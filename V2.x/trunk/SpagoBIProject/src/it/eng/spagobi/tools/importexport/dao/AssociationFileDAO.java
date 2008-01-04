@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
+import it.eng.spagobi.tools.importexport.services.DownloadFileAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
@@ -15,12 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class AssociationFileDAO implements IAssociationFileDAO {
 
 	private final String ASS_DIRECTORY = "Repository_Association_Files"; 
 	
+	static private Logger logger = Logger.getLogger(AssociationFileDAO.class);	
 	
 	public AssociationFile loadFromID(String id) {
+	    logger.debug("IN");
 		AssociationFile assFile = null;
 		try {
 			File fileAssRepDir = getFileOfAssRepDir();

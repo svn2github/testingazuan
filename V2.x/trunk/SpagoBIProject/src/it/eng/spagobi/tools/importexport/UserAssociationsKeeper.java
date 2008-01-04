@@ -1,13 +1,18 @@
 package it.eng.spagobi.tools.importexport;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+
 
 /**
  * Implements methods for recording the association of roles, engines, and connection 
  * setted by the user. The association recorder can be exported into xml format 
  */
 public class UserAssociationsKeeper {
+    
+
+    static private Logger logger = Logger.getLogger(UserAssociationsKeeper.class);
 
 	private SourceBean associationSB = null;
 	private SourceBean roleAssSB = null;
@@ -18,6 +23,7 @@ public class UserAssociationsKeeper {
 	 * Defines the internal structure for recording associations
 	 */
 	public UserAssociationsKeeper() {
+	    logger.debug("IN");
 		try{
 			associationSB = new SourceBean("USER_ASSOCIATIONS");
 			roleAssSB = new SourceBean("ROLE_ASSOCIATIONS");
@@ -27,8 +33,9 @@ public class UserAssociationsKeeper {
 			associationSB.setAttribute(engineAssSB);
 			associationSB.setAttribute(connectionAssSB);
 		} catch (Exception e) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-					            "constructor", "Error while creating the association SourceBean \n " + e );
+			logger.error("Error while creating the association SourceBean \n " , e );
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -39,10 +46,9 @@ public class UserAssociationsKeeper {
 	 * @param existingRolename the name of the existing role
 	 */
 	public void recordRoleAssociation(String exportedRoleName, String existingRolename) {
+	    logger.debug("IN");
 		if( (associationSB==null) || (roleAssSB==null) ) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		            			  "recordRoleAssociation", 
-		            			  "Cannot record the association between exported role "+exportedRoleName+" " +
+		    logger.warn("Cannot record the association between exported role "+exportedRoleName+" " +
 		            			  "and the role " + existingRolename + ", the association SourceBean is null");
 			return;
 		}
@@ -57,10 +63,10 @@ public class UserAssociationsKeeper {
 			roleSB.setAttribute("associatedTo", existingRolename);
 			roleAssSB.setAttribute(roleSB);
 		} catch (Exception e) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		                          "recordRoleAssociation", 
-		                          "Error while recording the association between exported role "+exportedRoleName+" " +
-		            			  "and the role " + existingRolename + " \n " + e);
+		    logger.error( "Error while recording the association between exported role "+exportedRoleName+" " +
+		            			  "and the role " + existingRolename + " \n " , e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -71,10 +77,9 @@ public class UserAssociationsKeeper {
 	 * @param existingEngineLabel the label of the existing engine
 	 */
 	public void recordEngineAssociation(String exportedEngineLabel, String existingEngineLabel) {
+	    logger.debug("IN");
 		if( (associationSB==null) || (engineAssSB==null) ) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		            			  "recordEngineAssociation", 
-		            			  "Cannot record the association between exported engine "+exportedEngineLabel+" " +
+		    logger.warn("Cannot record the association between exported engine "+exportedEngineLabel+" " +
 		            			  "and the engine " + existingEngineLabel + ", the association SourceBean is null");
 			return;
 		}
@@ -89,10 +94,10 @@ public class UserAssociationsKeeper {
 			engineSB.setAttribute("associatedTo", existingEngineLabel);
 			engineAssSB.setAttribute(engineSB);
 		} catch (Exception e) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		                          "recordEngineAssociation", 
-		                          "Error while recording the association between exported engine "+exportedEngineLabel+" " +
-		            			  "and the engine " + existingEngineLabel + " \n " + e);
+		    logger.error("Error while recording the association between exported engine "+exportedEngineLabel+" " +
+		            			  "and the engine " + existingEngineLabel + " \n " , e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
@@ -103,10 +108,9 @@ public class UserAssociationsKeeper {
 	 * @param existingConName the name of the existing connection
 	 */
 	public void recordConnectionAssociation(String exportedConName, String existingConName) {
+	    logger.debug("IN");
 		if( (associationSB==null) || (connectionAssSB==null) ) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		            			  "recordConnectionAssociation", 
-		            			  "Cannot record the association between exported connection "+exportedConName+" " +
+		    logger.warn("Cannot record the association between exported connection "+exportedConName+" " +
 		            			  "and the connection " + existingConName + ", the association SourceBean is null");
 			return;
 		}
@@ -121,10 +125,11 @@ public class UserAssociationsKeeper {
 			conSB.setAttribute("associatedTo", existingConName);
 			connectionAssSB.setAttribute(conSB);
 		} catch (Exception e) {
-			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-		                          "recordConnectionAssociation", 
-		                          "Error while recording the association between exported connection "+exportedConName+" " +
-		            			  "and the connection " + existingConName + " \n " + e);
+		    logger.error("Error while recording the association between exported connection "+exportedConName+" " +
+		            			  "and the connection " + existingConName + " \n " , e);
+		}finally{
+		    logger.debug("OUT");
+		    
 		}
 	}
 	
@@ -134,14 +139,14 @@ public class UserAssociationsKeeper {
 	 * @return the xml representation of the associations
 	 */
 	public String toXml() {
+	    logger.debug("IN");
 		String xml = "";
 		try{
 			xml = associationSB.toXML(false);
 		} catch (Exception e) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-                    			"toXml", 
-                    			"Error while exporting the association SourceBean to xml  \n " + e);
+		    logger.error("Error while exporting the association SourceBean to xml  \n " , e);
 		}
+		logger.debug("OUT");
 		return xml;
 	}
 	
@@ -151,6 +156,7 @@ public class UserAssociationsKeeper {
 	 * @param xmlStr the xml string which defines the associations 
 	 */
 	public void fillFromXml(String xmlStr) {
+	    logger.debug("IN");
 		try {
 			SourceBean associationSBtmp = SourceBean.fromXMLString(xmlStr);
 			SourceBean roleAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ROLE_ASSOCIATIONS");
@@ -164,15 +170,16 @@ public class UserAssociationsKeeper {
 			engineAssSB = engineAssSBtmp;
 			connectionAssSB = connectionAssSBtmp;
 		} catch (Exception e) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-        						"fillFromXml", 
-        						"Error while loading SourceBean from xml  \n " + e);
+		    logger.error("Error while loading SourceBean from xml  \n " , e);
+		}finally{
+		    logger.debug("OUT");
 		}
 	}
 	
 	
 	
 	public String getAssociatedRole(String expRoleName) {
+	    logger.debug("IN");
 		String assRole = null;
 		SourceBean assRoleSB = (SourceBean)roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", expRoleName);
 		if(assRoleSB!=null) {
@@ -181,6 +188,7 @@ public class UserAssociationsKeeper {
 				assRole = null;
 			}
 		}
+		logger.debug("OUT");
 		return assRole;
 	}
 	

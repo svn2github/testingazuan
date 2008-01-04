@@ -26,13 +26,13 @@ import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -41,13 +41,15 @@ import org.hibernate.cfg.Configuration;
  */
 public class ExportUtilities {
 
-	
+    static private Logger logger = Logger.getLogger(ExportUtilities.class);
+    
 	/**
 	 * Copy the metadata script of the exported database into the export folder 
 	 * @param pathDBFolder Path of the export database folder
 	 * @throws EMFUserError
 	 */
 	public static void copyMetadataScript(String pathDBFolder) throws EMFUserError {
+	    logger.debug("IN");
 		FileOutputStream fos = null;
 		InputStream ismetadata = null;
 		try {
@@ -63,8 +65,7 @@ public class ExportUtilities {
 	        }
 	        fos.flush();
         } catch (Exception e) {
-        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
-        			"Error during the copy of the metadata exportdatabase script " + e);
+        	logger.error("Error during the copy of the metadata exportdatabase script " , e);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
         } finally {
         	try{
@@ -75,9 +76,9 @@ public class ExportUtilities {
 	        		ismetadata.close();
 	        	}
         	} catch (Exception e) {
-        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
-            						"Error while closing streams " + e);
+        	    logger.error("Error while closing streams " , e);
         	}
+        	logger.debug("OUT");
         }
 	}
 	
@@ -89,6 +90,7 @@ public class ExportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static void copyMetadataScriptProperties(String pathDBFolder) throws EMFUserError {
+	    logger.debug("IN");
 		FileOutputStream fos = null;
 		InputStream ismetadata = null;
 		try {
@@ -104,8 +106,7 @@ public class ExportUtilities {
 	        }
 	        fos.flush();
         } catch (Exception e) {
-        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
-        			"Error during the copy of the metadata exportdatabase properties " + e);
+            logger.error("Error during the copy of the metadata exportdatabase properties " , e);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
         } finally {
         	try{
@@ -116,9 +117,9 @@ public class ExportUtilities {
 	        		ismetadata.close();
 	        	}
         	} catch (Exception e) {
-        		SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScriptProperties",
-            						"Error while closing streams " + e);
+        	    logger.error("Error while closing streams " , e);
         	}
+        	logger.debug("OUT");
         }
 	}
 	
@@ -131,12 +132,14 @@ public class ExportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
+	    logger.debug("IN");
 		Configuration conf = new Configuration();
 		String resource = "it/eng/spagobi/tools/importexport/metadata/hibernate.cfg.hsql.export.xml";
 		conf = conf.configure(resource);
 		String hsqlJdbcString = "jdbc:hsqldb:file:" + pathDBFolder + "/metadata;shutdown=true";
 		conf.setProperty("hibernate.connection.url",hsqlJdbcString);
 		SessionFactory sessionFactory = conf.buildSessionFactory();
+		logger.debug("OUT");
 		return sessionFactory;
 	}
 	
@@ -148,6 +151,7 @@ public class ExportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static Connection getConnectionExportDB(String pathDBFolder) throws EMFUserError {
+	    logger.debug("IN");
 		Connection sqlconn = null;
 		try {
 			String driverName = "org.hsqldb.jdbcDriver";
@@ -157,9 +161,10 @@ public class ExportUtilities {
 	        String password = "";
 	         sqlconn = DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
-        	SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "copyMetadataScript",
-        			"Error while getting connection to export database " + e);
+        	logger.error("Error while getting connection to export database " , e);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+        }finally{
+            logger.debug("OUT");
         }
         return sqlconn;
 	}
@@ -172,15 +177,17 @@ public class ExportUtilities {
 	 * @throws EMFInternalError
 	 */
 	public static DataConnection getDataConnection(Connection con) throws EMFInternalError {
+	    logger.debug("IN");
 		DataConnection dataCon = null;
 		try {
 			Class mapperClass = Class.forName("it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper");
 			SQLMapper sqlMapper = (SQLMapper)mapperClass.newInstance();
 			dataCon = new DataConnection(con, "2.1", sqlMapper);
 		} catch(Exception e) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ExportUtilities" , "getDataConnection",
-        			"Error while getting Spago  DataConnection " + e);
+			logger.error("Error while getting Spago  DataConnection " , e);
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, "cannot build DataConnection object");
+		}finally{
+		    logger.debug("OUT");
 		}
 		return dataCon;
 	}

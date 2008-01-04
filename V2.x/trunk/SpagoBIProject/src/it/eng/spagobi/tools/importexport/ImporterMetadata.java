@@ -39,10 +39,8 @@ import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
@@ -53,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -64,6 +63,7 @@ import org.hibernate.Transaction;
  */
 public class ImporterMetadata {
 
+    static private Logger logger = Logger.getLogger(ImporterMetadata.class);
 		/**
 		 * Get the list of exported hibernate role objects 
 		 * @param tx Hiberante transaction for the exported database
@@ -72,6 +72,7 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public List getAllExportedRoles(Transaction tx, Session session) throws EMFUserError {
+		    logger.debug("IN");
 			List roles = new ArrayList();
 			try {
 				Query hibQuery = session.createQuery(" from SbiExtRoles");
@@ -89,10 +90,11 @@ public class ImporterMetadata {
 					roles.add(role);
 				}
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedRoles",
-						               "Error while getting exported roles " + he);
+				logger.error("Error while getting exported roles " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			} 
+			} finally{
+			    logger.debug("OUT");
+			}
 			return roles;
 		}
 		
@@ -105,6 +107,7 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public List getAllExportedEngines(Transaction tx, Session session) throws EMFUserError {
+		    logger.debug("IN");
 			List engines = new ArrayList();
 			try {
 				Query hibQuery = session.createQuery(" from SbiEngines");
@@ -128,10 +131,11 @@ public class ImporterMetadata {
 					engines.add(eng);
 				}
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedEngines",
-						               "Error while getting exported engine " + he);
+			    logger.error("Error while getting exported engine " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			} 
+			} finally{
+			    logger.debug("OUT");
+			}
 			return engines;
 		}
 		
@@ -145,15 +149,17 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */		
 		public List getAllExportedSbiObjects(Transaction tx, Session session, String table) throws EMFUserError {
-			List hibList = null;
+		    logger.debug("IN");
+		    List hibList = null;
 			try {
 				Query hibQuery = session.createQuery(" from " + table);
 				hibList = hibQuery.list();
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getAllExportedSbiObjects",
-						               "Error while getting exported sbi objects " + he);
+			    logger.error("Error while getting exported sbi objects " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			} 
+			} finally{
+			    logger.debug("OUT");
+			}
 			return hibList;
 		}
 		
@@ -167,15 +173,16 @@ public class ImporterMetadata {
 		 * @return The existing hibernate object
 		 */		
 		public Object getObject(Integer id, Class objClass, Transaction tx, Session session) {
+		    logger.debug("IN");
 			Object hibObject = null;
 			try {
 				hibObject = session.load(objClass, id);
 			} catch (HibernateException he) {
-				SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-						           "getExistingObject",
-						           "Error while getting the existing object with class "+objClass.getName()+" " +
-						           "and id " +id+ " \n " + he);
-			} 
+			    logger.error("Error while getting the existing object with class "+objClass.getName()+" " +
+						           "and id " +id+ " \n " ,he);
+			} finally{
+			    logger.debug("OUT");
+			}
 			return hibObject;
 		}
 		
@@ -192,6 +199,7 @@ public class ImporterMetadata {
 		 */
 		public void updateConnRefs(Map associations, Transaction tx, Session session, 
 				                   MetadataLogger log) throws EMFUserError {
+		    logger.debug("IN");
 			try {
 				List lovs = getAllExportedSbiObjects(tx, session, "SbiLov");
 				Iterator iterLovs = lovs.iterator();
@@ -219,10 +227,11 @@ public class ImporterMetadata {
 					}
 				}
 			} catch (SourceBeanException sbe) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "updateConnRefs",
-									   "Error while updating connection references " + sbe);
+			    logger.error("Error while updating connection references " , sbe);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}	 
+			}finally{
+			    logger.debug("OUT");
+			}
 		}
 		
 		
@@ -233,16 +242,17 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public void insertObject(Object hibObj, Session session) throws EMFUserError {
+		    logger.debug("IN");
 			try{
 				Serializable serId = session.save(hibObj);
 			} catch (HibernateException he) {
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
-                        			   "Error while inserting object " + he);
+			    logger.error("Error while inserting object " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 			} catch (Exception e){
-				SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertObject",
-										"Error while inserting object " + e);
+			    logger.error("Error while inserting object " , e);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+			}finally{
+			    logger.debug("OUT");
 			}
 		}
 		
@@ -257,7 +267,8 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
-			//IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
+		    logger.debug("IN");
+		    //IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
 			SbiObjects objToReturn = null;
 			try {
 				String pathTempFolder = pathContent + obj.getPath();
@@ -270,9 +281,10 @@ public class ImporterMetadata {
 				insertObject(obj, session);
 				objToReturn = obj;
 			} catch (Exception e) {
-					SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "insertBIObject",
-             			   				   "Error while inserting business objects " + e);
+			    logger.error("Error while inserting business objects " , e);
 					throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+			}finally{
+			    logger.debug("OUT");
 			}
 			return objToReturn;
 		}
@@ -290,7 +302,8 @@ public class ImporterMetadata {
 		 * @throws EMFUserError
 		 */
 		public Object checkExistence(Object unique, Session sessionCurrDB, Object hibObj) throws EMFUserError {
-			String hql = null;
+		    logger.debug("IN");
+		    String hql = null;
 			Query hqlQuery = null;
 			if(hibObj instanceof SbiParameters) {
 				String label = (String)unique;
@@ -422,7 +435,7 @@ public class ImporterMetadata {
 				SbiObjParuse hibObjParUse = (SbiObjParuse)hqlQuery.uniqueResult();
 				return hibObjParUse;
 			} 
-			
+			logger.debug("OUT");
 			return null;
 		}
 		

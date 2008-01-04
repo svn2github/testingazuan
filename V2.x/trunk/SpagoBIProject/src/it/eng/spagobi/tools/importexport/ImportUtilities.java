@@ -21,8 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
@@ -32,11 +31,8 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -48,11 +44,13 @@ import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class ImportUtilities {
 
+    static private Logger logger = Logger.getLogger(ImportUtilities.class);
 	/**
 	 * Decompress the export compress file
 	 * @param pathImpTmpFolder The path of the import directory 
@@ -60,7 +58,8 @@ public class ImportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static void decompressArchive(String pathImpTmpFolder, String pathArchiveFile) throws EMFUserError {
-		File tmpFolder = new File(pathImpTmpFolder);
+	    logger.debug("IN");
+	    File tmpFolder = new File(pathImpTmpFolder);
 		tmpFolder.mkdirs();
 		int BUFFER = 2048;
 		try {
@@ -92,12 +91,12 @@ public class ImportUtilities {
 	         }
 	         zis.close();
 	      } catch (EOFException eofe) {
-	    	  SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
-			          "Error during the decompression of the exported file " + eofe);
+	    	  logger.warn("Error during the decompression of the exported file " , eofe);
 	      } catch(Exception e) {
-	    	  SpagoBITracer.major(ImportExportConstants.NAME_MODULE, "ImportUtilities" , "decompressArchive",
-	        			          "Error during the decompression of the exported file " + e);
+		  logger.warn("Error during the decompression of the exported file " , e);
 	    	  throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+	      }finally{
+		  logger.debug("OUT");
 	      }
 	}
 	
@@ -110,12 +109,14 @@ public class ImportUtilities {
 	 * @throws EMFUserError
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
+	    logger.debug("IN");
 		Configuration conf = new Configuration();
-		String resource = "it/eng/spagobi/importexport/metadata/hibernate.cfg.hsql.export.xml";
+		String resource = "it/eng/spagobi/tools/importexport/metadata/hibernate.cfg.hsql.export.xml";
 		conf = conf.configure(resource);
 		String hsqlJdbcString = "jdbc:hsqldb:file:" + pathDBFolder + "/metadata;shutdown=true";
 		conf.setProperty("hibernate.connection.url",hsqlJdbcString);
 		SessionFactory sessionFactory = conf.buildSessionFactory();
+		logger.debug("IN");
 		return sessionFactory;
 	}
 	
@@ -126,6 +127,7 @@ public class ImportUtilities {
 	 * @return the new hibernate role object
 	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role){
+	    	logger.debug("IN");
 		SbiExtRoles newRole = new SbiExtRoles();
 		newRole.setCode(role.getCode());
 		newRole.setDescr(role.getDescr());
@@ -134,6 +136,7 @@ public class ImportUtilities {
 		newRole.setRoleTypeCode(role.getRoleTypeCode());
 		newRole.setSbiParuseDets(new HashSet());
 		newRole.setSbiFuncRoles(new HashSet());
+		logger.debug("OUT");
 		return newRole;
 	}
 	
@@ -144,8 +147,10 @@ public class ImportUtilities {
 	 * @return the new hibernate role object
 	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role, Integer id){
+	    	logger.debug("IN");
 		SbiExtRoles newRole = makeNewSbiExtRole(role);
 		newRole.setExtRoleId(id);
+		logger.debug("OUT");
 		return newRole;
 	}
 	
@@ -156,6 +161,7 @@ public class ImportUtilities {
 	 * @return the new hibernate engine object
 	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine){
+	    	logger.debug("IN");
 		SbiEngines newEng = new SbiEngines();
 		newEng.setDescr(engine.getDescr());
 		newEng.setDriverNm(engine.getDriverNm());
@@ -169,6 +175,7 @@ public class ImportUtilities {
 		newEng.setEngineType(engine.getEngineType());
 		newEng.setBiobjType(engine.getBiobjType());
 		newEng.setClassNm(engine.getClassNm());
+		logger.debug("OUT");
 		return newEng;
 	}
 	
@@ -179,8 +186,10 @@ public class ImportUtilities {
 	 * @return the new hibernate engine object
 	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine, Integer id){
+	    	logger.debug("IN");
 		SbiEngines newEng = makeNewSbiEngine(engine);
 		newEng.setEngineId(id);
+		logger.debug("OUT");
 		return newEng;
 	}
 	
@@ -191,6 +200,7 @@ public class ImportUtilities {
 	 * @return the new hibernate functionality object
 	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct){
+	    	logger.debug("IN");
 		SbiFunctions newFunct = new SbiFunctions();
 		newFunct.setCode(funct.getCode());
 		newFunct.setDescr(funct.getDescr());
@@ -199,9 +209,7 @@ public class ImportUtilities {
 		newFunct.setName(funct.getName());
 		newFunct.setParentFunct(funct.getParentFunct());
 		newFunct.setPath(funct.getPath());
-		//newFunct.setProg(funct.getProg());
-		//newFunct.setSbiFuncRoles(new HashSet());
-		//newFunct.setSbiObjFuncs(new HashSet());
+		logger.debug("OUT");
 		return newFunct;
 	}
 
@@ -212,8 +220,10 @@ public class ImportUtilities {
 	 * @return the new hibernate functionality object
 	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct, Integer id){
+	    	logger.debug("IN");
 		SbiFunctions newFunct = makeNewSbiFunction(funct);
 		newFunct.setFunctId(id);
+		logger.debug("OUT");
 		return newFunct;
 	}
 	
@@ -224,6 +234,7 @@ public class ImportUtilities {
 	 * @return the new hibernate lov object
 	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov){
+	    	logger.debug("IN");
 		SbiLov newlov = new SbiLov();
 		newlov.setDefaultVal(lov.getDefaultVal());
 		newlov.setDescr(lov.getDescr());
@@ -233,6 +244,7 @@ public class ImportUtilities {
 		newlov.setLovProvider(lov.getLovProvider());
 		newlov.setName(lov.getName());
 		newlov.setProfileAttr(lov.getProfileAttr());
+		logger.debug("OUT");
 		return newlov;
 	}
 
@@ -243,8 +255,10 @@ public class ImportUtilities {
 	 * @return the new hibernate lov object
 	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov, Integer id){
+	    	logger.debug("IN");
 		SbiLov newlov = makeNewSbiLov(lov);
 		newlov.setLovId(id);
+		logger.debug("OUT");
 		return newlov;
 	}
 	
@@ -255,6 +269,7 @@ public class ImportUtilities {
 	 * @return the new hibernate check object
 	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check){
+	    	logger.debug("IN");
 		SbiChecks newck = new SbiChecks();
 		newck.setCheckType(check.getCheckType());
 		newck.setDescr(check.getDescr());
@@ -262,7 +277,8 @@ public class ImportUtilities {
 		newck.setName(check.getName());
 		newck.setValue1(check.getValue1());
 		newck.setValue2(check.getValue2());
-		newck.setValueTypeCd(check.getValueTypeCd());	
+		newck.setValueTypeCd(check.getValueTypeCd());
+		logger.debug("OUT");
 		return newck;
 	}
 	
@@ -273,8 +289,10 @@ public class ImportUtilities {
 	 * @return the new hibernate check object
 	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check, Integer id){
+	    	logger.debug("IN");
 		SbiChecks newCk = makeNewSbiCheck(check);
 		newCk.setCheckId(id);
+		logger.debug("OUT");
 		return newCk;
 	}
 	
@@ -285,6 +303,7 @@ public class ImportUtilities {
 	 * @return the new hibernate parameter object
 	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param){
+	    	logger.debug("IN");
 		SbiParameters newPar = new SbiParameters();
 		newPar.setDescr(param.getDescr());
 		newPar.setLabel(param.getLabel());
@@ -296,6 +315,7 @@ public class ImportUtilities {
 		newPar.setSbiObjPars(new HashSet());
 		newPar.setSbiParuses(new HashSet());
 		newPar.setFunctionalFlag(param.getFunctionalFlag());
+		logger.debug("OUT");
 		return newPar;
 	}
 	
@@ -306,8 +326,10 @@ public class ImportUtilities {
 	 * @return the new hibernate parameter object
 	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param, Integer id){
+	    	logger.debug("IN");
 		SbiParameters newPar = makeNewSbiParameter(param);
 		newPar.setParId(id);
+		logger.debug("OUT");
 		return newPar;
 	}
 	
@@ -317,6 +339,7 @@ public class ImportUtilities {
 	 * @return the new hibernate parameter use object
 	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse){
+	    	logger.debug("IN");
 		SbiParuse newParuse = new SbiParuse();
 		newParuse.setDescr(paruse.getDescr());
 		newParuse.setLabel(paruse.getLabel());
@@ -328,6 +351,7 @@ public class ImportUtilities {
 		newParuse.setManualInput(paruse.getManualInput());
 		newParuse.setSelectionType(paruse.getSelectionType());
 		newParuse.setMultivalue(paruse.getMultivalue());
+		logger.debug("OUT");
 		return newParuse;
 	}
 	
@@ -339,8 +363,10 @@ public class ImportUtilities {
 	 * @return the new hibernate parameter use object
 	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse, Integer id){
+	    	logger.debug("IN");
 		SbiParuse newParuse = makeNewSbiParuse(paruse);
 		newParuse.setUseId(id);
+		logger.debug("OUT");
 		return newParuse;
 	}
 	
@@ -350,6 +376,7 @@ public class ImportUtilities {
 	 * @return the new hibernate biobject
 	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj){
+	    	logger.debug("IN");
 		SbiObjects newObj = new SbiObjects();
 		newObj.setDescr(obj.getDescr());
 		newObj.setEncrypt(obj.getEncrypt());
@@ -372,6 +399,7 @@ public class ImportUtilities {
 		newObj.setStateConsiderationCode(obj.getStateConsiderationCode());
 		newObj.setVisible(obj.getVisible());
 		newObj.setUuid(obj.getUuid());
+		logger.debug("OUT");
 		return newObj;
 	}
 	
@@ -383,8 +411,10 @@ public class ImportUtilities {
 	 * @return the new hibernate biobject
 	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj, Integer id){
+	    	logger.debug("IN");
 		SbiObjects newObj = makeNewSbiObject(obj);
 		newObj.setBiobjId(id);
+		logger.debug("OUT");
 		return newObj;
 	}
 	
@@ -394,6 +424,7 @@ public class ImportUtilities {
 	 * Creates a new hibernate biobject parameter object
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar){
+	    	logger.debug("IN");
 		SbiObjPar newObjPar = new SbiObjPar();
 		newObjPar.setLabel(objpar.getLabel());
 		newObjPar.setModFl(objpar.getModFl());
@@ -405,6 +436,7 @@ public class ImportUtilities {
 		newObjPar.setSbiObject(objpar.getSbiObject());
 		newObjPar.setSbiParameter(objpar.getSbiParameter());
 		newObjPar.setViewFl(objpar.getViewFl());
+		logger.debug("OUT");
 		return newObjPar;
 	}
 	
@@ -412,8 +444,10 @@ public class ImportUtilities {
 	 * Creates a new hibernate biobject parameter object
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar, Integer id){
+	    	logger.debug("IN");
 		SbiObjPar newObjPar = makeNewSbiObjpar(objpar);
 		newObjPar.setObjParId(id);
+		logger.debug("OUT");
 		return newObjPar;
 	}
 	

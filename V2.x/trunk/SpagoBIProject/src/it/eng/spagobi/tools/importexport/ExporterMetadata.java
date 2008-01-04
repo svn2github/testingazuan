@@ -70,7 +70,6 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 

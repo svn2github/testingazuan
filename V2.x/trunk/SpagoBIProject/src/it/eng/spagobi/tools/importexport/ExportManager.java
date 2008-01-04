@@ -26,7 +26,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -38,7 +37,6 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
-import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
@@ -52,8 +50,6 @@ import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -388,49 +384,6 @@ public class ExportManager implements IExportManager {
 
 
     /**
-     * Export the subobjects of a single SpagoBI Object
-     * 
-     * @param biobj
-     *                The BIObject to which the template belongs
-     * @param path
-     *                The path of the SpagoBI BIObject
-     * @throws EMFUserError
-     */
-/*
-      private void exportSubObjects(BIObject biobj) throws EMFUserError { 
-      try{
-          String folderSubObjPath = pathContentFolder + biobj.getPath() +"/subobjects"; 
-          File folderSubObjFile = new File(folderSubObjPath);
-          folderSubObjFile.mkdirs(); IBIObjectCMSDAO cmsdao =DAOFactory.getBIObjectCMSDAO(); List subObjs =
-          cmsdao.getSubObjects(biobj.getPath()); 
-          Iterator iterSubObjs =subObjs.iterator(); 
-          while(iterSubObjs.hasNext()) {
-              BIObject.SubObjectDetail subObj =(BIObject.SubObjectDetail)iterSubObjs.next(); 
-              String nameSub =subObj.getName(); 
-              String descr = subObj.getDescription(); 
-              String owner =subObj.getOwner(); 
-              String publicVisibility = "false";
-              if(subObj.isPublicVisible()) publicVisibility = "true"; 
-              String propertiesStr = "name="+nameSub+"\ndescription="+descr+"\nowner="+owner+"\npubvis="+publicVisibility;
-              FileOutputStream fos = new FileOutputStream(folderSubObjPath + "/" +nameSub + ".properties"); 
-              fos.write(propertiesStr.getBytes());
-              fos.flush(); 
-              fos.close(); 
-              InputStream subis =cmsdao.getSubObject(biobj.getPath(), nameSub); 
-              byte[] subcontent =GeneralUtilities.getByteArrayFromInputStream(subis); subis.close(); 
-              fos =new FileOutputStream(folderSubObjPath + "/" + nameSub + ".content");
-              fos.write(subcontent); 
-              fos.flush(); 
-              fos.close(); 
-          } 
-      } catch (Exception e) {
-          logger.error( "Error while exporting subobjects " + e); 
-          throw new EMFUserError(EMFErrorSeverity.ERROR, "8005","component_impexp_messages"); 
-      } 
-      }
-*/
-
-    /**
      * Exports the BIParameters of a BIObject
      * 
      * @param biparams
@@ -493,48 +446,7 @@ public class ExportManager implements IExportManager {
     }
 
  
-    /**
-     * Export a single functionality
-     * 
-     * @param path
-     *                The path of the fuctionality to export
-     * @throws EMFUserError
-     */
-    private void exportFunctionalities(String path) throws EMFUserError {
-	logger.debug("IN");
-	List pathFuncts = new ArrayList();
-	String pathTmp = path;
-	while ((pathTmp.lastIndexOf('/') != -1) && (pathTmp.lastIndexOf('/') != 0)) {
-	    int posLast = pathTmp.lastIndexOf('/');
-	    pathTmp = pathTmp.substring(0, posLast);
-	    pathFuncts.add(pathTmp);
-	}
-	Iterator iterPathFuncts = pathFuncts.iterator();
-	while (iterPathFuncts.hasNext()) {
-	    String pathFunct = (String) iterPathFuncts.next();
-	    ILowFunctionalityDAO functDAO = DAOFactory.getLowFunctionalityDAO();
-	    LowFunctionality funct = functDAO.loadLowFunctionalityByPath(pathFunct, false);
-	    if (funct == null) {
-		continue;
-	    }
-	    exporter.insertFunctionality(funct, session);
-	    Role[] devRoles = funct.getDevRoles();
-	    Role[] testRoles = funct.getTestRoles();
-	    Role[] execRoles = funct.getExecRoles();
-	    List devRolesList = Arrays.asList(devRoles);
-	    List testRolesList = Arrays.asList(testRoles);
-	    List execRolesList = Arrays.asList(execRoles);
-	    List allRoles = new ArrayList();
-	    addToList(allRoles, devRolesList);
-	    addToList(allRoles, testRolesList);
-	    addToList(allRoles, execRolesList);
-	    exportRoles(allRoles);
-	    exportFunctRoles(devRolesList, funct, "DEV");
-	    exportFunctRoles(testRolesList, funct, "TEST");
-	    exportFunctRoles(execRolesList, funct, "REL");
-	}
-	logger.debug("OUT");
-    }
+
 
     private void addToList(List dest, List src) {
 	logger.debug("IN");

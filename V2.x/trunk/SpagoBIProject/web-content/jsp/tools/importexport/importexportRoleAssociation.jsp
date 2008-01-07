@@ -20,11 +20,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Iterator,it.eng.spagobi.commons.bo.Role" %>
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Iterator,it.eng.spagobi.commons.bo.Role" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.tooit.eng.spagobi.tools.importexportger"%>
-<%@page import="it.eng.spagoit.eng.spagobi.tools.importexportssociationsKeeper"%>
+<%@page import="it.eng.spagobi.tools.importexport.*"%>
+
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
@@ -171,7 +171,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							while(iterCurRoles.hasNext()) {
 								Role roleCur = (Role)iterCurRoles.next();
 								if(roleCur.getName().equalsIgnoreCase(role.getName())){
-									disabled = true;
+									//disabled = true;
 									idAssRole = roleCur.getId();
 									break;
 								}

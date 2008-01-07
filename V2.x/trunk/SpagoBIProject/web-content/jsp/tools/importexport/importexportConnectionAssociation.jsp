@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Map,java.util.Set,java.util.Iterator,it.eng.spagobi.engines.config.bo.Engine,it.eng.spagobi.tools.importexport.Jnit.eng.spagobi.tools.importexport.tools.importexport.Jdit.eng.spagobi.tools.importexportmport="java.util.HashMap"%>
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Map,java.util.Set,java.util.Iterator,it.eng.spagobi.engines.config.bo.Engine,java.util.HashMap"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
@@ -50,6 +50,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <script>
 
 	var infopanelopen = false;
@@ -157,31 +158,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<% } %>
 				<%
 			    while(iterExpConn.hasNext()) {
-			    	Object connObj = iterExpConn.next();
-			    	String connName = "";
-			    	if(connObj instanceof JdbcConnection) {
-			    		JdbcConnection conn = (JdbcConnection)connObj;
-			    		connName = conn.getName();	
+				    DataSource dataSource = (DataSource)iterExpConn.next();
+			    	String connName = dataSource.getLabel();
+			    	if(dataSource.getJndi()==null) {
+
 			    %>
 				<tr>
 					<td class="portlet-font">
-						<span class='portlet-form-field-label'><%=conn.getName() + "  (Jdbc)"%> </span>
+						<span class='portlet-form-field-label'><%=connName + "  (Jdbc)"%> </span>
 						<br/>
-						<%=conn.getDescription()%><br/>
-						<%=conn.getDriverClassName()%><br/>
-						<%=conn.getConnectionString()%><br/>
+						<%=dataSource.getDescr()%><br/>
+						<%=dataSource.getDriver()%><br/>
+						<%=dataSource.getUrlConnection()%><br/>
 					</td>
 			   <% } else {
-					JndiConnection conn = (JndiConnection)connObj;
-					connName = conn.getName();	
 			   %>
 			   <tr>
 					<td class="portlet-font">
-						<span class='portlet-form-field-label'><%=conn.getName() + "  (Jndi)"%></span>
+						<span class='portlet-form-field-label'><%=connName + "  (Jndi)"%></span>
 						<br/>
-						<%=conn.getDescription()%><br/>
-						<%=conn.getJndiName()%><br/>
-						<%=conn.getJndiContextName()%><br/>
+						<%=dataSource.getDescr()%> <br/>
+						<%=dataSource.getJndi()%> <br/>
 					</td>
 			   <% } %>
 					<td>

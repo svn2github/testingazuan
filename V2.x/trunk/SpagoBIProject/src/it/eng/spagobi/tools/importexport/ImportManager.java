@@ -48,6 +48,8 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.importexport.transformers.TransformersUtilities;
 
 import java.io.File;
@@ -82,7 +84,6 @@ public class ImportManager implements IImportManager, Serializable {
     private String pathImportTmpFolder = "";
     private String pathBaseFolder = "";
     private String pathDBFolder = "";
-    private String pathContentFolder = "";
     private ImporterMetadata importer = null;
     private Properties props = null;
     private SessionFactory sessionFactoryExpDB = null;
@@ -134,7 +135,6 @@ public class ImportManager implements IImportManager, Serializable {
 	pathImportTmpFolder = pathImpTmpFold;
 	pathBaseFolder = pathImportTmpFolder + "/" + archiveName;
 	pathDBFolder = pathBaseFolder + "/metadata";
-	pathContentFolder = pathBaseFolder + "/contents";
 	String propFilePath = pathBaseFolder + "/export.properties";
 	try {
 	    FileInputStream fis = new FileInputStream(propFilePath);
@@ -178,15 +178,6 @@ public class ImportManager implements IImportManager, Serializable {
 	String curVer = (String) curVerSB.getAttribute("version");
 	logger.debug("OUT");
 	return curVer;
-    }
-
-    /**
-     * Gets the path of the cms base folder of the exported archive
-     * 
-     * @return The path of the cms base folder of the exported archive
-     */
-    private String getExportedCmsBaseFolder() {
-	return props.getProperty("cms-basefolder");
     }
 
     /**
@@ -236,7 +227,7 @@ public class ImportManager implements IImportManager, Serializable {
 		if (otherRoleExpId.compareTo(roleExpId) != 0) {
 		    Integer otherRoleAssId = (Integer) roleAssociations.get(otherRoleExpId);
 		    if (otherRoleAssId.compareTo(roleAssId) == 0) {
-			logger.debug("OUT");
+			logger.debug("OUT. The checkRoleReferences method doesn't  ");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8001", "component_impexp_messages");
 		    }
 		}
@@ -400,8 +391,8 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public void importObjects() throws EMFUserError {
 	logger.debug("IN");
-	// checkRoleReferences(metaAss.getRoleIDAssociation());
 	updateConnectionReferences(metaAss.getConnectionAssociation());
+	importDataSource();
 	importRoles();
 	importEngines();
 	importFunctionalities();
@@ -471,7 +462,6 @@ public class ImportManager implements IImportManager, Serializable {
 	try {
 	    List exportedEngines = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
 	    Iterator iterSbiEngines = exportedEngines.iterator();
-	    Map engineAss = new HashMap();
 	    while (iterSbiEngines.hasNext()) {
 		SbiEngines engine = (SbiEngines) iterSbiEngines.next();
 		Integer oldId = engine.getEngineId();
@@ -512,6 +502,34 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+    private void importDataSource() throws EMFUserError {
+	logger.debug("IN");
+	try {
+	    List exportedDS = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDataSource");
+	    Iterator iterSbiDataSource = exportedDS.iterator();
+	    
+	    while (iterSbiDataSource.hasNext()) {
+		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
+		Integer oldId = new Integer(dataSource.getDsId());
+		Map engIdAss = metaAss.getConnectionAssociation();
+		Set engIdAssSet = engIdAss.keySet();
+		if (engIdAssSet.contains(oldId)) {
+		    metaLog.log("Exported dataSource " + dataSource.getLabel() + " not inserted"
+			    + " because exist dataSource with the same  label ");
+		    continue;
+		}
+
+		SbiDataSource newDS = ImportUtilities.makeNewDataSource(dataSource);
+
+		Integer newId=importer.insertObject(newDS, sessionCurrDB);
+		metaLog.log("Inserted new engine " + newDS.getLabel());
+		metaAss.insertCoupleConnections(dataSource.getLabel(), newDS.getLabel());
+	    }
+	} finally {
+	    logger.debug("OUT");
+	}
+    }
+
     /**
      * Imports exported functionalities
      * 
@@ -539,8 +557,6 @@ public class ImportManager implements IImportManager, Serializable {
 		// remove function from list
 		exportedFuncts = removeFromList(exportedFuncts, functToInsert);
 		// insert function
-		// functToInsert.setSbiFuncRoles(new HashSet());
-		// functToInsert.setSbiObjFuncs(new HashSet());
 		Integer oldId = functToInsert.getFunctId();
 		Map functIdAss = metaAss.getFunctIDAssociation();
 		Set functIdAssSet = functIdAss.keySet();
@@ -590,7 +606,6 @@ public class ImportManager implements IImportManager, Serializable {
 	    logger.debug("OUT");
 	}
 
-	// throw new EMFUserError(EMFErrorSeverity.ERROR, 8008);
     }
 
     private List removeFromList(List complete, SbiFunctions funct) {
@@ -617,7 +632,6 @@ public class ImportManager implements IImportManager, Serializable {
 	try {
 	    List exportedLovs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
 	    Iterator iterSbiLovs = exportedLovs.iterator();
-	    Map lovAss = new HashMap();
 	    while (iterSbiLovs.hasNext()) {
 		SbiLov lov = (SbiLov) iterSbiLovs.next();
 		Integer oldId = lov.getLovId();
@@ -658,7 +672,6 @@ public class ImportManager implements IImportManager, Serializable {
 	try {
 	    List exportedChecks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
 	    Iterator iterSbiChecks = exportedChecks.iterator();
-	    Map checkAss = new HashMap();
 	    while (iterSbiChecks.hasNext()) {
 		SbiChecks check = (SbiChecks) iterSbiChecks.next();
 		Integer oldId = check.getCheckId();
@@ -699,7 +712,6 @@ public class ImportManager implements IImportManager, Serializable {
 	try {
 	    List exportedParams = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParameters");
 	    Iterator iterSbiParams = exportedParams.iterator();
-	    Map paramAss = new HashMap();
 	    while (iterSbiParams.hasNext()) {
 		SbiParameters param = (SbiParameters) iterSbiParams.next();
 		Integer oldId = param.getParId();
@@ -740,12 +752,10 @@ public class ImportManager implements IImportManager, Serializable {
 	try {
 	    List exportedBIObjs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
 	    Iterator iterSbiObjs = exportedBIObjs.iterator();
-	    Map objAss = new HashMap();
 	    while (iterSbiObjs.hasNext()) {
+		
 		SbiObjects obj = (SbiObjects) iterSbiObjs.next();
-
-		String oldpath = obj.getPath();
-
+		
 		SbiEngines engine = obj.getSbiEngines();
 		Integer oldEngId = engine.getEngineId();
 		Map assEngs = metaAss.getEngineIDAssociation();
@@ -781,9 +791,8 @@ public class ImportManager implements IImportManager, Serializable {
 		    newObj.setState(existDomSt);
 		    newObj.setStateCode(existDomSt.getValueCd());
 		}
-		obj = importer.insertBIObject(newObj, pathContentFolder, sessionCurrDB);
+		Integer newId=importer.insertBIObject(newObj, sessionCurrDB);
 		metaLog.log("Inserted new biobject " + newObj.getName());
-		Integer newId = newObj.getBiobjId();
 		metaAss.insertCoupleBIObj(oldId, newId);
 
 	    }
@@ -1272,7 +1281,24 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public List getExportedConnections() throws EMFUserError {
 	logger.debug("IN");
-	List connections = new ArrayList();
+	List conn=new ArrayList();
+	try {
+	    List exportedDS = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDataSource");
+	    Iterator iterSbiDataSource = exportedDS.iterator();
+	    
+	    while (iterSbiDataSource.hasNext()) {
+		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
+		DataSource ds=new DataSource();
+		ds.setLabel(dataSource.getLabel());
+		ds.setDescr(dataSource.getDescr());
+		ds.setDriver(dataSource.getDriver());
+		ds.setJndi(dataSource.getJndi());
+		conn.add(ds);
+	    }
+	} finally {
+	    logger.debug("OUT");
+	}
+	
 	/*
 	 * String connFilePath = pathBaseFolder + "/connections.xml"; try{
 	 * FileInputStream fis = new FileInputStream(connFilePath); byte[]
@@ -1322,7 +1348,7 @@ public class ImportManager implements IImportManager, Serializable {
 	 * "component_impexp_messages"); } finally {}
 	 */
 	logger.debug("OUT");
-	return connections;
+	return conn;
     }
 
     /**

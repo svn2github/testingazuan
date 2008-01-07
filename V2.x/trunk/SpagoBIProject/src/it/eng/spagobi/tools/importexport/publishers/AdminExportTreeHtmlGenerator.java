@@ -38,6 +38,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -47,6 +48,7 @@ import org.safehaus.uuid.UUIDGenerator;
 
 public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 
+    static private Logger logger = Logger.getLogger(AdminExportTreeHtmlGenerator.class);
 	/**
 	 * Builds the JavaScript object to make the tree. All code is appended into a 
 	 * String Buffer, which is then returned. 
@@ -55,6 +57,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	 * @param initialPath The tree initial path
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
+	    logger.debug("IN");
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -111,6 +114,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
+		logger.debug("OUT");
 		return htmlStream;
 	}
 	
@@ -118,7 +122,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	
 	
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
-		
+	    logger.debug("IN");
 		String nameLabel = folder.getName();
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String path = folder.getPath();
@@ -145,6 +149,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				}
 			}
 		}
+		logger.debug("OUT");
 	}
 	
 	

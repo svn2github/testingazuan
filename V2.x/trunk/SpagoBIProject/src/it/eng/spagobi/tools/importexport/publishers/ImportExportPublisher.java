@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.importexport.publishers;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
@@ -30,7 +32,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
 
 
@@ -39,6 +40,7 @@ import it.eng.spagobi.tools.importexport.ImportExportConstants;
  */
 public class ImportExportPublisher implements PublisherDispatcherIFace {
 
+    static private Logger logger = Logger.getLogger(ImportExportPublisher.class);
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -48,12 +50,14 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 	 * 		   call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
-		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
+	    logger.debug("IN");
+	    EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("ImportExportModule");
 		if(moduleResponse==null) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName", "Module response null");
+			logger.warn( "Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "10", "component_impexp_messages");
 			errorHandler.addError(error);
+			logger.warn("OUT. Error");
 			return "error";
 		}
 		
@@ -70,16 +74,20 @@ public class ImportExportPublisher implements PublisherDispatcherIFace {
 			}
 		}
 		
-		
+				
 		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			if((pubName!=null) && !(pubName.trim().equals(""))) {
+			    logger.debug("OUT.pubName="+pubName);
 				return pubName;
 			} else {
+			    logger.debug("OUT.pubName=ImportExportLoopback");
 				return new String("ImportExportLoopback");
 			}
 		} else {
+		    logger.debug("OUT.pubName=error");
 			return new String("error");
 		}
+
 		
 	}
 	

@@ -24,6 +24,8 @@ package it.eng.spagobi.tools.importexport;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
@@ -39,6 +41,7 @@ import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -241,10 +244,11 @@ public class ImporterMetadata {
 		 * @param session Hibernate session for the exported database
 		 * @throws EMFUserError
 		 */
-		public void insertObject(Object hibObj, Session session) throws EMFUserError {
+		public Integer insertObject(Object hibObj, Session session) throws EMFUserError {
 		    logger.debug("IN");
 			try{
 				Serializable serId = session.save(hibObj);
+				return (Integer)serId;
 			} catch (HibernateException he) {
 			    logger.error("Error while inserting object " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
@@ -266,27 +270,23 @@ public class ImporterMetadata {
 		 * @return The Hibernate BIObject inserted
 		 * @throws EMFUserError
 		 */
-		public SbiObjects insertBIObject(SbiObjects obj, String pathContent, Session session) throws EMFUserError {
+		public Integer insertBIObject(SbiObjects obj, Session session) throws EMFUserError {
 		    logger.debug("IN");
-		    //IBIObjectCMSDAO cmsdao = DAOFactory.getBIObjectCMSDAO();
-			SbiObjects objToReturn = null;
 			try {
-				String pathTempFolder = pathContent + obj.getPath();
-				// normalize path
-				File temp = new File(pathTempFolder);
-				pathTempFolder = temp.getAbsolutePath();
-				//String newPath = cmsdao.importDocument(pathTempFolder);
-				String newPath = "";
-				obj.setPath(newPath);
-				insertObject(obj, session);
-				objToReturn = obj;
+			    Serializable id =session.save(obj);
+			    
+			    // insert template
+			    
+			    
+			    // subobject 
+			    
+			    return (Integer)id;
 			} catch (Exception e) {
 			    logger.error("Error while inserting business objects " , e);
 					throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 			}finally{
 			    logger.debug("OUT");
 			}
-			return objToReturn;
 		}
 		
 		

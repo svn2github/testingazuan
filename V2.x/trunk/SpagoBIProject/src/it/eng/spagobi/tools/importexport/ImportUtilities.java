@@ -33,6 +33,7 @@ import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -175,9 +176,24 @@ public class ImportUtilities {
 		newEng.setEngineType(engine.getEngineType());
 		newEng.setBiobjType(engine.getBiobjType());
 		newEng.setClassNm(engine.getClassNm());
+		newEng.setDataSource(engine.getDataSource());
 		logger.debug("OUT");
 		return newEng;
 	}
+	
+	public static SbiDataSource makeNewDataSource(SbiDataSource ds){
+	    	logger.debug("IN");
+	    	SbiDataSource newDS = new SbiDataSource();
+		newDS.setDescr(ds.getDescr());
+		newDS.setLabel(ds.getLabel());
+		newDS.setJndi(ds.getJndi());
+		newDS.setDriver(ds.getDriver());
+		newDS.setPwd(ds.getPwd());
+		newDS.setUrl_connection(ds.getUrl_connection());
+		newDS.setUser(ds.getUser());
+		logger.debug("OUT");
+		return newDS;
+	}	
 	
 	/**
 	 * Creates a new hibernate engine object
@@ -399,6 +415,7 @@ public class ImportUtilities {
 		newObj.setStateConsiderationCode(obj.getStateConsiderationCode());
 		newObj.setVisible(obj.getVisible());
 		newObj.setUuid(obj.getUuid());
+		newObj.setDataSource(obj.getDataSource());
 		logger.debug("OUT");
 		return newObj;
 	}

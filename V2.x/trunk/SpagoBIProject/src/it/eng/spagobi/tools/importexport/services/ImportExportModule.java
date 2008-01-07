@@ -40,6 +40,8 @@ import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
@@ -731,17 +733,20 @@ public class ImportExportModule extends AbstractModule {
     private Map getCurrentConnectionInfo() {
 	logger.debug("IN");
 	Map curConns = new HashMap();
-	ConfigSingleton conf = ConfigSingleton.getInstance();
-	List connList = conf.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
-	Iterator iterConn = connList.iterator();
-	while (iterConn.hasNext()) {
-	    SourceBean connSB = (SourceBean) iterConn.next();
-	    String name = (String) connSB.getAttribute("connectionPoolName");
-	    String descr = (String) connSB.getAttribute("connectionDescription");
-	    if ((descr == null) || (descr.trim().equals("")))
-		descr = name;
-	    curConns.put(name, descr);
-	}
+	
+	try {
+	    	IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
+	    	List dsList=dsDao.loadAllDataSources();
+         	Iterator iterList = dsList.iterator();
+        	while (iterList.hasNext()) {
+        	    DataSource ds = (DataSource) iterList.next();
+        	    String laben = ds.getLabel();
+        	    String desc = ds.getDescr();
+        	    curConns.put(laben,desc);
+        	}
+	} catch (EMFUserError e) {
+	    logger.error("EMFUserError",e);
+	}	
 	logger.debug("OUT");
 	return curConns;
     }

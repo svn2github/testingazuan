@@ -33,10 +33,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import edu.yale.its.tp.cas.client.CASReceipt;
-import edu.yale.its.tp.cas.client.filter.CASFilter;
-import edu.yale.its.tp.cas.proxy.ProxyTicketReceptor;
-
 /**
  * Driver Implementation (IEngineDriver Interface) for Jasper Report Engine.
  */

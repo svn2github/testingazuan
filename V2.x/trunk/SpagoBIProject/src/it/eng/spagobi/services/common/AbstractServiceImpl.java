@@ -3,12 +3,9 @@ package it.eng.spagobi.services.common;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
-
-import edu.yale.its.tp.cas.client.ProxyTicketValidator;
 
 public abstract class AbstractServiceImpl {
 
@@ -58,34 +55,9 @@ public abstract class AbstractServiceImpl {
 	    if (UserProfile.isSchedulerUser(userId)) {
 		logger.info("User is a scheduler, JUMP che ticket validation");
 	    }else {
-		try {
-		    ProxyTicketValidator pv = null;
-		    pv = new ProxyTicketValidator();
-		    pv.setCasValidateUrl(validateUrl);
-		    pv.setServiceTicket(ticket);
-		    pv.setService(validateService);
-		    pv.setRenew(false);
-		    pv.validate();
-		    if (pv.isAuthenticationSuccesful()) {
-			String tmpUserId = pv.getUser();
-			logger.debug("CAS User:" + tmpUserId);
-			if ( !userId.equals(tmpUserId)) {
-			    logger.warn("Proxy and application users are not the same !!!!! " + userId + "-"
-				    + tmpUserId);
-			    throw new SecurityException();
-			}
-		    } else {
-			logger.error("Token NOT VALID");
-			throw new SecurityException();
-		    }
-		} catch (Exception e) {
-		    logger.error("Exception", e);
-		    throw new SecurityException();
-		} finally {
-		    logger.debug("OUT");
-		}
+		IProxyService proxyService=IProxyServiceFactory.createProxyService();
+		proxyService.validateTicket(ticket, userId, validateUrl, validateService);
 	    }
-
 	}
 	logger.debug("OUT");
 

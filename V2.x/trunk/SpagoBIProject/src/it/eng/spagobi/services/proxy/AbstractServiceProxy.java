@@ -8,15 +8,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import edu.yale.its.tp.cas.client.CASReceipt;
-import edu.yale.its.tp.cas.client.filter.CASFilter;
-import edu.yale.its.tp.cas.proxy.ProxyTicketReceptor;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 
 public abstract class AbstractServiceProxy {
 
@@ -29,9 +27,8 @@ public abstract class AbstractServiceProxy {
 
     protected String readTicket() throws IOException {
 	if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
-	    CASReceipt cr = (CASReceipt) session.getAttribute(CASFilter.CAS_FILTER_RECEIPT);
-	    logger.debug("Read cr=" + cr);
-	    return ProxyTicketReceptor.getProxyTicket(cr.getPgtIou(), filterReceipt);
+	    IProxyService proxyService=IProxyServiceFactory.createProxyService();
+	    return proxyService.readTicket(session, filterReceipt);
 	} else
 	    return "";
 

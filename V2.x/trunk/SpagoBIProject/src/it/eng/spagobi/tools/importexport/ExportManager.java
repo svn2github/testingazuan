@@ -26,6 +26,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -345,6 +346,12 @@ public class ExportManager implements IExportManager {
 		if (subObjectLis!=null && !subObjectLis.isEmpty())
 		    	exporter.insertSubObject(biobj,subObjectLis, session);
 	    }
+	    if(exportSnapshots) {
+		ISnapshotDAO subDao=DAOFactory.getSnapshotDAO();
+		List snapshotLis=subDao.getSnapshots(biobj.getId());
+		if (snapshotLis!=null && !snapshotLis.isEmpty())
+		    	exporter.insertSnapshot(biobj,snapshotLis, session);
+	    }	    
 
 	    // insert functionalities and association with object
 	    List functs = biobj.getFunctionalities();

@@ -25,12 +25,16 @@ package it.eng.spagobi.tools.importexport;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -176,7 +180,6 @@ public class ImportUtilities {
 		newEng.setEngineType(engine.getEngineType());
 		newEng.setBiobjType(engine.getBiobjType());
 		newEng.setClassNm(engine.getClassNm());
-		newEng.setDataSource(engine.getDataSource());
 		logger.debug("OUT");
 		return newEng;
 	}
@@ -419,7 +422,46 @@ public class ImportUtilities {
 		logger.debug("OUT");
 		return newObj;
 	}
+	public static SbiSnapshots makeNewSbiSnapshots(SbiSnapshots obj){
+	    	logger.debug("IN");
+	    	SbiSnapshots newObj = new SbiSnapshots();
+	    	newObj.setCreationDate(obj.getCreationDate());
+	    	newObj.setDescription(obj.getDescription());
+	    	newObj.setName(obj.getName());
+		logger.debug("OUT");
+		return newObj;
+	}
 	
+	public static SbiSubObjects makeNewSbiSubObjects(SbiSubObjects obj){
+	    	logger.debug("IN");
+	    	SbiSubObjects newObj = new SbiSubObjects();
+	    	newObj.setCreationDate(obj.getCreationDate());
+	    	newObj.setDescription(obj.getDescription());
+	    	newObj.setIsPublic(obj.getIsPublic());
+	    	newObj.setLastChangeDate(obj.getLastChangeDate());
+	    	newObj.setName(obj.getName());
+	    	newObj.setOwner(obj.getOwner());
+		logger.debug("OUT");
+		return newObj;
+	}	
+	public static SbiObjTemplates makeNewSbiObjTemplates(SbiObjTemplates obj){
+	    	logger.debug("IN");
+	    	SbiObjTemplates newObj = new SbiObjTemplates();
+	    	newObj.setActive(obj.getActive());
+	    	newObj.setCreationDate(obj.getCreationDate());
+	    	newObj.setName(obj.getName());
+	    	newObj.setProg(obj.getProg());
+		logger.debug("OUT");
+		return newObj;
+	}
+	
+	public static SbiBinContents makeNewSbiBinContents(SbiBinContents obj){
+	    	logger.debug("IN");
+	    	SbiBinContents newObj = new SbiBinContents();
+	    	newObj.setContent(obj.getContent());
+		logger.debug("OUT");
+		return newObj;
+	}	
 
 	/**
 	 * Creates a new hibernate biobject

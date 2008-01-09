@@ -25,12 +25,14 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreportsId;
@@ -187,6 +189,71 @@ public class ExporterMetadata {
 		    logger.debug("OUT");
 		}
 	}
+
+	/**
+	 * Insert all Snapshot and their binary content
+	 * @param biobj
+	 * @param snapshotLis
+	 * @param session
+	 * @throws EMFUserError
+	 */
+	public void insertSnapshot(BIObject biobj, List snapshotLis, Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    Iterator iter=snapshotLis.iterator();
+	    while(iter.hasNext()){
+		insertSnapshot(biobj,(Snapshot)iter.next(),session);
+	    }
+	    logger.debug("OUT");
+	}
+	
+	/**
+	 * Insert a single sub object and their binary content
+	 * @param biobj
+	 * @param subObject
+	 * @param session
+	 * @throws EMFUserError
+	 */
+	private void insertSnapshot(BIObject biobj, Snapshot snapshot, Session session) throws EMFUserError {
+	    logger.debug("IN");
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiSnapshots where snapId = " + snapshot.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+			    	logger.warn("Exist another SbiSnapshot");
+				return;
+			}
+			
+			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
+
+			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
+			byte[] template = contdao.getBinContent(snapshot.getBinId());
+			
+			SbiBinContents hibBinContent = new SbiBinContents();
+			hibBinContent.setId(snapshot.getBinId());
+			hibBinContent.setContent(template);
+			
+			SbiSnapshots sub=new SbiSnapshots();
+			sub.setCreationDate(snapshot.getDateCreation());
+			sub.setDescription(snapshot.getDescription());
+			sub.setName(snapshot.getName());
+			sub.setSbiBinContents(hibBinContent);
+			sub.setSbiObject(hibBIObj);
+			sub.setSnapId(snapshot.getId());
+			
+			
+			session.save(sub);
+			session.save(hibBinContent);
+			tx.commit();
+
+		} catch (Exception e) {
+			logger.error("Error while inserting biobject into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
+		}
+	}	
+	
 	/**
 	 * Insert all SubObject and their binary content
 	 * @param biobj

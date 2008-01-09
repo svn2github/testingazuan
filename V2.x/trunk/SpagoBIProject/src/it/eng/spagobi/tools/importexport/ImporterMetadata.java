@@ -27,7 +27,9 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
@@ -244,11 +246,11 @@ public class ImporterMetadata {
 		 * @param session Hibernate session for the exported database
 		 * @throws EMFUserError
 		 */
-		public Integer insertObject(Object hibObj, Session session) throws EMFUserError {
+		public Object insertObject(Object hibObj, Session session) throws EMFUserError {
 		    logger.debug("IN");
 			try{
 				Serializable serId = session.save(hibObj);
-				return (Integer)serId;
+				return (Object)serId;
 			} catch (HibernateException he) {
 			    logger.error("Error while inserting object " , he);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
@@ -261,36 +263,7 @@ public class ImporterMetadata {
 		}
 		
 		
-		
-		/**
-		 * Insert a BIObject into the database and cms repository
-		 * @param obj The Hiberante BIObject to insert
-		 * @param pathContent The path of the temporary contents directory
-		 * @param session Hibernate session for the exported database
-		 * @return The Hibernate BIObject inserted
-		 * @throws EMFUserError
-		 */
-		public Integer insertBIObject(SbiObjects obj, Session session) throws EMFUserError {
-		    logger.debug("IN");
-			try {
-			    Serializable id =session.save(obj);
-			    
-			    // insert template
-			    
-			    
-			    // subobject 
-			    
-			    return (Integer)id;
-			} catch (Exception e) {
-			    logger.error("Error while inserting business objects " , e);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}finally{
-			    logger.debug("OUT");
-			}
-		}
-		
-		
-		
+	
 		
 		/**
 		 * Check the existance of an object, based on his unique constraints, 

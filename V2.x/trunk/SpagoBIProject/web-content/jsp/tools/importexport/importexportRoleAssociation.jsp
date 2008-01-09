@@ -166,12 +166,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					    <input type="hidden" name="expRole" value="<%=role.getId()%>" />
 					    <% 
 							Iterator iterCurRoles = curRoles.iterator();
-							boolean disabled = false;
+							boolean existDefault = false;
 							Integer idAssRole = null;
 							while(iterCurRoles.hasNext()) {
 								Role roleCur = (Role)iterCurRoles.next();
 								if(roleCur.getName().equalsIgnoreCase(role.getName())){
-									//disabled = true;
+									existDefault = true;
 									idAssRole = roleCur.getId();
 									break;
 								}
@@ -179,10 +179,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						%>
 						<%
 							String associatedMsg = "";
-							if(disabled) {
+							if(existDefault) {
 						%>
 						<input type="hidden" name="roleAssociated<%=role.getId()%>" value="<%=idAssRole%>"> 
-						<select style="width:250px" disabled>
+						<select style="width:250px" >
 						<%
 							} else { 
 						%>
@@ -200,7 +200,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								while(iterCurRoles.hasNext()) {
 									selected = "";
 									Role roleCur = (Role)iterCurRoles.next();
-									if(disabled) {
+									if(existDefault) {
 										if(roleCur.getName().equalsIgnoreCase(role.getName())) {
 											selected=" selected ";
 										}

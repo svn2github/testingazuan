@@ -16,4 +16,6 @@ public interface IAssociationFileDAO {
 	
 	public AssociationFile loadFromID(String id);
 	
+	public boolean exists(String id);
+	
 }

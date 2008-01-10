@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.bo.Engine" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.importexport.IImportManager"%>
+<%@page import="it.eng.spagobi.importexport.UserAssociationsKeeper"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
@@ -52,6 +54,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formUrl = urlBuilder.getUrl(request, formUrlPars);
     
+	IImportManager impManager = (IImportManager)aSessionContainer.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+	UserAssociationsKeeper usrAssKeep = impManager.getUserAssociation();
 %>
 
 <script>
@@ -212,12 +216,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							</option>
 							<% 
 								Iterator iterCurEngines = curEngines.iterator();
+								String selected = null;
+								String associated = "";
+								boolean isAssociated = false;
 								while(iterCurEngines.hasNext()) {
-									Engine engineCur = (Engine)iterCurEngines.next();
+									selected = "";
+									Engine engineCur = (Engine) iterCurEngines.next();
+									String engineAss = usrAssKeep.getAssociatedEngine(engine.getLabel());
+									if( (engineAss!=null) &&  engineCur.getLabel().equals(engineAss)) {
+										selected=" selected ";
+										isAssociated = true;
+									}
 							%>
-							<option value='<%=engineCur.getId()%>' ><%=engineCur.getName()%></option>
+							<option value='<%=engineCur.getId()%>' <%=selected%>><%=engineCur.getName()%></option>
 							<% } %>
 						</select>
+						<%
+						if (isAssociated) {
+							%>
+							<img title='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' 
+	      				 		src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/associated.gif")%>' 
+	      				 		alt='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' />
+							<%
+						}
+						%>
 					</td>
 				</tr>
 				<% } %>

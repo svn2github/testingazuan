@@ -26,6 +26,12 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.bo.Engine;
+import it.eng.spagobi.bo.Role;
+import it.eng.spagobi.bo.dao.DAOFactory;
+import it.eng.spagobi.bo.dao.IEngineDAO;
+import it.eng.spagobi.bo.dao.IRoleDAO;
+import it.eng.spagobi.importexport.to.AssociationFile;
 import it.eng.spagobi.importexport.transformers.TransformersUtilities;
 import it.eng.spagobi.metadata.HibernateUtil;
 import it.eng.spagobi.metadata.SbiChecks;
@@ -93,6 +99,7 @@ public class ImportManager implements IImportManager, Serializable {
 	private MetadataAssociations metaAss = null;
 	private MetadataLogger metaLog = null;
 	private UserAssociationsKeeper usrAss = null;
+	private AssociationFile associationFile = null;
 	private String exportedFileName = "";
 	private String impAssMode = IMPORT_ASS_DEFAULT_MODE;
 	
@@ -1535,9 +1542,86 @@ public class ImportManager implements IImportManager, Serializable {
 	public void setImpAssMode(String impAssMode) {
 		this.impAssMode = impAssMode;
 	}
-	
-	
-	
 
-	
+
+	public boolean isConnectionsAssociationPageRequired() throws EMFUserError {
+		List exportedConnections = this.getExportedConnections();
+		if (exportedConnections == null || exportedConnections.size() == 0) return false;
+		List currentConnections = new ArrayList();
+		ConfigSingleton conf = ConfigSingleton.getInstance();
+		List connList = conf.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
+		Iterator iterConn = connList.iterator();
+		while(iterConn.hasNext()) {
+			SourceBean connSB = (SourceBean) iterConn.next();
+			String name = (String)connSB.getAttribute("connectionPoolName");
+			currentConnections.add(name);
+		}
+		Iterator exportedConnectionsIt = exportedConnections.iterator();
+		while (exportedConnectionsIt.hasNext()) {
+			DBConnection exportedConnection = (DBConnection) exportedConnectionsIt.next();
+			String exportedConnectionName = exportedConnection.getName();
+			String associatedConnectionName = this.getUserAssociation().getAssociatedConnection(exportedConnectionName);
+			if (associatedConnectionName == null || associatedConnectionName.trim().equals("")) return true;
+			if (!currentConnections.contains(associatedConnectionName)) return true;
+		}
+		return false;
+	}
+
+
+	public boolean isEnginesAssociationPageRequired() throws EMFUserError {
+		List exportedEngines = this.getExportedEngines();
+		IEngineDAO engineDAO = DAOFactory.getEngineDAO();
+		List currentEngines = engineDAO.loadAllEngines();
+		Iterator exportedEnginesIt = exportedEngines.iterator();
+		while (exportedEnginesIt.hasNext()) {
+			Engine exportedEngine = (Engine) exportedEnginesIt.next();
+			String associatedEngineLabel = this.getUserAssociation().getAssociatedEngine(exportedEngine.getLabel());
+			if (associatedEngineLabel == null || associatedEngineLabel.trim().equals("")) return true;
+			Iterator currentEngineIt = currentEngines.iterator();
+			boolean associatedEngineLabelExists = false;
+			while (currentEngineIt.hasNext()) {
+				Engine currentEngine = (Engine) currentEngineIt.next();
+				if (currentEngine.getLabel().equals(associatedEngineLabel)) {
+					associatedEngineLabelExists = true;
+					break;
+				}
+			}
+			if (!associatedEngineLabelExists) return true;
+		}
+		return false;
+	}
+
+
+	public boolean isRolesAssociationPageRequired() throws EMFUserError {
+		List exportedRoles = this.getExportedRoles();
+		IRoleDAO roleDAO = DAOFactory.getRoleDAO();
+		List currentRoles = roleDAO.loadAllRoles();
+		Iterator exportedRolesIt = exportedRoles.iterator();
+		while (exportedRolesIt.hasNext()) {
+			Role exportedRole = (Role) exportedRolesIt.next();
+			String associatedRoleName = this.getUserAssociation().getAssociatedRole(exportedRole.getName());
+			if (associatedRoleName == null || associatedRoleName.trim().equals("")) return true;
+			Iterator currentRolesIt = currentRoles.iterator();
+			boolean associatedRoleNameExists = false;
+			while (currentRolesIt.hasNext()) {
+				Role currentRole = (Role) currentRolesIt.next();
+				if (currentRole.getName().equals(associatedRoleName)) {
+					associatedRoleNameExists = true;
+					break;
+				}
+			}
+			if (!associatedRoleNameExists) return true;
+		}
+		return false;
+	}
+
+
+	public AssociationFile getAssociationFile() {
+		return associationFile;
+	}
+
+	public void setAssociationFile(AssociationFile associationFile) {
+		this.associationFile = associationFile;
+	}
+
 }

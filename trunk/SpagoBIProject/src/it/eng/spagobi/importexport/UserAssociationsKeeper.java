@@ -1,6 +1,7 @@
 package it.eng.spagobi.importexport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.importexport.to.AssociationFile;
 import it.eng.spagobi.utilities.SpagoBITracer;
 
 /**
@@ -47,15 +48,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean roleSB = (SourceBean) roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", exportedRoleName);
 			// association already recorder
-			if(roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", exportedRoleName)!= null) {
-				return;
+			if (roleSB != null) {
+				roleSB.updAttribute("associatedTo", existingRolename);
+				//return;
+			} else {
+				// record association
+				roleSB = new SourceBean("ROLE_ASSOCIATION");
+				roleSB.setAttribute("exported", exportedRoleName);
+				roleSB.setAttribute("associatedTo", existingRolename);
+				roleAssSB.setAttribute(roleSB);
 			}
-			// record association
-			SourceBean roleSB = new SourceBean("ROLE_ASSOCIATION");
-			roleSB.setAttribute("exported", exportedRoleName);
-			roleSB.setAttribute("associatedTo", existingRolename);
-			roleAssSB.setAttribute(roleSB);
 		} catch (Exception e) {
 			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
 		                          "recordRoleAssociation", 
@@ -79,15 +83,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean engineSB = (SourceBean) engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", exportedEngineLabel);
 			// association already recorder
-			if(engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", exportedEngineLabel)!= null) {
-				return;
+			if(engineSB != null) {
+				engineSB.updAttribute("associatedTo", existingEngineLabel);
+				//return;
+			} else {
+				// record association
+				engineSB = new SourceBean("ENGINE_ASSOCIATION");
+				engineSB.setAttribute("exported", exportedEngineLabel);
+				engineSB.setAttribute("associatedTo", existingEngineLabel);
+				engineAssSB.setAttribute(engineSB);
 			}
-			// record association
-			SourceBean engineSB = new SourceBean("ENGINE_ASSOCIATION");
-			engineSB.setAttribute("exported", exportedEngineLabel);
-			engineSB.setAttribute("associatedTo", existingEngineLabel);
-			engineAssSB.setAttribute(engineSB);
 		} catch (Exception e) {
 			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
 		                          "recordEngineAssociation", 
@@ -111,15 +118,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean conSB = (SourceBean) connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", exportedConName);
 			// association already recorder
-			if(connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", exportedConName)!= null) {
-				return;
+			if(conSB != null) {
+				conSB.updAttribute("associatedTo", existingConName);
+				//return;
+			} else {
+				// record association
+				conSB = new SourceBean("CONNECTION_ASSOCIATION");
+				conSB.setAttribute("exported", exportedConName);
+				conSB.setAttribute("associatedTo", existingConName);
+				connectionAssSB.setAttribute(conSB);
 			}
-			// record association
-			SourceBean conSB = new SourceBean("CONNECTION_ASSOCIATION");
-			conSB.setAttribute("exported", exportedConName);
-			conSB.setAttribute("associatedTo", existingConName);
-			connectionAssSB.setAttribute(conSB);
 		} catch (Exception e) {
 			SpagoBITracer.warning(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
 		                          "recordConnectionAssociation", 
@@ -149,28 +159,21 @@ public class UserAssociationsKeeper {
 	/**
 	 * Fill the associations reading an xml string
 	 * @param xmlStr the xml string which defines the associations 
+	 * @throws Exception 
 	 */
-	public void fillFromXml(String xmlStr) {
-		try {
-			SourceBean associationSBtmp = SourceBean.fromXMLString(xmlStr);
-			SourceBean roleAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ROLE_ASSOCIATIONS");
-			if(roleAssSBtmp==null) throw new Exception("Cannot recover ROLE_ASSOCIATIONS bean");
-			SourceBean engineAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ENGINE_ASSOCIATIONS");
-			if(engineAssSBtmp==null) throw new Exception("Cannot recover ENGINE_ASSOCIATIONS bean");
-			SourceBean connectionAssSBtmp = (SourceBean)associationSBtmp.getAttribute("CONNECTION_ASSOCIATIONS");
-			if(connectionAssSBtmp==null) throw new Exception("Cannot recover CONNECTION_ASSOCIATIONS bean");
-			associationSB = associationSBtmp;
-			roleAssSB = roleAssSBtmp;
-			engineAssSB = engineAssSBtmp;
-			connectionAssSB = connectionAssSBtmp;
-		} catch (Exception e) {
-			SpagoBITracer.major(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-        						"fillFromXml", 
-        						"Error while loading SourceBean from xml  \n " + e);
+	public void fillFromXml(String xmlStr) throws Exception {
+		if (!AssociationFile.isValidContent(xmlStr)) {
+			throw new Exception("String in input is not a valid association file String representation.");
 		}
+		SourceBean associationSBtmp = SourceBean.fromXMLString(xmlStr);
+		SourceBean roleAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ROLE_ASSOCIATIONS");
+		SourceBean engineAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ENGINE_ASSOCIATIONS");
+		SourceBean connectionAssSBtmp = (SourceBean)associationSBtmp.getAttribute("CONNECTION_ASSOCIATIONS");
+		associationSB = associationSBtmp;
+		roleAssSB = roleAssSBtmp;
+		engineAssSB = engineAssSBtmp;
+		connectionAssSB = connectionAssSBtmp;
 	}
-	
-	
 	
 	public String getAssociatedRole(String expRoleName) {
 		String assRole = null;
@@ -184,5 +187,28 @@ public class UserAssociationsKeeper {
 		return assRole;
 	}
 	
+	public String getAssociatedEngine(String expEngineLabel) {
+		String assEngine = null;
+		SourceBean assEngineSB = (SourceBean)engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", expEngineLabel);
+		if(assEngineSB!=null) {
+			assEngine = (String)assEngineSB.getAttribute("associatedTo");
+			if(assEngine.trim().equals("")) {
+				assEngine = null;
+			}
+		}
+		return assEngine;
+	}
+	
+	public String getAssociatedConnection(String expConnectionName) {
+		String assConnection = null;
+		SourceBean assConnectionSB = (SourceBean)connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", expConnectionName);
+		if(assConnectionSB!=null) {
+			assConnection = (String)assConnectionSB.getAttribute("associatedTo");
+			if(assConnection.trim().equals("")) {
+				assConnection = null;
+			}
+		}
+		return assConnection;
+	}
 	
 }

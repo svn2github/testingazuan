@@ -17,7 +17,7 @@ import java.util.Properties;
 
 public class AssociationFileDAO implements IAssociationFileDAO {
 
-	private final String ASS_DIRECTORY = "Repository_Association_Files"; 
+	//private final String ASS_DIRECTORY = "Repository_Association_Files"; 
 	
 	
 	public AssociationFile loadFromID(String id) {
@@ -46,10 +46,10 @@ public class AssociationFileDAO implements IAssociationFileDAO {
 	
 	public void saveAssociationFile(AssociationFile assfile, byte[] content) {
 		try {
-			String uuid = assfile.getId();
+			String id = assfile.getId();
 			File fileAssRepDir = getFileOfAssRepDir();
-			String pathBaseAssFile = fileAssRepDir.getAbsolutePath() + "/" + uuid;
-			File baseAssFile = new File(pathBaseAssFile); 
+			String pathBaseAssFile = fileAssRepDir.getAbsolutePath() + "/" + id;
+			File baseAssFile = new File(pathBaseAssFile);
 			baseAssFile.mkdirs();
 			String pathXmlAssFile = pathBaseAssFile + "/association.xml";
 			FileOutputStream fos = new FileOutputStream(pathXmlAssFile);
@@ -70,7 +70,21 @@ public class AssociationFileDAO implements IAssociationFileDAO {
 		}
 	}
 
-	
+	public boolean exists(String id) {
+		File fileAssRepDir = getFileOfAssRepDir();
+		String pathBaseAssFile = fileAssRepDir.getAbsolutePath() + "/" + id;
+		File baseAssFile = new File(pathBaseAssFile);
+		// if the folder exists the association file exists
+		// if a file with the same name exists then tries to delete it
+		if (baseAssFile.exists()) {
+			if (baseAssFile.isDirectory()) return true;
+			else {
+				if (baseAssFile.delete()) return false;
+				else return true;
+			}
+		}
+		else return false;
+	}
 	
 	public void deleteAssociationFile(AssociationFile assfile) { 
 		try {
@@ -142,16 +156,25 @@ public class AssociationFileDAO implements IAssociationFileDAO {
 	private File getFileOfAssRepDir() {
 		File assrepdirFile = null;
 		try{
-			File imptmpdirFile = getFileOfImportTmpDir();
-			if(imptmpdirFile==null) throw new Exception("Cannot recover the file of import tmp directory");
-			String pathImpTmpFolder = imptmpdirFile.getAbsolutePath();
-			// add the associations directory to the path
-			if(! pathImpTmpFolder.endsWith("/") ){
-				pathImpTmpFolder += "/";
+			ConfigSingleton conf = ConfigSingleton.getInstance();
+			SourceBean assRepo = (SourceBean)conf.getAttribute("IMPORTEXPORT.ASSOCIATIONS_REPOSITORY");
+			String assRepoPath = (String)assRepo.getAttribute("path");
+			if(!assRepoPath.startsWith("/")){
+				String pathcont = ConfigSingleton.getRootPath();
+				assRepoPath = pathcont + "/" + assRepoPath;
 			}
-			pathImpTmpFolder += ASS_DIRECTORY;
+			
+//			File imptmpdirFile = getFileOfImportTmpDir();
+//			if(imptmpdirFile==null) throw new Exception("Cannot recover the file of import tmp directory");
+//			String pathImpTmpFolder = imptmpdirFile.getAbsolutePath();
+//			// add the associations directory to the path
+//			if(! pathImpTmpFolder.endsWith("/") ){
+//				pathImpTmpFolder += "/";
+//			}
+//			pathImpTmpFolder += ASS_DIRECTORY;
+			
 			// check if the file already exists  and, if not, create the directory
-			assrepdirFile = new File(pathImpTmpFolder);
+			assrepdirFile = new File(assRepoPath);
 			assrepdirFile.mkdirs();
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getFileOfAssRepDir",

@@ -56,5 +56,6 @@ public class ImportExportConstants {
 	public static final String IMPORT_RESULT_INFO = "IMPORT_RESULT_INFO";
 	public static final String IMPORTEXPORT_OPERATION = "IMPORTEXPORT_OPERATION";
 	public static final String MANUALTASK_FOLDER_NAME = "MANUAL_TASKS";
+	public static final String IMPORT_ASSOCIATION_FILE = "IMPORT_ASSOCIATION_FILE";
 
 }

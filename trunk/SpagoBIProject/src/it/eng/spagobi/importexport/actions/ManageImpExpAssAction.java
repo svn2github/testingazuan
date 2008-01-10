@@ -6,7 +6,6 @@ import it.eng.spagobi.constants.SpagoBIConstants;
 import it.eng.spagobi.importexport.to.AssociationFile;
 import it.eng.spagobi.importexport.to.dao.AssociationFileDAO;
 import it.eng.spagobi.importexport.to.dao.IAssociationFileDAO;
-import it.eng.spagobi.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.GeneralUtilities;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
@@ -23,9 +22,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 public class ManageImpExpAssAction extends  AbstractHttpAction {
 	
@@ -53,13 +49,29 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 				uploadAssHandler(request);
 			} else if((message!=null) && (message.equalsIgnoreCase("DOWNLOAD_ASSOCIATION_FILE"))){
 				downloadAssHandler(request);
+			} else if ((message!=null) && (message.equalsIgnoreCase("CHECK_IF_EXISTS"))) {
+				checkIfExistsHandler(request);
 			}
 		} finally {}
 	}
 		
 	
+	private void checkIfExistsHandler(SourceBean sbrequest) {
+		String id = (String) sbrequest.getAttribute("ID");
+		IAssociationFileDAO assfiledao = new AssociationFileDAO();
+		String htmlResp = Boolean.toString(assfiledao.exists(id));
+		try {
+			httpResponse.getOutputStream().write(htmlResp.getBytes());
+			httpResponse.getOutputStream().flush();	
+		} catch (Exception e){
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "saveAssHandler",
+                    			  "Error while sending response to the client, " + e);
+		}
+	}
+
+
 	private void downloadAssHandler(SourceBean sbrequest) {
-		try{
+		try {
 			String idass = (String)sbrequest.getAttribute("ID");
 			IAssociationFileDAO assfiledao = new AssociationFileDAO();
 			AssociationFile assFile = assfiledao.loadFromID(idass);
@@ -79,18 +91,49 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		try{
 			String modality = "MANAGE";
 			String name = (String)sbrequest.getAttribute("NAME");
-			String description = (String)sbrequest.getAttribute("DESCRIPTION");
+			if (name == null || name.trim().equals("")) {
+				httpResponse.getOutputStream().write("Name not specified.".getBytes());
+				httpResponse.getOutputStream().flush();
+				return;
+			}
+			String description = (String) sbrequest.getAttribute("DESCRIPTION");
+			if (description == null) description = "";
 			UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
+			if (uplFile == null || uplFile.getFileName().trim().equals("")) {
+				httpResponse.getOutputStream().write("Association file not specified.".getBytes());
+				httpResponse.getOutputStream().flush();
+				return;
+			} else {
+				if (!AssociationFile.isValidContent(uplFile.getFileContent())) {
+					httpResponse.getOutputStream().write("Association file not valid.".getBytes());
+					httpResponse.getOutputStream().flush();
+					return;
+				}
+			}
+			String overwriteStr = (String)sbrequest.getAttribute("OVERWRITE");
+			boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
 			AssociationFile assFile = new AssociationFile();
 			assFile.setDescription(description);
 			assFile.setName(name);
 			assFile.setDateCreation(new Date().getTime());
-			UUIDGenerator uuidgen = UUIDGenerator.getInstance();
-			UUID uuid = uuidgen.generateTimeBasedUUID();
-			String uuidStr = uuid.toString();
-			assFile.setId(uuidStr);
+//			UUIDGenerator uuidgen = UUIDGenerator.getInstance();
+//			UUID uuid = uuidgen.generateTimeBasedUUID();
+//			String uuidStr = uuid.toString();
+//			assFile.setId(uuidStr);
+			assFile.setId(name);
 			IAssociationFileDAO assfiledao = new AssociationFileDAO();
-			assfiledao.saveAssociationFile(assFile, uplFile.getFileContent());
+			if (assfiledao.exists(assFile.getId())) {
+				if (overwrite) {
+					assfiledao.deleteAssociationFile(assFile);
+					assfiledao.saveAssociationFile(assFile, uplFile.getFileContent());
+				} else {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "uploadAssHandler",
+	                           "Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
+	                           		"and name=[" + assFile.getName() + "] will not be saved.");
+				}
+			} else {
+				assfiledao.saveAssociationFile(assFile, uplFile.getFileContent());
+			}
 			List assFiles = assfiledao.getAssociationFiles();
 			String html = generateHtmlJsCss();
 			html += "<br/>";
@@ -107,7 +150,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 	
 	
 	private void deleteAssHandler(SourceBean sbrequest) {
-		try{
+		try {
 			String modality = "MANAGE";
 			String idass = (String)sbrequest.getAttribute("ID");
 			IAssociationFileDAO assfiledao = new AssociationFileDAO();
@@ -153,7 +196,9 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		String html = "<LINK rel='StyleSheet' type='text/css' " +
 				      "      href='"+urlBuilder.getResourceLink(httpRequest, "css/spagobi_shared.css")+"' />";
 		html +=  "<LINK rel='StyleSheet' type='text/css' " +
-	      		 "      href='"+urlBuilder.getResourceLink(httpRequest, "css/jsr168.css")+"' />";		
+	      		 "      href='"+urlBuilder.getResourceLink(httpRequest, "css/jsr168.css")+"' />";
+		html +=  "<script type=\"text/javascript\" " +
+				"		src=\"" + urlBuilder.getResourceLink(httpRequest, "/js/prototype/javascripts/prototype.js") + "\"></script>";
 		return html;
 	}
 	
@@ -168,7 +213,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "			<form action='"+action+"' name='formNewAss' id='formNewAss' method='post' enctype='multipart/form-data'>  ";
 		html += "				<input type='hidden' name='ACTION_NAME' value='MANAGE_IMPEXP_ASS_ACTION' >";
 		html += "				<input type='hidden' name='MESSAGE' value='UPLOAD_ASSOCIATION_FILE' >";
-		
+		html += "				<input type='hidden' name='OVERWRITE' id='OVERWRITE' value='' >";
 		
 		
 		html += "<div class='div_form_container' >\n";
@@ -213,7 +258,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "				</span>\n";
 		html += "			</div>\n";
 		html += "			<div class='div_form_field'>\n";
-		html += "				<a class='link_without_dec' href=\"javascript:document.getElementById('formNewAss').submit()\">\n";		
+		html += "				<a class='link_without_dec' href=\"javascript:checkIfExists()\">\n";
 		html += "					<img src= '"+urlBuilder.getResourceLink(httpRequest, "/img/Save.gif")+"' " +
 				"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages")+"' " + 
 				" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages")+"' />\n";
@@ -262,6 +307,43 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "			}";
 		html += "		</script>";
 		
+		// check if the association already exists
+		html += "		<script>\n";
+		html += "		function checkIfExists() {\n";
+		html += "			nameass = document.getElementById('nameNewAssToSave').value;\n";
+		html += "			if (nameass==''){\n";
+		html += "				alert('Nome non specificato !');\n";
+		html += "				return;\n";
+		html += "			}\n";
+		html += "			checkAssUrl = '" + httpRequest.getContextPath() + "';\n";
+		html += "			checkAssUrl += '/servlet/AdapterHTTP?';\n";
+		html += "			pars = 'ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=CHECK_IF_EXISTS&ID=' + document.getElementById('nameNewAssToSave').value;\n";
+		html += "			new Ajax.Request(checkAssUrl,\n";
+		html += "		 		{\n";
+		html += "		    		method: 'post',\n";
+		html += "		    		parameters: pars,\n";
+		html += "		    		onSuccess: function(transport){\n";
+		html += "		            	        	response = transport.responseText || \"\";\n";
+		html += "		                	    	saveAss(response);\n";
+		html += "		                	   },\n";
+		html += "		    		onFailure: somethingWentWrongSaveAss,\n";
+		html += "		    		asynchronous: false\n";
+		html += "		 		 }\n";
+		html += "			 );\n";
+		html += "		}\n";
+		html += "		function somethingWentWrongSaveAss() {\n";
+		html += "		}\n";
+		html += "		</script>\n";
+		
+		// save the association
+		html += "		<script>\n";
+		html += "		function saveAss(exists) {\n";
+		html += "			if (exists != 'true' || confirm('Esiste una associazione con lo stesso nome, sovrascrivere?')) {\n";
+		html += "				document.getElementById('OVERWRITE').value = 'true';\n";
+		html += "				document.getElementById('formNewAss').submit();\n";
+		html += "			}\n";
+		html += "		}\n";
+		html += "		</script>\n";
 		return html;
 	}
 	
@@ -287,10 +369,11 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(dat);
 			String datSt = "" +  cal.get(Calendar.DAY_OF_MONTH) + "/" +
-								 cal.get(Calendar.MONTH) + "/" +
+								 (cal.get(Calendar.MONTH) + 1) + "/" +
 								 cal.get(Calendar.YEAR) +  "   " +
 								 cal.get(Calendar.HOUR_OF_DAY) + ":" +
-								 cal.get(Calendar.MINUTE);      
+								 (cal.get(Calendar.MINUTE) < 10 ? "0" : "") + 
+								 cal.get(Calendar.MINUTE);
 			html += "<td class='"+rowClass+"'>"+datSt+"</td>";
 			if(modality.equals("MANAGE")) {
 				String eraseUrl = httpRequest.getContextPath(); ;
@@ -333,19 +416,33 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			String pathFileAss = httpRequest.getParameter("PATH");
 			String name = httpRequest.getParameter("NAME");
 			String description = httpRequest.getParameter("DESCRIPTION");
+			String overwriteStr = httpRequest.getParameter("OVERWRITE");
+			boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
 			AssociationFile assFile = new AssociationFile();
 			assFile.setDescription(description);
 			assFile.setName(name);
 			assFile.setDateCreation(new Date().getTime());
-			UUIDGenerator uuidgen = UUIDGenerator.getInstance();
-			UUID uuid = uuidgen.generateTimeBasedUUID();
-			String uuidStr = uuid.toString();
-			assFile.setId(uuidStr);
+//			UUIDGenerator uuidgen = UUIDGenerator.getInstance();
+//			UUID uuid = uuidgen.generateTimeBasedUUID();
+//			String uuidStr = uuid.toString();
+//			assFile.setId(uuidStr);
+			assFile.setId(name);
 			FileInputStream fis = new FileInputStream(pathFileAss);
 			byte[] fileAssContent = GeneralUtilities.getByteArrayFromInputStream(fis);
 			fis.close();
 			IAssociationFileDAO assfiledao = new AssociationFileDAO();
-			assfiledao.saveAssociationFile(assFile, fileAssContent);
+			if (assfiledao.exists(assFile.getId())) {
+				if (overwrite) {
+					assfiledao.deleteAssociationFile(assFile);
+					assfiledao.saveAssociationFile(assFile, fileAssContent);
+				} else {
+					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "saveAssHandler",
+	                           "Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
+	                           		"and name=[" + assFile.getName() + "] will not be saved.");
+				}
+			} else {
+				assfiledao.saveAssociationFile(assFile, fileAssContent);
+			}
 			htmlResp = "File delle associzioni salvato correttamente";
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "saveAssHandler",

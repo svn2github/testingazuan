@@ -44,6 +44,10 @@
       					   type="RELATIVE" 
       					   scope="SERVICE_RESPONSE" 
       					   value="IMPORTEXPORTMODULE.IMPORT_RESULT_INFO"/>
+      			<PARAMETER name="IMPORT_ASSOCIATION_FILE" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.IMPORT_ASSOCIATION_FILE"/>
         	</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
@@ -61,6 +65,10 @@
       					   type="RELATIVE" 
       					   scope="SERVICE_RESPONSE" 
       					   value="IMPORTEXPORTMODULE.IMPORT_RESULT_INFO"/>
+      			<PARAMETER name="IMPORT_ASSOCIATION_FILE" 
+      					   type="RELATIVE" 
+      					   scope="SERVICE_RESPONSE" 
+      					   value="IMPORTEXPORTMODULE.IMPORT_ASSOCIATION_FILE"/>
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -100,6 +108,25 @@
     	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="ImportExportSkipRoleAssociation">
+		<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_ROLE_ASSOCIATION" />
+      			<PARAMETER name="ROLES_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_ROLE_ASSOCIATION" />
+      			<PARAMETER name="ROLES_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="ImportExportEngineAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -113,6 +140,25 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+
+  	<PUBLISHER name="ImportExportSkipEngineAssociation">
+		<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_ENGINE_ASSOCIATION" />
+      			<PARAMETER name="ENGINES_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_ENGINE_ASSOCIATION" />
+      			<PARAMETER name="ENGINES_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>  	
   	
   	<PUBLISHER name="ImportExportConnectionAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
@@ -127,6 +173,25 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+  	
+  	<PUBLISHER name="ImportExportSkipConnectionAssociation">
+		<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_CONNECTION_ASSOCIATION" />
+      			<PARAMETER name="CONNECTIONS_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_CONNECTION_ASSOCIATION" />
+      			<PARAMETER name="CONNECTIONS_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>   	
   	
   	<PUBLISHER name="ImportExportExistingMetadataAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">

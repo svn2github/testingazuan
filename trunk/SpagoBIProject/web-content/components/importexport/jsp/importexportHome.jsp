@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.importexport.to.AssociationFile"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
@@ -388,7 +389,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-	
+	<%
+	AssociationFile assFile = (AssociationFile) aServiceRequest.getAttribute(ImportExportConstants.IMPORT_ASSOCIATION_FILE);
+	String associationName = (assFile != null) ? assFile.getName() : "";
+	String associationDescription = (assFile != null) ? assFile.getDescription() : "";
+	%>
 	
 	<div id="divSaveAssFileForm" name="divSaveAssFileForm" style="display:none;" >
 		<table>
@@ -396,18 +401,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td>&nbsp;&nbsp;
 					<spagobi:message key = "impexp.name" bundle="component_impexp_messages"/>:
 				</td>
-				<td><input type="text" name="NAME" id="nameNewAssToSave"/></td>
+				<td><input type="text" name="NAME" id="nameNewAssToSave" value="<%=associationName%>" /></td>
 			</tr>
 			<tr height='25px'>
 				<td>&nbsp;&nbsp;
 					<spagobi:message key = "impexp.description" bundle="component_impexp_messages"/>:
 				</td>
-				<td><input type="text" name="DESCRIPTION" id="descriptionNewAssToSave"/></td>
+				<td><input type="text" name="DESCRIPTION" id="descriptionNewAssToSave"  value="<%=associationDescription%>"/></td>
 			</tr>
 			<tr height='45px' valign='middle'>
 				<td>&nbsp;</td>
 				<td>
-				   <a class='link_without_dec' href='javascript:saveAss()'>
+				   <a class='link_without_dec' href='javascript:checkIfExists()'>
 					   <img src= '<%= urlBuilder.getResourceLink(request, "/img/Save.gif") %>'
 							title='<spagobi:message key = "impexp.save" bundle="component_impexp_messages"/>' 
 							alt='<spagobi:message key = "impexp.save" bundle="component_impexp_messages"/>' />
@@ -475,38 +480,65 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    }
 		
 		
-		function saveAss() {
-       		saveAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
-			saveAssUrl += "/servlet/AdapterHTTP?";
-			pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE";
-			<%
-				if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	
-					String pathassfile = iri.getPathAssociationsFile();
-					pathassfile = pathassfile.replaceAll("\\\\", "/");
-			%>
-			pars += "&PATH=<%=pathassfile%>";
-			<%
-				}
-			%>
+		function checkIfExists() {
 			nameass = document.getElementById('nameNewAssToSave').value;
-			if(nameass==""){
+			if (nameass==""){
 				alert('Nome non specificato !');
 				return;
 			} 
-			pars += "&NAME=" + nameass;
-			descriptionass = document.getElementById('descriptionNewAssToSave').value;
-			pars += "&DESCRIPTION=" + descriptionass;
-			new Ajax.Request(saveAssUrl,
+			// check if the association file alreay exists
+			checkAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
+			checkAssUrl += "/servlet/AdapterHTTP?";
+			pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=CHECK_IF_EXISTS&ID=" + document.getElementById('nameNewAssToSave').value;
+			new Ajax.Request(checkAssUrl,
           		{
             		method: 'post',
             		parameters: pars,
             		onSuccess: function(transport){
                     	        	response = transport.responseText || "";
-                        	    	showSaveAssResult(response);
+                        	    	saveAss(response);
                         	   },
-            		onFailure: somethingWentWrongSaveAss
+            		onFailure: somethingWentWrongSaveAss,
+            		asynchronous: false
          		 }
        		 );
+		}	
+		
+		
+		function saveAss(exists) {
+			if (exists != "true" || confirm("Esiste una associazione con lo stesso nome, sovrascrivere?")) {
+	       		saveAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
+				saveAssUrl += "/servlet/AdapterHTTP?";
+				pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE&OVERWRITE=TRUE";
+				<%
+					if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	
+						String pathassfile = iri.getPathAssociationsFile();
+						pathassfile = pathassfile.replaceAll("\\\\", "/");
+				%>
+				pars += "&PATH=<%=pathassfile%>";
+				<%
+					}
+				%>
+				nameass = document.getElementById('nameNewAssToSave').value;
+				if(nameass==""){
+					alert('Nome non specificato !');
+					return;
+				} 
+				pars += "&NAME=" + nameass;
+				descriptionass = document.getElementById('descriptionNewAssToSave').value;
+				pars += "&DESCRIPTION=" + descriptionass;
+				new Ajax.Request(saveAssUrl,
+	          		{
+	            		method: 'post',
+	            		parameters: pars,
+	            		onSuccess: function(transport){
+	                    	        	response = transport.responseText || "";
+	                        	    	showSaveAssResult(response);
+	                        	   },
+	            		onFailure: somethingWentWrongSaveAss
+	         		 }
+	       		 );
+       		 }
 	 	} 
 	 	
 	 	function somethingWentWrongSaveAss() {

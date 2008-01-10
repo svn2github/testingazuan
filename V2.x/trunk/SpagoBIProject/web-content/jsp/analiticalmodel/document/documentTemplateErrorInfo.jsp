@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 	SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DocumentTemplateBuildModule");
-	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
 	String objectIdStr = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 
     // recover error handler and error collection 
@@ -46,7 +45,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	backUrl.setParameter(SpagoBIConstants.PAGE, "DetailBIObjectPage");
 	backUrl.setParameter(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
 	backUrl.setParameter(ObjectsTreeConstants.OBJECT_ID, objectIdStr);
-	backUrl.setParameter(SpagoBIConstants.ACTOR, actor);
 	backUrl.setParameter(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     
 %>

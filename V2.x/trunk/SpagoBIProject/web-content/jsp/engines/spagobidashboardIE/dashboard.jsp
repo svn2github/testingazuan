@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.commons.bo.Domain,
                  java.util.List" %>
 <%@page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.commons.utilitiestilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
@@ -52,9 +52,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 
-    // get the actor
-    String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-	
     String title = (String)moduleResponse.getAttribute("title");
     String displayTitleBar = (String)moduleResponse.getAttribute("displayTitleBar");
     String movie = ChannelUtilities.getSpagoBIContextName(request);
@@ -113,7 +110,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// build the back link
 	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
@@ -141,7 +137,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   		<% if (!possibleStateChanges.isEmpty()) {
 			   			Map formUrlPars = new HashMap();
 			   			formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-			   			formUrlPars.put(SpagoBIConstants.ACTOR, actor);
 			   			formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
 			   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			   		    String formUrl = urlBuilder.getUrl(request, formUrlPars);

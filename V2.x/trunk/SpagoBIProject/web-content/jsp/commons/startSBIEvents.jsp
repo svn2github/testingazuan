@@ -30,14 +30,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SessionContainer"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-
 <portlet:defineObjects/>
 
+<% //get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+%>
 	<!-- 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -53,39 +57,40 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background">
     <br/>	
 	<table>
-		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/todoList_2.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="WorkflowToDoListPage"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBIWorkflowTaskList.workflowToDoList.title" />
-				</a>
-			</td>
-		</tr>
-				
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/events.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="EVENTS_MONITOR_PAGE"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "sbievents.list.events" />
-				</a>
-			</td>
-		</tr>
-	
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.WORKLIST_MANAGEMENT)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/todoList_2.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="WorkflowToDoListPage"/></portlet:actionURL>' 
+						class="link_main_menu" >
+						<spagobi:message key = "SBIWorkflowTaskList.workflowToDoList.title" />
+					</a>
+				</td>
+			</tr>
+		<%} %>		
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.EVENTS_MANAGEMENT)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/events.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="EVENTS_MONITOR_PAGE"/></portlet:actionURL>' 
+						class="link_main_menu" >
+						<spagobi:message key = "sbievents.list.events" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
 	</table>
 	<br/>
 </div>

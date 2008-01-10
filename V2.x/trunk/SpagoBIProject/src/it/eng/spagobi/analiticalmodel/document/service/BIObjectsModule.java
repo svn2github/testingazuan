@@ -36,17 +36,18 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * Presentation page for the BIObjects.
  */
 
 public class BIObjectsModule extends AbstractModule {
-	
+	static private Logger logger = Logger.getLogger(BIObjectsModule.class);
 	public static final String MODULE_PAGE = "BIObjectsPage";
     public static final String MODALITY = "MODALITY";
     public static final String SINGLE_OBJECT = "SINGLE_OBJECT";
@@ -71,29 +72,23 @@ public class BIObjectsModule extends AbstractModule {
 			RequestContainer requestContainer = getRequestContainer();
             sessionContainer = requestContainer.getSessionContainer();
 			debug("service", "sessionContainer and permanentContainer retrived");
-			String actor = (String)request.getAttribute(SpagoBIConstants.ACTOR);
-			debug("service", "using "+actor+" actor");
-	        sessionContainer.setAttribute(SpagoBIConstants.ACTOR, actor);
             debug("service", "user profile retrived");
             String modality = ChannelUtilities.getPreferenceValue(requestContainer, MODALITY, "");
             debug("service", "using "+modality+" modality");
             if (modality != null) {
                 if (modality.equalsIgnoreCase(SINGLE_OBJECT)) {
-                	singleObjectModalityHandler(request, response, actor);
+                	singleObjectModalityHandler(request, response);
                 } else if (modality.equalsIgnoreCase(FILTER_TREE)) {
                 	String initialPath = ChannelUtilities.getPreferenceValue(requestContainer, TreeObjectsModule.PATH_SUBTREE, "");
-                	treeModalityHandler(request, response, actor, initialPath);
-                } else {
-                	treeModalityHandler(request, response, actor, null);
+                	treeModalityHandler(request, response, initialPath);
+                } else {               	
+                	treeModalityHandler(request, response, null);
                 }
             } else {
-            	treeModalityHandler(request, response, actor, null);
+            	treeModalityHandler(request, response, null);
             }
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-								"BIObjectsModule", 
-								"service", 
-								"Error while processing request of service",e);
+			logger.error("Error while processing request of service",e);
 			EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 101);
 			errorHandler.addError(emfu); 
 		}
@@ -101,17 +96,17 @@ public class BIObjectsModule extends AbstractModule {
 	}
 	
 		
-	/**
+		/**
 	 * Set information into response for entering a 
 	 * 
 	 * @param request
 	 *            The Spago Request SourceBean
 	 * @param response
 	 *            The Spago Response SourceBean
-	 * @param actor
-	 *            Actor type
+	 * @param initialPath
+	 *           initial path
 	 */
-	private void treeModalityHandler(SourceBean request,SourceBean response,  String actor, 
+	private void treeModalityHandler(SourceBean request,SourceBean response,  
 			                         String initialPath) throws SourceBeanException {
 		String objectsView = null;
 		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
@@ -135,12 +130,10 @@ public class BIObjectsModule extends AbstractModule {
 			response.setAttribute(TreeObjectsModule.PATH_SUBTREE, initialPath);
 		
 		response.setAttribute(SpagoBIConstants.OBJECTS_VIEW, objectsView);
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 
 	}
 		
 
-	
 	/**
 	 * Set information into response for the execution of a single object
 	 * 
@@ -150,11 +143,8 @@ public class BIObjectsModule extends AbstractModule {
 	 *            The response SourceBean
 	 * @param prefs
 	 *            Portlet Preferences
-	 * @param actor
-	 *            Actor's type
 	 */
-	private void singleObjectModalityHandler(SourceBean request, SourceBean response,
-			                                 String actor) throws Exception {
+	private void singleObjectModalityHandler(SourceBean request, SourceBean response) throws Exception {
 		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
 		RequestContainer requestContainer = this.getRequestContainer();
 		// get from preferences the label of the object
@@ -162,10 +152,7 @@ public class BIObjectsModule extends AbstractModule {
 		debug("singleObjectModalityHandler", "using object label " + label);
 		// if label is not set then throw an exception
 		if (label == null || label.trim().equals("")) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-								"BIObjectsModule", 
-								"singleObjectModalityHandler",  
-								"Object's label not set");
+			logger.error("Object's label not set");
         	throw new Exception("Label not set");
         }
 		// get from preferences the parameters used by the object during execution
@@ -186,7 +173,7 @@ public class BIObjectsModule extends AbstractModule {
 		// if the height of the area is set put it into the session
         if (heightArea != null && !heightArea.trim().equals("")) 
         	sessionContainer.setAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA, heightArea);
-        // put in session the modality and the actor
+        // put in session the modality 
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, 
         		                      SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
 		
@@ -197,9 +184,7 @@ public class BIObjectsModule extends AbstractModule {
         		Integer snapHistI = new Integer(snapHistStr);
         		snapHist = snapHistI.intValue();
         	} catch (Exception e) {
-        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-									"singleObjectModalityHandler", 
-									"Snapshot history preference value is not a valid integer number, using default 0");
+        		logger.error("Snapshot history preference value is not a valid integer number, using default 0");
         		snapHist = 0;
         	}
         	// get the all the snapshots of the objects
@@ -211,7 +196,6 @@ public class BIObjectsModule extends AbstractModule {
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "loopbackSnapshotExecution");
         } else {
         	// set into the response the right information for loopback
-            response.setAttribute(SpagoBIConstants.ACTOR, actor);
             response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
     		// set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
@@ -224,17 +208,13 @@ public class BIObjectsModule extends AbstractModule {
         debug("singleObjectModalityHandler", "end method");
 	}
 	
-	
 	/**
 	 * Trace a debug message into the log
 	 * @param method Name of the method to store into the log
 	 * @param message Message to store into the log
 	 */
 	private void debug(String method, String message) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							"BIObjectsModule", 
-							method, 
-        					message);
+		logger.debug(message);
 	}
 
 

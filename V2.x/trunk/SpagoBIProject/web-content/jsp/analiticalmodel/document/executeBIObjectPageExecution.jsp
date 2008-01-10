@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.monitoring.dao.AuditManager,
                  it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager,
                  it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance,
-                 it.eng.spagobi.engines.drivers.IEngineDriver" %>
+                 it.eng.spagobi.engines.drivers.IEngineDriver"%>
 
 
 
@@ -94,10 +94,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
 
     
-    
-   	// get the actor
-    String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-
+    	
    	// get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -152,7 +149,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// build the back link
    	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
@@ -160,7 +156,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Map refreshUrlPars = new HashMap();
 	if (!isSingleObjExec) {
 		refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
-		refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	} else {
 		refreshUrlPars.put("PAGE", "DirectExecutionPage");
@@ -171,7 +166,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
     List possibleStates = new java.util.ArrayList();
-    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
+	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
@@ -179,7 +174,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       					possibleStates.add(state);
       				}
       	}
-    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
+    } 
+    else if(userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
@@ -260,11 +256,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                       alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
            </a>
        </td>
-       <% if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) ||
-    		  (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {
+       <%if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)||
+    	   userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
     	   	Map formUrlPars = new HashMap();
     	   	formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-    	   	formUrlPars.put(SpagoBIConstants.ACTOR, actor);
     	   	formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
     	   	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     	    String formUrl = urlBuilder.getUrl(request, formUrlPars);

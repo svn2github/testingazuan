@@ -219,6 +219,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}
 
 		// get the type of actor 
+		/*
 		String actor = "";
 		Object actorObj =  request.getAttribute(SpagoBIConstants.ACTOR);
 		if (actorObj != null) {
@@ -236,7 +237,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 	   		return;
 		}
 		debug("pageCreationHandler", "using actor " + actor);
-		
+		*/
 		Integer id = null;
 		if (label != null) {
 			debug("pageCreationHandler", "Loading biobject with label = '" + label + "' ...");
@@ -282,9 +283,12 @@ public class ExecuteBIObjectModule extends AbstractModule
 		// define the variable for execution role
 		String role = (String) request.getAttribute("spagobi_execution_role");
        	List correctRoles = null;
-       	if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
+       	/*if ((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || 
        	    (actor.equalsIgnoreCase(SpagoBIConstants.USER_ACTOR)) || 
-       		(actor.equalsIgnoreCase(SpagoBIConstants.ADMIN_ACTOR)) )
+       		(actor.equalsIgnoreCase(SpagoBIConstants.ADMIN_ACTOR)) )*/
+       	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) ||
+       		profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
+       		profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
        		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id, profile);
        	else
        		correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id);
@@ -412,8 +416,9 @@ public class ExecuteBIObjectModule extends AbstractModule
 	 * @param response The response SourceBean
 	 */
 	private void changeStateHandler(SourceBean request, SourceBean response) throws Exception {
+		
 		// get the type of actor from the session
-		String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
+		//String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
 		// get new state from the request
 		String newState = (String)request.getAttribute("newState");
 		// get object from the session
@@ -430,7 +435,7 @@ public class ExecuteBIObjectModule extends AbstractModule
 		DAOFactory.getBIObjectDAO().modifyBIObject(obj); 
 		// set data for correct loopback to the navigation tree
 		response.setAttribute("isLoop", "true");
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+		//response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
 	public int findBIObjParId (Object parIdObj) {

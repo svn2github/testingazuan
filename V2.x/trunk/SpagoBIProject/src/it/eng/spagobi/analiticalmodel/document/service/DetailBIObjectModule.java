@@ -54,17 +54,16 @@ import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SessionMonitor;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.validator.GenericValidator;
+import org.apache.log4j.Logger;
 
 /**
  * Implements a module which  handles all BI objects management: 
@@ -74,7 +73,7 @@ import org.apache.commons.validator.GenericValidator;
  */
 
 public class DetailBIObjectModule extends AbstractModule {
-		
+	static private Logger logger = Logger.getLogger(DetailBIObjectModule.class);
 	public final static String MODULE_PAGE = "DetailBIObjectPage";
 	public final static String NAME_ATTR_OBJECT = "BIObjects";
 	public final static String NAME_ATTR_LIST_OBJ_TYPES = "types";
@@ -83,7 +82,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
 	public final static String NAME_ATTR_LIST_DS = "datasource";
 	
-	private String actor = null;
+	//private String actor = null;
 	private EMFErrorHandler errorHandler = null;
 	private IEngUserProfile profile;
 	private String initialPath = null;
@@ -125,10 +124,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		}
 		// GET MESSAGE FROM REQUEST	
 		String message = (String) request.getAttribute("MESSAGEDET");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," MESSAGEDET = " + message);
-		// GET ACTOR FROM REQUEST
-		actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service"," ACTOR = " + actor);
+		logger.debug(" MESSAGEDET = " + message);
 		
 		// get attribute from session
 		String moduleName = (String)session.getAttribute("RETURN_FROM_MODULE");
@@ -147,7 +143,6 @@ public class DetailBIObjectModule extends AbstractModule {
 			else if(moduleName.equalsIgnoreCase("CheckLinksModule")) {
 				SessionMonitor.printSession(session);
 				AbstractBasicCheckListModule.clearSession(session, moduleName);
-				session.delAttribute(SpagoBIConstants.ACTOR);
 				SessionMonitor.printSession(session);
 			} else if (moduleName.equalsIgnoreCase("ListObjParuseModule")) {
 				lookupReturnBackHandler(request,response);
@@ -167,19 +162,19 @@ public class DetailBIObjectModule extends AbstractModule {
 		try {
 			if (message == null) {				
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "service", "The message parameter is null");
+				logger.debug("The message parameter is null");
 				throw userError;
 			} 
 						
 			// check for events first...
 			if (parametersLookupButtonClicked){
-				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","loadParametersLookup != null");
+				logger.debug("loadParametersLookup != null");
 				startParametersLookupHandler (request, message, response);
 			} else if(linksLookupButtonClicked){
-				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","editSubreports != null");
+				logger.debug("editSubreorts != null");
 				startLinksLookupHandler(request, message, response);
 			} else if (dependenciesButtonClicked) {
-				SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","service","goToDependenciesPage != null");
+				logger.debug("goToDependenciesPage != null");
 				startDependenciesLookupHandler(request, message, response);
 		    } // ...then check for other service request types 			
 			 else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_SELECT)) {
@@ -191,7 +186,8 @@ public class DetailBIObjectModule extends AbstractModule {
 			} else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) {
 				modBIObject(request, ObjectsTreeConstants.DETAIL_INS, response);
 			} else if (message.trim().equalsIgnoreCase(ObjectsTreeConstants.DETAIL_DEL)) {
-				delDetailObject(request, ObjectsTreeConstants.DETAIL_DEL, response);
+				//delDetailObject(request, ObjectsTreeConstants.DETAIL_DEL, response);
+				delDetailObject(request, ObjectsTreeConstants.DETAIL_DEL, response, profile);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.ERASE_VERSION)) {
 				eraseVersion(request, response);
 			} else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
@@ -226,7 +222,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
 		session.setAttribute("modalityBkp", message);
-		session.setAttribute("actor",actor);
 	}
 	
 	private void delateLoopbackContext() {
@@ -234,7 +229,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
-		session.delAttribute("actor");
 	}
 	
 	private Integer getBIObjectIdFromLoopbackContext() {
@@ -254,13 +248,11 @@ public class DetailBIObjectModule extends AbstractModule {
 		modBIObject(request, ObjectsTreeConstants.DETAIL_MOD, response);
 		String idStr = (String) request.getAttribute("id");
 		session.setAttribute("SUBJECT_ID", idStr);
-		session.setAttribute(SpagoBIConstants.ACTOR, actor);
 		response.setAttribute("linksLookup", "true");		
 	}	
 
 	private void startDependenciesLookupHandler(SourceBean request, String message, SourceBean response) throws Exception {
 		//fillRequestContainer(request, errorHandler);
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		BIObject obj = null;
 		try{
 			obj = helper.recoverBIObjectDetails(message);
@@ -296,7 +288,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
 		session.setAttribute("modalityBkp", message);
-		session.setAttribute("actor",actor);		
 		response.setAttribute("dependenciesLookup", "true");
 	}
 	
@@ -307,13 +298,10 @@ public class DetailBIObjectModule extends AbstractModule {
 		String modality = (String) session.getAttribute("modality");
 		if(modality == null) modality = (String)session.getAttribute("modalityBkp");
 		
-		actor = (String) session.getAttribute("actor");
 		session.delAttribute("LookupBIObject");
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
-		session.delAttribute("actor");
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		helper.fillResponse(initialPath);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		
@@ -323,22 +311,14 @@ public class DetailBIObjectModule extends AbstractModule {
 	private void lookupReturnHandler(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		
 		BIObject obj = (BIObject) session.getAttribute("LookupBIObject");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
-				" BIObject = " + obj);
+		logger.debug(" BIObject = " + obj);
 		
 		BIObjectParameter biObjPar = (BIObjectParameter) session.getAttribute("LookupBIObjectParameter");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
-				" BIObjectParameter = " + biObjPar);
+		logger.debug(" BIObjectParameter = " + biObjPar);
 		
 		String modality = (String) session.getAttribute("modality");
 		if(modality == null) modality = (String)session.getAttribute("modalityBkp");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
-				" modality = " + modality);
-		
-		
-		actor = (String) session.getAttribute("actor");
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","lookupReturnHandler",
-				" actor = " + actor);
+		logger.debug(" modality = " + modality);
 		
 		
 		String newParIdStr = (String) session.getAttribute("PAR_ID");
@@ -350,7 +330,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		
 		delateLoopbackContext();
 		
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 		helper.fillResponse(initialPath);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		session.delAttribute("PAR_ID");
@@ -368,13 +347,11 @@ public class DetailBIObjectModule extends AbstractModule {
 	private void getDetailObject(SourceBean request, SourceBean response)
 			throws EMFUserError {
 		try {
-			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 			Integer id = new Integer(idStr);
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
 			if (obj == null) {
-				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, this.getClass().getName(), 
-						"getDetailObject", "BIObject with id "+id+" cannot be retrieved.");
+				logger.error("BIObject with id "+id+" cannot be retrieved.");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1040);
 				errorHandler.addError(error);
 				return;
@@ -388,9 +365,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			helper.fillResponse(initialPath);
 			prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, ObjectsTreeConstants.DETAIL_MOD, true, true);
 		} catch (Exception ex) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE,
-					"DetailBIObjectModule", "getDetailObject",
-					"Cannot fill response container", ex);
+			logger.error("Cannot fill response container", ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -475,7 +450,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			}
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","urlNameControl","Error while url name control", e);
+			logger.error("Error while url name control", e);
 		}
 		
 	}
@@ -496,10 +471,10 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			}
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","reloadBIObjectParameter","Cannot reload BIObjectParameter", e);
+			logger.error("Cannot reload BIObjectParameter", e);
 		}
 		if (objPar == null) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailBIObjectModule","reloadBIObjectParameter","BIObjectParameter with url name '"+ objParUrlName +"' not found.");
+			logger.error("BIObjectParameter with url name '"+ objParUrlName +"' not found.");
 			objPar = DetBIObjModHelper.createNewBIObjectParameter(objId);
 		}
 		return objPar;
@@ -562,7 +537,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		response.setAttribute(NAME_ATTR_OBJECT, obj);
 		response.setAttribute(NAME_ATTR_OBJECT_PAR, biObjPar);
 		
-		SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule", "prepareBIObjectDetailPage", "XXXXXXXXXX " + detail_mod);
+		logger.debug("XXXXXXXXXX " + detail_mod);
 		
 		response.setAttribute(ObjectsTreeConstants.MODALITY, detail_mod);
 		
@@ -590,7 +565,9 @@ public class DetailBIObjectModule extends AbstractModule {
 	 * @param response	The response SourceBean
 	 * @throws EMFUserError	If an Exception occurs
 	 * @throws SourceBeanException If a SourceBean Exception occurs
+	 * @deprecated
 	 */
+	/*
 	private void delDetailObject(SourceBean request, String mod, SourceBean response)
 		throws EMFUserError, SourceBeanException {
 		BIObject obj = null;
@@ -640,11 +617,78 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			}
 		} catch (Exception ex) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","delDetailObject","Cannot erase object", ex  );
+			logger.error("Cannot erase object", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 		response.setAttribute("loopback", "true");
 		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+	}
+	*/
+	/**
+	 * Deletes a BI Object choosed by user. If the folder id is specified, it deletes only the instance 
+	 * of the object in that folder. If the folder id is not specified: if the user is an administrator 
+	 * the object is deleted from all the folders, else it is deleted from the folder on which the user 
+	 * is a developer.
+	 * 
+	 * @param request	The request SourceBean
+	 * @param mod	A request string used to differentiate delete operation
+	 * @param response	The response SourceBean
+	 * @throws EMFUserError	If an Exception occurs
+	 * @throws SourceBeanException If a SourceBean Exception occurs
+	 */
+	private void delDetailObject(SourceBean request, String mod, SourceBean response, IEngUserProfile profile)
+		throws EMFUserError, SourceBeanException {
+		BIObject obj = null;
+		try {
+			String idObjStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			Integer idObj = new Integer(idObjStr);
+			IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
+			obj = objdao.loadBIObjectById(idObj);
+			String idFunctStr = (String) request.getAttribute(ObjectsTreeConstants.FUNCT_ID);
+			if (idFunctStr != null) {
+				Integer idFunct = new Integer(idFunctStr);
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					// deletes the document from the specified folder, no matter the permissions
+					objdao.eraseBIObject(obj, idFunct);
+				} else {
+					// deletes the document from the specified folder if the profile is a developer for that folder
+					if (ObjectsAccessVerifier.canDev(obj.getStateCode(), idFunct, profile)) {
+						objdao.eraseBIObject(obj, idFunct);
+					}
+				}
+			} else {
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					if (initialPath != null && !initialPath.trim().equals("")) {
+						// in case of local administrator, deletes the document in the folders where he can admin
+						List funcsId = obj.getFunctionalities();
+						for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
+							Integer idFunct = (Integer) it.next();
+							LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(idFunct, false);
+							String folderPath = folder.getPath();
+							if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
+								objdao.eraseBIObject(obj, idFunct);
+							}
+						}
+					} else {
+						// deletes the document from all the folders, no matter the permissions
+						objdao.eraseBIObject(obj, null);
+					}
+				} else {
+					// deletes the document from all the folders on which the profile is a developer
+					List funcsId = obj.getFunctionalities();
+					for (Iterator it = funcsId.iterator(); it.hasNext(); ) {
+						Integer idFunct = (Integer) it.next();
+						if (ObjectsAccessVerifier.canDev(obj.getStateCode(), idFunct, profile)) {
+							objdao.eraseBIObject(obj, idFunct);
+						}
+					}
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Cannot erase object", ex  );
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		response.setAttribute("loopback", "true");
 	}
 	
 	/**
@@ -674,10 +718,9 @@ public class DetailBIObjectModule extends AbstractModule {
             List functionalitites = new ArrayList();
             obj.setFunctionalities(functionalitites);
             response.setAttribute(NAME_ATTR_OBJECT, obj);
-            response.setAttribute(SpagoBIConstants.ACTOR, actor);
             helper.fillResponse(initialPath);      
 		} catch (Exception ex) {
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","newBIObject","Cannot prepare page for the insertion", ex  );
+			logger.error("Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -692,12 +735,10 @@ public class DetailBIObjectModule extends AbstractModule {
 			DAOFactory.getObjTemplateDAO().deleteBIObjectTemplate(tempId);
             // populate response
             BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objId);
-			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	        helper.fillResponse(initialPath);
 	        prepareBIObjectDetailPage(response, obj, null, "", ObjectsTreeConstants.DETAIL_MOD, false, false);
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-								"eraseVersion","Cannot erase version", e);
+			logger.error("Cannot erase version", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -712,9 +753,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("initial_BIObject");
 		session.delAttribute("initial_BIObjectParameter");
 		session.delAttribute("modality");
-		session.delAttribute("actor");
 		response.setAttribute("loopback", "true");
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
 	
@@ -767,8 +806,6 @@ public class DetailBIObjectModule extends AbstractModule {
 				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, mod, false, false);
 				return;
 			}
-			// put into response the actor
-			response.setAttribute(SpagoBIConstants.ACTOR, actor);
 			// build and ObjTemplate object using data into request
 			ObjTemplate objTemp = helper.recoverBIObjTemplateDetails();
 			// based on the modality do different tasks
@@ -933,12 +970,10 @@ public class DetailBIObjectModule extends AbstractModule {
 			}		
 
 		} catch (EMFUserError error) {			
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "modBIObject","Cannot fill response container", error  );
+			logger.error("Cannot fill response container", error  );
 			throw error;
 		} catch (Exception ex) {			
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-					            "modBIObject","Cannot fill response container", ex  );
+			logger.error("Cannot fill response container", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}

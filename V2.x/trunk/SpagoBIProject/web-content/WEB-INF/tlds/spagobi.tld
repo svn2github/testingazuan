@@ -150,11 +150,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>actor</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>moduleName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

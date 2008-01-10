@@ -24,7 +24,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          pageEncoding="UTF-8"
          import="it.eng.spagobi.commons.constants.SpagoBIConstants,
          		 it.eng.spago.configuration.ConfigSingleton,
-                 it.eng.spago.base.SourceBean" %>
+                 it.eng.spago.base.SourceBean,
+                 it.eng.spago.security.IEngUserProfile" %>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
@@ -32,6 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <portlet:defineObjects/>
+<% //get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+%>
 
 <!-- 	
 <table class='header-table-portlet-section'>
@@ -47,37 +52,40 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background">
     <br/>	
 	<table>
-		<tr class="portlet-font">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/engineAdministrationIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListEnginesPage"/></portlet:actionURL>' 
-					class="link_main_menu" >
-				 	<spagobi:message key="SBISet.linkEngConf" />
-				</a>
-			</td>
-		</tr>
-				
-		<tr class="portlet-font">
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.ENGINES_MANAGEMENT)) {%>
+			<tr class="portlet-font">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/datasource/datasource_2.png")%>' />
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/engineAdministrationIcon.png")%>' />
 				</td>
 				<td width="20">
 					&nbsp;
 				</td>
 				<td vAlign="middle">
 				    <br/> 
-					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDataSourcePage"/></portlet:actionURL>' 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListEnginesPage"/></portlet:actionURL>' 
 						class="link_main_menu" >
-					 	<spagobi:message key="SBISet.linkDsConf" />
+					 	<spagobi:message key="SBISet.linkEngConf" />
 					</a>
 				</td>
-		</tr>
+			</tr>
+		<%} %>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASOURCE_MANAGEMENT)) {%>		
+			<tr class="portlet-font">
+					<td width="100" align="center">
+						<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/datasource/datasource_2.png")%>' />
+					</td>
+					<td width="20">
+						&nbsp;
+					</td>
+					<td vAlign="middle">
+					    <br/> 
+						<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDataSourcePage"/></portlet:actionURL>' 
+							class="link_main_menu" >
+						 	<spagobi:message key="SBISet.linkDsConf" />
+						</a>
+					</td>
+			</tr>
+		<%} %>
 	</table>
 	<br/>
 </div>

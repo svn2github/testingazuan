@@ -44,14 +44,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	Map viewListUrlPars = new HashMap();
 	viewListUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
-	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
 	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
 	
 	Map addUrlPars = new HashMap();
 	addUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
 	addUrlPars.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_NEW);
-	addUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 	String addUrl = urlBuilder.getUrl(request, addUrlPars);
 	
     // identity string for object of the page

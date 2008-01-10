@@ -40,8 +40,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	UUID uuid = uuidGen.generateTimeBasedUUID();
 	String requestIdentity = "request" + uuid.toString();
 	requestIdentity = requestIdentity.replaceAll("-", "");
-	// get the actor type from the session
-	String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
     // get the list of possible role
@@ -84,12 +82,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<%
 			if (modality == null || !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) {
-				// build the back url (the actor parameter must be passed because the module take it from the request
-    			// not from the session)
+				// build the back url 
 				
 				Map backUrlPars = new HashMap();
 			    backUrlPars.put("PAGE", "BIObjectsPage");
-			    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
 			    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			    String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
@@ -110,7 +106,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_background_no_img' >
 
-		<input type="hidden" value="<%= actor %>" name="<%= SpagoBIConstants.ACTOR %>" />
 		<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
 		<%
 		if (executionId != null && flowId != null) {

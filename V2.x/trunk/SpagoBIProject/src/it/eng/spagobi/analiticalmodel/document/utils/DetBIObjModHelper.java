@@ -54,8 +54,6 @@ public class DetBIObjModHelper {
 	
 	
 	public BIObject recoverBIObjectDetails(String mod) throws Exception {
-		// GET THE USER FROM THE REQUEST
-		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		// GET THE USER PROFILE
 		SessionContainer session = reqCont.getSessionContainer();
 		SessionContainer permanentSession = session.getPermanentContainer();
@@ -137,7 +135,7 @@ public class DetBIObjModHelper {
 		// First case: the current user is not an administrator (so he cannot see all the functionalities)
 		// and the modality is Modify. In this case some functionalities, that the user cannot see, can be 
 		// already associated to the object (by different users). This associations mustn't be erased.
-		if (!SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) && mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
+		if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) && mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 			BIObject prevObj = objDAO.loadBIObjectById(id);
 			List prevFuncsId = prevObj.getFunctionalities();
@@ -150,8 +148,8 @@ public class DetBIObjModHelper {
 		}
 		// Second case: the current user is a local administrator (he can admin only a part of the tree)
 		// and the modality is Modify. In this case some funtionalities in oder part of the tree, which the
-		// user cannot see, can be already associated to the object. This associations mustn't be erased.
-		if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) 
+		// user cannot see, can be already associated to the object. This associations mustn't be erased. 
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)
 				&& initialPath != null && !initialPath.trim().equals("")  
 				&& mod.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();

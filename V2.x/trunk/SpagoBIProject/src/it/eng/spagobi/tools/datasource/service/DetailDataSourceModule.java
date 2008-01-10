@@ -32,7 +32,6 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
@@ -64,8 +63,7 @@ public class DetailDataSourceModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "DetailDataSourceModule", 
-				"service","begin of detail Data Source service with message =" +message);
+		logger.debug("begin of detail Data Source service with message =" +message);
 		EMFErrorHandler errorHandler = getErrorHandler();
 		try {
 			if (message == null) {

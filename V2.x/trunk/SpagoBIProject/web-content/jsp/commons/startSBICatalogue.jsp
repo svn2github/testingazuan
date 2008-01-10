@@ -30,14 +30,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SessionContainer"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-
 <portlet:defineObjects/>
 
+<% //get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+%>
 <!-- 	
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -53,22 +57,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background">
     <br/>	
 	<table>
-		<tr class="portlet-font">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/mapcatalogue/maps.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/>
-				<portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/><portlet:param name="OPERATION" value="<%= SpagoBIConstants.FUNCTIONALITIES_OPERATION %>"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBIMapCatalogue.titleMaps" />
-				</a>
-			</td>
-		</tr>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MAPCATALOGUE_MANAGEMENT)) {%>
+			<tr class="portlet-font">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/mapcatalogue/maps.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
+						class="link_main_menu" >
+						<spagobi:message key = "SBIMapCatalogue.titleMaps" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
 		<!-- 
 		<tr class="portlet-font" vAlign="middle">
 			<td width="100" align="center">
@@ -79,7 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/></portlet:actionURL>' 
+				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkDocMan" />
 				</a>
@@ -94,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/></portlet:actionURL>' 
+				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkDocMan" />
 				</a>
@@ -109,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 			<td vAlign="middle">
 			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="BIObjectsPage"/><portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/></portlet:actionURL>' 
+				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
 					class="link_main_menu" >
 					<spagobi:message key = "SBISet.linkDocMan" />
 				</a>

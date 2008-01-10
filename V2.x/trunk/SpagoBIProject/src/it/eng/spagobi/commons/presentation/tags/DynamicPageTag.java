@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.presentation.tags;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -31,7 +30,6 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
@@ -49,7 +47,6 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -65,13 +62,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.log4j.Logger;
+
 /**
  * Defines a tag to create a dinamic JSP page
  */
 public class DynamicPageTag extends TagSupport {
-
+	static private Logger logger = Logger.getLogger(DynamicPageTag.class);
+	
 	private String modality = null;
-	private String actor = null;
 	private String moduleName = "";
 	private SourceBean request = null;
 	private HttpServletRequest httpRequest = null;
@@ -173,7 +172,7 @@ public class DynamicPageTag extends TagSupport {
 		try {
 			pageContext.getOut().print(htmlStream);
 		} catch(IOException ioe) {
-			SpagoBITracer.major("", "DynamicPageTag", "doStartTag", "cannot start tag: IO exception occurred",ioe);
+			logger.error("cannot start tag: IO exception occurred",ioe);
 		}
 		
 		return SKIP_BODY;
@@ -183,7 +182,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	
 	public int doEndTag() throws JspException {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.INFORMATION, "TitleTag::doEndTag:: invocato");
+		logger.debug("TitleTag::doEndTag:: invocato");
 		return super.doEndTag();
 	}
 	
@@ -388,8 +387,7 @@ public class DynamicPageTag extends TagSupport {
 		try {
 			lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(biparam.getId());
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "createParameterInputboxDiv", "Error while recovering dependencies " +
+			logger.error("Error while recovering dependencies " +
 					            " for biparm label " + biparam.getLabel(), e);
 			lblBiParamDependent = new ArrayList();
 		}
@@ -596,8 +594,7 @@ public class DynamicPageTag extends TagSupport {
 			
 			
 	    }catch (Exception ex) {
-	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	    			            "createHTMLComboBox", "Error while creating html combo box " +
+	    	logger.error("Error while creating html combo box " +
 	    			            " for biparam " + biparam.getLabel(), ex);
 	    }
     }	
@@ -693,7 +690,7 @@ public class DynamicPageTag extends TagSupport {
 					if (idLov.equals(getModalityValue(biparam).getId())) {
 						// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
 						objParuse = aObjParuse;
-						SpagoBITracer.debug("", "DynamicPageTag", "createHTMLForm()", "Found correlation:" +
+						logger.debug("Found correlation:" +
 								" dependent BIObjectParameter id = " + biparam.getId() + "," +
 								" ParameterUse with id = " + paruseId + ";" +
 								" BIObjectParameter father has id = " + objParuse.getObjParFatherId());
@@ -710,7 +707,7 @@ public class DynamicPageTag extends TagSupport {
 						}
 						if (objParFather == null) {
 							// the BIObjectParameter father of the correlation was not found
-							SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Cannot find the BIObjectParameter father of the correlation");
+							logger.error("Cannot find the BIObjectParameter father of the correlation");
 							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 						}
 						break;
@@ -718,7 +715,7 @@ public class DynamicPageTag extends TagSupport {
 				}
 			}
 		} catch (EMFUserError e) {
-			SpagoBITracer.major("", "DynamicPageTag", "createHTMLForm()", "Error while retrieving information from db", e);
+			logger.error("Error while retrieving information from db", e);
 			e.printStackTrace();
 		}
 		
@@ -755,21 +752,7 @@ public class DynamicPageTag extends TagSupport {
 	public void setModality(String modality) {
 		this.modality = modality;
 	}
-	/**
-	 * 
-	 * @return The Actor's name.
-	 */
-	public String getActor() {
-		return actor;
-	}
-	/**
-	 * 
-	 * @param actor The Actor to set.
-	 */
-	public void setActor(String actor) {
-		this.actor = actor;
-	}
-
+	
 	public String getModuleName() {
 		return moduleName;
 	}

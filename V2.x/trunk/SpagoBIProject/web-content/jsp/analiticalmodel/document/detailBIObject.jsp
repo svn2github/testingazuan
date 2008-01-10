@@ -44,7 +44,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.commons.utilities.ChannelUtilities,
 				 java.util.Map,
 				 java.util.HashMap,
-				 it.eng.spagobi.commons.bo.Subreport" %>
+				 it.eng.spagobi.commons.bo.Subreport,
+				 it.eng.spago.security.IEngUserProfile" %>
 
 
 <%
@@ -57,8 +58,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List listDataSource = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS);
 	if (listDataSource == null) listDataSource = new ArrayList();
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
-	String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
-	
+	//get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
 	
 	// CREATE PAGE URLs
@@ -76,7 +78,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     backUrlPars.put("PAGE", "detailBIObjectPage");
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
-    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
 %>
@@ -214,7 +215,6 @@ function checkFormVisibility(docType) {
 
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
-<input type='hidden' value='<%= actor %>' name='<%= SpagoBIConstants.ACTOR %>' />
 <input type='hidden' value='' name='' id='saveBIObjectParameter'>
 	
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
@@ -365,32 +365,10 @@ function checkFormVisibility(docType) {
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE
      			 (development) SO IS NOT USEFUL TO SHOW IT	 -->
-            <% if(actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){%>
-				<div class='div_detail_label' style='display:none;'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
-					</span>
-				</div>
-				<div class='div_detail_form' style='display:none;'>
-					<select class='portlet-form-input-field' style='width:230px;' name="state" id="doc_state"> 
-		      			<%     
-		      		    	Iterator iterstates = listStates.iterator();
-		      		    	while(iterstates.hasNext()) {
-		      		    		Domain state = (Domain)iterstates.next();
-		      		    		String objState = obj.getStateCode();
-		      		    		String currState = state.getValueCd();
-		      		    		boolean isState = false;
-		      		    		if(objState.equals(currState)){
-		      		    			isState = true;   
-		      		    		}
-		      		    		if (state.getValueCd().equalsIgnoreCase("DEV")){ %>
-		      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
-		      					<%  }  
-		      		   		 }%>
-		      		  </select>  
-				</div>               	
-            <% }else{ %>
-				<div class='div_detail_label'>
+            <%
+            	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_STATE_MANAGEMENT)){
+            %>
+            	<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
 					</span>
@@ -413,8 +391,32 @@ function checkFormVisibility(docType) {
 		      		    }
 		      			%>
 		      		</select>	
-				</div>
-            <% } %>
+				</div>             	
+            <% }else { %>
+	            <div class='div_detail_label' style='display:none;'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
+						</span>
+					</div>
+					<div class='div_detail_form' style='display:none;'>
+						<select class='portlet-form-input-field' style='width:230px;' name="state" id="doc_state"> 
+			      			<%     
+			      		    	Iterator iterstates = listStates.iterator();
+			      		    	while(iterstates.hasNext()) {
+			      		    		Domain state = (Domain)iterstates.next();
+			      		    		String objState = obj.getStateCode();
+			      		    		String currState = state.getValueCd();
+			      		    		boolean isState = false;
+			      		    		if(objState.equals(currState)){
+			      		    			isState = true;   
+			      		    		}
+			      		    		if (state.getValueCd().equalsIgnoreCase("DEV")){ %>
+			      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+			      					<%  }  
+			      		   		 }%>
+			      		  </select>  
+					</div>  
+		    <% } %>
                         
             <!-- DISPLAY RADIO BUTTON FOR CRYPT SELECTION -->
 			<!-- FOR THE CURRENT RELEASE THIS RADIO IS HIDE -->
@@ -511,7 +513,6 @@ function checkFormVisibility(docType) {
 								confUrlPars.put(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
 								confUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
 								confUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-								confUrlPars.put(SpagoBIConstants.ACTOR, actor);
 							    hrefConf = urlBuilder.getUrl(request, confUrlPars);
 							} else {
 								hrefConf = "javascript:alert('"+msgBuilder.getMessage("sbi.detailbiobj.objectnotsaved", "messages", request)+"')";
@@ -529,7 +530,6 @@ function checkFormVisibility(docType) {
 							editUrlPars.put(SpagoBIConstants.PAGE, SpagoBIConstants.DOCUMENT_TEMPLATE_BUILD);
 							editUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
 							editUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-							editUrlPars.put(SpagoBIConstants.ACTOR, actor);
 							String editUrlStr = urlBuilder.getUrl(request, editUrlPars);
 					%>
 							<a href="<%=editUrlStr%>">
@@ -654,7 +654,6 @@ function checkFormVisibility(docType) {
 		      			eraseVerUrlPars.put("MESSAGEDET", SpagoBIConstants.ERASE_VERSION);
 		      			eraseVerUrlPars.put(SpagoBIConstants.TEMPLATE_ID, tempVer.getId());
 		      			eraseVerUrlPars.put(AdmintoolsConstants.OBJECT_ID, obj.getId().toString());
-		      			eraseVerUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		      			eraseVerUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 						String eraseVerUrlStr = urlBuilder.getUrl(request, eraseVerUrlPars);
 						

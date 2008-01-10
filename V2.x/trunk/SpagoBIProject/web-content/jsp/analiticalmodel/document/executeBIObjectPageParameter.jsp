@@ -60,8 +60,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String currentUser = (String)profile.getUserUniqueIdentifier();
     // get response of the module
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
-	// get actor from session
-    String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR); 
 	// get subObject List
 	List subObjs = (List)moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT_LIST);
 	// get snapshot List
@@ -96,7 +94,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// build the url for the save-parameters form as view-point   	
    	Map saveVPUrlPars = new HashMap();
    	saveVPUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
-   	saveVPUrlPars.put(SpagoBIConstants.ACTOR, actor);
    	saveVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_SAVE);
    	saveVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");   	
    	saveVPUrlPars.put("parameters", obj.getBiObjectParameters());    	
@@ -111,7 +108,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	Map execUrlPars = new HashMap();
    	execUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
 //   	execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);  
-   	execUrlPars.put(SpagoBIConstants.ACTOR, actor);
    	execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
    	execUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    	if (executionId != null && flowId != null) {
@@ -123,7 +119,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// build the back url 
    	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
    	if (executionId != null && flowId != null) {
    		backUrlPars.put("spagobi_execution_id", executionId);
@@ -271,8 +266,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div class='div_background_no_img' >
 		
-		<spagobi:dynamicPage modality="EXECUTION_MODALITY" actor="<%=actor %>" requestIdentity="<%=requestIdentity%>"/>
-	
+	    <spagobi:dynamicPage modality="EXECUTION_MODALITY"  requestIdentity="<%=requestIdentity%>"/>
 		<%--
 		<!-- if there aren't parameters show the link for the new composition -->
 		<% 
@@ -474,7 +468,6 @@ if (isSingleObjExec) {
 		                        Map execSubObjUrlPars = new HashMap();
 		                        execSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
 		                        execSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
-		                        execSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		                        execSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
 		                        execSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 		            		   	if (executionId != null && flowId != null) {
@@ -486,7 +479,6 @@ if (isSingleObjExec) {
 		            		    Map deleteSubObjUrlPars = new HashMap();
 		            		    deleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 		            		    deleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
-		            		    deleteSubObjUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		            		    deleteSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
 		            		    deleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 		            		   	if (executionId != null && flowId != null) {
@@ -642,7 +634,7 @@ if (isSingleObjExec) {
 		            <td class='<%= rowClass %>' width="20px">&nbsp;</td>
                     <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                     	<% 
-                    	if (!actor.equalsIgnoreCase(SpagoBIConstants.ADMIN_ACTOR)) {
+                    	if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
                     		%>
                     		&nbsp;
                     		<%

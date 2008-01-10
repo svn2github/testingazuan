@@ -28,13 +28,13 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -54,7 +56,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * There are methods to generate tree, configure, insert and modify elements.
  */
 public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
-	
+	static private Logger logger = Logger.getLogger(ExecTreeHtmlGenerator.class);
 	HttpServletRequest httpRequest = null;
 	RequestContainer reqCont = null;
 	protected IUrlBuilder urlBuilder = null;
@@ -210,7 +212,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			Map formUrlPars = new HashMap();
 			formUrlPars.put("PAGE", "LOGIN_PAGE_SBI_FUNCTIONALITY");
 			formUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_TREE);
-			formUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 			if(ChannelUtilities.isWebRunning()) {
 				formUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");
 			}
@@ -244,12 +245,52 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				
 		if (isRoot) {
 			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'true');\n");
+			//anto
+			List objects = folder.getBiObjects();
+			for (Iterator it = objects.iterator(); it.hasNext(); ) {
+				BIObject obj = (BIObject) it.next();
+				Integer idObj = obj.getId();
+				String stateObj = obj.getStateCode();
+				Integer visibleObj = obj.getVisible();
+				//insert the correct image for each BI Object type
+				String biObjType = obj.getBiObjectTypeCode();
+				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
+				String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+				String biObjState = obj.getStateCode();
+				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
+				
+				
+				Map execUrlPars = new HashMap();
+				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
+				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+				
+				
+				
+				logger.debug(obj.getName() + ": " + stateObj + " - " + visibleObj);
+				if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
+					logger.debug("NOT visible " + obj.getName());
+				} else {
+					logger.debug("VISIBLE " + obj.getName());
+					if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
+						thereIsOneOrMoreObjectsInTestState = true;
+						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
+						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+					}
+				}
+			}
 		} 
 		/* ********* start luca changes *************** */
 		else if (isUserFunct) {
 			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
 			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
 			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "(event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
+		
 			List objects = folder.getBiObjects();
 			for (Iterator it = objects.iterator(); it.hasNext(); ) {
 				BIObject obj = (BIObject) it.next();
@@ -271,7 +312,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-				execUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 				//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj)+"\\', \\'\\', \\'\\')' );\n");
@@ -304,21 +344,16 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					
 					
 					
-					SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
-				            "addItemForJSTree ", obj.getName() + ": " + stateObj + " - " + visibleObj);
+					logger.debug(obj.getName() + ": " + stateObj + " - " + visibleObj);
 					if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
-						SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
-					            "addItemForJSTree ", "NOT visible " + obj.getName());
+						logger.debug("NOT visible " + obj.getName());
 					} else {
-						SpagoBITracer.debug(ObjectsTreeConstants.NAME_MODULE, "ExecTreeHtmlGenerator", 
-					            "addItemForJSTree ", "VISIBLE " + obj.getName());
+						logger.debug("VISIBLE " + obj.getName());
 						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
 							thereIsOneOrMoreObjectsInTestState = true;
-							execUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.TESTER_ACTOR);
 							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-							execUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						}

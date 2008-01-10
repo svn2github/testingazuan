@@ -23,11 +23,13 @@ package it.eng.spagobi.analiticalmodel.document.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -53,7 +55,7 @@ public class BIObjectsPublisher implements PublisherDispatcherIFace {
 	 * 		   call the correct jsp reference.
 	 */
 
-	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer){
 
 		String pubName = ""; 
 		SourceBean serviceRequest = requestContainer.getServiceRequest();
@@ -102,23 +104,35 @@ public class BIObjectsPublisher implements PublisherDispatcherIFace {
 			   	return publisherName;
 			} 
 			
+			//gets the profile 
+			SessionContainer sessionContainer = requestContainer.getSessionContainer();
+			SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
-	        // if no publisher name is set get the actor		
-			String actor = (String)treeModuleResponse.getAttribute(SpagoBIConstants.ACTOR);
-	        // based on actor type return different publisher names           
-			if(actor.equals(SpagoBIConstants.ADMIN_ACTOR)) {
-				String operation = (String)serviceRequest.getAttribute(SpagoBIConstants.OPERATION);
-				if( (operation!=null) && (operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) ) {
-					pubName = "treeFunctionalities";
-				} else {
-					pubName = "treeAdminObjects";
+			try{
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
+					String operation = (String)serviceRequest.getAttribute(SpagoBIConstants.OPERATION);
+					if( (operation!=null) && (operation.equals(SpagoBIConstants.FUNCTIONALITIES_OPERATION)) ) {
+						pubName = "treeFunctionalities";
+					} else {
+						pubName = "treeAdminObjects";
+					}
 				}
-			} else if(actor.equals(SpagoBIConstants.DEV_ACTOR)) {
-				pubName = "treeDevObjects";
-			} else if(actor.equals(SpagoBIConstants.USER_ACTOR)) {
-				pubName = "treeExecObjects";
-			} else if(actor.equals(SpagoBIConstants.TESTER_ACTOR)) {
-				pubName = "treeExecObjects";
+				else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))
+					pubName = "treeDevObjects";
+				else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER))
+					pubName = "treeExecObjects";
+				else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))
+					pubName = "treeExecObjects";
+			}
+			catch (Exception e){
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
+			            "BIObjectsPublisher", 
+			            "getPublisherName", 
+			            "Error would be defining pubName");
+				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
+				errorHandler.addError(error);
+				return "error";
 			}
 		} else {
 			pubName = "listBIObjects";

@@ -39,7 +39,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  
 	Map viewListUrlPars = new HashMap();
 	viewListUrlPars.put("PAGE", pageName);
-	viewListUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
 	viewListUrlPars.put(SpagoBIConstants.OBJECTS_VIEW, SpagoBIConstants.VIEW_OBJECTS_AS_LIST);
 	if(ChannelUtilities.isWebRunning()){
 		viewListUrlPars.put(SpagoBIConstants.WEBMODE, "TRUE");

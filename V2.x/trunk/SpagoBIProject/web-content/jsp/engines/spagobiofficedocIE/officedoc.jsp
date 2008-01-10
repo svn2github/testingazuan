@@ -30,7 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.Map,
                  org.safehaus.uuid.UUIDGenerator,
-                 org.safehaus.uuid.UUID" %>
+                 org.safehaus.uuid.UUID,
+                 it.eng.spago.security.IEngUserProfile" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
                  
@@ -45,8 +46,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Integer biobjectId = (Integer) moduleResponse.getAttribute("biobjectId");
     // get the name of the template file
 	String templateFileName = (String) moduleResponse.getAttribute("templateFileName");
-   	// get the actor
-    String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+   	//get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	// get the string of the title
     String title = (String) moduleResponse.getAttribute("title");
     
@@ -68,7 +70,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// build the back link
    	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "BIObjectsPage");
-	backUrlPars.put(SpagoBIConstants.ACTOR, actor);
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
    	
@@ -76,14 +77,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// build the refresh button
     Map refreshUrlPars = new HashMap();
     refreshUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
-    refreshUrlPars.put(SpagoBIConstants.ACTOR, actor);
     refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 	
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
     List possibleStates = new java.util.ArrayList();
-    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
+    if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
@@ -91,7 +91,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       					possibleStates.add(state);
       				}
       	}  
-    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
+    } 
+    if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
     	Iterator it = states.iterator();
     	 while(it.hasNext()) {
       		    	Domain state = (Domain)it.next();
@@ -112,11 +113,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <% 
 		boolean canChangeState = false;
-		if((actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) || (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR))) {        
+		if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) ||
+			userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
 			canChangeState = true;
     	    Map formUrlPars = new HashMap();
     	    formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-    	    formUrlPars.put(SpagoBIConstants.ACTOR,actor );
     	    formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
     	    formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     		String formUrl = urlBuilder.getUrl(request, formUrlPars);		

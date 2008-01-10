@@ -239,9 +239,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateObj = obj.getStateCode();
 					if (ObjectsAccessVerifier.canDev(stateObj, idFolder, profile)) {
 						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'"+createDetailObjectLink(idObj)+"\\', \\'\\', \\'"+createEraseObjectLink(idObj, idFolder)+"\\')' );\n");
-					} else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
+					} /* anto else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+createExecuteObjectLink(idObj)+"\\', \\'\\', \\'\\', \\'\\')' );\n");
-					}
+					}*/
 				}
 			}
 		}
@@ -256,7 +256,6 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		HashMap execUrlParMap = new HashMap();
 		execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
-		execUrlParMap.put(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
 		execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 		String execUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
 		return execUrl;
@@ -267,7 +266,6 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_SELECT);
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
-		detUrlParMap.put(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
 		String detUrl = urlBuilder.getUrl(httpRequest, detUrlParMap);
 		return detUrl;
 	}
@@ -278,7 +276,6 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		delUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.DETAIL_DEL);
 		delUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 		delUrlParMap.put(ObjectsTreeConstants.FUNCT_ID, idFunct.toString());
-		delUrlParMap.put(SpagoBIConstants.ACTOR, SpagoBIConstants.DEV_ACTOR);
 		String delUrl = urlBuilder.getUrl(httpRequest, delUrlParMap);
 		return delUrl;
 	}

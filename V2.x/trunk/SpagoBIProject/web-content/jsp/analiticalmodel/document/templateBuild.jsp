@@ -44,7 +44,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     BIObject obj = (BIObject) moduleResponse.getAttribute("biobject");
 	// get the url of the engine
 	EngineURL engineurl = (EngineURL) moduleResponse.getAttribute(ObjectsTreeConstants.CALL_URL);
-    String actor = (String) moduleResponse.getAttribute(SpagoBIConstants.ACTOR);
     String operation = (String) moduleResponse.getAttribute("operation");
 	
 	// build the string of the title
@@ -70,7 +69,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	backUrlPars.put(SpagoBIConstants.PAGE, "DetailBIObjectPage");
    	backUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
    	backUrlPars.put(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
-   	backUrlPars.put(SpagoBIConstants.ACTOR, actor);
    	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 

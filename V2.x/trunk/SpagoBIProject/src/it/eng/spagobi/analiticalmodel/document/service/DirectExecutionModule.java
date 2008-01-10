@@ -43,7 +43,6 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -53,8 +52,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-public class DirectExecutionModule extends AbstractModule {
+import org.apache.log4j.Logger;
 
+public class DirectExecutionModule extends AbstractModule {
+	static private Logger logger = Logger.getLogger(DirectExecutionModule.class);
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
@@ -119,14 +120,11 @@ public class DirectExecutionModule extends AbstractModule {
 			
 
 				if (profile == null) {
-					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-							"DirectExecutionModule", "service", "User profile is null!!");
+					logger.error("User profile is null!!");
 					throw new Exception("User profile is null!!");
 				} else {
 					sessionContainer.getPermanentContainer().setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-					SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, 
-							"DirectExecutionModule", "service", 
-							"User profile was retrieved from HttpSession and put on PermanentContainer.");
+					logger.debug("User profile was retrieved from HttpSession and put on PermanentContainer.");
 				}
 
 			
@@ -140,10 +138,7 @@ public class DirectExecutionModule extends AbstractModule {
 			*/
 			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
 			if (!canSee) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-			            "DirectExecutionModule", 
-			            "service", 
-			            "Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
+				logger.error("Object with label = '" + obj.getLabel() + "' cannot be executed by the user!!");
 				Vector v = new Vector();
 				v.add(obj.getLabel());
 				this.getErrorHandler().addError(new EMFUserError(EMFErrorSeverity.ERROR, "1075"));
@@ -157,7 +152,7 @@ public class DirectExecutionModule extends AbstractModule {
 		// put in session execution modality
         sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         // set into the response the right information for loopback
-        response.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
+        //response.setAttribute(SpagoBIConstants.ACTOR, SpagoBIConstants.USER_ACTOR);
         response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
     	// set into the reponse the publisher name for object execution
         response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);

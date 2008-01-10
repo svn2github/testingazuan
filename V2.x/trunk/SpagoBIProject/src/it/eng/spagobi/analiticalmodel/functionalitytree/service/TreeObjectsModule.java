@@ -46,7 +46,7 @@ public class TreeObjectsModule extends AbstractModule {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
-		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
+		//String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		String initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
 		List functionalities = new ArrayList();
 		boolean recoverBIObjects = true;
@@ -75,7 +75,7 @@ public class TreeObjectsModule extends AbstractModule {
 					"Error loading functionalities", e);
 		}
 		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-		response.setAttribute(SpagoBIConstants.ACTOR, actor);
+		//response.setAttribute(SpagoBIConstants.ACTOR, actor);
 	}
 	
 }	

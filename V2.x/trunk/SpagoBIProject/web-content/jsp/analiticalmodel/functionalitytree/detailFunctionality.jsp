@@ -57,7 +57,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", BIObjectsModule.MODULE_PAGE);
-    backUrlPars.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
     backUrlPars.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);

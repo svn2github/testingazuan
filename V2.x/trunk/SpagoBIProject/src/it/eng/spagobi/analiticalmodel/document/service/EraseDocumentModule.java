@@ -24,20 +24,18 @@ package it.eng.spagobi.analiticalmodel.document.service;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 
 public class EraseDocumentModule extends AbstractModule {
-	
+	private static transient Logger logger = Logger.getLogger(EraseDocumentModule.class);
 
 	public void init(SourceBean config) {
 	}
@@ -55,8 +53,7 @@ public class EraseDocumentModule extends AbstractModule {
 				biobjdao.eraseBIObject(obj, functId);
 			}
 		} catch (Exception e ) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "service", "Error while deleting biobject " + e);
+			logger.error("Error while deleting biobject " + e);
 		}
 		
 		

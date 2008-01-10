@@ -157,19 +157,9 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 		}
 
 		if (isLoop && executeModuleResponse != null) {
-			String actor = (String) executeModuleResponse
-					.getAttribute(SpagoBIConstants.ACTOR);
-			if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)) {
-				return new String("LoopTree");
-				// return new String("LoopTreeDev");
-			} else if (actor.equalsIgnoreCase(SpagoBIConstants.TESTER_ACTOR)) {
-				return new String("LoopTree");
-				// return new String("LoopTreeTest");
-			} else {
-				return new String("LoopTree");
-				// return new String("LoopTreeExec");
-			}
+			return new String("LoopTree");
 		}
+		
 
 		if (!execute) {
 			if (!selRole) {

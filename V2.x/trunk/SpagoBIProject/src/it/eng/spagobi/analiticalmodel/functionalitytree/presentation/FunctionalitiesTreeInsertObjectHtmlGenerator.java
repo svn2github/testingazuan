@@ -38,10 +38,12 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 /**
@@ -50,7 +52,8 @@ import org.safehaus.uuid.UUIDGenerator;
  * There are methods to generate tree, configure, insert and modify elements.
  */
 public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGenerator {
-
+	static private Logger logger = Logger.getLogger(FunctionalitiesTreeInsertObjectHtmlGenerator.class);
+	
 	HttpServletRequest httpRequest = null;
 	RequestContainer reqCont = null;
 	private IUrlBuilder urlBuilder = null;
@@ -58,7 +61,6 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	int progrJSTree = 0;
 	private IEngUserProfile profile = null;
 	private int dTreeRootId = -100;
-	private String actor = null;
 	protected String requestIdentity = null;
 
 	/**
@@ -127,10 +129,6 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		SourceBean serviceRequest = reqCont.getServiceRequest();
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
-		actor = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTOR);
-		if(actor==null){
-			actor = (String)sessionContainer.getAttribute(SpagoBIConstants.ACTOR);
-		}
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		ResponseContainer responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
@@ -196,19 +194,23 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				if (SpagoBIConstants.ADMIN_ACTOR.equalsIgnoreCase(actor) || ObjectsAccessVerifier.canDev(id, profile)) {
-					boolean checked = false;
-					if (obj != null) {
-						List funcs = obj.getFunctionalities();
-						if (funcs.contains(id)) checked = true;
-					}
-					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
+				try{
+					if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)|| ObjectsAccessVerifier.canDev(id, profile)){
+						boolean checked = false;
+						if (obj != null) {
+							List funcs = obj.getFunctionalities();
+							if (funcs.contains(id)) checked = true;
+						}
+						htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
+							          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
+							          "', '', '', '" + ObjectsTreeConstants.FUNCT_ID + "', '" + id + "'," + checked + ");\n");
+					} else if (ObjectsAccessVerifier.canExec(id, profile)) {
+						htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
 						          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
-						          "', '', '', '" + ObjectsTreeConstants.FUNCT_ID + "', '" + id + "'," + checked + ");\n");
-				} else if (ObjectsAccessVerifier.canExec(id, profile)) {
-					htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
-					          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
-					          "', '', '', '', '',false);\n");
+						          "', '', '', '', '',false);\n");
+					}
+				}catch (Exception ex){
+					logger.error("Error in adding items " + ex.getMessage());
 				}
 			} 
 		}

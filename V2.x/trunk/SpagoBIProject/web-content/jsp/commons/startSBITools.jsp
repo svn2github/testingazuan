@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SessionContainer"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
@@ -42,6 +43,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	PortletURL scheduleUrl = renderResponse.createActionURL();
 	scheduleUrl.setParameter("PAGE", "JobManagementPage");
 	scheduleUrl.setParameter(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_GET_ALL_JOBS);
+	
+	//get the user profile from session
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 %>
 
 <!-- 	
@@ -59,60 +64,62 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="div_background">
     <br/>	
 	<table>
-		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/importexport/importexport64.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL>
-				                <portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/>
-								<portlet:param name="PAGE" value="BIObjectsPage"/>
-								<portlet:param name="OPERATION" value="<%=SpagoBIConstants.IMPORTEXPORT_OPERATION %>"/>
-								<portlet:param name="OBJECTS_VIEW" value="<%=SpagoBIConstants.VIEW_OBJECTS_AS_TREE%>"/>
-						</portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.importexport" />
-				</a>
-			</td>
-		</tr>
-		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/scheduler/scheduleIcon64_blu.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<%=scheduleUrl.toString()%>' 
-					class="link_main_menu" >
-					<spagobi:message key = "scheduler.Schedule" />
-				</a>
-			</td>
-		</tr>
-		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListRolesPage"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkRolesSynch" />
-				</a>
-			</td>
-		</tr>
-	
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/importexport/importexport64.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL>
+					                <portlet:param name="ACTOR" value="<%= SpagoBIConstants.ADMIN_ACTOR %>"/>
+									<portlet:param name="PAGE" value="BIObjectsPage"/>
+									<portlet:param name="OPERATION" value="<%=SpagoBIConstants.IMPORTEXPORT_OPERATION %>"/>
+									<portlet:param name="OBJECTS_VIEW" value="<%=SpagoBIConstants.VIEW_OBJECTS_AS_TREE%>"/>
+							</portlet:actionURL>' 
+						class="link_main_menu" >
+						<spagobi:message key = "SBISet.importexport" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.SCHEDULER_MANAGEMENT)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/scheduler/scheduleIcon64_blu.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<%=scheduleUrl.toString()%>' 
+						class="link_main_menu" >
+						<spagobi:message key = "scheduler.Schedule" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListRolesPage"/></portlet:actionURL>' 
+						class="link_main_menu" >
+						<spagobi:message key = "SBISet.linkRolesSynch" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
 	</table>
 	<br/>
 </div>

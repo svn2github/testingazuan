@@ -254,5 +254,31 @@ public class SpagoBIConstants {
 	
 	public static final String SUBOBJECT_ID = "SUBOBJECT_ID";
 	
+	//constants for user profiles
+	public static final String ENGINES_MANAGEMENT = "EnginesManagement";
+	public static final String FUNCTIONALITIES_MANAGEMENT = "FunctionalitiesManagement";
+	public static final String LOVS_MANAGEMENT = "LovsManagement";
+	public static final String CONTSTRAINT_MANAGEMENT = "ConstraintManagement";
+	public static final String PARAMETER_MANAGEMENT = "ParameterManagement";
+	//public static final String DOCUMENT_ADMINISTRATION = "DocumentAdministration";
+	public static final String DOCUMENT_MANAGEMENT_DEV = "DocumentDevManagement";
+	public static final String DOCUMENT_MANAGEMENT_TEST = "DocumentTestManagement";
+	public static final String DOCUMENT_MANAGEMENT_ADMIN = "DocumentAdminManagement";
+	public static final String DOCUMENT_MANAGEMENT_USER = "DocumentUserManagement";
+	public static final String IMPORT_EXPORT_MANAGEMENT = "ImportExportManagement";
+	public static final String SCHEDULER_MANAGEMENT = "SchedulerManagement";
+	public static final String EVENTS_MANAGEMENT = "EventsManagement";
+	public static final String WORKSPACE_MANAGEMENT = "WorkspaceManagement";
+	public static final String WORKLIST_MANAGEMENT = "WorklistManagement";
+	public static final String MAPCATALOGUE_MANAGEMENT = "MapCatalogueManagement";
+	public static final String DOCUMENT_MANAGEMENT = "DocumentManagement";
+	public static final String SYNCRONIZE_ROLES_MANAGEMENT = "SyncronizeRolesManagement";
+	public static final String PROFILE_ATTRIBUTES_MANAGEMENT = "ProfileAttributeManagement";
+	public static final String DATASOURCE_MANAGEMENT = "DataSourceManagement";
+	public static final String DOCUMENT_DELETE_MANAGEMENT = "DocumentDeleteManagement";
+	public static final String DOCUMENT_DETAIL_MANAGEMENT = "DocumentDetailManagement";
+	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";
+	
+	
 	
 }

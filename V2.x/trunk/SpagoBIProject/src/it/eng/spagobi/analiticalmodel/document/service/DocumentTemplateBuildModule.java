@@ -53,7 +53,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 	protected RequestContainer requestContainer = null;
 	protected SessionContainer session = null;
 	protected SessionContainer permanentSession = null;
-	protected String actor = null;
 	private IEngUserProfile profile;
 	
 	public void init(SourceBean config) {}
@@ -74,7 +73,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 		session = requestContainer.getSessionContainer();
 		permanentSession = session.getPermanentContainer();
 		debug("service", "errorHanlder, requestContainer, session, permanentSession retrived ");
-        actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
         profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         
 		try {
@@ -141,7 +139,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 					Vector params = new Vector();
 					params.add(engine.getName());
 					errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
-					response.setAttribute(SpagoBIConstants.ACTOR, actor);
 					response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 					response.setAttribute("biobject", obj);
 					return;
@@ -149,7 +146,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 			    // set into the reponse the url to be invoked	
 				response.setAttribute(ObjectsTreeConstants.CALL_URL, templateBuildUrl);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TemplateBuildPublisher");
-				response.setAttribute(SpagoBIConstants.ACTOR, actor);
 				response.setAttribute("biobject", obj);				
 				response.setAttribute("operation", "newDocumentTemplate");
 				
@@ -191,7 +187,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				Vector params = new Vector();
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
-				response.setAttribute(SpagoBIConstants.ACTOR, actor);
 				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 				return;
 			} catch (Exception e) {
@@ -246,14 +241,12 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 					Vector params = new Vector();
 					params.add(engine.getName());
 					errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
-					response.setAttribute(SpagoBIConstants.ACTOR, actor);
 					response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 					return;
 				}
 			    // set into the reponse the url to be invoked	
 				response.setAttribute(ObjectsTreeConstants.CALL_URL, templateBuildUrl);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TemplateBuildPublisher");
-				response.setAttribute(SpagoBIConstants.ACTOR, actor);
 				response.setAttribute("biobject", obj);
 				response.setAttribute("operation", "newDocumentTemplate");
 				
@@ -295,7 +288,6 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 				Vector params = new Vector();
 				params.add(engine.getName());
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.INFORMATION, "1076", params));
-				response.setAttribute(SpagoBIConstants.ACTOR, actor);
 				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, idStr);
 				return;
 			} catch (Exception e) {

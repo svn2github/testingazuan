@@ -40,8 +40,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
 	if( (modality!=null) && modality.equals(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) )
 		isSingleObjExec = true;
-    // get the actor
-    String actor = (String) aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
     // get the module response 
     SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
     String title = (String) moduleResponse.getAttribute("title");
@@ -56,7 +54,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//  build the back link
 	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(SpagoBIConstants.ACTOR, actor);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
     
@@ -81,7 +78,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   		<% if (!possibleStateChanges.isEmpty()) {   			
 		   				Map formUrlPars = new HashMap();
 		   				formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-		   				formUrlPars.put(SpagoBIConstants.ACTOR, actor);
 		   				formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
 		   				formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		   		    	String formUrl = urlBuilder.getUrl(request, formUrlPars);

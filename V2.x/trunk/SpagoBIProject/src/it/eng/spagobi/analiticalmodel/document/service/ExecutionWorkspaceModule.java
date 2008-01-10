@@ -33,20 +33,19 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
 public class ExecutionWorkspaceModule extends AbstractModule {
-
+	private static transient Logger logger = Logger.getLogger(ExecutionWorkspaceModule.class);
 	public static final String MODULE_PAGE = "ExecutionWorkspacePage";
 	
 	protected List firtsLevelExecutableFolders = new ArrayList();
@@ -69,8 +68,7 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 		functionDAO = DAOFactory.getLowFunctionalityDAO();
 		LowFunctionality root = functionDAO.loadRootLowFunctionality(false);
 		if (root == null) {
-			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, "ExecutionWorkspaceModule", 
-					"service", "Missing root functionality!");
+			logger.error("Missing root functionality!");
 			throw new Exception("Missing root functionality!");
 		}
 		List firstLevelFunctions = functionDAO.loadChildFunctionalities(root.getId(), false);
@@ -81,8 +79,7 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 			if (ObjectsAccessVerifier.canExec(aFolder, profile)) firtsLevelExecutableFolders.add(aFolder);
 		}
 		if (firtsLevelExecutableFolders.size() == 0) {
-			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "ExecutionWorkspaceModule", 
-					"service", "The user has no executable folders");
+			logger.warn("The user has no executable folders");
 			exit(response);
 		}
 		
@@ -158,7 +155,7 @@ public class ExecutionWorkspaceModule extends AbstractModule {
 	 * @param message Message to store into the log
 	 */
 	private void debug(String method, String message) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "ExecutionWorkspaceModule", method, message);
+		logger.debug(message);
 	}
 	
 }

@@ -124,9 +124,7 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
 	private HashMap getParams(SourceBean request) {
 		HashMap paramsMap = new HashMap();
 		String lookupParameterName = (String) request.getAttribute("LOOKUP_PARAMETER_NAME");
-		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		paramsMap.put("LOOKUP_PARAMETER_NAME", lookupParameterName);
-		paramsMap.put(SpagoBIConstants.ACTOR, actor);
 		paramsMap.put("mod_val_id", request.getAttribute("mod_val_id"));
 		return paramsMap;
 	}

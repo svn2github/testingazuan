@@ -20,6 +20,7 @@
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiDomains.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiEventRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiUserFunctionality.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingsqlserver/SbiParameters.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingsqlserver/SbiParuseDet.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingsqlserver/SbiParuse.hbm.xml" />

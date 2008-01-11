@@ -20,6 +20,7 @@
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiDomains.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiEventRole.hbm.xml" />  
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiUserFunctionality.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingora/SbiParameters.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingora/SbiParuseDet.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingora/SbiParuse.hbm.xml" />

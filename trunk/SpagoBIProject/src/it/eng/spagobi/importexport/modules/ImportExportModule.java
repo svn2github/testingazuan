@@ -615,7 +615,7 @@ public class ImportExportModule extends AbstractModule {
 			}
 
 			impManager.checkExistingMetadata();
-			if(metaAss.isEmpty() || impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE)) {
+			if(metaAss.isEmpty()) {
 				impManager.importObjects();
 				ImportResultInfo iri = impManager.commitAllChanges(); 
 				response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);

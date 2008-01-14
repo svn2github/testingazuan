@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities.messages;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
-import it.eng.spago.base.RequestContainer;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This is the interface for classes that implements logic
@@ -55,12 +55,23 @@ public interface IMessageBuilder {
 	public String getMessage(String code);
 	
 	/**
+	 * If the specified locale is valid, returns the message associated with code in the default bundle with the specified locale; 
+	 * otherwise returns the message associated with code in the default bundle with default locale
+	 * @param code: the message code
+	 * @param locale: the specified locale
+	 * @return: if the specified locale is valid, returns the message associated with code in the default bundle with the specified locale; 
+	 * otherwise returns the message associated with code in the default bundle with default locale
+	 */
+	public String getMessage(String code, Locale locale);
+	
+	/**
 	 * Returns the message associated with code in the given bundle
 	 * @param code: the message code
 	 * @param bundle: the bundle to use
 	 * @return  the message associated with code in the given bundle
 	 */
 	public String getMessage(String code, String bundle);
+	public String getMessage(String code, String bundle, Locale locale);
 	
 	/**
 	 * Returns the message associated with code in the default bundle
@@ -69,6 +80,7 @@ public interface IMessageBuilder {
 	 * @return: the message associated with code in the default bundle
 	 */
 	public String getMessage(String code, HttpServletRequest request);
+	public String getMessage(String code, HttpServletRequest request, Locale locale);
 	
 	/**
 	 * Returns the message associated with code in the given bundle
@@ -78,6 +90,7 @@ public interface IMessageBuilder {
 	 * @return  the message associated with code in the given bundle
 	 */
 	public String getMessage(String code, String bundle, HttpServletRequest request);
+	public String getMessage(String code, String bundle, HttpServletRequest request, Locale locale);
 	
 	/**
 	 * Get the localized text contained into the resource
@@ -85,5 +98,6 @@ public interface IMessageBuilder {
 	 * @return the localized text contained into the resource
 	 */
 	public String getMessageTextFromResource(String resourceName);
+	public String getMessageTextFromResource(String resourceName, Locale locale);
 	
 }

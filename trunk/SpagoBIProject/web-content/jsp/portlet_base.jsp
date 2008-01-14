@@ -33,6 +33,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.utilities.messages.MessageBuilder"%>
 <%@page import="it.eng.spagobi.utilities.messages.MessageBuilderFactory"%>
 <%@page import="it.eng.spagobi.utilities.urls.UrlBuilderFactory"%>
+<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
+<%@page import="java.util.Locale"%>
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
@@ -44,6 +46,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	SessionContainer aSessionContainer = null;
 	IUrlBuilder urlBuilder = null;
 	IMessageBuilder msgBuilder = null;
+	Locale locale = null;
 	
 	// get configuration
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
@@ -72,6 +75,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String channelType = aRequestContainer.getChannelType();
 	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
 	else sbiMode = "WEB";
+	
+	if (sbiMode.equals("PORTLET")) {
+		locale = PortletAccess.getPortalLocale();
+	} else {
+		locale = request.getLocale();
+	}
 	
 	// create url builder 
 	urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
@@ -104,8 +113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
-<%@page import="it.eng.spagobi.constants.SpagoBIConstants"%>
-<html>
+<html lang="<%=locale.getLanguage()%>">
 <body>
 <%} %>
 

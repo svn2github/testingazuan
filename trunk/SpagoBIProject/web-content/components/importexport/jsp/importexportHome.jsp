@@ -436,6 +436,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			getlisturl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
 			getlisturl += "/servlet/AdapterHTTP?";
 			getlisturl += "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=GET_ASSOCIATION_FILE_LIST";
+			getlisturl += "&language=<%=locale.getLanguage()%>&country=<%=locale.getCountry()%>";
 			getlisturl += "&MODALITY=" + modality;
 			winlistass = new Window('win_list_ass', {className: "alphacube", title: "<spagobi:message key = "impexp.listAssFile" bundle="component_impexp_messages"/>", width:550, height:350, hideEffect:Element.hide, showEffect:Element.show, destroyOnClose:true});
        		winlistass.setURL(getlisturl);
@@ -483,7 +484,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		function checkIfExists() {
 			nameass = document.getElementById('nameNewAssToSave').value;
 			if (nameass==""){
-				alert('Nome non specificato !');
+				alert('<spagobi:message key = "Sbi.saving.nameNotSpecified" bundle="component_impexp_messages"/>');
 				return;
 			} 
 			// check if the association file alreay exists
@@ -506,10 +507,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		
 		function saveAss(exists) {
-			if (exists != "true" || confirm("Esiste una associazione con lo stesso nome, sovrascrivere?")) {
+			if (exists != "true" || confirm("<spagobi:message key = "Sbi.saving.alreadyExisting" bundle="component_impexp_messages"/>")) {
 	       		saveAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
 				saveAssUrl += "/servlet/AdapterHTTP?";
 				pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE&OVERWRITE=TRUE";
+				pars += "&language=<%=locale.getLanguage()%>&country=<%=locale.getCountry()%>";
 				<%
 					if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	
 						String pathassfile = iri.getPathAssociationsFile();
@@ -521,7 +523,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				%>
 				nameass = document.getElementById('nameNewAssToSave').value;
 				if(nameass==""){
-					alert('Nome non specificato !');
+					alert('<spagobi:message key = "Sbi.saving.nameNotSpecified" bundle="component_impexp_messages"/>');
 					return;
 				} 
 				pars += "&NAME=" + nameass;
@@ -543,7 +545,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 	
 	 	function somethingWentWrongSaveAss() {
 	        divres = document.getElementById('divshowresultsave');
-			divres.innerHTML="Non è possibile invocare il servizio di salvataggio";
+			divres.innerHTML="Saving service not reachable.";
      	}
      
 	    function showSaveAssResult(response) {

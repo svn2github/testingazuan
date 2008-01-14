@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 	private HttpServletResponse httpResponse = null;
 	IMessageBuilder msgBuild = null;
 	WebUrlBuilder urlBuilder = null;
+	private Locale locale = null;
 	
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
@@ -38,6 +40,13 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			httpResponse = getHttpResponse();
 			msgBuild = MessageBuilderFactory.getMessageBuilder();
 			urlBuilder = new WebUrlBuilder();
+			String language = httpRequest.getParameter("language");
+			String country = httpRequest.getParameter("country");
+			try {
+				locale = new Locale(language, country);
+			} catch (Exception e) {
+				// ignore, the defualt locale will be considered
+			}
 			String message = (String)request.getAttribute("MESSAGE");
 			if((message!=null) && (message.equalsIgnoreCase("SAVE_ASSOCIATION_FILE"))){
 				saveAssHandler();
@@ -92,7 +101,8 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			String modality = "MANAGE";
 			String name = (String)sbrequest.getAttribute("NAME");
 			if (name == null || name.trim().equals("")) {
-				httpResponse.getOutputStream().write("Name not specified.".getBytes());
+				String msg = msgBuild.getMessage("Sbi.saving.nameNotSpecified", "component_impexp_messages", locale);
+				httpResponse.getOutputStream().write(msg.getBytes());
 				httpResponse.getOutputStream().flush();
 				return;
 			}
@@ -100,12 +110,14 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			if (description == null) description = "";
 			UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
 			if (uplFile == null || uplFile.getFileName().trim().equals("")) {
-				httpResponse.getOutputStream().write("Association file not specified.".getBytes());
+				String msg = msgBuild.getMessage("Sbi.saving.associationFileNotSpecified", "component_impexp_messages", locale);
+				httpResponse.getOutputStream().write(msg.getBytes());
 				httpResponse.getOutputStream().flush();
 				return;
 			} else {
 				if (!AssociationFile.isValidContent(uplFile.getFileContent())) {
-					httpResponse.getOutputStream().write("Association file not valid.".getBytes());
+					String msg = msgBuild.getMessage("Sbi.saving.associationFileNotValid", "component_impexp_messages", locale);
+					httpResponse.getOutputStream().write(msg.getBytes());
 					httpResponse.getOutputStream().flush();
 					return;
 				}
@@ -204,9 +216,11 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 	
 	private String generateHtmlForInsertNewForm() {
 		String html = "<div width='100%' class='portlet-section-header'>";
-		html += "			&nbsp;&nbsp;&nbsp;<a class='linkAction' href='javascript:openclosenewform()'>Inserisci Nuovo</a>";
+		html += "			&nbsp;&nbsp;&nbsp;<a class='linkAction' href='javascript:openclosenewform()'>" 
+			+ msgBuild.getMessage("Sbi.saving.insertNew", "component_impexp_messages", locale) 
+			+ "</a>";
 		html += "	   </div>";
-		
+
 		String action = httpRequest.getContextPath(); 
 		action += "/servlet/AdapterHTTP";	
 		html += "		<div id='divFormNewAss' style='display:none;'>";
@@ -221,7 +235,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "		<div class='div_form_row' >\n";
 		html += "			<div class='div_form_label'>\n";
 		html += "				<span class='portlet-form-field-label'>\n";
-		html += "					" + msgBuild.getMessage("impexp.name", "component_impexp_messages");
+		html += "					" + msgBuild.getMessage("impexp.name", "component_impexp_messages", locale);
 		html += "				</span>\n";
 		html += "			</div>\n";
 		html += "			<div class='div_form_field'>\n";
@@ -232,7 +246,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "		<div class='div_form_row' >\n";
 		html += "			<div class='div_form_label'>\n";
 		html += "				<span class='portlet-form-field-label'>\n";
-		html += "					" + msgBuild.getMessage("impexp.description", "component_impexp_messages");
+		html += "					" + msgBuild.getMessage("impexp.description", "component_impexp_messages", locale);
 		html += "				</span>\n";
 		html += "			</div>\n";
 		html += "			<div class='div_form_field'>\n";
@@ -243,7 +257,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "		<div class='div_form_row' >\n";
 		html += "			<div class='div_form_label'>\n";
 		html += "				<span class='portlet-form-field-label'>\n";
-		html += "					" + msgBuild.getMessage("impexp.file", "component_impexp_messages");
+		html += "					" + msgBuild.getMessage("impexp.file", "component_impexp_messages", locale);
 		html += "				</span>\n";
 		html += "			</div>\n";
 		html += "			<div class='div_form_field'>\n";
@@ -260,8 +274,8 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "			<div class='div_form_field'>\n";
 		html += "				<a class='link_without_dec' href=\"javascript:checkIfExists()\">\n";
 		html += "					<img src= '"+urlBuilder.getResourceLink(httpRequest, "/img/Save.gif")+"' " +
-				"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages")+"' " + 
-				" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages")+"' />\n";
+				"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' " + 
+				" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' />\n";
 		html += "				</a>\n";	
 		html += "			</div>\n";
 		html += "		</div>\n";
@@ -312,7 +326,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		html += "		function checkIfExists() {\n";
 		html += "			nameass = document.getElementById('nameNewAssToSave').value;\n";
 		html += "			if (nameass==''){\n";
-		html += "				alert('Nome non specificato !');\n";
+		html += "				alert('" + msgBuild.getMessage("Sbi.saving.nameNotSpecified", "component_impexp_messages", locale) + "');\n";
 		html += "				return;\n";
 		html += "			}\n";
 		html += "			checkAssUrl = '" + httpRequest.getContextPath() + "';\n";
@@ -338,7 +352,7 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 		// save the association
 		html += "		<script>\n";
 		html += "		function saveAss(exists) {\n";
-		html += "			if (exists != 'true' || confirm('Esiste una associazione con lo stesso nome, sovrascrivere?')) {\n";
+		html += "			if (exists != 'true' || confirm('" + msgBuild.getMessage("Sbi.saving.alreadyExisting", "component_impexp_messages", locale) + "')) {\n";
 		html += "				document.getElementById('OVERWRITE').value = 'true';\n";
 		html += "				document.getElementById('formNewAss').submit();\n";
 		html += "			}\n";
@@ -350,9 +364,9 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 	private String generateHtmlForList(List assFiles, String modality) {
 		String html = "<table widht='100%'>";
 		html += "<tr>";
-		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.name", "component_impexp_messages")+"</td>";
-		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.description", "component_impexp_messages")+"</td>";
-		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.creationDate", "component_impexp_messages")+"</td>";
+		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.name", "component_impexp_messages", locale)+"</td>";
+		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.description", "component_impexp_messages", locale)+"</td>";
+		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.creationDate", "component_impexp_messages", locale)+"</td>";
 		html += "<td class='portlet-section-header'>&nbsp;</td>";
 		html += "</tr>";
 		String rowClass = "";
@@ -385,22 +399,22 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 				html += "<td class='"+rowClass+"'>\n";
 				html += "<a class='link_without_dec' href='"+eraseUrl+"'>\n";		
 				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/erase.gif")+"' \n" + 
-						"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages")+"' \n" + 
-						"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages")+"' />\n";
+						"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' \n" + 
+						"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "&nbsp;&nbsp;\n";
 				html += "<a class='link_without_dec' href='"+downloadUrl+"'>\n";
 				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/down16.gif")+"' \n" + 
-						"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages")+"' \n" + 
-						"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages")+"' />\n";
+						"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' \n" + 
+						"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "</td>";
 			} else if(modality.equals("SELECT") ) {
 				html += "<td class='"+rowClass+"'>\n";
 				html += "<a class='link_without_dec' href=\"javascript:parent.selectAssFile('"+assFile.getId()+"', '"+assFile.getName()+"')\">\n";
 				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/button_ok.gif")+"' \n" + 
-				"title='"+msgBuild.getMessage("impexp.select", "component_impexp_messages")+"' \n" + 
-				"alt='"+msgBuild.getMessage("mpexp.select", "component_impexp_messages")+"' />\n";
+				"title='"+msgBuild.getMessage("impexp.select", "component_impexp_messages", locale)+"' \n" + 
+				"alt='"+msgBuild.getMessage("mpexp.select", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";
 			}
 			html += "</tr>";
@@ -443,11 +457,11 @@ public class ManageImpExpAssAction extends  AbstractHttpAction {
 			} else {
 				assfiledao.saveAssociationFile(assFile, fileAssContent);
 			}
-			htmlResp = "File delle associzioni salvato correttamente";
+			htmlResp = msgBuild.getMessage("Sbi.saved.ok", "component_impexp_messages", locale);
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "saveAssHandler",
 		                           "Error wile saving the association file, " + e);
-			htmlResp = "Errore durante il salvataggio del file";
+			htmlResp = msgBuild.getMessage("Sbi.saved.ko", "component_impexp_messages", locale);
 		} finally {	
 			try{
 				httpResponse.getOutputStream().write(htmlResp.getBytes());

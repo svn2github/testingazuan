@@ -81,7 +81,7 @@ public class AuditAccessUtils {
      * @param errorCode
      *                The error code
      */
-    public void updateAudit(HttpSession sessione, String userId,String auditId, Long startTime, Long endTime,
+    public void updateAudit(HttpSession session, String userId,String auditId, Long startTime, Long endTime,
 	    String executionState, String errorMessage, String errorCode) {
 	logger.debug("IN");
 	try {
@@ -92,7 +92,7 @@ public class AuditAccessUtils {
 		errorMessage = errorMessage.substring(0, 390);
 	    }
 
-	    AuditServiceProxy proxy = new AuditServiceProxy(userId,sessione);
+	    AuditServiceProxy proxy = new AuditServiceProxy(userId,session); 
 	    String ris = proxy.log( auditId, startTime != null ? startTime
 		    .toString() : "",
 		    endTime != null ? endTime.toString() : "",

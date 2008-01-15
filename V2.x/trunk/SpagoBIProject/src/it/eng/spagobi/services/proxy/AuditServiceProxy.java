@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
  * Proxy of Autit Service
  *
  */
-public abstract class AuditServiceProxy extends AbstractServiceProxy{
+public final class AuditServiceProxy extends AbstractServiceProxy{
 
 
     static private Logger logger = Logger.getLogger(AuditServiceProxy.class);

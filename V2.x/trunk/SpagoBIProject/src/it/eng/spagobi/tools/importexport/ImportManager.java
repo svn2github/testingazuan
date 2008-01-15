@@ -165,6 +165,31 @@ public class ImportManager implements IImportManager, Serializable {
 	logger.debug("OUT");
     }
 
+
+    /**
+     * Imports the exported objects
+     */
+    public void importObjects() throws EMFUserError {
+	logger.debug("IN");
+	updateConnectionReferences(metaAss.getConnectionAssociation());
+	importDataSource();
+	importRoles();
+	importEngines();
+	importFunctionalities();
+	importChecks();
+	importParameters();
+	importLovs();
+	importParuse();
+	importBIObjects();
+	importBIObjectLinks();
+	importFunctObject();
+	importFunctRoles();
+	importParuseDet();
+	importParuseCheck();
+	importBIObjPar();
+	importObjParUse();
+	logger.debug("OUT");
+    }
     /**
      * Gets the SpagoBI version of the exported file
      * 
@@ -195,7 +220,7 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public List getExportedRoles() throws EMFUserError {
 	List exportedRoles = null;
-	exportedRoles = importer.getAllExportedRoles(txExpDB, sessionExpDB);
+	exportedRoles = importer.getAllExportedRoles(sessionExpDB);
 	return exportedRoles;
     }
 
@@ -206,7 +231,7 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public List getExportedEngines() throws EMFUserError {
 	List exportedEngines = null;
-	exportedEngines = importer.getAllExportedEngines(txExpDB, sessionExpDB);
+	exportedEngines = importer.getAllExportedEngines(sessionExpDB);
 	return exportedEngines;
     }
 
@@ -258,7 +283,7 @@ public class ImportManager implements IImportManager, Serializable {
 	 * The key of the map are the name of the exported connections Each key
 	 * value is the name of the current system connection associate
 	 */
-	importer.updateConnRefs(connAssociations, txExpDB, sessionExpDB, metaLog);
+	importer.updateConnRefs(connAssociations, sessionExpDB, metaLog);
     }
 
     /**
@@ -394,30 +419,6 @@ public class ImportManager implements IImportManager, Serializable {
 	return iri;
     }
 
-    /**
-     * Imports the exported objects
-     */
-    public void importObjects() throws EMFUserError {
-	logger.debug("IN");
-	updateConnectionReferences(metaAss.getConnectionAssociation());
-	importDataSource();
-	importRoles();
-	importEngines();
-	importFunctionalities();
-	importChecks();
-	importParameters();
-	importLovs();
-	importParuse();
-	importBIObjects();
-	importBIObjectLinks();
-	importFunctObject();
-	importFunctRoles();
-	importParuseDet();
-	importParuseCheck();
-	importBIObjPar();
-	importObjParUse();
-	logger.debug("OUT");
-    }
 
     /**
      * Import exported roles
@@ -427,7 +428,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importRoles() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
+	    List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles");
 	    Iterator iterSbiRoles = exportedRoles.iterator();
 	    while (iterSbiRoles.hasNext()) {
 		SbiExtRoles role = (SbiExtRoles) iterSbiRoles.next();
@@ -450,11 +451,17 @@ public class ImportManager implements IImportManager, Serializable {
 		    newRole.setRoleType(existDom);
 		    newRole.setRoleTypeCode(existDom.getValueCd());
 		}
-		importer.insertObject(newRole, sessionCurrDB);
+		sessionCurrDB.save(newRole);
 		metaLog.log("Inserted new role " + newRole.getName());
 		Integer newId = newRole.getExtRoleId();
 		metaAss.insertCoupleRole(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -468,7 +475,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importEngines() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedEngines = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
+	    List exportedEngines = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines");
 	    Iterator iterSbiEngines = exportedEngines.iterator();
 	    while (iterSbiEngines.hasNext()) {
 		SbiEngines engine = (SbiEngines) iterSbiEngines.next();
@@ -501,23 +508,29 @@ public class ImportManager implements IImportManager, Serializable {
 		    newEng.setBiobjType(existBiobjectTypeDomain);
 		}
 		// check datasource link
-		SbiDataSource expDs=newEng.getDataSource();
-		String label=(String)metaAss.getConnectionAssociation().get(expDs.getLabel());
-		if (label==null){
-		    // exist a Connection Association, read a new DataSource from the DB 
-		    label=expDs.getLabel();
+		SbiDataSource expDs = newEng.getDataSource();
+		String label = (String) metaAss.getConnectionAssociation().get(expDs.getLabel());
+		if (label == null) {
+		    // exist a Connection Association, read a new DataSource
+		    // from the DB
+		    label = expDs.getLabel();
 		}
 		Criterion labelCriterrion = Expression.eq("label", label);
 		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-		criteria.add(labelCriterrion);	
+		criteria.add(labelCriterrion);
 		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
 		newEng.setDataSource(localDS);
-		
-		importer.insertObject(newEng, sessionCurrDB);
+		sessionCurrDB.save(newEng);
 		metaLog.log("Inserted new engine " + engine.getName());
 		Integer newId = newEng.getEngineId();
 		metaAss.insertCoupleEngine(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -526,13 +539,13 @@ public class ImportManager implements IImportManager, Serializable {
     private void importDataSource() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedDS = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDataSource");
+	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource");
 	    Iterator iterSbiDataSource = exportedDS.iterator();
-	    
+
 	    while (iterSbiDataSource.hasNext()) {
 		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
 		Integer oldId = new Integer(dataSource.getDsId());
-		String label=dataSource.getLabel();
+		String label = dataSource.getLabel();
 		Map engIdAss = metaAss.getConnectionAssociation();
 		Set engIdAssSet = engIdAss.keySet();
 		if (engIdAssSet.contains(label)) {
@@ -542,11 +555,17 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 
 		SbiDataSource newDS = ImportUtilities.makeNewDataSource(dataSource);
+		Integer newId = (Integer) sessionCurrDB.save(newDS);
 
-		Integer newId=(Integer)importer.insertObject(newDS, sessionCurrDB);
 		metaLog.log("Inserted new engine " + newDS.getLabel());
 		metaAss.insertCoupleConnections(dataSource.getLabel(), newDS.getLabel());
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -560,29 +579,38 @@ public class ImportManager implements IImportManager, Serializable {
     private void importFunctionalities() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFuncts = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFunctions");
+	    List exportedFuncts = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions");
 
 	    while (exportedFuncts.size() != 0) {
 		Iterator iterSbiFuncts = exportedFuncts.iterator();
 		int minEl = 1000;
 		SbiFunctions functToInsert = null;
 		SbiFunctions funct = null;
+
+		// search the functionality for insert
 		while (iterSbiFuncts.hasNext()) {
 		    funct = (SbiFunctions) iterSbiFuncts.next();
 		    String path = funct.getPath();
-		    int numEl = path.split("/").length;
+		    int numEl = path.split("/").length; // the number of levels
 		    if (numEl < minEl) {
 			minEl = numEl;
 			functToInsert = funct;
 		    }
 		}
+
 		// remove function from list
 		exportedFuncts = removeFromList(exportedFuncts, functToInsert);
+
+		logger.info("Insert the Funtionality (Path):" + functToInsert.getPath());
+
 		// insert function
-		Integer oldId = functToInsert.getFunctId();
+		Integer expId = functToInsert.getFunctId();
 		Map functIdAss = metaAss.getFunctIDAssociation();
 		Set functIdAssSet = functIdAss.keySet();
-		if (functIdAssSet.contains(oldId)) {
+		// if the functionality is present skip the insert
+		if (functIdAssSet.contains(expId)) {
+		    logger.info("Exported functionality " + functToInsert.getName() + " not inserted"
+			    + " because it has the same label (and the same path) of an existing functionality");
 		    metaLog.log("Exported functionality " + functToInsert.getName() + " not inserted"
 			    + " because it has the same label (and the same path) of an existing functionality");
 		    continue;
@@ -618,12 +646,18 @@ public class ImportManager implements IImportManager, Serializable {
 		    else
 			newFunct.setProg(new Integer(1));
 		}
-		importer.insertObject(newFunct, sessionCurrDB);
+		sessionCurrDB.save(newFunct);
 		metaLog.log("Inserted new functionality " + newFunct.getName() + " with path " + newFunct.getPath());
 		Integer newId = newFunct.getFunctId();
-		metaAss.insertCoupleFunct(oldId, newId);
+		metaAss.insertCoupleFunct(expId, newId);
 
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -652,7 +686,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importLovs() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedLovs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
+	    List exportedLovs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov");
 	    Iterator iterSbiLovs = exportedLovs.iterator();
 	    while (iterSbiLovs.hasNext()) {
 		SbiLov lov = (SbiLov) iterSbiLovs.next();
@@ -674,11 +708,17 @@ public class ImportManager implements IImportManager, Serializable {
 		    newlov.setInputType(existDom);
 		    newlov.setInputTypeCd(existDom.getValueCd());
 		}
-		importer.insertObject(newlov, sessionCurrDB);
+		sessionCurrDB.save(newlov);
 		metaLog.log("Inserted new lov " + newlov.getName());
 		Integer newId = newlov.getLovId();
 		metaAss.insertCoupleLov(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -692,7 +732,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importChecks() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedChecks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
+	    List exportedChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks");
 	    Iterator iterSbiChecks = exportedChecks.iterator();
 	    while (iterSbiChecks.hasNext()) {
 		SbiChecks check = (SbiChecks) iterSbiChecks.next();
@@ -714,11 +754,18 @@ public class ImportManager implements IImportManager, Serializable {
 		    newck.setCheckType(existDom);
 		    newck.setValueTypeCd(existDom.getValueCd());
 		}
-		importer.insertObject(newck, sessionCurrDB);
+		sessionCurrDB.save(newck);
+
 		metaLog.log("Inserted new check " + newck.getName());
 		Integer newId = newck.getCheckId();
 		metaAss.insertCoupleCheck(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -732,7 +779,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParameters() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParams = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParameters");
+	    List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters");
 	    Iterator iterSbiParams = exportedParams.iterator();
 	    while (iterSbiParams.hasNext()) {
 		SbiParameters param = (SbiParameters) iterSbiParams.next();
@@ -754,11 +801,17 @@ public class ImportManager implements IImportManager, Serializable {
 		    newPar.setParameterType(existDom);
 		    newPar.setParameterTypeCode(existDom.getValueCd());
 		}
-		importer.insertObject(newPar, sessionCurrDB);
+		sessionCurrDB.save(newPar);
 		metaLog.log("Inserted new parameter " + newPar.getName());
 		Integer newId = newPar.getParId();
 		metaAss.insertCoupleParameter(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -772,30 +825,26 @@ public class ImportManager implements IImportManager, Serializable {
     private void importBIObjects() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedBIObjs = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
+	    List exportedBIObjs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
 	    Iterator iterSbiObjs = exportedBIObjs.iterator();
 	    while (iterSbiObjs.hasNext()) {
-		
-		SbiObjects obj = (SbiObjects) iterSbiObjs.next();
-		
-		SbiEngines engine = obj.getSbiEngines();
-		Integer oldEngId = engine.getEngineId();
+
+		SbiObjects exopObj = (SbiObjects) iterSbiObjs.next();
+
+		Integer expId = exopObj.getBiobjId();
+
+		// reading exist engine
+		SbiEngines engine = exopObj.getSbiEngines();
+		Integer expEngId = engine.getEngineId();
 		Map assEngs = metaAss.getEngineIDAssociation();
-		Integer newEngId = (Integer) assEngs.get(oldEngId);
+		Integer newEngId = (Integer) assEngs.get(expEngId);
 		if (newEngId != null) {
 		    SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine, newEngId);
-		    obj.setSbiEngines(newEng);
+		    exopObj.setSbiEngines(newEng);
 		}
-		Integer oldId = obj.getBiobjId();
-		Map objIdAss = metaAss.getBIobjIDAssociation();
-		Set objIdAssSet = objIdAss.keySet();
-		if (objIdAssSet.contains(oldId)) {
-		    metaLog.log("Exported biobject " + obj.getName() + " not inserted"
-			    + " because it has the same label of an existing biobject");
-		    continue;
-		}
-		SbiObjects newObj = ImportUtilities.makeNewSbiObject(obj);
-		String typeCd = obj.getObjectTypeCode();
+		// reading exist object type
+		SbiObjects newObj = ImportUtilities.makeNewSbiObject(exopObj);
+		String typeCd = exopObj.getObjectTypeCode();
 		Map unique = new HashMap();
 		unique.put("valuecd", typeCd);
 		unique.put("domaincd", "BIOBJ_TYPE");
@@ -804,7 +853,8 @@ public class ImportManager implements IImportManager, Serializable {
 		    newObj.setObjectType(existDom);
 		    newObj.setObjectTypeCode(existDom.getValueCd());
 		}
-		String stateCd = obj.getStateCode();
+		// reading exist state
+		String stateCd = exopObj.getStateCode();
 		unique = new HashMap();
 		unique.put("valuecd", stateCd);
 		unique.put("domaincd", "STATE");
@@ -813,135 +863,175 @@ public class ImportManager implements IImportManager, Serializable {
 		    newObj.setState(existDomSt);
 		    newObj.setStateCode(existDomSt.getValueCd());
 		}
-		
-		// check datasource link
-		SbiDataSource expDs=obj.getDataSource();
-		String label=(String)metaAss.getConnectionAssociation().get(expDs.getLabel());
-		if (label==null){
-		    // exist a Connection Association, read a new DataSource from the DB 
-		    label=expDs.getLabel();
+
+		// reading exist datasource
+		SbiDataSource expDs = exopObj.getDataSource();
+		String label = (String) metaAss.getConnectionAssociation().get(expDs.getLabel());
+		if (label == null) {
+		    // exist a Connection Association, read a new DataSource
+		    // from the DB
+		    label = expDs.getLabel();
 		}
 		Criterion labelCriterrion = Expression.eq("label", label);
 		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-		criteria.add(labelCriterrion);	
+		criteria.add(labelCriterrion);
 		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
-		newObj.setDataSource(localDS);		
-		Integer newId=(Integer)sessionCurrDB.save(newObj);
-		metaLog.log("Inserted new biobject " + newObj.getName());
-		metaAss.insertCoupleBIObj(oldId, newId);
-		
-		// insert object template
-		insertObjectTemplate(newObj,obj.getBiobjId());
-		
-		// insert sub_object  here
-		insertSubObject(newObj,obj.getBiobjId());
-		
-		// insert snapshot  here
-		insertSnapshot(newObj,obj.getBiobjId());		
+		newObj.setDataSource(localDS);
+
+		Map objIdAss = metaAss.getBIobjIDAssociation();
+		Set objIdAssSet = objIdAss.keySet();
+		if (objIdAssSet.contains(expId)) {
+		    logger.info("This Documents is just present (label):" + exopObj.getLabel());
+		    metaLog.log("Exported biobject " + exopObj.getName() + " not inserted"
+			    + " because it has the same label of an existing biobject");
+		    // update document
+		    Integer existingId=(Integer)metaAss.getBIobjIDAssociation().get(expId);
+		    SbiObjects existingObj=(SbiObjects)sessionCurrDB.load(SbiObjects.class, existingId);
+		    existingObj.setName(newObj.getName());
+		    existingObj.setDescr(newObj.getDescr());
+		    existingObj.setLabel(newObj.getLabel());
+		    existingObj.setExecModeCode(newObj.getExecModeCode());
+		    existingObj.setObjectTypeCode(newObj.getObjectTypeCode());
+		    existingObj.setPath(newObj.getPath());
+		    existingObj.setRelName(newObj.getRelName());
+		    existingObj.setStateCode(newObj.getStateCode());
+		    existingObj.setStateConsiderationCode(newObj.getStateConsiderationCode());
+		    existingObj.setUuid(newObj.getUuid());
+		    existingObj.setDataSource(newObj.getDataSource());
+		    existingObj.setEncrypt(newObj.getEncrypt());
+		    existingObj.setExecMode(newObj.getExecMode());
+		    existingObj.setExecModeCode(newObj.getExecModeCode());
+		    existingObj.setObjectType(newObj.getObjectType());
+		    existingObj.setSbiEngines(newObj.getSbiEngines());
+		    existingObj.setSbiObjFuncs(newObj.getSbiObjFuncs());
+		    existingObj.setSchedFl(newObj.getSchedFl());
+		    existingObj.setSbiObjPars(newObj.getSbiObjPars());
+		    existingObj.setState(newObj.getState());
+		    existingObj.setSbiObjStates(newObj.getSbiObjStates());
+		    existingObj.setVisible(newObj.getVisible());
+		    sessionCurrDB.update(existingObj);
+
+		} else {
+		    // insert document
+		    Integer newId = (Integer) sessionCurrDB.save(newObj);
+		    metaLog.log("Inserted new biobject " + newObj.getName());
+		    metaAss.insertCoupleBIObj(expId, newId);
+
+		    // insert object template
+		    insertObjectTemplate(newObj, exopObj.getBiobjId());
+
+		    // insert sub_object here
+		    insertSubObject(newObj, exopObj.getBiobjId());
+
+		    // insert snapshot here
+		    insertSnapshot(newObj, exopObj.getBiobjId());
+		}
 	    }
 	} finally {
 	    logger.debug("OUT");
 	}
     }
-    
-    
-    private void insertSnapshot(SbiObjects obj,Integer objIdExp) throws EMFUserError{
-	logger.debug("IN");
-	    List subObjList = null;
-		try {
-			Query hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + objIdExp);
-			subObjList = hibQuery.list();
-			if(subObjList.isEmpty()) {
-			    	logger.warn(" Sub Object is not present");
-				return;
-			}	
-			SbiSnapshots expSbiSnapshots=(SbiSnapshots)subObjList.get(0);
-			SbiSnapshots newSnapshots=ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
-			newSnapshots.setSbiObject(obj);
-			SbiBinContents binary=insertBinaryContent(expSbiSnapshots.getSbiBinContents());
-			newSnapshots.setSbiBinContents(binary);
-			sessionCurrDB.save(newSnapshots);
 
-		} catch (HibernateException he) {
-		    logger.error("Error while getting exported template objects " , he);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-		} finally{
-		    logger.debug("OUT");
-		}
-    }
-    private void insertSubObject(SbiObjects obj,Integer objIdExp) throws EMFUserError{
+    private void insertSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
-	    List subObjList = null;
-		try {
-			Query hibQuery = sessionExpDB.createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + objIdExp);
-			subObjList = hibQuery.list();
-			if(subObjList.isEmpty()) {
-			    	logger.warn(" Sub Object is not present");
-				return;
-			}	
-			SbiSubObjects expSubObject=(SbiSubObjects)subObjList.get(0);
-			SbiSubObjects newSubObj=ImportUtilities.makeNewSbiSubObjects(expSubObject);
-			newSubObj.setSbiObject(obj);
-			SbiBinContents binary=insertBinaryContent(expSubObject.getSbiBinContents());
-			newSubObj.setSbiBinContents(binary);
-			sessionCurrDB.save(newSubObj);
+	List subObjList = null;
+	try {
+	    Query hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + objIdExp);
+	    subObjList = hibQuery.list();
+	    if (subObjList.isEmpty()) {
+		logger.warn(" Sub Object is not present");
+		return;
+	    }
+	    SbiSnapshots expSbiSnapshots = (SbiSnapshots) subObjList.get(0);
+	    SbiSnapshots newSnapshots = ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
+	    newSnapshots.setSbiObject(obj);
+	    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
+	    newSnapshots.setSbiBinContents(binary);
+	    sessionCurrDB.save(newSnapshots);
 
-		} catch (HibernateException he) {
-		    logger.error("Error while getting exported template objects " , he);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-		} finally{
-		    logger.debug("OUT");
-		}
-    }
-    
-    private void insertObjectTemplate(SbiObjects obj,Integer objIdExp) throws EMFUserError{
-	logger.debug("IN");
-	    List templateList = null;
-		try {
-			Query hibQuery = sessionExpDB.createQuery(" from SbiObjTemplates ot where ot.sbiObject.biobjId = " + objIdExp);
-			templateList = hibQuery.list();
-			if(templateList.isEmpty()) {
-			    	logger.warn(" Templates is not present");
-				return;
-			}	
-			SbiObjTemplates expTemplate=(SbiObjTemplates)templateList.get(0);
-			SbiObjTemplates newObj=ImportUtilities.makeNewSbiObjTemplates(expTemplate);
-			newObj.setSbiObject(obj);
-			SbiBinContents binary=insertBinaryContent(expTemplate.getSbiBinContents());
-			newObj.setSbiBinContents(binary);
-			sessionCurrDB.save(newObj);
-		} catch (HibernateException he) {
-		    logger.error("Error while getting exported template objects " , he);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-		} finally{
-		    logger.debug("OUT");
-		}
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported template objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
     }
 
-    private SbiBinContents insertBinaryContent(SbiBinContents binaryContent) throws EMFUserError{
+    private void insertSubObject(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
-	    List templateList = null;
-	    SbiBinContents newObj=null;
-		try {
-			Query hibQuery = sessionExpDB.createQuery(" from SbiBinContents where id = " + binaryContent.getId());
-			templateList = hibQuery.list();
-			if(templateList.isEmpty()) {
-			    	logger.warn(" Binary Content is not present");
-				return null;
-			}
-			SbiBinContents expBinaryContent=(SbiBinContents)templateList.get(0);
-			newObj=ImportUtilities.makeNewSbiBinContents(expBinaryContent);
-			// save new binary content
-			sessionCurrDB.save(newObj);
-			return newObj;
-			
-		} catch (HibernateException he) {
-		    logger.error("Error while getting exported binary content objects " , he);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-		} finally{
-		    logger.debug("OUT");
-		}
-    }    
+	List subObjList = null;
+	try {
+	    Query hibQuery = sessionExpDB
+		    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + objIdExp);
+	    subObjList = hibQuery.list();
+	    if (subObjList.isEmpty()) {
+		logger.warn(" Sub Object is not present");
+		return;
+	    }
+	    SbiSubObjects expSubObject = (SbiSubObjects) subObjList.get(0);
+	    SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
+	    newSubObj.setSbiObject(obj);
+	    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
+	    newSubObj.setSbiBinContents(binary);
+	    sessionCurrDB.save(newSubObj);
+
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported template objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
+    }
+
+    private void insertObjectTemplate(SbiObjects obj, Integer objIdExp) throws EMFUserError {
+	logger.debug("IN");
+	List templateList = null;
+	try {
+	    Query hibQuery = sessionExpDB.createQuery(" from SbiObjTemplates ot where ot.sbiObject.biobjId = "
+		    + objIdExp);
+	    templateList = hibQuery.list();
+	    if (templateList.isEmpty()) {
+		logger.warn(" Templates is not present");
+		return;
+	    }
+	    SbiObjTemplates expTemplate = (SbiObjTemplates) templateList.get(0);
+	    SbiObjTemplates newObj = ImportUtilities.makeNewSbiObjTemplates(expTemplate);
+	    newObj.setSbiObject(obj);
+	    SbiBinContents binary = insertBinaryContent(expTemplate.getSbiBinContents());
+	    newObj.setSbiBinContents(binary);
+	    sessionCurrDB.save(newObj);
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported template objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
+    }
+
+    private SbiBinContents insertBinaryContent(SbiBinContents binaryContent) throws EMFUserError {
+	logger.debug("IN");
+	List templateList = null;
+	SbiBinContents newObj = null;
+	try {
+	    Query hibQuery = sessionExpDB.createQuery(" from SbiBinContents where id = " + binaryContent.getId());
+	    templateList = hibQuery.list();
+	    if (templateList.isEmpty()) {
+		logger.warn(" Binary Content is not present");
+		return null;
+	    }
+	    SbiBinContents expBinaryContent = (SbiBinContents) templateList.get(0);
+	    newObj = ImportUtilities.makeNewSbiBinContents(expBinaryContent);
+	    // save new binary content
+	    sessionCurrDB.save(newObj);
+	    return newObj;
+
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported binary content objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
+    }
 
     /**
      * Imports exported paruses
@@ -951,7 +1041,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuse() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuses = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuse");
+	    List exportedParuses = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse");
 	    Iterator iterSbiParuses = exportedParuses.iterator();
 	    while (iterSbiParuses.hasNext()) {
 		SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
@@ -984,12 +1074,18 @@ public class ImportManager implements IImportManager, Serializable {
 		    continue;
 		}
 		SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(paruse);
-		importer.insertObject(newParuse, sessionCurrDB);
+		sessionCurrDB.save(newParuse);
 		metaLog.log("Inserted new parameter use " + newParuse.getName() + " for param " + param.getName());
 		Integer newId = newParuse.getUseId();
 		sessionExpDB.evict(paruse);
 		metaAss.insertCoupleParuse(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1003,7 +1099,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuseDet() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuseDets = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuseDet");
+	    List exportedParuseDets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet");
 	    Iterator iterSbiParuseDets = exportedParuseDets.iterator();
 	    while (iterSbiParuseDets.hasNext()) {
 		SbiParuseDet parusedet = (SbiParuseDet) iterSbiParuseDets.next();
@@ -1038,11 +1134,17 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("roleid", roleid);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseDet());
 		if (existObj == null) {
-		    importer.insertObject(parusedet, sessionCurrDB);
+		    sessionCurrDB.save(parusedet);
 		    metaLog.log("Inserted new association between paruse " + parusedet.getId().getSbiParuse().getName()
 			    + " and role " + parusedet.getId().getSbiExtRoles().getName());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1056,7 +1158,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuseCheck() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuseChecks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuseCk");
+	    List exportedParuseChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseCk");
 	    Iterator iterSbiParuseChecks = exportedParuseChecks.iterator();
 	    while (iterSbiParuseChecks.hasNext()) {
 		SbiParuseCk paruseck = (SbiParuseCk) iterSbiParuseChecks.next();
@@ -1091,11 +1193,17 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("checkid", checkid);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseCk());
 		if (existObj == null) {
-		    importer.insertObject(paruseck, sessionCurrDB);
+		    sessionCurrDB.save(paruseck);
 		    metaLog.log("Inserted new association between paruse " + paruseck.getId().getSbiParuse().getName()
 			    + " and check " + paruseck.getId().getSbiChecks().getName());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1109,7 +1217,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importBIObjectLinks() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedBIObjectsLinks = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiSubreports");
+	    List exportedBIObjectsLinks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiSubreports");
 	    Iterator iterSbiObjLinks = exportedBIObjectsLinks.iterator();
 	    while (iterSbiObjLinks.hasNext()) {
 		SbiSubreports objlink = (SbiSubreports) iterSbiObjLinks.next();
@@ -1148,11 +1256,17 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("subid", subid);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiSubreports());
 		if (existObj == null) {
-		    importer.insertObject(objlink, sessionCurrDB);
+		    sessionCurrDB.save(objlink);
 		    metaLog.log("Inserted new link between master object " + masterBIObj.getLabel()
 			    + " and sub object " + subBIObj.getLabel());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1166,7 +1280,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importFunctObject() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFunctObjects = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjFunc");
+	    List exportedFunctObjects = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjFunc");
 	    Iterator iterSbiFunctObjects = exportedFunctObjects.iterator();
 	    while (iterSbiFunctObjects.hasNext()) {
 		SbiObjFunc objfunct = (SbiObjFunc) iterSbiFunctObjects.next();
@@ -1202,12 +1316,18 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("functionid", functid);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiObjFunc());
 		if (existObj == null) {
-		    importer.insertObject(objfunct, sessionCurrDB);
+		    sessionCurrDB.save(objfunct);
 		    metaLog.log("Inserted new association between function "
 			    + objfunct.getId().getSbiFunctions().getName() + " and object "
 			    + objfunct.getId().getSbiObjects().getName());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1221,7 +1341,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importFunctRoles() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFunctRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFuncRole");
+	    List exportedFunctRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFuncRole");
 	    Iterator iterSbiFunctRoles = exportedFunctRoles.iterator();
 	    while (iterSbiFunctRoles.hasNext()) {
 		SbiFuncRole functrole = (SbiFuncRole) iterSbiFunctRoles.next();
@@ -1268,12 +1388,18 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("functionid", functid);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiFuncRole());
 		if (existObj == null) {
-		    importer.insertObject(functrole, sessionCurrDB);
+		    sessionCurrDB.save(functrole);
 		    metaLog.log("Inserted new association between function "
 			    + functrole.getId().getFunction().getName() + " and role "
 			    + functrole.getId().getRole().getName());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1287,7 +1413,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importBIObjPar() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedObjPars = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjPar");
+	    List exportedObjPars = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar");
 	    Iterator iterSbiObjPar = exportedObjPars.iterator();
 	    while (iterSbiObjPar.hasNext()) {
 		SbiObjPar objpar = (SbiObjPar) iterSbiObjPar.next();
@@ -1324,13 +1450,19 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 
 		SbiObjPar newObjpar = ImportUtilities.makeNewSbiObjpar(objpar);
-		importer.insertObject(newObjpar, sessionCurrDB);
+		sessionCurrDB.save(newObjpar);
 		metaLog.log("Inserted new biobject parameter with " + newObjpar.getParurlNm() + " for biobject "
 			+ newObjpar.getSbiObject().getName());
 		Integer newId = newObjpar.getObjParId();
 		sessionExpDB.evict(objpar);
 		metaAss.insertCoupleObjpar(oldId, newId);
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1344,7 +1476,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importObjParUse() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParDepends = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjParuse");
+	    List exportedParDepends = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjParuse");
 	    Iterator iterParDep = exportedParDepends.iterator();
 	    while (iterParDep.hasNext()) {
 		SbiObjParuse pardep = (SbiObjParuse) iterParDep.next();
@@ -1392,13 +1524,19 @@ public class ImportManager implements IImportManager, Serializable {
 		unique.put("filterop", filterOp);
 		Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiObjParuse());
 		if (existObj == null) {
-		    importer.insertObject(pardep, sessionCurrDB);
+		    sessionCurrDB.save(pardep);
 		    metaLog.log("Inserted new dependecies between biparameter "
 			    + pardep.getId().getSbiObjPar().getLabel() + " of the biobject "
 			    + pardep.getId().getSbiObjPar().getSbiObject().getLabel() + " and paruse "
 			    + pardep.getId().getSbiParuse().getLabel());
 		}
 	    }
+	} catch (HibernateException he) {
+	    logger.error("Error while inserting object ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+	    logger.error("Error while inserting object ", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -1422,14 +1560,14 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public List getExportedConnections() throws EMFUserError {
 	logger.debug("IN");
-	List conn=new ArrayList();
+	List conn = new ArrayList();
 	try {
-	    List exportedDS = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiDataSource");
+	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource");
 	    Iterator iterSbiDataSource = exportedDS.iterator();
-	    
+
 	    while (iterSbiDataSource.hasNext()) {
 		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
-		DataSource ds=new DataSource();
+		DataSource ds = new DataSource();
 		ds.setLabel(dataSource.getLabel());
 		ds.setDescr(dataSource.getDescr());
 		ds.setDriver(dataSource.getDriver());
@@ -1439,55 +1577,7 @@ public class ImportManager implements IImportManager, Serializable {
 	} finally {
 	    logger.debug("OUT");
 	}
-	
-	/*
-	 * String connFilePath = pathBaseFolder + "/connections.xml"; try{
-	 * FileInputStream fis = new FileInputStream(connFilePath); byte[]
-	 * content = GeneralUtilities.getByteArrayFromInputStream(fis);
-	 * fis.close(); String contentStr = new String(content); SourceBean
-	 * connsSB = SourceBean.fromXMLString(contentStr); List connsList =
-	 * connsSB.getAttributeAsList("CONNECTION-POOL"); Iterator iterConns =
-	 * connsList.iterator(); while(iterConns.hasNext()){ SourceBean connSB =
-	 * (SourceBean)iterConns.next(); String name =
-	 * (String)connSB.getAttribute("connectionPoolName"); String descr =
-	 * (String)connSB.getAttribute("connectionDescription"); if(descr==null)
-	 * descr=""; SourceBean driverSB =
-	 * (SourceBean)connSB.getFilteredSourceBeanAttribute("CONNECTION-POOL-PARAMETER",
-	 * "parameterName", "driverClass"); if(driverSB==null) { SourceBean
-	 * contNameSB=(SourceBean)connSB.getFilteredSourceBeanAttribute("CONNECTION-POOL-PARAMETER",
-	 * "parameterName", "initialContext"); String contName =
-	 * (String)contNameSB.getAttribute("parameterValue"); SourceBean
-	 * jndiNameSB=(SourceBean)connSB.getFilteredSourceBeanAttribute("CONNECTION-POOL-PARAMETER",
-	 * "parameterName", "resourceName"); String jndiName =
-	 * (String)jndiNameSB.getAttribute("parameterValue"); JndiConnection
-	 * conn = new JndiConnection(); conn.setJndiType(true);
-	 * conn.setName(name); conn.setDescription(descr);
-	 * conn.setJndiContextName(contName); conn.setJndiName(jndiName);
-	 * connections.add(conn); } else { String drivClass =
-	 * (String)connSB.getAttribute("parameterValue"); SourceBean connUrlSB =
-	 * (SourceBean)connSB.getFilteredSourceBeanAttribute("CONNECTION-POOL-PARAMETER",
-	 * "parameterName", "connectionString"); String connUrl =
-	 * (String)connUrlSB.getAttribute("parameterValue"); JdbcConnection conn =
-	 * new JdbcConnection(); conn.setJdbcType(true); conn.setName(name);
-	 * conn.setDescription(descr); conn.setDriverClassName(drivClass);
-	 * conn.setConnectionString(connUrl); connections.add(conn); } } } catch
-	 * (FileNotFoundException fnfe) {
-	 * SpagoBITracer.critical(ImportExportConstants.NAME_MODULE,
-	 * this.getClass().getName(), "getExportedConnections", "Error while
-	 * reading connections file " + fnfe); throw new
-	 * EMFUserError(EMFErrorSeverity.ERROR, "8004",
-	 * "component_impexp_messages"); } catch (SourceBeanException sbe) {
-	 * SpagoBITracer.critical(ImportExportConstants.NAME_MODULE,
-	 * this.getClass().getName(), "getExportedConnections", "Error while
-	 * reading connections file " + sbe); throw new
-	 * EMFUserError(EMFErrorSeverity.ERROR, "8004",
-	 * "component_impexp_messages"); }catch (IOException ioe) {
-	 * SpagoBITracer.critical(ImportExportConstants.NAME_MODULE,
-	 * this.getClass().getName(), "getExportedConnections", "Error while
-	 * reading connections file " + ioe); throw new
-	 * EMFUserError(EMFErrorSeverity.ERROR, "8004",
-	 * "component_impexp_messages"); } finally {}
-	 */
+
 	logger.debug("OUT");
 	return conn;
     }
@@ -1499,7 +1589,7 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public void checkExistingMetadata() throws EMFUserError {
 	logger.debug("IN");
-	List exportedParams = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParameters");
+	List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters");
 	Iterator iterSbiParams = exportedParams.iterator();
 	while (iterSbiParams.hasNext()) {
 	    SbiParameters paramExp = (SbiParameters) iterSbiParams.next();
@@ -1513,7 +1603,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported parameter " + paramExp.getName());
 	    }
 	}
-	List exportedRoles = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiExtRoles");
+	List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles");
 	Iterator iterSbiRoles = exportedRoles.iterator();
 	while (iterSbiRoles.hasNext()) {
 	    SbiExtRoles roleExp = (SbiExtRoles) iterSbiRoles.next();
@@ -1532,7 +1622,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same name of the exported role " + roleExp.getName());
 	    }
 	}
-	List exportedParuse = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiParuse");
+	List exportedParuse = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse");
 	Iterator iterSbiParuse = exportedParuse.iterator();
 	while (iterSbiParuse.hasNext()) {
 	    SbiParuse paruseExp = (SbiParuse) iterSbiParuse.next();
@@ -1557,7 +1647,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported parameter use " + paruseExp.getName());
 	    }
 	}
-	List exportedBiobj = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjects");
+	List exportedBiobj = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
 	Iterator iterSbiBiobj = exportedBiobj.iterator();
 	while (iterSbiBiobj.hasNext()) {
 	    SbiObjects objExp = (SbiObjects) iterSbiBiobj.next();
@@ -1571,7 +1661,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label and path of the exported BIObject " + objExp.getName());
 	    }
 	}
-	List exportedLov = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiLov");
+	List exportedLov = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov");
 	Iterator iterSbiLov = exportedLov.iterator();
 	while (iterSbiLov.hasNext()) {
 	    SbiLov lovExp = (SbiLov) iterSbiLov.next();
@@ -1585,7 +1675,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported lov " + lovExp.getName());
 	    }
 	}
-	List exportedFunct = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiFunctions");
+	List exportedFunct = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions");
 	Iterator iterSbiFunct = exportedFunct.iterator();
 	while (iterSbiFunct.hasNext()) {
 	    SbiFunctions functExp = (SbiFunctions) iterSbiFunct.next();
@@ -1596,10 +1686,10 @@ public class ImportManager implements IImportManager, Serializable {
 		metaAss.insertCoupleFunct(functExp.getFunctId(), functCurr.getFunctId());
 		metaAss.insertCoupleFunct(functExp, functCurr);
 		metaLog.log("Found an existing Functionality " + functCurr.getName() + " with "
-			+ "the same label and path of the exported functionality " + functExp.getName());
+			+ "the same CODE of the exported functionality " + functExp.getName());
 	    }
 	}
-	List exportedEngine = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiEngines");
+	List exportedEngine = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines");
 	Iterator iterSbiEng = exportedEngine.iterator();
 	while (iterSbiEng.hasNext()) {
 	    SbiEngines engExp = (SbiEngines) iterSbiEng.next();
@@ -1618,7 +1708,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported engine " + engExp.getName());
 	    }
 	}
-	List exportedCheck = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiChecks");
+	List exportedCheck = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks");
 	Iterator iterSbiCheck = exportedCheck.iterator();
 	while (iterSbiCheck.hasNext()) {
 	    SbiChecks checkExp = (SbiChecks) iterSbiCheck.next();
@@ -1632,7 +1722,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported check " + checkExp.getName());
 	    }
 	}
-	List exportedObjPar = importer.getAllExportedSbiObjects(txExpDB, sessionExpDB, "SbiObjPar");
+	List exportedObjPar = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar");
 	Iterator iterSbiObjPar = exportedObjPar.iterator();
 	while (iterSbiObjPar.hasNext()) {
 	    SbiObjPar objparExp = (SbiObjPar) iterSbiObjPar.next();

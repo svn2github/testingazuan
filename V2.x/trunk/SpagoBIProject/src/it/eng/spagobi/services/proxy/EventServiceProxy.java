@@ -8,15 +8,25 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-public class EventServiceProxy extends AbstractServiceProxy{
+/**
+ * 
+ * proxy of Event service
+ *
+ */
+public final class EventServiceProxy extends AbstractServiceProxy{
 
 
     static private Logger logger = Logger.getLogger(EventServiceProxy.class);
 
-
+    /**
+     * use it only in engine context
+     * @param user user Id
+     * @param session HttpSession
+     */
     public EventServiceProxy(String user,HttpSession session) {
 	super( user,session);
     }
+    
     private EventServiceProxy() {
 	super();
     }    
@@ -36,7 +46,14 @@ public class EventServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
-    
+    /**
+     * 
+     * @param description
+     * @param parameters
+     * @param rolesHandler
+     * @param presentationHandler
+     * @return
+     */
     public String fireEvent(String description,String parameters,String rolesHandler,String presentationHandler){
 	logger.debug("IN");
 	try {

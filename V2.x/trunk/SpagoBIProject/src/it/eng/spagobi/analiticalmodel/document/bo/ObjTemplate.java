@@ -56,8 +56,8 @@ public class ObjTemplate implements Serializable {
 	public Boolean getActive() {
 		return active;
 	}
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setActive(Boolean activeP) {
+		this.active = activeP;
 	}
 	public Integer getId() {
 		return id;

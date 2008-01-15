@@ -9,18 +9,29 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-public class SchedulerServiceProxy extends AbstractServiceProxy{
+/**
+ * 
+ * Scheduler Service
+ *
+ */
+public final class SchedulerServiceProxy extends AbstractServiceProxy{
 
     static private Logger logger = Logger.getLogger(SchedulerServiceProxy.class);
 
+    /**
+     * Use this in engine context only.
+     * @param user user id
+     * @param session HttpSession
+     */
     public SchedulerServiceProxy(String user,HttpSession session) {
     	super(user, session);
     }
-    
+
     private  SchedulerServiceProxy() {
     	super();
     }    
 
+    
     private SchedulerService lookUp() throws SecurityException {
 	try {
     	    SchedulerServiceServiceLocator locator = new SchedulerServiceServiceLocator();
@@ -36,6 +47,10 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }   
+    /**
+     * Return all jobs
+     * @return String
+     */
     public String getJobList() {
     	logger.debug("IN");
     	try {
@@ -48,6 +63,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
+    /**
+     * 
+     * @param jobName job name
+     * @param jobGroup job group
+     * @return
+     */
     public String getJobSchedulationList(String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {
@@ -60,7 +81,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param triggerName
+     * @param triggerGroup
+     * @return
+     */
     public String deleteSchedulation(String triggerName, String triggerGroup) {
     	logger.debug("IN");
     	try {
@@ -73,7 +99,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param jobName
+     * @param jobGroupName
+     * @return
+     */
     public String deleteJob(String jobName, String jobGroupName) {
     	logger.debug("IN");
     	try {
@@ -86,7 +117,11 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-
+    /**
+     * 
+     * @param xmlRequest
+     * @return
+     */
     public String defineJob(String xmlRequest) {
     	logger.debug("IN");
     	try {
@@ -99,7 +134,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     public String getJobDefinition(String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {
@@ -112,7 +152,11 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param xmlRequest
+     * @return
+     */
     public String scheduleJob(String xmlRequest) {
     	logger.debug("IN");
     	try {
@@ -125,7 +169,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param triggerName
+     * @param triggerGroup
+     * @return
+     */
     public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
     	logger.debug("IN");
     	try {
@@ -138,7 +187,12 @@ public class SchedulerServiceProxy extends AbstractServiceProxy{
     	return null;	
     }
     
-    
+    /**
+     * 
+     * @param jobName
+     * @param jobGroup
+     * @return
+     */
     public String existJobDefinition(String jobName, String jobGroup) {
     	logger.debug("IN");
     	try {

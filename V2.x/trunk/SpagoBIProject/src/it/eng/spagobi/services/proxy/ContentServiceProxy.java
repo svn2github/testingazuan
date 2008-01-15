@@ -11,12 +11,21 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-public class ContentServiceProxy extends AbstractServiceProxy{
+/**
+ * 
+ * Proxy of Content Service
+ *
+ */
+public final class ContentServiceProxy extends AbstractServiceProxy{
 
 
     static private Logger logger = Logger.getLogger(ContentServiceProxy.class);
 
-
+    /**
+     * use this i engine context only
+     * @param user
+     * @param session
+     */
     public ContentServiceProxy(String user,HttpSession session) {
 	super( user,session);
     }
@@ -39,7 +48,11 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
-    
+    /**
+     * 
+     * @param document
+     * @return
+     */
     public Content readTemplate(String document) {
 	logger.debug("IN");
 	try {
@@ -52,7 +65,11 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+    /**
+     * 
+     * @param attributes
+     * @return
+     */
     public String publishTemplate( HashMap attributes) {
 	logger.debug("IN");
 	try {
@@ -65,7 +82,14 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+    /**
+     * 
+     * @param operation
+     * @param path
+     * @param featureName
+     * @param mapName
+     * @return
+     */
     public String mapCatalogue( String operation,String path,String featureName,String mapName){
 	logger.debug("IN");
 	try {
@@ -78,7 +102,11 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;	
     }
-    
+    /**
+     * 
+     * @param nameSubObject
+     * @return
+     */
     public Content readSubObjectContent(String nameSubObject){
 	logger.debug("IN");
 	try {
@@ -91,7 +119,15 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+    /**
+     * 
+     * @param documentiId
+     * @param analysisName
+     * @param analysisDescription
+     * @param visibilityBoolean
+     * @param content
+     * @return
+     */
     public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
 	try {
@@ -104,7 +140,13 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+    /**
+     * 
+     * @param documentiId
+     * @param templateName
+     * @param content
+     * @return
+     */
     public String saveObjectTemplate(String documentiId,String templateName,String content){
 	logger.debug("IN");
 	try {
@@ -117,7 +159,12 @@ public class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+    /**
+     * 
+     * @param biobjectId
+     * @param fileName
+     * @return
+     */
     public Content downloadAll(String biobjectId,String fileName){
 	logger.debug("IN");
 	try {

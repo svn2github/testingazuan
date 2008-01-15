@@ -8,12 +8,21 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-public class AuditServiceProxy extends AbstractServiceProxy{
+/**
+ * 
+ * Proxy of Autit Service
+ *
+ */
+public abstract class AuditServiceProxy extends AbstractServiceProxy{
 
 
     static private Logger logger = Logger.getLogger(AuditServiceProxy.class);
 
-
+    /**
+     * 
+     * @param user
+     * @param session
+     */
     public AuditServiceProxy(String user,HttpSession session) {
 	super(user, session);
     }
@@ -36,7 +45,16 @@ public class AuditServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
-    
+    /**
+     * 
+     * @param id
+     * @param start
+     * @param end
+     * @param state
+     * @param message
+     * @param errorCode
+     * @return
+     */
     public String log(String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");
 	try {

@@ -176,6 +176,7 @@ public class ExportUtilities {
 	 * @return The Spago DataConnection Object
 	 * @throws EMFInternalError
 	 */
+	/*
 	public static DataConnection getDataConnection(Connection con) throws EMFInternalError {
 	    logger.debug("IN");
 		DataConnection dataCon = null;
@@ -191,7 +192,7 @@ public class ExportUtilities {
 		}
 		return dataCon;
 	}
-	
+	*/
 	
 
 }

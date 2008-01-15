@@ -4,8 +4,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.services.security.stub.SecurityServiceServiceLocator;
 
 import java.security.Principal;
@@ -15,19 +13,36 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-public class SecurityServiceProxy extends AbstractServiceProxy{
+/**
+ * 
+ * Security Service Proxy. 
+ * Use in engine component only
+ *
+ */
+public final class SecurityServiceProxy extends AbstractServiceProxy{
 
     static private Logger logger = Logger.getLogger(SecurityServiceProxy.class);
     
-
+/**
+ * Use this constructor.
+ * @param user user ID
+ * @param session HttpSession
+ */
     public SecurityServiceProxy(String user,HttpSession session){
 	super(user,session);
     }    
  
+    /**
+     * Don't use it.
+     */
     private SecurityServiceProxy() {
 	super();
     }     
-    
+    /**
+     * 
+     * @return Object used
+     * @throws SecurityException catch this if exist error
+     */
     private it.eng.spagobi.services.security.stub.SecurityService lookUp() throws SecurityException {
 	try {
 	    SecurityServiceServiceLocator locator = new SecurityServiceServiceLocator();
@@ -43,7 +58,11 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
-    
+    /**
+     * 
+     * @return IEngUserProfile with user profile
+     * @throws SecurityException if the process has generated an error
+     */
     public IEngUserProfile getUserProfile() throws SecurityException{
 	logger.debug("IN");
 	try {
@@ -56,25 +75,12 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
             logger.debug("IN");
         }
     }
-    /*
-    public IEngUserProfile getUserProfile(Principal principal) throws SecurityException{
-	logger.debug("IN");
-	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-        try {
-            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
-            return new UserProfile(user);
-        } catch (Exception e) {
-            logger.error("Error during service execution",e);
-            throw new SecurityException();
-        }finally{
-            logger.debug("IN");
-        }
-    }    
-    */
+
     /**
-     * Check if the user is authorized to access the folder
-     * @param function
-     * @return
+     * Check if the user is authorized to access the folder.
+     * @param folderId folder id
+     * @param mode mode
+     * @return true/false
      */    
     public boolean isAuthorized(String folderId,String mode) {
 	logger.debug("IN");
@@ -90,9 +96,9 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
     
 
     /**
-     * Check if the user can execute the function ( user function )
-     * @param function
-     * @return
+     * Check if the user can execute the function ( user function ).
+     * @param function function id
+     * @return true/false
      */
     public boolean checkAuthorization(String function){
 	
@@ -100,9 +106,10 @@ public class SecurityServiceProxy extends AbstractServiceProxy{
     }
     
     /**
-     * Check if the user can execute the function ( user function )
-     * @param function
-     * @return
+     * Check if the user can execute the function ( user function ).
+     * @param function function
+     * @param principal user principal
+     * @return true / false
      */    
     public boolean checkAuthorization(Principal principal,String function){
 	

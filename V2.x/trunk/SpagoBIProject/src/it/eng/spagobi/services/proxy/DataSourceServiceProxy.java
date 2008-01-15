@@ -15,20 +15,25 @@ import org.apache.log4j.Logger;
  * Ex.
  * 
 	DataSourceServiceProxy proxyDS=new DataSourceServiceProxy();
-	SpagoBiDataSource ds=proxyDS.getDataSource("doc", "label");
+	SpagoBiDataSource ds=proxyDS.getDataSource("2");
 	logger.debug("DS="+ds.getJndiName());
-	
- * @author Bernabei Angelo
+
  *
  */
-public class DataSourceServiceProxy extends AbstractServiceProxy{
+public final class DataSourceServiceProxy extends AbstractServiceProxy{
     
     static private Logger logger = Logger.getLogger(DataSourceServiceProxy.class);
     
 
+    /**
+     * 
+     * @param user User ID utente
+     * @param session Sessione http
+     */
     public DataSourceServiceProxy(String user,HttpSession session) {
 	super(user,session);
     }
+
     private DataSourceServiceProxy() {
 	super();
     }   
@@ -49,7 +54,12 @@ public class DataSourceServiceProxy extends AbstractServiceProxy{
 	}
     }
     
-    
+    /**
+     * Return the SpagoBiDataSource object, contains the information about
+     * the DWH connection 
+     * @param documentId document id
+     * @return SpagoBiDataSource object
+     */
     public SpagoBiDataSource getDataSource(String documentId) {
 	logger.debug("IN");
 	try {

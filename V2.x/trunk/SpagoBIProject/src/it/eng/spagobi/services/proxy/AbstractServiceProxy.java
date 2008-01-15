@@ -19,9 +19,9 @@ import it.eng.spagobi.services.common.IProxyServiceFactory;
 public abstract class AbstractServiceProxy {
 
     static private Logger logger = Logger.getLogger(AbstractServiceProxy.class);
-    protected HttpSession session = null;
-    protected boolean ssoIsActive = false;
-    protected String filterReceipt = null;
+    private HttpSession session = null;
+    private boolean ssoIsActive = false;
+    private String filterReceipt = null;
     protected URL serviceUrl = null;
     protected String userId = null;
 

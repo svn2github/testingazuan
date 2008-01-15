@@ -81,18 +81,15 @@ public class ExportManager implements IExportManager {
     /**
      * Prepare the environment for export
      * 
-     * @param pathExpFold
-     *                Path of the export folder
-     * @param nameExpFile
-     *                the name to give to the exported file
-     * @param expSubObj
-     *                Flag which tells if it's necessary to export subobjects
-     * @param expSnaps
-     *                Flag which tells if it's necessary to export snapshots
+     * @param pathExpFold Path of the export folder
+     * @param nameExpFile the name to give to the exported file
+     * @param expSubObj   Flag which tells if it's necessary to export subobjects
+     * @param expSnaps    Flag which tells if it's necessary to export snapshots
      */
     public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj, boolean expSnaps)
 	    throws EMFUserError {
-	logger.debug("IN. pathExpFold="+pathExpFold+" nameExpFile="+nameExpFile+" expSubObj="+expSubObj+" expSnaps"+expSnaps);
+	logger.debug("IN. pathExpFold=" + pathExpFold + " nameExpFile=" + nameExpFile + " expSubObj=" + expSubObj
+		+ " expSnaps" + expSnaps);
 	try {
 	    nameExportFile = nameExpFile;
 	    pathExportFolder = pathExpFold;
@@ -121,9 +118,9 @@ public class ExportManager implements IExportManager {
 	    exporter = new ExporterMetadata();
 
 	} catch (Exception e) {
-	    logger.error("Error while creating export environment " , e);
+	    logger.error("Error while creating export environment ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-	}finally{
+	} finally {
 	    logger.debug("OUT");
 	}
     }
@@ -131,8 +128,7 @@ public class ExportManager implements IExportManager {
     /**
      * Exports objects and creates the archive export file
      * 
-     * @param objPaths
-     *                List of path of the objects to export
+     * @param objPaths  List of path of the objects to export
      */
     public String exportObjects(List objIds) throws EMFUserError {
 	logger.debug("IN");
@@ -151,9 +147,9 @@ public class ExportManager implements IExportManager {
 	} catch (EMFUserError emfue) {
 	    throw emfue;
 	} catch (Exception e) {
-	    logger.error("Error while exporting objects " , e);
+	    logger.error("Error while exporting objects ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-	}finally{
+	} finally {
 	    logger.debug("OUT");
 	}
     }
@@ -190,7 +186,7 @@ public class ExportManager implements IExportManager {
 	    compressFolder(pathBaseFolder, out);
 	    out.flush();
 	} catch (Exception e) {
-	    logger.error("Error while creating archive file " , e);
+	    logger.error("Error while creating archive file ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 	} finally {
 	    try {
@@ -201,21 +197,19 @@ public class ExportManager implements IExportManager {
 		    fos.close();
 		}
 	    } catch (Exception e) {
-		logger.error("Error while closing streams " , e);
+		logger.error("Error while closing streams ", e);
 	    }
 	    logger.debug("OUT");
 	}
-	
+
 	return archivePath;
     }
 
     /**
      * Compress contents of a folder into an output stream
      * 
-     * @param pathFolder
-     *                The path of the folder to compress
-     * @param out
-     *                The Compress output stream
+     * @param pathFolder  The path of the folder to compress
+     * @param out         The Compress output stream
      * @throws EMFUserError
      */
     private void compressFolder(String pathFolder, ZipOutputStream out) throws EMFUserError {
@@ -247,7 +241,7 @@ public class ExportManager implements IExportManager {
 		}
 	    }
 	} catch (Exception e) {
-	    logger.error("Error while creating archive file " , e);
+	    logger.error("Error while creating archive file ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 	} finally {
 	    try {
@@ -255,7 +249,7 @@ public class ExportManager implements IExportManager {
 		    in.close();
 		}
 	    } catch (Exception e) {
-		logger.error("Error while closing streams " , e);
+		logger.error("Error while closing streams ", e);
 	    }
 	    logger.debug("OUT");
 	}
@@ -280,7 +274,7 @@ public class ExportManager implements IExportManager {
 	    fos.flush();
 	    fos.close();
 	} catch (Exception e) {
-	    logger.error( "Error while exporting properties file " , e);
+	    logger.error("Error while exporting properties file ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 	} finally {
 	    try {
@@ -288,7 +282,7 @@ public class ExportManager implements IExportManager {
 		    fos.close();
 		}
 	    } catch (Exception e) {
-		logger.error("Error while closing streams " , e);
+		logger.error("Error while closing streams ", e);
 	    }
 	    logger.debug("OUT");
 	}
@@ -309,18 +303,17 @@ public class ExportManager implements IExportManager {
 		exporter.insertDomain(dom, session);
 	    }
 	} catch (Exception e) {
-	    logger.error("Error while exporting domains " , e);
+	    logger.error("Error while exporting domains ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-	}finally{
+	} finally {
 	    logger.debug("OUT");
 	}
     }
 
     /**
-     * Export A single SpagoBI BiObject
+     * Export A single SpagoBI BiObject with Template, SubObject and Snapshot
      * 
-     * @param path
-     *                The path of the biobject to export
+     * @param idObj The idObj to export
      * @throws EMFUserError
      */
     private void exportSingleObj(String idObj) throws EMFUserError {
@@ -330,28 +323,27 @@ public class ExportManager implements IExportManager {
 		return;
 	    IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 	    BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
-	    IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
-	    DataSource ds=dsDao.loadDataSourceByID(biobj.getDataSourceId());
+	    
+	    IDataSourceDAO dsDao = DAOFactory.getDataSourceDAO();
+	    DataSource ds = dsDao.loadDataSourceByID(biobj.getDataSourceId());
 	    exporter.insertDataSource(ds, session);
-
-
 
 	    Engine engine = biobj.getEngine();
 	    exporter.insertEngine(engine, session);
 	    exporter.insertBIObject(biobj, session);
-	    
-	    if(exportSubObjects) {
-		ISubObjectDAO subDao=DAOFactory.getSubObjectDAO();
-		List subObjectLis=subDao.getSubObjects(biobj.getId());
-		if (subObjectLis!=null && !subObjectLis.isEmpty())
-		    	exporter.insertSubObject(biobj,subObjectLis, session);
+
+	    if (exportSubObjects) {
+		ISubObjectDAO subDao = DAOFactory.getSubObjectDAO();
+		List subObjectLis = subDao.getSubObjects(biobj.getId());
+		if (subObjectLis != null && !subObjectLis.isEmpty())
+		    exporter.insertSubObject(biobj, subObjectLis, session);
 	    }
-	    if(exportSnapshots) {
-		ISnapshotDAO subDao=DAOFactory.getSnapshotDAO();
-		List snapshotLis=subDao.getSnapshots(biobj.getId());
-		if (snapshotLis!=null && !snapshotLis.isEmpty())
-		    	exporter.insertSnapshot(biobj,snapshotLis, session);
-	    }	    
+	    if (exportSnapshots) {
+		ISnapshotDAO subDao = DAOFactory.getSnapshotDAO();
+		List snapshotLis = subDao.getSnapshots(biobj.getId());
+		if (snapshotLis != null && !snapshotLis.isEmpty())
+		    exporter.insertSnapshot(biobj, snapshotLis, session);
+	    }
 
 	    // insert functionalities and association with object
 	    List functs = biobj.getFunctionalities();
@@ -381,22 +373,19 @@ public class ExportManager implements IExportManager {
 	} catch (EMFUserError emfue) {
 	    throw emfue;
 	} catch (Exception e) {
-	    logger.error("Error while exporting document with id " + idObj + " :" , e);
+	    logger.error("Error while exporting document with id " + idObj + " :", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
-	}finally{
+	} finally {
 	    logger.debug("OUT");
 	}
-	
-    }
 
+    }
 
     /**
      * Exports the BIParameters of a BIObject
      * 
-     * @param biparams
-     *                List ot the BIParameters belonging to the BIObject
-     * @param biobj
-     *                The BIObject to which the parametes belong
+     * @param biparams List ot the BIParameters belonging to the BIObject
+     * @param biobj    The BIObject to which the parametes belong
      * @throws EMFUserError
      */
     private void exportBIParamsBIObj(List biparams, BIObject biobj) throws EMFUserError {
@@ -418,8 +407,7 @@ public class ExportManager implements IExportManager {
     /**
      * Export a list ot Parameter use Objects
      * 
-     * @param paruses
-     *                The list of parameter use objects
+     * @param paruses The list of parameter use objects
      * @throws EMFUserError
      */
     private void exportParUses(List paruses) throws EMFUserError {
@@ -452,28 +440,12 @@ public class ExportManager implements IExportManager {
 	logger.debug("OUT");
     }
 
- 
-
-
-    private void addToList(List dest, List src) {
-	logger.debug("IN");
-	Iterator iterSrc = src.iterator();
-	while (iterSrc.hasNext()) {
-	    Object obj = iterSrc.next();
-	    dest.add(obj);
-	}
-	logger.debug("OUT");
-    }
-
     /**
      * Export an association between a functionality and a list of roles
      * 
-     * @param roles
-     *                The list of roles to associate to the functionality
-     * @param funct
-     *                The functionality which is part of the association
-     * @param state
-     *                The state of the association
+     * @param roles The list of roles to associate to the functionality
+     * @param funct The functionality which is part of the association
+     * @param state The state of the association
      * @throws EMFUserError
      */
     private void exportFunctRoles(List roles, LowFunctionality funct, String state) throws EMFUserError {
@@ -492,8 +464,7 @@ public class ExportManager implements IExportManager {
     /**
      * Export a list of SpagoBI roles
      * 
-     * @param roles
-     *                The list of roles to export
+     * @param roles The list of roles to export
      * @throws EMFUserError
      */
     private void exportRoles(List roles) throws EMFUserError {
@@ -505,8 +476,6 @@ public class ExportManager implements IExportManager {
 	}
 	logger.debug("OUT");
     }
-
-
 
     /**
      * Close hibernate session and session factory relative to the export

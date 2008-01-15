@@ -155,8 +155,7 @@ public class ImportExportModule extends AbstractModule {
 	if ((exportFileName == null) || (exportFileName.trim().equals(""))) {
 	    logger.error("Missing name of the exported file");
 	    throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportFileName", "8006", "component_impexp_messages");
-	    // throw new EMFUserError(EMFErrorSeverity.ERROR, "8006",
-	    // "component_impexp_messages");
+
 	}
 	try {
 	    String exportSubObject = (String) request.getAttribute("exportSubObj");
@@ -573,10 +572,8 @@ public class ImportExportModule extends AbstractModule {
      * Manages the associations between the exported metadata and the one of the
      * portal in use
      * 
-     * @param request
-     *                Spago SourceBean request
-     * @param response
-     *                Spago SourceBean response
+     * @param request  Spago SourceBean request
+     * @param response Spago SourceBean response
      * @throws EMFUserError
      */
     private void associateMetadata(SourceBean request, SourceBean response) throws EMFUserError {
@@ -586,7 +583,6 @@ public class ImportExportModule extends AbstractModule {
 	    RequestContainer requestContainer = this.getRequestContainer();
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	    MetadataAssociations metaAss = impManager.getMetadataAssociation();
 	    impManager.importObjects();
 	    ImportResultInfo iri = impManager.commitAllChanges();
 	    response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);

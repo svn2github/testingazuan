@@ -138,8 +138,7 @@ public class BIObjectValidator {
 	 * @return	a boolean value which says if conditions are verified.
 	 * @throws Exception if an exception occurs.
 	 */
-	public boolean validate(RequestContainer requestContainer,
-			ResponseContainer responseContainer, SourceBean _serviceValidations) throws Exception {
+	public boolean validate(RequestContainer requestContainer, ResponseContainer responseContainer, SourceBean _serviceValidations) throws Exception {
 		if (_serviceValidations == null
 				|| !((String) _serviceValidations.getAttribute("TYPE"))
 						.equalsIgnoreCase(_serviceType)) {

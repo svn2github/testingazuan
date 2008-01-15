@@ -315,7 +315,6 @@ public class MetadataAssociations {
 	 * Inserts a couple of functionalities into the associations 
 	 */
 	public void insertCoupleFunct(SbiFunctions exp, SbiFunctions curr) {
-		//functIDAssociation.put(exp.getFunctId().toString(), curr.getFunctId().toString());
 		functAssociation.put(exp, curr);
 	}
 	

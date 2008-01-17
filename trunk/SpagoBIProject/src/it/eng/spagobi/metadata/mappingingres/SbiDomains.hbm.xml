@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 20-dic-2007 23.02.52 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.metadata.SbiDomains" table="sbi_domains">
+        <id name="valueId" type="integer">
+            <column name="value_id" />
+             <generator class="sequence">
+            	<param name="sequence">sbi_domains_seq</param> 
+            </generator>
+        </id>
+        <property name="domainCd" type="string">
+            <column name="domain_cd" length="20" />
+        </property>
+        <property name="domainNm" type="string">
+            <column name="domain_nm" length="40" />
+        </property>
+        <property name="valueCd" type="string">
+            <column name="value_cd" length="20" />
+        </property>
+        <property name="valueNm" type="string">
+            <column name="value_nm" length="40" />
+        </property>
+        <property name="valueDs" type="string">
+            <column name="value_ds" length="160" />
+        </property>
+
+    </class>
+</hibernate-mapping>

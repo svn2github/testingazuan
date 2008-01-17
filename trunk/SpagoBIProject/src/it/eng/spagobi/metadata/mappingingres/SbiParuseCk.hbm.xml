@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 20-dic-2007 23.02.52 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.metadata.SbiParuseCk" table="sbi_paruse_ck">
+         <composite-id name="id" class="it.eng.spagobi.metadata.SbiParuseCkId">
+            <key-many-to-one name="sbiParuse" class="it.eng.spagobi.metadata.SbiParuse">
+                <column name="use_id" />
+            </key-many-to-one>
+            <key-many-to-one name="sbiChecks" class="it.eng.spagobi.metadata.SbiChecks">
+                <column name="check_id" />
+            </key-many-to-one>
+        </composite-id>
+        <property name="prog" type="integer">
+            <column name="prog" />
+        </property>
+    </class>
+</hibernate-mapping>

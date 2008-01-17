@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+
+<hibernate-configuration>
+    <session-factory name="HibernateSessionFactoryIngres">
+        
+        <property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
+        
+        <!--
+        <property name="hibernate.cglib.use_reflection_optimizer">true</property>
+        <property name="hibernate.connection.driver_class">com.ingres.jdbc.IngresDriver</property>
+        <property name="hibernate.connection.password">andrea</property>
+        <property name="hibernate.connection.url">jdbc:ingres://localhost:II7/spagobi;AUTO=multi</property>
+        <property name="hibernate.connection.username">gioia</property>
+        -->
+        
+        <property name="hibernate.dialect">org.hibernate.dialect.IngresDialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.generate_statistics">true</property>
+        
+        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiDomains.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiSubreports.hbm.xml" />       
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiObjPar.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiLov.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiObjParuse.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiChecks.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiFunctions.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiObjFunc.hbm.xml" />       
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiParuseDet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiEvents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiParuse.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiAudit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiObjState.hbm.xml" />       
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiEventRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiEventsLog.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiParameters.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiViewpoints.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiParuseCk.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiExtRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/SbiFuncRole.hbm.xml" />
+        
+         <!-- map catalogue -->
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingingres/SbiGeoFeatures.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingingres/SbiGeoMaps.hbm.xml" />
+        <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingingres/SbiGeoMapFeatures.hbm.xml" />    
+        
+        <!--
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzJobListeners.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzLocks.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzTriggerListeners.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzBlobTriggers.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzFiredTriggers.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzJobDetails.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzCalendars.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzSimpleTriggers.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzPausedTriggerGrps.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzSchedulerState.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzTriggers.hbm.xml" />
+        <mapping resource="it/eng/spagobi/metadata/mappingingres/QrtzCronTriggers.hbm.xml" />
+        -->
+        
+    </session-factory>
+</hibernate-configuration>

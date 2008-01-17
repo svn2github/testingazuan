@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 20-dic-2007 23.02.52 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.metadata.SbiEventRole" table="sbi_events_roles">
+        <composite-id name="id" class="it.eng.spagobi.metadata.SbiEventRoleId">
+            <key-many-to-one name="role" class="it.eng.spagobi.metadata.SbiExtRoles">
+                <column name="role_id" />
+            </key-many-to-one>
+            <key-many-to-one name="event" class="it.eng.spagobi.metadata.SbiEventsLog">
+                <column name="event_id" />
+            </key-many-to-one>
+        </composite-id>
+    </class>
+</hibernate-mapping>

@@ -20,12 +20,13 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
 
     /**
      * 
-     * @param user
-     * @param session
+     * @param user userId	
+     * @param session Http Session
      */
     public AuditServiceProxy(String user,HttpSession session) {
 	super(user, session);
     }
+    
     private AuditServiceProxy() {
 	super();
     }    
@@ -47,13 +48,13 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param id
-     * @param start
-     * @param end
-     * @param state
-     * @param message
-     * @param errorCode
-     * @return
+     * @param id id
+     * @param start start time
+     * @param end end time
+     * @param state state
+     * @param message message 
+     * @param errorCode error code
+     * @return String
      */
     public String log(String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");

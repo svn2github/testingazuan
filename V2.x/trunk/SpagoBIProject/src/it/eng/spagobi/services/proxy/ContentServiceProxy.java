@@ -23,14 +23,15 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 
     /**
      * use this i engine context only
-     * @param user
-     * @param session
+     * @param user user ID
+     * @param session http session
      */
     public ContentServiceProxy(String user,HttpSession session) {
 	super( user,session);
     }
+    
     private ContentServiceProxy() {
-	super();
+	super ();
     }    
 
     private it.eng.spagobi.services.content.stub.ContentService lookUp() throws SecurityException {
@@ -50,8 +51,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param document
-     * @return
+     * @param document String
+     * @return Content
      */
     public Content readTemplate(String document) {
 	logger.debug("IN");
@@ -67,8 +68,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param attributes
-     * @return
+     * @param attributes HashMap 
+     * @return String
      */
     public String publishTemplate( HashMap attributes) {
 	logger.debug("IN");
@@ -84,11 +85,11 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param operation
-     * @param path
-     * @param featureName
-     * @param mapName
-     * @return
+     * @param operation String
+     * @param path String
+     * @param featureName String
+     * @param mapName String
+     * @return String
      */
     public String mapCatalogue( String operation,String path,String featureName,String mapName){
 	logger.debug("IN");
@@ -104,8 +105,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param nameSubObject
-     * @return
+     * @param nameSubObject String
+     * @return Content
      */
     public Content readSubObjectContent(String nameSubObject){
 	logger.debug("IN");
@@ -121,12 +122,12 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param documentiId
-     * @param analysisName
-     * @param analysisDescription
-     * @param visibilityBoolean
-     * @param content
-     * @return
+     * @param documentiId String
+     * @param analysisName String
+     * @param analysisDescription String
+     * @param visibilityBoolean String
+     * @param content  String
+     * @return  String
      */
     public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
@@ -142,10 +143,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param documentiId
-     * @param templateName
-     * @param content
-     * @return
+     * @param documentiId  String
+     * @param templateName String
+     * @param content String
+     * @return String
      */
     public String saveObjectTemplate(String documentiId,String templateName,String content){
 	logger.debug("IN");
@@ -159,11 +160,13 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
+
     /**
      * 
-     * @param biobjectId
-     * @param fileName
-     * @return
+     * @param biobjectId String
+     * @param fileName String
+     * @return  String
+     * 
      */
     public Content downloadAll(String biobjectId,String fileName){
 	logger.debug("IN");

@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class contain the information about the user
+ */
 public class UserProfile implements IEngUserProfile {
     
         private static String WORKFLOW_USER_NAME = "[SYSTEM - WORKFLOW]";
@@ -20,6 +23,10 @@ public class UserProfile implements IEngUserProfile {
 	private Collection functionalities = null;
 
 
+	/**
+	 * 
+	 * @param profile SpagoBIUserProfile
+	 */
     public UserProfile(SpagoBIUserProfile profile){
 	this.userUniqueIdentifier=profile.getUserId();
 	roles=new ArrayList();
@@ -40,7 +47,10 @@ public class UserProfile implements IEngUserProfile {
 	}	
 	userAttributes=profile.getAttributes();
     }
-    
+    /**
+     * 
+     * @param user String
+     */
     public UserProfile(String user){
 	this.userUniqueIdentifier=user;
     }  
@@ -69,7 +79,12 @@ public class UserProfile implements IEngUserProfile {
 	profile.userAttributes = new HashMap();
 	return profile;
     }    
-    
+
+    /**
+     * 
+     * @param userid String
+     * @return
+     */
     public static boolean isSchedulerUser(String userid){
 	return SCHEDULER_USER_NAME.equals(userid);
     }

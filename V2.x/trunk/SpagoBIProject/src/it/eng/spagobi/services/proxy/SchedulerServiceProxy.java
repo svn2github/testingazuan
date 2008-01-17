@@ -67,7 +67,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * 
      * @param jobName job name
      * @param jobGroup job group
-     * @return
+     * @return String
      */
     public String getJobSchedulationList(String jobName, String jobGroup) {
     	logger.debug("IN");
@@ -83,9 +83,9 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param triggerName
-     * @param triggerGroup
-     * @return
+     * @param triggerName String
+     * @param triggerGroup String
+     * @return String
      */
     public String deleteSchedulation(String triggerName, String triggerGroup) {
     	logger.debug("IN");
@@ -101,9 +101,9 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param jobName
-     * @param jobGroupName
-     * @return
+     * @param jobName String
+     * @param jobGroupName String
+     * @return String
      */
     public String deleteJob(String jobName, String jobGroupName) {
     	logger.debug("IN");
@@ -119,8 +119,8 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param xmlRequest
-     * @return
+     * @param xmlRequest  String
+     * @return String
      */
     public String defineJob(String xmlRequest) {
     	logger.debug("IN");
@@ -136,9 +136,9 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param jobName
-     * @param jobGroup
-     * @return
+     * @param jobName String
+     * @param jobGroup String
+     * @return String
      */
     public String getJobDefinition(String jobName, String jobGroup) {
     	logger.debug("IN");
@@ -154,8 +154,8 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param xmlRequest
-     * @return
+     * @param xmlRequest String
+     * @return String
      */
     public String scheduleJob(String xmlRequest) {
     	logger.debug("IN");
@@ -171,9 +171,9 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param triggerName
-     * @param triggerGroup
-     * @return
+     * @param triggerName String
+     * @param triggerGroup String
+     * @return String
      */
     public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
     	logger.debug("IN");
@@ -189,9 +189,9 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     
     /**
      * 
-     * @param jobName
-     * @param jobGroup
-     * @return
+     * @param jobName String
+     * @param jobGroup String
+     * @return String
      */
     public String existJobDefinition(String jobName, String jobGroup) {
     	logger.debug("IN");

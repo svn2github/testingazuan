@@ -308,7 +308,7 @@ public class CheckListTag extends TagSupport
 	{
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 				
-		Integer masterId = masterId = (Integer) _session.getAttribute("MASTER_ID");
+		Integer masterId =  (Integer) _session.getAttribute("MASTER_ID");
 		SourceBean subreports = (SourceBean) _session.getAttribute("SUBREPORTS");
 		
 		TracerSingleton.log(

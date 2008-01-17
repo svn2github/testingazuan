@@ -16,6 +16,9 @@ import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.common.IProxyService;
 import it.eng.spagobi.services.common.IProxyServiceFactory;
 
+/**
+ * Abstract Class of all Proxy 
+ */
 public abstract class AbstractServiceProxy {
 
     static private Logger logger = Logger.getLogger(AbstractServiceProxy.class);
@@ -25,6 +28,11 @@ public abstract class AbstractServiceProxy {
     protected URL serviceUrl = null;
     protected String userId = null;
 
+    /**
+     * 
+     * @return String Ticket for SSO control
+     * @throws IOException 
+     */
     protected String readTicket() throws IOException {
 	if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
 	    IProxyService proxyService=IProxyServiceFactory.createProxyService();
@@ -34,16 +42,24 @@ public abstract class AbstractServiceProxy {
 
     }
 
+    /**
+     * 
+     * @param user String , user ID
+     * @param session Http Session
+     */
     public AbstractServiceProxy(String user,HttpSession session) {
 	this.session = session;
 	this.userId=user;
 	init();
     }
 
-    public AbstractServiceProxy() {
+    protected AbstractServiceProxy() {
 	init();
     }
 
+    /**
+     * Initilize the configuration
+     */
     protected void init() {
 	String className = this.getClass().getSimpleName();
 	logger.debug("Read className=" + className);

@@ -10,15 +10,28 @@ import org.apache.log4j.Logger;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+/**
+ * Provide the Data Source information
+ */
 public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSourceService {
     static private Logger logger = Logger.getLogger(DataSourceServiceImpl.class);
     private DataSourceSupplier supplier=new DataSourceSupplier();
 
     
 
+    /**
+     * 
+     */
     public DataSourceServiceImpl(){
 	super();
     }
+    /**
+     * 
+     * @param token  String
+     * @param user String
+     * @param documentId String
+     * @return SpagoBiDataSource
+     */
     public SpagoBiDataSource getDataSource(String token,String user, String documentId) {
 	logger.debug("IN");
 	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getDataSource");
@@ -34,6 +47,12 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
 	}	
 
     }
+    /**
+     * 
+     * @param token String
+     * @param user String
+     * @return SpagoBiDataSource[]
+     */
     public SpagoBiDataSource[] getAllDataSource(String token,String user){
 	logger.debug("IN");
 	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getAllDataSource");

@@ -7,6 +7,9 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Abstract class for all Service Implementation
+ */
 public abstract class AbstractServiceImpl {
 
     static private Logger logger = Logger.getLogger(AbstractServiceImpl.class);
@@ -15,6 +18,9 @@ public abstract class AbstractServiceImpl {
     protected String validateService = null;
     protected boolean activeSso = false;
 
+    /**
+     * 
+     */
     public AbstractServiceImpl() {
 	init();
     }
@@ -40,8 +46,8 @@ public abstract class AbstractServiceImpl {
     /**
      * check the ticket used for verify the user authentication
      * 
-     * @param ticket
-     * @return
+     * @param ticket String
+     * @return String
      * @throws SecurityException
      */
     protected void validateTicket(String ticket, String userId) throws SecurityException {

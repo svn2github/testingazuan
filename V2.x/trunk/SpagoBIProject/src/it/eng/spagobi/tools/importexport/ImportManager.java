@@ -910,6 +910,11 @@ public class ImportManager implements IImportManager, Serializable {
 		    existingObj.setSbiObjStates(newObj.getSbiObjStates());
 		    existingObj.setVisible(newObj.getVisible());
 		    sessionCurrDB.update(existingObj);
+		    
+		    // update object template
+		    insertObjectTemplate(existingObj, exopObj.getBiobjId());
+
+		    updateSubObject(existingObj, exopObj.getBiobjId());
 
 		} else {
 		    // insert document
@@ -956,7 +961,92 @@ public class ImportManager implements IImportManager, Serializable {
 	    logger.debug("OUT");
 	}
     }
+    
+    private void updateSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
+	logger.debug("IN");
+	List subObjList = null;
+	try {
+	    Query hibQuery = sessionCurrDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + obj.getBiobjId());
+	    subObjList = hibQuery.list();
+	    if (subObjList.isEmpty()) {
+		logger.warn(" Error during reading of Existing SbiSnapshots");
+	    }
+	    SbiSnapshots existingSbiSnapshots = (SbiSnapshots) subObjList.get(0);
+	    
+	    hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + objIdExp);
+	    subObjList = hibQuery.list();
+	    if (subObjList.isEmpty()) {
+		logger.warn(" SbiSnapshots is not present");
+		return;
+	    }
+	    
+	    SbiSnapshots expSbiSnapshots = (SbiSnapshots) subObjList.get(0);
+	    
+	    existingSbiSnapshots.setCreationDate(expSbiSnapshots.getCreationDate());
+	    existingSbiSnapshots.setDescription(expSbiSnapshots.getDescription());
+	    existingSbiSnapshots.setName(expSbiSnapshots.getName());
+	    //existingSbiSnapshots.setSbiObject(obj);
+	    SbiBinContents existingBinaryContent=existingSbiSnapshots.getSbiBinContents();
+	    sessionCurrDB.delete(existingBinaryContent);
+	    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
+	    existingSbiSnapshots.setSbiBinContents(binary);
+	    sessionCurrDB.update(existingSbiSnapshots);
 
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported template objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
+    }    
+
+    private void updateSubObject(SbiObjects obj, Integer objIdExp) throws EMFUserError {
+	logger.debug("IN");
+	List subObjList = null;
+	try {
+	    // read the existing sub object
+	    Query hibQuery = sessionCurrDB
+	    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + obj.getBiobjId());
+            subObjList = hibQuery.list();
+            if (subObjList.isEmpty()) {
+        	logger.warn(" Existing Sub Object is not present");
+
+            }	
+            SbiSubObjects existingSubObject = (SbiSubObjects) subObjList.get(0);
+            if (existingSubObject==null){
+        	logger.warn("Don't read the Existing SubObject ... ERROR");
+        	return;
+            }
+            // read the import sub object
+	    hibQuery = sessionExpDB
+		    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + objIdExp);
+	    subObjList = hibQuery.list();
+	    if (subObjList.isEmpty()) {
+		logger.warn(" Sub Object is not present");
+		return;
+	    }
+	    SbiSubObjects expSubObject = (SbiSubObjects) subObjList.get(0);
+	    existingSubObject.setCreationDate(expSubObject.getCreationDate());
+	    existingSubObject.setDescription(expSubObject.getDescription());
+	    existingSubObject.setLastChangeDate(expSubObject.getLastChangeDate());
+	    existingSubObject.setIsPublic(expSubObject.getIsPublic());
+	    existingSubObject.setName(expSubObject.getName());
+	    existingSubObject.setOwner(expSubObject.getOwner());
+	    //existingSubObject.setSbiObject(obj);
+	    SbiBinContents existingBinaryContent=existingSubObject.getSbiBinContents();
+	    sessionCurrDB.delete(existingBinaryContent);
+	    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
+	    existingSubObject.setSbiBinContents(binary);
+	    sessionCurrDB.update(existingSubObject);
+
+	} catch (HibernateException he) {
+	    logger.error("Error while getting exported template objects ", he);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+	    logger.debug("OUT");
+	}
+    }
+    
     private void insertSubObject(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
 	List subObjList = null;
@@ -983,6 +1073,7 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+   
     private void insertObjectTemplate(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
 	List templateList = null;
@@ -994,8 +1085,21 @@ public class ImportManager implements IImportManager, Serializable {
 		logger.warn(" Templates is not present");
 		return;
 	    }
+	    
+	    hibQuery = sessionCurrDB.createQuery(" from SbiObjTemplates ot where ot.sbiObject.biobjId = "
+		    + obj.getBiobjId());
+	    List existTemplateList = hibQuery.list();
+	    SbiObjTemplates existingObjTemplate=null;
+	    if (!existTemplateList.isEmpty()) {
+		existingObjTemplate=(SbiObjTemplates)existTemplateList.get(0);
+	    }
+	    
 	    SbiObjTemplates expTemplate = (SbiObjTemplates) templateList.get(0);
 	    SbiObjTemplates newObj = ImportUtilities.makeNewSbiObjTemplates(expTemplate);
+	    if (existingObjTemplate!=null){
+		logger.debug("Update template...Increment prog.");
+		newObj.setProg(new Integer(existingObjTemplate.getProg().intValue()+1));
+	    }
 	    newObj.setSbiObject(obj);
 	    SbiBinContents binary = insertBinaryContent(expTemplate.getSbiBinContents());
 	    newObj.setSbiBinContents(binary);

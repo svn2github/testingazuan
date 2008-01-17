@@ -11,6 +11,9 @@ import it.eng.spago.base.SourceBeanException;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
+/**
+ * Class that read engine-config.xml file
+ */
 public class EnginConf {
 	private SourceBean config = null;
 	
@@ -18,6 +21,10 @@ public class EnginConf {
 
 	private static EnginConf instance = null;
 	
+	/**
+	 * 
+	 * @return EnginConf
+	 */
 	public static EnginConf getInstance(){
 		if(instance==null) instance = new EnginConf();
 		return instance;
@@ -34,7 +41,10 @@ public class EnginConf {
 			logger.error("Impossible to load configuration for report engine", e);
 		}
 	}
-	
+	/**
+	 * 
+	 * @return SourceBean contain the configuration
+	 */
 	public SourceBean getConfig() {
 		return config;
 	}

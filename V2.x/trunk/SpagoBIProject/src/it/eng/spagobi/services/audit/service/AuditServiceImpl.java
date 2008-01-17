@@ -9,10 +9,25 @@ import org.apache.log4j.Logger;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+/**
+ * Implementation of Audit Service
+ */
 public class AuditServiceImpl extends AbstractServiceImpl{
 
     static private Logger logger = Logger.getLogger(AuditServiceImpl.class);
     
+    /**
+     * 
+     * @param token String
+     * @param user String
+     * @param id String
+     * @param start String
+     * @param end String
+     * @param state String
+     * @param message String
+     * @param errorCode String
+     * @return String
+     */
     public String log(String token,String user,String id,String start,String end,String state,String message,String errorCode){
 	logger.debug("IN");
 	Monitor monitor =MonitorFactory.start("spagobi.service.audit.log");

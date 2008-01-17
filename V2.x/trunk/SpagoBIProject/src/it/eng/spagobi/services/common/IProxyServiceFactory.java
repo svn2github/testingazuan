@@ -2,8 +2,18 @@ package it.eng.spagobi.services.common;
 
 import it.eng.spagobi.services.cas.CasProxyService;
 
-public class IProxyServiceFactory {
+/**
+ * Factory Class
+ */
+public abstract class IProxyServiceFactory {
 
+    private IProxyServiceFactory(){
+	
+    }
+    /**
+     * 
+     * @return IProxyService
+     */
     public static final IProxyService createProxyService(){
 	return new CasProxyService();
     }

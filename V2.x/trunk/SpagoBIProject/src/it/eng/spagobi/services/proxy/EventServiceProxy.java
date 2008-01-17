@@ -48,11 +48,11 @@ public final class EventServiceProxy extends AbstractServiceProxy{
     }
     /**
      * 
-     * @param description
-     * @param parameters
-     * @param rolesHandler
-     * @param presentationHandler
-     * @return
+     * @param description String
+     * @param parameters String
+     * @param rolesHandler String
+     * @param presentationHandler String
+     * @return String
      */
     public String fireEvent(String description,String parameters,String rolesHandler,String presentationHandler){
 	logger.debug("IN");

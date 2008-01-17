@@ -1,0 +1,5 @@
+<c:if test="${isStandaloneModality}">
+	<qbe:titlebar datamartName = "${datamartModel.name}"
+			  	  datamartDescription = "${datamartModel.name}"
+			  	  pageName = "${pageName}"/>
+</c:if> 

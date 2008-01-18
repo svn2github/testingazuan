@@ -70,6 +70,9 @@
 				    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
 			    	
 		    	    it/eng/spagobi/services/common/EnginConf.class,
+		    	    it/eng/spagobi/services/common/IProxyService.class,
+		    	    it/eng/spagobi/services/common/IProxyServiceFactory.class,
+		    	    it/eng/spagobi/services/cas/CasProxyService.class,
 				    it/eng/spagobi/commons/bo/UserProfile.class"
 		    />
 		</jar>
@@ -88,6 +91,11 @@
 	    	</fileset>
 	    </copy>	
 	    <copy todir="../SpagoBIJPivotEngine/WebContent/WEB-INF/lib" overwrite="true">
+	    	<fileset dir="./dist">
+	    		<include name="**/*.jar"/>
+	    	</fileset>
+	    </copy>	
+	    <copy todir="../SpagoBIQbeEngine/WebContent/WEB-INF/lib" overwrite="true">
 	    	<fileset dir="./dist">
 	    		<include name="**/*.jar"/>
 	    	</fileset>

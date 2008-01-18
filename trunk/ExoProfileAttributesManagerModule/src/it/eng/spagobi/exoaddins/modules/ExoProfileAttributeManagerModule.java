@@ -90,6 +90,7 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 			userProfile = userProfileHandler.findUserProfileByName(username);
 			exoprofileattrs = userProfile.getUserInfoMap();
 			SourceBean profileAttributesSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("EXO_PORTAL_SECURITY.PROFILE_ATTRIBUTES");
+		
 			if(profileAttributesSB!=null) {
 				List attrs = profileAttributesSB.getAttributeAsList("ATTRIBUTE");
 				if(attrs != null && attrs.size() > 0) {
@@ -104,7 +105,21 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 						nameattr = (String) attrSB.getAttribute("name");
 						if((source!=null) && source.equalsIgnoreCase("exo")) {
 							exoName = (String) attrSB.getAttribute("exoname");
-							String value = (String) request.getAttribute(exoName);
+							String reqKey = (String) request.getAttribute("keys");
+							String value = null;
+							if (reqKey.equalsIgnoreCase(exoName)){
+								value = (String) request.getAttribute("attributes");
+								String valueFormatted =  "{,{"; 
+								String[] arValues = value.split(",");
+								for (int i=0; i < arValues.length; i++){
+									valueFormatted += "'" + arValues[i]+"'";
+									if (i<arValues.length-1)
+										valueFormatted += ",";
+								}
+								valueFormatted += "}}";
+								value = valueFormatted;
+							}
+								//value = (String) request.getAttribute(exoName);
 							if(value!=null) {
 								exoprofileattrs.put(exoName, value);
 							}
@@ -243,7 +258,8 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 		// load into response publisher name
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExoProfileAttributeManagerDetailProfile");
 	}
-	
+
+
 }	
 	
 	

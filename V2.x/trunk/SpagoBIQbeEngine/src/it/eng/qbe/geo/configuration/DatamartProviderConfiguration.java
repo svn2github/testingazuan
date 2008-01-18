@@ -202,7 +202,9 @@ public class DatamartProviderConfiguration {
 			} else {
 				try {
 					MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
+//TODO
+//					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
+					String sdtHierarchy = null;
 					hierarchySB = SourceBean.fromXMLString(sdtHierarchy);
 				} catch (Exception e) {
 					throw new ConfigurationException("Impossible to obtain default hierarchy");

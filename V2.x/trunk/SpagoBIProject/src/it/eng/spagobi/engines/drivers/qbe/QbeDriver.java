@@ -55,14 +55,13 @@ public class QbeDriver implements IEngineDriver {
 			BIObject biobj = (BIObject)biobject;
 			map = getMap(biobj);
 			map.put("query", "#");
-			//map.put("user", profile.getUserUniqueIdentifier());
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 
 		
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
-		
+		map = applyService(map);
 		logger.debug("OUT");
 		return map;
 	}
@@ -89,13 +88,12 @@ public class QbeDriver implements IEngineDriver {
 			map = getMap(biobj);
 			SubObject subObjectDetail = (SubObject) subObject;
 			map.put("query", subObjectDetail.getName());
-			//map.put("user", profile.getUserUniqueIdentifier());
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
-		
+		map = applyService(map);
 		logger.debug("OUT");
 		return map;
 	}
@@ -116,13 +114,7 @@ public class QbeDriver implements IEngineDriver {
 		String documentId=biobj.getId().toString();
 		pars.put("document", documentId);
 		logger.debug("Add document parameter:"+documentId);
-		
-		//pars.put("templatePath",biobj.getPath() + "/template");
-        // pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-        // pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
-        
-        
-        pars = addBIParameters(biobj, pars);
+                pars = addBIParameters(biobj, pars);
         
         logger.debug("OUT");
         return pars;
@@ -199,7 +191,15 @@ public class QbeDriver implements IEngineDriver {
 		logger.debug("OUT");
 		return pars;
 	}
-    
+
+	protected Map applyService(Map pars) {
+		logger.debug("IN");
+		pars.put("ACTION_NAME", "SPAGO_BI_START_ACTION");
+		pars.put("NEW_SESSION", "TRUE");
+		logger.debug("OUT");
+		return pars;
+	}
+	
     private Map applyLocale(Map map) {
     	logger.debug("IN");
     	

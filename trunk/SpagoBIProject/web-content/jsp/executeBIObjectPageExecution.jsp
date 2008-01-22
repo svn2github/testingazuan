@@ -342,7 +342,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        
        
        <!-- *************** start luca changes *************   -->
-       
+       <!--  
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
            <a href='javascript:openSendToForm<%=executionId%>()'>
@@ -362,7 +362,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                     alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
            </a>
          </td>
-       
+       -->
        <!-- *************** end luca changes ***************   -->
 
    </tr>
@@ -439,7 +439,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        <% } %>
        
        <!-- *************** start luca changes *************   -->
-       
+       <!-- 
         <td class='header-empty-column-portlet-section'>&nbsp;</td>
         <td class='header-button-column-portlet-section'>
            <a href='javascript:openSendToForm<%=executionId%>()'>
@@ -459,7 +459,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                     alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
            </a>
          </td>
-       
+        -->
        <!-- *************** end luca changes ***************   -->
        
     </tr>
@@ -621,7 +621,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 	    </tr>
 	</table>	
-	
+	 
 	<br/>
 	
 	<div class="div_form_container" style="margin-right:10px;">
@@ -682,7 +682,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <div id="formSendToDiv<%=executionId%>" style="display:none">
-
+ 
 	<table cellspacing='0' border='0'> 
 		<tr>
 			<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>
@@ -690,7 +690,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 	    </tr>
 	</table>	
-	
+
    <br/> 
 
 	<div class="div_form_container" style="margin-right:10px;">

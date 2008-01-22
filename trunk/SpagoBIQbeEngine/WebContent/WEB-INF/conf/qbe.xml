@@ -39,25 +39,30 @@
 		<PARAMETERS>
 		
 			<PARAMETER name="bandWidth" value="530"/>
-			<PARAMETER name="columnHeaderHeight" value="40"/>
+			<PARAMETER name="columnHeaderHeight" value="30"/>		
 			
 			<PARAMETER name="pixelPerChar" value="9"/>
 			<PARAMETER name="pixelPerRow" value="16"/>	
 			
 			<PARAMETER name="maxLinesPerRow" value="4"/>				
 			
-			<PARAMETER name="columnHeaderFont" value="Helvetica-Bold"/>
-			<PARAMETER name="columnHeaderFontSize" value="12"/>
-   		    <PARAMETER name="columnHeaderFontBold" value="true"/>			
-			<PARAMETER name="columnHeaderFontItalic" value="false"/>						
-			<PARAMETER name="columnHeaderForegroundColor" value="#074B88"/>
-			<PARAMETER name="columnHeaderBackgroundColor" value="#E4ECF2"/>
+			<!--<PARAMETER name="columnHeaderFont" value="Helvetica-Bold"/>-->
+			<PARAMETER name="columnHeaderFont" value="Times-Roman"/>
+			<PARAMETER name="columnHeaderFontSize" value="10"/>			
+			<PARAMETER name="columnHeaderFontBold" value="false"/>			
+			<PARAMETER name="columnHeaderFontItalic" value="false"/>			
 			
+			<!--<PARAMETER name="columnHeaderForegroundColor" value="#074B88"/>-->
+			<PARAMETER name="columnHeaderForegroundColor" value="#000000"/>
+			<!--<PARAMETER name="columnHeaderBackgroundColor" value="#E4ECF2"/> -->
+			<PARAMETER name="columnHeaderBackgroundColor" value="#FFFFFF"/>
+			 
 			<PARAMETER name="rowFont" value="Times-Roman"/>
 			<PARAMETER name="rowFontSize" value="10"/>
 			
 			<PARAMETER name="evenRowsForegroundColor" value="#000000"/>
-			<PARAMETER name="evenRowsBackgroundColor" value="#EEEEEE"/>
+			<!--<PARAMETER name="evenRowsBackgroundColor" value="#EEEEEE"/>-->
+			<PARAMETER name="evenRowsBackgroundColor" value="#FFFFFF"/>
 			
 			<PARAMETER name="oddRowsForegroundColor" value="#000000"/>
 			<PARAMETER name="oddRowsBackgroundColor" value="#FFFFFF"/>

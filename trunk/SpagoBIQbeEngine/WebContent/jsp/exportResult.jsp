@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
+<%@ page import="it.eng.qbe.datasource.*"%>
+
 <%@ page import="java.util.*"%>
 
 
@@ -44,7 +46,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel) sessionContainer
 					.getAttribute("dataMartModel");
 
-	String jarFilePath = dm.getJarFile().toString();
+	String jarFilePath = ((HibernateDataSource)dm.getDataSource()).getJarFile().toString(); //dm.getJarFile().toString();
+	
+  	
 	//dm.updateCurrentClassLoader();
 	aWizardObject.composeQuery(dm);
 	String msg  = null;
@@ -87,10 +91,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	
+  String datamartNamesStr = "";
+   List datamartNames = dm.getDataSource().getDatamartNames();
+   for(int i = 0; i < datamartNames.size(); i++) datamartNamesStr += (i==0?"":",") + (String)datamartNames.get(i);
 
-  	
-  	
-  	
 %>
 
 
@@ -135,10 +139,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   				<input type="hidden" id="inline" name="inline" value="false"/>
  				<input type="hidden" id="lang" name="lang" value="<%=queryLang%>"/>
  				<input type="hidden" id="action" name="action" value="buildTemplate"/>
-  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getJndiDataSourceName()%>"/>
-  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDialect()%>"/>
+  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getDataSource().getJndiDataSourceName()%>"/>
+  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDataSource().getDialect()%>"/>
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
+  				<input type="hidden" id="datamartNamesStr" name="datamartNamesStr" value="<%=datamartNamesStr%>"/>
 				<% if(aWizardObject.getQueryId() != null) {%>
   					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQueryId()%>"/>
   				<% } %>
@@ -175,10 +180,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<input type="hidden" id="query" name="query" value="<%=finalQueryString%>"/>
   				<input type="hidden" id="inline" name="inline" value="true"/>
  				<input type="hidden" id="lang" name="lang" value="<%=queryLang%>"/>
-  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getJndiDataSourceName()%>"/>
-  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDialect()%>"/>
+  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getDataSource().getJndiDataSourceName()%>"/>
+  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDataSource().getDialect()%>"/>
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
+  					<input type="hidden" id="datamartNamesStr" name="datamartNamesStr" value="<%=datamartNamesStr%>"/>
 				<% if(aWizardObject.getQueryId() != null) {%>
   					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQueryId()%>"/>
   				<% } %>
@@ -238,3 +244,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 </div>
+
+
+
+

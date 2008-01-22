@@ -81,10 +81,12 @@ public class PortletLoginModule extends AbstractModule {
 		profExchanger.insertProfile((String)userProfile.getUserUniqueIdentifier(), userProfile);
 		
 		/* ********* start luca changes *************** */
+		/*
 		String username = (String)userProfile.getUserUniqueIdentifier();
 		if(!UserUtilities.userFunctionalityRootExists(username)) {
 			UserUtilities.createUserFunctionalityRoot(userProfile);
 		}
+		*/
 		/* ********* end luca changes ***************** */
 		
 	}

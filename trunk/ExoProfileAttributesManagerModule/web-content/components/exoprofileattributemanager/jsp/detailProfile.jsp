@@ -76,9 +76,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-	var listAttributes;
-	var generalValueAttr;
-	var formChanged;
+	var listAttributes;			//the list of all values visualized
+	var selectedValue; 			//the value selected from user
+	var generalValueAttr;		//the all valus
+	var formChanged;			//flag that indicates if a value is changed into the form
 	
 
 
@@ -108,6 +109,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		generalValueAttr = outputVal;
 		drawListValues(outputVal);
 		formChanged  = 'false';
+		selectedValue = "";
 		return;
 	}
 	
@@ -143,11 +145,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					
 					//field number 2
 					if (alternate) {
-							rowClass = "portlet-section-alternate";
+							rowClass = "portlet-section-body";
 							alternate = false;
 					}
 					else {
-							rowClass = "portlet-section-body";
+							rowClass = "portlet-section-alternate";
 							alternate = true;
 					}
 					tdElement = document.createElement("<td style='width:70%' class='" + rowClass + "'>");
@@ -255,6 +257,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//copy the seleted value into textbox for modify
 	function setValueForModify(valueAttr){
 		document.forms.detailAttributesForm.valueDetail.value = valueAttr;
+		selectedValue = valueAttr;
+		return;
 	}
 	
 	//deletes a row from attribute's table
@@ -275,6 +279,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		drawListValues(generalValueAttr);
 		formChanged='true';
+		selectedValue = "";
 		return;
 	}
 	
@@ -286,21 +291,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			alert(msg);
 			return;
 		}
-		var tmpValue = document.forms.detailAttributesForm.valueDetail.value;
-		
-		if (generalValueAttr != "")
-	    	generalValueAttr = generalValueAttr + "," + tmpValue;
-	    else 
-	    	generalValueAttr = tmpValue;
+		var newValue = document.forms.detailAttributesForm.valueDetail.value;
+		//if selectedValue is imposted, it means that the user want to modify a value and not adding it...
+		var tmpVal = generalValueAttr;
+		if (selectedValue != null && selectedValue != ""){
+			tmpVal = tmpVal.replace(selectedValue, newValue);
+			generalValueAttr = tmpVal;
+		}
+		else {		
+			if (generalValueAttr != "")
+		    	generalValueAttr = generalValueAttr + "," + newValue;
+		    else 
+		    	generalValueAttr = newValue;
+		}
 	   
 	    drawListValues(generalValueAttr);
 	    formChanged='true';
+	    selectedValue = "";
 		return;
 	}
 	
 	function saveAttributes(){
 		document.forms.attributesForm.keys.value =  document.forms.detailAttributesForm.keyDetail.value;
 		document.forms.attributesForm.attributes.value =  generalValueAttr;
+		selectedValue = "";
 		
 		if (document.forms.detailAttributesForm.keyDetail.value ==  null ||
 			document.forms.detailAttributesForm.keyDetail.value == "" || generalValueAttr == null) {
@@ -326,6 +340,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 		}
 		
+		return;
+	} 
+	
+	function clearValue(){
+		document.forms.detailAttributesForm.valueDetail.value = "";
+		selectedValue = "";
+		formChanged = 'false';
 		return;
 	} 
 </script>
@@ -360,10 +381,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 		</tr>
 	</table>
-	<div style="float:left;width:50%;" class="div_detail_area_forms">
+	<div style="float:left;width:50%;" class="div_detail_area_sub_forms">
 		<!--  <div class='div_background_no_img' style='padding:5px;'>-->
 	     
-		    <table style="margin:5px;">
+		    <table>
 		    	<tr>
 		    		<td class='portlet-section-header'><spagobi:message key = "profileattr.username" /></td>
 		    		<td class='portlet-section-header'><spagobi:message key = "profileattr.firstname" /></td>
@@ -381,7 +402,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	     
 	    	<br/>
     
-			<div class="div_detail_area_forms" style="padding:10px;">    
+			<div class="div_detail_area_sub_forms" style="width:90%;padding:10px;">    
 		    <%
 		    	if(attributes.isEmpty()) {
 		    %>
@@ -395,23 +416,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		</tr>
 		    	</table>
 		    <%  } else { %>
-	    
+		    <table>
+  		    <tr>
+  				  	<td>
+  				  	 <span class='portlet-form-field-label'>
+  		    				<spagobi:message key = "selectKey"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />
+  		    			</span>
+  				  	</td>
+  				</tr>
+  				<tr><td>&nbsp;</td></tr>
+		    </table>
+
 			  <table>
-			  	<tr>
-				  	<td>
-				  	<span class='portlet-form-field-label'>
-		    				<spagobi:message key = "selectKey"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />
-		    				</span>
-				  	</td>
-				  	<tr><td>&nbsp;</td></tr>
-				<tr>
 			  	<%
 			  		while(iterAttr.hasNext()) {
 			  			String key = (String)iterAttr.next();
 			  			String value = (String)attributes.get(key);
 			   	%>
 					<tr>
-			   			<td width="250">
+			   			<td width="25%">
 			   				<span class='portlet-form-field-label'>
 								<%=key%>
 							</span>
@@ -420,7 +443,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   				<input class='portlet-form-input-field' type="text" name="<%=attributeKeys.get(key)%>" 
 					      	       size="40" value="<%=value%>" onClick='fillAttribute("<%=key %>", "<%=value.replace("'", "&#39;") %>")' readonly="readonly">
 			   			</td>  
-			   		</tr>
+			   		</tr> 
 			    <%  } %>
 			  </table>  
 	
@@ -434,46 +457,49 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <form method='POST' action='' id='detailAttributesForm' name='detailAttributesForm'>
 	<div style="float:right;width:45%;" class="div_detail_area_forms" >
 		
-		<div class="div_detail_area_forms_lov" >   
-			<table width="100%" >			 
+		<div class="div_detail_area_sub_forms"  style="width:90%">   
+			<table>			 
 				<tr>
-					<td style="width:10%">						
+					<td >						
 						<span class='portlet-form-field-label'>
 							<spagobi:message key = "detailAttribute.key"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />
 						</span>&nbsp;
 					</td>		
-					<td style="width:70%">		
-						<input class='portlet-form-input-field' type="text"	name="keyDetail" id="keyDetail" value="" size="50" readonly="readonly"/>						
+					<td width="70%">		
+						<input class='portlet-form-input-field' type="text"	name="keyDetail" id="keyDetail" value=""  size="40"  readonly="readonly"/>						
 					</td>
-					<td style="width:10%">
+					<td >
 						<span class='portlet-form-field-label'>&nbsp;</span>
 					</td>
-					<td style="width:10%">						
+					<td >						
 						<span class='portlet-form-field-label'>&nbsp;</span>
 					</td>	
 				</tr>
 				<tr>
-					<td style="width:10%"">						
+					<td >						
 						<span class='portlet-form-field-label'>
 							<spagobi:message key = "detailAttribute.value"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />
 						</span>&nbsp;
 					</td>
-					<td style="width:70%">	
-							<input class='portlet-form-input-field' type="text" name="valueDetail" id="valueDetail" value="" size="75"  onClick="javascript:checkChanges();"/>
+					<td width="70%">	
+							<input class='portlet-form-input-field' type="text" name="valueDetail" id="valueDetail" value=""  size="40"  onClick="javascript:checkChanges();"/>
 					</td>
-					<td style="width:10%" class="portlet-form-field-label">&nbsp;
+					<td class="portlet-form-field-label" style='width:5%' >&nbsp;
+						<a href="javascript:clearValue()"> 
+			      			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/exoprofileattributemanager/img/editclear.png")%>' 
+			      				 alt='<spagobi:message key = "detailClear"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />' /> 
+						</a>
+					</td>
+					<td class="portlet-form-field-label" style='width:5%' >&nbsp;
 						<a href="javascript:addValue()"> 
 			      			<img src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/components/exoprofileattributemanager/img/edit_add.png")%>' 
 			      				 alt='<spagobi:message key = "detailAdd"  bundle="it.eng.spagobi.exoaddins.component_exoprofman_messages" />' /> 
 						</a>
 					</td>
-					<td style="width:10%">						
-						<span class='portlet-form-field-label'>&nbsp;</span>
-					</td>	
 				</tr>
 				<tr><td>&nbsp;</td></tr>
 			</table>
-			<table width="100%" id="tableAllValues">			 
+			<table id="tableAllValues">			 
 			</table>
 		 </div> 
 	</div>

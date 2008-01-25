@@ -24,6 +24,8 @@ package it.eng.spagobi.commons.presentation;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
@@ -47,6 +49,7 @@ public class DynamicPublisher implements PublisherDispatcherIFace {
 	public String getPublisherName(RequestContainer request,
 			ResponseContainer response) {
 		
+		EMFErrorHandler errorHandler = response.getErrorHandler();
 		// get the module response
 		SourceBean moduleResponse = (SourceBean)response.getServiceResponse().getAttribute("ListLookupParametersModule");
 			
@@ -55,6 +58,12 @@ public class DynamicPublisher implements PublisherDispatcherIFace {
 		SpagoBITracer.debug("", "DynamicPublisher","service",
 				" PUBLISHER_NAME = "  + publisherName);
 		
+		// if there are errors and they are only validation errors return the name for the detail publisher
+		if(publisherName.equalsIgnoreCase("ReturnListPublisher") && !errorHandler.isOK()) {
+				response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+				return "error";
+		}
+	
 		if (publisherName != null) {
 			return publisherName;
 		} else {

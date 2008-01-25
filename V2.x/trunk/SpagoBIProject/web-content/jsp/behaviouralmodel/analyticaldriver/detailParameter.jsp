@@ -434,6 +434,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		<% 	
 	  		Map lovLookupURLPars = new HashMap();
   			lovLookupURLPars.put("PAGE", "lovLookupPage");
+  			lovLookupURLPars.put("ORIGIN", "lovLookupPage");
 	  		String lovLookupURL = urlBuilder.getUrl(request, formUrlPars);
   		%>
   		&nbsp;*&nbsp;

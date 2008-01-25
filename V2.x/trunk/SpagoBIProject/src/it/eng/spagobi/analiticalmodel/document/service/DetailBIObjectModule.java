@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
@@ -133,6 +134,10 @@ public class DetailBIObjectModule extends AbstractModule {
 				String returnState = (String)session.getAttribute("RETURN_STATUS");
 				if(returnState.equalsIgnoreCase("SELECT"))
 					lookupReturnHandler(request, response);	
+				else if (returnState.equalsIgnoreCase("DELETE")){
+						logger.debug("Return to list from DELETE parameter");
+						return;
+				}
 				else
 					lookupReturnBackHandler(request,response);
 				session.delAttribute("RETURN_STATUS");
@@ -221,6 +226,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObject", obj);
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
+		session.setAttribute("origin", "paramLookup");
 		session.setAttribute("modalityBkp", message);
 	}
 	
@@ -229,6 +235,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
+		session.delAttribute("originIns");
 	}
 	
 	private Integer getBIObjectIdFromLoopbackContext() {
@@ -302,6 +309,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
+		session.delAttribute("originIns");
 		helper.fillResponse(initialPath);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		

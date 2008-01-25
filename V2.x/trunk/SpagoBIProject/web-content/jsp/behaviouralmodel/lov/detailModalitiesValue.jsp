@@ -47,7 +47,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE); 
-	Iterator iterAttrs = null;
 	
 	Map formUrlPars = new HashMap();
 	formUrlPars.put("PAGE", "detailModalitiesValuePage");

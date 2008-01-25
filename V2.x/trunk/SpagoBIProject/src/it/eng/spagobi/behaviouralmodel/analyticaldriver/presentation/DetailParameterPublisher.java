@@ -21,16 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.behaviouralmodel.analyticaldriver.presentation;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 /**
  * Publishes the results of a detail request for a parameter into the correct 
  * jsp page according to what contained into request. If Any errors occurred during the 
@@ -39,10 +40,9 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 
  * 
- * @author sulis
  */
 public class DetailParameterPublisher implements PublisherDispatcherIFace {
-	 
+	static private Logger logger = Logger.getLogger(DetailParameterPublisher.class);
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -54,7 +54,7 @@ public class DetailParameterPublisher implements PublisherDispatcherIFace {
 	 */
 
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
-
+		SessionContainer session = requestContainer.getSessionContainer();
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
 		// get the module response
@@ -62,10 +62,7 @@ public class DetailParameterPublisher implements PublisherDispatcherIFace {
 		
 		// if the module response is null throws an error and return the name of the errors publisher
 		if(moduleResponse==null) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-		            "DetailDomainPublisher", 
-		            "getPublisherName", 
-		            "Module response null");
+			logger.error("Module response null");
 			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
 			errorHandler.addError(error);
 			return "error";
@@ -85,16 +82,41 @@ public class DetailParameterPublisher implements PublisherDispatcherIFace {
 			return new String("error");
 		}
 
+		//getting publisher name dependently from navigation (ie. document - insert parameter - back) 
         Object loop = moduleResponse.getAttribute("loopback");
         Object lookupLoop = moduleResponse.getAttribute("lookupLoopback");
-        if (loop != null) {
-        	return "detailParameterLoop";
-		} else if (lookupLoop != null){
-			return "lovLookupLoop";
-		} else {
-			return "detailParameter";
+        String paramLoopIns = (String)moduleResponse.getAttribute("originIns");
+        if(paramLoopIns == null)
+        	paramLoopIns = (String)session.getAttribute("originIns");
+        else
+        	if (!paramLoopIns.equalsIgnoreCase("")) session.setAttribute("originIns", paramLoopIns);
+        
+        	
+        Object paramLoop = session.getAttribute("ORIGIN_PARAM");
+        if (moduleResponse.getAttribute("modality")!= null && ((String)moduleResponse.getAttribute("modality")).equalsIgnoreCase("DETAIL_INS"))
+        	paramLoop = "";
+        String publisherValue = "";
+        
+        if (lookupLoop != null){
+			publisherValue = "lovLookupLoop";
+		} else if ((paramLoop != null && ((String)paramLoop).equalsIgnoreCase("paramLookup")) &&
+					(paramLoopIns == null || (paramLoopIns).equalsIgnoreCase(""))){
+			publisherValue = "paramLookupLoop1";
+			session.delAttribute("ORIGIN_PARAM");
+		} else if (loop != null && paramLoopIns != null) {
+        	publisherValue = "detailParameterLoop";
+        	session.delAttribute("ORIGIN_LOV");
+		} else if (loop != null) {
+        	publisherValue = "detailParameterLoop";
+		}
+		else{
+			publisherValue = "detailParameter";
 		}
         
+        
+        logger.debug("redirect to publisher: " + publisherValue);
+        
+        return publisherValue;
 	}
 
 }

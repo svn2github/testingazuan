@@ -212,6 +212,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 		}
 		
 		response.setAttribute("testExecuted", "true");
+	
 		return list;
 	}
 

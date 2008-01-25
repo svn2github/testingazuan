@@ -105,7 +105,7 @@ public class DetailParameterModule extends AbstractModule {
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 				modDetailParameter(request, AdmintoolsConstants.DETAIL_MOD, response);
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_NEW)) {
-				newDetailParameter(response);
+				newDetailParameter(request, response);
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 				modDetailParameter(request, AdmintoolsConstants.DETAIL_INS, response);
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_DEL)) {
@@ -747,7 +747,7 @@ public class DetailParameterModule extends AbstractModule {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
-	private void newDetailParameter(SourceBean response) throws EMFUserError {
+	private void newDetailParameter(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
 			this.modalita = AdmintoolsConstants.DETAIL_INS;
 			response.setAttribute("modality", modalita);
@@ -760,6 +760,7 @@ public class DetailParameterModule extends AbstractModule {
 				parameter.setTypeId(domain.getValueId());
 			}
 			response.setAttribute("parametersObj", parameter);
+			response.setAttribute("originIns", (request.getAttribute("ORIGIN_INS")==null)?"":(String)request.getAttribute("ORIGIN_INS"));
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","newDetailParameter","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -965,6 +966,8 @@ public class DetailParameterModule extends AbstractModule {
 	private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
 		session.delAttribute("initial_Parameter");
 		session.delAttribute("initial_ParameterUse");
+		if (session.getAttribute("ORIGIN_LOV") == null || ((String)session.getAttribute("ORIGIN_LOV")).equals(""))
+			session.delAttribute("originIns");
 		response.setAttribute("loopback", "true");
 	}
 	

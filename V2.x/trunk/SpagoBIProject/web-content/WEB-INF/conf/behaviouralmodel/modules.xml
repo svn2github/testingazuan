@@ -277,7 +277,6 @@
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.predLovList.title">
       <QUERIES>
         	<SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE">
-        		<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="id"/>
         		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
         		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
         	</SELECT_QUERY>

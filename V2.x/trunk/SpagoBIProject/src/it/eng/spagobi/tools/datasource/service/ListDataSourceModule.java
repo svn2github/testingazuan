@@ -28,8 +28,6 @@ import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 
 /**
  * Loads the datasource list
- * 
- * @author giachino
  */
 public class ListDataSourceModule extends AbstractBasicListModule {
 	

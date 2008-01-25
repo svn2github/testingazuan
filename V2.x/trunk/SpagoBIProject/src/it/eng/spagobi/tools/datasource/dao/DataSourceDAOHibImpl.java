@@ -30,7 +30,6 @@ package it.eng.spagobi.tools.datasource.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -50,8 +49,6 @@ import org.hibernate.criterion.Expression;
 /**
  * Defines the Hibernate implementations for all DAO methods,
  * for a data source.
- * 
- * @author giachino
  */
 public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataSourceDAO{
 	static private Logger logger = Logger.getLogger(DataSourceDAOHibImpl.class);

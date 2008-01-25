@@ -36,8 +36,6 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
  * is able to call the error page with the error message caught before and put into 
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 
- * 
- * @author giachino
  */
 public class ListDataSourcePublisher implements PublisherDispatcherIFace {
 	static private Logger logger = Logger.getLogger(ListDataSourcePublisher.class);

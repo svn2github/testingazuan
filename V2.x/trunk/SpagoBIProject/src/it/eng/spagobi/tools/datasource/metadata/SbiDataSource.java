@@ -3,7 +3,6 @@ package it.eng.spagobi.tools.datasource.metadata;
 
 // Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,12 +40,23 @@ public class SbiDataSource implements java.io.Serializable {
 	public SbiDataSource() {
 	}
 
-	/** minimal constructor */
+	/** minimal constructor 
+	 * @param dsId Identifier of data source
+	 * */
 	public SbiDataSource(int dsId) {
 		this.dsId = dsId;
 	}
 
-	/** full constructor */
+	/** full constructor 
+	 * @param dsId Identifier of data source
+	 * @param descr description of data source
+	 * @param label label of data source
+	 * @param jndi jndi value
+	 * @param url_connection url connection value
+	 * @param user user of data source
+	 * @param pwd password of data source
+	 * @param driver driver of data source
+	 * */
 	public SbiDataSource(int dsId, String descr, String label, String jndi, String url_connection, String user, String pwd, String driver,  Set sbiObjectses, Set sbiEngineses) {
 		this.dsId = dsId;		
 		this.descr = descr;

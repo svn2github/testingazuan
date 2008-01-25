@@ -22,15 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.datasource.bo;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 
 
 /**
  * Defines an <code>DataSource</code> object
- * 
- * @author giachino
  *
  */
 

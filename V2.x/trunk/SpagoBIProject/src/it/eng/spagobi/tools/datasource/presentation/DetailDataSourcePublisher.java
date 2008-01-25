@@ -30,10 +30,8 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
+
 
 /**
  * Publishes the results of a detail request for a datasource into the correct 
@@ -43,7 +41,6 @@ import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
  * the error handler. If the input information don't fall into any of the cases declared,
  * another error is generated. 
  * 
- * @author giachino
  */
 public class DetailDataSourcePublisher implements PublisherDispatcherIFace {
 	static private Logger logger = Logger.getLogger(DetailDataSourcePublisher.class);

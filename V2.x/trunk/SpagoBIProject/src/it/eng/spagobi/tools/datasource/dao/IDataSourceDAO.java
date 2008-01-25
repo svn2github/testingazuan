@@ -34,8 +34,6 @@ import java.util.List;
 
 /**
  * Defines the interfaces for all methods needed to insert, modify and deleting an engine.
- * 
- * @author Giachino
  */
 public interface IDataSourceDAO {
 	
@@ -75,7 +73,7 @@ public interface IDataSourceDAO {
 	 * Implements the query to modify a data source. All information needed is stored 
 	 * into the input <code>datasource</code> object.
 	 * 
-	 * @param aDatasource The object containing all modify information
+	 * @param aDataSource The object containing all modify information
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
@@ -85,7 +83,7 @@ public interface IDataSourceDAO {
 	 * Implements the query to insert a data source. All information needed is stored 
 	 * into the input <code>datasource</code> object.
 	 * 
-	 * @param aEngine The object containing all insert information
+	 * @param aDataSource The object containing all insert information
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertDataSource(DataSource aDataSource) throws EMFUserError;

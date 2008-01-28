@@ -19,31 +19,25 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.model;
+package it.eng.qbe.query;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.query.IQuery;
+import it.eng.qbe.wizard.EntityClass;
 
 import java.io.Serializable;
-import java.util.Properties;
+import java.util.ArrayList;
 
+public interface ISelectField extends IField {	
+		
+	String getFieldNameWithoutOperators();
 
-/**
- * @author Andrea Gioia
- *
- */
-public interface IDataMartModel extends Serializable {
-	public IStatement createStatement();
-	public IStatement createStatement(IQuery query);
+	String getFieldAlias();	
+	void setFieldAlias(String aFieldAlias);
 	
-	public DataMartModelStructure getDataMartModelStructure();
-	public IHibernateDataSource getDataSource();
+	void setFieldEntityClass(EntityClass ec);
+	EntityClass getFieldEntityClass();
+
+	void setFieldCompleteName(String fieldCompleteName);	
+	String getFieldCompleteName();
 	
-	public DataMartModelAccessModality getDataMartModelAccessModality();
-	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	
-	
-	public Properties getDataMartProperties();
-	public void setDataMartProperties(Properties dataMartProperties);
+	ISelectField getCopy();
 }

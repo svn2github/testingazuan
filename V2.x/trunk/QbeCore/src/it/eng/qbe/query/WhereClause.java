@@ -19,20 +19,15 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
 
 import it.eng.qbe.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class WhereClauseSourceBeanImpl implements IWhereClause {
+
+public class WhereClause implements IWhereClause {
 
 	
 	
@@ -42,12 +37,12 @@ public class WhereClauseSourceBeanImpl implements IWhereClause {
 	
 	
 	
-	public WhereClauseSourceBeanImpl(){
+	public WhereClause(){
 		this.whereFields = new ArrayList();
 	}
 
 	public IWhereClause getCopy() {
-		IWhereClause whereClause = new WhereClauseSourceBeanImpl();
+		IWhereClause whereClause = new WhereClause();
 		
 		for(int i = 0; i < whereFields.size(); i++) {
 			IWhereField whereField = (IWhereField)whereFields.get(i);
@@ -70,13 +65,13 @@ public class WhereClauseSourceBeanImpl implements IWhereClause {
 		this.whereFields.add(whereField);	
 	}
 	
-	public void delWhereField(IWhereField whereField) {
+	public void delWhereField(String fieldId) {
 		int positionOfElement = -1;
 		
 		IWhereField tmp = null;
 		for (int i=0; i < this.whereFields.size(); i++){
 			tmp = (IWhereField)this.whereFields.get(i);
-			if (tmp.getId().equalsIgnoreCase(whereField.getId())){
+			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
 			}
@@ -87,20 +82,20 @@ public class WhereClauseSourceBeanImpl implements IWhereClause {
 	}
 	
 	
-	public void moveUp(IWhereField whereField) {
+	public void moveUp(String fieldId) {
 		int positionOfElement = -1;
 		
 		IWhereField tmp = null;
 		for (int i=0; i < this.whereFields.size(); i++){
 			tmp = (IWhereField)this.whereFields.get(i);
-			if (tmp.getId().equalsIgnoreCase(whereField.getId())){
+			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
 			}
 		}
 		
 		if (positionOfElement == 0){
-			Logger.debug(WhereClauseSourceBeanImpl.class,"Cannot Move Up Position is 0");
+			Logger.debug(WhereClause.class,"Cannot Move Up Position is 0");
 		}else{
 			int newPosition = positionOfElement - 1;
 			
@@ -110,21 +105,21 @@ public class WhereClauseSourceBeanImpl implements IWhereClause {
 		
 	}
 
-	public void moveDown(IWhereField whereField) {
+	public void moveDown(String fieldId) {
 		
 			int positionOfElement = -1;
 			
 			IWhereField tmp = null;
 			for (int i=0; i < this.whereFields.size(); i++){
 				tmp = (IWhereField)this.whereFields.get(i);
-				if (tmp.getId().equalsIgnoreCase(whereField.getId())){
+				if (tmp.getId().equalsIgnoreCase(fieldId)){
 					positionOfElement = i;
 					break;
 				}
 			}
 			
 			if (positionOfElement == this.whereFields.size() -1){
-				Logger.debug(WhereClauseSourceBeanImpl.class,"Cannot Move Element is at last position "+ (this.whereFields.size() - 1));
+				Logger.debug(WhereClause.class,"Cannot Move Element is at last position "+ (this.whereFields.size() - 1));
 			}else{
 				int newPosition = positionOfElement + 1;
 				

@@ -19,25 +19,19 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
+
+import it.eng.qbe.wizard.EntityClass;
 
 
-/**
- * @author Zoppello
- */
-public class WhereFieldSourceBeanImpl 
-		implements IWhereField {
-
-	private String id = null;
-
-	private String fieldName = null;
+public class WhereField extends Field implements IWhereField {
+	
+	
 	
 	private String fieldOperator = null;
 	
 	private String fieldValue = null;
-	
-	private String hibernateType = null;
-	
+		
 	private String nextBooleanOperator = null;
 	
 	private EntityClass fieldEntityClassForRightCondition = null;
@@ -47,20 +41,24 @@ public class WhereFieldSourceBeanImpl
 	private int rightBracketsNum;	
 	private int leftBracketsNum;	
 
-	public WhereFieldSourceBeanImpl(){
-		
-		this.id = "where_"+ String.valueOf(System.currentTimeMillis());
 	
+	
+	private static String createNewId() {
+		return "where_"+ String.valueOf(System.currentTimeMillis());
+	}
+	
+	public WhereField(){	
+		super( createNewId() );	
 	}
 	
 	public IWhereField getCopy() {
-		IWhereField whereField = new WhereFieldSourceBeanImpl();
+		IWhereField whereField = new WhereField();
 		
-		whereField.setId(id);
-		whereField.setFieldName(fieldName);
+		whereField.setId(getId());
+		whereField.setFieldName(getFieldName());
 		whereField.setFieldOperator(fieldOperator);
 		whereField.setFieldValue(fieldValue);
-		whereField.setHibernateType(hibernateType);
+		whereField.setType(getType());
 		whereField.setNextBooleanOperator(nextBooleanOperator);
 		if(fieldEntityClassForRightCondition != null) whereField.setFieldEntityClassForRightCondition(fieldEntityClassForRightCondition.getCopy());
 		if(fieldEntityClassForLeftCondition != null) whereField.setFieldEntityClassForLeftCondition(fieldEntityClassForLeftCondition.getCopy());
@@ -72,13 +70,7 @@ public class WhereFieldSourceBeanImpl
 	
 	
 	
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
+	
 
 	public String getFieldOperator() {
 		return fieldOperator;
@@ -94,23 +86,7 @@ public class WhereFieldSourceBeanImpl
 
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
-	}
-
-	public String getHibernateType() {
-		return hibernateType;
-	}
-
-	public void setHibernateType(String hibernateType) {
-		this.hibernateType = hibernateType;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
+	}	
 
 	public String getNextBooleanOperator() {
 		return nextBooleanOperator;

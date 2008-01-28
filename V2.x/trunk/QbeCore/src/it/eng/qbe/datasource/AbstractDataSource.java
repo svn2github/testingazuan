@@ -35,8 +35,8 @@ import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.locale.LocaleUtils;
 import it.eng.qbe.model.BasicStatement;
-import it.eng.qbe.model.IQuery;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.query.IQuery;
 
 /**
  * @author Andrea Gioia

@@ -24,6 +24,7 @@ package it.eng.qbe.utility;
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import it.eng.qbe.log.Logger;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 
@@ -109,7 +110,7 @@ public class CalculatedField {
 		
 	}
 	
-	public void calculateMappings(SingleDataMartWizardObjectSourceBeanImpl aWizardObject){
+	public void calculateMappings(IQuery query){
 		String[] mappingArray = mappings.split(",");
 	
 		String prefix = null;
@@ -126,12 +127,12 @@ public class CalculatedField {
 			
 			mappingMap.put(groovyInputId,fieldId);
 			if (classNameInQuery.equalsIgnoreCase(entityName)){
-				mappingPositions.put(fieldId, Utils.findPositionOf(aWizardObject, classNameInQuery + "." + fieldId));
+				mappingPositions.put(fieldId, query.findPositionOf( classNameInQuery + "." + fieldId ));
 			}else{
 				if (prefix != null){
 					completeRequiredFieldId = prefix + "." + completeRequiredFieldId;
 				}
-				mappingPositions.put(fieldId, Utils.findPositionOf(aWizardObject, classNameInQuery + "." + completeRequiredFieldId));
+				mappingPositions.put(fieldId, query.findPositionOf( classNameInQuery + "." + completeRequiredFieldId));
 			}
 		}
 	}

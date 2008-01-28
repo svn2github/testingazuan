@@ -64,8 +64,6 @@ public class LocaleUtils {
 		
 		}else if (qbeMode.equalsIgnoreCase("PORTLET")) {
 		
-			//PortletRequest portletRequest = (PortletRequest)requestConatiner.getAttribute("PORTLET_REQUEST");
-			//Locale portalLocale = (Locale)portletRequest.getPortletSession().getAttribute("LOCALE");
 			PortletRequest portletRequest = PortletAccess.getPortletRequest();
 			Locale portalLocale = (Locale)PortletAccess.getPortalLocale();
 			retLocale =  portalLocale;

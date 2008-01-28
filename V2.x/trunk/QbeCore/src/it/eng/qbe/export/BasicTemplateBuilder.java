@@ -565,9 +565,8 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 			SingleDataMartWizardObjectSourceBeanImpl aWizardObject = (SingleDataMartWizardObjectSourceBeanImpl)deserializeQueryObject(savedQueryObjectID);
 			this.calculatedFields = new ArrayList();
 			
-			List queryManuallyCalculatedFields = aWizardObject.getSelectClause().getCalcuatedFields();
 			CalculatedField cField = null;
-			for (Iterator it = queryManuallyCalculatedFields.iterator(); it.hasNext();){
+			for (Iterator it = aWizardObject.getQuery().getCalculatedFieldsIterator(); it.hasNext();){
 				cField = (CalculatedField)it.next();
 				if (cField.getInExport().equalsIgnoreCase("true"))
 					this.calculatedFields.add(cField);

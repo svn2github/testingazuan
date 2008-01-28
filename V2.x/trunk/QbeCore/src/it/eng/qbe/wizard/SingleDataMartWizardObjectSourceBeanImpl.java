@@ -27,8 +27,8 @@ import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.IQuery;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
@@ -48,52 +48,41 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject, IQuery {
+public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject {
 
 	
 	private int subQueryCounter = 0;
-	private ISelectClause selectClause = null;
-	private IWhereClause  whereClause = null;
-	private IOrderByClause orderByClause = null;
-	private IGroupByClause groupByClause = null;
-	
+
 	private String finalQuery = null;
-	private List entityClasses = null;
+	//private List entityClasses = null;
 	
 	private String expertQueryDisplayed = null;
 	private String expertQuerySaved = null;
 	
 	private String owner = null;
 	private boolean visibility;
-	private boolean distinct;
 	
 	private boolean useExpertedVersion = false;
 	
-	private String queryId = null;
+	//private String queryId = null;
 	private String description = null;
 	
 	public static final int DEFAULT_MAX_ROWS_NUM = 5000;
 	
-	private Map subqueryMap = null;
-	private Map mapFieldIdSubQUeryId = null;
-	private ISingleDataMartWizardObject selectedSubquery = null;
-	private String subqueryErrMsg = "";
+	//private Map subqueryMap = null;
+	//private Map mapFieldIdSubQUeryId = null;
+	//private ISingleDataMartWizardObject selectedSubquery = null;
+	//private String subqueryErrMsg = "";
 	
 	
-	private it.eng.qbe.model.Query query = null;
+	private it.eng.qbe.query.Query query = null;
 	
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
-		this.entityClasses = new ArrayList();
-		this.subqueryMap = new HashMap();
-		this.mapFieldIdSubQUeryId = new HashMap();
-		query = new it.eng.qbe.model.Query();
+		//this.entityClasses = new ArrayList();
+		//this.subqueryMap = new HashMap();
+		//this.mapFieldIdSubQUeryId = new HashMap();
+		query = new it.eng.qbe.query.Query();
 	
 	}
 	
@@ -101,23 +90,25 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		SingleDataMartWizardObjectSourceBeanImpl wizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
 		
 		// copy all the query relaed informations
-		wizardObject.setSubQueryCounter(subQueryCounter);
-		if(selectClause != null) wizardObject.setSelectClause(selectClause.getCopy());
-		if(whereClause != null) wizardObject.setWhereClause(whereClause.getCopy());
-		if(orderByClause != null) wizardObject.setOrderByClause(orderByClause.getCopy());
-		if(groupByClause != null) wizardObject.setGroupByClause(groupByClause.getCopy());
+		query.setSubQueryCounter(subQueryCounter);
+		//if(selectClause != null) wizardObject.setSelectClause(selectClause.getCopy());
+		//if(whereClause != null) wizardObject.setWhereClause(whereClause.getCopy());
+		//if(orderByClause != null) wizardObject.setOrderByClause(orderByClause.getCopy());
+		//if(groupByClause != null) wizardObject.setGroupByClause(groupByClause.getCopy());
 		wizardObject.setFinalQuery(finalQuery);
 		List list = new ArrayList();
+		/*
 		for(int i = 0; i < entityClasses.size(); i++) {
 			EntityClass entityClass = (EntityClass)entityClasses.get(i);
 			list.add(entityClass.getCopy());
 		}
-		wizardObject.setEntityClasses(list);
+		*/
+		//wizardObject.setEntityClasses(list);
 		wizardObject.setOwner(owner);
 		wizardObject.setVisibility(visibility);
-		wizardObject.setDistinct(distinct);
+		//wizardObject.setDistinct(distinct);
 		wizardObject.setUseExpertedVersion(useExpertedVersion);
-		wizardObject.setQueryId(queryId);
+		//.setQueryId(queryId);
 		wizardObject.setDescription(description);
 				
 		return wizardObject;
@@ -160,11 +151,10 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public void composeQuery(IDataMartModel dataMartModel){
 		finalQuery = null;
-		IStatement statement = dataMartModel.createStatement(this);
+		IStatement statement = dataMartModel.createStatement(query);
 		statement.setParameters(dataMartModel.getDataMartProperties());
-		finalQuery = statement.getQueryString();
-	
-	}//public void composeQuery(){
+		finalQuery = statement.getQueryString();	
+	}
 
 
 
@@ -182,10 +172,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
-
+/*
 	public void setEntityClasses(List entityClasses) {
 		this.entityClasses = entityClasses;
 	}
+	*/
 	
 	
 
@@ -241,14 +232,6 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
-
-	public void setDistinct(boolean distinct) {
-		this.distinct = distinct;
-	}
-	
-	public boolean getDistinct() {
-		return distinct;
-	}
 
 
 
@@ -345,9 +328,10 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
+	
 	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		
-		IStatement statement = dataMartModel.createStatement(this);
+		IStatement statement = dataMartModel.createStatement(query);
 		
 		String maxRowsForSQLExecution = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
 		int maxResults = DEFAULT_MAX_ROWS_NUM;
@@ -357,9 +341,8 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		statement.setMaxResults(maxResults);
 		statement.setParameters(dataMartModel.getDataMartProperties());
 		return statement.executeWithPagination(pageNumber, pageSize);
-		
-		//return executeHqlQuery(dataMartModel, getFinalQuery(), pageNumber, pageSize);
 	}
+	
 	
 	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		return executeSqlQuery(dataMartModel, getExpertQueryDisplayed(), pageNumber, pageSize);
@@ -446,6 +429,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		}
 	}
 	
+	/*
 	private SourceBean executeHqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		Session aSession = null;
 		try{		
@@ -459,27 +443,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 				maxSQLResults = Integer.valueOf(maxRowsForSQLExecution).intValue();
 			}
 				
-		//Query aQuery = aSession.createQuery(getFinalQuery());
 		Query aQuery = aSession.createQuery(query);
 		
 		String queryStr = aQuery.getQueryString();		
-		/*
-		queryStr = queryStr.substring(queryStr.indexOf("from"));
-		queryStr = "select count(*) " + queryStr;
-		Query countQuery = aSession.createQuery(queryStr);
-		List countList = countQuery.list();
-		Integer count = (Integer)countList.get(0);
-		*/
+		
 		Query countQuery = aSession.createQuery(queryStr);
 		aQuery.setMaxResults(maxSQLResults);
 		List countList = countQuery.list();
 		
 		int rowsNumber = countList.size();
-		//int pagesNumber = (rowsNumber / pageSize) + ( ((rowsNumber % pageSize) != 0 )? 1: 0 );
-		
-		
-		
-		
+	
 		int firstRow = pageNumber * pageSize;
 		
 		aQuery.setFirstResult(firstRow < 0 ? 0 : firstRow);
@@ -520,14 +493,17 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			aSession.close();
 		}
 	}
+	*/
 	
 	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		if(isUseExpertedVersion()) return executeExpertQuery(dataMartModel, pageNumber, pageSize);
 		return executeQbeQuery(dataMartModel, pageNumber, pageSize);			
 	}
 
-
 	
+	
+	
+	/*
 	
 	public boolean isSelectedSubqueryValid() {
 		ISingleDataMartWizardObject subquery = getSelectedSubquery();
@@ -538,16 +514,18 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		ISingleDataMartWizardObject subquery = getSubQueryOnField(fieldId);
 		return isSubqueryValid(subquery);
 	}
+	*/
 	
+	/*
 	public boolean isSubqueryValid(ISingleDataMartWizardObject subquery) {
 		
 		boolean missingCondition = false;
 		boolean invalidReference = false;
-		subquery.setSubqueryErrMsg(null);
-		subquery.setSubqueryErrMsg(null);
+		subquery.getQuery().setSubqueryErrMsg(null);
+		subquery.getQuery().setSubqueryErrMsg(null);
 		
 		if(subquery !=  null) {
-			IWhereClause whereClause = subquery.getWhereClause();
+			IWhereClause whereClause = subquery.getQuery().getWhereClause();
 			if(whereClause != null) {
 				List fields = whereClause.getWhereFields();
 				for(int i = 0; i < fields.size(); i++) {
@@ -559,10 +537,10 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 						missingCondition = true;
 					}  
 					
-					this.getEntityClasses();
+					this.query.getEntityClasses();
 					EntityClass ec = whereField.getFieldEntityClassForRightCondition();
-					if(ec != null && !this.containEntityClass(ec)) {
-						subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined");
+					if(ec != null && !query.containEntityClass(ec)) {
+						subquery.getQuery().setSubqueryErrMsg("Subquery contains at least one where condition not properly defined");
 						invalidReference = true;
 					}
 					
@@ -573,16 +551,18 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 		// resolve all invalid references first; missing right values next
 		if(invalidReference) {
-			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: invalid reference to a parent entity)");
+			subquery.getQuery().setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: invalid reference to a parent entity)");
 		}
 		else if(missingCondition) {
-			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: missing right end value)");
+			subquery.getQuery().setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: missing right end value)");
 		}
 		
 		
 		return (!invalidReference && !missingCondition);		
 	}
+	*/
 	
+	/*
 	public void selectSubquery(String fieldId) {
 		ISingleDataMartWizardObject subquery = getSubQueryOnField(fieldId);
 		if(subquery !=  null) {
@@ -594,17 +574,12 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 			mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
 		}
 	}
-	
+	*/
 	
 	
 	
 
 	
-
-
-	
-
-
 
 
 	
@@ -615,14 +590,20 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 
 
+
+
+	
+
+/*
 	public ISingleDataMartWizardObject getSelectedSubquery() {
-		return selectedSubquery;
+		return query.getSelectedSubquery();
 	}
 
 
 	public void setSelectedSubquery(ISingleDataMartWizardObject selectedSubquery) {
-		this.selectedSubquery = selectedSubquery;
+		query.setSelectedSubquery(selectedSubquery);
 	}
+	*/
 
 	
 	
@@ -637,7 +618,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// DEPRECATED
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	
+	/*
 	public String getSubqueryErrMsg() {
 		return query.getSubqueryErrMsg();
 	}
@@ -649,15 +630,20 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public boolean isEmpty(){
 		return query.isEmpty();
 	}
-	
+	*/
+	/*
 	public ISelectClause getSelectClause() {
 		return query.getSelectClause();
 	}
+	*/
 	
+	/*
 	public IWhereClause getWhereClause() {
 		return query.getWhereClause();
 	}
+	*/
 	
+	/*
 	public IOrderByClause getOrderByClause() {
 		return query.getOrderByClause();
 	}
@@ -675,9 +661,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public void setGroupByClause(IGroupByClause groupByClause) {
 		query.setGroupByClause(groupByClause)	;	
 	}
-
+	*/
 	
-	
+	/*
 	public void setWhereClause(IWhereClause whereClause) {
 		query.setWhereClause(whereClause);
 		
@@ -688,6 +674,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		query.setSelectClause(aSelectClause);
 	}
 	
+	
 	public void delSelectClause() {
 		query.delSelectClause();
 	}
@@ -695,7 +682,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public void delWhereClause() {
 		query.delWhereClause();
 	}
+	*/
 	
+	/*
 	public void delOrderByClause() {
 		query.delOrderByClause();
 	}
@@ -703,7 +692,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public void delGroupByClause() {
 		query.delGroupByClause();
 	}
+	*/
 
+	/*
 	public String getQueryId() {
 		return query.getQueryId();
 	}
@@ -766,7 +757,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public void setSubqueryMap(Map subqueryMap) {
 		query.setSubqueryMap(subqueryMap);
 	}
+	*/
 	
+	/*
 	public void addEntityClass(EntityClass ec) {
 		query.addEntityClass(ec);
 	}
@@ -774,30 +767,37 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public List getEntityClasses() {
 		return query.getEntityClasses();
 	}
+	*/
 	
+	/*
 	public boolean containEntityClass(EntityClass parameEc) {
 		
 		return query.containEntityClass(parameEc);
 							
 	}
+	*/
 	
 	
-
+	/*
 	public void purgeNotReferredEntityClasses() {
 		query.purgeNotReferredEntityClasses();
 	}
+	*/
 	
+	/*
 	public void purgeNotReferredEntityClasses(String prefix) {
 		query.purgeNotReferredEntityClasses(prefix);
 	}
+	*/
 	
-	/**
-	 * @deprecated
-	 */
+	/*
 	public void addSubQueryOnField(String fieldId) {
 		query.addSubQueryOnField(fieldId);
 	}
+	*/
 	
+	
+	/*
 	public String[] getDuplicatedAliases() {
 		return query.getDuplicatedAliases();
 	}
@@ -813,7 +813,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	public String getNewSubQueryId(){
 		return query.getNewSubQueryId();
 	}	
+	*/
 	
+	/*
 	public void addSelectField(String className, 
 			   String classAlias, 
 			   String fieldAlias, 
@@ -825,4 +827,5 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		query.addSelectField(className, classAlias, fieldAlias, fieldLabel, selectFieldCompleteName, 
 				fldHibType, fldHibPrec, fldHibScale);
 	}
+	*/
 }

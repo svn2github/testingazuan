@@ -19,30 +19,45 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
 
-import java.io.Serializable;
-import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public interface IWhereClause extends  Serializable {
+public class OrderByField  extends Field implements IOrderByField {
 
-	public List getWhereFields();
+	boolean ascendingOrder = true;
+
+	private static long idcounter = 0;
+	private static String createNewId() {
+		return "orderby" + String.valueOf(idcounter++);
+	}
 	
-	public void setWhereFields(List aList);
+	public OrderByField(){		
+		super( createNewId() );	
+	}
+		
+	public boolean isAscendingOrder() {
+		return ascendingOrder;
+	}
+
+	public void setAscendingOrder(boolean ascendingOrder) {
+		this.ascendingOrder = ascendingOrder;
+	}
 	
-	public void addWhereField(IWhereField whereField);
-	
-	public void delWhereField(IWhereField whereField);
-	
-	public void moveUp(IWhereField whereField);
-	
-	public void moveDown(IWhereField whereField);
-	
-	public IWhereClause getCopy();
+	public IOrderByField getCopy() {
+		OrderByField orderByField = new OrderByField();
+		
+		orderByField.setId(getId());
+		orderByField.setFieldName(getFieldName());
+		orderByField.setAscendingOrder(isAscendingOrder());
+		
+		return orderByField;
+	}	
 }
+
+
+	
+
+	
+	
+	
+

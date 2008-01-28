@@ -19,46 +19,41 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
+
+import it.eng.qbe.wizard.EntityClass;
 
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class SelectFieldSourceBeanImpl implements ISelectField{
+public class SelectField extends Field implements ISelectField {
 
-	
-	private String id = null;
-	private String fieldName = null;
 	private String fieldAlias = null;
 	private String originalFieldName = null;
 	private EntityClass entityClass = null;
 	private String fieldCompleteName = null;
-	private String hibType = null;
-	private String scale = null;
-	private String precision = null;
+
+	private static long idcounter = 0;
+	private static String createNewId() {
+		return "select_" + String.valueOf(idcounter++);
+	}
 	
-	public SelectFieldSourceBeanImpl(){
-		this.id = createNewId();
+	public SelectField(){
+		super( createNewId() );
 	}
 	public String getFieldAlias() {
 		return fieldAlias;
 	}
 	
 	public ISelectField getCopy() {
-		ISelectField selectField = new SelectFieldSourceBeanImpl();
+		ISelectField selectField = new SelectField();
 		
-		selectField.setId(id);
-		selectField.setFieldName(fieldName);	
+		selectField.setId(getId());
+		selectField.setFieldName(getFieldName());	
 		selectField.setFieldAlias(fieldAlias);
 		selectField.setFieldCompleteName(fieldCompleteName);
 		if(entityClass != null) selectField.setFieldEntityClass(entityClass.getCopy());	
-		selectField.setHibType(hibType);
-		selectField.setScale(scale);
-		selectField.setPrecision(precision);		
+		selectField.setType(getType());
+		selectField.setScale(getScale());
+		selectField.setPrecision(getPrecision());		
 		
 		return selectField;
 	}
@@ -66,12 +61,11 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	public void setFieldAlias(String fieldAlias) {
 		this.fieldAlias = fieldAlias;
 	}
-	public String getFieldName() {
-		return fieldName;
-	}
+
+
 	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-		if (this.originalFieldName == null)
+		super.setFieldName(fieldName);
+		if (getOriginalFieldName() == null)
 			setOriginalFieldName(fieldName);
 	}
 	public String getOriginalFieldName() {
@@ -80,13 +74,8 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 	public void setOriginalFieldName(String originalFieldName) {
 		this.originalFieldName = originalFieldName;
 	}
-	public String getId() {
-		return this.id;
-	}
-	public void setId(String id) {
-		this.id = id;
-		
-	}
+	
+	
 	public String getFieldNameWithoutOperators() {
 		return originalFieldName;
 	}
@@ -99,38 +88,15 @@ public class SelectFieldSourceBeanImpl implements ISelectField{
 		return this.entityClass;
 	}
 	
-	// TODO generate unique id in a safer mode (i.e. without overflow risk)
-	private static long idcounter = 0;
-	private static String createNewId() {
-		return "select_" + String.valueOf(idcounter++);
-	}
+	
+	
 	public String getFieldCompleteName() {
 		return fieldCompleteName;
 	}
 	public void setFieldCompleteName(String fieldCompleteName) {
 		this.fieldCompleteName = fieldCompleteName;
 	}
-	public String getHibType() {
-		return hibType;
-	}
-	public String getPrecision() {
-		return precision;
-	}
-	public String getScale() {
-		return scale;
-	}
-	public void setHibType(String type) {
-		this.hibType = type;
-		
-	}
-	public void setPrecision(String precision) {
-		this.precision = precision;
-		
-	}
-	public void setScale(String scale) {
-		this.scale = scale;
-		
-	}
+	
 	
 
 	

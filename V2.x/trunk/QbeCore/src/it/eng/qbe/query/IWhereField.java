@@ -19,31 +19,35 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.model;
+package it.eng.qbe.query;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.query.IQuery;
+import it.eng.qbe.wizard.EntityClass;
 
 import java.io.Serializable;
-import java.util.Properties;
 
 
-/**
- * @author Andrea Gioia
- *
- */
-public interface IDataMartModel extends Serializable {
-	public IStatement createStatement();
-	public IStatement createStatement(IQuery query);
+public interface IWhereField extends IField{
+
+	String getFieldOperator();
+	void setFieldOperator(String fieldOperator);
 	
-	public DataMartModelStructure getDataMartModelStructure();
-	public IHibernateDataSource getDataSource();
+	String getFieldValue();	
+	void setFieldValue(String fieldValue);
 	
-	public DataMartModelAccessModality getDataMartModelAccessModality();
-	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	
+	String getNextBooleanOperator();	
+	void setNextBooleanOperator(String nextBooleanOperator);
 	
-	public Properties getDataMartProperties();
-	public void setDataMartProperties(Properties dataMartProperties);
+	void setFieldEntityClassForRightCondition(EntityClass ec);
+	EntityClass getFieldEntityClassForRightCondition();
+	
+	void setFieldEntityClassForLeftCondition(EntityClass ec);	
+	EntityClass getFieldEntityClassForLeftCondition();	
+	
+	int getLeftBracketsNum() ;
+	void setLeftBracketsNum(int leftBracketsNum);
+	
+	int getRightBracketsNum();
+	void setRightBracketsNum(int rightBracketsNum);
+	
+	IWhereField getCopy();
 }

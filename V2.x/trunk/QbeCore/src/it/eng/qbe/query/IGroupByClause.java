@@ -19,26 +19,26 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
+
 
 import java.io.Serializable;
+import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public interface IOrderGroupByField extends  Serializable{
-	
-	public IOrderGroupByField getCopy();
-	
-	public String getId();
-	
-	public void setId(String id);
-	
-	public String getFieldName();
 
-	public void setFieldName(String fieldName);
+public interface IGroupByClause extends Serializable {
 	
+	List getGroupByFields();
+	
+	void setGroupByFields(List aList);
+	
+	void addGroupByField(IGroupByField groupByField);
+	
+	void deleteGroupByField(String fieldId);
+
+	void moveUp(String fieldId);
+	
+	void moveDown(String fieldId);
+	
+	IGroupByClause getCopy();
 }

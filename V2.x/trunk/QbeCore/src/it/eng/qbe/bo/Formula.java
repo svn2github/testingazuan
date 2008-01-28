@@ -73,14 +73,13 @@ public class Formula {
 		return calculatedField;
 	}
 	
-	public List getCalculatedFields(List entityClasse) {
+	public List getCalculatedFields(Iterator entityClasseIterator) {
 		List calculateFields = new ArrayList();
-		Iterator it = entityClasse.iterator();
 		EntityClass ec = null;
 		String ecName = null;
 		CalculatedField cfield = null;
-		while(it.hasNext()){
-			ec =(EntityClass) it.next();
+		while(entityClasseIterator.hasNext()){
+			ec =(EntityClass) entityClasseIterator.next();
 			ecName = ec.getClassName(); 
 			CalculatedField cf = getCalculatedField(ecName);
 			if(cf != null) calculateFields.add(cf);

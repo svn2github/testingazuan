@@ -19,42 +19,25 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
-
-import it.eng.qbe.utility.CalculatedField;
+package it.eng.qbe.query;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public interface ISelectClause extends  Serializable {
-	
-	public List getSelectFields(); 
-	
-	public List getCalcuatedFields();
-	
-	public void setSelectFields(List aList);
 
-	public void addSelectField(ISelectField selectField);
+public interface IOrderByClause extends  Serializable {	
 	
-	public void delSelectField(ISelectField selectField);
+	public List getOrderByFields();
 	
-	public void moveUp(ISelectField selectField);
+	public void setOrderByFields(List aList);
 	
-	public void moveDown(ISelectField selectField);
+	public void addOrderByField(IOrderByField aOrderGroupByField);
 	
-	public void addCalculatedField(CalculatedField calculatedField);
+	public void deleteOrderByField(String fieldId);
+
+	public void moveUp(String fieldId);
 	
+	public void moveDown(String fieldId);
 	
-	
-	public void deleteCalculatedField(String calculatedField);
-	
-	public ISelectClause getCopy();
-	
-	
+	public IOrderByClause getCopy();
 }

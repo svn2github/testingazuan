@@ -27,10 +27,10 @@ import it.eng.qbe.locale.LocaleUtils;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IQuery;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.qbe.model.io.IQueryPersister;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.utility.JarUtils;
 import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.ApplicationContainer;
@@ -160,8 +160,6 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		if (!classLoaderExtended){
 			updateCurrentClassLoader(jarFile);
 		}	
-		
-		configuration.addJar(jarFile);
 		
 		try {
 			configuration.addJar(jarFile);

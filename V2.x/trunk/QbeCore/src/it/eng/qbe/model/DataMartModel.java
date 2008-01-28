@@ -39,9 +39,10 @@ import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
 import it.eng.qbe.model.views.ViewBuilder;
+import it.eng.qbe.query.IQuery;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.spago.base.ApplicationContainer;
@@ -137,7 +138,7 @@ public class DataMartModel implements IDataMartModel {
 	 */
 	public void addView(String name, ISingleDataMartWizardObject dmWizard) throws Exception {	
 		
-		if ((dmWizard.getSelectClause() != null) && (dmWizard.getSelectClause().getSelectFields().size() > 0)){
+		if ( !dmWizard.getQuery().isEmpty() ){
 			
 			
 			String sqlQuery = dmWizard.getFinalSqlQuery(this);
@@ -192,13 +193,15 @@ public class DataMartModel implements IDataMartModel {
 					List columnNames = new ArrayList();
 					List columnHibernateTypes = new ArrayList();
 					
-					List queryFileds = dmWizard.getSelectClause().getSelectFields();
+					Iterator queryFileds = dmWizard.getQuery().getSelectFieldsIterator();
+					
 					Vector columns = sqlFieldsReader.readFields();
-					for(int i = 0; i < queryFileds.size(); i++) {
-						ISelectField filed = (ISelectField)queryFileds.get(i);
-						Field column = (Field)columns.get(i);
+					int i = 0;
+					while(queryFileds.hasNext()) {
+						ISelectField filed = (ISelectField)queryFileds.next();
+						Field column = (Field)columns.get(i++);
 						
-						columnHibernateTypes.add(filed.getHibType());
+						columnHibernateTypes.add(filed.getType());
 						columnNames.add(column.getName());					
 					}
 					

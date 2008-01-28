@@ -25,17 +25,19 @@ import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.query.IGroupByClause;
+import it.eng.qbe.query.IGroupByField;
+import it.eng.qbe.query.IOrderByClause;
+import it.eng.qbe.query.IOrderByField;
+import it.eng.qbe.query.IQuery;
+import it.eng.qbe.query.ISelectClause;
+import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.IWhereClause;
+import it.eng.qbe.query.IWhereField;
+import it.eng.qbe.query.OrderByField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.IGroupByClause;
-import it.eng.qbe.wizard.IOrderByClause;
-import it.eng.qbe.wizard.IOrderGroupByField;
-import it.eng.qbe.wizard.ISelectClause;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.IWhereClause;
-import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.OrderByFieldSourceBeanImpl;
 import it.eng.spago.base.SourceBean;
 
 import java.io.IOException;
@@ -49,10 +51,6 @@ import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-/**
- * @author Andrea Gioia
- *
- */
 public class HQLStatement extends BasicStatement {
 	
 	protected HQLStatement(IDataMartModel dataMartModel) {
@@ -78,10 +76,8 @@ public class HQLStatement extends BasicStatement {
 		buffer.append("select ");		
 		if (query.getDistinct()) buffer.append("distinct ");
 				
-		selectClause = query.getSelectClause();
-		selectClauses = selectClause.getSelectFields();		 		
 		
-		it = selectClauses.iterator();	
+		it = query.getSelectFieldsIterator();	
 		afterFirst = false;
 		while (it.hasNext()) {
 			selectField =(ISelectField)it.next();
@@ -105,20 +101,18 @@ public class HQLStatement extends BasicStatement {
 		StringBuffer buffer = new StringBuffer();
 		boolean afterFirst;
 		
-		List entityClasses = query.getEntityClasses();		
 		afterFirst = false;
 		EntityClass ec = null;
-		if (entityClasses != null){
-			buffer.append(" from ");
+		buffer.append(" from ");
 			
-			for (Iterator it = entityClasses.iterator(); it.hasNext();){
+		for (Iterator it = query.getEntityClassesItertor(); it.hasNext();){
 				ec =(EntityClass)it.next();
 		 		if (afterFirst)
 		 			buffer.append(", ");
 		 		buffer.append(ec.getClassName() + " as " + ec.getClassAlias() + " ");
 		 		afterFirst = true;
-			}
 		}
+		
 		
 		return buffer.toString();
 	}
@@ -127,18 +121,16 @@ public class HQLStatement extends BasicStatement {
 		StringBuffer buffer = new StringBuffer();
 		boolean afterFirst;
 		
-		IWhereClause aWhereClause = query.getWhereClause();  
+		
 		afterFirst = false;
-		if (aWhereClause != null){
-		 	buffer.append("where \n");
-		 	java.util.List l= aWhereClause.getWhereFields();
-		 	Iterator it = l.iterator();
+		buffer.append("where \n");
+		Iterator it = query.getWhereFieldsIterator();
 		 	
 		 	
-		 	IWhereField aWhereField = null;
-		 	String newFieldValue = null;
-		 	String fieldName = null;
-		 	while (it.hasNext()){
+		IWhereField aWhereField = null;
+		String newFieldValue = null;
+		String fieldName = null;
+		while (it.hasNext()) {
 		 		aWhereField =(IWhereField)it.next();
 		 		fieldName = aWhereField.getFieldName();
 		 		
@@ -172,14 +164,14 @@ public class HQLStatement extends BasicStatement {
 		 			
 		 			idx1 += "$subquery_".length();
 		 			String subQueryFldId = fValue.substring(idx1, idx2);
-		 			ISingleDataMartWizardObject subQueryObject = query.getSubQueryOnField(subQueryFldId);
+		 			IQuery subQueryObject = query.getSubQueryOnField(subQueryFldId);
 		 			
-		 			subQueryObject.composeQuery(dataMartModel);
+		 			IStatement statement = dataMartModel.createStatement(subQueryObject);
 		 			buffer.append(" ( ");
-		 			buffer.append(subQueryObject.getFinalQuery());
+		 			buffer.append(statement.getQueryString());
 		 			buffer.append(" ) ");
 		 		}else{
-		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getHibernateType().endsWith("StringType")))
+		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getType().endsWith("StringType")))
 		 				buffer.append("'"+ fValue + "'");
 		 			else
 		 				buffer.append( fValue );
@@ -190,14 +182,25 @@ public class HQLStatement extends BasicStatement {
 		 		if (it.hasNext())
 		 			buffer.append(" "+aWhereField.getNextBooleanOperator()+" ");
 		 		afterFirst = true;
-		 	}
 		 }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		/////////////////////////////////////////////////////////////////////////
 		DataMartModelStructure dataMartModelStructure = dataMartModel.getDataMartModelStructure();
 		DataMartModelAccessModality dataMartModelAccessModality = dataMartModel.getDataMartModelAccessModality();
-		List entityClasses = query.getEntityClasses();		
-		Iterator it = entityClasses.iterator();
+		
+		it = query.getEntityClassesItertor();
 		while(it.hasNext()){
 			EntityClass entityClass = (EntityClass)it.next();
 			String entityName = entityClass.getClassName();
@@ -211,7 +214,7 @@ public class HQLStatement extends BasicStatement {
 				Properties props = new Properties();
 				Iterator fieldIterator = fields.iterator();
 				while(fieldIterator.hasNext()) {
-					String fieldName = (String)fieldIterator.next();
+					fieldName = (String)fieldIterator.next();
 					props.put(fieldName, entityClass.getClassAlias() + "." + fieldName);
 				}
 				String filterCondition = null;
@@ -242,7 +245,7 @@ public class HQLStatement extends BasicStatement {
 					Properties props = new Properties();
 					Iterator fieldIterator = fields.iterator();
 					while(fieldIterator.hasNext()) {
-						String fieldName = (String)fieldIterator.next();
+						fieldName = (String)fieldIterator.next();
 						DataMartField filed = null;
 						Iterator subEntityFields = subEntity.getFields().iterator();
 						while(subEntityFields.hasNext()) {
@@ -278,19 +281,17 @@ public class HQLStatement extends BasicStatement {
 	}
 	
 	public String buildGroupByClause(IQuery query) {
-		StringBuffer buffer = new StringBuffer();
-		IGroupByClause aGroupByClause = query.getGroupByClause();  
+		StringBuffer buffer = new StringBuffer(); 
 		boolean afterFirst = false;
 		
-		if (aGroupByClause != null){
+		if(query.getGroupByFieldsIterator().hasNext()) {
 			buffer.append(" group by ");
-			java.util.List l= aGroupByClause.getGroupByFields();
-		 	Iterator it = l.iterator();
+		 	Iterator it = query.getGroupByFieldsIterator();
 		 
 		 	
-		 	IOrderGroupByField aOrderGroupByField = null;
+		 	IGroupByField aOrderGroupByField = null;
 		 	while (it.hasNext()){
-		 		aOrderGroupByField =(IOrderGroupByField)it.next();
+		 		aOrderGroupByField =(IGroupByField)it.next();
 		 		if (afterFirst)
 		 			buffer.append(", ");
 		 		
@@ -301,25 +302,24 @@ public class HQLStatement extends BasicStatement {
 		 		
 		 		afterFirst = true;
 		 	}
-		}
 		
+		}
 		return buffer.toString();
 	}
 	
 	public String buildOrderByClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
-		IOrderByClause aOrderByClause= query.getOrderByClause();  
+		
 		boolean afterFirst = false;
 		
-		if (aOrderByClause != null){
+		if (query.getOrderByFieldsIterator().hasNext()){
 			buffer.append(" order by ");
-			java.util.List l= aOrderByClause.getOrderByFields();
-		 	Iterator it = l.iterator();
+		Iterator it = query.getOrderByFieldsIterator();
 		 
 		 	
-		 	OrderByFieldSourceBeanImpl aOrderGroupByField = null;
+		 	OrderByField aOrderGroupByField = null;
 		 	while (it.hasNext()){
-		 		aOrderGroupByField =(OrderByFieldSourceBeanImpl)it.next();
+		 		aOrderGroupByField =(OrderByField)it.next();
 		 		if (afterFirst)
 		 			buffer.append(", ");
 	 			buffer.append(aOrderGroupByField.getFieldName() + " ");

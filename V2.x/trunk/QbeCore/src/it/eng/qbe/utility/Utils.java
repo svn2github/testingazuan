@@ -21,20 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.utility;
 
-import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.qbe.query.IQuery;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerAccess;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -45,20 +41,10 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 import java.util.StringTokenizer;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.portlet.PortletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -66,10 +52,7 @@ import org.dom4j.io.SAXReader;
 
 import sun.misc.BASE64Encoder;
 
-/**
- * @author Andrea Gioia
- *
- */
+
 public class Utils {
 
 	
@@ -214,7 +197,7 @@ public class Utils {
 		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
 			   String subQueryField = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
 			   //ISingleDataMartWizardObject newWizObject =  aWizardObject.getSubQueryOnField(subQueryField);
-			   ISingleDataMartWizardObject newWizObject =  (ISingleDataMartWizardObject)aWizardObject.getSelectedSubquery();
+			   ISingleDataMartWizardObject newWizObject =  (ISingleDataMartWizardObject)aWizardObject.getQuery().getSelectedSubquery();
 			   return newWizObject;
 		}
 		
@@ -454,10 +437,10 @@ public class Utils {
 	
 	*/
 	
-	
-	public static Integer findPositionOf(ISingleDataMartWizardObject aWizardObject, String completeName){
-		if (aWizardObject.getSelectClause() != null){
-			List l = aWizardObject.getSelectClause().getSelectFields();
+	/*
+	public static Integer findPositionOf(IQuery query, String completeName){
+		if (query.getSelectClause() != null){
+			List l = query.getSelectClause().getSelectFields();
 			ISelectField selField = null;
 			String selFieldcompleteName = null;
 			for (int i=0; i < l.size(); i++){
@@ -471,14 +454,14 @@ public class Utils {
 		
 		return new Integer(-1);
 	}
+	*/
 	
 	
 	public static String getOrderedFieldList(ISingleDataMartWizardObject wizObject){
 		StringBuffer sb = new StringBuffer();
-		if (wizObject.getSelectClause() != null){
-			List l = wizObject.getSelectClause().getSelectFields();
+		if (!wizObject.getQuery().isEmpty()){
 			
-			for (Iterator it = l.iterator(); it.hasNext();){
+			for (Iterator it = wizObject.getQuery().getSelectFieldsIterator(); it.hasNext();){
 				sb.append(((ISelectField)it.next()).getFieldCompleteName());
 				if (it.hasNext())
 					sb.append(";");
@@ -490,7 +473,7 @@ public class Utils {
 	}
 	
 	public static String getSelectedEntitiesAsString(ISingleDataMartWizardObject aWizardObject) throws Exception{
-		Iterator it = aWizardObject.getEntityClasses().iterator();
+		Iterator it = aWizardObject.getQuery().getEntityClassesItertor();
 		EntityClass ec = null;
 		StringBuffer sb = new StringBuffer();
 		while (it.hasNext()){

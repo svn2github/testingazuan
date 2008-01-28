@@ -19,38 +19,20 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
 
 import it.eng.qbe.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class GroupByClauseSourceBeanImpl 
-		implements IGroupByClause {
+public class GroupByClause  implements IGroupByClause {
 
 	public List groupByFields = null;
 	
-	public GroupByClauseSourceBeanImpl(){
+	public GroupByClause(){
 		super();
 		this.groupByFields = new ArrayList();
-	}
-	
-	public IGroupByClause getCopy(){
-		IGroupByClause groupByClause = new GroupByClauseSourceBeanImpl();
-		
-		for(int i = 0; i < groupByFields.size(); i++) {
-			IOrderGroupByField orderField = (IOrderGroupByField)groupByFields.get(i);
-			groupByClause.addGroupByField(orderField.getCopy());			
-		}
-		
-		return groupByClause;
 	}
 	
 	public List getGroupByFields() {
@@ -62,17 +44,17 @@ public class GroupByClauseSourceBeanImpl
 		
 	}
 
-	public void addGroupByField(IOrderGroupByField aOrderGroupByField) {
-		this.groupByFields.add(aOrderGroupByField);	
+	public void addGroupByField(IGroupByField groupByField) {
+		this.groupByFields.add(groupByField);	
 	}
 
-	public void delGroupByField(IOrderGroupByField aOrderGroupByField) {
+	public void deleteGroupByField(String fieldId) {
 		int positionOfElement = -1;
 		
-		IOrderGroupByField tmp = null;
+		IOrderByField tmp = null;
 		for (int i=0; i < this.groupByFields.size(); i++){
-			tmp = (IOrderGroupByField)this.groupByFields.get(i);
-			if (tmp.getId().equalsIgnoreCase(aOrderGroupByField.getId())){
+			tmp = (IOrderByField)this.groupByFields.get(i);
+			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
 			}
@@ -83,53 +65,61 @@ public class GroupByClauseSourceBeanImpl
 		
 	}
 	
-	public void moveUp(IOrderGroupByField aOrderGroupByField) {
+	public void moveUp(String fieldId) {
 		int positionOfElement = -1;
 		
-		IOrderGroupByField tmp = null;
+		IOrderByField tmp = null;
 		for (int i=0; i < this.groupByFields.size(); i++){
-			tmp = (IOrderGroupByField)this.groupByFields.get(i);
-			if (tmp.getId().equalsIgnoreCase(aOrderGroupByField.getId())){
+			tmp = (IOrderByField)this.groupByFields.get(i);
+			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
 			}
 		}
 		
 		if (positionOfElement == 0){
-			Logger.debug(GroupByClauseSourceBeanImpl.class,"Cannot Move Up Position is 0");
+			Logger.debug(GroupByClause.class,"Cannot Move Up Position is 0");
 		}else{
 			int newPosition = positionOfElement - 1;
 			
-			IOrderGroupByField swap = (IOrderGroupByField)this.groupByFields.set(newPosition, tmp);
+			IOrderByField swap = (IOrderByField)this.groupByFields.set(newPosition, tmp);
 			this.groupByFields.set(positionOfElement, swap);
 		}
 		
 	}
 
-	public void moveDown(IOrderGroupByField aOrderGroupByField) {
+	public void moveDown(String fieldId) {
 		
 			int positionOfElement = -1;
 			
-			IOrderGroupByField tmp = null;
+			IOrderByField tmp = null;
 			for (int i=0; i < this.groupByFields.size(); i++){
-				tmp = (IOrderGroupByField)this.groupByFields.get(i);
-				if (tmp.getId().equalsIgnoreCase(aOrderGroupByField.getId())){
+				tmp = (IOrderByField)this.groupByFields.get(i);
+				if (tmp.getId().equalsIgnoreCase(fieldId)){
 					positionOfElement = i;
 					break;
 				}
 			}
 			
 			if (positionOfElement == this.groupByFields.size() -1){
-				Logger.debug(GroupByClauseSourceBeanImpl.class,"Cannot Move Element is at last position "+ (this.groupByFields.size() - 1));
+				Logger.debug(GroupByClause.class,"Cannot Move Element is at last position "+ (this.groupByFields.size() - 1));
 			}else{
 				int newPosition = positionOfElement + 1;
 				
-				IOrderGroupByField swap = (IOrderGroupByField)this.groupByFields.set(newPosition, tmp);
+				IOrderByField swap = (IOrderByField)this.groupByFields.set(newPosition, tmp);
 				this.groupByFields.set(positionOfElement, swap);
-			}
-			
+			}		
+	}
+	
+	public IGroupByClause getCopy(){
+		IGroupByClause groupByClause = new GroupByClause();
 		
+		for(int i = 0; i < groupByFields.size(); i++) {
+			IGroupByField orderField = (IGroupByField)groupByFields.get(i);
+			groupByClause.addGroupByField(orderField.getCopy());			
+		}
 		
+		return groupByClause;
 	}
 }
 

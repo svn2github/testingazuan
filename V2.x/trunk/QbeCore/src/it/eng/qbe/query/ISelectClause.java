@@ -19,30 +19,38 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.wizard;
+package it.eng.qbe.query;
+
+import it.eng.qbe.utility.CalculatedField;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public interface IOrderByClause extends  Serializable {
+public interface ISelectClause extends  Serializable {
+	
+	boolean isEmpty();
+	
+	List getSelectFields();	
+	List getCalcuatedFields();
+	
 
-	public IOrderByClause getCopy();
+	void addSelectField(ISelectField selectField);	
+	void addCalculatedField(CalculatedField calculatedField);
 	
-	public List getOrderByFields();
+	void delSelectField(String fieldId);	
+	void deleteSelectFields();
 	
-	public void setOrderByFields(List aList);
+	void deleteCalculatedField(String calculatedField);	
+	void deleteCalculatedFields();
 	
-	public void addOrderByField(IOrderGroupByField aOrderGroupByField);
+	void deleteAllFields();		
+	void setSelectFields(List aList);
 	
-	public void delOrderByField(IOrderGroupByField aOrderGroupByField);
-
-	public void moveUp(IOrderGroupByField aOrderGroupByField);
 	
-	public void moveDown(IOrderGroupByField aOrderGroupByField);
+	void moveUp(String fieldId);
+	
+	void moveDown(String fieldId);
+	
+	
+	ISelectClause getCopy();	
 }

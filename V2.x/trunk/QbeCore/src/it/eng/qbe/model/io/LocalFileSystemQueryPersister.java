@@ -84,7 +84,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
 		
-		String key = wizObject.getQueryId();
+		String key = wizObject.getQuery().getQueryId();
 		String fileName = null;
 		
 		String publicDmDir = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName();

@@ -47,10 +47,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Table;
 
-/**
- * @author Andrea Gioia
- *
- */
 public abstract class AbstractHibernateDataSource extends AbstractDataSource implements IHibernateDataSource {
 
 	private String datamartName = null;

@@ -23,20 +23,13 @@ package it.eng.qbe.wizard;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.IQuery;
+import it.eng.qbe.query.IQuery;
 import it.eng.spago.base.SourceBean;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * @author Zoppello
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 public interface ISingleDataMartWizardObject extends Serializable {
 	
 	
@@ -90,23 +83,23 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception;	
 	
 	
-	public ISingleDataMartWizardObject getSelectedSubquery() ;
+	//public ISingleDataMartWizardObject getSelectedSubquery() ;
 
 
-	public void setSelectedSubquery(ISingleDataMartWizardObject selectedSubquery) ;
+	//public void setSelectedSubquery(ISingleDataMartWizardObject selectedSubquery) ;
 	
-	public void selectSubquery(String fieldId);
+	//public void selectSubquery(String fieldId);
 	
-	public void addSubQueryOnField(String fieldId, ISingleDataMartWizardObject subquery);
+	//public void addSubQueryOnField(String fieldId, ISingleDataMartWizardObject subquery);
 	
-	public ISingleDataMartWizardObject getCopy();
+	//public ISingleDataMartWizardObject getCopy();
 	
 	
-	public boolean isSelectedSubqueryValid() ;
+	//public boolean isSelectedSubqueryValid() ;
 	
-	public boolean isSubqueryValid(String fieldId);
+	//public boolean isSubqueryValid(String fieldId);
 	
-	public boolean isSubqueryValid(ISingleDataMartWizardObject subquery);
+	//public boolean isSubqueryValid(ISingleDataMartWizardObject subquery);
 	
 	
 	
@@ -115,51 +108,52 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	// IQuery
 	///////////////////////////
 	
-	boolean containEntityClass(EntityClass ec);	
-	void addEntityClass(EntityClass ec);	
-	List  getEntityClasses();
-	void purgeNotReferredEntityClasses();
-	void purgeNotReferredEntityClasses(String prefix);
+	//boolean containEntityClass(EntityClass ec);	
+	//void addEntityClass(EntityClass ec);	
+	//List  getEntityClasses();
+	//void purgeNotReferredEntityClasses();
+	//void purgeNotReferredEntityClasses(String prefix);
 			
-	ISelectClause getSelectClause();	
-	IOrderByClause getOrderByClause();	
-	IGroupByClause getGroupByClause();	
-	IWhereClause getWhereClause();
+	//ISelectClause getSelectClause();	
+	//IOrderByClause getOrderByClause();	
+	//IGroupByClause getGroupByClause();	
+	//IWhereClause getWhereClause();
 	
-	void setWhereClause (IWhereClause aWhereClause);	
-	void setSelectClause(ISelectClause aSelectClause);	
-	void setOrderByClause(IOrderByClause orderByClause);	
-	void setGroupByClause(IGroupByClause groupByClause);		
+	//void setWhereClause (IWhereClause aWhereClause);	
+	//void setSelectClause(ISelectClause aSelectClause);	
+	//void setOrderByClause(IOrderByClause orderByClause);	
+	//void setGroupByClause(IGroupByClause groupByClause);		
 	
-	void delSelectClause();	
-	void delWhereClause();	
-	void delOrderByClause();	
-	void delGroupByClause();
+	//void delSelectClause();	
+	//void delWhereClause();	
+	//void delOrderByClause();	
+	//void delGroupByClause();
 			
-	String getQueryId();	
-	void setQueryId(String queryId);
+	//String getQueryId();	
+	//void setQueryId(String queryId);
 		
-	void setDistinct(boolean distinct);	
-	boolean getDistinct();
+	//void setDistinct(boolean distinct);	
+	//boolean getDistinct();
 	
-	void addSubQueryOnField(String fieldId);	
-	Map  getSubqueries();
+	//void addSubQueryOnField(String fieldId);	
+	//Map  getSubqueries();
 	
-	ISingleDataMartWizardObject getSubQueryOnField(String fieldId);	
-	String getSubQueryIdForSubQueryOnField(String fieldId);
+	//ISingleDataMartWizardObject getSubQueryOnField(String fieldId);	
+	//String getSubQueryIdForSubQueryOnField(String fieldId);
 	
-	String[] getDuplicatedAliases();
+	//String[] getDuplicatedAliases();
 	
-	boolean containsDuplicatedAliases();
+	//boolean containsDuplicatedAliases();
 	
-	boolean isEmpty();
+	//boolean isEmpty();
 	
-	boolean areAllEntitiesJoined();
+	//boolean areAllEntitiesJoined();
 	
-	public String getSubqueryErrMsg();
+	//public String getSubqueryErrMsg();
 
-	public void setSubqueryErrMsg(String subqueryErrMsg);
+	//public void setSubqueryErrMsg(String subqueryErrMsg);
 	
+	/*
 	void addSelectField(String className, 
 			   String classAlias, 
 			   String fieldAlias, 
@@ -169,6 +163,6 @@ public interface ISingleDataMartWizardObject extends Serializable {
 			   String fldHibPrec,
 			   String fldHibScale);
 	
-	
+	*/
 	
 }

@@ -19,31 +19,24 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.model;
-
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.query.IQuery;
+package it.eng.qbe.query;
 
 import java.io.Serializable;
-import java.util.Properties;
+import java.util.List;
 
+public interface IWhereClause extends  Serializable {
 
-/**
- * @author Andrea Gioia
- *
- */
-public interface IDataMartModel extends Serializable {
-	public IStatement createStatement();
-	public IStatement createStatement(IQuery query);
+	public List getWhereFields();
 	
-	public DataMartModelStructure getDataMartModelStructure();
-	public IHibernateDataSource getDataSource();
+	public void setWhereFields(List aList);
 	
-	public DataMartModelAccessModality getDataMartModelAccessModality();
-	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	
+	public void addWhereField(IWhereField whereField);
 	
-	public Properties getDataMartProperties();
-	public void setDataMartProperties(Properties dataMartProperties);
+	public void delWhereField(String fieldId);
+	
+	public void moveUp(String fieldId);
+	
+	public void moveDown(String fieldId);
+	
+	public IWhereClause getCopy();
 }

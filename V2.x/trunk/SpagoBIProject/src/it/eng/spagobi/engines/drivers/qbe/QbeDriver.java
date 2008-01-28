@@ -54,7 +54,8 @@ public class QbeDriver implements IEngineDriver {
 		try{
 			BIObject biobj = (BIObject)biobject;
 			map = getMap(biobj);
-			map.put("query", "#");
+			// This parameter is not required
+			//map.put("query", "#");
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 

@@ -22,107 +22,96 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.qbe.querybuilder.where.service;
 
 import it.eng.qbe.log.Logger;
-import it.eng.qbe.utility.Utils;
+import it.eng.qbe.query.IWhereField;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.IWhereClause;
-import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.WhereClauseSourceBeanImpl;
-import it.eng.qbe.wizard.WhereFieldSourceBeanImpl;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import java.util.Iterator;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This Action is responsible to handle the modification of where fields in the Field
  * Condition Tab, like the right-value of where modification, the where operator modification 
  * 
  */
-public class UpdateFieldsForWhereAction extends AbstractAction {
+public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
+
+	// valid input parameter names
+	public static final String S_CLASS_NAME = "S_CLASS_NAME";
+	public static final String S_HIB_TYPE = "S_HIB_TYPE";
+	public static final String UPD_COND_MSG = "updCondMsg";
+	public static final String FIELDID = "FIELDID";
+	public static final String FUPD_COND_JOIN_PARENT = "fUpdCondJoinParent";
+	public static final String S_COMPLETE_FIELD_NAME = "S_COMPLETE_FIELD_NAME";
+	public static final String INPUT_SELECTION_TREE = "SELECTION_TREE";
+	public static final String INPUT_NEXT_ACTION = "NEXT_ACTION";
+	public static final String INPUT_NEXT_PUBLISHER = "NEXT_PUBLISHER";
+	public static final String NEXT_BOOLEAN_OPERATOR_FOR_FIELD_PREFIX = "NEXT_BOOLEAN_OPERATOR_FOR_FIELD_";
+	public static final String VALUE_FOR_FIELD_PREFIX = "VALUE_FOR_FIELD_";
+	public static final String OPERATOR_FOR_FIELD_PREFIX = "OPERATOR_FOR_FIELD_";
 	
-	/**
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	
+	
+	
+	
+	// output session parameters
+	public static final String OUTPUT_SELECTION_TREE = INPUT_SELECTION_TREE;
+	public static final String OUTPUT_NEXT_ACTION = INPUT_NEXT_ACTION;
+	public static final String OUTPUT_NEXT_PUBLISHER = INPUT_NEXT_PUBLISHER;
+	
+	
+	
 	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-		
-		String className = (String) request.getAttribute("S_CLASS_NAME");	
+		String className = getAttributeAsString(S_CLASS_NAME);	
+		String hibFieldType= getAttributeAsString(S_HIB_TYPE);
+		String nextAction = getAttributeAsString(INPUT_NEXT_ACTION);
+		String nextPublisher = getAttributeAsString(INPUT_NEXT_PUBLISHER);
+		String updCondMsg = getAttributeAsString(UPD_COND_MSG);
+		String selectionTree = getAttributeAsString(INPUT_SELECTION_TREE);
+		String selectedFieldId = getAttributeAsString(FIELDID);
+		String isJoinWithParentQuery =   getAttributeAsString(FUPD_COND_JOIN_PARENT);
+		String aliasedFieldName = getAttributeAsString(S_COMPLETE_FIELD_NAME);
 		
 		String classPrefix = "a";
-		String isJoinWithParentQuery =   (String)request.getAttribute("fUpdCondJoinParent");
+		
 		
 		if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
 			classPrefix = "a";
 		}else{
-			if (Utils.isSubQueryModeActive(aSessionContainer)){
-				String subQueryFieldId = (String)aSessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
-				classPrefix = Utils.getMainWizardObject(aSessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+			if ( isSubqueryModeActive() ){
+				classPrefix = getMainQuery().getSubQueryIdForSubQueryOnField( getSubqueryField() );
 			}
 		}
 		String classAlias = null;
-		/*
-			if (className.indexOf(".") > 0){
-				classAlias = classPrefix + className.substring(className.lastIndexOf(".")+1);
-			}else{
-				classAlias = classPrefix  + className;
-			}
-		*/
 		
 		classAlias = classPrefix  + className.replace(".", "_");
 			
-		String aliasedFieldName = (String)request.getAttribute("S_COMPLETE_FIELD_NAME");
-		String alias = (String)request.getAttribute("S_ALIAS_COMPLETE_FIELD_NAME");
 		
-		String hibFieldType= (String)request.getAttribute("S_HIB_TYPE");
-		String nextAction = (String)request.getAttribute("NEXT_ACTION");
-		String nextPublisher = (String)request.getAttribute("NEXT_PUBLISHER");
-		String updCondMsg = (String)request.getAttribute("updCondMsg");
-		String selectionTree = (String)request.getAttribute("SELECTION_TREE");
-		String selectedFieldId = (String)request.getAttribute("FIELDID");
+		setAttribute(OUTPUT_NEXT_ACTION, nextAction);		
+		setAttribute(OUTPUT_NEXT_PUBLISHER, nextPublisher);
 		
 		
-		try{
-			response.setAttribute("NEXT_ACTION", nextAction);		
-			response.setAttribute("NEXT_PUBLISHER", nextPublisher);
-		}catch(SourceBeanException sbe){
-			sbe.printStackTrace();
-		}
-		
-		
-		IWhereClause aWhereClause = aWizardObject.getWhereClause();
 		
 		IWhereField aWhereField = null; 
-		
-		
-		if (aWhereClause != null){
-			java.util.List l= aWhereClause.getWhereFields();
-			Iterator it = l.iterator();
-			String fieldName = null;
-			String operatorForField = null;
-			String valueForField = null;
-			String nextBooleanOperatorForField = null;
-			String fieldId = null;
-			while (it.hasNext()){
+		Iterator it = getMainQuery().getWhereFieldsIterator();
+		String fieldName = null;
+		String operatorForField = null;
+		String valueForField = null;
+		String nextBooleanOperatorForField = null;
+		String fieldId = null;
+		while (it.hasNext()){
 				aWhereField = (IWhereField)it.next();
 			 	
 				fieldName = aWhereField.getFieldName();
 			 	fieldId =  aWhereField.getId();
-			 	operatorForField =(String)request.getAttribute("OPERATOR_FOR_FIELD_"+fieldId);
+			 	operatorForField =getAttributeAsString(OPERATOR_FOR_FIELD_PREFIX + fieldId);
 			 	if (operatorForField != null){
 			 		aWhereField.setFieldOperator(operatorForField);
 			 	}
-			 	valueForField =(String)request.getAttribute("VALUE_FOR_FIELD_"+fieldId);
+			 	valueForField = getAttributeAsString(VALUE_FOR_FIELD_PREFIX + fieldId);
 			 	if (valueForField != null){
 			 		if(!valueForField.equals(aWhereField.getFieldValue())) {
 			 			EntityClass entity = aWhereField.getFieldEntityClassForRightCondition();
@@ -131,48 +120,29 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			 		aWhereField.setFieldValue(valueForField);
 			 	}
 			 	
-			 	nextBooleanOperatorForField =(String)request.getAttribute("NEXT_BOOLEAN_OPERATOR_FOR_FIELD_"+fieldId);
+			 	nextBooleanOperatorForField = getAttributeAsString(NEXT_BOOLEAN_OPERATOR_FOR_FIELD_PREFIX + fieldId);
 			 	if (nextBooleanOperatorForField != null){
 			 		aWhereField.setNextBooleanOperator(nextBooleanOperatorForField);
 			 	}
-			 }
-		}
+		 }
+		
 		
 
 		
 		
-		if (updCondMsg.equalsIgnoreCase("UPD_SEL")){
-		
-			
-			// update clause		
+		if (updCondMsg.equalsIgnoreCase("UPD_SEL")) {
 			
 			EntityClass ec = new EntityClass(className, classAlias);
-			if (!aWizardObject.containEntityClass(ec)){
-				aWizardObject.addEntityClass(ec);
+			if (!getActiveQuery().containEntityClass(ec)){
+				getMainQuery().addEntityClass(ec);
 			}
 
+			IWhereField whereField = getMainQuery().addWhereField(aliasedFieldName, hibFieldType);
+			whereField.setFieldEntityClassForLeftCondition(ec);
 			
-			if ( aWhereClause == null){
-				aWhereClause = new WhereClauseSourceBeanImpl();
-			}
-		
-			IWhereField aWhereField2 = new WhereFieldSourceBeanImpl();
-			aWhereField2.setFieldName(aliasedFieldName);
-			aWhereField2.setFieldOperator("=");
-			aWhereField2.setFieldValue("");
-			aWhereField2.setHibernateType(hibFieldType);
-			aWhereField2.setNextBooleanOperator("AND");
-			aWhereField2.setFieldEntityClassForLeftCondition(ec);
+			updateLastUpdateTimeStamp();
+			setMainDataMartWizard( getMainDataMartWizard() );
 			
-			// se volessi potrei fare il parsing del campo che ho aggiunto a mano per vedere se ho introdotto un campo e non un valore
-			
-			aWhereClause.addWhereField(aWhereField2);
-			aWizardObject.setWhereClause(aWhereClause);
-			
-			Utils.updateLastUpdateTimeStamp(getRequestContainer());
-			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
-			
-						
 		} else if (updCondMsg.equalsIgnoreCase("UPD_SEL_RIGHT")){
 			
 			EntityClass ec = new EntityClass(className, classAlias);
@@ -180,39 +150,37 @@ public class UpdateFieldsForWhereAction extends AbstractAction {
 			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
 				Logger.debug(this.getClass(), "-----");
 			}else{	
-				if (!aWizardObject.containEntityClass(ec)){
-					aWizardObject.addEntityClass(ec);
+				if (!getMainQuery().containEntityClass(ec)){
+					getMainQuery().addEntityClass(ec);
 				}
 			}
 			
 			
 			aWhereField = null;
 			
-			if (aWhereClause != null){
-				java.util.List l= aWhereClause.getWhereFields();
-				Iterator it = l.iterator();
-			    while (it.hasNext()){
+			it = getMainQuery().getWhereFieldsIterator();;
+			while (it.hasNext()){
 					aWhereField = (IWhereField)it.next();
 					if (aWhereField.getId().equalsIgnoreCase(selectedFieldId)){
 						
 						aWhereField.setFieldEntityClassForRightCondition(ec);
 						
-					}
-			    }
+				}
 			}
+			
 			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
 				// --- 
 			}else{
-				aWizardObject.purgeNotReferredEntityClasses();
+				getMainQuery().purgeNotReferredEntityClasses();
 			}
 			
-			Utils.updateLastUpdateTimeStamp(getRequestContainer());
-			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
+			updateLastUpdateTimeStamp();
+			setMainDataMartWizard( getMainDataMartWizard() );
 						
 			
 		} else if (updCondMsg.equalsIgnoreCase("UPD_TREE_SEL")){
 		
-			aSessionContainer.setAttribute("SELECTION_TREE",selectionTree);
+			this.setAttributeInSession(OUTPUT_SELECTION_TREE, selectionTree);
 						
 		}
 	}

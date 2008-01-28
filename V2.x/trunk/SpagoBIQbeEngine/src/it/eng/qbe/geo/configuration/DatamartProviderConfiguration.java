@@ -21,17 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.geo.configuration;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 /**
  * @author Andrea Gioia
@@ -202,9 +201,7 @@ public class DatamartProviderConfiguration {
 			} else {
 				try {
 					MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-//TODO
-//					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
-					String sdtHierarchy = null;
+					String sdtHierarchy = mapCatalogueAccessUtils.getStandardHierarchy();
 					hierarchySB = SourceBean.fromXMLString(sdtHierarchy);
 				} catch (Exception e) {
 					throw new ConfigurationException("Impossible to obtain default hierarchy");

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
 
 
 
@@ -42,18 +43,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
    
    Map selectedFields = new HashMap();
-   if(aWizardObject.getGroupByClause() != null){ 	
-		List l = aWizardObject.getGroupByClause().getGroupByFields();
-		if (l != null){
-			java.util.Iterator it = l.iterator();
-			IOrderGroupByField aGroupByField = null;
+   
+			Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+			IGroupByField aGroupByField = null;
 			
 			while (it.hasNext()){
-				aGroupByField = (IOrderGroupByField)it.next();
+				aGroupByField = (IGroupByField)it.next();
 				selectedFields.put(aGroupByField.getFieldName(), aGroupByField);
 			}			
-		}
-   }
+	
+   it = null;
+   String originalFieldName = "";
    
    //dm.updateCurrentClassLoader();
 %>
@@ -84,7 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_background_no_img'>
 
-<% if ((aWizardObject.getSelectClause() != null) && (aWizardObject.getSelectClause().getSelectFields().size() > 0)){ %>
+<% if ( !aWizardObject.getQuery().isEmpty() ){ %>
 		
 		
 		<% 
@@ -138,12 +138,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			  		<%  
 			  			java.util.Map oParams = new java.util.HashMap();
 		  		  		oParams.clear();	
-			  			 if (aWizardObject.getSelectClause() != null){ 
-			    		   			List l = aWizardObject.getSelectClause().getSelectFields();
-			    		   			if (l != null){
-			    		   				java.util.Iterator it = l.iterator();
+			  			 
+			    		   				it = aWizardObject.getQuery().getSelectFieldsIterator();
 			    		   				ISelectField aSelectField = null;
-			    		   				String originalFieldName = "";
 			    		   				String urlOrderBy = ""; 
 			    		   				while (it.hasNext()){
 			    		   					aSelectField = (ISelectField)it.next();
@@ -167,8 +164,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		</tr>
 			    		   			<% } %>
 			    		   			<%}//endwhile%>		    		   				
-			    		   		<%}//endif %>
-			    		 <%}//endif %>
+			    		   		
 			    		 
 			    		 <tr>
 			    		   <td colspan="2">
@@ -212,18 +208,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								&nbsp;
 							</td>
 						</tr>
-			    		<% if (aWizardObject.getGroupByClause() != null){ %>
-				 						
-			    		   			<% List l = aWizardObject.getGroupByClause().getGroupByFields();
-			    		   			if (l != null){
-			    		   				java.util.Iterator it = l.iterator();
-			    		   				IOrderGroupByField aOrderByField = null;
-			    		   				String originalFieldName = "";
+			    			
+			    		   			<% 
+			    		   				it = aWizardObject.getQuery().getGroupByFieldsIterator();
+			    		   				IGroupByField aOrderByField = null;
+			    		   				
 			    		   				String urlDeleteOrderBy = "";
 			    		   				String urlMoveUp ="";
 			    		   				String urlMoveDown = "";
 			    		   				while (it.hasNext()){
-			    		   					aOrderByField = (IOrderGroupByField)it.next();
+			    		   					aOrderByField = (IGroupByField)it.next();
 			    		   					originalFieldName = (String)aOrderByField.getFieldName();
 			    		   					oParams.clear();
 			    		   					oParams.put("ACTION_NAME","DELETE_FIELD_FOR_GROUPBY_ACTION");
@@ -260,8 +254,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   					</td>	
 			    		   				</tr>
 			    		   			<%}//endwhile%>
-			    		   		<%}//endif %>
-			    		 <%}//endif %>
+			    		   		
 			    		  <tr>
 			    		   <td colspan="4">
 			    		   		 &nbsp;

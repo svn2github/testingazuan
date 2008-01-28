@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import java.util.Locale;
-import java.util.Map;
-
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
@@ -38,11 +35,12 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerAccess;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.message.MessageBundle;
+
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * @author Andrea Gioia

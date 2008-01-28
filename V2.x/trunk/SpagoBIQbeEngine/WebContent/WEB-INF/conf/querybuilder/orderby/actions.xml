@@ -2,9 +2,14 @@
 
 <ACTIONS>
 
-
+	<ACTION name="SELECT_FIELD_FOR_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.AddOrderByFieldAction" 
+			scope="REQUEST">		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="DELETE_FIELD_FOR_ORDERBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.orderby.service.DeleteFieldFromOrderByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.DeleteOrderByFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -12,7 +17,7 @@
 	
 	
 	<ACTION name="MOVE_DOWN_ORDERBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveDownOrderByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveDownOrderByFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -20,23 +25,18 @@
 	
 	
 	<ACTION name="MOVE_UP_ORDERBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveUpOrderByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveUpOrderByFieldAction" 
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	
-	<ACTION name="SELECT_FIELD_FOR_ORDERBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.orderby.service.SelectFieldForOrderByAction" 
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
+	
 	
 	
 	<ACTION name="SWITCH_ORDERBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.orderby.service.SwitchOrderByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.SwitchAscendingOrderPopertyValueAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

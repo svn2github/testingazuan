@@ -22,47 +22,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.action;
 
 import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.conf.QbeTemplate;
-import it.eng.qbe.datasource.AbstractDataSource;
-import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DataSourceCache;
-import it.eng.qbe.datasource.DataSourceFactory;
-import it.eng.qbe.datasource.BasicHibernateDataSource;
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.utility.SpagoBIInfo;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceCache;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
-import it.eng.spagobi.qbe.commons.naming.QbeNamingStrategy;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-
-import org.hibernate.SessionFactory;
 
 
 public class SelectDataMartAndInitNewWizardAction extends AbstractQbeEngineAction {
@@ -84,7 +63,7 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractQbeEngineActio
 	
 	
 
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	public void service(SourceBean request, SourceBean response)  {
 		super.service(request, response);		
 		
 		IDataSource dataSource = null;
@@ -130,7 +109,12 @@ public class SelectDataMartAndInitNewWizardAction extends AbstractQbeEngineActio
 			
 			if(propertiesStr != null) {
 				properties = new Properties();
-				properties.load(new ByteArrayInputStream(propertiesStr.getBytes()));
+				try {
+					properties.load(new ByteArrayInputStream(propertiesStr.getBytes()));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}			
 		} else  {
 			

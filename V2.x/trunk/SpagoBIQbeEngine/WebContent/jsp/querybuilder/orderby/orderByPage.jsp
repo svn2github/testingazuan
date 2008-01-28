@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
 
 
 
@@ -42,18 +43,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
    
    Map selectedFields = new HashMap();
-   if(aWizardObject.getOrderByClause() != null){ 	
-		List l = aWizardObject.getOrderByClause().getOrderByFields();
-		if (l != null){
-			java.util.Iterator it = l.iterator();
-			IOrderGroupByField aOrderByField = null;
+  
+	Iterator it =  aWizardObject.getQuery().getOrderByFieldsIterator();
+	IOrderByField aOrderByField = null;
 			
-			while (it.hasNext()){
-				aOrderByField = (IOrderGroupByField)it.next();
-				selectedFields.put(aOrderByField.getFieldName(), aOrderByField);
-			}			
-		}
-   }
+	while (it.hasNext()){
+		aOrderByField = (IOrderByField)it.next();
+		selectedFields.put(aOrderByField.getFieldName(), aOrderByField);
+	}
+  
    
    //dm.updateCurrentClassLoader();
 %>
@@ -91,13 +89,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_background_no_img'>
 
-<% if ((aWizardObject.getSelectClause() != null) && (aWizardObject.getSelectClause().getSelectFields().size() > 0)){%> 
+<% if ( !aWizardObject.getQuery().isEmpty() ){%> 
 		
 		
 		<%
 		  java.util.Map params = new java.util.HashMap();
 		  params.put("ACTION_NAME","SELECT_FIELD_FOR_ORDERBY_ACTION");
 		  String formUrl = qbeUrl.getUrl(request, params);
+		  
+		  it = null;
 		%>
 		<form method='POST' action='<%=formUrl%>' id ='orderForm' name='orderForm'>
 		
@@ -149,10 +149,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		  				<% 
 				    		java.util.Map oParams = new java.util.HashMap();
 		  		  			oParams.clear();
-		  					if(aWizardObject.getSelectClause() != null){ 			 						
-		    		  		List l = aWizardObject.getSelectClause().getSelectFields();
-		    		  		if(l!= null){
-		    		   			java.util.Iterator it = l.iterator();
+		  					
+		    		   			it = aWizardObject.getQuery().getSelectFieldsIterator();
 		    		   			ISelectField aSelectField = null;
 		    		   			String originalFieldName = "";
 		    		   			String urlOrderBy = "";
@@ -178,8 +176,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		   	</tr>		    		   				
 		    		   				<% //} %>
 		    		   			<%}//endwhile%>    		   			
-		    		   		<%}//endif %>
-		    			 <%}//endif %>
+		    		   		
 		    			<tr>
 		    		   		<td colspan="2">
 		    		   			&nbsp;
@@ -222,19 +219,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     							&nbsp;
 	   						</td>
 		   				</tr>  
-		    		<% if (aWizardObject.getOrderByClause() != null){ %>
+		    		
 			 						
-		    		   			<% List l = aWizardObject.getOrderByClause().getOrderByFields();
-		    		   			if (l != null){
-		    		   				java.util.Iterator it = l.iterator();
-		    		   				OrderByFieldSourceBeanImpl aOrderByField = null;
+		    		   			<%
+		    		   				it = aWizardObject.getQuery().getOrderByFieldsIterator();
+		    		   				aOrderByField = null;
 		    		   				
 		    		   				String urlDeleteOrderBy = "";
 		    		   				String urlMoveUp ="";
 		    		   				String urlMoveDown = "";
 		    		   				String urlSwitchOrder = "";
 		    		   				while (it.hasNext()){
-		    		   					aOrderByField = (OrderByFieldSourceBeanImpl)it.next();
+		    		   					aOrderByField = (IOrderByField)it.next();
 		    		   					
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","DELETE_FIELD_FOR_ORDERBY_ACTION");
@@ -285,8 +281,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		   					</td>	
 		    		   				</tr>
 		    		   			<%}//endwhile%>
-		    		   		<%}//endif %>
-		    		 <%}//endif %>
+		    		 
 		    		 	<tr>
 		    		   		<td colspan="4">
 		    		   			&nbsp;

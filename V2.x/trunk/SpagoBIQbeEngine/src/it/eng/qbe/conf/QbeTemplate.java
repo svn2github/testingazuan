@@ -21,15 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.conf;
 
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 
 /**
  * @author Andrea Gioia

@@ -25,30 +25,26 @@ import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IQuery;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.IWhereField;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.queryresultshandler.service.ExecuteQueryAction;
 
 import org.hibernate.HibernateException;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This action do the execution of the query represented by ISingleDataMartWizardObject in session
  * 
  * If ISingleDataMartWizardObject is configured to run the query composed automatically this action 
  * do some control on join conditions.
  *  
  */
-public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
+public class ExecuteSaveQueryFromSaveAction extends AbstractQbeEngineAction {
 	
 	
 	/**
@@ -88,8 +84,10 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
 	}
 
-	public void service(SourceBean request, SourceBean response) throws Exception{
-		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
+	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);	
+		
+		if ( !getActiveQuery().isEmpty() ){
 			
 		
 		getDataMartWizard().composeQuery(getDataMartModel());
@@ -102,10 +100,16 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 			}
 		}
 		
-		boolean joinOk = doCheckJoins((IQuery)getDataMartWizard(), response);
+		boolean joinOk = false;
+		try {
+			joinOk = doCheckJoins(getDataMartWizard().getQuery(), response);
+		} catch (SourceBeanException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		if (!joinOk){		
-			response.setAttribute("ERROR_MSG_FINAL", "QBE.Warning.Join");
+			setAttribute("ERROR_MSG_FINAL", "QBE.Warning.Join");
 		} 
 		else{
 			try {
@@ -114,20 +118,20 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractAction {
 			}catch(HibernateException he) {				
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, he);				
 				String causeMsg = he.getCause().getMessage();
-				response.setAttribute("ERROR_MSG_FINAL", causeMsg);
+				setAttribute("ERROR_MSG_FINAL", causeMsg);
 			}catch (java.sql.SQLException se) {
 				Logger.error(ExecuteQueryAction.class, se);
 				String causeMsg = se.getMessage();
-				response.setAttribute("ERROR_MSG_FINAL", causeMsg);
+				setAttribute("ERROR_MSG_FINAL", causeMsg);
 			}catch(Exception e){
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, e);
-				response.setAttribute("ERROR_MSG_FINAL", e.getMessage());					
+				setAttribute("ERROR_MSG_FINAL", e.getMessage());					
 			}					
 		}
 		}else{
 			IQbeMessageHelper qbeMsg = QbeEngineConf.getInstance().getQbeMessageHelper();
 			String bundle =  "component_spagobiqbeIE_messages";
-			response.setAttribute("ERROR_MSG_FINAL", qbeMsg.getMessage(getRequestContainer(), "QBE.Error.ImpossibleExecution", bundle));	
+			setAttribute("ERROR_MSG_FINAL", qbeMsg.getMessage(getRequestContainer(), "QBE.Error.ImpossibleExecution", bundle));	
 		}
 	}//service
 }

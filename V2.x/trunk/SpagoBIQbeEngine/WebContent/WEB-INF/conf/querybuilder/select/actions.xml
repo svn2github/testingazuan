@@ -2,40 +2,8 @@
 
 <ACTIONS>
 
-	<ACTION name="DELETE_CALCULATED_FIELD_FROM_SELECT_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.DeleteCalculatedFieldFromSelectAction" 
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>     
-	
-	
-	<ACTION name="DELETE_FIELD_FROM_SELECT_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.DeleteFieldFromSelectAction" 
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
-	<ACTION name="MOVE_DOWN_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.MoveDownAction" 
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
-	<ACTION name="MOVE_UP_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.MoveUpAction" 
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
 	<ACTION name="SELECT_CALC_FIELD_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.SelectCalculatedFieldForSelectAction" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.AddCalculatedFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -43,7 +11,38 @@
 	
 	
 	<ACTION name="SELECT_FIELD_FOR_SELECT_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.select.service.SelectFieldForSelectAction" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.AddSelectFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_CALCULATED_FIELD_FROM_SELECT_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.DeleteCalculatedFieldAction" 
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>     
+	
+	
+	<ACTION name="DELETE_FIELD_FROM_SELECT_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.DeleteSelectFieldAction" 
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_DOWN_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.MoveDownSelectFieldAction" 
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_UP_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.select.service.MoveUpSelectFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

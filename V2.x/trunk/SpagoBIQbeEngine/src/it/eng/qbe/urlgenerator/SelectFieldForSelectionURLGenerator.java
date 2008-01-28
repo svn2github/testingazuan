@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
-import it.eng.spagobi.qbe.querybuilder.select.service.SelectCalculatedFieldForSelectAction;
-import it.eng.spagobi.qbe.querybuilder.select.service.SelectFieldForSelectAction;
+import it.eng.spagobi.qbe.querybuilder.select.service.AddCalculatedFieldAction;
+import it.eng.spagobi.qbe.querybuilder.select.service.AddSelectFieldAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,8 +60,8 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");
 		
-		params.put(SelectFieldForSelectAction.CLASS_NAME, className);
-		params.put(SelectFieldForSelectAction.FIELD_NAME, (String)fieldName);
+		params.put(AddSelectFieldAction.CLASS_NAME, className);
+		params.put(AddSelectFieldAction.FIELD_NAME, (String)fieldName);
 			
 		return qbeUrlGenerator.getUrl(httpRequest, params);
 	}
@@ -76,17 +76,17 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		params.put("ACTION_NAME","SELECT_FIELD_FOR_SELECT_ACTION");		
 		
 		
-		params.put(SelectFieldForSelectAction.CLASS_NAME, className);
-		params.put(SelectFieldForSelectAction.FIELD_NAME, (String)fieldName);
-		params.put(SelectFieldForSelectAction.FIELD_LABEL, fieldLabel);	
+		params.put(AddSelectFieldAction.CLASS_NAME, className);
+		params.put(AddSelectFieldAction.FIELD_NAME, (String)fieldName);
+		params.put(AddSelectFieldAction.FIELD_LABEL, fieldLabel);	
 		
 		if ( additionalParameters != null){
 			String additionalParametersString = (String)additionalParameters;
 			String[] addPars = additionalParametersString.split(";");
 			if (addPars.length == 3){
-				params.put(SelectFieldForSelectAction.FIELD_HIBTYPE, addPars[0]);	
-				params.put(SelectFieldForSelectAction.FIELD_HIBSCALE, addPars[1]);
-				params.put(SelectFieldForSelectAction.FIELD_HIBPREC, addPars[2]);
+				params.put(AddSelectFieldAction.FIELD_HIBTYPE, addPars[0]);	
+				params.put(AddSelectFieldAction.FIELD_HIBSCALE, addPars[1]);
+				params.put(AddSelectFieldAction.FIELD_HIBPREC, addPars[2]);
 			}
 		}
 		
@@ -98,9 +98,9 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		Map params = new HashMap();
 		params.put("ACTION_NAME","SELECT_CALC_FIELD_ACTION");
 		
-		params.put(SelectCalculatedFieldForSelectAction.CLASS_NAME, className);
-		params.put(SelectCalculatedFieldForSelectAction.CFIELD_ID, calculatedFieldId);
-		params.put(SelectCalculatedFieldForSelectAction.CFIELD_COMPLETE_NAME, cFieldCompleteName);
+		params.put(AddCalculatedFieldAction.CLASS_NAME, className);
+		params.put(AddCalculatedFieldAction.CFIELD_ID, calculatedFieldId);
+		params.put(AddCalculatedFieldAction.CFIELD_COMPLETE_NAME, cFieldCompleteName);
 		return qbeUrlGenerator.getUrl(httpRequest, params);
 	}
 

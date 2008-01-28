@@ -25,29 +25,25 @@ import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IQuery;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.IWhereField;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import org.hibernate.HibernateException;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This action do the execution of the query represented by ISingleDataMartWizardObject in session
  * 
  * If ISingleDataMartWizardObject is configured to run the query composed automatically this action 
  * do some control on join conditions.
  *  
  */
-public class ExecuteQueryAction extends AbstractAction {
+public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 		
@@ -57,7 +53,7 @@ public class ExecuteQueryAction extends AbstractAction {
 			if (!getDataMartWizard().isUseExpertedVersion()){
 				// If I'm not using expert
 				// Check for join controls
-				return doCheckJoins((IQuery)getDataMartWizard(), response);				
+				return doCheckJoins(getDataMartWizard().getQuery(), response);				
 			}
 		}
 		return true;
@@ -153,9 +149,10 @@ public class ExecuteQueryAction extends AbstractAction {
 		}
 	}
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {				
+	public void service(SourceBean request, SourceBean response)  {				
+		super.service(request, response);	
 		
-		if ((getDataMartWizard().getSelectClause() != null) && (getDataMartWizard().getSelectClause().getSelectFields().size() > 0)){
+		if (!getActiveQuery().isEmpty()){
 			
 		
 			if ("QUERY_RESULT".equalsIgnoreCase( getSource(request) )){			
@@ -166,28 +163,33 @@ public class ExecuteQueryAction extends AbstractAction {
 		
 			getDataMartWizard().composeQuery(getDataMartModel());	
 	
-			if (!checkJoins(request, response)){
-				returnError(response, "QBE.Warning.Join");
-			} 
-			else{
-				try {
-					if (getDataMartWizard().getExpertQueryDisplayed() == null){
-						
-						getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+			try {
+				if (!checkJoins(request, response)){
+					returnError(response, "QBE.Warning.Join");
+				} 
+				else{
+					try {
+						if (getDataMartWizard().getExpertQueryDisplayed() == null){
+							
+							getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+						}
+						SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
+						getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+					}catch (HibernateException he) {
+						Logger.error(ExecuteQueryAction.class, he);					
+						returnError(response, he.getLocalizedMessage() + "\n" + he.getCause().getLocalizedMessage());
+					}catch (java.sql.SQLException se) {
+						Logger.error(ExecuteQueryAction.class, se);
+						returnError(response, se.getLocalizedMessage());
+					}catch(Exception e){
+						Logger.error(ExecuteQueryAction.class, e);
+						returnError(response, e.getLocalizedMessage());					
 					}
-					SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
-					getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
-				}catch (HibernateException he) {
-					Logger.error(ExecuteQueryAction.class, he);					
-					returnError(response, he.getLocalizedMessage() + "\n" + he.getCause().getLocalizedMessage());
-				}catch (java.sql.SQLException se) {
-					Logger.error(ExecuteQueryAction.class, se);
-					returnError(response, se.getLocalizedMessage());
-				}catch(Exception e){
-					Logger.error(ExecuteQueryAction.class, e);
-					returnError(response, e.getLocalizedMessage());					
-				}
-		}//else
+}
+			} catch (SourceBeanException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}//else
 		}else{
 			IQbeMessageHelper qbeMsg = QbeEngineConf.getInstance().getQbeMessageHelper();
 			String bundle =  "component_spagobiqbeIE_messages";

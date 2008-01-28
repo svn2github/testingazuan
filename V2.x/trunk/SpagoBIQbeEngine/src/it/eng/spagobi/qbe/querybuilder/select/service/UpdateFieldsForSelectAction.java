@@ -21,74 +21,54 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.select.service;
 
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISelectClause;
-import it.eng.qbe.wizard.ISelectField;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
+import it.eng.qbe.query.ISelectField;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import java.util.Iterator;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This Action is responsible to handle the modification of selected fields in the Field
  * Selection Tab, like apply operators, distinct selection, change of the alias of a field
  * 
  */
-public class UpdateFieldsForSelectAction extends AbstractAction {
+public class UpdateFieldsForSelectAction extends AbstractQbeEngineAction {
+
+	// valid input parameter names
+	public static final String NEW_FIELD_PREFIX = "NEW_FIELD_";
+	public static final String ALIAS_FOR_PREFIX = "ALIAS_FOR_";
+	public static final String DISTINCT = "selectDistinct";
 	
-	/**
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	
 	public void service(SourceBean request, SourceBean response) {
-		String className = (String) request.getAttribute("className");
+		super.service(request, response);	
 		
+		boolean distinct = getAttributeAsBoolean(DISTINCT);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-		
-		
-		ISelectClause selectClause = aWizardObject.getSelectClause();
 		ISelectField selectField = null;
 		
-	
-		if (selectClause != null){
-			java.util.List l= selectClause.getSelectFields();
-			Iterator it = l.iterator();
-			String fieldId = null;
+		Iterator it = getMainQuery().getSelectFieldsIterator();
+		String fieldId = null;			
 			
-			
-			while (it.hasNext()){
-				selectField = (ISelectField)it.next();
-			 	fieldId = selectField.getId();
-			 	String newFieldName  =(String)request.getAttribute("NEW_FIELD_"+fieldId);
-			 	String alias  =(String)request.getAttribute("ALIAS_FOR_"+fieldId);
-			 	
-			 	if (newFieldName != null){
-			 		selectField.setFieldName(newFieldName);
-			 	}//end if 	
-			 	
-			 	if ((alias != null) && (alias.trim().length() > 0)){
-			 		selectField.setFieldAlias(alias);
-			 	}
-			}//end if
-		}//end  if
+		while (it.hasNext()){
+			selectField = (ISelectField)it.next();
+		 	fieldId = selectField.getId();
+		 	String newFieldName  =(String)request.getAttribute(NEW_FIELD_PREFIX + fieldId);
+		 	String alias  =(String)request.getAttribute(ALIAS_FOR_PREFIX + fieldId);
+		 	
+		 	if (newFieldName != null){
+		 		selectField.setFieldName(newFieldName);
+		 	}	
+		 	
+		 	if ((alias != null) && (alias.trim().length() > 0)){
+		 		selectField.setFieldAlias(alias);
+		 	}
+		}		
 		
+		getMainQuery().setDistinct( distinct );
 		
-		String distinct = (String)request.getAttribute("selectDistinct");
-		if (distinct.equalsIgnoreCase("true")){
-			aWizardObject.setDistinct(true);
-		}else{
-			aWizardObject.setDistinct(false);
-		}
-		
-		Utils.updateLastUpdateTimeStamp(getRequestContainer());
+		updateLastUpdateTimeStamp();
 		
 	}
 }

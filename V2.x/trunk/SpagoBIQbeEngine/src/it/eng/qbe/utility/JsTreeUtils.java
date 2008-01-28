@@ -22,18 +22,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.utility;
 
 import it.eng.qbe.bo.DatamartLabels;
-import it.eng.qbe.bo.DatamartProperties;
-import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
 
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.Properties;
+
 
 /**
  * @author Andrea Gioia
@@ -127,8 +125,9 @@ public class JsTreeUtils {
 		
 		String className = classAlias;
 		EntityClass ec = null;
-		for (int i=0; i < wizObj.getEntityClasses().size(); i++){
-			ec = (EntityClass)wizObj.getEntityClasses().get(i);
+		Iterator it = wizObj.getQuery().getEntityClassesItertor();
+		while (it.hasNext()){
+			ec = (EntityClass)it.next();
 			if (classAlias.equalsIgnoreCase(ec.getClassAlias())){
 				className = ec.getClassName();
 				break;

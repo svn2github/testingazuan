@@ -21,15 +21,8 @@
  **/
 package it.eng.qbe.geo.action;
 
-import it.businesslogic.ireport.crosstab.Measure;
-import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapRendererConfiguration;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Andrea Gioia

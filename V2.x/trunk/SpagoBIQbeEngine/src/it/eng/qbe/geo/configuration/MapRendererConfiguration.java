@@ -21,14 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.geo.configuration;
 
-import java.util.ArrayList;
+import it.eng.spago.base.SourceBean;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import it.eng.spago.base.SourceBean;
 
 
 /**

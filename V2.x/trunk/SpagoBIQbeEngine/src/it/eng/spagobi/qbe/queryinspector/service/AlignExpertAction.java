@@ -25,7 +25,6 @@ import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;

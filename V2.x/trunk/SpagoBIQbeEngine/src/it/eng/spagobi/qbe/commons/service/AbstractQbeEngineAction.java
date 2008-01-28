@@ -21,23 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.query.IQuery;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.qbe.wizard.WizardConstants;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
+
 import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-
-import it.eng.qbe.action.SpagoBIStartAction;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IQuery;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 
 /**
  * @author Andrea Gioia
@@ -56,8 +53,11 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 	private static final String QBE_SUBQUERY_MODE = WizardConstants.SUBQUERY_MODE;
 	private static final String QBE_SUBQUERY_FIELD =  WizardConstants.SUBQUERY_FIELD;
 	private static final String QBE_LAST_UPDATE_TIMESTAMP =  "QBE_LAST_UPDATE_TIMESTAMP";
-
 	private static final String QBE_USER_ID = "userId";
+	
+	public static final String TRUE = "TRUE";
+	public static final String FALSE = "FALSE";
+	
 	
 	/**
      * Logger component
@@ -69,7 +69,7 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
         super.init(config);
     } 
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	public void service(SourceBean request, SourceBean response) {
 		this.request = request;
 		this.response = response;
 	}
@@ -97,8 +97,29 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 		getRequestContainer().getSessionContainer().setAttribute(attrName, attrValue);
 	}	
 	
+	public void setAttribute(String key, Object value) {
+		try {
+			response.setAttribute(key, value);
+		} catch (SourceBeanException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Object getAttribute(String key) {
+		return request.getAttribute(key);
+	}
+	
 	public String getAttributeAsString(String attrName) {
-		return (String)request.getAttribute(attrName);
+		return (String)getAttribute(attrName);
+	}
+	
+	public boolean getAttributeAsBoolean(String key) {
+		return getAttributeAsBoolean(key, false);
+	}
+
+	public boolean getAttributeAsBoolean(String key, boolean defaultValue) {
+		if( getAttribute(key) == null ) return false;
+		return getAttributeAsString(key).equalsIgnoreCase(TRUE);
 	}
 
 	public Locale getQbeEngineLocale() {
@@ -132,12 +153,16 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 		} else {
 			delAttributeFromSession(QBE_QUERY_MODE);
 		}
+		
+		getActiveQuery().setSubqueryModeActive(subqueryMode);
 	}
 	
 	public boolean isSubqueryModeActive() {
 		String qbeQueryMode = (String)getAttributeFromSession(QBE_QUERY_MODE);
 		return (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(QBE_SUBQUERY_MODE));
+		//return getActiveQuery().isSubqueryModeActive();
 	}
+	
 	
 	public ISingleDataMartWizardObject getMainDataMartWizard() {
 		return  (ISingleDataMartWizardObject)getAttributeFromSession(QBE_QUERY);
@@ -147,6 +172,7 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 		setAttributeInSession(QBE_QUERY, dataMartWizard);
 	}	
 	
+	/*
 	public ISingleDataMartWizardObject getActiveDataMartWizard(){
 		ISingleDataMartWizardObject activeDataMartWizard = null;
 		ISingleDataMartWizardObject mainDataMartWizard = null;		
@@ -161,9 +187,25 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 		
 		return activeDataMartWizard;
 	}
+	*/
+	
+	public IQuery getMainQuery() {
+		return getMainDataMartWizard().getQuery();
+	}
 	
 	public IQuery getActiveQuery() {
-		return getActiveDataMartWizard().getQuery();
+		IQuery activeQuery = null;
+		ISingleDataMartWizardObject mainDataMartWizard = null;		
+		
+		mainDataMartWizard = getMainDataMartWizard();
+		
+		if (isSubqueryModeActive()){
+			activeQuery =  mainDataMartWizard.getQuery().getSelectedSubquery();
+		} else {
+			activeQuery = mainDataMartWizard.getQuery();
+		}
+		
+		return activeQuery;
 	}
 	
 	public String getSubqueryField() {
@@ -172,7 +214,13 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 
 	public void setSubqueryField(String field) {
 		setAttributeInSession(QBE_SUBQUERY_FIELD, field);
-	}	
+	}
+	
+	public void delSubqueryField() {
+		delAttributeFromSession(QBE_SUBQUERY_FIELD);
+	}
+	
+	
 	
 	public void setUserId(String userId) {
 		setAttributeInSession(QBE_USER_ID, userId);

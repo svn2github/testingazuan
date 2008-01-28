@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
 
 
 
@@ -107,8 +108,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_background_no_img'>
 
-	<%if ((aWizardObject.getEntityClasses() != null)
-					&& (aWizardObject.getEntityClasses().size() > 0)) {%>
+	<%if (!aWizardObject.getQuery().isEmpty()) {%>
 
 <table width="100%">
 	<tr>
@@ -130,7 +130,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<form id="formPersistQuery" name="formPersistQuery"
 					action="<%=qbeUrl.getUrl(request,null) %>" method="POST"><input
 					type="hidden" id="previousQueryId" name="previousQueryId"
-					value="<%= (aWizardObject.getQueryId() != null ? aWizardObject.getQueryId() : "")  %>" />
+					value="<%= (aWizardObject.getQuery().getQueryId() != null ? aWizardObject.getQuery().getQueryId() : "")  %>" />
 				<input type="hidden" name="ACTION_NAME" value="PERSIST_QUERY_ACTION" />
 				<table>
 					<tr>
@@ -149,7 +149,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</td>
 						<td >
 								<input id="queryId" type="text" name="queryId"
-												value="<%=(aWizardObject.getQueryId() != null ? aWizardObject.getQueryId() : "") %>">
+												value="<%=(aWizardObject.getQuery().getQueryId() != null ? aWizardObject.getQuery().getQueryId() : "") %>">
 						</td>
 					</tr>
 					<tr>
@@ -258,18 +258,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									<table valign="top" border='0' cellspacing='1'>
 										<thead>
 											<tr>
-												<%List headers = aWizardObject.getSelectClause()
-							.getSelectFields();
-					Iterator it = headers.iterator();
-					String headerName = "";
-					ISelectField selField = null;
-					while (it.hasNext()) {
-						selField = (ISelectField) it.next();
-						headerName = (selField.getFieldAlias() != null ? selField
-								.getFieldAlias()
-								: selField.getFieldName());
-
-						%>
+												<%
+															Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+															String headerName = "";
+															ISelectField selField = null;
+															while (it.hasNext()) {
+																selField = (ISelectField) it.next();
+																headerName = (selField.getFieldAlias() != null ? selField
+																		.getFieldAlias()
+																		: selField.getFieldName());
+												%>
 												<td class="qbe-font"><%=headerName%></td>
 												<%}
 

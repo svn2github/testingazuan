@@ -21,15 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.action;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.conf.QbeTemplate;
-import it.eng.qbe.utility.SpagoBIInfo;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
@@ -39,26 +35,19 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import sun.misc.BASE64Decoder;
 
 import org.apache.log4j.Logger;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import sun.misc.BASE64Decoder;
 
 
 /**

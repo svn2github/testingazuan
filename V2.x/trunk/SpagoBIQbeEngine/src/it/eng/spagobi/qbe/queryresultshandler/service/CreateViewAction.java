@@ -21,44 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.queryresultshandler.service;
 
-import it.eng.qbe.export.Field;
-import it.eng.qbe.export.SQLFieldsReader;
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.views.ViewBuilder;
-import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Jar;
-import org.apache.tools.ant.taskdefs.Javac;
-import org.apache.tools.ant.types.Path;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 
 

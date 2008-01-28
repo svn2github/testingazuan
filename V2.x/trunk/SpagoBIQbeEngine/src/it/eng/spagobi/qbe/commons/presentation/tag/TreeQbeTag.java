@@ -21,27 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.javascript.QbeJsTreeBuilder;
 import it.eng.qbe.javascript.QbeSelectJsTreeBuilder;
-import it.eng.qbe.model.IQuery;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerAccess;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerAccess;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.configuration.ConfigSingleton;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * @author Andrea Gioia
@@ -58,7 +44,7 @@ public class TreeQbeTag extends QbeTagSupport {
 									   
 		   	if ( Utils.isSubQueryModeActive( getSessionContainer() ) ){
 					String subQueryFieldId = (String)getSessionContainer().getAttribute(WizardConstants.SUBQUERY_FIELD);
-					String subQueryPrefix = Utils.getMainWizardObject(getSessionContainer()).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+					String subQueryPrefix = Utils.getMainWizardObject(getSessionContainer()).getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
 					qbeJsBuilder.setClassPrefix(subQueryPrefix);
 		   	}
 	    	  

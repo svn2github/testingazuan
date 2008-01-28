@@ -21,17 +21,15 @@
  **/
 package it.eng.qbe.geo.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapRendererConfiguration;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import sun.misc.BASE64Encoder;
 

@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.javascript;
 
-import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.datasource.BasicHibernateDataSource;
+import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
@@ -34,13 +34,11 @@ import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.utility.JsTreeUtils;
 import it.eng.qbe.utility.QbeProperties;
 import it.eng.qbe.utility.RelationField;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.ApplicationContainer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -254,23 +252,17 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	
 	protected Collection getSelectedClassNames() {
 		Set selectedClassNames = null;
-		
-		List list  = dataMartWizard.getEntityClasses();		
-		if(list.size() > 0) {
-			selectedClassNames = new HashSet();
-			EntityClass ec = null;	
-			Collection allClassNames = getClassNames();		
-			for (Iterator it = list.iterator(); it.hasNext(); ){
+				
+		selectedClassNames = new HashSet();
+		EntityClass ec = null;	
+		Collection allClassNames = getClassNames();		
+		for (Iterator it = dataMartWizard.getQuery().getEntityClassesItertor(); it.hasNext(); ){
 				ec  = (EntityClass)it.next();	
 				if(allClassNames.contains(ec.getClassName())) {
 					selectedClassNames.add(ec.getClassName());
 				}
-			}		
 		}
-		
-		
-		
-		
+				
 		return selectedClassNames;	 
 	}
 		

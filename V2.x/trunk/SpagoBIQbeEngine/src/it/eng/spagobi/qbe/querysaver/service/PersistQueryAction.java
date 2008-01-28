@@ -21,69 +21,63 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querysaver.service;
 
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.SpagoBIInfo;
+import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.utilities.GenericSavingException;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This action is responsible to Persist the current working query represented by
  * the object ISingleDataMartWizardObject in session
  */
 public class PersistQueryAction extends AbstractQbeEngineAction {
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	// valid input parameter names
+	public static final String QUERY_ID = "queryId";
+	public static final String QUERY_DESCRIPTION = "queryDescritpion";
+	public static final String QUERY_VISIBILITY = "visibility";
+	
+	
 	public void service(SourceBean request, SourceBean response) {
 		
 	
-		DataMartModel dmModel = (DataMartModel)getRequestContainer().getSessionContainer().getAttribute("dataMartModel");
-	
-		String queryId = (String)request.getAttribute("queryId");
+		String queryId = getAttributeAsString(QUERY_ID);		
+		String  queryDescritpion  = getAttributeAsString(QUERY_DESCRIPTION);		
+		String  visibility  = getAttributeAsString(QUERY_VISIBILITY);
 		
-		String  queryDescritpion  = (String)request.getAttribute("queryDescritpion");
 		
-		String  visibility  = (String)request.getAttribute("visibility");
 		
-		ISingleDataMartWizardObject obj = Utils.getWizardObject(getRequestContainer().getSessionContainer());
 		if ((queryId != null) && (queryId.trim().length() > 0)){
-			obj.setQueryId(queryId);
+			getActiveQuery().setQueryId(queryId);
 		}
 		
 		if ((queryDescritpion != null) && (queryDescritpion.trim().length() > 0)){
-			obj.setDescription(queryDescritpion);
+			getMainDataMartWizard().setDescription(queryDescritpion);
 		}
 		
 		if ((visibility != null) && (visibility.trim().length() > 0)){
 			if (visibility.equalsIgnoreCase("public")){
-				obj.setVisibility(true);
+				getMainDataMartWizard().setVisibility(true);
 			}else {
-				obj.setVisibility(false);
+				getMainDataMartWizard().setVisibility(false);
 			}
 		}
 		
-		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
-		if (qbeMode.equalsIgnoreCase("WEB")){
-			IEngUserProfile userProfile =(IEngUserProfile)getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			if (userProfile != null){
-				obj.setOwner(userProfile.getUserUniqueIdentifier().toString());
+		if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
+			SpagoBIRequest spagoBIRequest = getSpagoBIRequest();
+			
+			if (spagoBIRequest != null){
+				getMainDataMartWizard().setOwner(spagoBIRequest.getUserId());
 			}
 			
 			
 		}
-		dmModel.persistQueryAction(obj);
+		
+		getDatamartModel().persistQueryAction( getMainDataMartWizard() );
 		SessionContainer session = getRequestContainer().getSessionContainer();
 		
 		
@@ -92,7 +86,7 @@ public class PersistQueryAction extends AbstractQbeEngineAction {
 			ContentServiceProxy proxy = new ContentServiceProxy(getUserId(), getHttpSession());
 			 
 			String result=proxy.saveSubObject(getSpagoBIRequest().getDocumentId(), 
-					queryId,queryDescritpion, "" + obj.getVisibility(), queryId);
+					queryId,queryDescritpion, "" + getMainDataMartWizard().getVisibility(), queryId);
 			
 			if (result.toUpperCase().startsWith("KO")) {}
 		}

@@ -22,28 +22,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
 import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.model.IQuery;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerAccess;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerAccess;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.configuration.ConfigSingleton;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 
-/**
- * @author Andrea Gioia
- *
- */
 public class TitlebarTag extends QbeTagSupport {
 	
 	String datamartName;
@@ -73,7 +58,7 @@ public class TitlebarTag extends QbeTagSupport {
 			
 			//buffer.append("		<%@include file='/jsp/qbe_headers.jsp'%>\n");
 			if (!Utils.isSubQueryModeActive( getSessionContainer() )){
-				String queryId = getQuery().getQueryId() != null ? getQuery().getQueryId() : " ";
+				String queryId = getQuery().getQuery().getQueryId() != null ? getQuery().getQuery().getQueryId() : " ";
 				startModifyTimeStamp = (startModifyTimeStamp != null ? startModifyTimeStamp : " ");
 				lastUpdTimeStamp = (lastUpdTimeStamp != null ? lastUpdTimeStamp : " ");
 				String imgSrc = QbeEngineConf.getInstance().getUrlGenerator().conformStaticResourceLink(getRequest(),"../img/back.gif");

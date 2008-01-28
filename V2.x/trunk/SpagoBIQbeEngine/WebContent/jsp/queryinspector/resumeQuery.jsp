@@ -29,6 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
+
 
 
 
@@ -88,7 +90,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 	if(editableStr != null && editableStr.equalsIgnoreCase("FALSE")) {
-		if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){
+		if (!aWizardObject.getQuery().isEmpty()){
 %>
 	<table width="100%">
 	<tr>
@@ -133,158 +135,217 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<%  int rowsCounter = 1;
 							if (aWizardObject.getFinalQuery() != null){ 
 									 
-									 if (aWizardObject.getSelectClause() != null){ %>
+									 if (true){ %>
 									
 							<tr border=2>
 								<td colspan="2"> <b>Select </b> 
-										<% if (aWizardObject.getDistinct()) {%>
+										<% if (aWizardObject.getQuery().getDistinct()) {%>
 								    		<b> distinct</b>
 								    	<% } %>
 								</td> 			
 							</tr>
 									
-									<% List selectedFields = aWizardObject.getSelectClause().getSelectFields(); 
-									   java.util.Iterator it = selectedFields.iterator();
-									   ISelectField selectF = null;
-									   while (it.hasNext()){
-										   selectF = (ISelectField)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+																									   Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+																									   ISelectField selectF = null;
+																									   while (it.hasNext()){
+																										   selectF = (ISelectField)it.next();
+																										   rowsCounter++;
+																		%>
 								    	<tr>
-								    	<td>&nbsp;<%= selectF.getFieldName() %> 
-								    	<% if (selectF.getFieldAlias() != null) {%>
-								    		as <%=selectF.getFieldAlias() %>
-								    	<% } %>
-								    	<% if (it.hasNext()){ %>
+								    	<td>&nbsp;<%=selectF.getFieldName()%> 
+								    	<%
+ 								    		if (selectF.getFieldAlias() != null) {
+ 								    	%>
+								    		as <%=selectF.getFieldAlias()%>
+								    	<%
+								    		}
+								    	%>
+								    	<%
+								    		if (it.hasNext()){
+								    	%>
 								    		,
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									
-									<% if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)) { 
-										rowsCounter++;
+									<%
+										}
 									%>
+									<%
+										}
+									%>
+									
+									<%
+																			if (!aWizardObject.getQuery().isEmpty()) { 
+																										rowsCounter++;
+																		%>
 									<tr>
 										<td colspan="2"><b> From </b></td> 
 										
 									</tr>
 									
-									<% List enityClasses = aWizardObject.getEntityClasses();
-									   java.util.Iterator it = enityClasses.iterator();
-									   EntityClass ec = null;
-									   while (it.hasNext()){
-										   ec = (EntityClass)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+																			
+																									  Iterator it = aWizardObject.getQuery().getEntityClassesItertor();;
+																									   EntityClass ec = null;
+																									   while (it.hasNext()){
+																										   ec = (EntityClass)it.next();
+																										   rowsCounter++;
+																		%>
 								    	<tr>
-								    	<td>&nbsp;<%= ec.getClassName() %> 
-								    	<% if (ec.getClassAlias() != null) {%>
-								    		as <%=ec.getClassAlias() %>
-								    	<% } %>
-								    	<% if (it.hasNext()){ %>
+								    	<td>&nbsp;<%=ec.getClassName()%> 
+								    	<%
+ 								    		if (ec.getClassAlias() != null) {
+ 								    	%>
+								    		as <%=ec.getClassAlias()%>
+								    	<%
+								    		}
+								    	%>
+								    	<%
+								    		if (it.hasNext()){
+								    	%>
 								    		,
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									
-									<% if (aWizardObject.getWhereClause() != null){ 
-										rowsCounter++;
+									<%
+										}
 									%>
+									<%
+										}
+									%>
+									
+									<%
+																			if (aWizardObject.getQuery().getEntityClassesItertor().hasNext()){ 
+																										rowsCounter++;
+																		%>
 									   <tr>
 										<td colspan="2"> <b>Where</b> </td>
 									   </tr>
-									<% List conditionFields = aWizardObject.getWhereClause().getWhereFields(); 
-										java.util.Iterator it = conditionFields.iterator();
-									   IWhereField conditionF = null;
-									   while (it.hasNext()){
-										   conditionF = (IWhereField)it.next();
-										   rowsCounter++;
-										   String leftBracketsStr = "";
-										   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
-								    
-										   String rightBracketsStr = "";
-										   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
-								    
-								    %>
+									<%
+										 
+																Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+																   IWhereField conditionF = null;
+																   while (it.hasNext()){
+																	   conditionF = (IWhereField)it.next();
+																	   rowsCounter++;
+																	   String leftBracketsStr = "";
+																	   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
+															    
+																	   String rightBracketsStr = "";
+																	   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
+									%>
 								    	<tr>
 								    	<td>&nbsp;<%=leftBracketsStr + conditionF.getFieldName()%>
-								    	<b><%= " " + conditionF.getFieldOperator() + " "%></b> 
-								    	<% if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getHibernateType().endsWith("StringType"))){ %>
+								    	<b><%=" " + conditionF.getFieldOperator() + " "%></b> 
+								    	<%
+ 								    		if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getType().endsWith("StringType"))){
+ 								    	%>
 								    	<%=" '"+conditionF.getFieldValue()+ "' "%>
-								    	<% }else{ %>
+								    	<%
+								    		}else{
+								    	%>
 								    	<%=" "+ conditionF.getFieldValue() + " "%>
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	<%=rightBracketsStr%>
-								    	<% if (it.hasNext()) {%>
-								    	&nbsp;<%=conditionF.getNextBooleanOperator() %>
-								    	<% } %>
+								    	<%
+								    		if (it.hasNext()) {
+								    	%>
+								    	&nbsp;<%=conditionF.getNextBooleanOperator()%>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<% } %>
+									<%
+										}
+									%>
+									<%
+										}
+									%>
 									
 									
-									<% if (aWizardObject.getGroupByClause() != null){
-										rowsCounter++;
+									<%
+										if (aWizardObject.getQuery().getGroupByFieldsIterator().hasNext()){
+											rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"> <b>Group By</b> </td>
 									  </tr>
-									<% List groupByFields = aWizardObject.getGroupByClause().getGroupByFields(); 
-									   java.util.Iterator it = groupByFields.iterator();
-									   IOrderGroupByField groupF = null;
-									   while (it.hasNext()){
-										   groupF = (IOrderGroupByField)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+																   Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+																   IGroupByField groupF = null;
+																   while (it.hasNext()){
+																	   groupF = (IGroupByField)it.next();
+																	   rowsCounter++;
+									%>
 								    	<tr>
-								    		<td>&nbsp;<%= groupF.getFieldName() %>
-								    		<% if (it.hasNext()){ %>
+								    		<td>&nbsp;<%=groupF.getFieldName()%>
+								    		<%
+								    			if (it.hasNext()){
+								    		%>
 								    		,
-								    		<% } %>
+								    		<%
+								    			}
+								    		%>
 								    		</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									<% if (aWizardObject.getOrderByClause() != null){ 
-										rowsCounter++;
+									<%
+										}
+									%>
+									<%
+										}
+									%>
+									<%
+										if (aWizardObject.getQuery().getOrderByFieldsIterator().hasNext()){ 
+																	rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"><b> Order By</b> </td>
 									   </tr>
-									<% List orderByFields = aWizardObject.getOrderByClause().getOrderByFields(); 
-									   java.util.Iterator it = orderByFields.iterator();
-									   OrderByFieldSourceBeanImpl orderF = null;
-									   while (it.hasNext()){
-										   orderF = (OrderByFieldSourceBeanImpl)it.next();
+									<%
+										Iterator it = aWizardObject.getQuery().getOrderByFieldsIterator();
+										IOrderByField orderF = null;
+										while (it.hasNext()){
+										   orderF = (IOrderByField)it.next();
 										   rowsCounter++;
-								    %>
+									%>
 								    	<tr>
-								    	<td>&nbsp;<%= orderF.getFieldName() %> 
-								    	&nbsp;<%= orderF.isAscendingOrder()? "ASC": "DESC"%> 
-								    	<% if (it.hasNext()){ %>
+								    	<td>&nbsp;<%=orderF.getFieldName()%> 
+								    	&nbsp;<%=orderF.isAscendingOrder()? "ASC": "DESC"%> 
+								    	<%
+ 								    		if (it.hasNext()){
+ 								    	%>
 								    		,
-								    		<% } %>
+								    		<%
+ 								    		}
+ 								    	%>
 								    	 	</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-								
-									<% 
-									
-										if (rowsCounter<11) rowsCounter=10;
-										else {
-											rowsCounter = (int)Math.floor((10 + (rowsCounter-10)*1.5));
-
+									<%
 										}
-										
 									%>
+									<%
+										}
+									%>
+								
+									<%
+																		if (rowsCounter<11) rowsCounter=10;
+																																								else {
+																																									rowsCounter = (int)Math.floor((10 + (rowsCounter-10)*1.5));
+
+																																								}
+																	%>
 							
-							<%} %>	
+							<%
+															}
+														%>	
 						</table>
 					</td>	
 				</tr>		
@@ -295,7 +356,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td>&nbsp;</td>
 	</tr>
 </table>
-	<%} else { %>
+	<%
+		} else {
+	%>
 <table width="100%">
 	<tr>
 		<td width="3%">
@@ -308,7 +371,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr>
 		<td></td>
 		<td valign="top">
-			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer, "QBE.Warning.NoFieldSelected", bundle) %></span>	
+			<span class="qbeError"><%=qbeMsg.getMessage(requestContainer, "QBE.Warning.NoFieldSelected", bundle)%></span>	
 		</td>
 	</tr>
 	<tr>
@@ -322,9 +385,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  <span id="currentScreen">DIV_RESUME_QUERY</span>
 </div>
   
-	<%}%>
+	<%
+  		}
+  	%>
 
-<% } else if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)){%> 
+<%
+	} else if (!aWizardObject.getQuery().isEmpty()){
+%> 
 <table width="100%">
 	<tr>
 		<td width="2%">
@@ -371,139 +438,196 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<tr>
 					<td>
 						<table class="qbe-font" width="100%">
-						<%  int rowsCounter = 1;
-							if (aWizardObject.getFinalQuery() != null){ 
-									 
-									 if (aWizardObject.getSelectClause() != null){ %>
+						<%
+							int rowsCounter = 1;
+															if (aWizardObject.getFinalQuery() != null){ 
+																	 
+																	 if (true){
+						%>
 									
 							<tr border=2>
 								<td colspan="2"> <b>Select </b> 
-										<% if (aWizardObject.getDistinct()) {%>
+										<%
+ 											if (aWizardObject.getQuery().getDistinct()) {
+ 										%>
 								    		<b> distinct</b>
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								</td> 			
 							</tr>
 									
-									<% List selectedFields = aWizardObject.getSelectClause().getSelectFields(); 
-									   java.util.Iterator it = selectedFields.iterator();
-									   ISelectField selectF = null;
-									   while (it.hasNext()){
-										   selectF = (ISelectField)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+																			Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+																																									   ISelectField selectF = null;
+																																									   while (it.hasNext()){
+																																										   selectF = (ISelectField)it.next();
+																																										   rowsCounter++;
+																		%>
 								    	<tr>
-								    	<td>&nbsp;<%= selectF.getFieldName() %> 
-								    	<% if (selectF.getFieldAlias() != null) {%>
-								    		as <%=selectF.getFieldAlias() %>
-								    	<% } %>
-								    	<% if (it.hasNext()){ %>
+								    	<td>&nbsp;<%=selectF.getFieldName()%> 
+								    	<%
+ 								    		if (selectF.getFieldAlias() != null) {
+ 								    	%>
+								    		as <%=selectF.getFieldAlias()%>
+								    	<%
+								    		}
+								    	%>
+								    	<%
+								    		if (it.hasNext()){
+								    	%>
 								    		,
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									
-									<% if ((aWizardObject.getEntityClasses() != null) && (aWizardObject.getEntityClasses().size() > 0)) { 
-										rowsCounter++;
+									<%
+										}
 									%>
+									<%
+										}
+									%>
+									
+									<%
+																			if (!aWizardObject.getQuery().isEmpty()) { 
+																										rowsCounter++;
+																		%>
 									<tr>
 										<td colspan="2"><b> From </b></td> 
 										
 									</tr>
 									
-									<% List enityClasses = aWizardObject.getEntityClasses();
-									   java.util.Iterator it = enityClasses.iterator();
-									   EntityClass ec = null;
-									   while (it.hasNext()){
-										   ec = (EntityClass)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+																			Iterator it = aWizardObject.getQuery().getEntityClassesItertor();
+																									   EntityClass ec = null;
+																									   while (it.hasNext()){
+																										   ec = (EntityClass)it.next();
+																										   rowsCounter++;
+																		%>
 								    	<tr>
-								    	<td>&nbsp;<%= ec.getClassName() %> 
-								    	<% if (ec.getClassAlias() != null) {%>
-								    		as <%=ec.getClassAlias() %>
-								    	<% } %>
-								    	<% if (it.hasNext()){ %>
+								    	<td>&nbsp;<%=ec.getClassName()%> 
+								    	<%
+ 								    		if (ec.getClassAlias() != null) {
+ 								    	%>
+								    		as <%=ec.getClassAlias()%>
+								    	<%
+								    		}
+								    	%>
+								    	<%
+								    		if (it.hasNext()){
+								    	%>
 								    		,
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									
-									<% if (aWizardObject.getWhereClause() != null){ 
-										rowsCounter++;
+									<%
+										}
 									%>
+									<%
+										}
+									%>
+									
+									<%
+																			if (aWizardObject.getQuery().getEntityClassesItertor().hasNext()){ 
+																										rowsCounter++;
+																		%>
 									   <tr>
 										<td colspan="2"> <b>Where</b> </td>
 									   </tr>
-									<% List conditionFields = aWizardObject.getWhereClause().getWhereFields(); 
-										java.util.Iterator it = conditionFields.iterator();
-									   IWhereField conditionF = null;
-									   while (it.hasNext()){
-										   conditionF = (IWhereField)it.next();
-										   rowsCounter++;
-										   String leftBracketsStr = "";
-										   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
-								    
-										   String rightBracketsStr = "";
-										   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
-								    
-								    %>
+									<%
+										java.util.Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+																   IWhereField conditionF = null;
+																   while (it.hasNext()){
+																	   conditionF = (IWhereField)it.next();
+																	   rowsCounter++;
+																	   String leftBracketsStr = "";
+																	   for(int j = 0; j < conditionF.getLeftBracketsNum(); j++) leftBracketsStr += "(";
+															    
+																	   String rightBracketsStr = "";
+																	   for(int j = 0; j < conditionF.getRightBracketsNum(); j++) rightBracketsStr += ")";
+									%>
 								    	<tr>
 								    	<td>&nbsp;<%=leftBracketsStr + conditionF.getFieldName()%>
-								    	<b><%= " " + conditionF.getFieldOperator() + " "%></b> 
-								    	<% if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getHibernateType().endsWith("StringType"))){ %>
+								    	<b><%=" " + conditionF.getFieldOperator() + " "%></b> 
+								    	<%
+ 								    		if ((conditionF.getFieldEntityClassForRightCondition() == null)&&(conditionF.getType().endsWith("StringType"))){
+ 								    	%>
 								    	<%=" '"+conditionF.getFieldValue()+ "' "%>
-								    	<% }else{ %>
+								    	<%
+								    		}else{
+								    	%>
 								    	<%=" "+ conditionF.getFieldValue() + " "%>
-								    	<% } %>
+								    	<%
+								    		}
+								    	%>
 								    	<%=rightBracketsStr%>
-								    	<% if (it.hasNext()) {%>
-								    	&nbsp;<%=conditionF.getNextBooleanOperator() %>
-								    	<% } %>
+								    	<%
+								    		if (it.hasNext()) {
+								    	%>
+								    	&nbsp;<%=conditionF.getNextBooleanOperator()%>
+								    	<%
+								    		}
+								    	%>
 								    	</td>
 								    	</tr>
-									<%    } %>
-									<% } %>
+									<%
+										}
+									%>
+									<%
+										}
+									%>
 									
 									
-									<% if (aWizardObject.getGroupByClause() != null){
-										rowsCounter++;
+									<%
+										if (aWizardObject.getQuery().getGroupByFieldsIterator().hasNext()){
+											rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"> <b>Group By</b> </td>
 									  </tr>
-									<% List groupByFields = aWizardObject.getGroupByClause().getGroupByFields(); 
-									   java.util.Iterator it = groupByFields.iterator();
-									   IOrderGroupByField groupF = null;
-									   while (it.hasNext()){
-										   groupF = (IOrderGroupByField)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+										
+																   Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+																   IGroupByField groupF = null;
+																   while (it.hasNext()){
+																	   groupF = (IGroupByField)it.next();
+																	   rowsCounter++;
+									%>
 								    	<tr>
-								    		<td>&nbsp;<%= groupF.getFieldName() %>
-								    		<% if (it.hasNext()){ %>
+								    		<td>&nbsp;<%=groupF.getFieldName()%>
+								    		<%
+								    			if (it.hasNext()){
+								    		%>
 								    		,
-								    		<% } %>
+								    		<%
+								    			}
+								    		%>
 								    		</td>
 								    	</tr>
-									<%    } %>
-									<%  } %>
-									<% if (aWizardObject.getOrderByClause() != null){ 
-										rowsCounter++;
+									<%
+										}
+									%>
+									<%
+										}
+									%>
+									<%
+										if (aWizardObject.getQuery().getOrderByFieldsIterator().hasNext()){ 
+																	rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"><b> Order By</b> </td>
 									   </tr>
-									<% List orderByFields = aWizardObject.getOrderByClause().getOrderByFields(); 
-									   java.util.Iterator it = orderByFields.iterator();
-									   OrderByFieldSourceBeanImpl orderF = null;
-									   while (it.hasNext()){
-										   orderF = (OrderByFieldSourceBeanImpl)it.next();
-										   rowsCounter++;
-								    %>
+									<%
+										
+																   Iterator it = aWizardObject.getQuery().getOrderByFieldsIterator();
+																   IOrderByField orderF = null;
+																   while (it.hasNext()){
+																	   orderF = (IOrderByField)it.next();
+																	   rowsCounter++;
+									%>
 								    	<tr>
 								    	<td>&nbsp;<%= orderF.getFieldName() %> 
 								    	&nbsp;<%= orderF.isAscendingOrder()? "ASC": "DESC"%> 

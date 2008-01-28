@@ -21,12 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.javascript;
 
-import it.eng.qbe.wizard.ISelectField;
+import it.eng.qbe.query.ISelectField;
 
-/**
- * @author Gioia
- *
- */
 public class QbeJsTreeNodeId implements IJsTreeNodeId {
 	
 	String className;
@@ -88,10 +84,4 @@ public class QbeJsTreeNodeId implements IJsTreeNodeId {
 	public void setClassPrefix(String classPrefix) {
 		this.classPrefix = classPrefix;
 	}
-	
-	/*
-	public int equals(Object o) {
-		return 
-	}
-	*/
 }

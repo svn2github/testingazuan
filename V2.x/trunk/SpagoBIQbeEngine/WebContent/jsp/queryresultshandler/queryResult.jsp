@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.export.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="javax.portlet.PortletRequest"%>
+<%@ page import="it.eng.qbe.query.*"%>
 
 
 
@@ -123,15 +124,16 @@ public static String getReportServletContextAddress(){
   	
   
 	List calculateFields = new ArrayList();
-	if (aWizardObject.getSelectClause() != null){
-		calculateFields.addAll(aWizardObject.getSelectClause().getCalcuatedFields());
-		
-		
-		calculateFields.addAll(dm.getFormula().getCalculatedFields(aWizardObject.getEntityClasses()));
+	Iterator it = aWizardObject.getQuery().getCalculatedFieldsIterator();
+	while(it.hasNext()) {
+		calculateFields.add(it.next());
 	}
+	
+	calculateFields.addAll(dm.getFormula().getCalculatedFields(aWizardObject.getQuery().getEntityClassesItertor()));
+	
   	try{
 		for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
-  			((CalculatedField)itCalcFields.next()).calculateMappings((SingleDataMartWizardObjectSourceBeanImpl)aWizardObject);
+  			((CalculatedField)itCalcFields.next()).calculateMappings(aWizardObject.getQuery());
   		}
   	}catch(Throwable t){
   		t.printStackTrace();
@@ -186,6 +188,7 @@ function askConfirmation (message) {
 <%
 	}
 %>
+
 
 <%@include file="/jsp/testata.jsp" %>
 
@@ -296,8 +299,8 @@ function askConfirmation (message) {
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
   				
-  				<% if(aWizardObject.getQueryId() != null) {%>
-  					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQueryId()%>"/>
+  				<% if(aWizardObject.getQuery().getQueryId() != null) {%>
+  					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQuery().getQueryId()%>"/>
   				<% } %>
   				
 				<table>
@@ -321,7 +324,7 @@ function askConfirmation (message) {
 				
 						<td width="20%">					
 							
-							<% if(!aWizardObject.containsDuplicatedAliases()) {
+							<% if(!aWizardObject.getQuery().containsDuplicatedAliases()) {
 							 	if (overflow){ %>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
@@ -349,7 +352,7 @@ function askConfirmation (message) {
 						</td>
 						<td width="60%" align="left">
 							
-							<% if(!aWizardObject.containsDuplicatedAliases()) {%>
+							<% if(!aWizardObject.getQuery().containsDuplicatedAliases()) {%>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
 									 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
@@ -526,7 +529,7 @@ function askConfirmation (message) {
 			<table>
 
 				<% 
-					Iterator it = null;
+					
 					List headers = null;
 					if (aWizardObject.isUseExpertedVersion()){%>
 					<thead>
@@ -572,18 +575,19 @@ function askConfirmation (message) {
 										<%
 								 }
 							 	} %>
-						<% headers = aWizardObject.getSelectClause().getSelectFields(); 
-						   it = headers.iterator();
-						   String headerName = "";
-						   ISelectField selField = null;
-						   while (it.hasNext()){
-							   selField = (ISelectField)it.next();
-							   headerName = selField.getFieldName();
-							   if(headerName.equalsIgnoreCase(selField.getFieldNameWithoutOperators()))
-							   	headerName = (selField.getFieldAlias() != null ? selField.getFieldAlias() : headerName); 
-							   else
-								   if(selField.getFieldAlias() != null)
-								   	headerName = headerName.replaceAll(selField.getFieldNameWithoutOperators(), selField.getFieldAlias());
+						<%
+							//headers = aWizardObject.getQuery().getSelectClause().getSelectFields(); 
+										   it = aWizardObject.getQuery().getSelectFieldsIterator();
+										   String headerName = "";
+										   ISelectField selField = null;
+										   while (it.hasNext()){
+											   selField = (ISelectField)it.next();
+											   headerName = selField.getFieldName();
+											   if(headerName.equalsIgnoreCase(selField.getFieldNameWithoutOperators()))
+											   	headerName = (selField.getFieldAlias() != null ? selField.getFieldAlias() : headerName); 
+											   else
+												   if(selField.getFieldAlias() != null)
+												   	headerName = headerName.replaceAll(selField.getFieldNameWithoutOperators(), selField.getFieldAlias());
 						%>
 								<td class='portlet-section-header' style='vertical-align:middle;<%=paddingStyle%>'><%=headerName %></td>
 						<% } %>

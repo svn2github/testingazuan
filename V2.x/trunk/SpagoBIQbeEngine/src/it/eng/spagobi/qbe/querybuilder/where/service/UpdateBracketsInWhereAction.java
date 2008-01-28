@@ -21,55 +21,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.where.service;
 
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.IWhereClause;
-import it.eng.qbe.wizard.IWhereField;
-import it.eng.qbe.wizard.WizardConstants;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
+import it.eng.qbe.query.IWhereField;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import java.util.Iterator;
-import java.util.List;
 
 
 /**
- * @author Andrea Zoppello
- * 
  * This action move down of one position the field identified in request with FIELD_ID in the Where Clause  
  * of the object ISingleDataMartWizardObject in session
  */
-public class UpdateBracketsInWhereAction extends AbstractAction {
+public class UpdateBracketsInWhereAction extends AbstractQbeEngineAction {
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	// valid input parameter names
+	public static final String FIELD_ID = "FIELD_ID";
+	public static final String SIDE = "SIDE";
+	public static final String ACTION = "ACTION";
+	
 	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-		
-		String fieldId = (String)request.getAttribute("FIELD_ID"); 
-		String side = (String)request.getAttribute("SIDE"); 
-		String action = (String)request.getAttribute("ACTION"); 
+		String fieldId = getAttributeAsString(FIELD_ID); 
+		String side = getAttributeAsString(SIDE); 
+		String action = getAttributeAsString(ACTION); 
 		
 		if(fieldId == null || side == null || action == null) return;
 		
-		IWhereClause aWhereClause = aWizardObject.getWhereClause();
+		
 		IWhereField whereField = null;
-		if(aWhereClause != null) {
-			List fileds = aWhereClause.getWhereFields();
-			for(Iterator it = fileds.iterator(); it.hasNext(); ) {
-				IWhereField field = (IWhereField)it.next();
-				if(field.getId().equalsIgnoreCase(fieldId)) {
-					whereField = field;
-					break;
-				}
+		for(Iterator it =getMainQuery().getWhereFieldsIterator(); it.hasNext(); ) {
+			IWhereField field = (IWhereField)it.next();
+			if(field.getId().equalsIgnoreCase(fieldId)) {
+				whereField = field;
+				break;
 			}
 		}
+		
 		
 		if(whereField == null) return;
 		
@@ -88,9 +76,7 @@ public class UpdateBracketsInWhereAction extends AbstractAction {
 		}
 						
 		
-		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
-	
-		
+		updateLastUpdateTimeStamp();
+		setMainDataMartWizard( getMainDataMartWizard() );	
 	}
 }

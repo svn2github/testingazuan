@@ -13,14 +13,15 @@
 <qbe:url type="resource" var="showOperatorsButtonImage" ref="../img/querybuilder/select/operator.gif"/>
 <qbe:url type="resource" var="setAliasButtonImage" ref="../img/querybuilder/select/as.gif"/>
 
+
 <form id="formUpdateSelect" name="formUpdateSelect" action="${updateSelectionClause}" method="post">	
 					
 					<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_SELECT_ACTION"/>
 				  	
 				  	<table class="qbe-font">
 				  			
-				  		<c:if test="${query.selectClause != null}">
-				  			<c:set var="fields" value="${query.selectClause.selectFields}"/>
+				  		<c:if test="true">
+				  			<c:set var="fields" value="${query.query.selectFieldsIterator}"/>
 					 		<c:if test="${fields != null}">	
 					 			<c:forEach var="field" items="${fields}">	
 					 				<tr>
@@ -125,7 +126,7 @@
 					 		
 			
 			
-			<c:set var="cFields" value="${query.selectClause.calcuatedFields}"/>
+			<c:set var="cFields" value="${query.query.calculatedFieldsIterator}"/>
 				
 			<c:if test="${cFields != null}">	
 				<c:forEach var="cField" items="${cFields}">
@@ -171,7 +172,7 @@
 			<tr>
 				<td colspan="8">
 					<c:choose>
-							<c:when test="${query.distinct}">
+							<c:when test="${query.query.distinct}">
 								<input type="checkbox" 
 										id="checkboxDistinct" 
 										checked="checked" 
@@ -187,7 +188,7 @@
 					<input type="hidden" 
 						   id="selectDistinct" 
 						   name="selectDistinct" 
-						   value="${query.distinct}"/>
+						   value="${query.query.distinct}"/>
     			</td>
     		</tr>
     			 			    		   		

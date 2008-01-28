@@ -28,6 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@ page import="it.eng.qbe.wizard.*"%>
+<%@ page import="it.eng.qbe.model.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
+
 
 
 
@@ -51,7 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
    if (Utils.isSubQueryModeActive(sessionContainer)){
 		String subQueryFieldId = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
-		String subQueryPrefix = Utils.getMainWizardObject(sessionContainer).getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		String subQueryPrefix = Utils.getMainWizardObject(sessionContainer).getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
 		qbeConditionJsTreeBuilder.setClassPrefix(subQueryPrefix);
 		qbeJoinJsTreeBuilder.setClassPrefix(subQueryPrefix);
 		qbeJoinWithParentQueryBuilder = new QbeJoinWithFatherQueryJsTreeBuilder(dm, Utils.getMainWizardObject(sessionContainer), request);
@@ -91,7 +94,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
  
 <div class='div_background_no_img'>
-<% if ((aWizardObject.getSelectClause() != null) && (aWizardObject.getSelectClause().getSelectFields().size() > 0)){%> 
+<% if (!aWizardObject.getQuery().isEmpty()){%> 
 	<table width="100%">
 
 		<% 	
@@ -120,7 +123,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   			<td>
 		   			<% String treeSelection = null;
 		   			   String isSelectClauseEmpty = null;
-		   			   	if ((aWizardObject.getSelectClause() != null) && (aWizardObject.getSelectClause().getSelectFields().size() > 0)){
+		   			   	if (!aWizardObject.getQuery().isEmpty()){
 		   			   	   isSelectClauseEmpty = "false";
 	  						treeSelection = (String)sessionContainer.getAttribute("SELECTION_TREE");
 	  						
@@ -236,12 +239,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    		   				
 			    		   		
 			    		   		String fieldId = "";
-			    		   		if (aWizardObject.getWhereClause() != null){
-			    		   			List l = aWizardObject.getWhereClause().getWhereFields();
-			    		   			if (l != null){
-			    		   				java.util.Iterator it = l.iterator();
-			    		   				IWhereField aWhereField = null;
-			    		   				while (it.hasNext()){
+			    		   		
+			    		   		Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+			    		   		IWhereField aWhereField = null;
+			    		   		while (it.hasNext()){
 			    		   					aWhereField = (IWhereField)it.next();
 			    		   					fieldId = (String)aWhereField.getId();
 			    		   					fieldName = (String)aWhereField.getFieldName();
@@ -369,8 +370,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 													<td>&nbsp;</td> 
 			    		   					<td>
 			    		   						<%
-			    		   						ISingleDataMartWizardObject subquery = aWizardObject.getSubQueryOnField(fieldId);
-			    		   						if(subquery != null && !aWizardObject.isSubqueryValid(subquery)) {
+			    		   							IQuery subquery = aWizardObject.getQuery().getSubQueryOnField(fieldId);
+			    		   							    		   						if(subquery != null && !aWizardObject.getQuery().isSubqueryValid(subquery)) {
 			    		   						%>
 			    		   							<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" 
 			    		   								   name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>" 
@@ -425,8 +426,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 													<td>&nbsp;</td>
 			    		   			    </tr><tr><td>&nbsp;</td></tr>
 			    		   			   <% }%> <%-- FINE WHILE --%>
-			    		   			<% }%> <%-- FINE IF--%>
-		    					<% }%><%-- FINE IF--%>
 		    					
 		  						</table>
 		  						</form>

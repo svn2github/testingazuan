@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.action;
 
-import it.eng.qbe.datasource.BasicHibernateDataSource;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.DataMartModel;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
 

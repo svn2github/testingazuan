@@ -2,17 +2,15 @@
 
 <ACTIONS>
 
-
-	<ACTION name="DELETE_FIELD_FROM_WHERE_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.DeleteFieldFromWhereAction" 
+	<ACTION name="SELECT_FIELD_FOR_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.AddWhereFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	
-	<ACTION name="EXIT_SUBQUERY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.ExitSubQueryAction" 
+	<ACTION name="DELETE_FIELD_FROM_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.DeleteWhereFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -20,7 +18,7 @@
 	
 	
 	<ACTION name="MOVE_DOWN_WHERE_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveDownWhereAction" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveDownWhereFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -28,15 +26,7 @@
 	
 	
 	<ACTION name="MOVE_UP_WHERE_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveUpWhereAction" 
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
-	<ACTION name="SELECT_FIELD_FOR_WHERE_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.SelectFieldForWhereAction" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveUpWhereFiledAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -44,9 +34,15 @@
 	
 	
 	<ACTION name="START_WIZARD_SUBQUERY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.StartWizardSubQueryAction" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.SubQueryStartAction" 
 			scope="REQUEST">
 			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXIT_SUBQUERY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.SubQueryExitAction" 
+			scope="REQUEST">			
 		<CONFIG></CONFIG>
 	</ACTION>
 	

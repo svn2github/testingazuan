@@ -21,11 +21,6 @@
  **/
 package it.eng.qbe.geo.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.eng.qbe.datasource.BasicHibernateDataSource;
-import it.eng.qbe.geo.configuration.ConfigurationException;
 import it.eng.qbe.geo.configuration.Constants;
 import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapConfiguration;
@@ -36,9 +31,10 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+
+import java.util.List;
 
 /**
  * @author Andrea Gioia
@@ -51,7 +47,7 @@ public class GeoAbstractAction extends AbstractQbeEngineAction {
 	ISingleDataMartWizardObject queryWizard;
 	
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	public void service(SourceBean request, SourceBean response) {
 		super.service(request, response);
 		
 		RequestContainer requestContainer = getRequestContainer();
@@ -69,11 +65,16 @@ public class GeoAbstractAction extends AbstractQbeEngineAction {
 			MapCatalogueAccessUtils mapCatalogueClient = null;
 			mapCatalogueClient = (MapCatalogueAccessUtils)getRequestContainer().getSessionContainer().getAttribute("MAP_CATALOGUE_CLIENT");
 			
-			DatamartProviderConfiguration.Hierarchy hierarchy;
+			DatamartProviderConfiguration.Hierarchy hierarchy = null;
 			if(mapCatalogueClient == null) {
 				hierarchy = new DatamartProviderConfiguration.Hierarchy("Standard", null);
 			} else {
-				hierarchy = getStandardHierarchy(mapCatalogueClient);
+				try {
+					hierarchy = getStandardHierarchy(mapCatalogueClient);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			datamartProviderConfiguration.addHieararchy(hierarchy);

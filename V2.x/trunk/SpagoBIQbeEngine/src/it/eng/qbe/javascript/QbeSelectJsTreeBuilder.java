@@ -22,23 +22,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.javascript;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.urlgenerator.SelectFieldForSelectionURLGenerator;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISelectClause;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author Andrea Gioia
- *
- */
 public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {
 	
 	public QbeSelectJsTreeBuilder(DataMartModel dataMartModel, ISingleDataMartWizardObject dataMartWizard, HttpServletRequest httpRequest){
@@ -48,16 +42,15 @@ public class QbeSelectJsTreeBuilder extends QbeJsTreeBuilder {
 	
 	public Map getSelectdNodes() {
 		Map map = new HashMap();
-		ISelectClause aSelectClause = dataMartWizard.getSelectClause();
-		if(aSelectClause != null) {
-			List fields = aSelectClause.getSelectFields();
-			for(int i = 0; i < fields.size(); i++) {
-				ISelectField field = (ISelectField)fields.get(i);
+		
+			Iterator it = dataMartWizard.getQuery().getSelectFieldsIterator();
+			while(it.hasNext()) {
+				ISelectField field = (ISelectField)it.next();
 				EntityClass ec = field.getFieldEntityClass();
 				QbeJsTreeNodeId nodeId = new QbeJsTreeNodeId(field, getClassPrefix());
 				map.put(nodeId.getId(), nodeId);
 			}
-		}
+		
 		return map;
 	}
 	

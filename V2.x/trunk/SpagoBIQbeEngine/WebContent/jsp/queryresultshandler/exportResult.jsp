@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="it.eng.qbe.query.*"%>
 
 
 

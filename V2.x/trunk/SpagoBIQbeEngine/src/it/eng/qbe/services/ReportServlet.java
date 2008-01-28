@@ -22,12 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.services;
 
 import it.eng.qbe.bo.Formula;
-import it.eng.qbe.datasource.AbstractDataSource;
-import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DataSourceFactory;
-import it.eng.qbe.datasource.BasicHibernateDataSource;
-import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.IQueryRewriter;
@@ -37,7 +32,6 @@ import it.eng.qbe.export.SQLTemplateBuilder;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.JarUtils;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
@@ -101,7 +95,7 @@ public class ReportServlet extends HttpServlet{
 	/**
 	 * Handle an export request of a QBE query resultset. First generates a jasper report template. Than compile &
 	 * fill it. In the end exports the filled report to the target export format. If the parameter <i>action</i> is equal
-	 * to <i>buildTemplate</i> it juat return the report template
+	 * to <i>buildTemplate</i> it just return the report template
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Logger.debug(this.getClass(), "service: start method service");		

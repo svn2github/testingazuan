@@ -2,9 +2,15 @@
 
 <ACTIONS>
 
-
+	<ACTION name="SELECT_FIELD_FOR_GROUPBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.AddGroupByFieldAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="DELETE_FIELD_FOR_GROUPBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.groupby.service.DeleteFieldFromGroupByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.DeleteGroupByFieldAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
@@ -12,7 +18,7 @@
 	
 	
 	<ACTION name="MOVE_DOWN_GROUPBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveDownGroupByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveDownGroupByFieldAction" 
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
@@ -20,18 +26,13 @@
 	
 	
 	<ACTION name="MOVE_UP_GROUPBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveUpGroupByAction" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveUpGroupByFieldAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	
-	<ACTION name="SELECT_FIELD_FOR_GROUPBY_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.groupby.service.SelectFieldForGroupByAction" 
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
+	
 	
 	
 </ACTIONS>

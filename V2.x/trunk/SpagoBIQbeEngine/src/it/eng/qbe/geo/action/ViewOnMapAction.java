@@ -21,22 +21,19 @@
  **/
 package it.eng.qbe.geo.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapProviderConfiguration;
 import it.eng.qbe.geo.configuration.MapRendererConfiguration;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.utility.QbeProperties;
-import it.eng.qbe.wizard.ISelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import sun.misc.BASE64Encoder;
 

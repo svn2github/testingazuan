@@ -65,10 +65,11 @@
 	        </SELECT_CAPTION>
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIMapCatalogue.deleteCaption">
 	            <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
-	            <PARAMETER name="NUM_MAPS" scope="LOCAL" type="RELATIVE" value="field_4"/>
 		        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="detailFeaturePage"/>
 		        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>   		        	        
-		        <PARAMETER name="MESSAGECONFIRM" scope="" type="ABSOLUTE" value="SBIMapCatalogue.ConfirmDeleteFeature"/>   		        	        		        
+		        <CONFIRM_CONDITION msg="SBIMapCatalogue.ConfirmDeleteFeature" bundle="component_mapcatalogue_messages" >
+		        	<PARAMETER name="NUM_MAPS" scope="LOCAL" value="0" operator="GREATER_THAN" />
+		        </CONFIRM_CONDITION>
 	        </DELETE_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>

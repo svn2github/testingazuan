@@ -91,7 +91,6 @@ public class ListTag extends TagSupport
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
     
-    
     // the _providerUrlMap contains all the parameters for the navigation buttons ("next", "previous", "filter" and "all" buttons)
     private HashMap _providerUrlMap = new HashMap();
     // the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
@@ -325,11 +324,11 @@ public class ListTag extends TagSupport
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 	    
 		// js function for item action confirm
-		String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
-		//String confirmCaption = PortletUtilities.getMessage("ListTag.confirmCaption", "messages");
+		//String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
 		_htmlStream.append(" <script>\n");
 		_htmlStream.append("	function actionConfirm(message, url){\n");
-		_htmlStream.append("		if (confirm('" + confirmCaption + " ' + message + '?')){\n");
+		//_htmlStream.append("		if (confirm('" + confirmCaption + " ' + message + '?')){\n");
+		_htmlStream.append("		if (confirm(message + '?')){\n");
 		_htmlStream.append("			location.href = url;\n");
 		_htmlStream.append("		}\n");
 		_htmlStream.append("	}\n");
@@ -385,13 +384,30 @@ public class ListTag extends TagSupport
 					String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 					String buttonUrl = createUrl(paramsMap);
 					boolean confirm = false;
+					// If caption's 'confirm' attribute is true, then all rows will have the confirmation alert
+					// with message code that is specified in the 'label' attribute of the caption tag);
+					// if there is also a CONFIRM_CONDITION tag, then the alert message code will be overwritten by 
+					// 'msg' attribute of CONFIRM_CONDITION tag (with the bundle specified in 'bundle' attribute).
+					// If caption's 'confirm' attribute is false, only rows that satisfy CONFIRM_CONDITION will have 
+					// the confirmation alert with 'msg' attribute of CONFIRM_CONDITION tag as alert message.
 					if (captionSB.getAttribute("confirm") != null &&
 							((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
 						confirm = true;
 					}
 					_htmlStream.append(" <td width='40px' class='" + rowClass + "'>\n");
+					String msg = label;
+					SourceBean confirmConditionSB = (SourceBean) captionSB.getAttribute("CONFIRM_CONDITION");
+					if (confirmConditionSB != null) {
+						if (verifyConditions(confirmConditionSB, row)) {
+							String msgCode = (String) confirmConditionSB.getAttribute("msg");
+							String bundle = (String) confirmConditionSB.getAttribute("bundle");
+							if (bundle == null || bundle.trim().equals("")) bundle = "messages";
+							msg = msgBuilder.getMessage(msgCode, bundle, httpRequest);
+							confirm = true;
+						}
+					}
 					if (confirm){
-						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + label + "\", \"" + buttonUrl+ "\");'>\n");	
+						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
 					}else{
 						_htmlStream.append("     <a href='"+buttonUrl+"'>\n");	
 					}
@@ -446,10 +462,48 @@ public class ListTag extends TagSupport
 						} // if (inParameterValue != null)
 						continue;
 					} // if (parameterValue.equalsIgnoreCase("AF_NOT_DEFINED"))
-					if (!(parameterValue.equalsIgnoreCase(inParameterValue))) {
-						conditionVerified = false;
-						break;
-					} // if (!(parameterValue.equalsIgnoreCase(inParameterValue)))
+					
+					String operator = (String) condition.getAttribute("OPERATOR");
+					if (operator == null || operator.trim().equals("")) operator = "EQUAL_TO";
+					else operator = operator.trim();
+					if (operator.equalsIgnoreCase("EQUAL_TO")) {
+						if (!(parameterValue.equalsIgnoreCase(inParameterValue))) {
+							conditionVerified = false;
+							break;
+						} // if (!(parameterValue.equalsIgnoreCase(inParameterValue)))
+					}// if (operator.equalsIgnoreCase("EQUAL_TO"))
+					if (operator.equalsIgnoreCase("GREATER_THAN")) {
+						double parameterValueDouble = Double.parseDouble(parameterValue);
+						double inParameterValueDouble = Double.parseDouble(inParameterValue);
+						if (!(inParameterValueDouble > parameterValueDouble)) {
+							conditionVerified = false;
+							break;
+						} // if (!(inParameterValueDouble > parameterValueDouble))
+					}// if (operator.equalsIgnoreCase("GREATER_THAN"))					
+					if (operator.equalsIgnoreCase("GREATER_OR_EQUAL_THAN")) {
+						double parameterValueDouble = Double.parseDouble(parameterValue);
+						double inParameterValueDouble = Double.parseDouble(inParameterValue);
+						if (!(inParameterValueDouble >= parameterValueDouble)) {
+							conditionVerified = false;
+							break;
+						} // if (!(inParameterValueDouble >= parameterValueDouble))
+					}// if (operator.equalsIgnoreCase("GREATER_OR_EQUAL_THAN"))						
+					if (operator.equalsIgnoreCase("LESS_THAN")) {
+						double parameterValueDouble = Double.parseDouble(parameterValue);
+						double inParameterValueDouble = Double.parseDouble(inParameterValue);
+						if (!(inParameterValueDouble > parameterValueDouble)) {
+							conditionVerified = false;
+							break;
+						} // if (!(inParameterValueDouble < parameterValueDouble))
+					}// if (operator.equalsIgnoreCase("LESS_THAN"))	
+					if (operator.equalsIgnoreCase("LESS_OR_EQUAL_THAN")) {
+						double parameterValueDouble = Double.parseDouble(parameterValue);
+						double inParameterValueDouble = Double.parseDouble(inParameterValue);
+						if (!(inParameterValueDouble <= parameterValueDouble)) {
+							conditionVerified = false;
+							break;
+						} // if (!(inParameterValueDouble <= parameterValueDouble))
+					}// if (operator.equalsIgnoreCase("LESS_OR_EQUAL_THAN"))	
 				} 
 			}
 		}

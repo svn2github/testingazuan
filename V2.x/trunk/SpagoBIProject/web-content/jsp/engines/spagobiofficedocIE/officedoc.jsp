@@ -1,3 +1,4 @@
+
 <!--
 SpagoBI - The Business Intelligence Free Platform
 
@@ -49,6 +50,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	//get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String userId=(String)userProfile.getUserUniqueIdentifier();
 	// get the string of the title
     String title = (String) moduleResponse.getAttribute("title");
     
@@ -105,7 +107,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <% 
-	// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
+	String formUrl="";	
+// IF NOT SINGLE OBJECT MODALITY SHOW DEFAULT TITLE BAR
 	if(!isSingleObjExec) {
 %>
 
@@ -120,14 +123,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	    formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
     	    formUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_CHANGE_STATE);
     	    formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    		String formUrl = urlBuilder.getUrl(request, formUrlPars);		
+    		formUrl = urlBuilder.getUrl(request, formUrlPars);		
 		} 			  
 %>
 
 <%
 		if(canChangeState) {
 %>
-		<form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
+		<%@page import="it.eng.spago.base.SourceBean"%>
+<form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
 <%
 		}
 %>
@@ -250,28 +254,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   style='display:inline;<%=heightStr%>' 
 				   id='iframeexec<%=requestIdentity%>' 
                    name='iframeexec<%=requestIdentity%>'  
-				   src=""
+                   src="<%= urlBuilder.getResourceLink(request, "/jsp/engines/spagobiofficedocIE/officeReader.jsp?userId="+userId+"&documentId="+biobjectId.toString())%>"
                    frameborder=0  
 			       width='100%' >
+
          	</iframe>       
-                                
-         	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
-         	      action="<%=ChannelUtilities.getSpagoBiContentRepositoryServlet(request)%>/<%=templateFileName%>" 
-         	      target='iframeexec<%=requestIdentity%>'>
+                      
 
-         		<input type="hidden" name="operation" value="getTemplateFile" />
-         		<input type="hidden" name="biobjectId" value="<%=biobjectId%>" />
-
-         	<center>
-         	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
-			</center>
-			</form>
-         
-            <script>
-              button = document.getElementById('button<%=requestIdentity%>');
-              button.style.display='none';
-              button.click();               
-            </script>
             
 </div>
        

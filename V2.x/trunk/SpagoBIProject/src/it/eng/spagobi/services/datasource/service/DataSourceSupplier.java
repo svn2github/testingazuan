@@ -46,7 +46,7 @@ public class DataSourceSupplier {
 	    //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectClass(doDialect.getValueDescription());
 	    sbds.setHibDialectName(doDialect.getValueName());
 
 	} catch (Exception e) {
@@ -79,7 +79,7 @@ public class DataSourceSupplier {
 	  //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectClass(doDialect.getValueDescription());
 	    sbds.setHibDialectName(doDialect.getValueName());
 	    
 	} catch (Exception e) {
@@ -113,7 +113,7 @@ public class DataSourceSupplier {
 		//gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectClass(doDialect.getValueDescription());
 	    sbds.setHibDialectName(doDialect.getValueName());
 	    
 		tmpList.add(sbds);

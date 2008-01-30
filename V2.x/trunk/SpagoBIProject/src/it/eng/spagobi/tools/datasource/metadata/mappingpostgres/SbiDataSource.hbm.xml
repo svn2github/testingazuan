@@ -9,6 +9,9 @@
             	<param name="sequence">sbi_data_source_seq</param> 
             </generator>         
         </id>
+        <many-to-one name="dialect" class="it.eng.spagobi.commons.metadata.SbiDomains">
+            <column name="DIALECT_ID" not-null="true" />
+        </many-to-one>
         <property name="descr" type="string">
             <column name="DESCR" />
         </property>

@@ -7,6 +7,9 @@
             <column name="DS_ID" />     
              <generator class="identity"/>      
         </id>
+        <many-to-one name="dialect" class="it.eng.spagobi.commons.metadata.SbiDomains">
+            <column name="DIALECT_ID" not-null="true" />
+        </many-to-one>
         <property name="descr" type="string">
             <column name="DESCR" />
         </property>

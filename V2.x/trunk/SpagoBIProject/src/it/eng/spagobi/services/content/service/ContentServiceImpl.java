@@ -32,12 +32,13 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     }
     
     public Content readTemplate(String token, String user, String document) {
-// TODO IMPLEMENTARE I CONTROLLI
+
 	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
         logger.debug("IN");
         try {
             validateTicket(token,user);
-            return readTemplate(user,document);
+            ContentServiceImplSupplier c=new ContentServiceImplSupplier();
+            return c.readTemplate(user,document);
 	} catch (SecurityException e) {
 	    logger.error("SecurityException",e);
 	    return null;
@@ -184,33 +185,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 
 
     
-    private Content readTemplate( String user, String document) {
-	logger.debug("IN");
-	BIObject biobj = null;
-	Content content=new Content();
-	try {
-	    Integer id = new Integer(document);
-	    biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-	    
-	    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-	    IBinContentDAO contdao = DAOFactory.getBinContentDAO();
-	    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
-	    byte[] template = contdao.getBinContent(temp.getBinId());
-	
-	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
-	    content.setContent(bASE64Encoder.encode(template));
-	    content.setFileName(temp.getName());
-	    return content;
-	} catch (NumberFormatException e) {
-	    logger.error("NumberFormatException",e);
-	} catch (EMFUserError e) {
-	    logger.error("EMFUserError",e);
-	} catch (EMFInternalError e) {
-		 logger.error("EMFUserError",e);
-	}
-	logger.debug("OUT");
-	return null;	
-    } 
+
     
     
     

@@ -22,10 +22,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.engines.officeDocuments;
 
+import java.io.ByteArrayOutputStream;
+
+import sun.misc.BASE64Decoder;
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -33,6 +38,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
 
 public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace {
 
@@ -82,6 +89,13 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 				title += ": " + objDescr;
 			}
 			response.setAttribute("title", title);
+			SessionContainer sessionCont = requestContainer.getSessionContainer();
+			SessionContainer permSession = sessionCont.getPermanentContainer();
+			IEngUserProfile profile=(IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String userId=(String)profile.getUserUniqueIdentifier();
+
+		
+			
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {

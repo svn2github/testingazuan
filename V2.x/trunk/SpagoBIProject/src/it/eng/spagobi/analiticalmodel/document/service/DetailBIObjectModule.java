@@ -31,7 +31,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
@@ -65,6 +64,12 @@ import java.util.Vector;
 
 import org.apache.commons.validator.GenericValidator;
 import org.apache.log4j.Logger;
+
+
+/**
+ * @author Antonella Giachino (antonella.giachino@eng.it)
+ *
+ */
 
 /**
  * Implements a module which  handles all BI objects management: 

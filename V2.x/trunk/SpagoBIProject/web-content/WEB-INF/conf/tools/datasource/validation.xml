@@ -9,8 +9,21 @@
 			<FIELDS>
 				<FIELD name="LABEL" label="#SBISet.ListDS.columnLabel">
 					<VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>				
+				</FIELD>	
+				<FIELD name="DIALECT" label="#SBISet.ListDS.columnDialect">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>			
 			</FIELDS>
 		</VALIDATION>	
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+			</CONDITIONS>
+			<FIELDS>
+			   <FIELD name="DIALECT" label="#SBISet.ListDS.columnDialect">
+					<VALIDATOR validatorName="MANDATORY"/>					
+				</FIELD>	
+			</FIELDS>
+		</VALIDATION>
 	</SERVICE>
 </VALIDATIONS>

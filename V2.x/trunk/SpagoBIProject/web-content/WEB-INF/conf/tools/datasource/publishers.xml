@@ -6,7 +6,7 @@
   	<PUBLISHER name="detailDataSourceLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListRolesPage" />
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDataSourcePage" />
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>

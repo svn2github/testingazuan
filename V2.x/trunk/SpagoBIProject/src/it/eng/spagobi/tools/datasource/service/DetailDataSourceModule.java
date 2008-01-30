@@ -32,12 +32,14 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -49,6 +51,7 @@ public class DetailDataSourceModule extends AbstractModule {
 	static private Logger logger = Logger.getLogger(DetailDataSourceModule.class);
 	public static final String MOD_SAVE = "SAVE";
 	public static final String MOD_SAVEBACK = "SAVEBACK";
+	public final static String NAME_ATTR_LIST_DIALECTS = "dialects";
 
 	private String modalita = "";
 	
@@ -114,6 +117,9 @@ public class DetailDataSourceModule extends AbstractModule {
 				response.setAttribute("loopback", "true");
 				return;
 			}
+			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+			List dialects = domaindao.loadListDomainsByType("DIALECT_HIB");
+			response.setAttribute(NAME_ATTR_LIST_DIALECTS, dialects);
 			response.setAttribute("modality", modalita);
 			response.setAttribute("dsObj", ds);
 		} catch (Exception ex) {
@@ -178,8 +184,12 @@ public class DetailDataSourceModule extends AbstractModule {
 				//update ds
 				DAOFactory.getDataSourceDAO().modifyDataSource(dsNew);			
 			}  
+			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+			List dialects = domaindao.loadListDomainsByType("DIALECT_HIB");
+			serviceResponse.setAttribute(NAME_ATTR_LIST_DIALECTS, dialects);
+			
 			if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
-				((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {						
+				((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
 				serviceResponse.setAttribute("modality", mod);
 				serviceResponse.setAttribute("dsObj", dsNew);				
 				return;
@@ -267,6 +277,7 @@ public class DetailDataSourceModule extends AbstractModule {
 			ds = new DataSource();
 			ds.setDsId(-1);
 			ds.setDescr("");
+			ds.setDialectId(new Integer("-1"));
 			ds.setLabel("");
 			ds.setJndi("");
 			ds.setUrlConnection("");
@@ -274,6 +285,9 @@ public class DetailDataSourceModule extends AbstractModule {
 			ds.setPwd("");
 			ds.setDriver("");
 			response.setAttribute("dsObj", ds);
+			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+			List dialects = domaindao.loadListDomainsByType("DIALECT_HIB");
+			response.setAttribute(NAME_ATTR_LIST_DIALECTS, dialects);
 		} catch (Exception ex) {
 			logger.error("Cannot prepare page for the insertion" , ex);		
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -287,6 +301,7 @@ public class DetailDataSourceModule extends AbstractModule {
 		
 		String idStr = (String)serviceRequest.getAttribute("ID");
 		Integer id = new Integer(idStr);
+		Integer dialectId = Integer.valueOf((String)serviceRequest.getAttribute("DIALECT"));	
 		String description = (String)serviceRequest.getAttribute("DESCR");	
 		String label = (String)serviceRequest.getAttribute("LABEL");
 		String jndi = (String)serviceRequest.getAttribute("JNDI");
@@ -296,6 +311,7 @@ public class DetailDataSourceModule extends AbstractModule {
 		String driver = (String)serviceRequest.getAttribute("DRIVER");
 		
 		ds.setDsId(id.intValue());
+		ds.setDialectId(dialectId);
 		ds.setLabel(label);
 		ds.setDescr(description);
 		ds.setJndi(jndi);

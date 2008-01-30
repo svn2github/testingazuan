@@ -30,6 +30,7 @@ package it.eng.spagobi.tools.datasource.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -45,6 +46,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
+/**
+ * @author Antonella Giachino (antonella.giachino@eng.it)
+ */
+
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -167,10 +172,24 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			
+			Criterion aCriterion = Expression.eq("valueId",	aDataSource.getDialectId());
+			Criteria criteria = aSession.createCriteria(SbiDomains.class);
+			criteria.add(aCriterion);
+
+			SbiDomains dialect = (SbiDomains) criteria.uniqueResult();
+
+			if (dialect == null){
+				logger.error("The Domain with value_id= "+aDataSource.getDialectId()+" does not exist.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
+			}
+
 
 			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class,
 					new Integer(aDataSource.getDsId()));			
 			hibDataSource.setLabel(aDataSource.getLabel());
+			hibDataSource.setDialect(dialect);
+			hibDataSource.setDialectDescr(dialect.getValueNm());
 			hibDataSource.setDescr(aDataSource.getDescr());
 			hibDataSource.setJndi(aDataSource.getJndi());
 			hibDataSource.setUrl_connection(aDataSource.getUrlConnection());
@@ -206,7 +225,19 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			Criterion aCriterion = Expression.eq("valueId",	aDataSource.getDialectId());
+			Criteria criteria = aSession.createCriteria(SbiDomains.class);
+			criteria.add(aCriterion);
+
+			SbiDomains dialect = (SbiDomains) criteria.uniqueResult();
+
+			if (dialect == null){
+				logger.error("The Domain with value_id="+aDataSource.getDialectId()+" does not exist.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
+			}
 			SbiDataSource hibDataSource = new SbiDataSource();
+			hibDataSource.setDialect(dialect);
+			hibDataSource.setDialectDescr(dialect.getValueNm());
 			hibDataSource.setLabel(aDataSource.getLabel());
 			hibDataSource.setDescr(aDataSource.getDescr());
 			hibDataSource.setJndi(aDataSource.getJndi());
@@ -268,7 +299,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * From the hibernate DataSource at input, gives
 	 * the corrispondent <code>DataSource</code> object.
 	 * 
-	 * @param hibEngine The hybernate data source
+	 * @param hibDataSource The hybernate data source
 	 * @return The corrispondent <code>DataSource</code> object
 	 */
 	public DataSource toDataSource(SbiDataSource hibDataSource){
@@ -282,6 +313,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		ds.setUser(hibDataSource.getUser());
 		ds.setPwd(hibDataSource.getPwd());
 		ds.setDriver(hibDataSource.getDriver());
+		ds.setDialectId(hibDataSource.getDialect().getValueId());
 		ds.setEngines(hibDataSource.getSbiEngineses());
 		ds.setObjects(hibDataSource.getSbiObjectses());
 		

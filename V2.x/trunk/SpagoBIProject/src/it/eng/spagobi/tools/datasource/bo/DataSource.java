@@ -34,7 +34,7 @@ import java.util.Set;
 public class DataSource implements Serializable {
 	
 
-	private int dsId;	
+	private int dsId;
 	private String descr;
 	private String label;
 	private String jndi;
@@ -42,6 +42,7 @@ public class DataSource implements Serializable {
 	private String user;
 	private String pwd;
 	private String driver;
+	private Integer dialectId;	
 	private Set engines = null;
 	private Set objects = null;
 	
@@ -92,6 +93,12 @@ public class DataSource implements Serializable {
 	}
 	public void setDriver(String driver) {
 		this.driver = driver;
+	}
+	public Integer getDialectId() {
+		return dialectId;
+	}
+	public void setDialectId(Integer dialectId) {
+		this.dialectId = dialectId;
 	}
 	public Set getEngines() {
 		return engines;

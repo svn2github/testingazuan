@@ -3,6 +3,8 @@ package it.eng.spagobi.tools.datasource.metadata;
 
 // Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8
 
+import it.eng.spagobi.commons.metadata.SbiDomains;
+
 import java.util.Set;
 
 /**
@@ -13,6 +15,10 @@ public class SbiDataSource implements java.io.Serializable {
 	// Fields    
 
 	private int dsId;	
+	
+	private SbiDomains dialect;
+	
+	private String dialectDescr;
 
 	private String descr;
 	
@@ -57,8 +63,9 @@ public class SbiDataSource implements java.io.Serializable {
 	 * @param pwd password of data source
 	 * @param driver driver of data source
 	 * */
-	public SbiDataSource(int dsId, String descr, String label, String jndi, String url_connection, String user, String pwd, String driver,  Set sbiObjectses, Set sbiEngineses) {
+	public SbiDataSource(int dsId, String descr, SbiDomains dialect, String label, String jndi, String url_connection, String user, String pwd, String driver,  Set sbiObjectses, Set sbiEngineses) {
 		this.dsId = dsId;		
+		this.dialect = dialect;
 		this.descr = descr;
 		this.label = label;
 		this.jndi = jndi;
@@ -77,6 +84,22 @@ public class SbiDataSource implements java.io.Serializable {
 	public void setDsId(int dsId) {
 		this.dsId = dsId;
 	}
+	
+	public SbiDomains getDialect() {
+        return this.dialect;
+    }
+    
+    public void setDialect(SbiDomains dialect) {
+        this.dialect = dialect;
+    }
+    
+	public String getDialectDescr() {
+        return this.dialectDescr;
+    }
+    
+    public void setDialectDescr(String dialectDescr) {
+        this.dialectDescr = dialectDescr;
+    }
 
 	public String getDescr() {
 		return descr;

@@ -1,17 +1,18 @@
 	<%@ include file="/jsp/commons/portlet_base.jsp"%>
 	
-	<%@ page         import="it.eng.spago.base.*,
-	 				         it.eng.spago.configuration.ConfigSingleton,
-	 				         it.eng.spagobi.tools.datasource.bo.DataSource,
+	<%@ page         import="it.eng.spagobi.tools.datasource.bo.DataSource,
 	 				         it.eng.spago.navigation.LightNavigationManager,
-	 				         it.eng.spagobi.commons.constants.SpagoBIConstants,
-	 				         java.util.Map,java.util.HashMap,java.util.List" %>
+	 				         java.util.Map,java.util.HashMap,java.util.List,
+	 				         java.util.Iterator,
+	 				         it.eng.spagobi.commons.bo.Domain,
+	 				         it.eng.spagobi.tools.datasource.service.DetailDataSourceModule" %>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSourceModule"); 
 		DataSource ds = (DataSource)moduleResponse.getAttribute("dsObj");
+		List listDialects = (List) moduleResponse.getAttribute(DetailDataSourceModule.NAME_ATTR_LIST_DIALECTS);
 		
 		String modality = (String)moduleResponse.getAttribute("modality");
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -61,7 +62,7 @@
 				</a>
 			</td>		 
 			<td class='header-button-column-portlet-section'>
-				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDS('SAVEBACK')" value='true' class='header-button-image-portlet-section'
+				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDS('SAVEBACK')" class='header-button-image-portlet-section'
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
       				   title='<spagobi:message key = "SBISet.ListDS.saveBackButton" />'  
                        alt='<spagobi:message key = "SBISet.ListDS.saveBackButton" />' 
@@ -120,6 +121,37 @@
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
 				   size="50" value="<%= desc %>" maxlength="160" />
 		</div>
+			
+		<div class='div_detail_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.ListDS.columnDialect" />
+				</span>
+		</div>
+		
+	
+		<div class='div_detail_form'>
+      		<select class='portlet-form-input-field' style='width:250px;' 
+					name="DIALECT" id="DIALECT" >
+					<option></option>
+			<% if (listDialects != null){
+				Iterator iterDialect = listDialects.iterator();
+			   
+      			while(iterDialect.hasNext()) {
+      				Domain dialect = (Domain)iterDialect.next();
+      				Integer objDialect = ds.getDialectId();
+      				Integer currDialect = dialect.getValueId();
+                    boolean isDialect = false;
+      		    	if(objDialect.intValue() == currDialect.intValue()){
+      		    		isDialect = true;   
+      		    	}
+      		%>
+      			<option value="<%=dialect.getValueId() %>"<%if(isDialect) out.print(" selected='selected' ");  %>><%=dialect.getValueName()%></option>
+      		<% 	
+      			}
+			}
+      		%>
+      		</select>
+		</div> 
 			
 			
     	<div class='div_detail_label'>
@@ -245,6 +277,7 @@
 	
 	var bFormModified = 'false';
 		
+	var dialect = document.dsForm.DIALECT.value;
 	var label = document.dsForm.LABEL.value;
 	var description = document.dsForm.DESCR.value;	
 	var jndi = document.dsForm.JNDI.value;
@@ -253,7 +286,9 @@
 	var pwd = document.dsForm.PWD.value;
 	var driver = document.dsForm.DRIVER.value;
 
+	
 	if ((label != '<%=ds.getLabel()%>')
+	    || (dialect != '<%=(ds.getDialectId()==null)?"":ds.getDialectId()%>')
 		|| (description != '<%=(ds.getDescr()==null)?"":ds.getDescr()%>')
 		|| ( jndi != '<%=(ds.getJndi()==null)?"":ds.getJndi()%>')
 		|| ( url != '<%=(ds.getUrlConnection()==null)?"":ds.getUrlConnection()%>')
@@ -286,7 +321,8 @@
 	
 	function saveDS(type) {	
   	  	  document.dsForm.SUBMESSAGEDET.value=type;
-      	  document.getElementById('dsForm').submit();
+  	  	  if (type == 'SAVE')
+      		  document.getElementById('dsForm').submit();
 	}
 	
 	function DisableFields(type){

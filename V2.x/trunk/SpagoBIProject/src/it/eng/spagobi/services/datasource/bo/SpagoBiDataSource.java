@@ -19,6 +19,10 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     private java.lang.String user;
 
     private java.lang.String label;
+    
+    private java.lang.String hibDialectClass;
+    
+    private java.lang.String hibDialectName;
 
     public SpagoBiDataSource() {
     }
@@ -29,13 +33,17 @@ public class SpagoBiDataSource  implements java.io.Serializable {
            java.lang.String password,
            java.lang.String url,
            java.lang.String user,
-           java.lang.String label) {
+           java.lang.String label,
+           java.lang.String hibDialectClass,
+           java.lang.String hibDialectName) {
            this.driver = driver;
            this.jndiName = jndiName;
            this.password = password;
            this.url = url;
            this.user = user;
            this.label = label;
+           this.hibDialectClass = hibDialectClass;
+           this.hibDialectName = hibDialectName;
     }
 
 
@@ -157,6 +165,38 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     public void setLabel(java.lang.String label) {
         this.label = label;
     }
+    /**
+     * Gets the hibernate dialect class value for this SpagoBiDataSource.
+     * 
+     * @return hibDialectClass
+     */
+	public java.lang.String getHibDialectClass() {
+		return hibDialectClass;
+	}
+    /**
+     * Sets the hibernate dialect class value for this SpagoBiDataSource.
+     * 
+     * @param hibDialectClass
+     */
+	public void setHibDialectClass(java.lang.String hibDialectClass) {
+		this.hibDialectClass = hibDialectClass;
+	}
+    /**
+     * Gets the hibernate dialect name value for this SpagoBiDataSource.
+     * 
+     * @return hibDialectName
+     */
+	public java.lang.String getHibDialectName() {
+		return hibDialectName;
+	}
+    /**
+     * Sets the hibernate dialect name value for this SpagoBiDataSource.
+     * 
+     * @param hibDialectName
+     */
+	public void setHibDialectName(java.lang.String hibDialectName) {
+		this.hibDialectName = hibDialectName;
+	}
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
@@ -187,7 +227,13 @@ public class SpagoBiDataSource  implements java.io.Serializable {
               this.user.equals(other.getUser()))) &&
             ((this.label==null && other.getLabel()==null) || 
              (this.label!=null &&
-              this.label.equals(other.getLabel())));
+              this.label.equals(other.getLabel()))) &&
+            ((this.hibDialectClass==null && other.getHibDialectClass()==null) || 
+             (this.hibDialectClass!=null &&
+              this.hibDialectClass.equals(other.getHibDialectClass())) &&
+            ((this.hibDialectName==null && other.getHibDialectName()==null) || 
+             (this.hibDialectName!=null &&
+              this.hibDialectName.equals(other.getHibDialectName()))));
         __equalsCalc = null;
         return _equals;
     }
@@ -216,6 +262,12 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         }
         if (getLabel() != null) {
             _hashCode += getLabel().hashCode();
+        }
+        if (getHibDialectClass() != null) {
+            _hashCode += getHibDialectClass().hashCode();
+        }
+        if (getHibDialectName() != null) {
+            _hashCode += getHibDialectName().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -263,6 +315,18 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("hibDialectClass");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "hibDialectClass"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("hibDialectName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "hibDialectName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**
@@ -295,5 +359,6 @@ public class SpagoBiDataSource  implements java.io.Serializable {
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
+
 
 }

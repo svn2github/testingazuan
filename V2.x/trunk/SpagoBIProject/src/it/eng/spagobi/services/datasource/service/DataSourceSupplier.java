@@ -1,7 +1,9 @@
 package it.eng.spagobi.services.datasource.service;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -40,6 +42,12 @@ public class DataSourceSupplier {
 	    sbds.setUser(ds.getUser());
 	    sbds.setPassword(ds.getPwd());
 	    sbds.setDriver(ds.getDriver());
+	    
+	    //gets dialect informations
+	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
+	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectName(doDialect.getValueName());
 
 	} catch (Exception e) {
 	    logger.error("The data source is not correctly returned", e);
@@ -67,6 +75,13 @@ public class DataSourceSupplier {
 	    sbds.setUser(ds.getUser());
 	    sbds.setPassword(ds.getPwd());
 	    sbds.setDriver(ds.getDriver());
+	    
+	  //gets dialect informations
+	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
+	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectName(doDialect.getValueName());
+	    
 	} catch (Exception e) {
 	    logger.error("The data source is not correctly returned", e);
 	}
@@ -95,6 +110,12 @@ public class DataSourceSupplier {
 		sbds.setUser(ds.getUser());
 		sbds.setPassword(ds.getPwd());
 		sbds.setDriver(ds.getDriver());
+		//gets dialect informations
+	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
+	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
+	    sbds.setHibDialectName(doDialect.getValueName());
+	    
 		tmpList.add(sbds);
 	    }
 	} catch (Exception e) {

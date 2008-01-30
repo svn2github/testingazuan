@@ -45,7 +45,8 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SEL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ENGINE_TYPE', 'Engine types', 'INT', 'Internal Engine', 'Business intelligence internal engine of Spa BI platform' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','LIST','List values selection','Single-value selection from a list' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','CHECK_LIST','CheckList values selection','Multi-value selection from a checklist' 
-INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','COMBOBOX','ComboBox values selection','Single value selection from a combobox' 
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','COMBOBOX','ComboBox values selection','Single value selection from a combobox'
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'DEFAULT','','-1' ;
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'ORACLE','Oracle (any version)','org.hibernate.dialect.OracleDialect'
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'ORACLE 9i/10g','Oracle (Oracle 9i/10g)', 'org.hibernate.dialect.Oracle9Dialect'
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'SQLSERVER','SQL Server ', 'org.hibernate.dialect.SQLServerDialect'

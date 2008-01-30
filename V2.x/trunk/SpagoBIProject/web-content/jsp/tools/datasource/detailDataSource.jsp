@@ -132,7 +132,6 @@
 		<div class='div_detail_form'>
       		<select class='portlet-form-input-field' style='width:250px;' 
 					name="DIALECT" id="DIALECT" >
-					<option></option>
 			<% if (listDialects != null){
 				Iterator iterDialect = listDialects.iterator();
 			   

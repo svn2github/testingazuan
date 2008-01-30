@@ -20,11 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package it.eng.spagobi.engines.officeDocuments;
+package it.eng.spagobi.engines.officedocument;
 
-import java.io.ByteArrayOutputStream;
-
-import sun.misc.BASE64Decoder;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -38,8 +35,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
-import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
 
 public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace {
 

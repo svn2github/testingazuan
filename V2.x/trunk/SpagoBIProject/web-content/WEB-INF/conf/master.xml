@@ -53,7 +53,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardsCompositionIE/publishers.xml" />
 
 <!-- engines.spagobiofficedocIE -->
-	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobiofficedocIE/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/publishers.xml" />
     
   
 <!-- event -->

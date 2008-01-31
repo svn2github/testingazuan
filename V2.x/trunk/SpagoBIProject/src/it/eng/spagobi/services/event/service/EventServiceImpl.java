@@ -51,8 +51,8 @@ public class EventServiceImpl extends AbstractServiceImpl {
 	    }
 	    return returnValue;
 	} catch (Exception e) {
-	    SpagoBITracer.critical("SpagoBI", getClass().getName(), "service",
-		    "Exception", e);
+		logger.error("TalendRolesHandler not found");
+
 	}finally{
 	    logger.debug("OUT");
 	}

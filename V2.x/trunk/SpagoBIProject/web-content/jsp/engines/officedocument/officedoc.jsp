@@ -35,9 +35,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.security.IEngUserProfile" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-                 
+<%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="org.apache.log4j.Logger"%>
 
-<%
+                 
+<%! private static transient Logger logger=Logger.getLogger(SpagoBIOfficeDocumentInternalEngine.class);
+	%>
+
+<% 
+	logger.debug("officedoc.jsp: IN");
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
     String requestIdentity = "request" + uuid.toString();  
@@ -45,7 +51,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
     // get the id of the document
     Integer biobjectId = (Integer) moduleResponse.getAttribute("biobjectId");
-
+    // get the name of the template file
+	String templateFileName = (String) moduleResponse.getAttribute("templateFileName");
    	//get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -53,6 +60,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// get the string of the title
     String title = (String) moduleResponse.getAttribute("title");
     
+	logger.debug("officedoc.jsp: got parameters userId="+userId+" and documentId="+biobjectId.toString());
+	
 	// try to get the modality
 	boolean isSingleObjExec = false;
 	String modality = (String)aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
@@ -129,7 +138,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 		if(canChangeState) {
 %>
-		<%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine"%>
 <form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
 <%
 		}
@@ -263,7 +272,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             
 </div>
        
-
+<%	logger.debug("officedoc.jsp:  OUT"); %>
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->

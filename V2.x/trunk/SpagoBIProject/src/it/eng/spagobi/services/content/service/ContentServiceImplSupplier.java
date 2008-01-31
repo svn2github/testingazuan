@@ -28,10 +28,12 @@ public class ContentServiceImplSupplier {
 			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
 			ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
 			byte[] template = contdao.getBinContent(temp.getBinId());
-
+			
 			BASE64Encoder bASE64Encoder = new BASE64Encoder();
 			content.setContent(bASE64Encoder.encode(template));
+			logger.debug("template read");
 			content.setFileName(temp.getName());
+			logger.debug("OUT");
 			return content;
 		} catch (NumberFormatException e) {
 			logger.error("NumberFormatException",e);
@@ -40,7 +42,7 @@ public class ContentServiceImplSupplier {
 		} catch (EMFInternalError e) {
 			logger.error("EMFUserError",e);
 		}
-		logger.debug("OUT");
+		logger.error("OUT with errors");
 		return null;	
 	} 
 

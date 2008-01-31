@@ -389,8 +389,8 @@ public class ImportExportModule extends AbstractModule {
 					Role exportedRole = (Role) exportedRolesIt.next();
 					String associatedRoleName = impManager.getUserAssociation().getAssociatedRole(exportedRole.getName());
 					Iterator currentRolesIt = currentRoles.iterator();
-					while (exportedRolesIt.hasNext()) {
-						Role currentRole = (Role) exportedRolesIt.next();
+					while (currentRolesIt.hasNext()) {
+						Role currentRole = (Role) currentRolesIt.next();
 						if (currentRole.getName().equals(associatedRoleName)) {
 							metaAss.insertCoupleRole(exportedRole.getId(), currentRole.getId());
 							break;
@@ -492,8 +492,8 @@ public class ImportExportModule extends AbstractModule {
 					Engine exportedEngine = (Engine) exportedEnginesIt.next();
 					String associatedEngineLabel = impManager.getUserAssociation().getAssociatedEngine(exportedEngine.getLabel());
 					Iterator currentEngineIt = currentEngines.iterator();
-					while (exportedEnginesIt.hasNext()) {
-						Engine currentEngine = (Engine) exportedEnginesIt.next();
+					while (currentEngineIt.hasNext()) {
+						Engine currentEngine = (Engine) currentEngineIt.next();
 						if (currentEngine.getLabel().equals(associatedEngineLabel)) {
 							metaAss.insertCoupleEngine(exportedEngine.getId(), currentEngine.getId());
 							break;

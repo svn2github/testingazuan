@@ -54,6 +54,8 @@ public class BIObjectsModule extends AbstractModule {
     public static final String FILTER_TREE = "FILTER_TREE";
     public static final String ENTIRE_TREE = "ENTIRE_TREE";
     public static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
+    // MPENNINGROTH 25-Jan-2008 add sub object label support
+    public static final String LABEL_SUB_OBJECT = "LABEL_SUB_OBJECT";
     public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
     public static final String PATH_SUBTREE = "PATH_SUBTREE";
     public static final String HEIGHT_AREA = "HEIGHT_AREA";
@@ -167,6 +169,9 @@ public class BIObjectsModule extends AbstractModule {
 		// get from preferences the snapshot history
 		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_HISTORY, "0");
 		debug("singleObjectModalityHandler", "using snapshot history " + snapHistStr);
+		// MPENNINGROTH 25-Jan-2008 add sub object label support
+		String labelSubObject = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SUB_OBJECT, "");
+		debug("singleObjectModalityHandler", "using subobject " + labelSubObject);
 		
 		// load biobject
 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
@@ -203,6 +208,10 @@ public class BIObjectsModule extends AbstractModule {
             // if the parameters is set put it into the session
             if (parameters != null && !parameters.trim().equals("")) 
             	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
+            // MPENNINGROTH 25-Jan-2008 add subObject if present
+            if (!labelSubObject.trim().equalsIgnoreCase("")) {
+            	sessionContainer.setAttribute(LABEL_SUB_OBJECT, labelSubObject);
+            }
         }
         
         debug("singleObjectModalityHandler", "end method");

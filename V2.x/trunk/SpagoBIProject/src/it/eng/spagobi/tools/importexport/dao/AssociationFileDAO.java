@@ -76,6 +76,27 @@ public class AssociationFileDAO implements IAssociationFileDAO {
 	}
     }
 
+	public boolean exists(String id) {
+	logger.debug("IN");
+	try {
+		File fileAssRepDir = getFileOfAssRepDir();
+		String pathBaseAssFile = fileAssRepDir.getAbsolutePath() + "/" + id;
+		File baseAssFile = new File(pathBaseAssFile);
+		// if the folder exists the association file exists
+		// if a file with the same name exists then tries to delete it
+		if (baseAssFile.exists()) {
+			if (baseAssFile.isDirectory()) return true;
+			else {
+				if (baseAssFile.delete()) return false;
+				else return true;
+			}
+		}
+		else return false;
+	} finally {
+	    logger.debug("OUT");
+	}
+	}
+    
     public void deleteAssociationFile(AssociationFile assfile) {
 	logger.debug("IN");
 	try {
@@ -146,46 +167,22 @@ public class AssociationFileDAO implements IAssociationFileDAO {
 	logger.debug("IN");
 	File assrepdirFile = null;
 	try {
-	    File imptmpdirFile = getFileOfImportTmpDir();
-	    if (imptmpdirFile == null)
-		throw new Exception("Cannot recover the file of import tmp directory");
-	    String pathImpTmpFolder = imptmpdirFile.getAbsolutePath();
-	    // add the associations directory to the path
-	    if (!pathImpTmpFolder.endsWith("/")) {
-		pathImpTmpFolder += "/";
-	    }
-	    pathImpTmpFolder += ASS_DIRECTORY;
-	    // check if the file already exists and, if not, create the
-	    // directory
-	    assrepdirFile = new File(pathImpTmpFolder);
-	    assrepdirFile.mkdirs();
+		ConfigSingleton conf = ConfigSingleton.getInstance();
+		SourceBean assRepo = (SourceBean)conf.getAttribute("IMPORTEXPORT.ASSOCIATIONS_REPOSITORY");
+		String assRepoPath = (String)assRepo.getAttribute("path");
+		if(!assRepoPath.startsWith("/")){
+			String pathcont = ConfigSingleton.getRootPath();
+			assRepoPath = pathcont + "/" + assRepoPath;
+		}
+		// check if the file already exists  and, if not, create the directory
+		assrepdirFile = new File(assRepoPath);
+		assrepdirFile.mkdirs();
 	} catch (Exception e) {
 	    logger.error("Error wile getting the associations repository dir file, ", e);
 	} finally {
 	    logger.debug("OUT");
 	}
 	return assrepdirFile;
-    }
-
-    private File getFileOfImportTmpDir() {
-	logger.debug("IN");
-	File imptmpdirFile = null;
-	try {
-	    // get the tmp import folder path
-	    ConfigSingleton conf = ConfigSingleton.getInstance();
-	    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");
-	    String pathImpTmpFolder = (String) importerSB.getAttribute("tmpFolder");
-	    if (!pathImpTmpFolder.startsWith("/")) {
-		String pathcont = ConfigSingleton.getRootPath();
-		pathImpTmpFolder = pathcont + "/" + pathImpTmpFolder;
-	    }
-	    imptmpdirFile = new File(pathImpTmpFolder);
-	} catch (Exception e) {
-	    logger.error("Error wile getting the import tmp dir file, ", e);
-	} finally {
-	    logger.debug("OUT");
-	}
-	return imptmpdirFile;
     }
 
 }

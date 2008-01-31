@@ -179,6 +179,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						%>
 						<%
 							String associatedMsg = "";
+							boolean isAssociated = false;
 							if(existDefault) {
 						%>
 						<input type="hidden" name="roleAssociated<%=role.getId()%>" value="<%=idAssRole%>"> 
@@ -196,7 +197,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<% 
 								iterCurRoles = curRoles.iterator();
 								String selected = null;
-								String associated = "";
 								while(iterCurRoles.hasNext()) {
 									selected = "";
 									Role roleCur = (Role)iterCurRoles.next();
@@ -208,13 +208,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										String roleAss = usrAssKeep.getAssociatedRole(role.getName());
 										if( (roleAss!=null) &&  roleCur.getName().equals(roleAss)) {
 											selected=" selected ";
-											associatedMsg = "ass";
+											isAssociated = true;
 										}
 									}
 							%>
 							<option value='<%=roleCur.getId()%>' <%=selected%>><%=roleCur.getName()%></option>
 							<% } %>
-						</select> <%=associatedMsg%>
+						</select>
+						<%
+						if (isAssociated) {
+							%>
+							<img title='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' 
+	      				 		src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/associated.gif")%>' 
+	      				 		alt='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' />
+							<%
+						}
+						%>
 					</td>
 				</tr>
 				<% } %>

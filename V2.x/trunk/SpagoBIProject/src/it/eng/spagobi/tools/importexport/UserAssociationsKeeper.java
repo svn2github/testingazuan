@@ -53,15 +53,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean roleSB = (SourceBean) roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", exportedRoleName);
 			// association already recorder
-			if(roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", exportedRoleName)!= null) {
-				return;
+			if (roleSB != null) {
+				roleSB.updAttribute("associatedTo", existingRolename);
+				//return;
+			} else {
+				// record association
+				roleSB = new SourceBean("ROLE_ASSOCIATION");
+				roleSB.setAttribute("exported", exportedRoleName);
+				roleSB.setAttribute("associatedTo", existingRolename);
+				roleAssSB.setAttribute(roleSB);
 			}
-			// record association
-			SourceBean roleSB = new SourceBean("ROLE_ASSOCIATION");
-			roleSB.setAttribute("exported", exportedRoleName);
-			roleSB.setAttribute("associatedTo", existingRolename);
-			roleAssSB.setAttribute(roleSB);
 		} catch (Exception e) {
 		    logger.error( "Error while recording the association between exported role "+exportedRoleName+" " +
 		            			  "and the role " + existingRolename + " \n " , e);
@@ -84,15 +87,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean engineSB = (SourceBean) engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", exportedEngineLabel);
 			// association already recorder
-			if(engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", exportedEngineLabel)!= null) {
-				return;
+			if(engineSB != null) {
+				engineSB.updAttribute("associatedTo", existingEngineLabel);
+				//return;
+			} else {
+				// record association
+				engineSB = new SourceBean("ENGINE_ASSOCIATION");
+				engineSB.setAttribute("exported", exportedEngineLabel);
+				engineSB.setAttribute("associatedTo", existingEngineLabel);
+				engineAssSB.setAttribute(engineSB);
 			}
-			// record association
-			SourceBean engineSB = new SourceBean("ENGINE_ASSOCIATION");
-			engineSB.setAttribute("exported", exportedEngineLabel);
-			engineSB.setAttribute("associatedTo", existingEngineLabel);
-			engineAssSB.setAttribute(engineSB);
 		} catch (Exception e) {
 		    logger.error("Error while recording the association between exported engine "+exportedEngineLabel+" " +
 		            			  "and the engine " + existingEngineLabel + " \n " , e);
@@ -115,15 +121,18 @@ public class UserAssociationsKeeper {
 			return;
 		}
 		try{
+			SourceBean conSB = (SourceBean) connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", exportedConName);
 			// association already recorder
-			if(connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", exportedConName)!= null) {
-				return;
+			if(conSB != null) {
+				conSB.updAttribute("associatedTo", existingConName);
+				//return;
+			} else {
+				// record association
+				conSB = new SourceBean("CONNECTION_ASSOCIATION");
+				conSB.setAttribute("exported", exportedConName);
+				conSB.setAttribute("associatedTo", existingConName);
+				connectionAssSB.setAttribute(conSB);
 			}
-			// record association
-			SourceBean conSB = new SourceBean("CONNECTION_ASSOCIATION");
-			conSB.setAttribute("exported", exportedConName);
-			conSB.setAttribute("associatedTo", existingConName);
-			connectionAssSB.setAttribute(conSB);
 		} catch (Exception e) {
 		    logger.error("Error while recording the association between exported connection "+exportedConName+" " +
 		            			  "and the connection " + existingConName + " \n " , e);
@@ -176,8 +185,6 @@ public class UserAssociationsKeeper {
 		}
 	}
 	
-	
-	
 	public String getAssociatedRole(String expRoleName) {
 	    logger.debug("IN");
 		String assRole = null;
@@ -192,5 +199,32 @@ public class UserAssociationsKeeper {
 		return assRole;
 	}
 	
+	public String getAssociatedEngine(String expEngineLabel) {
+		logger.debug("IN");
+		String assEngine = null;
+		SourceBean assEngineSB = (SourceBean)engineAssSB.getFilteredSourceBeanAttribute("ENGINE_ASSOCIATION", "exported", expEngineLabel);
+		if(assEngineSB!=null) {
+			assEngine = (String)assEngineSB.getAttribute("associatedTo");
+			if(assEngine.trim().equals("")) {
+				assEngine = null;
+			}
+		}
+		logger.debug("OUT");
+		return assEngine;
+	}	
+
+	public String getAssociatedConnection(String expConnectionName) {
+		logger.debug("IN");
+		String assConnection = null;
+		SourceBean assConnectionSB = (SourceBean)connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", expConnectionName);
+		if(assConnectionSB!=null) {
+			assConnection = (String)assConnectionSB.getAttribute("associatedTo");
+			if(assConnection.trim().equals("")) {
+				assConnection = null;
+			}
+		}
+		logger.debug("OUT");
+		return assConnection;
+	}
 	
 }

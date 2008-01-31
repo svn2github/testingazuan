@@ -82,6 +82,11 @@ import org.safehaus.uuid.UUIDGenerator;
  * 3) From the field input values loads the object and starts execution
  * <p>
  * 4) See Report/Change the report state
+ * 
+ * @author Zerbetto
+ * @author Fiscato
+ * @author Bernabei
+ * @author Mark Penningroth (Cincom Systems, Inc.)
  */
 public class ExecuteBIObjectModule extends AbstractModule
 {
@@ -385,22 +390,27 @@ public class ExecuteBIObjectModule extends AbstractModule
 			ignoreSubNodes = true;
 		}
 		
-		// if the object can be directly executed (because it hasn't any parameter to be
+		// subObj is not null if specified on preferences
+		SubObject subObj = getRequiredSubObject(obj, subObjects, profile);
+		
+		// (if the object can be directly executed (because it hasn't any parameter to be
 		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved 
-		// or the request esplicitely asks to ignore subnodes
+		// or the request esplicitely asks to ignore subnodes) or (a valid subobject
+		// is specified by preferences)
 	   	// then execute it directly without pass through parameters page
-		if (controller.directExecution() && 
+		if ((controller.directExecution() && 
 				((subObjects.size() == 0 && snapshots.size() == 0 && viewpoints.size() == 0)
-					|| ignoreSubNodes)
+					|| ignoreSubNodes)) 
+			|| subObj != null
 		) {
 			debug("pageCreationHandler", "object hasn't any parameter to fill and no subObjects");
-	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
+	        if (subObj == null) controlInputParameters(obj.getBiObjectParameters(), profile, role);
 			// if there are some errors into the errorHandler does not execute the BIObject
 			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-            execute(obj, null, null, response);
+            execute(obj, subObj, null, response);
 		}
 		if(controller.directExecution()) {
 			debug("pageCreationHandler", "object has only subobjects but not parameter to fill");
@@ -408,7 +418,47 @@ public class ExecuteBIObjectModule extends AbstractModule
 		}
 	}
 	
-		
+	/**
+	 * Find the subobject with the name specified by the attribute "LABEL_SUB_OBJECT" on 
+	 * SessionContainer. If such a subobject exists and the user can execute it, then it is returned;
+	 * if it doesn't exist, null is returned; if it exists but the user is not able to execute it, 
+	 * an error is added into the error handler and null is returned.
+	 * 
+	 * 
+	 * @param obj The BIObject being executed
+	 * @param subObjects The list of all the document suobjects
+	 * @param profile The user profile
+	 * @return the subobject to be executed if it exists and the user can execute it
+	 */
+	// MPenningroth 25-JAN-2008
+	// Handle new LABEL_SUB_OBJECT Preference
+	private SubObject getRequiredSubObject(BIObject obj, List subObjects, IEngUserProfile profile) {
+		SubObject subObj = null;
+		if (subObjects.size() > 0) {
+			String subObjectName = (String) session.getAttribute("LABEL_SUB_OBJECT");
+			if (subObjectName != null ) {
+				Iterator iterSubs = subObjects.iterator();
+				while (iterSubs.hasNext() && subObj == null) {
+					SubObject sd = (SubObject) iterSubs.next();
+					if (sd.getName().equals(subObjectName.trim())) {
+						subObj = sd;
+					}
+				}
+				// TODO - Error case if not found?
+			}
+		}
+		if (subObj != null) {
+			if (!subObj.getIsPublic().booleanValue() && !subObj.getOwner().equals(profile.getUserUniqueIdentifier())) {
+				List l = new ArrayList();
+				l.add(subObj.getName());
+				l.add(obj.getName());
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
+				errorHandler.addError(userError);
+				return null;
+			}
+		}
+		return subObj;
+	}
 	
 	/**
 	 * Called after the user change state selection to pass the BIObject from a state to another  
@@ -593,17 +643,20 @@ public class ExecuteBIObjectModule extends AbstractModule
 		
 		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
 		
-		// if the object can be directly executed (because it hasn't any parameter to be
-		// filled by the user) and if the object has no subobject saved then execute it
-		// directly without pass for parameters page 	
-		if( controller.directExecution() &&  (subObjects.size() == 0) ) {
-	        controlInputParameters(obj.getBiObjectParameters(), profile, role);
+		// subObj is not null if specified on preferences
+		SubObject subObj = getRequiredSubObject(obj, subObjects, profile);
+		
+		// (if the object can be directly executed (because it hasn't any parameter to be
+		// filled by the user) and if the object has no subobject saved) or (a valid subobject
+		// is specified by preferences) then execute it directly without pass for parameters page 	
+		if ((controller.directExecution() &&  subObjects.size() == 0) || subObj != null) {
+			if (subObj == null) controlInputParameters(obj.getBiObjectParameters(), profile, role);
 			// if there are some errors into the errorHandler does not execute the BIObject
 			if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-            execute(obj, null, null, response);
+            execute(obj, subObj, null, response);
 		}
 		if(controller.directExecution()) {
 			response.setAttribute("NO_PARAMETERS", "TRUE");

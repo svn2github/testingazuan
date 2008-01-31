@@ -30,6 +30,8 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,32 +51,33 @@ public class MessageBuilder implements IMessageBuilder {
 	 * @return	A string containing the text
 	 */
 	public String getMessageTextFromResource(String resourceName) {
+		Locale locale = this.getLocale(null);
+		String message = getMessageTextFromResource(resourceName, locale);
+		return message;
+	}
+	
+	public String getMessageTextFromResource(String resourceName, Locale locale) {
 	    logger.debug("IN-resourceName:"+resourceName);
+	    logger.debug("IN-locale:"+ (locale != null ? locale.toString() : "null" ));
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
+			locale = getDefaultLocale();
+		}
 		String message = "";
 		try{
-			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 			// get mode of execution
-			String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-			// based on mode get locale
-			Locale locale = null;
-			if (sbiMode.equalsIgnoreCase("WEB")) {
-				locale = getBrowserLocaleFromSpago();
-			} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-				locale = PortletUtilities.getPortalLocale();
-			}
 			String resourceNameLoc = resourceName + "_" + locale.getLanguage() + "_" + locale.getCountry();
-			logger.debug("resourceNameLoc:"+resourceNameLoc);
-			ClassLoader classLoad = this.getClass().getClassLoader();
+		 	ClassLoader classLoad = this.getClass().getClassLoader();
 		 	InputStream resIs = classLoad.getResourceAsStream(resourceNameLoc);
 		 	if(resIs==null) {
-		 	   logger.warn("Cannot find resource " + resourceName);
-     	 		   resIs = classLoad.getResourceAsStream(resourceName);
+		    	logger.warn("Cannot find resource " + resourceName);
+		 		resIs = classLoad.getResourceAsStream(resourceName);
 		 	}
 		 	byte[] resBytes = GeneralUtilities.getByteArrayFromInputStream(resIs);
 		 	message = new String(resBytes);
 		} catch (Exception e) {
 			message = "";
-			logger.error("Error while recovering text of the resource name " + resourceName,e);
+			logger.error("Error while recovering text of the resource name " + resourceName, e);
 		}
 		logger.debug("OUT-message:"+message);
 	 	return message;
@@ -82,46 +85,75 @@ public class MessageBuilder implements IMessageBuilder {
 	
 	
 	public String getMessage(String code) {
-		return getMessageInternal(code, "messages", null);
+		Locale locale = getLocale(null);
+		return getMessageInternal(code, "messages", locale);
+	}
+	public String getMessage(String code, Locale locale) {
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
+			locale = getDefaultLocale();
+		}
+		return getMessageInternal(code, "messages", locale);
 	}
 	
 	
 	public String getMessage(String code, String bundle) {
-		return getMessageInternal(code, bundle, null);
+		Locale locale = getLocale(null);
+		return getMessageInternal(code, bundle, locale);
+	}
+	
+	public String getMessage(String code, String bundle, Locale locale) {
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
+			locale = getDefaultLocale();
+		}
+		return getMessageInternal(code, bundle, locale);
 	}
 	
 	public String getMessage(String code, HttpServletRequest request) {
-		return getMessageInternal(code, "messages", request);
+		Locale locale = getLocale(request);
+		return getMessageInternal(code, "messages", locale);
+	}
+	
+	public String getMessage(String code, HttpServletRequest request, Locale locale) {
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
+			locale = getDefaultLocale();
+		}
+		return getMessageInternal(code, "messages", locale);
 	}
 	
 	
 	public String getMessage(String code, String bundle, HttpServletRequest request) {
-		return getMessageInternal(code, bundle, request);
+		Locale locale = getLocale(request);
+		return getMessageInternal(code, bundle, locale);
+	}
+	
+	public String getMessage(String code, String bundle, HttpServletRequest request, Locale locale) {
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
+			locale = getDefaultLocale();
+		}
+		return getMessageInternal(code, bundle, locale);
 	}
 	
 	
 	
-	private String getMessageInternal(String code, String bundle, HttpServletRequest request) {
-	        logger.debug("IN-code:"+code);
-	        logger.debug("bundle:"+bundle);
+	private String getMessageInternal(String code, String bundle, Locale locale) {
+	    logger.debug("IN-code:"+code);
+	    logger.debug("bundle:"+bundle);
 		String message = "";
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
 		// based on mode get spago object and url builder
 		if (sbiMode.equalsIgnoreCase("WEB")) {
-			Locale locale = null;
-			if(request==null) {
-				locale = getBrowserLocaleFromSpago();
-			} else {
-				locale = getBrowserLocale(request);
-			}
-			message = MessageBundle.getMessage(code,bundle, locale);
+			message = MessageBundle.getMessage(code, bundle, locale);
 			if((message==null) || message.trim().equals("")) {
 				message = code;
 			}
 		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			message = PortletUtilities.getMessage(code,bundle);
+			message = PortletUtilities.getMessage(code, bundle);
 		}
 		logger.debug("OUT-message:"+message);
 		return message;
@@ -196,4 +228,62 @@ public class MessageBuilder implements IMessageBuilder {
 	 	return locale;
 	}
 	
+	
+	public Locale getLocale(HttpServletRequest request) {
+		logger.debug("IN");
+		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+		// get mode of execution
+		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+		// based on mode get locale
+		Locale locale = null;
+		if (sbiMode.equalsIgnoreCase("WEB")) {
+			if (request == null) {
+				locale = getBrowserLocaleFromSpago();
+			} else {
+				locale = getBrowserLocale(request);
+			}
+		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
+			locale = PortletUtilities.getPortalLocale();
+		}
+		if (!isValidLocale(locale)) {
+			logger.warn("Request locale " + locale + " not valid since it is not configured.");
+			locale = getDefaultLocale();
+			logger.debug("Using default locale " + locale + ".");
+		}
+		logger.debug("OUT-locale:" + (locale != null ? locale.toString() : "null"));
+		return locale;
+	}
+	
+	private boolean isValidLocale(Locale locale) {
+		logger.debug("IN");
+		try {
+			if (locale == null) return false;
+		 	// check if the Locale at input is configured
+			String language = locale.getLanguage();
+			Object o = ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+					"language", language);
+			if (o != null) {
+				if (o instanceof SourceBean) {
+					SourceBean langSB = (SourceBean) o;
+					String country = (String) langSB.getAttribute("country");
+					if (locale.getCountry().equalsIgnoreCase(country)) return true;
+					else return false;
+				} else if (o instanceof List) {
+					List list = (List) o;
+					Iterator it = list.iterator();
+					while (it.hasNext()) {
+						SourceBean langSB = (SourceBean) it.next();
+						String country = (String) langSB.getAttribute("country");
+						if (locale.getCountry().equalsIgnoreCase(country)) return true;
+					}
+					return false;
+				} else {
+					logger.error("Invalid configuration.");
+					return false;
+				}
+			} else return false;
+		} finally {
+			logger.debug("OUT");
+		}
+	}
 }

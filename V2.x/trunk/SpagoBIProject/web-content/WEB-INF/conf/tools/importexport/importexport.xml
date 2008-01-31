@@ -12,6 +12,7 @@
 		<TRANSFORM from="1.9.2" to="1.9.3" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9_2To1_9_3" />
 		<TRANSFORM from="1.9.3" to="1.9.4" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom1_9_3To1_9_4" />
 	</TRANSFORMERS>
+	<ASSOCIATIONS_REPOSITORY path="Repository_Association_Files"/>
 </IMPORTEXPORT>
 
 <!--

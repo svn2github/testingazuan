@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,18 @@ public interface IImportManager {
 	
 	
 	/**
+	 * Returns the AssociationFile involved in the current import operation, if any
+	 * @return the AssociationFile involved in the current import operation, if any
+	 */
+	public AssociationFile getAssociationFile();
+	
+	
+	/**
+	 * Sets the AssociationFile involved in the current import operation
+	 */
+	public void setAssociationFile(AssociationFile associationFile);
+	
+	/**
 	 * checks if two or more exported roles are associate to the same current role
 	 * @param roleAssociations Map of association between exported roles and 
 	 * roles of the portal in use
@@ -154,5 +167,23 @@ public interface IImportManager {
 	 * @param impAssMode The import association mode 
 	 */
 	public void setImpAssMode(String impAssMode);
+	
+	/**
+	 * Returns true is some roles associations is required, false otherwise 
+	 * @return true is some roles associations is required, false otherwise 
+	 */
+	public boolean isRolesAssociationPageRequired() throws EMFUserError;
+	
+	/**
+	 * Returns true is some engines associations is required, false otherwise 
+	 * @return true is some engines associations is required, false otherwise 
+	 */
+	public boolean isEnginesAssociationPageRequired() throws EMFUserError;
+	
+	/**
+	 * Returns true is some connection associations is required, false otherwise 
+	 * @return true is some connection associations is required, false otherwise 
+	 */
+	public boolean isConnectionsAssociationPageRequired() throws EMFUserError;
 	
 }

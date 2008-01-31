@@ -20,7 +20,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Map,java.util.Set,java.util.Iterator,it.eng.spagobi.engines.config.bo.Engine,java.util.HashMap"%>
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
+				it.eng.spagobi.tools.importexport.ImportExportConstants,
+				java.util.List,
+				java.util.Map,
+				java.util.Set,
+				java.util.Iterator,
+				it.eng.spagobi.tools.importexport.DBConnection" %>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.tools.importexport.IImportManager"%>
+<%@page import="it.eng.spagobi.tools.importexport.UserAssociationsKeeper"%>
+<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
@@ -46,11 +56,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formUrl = urlBuilder.getUrl(request, formUrlPars);
    
+	IImportManager impManager = (IImportManager)aSessionContainer.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+	UserAssociationsKeeper usrAssKeep = impManager.getUserAssociation();
+    
 %>
 
-
-
-<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <script>
 
 	var infopanelopen = false;
@@ -190,13 +200,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<% 
 								Set curConnNames = curConns.keySet();	
 								Iterator iterCurConnNames = curConnNames.iterator();
+								String selected = null;
+								String associated = "";
+								boolean isAssociated = false;
 								while(iterCurConnNames.hasNext()) {
+									selected = "";
 									String curConnName = (String)iterCurConnNames.next();
 									String curNameDesc = (String)curConns.get(curConnName);
+									String connectionAss = usrAssKeep.getAssociatedConnection(connName);
+									if( (connectionAss!=null) &&  curConnName.equals(connectionAss)) {
+										selected=" selected ";
+										isAssociated = true;
+									}
 							%>
-							<option value='<%=curConnName%>' ><%=curNameDesc%></option>
+							<option value='<%=curConnName%>' <%=selected%>><%=curNameDesc%></option>
 							<% } %>
 						</select>
+						<%
+						if (isAssociated) {
+							%>
+							<img title='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' 
+	      				 		src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/associated.gif")%>' 
+	      				 		alt='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' />
+							<%
+						}
+						%>
 					</td>
 				</tr>
 				<% } %>

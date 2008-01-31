@@ -1,4 +1,13 @@
+
+
+<%@page import="it.eng.qbe.model.*"%>
+<%@page import="it.eng.qbe.wizard.*"%>
+<%@page import="it.eng.qbe.query.*"%>
+
+<%@page import="it.eng.spagobi.qbe.commons.constants.*"%>
+<%@page import="it.eng.spago.configuration.*"%>
 <%@ page import="it.eng.spago.base.*"%>
+
 <%@ page import="it.eng.qbe.utility.*"%>
 <%@ page import="it.eng.qbe.locale.*"%>
 <%@ page import="it.eng.qbe.log.*"%>
@@ -6,53 +15,73 @@
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
 <%@page import="it.eng.qbe.conf.*"%>
 
+<%@ page import="java.util.*"%>
+
+
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
 
 <qbe:url type="resource" var="qbeCommonsScripts" ref="../js/commons/qbe_commons.js"/>
-	<script type="text/javascript" src='${qbeCommonsScripts}'/></script>
+<script type="text/javascript" src='${qbeCommonsScripts}'/></script>
 
 <%  
 	RequestContainer requestContainer = null;
 	ResponseContainer responseContainer = null;
 	SessionContainer sessionContainer = null;
 	
+	SourceBean aServiceRequest = null; // deprecated
+	SourceBean serviceRequest = null;
 	
-	String bundle = "component_spagobiqbeIE_messages";
+	SourceBean aServiceResponse = null; // deprecated
+	SourceBean serviceResponse = null;
 	
-	String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");   
+	DataMartModel datamartModel = null;
+	ISingleDataMartWizardObject datamartWizard = null;
+	IQuery query = null;
 	
 	IQbeUrlGenerator qbeUrl = null;
+	
+	String bundle = null;
 	IQbeMessageHelper qbeMsg = null;
-	if (qbeMode.equalsIgnoreCase("WEB")) {
-		requestContainer = RequestContainerAccess.getRequestContainer(request);
-		responseContainer = ResponseContainerAccess.getResponseContainer(request);
-		qbeUrl = new WebQbeUrlGenerator();		
-	} else if  (qbeMode.equalsIgnoreCase("PORTLET")){
-		requestContainer = RequestContainerPortletAccess.getRequestContainer(request);
-		responseContainer = it.eng.spago.base.ResponseContainerPortletAccess.getResponseContainer(request);
-		qbeUrl = new PortletQbeUrlGenerator();
-	}
 	
-	qbeMsg =  QbeEngineConf.getInstance().getQbeMessageHelper();
+	Map functionalities = null;
 	
-	SourceBean aServiceRequest = requestContainer.getServiceRequest();
-	SourceBean aServiceResponse = responseContainer.getServiceResponse();
 	
+	
+	
+	requestContainer = QbeEngineConf.getInstance().isWebModalityActive()? 
+					   RequestContainerAccess.getRequestContainer(request):
+					   RequestContainerPortletAccess.getRequestContainer(request);
+						
+	responseContainer = QbeEngineConf.getInstance().isWebModalityActive()? 
+						ResponseContainerAccess.getResponseContainer(request):
+						ResponseContainerPortletAccess.getResponseContainer(request);
+						
 	sessionContainer = requestContainer.getSessionContainer();
 	
-	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
+	aServiceRequest = requestContainer.getServiceRequest();
+	serviceRequest = aServiceRequest;
+	
+	aServiceResponse = responseContainer.getServiceResponse();
+	serviceResponse = aServiceResponse;
+	
+		
+	datamartModel = (DataMartModel)sessionContainer.getAttribute(QbeConstants.DATAMART_MODEL); 
+	datamartWizard = (ISingleDataMartWizardObject)sessionContainer.getAttribute(QbeConstants.DATAMART_WIZARD);
+	query = (datamartWizard != null)? datamartWizard.getQuery(): null;
+	
+	qbeUrl = QbeEngineConf.getInstance().isWebModalityActive()? 
+			 new WebQbeUrlGenerator():
+			 new PortletQbeUrlGenerator();
+			 
+	bundle = QbeEngineConf.getInstance().getBundle();
+	qbeMsg =  QbeEngineConf.getInstance().getQbeMessageHelper();
+	
+	
+	functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
 %>
    
-<% if (qbeMode.equalsIgnoreCase("PORTLET")){ %>       
-	
-<%} %>
 
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-
-<html>
-<head>
-<%} %>
 
 
 
@@ -81,7 +110,7 @@
 		document.onselectstart = function() { return true; }
 	</script>
 	
-<%  if (qbeMode.equalsIgnoreCase("WEB")) { %>
+<%  if ( QbeEngineConf.getInstance().isWebModalityActive() ) { %>
 		<script language=JavaScript>
 			var currentSubQueryFieldId = '';
 			var errMsg = null;
@@ -215,7 +244,7 @@
 
 
 
-<%  if (qbeMode.equalsIgnoreCase("PORTLET")) { %>	
+<%  if ( !QbeEngineConf.getInstance().isWebModalityActive() ) { %>	
 	<SCRIPT language=JavaScript>
 			function dTree(objName) {
 				this.config = {
@@ -738,13 +767,13 @@
 	
 		
 
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
+<% if ( QbeEngineConf.getInstance().isWebModalityActive() ){ %> 
 </head>
 <%} %>
   
   
   <% 
-     if(qbeMode.equalsIgnoreCase("PORTLET")){
+     if( !QbeEngineConf.getInstance().isWebModalityActive() ){
         String actor = (String)aServiceRequest.getAttribute("ACTOR");
         if(actor!=null) {
         	sessionContainer.setAttribute("ACTOR", actor);

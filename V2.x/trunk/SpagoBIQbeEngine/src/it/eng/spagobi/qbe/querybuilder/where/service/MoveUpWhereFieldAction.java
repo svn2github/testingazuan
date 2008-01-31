@@ -41,9 +41,9 @@ public class MoveUpWhereFieldAction extends AbstractQbeEngineAction {
 		String fieldId = getAttributeAsString(FIELD_ID); 	
 		
 		
-		getActiveQuery().moveUpWhereField(fieldId);
+		getQuery().moveUpWhereField(fieldId);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );		
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

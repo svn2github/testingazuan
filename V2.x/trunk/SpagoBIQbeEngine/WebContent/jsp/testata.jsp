@@ -20,45 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
 
-<%
-	boolean jasperTemplateBuilderVisible = true;
-	boolean geoTemplateBuilderVisible = false;
-	boolean geoViewerVisible = false;
-	
-	
-	
-	/*
-	Map functionalities = (Map)sessionContainer.getAttribute("FUNCTIONALITIES");
-	
-	if(functionalities != null) {
-		Properties props = null;
-		String pValue = null;
-		
-		props = (Properties)functionalities.get("jasperTemplateBuilder");
-		if(props != null) {
-			pValue = props.getProperty("visible");
-			if(pValue != null && pValue.equalsIgnoreCase("FALSE")) jasperTemplateBuilderVisible = false;
-		}
-		
-		props = (Properties)functionalities.get("geoTemplateBuilder");
-		if(props != null) {
-			pValue = props.getProperty("visible");
-			if(pValue != null && pValue.equalsIgnoreCase("TRUE")) geoTemplateBuilderVisible = true;
-		}
-		
-		props = (Properties)functionalities.get("geoViewer");
-		if(props != null) {
-			pValue = props.getProperty("visible");
-			if(pValue != null && pValue.equalsIgnoreCase("TRUE")) geoViewerVisible = true;
-		}
-		
-		
-	}
-	*/
-	
-	
 
-%>
 
 <qbe:message key="QBE.Tab.FieldSelection" var="fieldSelectionLabel" />
 <qbe:message key="QBE.Tab.FieldSelectionTooltip" var="fieldSelectionTooltip" />
@@ -104,15 +66,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<qbe:tab id="DIV_GEO_VIEWER" msg="GeoViewer" label="Geo Viewer" tooltip="Geo Viewer"/>			
 			</c:if>
 			
-			
-			
-			<%
-			 if(false /*Utils.isSubQueryModeActive(SessionContainer)*/) {
-			%>
-			<div class='btab' align="right" id='DIV_SAVE_SUBQUERY' title="Save Subquery">
+			<c:if test="${query.subqueryModeActive}">
+				<div class='btab' align="right" id='DIV_SAVE_SUBQUERY' title="Save Subquery">
 				<input type='button' value='Save Subquery' style="font-size:10px;height:20px;"  onclick="javascript:vediSchermo('save','DIV_SAVE_SUBQUERY')"/>
 			</div>
-			<%} %>
+			</c:if>
+			
 			
 		</div>
 		

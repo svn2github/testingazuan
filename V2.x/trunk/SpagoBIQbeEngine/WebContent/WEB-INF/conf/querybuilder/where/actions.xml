@@ -26,7 +26,7 @@
 	
 	
 	<ACTION name="MOVE_UP_WHERE_ACTION" 
-			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveUpWhereFiledAction" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveUpWhereFieldAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

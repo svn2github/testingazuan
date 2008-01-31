@@ -40,9 +40,9 @@ public class DeleteWhereFieldAction extends AbstractQbeEngineAction {
 				
 		String fieldId = getAttributeAsString(FIELD_ID); 	
 		
-		getMainQuery().deleteWhereField(fieldId);		
+		getQuery().deleteWhereField(fieldId);		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );		
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

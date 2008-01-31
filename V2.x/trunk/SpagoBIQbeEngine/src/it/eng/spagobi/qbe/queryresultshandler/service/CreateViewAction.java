@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.queryresultshandler.service;
 
+import java.io.IOException;
+
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
@@ -28,20 +30,21 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 
 
 /**
  * @author Andrea Gioia
  */
-public class CreateViewAction extends AbstractHttpAction {
+public class CreateViewAction extends AbstractQbeEngineAction {
 	
 	private SessionContainer getSessionContainer() {
 		return getRequestContainer().getSessionContainer();
 	}
 	
 	private ISingleDataMartWizardObject getDataMartWizard() {
-		return Utils.getWizardObject(getSessionContainer());
+		return getDatamartWizard();
 	}
 	
 	private DataMartModel getDataMartModel() {
@@ -50,18 +53,24 @@ public class CreateViewAction extends AbstractHttpAction {
 	
 	
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {				
+	public void service(SourceBean request, SourceBean response)  {				
 		String viewName = (String)request.getAttribute("VIEW_NAME");
 		
 		getResponseContainer().setAttribute(Constants.HTTP_RESPONSE_FREEZED, Boolean.TRUE);
 		
 		try {
 			getDataMartModel().addView(viewName, getDataMartWizard());
+			getHttpResponse().getWriter().write("OK");	
 		} catch (Throwable t) {
-			getHttpResponse().getWriter().write("KO" + t.getMessage());
+			try {
+				getHttpResponse().getWriter().write("KO" + t.getMessage());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			t.printStackTrace();
 		}
 		
-		getHttpResponse().getWriter().write("OK");		
+			
 	}
 }

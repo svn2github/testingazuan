@@ -21,7 +21,7 @@
 				  	<table class="qbe-font">
 				  			
 				  		<c:if test="true">
-				  			<c:set var="fields" value="${query.query.selectFieldsIterator}"/>
+				  			<c:set var="fields" value="${query.selectFieldsIterator}"/>
 					 		<c:if test="${fields != null}">	
 					 			<c:forEach var="field" items="${fields}">	
 					 				<tr>
@@ -126,7 +126,7 @@
 					 		
 			
 			
-			<c:set var="cFields" value="${query.query.calculatedFieldsIterator}"/>
+			<c:set var="cFields" value="${query.calculatedFieldsIterator}"/>
 				
 			<c:if test="${cFields != null}">	
 				<c:forEach var="cField" items="${cFields}">
@@ -172,7 +172,7 @@
 			<tr>
 				<td colspan="8">
 					<c:choose>
-							<c:when test="${query.query.distinct}">
+							<c:when test="${query.distinct}">
 								<input type="checkbox" 
 										id="checkboxDistinct" 
 										checked="checked" 
@@ -188,7 +188,7 @@
 					<input type="hidden" 
 						   id="selectDistinct" 
 						   name="selectDistinct" 
-						   value="${query.query.distinct}"/>
+						   value="${query.distinct}"/>
     			</td>
     		</tr>
     			 			    		   		

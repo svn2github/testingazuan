@@ -48,11 +48,11 @@ public class AddSelectFieldAction extends AbstractQbeEngineAction {
 		String fieldHibPrec= getAttributeAsString(FIELD_HIBPREC);
 		
 				
-		getMainQuery().addSelectField(className, fieldName, fieldLabel, 
+		getQuery().addSelectField(className, fieldName, fieldLabel, 
 				fieldHibType, fieldHibScale, fieldHibPrec);
 		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );		
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

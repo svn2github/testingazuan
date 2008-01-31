@@ -23,12 +23,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java"%>
 
-<%@ page import="it.eng.spago.base.*"%>
+
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.qbe.query.*"%>
+
 
 
 
@@ -37,17 +35,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%-- For validation --%>
 <%
 
-			Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
-
-			ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
-			it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel) sessionContainer
-					.getAttribute("dataMartModel");
-
-			//dm.updateCurrentClassLoader();
-
-			String msgFinal = (String) aServiceResponse
+			
+			String msgFinal = (String) serviceResponse
 					.getAttribute("ERROR_MSG_FINAL");
-			String msgExpert = (String) aServiceResponse
+			String msgExpert = (String) serviceResponse
 					.getAttribute("ERROR_MSG_EXPERT");
 
 			boolean flagErrorsFinal = false;
@@ -66,10 +57,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 
 			String finalQueryString = null;
-			if (aWizardObject.isUseExpertedVersion()) {
-				finalQueryString = aWizardObject.getExpertQueryDisplayed();
+			if (datamartWizard.isUseExpertedVersion()) {
+				finalQueryString = datamartWizard.getExpertQueryDisplayed();
 			} else {
-				finalQueryString = aWizardObject.getFinalQuery();
+				finalQueryString = datamartWizard.getFinalQuery();
 			}
 
 			
@@ -80,35 +71,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<%if (qbeMode.equalsIgnoreCase("WEB")) {
+<qbe:page>
+ 	<qbe:page-content>
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
+ 
+ 
+		<div class='div_background_no_img'>
 
-			%>
-<body>
-<%}%>
-
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%=dm.getName()%> : <%=dm.getDescription()%> - <%=qbeMsg.getMessage(requestContainer,"QBE.Title.Savepage", bundle)%>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
-%>
-
-<%@include file="/jsp/testata.jsp" %>
-
-
-<div class='div_background_no_img'>
-
-	<%if (!aWizardObject.getQuery().isEmpty()) {%>
+	<%if (!query.isEmpty()) {%>
 
 <table width="100%">
 	<tr>
@@ -130,7 +102,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<form id="formPersistQuery" name="formPersistQuery"
 					action="<%=qbeUrl.getUrl(request,null) %>" method="POST"><input
 					type="hidden" id="previousQueryId" name="previousQueryId"
-					value="<%= (aWizardObject.getQuery().getQueryId() != null ? aWizardObject.getQuery().getQueryId() : "")  %>" />
+					value="<%= (query.getQueryId() != null ? query.getQueryId() : "")  %>" />
 				<input type="hidden" name="ACTION_NAME" value="PERSIST_QUERY_ACTION" />
 				<table>
 					<tr>
@@ -149,7 +121,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</td>
 						<td >
 								<input id="queryId" type="text" name="queryId"
-												value="<%=(aWizardObject.getQuery().getQueryId() != null ? aWizardObject.getQuery().getQueryId() : "") %>">
+												value="<%=(query.getQueryId() != null ? query.getQueryId() : "") %>">
 						</td>
 					</tr>
 					<tr>
@@ -157,7 +129,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.QueryDescr", bundle)%>
 						</td>
 						<td><input type="text" name="queryDescritpion"
-							value="<%=(aWizardObject.getDescription() != null ? aWizardObject.getDescription() : "") %>">
+							value="<%=(datamartWizard.getDescription() != null ? datamartWizard.getDescription() : "") %>">
 						</td>
 					</tr>
 					<tr>
@@ -172,7 +144,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
-						<td colspan="2"><%if (aWizardObject.getVisibility()) {
+						<td colspan="2"><%if (datamartWizard.getVisibility()) {
 
 					%> <input
 							type="radio" name="visibility" value="public" checked="checked">
@@ -259,7 +231,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<thead>
 											<tr>
 												<%
-															Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+															Iterator it = query.getSelectFieldsIterator();
 															String headerName = "";
 															ISelectField selField = null;
 															while (it.hasNext()) {
@@ -383,7 +355,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					{%>
 										<thead>
 											<tr>
-												<%headers = aWizardObject.extractExpertSelectFieldsList();
+												<%headers = datamartWizard.extractExpertSelectFieldsList();
 						if (headers == null)
 							headers = new ArrayList();
 						it = headers.iterator();
@@ -509,15 +481,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%-- SAVE --%>
 
 
-<%if (qbeMode.equalsIgnoreCase("WEB")) {
-%>
-</body>
-<%}%>
-
-<div id="divSpanCurrent"><span id="currentScreen">DIV_SAVE_QUERY</span>
-</div>
-
-<%@include file="/jsp/qbefooter.jsp"%>
 
 
-</div>
+	<div id="divSpanCurrent"><span id="currentScreen">DIV_SAVE_QUERY</span>
+	
+	<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
+
+	</qbe:page-content>
+</qbe:page>

@@ -82,7 +82,7 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 			classPrefix = "a";
 		}else{
 			if ( isSubqueryModeActive() ){
-				classPrefix = getMainQuery().getSubQueryIdForSubQueryOnField( getSubqueryField() );
+				classPrefix = getQuery().getSubQueryIdForSubQueryOnField( getSubqueryField() );
 			}
 		}
 		String classAlias = null;
@@ -96,7 +96,7 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 		
 		
 		IWhereField aWhereField = null; 
-		Iterator it = getMainQuery().getWhereFieldsIterator();
+		Iterator it = getQuery().getWhereFieldsIterator();
 		String fieldName = null;
 		String operatorForField = null;
 		String valueForField = null;
@@ -133,15 +133,15 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 		if (updCondMsg.equalsIgnoreCase("UPD_SEL")) {
 			
 			EntityClass ec = new EntityClass(className, classAlias);
-			if (!getActiveQuery().containEntityClass(ec)){
-				getMainQuery().addEntityClass(ec);
+			if (!getQuery().containEntityClass(ec)){
+				getQuery().addEntityClass(ec);
 			}
 
-			IWhereField whereField = getMainQuery().addWhereField(aliasedFieldName, hibFieldType);
+			IWhereField whereField = getQuery().addWhereField(aliasedFieldName, hibFieldType);
 			whereField.setFieldEntityClassForLeftCondition(ec);
 			
 			updateLastUpdateTimeStamp();
-			setMainDataMartWizard( getMainDataMartWizard() );
+			setDatamartWizard( getDatamartWizard() );
 			
 		} else if (updCondMsg.equalsIgnoreCase("UPD_SEL_RIGHT")){
 			
@@ -150,15 +150,15 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
 				Logger.debug(this.getClass(), "-----");
 			}else{	
-				if (!getMainQuery().containEntityClass(ec)){
-					getMainQuery().addEntityClass(ec);
+				if (!getQuery().containEntityClass(ec)){
+					getQuery().addEntityClass(ec);
 				}
 			}
 			
 			
 			aWhereField = null;
 			
-			it = getMainQuery().getWhereFieldsIterator();;
+			it = getQuery().getWhereFieldsIterator();;
 			while (it.hasNext()){
 					aWhereField = (IWhereField)it.next();
 					if (aWhereField.getId().equalsIgnoreCase(selectedFieldId)){
@@ -171,11 +171,11 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
 				// --- 
 			}else{
-				getMainQuery().purgeNotReferredEntityClasses();
+				getQuery().purgeNotReferredEntityClasses();
 			}
 			
 			updateLastUpdateTimeStamp();
-			setMainDataMartWizard( getMainDataMartWizard() );
+			setDatamartWizard( getDatamartWizard() );
 						
 			
 		} else if (updCondMsg.equalsIgnoreCase("UPD_TREE_SEL")){

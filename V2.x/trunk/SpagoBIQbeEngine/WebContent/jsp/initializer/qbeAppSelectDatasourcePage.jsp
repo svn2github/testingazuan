@@ -25,8 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="java.util.*"%>
 
  
-
-<%@include file="../jsp/qbe_base.jsp"%>  
+<%@ include file="/jsp/qbe_base.jsp" %>
 <%
 
 List allJndiDs = QbeEngineConf.getInstance().getConnectionNames();
@@ -183,10 +182,10 @@ queries.addAll(privateQueries);
 					            theQuery = (ISingleDataMartWizardObject)itQueries.next();
 					%>
 						   		<tr class='portlet-font'>
-						   			<td class="<%=rowClass%>"><%= theQuery.getQueryId() %></td>
+						   			<td class="<%=rowClass%>"><%= theQuery.getQuery().getQueryId() %></td>
 						   			<td class="<%=rowClass%>"><%= theQuery.getDescription() %></td>
 						   			<td class="<%=rowClass%>" width="22px" height="22px">
-						   				<a href="#" onclick="javascript:setQueryIdAndSubmitForm('<%=theQuery.getQueryId()%>')"/>
+						   				<a href="#" onclick="javascript:setQueryIdAndSubmitForm('<%=theQuery.getQuery().getQueryId()%>')"/>
 						   					<img title="Execute Query" alt="Execute Query" src="<%= qbeUrl.conformStaticResourceLink(request,"../img/exec.gif")%>"/>
 						   				</a>
 						   			</td>
@@ -207,5 +206,5 @@ queries.addAll(privateQueries);
 <% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
 </body>
 <%}%>
-<%@include file="../jsp/qbefooter.jsp" %>
+<%@include file="/jsp/qbefooter.jsp" %>
 

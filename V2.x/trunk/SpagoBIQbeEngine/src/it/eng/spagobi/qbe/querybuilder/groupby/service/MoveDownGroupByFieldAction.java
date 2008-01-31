@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.groupby.service;
 
-import it.eng.qbe.query.GroupByField;
-import it.eng.qbe.query.IGroupByClause;
-import it.eng.qbe.query.IGroupByField;
-import it.eng.qbe.query.IOrderByField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
@@ -44,9 +40,9 @@ public class MoveDownGroupByFieldAction extends AbstractQbeEngineAction {
 		String fieldId = getAttributeAsString(FIELD_ID);
 		
 		
-		getMainQuery().moveDownGroupByField(fieldId);
+		getQuery().moveDownGroupByField(fieldId);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

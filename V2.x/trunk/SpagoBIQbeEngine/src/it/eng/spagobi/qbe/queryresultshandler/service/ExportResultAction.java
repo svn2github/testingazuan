@@ -30,6 +30,7 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import org.hibernate.HibernateException;
 
@@ -37,44 +38,20 @@ import org.hibernate.HibernateException;
 /**
  * @author Andrea Gioia
  */
-public class ExportResultAction extends AbstractAction {
+public class ExportResultAction extends AbstractQbeEngineAction {
 	
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
-	
-	private SessionContainer getSessionContainer() {
-		return getRequestContainer().getSessionContainer();
-	}
-	
-	private void returnError(SourceBean response, String errorMsg) {
-		if (getSessionContainer().getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
-			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
-		}
 		
-		try {
-		
-			response.setAttribute("ERROR_MSG", errorMsg);
-		
-		} catch (SourceBeanException e) {
-		
-			e.printStackTrace();
-		
-		}
-	}
-	
-	public void service(SourceBean request, SourceBean response) throws Exception{
+	public void service(SourceBean request, SourceBean response) {
 
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-		DataMartModel dataMartModel  = (DataMartModel)aSessionContainer.getAttribute("dataMartModel");
-			
+		
 		String query = null;
-		aWizardObject.composeQuery(dataMartModel);
-		if (aWizardObject.isUseExpertedVersion()){
-			query = aWizardObject.getExpertQueryDisplayed();
+		getDatamartWizard().composeQuery( getDatamartModel() );
+		if (getDatamartWizard().isUseExpertedVersion()){
+			query = getDatamartWizard().getExpertQueryDisplayed();
 		}else{
 			try{
-				query =  aWizardObject.getFinalSqlQuery(dataMartModel);
+				query =  getDatamartWizard().getFinalSqlQuery( getDatamartModel() );
 			}catch(Throwable t){
 				t.printStackTrace();
 			}
@@ -88,8 +65,8 @@ public class ExportResultAction extends AbstractAction {
 		
 			try {
 		
-				SourceBean queryResponseSourceBean = aWizardObject.executeSqlQuery(dataMartModel, query, 0, 10);
-				getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
+				SourceBean queryResponseSourceBean = getDatamartWizard().executeSqlQuery(getDatamartModel(), query, 0, 10);
+				setAttributeInSession (QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
 			
 			}catch (HibernateException he) {
 			
@@ -107,9 +84,11 @@ public class ExportResultAction extends AbstractAction {
 				returnError(response, e.getMessage());					
 			
 			}
-		}
-		
-				
-				
+		}				
 	}	
+	
+	private void returnError(SourceBean response, String errorMsg) {
+		delAttributeFromSession(QUERY_RESPONSE_SOURCE_BEAN);		
+		setAttribute("ERROR_MSG", errorMsg);
+	}
 }

@@ -43,9 +43,9 @@ public class AddWhereFieldAction extends AbstractQbeEngineAction {
 		String fieldName = getAttributeAsString(COMPLETE_FIELD_NAME); 
 		String type = getAttributeAsString(HIB_TYPE); 
 		
-		getMainQuery().addWhereField(fieldName, type);
+		getQuery().addWhereField(fieldName, type);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );	
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

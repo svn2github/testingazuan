@@ -76,9 +76,6 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractQbeEngineAction {
 		return getRequestContainer().getSessionContainer();
 	}
 	
-	private ISingleDataMartWizardObject getDataMartWizard() {
-		return Utils.getWizardObject(getSessionContainer());
-	}
 	
 	private DataMartModel getDataMartModel() {
 		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
@@ -87,14 +84,14 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractQbeEngineAction {
 	public void service(SourceBean request, SourceBean response) {
 		super.service(request, response);	
 		
-		if ( !getActiveQuery().isEmpty() ){
+		if ( !getQuery().isEmpty() ){
 			
 		
-		getDataMartWizard().composeQuery(getDataMartModel());
+		getDatamartWizard().composeQuery(getDataMartModel());
 		
-		if ((getDataMartWizard().getExpertQueryDisplayed() == null)||(getDataMartWizard().getExpertQueryDisplayed().trim().length() == 0)){
+		if ((getDatamartWizard().getExpertQueryDisplayed() == null)||(getDatamartWizard().getExpertQueryDisplayed().trim().length() == 0)){
 			try{
-				getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+				getDatamartWizard().setExpertQueryDisplayed(getDatamartWizard().getFinalSqlQuery(getDataMartModel()));
 			}catch (Throwable t) {
 				t.printStackTrace();
 			}
@@ -102,7 +99,7 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractQbeEngineAction {
 		
 		boolean joinOk = false;
 		try {
-			joinOk = doCheckJoins(getDataMartWizard().getQuery(), response);
+			joinOk = doCheckJoins(getDatamartWizard().getQuery(), response);
 		} catch (SourceBeanException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -113,8 +110,8 @@ public class ExecuteSaveQueryFromSaveAction extends AbstractQbeEngineAction {
 		} 
 		else{
 			try {
-				getDataMartWizard().executeQbeQuery(getDataMartModel(), 0, 10);
-				getDataMartWizard().executeExpertQuery(getDataMartModel(), 0, 10);
+				getDatamartWizard().executeQbeQuery(getDataMartModel(), 0, 10);
+				getDatamartWizard().executeExpertQuery(getDataMartModel(), 0, 10);
 			}catch(HibernateException he) {				
 				Logger.error(ExecuteSaveQueryFromSaveAction.class, he);				
 				String causeMsg = he.getCause().getMessage();

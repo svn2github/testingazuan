@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.orderby.service;
 
-import it.eng.qbe.query.IOrderByClause;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.OrderByClause;
-import it.eng.qbe.query.OrderByField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
@@ -49,17 +45,17 @@ public class AddOrderByFieldAction extends AbstractQbeEngineAction {
 		List fields = request.getAttributeAsList(FIELDS);
 		
 		if(fieldName != null) {
-			getMainQuery().addOrderByField(fieldName);
+			getQuery().addOrderByField(fieldName);
 		}
 		else {			
-			getMainQuery().deleteOrderByClause();
+			getQuery().deleteOrderByClause();
 			for(int i = 0; i < fields.size(); i++) {
 				fieldName = (String)fields.get(i);
-				getMainQuery().addOrderByField(fieldName);
+				getQuery().addOrderByField(fieldName);
 			}	
 		}		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

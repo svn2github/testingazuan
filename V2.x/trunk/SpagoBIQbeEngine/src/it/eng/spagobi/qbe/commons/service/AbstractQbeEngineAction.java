@@ -24,11 +24,11 @@ package it.eng.spagobi.qbe.commons.service;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 
 import java.util.Locale;
 
@@ -37,32 +37,15 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 /**
- * @author Andrea Gioia
- *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
-	
-	private SourceBean request;
-	private SourceBean response;
-	
-	public static final String QBE_ENGINE_LOCALE = "QBE_ENGINE_LOCALE";
-	public static final String QBE_SPAGOBI_REQUEST = "QBE_SPAGOBI_REQUEST";
-	public static final String QBE_DATAMART_MODEL = "dataMartModel";
-	private static final String QBE_QUERY = WizardConstants.SINGLE_DATA_MART_WIZARD;
-	private static final String QBE_QUERY_MODE = WizardConstants.QUERY_MODE;
-	private static final String QBE_SUBQUERY_MODE = WizardConstants.SUBQUERY_MODE;
-	private static final String QBE_SUBQUERY_FIELD =  WizardConstants.SUBQUERY_FIELD;
-	private static final String QBE_LAST_UPDATE_TIMESTAMP =  "QBE_LAST_UPDATE_TIMESTAMP";
-	private static final String QBE_USER_ID = "userId";
-	
-	public static final String TRUE = "TRUE";
-	public static final String FALSE = "FALSE";
-	
+public abstract class AbstractQbeEngineAction extends AbstractBaseHttpAction {
 	
 	/**
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(AbstractQbeEngineAction.class);
+    
 	
 	
 	public void init(SourceBean config) {
@@ -70,134 +53,54 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
     } 
 	
 	public void service(SourceBean request, SourceBean response) {
-		this.request = request;
-		this.response = response;
+		super.service(request, response);
 	}
 	
-	public HttpSession getHttpSession() {
-		return getHttpRequest().getSession();
-	}
 	
-	public SessionContainer getSession() {
-		return getRequestContainer().getSessionContainer();
-	}
-	
-	public Object getAttributeFromSession(String attrName) {
-		return getRequestContainer().getSessionContainer().getAttribute(attrName);
-	}
-	
-	public void delAttributeFromSession(String attrName) {
-		if(getAttributeFromSession(attrName) != null) {
-			getRequestContainer().getSessionContainer().delAttribute(attrName);
-		}
-	}
-		
-	public void setAttributeInSession(String attrName, Object attrValue) {
-		delAttributeFromSession(attrName);
-		getRequestContainer().getSessionContainer().setAttribute(attrName, attrValue);
-	}	
-	
-	public void setAttribute(String key, Object value) {
-		try {
-			response.setAttribute(key, value);
-		} catch (SourceBeanException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Object getAttribute(String key) {
-		return request.getAttribute(key);
-	}
-	
-	public String getAttributeAsString(String attrName) {
-		return (String)getAttribute(attrName);
-	}
-	
-	public boolean getAttributeAsBoolean(String key) {
-		return getAttributeAsBoolean(key, false);
-	}
 
-	public boolean getAttributeAsBoolean(String key, boolean defaultValue) {
-		if( getAttribute(key) == null ) return false;
-		return getAttributeAsString(key).equalsIgnoreCase(TRUE);
+	public void setUserId(String userId) {
+		setAttributeInSession(QbeConstants.USER_ID, userId);
 	}
-
+	
+	public String getUserId() {
+		return (String)getAttributeFromSession(QbeConstants.USER_ID);
+	}
+	
 	public Locale getQbeEngineLocale() {
-		return  (Locale)getAttributeFromSession(QBE_ENGINE_LOCALE);
+		return  (Locale)getAttributeFromSession(QbeConstants.LOCALE);
 	}
 
 	public void setQbeEngineLocale(Locale locale) {
-		setAttributeInSession(QBE_ENGINE_LOCALE, locale);
-	}
-	
-	public SpagoBIRequest getSpagoBIRequest() {
-		return  (SpagoBIRequest)getAttributeFromSession(QBE_SPAGOBI_REQUEST);
+		setAttributeInSession(QbeConstants.LOCALE, locale);
 	}
 
-	public void setSpagoBIRequest(SpagoBIRequest spagoBIRequest) {
-		setAttributeInSession(QBE_SPAGOBI_REQUEST, spagoBIRequest);
-	}
 	
 	public DataMartModel getDatamartModel() {
-		return  (DataMartModel)getAttributeFromSession(QBE_DATAMART_MODEL);
+		return  (DataMartModel)getAttributeFromSession(QbeConstants.DATAMART_MODEL);
 	}
 
 	public void setDatamartModel(DataMartModel datamartModel) {
-		setAttributeInSession(QBE_DATAMART_MODEL, datamartModel);
+		setAttributeInSession(QbeConstants.DATAMART_MODEL, datamartModel);
 	}
 	
-	
-	public void setSubqueryModeActive(boolean subqueryMode) {
-		if(subqueryMode) {
-			setAttributeInSession(QBE_QUERY_MODE, QBE_SUBQUERY_MODE);
-		} else {
-			delAttributeFromSession(QBE_QUERY_MODE);
-		}
-		
-		getActiveQuery().setSubqueryModeActive(subqueryMode);
-	}
-	
-	public boolean isSubqueryModeActive() {
-		String qbeQueryMode = (String)getAttributeFromSession(QBE_QUERY_MODE);
-		return (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(QBE_SUBQUERY_MODE));
-		//return getActiveQuery().isSubqueryModeActive();
-	}
-	
-	
-	public ISingleDataMartWizardObject getMainDataMartWizard() {
-		return  (ISingleDataMartWizardObject)getAttributeFromSession(QBE_QUERY);
+	public ISingleDataMartWizardObject getDatamartWizard() {
+		return  (ISingleDataMartWizardObject)getAttributeFromSession(QbeConstants.DATAMART_WIZARD);
 	}
 
-	public void setMainDataMartWizard(ISingleDataMartWizardObject dataMartWizard) {
-		setAttributeInSession(QBE_QUERY, dataMartWizard);
+	public void setDatamartWizard(ISingleDataMartWizardObject datamartWizard) {
+		setAttributeInSession(QbeConstants.DATAMART_WIZARD, datamartWizard);
 	}	
 	
+	public IQuery getQuery() {
+		return getDatamartWizard().getQuery();
+	}
+	
 	/*
-	public ISingleDataMartWizardObject getActiveDataMartWizard(){
-		ISingleDataMartWizardObject activeDataMartWizard = null;
-		ISingleDataMartWizardObject mainDataMartWizard = null;		
-		
-		mainDataMartWizard = getMainDataMartWizard();
-		
-		if (isSubqueryModeActive()){
-			activeDataMartWizard =  (ISingleDataMartWizardObject)mainDataMartWizard.getSelectedSubquery();
-		} else {
-			activeDataMartWizard = mainDataMartWizard;
-		}
-		
-		return activeDataMartWizard;
-	}
-	*/
-	
-	public IQuery getMainQuery() {
-		return getMainDataMartWizard().getQuery();
-	}
-	
 	public IQuery getActiveQuery() {
 		IQuery activeQuery = null;
 		ISingleDataMartWizardObject mainDataMartWizard = null;		
 		
-		mainDataMartWizard = getMainDataMartWizard();
+		mainDataMartWizard = getDatamartWizard();
 		
 		if (isSubqueryModeActive()){
 			activeQuery =  mainDataMartWizard.getQuery().getSelectedSubquery();
@@ -207,32 +110,70 @@ public abstract class AbstractQbeEngineAction extends AbstractHttpAction {
 		
 		return activeQuery;
 	}
+	*/
 	
-	public String getSubqueryField() {
-		return  (String)getAttributeFromSession(QBE_SUBQUERY_FIELD);
-	}
-
-	public void setSubqueryField(String field) {
-		setAttributeInSession(QBE_SUBQUERY_FIELD, field);
-	}
-	
-	public void delSubqueryField() {
-		delAttributeFromSession(QBE_SUBQUERY_FIELD);
+	public void setStandaloneModeActive(boolean standaloneMode) {
+		if(standaloneMode) {
+			delAttributeFromSession(QbeConstants.STANDALONE_MODE);
+		} else {
+			setAttributeInSession(QbeConstants.STANDALONE_MODE, FALSE);
+			
+		}
 	}
 	
-	
-	
-	public void setUserId(String userId) {
-		setAttributeInSession(QBE_USER_ID, userId);
+	public boolean isStandaloneModality() {
+		String standaloneMode = (String)getAttributeFromSession(QbeConstants.STANDALONE_MODE);
+		return (standaloneMode == null || !standaloneMode.equalsIgnoreCase(FALSE));
 	}
 	
-	public String getUserId() {
-		return (String)getAttributeFromSession(QBE_USER_ID);
-	}
+	
+	
+	
 	
 	public void updateLastUpdateTimeStamp(){
 		String str = String.valueOf(System.currentTimeMillis());
 		logger.debug("Last Update Timestamp [" + str + "]");
-		setAttributeInSession(QBE_LAST_UPDATE_TIMESTAMP, str);
+		setAttributeInSession(QbeConstants.LAST_UPDATE_TIMESTAMP, str);
+	}
+	
+	
+	
+	
+	
+	
+	public SpagoBIRequest getSpagoBIRequest() {
+		return  (SpagoBIRequest)getAttributeFromSession(QbeConstants.SPAGOBI_REQUEST);
+	}
+
+	public void setSpagoBIRequest(SpagoBIRequest spagoBIRequest) {
+		setAttributeInSession(QbeConstants.SPAGOBI_REQUEST, spagoBIRequest);	
+	}
+	
+	public void setSubqueryModeActive(boolean subqueryMode) {
+		if(subqueryMode) {
+			setAttributeInSession(QbeConstants.QUERY_MODE, QbeConstants.SUBQUERY_MODE);
+		} else {
+			delAttributeFromSession(QbeConstants.QUERY_MODE);
+		}
+		
+		//getQuery().setSubqueryModeActive(subqueryMode);
+		//getActiveQuery().setSubqueryModeActive(subqueryMode);
+	}
+	
+	public boolean isSubqueryModeActive() {
+		String qbeQueryMode = (String)getAttributeFromSession(QbeConstants.QUERY_MODE);
+		return (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(QbeConstants.SUBQUERY_MODE));
+	}	
+	
+	public String getSubqueryField() {
+		return  (String)getAttributeFromSession(QbeConstants.SUBQUERY_FIELD);
+	}
+
+	public void setSubqueryField(String field) {
+		setAttributeInSession(QbeConstants.SUBQUERY_FIELD, field);
+	}
+	
+	public void delSubqueryField() {
+		delAttributeFromSession(QbeConstants.SUBQUERY_FIELD);
 	}
 }

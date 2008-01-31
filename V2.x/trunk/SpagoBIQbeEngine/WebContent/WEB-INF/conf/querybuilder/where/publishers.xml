@@ -33,5 +33,13 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="EXIT_FROM_SUBQUERY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/querybuilder/where/exitFromSubquery.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+  	
 	                        	
 </PUBLISHERS>

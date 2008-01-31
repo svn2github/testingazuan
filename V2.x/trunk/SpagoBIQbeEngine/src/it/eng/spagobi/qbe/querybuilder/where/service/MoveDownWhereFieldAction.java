@@ -41,9 +41,9 @@ public class MoveDownWhereFieldAction extends AbstractQbeEngineAction {
 		String fieldId = getAttributeAsString(FIELD_ID); 	
 		
 		
-		getActiveQuery().moveDownWhereField(fieldId);
+		getQuery().moveDownWhereField(fieldId);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );		
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

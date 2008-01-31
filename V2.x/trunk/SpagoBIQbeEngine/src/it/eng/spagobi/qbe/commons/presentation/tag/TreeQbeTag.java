@@ -24,7 +24,7 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 import it.eng.qbe.javascript.QbeJsTreeBuilder;
 import it.eng.qbe.javascript.QbeSelectJsTreeBuilder;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.WizardConstants;
+import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -40,11 +40,11 @@ public class TreeQbeTag extends QbeTagSupport {
 	public int doStartTag() throws JspException {
 		
 		try {
-			QbeJsTreeBuilder qbeJsBuilder = new QbeSelectJsTreeBuilder(getDatamartModel(), getQuery(), getRequest());
+			QbeJsTreeBuilder qbeJsBuilder = new QbeSelectJsTreeBuilder(getDatamartModel(), getDatamartWizard(), getRequest());
 									   
-		   	if ( Utils.isSubQueryModeActive( getSessionContainer() ) ){
-					String subQueryFieldId = (String)getSessionContainer().getAttribute(WizardConstants.SUBQUERY_FIELD);
-					String subQueryPrefix = Utils.getMainWizardObject(getSessionContainer()).getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		   	if ( getQuery().isSubqueryModeActive() ){
+					String subQueryFieldId = (String)getSessionContainer().getAttribute(QbeConstants.SUBQUERY_FIELD);
+					String subQueryPrefix =  getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
 					qbeJsBuilder.setClassPrefix(subQueryPrefix);
 		   	}
 	    	  

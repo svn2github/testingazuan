@@ -24,11 +24,11 @@ package it.eng.spagobi.qbe.queryinspector.service;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 
 /**
@@ -37,46 +37,45 @@ import it.eng.spago.dispatching.action.AbstractAction;
  * This Action is responsible to change the execuption mode of the Preview Tab of the ISingleDataMartWizardObject
  * 
  */
-public class UpdatePreviewModeAction extends AbstractAction {
+public class UpdatePreviewModeAction extends AbstractQbeEngineAction {
 	
-	/**
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	// valid input parameter names
+	public static final String SOURCE = "SOURCE";
+	public static final String EXPERT_DISPLAYED = "EXPERT_DISPLAYED";
+	public static final String PREVIEW_MODE = "previewMode";
+	
 	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
 		
-		String source = (String)request.getAttribute("SOURCE");
-		String expertQueryDisplayed = (String)request.getAttribute("EXPERT_DISPLAYED");
+		String source = getAttributeAsString(SOURCE);
+		String expertQueryDisplayed = getAttributeAsString(EXPERT_DISPLAYED);
+		String previewMode = (String)request.getAttribute(PREVIEW_MODE);
 		
 		if (source.equalsIgnoreCase("RADIO_BUTTON")){
-			String previewMode = (String)request.getAttribute("previewMode"); 
-			
 			if (previewMode.equalsIgnoreCase("ExpertMode")){
 				
-				aWizardObject.setUseExpertedVersion(true);
+				getDatamartWizard().setUseExpertedVersion(true);
 							
-			}else{
+			} else {
 				
-				aWizardObject.setUseExpertedVersion(false);
+				getDatamartWizard().setUseExpertedVersion(false);
 				
 			}	
 			
-			aWizardObject.setExpertQueryDisplayed(expertQueryDisplayed);
+			getDatamartWizard().setExpertQueryDisplayed(expertQueryDisplayed);
 			
 		} else if (source.equalsIgnoreCase("RESUME_LAST_EXPERT_LINK")){
 			
-			String expertQuerySaved = aWizardObject.getExpertQuerySaved();
+			String expertQuerySaved = getDatamartWizard().getExpertQuerySaved();
 			
-			aWizardObject.setExpertQueryDisplayed(expertQuerySaved);
+			getDatamartWizard().setExpertQueryDisplayed(expertQuerySaved);
 			
 			
-		} else Logger.debug(UpdatePreviewModeAction.class,"ERRORE in UpdatePreviewModeAction - la source non è prevista");
+		} else {
+			Logger.debug(UpdatePreviewModeAction.class,"ERRORE in UpdatePreviewModeAction - la source non è prevista");
+		}
 		
-		
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
-			
+		setDatamartWizard( getDatamartWizard() );	
 	}
 }

@@ -23,30 +23,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java"%>
 
-<%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.qbe.query.*"%>
-
 
 
 <%@ include file="/jsp/qbe_base.jsp"%>
 
  
 <%
- 	Object spagoBiInfo = sessionContainer.getAttribute("spagobi");
   	
-  	ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject) sessionContainer
-  			.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-  	it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel) sessionContainer
-  			.getAttribute("dataMartModel");
-
-  	String jarFilePath = dm.getJarFile().toString();
+  	String jarFilePath = datamartModel.getDataSource().getJarFile().toString();
   	//dm.updateCurrentClassLoader();
-  	aWizardObject.composeQuery(dm);
+  	datamartWizard.composeQuery(datamartModel);
   	String msg  = null;
   	try{
   		 Object o = aServiceResponse.getAttribute("ERROR_MSG");
@@ -69,12 +58,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	
   	
   	
-  	String qbeQuery = aWizardObject.getFinalQuery();;
-    	String expertQuery = aWizardObject.getExpertQueryDisplayed();
+  	String qbeQuery = datamartWizard.getFinalQuery();;
+    	String expertQuery = datamartWizard.getExpertQueryDisplayed();
     			
   	String finalQueryString = null;
   	String queryLang = null;
-  	if (aWizardObject.isUseExpertedVersion()){
+  	if (datamartWizard.isUseExpertedVersion()){
   		finalQueryString = expertQuery;
   		queryLang = "sql";
   	}else{
@@ -89,33 +78,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<%if (qbeMode.equalsIgnoreCase("WEB")) {
-
-			%>
-<body>
-<%}%>
-
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%=dm.getName()%> : <%=dm.getDescription()%> - <%=qbeMsg.getMessage(requestContainer,"QBE.Title.Templatepage", bundle)%>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
-%>
-
-<%@include file="/jsp/testata.jsp" %>
-
-
-<div class='div_background_no_img'>
+<qbe:page>
+ 	<qbe:page-content>
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
+ 
+ 
+		<div class='div_background_no_img'>
+		
+		
 
 <form 	id="formExport" 
 		name="formExport" 
@@ -131,8 +103,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDialect()%>"/>
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
-				<% if(aWizardObject.getQueryId() != null) {%>
-  					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQueryId()%>"/>
+				<% if(query.getQueryId() != null) {%>
+  					<input type="hidden" id="queryName" name="queryName" value="<%=query.getQueryId()%>"/>
   				<% } %>
 	<table width="100%">
 		<td width="10%">&nbsp;</td>
@@ -171,7 +143,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDialect()%>"/>
   				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
   				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
-				<% if(aWizardObject.getQueryId() != null) {%>
+				<% if(query.getQueryId() != null) {%>
   					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQueryId()%>"/>
   				<% } %>
 </form>
@@ -217,16 +189,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>
 <% } %>
 
-<%if (qbeMode.equalsIgnoreCase("WEB")) {
-%>
-</body>
-<%}%>
-
-<div id="divSpanCurrent"><span id="currentScreen">DIV_EXPORT</span>
-</div>
 
 
-<%@include file="/jsp/qbefooter.jsp"%>
+		<div id="divSpanCurrent">
+			<span id="currentScreen">DIV_EXPORT</span>
+		</div>
 
 
-</div>
+		
+		<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
+
+	</qbe:page-content>
+</qbe:page>

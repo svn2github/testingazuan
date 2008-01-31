@@ -23,11 +23,11 @@ package it.eng.spagobi.qbe.queryinspector.service;
 
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 
 /**
@@ -37,26 +37,22 @@ import it.eng.spago.dispatching.action.AbstractAction;
  * of the text area input by the user identified by the field expertSelectTA
  * 
  */
-public class UpdateExpertAction extends AbstractAction {
+public class UpdateExpertAction extends AbstractQbeEngineAction {
+
+	// valid input parameter names
+	public static final String EXPERT_STRING = "expertSelectTA";
 	
-	/**
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	
 	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
+		String expertString = getAttributeAsString(EXPERT_STRING); 
+				
+		getDatamartWizard().setExpertQuerySaved(expertString);
+		getDatamartWizard().setExpertQueryDisplayed(expertString);
 		
-		String expertString = (String)request.getAttribute("expertSelectTA"); 
-		
-		
-		aWizardObject.setExpertQuerySaved(expertString);
-		aWizardObject.setExpertQueryDisplayed(expertString);
-		
-		Utils.updateLastUpdateTimeStamp(getRequestContainer());
-		aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));
-	
+		updateLastUpdateTimeStamp();
+		setDatamartWizard( getDatamartWizard() );
 		
 	}
 }

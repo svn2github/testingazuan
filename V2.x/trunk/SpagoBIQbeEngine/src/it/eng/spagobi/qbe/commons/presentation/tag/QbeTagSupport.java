@@ -23,6 +23,7 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.query.IQuery;
 import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
@@ -35,6 +36,7 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerAccess;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 
 import java.util.Locale;
 import java.util.Map;
@@ -43,64 +45,87 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * @author Andrea Gioia
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class QbeTagSupport extends BodyTagSupport {
+public class QbeTagSupport extends BaseTagSupport {
 	
-	public QbeTagSupport() {
-		super();
-	}
-	
-	
-	
-	protected HttpServletRequest getRequest() {
-		if(pageContext == null) {
-			return null;
-		}
-		return (HttpServletRequest) pageContext.getRequest();
-	}
-	
-	protected RequestContainer getRequestContainer() {
+	protected Locale getLocale() {
 		if(pageContext == null) {
 			return null;
 		}
 		
-		if(pageContext.getAttribute("RequestContainer") == null) {
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
-				pageContext.setAttribute("RequestContainer", RequestContainerAccess.getRequestContainer( getRequest() ) );
-			} else {
-				pageContext.setAttribute("RequestContainer", RequestContainerPortletAccess.getRequestContainer( getRequest() ) );
+		if(pageContext.getAttribute("locale") == null) {
+			pageContext.setAttribute("locale", getSessionContainer().getAttribute(QbeConstants.LOCALE) );
+		}
+		return (Locale)pageContext.getAttribute("locale");
+	}
+	
+	
+	
+	protected DataMartModel getDatamartModel() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		if(pageContext.getAttribute("datamartModel") == null) {
+			pageContext.setAttribute("datamartModel", getSessionContainer().getAttribute(QbeConstants.DATAMART_MODEL) );
+		}
+		return (DataMartModel)pageContext.getAttribute("datamartModel");   
+	}
+	
+	protected ISingleDataMartWizardObject getDatamartWizard() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		if(pageContext.getAttribute("datamartWizard") == null) {
+			pageContext.setAttribute("datamartWizard", getSessionContainer().getAttribute(QbeConstants.DATAMART_WIZARD) );
+		}
+		return (ISingleDataMartWizardObject)pageContext.getAttribute("datamartWizard");
+	}
+	
+	protected IQuery getQuery() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		ISingleDataMartWizardObject datamartWizard = null;
+		
+		if(pageContext.getAttribute("query") == null) {
+			datamartWizard =  (ISingleDataMartWizardObject)getSessionContainer().getAttribute(QbeConstants.DATAMART_WIZARD);
+			if(datamartWizard !=  null) {
+				pageContext.setAttribute("query", datamartWizard.getQuery() );
 			}
-		}		
-		return (RequestContainer)pageContext.getAttribute("RequestContainer");
+		}
+		return (IQuery)pageContext.getAttribute("query");
 	}
 	
-	protected ResponseContainer getResponseContainer() {
+	
+	protected boolean isStandaloneModality() {
 		if(pageContext == null) {
-			return null;
+			return false;
 		}
 		
-		if(pageContext.getAttribute("ResponseContainer") == null) {
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
-				pageContext.setAttribute("ResponseContainer", ResponseContainerAccess.getResponseContainer( getRequest() ) );
-			} else {
-				pageContext.setAttribute("ResponseContainer", ResponseContainerPortletAccess.getResponseContainer( getRequest() ) );
-			}
-		}		
-		return (ResponseContainer)pageContext.getAttribute("ResponseContainer");
+		if(pageContext.getAttribute("isStandaloneModality") == null) {
+			boolean isStandaloneModality = (getSessionContainer().getAttribute("spagobi") == null); 
+			pageContext.setAttribute("isStandaloneModality", new Boolean( isStandaloneModality ) );
+		}
+		return ((Boolean)pageContext.getAttribute("isStandaloneModality")).booleanValue();
 	}
 	
-	protected SessionContainer getSessionContainer() {
+	protected boolean isWebModality() {
 		if(pageContext == null) {
-			return null;
+			return false;
 		}
 		
-		if(pageContext.getAttribute("SessionContainer") == null) {
-			pageContext.setAttribute("SessionContainer", getRequestContainer().getSessionContainer() );
+		if(pageContext.getAttribute("isWebModality") == null) {
+			pageContext.setAttribute("isWebModality", QbeEngineConf.getInstance().isWebModalityActive() );
 		}
-		return (SessionContainer)pageContext.getAttribute("SessionContainer");
+		return ((Boolean)pageContext.getAttribute("isWebModality")).booleanValue();
 	}
+	
+	
 	
 	protected IQbeUrlGenerator getQbeUrlGenerator() {
 		if(pageContext == null) {
@@ -125,53 +150,6 @@ public class QbeTagSupport extends BodyTagSupport {
 	
 	protected String getActionUrl(Map parameters) {
 		return getQbeUrlGenerator().getUrl(getRequest() , parameters);
-	}
-	
-	protected Locale getLocale() {
-		if(pageContext == null) {
-			return null;
-		}
-		
-		if(pageContext.getAttribute("Locale") == null) {
-			pageContext.setAttribute("Locale", getSessionContainer().getAttribute("QBE_ENGINE_LOCALE") );
-		}
-		return (Locale)pageContext.getAttribute("Locale");
-	}
-	
-	
-	
-	protected DataMartModel getDatamartModel() {
-		if(pageContext == null) {
-			return null;
-		}
-		
-		if(pageContext.getAttribute("datamartModel") == null) {
-			pageContext.setAttribute("datamartModel", getSessionContainer().getAttribute("dataMartModel") );
-		}
-		return (DataMartModel)pageContext.getAttribute("datamartModel");   
-	}
-	
-	protected ISingleDataMartWizardObject getQuery() {
-		if(pageContext == null) {
-			return null;
-		}
-		
-		if(pageContext.getAttribute("query") == null) {
-			pageContext.setAttribute("query", Utils.getWizardObject( getSessionContainer() ) );
-		}
-		return (ISingleDataMartWizardObject)pageContext.getAttribute("query");
-	}
-	
-	protected boolean isStandaloneModality() {
-		if(pageContext == null) {
-			return false;
-		}
-		
-		if(pageContext.getAttribute("isStandaloneModality") == null) {
-			boolean isStandaloneModality = (getSessionContainer().getAttribute("spagobi") == null); 
-			pageContext.setAttribute("isStandaloneModality", new Boolean( isStandaloneModality ) );
-		}
-		return ((Boolean)pageContext.getAttribute("isStandaloneModality")).booleanValue();
 	}
 }
 

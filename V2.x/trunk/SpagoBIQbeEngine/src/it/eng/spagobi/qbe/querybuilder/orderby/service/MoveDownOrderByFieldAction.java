@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.orderby.service;
 
-import it.eng.qbe.query.IOrderByClause;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.OrderByField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
@@ -43,11 +40,11 @@ public class MoveDownOrderByFieldAction extends AbstractQbeEngineAction {
 		
 		String fieldId = getAttributeAsString(FIELD_ID);
 		
-		getMainQuery().moveDownOrderByField(fieldId);
+		getQuery().moveDownOrderByField(fieldId);
 		
 		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

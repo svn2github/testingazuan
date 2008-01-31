@@ -21,11 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.groupby.service;
 
-import it.eng.qbe.query.GroupByClause;
-import it.eng.qbe.query.GroupByField;
-import it.eng.qbe.query.IGroupByClause;
-import it.eng.qbe.query.IGroupByField;
-import it.eng.qbe.query.IOrderByField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
@@ -51,18 +46,18 @@ public class AddGroupByFieldAction extends AbstractQbeEngineAction {
 		
 				
 		if(fieldName != null) {			
-			getMainQuery().addGroupByField(fieldName);
+			getQuery().addGroupByField(fieldName);
 		} else {			
-			getMainQuery().deleteGroupByClause();
+			getQuery().deleteGroupByClause();
 			for(int i = 0; i < fields.size(); i++) {
 				fieldName = (String)fields.get(i);
-				getMainQuery().addGroupByField(fieldName);
+				getQuery().addGroupByField(fieldName);
 			}	
 		}
 		
 		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

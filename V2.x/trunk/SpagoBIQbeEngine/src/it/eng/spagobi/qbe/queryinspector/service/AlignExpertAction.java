@@ -29,6 +29,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import org.hibernate.SessionFactory;
 
@@ -39,30 +40,22 @@ import org.hibernate.SessionFactory;
  * This action is responsible to put the contents of the query composed automatically
  * in the expert query contents
  */
-public class AlignExpertAction extends AbstractAction {
+public class AlignExpertAction extends AbstractQbeEngineAction {
 	
 		
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	
 	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
-		try {
-			
-			RequestContainer aRequestContainer = getRequestContainer();
-			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-			DataMartModel dm = (it.eng.qbe.model.DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
-		    ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-			
-		    aWizardObject.composeQuery(dm);
-			SessionFactory sf = dm.getDataSource().getSessionFactory();
-			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(sf.openSession());
-			String sqlQuery = queryRewriter.rewrite( aWizardObject.getFinalQuery() );
-			aWizardObject.setExpertQueryDisplayed(sqlQuery);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		/**
+		 * BRUTTO :-(( 
+		 * TODO Sistemare i riferimenti incrociati tra DatamartModel e DatamartWizard
+		 */
+	    getDatamartWizard().composeQuery( getDatamartModel() );
+		SessionFactory sf = getDatamartModel().getDataSource().getSessionFactory();
+		HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(sf.openSession());
+		String sqlQuery = queryRewriter.rewrite( getDatamartWizard().getFinalQuery() );
+		getDatamartWizard().setExpertQueryDisplayed(sqlQuery);
 		
 	}
 }

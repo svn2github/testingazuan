@@ -40,10 +40,10 @@ public class DeleteCalculatedFieldAction extends AbstractQbeEngineAction {
 		
 		String fieldId = getAttributeAsString(FIELD_ID); 
 				
-		getMainQuery().deleteCalculatedField(fieldId);
+		getQuery().deleteCalculatedField(fieldId);
 								
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 		
 	}
 }

@@ -23,14 +23,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
 
-<%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
-<%@ page import="java.util.*"%>
 <%@ page import="javax.portlet.PortletRequest"%>
-<%@ page import="it.eng.qbe.query.*"%>
+
 
 
 
@@ -41,10 +38,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%!
 public static String getReportServletContextAddress(){
-	String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
-	//		 Retrieve Locale
+	
 	String path = null;
-	if (qbeMode.equalsIgnoreCase("WEB")){
+	if ( QbeEngineConf.getInstance().isWebModalityActive() ){
 		path = "..";
 	}else{
 		PortletRequest portletRequest = it.eng.spago.util.PortletUtilities.getPortletRequest();
@@ -56,63 +52,61 @@ public static String getReportServletContextAddress(){
 	}
 	
 	return path;
-	//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
 }
 %>
 
 <% 
-   Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
-
+  
 	String paddingStyle = "padding-left:4px;padding-right:4px";
 
-
-   ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
-   it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
-     
-   String datamartNamesStr = "";
-   List datamartNames = dm.getDataSource().getDatamartNames();
-   for(int i = 0; i < datamartNames.size(); i++) datamartNamesStr += (i==0?"":",") + (String)datamartNames.get(i);
+   	String datamartNamesStr = "";
+   	List datamartNames = datamartModel.getDataSource().getDatamartNames();
+   	for(int i = 0; i < datamartNames.size(); i++) {
+   		datamartNamesStr += (i==0?"":",") + (String)datamartNames.get(i);
+   	}
 
      
-   String msg =  (String)aServiceResponse.getAttribute("ERROR_MSG");
-   boolean flagErrors = false;
-   java.util.List aList = null;
-   String className = null;
-	String query = null;
+   	String msg =  (String)aServiceResponse.getAttribute("ERROR_MSG");
+   	boolean flagErrors = false;
+   	List aList = null;
+   	String className = null;
+	
+	String queryStr = null;
 	int currentPage = -1;
 	Integer pagesNumber = null;
 	boolean hasPreviousPage = false;
 	boolean hasNextPage = false;
 	boolean overflow = false;
-   SourceBean listResponse = null;
-   if (msg != null){
+   
+	SourceBean listResponse = null;
+   	if (msg != null){
 	   flagErrors = true;
-   }else{
+   	}else{
 	   listResponse = (SourceBean)sessionContainer.getAttribute("QUERY_RESPONSE_SOURCE_BEAN");
 	   aList = (java.util.List)listResponse.getAttribute("list");
 	   className = (String) listResponse.getAttribute("className");
-	   query =(String) listResponse.getAttribute("query");
+	   queryStr =(String) listResponse.getAttribute("query");
 	   currentPage = ((Integer)listResponse.getAttribute("currentPage")).intValue();
 	   pagesNumber = (Integer)listResponse.getAttribute("pagesNumber");
 	   hasPreviousPage = ((Boolean)listResponse.getAttribute("hasPreviousPage")).booleanValue();
 	   hasNextPage = ((Boolean)listResponse.getAttribute("hasNextPage")).booleanValue();
 	   Boolean b = (Boolean)listResponse.getAttribute("overflow");
 	   overflow = (b == null)? false: b.booleanValue();
-   }
+   	}
    	String qbeQuery = null;
 	String qbeSqlQuery = null;
 	String expertQuery = null;
    	try{
-  		 qbeQuery = aWizardObject.getFinalQuery();
-  		 qbeSqlQuery = aWizardObject.getFinalSqlQuery(dm);
-  		 expertQuery = aWizardObject.getExpertQueryDisplayed();
+  		 qbeQuery = datamartWizard.getFinalQuery();
+  		 qbeSqlQuery = datamartWizard.getFinalSqlQuery(datamartModel);
+  		 expertQuery = datamartWizard.getExpertQueryDisplayed();
    	}catch(Throwable t){
    		t.printStackTrace();
    		qbeQuery = null;
    	}
 	String finalQueryString = null;
 	String queryLang = null;
-	if (aWizardObject.isUseExpertedVersion()){
+	if (datamartWizard.isUseExpertedVersion()){
 		finalQueryString = expertQuery;
 		queryLang = "sql";
 	}else{
@@ -124,16 +118,16 @@ public static String getReportServletContextAddress(){
   	
   
 	List calculateFields = new ArrayList();
-	Iterator it = aWizardObject.getQuery().getCalculatedFieldsIterator();
+	Iterator it = query.getCalculatedFieldsIterator();
 	while(it.hasNext()) {
 		calculateFields.add(it.next());
 	}
 	
-	calculateFields.addAll(dm.getFormula().getCalculatedFields(aWizardObject.getQuery().getEntityClassesItertor()));
+	calculateFields.addAll(datamartModel.getFormula().getCalculatedFields(datamartWizard.getQuery().getEntityClassesItertor()));
 	
   	try{
 		for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){
-  			((CalculatedField)itCalcFields.next()).calculateMappings(aWizardObject.getQuery());
+  			((CalculatedField)itCalcFields.next()).calculateMappings(datamartWizard.getQuery());
   		}
   	}catch(Throwable t){
   		t.printStackTrace();
@@ -149,11 +143,21 @@ public static String getReportServletContextAddress(){
   	
 %>
 
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
+<qbe:page>
+ 	<qbe:page-content>
+		
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
+ 
+ 
+		<div class='div_background_no_img'>
+		
+<% if ( QbeEngineConf.getInstance().isWebModalityActive() ){ %> 
 <%@page import="groovy.util.GroovyScriptEngine"%>
 <%@page import="groovy.lang.Binding"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
-<body>
+
 
 <script>
 function askConfirmation (message) {
@@ -171,29 +175,6 @@ function askConfirmation (message) {
 
 <%}%>
 
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Result.Preview", bundle) %>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
-%>
-
-
-<%@include file="/jsp/testata.jsp" %>
-
-
-<div class='div_background_no_img'>
 
 
 <table width="100%">
@@ -224,7 +205,7 @@ function askConfirmation (message) {
 						<td rowspan="2" width="30%">
 							<span class="qbeTitle"><%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%></span>
 					 	</td>	
-					 <%	if (aWizardObject.isUseExpertedVersion()) { %>
+					 <%	if (datamartWizard.isUseExpertedVersion()) { %>
 							<td width="20%">	
 									<input type="radio" name="previewModeFromQueryResult" value="ComposedQuery" onclick="javascript:submitUpdatePreviewFromQueryResult()" title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview.Tooltip", bundle)%>"> 
 										<span class="qbe-font">
@@ -294,13 +275,13 @@ function askConfirmation (message) {
 				<input type="hidden" id="datamartNamesStr" name="datamartNamesStr" value="<%=datamartNamesStr%>"/>
   				<input type="hidden" id="query" name="query" value="<%=finalQueryString%>"/>
  				<input type="hidden" id="lang" name="lang" value="<%=queryLang%>"/>
-  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=dm.getDataSource().getConnection().getJndiName()%>"/>
-  				<input type="hidden" id="dialect" name="dialect" value="<%=dm.getDataSource().getConnection().getDialect()%>"/>
-  				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(aWizardObject)%>"/>
-  				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(aWizardObject)%>"/>
+  				<input type="hidden" id="jndiDataSourceName" name="jndiDataSourceName" value="<%=datamartModel.getDataSource().getConnection().getJndiName()%>"/>
+  				<input type="hidden" id="dialect" name="dialect" value="<%=datamartModel.getDataSource().getConnection().getDialect()%>"/>
+  				<input type="hidden" id="orderedFldList" name="orderedFldList" value="<%=Utils.getOrderedFieldList(datamartWizard)%>"/>
+  				<input type="hidden" id="extractedEntitiesList" name="extractedEntitiesList" value="<%=Utils.getSelectedEntitiesAsString(datamartWizard)%>"/>
   				
-  				<% if(aWizardObject.getQuery().getQueryId() != null) {%>
-  					<input type="hidden" id="queryName" name="queryName" value="<%=aWizardObject.getQuery().getQueryId()%>"/>
+  				<% if(query.getQueryId() != null) {%>
+  					<input type="hidden" id="queryName" name="queryName" value="<%=query.getQueryId()%>"/>
   				<% } %>
   				
 				<table>
@@ -324,7 +305,7 @@ function askConfirmation (message) {
 				
 						<td width="20%">					
 							
-							<% if(!aWizardObject.getQuery().containsDuplicatedAliases()) {
+							<% if(!query.containsDuplicatedAliases()) {
 							 	if (overflow){ %>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
@@ -352,7 +333,7 @@ function askConfirmation (message) {
 						</td>
 						<td width="60%" align="left">
 							
-							<% if(!aWizardObject.getQuery().containsDuplicatedAliases()) {%>
+							<% if(!query.containsDuplicatedAliases()) {%>
 								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
 									 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
@@ -451,7 +432,7 @@ function askConfirmation (message) {
   			<% if (hasPreviousPage){ 
 					sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-   		   			sParams.put("query",query);
+   		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(0));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlPrev = qbeUrl.getUrl(request, sParams);
@@ -461,7 +442,7 @@ function askConfirmation (message) {
 			<% if (hasPreviousPage){ 
 					sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-   		   			sParams.put("query",query);
+   		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(currentPage-1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlPrev = qbeUrl.getUrl(request, sParams);
@@ -478,7 +459,7 @@ function askConfirmation (message) {
 					} else {
 						sParams.clear();
 	   		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-	   		   			sParams.put("query",query);
+	   		   			sParams.put("query",queryStr);
 	   		   			sParams.put("pageNumber",String.valueOf(pages[y]-1));
 	   		   			sParams.put("ignoreJoins", "true");
 	   		   			urlNext = qbeUrl.getUrl(request, sParams);
@@ -491,7 +472,7 @@ function askConfirmation (message) {
 			<% if (hasNextPage){
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-   		   			sParams.put("query",query);
+   		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
@@ -500,7 +481,7 @@ function askConfirmation (message) {
 			<% if (hasNextPage){
 				sParams.clear();
    		   			sParams.put("ACTION_NAME","EXECUTE_QUERY_AND_SAVE_ACTION");
-   		   			sParams.put("query",query);
+   		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(pagesNumber.intValue()-1));
    		   			sParams.put("ignoreJoins", "true");
    		   			urlNext = qbeUrl.getUrl(request, sParams);%>
@@ -531,7 +512,7 @@ function askConfirmation (message) {
 				<% 
 					
 					List headers = null;
-					if (aWizardObject.isUseExpertedVersion()){%>
+					if (datamartWizard.isUseExpertedVersion()){%>
 					<thead>
 						<tr>
 							<% if (calculateFieldPosition != null && calculateFieldPosition.equalsIgnoreCase("BEFORE_COLUMNS")){ 
@@ -542,7 +523,7 @@ function askConfirmation (message) {
 										<%
 								 }
 							 	} %>
-							<% headers = aWizardObject.extractExpertSelectFieldsList();
+							<% headers = datamartWizard.extractExpertSelectFieldsList();
 							   it = headers.iterator();
 							   String headerName = "";
 							   							   
@@ -577,7 +558,7 @@ function askConfirmation (message) {
 							 	} %>
 						<%
 							//headers = aWizardObject.getQuery().getSelectClause().getSelectFields(); 
-										   it = aWizardObject.getQuery().getSelectFieldsIterator();
+										   it = query.getSelectFieldsIterator();
 										   String headerName = "";
 										   ISelectField selField = null;
 										   while (it.hasNext()){
@@ -770,7 +751,7 @@ function askConfirmation (message) {
 <%}%>
 
 		
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
+<% if ( QbeEngineConf.getInstance().isWebModalityActive() ){ %> 
 </body>
 <%}%>
 <div id="divSpanCurrent">
@@ -798,6 +779,12 @@ function askConfirmation (message) {
 </div>
 
 
-<%@include file="/jsp/qbefooter.jsp" %>
+		<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
 
-</div>
+	</qbe:page-content>
+</qbe:page>

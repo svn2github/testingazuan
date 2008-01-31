@@ -21,13 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.orderby.service;
 
-import it.eng.qbe.query.IOrderByClause;
-import it.eng.qbe.query.OrderByField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -44,11 +39,11 @@ public class SwitchAscendingOrderPopertyValueAction extends AbstractQbeEngineAct
 		
 		String fieldId = getAttributeAsString(FIELD_ID);
 		
-		getMainQuery().switchAscendingOrderPopertyValue(fieldId);
+		getQuery().switchAscendingOrderPopertyValue(fieldId);
 		
 		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

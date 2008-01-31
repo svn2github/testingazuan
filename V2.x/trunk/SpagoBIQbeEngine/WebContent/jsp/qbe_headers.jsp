@@ -35,10 +35,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
                              
 			     
-<% if (!Utils.isSubQueryModeActive(sessionContainer)){ %>
+<% if (!QbeEngineConf.getInstance().isWebModalityActive()){ %>
 				
 				<td class='header-button-column-portlet-section'>
-					<a href="javascript:checkSavingBeforeBack('<%=url%>', '<%=aWizardObject.getQuery().getQueryId() != null ? aWizardObject.getQuery().getQueryId() : " " %>','<%=startModifyTimeStamp != null ? startModifyTimeStamp : " "%>', '<%=lastUpdTimeStamp != null ? lastUpdTimeStamp : " "%>' )"> 
+					<a href="javascript:checkSavingBeforeBack('<%=url%>', '<%=query.getQueryId() != null ? query.getQueryId() : " " %>','<%=startModifyTimeStamp != null ? startModifyTimeStamp : " "%>', '<%=lastUpdTimeStamp != null ? lastUpdTimeStamp : " "%>' )"> 
       						<img class='header-button-image-portlet-section' title='Back'
 						src='<%=qbeUrl.conformStaticResourceLink(request,"../img/back.gif")%>' alt='Back' />
 					</a>

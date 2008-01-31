@@ -38,9 +38,9 @@ public class MoveUpSelectFieldAction extends AbstractQbeEngineAction {
 		
 		String fieldId = getAttributeAsString(FIELD_ID); 		
 		
-		getMainQuery().moveUpSelectField(fieldId);
+		getQuery().moveUpSelectField(fieldId);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

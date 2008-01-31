@@ -43,8 +43,10 @@ public class PageTag extends QbeTagSupport {
 		getSessionContainer();
 		getLocale();
 		getDatamartModel();
+		getDatamartWizard();
 		getQuery();
 		isStandaloneModality();
+		isWebModality();
 	}
 	
 	public int doStartTag() throws JspException {		

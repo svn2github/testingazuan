@@ -52,18 +52,18 @@ public class PersistQueryAction extends AbstractQbeEngineAction {
 		
 		
 		if ((queryId != null) && (queryId.trim().length() > 0)){
-			getActiveQuery().setQueryId(queryId);
+			getQuery().setQueryId(queryId);
 		}
 		
 		if ((queryDescritpion != null) && (queryDescritpion.trim().length() > 0)){
-			getMainDataMartWizard().setDescription(queryDescritpion);
+			getDatamartWizard().setDescription(queryDescritpion);
 		}
 		
 		if ((visibility != null) && (visibility.trim().length() > 0)){
 			if (visibility.equalsIgnoreCase("public")){
-				getMainDataMartWizard().setVisibility(true);
+				getDatamartWizard().setVisibility(true);
 			}else {
-				getMainDataMartWizard().setVisibility(false);
+				getDatamartWizard().setVisibility(false);
 			}
 		}
 		
@@ -71,13 +71,13 @@ public class PersistQueryAction extends AbstractQbeEngineAction {
 			SpagoBIRequest spagoBIRequest = getSpagoBIRequest();
 			
 			if (spagoBIRequest != null){
-				getMainDataMartWizard().setOwner(spagoBIRequest.getUserId());
+				getDatamartWizard().setOwner(spagoBIRequest.getUserId());
 			}
 			
 			
 		}
 		
-		getDatamartModel().persistQueryAction( getMainDataMartWizard() );
+		getDatamartModel().persistQueryAction( getDatamartWizard() );
 		SessionContainer session = getRequestContainer().getSessionContainer();
 		
 		
@@ -86,16 +86,16 @@ public class PersistQueryAction extends AbstractQbeEngineAction {
 			ContentServiceProxy proxy = new ContentServiceProxy(getUserId(), getHttpSession());
 			 
 			String result=proxy.saveSubObject(getSpagoBIRequest().getDocumentId(), 
-					queryId,queryDescritpion, "" + getMainDataMartWizard().getVisibility(), queryId);
+					queryId,queryDescritpion, "" + getDatamartWizard().getVisibility(), queryId);
 			
 			if (result.toUpperCase().startsWith("KO")) {}
 		}
 		
 		
 		String cTM = String.valueOf(System.currentTimeMillis());
-		if (!Utils.isSubQueryModeActive(session)){
-			session.setAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
-			session.setAttribute("QBE_LAST_UPDATE_TIMESTAMP", cTM);
+		if (isSubqueryModeActive()){
+			setAttributeInSession("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
+			setAttributeInSession("QBE_LAST_UPDATE_TIMESTAMP", cTM);
 		}
 		
 	}

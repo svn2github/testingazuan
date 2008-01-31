@@ -41,15 +41,18 @@ public class SubQueryExitAction extends AbstractQbeEngineAction {
 		
 		boolean save = getAttributeAsBoolean(SAVE);
 		
-		IQuery mainQuery = getMainQuery();
-		IQuery subQuery = getActiveQuery();
-		String fieldId = getSubqueryField();
-		
 		if(save) {
-			mainQuery.addSubQueryOnField(fieldId, subQuery);
+			getQuery().saveSelectedSubquery();
 		}
+		getQuery().deselectSubquery();
 		
 		
+		/*
+		 	deperecated 
+		 	subquery manipulation is a responsability of the query object. This mean that I haven't
+		 	to know if i'm working on the main query or on a particular subquery.
+		 
+		 */
 		setSubqueryModeActive(false);
 		delSubqueryField();
 		

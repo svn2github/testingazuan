@@ -20,33 +20,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
 
+  
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.spago.base.*"%>
-<%@ page import="it.eng.qbe.javascript.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
-<%@ page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
-<%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.utility.*"%>
 
 
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
 
 
-<%
-	//String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode"); 
+<%--
 	IQbeUrlGenerator qbeUrl = new WebQbeUrlGenerator();
-
-	/*
-	if (qbeMode.equalsIgnoreCase("WEB")) {
-		qbeUrl = new WebQbeUrlGenerator();		
-	} else if  (qbeMode.equalsIgnoreCase("PORTLET")){
-		qbeUrl = new PortletQbeUrlGenerator();
-	}
-	*/
-%>
+--%>
 
 <qbe:page>
 
@@ -82,7 +67,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<qbe:page-content>
 		
-		<%@include file="titlebar.jspf" %>
+		<%@include file="/jsp/commons/titlebar.jspf" %>
 		<%@include file="/jsp/testata.jsp" %>	
 		
 		

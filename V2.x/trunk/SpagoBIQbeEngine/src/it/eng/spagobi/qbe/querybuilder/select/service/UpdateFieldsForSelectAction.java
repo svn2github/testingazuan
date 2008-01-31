@@ -48,7 +48,7 @@ public class UpdateFieldsForSelectAction extends AbstractQbeEngineAction {
 		
 		ISelectField selectField = null;
 		
-		Iterator it = getMainQuery().getSelectFieldsIterator();
+		Iterator it = getQuery().getSelectFieldsIterator();
 		String fieldId = null;			
 			
 		while (it.hasNext()){
@@ -66,7 +66,7 @@ public class UpdateFieldsForSelectAction extends AbstractQbeEngineAction {
 		 	}
 		}		
 		
-		getMainQuery().setDistinct( distinct );
+		getQuery().setDistinct( distinct );
 		
 		updateLastUpdateTimeStamp();
 		

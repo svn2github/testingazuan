@@ -50,7 +50,7 @@ public class UpdateBracketsInWhereAction extends AbstractQbeEngineAction {
 		
 		
 		IWhereField whereField = null;
-		for(Iterator it =getMainQuery().getWhereFieldsIterator(); it.hasNext(); ) {
+		for(Iterator it =getQuery().getWhereFieldsIterator(); it.hasNext(); ) {
 			IWhereField field = (IWhereField)it.next();
 			if(field.getId().equalsIgnoreCase(fieldId)) {
 				whereField = field;
@@ -77,6 +77,6 @@ public class UpdateBracketsInWhereAction extends AbstractQbeEngineAction {
 						
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );	
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

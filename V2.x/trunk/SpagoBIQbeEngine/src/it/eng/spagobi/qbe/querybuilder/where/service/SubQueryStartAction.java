@@ -40,8 +40,15 @@ public class SubQueryStartAction extends AbstractQbeEngineAction {
 		
 		String fieldID = getAttributeAsString(ON_FIELD_ID);		
 		
-        getMainQuery().selectSubquery(fieldID);
+        getQuery().selectSubquery(fieldID);
 		
+        
+        /*
+	 	deperecated 
+	 	subquery manipulation is a responsability of the query object. This mean that I haven't
+	 	to know if i'm working on the main query or on a particular subquery.
+	 
+	 */
         setSubqueryModeActive(true);
         setSubqueryField(fieldID);
 		

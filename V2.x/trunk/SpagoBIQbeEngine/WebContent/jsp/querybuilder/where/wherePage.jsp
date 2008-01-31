@@ -20,16 +20,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
 
- <%@ page contentType="text/html; charset=ISO-8859-1"%>
+<%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
 
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.spago.base.*"%>
+
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
-<%@ page import="it.eng.qbe.model.*"%>
-<%@ page import="it.eng.qbe.query.*"%>
+
 
 
 
@@ -37,27 +34,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/qbe_base.jsp" %>
 
 <% 
-   Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
-
-
-   ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
-   it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
-   QbeJsTreeBuilder qbeConditionJsTreeBuilder = new QbeConditionJsTreeBuilder(dm,aWizardObject, request);;
-   qbeConditionJsTreeBuilder.setCheckable(false);
-   qbeConditionJsTreeBuilder.setName("conditionTree");
    
-   QbeJsTreeBuilder qbeJoinJsTreeBuilder = new QbeJoinJsTreeBuilder(dm,aWizardObject, request);
-   qbeJoinJsTreeBuilder.setCheckable(false);	
-   qbeJoinJsTreeBuilder.setName("joinTree");
+	QbeJsTreeBuilder qbeConditionJsTreeBuilder = null;
+	QbeJsTreeBuilder qbeJoinJsTreeBuilder = null;
+
+	qbeConditionJsTreeBuilder = new QbeConditionJsTreeBuilder(datamartModel, datamartWizard, request);;
+   	qbeConditionJsTreeBuilder.setCheckable(false);
+   	qbeConditionJsTreeBuilder.setName("conditionTree");
+   
+   	qbeJoinJsTreeBuilder = new QbeJoinJsTreeBuilder(datamartModel, datamartWizard, request);
+   	qbeJoinJsTreeBuilder.setCheckable(false);	
+   	qbeJoinJsTreeBuilder.setName("joinTree");
    
    QbeJsTreeBuilder qbeJoinWithParentQueryBuilder = null; 
    
-   if (Utils.isSubQueryModeActive(sessionContainer)){
-		String subQueryFieldId = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
-		String subQueryPrefix = Utils.getMainWizardObject(sessionContainer).getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
+   if ( query.isSubqueryModeActive() ) {
+		String subQueryFieldId = (String)sessionContainer.getAttribute(QbeConstants.SUBQUERY_FIELD);
+		String subQueryPrefix = query.getSubQueryIdForSubQueryOnField(subQueryFieldId);
 		qbeConditionJsTreeBuilder.setClassPrefix(subQueryPrefix);
 		qbeJoinJsTreeBuilder.setClassPrefix(subQueryPrefix);
-		qbeJoinWithParentQueryBuilder = new QbeJoinWithFatherQueryJsTreeBuilder(dm, Utils.getMainWizardObject(sessionContainer), request);
+		qbeJoinWithParentQueryBuilder = new QbeJoinWithFatherQueryJsTreeBuilder(datamartModel, datamartWizard, request);
 		qbeJoinWithParentQueryBuilder.setCheckable(false);
 		qbeJoinWithParentQueryBuilder.setName("joinTreeWithParentQuery");
 		qbeJoinWithParentQueryBuilder.setClassPrefix("a");		
@@ -65,40 +61,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
 
 %>
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-<body>
-<%}%>
- 
-<%
-	if(spagoBiInfo == null) {
-%>
-
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%= dm.getName() %> : <%=dm.getDescription() %> - <%= qbeMsg.getMessage(requestContainer,"QBE.Title.Conditions", bundle) %>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
 
 
-<%
-	}
-%>
 
-<%@include file="/jsp/testata.jsp" %>
+<qbe:page>
+ 	<qbe:page-content>
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
  
  
-<div class='div_background_no_img'>
-<% if (!aWizardObject.getQuery().isEmpty()){%> 
+		<div class='div_background_no_img'>
+
+
+<% if (!query.isEmpty()){%> 
 	<table width="100%">
 
 		<% 	
-			java.util.Map sParams = new java.util.HashMap();
+			Map sParams = new HashMap();
 				
 	  	%>
 				<tr>
@@ -123,7 +103,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   			<td>
 		   			<% String treeSelection = null;
 		   			   String isSelectClauseEmpty = null;
-		   			   	if (!aWizardObject.getQuery().isEmpty()){
+		   			   	if (!query.isEmpty()){
 		   			   	   isSelectClauseEmpty = "false";
 	  						treeSelection = (String)sessionContainer.getAttribute("SELECTION_TREE");
 	  						
@@ -240,7 +220,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   		
 			    		   		String fieldId = "";
 			    		   		
-			    		   		Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+			    		   		Iterator it = query.getWhereFieldsIterator();
 			    		   		IWhereField aWhereField = null;
 			    		   		while (it.hasNext()){
 			    		   					aWhereField = (IWhereField)it.next();
@@ -342,7 +322,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    		   				
 			    		   					<td>
 			    		   						
-			    		   						<% String label = JsTreeUtils.getLabelForQueryField(requestContainer, dm, aWizardObject, fieldName);
+			    		   						<% String label = JsTreeUtils.getLabelForQueryField(requestContainer, datamartModel, datamartWizard, fieldName);
 			    		   						label = label.replaceAll("\\.", ". ");				    		   				
 			    		   						%>
 			    		   						<%=label %>
@@ -370,13 +350,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 													<td>&nbsp;</td> 
 			    		   					<td>
 			    		   						<%
-			    		   							IQuery subquery = aWizardObject.getQuery().getSubQueryOnField(fieldId);
-			    		   							    		   						if(subquery != null && !aWizardObject.getQuery().isSubqueryValid(subquery)) {
+			    		   							
+			    		   							  if(query.getSubqueryErrMsg(fieldId) != null) {
 			    		   						%>
 			    		   							<input type="text" id="<%="VALUE_FOR_FIELD_"+fieldId %>" 
 			    		   								   name="<%="VALUE_FOR_FIELD_"+fieldId %>" value="<%=fieldValue %>" 
 			    		   								   style="background-color:#FF6666;"
-			    		   								   title="<%=subquery.getSubqueryErrMsg()%>"/>
+			    		   								   title="<%=query.getSubqueryErrMsg(fieldId)%>"/>
 			    		   						<% 
 			    		   						} else {
 			    		   						%>
@@ -406,8 +386,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   					<td width="5%">
 				    		   					<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/selectjoin.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" onclick="openDivTreeSelectJoin('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 				    		   				</td>
-				    		   				<% if (qbeMode.equalsIgnoreCase("WEB")){ %>
-				    		   				<%    if (Utils.isSubQueryModeActive(sessionContainer)){ %> 
+				    		   				<% if ( QbeEngineConf.getInstance().isWebModalityActive() ){ %>
+				    		   				<%    if (query.isSubqueryModeActive()){ %> 
 				    		   						<td width="5%">
 										    			<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/joinparentquery.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" onclick="openDivTreeSelectJoinParentQuery('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 										    		</td>
@@ -479,16 +459,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-</body>
-<%}%>
 
-<div id="divSpanCurrent">
-	<span id="currentScreen">DIV_FIELD_CONDITION</span>
-</div>
+		<div id="divSpanCurrent">
+			<span id="currentScreen">DIV_FIELD_CONDITION</span>
+		</div>
 
+	
+		<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
 
-<%@include file="/jsp/qbefooter.jsp" %>
-
-
-</div>
+	</qbe:page-content>
+</qbe:page>

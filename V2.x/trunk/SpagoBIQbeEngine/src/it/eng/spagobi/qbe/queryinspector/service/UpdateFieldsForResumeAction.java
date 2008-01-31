@@ -23,12 +23,12 @@ package it.eng.spagobi.qbe.queryinspector.service;
 
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.WizardConstants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 /**
  * @author Scarel Luca
@@ -36,40 +36,37 @@ import it.eng.spago.dispatching.action.AbstractAction;
  * This Action is responsable to handle the modification of the expert query displayed text area in the Resume Query Tab 
  * 
  */
-public class UpdateFieldsForResumeAction extends AbstractAction {
+public class UpdateFieldsForResumeAction extends AbstractQbeEngineAction {
 	
-	/**
-	 * 
-	 */
+	// valid input parameter names
+	public static final String IP_NEXT_ACTION = "NEXT_ACTION";
+	public static final String IP_INEXT_PUBLISHER = "NEXT_PUBLISHER";
+	public static final String EXPERT_QUERY_DISPLAYED = "expertDisplayedForUpdate";
 	
-	public void service(SourceBean request, SourceBean response) {
+	// valid ouput parameter names
+	public static final String OP_NEXT_ACTION = IP_NEXT_ACTION;
+	public static final String OP_INEXT_PUBLISHER = IP_INEXT_PUBLISHER;
 		
-		RequestContainer aRequestContainer = getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
+	public void service(SourceBean request, SourceBean response) {
+		super.service(request, response);
 		
 						
-		String nextAction = (String)request.getAttribute("NEXT_ACTION");
-		String nextPublisher = (String)request.getAttribute("NEXT_PUBLISHER");
-		
-		String expertQueryDisplayed = (String)request.getAttribute("expertDisplayedForUpdate");
-		
-		
-		try{
-			response.setAttribute("NEXT_ACTION", nextAction);		
-			response.setAttribute("NEXT_PUBLISHER", nextPublisher);
-		}catch(SourceBeanException sbe){
-			sbe.printStackTrace();
-		}
-		
+		String nextAction = getAttributeAsString(IP_NEXT_ACTION);
+		String nextPublisher = getAttributeAsString(IP_INEXT_PUBLISHER);		
+		String expertQueryDisplayed = getAttributeAsString(EXPERT_QUERY_DISPLAYED);		
 		
 		if ((expertQueryDisplayed != null)&&(!expertQueryDisplayed.equalsIgnoreCase(""))){
-			aWizardObject.setExpertQueryDisplayed(expertQueryDisplayed);
+			getDatamartWizard().setExpertQueryDisplayed(expertQueryDisplayed);
 			
-			Utils.updateLastUpdateTimeStamp(getRequestContainer());
-			aSessionContainer.setAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD, Utils.getMainWizardObject(aSessionContainer));		
+			updateLastUpdateTimeStamp();
+			setDatamartWizard( getDatamartWizard() );
 		}		
 		
-		
+		try{
+			response.setAttribute(OP_NEXT_ACTION, nextAction);		
+			response.setAttribute(OP_INEXT_PUBLISHER, nextPublisher);
+		}catch(SourceBeanException sbe){
+			sbe.printStackTrace();
+		}		
 	}
 }

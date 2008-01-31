@@ -29,6 +29,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 
 /**
@@ -39,25 +40,10 @@ import it.eng.spago.dispatching.action.AbstractAction;
  * 
  * After the execution of this action you must obtain the query composed with qbe with ISingleDataMartWizardObject.getFinalQuery()
  */
-public class ComposeResumeQueryAction extends AbstractAction {
+public class ComposeResumeQueryAction extends AbstractQbeEngineAction {
 	
-	/** 
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
 	public void service(SourceBean request, SourceBean response) {
-		try{
-			
-			RequestContainer aRequestContainer = getRequestContainer();
-			SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-			DataMartModel dm = (DataMartModel)aSessionContainer.getAttribute("dataMartModel"); 
-		    
-			ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(aSessionContainer);
-			aWizardObject.composeQuery(dm);
-			
-			Logger.debug(ISingleDataMartWizardObject.class,"LA QUERY FINALE DEL WIZARD "+ aWizardObject.getFinalQuery());
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
+		super.service(request, response);
+		getDatamartWizard().composeQuery(getDatamartModel());		
 	}
 }

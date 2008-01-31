@@ -38,7 +38,7 @@ public class XFldLabelTag extends QbeTagSupport {
 	public int doStartTag() throws JspException {
 		
 		try {
-			String label = JsTreeUtils.getLabelForQueryField(getRequestContainer(), getDatamartModel(), getQuery() ,fieldName);
+			String label = JsTreeUtils.getLabelForQueryField(getRequestContainer(), getDatamartModel(), getDatamartWizard() ,fieldName);
 			pageContext.setAttribute(var, label);
 	      } catch (Exception ex) {
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());

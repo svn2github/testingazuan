@@ -20,65 +20,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
 
- <%@ page contentType="text/html; charset=ISO-8859-1"%>
+<%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
 
-<%@ page import="it.eng.spago.base.*"%>
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
 <%@ page import="it.eng.qbe.export.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.qbe.query.*"%>
-
 
 
 
 
 <%@ include file="/jsp/qbe_base.jsp" %>
 
-<% 
-    
-   Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
-
-
-   ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
-   it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
-   
-  
-   
-      
-   aWizardObject.composeQuery(dm);
-   //dm.updateCurrentClassLoader();
-   
-%>
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-<body>
-<%}%>
-
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Resume.Query", bundle) %>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
+<%       
+   datamartWizard.composeQuery(datamartModel);   
 %>
 
+<qbe:page>
+ 	<qbe:page-content>
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
+ 
+ 
+		<div class='div_background_no_img'>
 
-<%@include file="/jsp/testata.jsp" %>
-
-
-<div class='div_background_no_img'>
 
 <%
 	String editableStr = null;
@@ -90,7 +56,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 	if(editableStr != null && editableStr.equalsIgnoreCase("FALSE")) {
-		if (!aWizardObject.getQuery().isEmpty()){
+		if (!query.isEmpty()){
 %>
 	<table width="100%">
 	<tr>
@@ -133,20 +99,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td>
 						<table class="qbe-font" width="100%">
 						<%  int rowsCounter = 1;
-							if (aWizardObject.getFinalQuery() != null){ 
+							if (datamartWizard.getFinalQuery() != null){ 
 									 
 									 if (true){ %>
 									
 							<tr border=2>
 								<td colspan="2"> <b>Select </b> 
-										<% if (aWizardObject.getQuery().getDistinct()) {%>
+										<% if (query.getDistinct()) {%>
 								    		<b> distinct</b>
 								    	<% } %>
 								</td> 			
 							</tr>
 									
 									<%
-																									   Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+																									   Iterator it = query.getSelectFieldsIterator();
 																									   ISelectField selectF = null;
 																									   while (it.hasNext()){
 																										   selectF = (ISelectField)it.next();
@@ -178,7 +144,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (!aWizardObject.getQuery().isEmpty()) { 
+																			if (!query.isEmpty()) { 
 																										rowsCounter++;
 																		%>
 									<tr>
@@ -188,7 +154,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									
 									<%
 																			
-																									  Iterator it = aWizardObject.getQuery().getEntityClassesItertor();;
+																									  Iterator it = query.getEntityClassesItertor();;
 																									   EntityClass ec = null;
 																									   while (it.hasNext()){
 																										   ec = (EntityClass)it.next();
@@ -220,7 +186,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (aWizardObject.getQuery().getEntityClassesItertor().hasNext()){ 
+																			if (query.getEntityClassesItertor().hasNext()){ 
 																										rowsCounter++;
 																		%>
 									   <tr>
@@ -228,7 +194,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									   </tr>
 									<%
 										 
-																Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+																Iterator it = query.getWhereFieldsIterator();
 																   IWhereField conditionF = null;
 																   while (it.hasNext()){
 																	   conditionF = (IWhereField)it.next();
@@ -272,14 +238,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									
 									
 									<%
-										if (aWizardObject.getQuery().getGroupByFieldsIterator().hasNext()){
+										if (query.getGroupByFieldsIterator().hasNext()){
 											rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"> <b>Group By</b> </td>
 									  </tr>
 									<%
-																   Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+																   Iterator it = query.getGroupByFieldsIterator();
 																   IGroupByField groupF = null;
 																   while (it.hasNext()){
 																	   groupF = (IGroupByField)it.next();
@@ -303,14 +269,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										}
 									%>
 									<%
-										if (aWizardObject.getQuery().getOrderByFieldsIterator().hasNext()){ 
+										if (query.getOrderByFieldsIterator().hasNext()){ 
 																	rowsCounter++;
 									%>
 									<tr>
 										<td colspan="2"><b> Order By</b> </td>
 									   </tr>
 									<%
-										Iterator it = aWizardObject.getQuery().getOrderByFieldsIterator();
+										Iterator it = query.getOrderByFieldsIterator();
 										IOrderByField orderF = null;
 										while (it.hasNext()){
 										   orderF = (IOrderByField)it.next();
@@ -390,7 +356,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	%>
 
 <%
-	} else if (!aWizardObject.getQuery().isEmpty()){
+	} else if (!query.isEmpty()){
 %> 
 <table width="100%">
 	<tr>
@@ -440,7 +406,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<table class="qbe-font" width="100%">
 						<%
 							int rowsCounter = 1;
-															if (aWizardObject.getFinalQuery() != null){ 
+															if (datamartWizard.getFinalQuery() != null){ 
 																	 
 																	 if (true){
 						%>
@@ -448,7 +414,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<tr border=2>
 								<td colspan="2"> <b>Select </b> 
 										<%
- 											if (aWizardObject.getQuery().getDistinct()) {
+ 											if (query.getDistinct()) {
  										%>
 								    		<b> distinct</b>
 								    	<%
@@ -458,7 +424,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							</tr>
 									
 									<%
-																			Iterator it = aWizardObject.getQuery().getSelectFieldsIterator();
+																			Iterator it = query.getSelectFieldsIterator();
 																																									   ISelectField selectF = null;
 																																									   while (it.hasNext()){
 																																										   selectF = (ISelectField)it.next();
@@ -490,7 +456,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (!aWizardObject.getQuery().isEmpty()) { 
+																			if (!query.isEmpty()) { 
 																										rowsCounter++;
 																		%>
 									<tr>
@@ -499,7 +465,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									</tr>
 									
 									<%
-																			Iterator it = aWizardObject.getQuery().getEntityClassesItertor();
+																			Iterator it = query.getEntityClassesItertor();
 																									   EntityClass ec = null;
 																									   while (it.hasNext()){
 																										   ec = (EntityClass)it.next();
@@ -531,14 +497,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (aWizardObject.getQuery().getEntityClassesItertor().hasNext()){ 
+																			if (query.getEntityClassesItertor().hasNext()){ 
 																										rowsCounter++;
 																		%>
 									   <tr>
 										<td colspan="2"> <b>Where</b> </td>
 									   </tr>
 									<%
-										java.util.Iterator it = aWizardObject.getQuery().getWhereFieldsIterator();
+										java.util.Iterator it = query.getWhereFieldsIterator();
 																   IWhereField conditionF = null;
 																   while (it.hasNext()){
 																	   conditionF = (IWhereField)it.next();
@@ -582,7 +548,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									
 									
 									<%
-										if (aWizardObject.getQuery().getGroupByFieldsIterator().hasNext()){
+										if (query.getGroupByFieldsIterator().hasNext()){
 											rowsCounter++;
 									%>
 									<tr>
@@ -590,7 +556,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									  </tr>
 									<%
 										
-																   Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+																   Iterator it = query.getGroupByFieldsIterator();
 																   IGroupByField groupF = null;
 																   while (it.hasNext()){
 																	   groupF = (IGroupByField)it.next();
@@ -614,7 +580,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										}
 									%>
 									<%
-										if (aWizardObject.getQuery().getOrderByFieldsIterator().hasNext()){ 
+										if (query.getOrderByFieldsIterator().hasNext()){ 
 																	rowsCounter++;
 									%>
 									<tr>
@@ -622,7 +588,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									   </tr>
 									<%
 										
-																   Iterator it = aWizardObject.getQuery().getOrderByFieldsIterator();
+																   Iterator it = query.getOrderByFieldsIterator();
 																   IOrderByField orderF = null;
 																   while (it.hasNext()){
 																	   orderF = (IOrderByField)it.next();
@@ -689,9 +655,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<tr>
 					<td colspan="3">
  			 			<%  String strTextArea = "";
-						 				if ((aWizardObject.getExpertQueryDisplayed() == null)||(aWizardObject.getExpertQueryDisplayed().trim().length() == 0)){
+						 				if ((datamartWizard.getExpertQueryDisplayed() == null)||(datamartWizard.getExpertQueryDisplayed().trim().length() == 0)){
 						 					try{
-						 						strTextArea = aWizardObject.getFinalSqlQuery(dm);
+						 						strTextArea = datamartWizard.getFinalSqlQuery(datamartModel);
 						 					}catch(Throwable t){
 						 						strTextArea = "";
 						 					}
@@ -699,7 +665,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						 						strTextArea = "";
 						 					}
 						 				}else{
-						 					strTextArea = aWizardObject.getExpertQueryDisplayed();
+						 					strTextArea = datamartWizard.getExpertQueryDisplayed();
 						 				}
 						%>
 					 	<textarea name="expertSelectTextArea" id="expertSelectTextArea" rows="<%=rowsCounter%>" cols="50"><%=strTextArea%></textarea>
@@ -774,7 +740,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<input type="hidden" name="ACTION_NAME" value="UPDATE_PREVIEW_MODE_ACTION"/>
 				<input type="hidden" id="formUpdateExpert_Source" name="SOURCE" value="RADIO_BUTTON"/>
 				<input type="hidden" id="formUpdateExpert_expertTA" name="EXPERT_DISPLAYED" value=""/>												
-				<% if (aWizardObject.isUseExpertedVersion()) { %>
+				<% if (datamartWizard.isUseExpertedVersion()) { %>
 					<input type="radio" name="previewMode" value="ComposedQuery" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseQbeQueryInPreview", bundle)%></span>
 					&nbsp;
 					<input type="radio" name="previewMode" value="ExpertMode" checked="checked" onclick="javascript:submitUpdatePreview('RADIO_BUTTON')"><span class="qbe-font"> <%=qbeMsg.getMessage(requestContainer, "QBE.Resume.Query.RadioUseExpertQueryInPreview", bundle)%></span>
@@ -825,11 +791,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  <span id="currentScreen">DIV_RESUME_QUERY</span>
 </div>
   
-<%}
+<%}%> 
 
-if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-</body>
-<%}%>
 
 <form id="expertForm" name="expertForm" action="<%=qbeUrl.getUrl(request,null) %>" method="POST">
  	<input type="hidden" id="expertFormActionName" name="ACTION_NAME" value="UPDATE_EXPERT_ACTION"/>
@@ -845,6 +808,14 @@ if (qbeMode.equalsIgnoreCase("WEB")){ %>
 </form>
 
 
-<%@include file="/jsp/qbefooter.jsp" %>
 
-</div>
+
+		<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
+
+	</qbe:page-content>
+</qbe:page>

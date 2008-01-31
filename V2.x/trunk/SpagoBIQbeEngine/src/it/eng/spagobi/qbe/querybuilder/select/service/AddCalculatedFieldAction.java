@@ -41,12 +41,12 @@ public class AddCalculatedFieldAction extends AbstractQbeEngineAction {
 		String classNameInQuery = getAttributeAsString(CLASS_NAME);
 		
 		
-		getMainQuery().addCalculatedField(fieldId, fieldNameInQuery, classNameInQuery,  
+		getQuery().addCalculatedField(fieldId, fieldNameInQuery, classNameInQuery,  
 				getDatamartModel().getFormula(), getDatamartModel().getDataSource());
 		
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 		
 	

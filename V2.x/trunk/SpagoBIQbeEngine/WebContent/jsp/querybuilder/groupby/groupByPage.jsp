@@ -23,12 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
 
-<%@ page import="java.util.*"%>
-<%@ page import="it.eng.spago.base.*"%>
+
 <%@ page import="it.eng.qbe.javascript.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
-<%@ page import="it.eng.qbe.wizard.*"%>
-<%@ page import="it.eng.qbe.query.*"%>
 
 
 
@@ -37,14 +34,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%   
-   Object spagoBiInfo = sessionContainer.getAttribute("spagobi"); 
-
-   ISingleDataMartWizardObject aWizardObject = Utils.getWizardObject(sessionContainer);
-   it.eng.qbe.model.DataMartModel dm = (it.eng.qbe.model.DataMartModel)sessionContainer.getAttribute("dataMartModel"); 
    
    Map selectedFields = new HashMap();
    
-			Iterator it = aWizardObject.getQuery().getGroupByFieldsIterator();
+			Iterator it = query.getGroupByFieldsIterator();
 			IGroupByField aGroupByField = null;
 			
 			while (it.hasNext()){
@@ -58,33 +51,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    //dm.updateCurrentClassLoader();
 %>
 
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-<body>
-<%}%>
-
-<%
-	if(spagoBiInfo == null) {
-%>
-<table class='header-table-portlet-section'>		
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-
-		    style='vertical-align:middle;padding-left:5px;'>
-			<%= dm.getName() %> : <%=dm.getDescription() %> - <%=qbeMsg.getMessage(requestContainer, "QBE.Title.Grouping", bundle) %>
-		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<%@include file="/jsp/qbe_headers.jsp"%>
-	</tr>
-</table>
-<%
-	}
-%>
-
-<%@include file="/jsp/testata.jsp" %>
-
-<div class='div_background_no_img'>
-
-<% if ( !aWizardObject.getQuery().isEmpty() ){ %>
+<qbe:page>
+ 	<qbe:page-content>
+		
+		<%@include file="/jsp/commons/titlebar.jspf" %>
+		<%@include file="/jsp/testata.jsp" %>	
+ 
+ 
+		<div class='div_background_no_img'>
+		
+		
+		
+		
+<% if ( !query.isEmpty() ){ %>
 		
 		
 		<% 
@@ -139,7 +118,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			  			java.util.Map oParams = new java.util.HashMap();
 		  		  		oParams.clear();	
 			  			 
-			    		   				it = aWizardObject.getQuery().getSelectFieldsIterator();
+			    		   				it = query.getSelectFieldsIterator();
 			    		   				ISelectField aSelectField = null;
 			    		   				String urlOrderBy = ""; 
 			    		   				while (it.hasNext()){
@@ -158,7 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   	<td colspan="2" ALIGN="left">
 			    		   		<INPUT type=CHECKBOX name="field" value="<%=originalFieldName%>" <%=checked%> >
 			    		   		<a href="<%=urlOrderBy %>" class="qbe-font-link"> 
-			    		   			<%=JsTreeUtils.getLabelForQueryField(requestContainer,dm, aWizardObject,originalFieldName) %>
+			    		   			<%=JsTreeUtils.getLabelForQueryField(requestContainer,datamartModel, datamartWizard,originalFieldName) %>
 			    		   		</a>
 			    		   	</td>				
 			    		</tr>
@@ -210,7 +189,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</tr>
 			    			
 			    		   			<% 
-			    		   				it = aWizardObject.getQuery().getGroupByFieldsIterator();
+			    		   				it = query.getGroupByFieldsIterator();
 			    		   				IGroupByField aOrderByField = null;
 			    		   				
 			    		   				String urlDeleteOrderBy = "";
@@ -250,7 +229,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    		   				</td>
 			    		   					<td width="85%" class="qbe-font" ALIGN="left">
 			    		   						 <%--<%=originalFieldName %> --%>
-			    		   						<%=JsTreeUtils.getLabelForQueryField(requestContainer,dm,aWizardObject, originalFieldName) %>
+			    		   						<%=JsTreeUtils.getLabelForQueryField(requestContainer,datamartModel,datamartWizard, originalFieldName) %>
 			    		   					</td>	
 			    		   				</tr>
 			    		   			<%}//endwhile%>
@@ -303,13 +282,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
  
-<% if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-</body>
-<%}%>
-<div id="divSpanCurrent">
-	<span id="currentScreen">DIV_FIELD_GROUP_BY</span>
-</div>
-<%@include file="/jsp/qbefooter.jsp" %>
 
+		<div id="divSpanCurrent">
+			<span id="currentScreen">DIV_FIELD_GROUP_BY</span>
+		</div>
+		
+		<script type="text/javascript">
+			changeTabBkg();
+		</script>
+	
+	
+		</div>
 
-</div>
+	</qbe:page-content>
+</qbe:page>

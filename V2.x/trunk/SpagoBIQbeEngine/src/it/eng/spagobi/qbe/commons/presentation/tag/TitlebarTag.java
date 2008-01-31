@@ -57,8 +57,8 @@ public class TitlebarTag extends QbeTagSupport {
 			buffer.append("		<td class='header-empty-column-portlet-section'>&nbsp;</td>\n");
 			
 			//buffer.append("		<%@include file='/jsp/qbe_headers.jsp'%>\n");
-			if (!Utils.isSubQueryModeActive( getSessionContainer() )){
-				String queryId = getQuery().getQuery().getQueryId() != null ? getQuery().getQuery().getQueryId() : " ";
+			if (getQuery().isSubqueryModeActive()){
+				String queryId = getQuery().getQueryId() != null ? getQuery().getQueryId() : " ";
 				startModifyTimeStamp = (startModifyTimeStamp != null ? startModifyTimeStamp : " ");
 				lastUpdTimeStamp = (lastUpdTimeStamp != null ? lastUpdTimeStamp : " ");
 				String imgSrc = QbeEngineConf.getInstance().getUrlGenerator().conformStaticResourceLink(getRequest(),"../img/back.gif");

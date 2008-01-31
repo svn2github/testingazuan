@@ -50,10 +50,10 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	public boolean checkJoins(SourceBean request, SourceBean response) throws SourceBeanException {
 		if (isCheckJoinsEnabled(request)){
-			if (!getDataMartWizard().isUseExpertedVersion()){
+			if (!getDatamartWizard().isUseExpertedVersion()){
 				// If I'm not using expert
 				// Check for join controls
-				return doCheckJoins(getDataMartWizard().getQuery(), response);				
+				return doCheckJoins(getDatamartWizard().getQuery(), response);				
 			}
 		}
 		return true;
@@ -89,14 +89,9 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		return getRequestContainer().getSessionContainer();
 	}
 	
-	private ISingleDataMartWizardObject getDataMartWizard() {
-		//return (ISingleDataMartWizardObject)getSessionContainer().getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-		return Utils.getWizardObject(getSessionContainer());
-	}
 	
-	private DataMartModel getDataMartModel() {
-		return (DataMartModel)getSessionContainer().getAttribute("dataMartModel");
-	}
+	
+	
 		
 	private String getExecutionMode(SourceBean request) {
 		return (String)request.getAttribute("previewModeFromQueryResult"); 
@@ -152,16 +147,16 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public void service(SourceBean request, SourceBean response)  {				
 		super.service(request, response);	
 		
-		if (!getActiveQuery().isEmpty()){
+		if (!getQuery().isEmpty()){
 			
 		
 			if ("QUERY_RESULT".equalsIgnoreCase( getSource(request) )){			
 			
 		
-				getDataMartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
+				getDatamartWizard().setUseExpertedVersion( isExpertExecutionModeEnabled(request) );			
 			}  				
 		
-			getDataMartWizard().composeQuery(getDataMartModel());	
+			getDatamartWizard().composeQuery(getDatamartModel());	
 	
 			try {
 				if (!checkJoins(request, response)){
@@ -169,11 +164,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				} 
 				else{
 					try {
-						if (getDataMartWizard().getExpertQueryDisplayed() == null){
+						if (getDatamartWizard().getExpertQueryDisplayed() == null){
 							
-							getDataMartWizard().setExpertQueryDisplayed(getDataMartWizard().getFinalSqlQuery(getDataMartModel()));
+							getDatamartWizard().setExpertQueryDisplayed(getDatamartWizard().getFinalSqlQuery(getDatamartModel()));
 						}
-						SourceBean queryResponseSourceBean = getDataMartWizard().executeQuery(getDataMartModel(), getPageNumber(request), this.getPageSize());
+						SourceBean queryResponseSourceBean = getDatamartWizard().executeQuery(getDatamartModel(), getPageNumber(request), this.getPageSize());
 						getSessionContainer().setAttribute(QUERY_RESPONSE_SOURCE_BEAN, queryResponseSourceBean);
 					}catch (HibernateException he) {
 						Logger.error(ExecuteQueryAction.class, he);					

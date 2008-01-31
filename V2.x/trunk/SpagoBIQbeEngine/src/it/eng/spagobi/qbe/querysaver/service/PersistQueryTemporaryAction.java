@@ -27,6 +27,7 @@ import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
@@ -43,7 +44,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * This action is responsible to Persist the current working query represented by
  * the object ISingleDataMartWizardObject in session
  */
-public class PersistQueryTemporaryAction extends AbstractHttpAction {
+public class PersistQueryTemporaryAction extends AbstractQbeEngineAction {
 	
 	private static boolean isAbsolutePath(String path) {
 		if(path == null) return false;
@@ -75,7 +76,7 @@ public class PersistQueryTemporaryAction extends AbstractHttpAction {
 		
 			String fileName = publicDmDir + System.getProperty("file.separator") + uuid+ ".qbe";
 		
-			ISingleDataMartWizardObject wizardObject = Utils.getWizardObject(getRequestContainer().getSessionContainer());
+			ISingleDataMartWizardObject wizardObject = getDatamartWizard();
 			File f = new File(fileName);
 			if (!f.exists()){
 					f.createNewFile();

@@ -39,9 +39,9 @@ public class DeleteSelectFieldAction extends AbstractQbeEngineAction {
 		
 		String fieldId = getAttributeAsString(FIELD_ID); 		
 		
-		getMainQuery().deleteSelectField(fieldId);
+		getQuery().deleteSelectField(fieldId);
 		
 		updateLastUpdateTimeStamp();
-		setMainDataMartWizard( getMainDataMartWizard() );
+		setDatamartWizard( getDatamartWizard() );
 	}
 }

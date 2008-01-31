@@ -48,12 +48,11 @@ import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
 /**
- * @author Andrea Gioia
- *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class HibernateDataMartStructureBuilder {
 	
-IHibernateDataSource dataSource;	
+	IHibernateDataSource dataSource;	
 	
 	
 	public HibernateDataMartStructureBuilder(IHibernateDataSource dataSource) {

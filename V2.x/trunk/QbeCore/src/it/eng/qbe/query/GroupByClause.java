@@ -51,9 +51,9 @@ public class GroupByClause  implements IGroupByClause {
 	public void deleteGroupByField(String fieldId) {
 		int positionOfElement = -1;
 		
-		IOrderByField tmp = null;
+		IGroupByField tmp = null;
 		for (int i=0; i < this.groupByFields.size(); i++){
-			tmp = (IOrderByField)this.groupByFields.get(i);
+			tmp = (IGroupByField)this.groupByFields.get(i);
 			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
@@ -68,9 +68,9 @@ public class GroupByClause  implements IGroupByClause {
 	public void moveUp(String fieldId) {
 		int positionOfElement = -1;
 		
-		IOrderByField tmp = null;
+		IGroupByField tmp = null;
 		for (int i=0; i < this.groupByFields.size(); i++){
-			tmp = (IOrderByField)this.groupByFields.get(i);
+			tmp = (IGroupByField)this.groupByFields.get(i);
 			if (tmp.getId().equalsIgnoreCase(fieldId)){
 				positionOfElement = i;
 				break;
@@ -82,7 +82,7 @@ public class GroupByClause  implements IGroupByClause {
 		}else{
 			int newPosition = positionOfElement - 1;
 			
-			IOrderByField swap = (IOrderByField)this.groupByFields.set(newPosition, tmp);
+			IGroupByField swap = (IGroupByField)this.groupByFields.set(newPosition, tmp);
 			this.groupByFields.set(positionOfElement, swap);
 		}
 		
@@ -92,9 +92,9 @@ public class GroupByClause  implements IGroupByClause {
 		
 			int positionOfElement = -1;
 			
-			IOrderByField tmp = null;
+			IGroupByField tmp = null;
 			for (int i=0; i < this.groupByFields.size(); i++){
-				tmp = (IOrderByField)this.groupByFields.get(i);
+				tmp = (IGroupByField)this.groupByFields.get(i);
 				if (tmp.getId().equalsIgnoreCase(fieldId)){
 					positionOfElement = i;
 					break;
@@ -106,7 +106,7 @@ public class GroupByClause  implements IGroupByClause {
 			}else{
 				int newPosition = positionOfElement + 1;
 				
-				IOrderByField swap = (IOrderByField)this.groupByFields.set(newPosition, tmp);
+				IGroupByField swap = (IGroupByField)this.groupByFields.set(newPosition, tmp);
 				this.groupByFields.set(positionOfElement, swap);
 			}		
 	}

@@ -164,12 +164,23 @@ public class HQLStatement extends BasicStatement {
 		 			
 		 			idx1 += "$subquery_".length();
 		 			String subQueryFldId = fValue.substring(idx1, idx2);
-		 			IQuery subQueryObject = query.getSubQueryOnField(subQueryFldId);
 		 			
+		 			//////// TEST //////////////////////////////////////////////////////
+		 			IQuery subQueryObject = query.getSubquery(subQueryFldId);		 			
 		 			IStatement statement = dataMartModel.createStatement(subQueryObject);
 		 			buffer.append(" ( ");
 		 			buffer.append(statement.getQueryString());
 		 			buffer.append(" ) ");
+		 			/////////REPLACE WITH ///////////////////////////////////////////////
+		 			/*
+		 			query.selectSubquery(subQueryFldId);
+		 			IStatement statement = dataMartModel.createStatement(query);
+		 			buffer.append(" ( ");
+		 			buffer.append(statement.getQueryString());
+		 			buffer.append(" ) ");
+		 			 */
+		 			
+		 			
 		 		}else{
 		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getType().endsWith("StringType")))
 		 				buffer.append("'"+ fValue + "'");

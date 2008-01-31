@@ -54,10 +54,10 @@ public class Query implements IQuery {
 	
 	private Map subqueryMap = null;
 	private int subQueryCounter = 0;
-	private Map mapFieldIdSubQUeryId = null;
+	private Map mapFieldIdSubQueryId = null;
 	private IQuery selectedSubquery = null;
 	
-	private String subqueryField = null;
+	private String subqueryFieldId = null;
 	private boolean subqueryModeActive =  false;
 	
 	
@@ -66,7 +66,7 @@ public class Query implements IQuery {
 	
 	private boolean distinct;
 	
-	private String subqueryErrMsg = "";
+	private String errMsg = "";
 		
 
 	
@@ -76,7 +76,7 @@ public class Query implements IQuery {
 		
 		entityClasses = new ArrayList();
 		subqueryMap = new HashMap();
-		mapFieldIdSubQUeryId = new HashMap();
+		mapFieldIdSubQueryId = new HashMap();
 		
 		setSelectClause( new SelectClause() );
 		setWhereClause( new WhereClause() );
@@ -96,45 +96,7 @@ public class Query implements IQuery {
 		return getSelectClause().isEmpty();
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////
-	// SUBQUERY
-	////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean isSubqueryModeActive() {
-		return subqueryModeActive;
-	}
-
-	public void setSubqueryModeActive(boolean subqueryModeActive) {
-		this.subqueryModeActive = subqueryModeActive;
-	}
-	
-	public void setSelectedSubquery(IQuery selectedSubquery) {
-		this.selectedSubquery = selectedSubquery;
-	}
-	
-	public IQuery getSelectedSubquery() {
-		return selectedSubquery;
-	}
-	
-	public String getSubqueryField() {
-		return subqueryField;
-	}
-
-	public void setSubqueryField(String subqueryField) {
-		this.subqueryField = subqueryField;
-	}
-	
-	private Query getActiveQuery() {
-		
-		IQuery activeQuery = null;
-		if( isSubqueryModeActive() ) {
-			activeQuery = getSelectedSubquery();
-		} else {
-			activeQuery = this;
-		}
-		
-		return (Query)activeQuery;
-	}
 		
 	/////////////////////////////////////////////////////////////////////////////////////
 	// SELECT
@@ -217,7 +179,7 @@ public class Query implements IQuery {
 		
 		 String prefix = "a";
 		 if (isSubqueryModeActive()){
-				prefix = getSubQueryIdForSubQueryOnField( getSubqueryField() );
+				prefix = getSubQueryIdForSubQueryOnField( getSubqueryFieldId() );
 		 }	
 		 getActiveQuery().purgeNotReferredEntityClasses(prefix);
 	}
@@ -242,7 +204,7 @@ public class Query implements IQuery {
 		
 		String subQueryPrefix = null;
 		if (isSubqueryModeActive()){
-			subQueryPrefix = getSubQueryIdForSubQueryOnField( getSubqueryField() );
+			subQueryPrefix = getSubQueryIdForSubQueryOnField( getSubqueryFieldId() );
 		}
 		
 		if(className != null && fieldName != null) {		
@@ -281,7 +243,7 @@ public class Query implements IQuery {
 		
 		String subQueryPrefix = null;
 		if (isSubqueryModeActive()){
-			subQueryPrefix = getSubQueryIdForSubQueryOnField( getSubqueryField() );
+			subQueryPrefix = getSubQueryIdForSubQueryOnField( getSubqueryFieldId() );
 		}
 		
 		Integer positionInteger = new Integer(-1);
@@ -388,7 +350,7 @@ public class Query implements IQuery {
 						
 		String prefix = "a";
 		if ( isSubqueryModeActive() ) {
-			prefix = getSubQueryIdForSubQueryOnField( getSubqueryField() );
+			prefix = getSubQueryIdForSubQueryOnField( getSubqueryFieldId() );
 		}	
 		 getActiveQuery().purgeNotReferredEntityClasses(prefix);
 	}
@@ -537,9 +499,7 @@ public class Query implements IQuery {
 	// FROM
 	////////////////////////////////////////////////////////////////////////////////////
 	
-	// public ...
-	
-	
+	// public ...	
 	
 	public Iterator getEntityClassesItertor() {
 		return getActiveQuery().entityClasses.iterator();
@@ -683,9 +643,7 @@ public class Query implements IQuery {
 	
 	
 	
-	public void addSubQueryOnField(String fieldId, IQuery subquery) {		
-		subqueryMap.put(fieldId, subquery);
-	}
+	
 	
 	
 
@@ -738,12 +696,6 @@ public class Query implements IQuery {
 		
 		return joinFound;
 	}
-	
-		
-	public void addSubQueryOnField(String fieldId) {		
-		subqueryMap.put(fieldId, new Query());
-		mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
-	}
 
 
 	public String[] getDuplicatedAliases() {
@@ -767,90 +719,154 @@ public class Query implements IQuery {
 
 
 	
+	private Query getActiveQuery() {
+		
+		IQuery activeQuery = null;
+		if( isSubqueryModeActive() ) {
+			activeQuery = getSelectedSubquery();
+		} else {
+			activeQuery = this;
+		}
+		
+		return (Query)activeQuery;
+	}	
 	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// SUBQUERY
+	////////////////////////////////////////////////////////////////////////////////////
 	
+	public boolean isSubqueryModeActive() {
+		return subqueryModeActive;
+	}	
 	
-	
-	// SUBQUERIES
-	
-	public IQuery getSubQueryOnField(String fieldId) {		
-		return (IQuery)subqueryMap.get(fieldId);
+	public String getSubqueryField() {
+		return subqueryFieldId;
 	}
 	
-	public String getNewSubQueryId(){
+	public String getSubqueryFieldId() {
+		return subqueryFieldId;
+	}
+		
+	public IQuery getSubquery(String fieldId) {		
+		return (IQuery)subqueryMap.get(fieldId);
+	}	
+	
+	public boolean isSubqueryDefined(String fieldId) {
+		return getSubquery(fieldId) != null;
+	}
+	
+	public void selectSubquery(String fieldId) {		
+		if(!isSubqueryDefined(fieldId)) {
+			addEmptySubquery(fieldId);
+		}
+		
+		// All modifications are done on a copy of the selected subquery
+		// It is possible to save them at anytime or just undo all.
+		setSelectedSubquery( getSubquery(fieldId).getCopy() );
+		setSubqueryFieldId(fieldId);
+		setSubqueryModeActive(true);		
+	}	
+	
+	public void saveSelectedSubquery() {
+		if( isSubqueryModeActive() ) {
+			subqueryMap.put(getSubqueryFieldId(), getSelectedSubquery());
+		}
+	}
+	
+	public void deselectSubquery() {
+		setSelectedSubquery(null);
+		setSubqueryFieldId(null);
+		setSubqueryModeActive(false);
+	}	
+
+	public String getSubQueryIdForSubQueryOnField(String fieldId) {
+		return (String)mapFieldIdSubQueryId.get(fieldId);
+	}
+
+	
+	public String getErrMsg() {
+		return errMsg;
+	}
+	
+	public String getSubqueryErrMsg(String fieldId) {
+		if(isSubqueryDefined(fieldId)) {
+			IQuery subquery = getSubquery(fieldId);
+			if( isSubqueryValid(subquery) == false) {
+				return subquery.getErrMsg();
+			}
+		}		
+		
+		return null;
+	}
+
+	public void setErrMsg(String errMsg) {
+		this.errMsg = errMsg;
+	}	
+	
+	// ... private
+	
+	private void setSubqueryModeActive(boolean subqueryModeActive) {
+		this.subqueryModeActive = subqueryModeActive;
+	}	
+	
+	private IQuery getSelectedSubquery() {
+		return selectedSubquery;
+	}
+	
+	private void setSelectedSubquery(IQuery selectedSubquery) {
+		this.selectedSubquery = selectedSubquery;
+	}
+	
+	private void addEmptySubquery(String fieldId) {		
+		addSubquery(fieldId, new Query());
+	}
+	
+	private void addSubquery(String fieldId, IQuery subquery) {		
+		subqueryMap.put(fieldId, subquery);
+		mapFieldIdSubQueryId.put(fieldId, getNewSubQueryId());
+	}
+		
+	
+	private String getNewSubQueryId(){
 		subQueryCounter++;
 		return "sub"+this.subQueryCounter;
 	}
 	
-	public String getSubqueryErrMsg() {
-		return subqueryErrMsg;
-	}
-
-	public void setSubqueryErrMsg(String subqueryErrMsg) {
-		this.subqueryErrMsg = subqueryErrMsg;
-	}	
-	
-	public Map getSubqueries() {
+	private Map getSubqueryMap() {
 		return subqueryMap;
 	}
-
-	public String getSubQueryIdForSubQueryOnField(String fieldId) {
-		return (String)mapFieldIdSubQUeryId.get(fieldId);
-	}
 	
-	public Map getMapFieldIdSubQUeryId() {
-		return mapFieldIdSubQUeryId;
-	}
-
-
-
-
-	public void setMapFieldIdSubQUeryId(Map mapFieldIdSubQUeryId) {
-		this.mapFieldIdSubQUeryId = mapFieldIdSubQUeryId;
-	}
-
-
-
-
-	public int getSubQueryCounter() {
-		return subQueryCounter;
-	}
-
-
-
-
-	public void setSubQueryCounter(int subQueryCounter) {
-		this.subQueryCounter = subQueryCounter;
-	}
-
-	public Map getSubqueryMap() {
-		return subqueryMap;
-	}
-
-
-	public void setSubqueryMap(Map subqueryMap) {
+	private void setSubqueryMap(Map subqueryMap) {
 		this.subqueryMap = subqueryMap;
 	}
 	
-	public void selectSubquery(String fieldId) {
-		IQuery subquery = getSubQueryOnField(fieldId);
-		if(subquery !=  null) {
-			IQuery selectedSubquery = subquery.getCopy();
-			setSelectedSubquery(selectedSubquery);
-		} else {
-			//ISingleDataMartWizardObject selectedSubquery = new SingleDataMartWizardObjectSourceBeanImpl();
-			IQuery selectedSubquery = new Query();
-			setSelectedSubquery(selectedSubquery);
-			mapFieldIdSubQUeryId.put(fieldId, getNewSubQueryId());
-		}
+	public Map getMapFieldIdSubQUeryId() {
+		return mapFieldIdSubQueryId;
 	}
+
+	public void setMapFieldIdSubQUeryId(Map mapFieldIdSubQUeryId) {
+		this.mapFieldIdSubQueryId = mapFieldIdSubQUeryId;
+	}
+	
+	private void setSubqueryFieldId(String fieldId) {
+		subqueryFieldId = fieldId;
+	}
+	
+	private int getSubQueryCounter() {
+		return subQueryCounter;
+	}
+
+	private void setSubQueryCounter(int subQueryCounter) {
+		this.subQueryCounter = subQueryCounter;
+	}
+	
 
 
 	
 
 	public IQuery getCopy() {
 		// TO BE IMPLEMENTED
-		return new Query();
+		return this;
 	}
 
 	
@@ -859,8 +875,7 @@ public class Query implements IQuery {
 		
 		boolean missingCondition = false;
 		boolean invalidReference = false;
-		subquery.setSubqueryErrMsg(null);
-		subquery.setSubqueryErrMsg(null);
+		subquery.setErrMsg(null);
 		
 		if(subquery !=  null) {
 			Iterator it = subquery.getWhereFieldsIterator();
@@ -874,7 +889,7 @@ public class Query implements IQuery {
 					
 				EntityClass ec = whereField.getFieldEntityClassForRightCondition();
 				if(ec != null && !containEntityClass(ec)) {
-					subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined");
+					subquery.setErrMsg("Subquery contains at least one where condition not properly defined");
 					invalidReference = true;
 				}
 					
@@ -884,10 +899,10 @@ public class Query implements IQuery {
 		
 		// resolve all invalid references first; missing right values next
 		if(invalidReference) {
-			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: invalid reference to a parent entity)");
+			subquery.setErrMsg("Subquery contains at least one where condition not properly defined (cause: invalid reference to a parent entity)");
 		}
 		else if(missingCondition) {
-			subquery.setSubqueryErrMsg("Subquery contains at least one where condition not properly defined (cause: missing right end value)");
+			subquery.setErrMsg("Subquery contains at least one where condition not properly defined (cause: missing right end value)");
 		}
 		
 		
@@ -900,7 +915,7 @@ public class Query implements IQuery {
 	}
 	
 	public boolean isSubqueryValid(String fieldId) {
-		IQuery subquery = getSubQueryOnField(fieldId);
+		IQuery subquery = getSubquery(fieldId);
 		return isSubqueryValid(subquery);
 	}
 	

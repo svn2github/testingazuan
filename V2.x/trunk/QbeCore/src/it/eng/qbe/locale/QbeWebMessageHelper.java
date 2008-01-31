@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.locale;
 
 
-import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.message.MessageBundle;
@@ -40,9 +39,12 @@ public class QbeWebMessageHelper implements
 	
 	public String getMessage(RequestContainer aRequestContainer, String code, String bundle){
 		SessionContainer session = aRequestContainer.getSessionContainer();
+		/*
 		SpagoBIInfo spagoBIInfo = (SpagoBIInfo)session.getAttribute("spagobi");
-		if(spagoBIInfo != null && spagoBIInfo.getLoacale() != null) 
+		if(spagoBIInfo != null && spagoBIInfo.getLoacale() != null) {
 			return MessageBundle.getMessage(code, bundle, spagoBIInfo.getLoacale());
+		}
+		*/
 		return MessageBundle.getMessage(code, bundle);
 	}
 

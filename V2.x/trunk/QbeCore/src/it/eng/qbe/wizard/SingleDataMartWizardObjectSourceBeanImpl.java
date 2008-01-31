@@ -90,7 +90,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		SingleDataMartWizardObjectSourceBeanImpl wizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
 		
 		// copy all the query relaed informations
-		query.setSubQueryCounter(subQueryCounter);
+		//query.setSubQueryCounter(subQueryCounter);
 		//if(selectClause != null) wizardObject.setSelectClause(selectClause.getCopy());
 		//if(whereClause != null) wizardObject.setWhereClause(whereClause.getCopy());
 		//if(orderByClause != null) wizardObject.setOrderByClause(orderByClause.getCopy());

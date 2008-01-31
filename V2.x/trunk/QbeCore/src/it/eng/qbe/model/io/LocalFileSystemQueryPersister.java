@@ -25,7 +25,6 @@ import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.FileUtils;
-import it.eng.qbe.utility.SpagoBIInfo;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.spago.base.RequestContainer;
@@ -107,6 +106,12 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		persistToFile(dm, wizObject, fileName);
 	}
 	
+	// Just to implement the parent interface and avoid comipaltion errorss
+	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/*
 	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
 		return load((File)null, dm, key);
 	}
@@ -115,7 +120,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 
     	RequestContainer requestCont = RequestContainer.getRequestContainer();
         IEngUserProfile userProfile =(IEngUserProfile)requestCont.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        SpagoBIInfo spagoBIInfo =(SpagoBIInfo)requestCont.getSessionContainer().getAttribute("spagobi");
+        //SpagoBIInfo spagoBIInfo =(SpagoBIInfo)requestCont.getSessionContainer().getAttribute("spagobi");
     	
         
         String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
@@ -135,6 +140,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
         }
         return wiz;
 	}
+	*/
     
     protected ISingleDataMartWizardObject loadFromFile(File f) {
         try {
@@ -203,6 +209,8 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
     
     	return loadFirstLevelQuery(privateTargetDir.getAbsolutePath());
     }
+
+	
 
 	
 

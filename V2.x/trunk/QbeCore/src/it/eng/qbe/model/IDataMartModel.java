@@ -31,8 +31,7 @@ import java.util.Properties;
 
 
 /**
- * @author Andrea Gioia
- *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface IDataMartModel extends Serializable {
 	public IStatement createStatement();

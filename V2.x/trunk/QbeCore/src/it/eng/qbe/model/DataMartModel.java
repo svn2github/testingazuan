@@ -102,8 +102,7 @@ public class DataMartModel implements IDataMartModel {
 	
 		this.dataMartModelAccessModality = new DataMartModelAccessModality();
 		
-		this.dataMartProperties = new Properties();
-		
+		this.dataMartProperties = new Properties();		
 	}
 	
 	

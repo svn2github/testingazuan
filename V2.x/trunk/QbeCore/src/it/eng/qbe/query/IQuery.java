@@ -113,36 +113,18 @@ public interface IQuery {
 	void moveUpOrderByField(String fieldId);
 	
 	void switchAscendingOrderPopertyValue(String fieldId);
-	
-	
-	
-	
-	//ISelectClause getSelectClause();	
-	//IOrderByClause getOrderByClause();	
-	//IGroupByClause getGroupByClause();	
-	//IWhereClause getWhereClause();
-	
-	//void setSelectClause(ISelectClause aSelectClause);	
-	//void setWhereClause (IWhereClause aWhereClause);	
-	//void setOrderByClause(IOrderByClause orderByClause);	
-	//void setGroupByClause(IGroupByClause groupByClause);		
-	
-		
-	
-	
-	
-			
+
 	
 		
 	void setDistinct(boolean distinct);	
 	boolean getDistinct();
 	
-	void addSubQueryOnField(String fieldId);
-	void addSubQueryOnField(String fieldId, IQuery subquery);
+	//void addSubQueryOnField(String fieldId);
+	//void addSubQueryOnField(String fieldId, IQuery subquery);
 	void selectSubquery(String fieldId);
-	Map  getSubqueries();
+	//Map  getSubqueries();
 	
-	IQuery getSubQueryOnField(String fieldId);	
+	IQuery getSubquery(String fieldId);	
 	String getSubQueryIdForSubQueryOnField(String fieldId);
 	
 	String[] getDuplicatedAliases();
@@ -153,12 +135,13 @@ public interface IQuery {
 	
 	boolean areAllEntitiesJoined();
 	
-	String getSubqueryErrMsg();
-
-	void setSubqueryErrMsg(String subqueryErrMsg);
+	public String getErrMsg() ;	
+	public String getSubqueryErrMsg(String fieldId) ;
+	// TODO this method should not be public
+	void setErrMsg(String errMsg);
 	
 	IQuery getCopy();
-	IQuery getSelectedSubquery();
+	//IQuery getSelectedSubquery();
 	
 	
 	Integer findPositionOf(String completeName);
@@ -166,11 +149,18 @@ public interface IQuery {
 	boolean isSubqueryValid(IQuery subquery);
 	boolean isSelectedSubqueryValid() ;
 	
+	/**
+	 * 
+	 * @deprecated use getSubqueryFieldId
+	 */
 	String getSubqueryField() ;
+	String getSubqueryFieldId();
+	void deselectSubquery();
 
-	void setSubqueryField(String subqueryField);
+	//void setSubqueryField(String subqueryField);
+	void saveSelectedSubquery();
 
 	boolean isSubqueryModeActive() ;
 
-	void setSubqueryModeActive(boolean subqueryModeActive) ;
+	//void setSubqueryModeActive(boolean subqueryModeActive) ;
 }

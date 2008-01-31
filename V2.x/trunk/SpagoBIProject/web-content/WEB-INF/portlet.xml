@@ -350,6 +350,14 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         			parameterUrlName1=value1&parameterUrlName2=value2&... -->
         		<value></value>
         	</preference>
+        	
+	        <!--  The name of the sub object if the single object to exec has subobjects --> 
+	        <preference> 
+	            <name>LABEL_SUB_OBJECT</name>
+	            <!-- If the portlet is configured for a single object and LABEL_SINGLE_OBJECT 
+	                 item has subobject, you can specify the name of the subobject you want to execute -->
+	            <value></value>
+	        </preference>
             
             <!--
  			The path of the subtree to show

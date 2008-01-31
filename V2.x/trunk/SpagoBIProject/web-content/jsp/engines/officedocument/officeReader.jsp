@@ -1,3 +1,4 @@
+<%@page import="java.security.Principal"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Properties"%>
 <%@page import="java.io.InputStream"%>
@@ -8,7 +9,10 @@
 
 
 <%
-	String userId = request.getParameter("userId");
+
+
+	String userId=request.getParameter("userId");
+
 	String documentId = request.getParameter("documentId");
 	ContentServiceImplSupplier c = new ContentServiceImplSupplier();
 	Content template = c.readTemplate(userId, documentId);

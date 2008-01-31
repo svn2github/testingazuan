@@ -45,8 +45,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
     // get the id of the document
     Integer biobjectId = (Integer) moduleResponse.getAttribute("biobjectId");
-    // get the name of the template file
-	String templateFileName = (String) moduleResponse.getAttribute("templateFileName");
+
    	//get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -254,7 +253,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   style='display:inline;<%=heightStr%>' 
 				   id='iframeexec<%=requestIdentity%>' 
                    name='iframeexec<%=requestIdentity%>'  
-                   src="<%= urlBuilder.getResourceLink(request, "/jsp/engines/spagobiofficedocIE/officeReader.jsp?userId="+userId+"&documentId="+biobjectId.toString())%>"
+                   src="<%= urlBuilder.getResourceLink(request, "/jsp/engines/officedocument/officeReader.jsp?userId="+userId+"&documentId="+biobjectId.toString())%>"
                    frameborder=0  
 			       width='100%' >
 

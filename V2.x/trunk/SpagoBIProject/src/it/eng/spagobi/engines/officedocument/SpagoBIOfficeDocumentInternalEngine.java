@@ -84,13 +84,6 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 				title += ": " + objDescr;
 			}
 			response.setAttribute("title", title);
-			SessionContainer sessionCont = requestContainer.getSessionContainer();
-			SessionContainer permSession = sessionCont.getPermanentContainer();
-			IEngUserProfile profile=(IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			String userId=(String)profile.getUserUniqueIdentifier();
-
-		
-			
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {

@@ -35,6 +35,12 @@ public class DataSourceSupplier {
 		logger.error("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
 		return null;
 	    }
+	    
+	    Domain dialectHB = DAOFactory.getDomainDAO().loadDomainById(ds.getDialectId());
+	    if (ds == null) {
+		logger.error("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
+		return null;
+	    }	    
 	    sbds = new SpagoBiDataSource();
 	    sbds.setLabel(ds.getLabel());
 	    sbds.setJndiName(ds.getJndi());
@@ -42,6 +48,10 @@ public class DataSourceSupplier {
 	    sbds.setUser(ds.getUser());
 	    sbds.setPassword(ds.getPwd());
 	    sbds.setDriver(ds.getDriver());
+	    sbds.setHibDialectName(dialectHB.getValueName());
+	    sbds.setHibDialectClass(dialectHB.getValueDescription());
+	    
+	    logger.info("read DS: Label="+sbds.getLabel()+" Jndi="+sbds.getJndiName()+" HIB="+sbds.getHibDialectClass());
 	    
 	    //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();

@@ -8,21 +8,21 @@
 package it.eng.spagobi.services.datasource.bo;
 
 public class SpagoBiDataSource  implements java.io.Serializable {
-    private java.lang.String driver;
+    private java.lang.String driver=null;
 
-    private java.lang.String jndiName;
+    private java.lang.String jndiName=null;
 
-    private java.lang.String password;
+    private java.lang.String password=null;
 
-    private java.lang.String url;
+    private java.lang.String url=null;
 
-    private java.lang.String user;
+    private java.lang.String user=null;
 
-    private java.lang.String label;
+    private java.lang.String label=null;
     
-    private java.lang.String hibDialectClass;
+    private java.lang.String hibDialectClass=null;
     
-    private java.lang.String hibDialectName;
+    private java.lang.String hibDialectName=null;
 
     public SpagoBiDataSource() {
     }
@@ -230,10 +230,10 @@ public class SpagoBiDataSource  implements java.io.Serializable {
               this.label.equals(other.getLabel()))) &&
             ((this.hibDialectClass==null && other.getHibDialectClass()==null) || 
              (this.hibDialectClass!=null &&
-              this.hibDialectClass.equals(other.getHibDialectClass())) &&
+              this.hibDialectClass.equals(other.getHibDialectClass()))) &&
             ((this.hibDialectName==null && other.getHibDialectName()==null) || 
              (this.hibDialectName!=null &&
-              this.hibDialectName.equals(other.getHibDialectName()))));
+              this.hibDialectName.equals(other.getHibDialectName())));
         __equalsCalc = null;
         return _equals;
     }

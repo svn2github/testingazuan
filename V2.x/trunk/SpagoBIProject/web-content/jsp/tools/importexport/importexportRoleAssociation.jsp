@@ -183,7 +183,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							if(existDefault) {
 						%>
 						<input type="hidden" name="roleAssociated<%=role.getId()%>" value="<%=idAssRole%>"> 
-						<select style="width:250px" >
+						<select style="width:250px" disabled>
 						<%
 							} else { 
 						%>
@@ -219,7 +219,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						if (isAssociated) {
 							%>
 							<img title='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' 
-	      				 		src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/associated.gif")%>' 
+	      				 		src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/associated.gif")%>' 
 	      				 		alt='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' />
 							<%
 						}

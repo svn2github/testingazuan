@@ -58,6 +58,7 @@ import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 import it.eng.spagobi.tools.importexport.transformers.TransformersUtilities;
@@ -178,7 +179,7 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public void importObjects() throws EMFUserError {
 	logger.debug("IN");
-	updateConnectionReferences(metaAss.getConnectionAssociation());
+	updateDataSourceReferences(metaAss.getDataSourceAssociation());
 	importDataSource();
 	importRoles();
 	importEngines();
@@ -277,20 +278,20 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Update the connection name for each list of values of type query based on
-     * association between exported connections and current system connections
+     * Update the data source name for each list of values of type query based on
+     * association between exported data sources and current system data sources
      * 
-     * @param connAssociations
-     *                Map of the associations between exported connections and
-     *                current system connections
+     * @param mapDataSources
+     *                Map of the associations between exported data sources and
+     *                current system data sources
      * @throws EMFUserError
      */
-    public void updateConnectionReferences(Map connAssociations) throws EMFUserError {
+    public void updateDataSourceReferences(Map mapDataSources) throws EMFUserError {
 	/*
-	 * The key of the map are the name of the exported connections Each key
-	 * value is the name of the current system connection associate
+	 * The key of the map are the name of the exported data sources Each key
+	 * value is the name of the current system data source associate
 	 */
-	importer.updateConnRefs(connAssociations, sessionExpDB, metaLog);
+	importer.updateDSRefs(mapDataSources, sessionExpDB, metaLog);
     }
 
     /**
@@ -516,9 +517,9 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 		// check datasource link
 		SbiDataSource expDs = newEng.getDataSource();
-		String label = (String) metaAss.getConnectionAssociation().get(expDs.getLabel());
+		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
 		if (label == null) {
-		    // exist a Connection Association, read a new DataSource
+		    // exist a DataSource Association, read a new DataSource
 		    // from the DB
 		    label = expDs.getLabel();
 		}
@@ -553,7 +554,7 @@ public class ImportManager implements IImportManager, Serializable {
 		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
 		Integer oldId = new Integer(dataSource.getDsId());
 		String label = dataSource.getLabel();
-		Map engIdAss = metaAss.getConnectionAssociation();
+		Map engIdAss = metaAss.getDataSourceAssociation();
 		Set engIdAssSet = engIdAss.keySet();
 		if (engIdAssSet.contains(label)) {
 		    metaLog.log("Exported dataSource " + dataSource.getLabel() + " not inserted"
@@ -565,7 +566,7 @@ public class ImportManager implements IImportManager, Serializable {
 		Integer newId = (Integer) sessionCurrDB.save(newDS);
 
 		metaLog.log("Inserted new engine " + newDS.getLabel());
-		metaAss.insertCoupleConnections(dataSource.getLabel(), newDS.getLabel());
+		metaAss.insertCoupleDataSources(dataSource.getLabel(), newDS.getLabel());
 	    }
 	} catch (HibernateException he) {
 	    logger.error("Error while inserting object ", he);
@@ -873,9 +874,9 @@ public class ImportManager implements IImportManager, Serializable {
 
 		// reading exist datasource
 		SbiDataSource expDs = exopObj.getDataSource();
-		String label = (String) metaAss.getConnectionAssociation().get(expDs.getLabel());
+		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
 		if (label == null) {
-		    // exist a Connection Association, read a new DataSource
+		    // exist a DataSource Association, read a new DataSource
 		    // from the DB
 		    label = expDs.getLabel();
 		}
@@ -889,8 +890,9 @@ public class ImportManager implements IImportManager, Serializable {
 		Set objIdAssSet = objIdAss.keySet();
 		if (objIdAssSet.contains(expId)) {
 		    logger.info("This Documents is just present (label):" + exopObj.getLabel());
-		    metaLog.log("Exported biobject " + exopObj.getName() + " not inserted"
-			    + " because it has the same label of an existing biobject");
+//		    metaLog.log("Exported biobject " + exopObj.getName() + " not inserted"
+//			    + " because it has the same label of an existing biobject");
+		    metaLog.log("The document with label = [" + exopObj.getLabel() + "] will be updated.");
 		    // update document
 		    Integer existingId=(Integer)metaAss.getBIobjIDAssociation().get(expId);
 		    SbiObjects existingObj=(SbiObjects)sessionCurrDB.load(SbiObjects.class, existingId);
@@ -1665,13 +1667,13 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Gets the list of exported connections
+     * Gets the list of exported data sources
      * 
-     * @return List of the exported connections
+     * @return List of the exported data sources
      */
-    public List getExportedConnections() throws EMFUserError {
+    public List getExportedDataSources() throws EMFUserError {
 	logger.debug("IN");
-	List conn = new ArrayList();
+	List datasources = new ArrayList();
 	try {
 	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource");
 	    Iterator iterSbiDataSource = exportedDS.iterator();
@@ -1683,14 +1685,14 @@ public class ImportManager implements IImportManager, Serializable {
 		ds.setDescr(dataSource.getDescr());
 		ds.setDriver(dataSource.getDriver());
 		ds.setJndi(dataSource.getJndi());
-		conn.add(ds);
+		datasources.add(ds);
 	    }
 	} finally {
 	    logger.debug("OUT");
 	}
 
 	logger.debug("OUT");
-	return conn;
+	return datasources;
     }
 
     /**
@@ -1908,7 +1910,7 @@ public class ImportManager implements IImportManager, Serializable {
 		this.associationFile = associationFile;
 	}
 
-	public boolean isRolesAssociationPageRequired() throws EMFUserError {
+	public boolean associateAllExportedRolesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {
 			List exportedRoles = this.getExportedRoles();
@@ -1925,6 +1927,7 @@ public class ImportManager implements IImportManager, Serializable {
 					Role currentRole = (Role) currentRolesIt.next();
 					if (currentRole.getName().equals(associatedRoleName)) {
 						associatedRoleNameExists = true;
+						metaAss.insertCoupleRole(exportedRole.getId(), currentRole.getId());
 						break;
 					}
 				}
@@ -1936,7 +1939,7 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 	
-	public boolean isEnginesAssociationPageRequired() throws EMFUserError {
+	public boolean associateAllExportedEnginesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {
 			List exportedEngines = this.getExportedEngines();
@@ -1953,6 +1956,7 @@ public class ImportManager implements IImportManager, Serializable {
 					Engine currentEngine = (Engine) currentEngineIt.next();
 					if (currentEngine.getLabel().equals(associatedEngineLabel)) {
 						associatedEngineLabelExists = true;
+						metaAss.insertCoupleEngine(exportedEngine.getId(), currentEngine.getId());
 						break;
 					}
 				}
@@ -1964,27 +1968,29 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 	
-	public boolean isConnectionsAssociationPageRequired() throws EMFUserError {
+	public boolean associateAllExportedDataSourcesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {
-			List exportedConnections = this.getExportedConnections();
-			if (exportedConnections == null || exportedConnections.size() == 0) return false;
-			List currentConnections = new ArrayList();
-			ConfigSingleton conf = ConfigSingleton.getInstance();
-			List connList = conf.getAttributeAsList("DATA-ACCESS.CONNECTION-POOL");
-			Iterator iterConn = connList.iterator();
-			while(iterConn.hasNext()) {
-				SourceBean connSB = (SourceBean) iterConn.next();
-				String name = (String)connSB.getAttribute("connectionPoolName");
-				currentConnections.add(name);
-			}
-			Iterator exportedConnectionsIt = exportedConnections.iterator();
-			while (exportedConnectionsIt.hasNext()) {
-				DBConnection exportedConnection = (DBConnection) exportedConnectionsIt.next();
-				String exportedConnectionName = exportedConnection.getName();
-				String associatedConnectionName = this.getUserAssociation().getAssociatedConnection(exportedConnectionName);
-				if (associatedConnectionName == null || associatedConnectionName.trim().equals("")) return true;
-				if (!currentConnections.contains(associatedConnectionName)) return true;
+			List exportedDataSources = this.getExportedDataSources();
+			if (exportedDataSources == null || exportedDataSources.size() == 0) return false;
+			IDataSourceDAO datasourceDAO = DAOFactory.getDataSourceDAO();
+			List currentDataSources = datasourceDAO.loadAllDataSources();
+			Iterator exportedDataSourcesIt = exportedDataSources.iterator();
+			while (exportedDataSourcesIt.hasNext()) {
+				DataSource exportedDataSource = (DataSource) exportedDataSourcesIt.next();
+				String associatedDataSourceLabel = this.getUserAssociation().getAssociatedDataSource(exportedDataSource.getLabel());
+				if (associatedDataSourceLabel == null || associatedDataSourceLabel.trim().equals("")) return true;
+				Iterator currentDataSourcesIt = currentDataSources.iterator();
+				boolean associatedDataSourceLabelExists = false;
+				while (currentDataSourcesIt.hasNext()) {
+					DataSource currentDataSource = (DataSource) currentDataSourcesIt.next();
+					if (currentDataSource.getLabel().equals(associatedDataSourceLabel)) {
+						associatedDataSourceLabelExists = true;
+						metaAss.insertCoupleDataSources(exportedDataSource.getLabel(), currentDataSource.getLabel());
+						break;
+					}
+				}
+				if (!associatedDataSourceLabelExists) return true;
 			}
 			return false;
 		} finally {

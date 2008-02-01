@@ -57,7 +57,7 @@ public class MetadataAssociations {
 	private Map domainAssociation = new HashMap();
 	private Map objparIDAssociation = new HashMap();
 	private Map objparAssociation = new HashMap();
-	private Map connectionsAssociation = new HashMap();
+	private Map datasourcesAssociation = new HashMap();
 	
 	/**
 	 * Checks if the metadata association is empty
@@ -103,7 +103,7 @@ public class MetadataAssociations {
 		checkAssociation = new HashMap();
 		paruseIDAssociation = new HashMap();
 		paruseAssociation = new HashMap();
-		connectionsAssociation = new HashMap();
+		datasourcesAssociation = new HashMap();
 	}
 	
 	/**
@@ -480,18 +480,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported connections
+	 * Gets the Map of associations between current and exported datasources
 	 * @return Map of associations
 	 */
-	public Map getConnectionAssociation() {
-		return connectionsAssociation;
+	public Map getDataSourceAssociation() {
+		return datasourcesAssociation;
 	}
 	
 	/**
-	 * Inserts a couple of connection names into the associations 
+	 * Inserts a couple of datasource names into the associations 
 	 */
-	public void insertCoupleConnections(String exp, String curr) {
-		connectionsAssociation.put(exp, curr);
+	public void insertCoupleDataSources(String exp, String curr) {
+		datasourcesAssociation.put(exp, curr);
 	}
 	
 	

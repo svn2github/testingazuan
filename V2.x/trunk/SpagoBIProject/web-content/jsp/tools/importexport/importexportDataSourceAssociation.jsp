@@ -34,13 +34,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
-	List expConns = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS);
-	Map curConns = (Map)moduleResponse.getAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS);
+	List expConns = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES);
+	Map curConns = (Map)moduleResponse.getAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES);
     Iterator iterExpConn = expConns.iterator();
 	
     Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "ImportExportPage");
-    backUrlPars.put("MESSAGEDET", ImportExportConstants.IMPEXP_BACK_CONN_ASS);
+    backUrlPars.put("MESSAGEDET", ImportExportConstants.IMPEXP_BACK_DS_ASS);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
   
@@ -52,7 +52,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
     Map formUrlPars = new HashMap();
     formUrlPars.put("PAGE", "ImportExportPage");
-    formUrlPars.put("MESSAGEDET", ImportExportConstants.IMPEXP_CONNECTION_ASSOCIATION);
+    formUrlPars.put("MESSAGEDET", ImportExportConstants.IMPEXP_DATA_SOURCE_ASSOCIATION);
     formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formUrl = urlBuilder.getUrl(request, formUrlPars);
    
@@ -98,7 +98,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div id='infodiv' style='display:none;'>
 	<ul style="color:#074B88;">
-			<li><spagobi:message key = "SBISet.impexp.connrule1"  bundle="component_impexp_messages"/></li>
+			<li><spagobi:message key = "SBISet.impexp.datasourceRule1"  bundle="component_impexp_messages"/></li>
 	</ul>
 </div>	
 
@@ -109,7 +109,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key = "SBISet.connectionAssociation"  bundle="component_impexp_messages"/>
+				<spagobi:message key = "SBISet.datasourceAssociation"  bundle="component_impexp_messages"/>
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
@@ -155,15 +155,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="box padding5" >
 			<table>
 				<tr>
-					<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedConn" bundle="component_impexp_messages"/></td>
-					<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentConn" bundle="component_impexp_messages"/></td>
+					<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.exportedDS" bundle="component_impexp_messages"/></td>
+					<td class='portlet-section-header'><spagobi:message key="SBISet.impexp.currentDS" bundle="component_impexp_messages"/></td>
 				</tr>
 				<tr>
 					<td colspan="2">&nbsp;</td>
 				</tr>
 				<%if(expConns.isEmpty()) { %>
 				<tr>
-					<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noConnExported" bundle="component_impexp_messages"/></td>
+					<td colspan="2" style="color:#074B88;"><spagobi:message key="SBISet.impexp.noDSExported" bundle="component_impexp_messages"/></td>
 				</tr>
 				<% } %>
 				<%
@@ -207,7 +207,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									selected = "";
 									String curConnName = (String)iterCurConnNames.next();
 									String curNameDesc = (String)curConns.get(curConnName);
-									String connectionAss = usrAssKeep.getAssociatedConnection(connName);
+									String connectionAss = usrAssKeep.getAssociatedDataSource(connName);
 									if( (connectionAss!=null) &&  curConnName.equals(connectionAss)) {
 										selected=" selected ";
 										isAssociated = true;
@@ -220,7 +220,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						if (isAssociated) {
 							%>
 							<img title='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' 
-	      				 		src='<%=urlBuilder.getResourceLink(request, "/components/importexport/img/associated.gif")%>' 
+	      				 		src='<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/associated.gif")%>' 
 	      				 		alt='<spagobi:message key = "Sbi.associated"  bundle="component_impexp_messages"/>' />
 							<%
 						}

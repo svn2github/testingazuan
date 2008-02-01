@@ -184,16 +184,16 @@ public class ImporterMetadata {
     }
 
     /**
-     * Upadates the connection name into the query lov objects based on the
-     * assocaition defined by the user between exported and current SpagoBI
-     * connection
+     * Upadates the data source name into the query lov objects based on the
+     * association defined by the user between exported and current SpagoBI
+     * data source
      * 
-     * @param associations    Map of associations between exported connections and
-     *                        connections of the current SpagoBI platform
+     * @param associations    Map of associations between exported data sources and
+     *                        data sources of the current SpagoBI platform
      * @param session         Hibernate session for the exported database
      * @throws                EMFUserError
      */
-    public void updateConnRefs(Map associations,  Session session, MetadataLogger log)
+    public void updateDSRefs(Map associations,  Session session, MetadataLogger log)
 	    throws EMFUserError {
 	logger.debug("IN");
 	try {

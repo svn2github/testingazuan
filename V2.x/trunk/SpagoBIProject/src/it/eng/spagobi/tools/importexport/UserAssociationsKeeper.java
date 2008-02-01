@@ -6,7 +6,7 @@ import it.eng.spago.base.SourceBean;
 
 
 /**
- * Implements methods for recording the association of roles, engines, and connection 
+ * Implements methods for recording the association of roles, engines, and data sources 
  * setted by the user. The association recorder can be exported into xml format 
  */
 public class UserAssociationsKeeper {
@@ -17,7 +17,7 @@ public class UserAssociationsKeeper {
 	private SourceBean associationSB = null;
 	private SourceBean roleAssSB = null;
 	private SourceBean engineAssSB = null;
-	private SourceBean connectionAssSB = null;
+	private SourceBean datasourceAssSB = null;
 	
 	/**
 	 * Defines the internal structure for recording associations
@@ -28,10 +28,10 @@ public class UserAssociationsKeeper {
 			associationSB = new SourceBean("USER_ASSOCIATIONS");
 			roleAssSB = new SourceBean("ROLE_ASSOCIATIONS");
 			engineAssSB = new SourceBean("ENGINE_ASSOCIATIONS");
-			connectionAssSB = new SourceBean("CONNECTION_ASSOCIATIONS");
+			datasourceAssSB = new SourceBean("DATA_SOURCE_ASSOCIATIONS");
 			associationSB.setAttribute(roleAssSB);
 			associationSB.setAttribute(engineAssSB);
-			associationSB.setAttribute(connectionAssSB);
+			associationSB.setAttribute(datasourceAssSB);
 		} catch (Exception e) {
 			logger.error("Error while creating the association SourceBean \n " , e );
 		}finally{
@@ -109,33 +109,33 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Records an association between an exported connection and an existing one
-	 * @param exportedConName the name of the exported connection
-	 * @param existingConName the name of the existing connection
+	 * Records an association between an exported data source and an existing one
+	 * @param exportedDataSourceName the name of the exported data source
+	 * @param existingDataSourceName the name of the existing data source
 	 */
-	public void recordConnectionAssociation(String exportedConName, String existingConName) {
+	public void recordDataSourceAssociation(String exportedDataSourceName, String existingDataSourceName) {
 	    logger.debug("IN");
-		if( (associationSB==null) || (connectionAssSB==null) ) {
-		    logger.warn("Cannot record the association between exported connection "+exportedConName+" " +
-		            			  "and the connection " + existingConName + ", the association SourceBean is null");
+		if( (associationSB==null) || (datasourceAssSB==null) ) {
+		    logger.warn("Cannot record the association between exported  "+exportedDataSourceName+" " +
+		            			  "and the data source " + existingDataSourceName + ", the association SourceBean is null");
 			return;
 		}
 		try{
-			SourceBean conSB = (SourceBean) connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", exportedConName);
+			SourceBean dsSB = (SourceBean) datasourceAssSB.getFilteredSourceBeanAttribute("DATA_SOURCE_ASSOCIATION", "exported", exportedDataSourceName);
 			// association already recorder
-			if(conSB != null) {
-				conSB.updAttribute("associatedTo", existingConName);
+			if(dsSB != null) {
+				dsSB.updAttribute("associatedTo", existingDataSourceName);
 				//return;
 			} else {
 				// record association
-				conSB = new SourceBean("CONNECTION_ASSOCIATION");
-				conSB.setAttribute("exported", exportedConName);
-				conSB.setAttribute("associatedTo", existingConName);
-				connectionAssSB.setAttribute(conSB);
+				dsSB = new SourceBean("DATA_SOURCE_ASSOCIATION");
+				dsSB.setAttribute("exported", exportedDataSourceName);
+				dsSB.setAttribute("associatedTo", existingDataSourceName);
+				datasourceAssSB.setAttribute(dsSB);
 			}
 		} catch (Exception e) {
-		    logger.error("Error while recording the association between exported connection "+exportedConName+" " +
-		            			  "and the connection " + existingConName + " \n " , e);
+		    logger.error("Error while recording the association between exported data source "+exportedDataSourceName+" " +
+		            			  "and the data source " + existingDataSourceName + " \n " , e);
 		}finally{
 		    logger.debug("OUT");
 		    
@@ -172,12 +172,12 @@ public class UserAssociationsKeeper {
 			if(roleAssSBtmp==null) throw new Exception("Cannot recover ROLE_ASSOCIATIONS bean");
 			SourceBean engineAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ENGINE_ASSOCIATIONS");
 			if(engineAssSBtmp==null) throw new Exception("Cannot recover ENGINE_ASSOCIATIONS bean");
-			SourceBean connectionAssSBtmp = (SourceBean)associationSBtmp.getAttribute("CONNECTION_ASSOCIATIONS");
-			if(connectionAssSBtmp==null) throw new Exception("Cannot recover CONNECTION_ASSOCIATIONS bean");
+			SourceBean datasourceAssSBtmp = (SourceBean)associationSBtmp.getAttribute("DATA_SOURCE_ASSOCIATIONS");
+			if(datasourceAssSBtmp==null) throw new Exception("Cannot recover DATA_SOURCE_ASSOCIATIONS bean");
 			associationSB = associationSBtmp;
 			roleAssSB = roleAssSBtmp;
 			engineAssSB = engineAssSBtmp;
-			connectionAssSB = connectionAssSBtmp;
+			datasourceAssSB = datasourceAssSBtmp;
 		} catch (Exception e) {
 		    logger.error("Error while loading SourceBean from xml  \n " , e);
 		}finally{
@@ -213,18 +213,18 @@ public class UserAssociationsKeeper {
 		return assEngine;
 	}	
 
-	public String getAssociatedConnection(String expConnectionName) {
+	public String getAssociatedDataSource(String expDataSourceName) {
 		logger.debug("IN");
-		String assConnection = null;
-		SourceBean assConnectionSB = (SourceBean)connectionAssSB.getFilteredSourceBeanAttribute("CONNECTION_ASSOCIATION", "exported", expConnectionName);
-		if(assConnectionSB!=null) {
-			assConnection = (String)assConnectionSB.getAttribute("associatedTo");
-			if(assConnection.trim().equals("")) {
-				assConnection = null;
+		String assDataSource = null;
+		SourceBean assDataSourceSB = (SourceBean)datasourceAssSB.getFilteredSourceBeanAttribute("DATA_SOURCE_ASSOCIATION", "exported", expDataSourceName);
+		if(assDataSourceSB!=null) {
+			assDataSource = (String)assDataSourceSB.getAttribute("associatedTo");
+			if(assDataSource.trim().equals("")) {
+				assDataSource = null;
 			}
 		}
 		logger.debug("OUT");
-		return assConnection;
+		return assDataSource;
 	}
 	
 }

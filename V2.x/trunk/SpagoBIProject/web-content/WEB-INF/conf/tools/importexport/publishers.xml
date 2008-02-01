@@ -150,37 +150,19 @@
     	</RENDERING>
   	</PUBLISHER>
   	
-  	<PUBLISHER name="ImportExportConnectionAssociation">
+  	<PUBLISHER name="ImportExportDataSourceAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/importexport/importexportConnectionAssociation.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/tools/importexport/importexportDataSourceAssociation.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp" />
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/importexport/importexportConnectionAssociation.jsp"/>
+        		<ITEM prog="0" resource="/jsp/tools/importexport/importexportDataSourceAssociation.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
-  	<PUBLISHER name="ImportExportSkipConnectionAssociation">
-		<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
-      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_CONNECTION_ASSOCIATION" />
-      			<PARAMETER name="CONNECTIONS_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
-      		</RESOURCES>
-    	</RENDERING>
-    	<RENDERING channel="HTTP" mode="" type="LOOP">
-      		<RESOURCES>
-      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
-      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_CONNECTION_ASSOCIATION" />
-      			<PARAMETER name="CONNECTIONS_ASSOCIATIONS_SKIPPED" type="ABSOLUTE" scope="" value="TRUE" />
-      		</RESOURCES>
-    	</RENDERING>
-  	</PUBLISHER>  
   	
   	<PUBLISHER name="ImportExportExistingMetadataAssociation">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
@@ -195,7 +177,22 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
-  	
+   	<PUBLISHER name="ImportExportSkipExistingMetadataAssociation">
+		<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_METADATA_ASS" />
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ImportExportPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
+      			<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="IMPEXP_METADATA_ASS" />
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
   	
   	
 </PUBLISHERS>

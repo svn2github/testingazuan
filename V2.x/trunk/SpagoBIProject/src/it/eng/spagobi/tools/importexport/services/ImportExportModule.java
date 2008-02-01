@@ -32,19 +32,16 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
-import it.eng.spagobi.tools.importexport.DBConnection;
 import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
@@ -117,16 +114,16 @@ public class ImportExportModule extends AbstractModule {
 		associateRoles(request, response);
 	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_ENGINE_ASSOCIATION)) {
 		associateEngines(request, response);
-	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_CONNECTION_ASSOCIATION)) {
-		associateConnections(request, response);
+	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_DATA_SOURCE_ASSOCIATION)) {
+		associateDataSources(request, response);
 	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_METADATA_ASS)) {
 		associateMetadata(request, response);
 	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_EXIT)) {
 		exitImport(request, response);
 	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_BACK_ENGINE_ASS)) {
 		backEngineAssociation(request, response);
-	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_BACK_CONN_ASS)) {
-		backConnAssociation(request, response);
+	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_BACK_DS_ASS)) {
+	    backDataSourceAssociation(request, response);
 	    } else if (message.trim().equalsIgnoreCase(ImportExportConstants.IMPEXP_BACK_METADATA_ASS)) {
 		backMetadataAssociation(request, response);
 	    }
@@ -228,6 +225,8 @@ public class ImportExportModule extends AbstractModule {
 	UploadedFile archive = null;
 	UploadedFile associationsFile = null;
 	AssociationFile assFile = null;
+	String assKindFromReq = (String) request.getAttribute("importAssociationKind");
+	boolean isNoAssociationModality = assKindFromReq != null && assKindFromReq.equalsIgnoreCase("noassociations");
 	List uplFiles = request.getAttributeAsList("UPLOADED_FILE");
 	Iterator uplFilesIter = uplFiles.iterator();
 	while (uplFilesIter.hasNext()) {
@@ -251,32 +250,38 @@ public class ImportExportModule extends AbstractModule {
 	    }
 	    throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8007", "component_impexp_messages");
 	}
-	// check if the name of associations file is empty (in this case set
-	// null to the variable)
-	String associationsFileName = associationsFile.getFileName();
-	if (associationsFileName.trim().equals("")) {
-	    associationsFile = null;
+	
+	// if the user choose to have no associations, checks the form, otherwise set the variable associationsFile = null
+	if (!isNoAssociationModality) {
+		// check if the name of associations file is empty (in this case set
+		// null to the variable)
+		String associationsFileName = associationsFile.getFileName();
+		if (associationsFileName.trim().equals("")) {
+		    associationsFile = null;
+		}
+		// if the association file is empty then check if there is an
+		// association id
+		// rebuild the uploaded file and assign it to associationsFile
+		if (associationsFile == null) {
+		    String assId = (String) request.getAttribute("hidAssId");
+		    if ((assId != null) && !assId.trim().equals("")) {
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			assFile = assfiledao.loadFromID(assId);
+			byte[] content = assfiledao.getContent(assFile);
+			UploadedFile uplFile = new UploadedFile();
+			uplFile.setSizeInBytes(content.length);
+			uplFile.setFileContent(content);
+			uplFile.setFileName("association.xml");
+			uplFile.setFieldNameInForm("");
+			associationsFile = uplFile;
+		    }
+		}
+	} else {
+		associationsFile = null;
 	}
-	// if the association file is empty then check if there is an
-	// association id
-	// rebuild the uploaded file and assign it to associationsFile
-	if (associationsFile == null) {
-	    String assId = (String) request.getAttribute("hidAssId");
-	    if ((assId != null) && !assId.trim().equals("")) {
-		IAssociationFileDAO assfiledao = new AssociationFileDAO();
-		assFile = assfiledao.loadFromID(assId);
-		byte[] content = assfiledao.getContent(assFile);
-		UploadedFile uplFile = new UploadedFile();
-		uplFile.setSizeInBytes(content.length);
-		uplFile.setFileContent(content);
-		uplFile.setFileName("association.xml");
-		uplFile.setFieldNameInForm("");
-		associationsFile = uplFile;
-	    }
-	}
+	
 	// get the association mode
 	String assMode = IImportManager.IMPORT_ASS_DEFAULT_MODE;
-	String assKindFromReq = (String) request.getAttribute("importAssociationKind");
 	if (assKindFromReq.equalsIgnoreCase("predefinedassociations")) {
 	    assMode = IImportManager.IMPORT_ASS_PREDEFINED_MODE;
 	}
@@ -311,13 +316,8 @@ public class ImportExportModule extends AbstractModule {
 				impManager.getUserAssociation().fillFromXml(assFileStr);
 			} catch (Exception e) {
 				logger.error("Error while loading association file content:\n " + e);
-					try {
-						response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
-					} catch (SourceBeanException sbe) {
-						logger.error("Error while populating response source bean " + sbe);
-						throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-					}
-					throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8009", "component_impexp_messages");
+				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
+				throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8009", "component_impexp_messages");
 			}
 		}
 
@@ -329,26 +329,16 @@ public class ImportExportModule extends AbstractModule {
 		session.setAttribute(ImportExportConstants.IMPORT_MANAGER, impManager);
 		
 		// start import operations
-		if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.isRolesAssociationPageRequired()) {
-			try{
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportSkipRoleAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");	
-			}
+		if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.associateAllExportedRolesByUserAssociation()) {
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportSkipRoleAssociation");
 		} else {
 			// move to jsp
 			List exportedRoles = impManager.getExportedRoles();
 			IRoleDAO roleDAO = DAOFactory.getRoleDAO();
 			List currentRoles = roleDAO.loadAllRoles();
-			try{
-				response.setAttribute(ImportExportConstants.LIST_EXPORTED_ROLES, exportedRoles);
-				response.setAttribute(ImportExportConstants.LIST_CURRENT_ROLES, currentRoles);
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportRoleAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");	
-			}
+			response.setAttribute(ImportExportConstants.LIST_EXPORTED_ROLES, exportedRoles);
+			response.setAttribute(ImportExportConstants.LIST_CURRENT_ROLES, currentRoles);
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportRoleAssociation");
 		}
 	} catch (EMFUserError emfue) {
 	    if (impManager != null)
@@ -369,6 +359,11 @@ public class ImportExportModule extends AbstractModule {
 	    if (impManager != null)
 		impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (SourceBeanException sbe) {
+		logger.error("Error: " + sbe);
+	    if (impManager != null)
+			impManager.stopImport();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
 	}
@@ -392,27 +387,7 @@ public class ImportExportModule extends AbstractModule {
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 	    MetadataAssociations metaAss = impManager.getMetadataAssociation();
-		if (request.containsAttribute("ROLES_ASSOCIATIONS_SKIPPED")) {
-			// if the request contains the ROLES_ASSOCIATIONS_SKIPPED attribute it means that this is a loop call
-			// and the roles associations page is not required (all exported roles are already correctly associated)
-			// but user associations must be saved on metadata associations.
-			List exportedRoles = impManager.getExportedRoles();
-			IRoleDAO roleDAO = DAOFactory.getRoleDAO();
-			List currentRoles = roleDAO.loadAllRoles();
-			Iterator exportedRolesIt = exportedRoles.iterator();
-			while (exportedRolesIt.hasNext()) {
-				Role exportedRole = (Role) exportedRolesIt.next();
-				String associatedRoleName = impManager.getUserAssociation().getAssociatedRole(exportedRole.getName());
-				Iterator currentRolesIt = currentRoles.iterator();
-				while (currentRolesIt.hasNext()) {
-					Role currentRole = (Role) currentRolesIt.next();
-					if (currentRole.getName().equals(associatedRoleName)) {
-						metaAss.insertCoupleRole(exportedRole.getId(), currentRole.getId());
-						break;
-					}
-				}
-			}
-		} else {
+	    if (!request.containsAttribute("ROLES_ASSOCIATIONS_SKIPPED")) {
 			// the roles associations form was submitted
 			List expRoleIds = request.getAttributeAsList("expRole");
 			Iterator iterExpRoles = expRoleIds.iterator();
@@ -440,36 +415,31 @@ public class ImportExportModule extends AbstractModule {
 					}
 				}
 			}
-		}
+	    }
 	    // check role associations
 	    impManager.checkRoleReferences(metaAss.getRoleIDAssociation());
 		
-	    if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.isEnginesAssociationPageRequired()) {
-			try{
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportSkipEngineAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");	
-			}
+	    if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.associateAllExportedEnginesByUserAssociation()) {
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportSkipEngineAssociation");
 		} else {
 			// get the existing and exported engines
 			// move to jsp
             List exportedEngines = impManager.getExportedEngines();
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 			List currentEngines = engineDAO.loadAllEngines();
-			try{
-				response.setAttribute(ImportExportConstants.LIST_EXPORTED_ENGINES, exportedEngines);
-				response.setAttribute(ImportExportConstants.LIST_CURRENT_ENGINES, currentEngines);
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportEngineAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}
+			response.setAttribute(ImportExportConstants.LIST_EXPORTED_ENGINES, exportedEngines);
+			response.setAttribute(ImportExportConstants.LIST_CURRENT_ENGINES, currentEngines);
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportEngineAssociation");
 		}
 	} catch (EMFUserError emfue) {
 	    if (impManager != null)
 		impManager.stopImport();
 	    throw emfue;
+	} catch (SourceBeanException sbe) {
+		logger.error("Error: " + sbe);
+	    if (impManager != null)
+			impManager.stopImport();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} catch (Exception e) {
 	    logger.error("Error while getting role association ", e);
 	    if (impManager != null)
@@ -498,24 +468,7 @@ public class ImportExportModule extends AbstractModule {
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 		MetadataAssociations metaAss = impManager.getMetadataAssociation();
-		if (request.containsAttribute("ENGINES_ASSOCIATIONS_SKIPPED")) {
-			List exportedEngines = impManager.getExportedEngines();
-			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
-			List currentEngines = engineDAO.loadAllEngines();
-			Iterator exportedEnginesIt = exportedEngines.iterator();
-			while (exportedEnginesIt.hasNext()) {
-				Engine exportedEngine = (Engine) exportedEnginesIt.next();
-				String associatedEngineLabel = impManager.getUserAssociation().getAssociatedEngine(exportedEngine.getLabel());
-				Iterator currentEngineIt = currentEngines.iterator();
-				while (currentEngineIt.hasNext()) {
-					Engine currentEngine = (Engine) currentEngineIt.next();
-					if (currentEngine.getLabel().equals(associatedEngineLabel)) {
-						metaAss.insertCoupleEngine(exportedEngine.getId(), currentEngine.getId());
-						break;
-					}
-				}
-			}
-		} else {
+		if (!request.containsAttribute("ENGINES_ASSOCIATIONS_SKIPPED")) {
 			List expEngineIds = request.getAttributeAsList("expEngine");
 			Iterator iterExpEngines = expEngineIds.iterator();
 			while(iterExpEngines.hasNext()){
@@ -523,7 +476,6 @@ public class ImportExportModule extends AbstractModule {
 				String engineAssociateId = (String)request.getAttribute("engineAssociated"+expEngineId);
 				if(!engineAssociateId.trim().equals("")) {
 					metaAss.insertCoupleEngine(new Integer(expEngineId), new Integer(engineAssociateId));
-				
 					// insert into user associations
 					try{
 						Object existingEngineObj = impManager.getExistingObject(new Integer(engineAssociateId), SbiEngines.class); 
@@ -538,36 +490,37 @@ public class ImportExportModule extends AbstractModule {
 					} catch (Exception e) {
 						logger.warn("Error while recording user engine association", e);
 					}
-					
 				}
 			}
 		}
 		
-		if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.isConnectionsAssociationPageRequired()) {
-			try{
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportSkipConnectionAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");	
-			}
+		if (impManager.getImpAssMode().equals(IImportManager.IMPORT_ASS_PREDEFINED_MODE) && !impManager.associateAllExportedDataSourcesByUserAssociation()) {
+		    impManager.checkExistingMetadata();
+		    if (metaAss.isEmpty()) {
+		    	response.setAttribute(ImportExportConstants.PUBLISHER_NAME,
+			    	"ImportExportSkipExistingMetadataAssociation");
+		    } else {
+			    response.setAttribute(ImportExportConstants.PUBLISHER_NAME,
+				    "ImportExportExistingMetadataAssociation");
+		    }
 		} else {
 			// move to jsp
-			List exportedConnection = impManager.getExportedConnections();
-			Map currentConnections = getCurrentConnectionInfo();
-			try{
-				response.setAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS, exportedConnection);
-				response.setAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS, currentConnections);
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportConnectionAssociation");
-			} catch (SourceBeanException sbe) {
-				logger.error("Error while populating response source bean " + sbe);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-			}
+			List exportedDatasources = impManager.getExportedDataSources();
+			Map currentDatasources = getCurrentDataSourcesInfo();
+			response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDatasources);
+			response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDatasources);
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
 		}
 
 	} catch (EMFUserError emfue) {
 	    if (impManager != null)
 		impManager.stopImport();
 	    throw emfue;
+	} catch (SourceBeanException sbe) {
+		logger.error("Error: " + sbe);
+	    if (impManager != null)
+			impManager.stopImport();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} catch (Exception e) {
 	    logger.error("Error while getting engine association ", e);
 	    if (impManager != null)
@@ -579,8 +532,8 @@ public class ImportExportModule extends AbstractModule {
     }
 
     /**
-     * Manages the request of the user to associate some exported connections to
-     * the connections of the portal in use
+     * Manages the request of the user to associate some exported data sources to
+     * the data sources of the portal in use
      * 
      * @param request
      *                Spago SourceBean request
@@ -588,7 +541,7 @@ public class ImportExportModule extends AbstractModule {
      *                Spago SourceBean response
      * @throws EMFUserError
      */
-    private void associateConnections(SourceBean request, SourceBean response) throws EMFUserError {
+    private void associateDataSources(SourceBean request, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
 	IImportManager impManager = null;
 	try {
@@ -596,54 +549,33 @@ public class ImportExportModule extends AbstractModule {
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 		MetadataAssociations metaAss = impManager.getMetadataAssociation();
-		if (request.containsAttribute("CONNECTIONS_ASSOCIATIONS_SKIPPED")) {
-			List exportedConnections = impManager.getExportedConnections();
-			if (exportedConnections != null && exportedConnections.size() > 0) {
-				Iterator exportedConnectionsIt = exportedConnections.iterator();
-				while (exportedConnectionsIt.hasNext()) {
-					DBConnection exportedConnection = (DBConnection) exportedConnectionsIt.next();
-					String exportedConnectionName = exportedConnection.getName();
-					String associatedConnectionName = impManager.getUserAssociation().getAssociatedConnection(exportedConnectionName);
-					metaAss.insertCoupleConnections(exportedConnectionName, associatedConnectionName);
-				}
-			}
-		} else {
-			List expConnNameList = request.getAttributeAsList("expConn");
-			Iterator iterExpConn = expConnNameList.iterator();
-			while(iterExpConn.hasNext()){
-				String expConnName= (String)iterExpConn.next();
-				String connNameAss = (String)request.getAttribute("connAssociated"+ expConnName);
-				if(!connNameAss.equals("")) {
-					metaAss.insertCoupleConnections(expConnName, connNameAss);
-					impManager.getUserAssociation().recordConnectionAssociation(expConnName, connNameAss);
-				} else {
-					logger.error("Exported connection " +expConnName+" is not associate to a current " +
-	                        			"system connection");
-					List exportedConnection = impManager.getExportedConnections();
-					Map currentConnections = getCurrentConnectionInfo();
-					response.setAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS, exportedConnection);
-					response.setAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS, currentConnections);
-					response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportConnectionAssociation");
-					throw new EMFValidationError(EMFErrorSeverity.ERROR, "connAssociated"+ expConnName, "sbi.impexp.connNotAssociated");
-				}
+		List expConnNameList = request.getAttributeAsList("expConn");
+		Iterator iterExpConn = expConnNameList.iterator();
+		while(iterExpConn.hasNext()){
+			String expConnName= (String)iterExpConn.next();
+			String connNameAss = (String)request.getAttribute("connAssociated"+ expConnName);
+			if(!connNameAss.equals("")) {
+				metaAss.insertCoupleDataSources(expConnName, connNameAss);
+				impManager.getUserAssociation().recordDataSourceAssociation(expConnName, connNameAss);
+			} else {
+				logger.error("Exported data source " +expConnName+" is not associated to a current " +
+                        			"system data source");
+				List exportedDataSources = impManager.getExportedDataSources();
+				Map currentDataSources = getCurrentDataSourcesInfo();
+				response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
+				response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDataSources);
+				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
+				throw new EMFValidationError(EMFErrorSeverity.ERROR, "connAssociated"+ expConnName, "sbi.impexp.datasourceNotAssociated");
 			}
 		}
 		
 	    impManager.checkExistingMetadata();
 	    if (metaAss.isEmpty()) {
-			impManager.importObjects();
-			ImportResultInfo iri = impManager.commitAllChanges();
-			response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);
-			AssociationFile assFile = impManager.getAssociationFile();
-			if (assFile != null) response.setAttribute(ImportExportConstants.IMPORT_ASSOCIATION_FILE, assFile);
+	    	response.setAttribute(ImportExportConstants.PUBLISHER_NAME,
+		    	"ImportExportSkipExistingMetadataAssociation");
 	    } else {
-		try {
 		    response.setAttribute(ImportExportConstants.PUBLISHER_NAME,
 			    "ImportExportExistingMetadataAssociation");
-		} catch (SourceBeanException sbe) {
-		    logger.error("Error while populating response source bean ", sbe);
-		    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004");
-		}
 	    }
 	} catch (EMFValidationError emfve) {
 	    throw emfve;
@@ -655,7 +587,7 @@ public class ImportExportModule extends AbstractModule {
 	    logger.error("Cannot populate response ", sbe);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} catch (Exception e) {
-	    logger.error("Error while getting connection association ", e);
+	    logger.error("Error while getting  association ", e);
 	    if (impManager != null)
 		impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8003", "component_impexp_messages");
@@ -683,6 +615,8 @@ public class ImportExportModule extends AbstractModule {
 	    impManager.importObjects();
 	    ImportResultInfo iri = impManager.commitAllChanges();
 	    response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);
+		AssociationFile assFile = impManager.getAssociationFile();
+		if (assFile != null) response.setAttribute(ImportExportConstants.IMPORT_ASSOCIATION_FILE, assFile);
 	} catch (EMFUserError emfue) {
 	    if (impManager != null)
 		impManager.stopImport();
@@ -693,7 +627,7 @@ public class ImportExportModule extends AbstractModule {
 	} catch (Exception e) {
 	    if (impManager != null)
 		impManager.stopImport();
-	    logger.error("error after connection association ", e);
+	    logger.error("error after data source association ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");
@@ -757,7 +691,7 @@ public class ImportExportModule extends AbstractModule {
     }
 
     /**
-     * Manages the request of the user to go back from the connections
+     * Manages the request of the user to go back from the data sources
      * association to the engines association
      * 
      * @param request
@@ -766,7 +700,7 @@ public class ImportExportModule extends AbstractModule {
      *                Spago SourceBean response
      * @throws EMFUserError
      */
-    private void backConnAssociation(SourceBean request, SourceBean response) throws EMFUserError {
+    private void backDataSourceAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
 	RequestContainer requestContainer = this.getRequestContainer();
 	SessionContainer session = requestContainer.getSessionContainer();
@@ -789,7 +723,7 @@ public class ImportExportModule extends AbstractModule {
 
     /**
      * Manages the request of the user to go back from the metadata association
-     * to the connections association
+     * to the data sources association
      * 
      * @param request
      *                Spago SourceBean request
@@ -802,12 +736,12 @@ public class ImportExportModule extends AbstractModule {
 	RequestContainer requestContainer = this.getRequestContainer();
 	SessionContainer session = requestContainer.getSessionContainer();
 	IImportManager impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	List exportedConnection = impManager.getExportedConnections();
-	Map currentConnections = getCurrentConnectionInfo();
+	List exportedDataSources = impManager.getExportedDataSources();
+	Map currentDataSources = getCurrentDataSourcesInfo();
 	try {
-	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_CONNECTIONS, exportedConnection);
-	    response.setAttribute(ImportExportConstants.MAP_CURRENT_CONNECTIONS, currentConnections);
-	    response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportConnectionAssociation");
+	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
+	    response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDataSources);
+	    response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
 	} catch (SourceBeanException sbe) {
 	    logger.error("Error while populating response source bean ", sbe);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
@@ -817,13 +751,13 @@ public class ImportExportModule extends AbstractModule {
     }
 
     /**
-     * Gather information about the connections defined into the current SpagoBI
+     * Gather information about the data sources defined into the current SpagoBI
      * platform.
      * 
-     * @return Map A map containing the name of the connection pools as keys and
+     * @return Map A map containing the name of the data sources as keys and
      *         their description as value
      */
-    private Map getCurrentConnectionInfo() {
+    private Map getCurrentDataSourcesInfo() {
 	logger.debug("IN");
 	Map curConns = new HashMap();
 	

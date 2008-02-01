@@ -70,10 +70,10 @@ public interface IImportManager {
 	public List getExportedEngines() throws EMFUserError;
 	
 	/**
-	 * Gets the list of exported connections
-	 * @return List of the exported connections
+	 * Gets the list of exported data sources
+	 * @return List of the exported data sources
 	 */
-	public List getExportedConnections() throws EMFUserError;
+	public List getExportedDataSources() throws EMFUserError;
 	
 	/**
 	 * Commits all changes made on exported and current databases
@@ -169,21 +169,21 @@ public interface IImportManager {
 	public void setImpAssMode(String impAssMode);
 	
 	/**
-	 * Returns true is some roles associations is required, false otherwise 
+	 * Tries to associate all exported roles using the user associations; returns true is some roles associations is required, false otherwise 
 	 * @return true is some roles associations is required, false otherwise 
 	 */
-	public boolean isRolesAssociationPageRequired() throws EMFUserError;
+	public boolean associateAllExportedRolesByUserAssociation() throws EMFUserError;
 	
 	/**
-	 * Returns true is some engines associations is required, false otherwise 
+	 * Tries to associate all exported engines using the user associations; returns true is some engines associations is required, false otherwise 
 	 * @return true is some engines associations is required, false otherwise 
 	 */
-	public boolean isEnginesAssociationPageRequired() throws EMFUserError;
+	public boolean associateAllExportedEnginesByUserAssociation() throws EMFUserError;
 	
 	/**
-	 * Returns true is some connection associations is required, false otherwise 
-	 * @return true is some connection associations is required, false otherwise 
+	 * Tries to associate all exported data sources using the user associations; returns true is some data sources associations is required, false otherwise 
+	 * @return true is some data sources associations is required, false otherwise 
 	 */
-	public boolean isConnectionsAssociationPageRequired() throws EMFUserError;
+	public boolean associateAllExportedDataSourcesByUserAssociation() throws EMFUserError;
 	
 }

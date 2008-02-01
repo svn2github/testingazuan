@@ -115,7 +115,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key = "SBISet.connectionAssociation"  bundle="component_impexp_messages"/>
+				<spagobi:message key = "SBISet.metadataConflicts"  bundle="component_impexp_messages"/>
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>

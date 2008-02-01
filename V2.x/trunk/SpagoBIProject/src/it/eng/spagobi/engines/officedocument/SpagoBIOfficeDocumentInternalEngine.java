@@ -32,13 +32,16 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
+
+import org.apache.log4j.Logger;
 
 public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace {
 
 	public static final String messageBundle = "component_spagobiofficedocIE_messages";
+	
+	private static transient Logger logger=Logger.getLogger(SpagoBIOfficeDocumentInternalEngine.class);
 	
 	/**
 	 * Executes the document and populates the response 
@@ -50,24 +53,15 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	public void execute(RequestContainer requestContainer, BIObject obj,
 			SourceBean response) throws EMFUserError {
 		
-		SpagoBITracer.debug("SpagoBIOfficeDocumentInternalEngine",
-	            this.getClass().getName(),
-	            "execute",
-	            "Start execute method.");
+		logger.debug("IN");
 		
 		if (obj == null) {
-			SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is null.");
+			logger.error("The input object is null");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 
 		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("OFFICE_DOC")) {
-			SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is not a office document.");
+			logger.error("The input object is not a office document");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
 		
@@ -84,13 +78,16 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 				title += ": " + objDescr;
 			}
 			response.setAttribute("title", title);
+			SessionContainer sessionCont = requestContainer.getSessionContainer();
+			SessionContainer permSession = sessionCont.getPermanentContainer();
+			IEngUserProfile profile=(IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String userId=(String)profile.getUserUniqueIdentifier();
+
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {
-			SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
-						this.getClass().getName(),
-					    "execute", 
-					    "Cannot exec the Office document", e);
+			logger.error("Cannot exec the Office document");
+
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 	}
@@ -107,10 +104,8 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 			BIObject obj, SourceBean response, Object subObjectInfo)
 			throws EMFUserError {
 		// it cannot be invoked
-		SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
-				this.getClass().getName(),
-	            "executeSubObject", 
-	            "SpagoBIOfficeDocumentInternalEngine cannot exec subobjects.");
+		logger.error("SpagoBIOfficeDocumentInternalEngine cannot exec subobjects");
+
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
@@ -124,10 +119,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
-				this.getClass().getName(),
-	            "handleNewDocumentTemplateCreation", 
-	            "SpagoBIOfficeDocumentInternalEngine cannot build document template.");
+		logger.error("SpagoBIOfficeDocumentInternalEngine cannot build document template");
 		throw new InvalidOperationRequest();
 		
 	}
@@ -142,10 +134,7 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIOfficeDocumentInternalEngine", 
-				this.getClass().getName(),
-	            "handleDocumentTemplateEdit", 
-	            "SpagoBIOfficeDocumentInternalEngine cannot build document template.");
+		logger.error("SpagoBIOfficeDocumentInternalEngine cannot build document template");
 		throw new InvalidOperationRequest();
 	}
 }

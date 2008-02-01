@@ -38,12 +38,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="org.apache.log4j.Logger"%>
 
+<%@page import="it.eng.spagobi.engines.officedocument.SpagoBIOfficeDocumentInternalEngine"%>
                  
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIOfficeDocumentInternalEngine.class);
 	%>
 
 <% 
-	logger.debug("officedoc.jsp: IN");
+	logger.debug("IN");
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
     UUID uuid = uuidGen.generateTimeBasedUUID();
     String requestIdentity = "request" + uuid.toString();  
@@ -60,7 +61,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// get the string of the title
     String title = (String) moduleResponse.getAttribute("title");
     
-	logger.debug("officedoc.jsp: got parameters userId="+userId+" and documentId="+biobjectId.toString());
+	logger.debug("got parameters userId="+userId+" and documentId="+biobjectId.toString());
 	
 	// try to get the modality
 	boolean isSingleObjExec = false;
@@ -138,7 +139,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 		if(canChangeState) {
 %>
-<%@page import="it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine"%>
+
+
 <form method='POST' action='<%= formUrl %>' id='changeStateForm'  name='changeStateForm'>
 <%
 		}
@@ -272,7 +274,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             
 </div>
        
-<%	logger.debug("officedoc.jsp:  OUT"); %>
+<%	logger.debug("OUT"); %>
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->

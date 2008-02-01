@@ -1,4 +1,4 @@
-<%@page import="it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine"%>
+<%@page import="it.eng.spagobi.engines.officedocument.SpagoBIOfficeDocumentInternalEngine"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Properties"%>
 <%@page import="java.io.InputStream"%>

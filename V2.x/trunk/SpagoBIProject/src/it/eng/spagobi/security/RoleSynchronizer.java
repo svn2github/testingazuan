@@ -49,12 +49,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Contains methods to Syncronize the portal list of roles
  */
 public class RoleSynchronizer {
 	
+	static private Logger logger = Logger.getLogger(RoleSynchronizer.class);
 	
 	/**
 	 * Syncronize the portal roles with SpagoBI roles importing roles missing in SpagoBI. 
@@ -63,76 +66,61 @@ public class RoleSynchronizer {
 	 * it is inserted into role database and another tracing message is added. 
 	 */
 	public void synchronize() {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-				"RoleSynchronizer::synchronize: start method");
+		logger.debug("IN");
         try {
-        	Integer roleTypeID = findSBIDomainValueID("ROLE_TYPE", "PORTAL");
             IRoleDAO roleDAO = DAOFactory.getRoleDAO();
-            if (roleTypeID == null){
-            	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE,this.getClass().toString(),"Synchronize()", 
-            	" Cannot Determine SBI_DOMAINS.VALUE_ID FOR DOMAINS.VALUE_CD=PORTAL AND DOMAIN_CD=ROLE_TYPE");
-            }else{
-            	ConfigSingleton conf = ConfigSingleton.getInstance();
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: config singleton retrived " + conf);
-            	SourceBean secClassSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: source bean security class retrived " + secClassSB);
-            	String portalSecurityProviderClass = (String) secClassSB.getAttribute("className");
-            	portalSecurityProviderClass = portalSecurityProviderClass.trim();
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: security class name retrived " + portalSecurityProviderClass);
-            	Class secProvClass = Class.forName(portalSecurityProviderClass);
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: security class found " + secProvClass);
-            	ISecurityInfoProvider portalSecurityProvider = (ISecurityInfoProvider)secProvClass.newInstance();
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: security class instance created " + portalSecurityProvider);
-            	SourceBean secFilterSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
-            	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: source bean filter retrived " + secFilterSB);
-                String rolePatternFilter = secFilterSB.getCharacters();
-                TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: filter string retrived " + rolePatternFilter);
-                Pattern pattern = Pattern.compile(rolePatternFilter);
-                TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: pattern regular expression " + pattern);
-                Matcher matcher = null;
-                List roles = portalSecurityProvider.getRoles();
-                TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-            			"RoleSynchronizer::synchronize: complete list retrived " + roles);
-            	Role aRole = null;
-            	String roleName = null;
-            	for (Iterator it = roles.iterator(); it.hasNext(); ){
-            		aRole = (Role)it.next();
-            		roleName = aRole.getName();
-            		matcher = pattern.matcher(roleName);
-            		if(!matcher.find())
-            			continue;	
-            		if (exist(aRole, roleDAO)){
-            			SpagoBITracer.info(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 
-            			"Synchronize()", " Portal Role [" + aRole.getName()+"] already in Database");
-            		}else{
-            			SpagoBITracer.info(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 
-            			"Synchronize()", " Portal Role [" + aRole.getName()+"] must be inserted in database");
-            			aRole.setRoleTypeID(roleTypeID);
-            			aRole.setRoleTypeCD("PORTAL");
-            			roleDAO.insertRole(aRole);
-            			SpagoBITracer.info(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 
-            			"Synchronize()", " Portal Role [" + aRole.getName()+"] INSERTED OK");
-
-            		}
-            	}
-            } 
+        	ConfigSingleton conf = ConfigSingleton.getInstance();
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: config singleton retrived " + conf);
+        	SourceBean secClassSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: source bean security class retrived " + secClassSB);
+        	String portalSecurityProviderClass = (String) secClassSB.getAttribute("className");
+        	portalSecurityProviderClass = portalSecurityProviderClass.trim();
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: security class name retrived " + portalSecurityProviderClass);
+        	Class secProvClass = Class.forName(portalSecurityProviderClass);
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: security class found " + secProvClass);
+        	ISecurityInfoProvider portalSecurityProvider = (ISecurityInfoProvider)secProvClass.newInstance();
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: security class instance created " + portalSecurityProvider);
+        	SourceBean secFilterSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
+        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: source bean filter retrived " + secFilterSB);
+            String rolePatternFilter = secFilterSB.getCharacters();
+            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: filter string retrived " + rolePatternFilter);
+            Pattern filterPattern = Pattern.compile(rolePatternFilter);
+            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: filter pattern regular expression " + filterPattern);
+            Matcher matcher = null;
+            List roles = portalSecurityProvider.getRoles();
+            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+        			"RoleSynchronizer::synchronize: complete list retrived " + roles);
+        	Role aRole = null;
+        	String roleName = null;
+        	for (Iterator it = roles.iterator(); it.hasNext(); ){
+        		aRole = (Role)it.next();
+        		roleName = aRole.getName();
+        		matcher = filterPattern.matcher(roleName);
+        		if(!matcher.matches())
+        			continue;	
+        		if (exist(aRole, roleDAO)){
+        			logger.info(" Role [" + aRole.getName()+"] already in Database");
+        		}else{
+        			logger.info(" Role [" + aRole.getName()+"] must be inserted in database");
+        			setRoleType(aRole);
+        			roleDAO.insertRole(aRole);
+        			logger.info(" Portal Role [" + aRole.getName()+"] INSERTED OK");
+        		}
+        	}
         } catch (EMFUserError emfue) {
-        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE,this.getClass().toString(),
-        	"Synchronize()", " Exception verified ", emfue);
+        	logger.error(" Exception verified ", emfue);
 		} catch(Exception ex){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 
-			"Synchronize()", " An exception has occurred ", ex);
+			logger.error(" An exception has occurred ", ex);
 		} finally {
-			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-			"RoleSynchronizer::synchronize: end method");
+			logger.debug("OUT");
 		}
 	}
 	
@@ -157,6 +145,69 @@ public class RoleSynchronizer {
     	}
     }
     
+	/**
+	 * Sets the correct role type, according to the role name and the configured patterns
+	 * @param aRole, the role to be modified (information about the role type will be added)
+	 */
+	private void setRoleType(Role aRole) {
+		if (aRole == null) {
+			logger.warn("Role in input is null. Returning.");
+			return;
+		}
+		if (isRoleType(aRole, "ADMIN")) {
+			logger.debug("Role with name [" + aRole.getName() + "] is ADMIN role type.");
+			Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "ADMIN");
+			aRole.setRoleTypeID(roleTypeId);
+			aRole.setRoleTypeCD("ADMIN");
+			return;
+		}
+		if (isRoleType(aRole, "DEV_ROLE")) {
+			logger.debug("Role with name [" + aRole.getName() + "] is DEV_ROLE role type.");
+			Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "DEV_ROLE");
+			aRole.setRoleTypeID(roleTypeId);
+			aRole.setRoleTypeCD("DEV_ROLE");
+			return;
+		}		
+		if (isRoleType(aRole, "TEST_ROLE")) {
+			logger.debug("Role with name [" + aRole.getName() + "] is TEST_ROLE role type.");
+			Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "TEST_ROLE");
+			aRole.setRoleTypeID(roleTypeId);
+			aRole.setRoleTypeCD("TEST_ROLE");
+			return;
+		}
+		
+		// Role is not ADMIN/DEV_ROLE/TEST_ROLE, default is FUNCT
+		Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "FUNCT");
+		aRole.setRoleTypeID(roleTypeId);
+		aRole.setRoleTypeCD("FUNCT");
+		
+//		if (isRoleType(aRole, "FUNCT")) {
+//			logger.debug("Role with name [" + aRole.getName() + "] is FUNCT role type.");
+//			Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "FUNCT");
+//			aRole.setRoleTypeID(roleTypeId);
+//			aRole.setRoleTypeCD("FUNCT");
+//			return;
+//		}
+//		// Role is not ADMIN/DEV_ROLE/TEST_ROLE/FUNCT, default is PORTAL
+//		Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "PORTAL");
+//		aRole.setRoleTypeID(roleTypeId);
+//		aRole.setRoleTypeCD("PORTAL");
+	}
+	
+	private boolean isRoleType(Role aRole, String roleTypeCd) {
+		String roleName = aRole.getName();
+		ConfigSingleton conf = ConfigSingleton.getInstance();
+		SourceBean adminRolePatternSB = (SourceBean) conf.getAttribute("SPAGOBI.SECURITY.ROLE-TYPE-PATTERNS." + roleTypeCd + "-PATTERN");
+		if (adminRolePatternSB != null) {
+			String adminPatternStr = adminRolePatternSB.getCharacters();
+			Pattern adminPattern = Pattern.compile(adminPatternStr);
+			Matcher matcher = adminPattern.matcher(roleName);
+    		if (matcher.matches()) {
+    			return true;
+    		}
+		}
+		return false;
+	}
 	
 	
 	/**
@@ -172,7 +223,7 @@ public class RoleSynchronizer {
 		Integer returnValue = null;
 		try {
 			IDomainDAO domdao = DAOFactory.getDomainDAO();
-			Domain dom = domdao.loadDomainByCodeAndValue("ROLE_TYPE", "PORTAL");
+			Domain dom = domdao.loadDomainByCodeAndValue(domainCode, valueCode);
 			returnValue = dom.getValueId();
 		}  catch (Exception ex) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE,this.getClass().toString(), 

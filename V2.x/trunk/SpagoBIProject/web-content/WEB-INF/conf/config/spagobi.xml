@@ -48,6 +48,14 @@
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
 		</USER-PROFILE-FACTORY-CLASS>
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+    	<ROLE-TYPE-PATTERNS>
+	    	<ADMIN-PATTERN>/admin</ADMIN-PATTERN>
+	    	<DEV_ROLE-PATTERN>/dev</DEV_ROLE-PATTERN>
+	    	<TEST_ROLE-PATTERN>/test</TEST_ROLE-PATTERN>
+	    	<!--
+	    	<FUNCT-PATTERN>.*</FUNCT-PATTERN>
+	    	-->
+    	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
 	
          

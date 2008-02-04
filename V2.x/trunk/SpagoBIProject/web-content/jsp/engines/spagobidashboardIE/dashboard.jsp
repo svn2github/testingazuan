@@ -34,6 +34,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
+<%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%
 	// control if the portlet act with single object modality.
 	// get the modality of the portlet (single object execution, entire tree or filter tree)
@@ -80,12 +82,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		dataParameters.put(AuditManager.AUDIT_ID, auditId.toString());
 	}
 	
-	List possibleStateChanges = (List)moduleResponse.getAttribute("possibleStateChanges");
+	//List possibleStateChanges = (List)moduleResponse.getAttribute("possibleStateChanges");
+	IDomainDAO domaindao = DAOFactory.getDomainDAO();
+	List states = domaindao.loadListDomainsByType("STATE");
+    List possibleStates = new java.util.ArrayList();
+	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+    	Iterator it = states.iterator();
+    	 while(it.hasNext()) {
+      		    	Domain state = (Domain)it.next();
+      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){
+      					possibleStates.add(state);
+      				}
+      	}
+    } 
+    else if(userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+    	Iterator it = states.iterator();
+    	 while(it.hasNext()) {
+      		    	Domain state = (Domain)it.next();
+      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) {
+      					possibleStates.add(state);
+      				}
+      	}
+    }
+	
 	// start to create the calling url
 	// put the two dimensio parameter
 	movie += "?paramHeight="+height+"&paramWidth="+width; 
 	// create the dataurl string
-	dataurl += "?";
+	if (dataurl.contains("?")) dataurl += "%26";
+	else dataurl += "?";
 	// for each data parameter append to the dataurl 
 	Set dataKeys = dataParameters.keySet();
 	Iterator iterDataKeys = dataKeys.iterator();
@@ -134,7 +159,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                       		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
            			</a>
        			</td>
-		   		<% if (!possibleStateChanges.isEmpty()) {
+		   		<% if (!possibleStates.isEmpty()) {
 			   			Map formUrlPars = new HashMap();
 			   			formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 			   			formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
@@ -145,7 +170,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	       		<td class='header-select-column-portlet-section'>
       				<select class='portlet-form-field' name="newState">
       				<% 
-      		    	Iterator iterstates = possibleStateChanges.iterator();
+      		    	Iterator iterstates = possibleStates.iterator();
       		    	while(iterstates.hasNext()) {
       		    		Domain state = (Domain)iterstates.next();
       				%>

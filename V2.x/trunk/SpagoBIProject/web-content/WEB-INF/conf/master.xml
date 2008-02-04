@@ -46,7 +46,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/validation.xml" />  
   
 <!-- engines.spagobidashboardIE -->
-
+	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/publishers.xml" />
 	
 <!-- engines.spagobidashboardsCompositionIE -->

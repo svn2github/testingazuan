@@ -1,32 +1,8 @@
-/**
+package it.eng.spagobi.behaviouralmodel.lov.service;
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
-/*
- * Created on 4-mag-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-package it.eng.spagobi.services;
-
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
@@ -36,42 +12,40 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
-import java.io.IOException;
-import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 
-public class DashboardServlet extends HttpServlet{
-	
-	public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-     } 
+public class GetLovResultAction extends AbstractHttpAction {
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private static transient Logger logger=Logger.getLogger(GetLovResultAction.class);
+    
+	public void service(SourceBean requestSB, SourceBean responseSB) throws Exception {
+		logger.debug("IN");
+		
+		freezeHttpResponse();
+		HttpServletRequest request = getHttpRequest();
+		HttpServletResponse response = getHttpResponse();
 		
 		// AUDIT UPDATE
 		Integer auditId = null;
 		String auditIdStr = request.getParameter("SPAGOBI_AUDIT_ID");
 		if (auditIdStr == null) {
-			SpagoBITracer.warning("SpagoBI", getClass().getName(), "service:", "Audit record id not specified! " +
-					"No operations will be performed");
+			logger.warn("Audit record id not specified! No operations will be performed");
 		} else {
-			SpagoBITracer.debug("SpagoBI", getClass().getName(), "service:", "Audit id = [" + auditIdStr + "]");
+			logger.debug("Audit id = [" + auditIdStr + "]");
 			auditId = new Integer(auditIdStr);
 		}
 		AuditManager auditManager = AuditManager.getInstance();
@@ -80,28 +54,48 @@ public class DashboardServlet extends HttpServlet{
 					"EXECUTION_STARTED", null, null);
 		}
 		
-
-		
-	 	try{
+	 	try {
 	 		
-	 	        Principal principal = request.getUserPrincipal();
+			String userId = null;
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean validateSB =(SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+			String active = (String) validateSB.getCharacters();
+			if (active != null && active.equals("true")){
+				IProxyService proxy=IProxyServiceFactory.createProxyService();
+				userId=proxy.readUserId(request.getSession());
+				logger.debug("got userId from IProxyService="+userId);
+			} else {
+		    	userId = (String)request.getAttribute("userId");
+		    	logger.debug("got userId from Request="+userId);
+			}
+	 		
+//	 	    Principal principal = request.getUserPrincipal();
 			IEngUserProfile profile = null;
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		        try {
-		            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
-		            profile=new UserProfile(user);
-		        } catch (Exception e) {
-		            throw new SecurityException();
-		        }			
+	        try {
+//	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+	            SpagoBIUserProfile user= supplier.createUserProfile(userId);
+	            profile=new UserProfile(user);
+	        } catch (Exception e) {
+	            throw new SecurityException();
+	        }			
 
+			String documentId = (String) request.getAttribute("documentId");
+			logger.debug("got parameter documentId="+documentId.toString());
 			
+			// TODO control that template contains the reference to the lov to be executed
+			//ContentServiceImplSupplier c = new ContentServiceImplSupplier();
+			//Content template = c.readTemplate(userId, documentId);
+			//parse template ....
+	        
+	        
 	 		// get the mode (mode=single --> only one lov to execute, mode=list --> more than one lov to execute)
-	 		// if the parameter mode is not present the single mode is the dafult
+	 		// if the parameter mode is not present the single mode is the default
 	 		String mode = (String)request.getParameter("mode");
 	 		
 	 		String result = "";
 	 		
-	 		if((mode==null) || !mode.equalsIgnoreCase("list")) {
+	 		if (mode == null || !mode.equalsIgnoreCase("list")) {
 		 		// ge the lov name
 	 			String dataName = (String)request.getParameter("dataname");
 	 			// if lov name is not present send an error
@@ -112,18 +106,19 @@ public class DashboardServlet extends HttpServlet{
 	 			}
 	 			// check if the lov is supported
 	 			if(!isLovSupported(dataName, response)) {
+	 				logger.debug("Lov is not supported.");
 	 				return;
 	 			}
 	 			// get the lov type
 	 			String type = getLovType(dataName);
 	 			// get the result
-	            if(profile == null) {
+	            if (profile == null) {
 	            	result = GeneralUtilities.getLovResult(dataName);
 	            } else {
 	            	result = GeneralUtilities.getLovResult(dataName, profile);
 	            }
 	            // if the lov is a query trasform the result to lower case (for flash dashboard)
-	            if(type.equalsIgnoreCase("QUERY")){
+	            if (type.equalsIgnoreCase("QUERY")){
 	            	result = result.toLowerCase();
 	            }
 	            
@@ -155,14 +150,15 @@ public class DashboardServlet extends HttpServlet{
     								"EXECUTION_PERFORMED", null, null);	
 		 	
 		 	
-	 	}catch(Exception e){
-	 		SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE,getClass().getName(),"service","Exception", e);
+	 	} catch(Exception e){
+	 		logger.error("Exception", e);
 	 		// AUDIT UPDATE
 	 		auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", e.getMessage(), null);
-	 	} 
-	 }
-	
+	 	} finally {
+	 		logger.debug("OUT");
+	 	}
+	}
 
 	private String getLovType(String lovName) {
 		String toReturn = "";
@@ -172,8 +168,7 @@ public class DashboardServlet extends HttpServlet{
 		    String type = lov.getITypeCd();
 		    toReturn = type;
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                                "getLovType", "Error while recovering type of lov " + lovName);
+			logger.error("Error while recovering type of lov " + lovName);
 		}
 	    return toReturn;
 	}
@@ -194,8 +189,7 @@ public class DashboardServlet extends HttpServlet{
 	        }
 		} catch (Exception e) {
 			toReturn = false;
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                                "isLovSupported", "Error while checkin if lov " + lovName + " is supported");
+			logger.error("Error while checkin if lov " + lovName + " is supported");
 		}
         return toReturn;
 	}
@@ -206,5 +200,5 @@ public class DashboardServlet extends HttpServlet{
 				          "<message>"+message+"</message></error></response>";
 		return response.getBytes();
 	}
-
+	
 }

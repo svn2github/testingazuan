@@ -28,6 +28,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.Domain;
@@ -123,7 +124,12 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 				String valueParam = (String)param.getAttribute("value");
 				dataParameters.put(nameParam, valueParam);
 			}
-			
+			// puts the document id
+			dataParameters.put("documentId", obj.getId());
+			// puts the userId into parameters for data recovery
+			SessionContainer session = requestContainer.getSessionContainer();
+			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			dataParameters.put("userId", profile.getUserUniqueIdentifier());
 			
 			// get all the parameters for dash configuration
 			Map confParameters = new HashMap();
@@ -144,30 +150,29 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
 				title += ": " + objDescr;
 			}
-			// get the actor
-			SessionContainer session = requestContainer.getSessionContainer();
-			String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
+			
+//			String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
 			// get the possible state changes
-			IDomainDAO domaindao = DAOFactory.getDomainDAO();
-			List states = domaindao.loadListDomainsByType("STATE");
-		    List possibleStates = new ArrayList();
-		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
-		    	Iterator it = states.iterator();
-		    	 while(it.hasNext()) {
-		      		    	Domain state = (Domain)it.next();
-		      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){ 
-		      					possibleStates.add(state);
-		      				}
-		      	}  
-		    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
-		    	Iterator it = states.iterator();
-		    	 while(it.hasNext()) {
-		      		    	Domain state = (Domain)it.next();
-		      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) { 
-		      					possibleStates.add(state);
-		      				}
-		      	}  
-		    } 
+//			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+//			List states = domaindao.loadListDomainsByType("STATE");
+//		    List possibleStates = new ArrayList();
+//		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
+//		    	Iterator it = states.iterator();
+//		    	 while(it.hasNext()) {
+//		      		    	Domain state = (Domain)it.next();
+//		      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){ 
+//		      					possibleStates.add(state);
+//		      				}
+//		      	}  
+//		    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
+//		    	Iterator it = states.iterator();
+//		    	 while(it.hasNext()) {
+//		      		    	Domain state = (Domain)it.next();
+//		      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) { 
+//		      					possibleStates.add(state);
+//		      				}
+//		      	}  
+//		    } 
 			// set information into reponse
 		    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 			response.setAttribute("movie", movie);
@@ -178,7 +183,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			response.setAttribute("title", title);
 			response.setAttribute("confParameters", confParameters);
 			response.setAttribute("dataParameters", dataParameters);
-			response.setAttribute("possibleStateChanges", possibleStates);
+//			response.setAttribute("possibleStateChanges", possibleStates);
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
 			

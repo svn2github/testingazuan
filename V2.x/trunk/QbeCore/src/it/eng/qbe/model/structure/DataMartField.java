@@ -27,27 +27,41 @@ package it.eng.qbe.model.structure;
  */
 public class DataMartField {
 	
-	long id;
-	String name;
-	String path;
-	DataMartEntity parent;
+	// wbn: Would Be Nice
+	
+	private long id;
+	private String name;  					// -> product.productClass.productFamily :wbn: -> productFamily
+	private String datamartName;			// -> hqlFoodmart
+	
+	private boolean key;
+	
 	String type;
 	int length;
 	int precision;
 	
+	DataMartEntity parent;
+	
+	
+	
 	public DataMartField(String name, DataMartEntity parent) {
-		this.name = name;
-		this.parent = parent;
-		this.id = parent.getStructure().getNextId();
+		setId( parent.getStructure().getNextId() );		
+		setName(name);
+		setParent(parent) ;		
 	}
 
-	public String getName() {
-		return name;
+	public String getUniqueName() {
+		if(getParent().getParent() == null) {
+			//return getParent().getType() + "::" +  getName();
+			return getName();
+		}
+		return getParent().getUniqueName() + ":" + getName();
 	}
+	
+	
+	
 	
 	public String toString() {
 		return name + "(id="+id
-		+"; path="+path
 		+"; parent:" + (parent==null?"NULL": parent.getName())
 		+"; type="+type
 		+"; length="+length
@@ -55,52 +69,97 @@ public class DataMartField {
 		+")";
 	}
 
+
+
 	public long getId() {
 		return id;
 	}
+
+
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	public int getLength() {
-		return length;
+
+
+	public String getName() {
+		return name;
 	}
 
-	public void setLength(int length) {
-		this.length = length;
+
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public DataMartEntity getParent() {
-		return parent;
+	
+
+
+
+	public String getDatamartName() {
+		return datamartName;
 	}
 
-	public void setParent(DataMartEntity parent) {
-		this.parent = parent;
+
+
+	public void setDatamartName(String datamartName) {
+		this.datamartName = datamartName;
 	}
 
-	public String getPath() {
-		return path;
-	}
 
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public int getPrecision() {
-		return precision;
-	}
-
-	public void setPrecision(int precision) {
-		this.precision = precision;
-	}
 
 	public String getType() {
 		return type;
 	}
 
+
+
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
+
+
+	public int getLength() {
+		return length;
+	}
+
+
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+
+
+	public int getPrecision() {
+		return precision;
+	}
+
+
+
+	public void setPrecision(int precision) {
+		this.precision = precision;
+	}
+
+
+
+	public DataMartEntity getParent() {
+		return parent;
+	}
+
+
+
+	public void setParent(DataMartEntity parent) {
+		this.parent = parent;
+	}
+
+	public boolean isKey() {
+		return key;
+	}
+
+	public void setKey(boolean key) {
+		this.key = key;
+	}
 }

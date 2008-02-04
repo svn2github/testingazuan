@@ -50,7 +50,6 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/iReport.jar"/>
-	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar" sourcepath="C:/Documents and Settings/sulis/Documenti/Codice/Java/Spago/spago2.1.1/spago-core/src"/>
 	<classpathentry kind="lib" path="lib/spago-portlet-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spago-web-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>
@@ -60,5 +59,6 @@
 	<classpathentry kind="lib" path="lib/jug-asl-2.0.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="var" path="PORTLET_API_HOME/portlet-api-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

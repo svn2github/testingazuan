@@ -208,6 +208,7 @@ public class HQLStatement extends BasicStatement {
 		
 		
 		/////////////////////////////////////////////////////////////////////////
+		/*
 		DataMartModelStructure dataMartModelStructure = dataMartModel.getDataMartModelStructure();
 		DataMartModelAccessModality dataMartModelAccessModality = dataMartModel.getDataMartModelAccessModality();
 		
@@ -258,7 +259,7 @@ public class HQLStatement extends BasicStatement {
 					while(fieldIterator.hasNext()) {
 						fieldName = (String)fieldIterator.next();
 						DataMartField filed = null;
-						Iterator subEntityFields = subEntity.getFields().iterator();
+						Iterator subEntityFields = subEntity.getAllFields().iterator();
 						while(subEntityFields.hasNext()) {
 							filed = (DataMartField)subEntityFields.next();
 							if(filed.getName().endsWith("." + fieldName)) break;
@@ -285,7 +286,7 @@ public class HQLStatement extends BasicStatement {
 			
 			
 		}
-		
+		*/
 		
 		
 		return buffer.toString();

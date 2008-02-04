@@ -61,6 +61,10 @@ import org.hibernate.mapping.Table;
 
 /**
  * @author Andrea Gioia
+ * 
+ * TODO BasicHibernateDataSource is just a particular type of composite-data source (datamartNum = 1). 
+ * Use only CompositeDatasource for handle both cases. Problems: the persistance of object related to datamart like
+ * views that is different in the two cases.
  *
  */
 public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
@@ -72,28 +76,6 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	private boolean classLoaderExtended = false;	
 	private List alreadyAddedView = null;
 	
-	
-	
-	/*
-	 public BasicHibernateDataSource(String datamartName, DBConnection connection) {
-		
-		setName( buildDatasourceName(datamartName) );
-		setType( HIBERNATE_DS_TYPE );
-		
-		setDatamartName(buildDatamartName(datamartName));
-		
-		this.datamartNames = new ArrayList();
-		this.datamartNames.add(datamartName);
-		
-		setConnection(connection);
-		
-		setFormulaFile( loadFormulaFile( getDatamartName() ) );
-		setQbeProperties( loadQbeProperties( getDatamartName() ) );
-		setLabelProperties( loadLabelProperties( getDatamartName() ) );
-		
-		this.alreadyAddedView = new ArrayList();		
-	}
-	 */
 	
 	private BasicHibernateDataSource(String dataSourceName, String datamartName, List datamartNames, DBConnection connection) {
 		this(dataSourceName, datamartName, datamartNames, new HashMap(), connection);
@@ -124,13 +106,7 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		setName( dataSourceName );
 		setType( HIBERNATE_DS_TYPE );
 		alreadyAddedView = new ArrayList();
-	}
-	
-	
-	
-	
-	
-	
+	}	
 	
 	public Configuration getConfiguration() {
 		if(configuration == null) {
@@ -144,10 +120,11 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 			initHibernate();
 		}
 		return sessionFactory;
-	}
-		
+	}	
 	
-	
+	public SessionFactory getSessionFactory(String dmName) {
+		return getSessionFactory();
+	}	
 	
 	private void initHibernate() {
 		File jarFile = null;

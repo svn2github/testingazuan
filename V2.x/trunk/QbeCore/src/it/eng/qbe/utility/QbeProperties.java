@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.utility;
 
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
 import it.eng.spago.base.ApplicationContainer;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class QbeProperties {
 	private Properties qbeProperties = null;
 	
 	
-	public QbeProperties(DataMartModel dm) {
+	public QbeProperties(IDataMartModel dm) {
 		qbeProperties = dm.getDataMartProperties();
 	}
 	

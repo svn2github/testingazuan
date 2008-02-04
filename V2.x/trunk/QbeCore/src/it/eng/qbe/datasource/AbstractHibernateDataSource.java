@@ -55,11 +55,8 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	private Map dblinkMap = null;
 	
 	private DBConnection connection = null;
-	//private String jndiDataSourceName = null;	
-	//private String dialect = null;		
 	
-	private Formula formula = null;
-	
+	private Formula formula = null;	
 	
 	
 	protected Configuration buildEmptyConfiguration() {
@@ -93,23 +90,6 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		this.datamartName = datamartName;
 	}
 	
-	/*
-	public String getDialect() {
-		return dialect;
-	}
-
-	public void setDialect(String dialect) {
-		this.dialect = dialect;
-	}
-	
-	public String getJndiDataSourceName() {
-		return jndiDataSourceName;
-	}
-
-	public void setJndiDataSourceName(String jndiDataSourceName) {
-		this.jndiDataSourceName = jndiDataSourceName;
-	}
-	*/
 	
 	protected File getDatamartJarFile(String datamartName){
 		File datamartJarFile = null;
@@ -268,32 +248,11 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	
 	
 	
-	
-
-	
-	
-	/*
-	protected File loadFormulaFile(String datamartName) {
-		String formulaFile = getDatamartJarFile( datamartName ).getParent() + "/formula.xml";
-		return new File(formulaFile);
-	}
-	*/
 	protected File loadFormulaFile(String datamartName) {
 		String formulaFile = getDatamartJarFile( datamartName ).getParent() + "/formula.xml";
 		return new File(formulaFile);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	protected static void updateCurrentClassLoader(File jarFile){
 		
 		boolean wasAlreadyLoaded = false;

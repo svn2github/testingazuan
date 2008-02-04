@@ -73,6 +73,8 @@ public class HibernateDataMartStructureBuilder {
 		return dataMartStructure;
 	}
 	
+	/////////////////////////////////////////////
+	
 	private void addEntity (DataMartModelStructure dataMartStructure,
 							String entityName, 
 							String relationOnColumnName, 

@@ -31,6 +31,17 @@ import it.eng.qbe.model.structure.DataMartModelStructure;
  */
 public class BasicDataMartStructureBuilder implements IDataMartStructureBuilder{
 	public static DataMartModelStructure buildDataMartStructure(IDataSource dataSource) {
+		
+		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE
+				|| dataSource.getType() == IDataSource.COMPOSITE_HIBERNATE_DS_TYPE) {
+			DatamartStructureBuilder builder = 
+				new DatamartStructureBuilder((IHibernateDataSource)dataSource);
+			return builder.build();
+		} else {
+			
+		}
+		
+		/*
 		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE) {
 			HibernateDataMartStructureBuilder builder = 
 				new HibernateDataMartStructureBuilder((IHibernateDataSource)dataSource);
@@ -41,7 +52,8 @@ public class BasicDataMartStructureBuilder implements IDataMartStructureBuilder{
 			return builder.build();
 		} else {
 			// log somethings here
-		}		
+		}	
+		*/	
 		return null;		
 	}
 }

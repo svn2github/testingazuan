@@ -40,63 +40,15 @@ public class DataSourceFactory {
 		
 		if(datamartNames.size() == 1) {
 			dataSource = new BasicHibernateDataSource(dataSourceName);
-			//dataSource = buildBasicHibernateDataSource(dataSourceName, datamartName, datamartNames, dblinkMap, connection);
 		} else {
 			dataSource = new CompositeHibernateDataSource(dataSourceName);
-			//dataSource = buildCompositeHibernateDataSource(dataSourceName, datamartName, datamartNames, dblinkMap, connection);
 		} 
 		
 		initDataSource(dataSource, datamartName, datamartNames, dblinkMap, connection);
 		return dataSource;
 	}
 	
-	/*
-	private static BasicHibernateDataSource buildBasicHibernateDataSource(String dataSourceName, 
-			String datamartName, 
-			List datamartNames, 
-			Map dblinkMap, 
-			DBConnection connection) {
-
-		BasicHibernateDataSource dataSource = null;
-		
-		dataSource = new BasicHibernateDataSource(dataSourceName);
-		
-		dataSource.setDatamartName(datamartName);		
-		dataSource.setDatamartNames(datamartNames);
-		dataSource.setConnection(connection);	
-		
-		dataSource.setDblinkMap(dblinkMap);	
-		
-		dataSource.setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
-		dataSource.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
-		dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
-		
-		return dataSource;
-	}
 	
-	private static CompositeHibernateDataSource buildCompositeHibernateDataSource(String dataSourceName, 
-			String datamartName, 
-			List datamartNames, 
-			Map dblinkMap, 
-			DBConnection connection) {
-		
-		CompositeHibernateDataSource dataSource = null;
-		
-		dataSource = new CompositeHibernateDataSource(dataSourceName);
-		
-		dataSource.setDatamartName(datamartName);	
-		dataSource.setDatamartNames(datamartNames);
-		dataSource.setConnection(connection);
-		
-		dataSource.setDblinkMap(dblinkMap);		
-		
-		dataSource.setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
-		dataSource.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
-		dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
-		
-		return dataSource;
-	}
-	*/
 	
 	private static void initDataSource(AbstractHibernateDataSource dataSource,
 			String datamartName, 

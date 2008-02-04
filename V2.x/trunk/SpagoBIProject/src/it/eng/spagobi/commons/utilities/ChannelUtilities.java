@@ -105,23 +105,23 @@ public class ChannelUtilities {
 	}
 	
 	
-	public static SourceBean getSpagoRequestFromMultipart() {
-		SourceBean request = null;
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		// get mode of execution
-		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-		// based on mode get spago object and url builder
-		if(sbiMode.equalsIgnoreCase("PORTLET")){
-			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-			if (portletRequest instanceof ActionRequest) {
-				ActionRequest actionRequest = (ActionRequest) portletRequest;
-				if (PortletFileUpload.isMultipartContent(actionRequest)) {
-					request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
-				}
-			}
-		}
-		return request;
-	}
+//	public static SourceBean getSpagoRequestFromMultipart() {
+//		SourceBean request = null;
+//		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+//		// get mode of execution
+//		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+//		// based on mode get spago object and url builder
+//		if(sbiMode.equalsIgnoreCase("PORTLET")){
+//			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+//			if (portletRequest instanceof ActionRequest) {
+//				ActionRequest actionRequest = (ActionRequest) portletRequest;
+//				if (PortletFileUpload.isMultipartContent(actionRequest)) {
+//					request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+//				}
+//			}
+//		}
+//		return request;
+//	}
 	
 	
 	public static boolean isWebRunning() {

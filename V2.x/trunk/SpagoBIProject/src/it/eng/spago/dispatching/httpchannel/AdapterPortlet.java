@@ -41,6 +41,8 @@ import it.eng.spago.dispatching.action.NavigationErrorUtility;
 import it.eng.spago.dispatching.action.SessionExpiredUtility;
 import it.eng.spago.dispatching.coordinator.CoordinatorIFace;
 import it.eng.spago.dispatching.coordinator.DispatcherManager;
+import it.eng.spago.dispatching.httpchannel.upload.IUploadHandler;
+import it.eng.spago.dispatching.httpchannel.upload.UploadFactory;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.dispatching.service.RequestContextIFace;
 import it.eng.spago.error.EMFErrorHandler;
@@ -73,6 +75,11 @@ import javax.portlet.PortletResponse;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.portlet.PortletFileUpload;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -147,6 +154,14 @@ public class AdapterPortlet extends GenericPortlet {
         try {
             SourceBean serviceRequest = null;
             EMFErrorHandler emfErrorHandler = null;
+            
+            RequestContainer requestContainer = new RequestContainer();
+            RequestContainer.setRequestContainer(requestContainer);
+            ResponseContainer responseContainer = new ResponseContainer();
+            ResponseContainer.setResponseContainer(responseContainer);
+            RequestContextIFace requestContext = new DefaultRequestContext(requestContainer,
+                    responseContainer);
+            
             // try to get from the request the loopback attribute. If present the method has to serve
             // a loopback request (the method has been called from the doRenderService)
             // if not present is a normal request
@@ -186,19 +201,23 @@ public class AdapterPortlet extends GenericPortlet {
             else {
 	            monitor = MonitorFactory.start("controller.adapter.portlet");
 	            serviceRequest = new SourceBean(Constants.SERVICE_REQUEST);
-	            Enumeration names = request.getParameterNames();
-	            while (names.hasMoreElements()) {
-	                String parameterName = (String) names.nextElement();
-	                String[] parameterValues =
-	                    request.getParameterValues(parameterName);
-	                if (parameterValues != null)
-	                    for (int i = 0; i < parameterValues.length; i++)
-	                        serviceRequest.setAttribute(
-	                            parameterName,
-	                            parameterValues[i]);
-	            } // while (names.hasMoreElements())
+                requestContainer.setServiceRequest(serviceRequest);
+	            
+                boolean isMultipart = false;
+                
+                // only an ActionRequest can have a multipart content
+                if (request instanceof ActionRequest && PortletFileUpload.isMultipartContent((ActionRequest) request)) {
+                	isMultipart = true;
+                }
+                
+                if (isMultipart) {
+                	handleMultipartForm((ActionRequest) request, requestContext);
+                } else {
+                	handleSimpleForm(request, requestContext);
+                }
+	            
 	          	// ***************** START SERVICE ***********************************************
-	            String actionName = (String)request.getAttribute("ACTION_NAME");
+	            String actionName = (String) request.getAttribute("ACTION_NAME");
 	            if(actionName!=null) {
 	            	request.removeAttribute("ACTION_NAME");
 	            	serviceRequest.setAttribute("ACTION_NAME", actionName);
@@ -213,15 +232,15 @@ public class AdapterPortlet extends GenericPortlet {
 	        	// *******************************************************************************************
 	            emfErrorHandler = new EMFErrorHandler();
             } 
+            
+            requestContainer.setServiceRequest(serviceRequest);
+            
             //***************** NAVIGATION CONTROL *******************************************************
             String navigation = getInitParameter("light_navigation");
             if ("enabled".equalsIgnoreCase(navigation)) {
             	serviceRequest = LightNavigationManager.controlLightNavigation(request, serviceRequest);
             }
             //********************************************************************************************
-            RequestContainer requestContainer = new RequestContainer();
-            RequestContainer.setRequestContainer(requestContainer);
-            requestContainer.setServiceRequest(serviceRequest);
             boolean isRequestedSessionIdValid = true;
             PortletSession session = request.getPortletSession(true);
             /*
@@ -307,8 +326,7 @@ public class AdapterPortlet extends GenericPortlet {
                 TracerSingleton.DEBUG,
                 "AdapterPortlet::processAction: sessionContainer",
                 requestContainer.getSessionContainer());
-            ResponseContainer responseContainer = new ResponseContainer();
-            ResponseContainer.setResponseContainer(responseContainer);
+
             responseContainer.setErrorHandler(emfErrorHandler);
             SourceBean serviceResponse =
                 new SourceBean(Constants.SERVICE_RESPONSE);
@@ -326,8 +344,7 @@ public class AdapterPortlet extends GenericPortlet {
                     NavigationErrorUtility.getNavigationErrorServiceRequest());
             } // catch (NavigationException ne)
             serviceRequest = requestContainer.getServiceRequest();
-            RequestContextIFace requestContext =
-                new DefaultRequestContext(requestContainer, responseContainer);
+
             CoordinatorIFace coordinator =
                 DispatcherManager.getCoordinator(requestContext);
             Exception serviceException = null;
@@ -448,6 +465,61 @@ public class AdapterPortlet extends GenericPortlet {
     } // public void processAction(ActionRequest request, ActionResponse)
     
     
+    private void handleMultipartForm(ActionRequest request, RequestContextIFace requestContext) throws Exception {
+    	SourceBean serviceRequest = requestContext.getServiceRequest();
+    	
+    	// Create a factory for disk-based file items
+    	FileItemFactory factory = new DiskFileItemFactory();
+    	
+        // Create a new file upload handler
+    	PortletFileUpload upload = new PortletFileUpload(factory);
+
+        // Parse the request
+        List fileItems = upload.parseRequest(request);
+        Iterator iter = fileItems.iterator();
+        while (iter.hasNext()) {
+            FileItem item = (FileItem) iter.next();
+
+            if (item.isFormField()) {
+                String name = item.getFieldName();
+                String value = item.getString();
+                serviceRequest.setAttribute(name, value);
+            } else {
+                processFileField(item, requestContext);
+            }
+        }
+    }
+    
+    
+    private void processFileField(final FileItem item, RequestContextIFace requestContext) throws Exception {
+		String uploadManagerName = (String)ConfigSingleton.getInstance().getAttribute("UPLOAD.UPLOAD-MANAGER.NAME");
+		if (uploadManagerName == null) {
+		    TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL,
+		            "AdapterHTTP::processFileField: metodo di upload non selezionato");
+		}
+		
+		IUploadHandler uploadHandler = UploadFactory.getHandler(uploadManagerName);
+		if (uploadHandler instanceof RequestContextIFace) {
+		    ((RequestContextIFace) uploadHandler).setRequestContext(requestContext);
+		}
+		uploadHandler.upload(item);
+    }
+    
+    
+    private void handleSimpleForm(PortletRequest request, RequestContextIFace requestContext) throws SourceBeanException {
+    	SourceBean serviceRequest = requestContext.getServiceRequest();
+    	Enumeration names = request.getParameterNames();
+        while (names.hasMoreElements()) {
+            String parameterName = (String) names.nextElement();
+            String[] parameterValues =
+                request.getParameterValues(parameterName);
+            if (parameterValues != null)
+                for (int i = 0; i < parameterValues.length; i++)
+                    serviceRequest.setAttribute(
+                        parameterName,
+                        parameterValues[i]);
+        } // while (names.hasMoreElements())
+	}    
    
    
     

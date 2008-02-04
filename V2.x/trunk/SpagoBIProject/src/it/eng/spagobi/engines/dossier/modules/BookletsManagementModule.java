@@ -360,12 +360,12 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	private void saveBookletDetailHandler(SourceBean request, SourceBean response, boolean newVersion) throws Exception {
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-		if (portletRequest instanceof ActionRequest) {
-			ActionRequest actionRequest = (ActionRequest) portletRequest;
-			if (PortletFileUpload.isMultipartContent(actionRequest)) {
-				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
-			}
-		}
+//		if (portletRequest instanceof ActionRequest) {
+//			ActionRequest actionRequest = (ActionRequest) portletRequest;
+//			if (PortletFileUpload.isMultipartContent(actionRequest)) {
+//				request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
+//			}
+//		}
 		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
 		// check if a new version is requested

@@ -147,40 +147,40 @@ public class PortletUtilities {
 	 * @param portletRequest	The input portlet request
 	 * @return	The <code>serviceRequest</code> SourceBean containing the uploaded file.
 	 */
-	public static SourceBean getServiceRequestFromMultipartPortletRequest(PortletRequest portletRequest){
-		SourceBean serviceRequest = null;
-		try{
-			serviceRequest = new SourceBean("SERVICEREQUEST");
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			//		 Create a new file upload handler
-			PortletFileUpload upload = new PortletFileUpload(factory);
-		
-			//		 Parse the request
-			List /* FileItem */ items = upload.parseRequest((ActionRequest)portletRequest);
-		
-		
-			//		 Process the uploaded items
-			Iterator iter = items.iterator();
-			while (iter.hasNext()) {
-				FileItem item = (FileItem) iter.next();
-
-				if (item.isFormField()) {
-					serviceRequest.setAttribute(item.getFieldName(), item.getString());
-				} else {
-					UploadedFile uploadedFile = new UploadedFile();
-					uploadedFile.setFileContent(item.get());
-					uploadedFile.setFieldNameInForm(item.getFieldName());
-					uploadedFile.setSizeInBytes(item.getSize());
-					uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
-					serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
-				}
-			}
-		}catch(Exception e){
-			SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, PortletUtilities.class.getName(),"getServiceRequestFromMultipartPortletRequets","Cannot parse multipart request", e);
-		}
-		return serviceRequest;
-		
-	}
+//	public static SourceBean getServiceRequestFromMultipartPortletRequest(PortletRequest portletRequest){
+//		SourceBean serviceRequest = null;
+//		try{
+//			serviceRequest = new SourceBean("SERVICEREQUEST");
+//			DiskFileItemFactory factory = new DiskFileItemFactory();
+//			//		 Create a new file upload handler
+//			PortletFileUpload upload = new PortletFileUpload(factory);
+//		
+//			//		 Parse the request
+//			List /* FileItem */ items = upload.parseRequest((ActionRequest)portletRequest);
+//		
+//		
+//			//		 Process the uploaded items
+//			Iterator iter = items.iterator();
+//			while (iter.hasNext()) {
+//				FileItem item = (FileItem) iter.next();
+//
+//				if (item.isFormField()) {
+//					serviceRequest.setAttribute(item.getFieldName(), item.getString());
+//				} else {
+//					UploadedFile uploadedFile = new UploadedFile();
+//					uploadedFile.setFileContent(item.get());
+//					uploadedFile.setFieldNameInForm(item.getFieldName());
+//					uploadedFile.setSizeInBytes(item.getSize());
+//					uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
+//					serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
+//				}
+//			}
+//		}catch(Exception e){
+//			SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, PortletUtilities.class.getName(),"getServiceRequestFromMultipartPortletRequets","Cannot parse multipart request", e);
+//		}
+//		return serviceRequest;
+//		
+//	}
 	
 	/**
 	 * Gets the first uploaded file from a portlet request. This method creates a new file upload handler, 
@@ -340,15 +340,15 @@ public class PortletUtilities {
 	 
 		 
 		 
-		public static boolean isMultipartRequest() {
-			boolean ismultipart = false;
-			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-			if (portletRequest instanceof ActionRequest) {
-				ActionRequest actionRequest = (ActionRequest) portletRequest;
-				if (PortletFileUpload.isMultipartContent(actionRequest)) {
-					ismultipart = true;
-				}
-			}
-			return ismultipart;
-		}
+//		public static boolean isMultipartRequest() {
+//			boolean ismultipart = false;
+//			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+//			if (portletRequest instanceof ActionRequest) {
+//				ActionRequest actionRequest = (ActionRequest) portletRequest;
+//				if (PortletFileUpload.isMultipartContent(actionRequest)) {
+//					ismultipart = true;
+//				}
+//			}
+//			return ismultipart;
+//		}
 }

@@ -90,11 +90,11 @@ public class ImportExportModule extends AbstractModule {
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
-	if (ChannelUtilities.isPortletRunning()) {
-	    if (PortletUtilities.isMultipartRequest()) {
-		request = ChannelUtilities.getSpagoRequestFromMultipart();
-	    }
-	}
+//	if (ChannelUtilities.isPortletRunning()) {
+//	    if (PortletUtilities.isMultipartRequest()) {
+//		request = ChannelUtilities.getSpagoRequestFromMultipart();
+//	    }
+//	}
 
 	String message = (String) request.getAttribute("MESSAGEDET");
 	logger.debug("begin of import / export service with message =" + message);

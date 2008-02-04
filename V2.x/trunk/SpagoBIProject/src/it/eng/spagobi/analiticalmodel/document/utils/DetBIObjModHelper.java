@@ -196,13 +196,15 @@ public class DetBIObjModHelper {
 	public ObjTemplate recoverBIObjTemplateDetails() throws Exception {
 		ObjTemplate templ = null;
 		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
-		String fileName = uploaded.getFileName();
-		if( (fileName!=null) && !fileName.trim().equals("") ) {
-			templ = new ObjTemplate();
-			templ.setActive(new Boolean(true));
-	        templ.setName(fileName);
-	        byte[] uplCont = uploaded.getFileContent();
-	        templ.setContent(uplCont);
+		if (uploaded != null) {
+			String fileName = uploaded.getFileName();
+			if (fileName != null && !fileName.trim().equals("")) {
+				templ = new ObjTemplate();
+				templ.setActive(new Boolean(true));
+		        templ.setName(fileName);
+		        byte[] uplCont = uploaded.getFileContent();
+		        templ.setContent(uplCont);
+			}
 		}
 		return templ;
 	}
@@ -389,75 +391,75 @@ public class DetBIObjModHelper {
 	 * @param request The request Source Bean 
 	 * @throws SourceBeanException If any exception occurred
 	 */
-	public static void fillRequestContainer (RequestContainer req, SourceBean request, EMFErrorHandler errorHandler) throws Exception{
-		String label = (String)request.getAttribute("label");
-		String name = (String)request.getAttribute("name");
-		String description = (String)request.getAttribute("description");
-		String relName = (String)request.getAttribute("relName");
-		String engine = (String)request.getAttribute("engine");
-		String datasource = (String)request.getAttribute("datasource");
-		String state = (String)request.getAttribute("state");
-		String path = "";
-		String objParLabel = (String)request.getAttribute("objParLabel");
-		String parurl_nm = (String)request.getAttribute("parurl_nm");
-		String par_Id = (String)request.getAttribute("par_Id");
-		String req_fl = (String)request.getAttribute("req_fl");
-		String mod_fl = (String) request.getAttribute("mod_fl");
-		String view_fl = (String) request.getAttribute("view_fl");
-		String mult_fl = (String) request.getAttribute("mult_fl");
-		Object pathParentObj = request.getAttribute("PATH_PARENT");
-		if( (pathParentObj != null) && (!(pathParentObj instanceof String))) {
-			errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, 1032));
-		}else {
-			String pathParent = (String)pathParentObj;
-			if(pathParent != null){
-				path = pathParent;
-			}
-		}
-		SourceBean _serviceRequest = req.getServiceRequest();
-		if(_serviceRequest.getAttribute("label")==null)
-			_serviceRequest.setAttribute("label",label);
-		if(_serviceRequest.getAttribute("description")==null)
-			_serviceRequest.setAttribute("description",description);
-		if(_serviceRequest.getAttribute("name")==null)
-			_serviceRequest.setAttribute("name",name);
-		if(_serviceRequest.getAttribute("relName")==null)
-			_serviceRequest.setAttribute("relName",relName);
-		if (engine == null) {
-			List engines = DAOFactory.getEngineDAO().loadAllEngines();
-			if (engines.size() > 0) {
-				engine = ((Engine) engines.get(0)).getId().toString();
-			}
-		}
-		if (datasource == null) {
-			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
-			if (lstDataSource.size() > 0) {
-				datasource = new Integer(((DataSource) lstDataSource.get(0)).getDsId()).toString();
-			}
-		}		
-		if(_serviceRequest.getAttribute("engine")==null)
-			_serviceRequest.setAttribute("engine", engine);
-		if(_serviceRequest.getAttribute("datasource")==null)
-			_serviceRequest.setAttribute("datasource", datasource);		
-		if(_serviceRequest.getAttribute("state")==null)
-			_serviceRequest.setAttribute("state", state);
-		if(_serviceRequest.getAttribute("path")==null)
-			_serviceRequest.setAttribute("path", path);
-		if(_serviceRequest.getAttribute("objParLabel")==null)
-			_serviceRequest.setAttribute("objParLabel", objParLabel == null ? "" : objParLabel);
-		if(_serviceRequest.getAttribute("parurl_nm")==null)
-			_serviceRequest.setAttribute("parurl_nm", parurl_nm == null ? "" : parurl_nm);
-		if(_serviceRequest.getAttribute("par_Id")==null)
-			_serviceRequest.setAttribute("par_Id", par_Id == null ? "" : par_Id);
-		if(_serviceRequest.getAttribute("req_fl")==null)
-			_serviceRequest.setAttribute("req_fl", req_fl == null ? "" : req_fl);
-		if(_serviceRequest.getAttribute("mod_fl")==null)
-			_serviceRequest.setAttribute("mod_fl", mod_fl == null ? "" : mod_fl);
-		if(_serviceRequest.getAttribute("view_fl")==null)
-			_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
-		if(_serviceRequest.getAttribute("mult_fl")==null)
-			_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
-	}
+//	public static void fillRequestContainer (RequestContainer req, SourceBean request, EMFErrorHandler errorHandler) throws Exception{
+//		String label = (String)request.getAttribute("label");
+//		String name = (String)request.getAttribute("name");
+//		String description = (String)request.getAttribute("description");
+//		String relName = (String)request.getAttribute("relName");
+//		String engine = (String)request.getAttribute("engine");
+//		String datasource = (String)request.getAttribute("datasource");
+//		String state = (String)request.getAttribute("state");
+//		String path = "";
+//		String objParLabel = (String)request.getAttribute("objParLabel");
+//		String parurl_nm = (String)request.getAttribute("parurl_nm");
+//		String par_Id = (String)request.getAttribute("par_Id");
+//		String req_fl = (String)request.getAttribute("req_fl");
+//		String mod_fl = (String) request.getAttribute("mod_fl");
+//		String view_fl = (String) request.getAttribute("view_fl");
+//		String mult_fl = (String) request.getAttribute("mult_fl");
+//		Object pathParentObj = request.getAttribute("PATH_PARENT");
+//		if( (pathParentObj != null) && (!(pathParentObj instanceof String))) {
+//			errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, 1032));
+//		}else {
+//			String pathParent = (String)pathParentObj;
+//			if(pathParent != null){
+//				path = pathParent;
+//			}
+//		}
+//		SourceBean _serviceRequest = req.getServiceRequest();
+//		if(_serviceRequest.getAttribute("label")==null)
+//			_serviceRequest.setAttribute("label",label);
+//		if(_serviceRequest.getAttribute("description")==null)
+//			_serviceRequest.setAttribute("description",description);
+//		if(_serviceRequest.getAttribute("name")==null)
+//			_serviceRequest.setAttribute("name",name);
+//		if(_serviceRequest.getAttribute("relName")==null)
+//			_serviceRequest.setAttribute("relName",relName);
+//		if (engine == null) {
+//			List engines = DAOFactory.getEngineDAO().loadAllEngines();
+//			if (engines.size() > 0) {
+//				engine = ((Engine) engines.get(0)).getId().toString();
+//			}
+//		}
+//		if (datasource == null) {
+//			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
+//			if (lstDataSource.size() > 0) {
+//				datasource = new Integer(((DataSource) lstDataSource.get(0)).getDsId()).toString();
+//			}
+//		}		
+//		if(_serviceRequest.getAttribute("engine")==null)
+//			_serviceRequest.setAttribute("engine", engine);
+//		if(_serviceRequest.getAttribute("datasource")==null)
+//			_serviceRequest.setAttribute("datasource", datasource);		
+//		if(_serviceRequest.getAttribute("state")==null)
+//			_serviceRequest.setAttribute("state", state);
+//		if(_serviceRequest.getAttribute("path")==null)
+//			_serviceRequest.setAttribute("path", path);
+//		if(_serviceRequest.getAttribute("objParLabel")==null)
+//			_serviceRequest.setAttribute("objParLabel", objParLabel == null ? "" : objParLabel);
+//		if(_serviceRequest.getAttribute("parurl_nm")==null)
+//			_serviceRequest.setAttribute("parurl_nm", parurl_nm == null ? "" : parurl_nm);
+//		if(_serviceRequest.getAttribute("par_Id")==null)
+//			_serviceRequest.setAttribute("par_Id", par_Id == null ? "" : par_Id);
+//		if(_serviceRequest.getAttribute("req_fl")==null)
+//			_serviceRequest.setAttribute("req_fl", req_fl == null ? "" : req_fl);
+//		if(_serviceRequest.getAttribute("mod_fl")==null)
+//			_serviceRequest.setAttribute("mod_fl", mod_fl == null ? "" : mod_fl);
+//		if(_serviceRequest.getAttribute("view_fl")==null)
+//			_serviceRequest.setAttribute("view_fl", view_fl == null ? "" : view_fl);
+//		if(_serviceRequest.getAttribute("mult_fl")==null)
+//			_serviceRequest.setAttribute("mult_fl", mult_fl == null ? "" : mult_fl);
+//	}
 	
 	
 	

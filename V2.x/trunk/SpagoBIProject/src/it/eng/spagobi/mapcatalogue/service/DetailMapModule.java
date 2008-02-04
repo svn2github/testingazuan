@@ -70,12 +70,12 @@ public class DetailMapModule extends AbstractHttpModule {
 		
 		EMFErrorHandler errorHandler = getErrorHandler();
 		
-		if(ChannelUtilities.isPortletRunning()){
-			if(PortletUtilities.isMultipartRequest()) {
-				serviceRequest = ChannelUtilities.getSpagoRequestFromMultipart();
-				fillRequestContainer(serviceRequest, errorHandler);		
-			}
-		}
+//		if(ChannelUtilities.isPortletRunning()){
+//			if(PortletUtilities.isMultipartRequest()) {
+//				serviceRequest = ChannelUtilities.getSpagoRequestFromMultipart();
+//				fillRequestContainer(serviceRequest, errorHandler);		
+//			}
+//		}
 		String message = (String) serviceRequest.getAttribute("MESSAGEDET");
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG,  "begin of detail Map modify/visualization service with message =" + message);
 		
@@ -477,30 +477,30 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	 * @param request The request Source Bean 
 	 * @throws SourceBeanException If any exception occurred
 	 */
-	public void fillRequestContainer (SourceBean request, EMFErrorHandler errorHandler) throws Exception{
-		RequestContainer req = getRequestContainer();
-		String name = (String)request.getAttribute("NAME");
-		String description = (String)request.getAttribute("DESCR");
-		String format = (String)request.getAttribute("FORMAT");
-		String url = null;
-		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
-		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, "uploaded: " + uploaded );
-		if (uploaded != null)
-		    url = uploaded.getFileName();
-		
-		if (url == null || url.equals(""))
-			url = (String)request.getAttribute("sourceUrl");
-		
-		SourceBean _serviceRequest = req.getServiceRequest();
-		if(_serviceRequest.getAttribute("DESR")==null)
-			_serviceRequest.setAttribute("DESR",description == null ? "" : description);
-		if(_serviceRequest.getAttribute("NAME")==null)
-			_serviceRequest.setAttribute("NAME",name == null ? "": name);
-		if(_serviceRequest.getAttribute("URL")==null)
-			_serviceRequest.setAttribute("URL", url == null ? "" : url);
-		if(_serviceRequest.getAttribute("FORMAT")==null)
-			_serviceRequest.setAttribute("FORMAT", format == null ? "" : format);
-	}
+//	public void fillRequestContainer (SourceBean request, EMFErrorHandler errorHandler) throws Exception{
+//		RequestContainer req = getRequestContainer();
+//		String name = (String)request.getAttribute("NAME");
+//		String description = (String)request.getAttribute("DESCR");
+//		String format = (String)request.getAttribute("FORMAT");
+//		String url = null;
+//		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+//		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, "uploaded: " + uploaded );
+//		if (uploaded != null)
+//		    url = uploaded.getFileName();
+//		
+//		if (url == null || url.equals(""))
+//			url = (String)request.getAttribute("sourceUrl");
+//		
+//		SourceBean _serviceRequest = req.getServiceRequest();
+//		if(_serviceRequest.getAttribute("DESR")==null)
+//			_serviceRequest.setAttribute("DESR",description == null ? "" : description);
+//		if(_serviceRequest.getAttribute("NAME")==null)
+//			_serviceRequest.setAttribute("NAME",name == null ? "": name);
+//		if(_serviceRequest.getAttribute("URL")==null)
+//			_serviceRequest.setAttribute("URL", url == null ? "" : url);
+//		if(_serviceRequest.getAttribute("FORMAT")==null)
+//			_serviceRequest.setAttribute("FORMAT", format == null ? "" : format);
+//	}
 	
 	private List loadUpdateMapFeatures(GeoMap mapNew) throws EMFUserError, Exception {
 		try {

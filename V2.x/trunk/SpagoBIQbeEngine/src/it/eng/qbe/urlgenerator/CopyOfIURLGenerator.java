@@ -21,31 +21,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Andrea Zoppello
  * 
- * This is the interface for classes that implements logic
- * to generate URLS 
+ * This is interface for object responsible of generating URLS
  * 
- * This is because we want reuse JSP in Standalone Web applications and Portlet Enviroments
+ * Object Implementing this interface are for example used to change urls associated
+ * to node of a tree
+ *
  */
-public interface IQbeUrlGenerator {
+public interface CopyOfIURLGenerator {
 
-	/**
-	 * @param aHttpServletRequest the http servlet request
-	 * @param parameters an HashMap of parameters
-	 * @return a URL given the Map parameters
-	 */
-	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters);
+	public String generateURL(Object source);
 	
-	/**
-	 * @param aHttpServletRequest the http servlet request
-	 * @param originalUrl a String representic a link to static resource img, css, js and so on
-	 * @return
-	 */
-	public String conformStaticResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl);
+	public String generateURL(Object source, Object addtionalParameter);
+	
+	public String generateURL(Object source, Object source2, Object addtionalParameter);
+	
+	public String getClassName();
 }

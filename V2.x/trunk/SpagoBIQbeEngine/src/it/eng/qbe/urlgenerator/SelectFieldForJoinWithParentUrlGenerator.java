@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
+
+
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,7 +108,7 @@ public class SelectFieldForJoinWithParentUrlGenerator implements IURLGenerator{
 		params.put("ALIAS_CLASS_NAME",this.aliasedClassName);
 	
 		
-		return qbeUrlGenerator.getUrl(httpRequest, params);
+		return qbeUrlGenerator.getActionUrl(httpRequest, params);
 	}
 	
 	/**

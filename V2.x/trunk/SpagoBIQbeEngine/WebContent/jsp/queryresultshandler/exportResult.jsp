@@ -113,7 +113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<span class="qbeTitle">Save report template to local disk&nbsp;&nbsp;</span>				
 			<P>
 			<img 
-					src="<%=qbeUrl.conformStaticResourceLink(request,"../img/Save.gif")%>" 
+					src="<%=qbeUrl.getResourceUrl(request,"../img/Save.gif")%>" 
 					onclick="ajxPersistTemporaryQueryAction();"
 					alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Template.Save", bundle) %>" 
 					title="<%= qbeMsg.getMessage(requestContainer, "QBE.Template.Save", bundle) %>"/>	

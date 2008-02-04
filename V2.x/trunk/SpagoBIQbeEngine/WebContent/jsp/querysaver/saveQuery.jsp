@@ -100,7 +100,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<td class="qbe-td-form"><%-- Save --%>
 			<form id="formPersistQuery" name="formPersistQuery"
-					action="<%=qbeUrl.getUrl(request,null) %>" method="POST"><input
+					action="<%=qbeUrl.getActionUrl(request,null) %>" method="POST"><input
 					type="hidden" id="previousQueryId" name="previousQueryId"
 					value="<%= (query.getQueryId() != null ? query.getQueryId() : "")  %>" />
 				<input type="hidden" name="ACTION_NAME" value="PERSIST_QUERY_ACTION" />

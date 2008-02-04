@@ -13,6 +13,7 @@
 <%@ page import="it.eng.qbe.log.*"%>
 <%@ page import="it.eng.qbe.model.io.*"%>
 <%@ page import="it.eng.qbe.urlgenerator.*"%>
+<%@ page import="it.eng.spagobi.qbe.commons.urlgenerator.*"%>
 <%@page import="it.eng.qbe.conf.*"%>
 
 <%@ page import="java.util.*"%>
@@ -85,24 +86,24 @@
 
 
 
-	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/spagobi.css")%>" type="text/css"/>
-	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/jsr168.css")%>" type="text/css"/>
-	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/external.css")%>" type="text/css"/>
-	<link rel="styleSheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../css/dtree.css")%>" type="text/css" />	
+	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../css/spagobi.css")%>" type="text/css"/>
+	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../css/jsr168.css")%>" type="text/css"/>
+	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../css/external.css")%>" type="text/css"/>
+	<link rel="styleSheet" href ="<%=qbeUrl.getResourceUrl(request,"../css/dtree.css")%>" type="text/css" />	
 	
 	<%-- Necessary for window Javascript library --%>
-	<script type="text/javascript" src='<%=qbeUrl.conformStaticResourceLink(request,"../js/prototype.js")%>'></script>
-  	<script type="text/javascript" src='<%=qbeUrl.conformStaticResourceLink(request,"../js/effects.js")%>'></script>
-  	<script type="text/javascript" src='<%=qbeUrl.conformStaticResourceLink(request,"../js/window.js")%>'></script>
-  	<script type="text/javascript" src='<%=qbeUrl.conformStaticResourceLink(request,"../js/debug.js")%>'></script>
-  	<script type="text/javascript" src='<%=qbeUrl.conformStaticResourceLink(request,"../js/application.js")%>'/></script>
+	<script type="text/javascript" src='<%=qbeUrl.getResourceUrl(request,"../js/prototype.js")%>'></script>
+  	<script type="text/javascript" src='<%=qbeUrl.getResourceUrl(request,"../js/effects.js")%>'></script>
+  	<script type="text/javascript" src='<%=qbeUrl.getResourceUrl(request,"../js/window.js")%>'></script>
+  	<script type="text/javascript" src='<%=qbeUrl.getResourceUrl(request,"../js/debug.js")%>'></script>
+  	<script type="text/javascript" src='<%=qbeUrl.getResourceUrl(request,"../js/application.js")%>'/></script>
   	
    
-  	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../themes/default.css")%>" type="text/css"/>	 
-  	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../themes/alert.css")%>" type="text/css"/>	 
-  	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../themes/alert_lite.css")%>" type="text/css" />
-  	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../themes/mac_os_x.css")%>" type="text/css"/>	
-  	<link rel="stylesheet" href ="<%=qbeUrl.conformStaticResourceLink(request,"../themes/debug.css")%>" type="text/css"/>	 
+  	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../themes/default.css")%>" type="text/css"/>	 
+  	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../themes/alert.css")%>" type="text/css"/>	 
+  	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../themes/alert_lite.css")%>" type="text/css" />
+  	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../themes/mac_os_x.css")%>" type="text/css"/>	
+  	<link rel="stylesheet" href ="<%=qbeUrl.getResourceUrl(request,"../themes/debug.css")%>" type="text/css"/>	 
   
     
 	
@@ -259,20 +260,20 @@
 					inOrder			: false
 				}
 				this.icon = {
-					root		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treebase.gif")%>',
-					folder		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treefolder.gif")%>',
-					folderOpen	: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treefolderopen.gif")%>',
-					node		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treepage.gif")%>',
-					empty		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeempty.gif")%>',
-					line		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeline.gif")%>',
-					join		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treejoin.gif")%>',
-					joinBottom	: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treejoinbottom.gif")%>',
-					plus		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeplus.gif")%>',
-					plusBottom	: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeplusbottom.gif")%>',
-					minus		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeminus.gif")%>',
-					minusBottom	: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treeminusbottom.gif")%>',
-					nlPlus		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treenolines_plus.gif")%>',
-					nlMinus		: '<%=qbeUrl.conformStaticResourceLink(request, "/img/treenolines_minus.gif")%>'
+					root		: '<%=qbeUrl.getResourceUrl(request, "/img/treebase.gif")%>',
+					folder		: '<%=qbeUrl.getResourceUrl(request, "/img/treefolder.gif")%>',
+					folderOpen	: '<%=qbeUrl.getResourceUrl(request, "/img/treefolderopen.gif")%>',
+					node		: '<%=qbeUrl.getResourceUrl(request, "/img/treepage.gif")%>',
+					empty		: '<%=qbeUrl.getResourceUrl(request, "/img/treeempty.gif")%>',
+					line		: '<%=qbeUrl.getResourceUrl(request, "/img/treeline.gif")%>',
+					join		: '<%=qbeUrl.getResourceUrl(request, "/img/treejoin.gif")%>',
+					joinBottom	: '<%=qbeUrl.getResourceUrl(request, "/img/treejoinbottom.gif")%>',
+					plus		: '<%=qbeUrl.getResourceUrl(request, "/img/treeplus.gif")%>',
+					plusBottom	: '<%=qbeUrl.getResourceUrl(request, "/img/treeplusbottom.gif")%>',
+					minus		: '<%=qbeUrl.getResourceUrl(request, "/img/treeminus.gif")%>',
+					minusBottom	: '<%=qbeUrl.getResourceUrl(request, "/img/treeminusbottom.gif")%>',
+					nlPlus		: '<%=qbeUrl.getResourceUrl(request, "/img/treenolines_plus.gif")%>',
+					nlMinus		: '<%=qbeUrl.getResourceUrl(request, "/img/treenolines_minus.gif")%>'
 				};
 				this.obj = objName;
 				this.aNodes = [];
@@ -289,7 +290,7 @@
 
 
 
-	<script language='javascript' src='<%=qbeUrl.conformStaticResourceLink(request,"../js/dtree.js")%>'></script>
+	<script language='javascript' src='<%=qbeUrl.getResourceUrl(request,"../js/dtree.js")%>'></script>
 	<script type='text/javascript'>
 				
 		selField = "";

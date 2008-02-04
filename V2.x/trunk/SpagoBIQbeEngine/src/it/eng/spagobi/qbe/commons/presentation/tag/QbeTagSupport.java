@@ -24,9 +24,6 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
-import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
-import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
@@ -37,6 +34,9 @@ import it.eng.spago.base.ResponseContainerAccess;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 
 import java.util.Locale;
 import java.util.Map;
@@ -145,11 +145,11 @@ public class QbeTagSupport extends BaseTagSupport {
 	}
 	
 	protected String getResourceUrl(String url) {
-		return getQbeUrlGenerator().conformStaticResourceLink(getRequest() , url);
+		return getQbeUrlGenerator().getResourceUrl(getRequest() , url);
 	}
 	
 	protected String getActionUrl(Map parameters) {
-		return getQbeUrlGenerator().getUrl(getRequest() , parameters);
+		return getQbeUrlGenerator().getActionUrl(getRequest() , parameters);
 	}
 }
 

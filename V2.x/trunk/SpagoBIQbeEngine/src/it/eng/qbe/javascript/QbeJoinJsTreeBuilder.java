@@ -33,7 +33,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Gioia
+ * @author Andrea Gioia
  */
 public class QbeJoinJsTreeBuilder extends QbeJsTreeBuilder {
 
@@ -69,8 +69,8 @@ public class QbeJoinJsTreeBuilder extends QbeJsTreeBuilder {
 		if(rootNodeName == null) rootNodeName = dataMartModel.getName();
 		
 		addNode("0", "-1", rootNodeName, "", "", rootNodeName, 
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/base.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/base.gif"),
 				"", "", "", "", "");
 	}
 	

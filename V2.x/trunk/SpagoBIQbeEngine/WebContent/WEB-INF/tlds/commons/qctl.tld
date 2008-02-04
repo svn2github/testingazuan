@@ -155,6 +155,19 @@
     </tag>
     
     <tag>
+    	<name>newtree</name>
+        <tag-class>it.eng.spagobi.qbe.commons.presentation.tag.NewTreeQbeTag</tag-class>
+        <body-content>empty</body-content>
+        <description>Rendering of a tree</description>
+        
+        <attribute>
+            <name>type</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    <tag>
     	<name>button</name>
         <tag-class>it.eng.spagobi.qbe.commons.presentation.tag.ButtonTag</tag-class>
         <body-content>JSP</body-content>

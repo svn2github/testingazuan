@@ -123,7 +123,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  					<tbody>
 	  						<tr>
 	  							<td id="lightTreeLink">
-									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeOperator.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Light Tree','LIGHT_TREE')" />	
+									<img src="<%=qbeUrl.getResourceUrl(request,"../img/removeOperator.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Light Tree','LIGHT_TREE')" />	
 									<a href="javascript:vediSchermo('Light Tree','LIGHT_TREE')"
 										 class="qbe-title-link" >
 										<%=qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTree", bundle)%>
@@ -133,7 +133,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  						</tr>
 	  						<tr>
 	  							<td id="fullTreeLink">
-	  								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/detail.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Full Tree','FULL_TREE')"/>	
+	  								<img src="<%=qbeUrl.getResourceUrl(request,"../img/detail.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.Conditions.LightTreeTooltip", bundle) %>" onclick="javascript:vediSchermo('Full Tree','FULL_TREE')"/>	
 									<a href="javascript:vediSchermo('Full Tree','FULL_TREE')" class="qbe-title-link" >
 										<%=qbeMsg.getMessage(requestContainer, "QBE.Conditions.FullTree", bundle)%>
 									</a>	
@@ -182,7 +182,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		  		    <table  width="100%">
 		  				<tr>
 		  					<td>
-		  						<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getUrl(request, null) %>"  method="POST">
+		  						<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getActionUrl(request, null) %>"  method="POST">
 		  							<input type="hidden" id="fUpdCondJoinParent" name="fUpdCondJoinParent" value="FALSE"/>
 		  							<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_WHERE_ACTION"/>
 		  							<input id="nextActionAfterSaveCondition" type="hidden" name="NEXT_ACTION" value=""/>
@@ -233,38 +233,38 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","DELETE_FIELD_FROM_WHERE_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
-			    		   					urlDeleteWhere = qbeUrl.getUrl(request, sParams);
+			    		   					urlDeleteWhere = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","MOVE_UP_WHERE_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
-			    		   					urlMoveUp = qbeUrl.getUrl(request, sParams);
+			    		   					urlMoveUp = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","MOVE_DOWN_WHERE_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
-			    		   					urlMoveDown = qbeUrl.getUrl(request, sParams);
+			    		   					urlMoveDown = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
 			    		   					sParams.put("SIDE", "RIGHT");
 			    		   					sParams.put("ACTION", "ADD");
-			    		   					urlAddRightBracket = qbeUrl.getUrl(request, sParams);
+			    		   					urlAddRightBracket = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
 			    		   					sParams.put("SIDE", "RIGHT");
 			    		   					sParams.put("ACTION", "REMOVE");
-			    		   					urlRemoveRightBracket = qbeUrl.getUrl(request, sParams);
+			    		   					urlRemoveRightBracket = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					sParams.clear();
 			    		   					sParams.put("ACTION_NAME","UPDATE_BRACKETS_ACTION");
 			    		   					sParams.put("FIELD_ID",fieldId);
 			    		   					sParams.put("SIDE", "LEFT");
 			    		   					sParams.put("ACTION", "ADD");
-			    		   					urlAddLeftBracket = qbeUrl.getUrl(request, sParams);
+			    		   					urlAddLeftBracket = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					
 			    		   					sParams.clear();
@@ -272,7 +272,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   					sParams.put("FIELD_ID",fieldId);
 			    		   					sParams.put("SIDE", "LEFT");
 			    		   					sParams.put("ACTION", "REMOVE");
-			    		   					urlRemoveLeftBracket = qbeUrl.getUrl(request, sParams);
+			    		   					urlRemoveLeftBracket = qbeUrl.getActionUrl(request, sParams);
 			    		   					
 			    		   					String leftBracketsStr = "";
 			    		   					if(aWhereField.getLeftBracketsNum() == 0) {
@@ -296,21 +296,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		   				%>
 			    		   				<tr>
 			    		   					<td width="5%">
-		    		   							<a href="<%=urlDeleteWhere %>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/delete.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromCondition", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromCondition", bundle) %>" /></a>
+		    		   							<a href="<%=urlDeleteWhere %>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/delete.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromCondition", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromCondition", bundle) %>" /></a>
 		    		   						</td>
 		    		   						<td  width="5%">
-				    		   					<a href="<%=urlMoveUp %>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowUp.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>"/></a>
+				    		   					<a href="<%=urlMoveUp %>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/ArrowUp.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>"/></a>
 				    		   				</td>
 				    		   					
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
+				    		   					<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td>&nbsp;</td> 
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlAddLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/addLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlAddLeftBracket%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/addLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addLeftBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlRemoveLeftBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlRemoveLeftBracket%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/removeLeft.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeLeftBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td>&nbsp;</td> 
 				    		   				<td width="5%">
@@ -375,25 +375,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    		   				</td>	
 				    		   				<td>&nbsp;</td> 	
 											<td width="5%">
-				    		   					<a href="<%=urlAddRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/addRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlAddRightBracket%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/addRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.addRightBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   				<td width="5%">
-				    		   					<a href="<%=urlRemoveRightBracket%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/removeRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>"/></a>
+				    		   					<a href="<%=urlRemoveRightBracket%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/removeRight.png")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.removeRightBraket", bundle) %>"/></a>
 				    		   				</td>
 				    		   					
 													
 													
 			    		   					<td width="5%">
-				    		   					<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/selectjoin.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" onclick="openDivTreeSelectJoin('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
+				    		   					<img src="<%=qbeUrl.getResourceUrl(request,"../img/selectjoin.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSelectJoin", bundle) %>" onclick="openDivTreeSelectJoin('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 				    		   				</td>
 				    		   				<% if ( QbeEngineConf.getInstance().isWebModalityActive() ){ %>
 				    		   				<%    if (query.isSubqueryModeActive()){ %> 
 				    		   						<td width="5%">
-										    			<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/joinparentquery.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" onclick="openDivTreeSelectJoinParentQuery('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
+										    			<img src="<%=qbeUrl.getResourceUrl(request,"../img/joinparentquery.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgJoinParentQuery", bundle) %>" onclick="openDivTreeSelectJoinParentQuery('<%=fieldId%>', '<%="VALUE_FOR_FIELD_"+fieldId%>', event)"/>
 										    		</td>
 				    		   				<%	  }else{ %>
 										    		<td width="5%">
-										    			<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/subquery.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSubquery", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSubquery", bundle) %>" onclick="showSubqueryWin('<%=fieldId%>')"/>
+										    			<img src="<%=qbeUrl.getResourceUrl(request,"../img/subquery.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSubquery", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSubquery", bundle) %>" onclick="showSubqueryWin('<%=fieldId%>')"/>
 										    		</td>
 										    	<%} %>
 										     <%} %>

@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                                  
  								 paramsBack.put("ACTION_NAME", "RECOVER_CL_ACTION");
                                  
-                                 String url = qbeUrl.getUrl(request, paramsBack);    			
+                                 String url = qbeUrl.getActionUrl(request, paramsBack);    			
 
                                  String startModifyTimeStamp =(String)sessionContainer.getAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP"); 
                                  String lastUpdTimeStamp =(String)sessionContainer.getAttribute("QBE_LAST_UPDATE_TIMESTAMP");
@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td class='header-button-column-portlet-section'>
 					<a href="javascript:checkSavingBeforeBack('<%=url%>', '<%=query.getQueryId() != null ? query.getQueryId() : " " %>','<%=startModifyTimeStamp != null ? startModifyTimeStamp : " "%>', '<%=lastUpdTimeStamp != null ? lastUpdTimeStamp : " "%>' )"> 
       						<img class='header-button-image-portlet-section' title='Back'
-						src='<%=qbeUrl.conformStaticResourceLink(request,"../img/back.gif")%>' alt='Back' />
+						src='<%=qbeUrl.getResourceUrl(request,"../img/back.gif")%>' alt='Back' />
 					</a>
 				</td>			
 <% } %>

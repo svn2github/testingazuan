@@ -43,7 +43,7 @@ public class TitlebarTag extends QbeTagSupport {
 		try {			
 			Map paramsBack = new java.util.HashMap();
             paramsBack.put("ACTION_NAME", "RECOVER_CL_ACTION");            
-            String url = QbeEngineConf.getInstance().getUrlGenerator().getUrl(getRequest(), paramsBack);
+            String url = getActionUrl(paramsBack);
             String startModifyTimeStamp =(String)getSessionContainer().getAttribute("QBE_START_MODIFY_QUERY_TIMESTAMP"); 
             String lastUpdTimeStamp =(String)getSessionContainer().getAttribute("QBE_LAST_UPDATE_TIMESTAMP");
 			
@@ -61,7 +61,7 @@ public class TitlebarTag extends QbeTagSupport {
 				String queryId = getQuery().getQueryId() != null ? getQuery().getQueryId() : " ";
 				startModifyTimeStamp = (startModifyTimeStamp != null ? startModifyTimeStamp : " ");
 				lastUpdTimeStamp = (lastUpdTimeStamp != null ? lastUpdTimeStamp : " ");
-				String imgSrc = QbeEngineConf.getInstance().getUrlGenerator().conformStaticResourceLink(getRequest(),"../img/back.gif");
+				String imgSrc = getResourceUrl("../img/back.gif");
 				
 				buffer.append("<td class='header-button-column-portlet-section'>\n");
 				buffer.append("		<a href=\"javascript:checkSavingBeforeBack('" + url +"', '" + queryId +"','" + startModifyTimeStamp +"','" + lastUpdTimeStamp + "')\">\n"); 

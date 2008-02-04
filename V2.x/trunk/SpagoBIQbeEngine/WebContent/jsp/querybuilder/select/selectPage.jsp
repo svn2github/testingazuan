@@ -76,21 +76,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 			<table width="100%">  
 				<tr>
-					<td width="3%">&nbsp;</td>	   	
-				   	<td width="47%">&nbsp;</td>
-				   	<td width="50%">&nbsp;</td>
+					<td width="2%">&nbsp;</td>	   	
+				   	<td width="29%">&nbsp;</td>
+				   	<td width="29%">&nbsp;</td>
+				   	<td width="30%">&nbsp;</td>
 				</tr>
 				
 				<tr>
 					<td></td>
 					
-					<td valign="top">
-						<!--  
-						<tiles:insertTemplate path="tree.jspf"/>
-						-->
+					<td valign="top">						
+						<%@include file="tree.jspf" %>							
+					</td>
 						
-						<%@include file="tree.jspf" %>	
-						
+					<td>
+						<qbe:newtree type="select"/>
 					</td>
 						  		
 					<td width="47%" valign="top">	

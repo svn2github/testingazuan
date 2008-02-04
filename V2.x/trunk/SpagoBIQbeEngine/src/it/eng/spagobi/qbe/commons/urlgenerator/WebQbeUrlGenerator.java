@@ -19,7 +19,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.urlgenerator;
+package it.eng.spagobi.qbe.commons.urlgenerator;
+
 
 import java.util.Iterator;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class WebQbeUrlGenerator implements IQbeUrlGenerator{
 
 	private String baseURL="../servlet/AdapterHTTP";
 
-	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+	public String getActionUrl(HttpServletRequest httpServletRequest, Map parameters) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(baseURL);
 		
@@ -54,15 +55,16 @@ public class WebQbeUrlGenerator implements IQbeUrlGenerator{
 				}else{
 					sb.append("&");
 				}
-				sb.append(paramName+"="+paramValue.toString());
+				if(paramValue == null) paramValue = "x";
+				sb.append(paramName + "=" + paramValue.toString());
 				
 			}
 		}
 		return sb.toString();
 	}
 	
-	public String conformStaticResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
-		return originalUrl;
+	public String getResourceUrl(HttpServletRequest httpServletRequest, String url){
+		return url;
 	}
 
 	

@@ -182,7 +182,7 @@ function askConfirmation (message) {
 			<td width="3%">
 			</td>
   	 		<td width="64%">
-				<form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+				<form id="formUpdateExpertMode" name="formUpdateExpertMode" action="<%=qbeUrl.getActionUrl(request,null) %>" method="post">
 				<input type="hidden" name="ACTION_NAME" value="EXECUTE_QUERY_AND_SAVE_ACTION"/>
 				<input type="hidden" name="SOURCE_FROM_QUERY_RESULT" value="QUERY_RESULT"/>
 						
@@ -215,7 +215,7 @@ function askConfirmation (message) {
 									</td>	
 									
 									<td>
-									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+									<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
 									</td>
 									
 									<td width="50%">&nbsp;</td>								
@@ -230,7 +230,7 @@ function askConfirmation (message) {
 									</input>
 									</td>	
 									<td>
-									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+									<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
 									</td>
 									</tr>
 								<%} else {%>
@@ -243,7 +243,7 @@ function askConfirmation (message) {
 									</td>	
 									
 									<td>
-									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
+									<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divQbeQuery')" />	
 									</td>
 									<td width="50%">&nbsp;</td>
 									</tr>
@@ -257,7 +257,7 @@ function askConfirmation (message) {
 									</input>
 									</td>	
 									<td>
-									<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
+									<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertok.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Resume.ShowQueryTooltip", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.QueryResult.ShowQueryTooltip", bundle) %>" onclick="javascript:showQueryInQueryResult(event, 'divExpertQuery')" />	
 									</td>
 									</tr>
 								<%}
@@ -307,18 +307,18 @@ function askConfirmation (message) {
 							
 							<% if(!query.containsDuplicatedAliases()) {
 							 	if (overflow){ %>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+								<img src="<%=qbeUrl.getResourceUrl(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
 									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
 									onclick='askConfirmation("<%=qbeMsg.getMessage(requestContainer, "QBE.Exportation.warning", bundle)%>")'/>
 							<%} else {%> 
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+								<img src="<%=qbeUrl.getResourceUrl(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
 									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
 									onclick='ajxPersistTemporaryQueryAction();'/>
 							<% }
 							  } else { %>
-								  <img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/exec22.png")%>"  
+								  <img src="<%=qbeUrl.getResourceUrl(request,"../img/exec22.png")%>"  
 									alt="<%= qbeMsg.getMessage(requestContainer, "QBE.Export", bundle) %>" 
 									title="<%= qbeMsg.getMessage(requestContainer, "QBE.ExportTooltip", bundle) %>"
 									onclick='alert("Impossible to export result set. Query contains duplicated column alises");'/>
@@ -334,13 +334,13 @@ function askConfirmation (message) {
 						<td width="60%" align="left">
 							
 							<% if(!query.containsDuplicatedAliases()) {%>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
+								<img src="<%=qbeUrl.getResourceUrl(request,"../img/mview2.gif")%>"
 									 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 									 onclick="ajxCreateViewFromCurrentQuery();"/>
 							<%
 							} else { %>
-								<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/mview2.gif")%>"
+								<img src="<%=qbeUrl.getResourceUrl(request,"../img/mview2.gif")%>"
 								 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 								 title="<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.MaterializeView", bundle)%>"
 								 onclick='alert("Impossible to create view. Query contains duplicated column alises");'/>
@@ -435,7 +435,7 @@ function askConfirmation (message) {
    		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(0));
    		   			sParams.put("ignoreJoins", "true");
-   		   			urlPrev = qbeUrl.getUrl(request, sParams);
+   		   			urlPrev = qbeUrl.getActionUrl(request, sParams);
    		   			%>
 				<a class="qbe-title-link" href="<%=urlPrev%>"> << </a>
 			<% } %> 
@@ -445,7 +445,7 @@ function askConfirmation (message) {
    		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(currentPage-1));
    		   			sParams.put("ignoreJoins", "true");
-   		   			urlPrev = qbeUrl.getUrl(request, sParams);
+   		   			urlPrev = qbeUrl.getActionUrl(request, sParams);
    		   			%>
 				<a class="qbe-title-link" href="<%=urlPrev%>"> < </a>
 			<% } %> 
@@ -462,7 +462,7 @@ function askConfirmation (message) {
 	   		   			sParams.put("query",queryStr);
 	   		   			sParams.put("pageNumber",String.valueOf(pages[y]-1));
 	   		   			sParams.put("ignoreJoins", "true");
-	   		   			urlNext = qbeUrl.getUrl(request, sParams);
+	   		   			urlNext = qbeUrl.getActionUrl(request, sParams);
 	   		%>
 			&nbsp;<a class="qbe-title-link" href="<%=urlNext%>"> <%=pages[y]%> </a>&nbsp;
 			<% 		}
@@ -475,7 +475,7 @@ function askConfirmation (message) {
    		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(currentPage+1));
    		   			sParams.put("ignoreJoins", "true");
-   		   			urlNext = qbeUrl.getUrl(request, sParams);%>
+   		   			urlNext = qbeUrl.getActionUrl(request, sParams);%>
 				<a class="qbe-title-link" href="<%=urlNext%>"> > </a>
 			<% } %>
 			<% if (hasNextPage){
@@ -484,7 +484,7 @@ function askConfirmation (message) {
    		   			sParams.put("query",queryStr);
    		   			sParams.put("pageNumber",String.valueOf(pagesNumber.intValue()-1));
    		   			sParams.put("ignoreJoins", "true");
-   		   			urlNext = qbeUrl.getUrl(request, sParams);%>
+   		   			urlNext = qbeUrl.getActionUrl(request, sParams);%>
 				<a class="qbe-title-link" href="<%=urlNext%>"> >> </a>
 			<% } %>
 		</td>
@@ -698,7 +698,7 @@ function askConfirmation (message) {
 			eParams.put("ACTION_NAME", "EXECUTE_QUERY_AND_SAVE_ACTION");
 			eParams.put("ignoreJoins", "true");
 			%>
-			<a href="<%=qbeUrl.getUrl(request, eParams) %>"><%=qbeMsg.getMessage(requestContainer, "QBE.JoinWarning.Continue", bundle) %>
+			<a href="<%=qbeUrl.getActionUrl(request, eParams) %>"><%=qbeMsg.getMessage(requestContainer, "QBE.JoinWarning.Continue", bundle) %>
 		</td>
 		<td></td>
 	</tr>

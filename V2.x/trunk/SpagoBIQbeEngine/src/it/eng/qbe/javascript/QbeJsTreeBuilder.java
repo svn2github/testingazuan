@@ -25,11 +25,8 @@ import it.eng.qbe.datasource.BasicHibernateDataSource;
 import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.IURLGenerator;
-import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.qbe.urlgenerator.SelectFieldForSelectionURLGenerator;
-import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
 import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.utility.JsTreeUtils;
 import it.eng.qbe.utility.QbeProperties;
@@ -37,6 +34,9 @@ import it.eng.qbe.utility.RelationField;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.ApplicationContainer;
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -213,8 +213,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		if(rootNodeName == null) rootNodeName = dataMartModel.getName();
 		
 		addNode("0", "-1", rootNodeName, "", "", rootNodeName, 
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/base.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/base.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/base.gif"),
 				"", "", "", "", "");
 	}
 	
@@ -321,8 +321,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		// add class node
 		addNode("" + nodeCounter, "" + rootNode, classLabel, "", "", classLabel, 
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,classImage),
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,classImage),
+				qbeUrlGenerator.getResourceUrl(httpRequest,classImage),
+				qbeUrlGenerator.getResourceUrl(httpRequest,classImage),
 				"", "", "", "", "");
 		
 		
@@ -483,8 +483,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							fieldAction,  
 							fldLabel, 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
+							qbeUrlGenerator.getResourceUrl(httpRequest,img),
+							qbeUrlGenerator.getResourceUrl(httpRequest,img),
 							"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);	
 				}
 				else {
@@ -493,8 +493,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							fieldAction,  
 							fldLabel, 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+							qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
+							qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
 							"", "", "", "", "");	
 				}
 			}
@@ -642,8 +642,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 									fieldAction,  
 									fldLabel, 
 									"_self",
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+									qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
+									qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
 									"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);		
 						} else {
 							addNode("" + nodeCounter, "" + idxClassNode, 
@@ -651,8 +651,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 								fieldAction,  
 								fldLabel, 
 								"_self",
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,fieldImage),
+								qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
+								qbeUrlGenerator.getResourceUrl(httpRequest,fieldImage),
 								"", "", "",  "", "");
 						}
 					}
@@ -684,8 +684,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							cFieldAction,  
 							cField.getFldLabel(),
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/cfield.gif"),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/cfield.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/cfield.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/cfield.gif"),
 							"", "", "",  "", "");
 				}
 				
@@ -761,8 +761,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 		// add class node
 		addNode("" + nodeCounter, "" + rootNode, classLabel, "", "", classLabel, 
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
-				qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Class.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Class.gif"),
+				qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Class.gif"),
 				"", "", "", "", "");
 		
 		
@@ -848,8 +848,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							fieldAction,  
 							JsTreeUtils.getLabelForField(dataMartModel, completeFieldRef), 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,img),
+							qbeUrlGenerator.getResourceUrl(httpRequest,img),
+							qbeUrlGenerator.getResourceUrl(httpRequest,img),
 							"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);	
 				}
 				else {
@@ -858,8 +858,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							fieldAction,  
 							JsTreeUtils.getLabelForField(dataMartModel, completeFieldRef), 
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/key.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/key.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/key.gif"),
 							"", "", "", "", "");	
 				}
 			}
@@ -909,8 +909,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 									fieldAction,  
 									fldLabel, 
 									"_self",
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
-									qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+									qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Method.gif"),
+									qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Method.gif"),
 									"", "", "selectItem",  className + ";" + completeFieldName + ";" + fldLabel, selected);		
 						} else {
 							addNode("" + nodeCounter, "" + idxClassNode, 
@@ -918,8 +918,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 								fieldAction,  
 								fldLabel, 
 								"_self",
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
-								qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/Method.gif"),
+								qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Method.gif"),
+								qbeUrlGenerator.getResourceUrl(httpRequest,"../img/Method.gif"),
 								"", "", "",  "", "");
 						}
 					}
@@ -946,8 +946,8 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 							cFieldAction,  
 							cField.getFldLabel(),
 							"_self",
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/cfield.gif"),
-							qbeUrlGenerator.conformStaticResourceLink(httpRequest,"../img/cfield.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/cfield.gif"),
+							qbeUrlGenerator.getResourceUrl(httpRequest,"../img/cfield.gif"),
 							"", "", "",  "", "");
 				}
 				
@@ -979,7 +979,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		Map params = new HashMap();		
 		params.put("ACTION_NAME", actionName);
 		if(checkable) {
-			String url = qbeUrlGenerator.getUrl(httpRequest, params);
+			String url = qbeUrlGenerator.getActionUrl(httpRequest, params);
 			buffer.append("<form method='POST' action='" + url + "' id ='treeForm' name='treeForm'>");
 		}
 		super.addHeader();

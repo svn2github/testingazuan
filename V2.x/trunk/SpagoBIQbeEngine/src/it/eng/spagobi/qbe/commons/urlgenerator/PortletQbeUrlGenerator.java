@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.urlgenerator;
+package it.eng.spagobi.qbe.commons.urlgenerator;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -40,15 +40,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class PortletQbeUrlGenerator implements IQbeUrlGenerator{
 
-	/**
-	 * @see it.eng.qbe.utility.IQbeUrlGenerator#getUrl(javax.servlet.http.HttpServletRequest, java.util.Map)
-	 */
-	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
-		//Logger.debug(PortletQbeUrlGenerator.class, "getUrl::Start");
-		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
-		
-		//Logger.debug(PortletQbeUrlGenerator.class, "getUrl::Obatined Render Response and Request Container");
+	
+	public String getActionUrl(HttpServletRequest httpServletRequest, Map parameters) {
+		RenderResponse renderResponse =(RenderResponse)httpServletRequest.getAttribute("javax.portlet.response");
 		
 		PortletURL aPortletURL = renderResponse.createActionURL();
 		
@@ -69,17 +63,15 @@ public class PortletQbeUrlGenerator implements IQbeUrlGenerator{
 		return aPortletURL.toString();
 	}
 	
-	/**
-	 * @see it.eng.qbe.utility.IQbeUrlGenerator#conformStaticResourceLink(javax.servlet.http.HttpServletRequest, java.lang.String)
-	 */
-	public String conformStaticResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
-		RenderRequest renderRequest =(RenderRequest)aHttpServletRequest.getAttribute("javax.portlet.request");
-		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
+	
+	public String getResourceUrl(HttpServletRequest httpServletRequest, String url){
+		RenderRequest renderRequest =(RenderRequest)httpServletRequest.getAttribute("javax.portlet.request");
+		RenderResponse renderResponse =(RenderResponse)httpServletRequest.getAttribute("javax.portlet.response");
 		
 		String urlToConvert = null; 
-		int idx = originalUrl.indexOf('/'); 
+		int idx = url.indexOf('/'); 
 		if ( idx > - 1){
-			urlToConvert = originalUrl.substring(idx);
+			urlToConvert = url.substring(idx);
 			//Logger.debug(PortletQbeUrlGenerator.class,"URL TO CONVERT "+ urlToConvert);
 		}
 		String newUrl = renderResponse.encodeURL(renderRequest.getContextPath() + urlToConvert).toString();

@@ -626,7 +626,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
   <%-- Start central column --%>
 	  <td align="center" valign="middle">
-	   				<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/alignexpert.gif")%>" 
+	   				<img src="<%=qbeUrl.getResourceUrl(request,"../img/alignexpert.gif")%>" 
 	   						 alt="<%=qbeMsg.getMessage(requestContainer,"QBE.alt.imgRresumeFromQbe", bundle) %>" 
 	   						 title="<%=qbeMsg.getMessage(requestContainer,"QBE.alt.imgResumeFromQbe", bundle) %>" 
 	   						 onclick="javascript:resumeFromQbe()"/>
@@ -678,7 +678,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<tr>	
 				<tr>
 					<td>
-						<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertclose.gif")%>" 
+						<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertclose.gif")%>" 
 							 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgResumeLastExpert", bundle) %>"  
 							 title="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgResumeLastExpert", bundle) %>" 
 							 onclick="javascript:resumeLastExpert()"/> 
@@ -691,7 +691,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						&nbsp;
 					</td>
 					<td>
-						<img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/expertok.gif")%>" 
+						<img src="<%=qbeUrl.getResourceUrl(request,"../img/expertok.gif")%>" 
 							 alt="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgExpertSave", bundle) %>"  
 							 title="<%=qbeMsg.getMessage(requestContainer, "QBE.alt.imgExpertSave", bundle) %>" 
 				             onclick="javascript:saveExpertSelect()"/>
@@ -732,7 +732,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td></td>			
 		<td>
 		    <div class="qbe-td-form">
-				<form id="formUpdateExpert" name="formUpdateExpert" action="<%=qbeUrl.getUrl(request,null) %>" method="post">
+				<form id="formUpdateExpert" name="formUpdateExpert" action="<%=qbeUrl.getActionUrl(request,null) %>" method="post">
 				<span class="qbeTitle">
 						<%=qbeMsg.getMessage(requestContainer, "QBE.Resume.ExecutionModality", bundle)%>
 				</span>
@@ -794,12 +794,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%}%> 
 
 
-<form id="expertForm" name="expertForm" action="<%=qbeUrl.getUrl(request,null) %>" method="POST">
+<form id="expertForm" name="expertForm" action="<%=qbeUrl.getActionUrl(request,null) %>" method="POST">
  	<input type="hidden" id="expertFormActionName" name="ACTION_NAME" value="UPDATE_EXPERT_ACTION"/>
  	<input type="hidden" id="expertSelectTA" name="expertSelectTA" value="">
 </form>
 
-<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getUrl(request,null) %>" method="POST">
+<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getActionUrl(request,null) %>" method="POST">
  	<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_RESUME_ACTION"/>
  	<input type="hidden" id="nextActionAfterSaveCondition"  name="NEXT_ACTION" value=""/>
 	<input type="hidden" id="nextPublisherAfterSaveCondition" name="NEXT_PUBLISHER" value=""/>

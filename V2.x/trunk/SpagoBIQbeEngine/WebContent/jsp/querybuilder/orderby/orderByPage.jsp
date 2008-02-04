@@ -72,7 +72,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%
 		  java.util.Map params = new java.util.HashMap();
 		  params.put("ACTION_NAME","SELECT_FIELD_FOR_ORDERBY_ACTION");
-		  String formUrl = qbeUrl.getUrl(request, params);
+		  String formUrl = qbeUrl.getActionUrl(request, params);
 		  
 		  it = null;
 		%>
@@ -137,7 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		   				oParams.clear();
 		    		   				oParams.put("ACTION_NAME","SELECT_FIELD_FOR_ORDERBY_ACTION");
 		    		   				oParams.put("COMPLETE_FIELD_NAME",originalFieldName);
-		    		   				urlOrderBy = qbeUrl.getUrl(request, oParams);
+		    		   				urlOrderBy = qbeUrl.getActionUrl(request, oParams);
 									// if no operators has applied
 		    		   				//if (originalFieldName.equalsIgnoreCase(aSelectField.getFieldName())){
 		    		   				String checked = "";
@@ -168,7 +168,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    	<td align="center">
 						<br/>
 						<input type="image"
-						       src='<%=qbeUrl.conformStaticResourceLink(request,"../img/refresh.gif")%>' 
+						       src='<%=qbeUrl.getResourceUrl(request,"../img/refresh.gif")%>' 
 						       alt='<%=qbeMsg.getMessage(requestContainer,"QBE.Update", bundle) %>' 
 						       title='<%=qbeMsg.getMessage(requestContainer,"QBE.Update", bundle) %>'/>
 						<br/>
@@ -212,45 +212,45 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","DELETE_FIELD_FOR_ORDERBY_ACTION");
 		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
-		    		   					urlDeleteOrderBy = qbeUrl.getUrl(request, oParams);
+		    		   					urlDeleteOrderBy = qbeUrl.getActionUrl(request, oParams);
 		    		   					
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","MOVE_UP_ORDERBY_ACTION");
 		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
-		    		   					urlMoveUp = qbeUrl.getUrl(request, oParams);
+		    		   					urlMoveUp = qbeUrl.getActionUrl(request, oParams);
 		    		   					
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","MOVE_DOWN_ORDERBY_ACTION");
 		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
-		    		   					urlMoveDown = qbeUrl.getUrl(request, oParams);
+		    		   					urlMoveDown = qbeUrl.getActionUrl(request, oParams);
 		    		   					
 		    		   					oParams.clear();
 		    		   					oParams.put("ACTION_NAME","SWITCH_ORDERBY_ACTION");
 		    		   					oParams.put("FIELD_ID",aOrderByField.getId());
-		    		   					urlSwitchOrder = qbeUrl.getUrl(request, oParams);
+		    		   					urlSwitchOrder = qbeUrl.getActionUrl(request, oParams);
 		    		   					
 		    		   				%>
 		    		   				<tr>
 		    		   					<td width="5%">
-		    		   						<a href="<%=urlDeleteOrderBy %>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/delete.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromOrdering", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromOrdering", bundle) %>"/></a>
+		    		   						<a href="<%=urlDeleteOrderBy %>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/delete.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromOrdering", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgDeleteFromOrdering", bundle) %>"/></a>
 		    		   					</td>
 		    		   					<td  width="5%">
-				    		   						<a href="<%=urlMoveUp %>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowUp.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>"/></a>
+				    		   						<a href="<%=urlMoveUp %>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/ArrowUp.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveUp", bundle) %>"/></a>
 				    		   			</td>
 				    		   					
 				    		   			<td width="5%">
-				    		   						<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
+				    		   						<a href="<%=urlMoveDown%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/ArrowDown.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgMoveDown", bundle) %>"/></a>
 				    		   			</td>
 				    		   			
 				    		   		<%
 				    		   			if(aOrderByField.isAscendingOrder()) {
 				    		   		%>
 				    		   			<td width="5%">
-				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/ascendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>"/></a>
+				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/ascendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToDescendingOrder", bundle) %>"/></a>
 				    		   			</td>
 				    		   		<%} else { %>
 				    		   			<td width="5%">
-				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.conformStaticResourceLink(request,"../img/descendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>"/></a>
+				    		   						<a href="<%=urlSwitchOrder%>"><img src="<%=qbeUrl.getResourceUrl(request,"../img/descendingOrder.gif")%>" alt="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>" title="<%= qbeMsg.getMessage(requestContainer, "QBE.alt.imgSwitchToAscendingOrder", bundle) %>"/></a>
 				    		   			</td>
 				    		   		<%} %>
 		    		   					<td width="85%" class="qbe-font" ALIGN="left">

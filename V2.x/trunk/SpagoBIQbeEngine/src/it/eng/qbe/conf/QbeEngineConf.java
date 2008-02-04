@@ -26,13 +26,13 @@ import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.naming.NamingStrategy;
-import it.eng.qbe.urlgenerator.IQbeUrlGenerator;
-import it.eng.qbe.urlgenerator.PortletQbeUrlGenerator;
-import it.eng.qbe.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceCache;
 import it.eng.spagobi.qbe.commons.naming.QbeNamingStrategy;
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
+import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

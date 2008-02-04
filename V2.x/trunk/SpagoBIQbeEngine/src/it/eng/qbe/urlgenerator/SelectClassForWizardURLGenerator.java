@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
+
+
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +60,7 @@ public class SelectClassForWizardURLGenerator implements IURLGenerator{
 		params.put("className", source.toString());
 		params.put("NEW_SESSION", "TRUE");
 		
-		return qbeUrlGenerator.getUrl(httpRequest, params);
+		return qbeUrlGenerator.getActionUrl(httpRequest, params);
 		
 	}
 

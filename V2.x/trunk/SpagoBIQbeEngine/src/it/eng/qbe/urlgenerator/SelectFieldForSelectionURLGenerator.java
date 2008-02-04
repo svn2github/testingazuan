@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
+import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.querybuilder.select.service.AddCalculatedFieldAction;
 import it.eng.spagobi.qbe.querybuilder.select.service.AddSelectFieldAction;
 
@@ -34,9 +35,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 
-	/** 
-	 * @see it.eng.qbe.utility.javascript.IURLGenerator#generateURL(java.lang.Object)
-	 */
 	private String className = null;
 		
 	
@@ -63,7 +61,7 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		params.put(AddSelectFieldAction.CLASS_NAME, className);
 		params.put(AddSelectFieldAction.FIELD_NAME, (String)fieldName);
 			
-		return qbeUrlGenerator.getUrl(httpRequest, params);
+		return qbeUrlGenerator.getActionUrl(httpRequest, params);
 	}
 	
 	public String generateURL(Object source, Object addtionalParameter) {
@@ -91,7 +89,7 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		}
 		
 		
-		return qbeUrlGenerator.getUrl(httpRequest, params);
+		return qbeUrlGenerator.getActionUrl(httpRequest, params);
 	}
 	
 	public String generateURLForCalculateField(String calculatedFieldId, String entityName, String cFieldCompleteName){
@@ -101,7 +99,7 @@ public class SelectFieldForSelectionURLGenerator implements IURLGenerator{
 		params.put(AddCalculatedFieldAction.CLASS_NAME, className);
 		params.put(AddCalculatedFieldAction.CFIELD_ID, calculatedFieldId);
 		params.put(AddCalculatedFieldAction.CFIELD_COMPLETE_NAME, cFieldCompleteName);
-		return qbeUrlGenerator.getUrl(httpRequest, params);
+		return qbeUrlGenerator.getActionUrl(httpRequest, params);
 	}
 
 	public String getClassName() {

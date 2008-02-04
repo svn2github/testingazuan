@@ -1,4 +1,4 @@
-<%-- 
+/**
 
 SpagoBI - The Business Intelligence Free Platform
 
@@ -18,14 +18,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
---%>
+**/
+package it.eng.spagobi.qbe.tree.presentation.tag;
 
-	<script type="text/javascript">
-		changeTabBkg();
-	</script>
-<%  if (qbeMode.equalsIgnoreCase("WEB")){ %> 
-</html>
-<%}%>
+import java.util.List;
 
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
 
-
+/**
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
+ */
+public interface IQbeTreeFilter {
+	//boolean isFieldVisible(IDataMartModel datamartModel, DataMartField field);
+	//boolean isEntityVisible(IDataMartModel datamartModel, DataMartEntity entity);
+	
+	List filterEntities(IDataMartModel datamartModel, List entities);
+	List filterFields(IDataMartModel datamartModel, List fields);
+}

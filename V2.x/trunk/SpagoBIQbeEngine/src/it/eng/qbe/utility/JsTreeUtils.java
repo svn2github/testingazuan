@@ -25,6 +25,7 @@ import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.RequestContainer;
@@ -38,10 +39,12 @@ import java.util.Locale;
  *
  */
 public class JsTreeUtils {
-	public static String getLabelForClass(DataMartModel dmModel,  String className){
+	public static String getLabelForClass(IDataMartModel dmModel,  String className){
 		
 		Locale locale = QbeEngineConf.getInstance().getLocale();		
-		DatamartLabels prop = dmModel.getLabels(locale);
+		DatamartLabels prop = dmModel.getDataSource().getLabels(locale);
+		
+		if(prop == null) return className;
 		
 		String res =(String)prop.getLabel("class." + className);
 		if ((res != null) && (res.trim().length() > 0)) {
@@ -51,9 +54,11 @@ public class JsTreeUtils {
 		}
 	}
 	
-	public static String getLabelForForeignKey(DataMartModel dmModel,  String classForeignKeyID){
+	public static String getLabelForForeignKey(IDataMartModel dmModel,  String classForeignKeyID){
 		Locale locale = QbeEngineConf.getInstance().getLocale();	
-		DatamartLabels prop = dmModel.getLabels(locale);
+		DatamartLabels prop = dmModel.getDataSource().getLabels(locale);
+		
+		if(prop == null) return null;
 		
 		String res =(String)prop.getLabel("relation." + classForeignKeyID);
 		if ((res != null) && (res.trim().length() > 0))
@@ -69,9 +74,11 @@ public class JsTreeUtils {
 	 * @param completeFieldName: The field Name
 	 * @return the label associated with the field name
 	 */
-	public static String getLabelForField(DataMartModel dmModel,  String completeFieldName){
+	public static String getLabelForField(IDataMartModel dmModel,  String completeFieldName){
 		Locale locale = QbeEngineConf.getInstance().getLocale();	
-		DatamartLabels prop = dmModel.getLabels(locale);
+		DatamartLabels prop = dmModel.getDataSource().getLabels(locale);
+		
+		if(prop == null) return completeFieldName;
 		
 		String res =(String)prop.getLabel("field." + completeFieldName); 
 		if ((res != null) && (res.trim().length() > 0))
@@ -88,10 +95,9 @@ public class JsTreeUtils {
 	 * @return
 	 */
 	public static String getLabelForQueryField(RequestContainer requestContainer, 
-			DataMartModel dmModel, ISingleDataMartWizardObject wizObj,  String completeFieldName){
+			IDataMartModel dmModel, ISingleDataMartWizardObject wizObj,  String completeFieldName){
 		Locale locale = QbeEngineConf.getInstance().getLocale();	
-		DatamartLabels prop = dmModel.getLabels(locale);
-		
+		DatamartLabels prop = dmModel.getDataSource().getLabels(locale);
 		
 		String prefix = "";
 		String postFix = "";
@@ -137,6 +143,9 @@ public class JsTreeUtils {
 		String classLabel = getLabelForClass(dmModel, className);
 		
 		String realFieldName = fieldNameWithoutOperators.substring(dotIndexOf + 1);
+		
+		if(prop == null) return prefix + classLabel+ "." + fieldNameWithoutOperators + postFix;
+		
 		String res =(String)prop.getLabel("field." + realFieldName); 
 		if ((res != null) && (res.trim().length() > 0))
 			return prefix + classLabel+ "." + res + postFix;

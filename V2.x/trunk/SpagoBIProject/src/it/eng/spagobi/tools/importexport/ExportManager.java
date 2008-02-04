@@ -38,6 +38,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
@@ -51,6 +52,7 @@ import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -419,6 +421,7 @@ public class ExportManager implements IExportManager {
 	    if (idLov != null) {
 		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
 		ModalitiesValue lov = lovDAO.loadModalitiesValueByID(idLov);
+		checkDataSource(lov);
 		exporter.insertLov(lov, session);
 	    }
 	    exporter.insertParUse(paruse, session);
@@ -440,6 +443,51 @@ public class ExportManager implements IExportManager {
 	logger.debug("OUT");
     }
 
+	/**
+	 * Checks if a list of value object is a query type and in this case 
+	 * exports the name of the SpagoBI data source associated to the query
+	 * @param lov List of values Object
+	 * @throws EMFUserError
+	 */
+	private void checkDataSource(ModalitiesValue lov) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			String type = lov.getITypeCd();
+			if(type.equalsIgnoreCase("QUERY")) {
+				String provider = lov.getLovProvider();
+				QueryDetail queryDet = QueryDetail.fromXML(provider);
+				String datasourceName = queryDet.getDataSource();
+				IDataSourceDAO dsDAO = DAOFactory.getDataSourceDAO();
+				List allDS = dsDAO.loadAllDataSources();
+				Iterator allDSIt = allDS.iterator();
+				DataSource dsFound = null;
+				while (allDSIt.hasNext()) {
+					DataSource ds = (DataSource) allDSIt.next();
+					if (ds.getLabel().equals(datasourceName)) {
+						dsFound = ds;
+						break;
+					}
+				}
+				if (dsFound == null){
+					logger.error("Data source pool name " +datasourceName+ " not found");
+					List paramsErr = new ArrayList();
+					paramsErr.add(lov.getLabel());
+					paramsErr.add(datasourceName);
+					throw new EMFUserError(EMFErrorSeverity.ERROR, "8008", paramsErr, "component_impexp_messages");
+				} else {
+					exporter.insertDataSource(dsFound, session);
+				}
+			}
+		} catch (EMFUserError emfue){
+			throw emfue;
+		} catch (Exception e) {
+			 logger.error("Error while checking connection" + e);
+			 throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+    
     /**
      * Export an association between a functionality and a list of roles
      * 

@@ -378,13 +378,13 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 				downloadUrl += "/servlet/AdapterHTTP?ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION";	
 				downloadUrl += "&MESSAGE=DOWNLOAD_ASSOCIATION_FILE&ID="+assFile.getId();	
 				html += "<td class='"+rowClass+"'>\n";
-				html += "<a class='link_without_dec' href='"+eraseUrl+"'>\n";		
+				html += "<a class='link_without_dec' href='"+eraseUrl+"' style='text-decoration:none;'>\n";		
 				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/erase.gif")+"' \n" + 
 						"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' \n" + 
 						"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "&nbsp;&nbsp;\n";
-				html += "<a class='link_without_dec' href='"+downloadUrl+"'>\n";
+				html += "<a class='link_without_dec' href='"+downloadUrl+"' style='text-decoration:none;'>\n";
 				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/down16.gif")+"' \n" + 
 						"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' \n" + 
 						"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' />\n";

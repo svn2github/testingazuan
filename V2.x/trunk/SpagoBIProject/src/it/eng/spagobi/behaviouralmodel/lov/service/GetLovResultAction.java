@@ -65,7 +65,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 				userId=proxy.readUserId(request.getSession());
 				logger.debug("got userId from IProxyService="+userId);
 			} else {
-		    	userId = (String)request.getAttribute("userId");
+		    	userId = request.getParameter("userId");
 		    	logger.debug("got userId from Request="+userId);
 			}
 	 		
@@ -80,8 +80,8 @@ public class GetLovResultAction extends AbstractHttpAction {
 	            throw new SecurityException();
 	        }			
 
-			String documentId = (String) request.getAttribute("documentId");
-			logger.debug("got parameter documentId="+documentId.toString());
+			String documentId = request.getParameter("documentId");
+			logger.debug("got parameter documentId="+documentId);
 			
 			// TODO control that template contains the reference to the lov to be executed
 			//ContentServiceImplSupplier c = new ContentServiceImplSupplier();
@@ -91,13 +91,13 @@ public class GetLovResultAction extends AbstractHttpAction {
 	        
 	 		// get the mode (mode=single --> only one lov to execute, mode=list --> more than one lov to execute)
 	 		// if the parameter mode is not present the single mode is the default
-	 		String mode = (String)request.getParameter("mode");
+	 		String mode = request.getParameter("mode");
 	 		
 	 		String result = "";
 	 		
 	 		if (mode == null || !mode.equalsIgnoreCase("list")) {
 		 		// ge the lov name
-	 			String dataName = (String)request.getParameter("dataname");
+	 			String dataName = request.getParameter("dataname");
 	 			// if lov name is not present send an error
 	 			if((dataName==null) || dataName.trim().equals("")) {
 	 				response.getOutputStream().write(createErrorMsg(10, "Param dataname not found"));
@@ -129,7 +129,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 	 				String paramKey = (String)paramNames.nextElement();
 	 				if(paramKey.startsWith("LovResLogName_")) {
 	 					String logicalName = paramKey.substring(14);
-	 					String paramValue = (String)request.getParameter(paramKey);
+	 					String paramValue = request.getParameter(paramKey);
 	 					if( !(paramValue==null) && !(paramValue.trim().equals("")) ) {
 	 						lovMap.put(logicalName, paramValue);
 	 					}

@@ -31,22 +31,23 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
+	
+	private static transient Logger logger = Logger.getLogger(SpagoBIDashboardInternalEngine.class);
 
 	public static final String messageBundle = "component_spagobidashboardIE_messages";
 
@@ -59,30 +60,20 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	 */
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
 		
-		SpagoBITracer.debug("SpagoBIDashboardInternalEngine",
-	            this.getClass().getName(),
-	            "execute",
-	            "Start execute method.");
+		logger.debug("IN");
 		
-		if (obj == null) {
-			SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is null.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
-		}
-		
-		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-			SpagoBITracer.major("SpagoBIDashboardInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is not a dashboard.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
-		}
-		
-		
-		
-		try{	
+		try {
+			
+			if (obj == null) {
+				logger.error("The input object is null.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+			}
+			
+			if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+				logger.error("The input object is not a dashboard.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
+			}
+			
 			byte[] contentBytes = null;
 			try{
 				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
@@ -100,8 +91,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-			            			"execute", "Error while converting the Template bytes into a SourceBean object");
+				logger.error("Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
 			// get information from the conf SourceBean and pass them into the response
@@ -188,15 +178,12 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
 			
 		} catch (EMFUserError error) {
-			
 			throw error;
-			
 		} catch (Exception e) {
-			SpagoBITracer.major("SpagoBIDashboardInternalEngine", 
-						this.getClass().getName(),
-					    "execute", 
-					    "Cannot exec the dashboard", e);
+			logger.error("Cannot exec the dashboard", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+		} finally {
+			logger.debug("OUT");
 		}
 
 	}
@@ -212,10 +199,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
 			SourceBean response, Object subObjectInfo) throws EMFUserError {
 		// it cannot be invoked
-		SpagoBITracer.major("SpagoBIDashboardInternalEngine", 
-				this.getClass().getName(),
-	            "executeSubObject", 
-	            "SpagoBIDashboardInternalEngine cannot exec subobjects.");
+		logger.error("SpagoBIDashboardInternalEngine cannot exec subobjects.");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
@@ -229,10 +213,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIDashboardInternalEngine", 
-				this.getClass().getName(),
-	            "handleNewDocumentTemplateCreation", 
-	            "SpagoBIDashboardInternalEngine cannot build document template.");
+		logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
 		throw new InvalidOperationRequest();
 		
 	}
@@ -247,10 +228,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIDashboardInternalEngine", 
-				this.getClass().getName(),
-	            "handleDocumentTemplateEdit", 
-	            "SpagoBIDashboardInternalEngine cannot build document template.");
+		logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
 		throw new InvalidOperationRequest();
 	}
 

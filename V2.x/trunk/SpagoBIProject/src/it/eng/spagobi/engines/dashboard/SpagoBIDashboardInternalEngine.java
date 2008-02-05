@@ -125,7 +125,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 				dataParameters.put(nameParam, valueParam);
 			}
 			// puts the document id
-			dataParameters.put("documentId", obj.getId());
+			dataParameters.put("documentId", obj.getId().toString());
 			// puts the userId into parameters for data recovery
 			SessionContainer session = requestContainer.getSessionContainer();
 			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);

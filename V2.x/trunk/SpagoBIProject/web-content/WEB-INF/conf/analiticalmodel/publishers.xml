@@ -4,13 +4,13 @@
   	<PUBLISHER name="ReportsLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/listLookupReports.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/listLookupReports.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/listLookupReports.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/listLookupReports.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

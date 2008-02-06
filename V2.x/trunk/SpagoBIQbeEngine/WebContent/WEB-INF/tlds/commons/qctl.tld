@@ -161,7 +161,19 @@
         <description>Rendering of a tree</description>
         
         <attribute>
-            <name>type</name>
+            <name>actionName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        <attribute>
+            <name>actionType</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+         <attribute>
+            <name>modality</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

@@ -33,6 +33,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/qbe_base.jsp" %>
 
+<qbe:url type="resource" var="pageJavaScripts" ref="../js/querybuilder/where/wherePage.js"/>
+<script type="text/javascript" src='${pageJavaScripts}'/></script>
+
 <% 
    
 	QbeJsTreeBuilder qbeConditionJsTreeBuilder = null;
@@ -88,11 +91,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   					<td width="30%">
    						&nbsp;
   					</td>
- 					<td width="17%">
+  					<td width="30%">
+   						&nbsp;
+  					</td>
+ 					<td width="10%">
    						&nbsp;
   					</td>
   					
-   					<td width="50%">
+   					<td width="27%">
    						&nbsp;
    					</td>
 	   			</tr>
@@ -116,6 +122,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   			 qbeConditionJsTreeBuilder.setModality(treeSelection);
 		  			 %>
 					 <%= qbeConditionJsTreeBuilder.build() %>
+	   			</td>
+	   			
+	   			<td>
+	   				<%if(treeSelection == qbeConditionJsTreeBuilder.FULL_MODALITY) {%>
+	   					<qbe:newtree actionName="selectFieldForConditionCallBack" actionType="script" modality="full"/>
+	   				<%} else { %>
+	   					<qbe:newtree actionName="selectFieldForConditionCallBack" actionType="script" modality="light"/>
+	   				<%} %>
 	   			</td>
 	   			
 	  			<td valign="top">
@@ -183,22 +197,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		  				<tr>
 		  					<td>
 		  						<form id="formUpdateConditions" name="formUpdateConditions" action="<%=qbeUrl.getActionUrl(request, null) %>"  method="POST">
-		  							<input type="hidden" id="fUpdCondJoinParent" name="fUpdCondJoinParent" value="FALSE"/>
-		  							<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_WHERE_ACTION"/>
+		  							<input id="fUpdCondJoinParent" name="fUpdCondJoinParent" value="FALSE" type="hidden" />
+		  							<input name="ACTION_NAME" value="UPDATE_FIELD_WHERE_ACTION" type="hidden" />
 		  							<input id="nextActionAfterSaveCondition" type="hidden" name="NEXT_ACTION" value=""/>
-		  							<input id="nextPublisherAfterSaveCondition" type="hidden" name="NEXT_PUBLISHER" value=""/>
-		  						
-		  							<input id="updCondMsg" name="updCondMsg" type="hidden" value="UPD"/>
-		  							
-		  							
+		  							<input id="nextPublisherAfterSaveCondition" type="hidden" name="NEXT_PUBLISHER" value=""/>		  						
+		  							<input id="updCondMsg" name="updCondMsg" type="hidden" value="UPD"/>		  							
 									<input id="S_COMPLETE_FIELD_NAME" type="hidden" name="S_COMPLETE_FIELD_NAME" value=""/>
-									<input id="S_ALIAS_COMPLETE_FIELD_NAME" type="hidden" name="S_ALIAS_COMPLETE_FIELD_NAME" value=""/>
-									
-									<input id="S_CLASS_NAME" type="hidden" name="S_CLASS_NAME" value=""/>
-																		
-									<input id="S_HIB_TYPE" type="hidden" name="S_HIB_TYPE" value=""/>
-									
+									<input id="S_ALIAS_COMPLETE_FIELD_NAME" type="hidden" name="S_ALIAS_COMPLETE_FIELD_NAME" value=""/>									
+									<input id="S_CLASS_NAME" type="hidden" name="S_CLASS_NAME" value=""/>																		
+									<input id="S_HIB_TYPE" type="hidden" name="S_HIB_TYPE" value=""/>									
 									<input id="Parameter" type="hidden" name="" value=""/>
+									
+									<input id="FIELD_UNIQUE_NAME" name="FIELD_UNIQUE_NAME" type="hidden"  value=""/>	
 																
 		  							
 		  						<table widht="100%" class="qbe-font">
@@ -423,14 +433,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		  </table>
 		  <div id="divTreeSelectJoin" >
    	    	<%treeSelection = (String)sessionContainer.getAttribute("SELECTION_TREE");%>
-			<%= qbeJoinJsTreeBuilder.build() %>
+			<%//=qbeJoinJsTreeBuilder.build() %>
+			
+			<qbe:newtree actionName="selectFieldForJoinCallBack" actionType="script" modality="full"/>
+			
 		  </div>
 		  <% if (qbeJoinWithParentQueryBuilder != null){ 
 		  		System.out.println(qbeJoinWithParentQueryBuilder.build());
 		  %>
 		  	
 		  	<div id="divTreeSelectJoinParentQuery" >	
-		  		<%=qbeJoinWithParentQueryBuilder.build() %>
+		  		<%//=qbeJoinWithParentQueryBuilder.build() %>
+		  		
+		  		<qbe:newtree actionName="selectFieldForJoinWithParentCallBack" actionType="script" modality="full"/>
+		  		
 		  </div>
 		  <%} %>
 <%} else { %>

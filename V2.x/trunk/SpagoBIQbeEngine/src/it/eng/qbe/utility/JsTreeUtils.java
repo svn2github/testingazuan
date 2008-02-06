@@ -131,7 +131,7 @@ public class JsTreeUtils {
 		
 		String className = classAlias;
 		EntityClass ec = null;
-		Iterator it = wizObj.getQuery().getEntityClassesItertor();
+		Iterator it = wizObj.getQuery().getEntityClassesIterator();
 		while (it.hasNext()){
 			ec = (EntityClass)it.next();
 			if (classAlias.equalsIgnoreCase(ec.getClassAlias())){

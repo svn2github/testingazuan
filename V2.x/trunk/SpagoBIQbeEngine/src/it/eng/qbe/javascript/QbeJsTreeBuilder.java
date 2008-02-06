@@ -256,7 +256,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		selectedClassNames = new HashSet();
 		EntityClass ec = null;	
 		Collection allClassNames = getClassNames();		
-		for (Iterator it = dataMartWizard.getQuery().getEntityClassesItertor(); it.hasNext(); ){
+		for (Iterator it = dataMartWizard.getQuery().getEntityClassesIterator(); it.hasNext(); ){
 				ec  = (EntityClass)it.next();	
 				if(allClassNames.contains(ec.getClassName())) {
 					selectedClassNames.add(ec.getClassName());

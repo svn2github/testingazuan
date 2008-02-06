@@ -27,12 +27,18 @@ import it.eng.qbe.javascript.QbeJsTreeBuilder;
 import it.eng.qbe.javascript.QbeSelectJsTreeBuilder;
 import it.eng.qbe.utility.Utils;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeTreeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.QbeTreeUrlGenerator;
-import it.eng.spagobi.qbe.tree.presentation.tag.DTree;
-import it.eng.spagobi.qbe.tree.presentation.tag.IQbeTree;
-import it.eng.spagobi.qbe.tree.presentation.tag.QbeTreeBuilder;
-import it.eng.spagobi.qbe.tree.presentation.tag.QbeTreeBuilder;
+import it.eng.spagobi.qbe.tree.DTree;
+import it.eng.spagobi.qbe.tree.IQbeTree;
+import it.eng.spagobi.qbe.tree.QbeTreeBuilder;
+import it.eng.spagobi.qbe.tree.filter.IQbeTreeEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.IQbeTreeFieldFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeSelectEntityFilter;
+import it.eng.spagobi.qbe.tree.urlgenerator.IQbeTreeUrlGenerator;
+import it.eng.spagobi.qbe.tree.urlgenerator.QbeTreeUrlGenerator;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -43,19 +49,38 @@ import javax.servlet.jsp.JspTagException;
  */
 public class NewTreeQbeTag extends QbeTagSupport {
 	
-	private String type;
+	private String actionName;
+	private String actionType; // action | page | url | javascript
+	private String modality;
 	
 	public int doStartTag() throws JspException {
 		
 		try {
-			IQbeTreeUrlGenerator urlGenerator = new QbeTreeUrlGenerator(getQbeUrlGenerator(), getRequest());
-			QbeTreeBuilder qbeBuilder = new QbeTreeBuilder(DTree.class.getName(), urlGenerator);
-									   
+			
+			String subQueryPrefix = null;
 		   	if ( getQuery().isSubqueryModeActive() ){
 					String subQueryFieldId = (String)getSessionContainer().getAttribute(QbeConstants.SUBQUERY_FIELD);
-					String subQueryPrefix =  getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
-					qbeBuilder.setClassPrefix(subQueryPrefix);
+					subQueryPrefix =  getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
 		   	}
+		   	
+		   	IQbeTreeUrlGenerator urlGenerator = 
+				new QbeTreeUrlGenerator(actionName, actionType, getQbeUrlGenerator(), getRequest());
+			
+		   	
+		   	IQbeTreeEntityFilter entityFilter = new QbeTreeAccessModalityEntityFilter( new QbeTreeOrderEntityFilter() );
+		   	if(modality.equalsIgnoreCase("light")) {
+		   		entityFilter = new QbeTreeOrderEntityFilter (
+		   						new QbeTreeSelectEntityFilter ( 
+		   						 new QbeTreeAccessModalityEntityFilter(), getQuery() ) );
+		   	} else {
+		   		entityFilter = new QbeTreeOrderEntityFilter(
+		   						new QbeTreeAccessModalityEntityFilter() );
+		   	}
+		   	IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
+		   	QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
+		   		
+			QbeTreeBuilder qbeBuilder = new QbeTreeBuilder(DTree.class.getName(), urlGenerator, treeFilter);
+			
 		   	
 		   	List trees = qbeBuilder.getQbeTrees(getDatamartModel());
 		   	StringBuffer script = new StringBuffer();
@@ -77,12 +102,28 @@ public class NewTreeQbeTag extends QbeTagSupport {
 		return EVAL_PAGE;
 	}
 
-	public String getType() {
-		return type;
+	public String getActionName() {
+		return actionName;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
+	public String getModality() {
+		return modality;
+	}
+
+	public void setModality(String modality) {
+		this.modality = modality;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 
 }

@@ -22,9 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.qbe.querybuilder.where.service;
 
 import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.IWhereField;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import java.util.Iterator;
@@ -38,6 +40,8 @@ import java.util.Iterator;
 public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 
 	// valid input parameter names
+	
+	public static final String FIELD_UNIQUE_NAME = "FIELD_UNIQUE_NAME";
 	public static final String S_CLASS_NAME = "S_CLASS_NAME";
 	public static final String S_HIB_TYPE = "S_HIB_TYPE";
 	public static final String UPD_COND_MSG = "updCondMsg";
@@ -65,6 +69,7 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 	public void service(SourceBean request, SourceBean response) {
 		super.service(request, response);
 		
+		String fieldUniqueName = getAttributeAsString(FIELD_UNIQUE_NAME);	
 		String className = getAttributeAsString(S_CLASS_NAME);	
 		String hibFieldType= getAttributeAsString(S_HIB_TYPE);
 		String nextAction = getAttributeAsString(INPUT_NEXT_ACTION);
@@ -72,22 +77,20 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 		String updCondMsg = getAttributeAsString(UPD_COND_MSG);
 		String selectionTree = getAttributeAsString(INPUT_SELECTION_TREE);
 		String selectedFieldId = getAttributeAsString(FIELDID);
-		String isJoinWithParentQuery =   getAttributeAsString(FUPD_COND_JOIN_PARENT);
+		boolean isJoinWithParentQuery =   getAttributeAsBoolean(FUPD_COND_JOIN_PARENT);;
 		String aliasedFieldName = getAttributeAsString(S_COMPLETE_FIELD_NAME);
 		
 		String classPrefix = "a";
 		
 		
-		if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
+		if ( isJoinWithParentQuery ){
 			classPrefix = "a";
 		}else{
 			if ( isSubqueryModeActive() ){
 				classPrefix = getQuery().getSubQueryIdForSubQueryOnField( getSubqueryField() );
 			}
 		}
-		String classAlias = null;
 		
-		classAlias = classPrefix  + className.replace(".", "_");
 			
 		
 		setAttribute(OUTPUT_NEXT_ACTION, nextAction);		
@@ -95,7 +98,7 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 		
 		
 		
-		IWhereField aWhereField = null; 
+		IWhereField whereField = null; 
 		Iterator it = getQuery().getWhereFieldsIterator();
 		String fieldName = null;
 		String operatorForField = null;
@@ -103,76 +106,100 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 		String nextBooleanOperatorForField = null;
 		String fieldId = null;
 		while (it.hasNext()){
-				aWhereField = (IWhereField)it.next();
+				whereField = (IWhereField)it.next();
 			 	
-				fieldName = aWhereField.getFieldName();
-			 	fieldId =  aWhereField.getId();
+				fieldName = whereField.getFieldName();
+			 	fieldId =  whereField.getId();
 			 	operatorForField =getAttributeAsString(OPERATOR_FOR_FIELD_PREFIX + fieldId);
 			 	if (operatorForField != null){
-			 		aWhereField.setFieldOperator(operatorForField);
+			 		whereField.setFieldOperator(operatorForField);
 			 	}
 			 	valueForField = getAttributeAsString(VALUE_FOR_FIELD_PREFIX + fieldId);
 			 	if (valueForField != null){
-			 		if(!valueForField.equals(aWhereField.getFieldValue())) {
-			 			EntityClass entity = aWhereField.getFieldEntityClassForRightCondition();
-			 			aWhereField.setFieldEntityClassForRightCondition(null);
+			 		if(!valueForField.equals(whereField.getFieldValue())) {
+			 			EntityClass entity = whereField.getFieldEntityClassForRightCondition();
+			 			whereField.setFieldEntityClassForRightCondition(null);
 			 		}
-			 		aWhereField.setFieldValue(valueForField);
+			 		whereField.setFieldValue(valueForField);
 			 	}
 			 	
 			 	nextBooleanOperatorForField = getAttributeAsString(NEXT_BOOLEAN_OPERATOR_FOR_FIELD_PREFIX + fieldId);
 			 	if (nextBooleanOperatorForField != null){
-			 		aWhereField.setNextBooleanOperator(nextBooleanOperatorForField);
+			 		whereField.setNextBooleanOperator(nextBooleanOperatorForField);
 			 	}
 		 }
 		
 		
-
-		
-		
-		if (updCondMsg.equalsIgnoreCase("UPD_SEL")) {
+		// === new invocation type ====================================================================
+		if(fieldUniqueName != null && !fieldUniqueName.equalsIgnoreCase("")) { 
+			DataMartField field = this.getDatamartModel().getDataMartModelStructure().getField(fieldUniqueName);
+			className = field.getParent().getRoot().getType();
 			
-			EntityClass ec = new EntityClass(className, classAlias);
+			
+			String aliasedEntityName;
+			String subQueryPrefix = null;
+		   	if ( getQuery().isSubqueryModeActive() && !isJoinWithParentQuery ){
+					String subQueryFieldId = getQuery().getSubqueryFieldId();
+					subQueryFieldId = getSubqueryField(); // deprecated: use only the above initialization
+					
+					subQueryPrefix =  getQuery().getSubQueryIdForSubQueryOnField(subQueryFieldId);
+		   	}
+		   	
+			if (subQueryPrefix == null){
+				subQueryPrefix = "a";
+			}
+			
+			if (field.getParent().getRoot().getType().indexOf(".") > 0){
+				aliasedEntityName = subQueryPrefix + field.getParent().getRoot().getType().replace(".", "_");
+			}else{
+				aliasedEntityName = subQueryPrefix + field.getParent().getRoot().getType();
+			}
+			
+			aliasedFieldName = aliasedEntityName + "." + field.getQueryName();
+			
+			hibFieldType = field.getType();
+		} 
+		
+		// === new invocation type ====================================================================
+		
+		String classAlias = classPrefix  + className.replace(".", "_");
+		EntityClass ec = new EntityClass(className, classAlias);		
+		
+		if (updCondMsg.equalsIgnoreCase("UPD_SEL")) {			
+			
+			
 			if (!getQuery().containEntityClass(ec)){
 				getQuery().addEntityClass(ec);
 			}
 
-			IWhereField whereField = getQuery().addWhereField(aliasedFieldName, hibFieldType);
+			whereField = getQuery().addWhereField(aliasedFieldName, hibFieldType);
 			whereField.setFieldEntityClassForLeftCondition(ec);
 			
 			updateLastUpdateTimeStamp();
 			setDatamartWizard( getDatamartWizard() );
 			
-		} else if (updCondMsg.equalsIgnoreCase("UPD_SEL_RIGHT")){
+		} else if (updCondMsg.equalsIgnoreCase("UPD_SEL_RIGHT")) {			
 			
-			EntityClass ec = new EntityClass(className, classAlias);
-			
-			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
-				Logger.debug(this.getClass(), "-----");
-			}else{	
+			if ( !isJoinWithParentQuery ) {
 				if (!getQuery().containEntityClass(ec)){
 					getQuery().addEntityClass(ec);
 				}
 			}
 			
 			
-			aWhereField = null;
-			
 			it = getQuery().getWhereFieldsIterator();;
-			while (it.hasNext()){
-					aWhereField = (IWhereField)it.next();
-					if (aWhereField.getId().equalsIgnoreCase(selectedFieldId)){
-						
-						aWhereField.setFieldEntityClassForRightCondition(ec);
-						
+			while (it.hasNext()) {
+				whereField = (IWhereField)it.next();
+				if (whereField.getId().equalsIgnoreCase(selectedFieldId)) {						
+					whereField.setFieldEntityClassForRightCondition(ec);						
 				}
 			}
 			
-			if (isJoinWithParentQuery != null && isJoinWithParentQuery.equalsIgnoreCase("TRUE")){
-				// --- 
-			}else{
+			if ( !isJoinWithParentQuery ) {
 				getQuery().purgeNotReferredEntityClasses();
 			}
+			
+			whereField.setFieldValue(aliasedFieldName);
 			
 			updateLastUpdateTimeStamp();
 			setDatamartWizard( getDatamartWizard() );

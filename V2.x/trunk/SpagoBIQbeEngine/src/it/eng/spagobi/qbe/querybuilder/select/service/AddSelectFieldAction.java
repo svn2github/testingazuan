@@ -21,24 +21,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.select.service;
 
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 
 public class AddSelectFieldAction extends AbstractQbeEngineAction {
 	
+	public static final String ACTION_NAME = "SELECT_FIELD_FOR_SELECT_ACTION";
+	
 	// valid input parameter names
+	public static final String FIELD_UNIQUE_NAME= "FIELD_UNIQUE_NAME";
 	public static final String CLASS_NAME = "CLASS_NAME";
 	public static final String FIELD_NAME = "FIELD_NAME";
 	public static final String FIELD_LABEL = "FIELD_LABEL";
 	public static final String FIELD_HIBTYPE = "FIELD_HIBTYPE";
 	public static final String FIELD_HIBSCALE= "FIELD_HIBSCALE";
 	public static final String FIELD_HIBPREC= "FIELD_HIBPREC";
-
+	
+	
 	
 	public void service(SourceBean request, SourceBean response) {	
 		super.service(request, response);
 				
+		String fieldUniqueName = getAttributeAsString(FIELD_UNIQUE_NAME);	
+		
 		String className = getAttributeAsString(CLASS_NAME);		
 		String fieldName = getAttributeAsString(FIELD_NAME); 
 		String fieldLabel = getAttributeAsString(FIELD_LABEL);
@@ -46,6 +54,19 @@ public class AddSelectFieldAction extends AbstractQbeEngineAction {
 		String fieldHibType = getAttributeAsString(FIELD_HIBTYPE);
 		String fieldHibScale = getAttributeAsString(FIELD_HIBSCALE);
 		String fieldHibPrec= getAttributeAsString(FIELD_HIBPREC);
+		
+		if(fieldUniqueName != null) {
+			DataMartField field = getDatamartModel().getDataMartModelStructure().getField(fieldUniqueName);
+			
+			fieldName = field.getQueryName();			
+			className = field.getParent().getRoot().getType();
+			fieldLabel =field.getName();
+			fieldHibType = field.getType();
+			fieldHibScale = "" + field.getLength();
+			fieldHibPrec = "" + field.getPrecision();
+		}
+		
+		
 		
 				
 		getQuery().addSelectField(className, fieldName, fieldLabel, 
@@ -55,4 +76,6 @@ public class AddSelectFieldAction extends AbstractQbeEngineAction {
 		updateLastUpdateTimeStamp();
 		setDatamartWizard( getDatamartWizard() );
 	}
+	
+	
 }

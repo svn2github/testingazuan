@@ -154,7 +154,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									
 									<%
 																			
-																									  Iterator it = query.getEntityClassesItertor();;
+																									  Iterator it = query.getEntityClassesIterator();;
 																									   EntityClass ec = null;
 																									   while (it.hasNext()){
 																										   ec = (EntityClass)it.next();
@@ -186,7 +186,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (query.getEntityClassesItertor().hasNext()){ 
+																			if (query.getEntityClassesIterator().hasNext()){ 
 																										rowsCounter++;
 																		%>
 									   <tr>
@@ -465,7 +465,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									</tr>
 									
 									<%
-																			Iterator it = query.getEntityClassesItertor();
+																			Iterator it = query.getEntityClassesIterator();
 																									   EntityClass ec = null;
 																									   while (it.hasNext()){
 																										   ec = (EntityClass)it.next();
@@ -497,7 +497,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									%>
 									
 									<%
-																			if (query.getEntityClassesItertor().hasNext()){ 
+																			if (query.getEntityClassesIterator().hasNext()){ 
 																										rowsCounter++;
 																		%>
 									   <tr>

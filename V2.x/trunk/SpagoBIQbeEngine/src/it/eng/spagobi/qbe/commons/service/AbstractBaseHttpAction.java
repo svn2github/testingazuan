@@ -88,7 +88,7 @@ public class AbstractBaseHttpAction extends AbstractHttpAction {
 	}
 
 	public boolean getAttributeAsBoolean(String key, boolean defaultValue) {
-		if( getAttribute(key) == null ) return false;
+		if( getAttribute(key) == null ) return defaultValue;
 		return getAttributeAsString(key).equalsIgnoreCase(TRUE);
 	}
 	

@@ -68,7 +68,8 @@ public class SelectFieldForConditionURLGenerator implements IURLGenerator{
 	 * @param qbeUrlGenerator
 	 * @param httpRequest
 	 */
-	public SelectFieldForConditionURLGenerator(String classCompleteName, IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest, String classPrefix){
+	public SelectFieldForConditionURLGenerator(String classCompleteName, 
+			IQbeUrlGenerator qbeUrlGenerator, HttpServletRequest httpRequest, String classPrefix){
 		this.qbeUrlGenerator = qbeUrlGenerator;
 		this.httpRequest = httpRequest;
 		

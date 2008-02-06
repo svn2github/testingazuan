@@ -90,13 +90,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</td>
 						
 					<td>
-						<qbe:newtree type="select"/>
+						<qbe:newtree actionName="SELECT_FIELD_FOR_SELECT_ACTION" actionType="action" modality="full"/>
 					</td>
 						  		
 					<td width="47%" valign="top">	
-						<!--  			
-						<tiles:insertTemplate path="fields.jspf"/>
-						-->
 						
 						<%@include file="fields.jspf" %>
 						

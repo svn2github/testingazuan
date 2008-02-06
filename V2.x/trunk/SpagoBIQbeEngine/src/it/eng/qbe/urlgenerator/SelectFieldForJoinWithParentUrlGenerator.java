@@ -127,7 +127,7 @@ public class SelectFieldForJoinWithParentUrlGenerator implements IURLGenerator{
 		*/
 		StringBuffer sb = new StringBuffer();
 		sb.append("javascript: selectFieldForJoinWithParentCallBack(");
-		sb.append("\\'SELECT_FIELD_FOR_WHERE_ACTION\\',");
+		//sb.append("\\'SELECT_FIELD_FOR_WHERE_ACTION\\',");
 		sb.append("\\'"+aliasedClassName + "."+source.toString()+"\\',");
 		sb.append("\\'"+this.className+"\\',");
 		sb.append("\\'"+addtionalParameter.toString()+"\\'");		

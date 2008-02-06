@@ -123,7 +123,7 @@ public static String getReportServletContextAddress(){
 		calculateFields.add(it.next());
 	}
 	
-	calculateFields.addAll(datamartModel.getFormula().getCalculatedFields(datamartWizard.getQuery().getEntityClassesItertor()));
+	calculateFields.addAll(datamartModel.getFormula().getCalculatedFields(datamartWizard.getQuery().getEntityClassesIterator()));
 	
   	try{
 		for (Iterator itCalcFields = calculateFields.iterator(); itCalcFields.hasNext(); ){

@@ -19,23 +19,48 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.qbe.tree.presentation.tag;
+package it.eng.spagobi.qbe.tree.filter;
 
-import java.util.List;
-
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public interface IQbeTreeFilter {
-	//boolean isFieldVisible(IDataMartModel datamartModel, DataMartField field);
-	//boolean isEntityVisible(IDataMartModel datamartModel, DataMartEntity entity);
+public class QbeTreeAccessModalityFieldFilter extends ComposableQbeTreeFieldFilter {
 	
-	List filterEntities(IDataMartModel datamartModel, List entities);
-	List filterFields(IDataMartModel datamartModel, List fields);
+	private IQbeTreeFieldFilter parentFilter;
+	
+	public QbeTreeAccessModalityFieldFilter() {
+		parentFilter = null;
+	}
+	
+	public QbeTreeAccessModalityFieldFilter(IQbeTreeFieldFilter parentFilter) {
+		setParentFilter(parentFilter);
+	}
+	
+	
+	public List filter(IDataMartModel datamartModel, List fields) {
+		List list;
+		DataMartField field;
+		
+		list = new ArrayList();
+		
+		for(int i = 0; i < fields.size(); i++) {
+			field = (DataMartField)fields.get(i);
+			if( isFieldVisible(datamartModel, field)) {
+				list.add(field);
+			}
+		}
+		
+		return list;
+	}
+	
+	private boolean isFieldVisible(IDataMartModel datamartModel, DataMartField field) {
+		return true;
+	}
 }

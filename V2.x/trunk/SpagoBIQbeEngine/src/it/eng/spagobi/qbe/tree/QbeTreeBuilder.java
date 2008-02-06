@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.qbe.tree.presentation.tag;
+package it.eng.spagobi.qbe.tree;
 
 import it.eng.qbe.datasource.BasicHibernateDataSource;
 import it.eng.qbe.datasource.CompositeHibernateDataSource;
@@ -40,10 +40,13 @@ import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeTreeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
+import it.eng.spagobi.qbe.tree.presentation.tag.DatamartImageFactory;
+import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
+import it.eng.spagobi.qbe.tree.urlgenerator.IQbeTreeUrlGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,7 +79,7 @@ public class QbeTreeBuilder  {
 	
 	private Class qbeTreeClass;
 	private IQbeTreeUrlGenerator urlGenerator;	
-	private IQbeTreeFilter qbeTreeFilter;
+	private QbeTreeFilter qbeTreeFilter;
 	
 	private IDataMartModel datamartModel;	
 	
@@ -88,10 +91,10 @@ public class QbeTreeBuilder  {
 	private String classPrefix = null;	
 	
 	
-	public QbeTreeBuilder(String className, IQbeTreeUrlGenerator urlGenerator) throws ClassNotFoundException {		
+	public QbeTreeBuilder(String className, IQbeTreeUrlGenerator urlGenerator, QbeTreeFilter qbeTreeFilter) throws ClassNotFoundException {		
 		setQbeTreeClass( Class.forName(className) );	
 		setUrlGenerator(urlGenerator);
-		setQbeTreeFilter( new QbeTreeFilter() );
+		setQbeTreeFilter( qbeTreeFilter );
 	}	
 	
 		
@@ -129,9 +132,9 @@ public class QbeTreeBuilder  {
 	private IQbeTree buildQbeTree(String datamartName) throws InstantiationException, IllegalAccessException {			
 		IQbeTree tree = (IQbeTree)qbeTreeClass.newInstance();	
 		
-		tree.setClassPrefix( getClassPrefix() );
-		tree.createTree(datamartName);		
-		
+		// è importante non rischiare di creare due alberi con lo stesso nome. 
+		//La cosa infatti crea casino quando gli alberi si trovano sulla stessa pagina
+		tree.createTree(datamartName + "_" + System.currentTimeMillis());		
 		addRootNode(tree, datamartName);
 		addEntityNodes(tree, datamartName);
 			
@@ -250,7 +253,7 @@ public class QbeTreeBuilder  {
 		
 		String label = DatamartLabelFactory.getFieldLabel(getDatamartModel(), field);			
 		String image = DatamartImageFactory.getFieldImage(getDatamartModel(), field);				
-		String action = getUrlGenerator().getActionUrlForSelecteField(getDatamartModel(), field);
+		String action = getUrlGenerator().getActionUrl(field);
 					
 		nodeCounter++;					
 		tree.addNode("" + nodeCounter, 
@@ -360,14 +363,6 @@ public class QbeTreeBuilder  {
 		this.datamartModel = datamartModel;
 	}
 
-	public String getClassPrefix() {
-		return classPrefix;
-	}
-
-	public void setClassPrefix(String classPrefix) {
-		this.classPrefix = classPrefix;
-	}
-
 
 	public IQbeTreeUrlGenerator getUrlGenerator() {
 		return urlGenerator;
@@ -389,12 +384,12 @@ public class QbeTreeBuilder  {
 	}
 
 
-	private IQbeTreeFilter getQbeTreeFilter() {
+	private QbeTreeFilter getQbeTreeFilter() {
 		return qbeTreeFilter;
 	}
 
 
-	private void setQbeTreeFilter(IQbeTreeFilter qbeTreeFilter) {
+	private void setQbeTreeFilter(QbeTreeFilter qbeTreeFilter) {
 		this.qbeTreeFilter = qbeTreeFilter;
 	}
 }

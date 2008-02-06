@@ -19,22 +19,20 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.qbe.tree.presentation.tag;
+package it.eng.spagobi.qbe.tree;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public class DTree implements IQbeTree {
-
+	
+	
 	private String name;
 	private StringBuffer script;	
-	
-	private String classPrefix;
-	
 		
 	public static final String DEFAULT_NAME = "dtree";
-	
 	
 	public DTree() {
 		this(DEFAULT_NAME);
@@ -42,10 +40,10 @@ public class DTree implements IQbeTree {
 	
 	public DTree(String treeName) {
 		clearScript();
-		setName(treeName);		
+		setName(treeName);
 	}
 		
-	public void createTree() {		
+	public void createTree() {	
 		appendLineToScript(getName() + " = new dTree('" + getName() + "');");
 	}
 	
@@ -117,17 +115,4 @@ public class DTree implements IQbeTree {
 				script.toString() + "\n" +
 				getFooter() + "\n");
 	}
-	
-	
-	
-	
-
-	public String getClassPrefix() {
-		return classPrefix;
-	}
-
-	public void setClassPrefix(String classPrefix) {
-		this.classPrefix = classPrefix;
-	}
-
 }

@@ -23,8 +23,7 @@ function updateConditions(divTxt) {
 	
 	//alert("inputNextActionAfterSaveCondition"+inputNextActionAfterSaveCondition);
 	//alert("inputNextPublisherAfterSaveCondition"+inputNextPublisherAfterSaveCondition);
-	
-						
+				
 	if (divTxt == 'FULL_TREE'){
 	
 		inputNextActionAfterSaveCondition.value='PUBLISH_ACTION';

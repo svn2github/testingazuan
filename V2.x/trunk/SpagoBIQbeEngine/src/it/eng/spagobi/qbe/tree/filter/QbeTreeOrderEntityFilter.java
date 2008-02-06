@@ -19,7 +19,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.qbe.tree.presentation.tag;
+package it.eng.spagobi.qbe.tree.filter;
+
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,91 +31,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.utility.JsTreeUtils;
-import it.eng.qbe.utility.QbeProperties;
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class QbeTreeFilter implements IQbeTreeFilter {
+public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
+
+	public QbeTreeOrderEntityFilter() {
+		super();
+	}
 	
-	/*
-	 * TODO implement filter chain pattern in order to make the behaviour of the filter composable 
-	 * (similar pattern used by java xxxInputStream classes)
-	 */
+	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter) {
+		super(parentFilter);
+	}
 	
-	public List filterEntities(IDataMartModel datamartModel, List entities) {
-		List list;
-		DataMartEntity entity;
-		
-		list = new ArrayList();
-		
-		for(int i = 0; i < entities.size(); i++) {
-			entity = (DataMartEntity)entities.get(i);
-			if( isEntityVisible(datamartModel, entity)) {
-				list.add(entity);
-			}
-		}
+	public List filter(IDataMartModel datamartModel, List entities) {
+		List list = null;
 		
 		ComparableEntitiesList comparableEntities = new ComparableEntitiesList(datamartModel);
-		comparableEntities.addEntities( list );
+		comparableEntities.addEntities( entities );
 		list = comparableEntities.getEntitiesOrderedByLabel();
 		
 		return list;
 	}
-	
-	public List filterFields(IDataMartModel datamartModel, List fields) {
-		List list;
-		DataMartField field;
-		
-		list = new ArrayList();
-		
-		for(int i = 0; i < fields.size(); i++) {
-			field = (DataMartField)fields.get(i);
-			if( isFieldVisible(datamartModel, field)) {
-				list.add(field);
-			}
-		}
-		
-		return list;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-
-	private boolean isEntityVisible(IDataMartModel datamartModel, DataMartEntity entity) {
-		QbeProperties qbeProperties = new QbeProperties(datamartModel);
-		
-		String entityName = entity.getName();
-		if (entity.getRole() != null && !entity.getRole().equalsIgnoreCase("")){
-			entityName = entity.getName() + "("+ entity.getRole() + ")";
-		}		
-		
-		if(!qbeProperties.isTableVisible(entityName)) return false;
-		if(!datamartModel.getDataMartModelAccessModality().isEntityAccessible(entityName)) return false;
-		return true;
-	}
-
-	private boolean isFieldVisible(IDataMartModel datamartModel, DataMartField field) {
-		return true;
-	}	
-	
-	/*
-	 * TODO: refactor ...
-	 * + use a plugable comparator (i.e. label comparator)
-	 * + generalize, if possible, to use this code for both fields and entities (i.e. base the code on the super class DataMartItem).	 * 
-	 */
-	
 	
 	private class ComparableEntitiesList {
 
@@ -194,5 +136,4 @@ public class QbeTreeFilter implements IQbeTreeFilter {
 		}
 		
 	}
-
 }

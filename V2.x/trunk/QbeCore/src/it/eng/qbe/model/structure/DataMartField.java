@@ -51,12 +51,39 @@ public class DataMartField {
 
 	public String getUniqueName() {
 		if(getParent().getParent() == null) {
-			//return getParent().getType() + "::" +  getName();
-			return getName();
+			return getParent().getType() + ":" + getName();
 		}
 		return getParent().getUniqueName() + ":" + getName();
 	}
 	
+	/**
+	 * @deprecated just for test purpose
+	 * TODO integrate the new dmStructure with the query object
+	 */
+	public String getQueryName() {
+		String fieldName = "";
+		
+		DataMartEntity entity = getParent();
+		if(entity.getParent() != null) {
+			fieldName = toLowerCase( entity.getName() );
+			entity = entity.getParent();
+		}
+		while(entity.getParent() != null) {
+			fieldName = toLowerCase( entity.getName() ) + "." + fieldName;
+			entity = entity.getParent();
+		}		
+		if(!fieldName.equalsIgnoreCase("")) fieldName +=  ".";
+		fieldName += getName();
+		
+		return fieldName;
+	}
+	
+	private String toLowerCase(String str) {
+		String head = str.substring(0,1);
+		String tail = str.substring(1, str.length());
+		
+		return head.toLowerCase() + tail;
+	}
 	
 	
 	

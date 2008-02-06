@@ -473,7 +473,7 @@ public class Utils {
 	}
 	
 	public static String getSelectedEntitiesAsString(ISingleDataMartWizardObject aWizardObject) throws Exception{
-		Iterator it = aWizardObject.getQuery().getEntityClassesItertor();
+		Iterator it = aWizardObject.getQuery().getEntityClassesIterator();
 		EntityClass ec = null;
 		StringBuffer sb = new StringBuffer();
 		while (it.hasNext()){

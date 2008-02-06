@@ -62,7 +62,7 @@ public interface IQuery {
 	// FROM
 	////////////////////////////////////////////////////////////////////////////////////
 		
-	Iterator  getEntityClassesItertor();
+	Iterator  getEntityClassesIterator();
 	boolean containEntityClass(EntityClass ec);	
 	void addEntityClass(EntityClass ec);	
 	
@@ -119,29 +119,26 @@ public interface IQuery {
 	void setDistinct(boolean distinct);	
 	boolean getDistinct();
 	
-	//void addSubQueryOnField(String fieldId);
-	//void addSubQueryOnField(String fieldId, IQuery subquery);
-	void selectSubquery(String fieldId);
-	//Map  getSubqueries();
-	
+
+	void selectSubquery(String fieldId);	
 	IQuery getSubquery(String fieldId);	
 	String getSubQueryIdForSubQueryOnField(String fieldId);
 	
-	String[] getDuplicatedAliases();
-	
-	boolean containsDuplicatedAliases();
-	
-	boolean isEmpty();
-	
+	String[] getDuplicatedAliases();	
+	boolean containsDuplicatedAliases();	
+	boolean isEmpty();	
 	boolean areAllEntitiesJoined();
+	
+	
+	
 	
 	public String getErrMsg() ;	
 	public String getSubqueryErrMsg(String fieldId) ;
+	
 	// TODO this method should not be public
 	void setErrMsg(String errMsg);
 	
 	IQuery getCopy();
-	//IQuery getSelectedSubquery();
 	
 	
 	Integer findPositionOf(String completeName);

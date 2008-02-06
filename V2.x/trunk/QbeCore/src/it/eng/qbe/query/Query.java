@@ -501,7 +501,7 @@ public class Query implements IQuery {
 	
 	// public ...	
 	
-	public Iterator getEntityClassesItertor() {
+	public Iterator getEntityClassesIterator() {
 		return getActiveQuery().entityClasses.iterator();
 	}
 	
@@ -531,9 +531,9 @@ public class Query implements IQuery {
 	
 
 	public void purgeNotReferredEntityClasses() {
-		this.entityClasses.clear();
+		getActiveQuery().entityClasses.clear();
 		
-		ISelectClause selectClause = getSelectClause();
+		ISelectClause selectClause = getActiveQuery().getSelectClause();
 				
 		EntityClass ec = null;
 		ISelectField selField = null;
@@ -541,13 +541,13 @@ public class Query implements IQuery {
 			for (int i=0; i < selectClause.getSelectFields().size(); i++){
 				selField = (ISelectField)selectClause.getSelectFields().get(i);
 				ec = selField.getFieldEntityClass();
-				if (!this.containEntityClass(ec)){
-					this.addEntityClass(ec);
+				if (!containEntityClass(ec)){
+					addEntityClass(ec);
 				}
 			}
 		}
 		
-		IWhereClause whereClause = getWhereClause();
+		IWhereClause whereClause = getActiveQuery().getWhereClause();
 		
 		ec = null;
 		
@@ -557,12 +557,12 @@ public class Query implements IQuery {
 			for (int i=0; i < whereClause.getWhereFields().size(); i++){
 				whereField = (IWhereField)whereClause.getWhereFields().get(i);
 				ec = whereField.getFieldEntityClassForLeftCondition();
-				if (!this.containEntityClass(ec)){
-					this.addEntityClass(ec);
+				if (!containEntityClass(ec)){
+					addEntityClass(ec);
 				}
 				ec = whereField.getFieldEntityClassForRightCondition();
-				if ((ec != null)&&(!this.containEntityClass(ec))){
-					this.addEntityClass(ec);
+				if ((ec != null)&&(!containEntityClass(ec))){
+					addEntityClass(ec);
 				}
 				
 			}
@@ -573,7 +573,7 @@ public class Query implements IQuery {
 	public void purgeNotReferredEntityClasses(String prefix) {
 		this.entityClasses.clear();
 		
-		ISelectClause selectClause = getSelectClause();
+		ISelectClause selectClause = getActiveQuery().getSelectClause();
 				
 		EntityClass ec = null;
 		ISelectField selField = null;
@@ -581,13 +581,13 @@ public class Query implements IQuery {
 			for (int i=0; i < selectClause.getSelectFields().size(); i++){
 				selField = (ISelectField)selectClause.getSelectFields().get(i);
 				ec = selField.getFieldEntityClass();
-				if (!this.containEntityClass(ec) && ec.getClassAlias().startsWith(prefix)){
-					this.addEntityClass(ec);
+				if (!containEntityClass(ec) && ec.getClassAlias().startsWith(prefix)){
+					addEntityClass(ec);
 				}
 			}
 		}
 		
-		IWhereClause whereClause = getWhereClause();
+		IWhereClause whereClause = getActiveQuery().getWhereClause();
 		
 		ec = null;
 		
@@ -655,7 +655,7 @@ public class Query implements IQuery {
 		if (getActiveQuery().entityClasses.size() == 1) return true;
 		
 		
-		Iterator it = this.getEntityClassesItertor();
+		Iterator it = this.getEntityClassesIterator();
 		while (it.hasNext() ){
 			
 			EntityClass entty = (EntityClass)it.next();
@@ -669,7 +669,7 @@ public class Query implements IQuery {
 	public boolean areEntitiyJoined(EntityClass entity) {
 		boolean joinFound = false;
 		
-		Iterator it = this.getEntityClassesItertor();
+		Iterator it = this.getEntityClassesIterator();
 		while (it.hasNext() ){
 			EntityClass targetEntity = (EntityClass)it.next();
 				

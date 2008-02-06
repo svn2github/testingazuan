@@ -105,7 +105,7 @@ public class HQLStatement extends BasicStatement {
 		EntityClass ec = null;
 		buffer.append(" from ");
 			
-		for (Iterator it = query.getEntityClassesItertor(); it.hasNext();){
+		for (Iterator it = query.getEntityClassesIterator(); it.hasNext();){
 				ec =(EntityClass)it.next();
 		 		if (afterFirst)
 		 			buffer.append(", ");
@@ -182,7 +182,9 @@ public class HQLStatement extends BasicStatement {
 		 			
 		 			
 		 		}else{
-		 			if ((aWhereField.getFieldEntityClassForRightCondition() == null)&&(aWhereField.getType().endsWith("StringType")))
+		 			if (aWhereField.getFieldEntityClassForRightCondition() == null
+		 					&& (aWhereField.getType().endsWith("StringType") 
+		 							|| aWhereField.getType().equalsIgnoreCase("string")) )
 		 				buffer.append("'"+ fValue + "'");
 		 			else
 		 				buffer.append( fValue );

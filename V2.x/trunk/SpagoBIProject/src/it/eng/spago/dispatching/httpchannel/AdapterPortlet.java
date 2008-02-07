@@ -233,14 +233,13 @@ public class AdapterPortlet extends GenericPortlet {
 	            emfErrorHandler = new EMFErrorHandler();
             } 
             
-            requestContainer.setServiceRequest(serviceRequest);
-            
             //***************** NAVIGATION CONTROL *******************************************************
             String navigation = getInitParameter("light_navigation");
             if ("enabled".equalsIgnoreCase(navigation)) {
             	serviceRequest = LightNavigationManager.controlLightNavigation(request, serviceRequest);
             }
             //********************************************************************************************
+            requestContainer.setServiceRequest(serviceRequest);
             boolean isRequestedSessionIdValid = true;
             PortletSession session = request.getPortletSession(true);
             /*

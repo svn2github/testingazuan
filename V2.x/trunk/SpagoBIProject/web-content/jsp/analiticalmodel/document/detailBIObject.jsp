@@ -644,9 +644,10 @@ function checkFormVisibility(docType) {
 		      		    Calendar creCal = new GregorianCalendar();
 		      		    creCal.setTime(creDate);
 		      		    String creDateStr = creCal.get(Calendar.DAY_OF_MONTH) + "/" +
-		      		  						creCal.get(Calendar.MONTH) + "/" +
+		      		  						(creCal.get(Calendar.MONTH) + 1) + "/" +
 		      		  					    creCal.get(Calendar.YEAR) + "  " + 
 		      		  						creCal.get(Calendar.HOUR_OF_DAY) + ":" + 
+		      		  						(creCal.get(Calendar.MINUTE) < 10 ? "0" : "") +
 		      		  						creCal.get(Calendar.MINUTE);
 		      		    out.print("<td class='portlet-font'>"+creDateStr+"</td>");
 		      		    out.print("<td class='portlet-font'>"+tempVer.getName()+"</td>");

@@ -130,7 +130,6 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	 * @param obj
 	 * @return
 	 * @throws Exception
-	 * @TODO controllare che il contatore visibleInstances non consideri più volte lo stesso documento ...
 	 */
 	private SourceBean makeListRow(IEngUserProfile profile, BIObject obj) throws Exception {
 		String rowSBStr = "<ROW ";
@@ -151,13 +150,11 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 							visibleInstances++;
 						}
 					}
-					//if (visibleInstances == 0) return null;
 				} else {
 					// in case of global administrator, he can admin all the instances of the document
 					visibleInstances = functionalities.size();
 					canAddIstances = false;
 				}	
-				//rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
 				
 				boolean canExec = false;
 				for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext(); ) {
@@ -177,13 +174,6 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 					visibleInstances++;
 				}
 			}
-			/*
-			if (visibleInstances == 0) {
-				// the document does not belong to any folder where the profile has the rigth permissions
-				// (i.e.: the document is in REL state but belongs to folders where the profile cannot execute it
-				// OR the document is in TEST state but belongs to folders where the profile cannot test it)
-				return null;
-			}*/
 			// at this point the document is in DEV or REL state and there is one or more visible instances
 			boolean canDev = true;
 			if (obj.getStateCode().equalsIgnoreCase("REL")) canDev = false;
@@ -196,19 +186,13 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 					return null;
 				}
 			}
-			//rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
 			rowSBStr += "		canDev=\"" + canDev + "\"";
 		}
-		/*if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) &&
-			!(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))){*/
-		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
-		    profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
-			 /*
-			if (!"REL".equalsIgnoreCase(state) && !"TEST".equalsIgnoreCase(state)) {
-				// the document in development state are excluded
-				return null;
-			}
-			*/
+
+		if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
+		    profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) &&
+		    (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))){
+
 			if (visible != null && visible.intValue() == 0) {
 				// the document is not visible
 				return null;
@@ -221,15 +205,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 					visibleInstances++;
 				}
 			}
-			/*
-			if (visibleInstances == 0) {
-				// the document does not belong to any folder where the profile has the rigth permissions
-				// (i.e.: the document is in REL state but belongs to folders where the profile cannot execute it
-				// OR the document is in TEST state but belongs to folders where the profile cannot test it)
-				return null;
-			}
-			rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
-			*/
+
 		}
 		if (visibleInstances == 0) return null;
 		

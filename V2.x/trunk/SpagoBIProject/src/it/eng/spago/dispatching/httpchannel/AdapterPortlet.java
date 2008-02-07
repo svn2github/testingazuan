@@ -201,7 +201,6 @@ public class AdapterPortlet extends GenericPortlet {
             else {
 	            monitor = MonitorFactory.start("controller.adapter.portlet");
 	            serviceRequest = new SourceBean(Constants.SERVICE_REQUEST);
-                requestContainer.setServiceRequest(serviceRequest);
 	            
                 boolean isMultipart = false;
                 

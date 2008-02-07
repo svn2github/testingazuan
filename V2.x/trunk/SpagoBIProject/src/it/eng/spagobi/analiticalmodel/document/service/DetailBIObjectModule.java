@@ -114,12 +114,14 @@ public class DetailBIObjectModule extends AbstractModule {
 		profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		errorHandler = getErrorHandler();
 		// IN CASE THE REQUEST IS MULTIPART AND THE APPLICATION RUN ON A PORTAL SERVER THE REQUEST CONTAINER MUST BE FILLED 
+		/*
 		if(ChannelUtilities.isPortletRunning()){
 			if(PortletUtilities.isMultipartRequest()) {
 				request = ChannelUtilities.getSpagoRequestFromMultipart();
 				DetBIObjModHelper.fillRequestContainer(requestContainer, request, errorHandler);
 			}
 		}
+		*/
 		// CREATE THE HELPER
 		helper = new DetBIObjModHelper(requestContainer, request, response);
 		// GET THE EXECUTION MODALITY AND THE INITIAL PATH  

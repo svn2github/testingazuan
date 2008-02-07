@@ -123,7 +123,8 @@ public class PublishImpl extends AbstractServiceImpl {
 	obj.setEngine(engine);
 
 	String template = (String) mapPar.get("TEMPLATE");
-	ObjTemplate objTemp = obj.getActiveTemplate();
+	//ObjTemplate objTemp = obj.getActiveTemplate();
+	ObjTemplate objTemp = new ObjTemplate();
 	objTemp.setName("etlTemplate.xml");
 	objTemp.setContent(template.getBytes());
 
@@ -192,13 +193,15 @@ public class PublishImpl extends AbstractServiceImpl {
 	obj.setEngine(engine);
 
 	String template = (String) mapPar.get("TEMPLATE");
-	ObjTemplate objTemp = obj.getActiveTemplate();
+	//ObjTemplate objTemp = obj.getActiveTemplate();
+	ObjTemplate objTemp = new ObjTemplate();
 	objTemp.setName("etlTemplate.xml");
 	objTemp.setContent(template.getBytes());
 
 	Domain domain = null;
 	try {
-	    DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
+	    //DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
+		DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
 	    logger.error("Error while reading domain by type");

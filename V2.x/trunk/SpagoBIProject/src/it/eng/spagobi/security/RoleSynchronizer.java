@@ -176,10 +176,10 @@ public class RoleSynchronizer {
 			return;
 		}
 		
-		// Role is not ADMIN/DEV_ROLE/TEST_ROLE, default is FUNCT
-		Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "FUNCT");
+		// Role is not ADMIN/DEV_ROLE/TEST_ROLE, default is USER
+		Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "USER");
 		aRole.setRoleTypeID(roleTypeId);
-		aRole.setRoleTypeCD("FUNCT");
+		aRole.setRoleTypeCD("USER");
 	}
 	
 	private boolean isRoleType(Role aRole, String roleTypeCd) {

@@ -114,12 +114,12 @@ public class DetailBIObjectModule extends AbstractModule {
 		profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		errorHandler = getErrorHandler();
 		// IN CASE THE REQUEST IS MULTIPART AND THE APPLICATION RUN ON A PORTAL SERVER THE REQUEST CONTAINER MUST BE FILLED 
-//		if(ChannelUtilities.isPortletRunning()){
-//			if(PortletUtilities.isMultipartRequest()) {
-//				request = ChannelUtilities.getSpagoRequestFromMultipart();
-//				DetBIObjModHelper.fillRequestContainer(requestContainer, request, errorHandler);
-//			}
-//		}
+		if(ChannelUtilities.isPortletRunning()){
+			if(PortletUtilities.isMultipartRequest()) {
+				request = ChannelUtilities.getSpagoRequestFromMultipart();
+				DetBIObjModHelper.fillRequestContainer(requestContainer, request, errorHandler);
+			}
+		}
 		// CREATE THE HELPER
 		helper = new DetBIObjModHelper(requestContainer, request, response);
 		// GET THE EXECUTION MODALITY AND THE INITIAL PATH  
@@ -231,7 +231,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.setAttribute("LookupBIObject", obj);
 		session.setAttribute("LookupBIObjectParameter", biObjPar);
 		session.setAttribute("modality", message);
-		session.setAttribute("origin", "paramLookup");
 		session.setAttribute("modalityBkp", message);
 	}
 	
@@ -240,7 +239,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
-		session.delAttribute("originIns");
 	}
 	
 	private Integer getBIObjectIdFromLoopbackContext() {
@@ -314,7 +312,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("LookupBIObjectParameter");
 		session.delAttribute("modality");
 		session.delAttribute("modalityBkp");
-		session.delAttribute("originIns");
 		helper.fillResponse(initialPath);
 		prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), modality, false, false);
 		

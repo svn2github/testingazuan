@@ -90,13 +90,13 @@
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.LIGHT_NAVIGATOR_BACK_TO" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.LIGHT_NAVIGATOR_BACK_TO" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -158,13 +158,13 @@
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="3" /><!-- value="1" -->
+        		  <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailParameterModule.LIGHT_NAVIGATOR_BACK_TO" />
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="3" /><!-- value="1" -->
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailParameterModule.LIGHT_NAVIGATOR_BACK_TO" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -172,42 +172,12 @@
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
       		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="LovLookupPage" />
-      		<!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" /> -->
         	</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
       		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="LovLookupPage" />
-      		<!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />-->
         	</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	 <PUBLISHER name="paramLookupLoop1">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
-      		</RESOURCES>
-   	 	</RENDERING>
-   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	<PUBLISHER name="paramLookupLoop2">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="2" />
-      		</RESOURCES>
-   	 	</RENDERING>
-   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListParametersPage" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="2" />
-      		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
 

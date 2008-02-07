@@ -21,13 +21,18 @@
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
 	          <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="SELECT"/>
-	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>		          
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>          
 	        </SELECT_CAPTION>
+	        <CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.ListParam.ListLookupParameters.selectCaption">
+	          <PARAMETER name="id" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>	          
+	        </CAPTION>
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParam.ListLookupParameters.deleteCaption">
 	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>        
               <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>	
-              <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>    
+              <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>  
  	        </DELETE_CAPTION>
 	     </CAPTIONS>
 	      <COLUMNS>
@@ -41,13 +46,13 @@
 	      <NEW_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParam.ListLookupParameters.insertButton">
 	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>	         
-	        <PARAMETER name="ORIGIN_INS" scope="" type="ABSOLUTE" value="lookupParam"/>
+	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 	      </NEW_BUTTON>
 	      <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.ListLookupParameters.backButton">
 	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>
 	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="EXIT_FROM_MODULE"/>
 	        <PARAMETER name="RETURN_STATE" scope="" type="ABSOLUTE" value="BACK"/>
-	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	        <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
 	      </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -87,7 +92,8 @@
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParam.deleteCaption">
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>        
-              <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>	        
+              <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
+              <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>	        
  	        </DELETE_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>
@@ -95,11 +101,13 @@
 	          <!--PARAMETER name="TARGET" scope="" type="ABSOLUTE" value="DETAIL"/-->
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 	        </INSERT_BUTTON>
 	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParam.backButton" onlyPortletRunning="true">
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIBehavioralModelPublisher"/>
-	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
+	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/> -->
+	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
 	        </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -236,13 +244,20 @@
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_FROM_LOOKUP"/>
-	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/> -->
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />-->
 	        </SELECT_CAPTION>
+	        <CAPTION confirm="FALSE" image="/img/detail.gif" label="SBIDev.predLovList.detailCaption">
+	          <PARAMETER name="id" scope="LOCAL" type="RELATIVE" value="ID"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>-->		          
+	         </CAPTION>
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParamUse.ListLookupLov.deleteCaption">
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
-	         <!--  <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>-->
+	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>-->
 	        </DELETE_CAPTION>
 	     </CAPTIONS>
 	      <COLUMNS>
@@ -257,13 +272,13 @@
 		          <!--PARAMETER name="TARGET" scope="" type="ABSOLUTE" value="DETAIL"/-->
 		          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
-		          <PARAMETER name="ORIGIN_LOV" scope="" type="ABSOLUTE" value="listLookupLov"/>
+		         <!--  <PARAMETER name="ORIGIN_LOV" scope="" type="ABSOLUTE" value="listLookupLov"/> -->
 		      </INSERT_BUTTON>
 	          <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParamUse.ListLookupLov.backButton">
 		          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>
 		          <!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/> -->
-		           <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
+		          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
 	      </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
@@ -294,11 +309,13 @@
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
         </SELECT_CAPTION>
         <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.predLovList.deleteCaption">
               <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>	
         </DELETE_CAPTION>
       </CAPTIONS>
       <BUTTONS>
@@ -309,7 +326,8 @@
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.predLovList.backButton" onlyPortletRunning="true">
 	      <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	      <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIBehavioralModelPublisher"/>
-	      <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
+	      <!-- <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/> -->
+	      <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
 	    </BACK_BUTTON>
       </BUTTONS>
     </CONFIG>

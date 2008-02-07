@@ -102,13 +102,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		
 		RequestContainer requestContainer = this.getRequestContainer();
 		session = requestContainer.getSessionContainer();
-        
-		String origin = (String) session.getAttribute("ORIGIN_LOV");
-		if (origin == null) {
-			origin = (String) request.getAttribute("ORIGIN_LOV");
-			if (origin != null)	session.setAttribute("ORIGIN_LOV", origin);
-			logger.debug("Origin module =" +origin);			
-		}
 		
 		
 		errorHandler = getErrorHandler();
@@ -128,11 +121,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 				String id = (String) request.getAttribute("id");
 				getDetailModValue(id, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
-				modDetailModValue(request, AdmintoolsConstants.DETAIL_MOD, origin, response);
+				modDetailModValue(request, AdmintoolsConstants.DETAIL_MOD, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_NEW)) {
 				newDetailModValue(response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-				modDetailModValue(request, AdmintoolsConstants.DETAIL_INS, origin, response);
+				modDetailModValue(request, AdmintoolsConstants.DETAIL_INS, response);
 			} 	else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_DEL)) {
 				delDetailModValue(request, AdmintoolsConstants.DETAIL_DEL, response);
 			} 	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
@@ -152,7 +145,6 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	}
 	
 	private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
-		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		response.setAttribute("loopback", "true");
 		session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
 		session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
@@ -514,291 +506,10 @@ public class DetailModalitiesValueModule extends AbstractModule {
 		}
 		
 		response.setAttribute("loopback", "true");
-		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
 		
 	}
 	
-	private void modDetailModValue(SourceBean request, String mod, 	String origin, SourceBean response) throws EMFUserError, SourceBeanException {
-		try {
-			ModalitiesValue modVal = null;
-			modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-			// to rember that the lov has been modified 
-			// necessary to show a confirm if the user change the lov and then go back without saving
-			String lovProviderModified = (String) request.getAttribute("lovProviderModified");
-			if(lovProviderModified != null && !lovProviderModified.trim().equals("")) 
-				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, lovProviderModified);
-			
-			// check if we are coming from the test
-			String returnFromTestMsg = (String) request.getAttribute("RETURN_FROM_TEST_MSG");
-			if(returnFromTestMsg!=null) {
-				// save after the test
-				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {		
-					
-					// validate data
-					ValidationCoordinator.validate("PAGE", "LovTestColumnSelector", this);
-					// if there are some validation errors return to test page 
-					Collection errors = errorHandler.getErrors();
-					if (errors != null && errors.size() > 0) {
-						Iterator iterator = errors.iterator();
-						while (iterator.hasNext()) {
-							Object error = iterator.next();
-							if(error instanceof EMFValidationError) {
-								response.setAttribute("testLov", "true");
-								return;
-							}
-						}
-					}
-					String valueColumn = (String)request.getAttribute("valueColumn");
-					String descriptionColumn = (String)request.getAttribute("descriptionColumn");
-					List visibleColumns = (List)request.getAttributeAsList("visibleColumn");
-					List columns = (List)request.getAttributeAsList("column");
-					
-					String lovProvider = modVal.getLovProvider();
-					ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovProvider);
-					lovDetail.setDescriptionColumnName(descriptionColumn);
-					List invisCols = getInvisibleColumns(columns, visibleColumns); 
-					lovDetail.setInvisibleColumnNames(invisCols);
-					lovDetail.setValueColumnName(valueColumn);
-					lovDetail.setVisibleColumnNames(visibleColumns);
-					String newLovProvider = lovDetail.toXML();
-					modVal.setLovProvider(newLovProvider);
-					
-					session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-					session.delAttribute(SpagoBIConstants.MODALITY);
-				} 
-				
-				
-				// don't save after the test
-				else if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
-					modVal = (ModalitiesValue) session.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-					//session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
-					//session.delAttribute(SpagoBIConstants.MODALITY);
-					prepareDetailModalitiesValuePage(modVal, mod, response);
-					// exits without writing into DB and without loop
-					return;
-				}
-			} 
-			// if we are not coming from the test result page, the Lov objects fields are in request
-			else {
-				String idStr = (String) request.getAttribute("id");
-				Integer id = new Integer(idStr);
-				String description = (String) request.getAttribute("description");
-				String name = (String) request.getAttribute("name");
-				String label = (String) request.getAttribute("label");
-				String input_type = (String) request.getAttribute("input_type");
-				String input_type_cd = input_type.substring(0, input_type.indexOf(","));
-				String input_type_id = input_type.substring(input_type.indexOf(",") + 1);
-				if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-					modVal.setId(id);
-				} 
-				// check if lov type has been changed and in that case reset the lovprovider
-				String oldTypeId = modVal.getITypeId();
-				if((oldTypeId!=null) && (!oldTypeId.trim().equals(""))) {
-					if(!oldTypeId.equals(input_type_id)) {
-						modVal.setLovProvider("");
-					}
-				}
-				// set the properties of the lov object
-				modVal.setDescription(description);
-				modVal.setName(name);
-				modVal.setLabel(label);
-				modVal.setITypeCd(input_type_cd);
-				modVal.setITypeId(input_type_id);
-                // check label and validation
-				labelControl(request, mod);
-				ValidationCoordinator.validate("PAGE", "ModalitiesValueValidation", this);
-				// based on the type of lov set special properties
-				Object objectToTest = null;
-				
-				
-				if(input_type_cd.equalsIgnoreCase("QUERY")) {
-					String lovProv = modVal.getLovProvider();
-					QueryDetail query = null;
-					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
-						query = new QueryDetail();
-					} else {
-						query = (QueryDetail)LovDetailFactory.getLovFromXML(lovProv);
-					}
-					recoverQueryWizardValues(request, query);
-					String lovProvider = query.toXML();
-					modVal.setLovProvider(lovProvider);
-					ValidationCoordinator.validate("PAGE", "QueryWizardValidation", this);
-					objectToTest = query;
-				} 
-				
-				else if (input_type_cd.equalsIgnoreCase("JAVA_CLASS")) {
-					String lovProv = modVal.getLovProvider();
-					JavaClassDetail javaClassDet =  null;
-					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
-						javaClassDet = new JavaClassDetail();
-					} else {
-						javaClassDet = (JavaClassDetail)LovDetailFactory.getLovFromXML(lovProv);
-					}
-			        recoverJavaClassWizardValues(request, javaClassDet);
-					String lovProvider = javaClassDet.toXML();
-					modVal.setLovProvider(lovProvider);
-					ValidationCoordinator.validate("PAGE", "JavaClassWizardValidation", this);
-					objectToTest = javaClassDet;
-				} 
-				
-				else if (input_type_cd.equalsIgnoreCase("SCRIPT")) {
-					String lovProv = modVal.getLovProvider();
-					ScriptDetail scriptDet =  null;
-					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
-						scriptDet = new ScriptDetail();
-					} else {
-						scriptDet = (ScriptDetail)LovDetailFactory.getLovFromXML(lovProv);
-					}
-					recoverScriptWizardValues(request, scriptDet);
-					String lovProvider = scriptDet.toXML();
-					modVal.setLovProvider(lovProvider);
-					ValidationCoordinator.validate("PAGE", "ScriptWizardValidation", this);
-					objectToTest = scriptDet;
-				} 
-				
-				else  if (input_type_cd.equalsIgnoreCase("FIX_LOV")) {
-					String lovProv = modVal.getLovProvider();
-					FixedListDetail fixlistDet = null;
-					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
-						fixlistDet = new FixedListDetail();
-					} else {
-						fixlistDet = (FixedListDetail)LovDetailFactory.getLovFromXML(lovProv);
-					}
-					boolean itemTaskDone = doFixListItemTask(modVal, fixlistDet, request);
-					if(itemTaskDone) {
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "true");
-						session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-						// exits without writing into DB and without loop
-						return;
-					} else {
-						List items = fixlistDet.getItems();
-						if(items.size()==0) {
-							modVal.setLovProvider("<LOV/>");
-						}
-						objectToTest = fixlistDet;
-					}	
-				}
-				// if there are some validation errors into the errorHandler does not write into DB
-				Collection errors = errorHandler.getErrors();
-				if (errors != null && errors.size() > 0) {
-					Iterator iterator = errors.iterator();
-					while (iterator.hasNext()) {
-						Object error = iterator.next();
-						if (error instanceof EMFValidationError) {
-							prepareDetailModalitiesValuePage(modVal, mod, response);
-							return;
-						}
-					}
-				}
-				// check if user wants to test
-				Object test = request.getAttribute("testLovBeforeSave");
-				if (test != null) {
-					session.setAttribute(SpagoBIConstants.MODALITY, mod);
-					session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-					boolean needProfAttrFill = checkProfileAttributes(response, (ILovDetail)objectToTest);
-					if(!needProfAttrFill) {
-						response.setAttribute("testLov", "true");
-					}
-					// exits without writing into DB 
-					return;
-				}
-			}
-	
-			
-			
-			// finally (if there are no error, if there is no request for test or to
-			// add or delete a Fix Lov item) writes into DB
-			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-				DAOFactory.getModalitiesValueDAO().insertModalitiesValue(modVal);
-			} else {
-				// looks for dependencies associated to the previous lov
-				Integer lovId = modVal.getId();
-				ModalitiesValue initialLov = DAOFactory.getModalitiesValueDAO().loadModalitiesValueByID(lovId);
-				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-				IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
-				List paruses = paruseDAO.getParameterUsesAssociatedToLov(lovId);
-				Iterator parusesIt = paruses.iterator();
-				List documents = new ArrayList();
-				List correlations = new ArrayList();
-				while (parusesIt.hasNext()) {
-					ParameterUse aParuse = (ParameterUse) parusesIt.next();
-					documents.addAll(objParuseDAO.getDocumentLabelsListWithAssociatedDependencies(aParuse.getUseID()));
-					correlations.addAll(objParuseDAO.getAllDependenciesForParameterUse(aParuse.getUseID()));
-				}
-				// if the document list is not empty means that the lov is in correlation in some documents
-				if (documents.size() > 0) {
-					if (!initialLov.getITypeCd().equals(modVal.getITypeCd())) {
-						// the lov type was changed
-						HashMap errparams = new HashMap();
-						errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
-						List params = new ArrayList();
-						params.add(documents.toString());
-						EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "input_type", "1058", params, errparams);
-						errorHandler.addError(error);
-						prepareDetailModalitiesValuePage(modVal, mod, response);
-						return;
-					} else {
-						// the lov type was not changed, must verify that the dependency columns are still present
-						// load all the columns returned by the lov
-						String queryDetXML = modVal.getLovProvider();
-						ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(queryDetXML);
-						List visColumns = lovProvDet.getVisibleColumnNames();
-						List invisColumns = lovProvDet.getInvisibleColumnNames();
-						List columns = new ArrayList();
-						if( (visColumns!=null) && (visColumns.size()!=0) )
-							columns.addAll(visColumns);
-						if( (invisColumns!=null) && (invisColumns.size()!=0) )
-							columns.addAll(invisColumns);
-						// for each correlation column name chechs if the column is still present 
-						Iterator correlationsIt = correlations.iterator();
-						boolean columnNoMorePresent = false;
-						List columnsNoMorePresent = new ArrayList();
-						while (correlationsIt.hasNext()) {
-							ObjParuse aObjParuse = (ObjParuse) correlationsIt.next();
-							String filterColumn = aObjParuse.getFilterColumn();
-							// because spago put all sourcebean attribute to Uppercase
-							//filterColumn = filterColumn.toUpperCase();
-							if (!columns.contains(filterColumn)) {
-								columnNoMorePresent = true;
-								columnsNoMorePresent.add(filterColumn);
-							}
-						}
-						// if there are some column no more present then generate an error and return to the detail page
-						if (columnNoMorePresent) {
-							HashMap errparams = new HashMap();
-							errparams.put(AdmintoolsConstants.PAGE, "DetailModalitiesValuePage");
-							List params = new ArrayList();
-							params.add(documents.toString());
-							params.add(columnsNoMorePresent.toString());
-							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, 1059, params, errparams);
-							errorHandler.addError(error);
-							prepareDetailModalitiesValuePage(modVal, mod, response);
-							return;
-						}
-					}
-				}
-				DAOFactory.getModalitiesValueDAO().modifyModalitiesValue(modVal);
-			}
-			
-		} catch (Exception ex) {			
-			logger.error("Cannot fill response container", ex  );
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, ListLovsModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 1018, new Vector(), params);
-		}
-		
-		if (origin != null && origin.equalsIgnoreCase("listLookupLov")){
-			if(session.getAttribute("origin") == null)
-				session.delAttribute("ORIGIN_LOV");
-		}
-
-		response.setAttribute("loopback", "true");
-		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-		session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
-		
-	}
 	
 	private boolean checkProfileAttributes(SourceBean response, ILovDetail lovDet) {
 		boolean needFill = false;
@@ -973,7 +684,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 		}
 		response.setAttribute("loopback", "true");
-		response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		//response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	}
 	
 	

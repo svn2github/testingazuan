@@ -55,10 +55,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	formUrlPars.put("MESSAGEDET", modality);
 	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formUrl = urlBuilder.getUrl(request, formUrlPars);
-	
+    
     Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "detailParameterPage");
-    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	if(moduleResponse.getAttribute("SelectedLov") != null && ((String)moduleResponse.getAttribute("SelectedLov")).equalsIgnoreCase("true"))
+			backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "2");
+		else
+			backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
@@ -434,7 +437,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		<% 	
 	  		Map lovLookupURLPars = new HashMap();
   			lovLookupURLPars.put("PAGE", "lovLookupPage");
-  			lovLookupURLPars.put("ORIGIN", "lovLookupPage");
+  			//lovLookupURLPars.put("ORIGIN", "lovLookupPage");
 	  		String lovLookupURL = urlBuilder.getUrl(request, formUrlPars);
   		%>
   		&nbsp;*&nbsp;
@@ -846,6 +849,8 @@ function uncheckAllFreeRoles() {
 		aFreeCheck.checked = false;
 	}
 }
+
+
 </script>
 
 </div>

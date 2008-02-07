@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
@@ -760,7 +761,8 @@ public class DetailParameterModule extends AbstractModule {
 				parameter.setTypeId(domain.getValueId());
 			}
 			response.setAttribute("parametersObj", parameter);
-			response.setAttribute("originIns", (request.getAttribute("ORIGIN_INS")==null)?"":(String)request.getAttribute("ORIGIN_INS"));
+			//sets information for future definitions of back return
+			session.setAttribute("originIns", "true");
 		} catch (Exception ex) {
 			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailParameterModule","newDetailParameter","Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -938,10 +940,12 @@ public class DetailParameterModule extends AbstractModule {
 		String modality = (String) session.getAttribute("modality");
 		String selectedLovId = (String) request.getAttribute("ID");
 		paruse.setIdLov(Integer.valueOf(selectedLovId));
-		prepareParameterDetailPage(response, parameter, paruse, paruse.getUseID().toString(), modality, false, false);		
+		prepareParameterDetailPage(response, parameter, paruse, paruse.getUseID().toString(), modality, false, false);	
 		session.delAttribute("LookupParameter");
 		session.delAttribute("LookupParUse");
 		session.delAttribute("modality");
+		session.setAttribute("SelectedLov", "true");
+		response.setAttribute("SelectedLov", "true");
 	}
 	
 	private void lookupReturnBackHandler (SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
@@ -964,10 +968,21 @@ public class DetailParameterModule extends AbstractModule {
 	 * @throws SourceBeanException
 	 */
 	private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
+		/*
+		 * define the number of 'page' to return dipendently from the tour of navigation 
+		 * (expecially if the user is went until lookup lov and selected one)
+		 */
+		if(session.getAttribute("SelectedLov") != null && ((String)session.getAttribute("SelectedLov")).equalsIgnoreCase("true") &&
+		   (session.getAttribute("originIns") == null || !((String)session.getAttribute("originIns")).equalsIgnoreCase("true")))
+			response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "2");
+		else
+			response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		
 		session.delAttribute("initial_Parameter");
 		session.delAttribute("initial_ParameterUse");
-		if (session.getAttribute("ORIGIN_LOV") == null || ((String)session.getAttribute("ORIGIN_LOV")).equals(""))
-			session.delAttribute("originIns");
+		session.delAttribute("SelectedLov");
+		session.delAttribute("originIns");
+		
 		response.setAttribute("loopback", "true");
 	}
 	

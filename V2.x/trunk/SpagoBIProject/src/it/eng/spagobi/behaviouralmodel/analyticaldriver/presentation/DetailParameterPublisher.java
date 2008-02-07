@@ -85,38 +85,14 @@ public class DetailParameterPublisher implements PublisherDispatcherIFace {
 		//getting publisher name dependently from navigation (ie. document - insert parameter - back) 
         Object loop = moduleResponse.getAttribute("loopback");
         Object lookupLoop = moduleResponse.getAttribute("lookupLoopback");
-        String paramLoopIns = (String)moduleResponse.getAttribute("originIns");
-        if(paramLoopIns == null)
-        	paramLoopIns = (String)session.getAttribute("originIns");
-        else
-        	if (!paramLoopIns.equalsIgnoreCase("")) session.setAttribute("originIns", paramLoopIns);
         
-        	
-        Object paramLoop = session.getAttribute("ORIGIN_PARAM");
-        if (moduleResponse.getAttribute("modality")!= null && ((String)moduleResponse.getAttribute("modality")).equalsIgnoreCase("DETAIL_INS"))
-        	paramLoop = "";
-        String publisherValue = "";
-        
-        if (lookupLoop != null){
-			publisherValue = "lovLookupLoop";
-		} else if ((paramLoop != null && ((String)paramLoop).equalsIgnoreCase("paramLookup")) &&
-					(paramLoopIns == null || (paramLoopIns).equalsIgnoreCase(""))){
-			publisherValue = "paramLookupLoop1";
-			session.delAttribute("ORIGIN_PARAM");
-		} else if (loop != null && paramLoopIns != null) {
-        	publisherValue = "detailParameterLoop";
-        	session.delAttribute("ORIGIN_LOV");
-		} else if (loop != null) {
-        	publisherValue = "detailParameterLoop";
+        if (loop != null) {
+        	return "detailParameterLoop";
+		} else if (lookupLoop != null){
+			return "lovLookupLoop";
+		} else {
+			return "detailParameter";
 		}
-		else{
-			publisherValue = "detailParameter";
-		}
-        
-        
-        logger.debug("redirect to publisher: " + publisherValue);
-        
-        return publisherValue;
 	}
 
 }

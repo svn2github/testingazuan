@@ -201,6 +201,7 @@ public class AdapterPortlet extends GenericPortlet {
             else {
 	            monitor = MonitorFactory.start("controller.adapter.portlet");
 	            serviceRequest = new SourceBean(Constants.SERVICE_REQUEST);
+	            requestContainer.setServiceRequest(serviceRequest);
 	            
                 boolean isMultipart = false;
                 
@@ -237,8 +238,10 @@ public class AdapterPortlet extends GenericPortlet {
             if ("enabled".equalsIgnoreCase(navigation)) {
             	serviceRequest = LightNavigationManager.controlLightNavigation(request, serviceRequest);
             }
-            //********************************************************************************************
+            //updates service request after LightNavigationManager control
             requestContainer.setServiceRequest(serviceRequest);
+            //********************************************************************************************
+            
             boolean isRequestedSessionIdValid = true;
             PortletSession session = request.getPortletSession(true);
             /*

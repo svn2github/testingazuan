@@ -3,7 +3,7 @@
  * LICENSE: see 'LICENSE.sbi.drivers.qbe.txt' file
  * 
  */
-package it.eng.spagobi.engines.drivers.qbe;
+package it.eng.spagobi.engines.drivers.geo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -34,13 +34,18 @@ import sun.misc.BASE64Encoder;
 
 
 /**
- * Driver Implementation (IEngineDriver Interface) for Qbe External Engine. 
+ * Driver Implementation (IEngineDriver Interface) for Geo External Engine. 
  */
-public class QbeDriver implements IEngineDriver {
+public class GeoDriver implements IEngineDriver {
 	
-	static private Logger logger = Logger.getLogger(QbeDriver.class);
-	 
-		
+	static private Logger logger = Logger.getLogger(GeoDriver.class);
+	
+	public static final String DOCUMENT_ID = "document";
+	public static final String USER_ID = "userId";
+	
+	public static final String COUNTRY = "country";
+	public static final String LANGUAGE = "language";
+	
 	/**
 	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
@@ -52,12 +57,13 @@ public class QbeDriver implements IEngineDriver {
 	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 		logger.debug("IN");
 		
-		Map map = new Hashtable();
+		Map map;
+		BIObject biobj;
+		
+		map = new Hashtable();
 		try{
-			BIObject biobj = (BIObject)biobject;
+			biobj = (BIObject)biobject;
 			map = getMap(biobj);
-			// This parameter is not required
-			//map.put("query", "#");
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 
@@ -65,7 +71,9 @@ public class QbeDriver implements IEngineDriver {
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
 		map = applyService(map);
+		
 		logger.debug("OUT");
+		
 		return map;
 	}
 	
@@ -78,9 +86,9 @@ public class QbeDriver implements IEngineDriver {
 	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
   	 */
-	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
-		logger.debug("IN");			
-			
+	public Map getParameterMap   (Object object, Object subObject, IEngUserProfile profile, String roleName) {
+		logger.debug("IN");
+		
 		if(subObject == null) {
 			return getParameterMap(object, profile, roleName);
 		}
@@ -90,20 +98,46 @@ public class QbeDriver implements IEngineDriver {
 			BIObject biobj = (BIObject)object;
 			map = getMap(biobj);
 			SubObject subObjectDetail = (SubObject) subObject;
-			map.put("query", subObjectDetail.getName());
+			
+			
+			map.put("nameSubObject",  subObjectDetail.getName() );
+			map.put("descriptionSubObject", subObjectDetail.getDescription() );
+			map.put("visibilitySubObject", subObjectDetail.getIsPublic().booleanValue()?"Public":"Private" );
+	        map.put("subobjectId", subObjectDetail.getId());
+		
+			
 		} catch (ClassCastException cce) {
-			logger.error("The parameter is not a BIObject type", cce);
-		} 
+		    logger.error("The second parameter is not a SubObjectDetail type", cce);
+		}
+		
+		
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
 		map = applyService(map);
-		logger.debug("OUT");
+		
+		logger.debug("OUT");		
+		
 		return map;
 	}
-	
-	
-	
+
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject,
+			IEngUserProfile profile) throws InvalidOperationRequest {
+		logger.warn("Function not implemented");
+    	throw new InvalidOperationRequest();
+	}
+
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject,
+			IEngUserProfile profile) throws InvalidOperationRequest {
+		logger.warn("Function not implemented");
+    	throw new InvalidOperationRequest();
+	}
 	     
+	
+	
+	
+	
+	
+	
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
@@ -120,7 +154,6 @@ public class QbeDriver implements IEngineDriver {
 		
 		pars = new Hashtable();
 		try {
-		
 			objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobj.getId());		    
 			if (objtemplate == null) {
 		    	throw new Exception("Active Template null");
@@ -131,22 +164,25 @@ public class QbeDriver implements IEngineDriver {
 				throw new Exception("Content of the Active template null");
 			}
 			
-			documentId = biobj.getId().toString();
-			pars.put("document", documentId);
-			logger.debug("Add document parameter:" + documentId);
-	        
-			pars = addBIParameters(biobj, pars);
-        
+		    documentId = biobj.getId().toString();		    
+		    pars.put(DOCUMENT_ID, documentId);
+		    logger.debug("Add document parameter: " + documentId);
+		    
+		    //pars.put("templatePath",biobj.getPath() + "/template");
+			//pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+			//pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
+		    
+		    pars = addBIParameters(biobj, pars);
 		} catch (Exception e) {
 		    logger.error("Error while recovering execution parameter map: \n" + e);
 		}
 		
-
 		logger.debug("OUT");
 		
 		return pars;
 	} 
-	
+ 
+         
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute
@@ -177,43 +213,18 @@ public class QbeDriver implements IEngineDriver {
 		}
 		
 		logger.debug("OUT");
-  		return pars;
-	}
+  		
+		return pars;
+	}	
 	
 	 /**
-     * Function not implemented. Thid method should not be called
-     * 
-     * @param biobject The BIOBject to edit
-     * @throws InvalidOperationRequest
-     */
-    public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
-	throws InvalidOperationRequest {
-    	logger.warn("Function not implemented");
-    	throw new InvalidOperationRequest();
-    }
-
-    /**
-     * Function not implemented. Thid method should not be called
-     * 
-     * @param biobject  The BIOBject to edit
-     * @throws InvalidOperationRequest
-     */
-    public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
-	throws InvalidOperationRequest {
-    	logger.warn("Function not implemented");
-    	throw new InvalidOperationRequest();
-    }
-
-    
-        
-    /**
 	 * Applys changes for security reason if necessary
 	 * @param pars The map of parameters
 	 * @return the map of parameters to send to the engine 
 	 */
 	protected Map applySecurity(Map pars, IEngUserProfile profile) {
 		logger.debug("IN");
-		pars.put("userId", profile.getUserUniqueIdentifier());
+		pars.put(USER_ID, profile.getUserUniqueIdentifier());
 		logger.debug("Add parameter: userId/"+ profile.getUserUniqueIdentifier());
 		logger.debug("OUT");
 		return pars;
@@ -221,7 +232,7 @@ public class QbeDriver implements IEngineDriver {
 
 	protected Map applyService(Map pars) {
 		logger.debug("IN");
-		pars.put("ACTION_NAME", "SPAGO_BI_START_ACTION");
+		pars.put("ACTION_NAME", "GEO_ACTION");
 		pars.put("NEW_SESSION", "TRUE");
 		logger.debug("OUT");
 		return pars;
@@ -247,15 +258,15 @@ public class QbeDriver implements IEngineDriver {
 		}
 		
 		if(languageSB != null) {
-			map.put("country", (String)languageSB.getAttribute("country"));
-			map.put("language", (String)languageSB.getAttribute("language"));
+			map.put(COUNTRY, (String)languageSB.getAttribute("country"));
+			map.put(LANGUAGE, (String)languageSB.getAttribute("language"));
 			logger.debug("Added parameter: country/" + (String)languageSB.getAttribute("country"));
 			logger.debug("Added parameter: language/" + (String)languageSB.getAttribute("language"));
 		} else {
 			logger.warn("Language " + portalLocale.getLanguage() + " is not supported by SpagoBI");
 			logger.warn("Portal locale will be replaced with the default lacale (country: US; language: en).");
-			map.put("country", "US");
-			map.put("language", "en");
+			map.put(COUNTRY, "US");
+			map.put(COUNTRY, "en");
 			logger.debug("Added parameter: country/US");
 			logger.debug("Added parameter: language/en");
 		}			

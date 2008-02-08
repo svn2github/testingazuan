@@ -286,7 +286,6 @@ public class ExporterMetadata {
 			}
 			
 			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
-
 			
 			SbiBinContents hibBinContent = new SbiBinContents();
 			hibBinContent.setId(subObject.getBinaryContentId());
@@ -301,7 +300,7 @@ public class ExporterMetadata {
 			sub.setLastChangeDate(subObject.getLastChangeDate());
 			sub.setSbiBinContents(hibBinContent);
 			sub.setSbiObject(hibBIObj);
-			
+			sub.setSubObjId(subObject.getId());
 			
 			session.save(sub);
 			session.save(hibBinContent);

@@ -615,7 +615,7 @@ function checkFormVisibility(docType) {
 			<table> 
 				<% 
 					templates = objtempdao.getBIObjectTemplateList(obj.getId());
-		 			ObjTemplate currTemplate = objtempdao.getBIObjectActiveTemplate(obj.getId());	
+		 			ObjTemplate currTemplate = objtempdao.getBIObjectActiveTemplate(obj.getId());
 					if(templates==null)
 		 				templates = new ArrayList();
 					Integer curVer = null;

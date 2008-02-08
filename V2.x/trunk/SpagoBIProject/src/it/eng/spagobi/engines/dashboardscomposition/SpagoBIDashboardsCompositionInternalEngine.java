@@ -91,7 +91,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 			try{
 				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
 	            if(template==null) throw new Exception("Active Template null");
-	            contentBytes = DAOFactory.getBinContentDAO().getBinContent(template.getBinId());
+	            contentBytes = template.getContent();
 	            if(contentBytes==null) throw new Exception("Content of the Active template null");
 			} catch (Exception e) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),

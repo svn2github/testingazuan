@@ -25,6 +25,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
@@ -334,6 +335,26 @@ public class ExportManager implements IExportManager {
 	    exporter.insertEngine(engine, session);
 	    exporter.insertBIObject(biobj, session);
 
+	    // if the document is a dashboard, export the relevant lov
+		if (biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+			ObjTemplate template = biobj.getActiveTemplate();
+			if (template != null) {
+				try {
+					byte[] tempFileCont = template.getContent();
+					String tempFileStr = new String(tempFileCont);
+					SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
+					SourceBean datanameSB = (SourceBean) tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
+					String lovLabel = (String) datanameSB.getAttribute("value");
+				    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
+				    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
+				    exporter.insertLov(lov, session);
+				} catch (Exception e) {
+					logger.error("Error while exporting dashboard with id " + idObj + " and label " + biobj.getLabel() + " : " +
+							"could not find lov reference in its template.");
+				}
+			}
+		}
+	    
 	    if (exportSubObjects) {
 		ISubObjectDAO subDao = DAOFactory.getSubObjectDAO();
 		List subObjectLis = subDao.getSubObjects(biobj.getId());

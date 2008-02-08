@@ -179,7 +179,7 @@ public class JPivotDriver implements IEngineDriver {
 	    ObjTemplate objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobj.getId());
 	    if (objtemplate == null)
 		throw new Exception("Active Template null");
-	    byte[] template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());
+	    byte[] template = objtemplate.getContent();
 	    if (template == null)
 		throw new Exception("Content of the Active template null");
 	    String documentId = biobj.getId().toString();

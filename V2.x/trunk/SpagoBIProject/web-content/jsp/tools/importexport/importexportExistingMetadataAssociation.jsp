@@ -157,6 +157,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</table>
 
 
+	<spagobi:message key = "impexp.overwrite"  bundle="component_impexp_messages"/>: 
+	<select name="overwrite">
+		<option value="false">
+			<spagobi:message key="impexp.overwrite.no" bundle="component_impexp_messages"/>
+		</option>
+		<option value="true">
+			<spagobi:message key="impexp.overwrite.yes" bundle="component_impexp_messages"/>
+		</option>
+	</select>
+
 
 	<div class="div_background_no_img">
 		<div class="box padding5" >

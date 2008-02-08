@@ -71,6 +71,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class ImportManager implements IImportManager, Serializable {
     /**
      * Imports the exported objects
      */
-    public void importObjects() throws EMFUserError {
+    public void importObjects(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	updateDataSourceReferences(metaAss.getDataSourceAssociation());
 	importDataSource();
@@ -185,10 +186,10 @@ public class ImportManager implements IImportManager, Serializable {
 	importEngines();
 	importFunctionalities();
 	importChecks();
-	importParameters();
-	importLovs();
+	importParameters(overwrite);
+	importLovs(overwrite);
 	importParuse();
-	importBIObjects();
+	importBIObjects(overwrite);
 	importBIObjectLinks();
 	importFunctObject();
 	importFunctRoles();
@@ -691,35 +692,38 @@ public class ImportManager implements IImportManager, Serializable {
      * 
      * @throws EMFUserError
      */
-    private void importLovs() throws EMFUserError {
+    private void importLovs(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	try {
 	    List exportedLovs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov");
 	    Iterator iterSbiLovs = exportedLovs.iterator();
 	    while (iterSbiLovs.hasNext()) {
-		SbiLov lov = (SbiLov) iterSbiLovs.next();
-		Integer oldId = lov.getLovId();
-		Map lovIdAss = metaAss.getLovIDAssociation();
-		Set lovIdAssSet = lovIdAss.keySet();
-		if (lovIdAssSet.contains(oldId)) {
-		    metaLog.log("Exported lov " + lov.getName() + " not inserted"
-			    + " because it has the same label of an existing lov");
-		    continue;
-		}
-		SbiLov newlov = ImportUtilities.makeNewSbiLov(lov);
-		String inpTypeCd = lov.getInputTypeCd();
-		Map unique = new HashMap();
-		unique.put("valuecd", inpTypeCd);
-		unique.put("domaincd", "INPUT_TYPE");
-		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
-		if (existDom != null) {
-		    newlov.setInputType(existDom);
-		    newlov.setInputTypeCd(existDom.getValueCd());
-		}
-		sessionCurrDB.save(newlov);
-		metaLog.log("Inserted new lov " + newlov.getName());
-		Integer newId = newlov.getLovId();
-		metaAss.insertCoupleLov(oldId, newId);
+			SbiLov exportedLov = (SbiLov) iterSbiLovs.next();
+			Integer oldId = exportedLov.getLovId();
+			Integer existingLovId = null; 
+			Map lovIdAss = metaAss.getLovIDAssociation();
+			Set lovIdAssSet = lovIdAss.keySet();
+			if (lovIdAssSet.contains(oldId) && !overwrite) {
+			    metaLog.log("Exported lov " + exportedLov.getName() + " not inserted"
+				    + " because it has the same label of an existing lov");
+			    continue;
+			} else {
+				existingLovId = (Integer) lovIdAss.get(oldId);
+			}
+			if (existingLovId != null) {
+				logger.info("The lov with label:[" + exportedLov.getLabel() + "] is just present. It will be updated.");
+			    metaLog.log("The lov with label = [" + exportedLov.getLabel() + "] will be updated.");
+				SbiLov existinglov = ImportUtilities.modifyExistingSbiLov(exportedLov, sessionCurrDB, existingLovId);
+			    ImportUtilities.associateWithExistingEntities(existinglov, exportedLov, sessionCurrDB, importer, metaAss);
+			    sessionCurrDB.update(existinglov);
+			} else {
+				SbiLov newlov = ImportUtilities.makeNewSbiLov(exportedLov);
+				ImportUtilities.associateWithExistingEntities(newlov, exportedLov, sessionCurrDB, importer, metaAss);
+				sessionCurrDB.save(newlov);
+				metaLog.log("Inserted new lov " + newlov.getName());
+				Integer newId = newlov.getLovId();
+				metaAss.insertCoupleLov(oldId, newId);
+			}
 	    }
 	} catch (HibernateException he) {
 	    logger.error("Error while inserting object ", he);
@@ -784,35 +788,38 @@ public class ImportManager implements IImportManager, Serializable {
      * 
      * @throws EMFUserError
      */
-    private void importParameters() throws EMFUserError {
+    private void importParameters(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	try {
 	    List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters");
 	    Iterator iterSbiParams = exportedParams.iterator();
 	    while (iterSbiParams.hasNext()) {
-		SbiParameters param = (SbiParameters) iterSbiParams.next();
-		Integer oldId = param.getParId();
-		Map paramIdAss = metaAss.getParameterIDAssociation();
-		Set paramIdAssSet = paramIdAss.keySet();
-		if (paramIdAssSet.contains(oldId)) {
-		    metaLog.log("Exported parameter " + param.getName() + " not inserted"
-			    + " because it has the same label of an existing parameter");
-		    continue;
-		}
-		SbiParameters newPar = ImportUtilities.makeNewSbiParameter(param);
-		String typeCd = param.getParameterTypeCode();
-		Map unique = new HashMap();
-		unique.put("valuecd", typeCd);
-		unique.put("domaincd", "PAR_TYPE");
-		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
-		if (existDom != null) {
-		    newPar.setParameterType(existDom);
-		    newPar.setParameterTypeCode(existDom.getValueCd());
-		}
-		sessionCurrDB.save(newPar);
-		metaLog.log("Inserted new parameter " + newPar.getName());
-		Integer newId = newPar.getParId();
-		metaAss.insertCoupleParameter(oldId, newId);
+			SbiParameters exportedParameter = (SbiParameters) iterSbiParams.next();
+			Integer oldId = exportedParameter.getParId();
+			Integer existingParId = null;
+			Map paramIdAss = metaAss.getParameterIDAssociation();
+			Set paramIdAssSet = paramIdAss.keySet();
+			if (paramIdAssSet.contains(oldId) && !overwrite) {
+			    metaLog.log("Exported parameter " + exportedParameter.getName() + " not inserted"
+				    + " because it has the same label of an existing parameter");
+			    continue;
+			} else {
+				existingParId = (Integer) paramIdAss.get(oldId);
+			}
+			if (existingParId != null) {
+			    logger.info("The parameter with label:[" + exportedParameter.getLabel() + "] is just present. It will be updated.");
+			    metaLog.log("The parameter with label = [" + exportedParameter.getLabel() + "] will be updated.");
+				SbiParameters existingParameter = ImportUtilities.modifyExistingSbiParameter(exportedParameter, sessionCurrDB, existingParId);
+				ImportUtilities.associateWithExistingEntities(existingParameter, exportedParameter, sessionCurrDB, importer, metaAss);
+				sessionCurrDB.update(existingParameter);
+			} else {
+				SbiParameters newPar = ImportUtilities.makeNewSbiParameter(exportedParameter);
+				ImportUtilities.associateWithExistingEntities(newPar, exportedParameter, sessionCurrDB, importer, metaAss);
+				sessionCurrDB.save(newPar);
+				metaLog.log("Inserted new parameter " + newPar.getName());
+				Integer newId = newPar.getParId();
+				metaAss.insertCoupleParameter(oldId, newId);
+			}
 	    }
 	} catch (HibernateException he) {
 	    logger.error("Error while inserting object ", he);
@@ -830,145 +837,81 @@ public class ImportManager implements IImportManager, Serializable {
      * 
      * @throws EMFUserError
      */
-    private void importBIObjects() throws EMFUserError {
-	logger.debug("IN");
-	try {
-	    List exportedBIObjs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
-	    Iterator iterSbiObjs = exportedBIObjs.iterator();
-	    while (iterSbiObjs.hasNext()) {
-
-		SbiObjects exopObj = (SbiObjects) iterSbiObjs.next();
-
-		Integer expId = exopObj.getBiobjId();
-
-		// reading exist engine
-		SbiEngines engine = exopObj.getSbiEngines();
-		Integer expEngId = engine.getEngineId();
-		Map assEngs = metaAss.getEngineIDAssociation();
-		Integer newEngId = (Integer) assEngs.get(expEngId);
-		if (newEngId != null) {
-		    SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine, newEngId);
-		    exopObj.setSbiEngines(newEng);
+    private void importBIObjects(boolean overwrite) throws EMFUserError {
+		logger.debug("IN");
+		try {
+		    List exportedBIObjs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
+		    Iterator iterSbiObjs = exportedBIObjs.iterator();
+		    while (iterSbiObjs.hasNext()) {
+				SbiObjects exportedObj = (SbiObjects) iterSbiObjs.next();
+				Integer expId = exportedObj.getBiobjId();
+				Integer existingObjId = null;
+				Map objIdAss = metaAss.getBIobjIDAssociation();
+			    Set objIdAssSet = objIdAss.keySet();
+				if (objIdAssSet.contains(expId) && !overwrite) {
+					metaLog.log("Exported biobject "+exportedObj.getName()+" not inserted" +
+								" because it has the same label of an existing biobject");
+					continue;
+				} else {
+					existingObjId = (Integer) objIdAss.get(expId);
+				}
+				
+				SbiObjects obj = null;
+				if (existingObjId != null) {
+					logger.info("The document with label:[" + exportedObj.getLabel() + "] is just present. It will be updated.");
+				    metaLog.log("The document with label = [" + exportedObj.getLabel() + "] will be updated.");
+				    obj = ImportUtilities.modifyExistingSbiObject(exportedObj, sessionCurrDB, existingObjId);
+				    ImportUtilities.associateWithExistingEntities(obj, exportedObj, sessionCurrDB, importer, metaAss);
+				    sessionCurrDB.update(obj);
+				} else {
+					obj = ImportUtilities.makeNewSbiObject(exportedObj);
+					ImportUtilities.associateWithExistingEntities(obj, exportedObj, sessionCurrDB, importer, metaAss);
+				    // insert document
+				    Integer newId = (Integer) sessionCurrDB.save(obj);
+				    metaLog.log("Inserted new biobject " + obj.getName());
+				    metaAss.insertCoupleBIObj(expId, newId);
+				}
+				// manage object template
+				insertObjectTemplate(obj, exportedObj.getBiobjId());
+				// manage sub_object here
+			    insertSubObject(obj, exportedObj);
+			    // manage snapshot here
+			    insertSnapshot(obj, exportedObj);
+			    
+			    
+			    // TODO controllare che fa questo e se serve!!!
+			    //updateSubObject(obj, exportedObj.getBiobjId());
+		    }
+		} finally {
+		    logger.debug("OUT");
 		}
-		// reading exist object type
-		SbiObjects newObj = ImportUtilities.makeNewSbiObject(exopObj);
-		String typeCd = exopObj.getObjectTypeCode();
-		Map unique = new HashMap();
-		unique.put("valuecd", typeCd);
-		unique.put("domaincd", "BIOBJ_TYPE");
-		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
-		if (existDom != null) {
-		    newObj.setObjectType(existDom);
-		    newObj.setObjectTypeCode(existDom.getValueCd());
-		}
-		// reading exist state
-		String stateCd = exopObj.getStateCode();
-		unique = new HashMap();
-		unique.put("valuecd", stateCd);
-		unique.put("domaincd", "STATE");
-		SbiDomains existDomSt = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
-		if (existDomSt != null) {
-		    newObj.setState(existDomSt);
-		    newObj.setStateCode(existDomSt.getValueCd());
-		}
-
-		// reading exist datasource
-		SbiDataSource expDs = exopObj.getDataSource();
-		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
-		if (label == null) {
-		    // exist a DataSource Association, read a new DataSource
-		    // from the DB
-		    label = expDs.getLabel();
-		}
-		Criterion labelCriterrion = Expression.eq("label", label);
-		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-		criteria.add(labelCriterrion);
-		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
-		newObj.setDataSource(localDS);
-
-		Map objIdAss = metaAss.getBIobjIDAssociation();
-		Set objIdAssSet = objIdAss.keySet();
-		if (objIdAssSet.contains(expId)) {
-		    logger.info("This Documents is just present (label):" + exopObj.getLabel());
-//		    metaLog.log("Exported biobject " + exopObj.getName() + " not inserted"
-//			    + " because it has the same label of an existing biobject");
-		    metaLog.log("The document with label = [" + exopObj.getLabel() + "] will be updated.");
-		    // update document
-		    Integer existingId=(Integer)metaAss.getBIobjIDAssociation().get(expId);
-		    SbiObjects existingObj=(SbiObjects)sessionCurrDB.load(SbiObjects.class, existingId);
-		    existingObj.setName(newObj.getName());
-		    existingObj.setDescr(newObj.getDescr());
-		    existingObj.setLabel(newObj.getLabel());
-		    existingObj.setExecModeCode(newObj.getExecModeCode());
-		    existingObj.setObjectTypeCode(newObj.getObjectTypeCode());
-		    existingObj.setPath(newObj.getPath());
-		    existingObj.setRelName(newObj.getRelName());
-		    existingObj.setStateCode(newObj.getStateCode());
-		    existingObj.setStateConsiderationCode(newObj.getStateConsiderationCode());
-		    existingObj.setUuid(newObj.getUuid());
-		    existingObj.setDataSource(newObj.getDataSource());
-		    existingObj.setEncrypt(newObj.getEncrypt());
-		    existingObj.setExecMode(newObj.getExecMode());
-		    existingObj.setExecModeCode(newObj.getExecModeCode());
-		    existingObj.setObjectType(newObj.getObjectType());
-		    existingObj.setSbiEngines(newObj.getSbiEngines());
-		    existingObj.setSbiObjFuncs(newObj.getSbiObjFuncs());
-		    existingObj.setSchedFl(newObj.getSchedFl());
-		    existingObj.setSbiObjPars(newObj.getSbiObjPars());
-		    existingObj.setState(newObj.getState());
-		    existingObj.setSbiObjStates(newObj.getSbiObjStates());
-		    existingObj.setVisible(newObj.getVisible());
-		    sessionCurrDB.update(existingObj);
-		    
-		    // update object template
-		    insertObjectTemplate(existingObj, exopObj.getBiobjId());
-
-		    updateSubObject(existingObj, exopObj.getBiobjId());
-
-		} else {
-		    // insert document
-		    Integer newId = (Integer) sessionCurrDB.save(newObj);
-		    metaLog.log("Inserted new biobject " + newObj.getName());
-		    metaAss.insertCoupleBIObj(expId, newId);
-
-		    // insert object template
-		    insertObjectTemplate(newObj, exopObj.getBiobjId());
-
-		    // insert sub_object here
-		    insertSubObject(newObj, exopObj.getBiobjId());
-
-		    // insert snapshot here
-		    insertSnapshot(newObj, exopObj.getBiobjId());
-		}
-	    }
-	} finally {
-	    logger.debug("OUT");
-	}
     }
 
-    private void insertSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
-	logger.debug("IN");
-	List subObjList = null;
-	try {
-	    Query hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + objIdExp);
-	    subObjList = hibQuery.list();
-	    if (subObjList.isEmpty()) {
-		logger.warn(" Sub Object is not present");
-		return;
-	    }
-	    SbiSnapshots expSbiSnapshots = (SbiSnapshots) subObjList.get(0);
-	    SbiSnapshots newSnapshots = ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
-	    newSnapshots.setSbiObject(obj);
-	    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
-	    newSnapshots.setSbiBinContents(binary);
-	    sessionCurrDB.save(newSnapshots);
-
-	} catch (HibernateException he) {
-	    logger.error("Error while getting exported template objects ", he);
-	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-	} finally {
-	    logger.debug("OUT");
-	}
+    private void insertSnapshot(SbiObjects obj, SbiObjects exportedObj) throws EMFUserError {
+		logger.debug("IN");
+		List exportedSnapshotsList = null;
+		try {
+		    Query hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + exportedObj.getBiobjId());
+		    exportedSnapshotsList = hibQuery.list();
+		    if (exportedSnapshotsList.isEmpty()) {
+		    	logger.debug("Exported document with label=[" + exportedObj.getLabel() + "] has no snapshots");
+		    	return;
+		    }
+		    Iterator exportedSnapshotsListIt = exportedSnapshotsList.iterator();
+		    while (exportedSnapshotsListIt.hasNext()) {
+		    	SbiSnapshots expSbiSnapshots = (SbiSnapshots) exportedSnapshotsListIt.next();
+			    SbiSnapshots newSnapshots = ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
+			    newSnapshots.setSbiObject(obj);
+			    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
+			    newSnapshots.setSbiBinContents(binary);
+			    sessionCurrDB.save(newSnapshots);
+		    }
+		} catch (HibernateException he) {
+		    logger.error("Error while getting exported template objects ", he);
+		    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} finally {
+		    logger.debug("OUT");
+		}
     }
     
     private void updateSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
@@ -1019,7 +962,6 @@ public class ImportManager implements IImportManager, Serializable {
             subObjList = hibQuery.list();
             if (subObjList.isEmpty()) {
         	logger.warn(" Existing Sub Object is not present");
-
             }	
             SbiSubObjects existingSubObject = (SbiSubObjects) subObjList.get(0);
             if (existingSubObject==null){
@@ -1056,30 +998,32 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
     
-    private void insertSubObject(SbiObjects obj, Integer objIdExp) throws EMFUserError {
-	logger.debug("IN");
-	List subObjList = null;
-	try {
-	    Query hibQuery = sessionExpDB
-		    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + objIdExp);
-	    subObjList = hibQuery.list();
-	    if (subObjList.isEmpty()) {
-		logger.warn(" Sub Object is not present");
-		return;
-	    }
-	    SbiSubObjects expSubObject = (SbiSubObjects) subObjList.get(0);
-	    SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
-	    newSubObj.setSbiObject(obj);
-	    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
-	    newSubObj.setSbiBinContents(binary);
-	    sessionCurrDB.save(newSubObj);
-
-	} catch (HibernateException he) {
-	    logger.error("Error while getting exported template objects ", he);
-	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-	} finally {
-	    logger.debug("OUT");
-	}
+    private void insertSubObject(SbiObjects obj, SbiObjects exportedObj) throws EMFUserError {
+		logger.debug("IN");
+		List exportedSubObjList = null;
+		try {
+		    Query hibQuery = sessionExpDB
+			    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + exportedObj.getBiobjId());
+		    exportedSubObjList = hibQuery.list();
+		    if (exportedSubObjList.isEmpty()) {
+		    	logger.debug("Exported document with label=[" + exportedObj.getLabel() + "] has no subobjects");
+		    	return;
+		    }
+		    Iterator exportedSubObjListIt = exportedSubObjList.iterator();
+		    while (exportedSubObjListIt.hasNext()) {
+		    	SbiSubObjects expSubObject = (SbiSubObjects) exportedSubObjListIt.next();
+			    SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
+			    newSubObj.setSbiObject(obj);
+			    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
+			    newSubObj.setSbiBinContents(binary);
+			    sessionCurrDB.save(newSubObj);
+		    }
+		} catch (HibernateException he) {
+		    logger.error("Error while getting exported template objects ", he);
+		    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} finally {
+		    logger.debug("OUT");
+		}
     }
 
    
@@ -1091,23 +1035,21 @@ public class ImportManager implements IImportManager, Serializable {
 		    + objIdExp);
 	    templateList = hibQuery.list();
 	    if (templateList.isEmpty()) {
-		logger.warn(" Templates is not present");
-		return;
+			logger.warn(" Templates is not present");
+			return;
 	    }
-	    
-	    hibQuery = sessionCurrDB.createQuery(" from SbiObjTemplates ot where ot.sbiObject.biobjId = "
-		    + obj.getBiobjId());
-	    List existTemplateList = hibQuery.list();
-	    SbiObjTemplates existingObjTemplate=null;
-	    if (!existTemplateList.isEmpty()) {
-		existingObjTemplate=(SbiObjTemplates)existTemplateList.get(0);
-	    }
+	    // finds the next prog value
+	    Integer nextProg = getNextProg(obj.getBiobjId());
 	    
 	    SbiObjTemplates expTemplate = (SbiObjTemplates) templateList.get(0);
 	    SbiObjTemplates newObj = ImportUtilities.makeNewSbiObjTemplates(expTemplate);
-	    if (existingObjTemplate!=null){
-		logger.debug("Update template...Increment prog.");
-		newObj.setProg(new Integer(existingObjTemplate.getProg().intValue()+1));
+	    newObj.setProg(nextProg);
+	    if (nextProg.intValue() > 1) {
+	    	// old current template is no more active
+			logger.debug("Update template...");
+			SbiObjTemplates existingObjTemplate = getCurrentActiveTemplate(obj.getBiobjId());
+			existingObjTemplate.setActive(new Boolean(false));
+			sessionCurrDB.save(existingObjTemplate);
 	    }
 	    newObj.setSbiObject(obj);
 	    SbiBinContents binary = insertBinaryContent(expTemplate.getSbiBinContents());
@@ -1121,6 +1063,29 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+    private SbiObjTemplates getCurrentActiveTemplate(Integer biobjId) {
+    	logger.debug("IN");
+    	String hql = "from SbiObjTemplates sot where sot.active=true and sot.sbiObject.biobjId=" + biobjId;
+		Query query = sessionCurrDB.createQuery(hql);
+		SbiObjTemplates hibObjTemp = (SbiObjTemplates)query.uniqueResult();
+		logger.debug("OUT");
+		return hibObjTemp;
+    }
+    
+    private Integer getNextProg(Integer objId) {
+    	logger.debug("IN");
+	    String hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId = " + objId;
+	    Query query = sessionCurrDB.createQuery(hql);
+		Integer maxProg = (Integer) query.uniqueResult();
+		if (maxProg == null) {
+			maxProg = new Integer(1);
+		} else {
+			maxProg = new Integer(maxProg.intValue() + 1);
+		}
+		logger.debug("OUT");
+		return maxProg;
+    }
+    
     private SbiBinContents insertBinaryContent(SbiBinContents binaryContent) throws EMFUserError {
 	logger.debug("IN");
 	List templateList = null;

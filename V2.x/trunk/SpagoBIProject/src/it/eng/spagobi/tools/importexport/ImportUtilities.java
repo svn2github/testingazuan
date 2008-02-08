@@ -35,6 +35,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
+import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -45,13 +46,21 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
 
 public class ImportUtilities {
 
@@ -253,7 +262,7 @@ public class ImportUtilities {
 	 * @return the new hibernate lov object
 	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov){
-	    	logger.debug("IN");
+	    logger.debug("IN");
 		SbiLov newlov = new SbiLov();
 		newlov.setDefaultVal(lov.getDefaultVal());
 		newlov.setDescr(lov.getDescr());
@@ -422,6 +431,7 @@ public class ImportUtilities {
 		logger.debug("OUT");
 		return newObj;
 	}
+	
 	public static SbiSnapshots makeNewSbiSnapshots(SbiSnapshots obj){
 	    	logger.debug("IN");
 	    	SbiSnapshots newObj = new SbiSnapshots();
@@ -477,13 +487,91 @@ public class ImportUtilities {
 		return newObj;
 	}
 	
-	
-	
+	/**
+	 * Load an existing biobject and make modifications as per the exported biobject in input
+	 * (existing associations with functionalities are maintained, while existing associations 
+	 * with parameters are deleted)
+	 * @param exportedObj: the exported biobject
+	 * @param sessionCurrDB: hibernate session on current database
+	 * @param existingId: the id of the existing biobject to be modified 
+	 * @return the existing biobject modified as per the exported biobject in input
+	 * @throws EMFUserError
+	 */
+	public static SbiObjects modifyExistingSbiObject(SbiObjects exportedObj, Session sessionCurrDB, 
+			Integer existingId) throws EMFUserError {
+		logger.debug("IN");
+		SbiObjects existingObj = null;
+		try {
+		    // update document
+		    existingObj = (SbiObjects) sessionCurrDB.load(SbiObjects.class, existingId);
+		    existingObj.setName(exportedObj.getName());
+		    existingObj.setDescr(exportedObj.getDescr());
+		    existingObj.setLabel(exportedObj.getLabel());
+		    existingObj.setExecModeCode(exportedObj.getExecModeCode());
+		    existingObj.setObjectTypeCode(exportedObj.getObjectTypeCode());
+		    existingObj.setPath(exportedObj.getPath());
+		    existingObj.setRelName(exportedObj.getRelName());
+		    existingObj.setStateConsiderationCode(exportedObj.getStateConsiderationCode());
+		    existingObj.setUuid(exportedObj.getUuid());
+		    existingObj.setEncrypt(exportedObj.getEncrypt());
+		    existingObj.setSbiEngines(exportedObj.getSbiEngines());
+		    existingObj.setSchedFl(exportedObj.getSchedFl());
+		    existingObj.setSbiObjStates(new HashSet());
+		    existingObj.setVisible(exportedObj.getVisible());
+		    // deletes existing associations between object and parameters 
+		    Set objPars = existingObj.getSbiObjPars();
+		    Iterator objParsIt = objPars.iterator();
+		    while (objParsIt.hasNext()) {
+		    	SbiObjPar objPar = (SbiObjPar) objParsIt.next();
+		    	sessionCurrDB.delete(objPar);
+		    }
+		} finally {
+			logger.debug("OUT");
+		}
+		return existingObj;
+	}
+
+	/**
+	 * Load an existing parameter and make modifications as per the exported parameter in input
+	 * (existing associations with biobjects are maintained, while parameter uses are deleted)
+	 * @param exportedParameter: the exported parameter
+	 * @param sessionCurrDB: hibernate session on current database
+	 * @param existingId: the id of the existing parameter to be modified 
+	 * @return the existing parameter modified as per the exported parameter in input
+	 * @throws EMFUserError
+	 */
+	public static SbiParameters modifyExistingSbiParameter(SbiParameters exportedParameter, Session sessionCurrDB, 
+			Integer existingId) throws EMFUserError {
+		logger.debug("IN");
+		SbiParameters existingPar = null;
+		try {
+		    // update parameter
+		    existingPar = (SbiParameters) sessionCurrDB.load(SbiParameters.class, existingId);
+			existingPar.setDescr(exportedParameter.getDescr());
+			existingPar.setLabel(exportedParameter.getLabel());
+			existingPar.setLength(exportedParameter.getLength());
+			existingPar.setMask(exportedParameter.getMask());
+			existingPar.setName(exportedParameter.getName());
+			existingPar.setSbiParuses(new HashSet());
+			existingPar.setFunctionalFlag(exportedParameter.getFunctionalFlag());
+		    // deletes existing associations between object and parameters 
+		    Set paruses = existingPar.getSbiParuses();
+		    Iterator parusesIt = paruses.iterator();
+		    while (parusesIt.hasNext()) {
+		    	SbiParuse paruse = (SbiParuse) parusesIt.next();
+		    	sessionCurrDB.delete(paruse);
+		    }
+		} finally {
+			logger.debug("OUT");
+		}
+		return existingPar;
+	}
+
 	/**
 	 * Creates a new hibernate biobject parameter object
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar){
-	    	logger.debug("IN");
+	    logger.debug("IN");
 		SbiObjPar newObjPar = new SbiObjPar();
 		newObjPar.setLabel(objpar.getLabel());
 		newObjPar.setModFl(objpar.getModFl());
@@ -503,11 +591,208 @@ public class ImportUtilities {
 	 * Creates a new hibernate biobject parameter object
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar, Integer id){
-	    	logger.debug("IN");
+	    logger.debug("IN");
 		SbiObjPar newObjPar = makeNewSbiObjpar(objpar);
 		newObjPar.setObjParId(id);
 		logger.debug("OUT");
 		return newObjPar;
+	}
+
+
+	/**
+	 * Set into the biobject to the engine/object type/object state/datasource
+	 * the entities associated with the exported biobject
+	 * @throws EMFUserError
+	 */
+	public static void associateWithExistingEntities(SbiObjects obj,
+			SbiObjects exportedObj, Session sessionCurrDB,
+			ImporterMetadata importer, MetadataAssociations metaAss) throws EMFUserError {
+		logger.debug("IN");
+		try {
+		    // reading exist engine
+		    SbiEngines engine = getAssociatedSbiEngine(exportedObj, sessionCurrDB, metaAss);
+		    obj.setSbiEngines(engine);
+		    // reading exist object type
+		    SbiDomains existDom = getAssociatedBIObjectType(exportedObj, sessionCurrDB, importer);
+			if (existDom != null) {
+				obj.setObjectType(existDom);
+				obj.setObjectTypeCode(existDom.getValueCd());
+			}
+			// reading exist state
+			SbiDomains existDomSt = getAssociatedBIObjectState(exportedObj, sessionCurrDB, importer);
+			if (existDomSt != null) {
+				obj.setState(existDomSt);
+				obj.setStateCode(existDomSt.getValueCd());
+			}
+			// reading exist datasource
+			SbiDataSource localDS = getAssociatedSbiDataSource(exportedObj, sessionCurrDB, metaAss);
+			obj.setDataSource(localDS);
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
+	
+	private static SbiDataSource getAssociatedSbiDataSource(
+			SbiObjects exportedObj, Session sessionCurrDB,
+			MetadataAssociations metaAss) {
+		logger.debug("IN");
+		SbiDataSource expDs = exportedObj.getDataSource();
+		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
+		if (label == null) {
+		    // exist a DataSource Association, read a new DataSource
+		    // from the DB
+		    label = expDs.getLabel();
+		}
+		Criterion labelCriterrion = Expression.eq("label", label);
+		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
+		criteria.add(labelCriterrion);
+		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
+		logger.debug("OUT");
+		return localDS;
+	}
+
+
+	private static SbiDomains getAssociatedBIObjectState(
+			SbiObjects exportedObj, Session sessionCurrDB,
+			ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		String stateCd = exportedObj.getStateCode();
+		Map unique = new HashMap();
+		unique.put("valuecd", stateCd);
+		unique.put("domaincd", "STATE");
+		SbiDomains existDomSt = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDomSt;
+	}
+
+
+	private static SbiDomains getAssociatedBIObjectType(SbiObjects exportedObj,
+			Session sessionCurrDB, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+	    String typeCd = exportedObj.getObjectTypeCode();
+		Map unique = new HashMap();
+		unique.put("valuecd", typeCd);
+		unique.put("domaincd", "BIOBJ_TYPE");
+		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDom;
+	}
+
+
+	private static SbiEngines getAssociatedSbiEngine(SbiObjects exportedObj,
+			Session sessionCurrDB, MetadataAssociations metaAss) {
+		logger.debug("IN");
+		SbiEngines existingEngine = null;
+		SbiEngines engine = exportedObj.getSbiEngines();
+		Integer expEngId = engine.getEngineId();
+		Map assEngs = metaAss.getEngineIDAssociation();
+		Integer existingId = (Integer) assEngs.get(expEngId);
+		if (existingId != null) {
+			existingEngine = (SbiEngines) sessionCurrDB.load(SbiEngines.class, existingId);
+		}
+		logger.debug("OUT");
+		return existingEngine;
+	}
+
+
+	/**
+	 * Set into the parameter to the parameter type
+	 * domain associated with the exported parameter
+	 * @throws EMFUserError
+	 */
+	public static void associateWithExistingEntities(
+			SbiParameters parameter, SbiParameters exportedParameter,
+			Session sessionCurrDB, ImporterMetadata importer,
+			MetadataAssociations metaAss) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			// reading existing parameter type
+			SbiDomains existDom = getAssociatedParameterType(exportedParameter, sessionCurrDB, metaAss, importer);
+			if (existDom != null) {
+				parameter.setParameterType(existDom);
+				parameter.setParameterTypeCode(existDom.getValueCd());
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+		
+	}
+
+
+	/**
+	 * Load an existing lov and make modifications as per the exported lov in input
+	 * (existing associations with parameters are maintained)
+	 * @param exportedLov: the exported lov
+	 * @param sessionCurrDB: hibernate session on current database
+	 * @param existingId: the id of the lov to be modified
+	 * @return the existing lov modified as per the exported lov in input
+	 * @throws EMFUserError
+	 */
+	public static SbiLov modifyExistingSbiLov(SbiLov exportedLov,
+			Session sessionCurrDB, Integer existingId) {
+    	logger.debug("IN");
+    	SbiLov existingLov = null;
+    	try {
+	    	existingLov = (SbiLov) sessionCurrDB.load(SbiLov.class, existingId);
+	    	existingLov.setDefaultVal(exportedLov.getDefaultVal());
+	    	existingLov.setDescr(exportedLov.getDescr());
+	    	existingLov.setLabel(exportedLov.getLabel());
+	    	existingLov.setLovProvider(exportedLov.getLovProvider());
+	    	existingLov.setName(exportedLov.getName());
+	    	existingLov.setProfileAttr(exportedLov.getProfileAttr());
+		} finally {
+			logger.debug("OUT");
+		}
+		return existingLov;
+	}
+
+
+	/**
+	 * Set into the lov the lov type domain
+	 * associated with the exported lov
+	 * @throws EMFUserError 
+	 * 
+	 */
+	public static void associateWithExistingEntities(SbiLov lov,
+			SbiLov exportedLov, Session sessionCurrDB,
+			ImporterMetadata importer, MetadataAssociations metaAss) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			// reading existing lov type
+			SbiDomains existDom = getAssociatedLovType(exportedLov, sessionCurrDB, metaAss, importer);
+			if (existDom != null) {
+				lov.setInputType(existDom);
+				lov.setInputTypeCd(existDom.getValueCd());
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
+	
+	private static SbiDomains getAssociatedParameterType(SbiParameters exportedParameter,
+			Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		String typeCd = exportedParameter.getParameterTypeCode();
+		Map unique = new HashMap();
+		unique.put("valuecd", typeCd);
+		unique.put("domaincd", "PAR_TYPE");
+		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDom;
+	}
+	
+	private static SbiDomains getAssociatedLovType(SbiLov exportedLov,
+			Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		String inpTypeCd = exportedLov.getInputTypeCd();
+		Map unique = new HashMap();
+		unique.put("valuecd", inpTypeCd);
+		unique.put("domaincd", "INPUT_TYPE");
+		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDom;
 	}
 	
 }

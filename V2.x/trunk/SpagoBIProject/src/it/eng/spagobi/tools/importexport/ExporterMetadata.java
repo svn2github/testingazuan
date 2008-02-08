@@ -62,7 +62,6 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
@@ -226,8 +225,7 @@ public class ExporterMetadata {
 			
 			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
 
-			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
-			byte[] template = contdao.getBinContent(snapshot.getBinId());
+			byte[] template = snapshot.getContent();
 			
 			SbiBinContents hibBinContent = new SbiBinContents();
 			hibBinContent.setId(snapshot.getBinId());
@@ -384,8 +382,7 @@ public class ExporterMetadata {
 				return;
 			}
 			
-			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
-			byte[] template = contdao.getBinContent(biobjTempl.getBinId());
+			byte[] template = biobjTempl.getContent();
 			
 			SbiBinContents hibBinContent = new SbiBinContents();
 			SbiObjTemplates hibObjTemplate = new SbiObjTemplates();

@@ -54,8 +54,9 @@ public interface IImportManager {
 	
 	/**
 	 * Imports the exported objects
+	 * @param overwrite: if true, existing metadata will be overwritten by the exported metadata
 	 */
-	public void importObjects() throws EMFUserError;
+	public void importObjects(boolean overwrite) throws EMFUserError;
 	
 	/**
 	 * Gets the list of all exported roles

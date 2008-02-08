@@ -379,7 +379,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	private void insertObjTemplate(Session aSession, ObjTemplate objTemp, SbiObjects hibBIObject) throws EMFUserError {
 		// store the binary content
 		SbiBinContents hibBinContent = new SbiBinContents();
-		hibBinContent.setContent(objTemp.getContent());
+		byte[] bytes = null;
+		try {
+			bytes = objTemp.getContent();
+		} catch (EMFInternalError e) {
+			logger.error("Could not retrieve content of ObjTemplate object in input.");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		hibBinContent.setContent(bytes);
+		
 		Integer idBin = (Integer)aSession.save(hibBinContent);
 		// recover the saved binary hibernate object
 		hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);

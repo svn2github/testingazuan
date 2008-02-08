@@ -118,7 +118,9 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     	    logger.error("NumberFormatException",e);
     	} catch (EMFUserError e) {
     	    logger.error("EMFUserError",e);
-    	} 
+    	} catch (EMFInternalError e) {
+    		logger.error("EMFInternalError",e);
+		} 
     	logger.debug("OUT");
     	return null;	
     }
@@ -127,10 +129,10 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     private String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
 	try {
-	    IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
+//	    IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
 	    ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
 	    Integer docId = new Integer(documentiId);
-	    BIObject biobj = objdao.loadBIObjectById(docId);
+//	    BIObject biobj = objdao.loadBIObjectById(docId);
 	    SubObject  objSub = new SubObject();
 	    objSub.setDescription(analysisDescription);
 	    if (visibilityBoolean!=null && visibilityBoolean.equals("true")){

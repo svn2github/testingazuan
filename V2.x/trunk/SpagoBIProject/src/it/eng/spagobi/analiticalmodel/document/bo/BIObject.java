@@ -29,7 +29,6 @@ import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

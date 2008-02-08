@@ -135,7 +135,6 @@ public class JasperReportDriver implements IEngineDriver {
 		BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
         
 		IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-		IBinContentDAO contdao = DAOFactory.getBinContentDAO();
 		ObjTemplate objtemp =  tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
 		
 		String flgTemplateStandard = "true";

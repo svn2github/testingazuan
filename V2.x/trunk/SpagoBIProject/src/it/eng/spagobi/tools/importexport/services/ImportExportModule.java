@@ -255,13 +255,15 @@ public class ImportExportModule extends AbstractModule {
 	if (!isNoAssociationModality) {
 		// check if the name of associations file is empty (in this case set
 		// null to the variable)
-		String associationsFileName = associationsFile.getFileName();
-		if (associationsFileName.trim().equals("")) {
-		    associationsFile = null;
+		if (associationsFile != null) {
+			String associationsFileName = associationsFile.getFileName();
+			if (associationsFileName.trim().equals("")) {
+			    associationsFile = null;
+			}
 		}
 		// if the association file is empty then check if there is an
 		// association id
-		// rebuild the uploaded file and assign it to associationsFile
+		// rebuild the uploaded file and assign it to associationsFile variable
 		if (associationsFile == null) {
 		    String assId = (String) request.getAttribute("hidAssId");
 		    if ((assId != null) && !assId.trim().equals("")) {
@@ -609,10 +611,17 @@ public class ImportExportModule extends AbstractModule {
 	logger.debug("IN");
 	IImportManager impManager = null;
 	try {
+		String overwriteStr = (String) request.getAttribute("overwrite");
+		boolean overwrite = false;
+		try {
+			overwrite = Boolean.parseBoolean(overwriteStr);
+		} catch (Exception e) {
+			logger.warn("Overwrite parameter is not a valid boolean; default value (that is false) will be considered.");
+		}
 	    RequestContainer requestContainer = this.getRequestContainer();
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	    impManager.importObjects();
+	    impManager.importObjects(overwrite);
 	    ImportResultInfo iri = impManager.commitAllChanges();
 	    response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);
 		AssociationFile assFile = impManager.getAssociationFile();

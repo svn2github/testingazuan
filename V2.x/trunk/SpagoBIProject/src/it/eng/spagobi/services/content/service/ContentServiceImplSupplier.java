@@ -1,15 +1,15 @@
 package it.eng.spagobi.services.content.service;
 
-import org.apache.log4j.Logger;
-
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.services.content.bo.Content;
+
+import org.apache.log4j.Logger;
+
 import sun.misc.BASE64Encoder;
 
 public class ContentServiceImplSupplier {
@@ -25,9 +25,8 @@ public class ContentServiceImplSupplier {
 			biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
 
 			IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-			IBinContentDAO contdao = DAOFactory.getBinContentDAO();
 			ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
-			byte[] template = contdao.getBinContent(temp.getBinId());
+			byte[] template = temp.getContent();
 			
 			BASE64Encoder bASE64Encoder = new BASE64Encoder();
 			content.setContent(bASE64Encoder.encode(template));

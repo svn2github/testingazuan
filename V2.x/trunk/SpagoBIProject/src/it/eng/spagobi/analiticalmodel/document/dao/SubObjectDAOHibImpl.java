@@ -1,6 +1,7 @@
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,6 +23,7 @@ import org.hibernate.Transaction;
 
 public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObjectDAO {
 
+	static private Logger logger = Logger.getLogger(SubObjectDAOHibImpl.class);
 	
 	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) throws EMFUserError {
 		List subs = new ArrayList();
@@ -39,7 +42,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			}
 			tx.commit();
 		}catch(HibernateException he){
-			logException(he);
+			logger.error(he);
 			if (tx != null) tx.rollback();	
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
 		}finally{
@@ -67,7 +70,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			}
 			tx.commit();
 		}catch(HibernateException he){
-			logException(he);
+			logger.error(he);
 			if (tx != null) tx.rollback();	
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
 		}finally{
@@ -92,7 +95,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			aSession.delete(hibSubobject);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -114,7 +117,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			sub = toSubobject(hibSub);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -135,7 +138,15 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, idBIObj);
 			SbiBinContents hibBinContent = new SbiBinContents();
-			hibBinContent.setContent(subObj.getContent());
+			byte[] bytes = null;
+			try {
+				bytes = subObj.getContent();
+			} catch (EMFInternalError e) {
+				logger.error("Could not retrieve content of SubObject object in input.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+			hibBinContent.setContent(bytes);
+			
 			Integer idBin = (Integer)aSession.save(hibBinContent);
 			// recover the saved binary hibernate object
 			hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
@@ -153,7 +164,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			aSession.save(hibSub);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error(he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);

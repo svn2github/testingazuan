@@ -890,6 +890,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void insertSnapshot(SbiObjects obj, SbiObjects exportedObj) throws EMFUserError {
 		logger.debug("IN");
 		List exportedSnapshotsList = null;
+		List currentSnapshotsList = null;
 		try {
 		    Query hibQuery = sessionExpDB.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + exportedObj.getBiobjId());
 		    exportedSnapshotsList = hibQuery.list();
@@ -897,14 +898,23 @@ public class ImportManager implements IImportManager, Serializable {
 		    	logger.debug("Exported document with label=[" + exportedObj.getLabel() + "] has no snapshots");
 		    	return;
 		    }
+		    hibQuery = sessionCurrDB
+	    		.createQuery(" from SbiSnapshots ot where ot.sbiObject.biobjId = " + obj.getBiobjId());
+		    currentSnapshotsList = hibQuery.list();
 		    Iterator exportedSnapshotsListIt = exportedSnapshotsList.iterator();
 		    while (exportedSnapshotsListIt.hasNext()) {
 		    	SbiSnapshots expSbiSnapshots = (SbiSnapshots) exportedSnapshotsListIt.next();
-			    SbiSnapshots newSnapshots = ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
-			    newSnapshots.setSbiObject(obj);
-			    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
-			    newSnapshots.setSbiBinContents(binary);
-			    sessionCurrDB.save(newSnapshots);
+		    	if (isAlreadyExisting(expSbiSnapshots, currentSnapshotsList)) {
+		    		logger.info("Exported snaphost with name = [" + expSbiSnapshots.getName() + "] and creation date = [" + expSbiSnapshots.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, most likely it is the same snapshot, so it will not be inserted.");
+		    		metaLog.log("Exported snaphost with name = [" + expSbiSnapshots.getName() + "] and creation date = [" + expSbiSnapshots.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, most likely it is the same snapshot, so it will not be inserted.");
+		    		continue;
+		    	} else {
+				    SbiSnapshots newSnapshots = ImportUtilities.makeNewSbiSnapshots(expSbiSnapshots);
+				    newSnapshots.setSbiObject(obj);
+				    SbiBinContents binary = insertBinaryContent(expSbiSnapshots.getSbiBinContents());
+				    newSnapshots.setSbiBinContents(binary);
+				    sessionCurrDB.save(newSnapshots);
+		    	}
 		    }
 		} catch (HibernateException he) {
 		    logger.error("Error while getting exported template objects ", he);
@@ -914,7 +924,24 @@ public class ImportManager implements IImportManager, Serializable {
 		}
     }
     
-    private void updateSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
+    private boolean isAlreadyExisting(SbiSnapshots expSbiSnapshots,
+			List currentSnapshotsList) {
+		Iterator currentSnapshotsListIt = currentSnapshotsList.iterator();
+		while (currentSnapshotsListIt.hasNext()) {
+			SbiSnapshots currentSnapshot = (SbiSnapshots) currentSnapshotsListIt.next();
+			if (((currentSnapshot.getName() == null && expSbiSnapshots.getName() == null) || 
+					(currentSnapshot.getName() != null && currentSnapshot.getName().equals(expSbiSnapshots.getName()))) 
+				&& ((currentSnapshot.getDescription() == null && expSbiSnapshots.getDescription() == null) || 
+						(currentSnapshot.getDescription() != null && currentSnapshot.getDescription().equals(expSbiSnapshots.getDescription())))
+				&& currentSnapshot.getCreationDate().equals(expSbiSnapshots.getCreationDate())) {
+						return true;
+			}
+		}
+		return false;
+	}
+
+
+	private void updateSnapshot(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
 	List subObjList = null;
 	try {
@@ -1001,6 +1028,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void insertSubObject(SbiObjects obj, SbiObjects exportedObj) throws EMFUserError {
 		logger.debug("IN");
 		List exportedSubObjList = null;
+		List currentSubObjList = null;
 		try {
 		    Query hibQuery = sessionExpDB
 			    .createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + exportedObj.getBiobjId());
@@ -1009,14 +1037,23 @@ public class ImportManager implements IImportManager, Serializable {
 		    	logger.debug("Exported document with label=[" + exportedObj.getLabel() + "] has no subobjects");
 		    	return;
 		    }
+		    hibQuery = sessionCurrDB
+		    	.createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + obj.getBiobjId());
+		    currentSubObjList = hibQuery.list();
 		    Iterator exportedSubObjListIt = exportedSubObjList.iterator();
 		    while (exportedSubObjListIt.hasNext()) {
 		    	SbiSubObjects expSubObject = (SbiSubObjects) exportedSubObjListIt.next();
-			    SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
-			    newSubObj.setSbiObject(obj);
-			    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
-			    newSubObj.setSbiBinContents(binary);
-			    sessionCurrDB.save(newSubObj);
+		    	if (isAlreadyExisting(expSubObject, currentSubObjList)) {
+		    		logger.info("Exported subobject with name = [" + expSubObject.getName() + "] and owner = [" + expSubObject.getOwner() + "] and visibility = [" + expSubObject.getIsPublic() + "] and creation date = [" + expSubObject.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, so it will not be inserted.");
+		    		metaLog.log("Exported subobject with name = [" + expSubObject.getName() + "] and owner = [" + expSubObject.getOwner() + "] and visibility = [" + expSubObject.getIsPublic() + "] and creation date = [" + expSubObject.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, most likely it is the same subobject, so it will not be inserted.");
+		    		continue;
+		    	} else {
+				    SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
+				    newSubObj.setSbiObject(obj);
+				    SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
+				    newSubObj.setSbiBinContents(binary);
+				    sessionCurrDB.save(newSubObj);
+		    	}
 		    }
 		} catch (HibernateException he) {
 		    logger.error("Error while getting exported template objects ", he);
@@ -1026,8 +1063,33 @@ public class ImportManager implements IImportManager, Serializable {
 		}
     }
 
-   
-    private void insertObjectTemplate(SbiObjects obj, Integer objIdExp) throws EMFUserError {
+   /**
+    * Controls if a subobject is already existing (i.e. they have the same name, owner, visibility, 
+    * creation date and last modification date)
+    * @param expSubObject
+    * @param currentSubObjList
+    * @return the true if the subobject is already existing, false otherwise
+    */
+    private boolean isAlreadyExisting(SbiSubObjects expSubObject,
+			List currentSubObjList) {
+		Iterator currentSubObjListIt = currentSubObjList.iterator();
+		while (currentSubObjListIt.hasNext()) {
+			SbiSubObjects currentSubObject = (SbiSubObjects) currentSubObjListIt.next();
+			if (((currentSubObject.getName() == null && expSubObject.getName() == null) ||
+					(currentSubObject.getName() != null && currentSubObject.getName().equals(expSubObject.getName())))  
+				&& ((currentSubObject.getOwner() == null && expSubObject.getOwner() == null) ||
+					(currentSubObject.getOwner() != null && currentSubObject.getOwner().equals(expSubObject.getOwner())))
+				&& currentSubObject.getIsPublic().equals(expSubObject.getIsPublic())
+				&& currentSubObject.getCreationDate().equals(expSubObject.getCreationDate())
+				&& currentSubObject.getLastChangeDate().equals(expSubObject.getLastChangeDate())) {
+					return true;
+			}
+		}
+		return false;
+	}
+
+
+	private void insertObjectTemplate(SbiObjects obj, Integer objIdExp) throws EMFUserError {
 	logger.debug("IN");
 	List templateList = null;
 	try {

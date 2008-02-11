@@ -47,6 +47,7 @@ import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 
@@ -332,6 +333,8 @@ public class ExportManager implements IExportManager {
 	    exporter.insertDataSource(ds, session);
 
 	    Engine engine = biobj.getEngine();
+	    ds = dsDao.loadDataSourceByID(engine.getDataSourceId());
+	    exporter.insertDataSource(ds, session);
 	    exporter.insertEngine(engine, session);
 	    exporter.insertBIObject(biobj, session);
 

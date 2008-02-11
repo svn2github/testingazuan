@@ -517,7 +517,7 @@ public class ImportManager implements IImportManager, Serializable {
 		    newEng.setBiobjType(existBiobjectTypeDomain);
 		}
 		// check datasource link
-		SbiDataSource expDs = newEng.getDataSource();
+		SbiDataSource expDs = engine.getDataSource();
 		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
 		if (label == null) {
 		    // exist a DataSource Association, read a new DataSource

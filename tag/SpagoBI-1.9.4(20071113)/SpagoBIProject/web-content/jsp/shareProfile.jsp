@@ -34,10 +34,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String usernameprofile = (String)portletProfile.getUserUniqueIdentifier();
  %>
 
-<script type="text/javascript" 
-        src="<%=urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js")%>">
-</script>
-
 <script type="text/javascript">
 
 	var ajaxRequestCanBeDone;

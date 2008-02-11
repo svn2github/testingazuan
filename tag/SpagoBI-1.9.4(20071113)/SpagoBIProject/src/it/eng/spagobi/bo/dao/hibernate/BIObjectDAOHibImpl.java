@@ -510,7 +510,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if (version) {
 				// if user has load a file template update the cms reporitory
-				if(biObject.getTemplate().getFileContent().length > 0) {
+				if (biObject.getTemplate() != null && biObject.getTemplate().getFileContent() != null && biObject.getTemplate().getFileContent().length > 0) {
 					// controls that the relevant node in CMS exists; if the node does not exist, it is created
 					GetOperation getOp = new GetOperation();
 					getOp.setPath(hibBIObject.getPath());
@@ -677,7 +677,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			setOp.setProperties(properties);
 			manager.execSetOperation(setOp);
 			// Set the report template
-			if (biObject.getTemplate().getFileContent().length > 0) {
+			if (biObject.getTemplate() != null && biObject.getTemplate().getFileContent() != null && biObject.getTemplate().getFileContent().length > 0) {
 				setOp.setContent(new ByteArrayInputStream(biObject.getTemplate().getFileContent()));
 				setOp.setType(SetOperation.TYPE_CONTENT);
 				setOp.setPath(path + "/template");

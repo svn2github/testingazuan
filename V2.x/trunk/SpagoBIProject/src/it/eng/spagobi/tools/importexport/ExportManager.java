@@ -359,13 +359,13 @@ public class ExportManager implements IExportManager {
 		ISubObjectDAO subDao = DAOFactory.getSubObjectDAO();
 		List subObjectLis = subDao.getSubObjects(biobj.getId());
 		if (subObjectLis != null && !subObjectLis.isEmpty())
-		    exporter.insertSubObject(biobj, subObjectLis, session);
+		    exporter.insertAllSubObject(biobj, subObjectLis, session);
 	    }
 	    if (exportSnapshots) {
 		ISnapshotDAO subDao = DAOFactory.getSnapshotDAO();
 		List snapshotLis = subDao.getSnapshots(biobj.getId());
 		if (snapshotLis != null && !snapshotLis.isEmpty())
-		    exporter.insertSnapshot(biobj, snapshotLis, session);
+		    exporter.insertAllSnapshot(biobj, snapshotLis, session);
 	    }
 
 	    // insert functionalities and association with object
@@ -509,26 +509,6 @@ public class ExportManager implements IExportManager {
 		}
 	}
     
-    /**
-     * Export an association between a functionality and a list of roles
-     * 
-     * @param roles The list of roles to associate to the functionality
-     * @param funct The functionality which is part of the association
-     * @param state The state of the association
-     * @throws EMFUserError
-     */
-    private void exportFunctRoles(List roles, LowFunctionality funct, String state) throws EMFUserError {
-	logger.debug("IN");
-	IDomainDAO domDAO = DAOFactory.getDomainDAO();
-	Domain stateDom = domDAO.loadDomainByCodeAndValue("STATE", state);
-	Integer idState = stateDom.getValueId();
-	Iterator iterRoles = roles.iterator();
-	while (iterRoles.hasNext()) {
-	    Role role = (Role) iterRoles.next();
-	    exporter.insertFunctRole(role, funct, idState, state, session);
-	}
-	logger.debug("OUT");
-    }
 
     /**
      * Export a list of SpagoBI roles

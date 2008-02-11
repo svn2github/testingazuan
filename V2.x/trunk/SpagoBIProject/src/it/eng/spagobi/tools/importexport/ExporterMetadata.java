@@ -196,7 +196,7 @@ public class ExporterMetadata {
 	 * @param session
 	 * @throws EMFUserError
 	 */
-	public void insertSnapshot(BIObject biobj, List snapshotLis, Session session) throws EMFUserError {
+	public void insertAllSnapshot(BIObject biobj, List snapshotLis, Session session) throws EMFUserError {
 	    logger.debug("IN");
 	    Iterator iter=snapshotLis.iterator();
 	    while(iter.hasNext()){
@@ -259,7 +259,7 @@ public class ExporterMetadata {
 	 * @param session
 	 * @throws EMFUserError
 	 */
-	public void insertSubObject(BIObject biobj, List subObjectLis, Session session) throws EMFUserError {
+	public void insertAllSubObject(BIObject biobj, List subObjectLis, Session session) throws EMFUserError {
 	    logger.debug("IN");
 	    Iterator iter=subObjectLis.iterator();
 	    while(iter.hasNext()){

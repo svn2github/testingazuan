@@ -27,21 +27,24 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngineIFace {
+	
+	private static transient Logger logger = Logger.getLogger(SpagoBIDashboardsCompositionInternalEngine.class);
 
 	public static final String messageBundle = "component_spagobidashboardscompositionIE_messages";
 	public static final String DASHBOARDS_COMPOSITION = "DASHBOARDS_COMPOSITION";
@@ -53,6 +56,8 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	public static final String LOV_LABEL = "lovlabel";
 	public static final String REFRESH_RATE = "refreshRate";
 	
+	protected IEngUserProfile profile = null;
+	
 	
 	/**
 	 * Executes the document and populates the response 
@@ -62,25 +67,18 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	 * @param response The response <code>SourceBean</code> to be populated
 	 */
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
+		logger.debug("IN");
 		
-		SpagoBITracer.debug("SpagoBIDashboardsCompositionInternalEngine",
-	            this.getClass().getName(),
-	            "execute",
-	            "Start execute method.");
-		
+		SessionContainer sessionContainer = requestContainer.getSessionContainer();
+		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		if (obj == null) {
-			SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is null.");
+			logger.error("The input object is null.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 		
 		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-			SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine",
-		            this.getClass().getName(),
-		            "execute",
-		            "The input object is not a dashboard.");
+			logger.error("The input object is not a dashboard.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
 		
@@ -94,8 +92,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	            contentBytes = template.getContent();
 	            if(contentBytes==null) throw new Exception("Content of the Active template null");
 			} catch (Exception e) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-			            			"execute", "Error while recovering template content: \n" + e);
+				logger.error("Error while recovering template content: \n" + e);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
 			}
 			// get bytes of template and transform them into a SourceBean
@@ -104,8 +101,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-			            			"execute", "Error while converting the Template bytes into a SourceBean object");
+				logger.error("Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
 			
@@ -119,12 +115,14 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 			
 			// get the actor
 			SessionContainer session = requestContainer.getSessionContainer();
-			String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
+			//String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
 			// get the possible state changes
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List states = domaindao.loadListDomainsByType("STATE");
 		    List possibleStates = new ArrayList();
-		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
+		   // if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
+		    if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
+				     profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
 		    	Iterator it = states.iterator();
 		    	 while(it.hasNext()) {
 		      		    	Domain state = (Domain)it.next();
@@ -132,7 +130,9 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 		      					possibleStates.add(state);
 		      				}
 		      	}  
-		    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
+		    //} else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
+		    } else if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
+	    		    profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
 		    	Iterator it = states.iterator();
 		    	 while(it.hasNext()) {
 		      		    	Domain state = (Domain)it.next();
@@ -152,13 +152,10 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 			throw error;
 			
 		} catch (Exception e) {
-			SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
-						this.getClass().getName(),
-					    "execute", 
-					    "Cannot exec the dashboard", e);
+			logger.error("Cannot exec the dashboard", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
-
+		logger.debug("OUT");
 	}
 
 	/**
@@ -172,10 +169,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
 			SourceBean response, Object subObjectInfo) throws EMFUserError {
 		// it cannot be invoked
-		SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
-				this.getClass().getName(),
-	            "executeSubObject", 
-	            "SpagoBIDashboardsCompositionInternalEngine cannot exec subobjects.");
+		logger.error("SpagoBIDashboardsCompositionInternalEngine cannot exec subobjects.");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 
@@ -189,10 +183,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
-				this.getClass().getName(),
-	            "handleNewDocumentTemplateCreation", 
-	            "SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
+		logger.error("SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
 		throw new InvalidOperationRequest();
 		
 	}
@@ -207,10 +198,7 @@ public class SpagoBIDashboardsCompositionInternalEngine implements InternalEngin
 	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		SpagoBITracer.major("SpagoBIDashboardsCompositionInternalEngine", 
-				this.getClass().getName(),
-	            "handleDocumentTemplateEdit", 
-	            "SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
+		logger.error("SpagoBIDashboardsCompositionInternalEngine cannot build document template.");
 		throw new InvalidOperationRequest();
 	}
 	

@@ -13,7 +13,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -35,15 +34,13 @@ public class TalendDriver implements IEngineDriver {
 	static private Logger logger = Logger.getLogger(TalendDriver.class);
 
 	private void addLocale(Map map) {
+		logger.debug("IN");
 		ConfigSingleton config = ConfigSingleton.getInstance();
 		Locale portalLocale = null;
 		try {
 			portalLocale =  PortletUtilities.getPortalLocale();
 		} catch (Exception e) {
-			SpagoBITracer.major("ENGINES",
-					this.getClass().getName(),
-					"addLocale(Map)",
-			"Error while getting portal locale.");
+			logger.warn("Error while getting portal locale: default en");
 			portalLocale = new Locale("en", "US");
 		}
 		SourceBean languageSB = null;
@@ -57,7 +54,9 @@ public class TalendDriver implements IEngineDriver {
 		} else {
 			map.put("country", "US");
 			map.put("language", "en");
-		}			
+		}
+		logger.debug("Locale set");
+		logger.debug("OUT");
 	}
 
 	/**

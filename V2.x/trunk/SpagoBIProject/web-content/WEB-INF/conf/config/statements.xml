@@ -4,7 +4,7 @@
 	<STATEMENT name="SELECT_CHECKED_OBJECT_LIST" 
   				   query="SELECT SUB_RPT_ID AS OBJ_ID  					 					
 				            FROM SBI_SUBREPORTS
-				            WHERE MASTER_RPT_ID = ?"/>
+				            WHERE MASTER_RPT_ID = ? "/>
 	
  	<STATEMENT name="DELETE_CHECK" 
              query="DELETE FROM SBI_CHECKS WHERE CHECK_ID = ?"/>

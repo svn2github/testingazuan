@@ -98,8 +98,7 @@ public class SpagoBITalendEngineConfig {
 	public boolean isAutoPublishActive() {
 		String autoPublishProp = null;
 		autoPublishProp = rrProps.getProperty("spagobi.autopublish");
-		if(autoPublishProp == null || autoPublishProp.equalsIgnoreCase("true")) return true;
-		
+		if(autoPublishProp != null && autoPublishProp.equalsIgnoreCase("true")) return true;
 		return false;
 	}
 	

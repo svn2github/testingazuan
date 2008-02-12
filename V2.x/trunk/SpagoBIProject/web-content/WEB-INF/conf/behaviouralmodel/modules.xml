@@ -126,9 +126,9 @@
 	      	<CAPTIONS></CAPTIONS>
 	      	<COLUMNS>
 	        	<COLUMN label="OBJ_ID" name="OBJ_ID" hidden="true" />
-	        	<COLUMN label="Label" name="LABEL"/>
-	        	<COLUMN label="Name" name="NAME" />
-	        	<COLUMN label="Description" name="DESCRIPTION" />
+	        	<COLUMN label="Label" name="label"/>
+	        	<COLUMN label="Name" name="name" />
+	        	<COLUMN label="Description" name="description" />
 	      	</COLUMNS>
       		<BUTTONS PAGE="CheckLinksPage" MESSAGEDET="RETURN_FROM_LOOKUP" LIGHT_NAVIGATOR_DISABLED="true">	      	        
 		        <SAVE_BUTTON 

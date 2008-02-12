@@ -7,22 +7,31 @@
 
 package it.eng.spagobi.services.datasource.bo;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class SpagoBiDataSource  implements java.io.Serializable {
-    private java.lang.String driver=null;
+    private java.lang.String driver;
 
-    private java.lang.String jndiName=null;
+    private java.lang.String jndiName;
 
-    private java.lang.String password=null;
+    private java.lang.String password;
 
-    private java.lang.String url=null;
+    private java.lang.String url;
 
-    private java.lang.String user=null;
+    private java.lang.String user;
 
-    private java.lang.String label=null;
-    
-    private java.lang.String hibDialectClass=null;
-    
-    private java.lang.String hibDialectName=null;
+    private java.lang.String label;
+
+    private java.lang.String hibDialectClass;
+
+    private java.lang.String hibDialectName;
 
     public SpagoBiDataSource() {
     }
@@ -47,6 +56,65 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
 
+    public boolean isJndi() {
+    	return getJndiName() != null 
+    			&& getJndiName().equals("") == false;
+    }
+    
+    public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+    	Connection connection = null;
+    	 
+    	if( isJndi() ) {
+    		connection = getJndiConnection();
+    	} else {    		
+    		connection = getDirectConnection();
+    	}
+    	
+    	return connection;
+    }
+    
+    
+    /**
+     * Get the connection from JNDI
+     * 
+     * @param connectionConfig
+     *                SourceBean describing data connection
+     * @return Connection to database
+     * @throws NamingException 
+     * @throws SQLException 
+     */
+    private Connection getJndiConnection() throws NamingException, SQLException {
+		Connection connection = null;
+		
+		Context ctx;
+		ctx = new InitialContext();
+		DataSource ds = (DataSource) ctx.lookup( getJndiName() );
+		connection = ds.getConnection();
+		
+		return connection;
+    }
+
+    /**
+     * Get the connection using jdbc
+     * 
+     * @param connectionConfig
+     *                SpagoBiDataSource describing data connection
+     * @return Connection to database
+     * @throws ClassNotFoundException 
+     * @throws SQLException 
+     */
+    private Connection getDirectConnection() throws ClassNotFoundException, SQLException {
+		Connection connection = null;
+		
+		Class.forName( getDriver() );
+		connection = DriverManager.getConnection(getUrl(), getUser(), getPassword());
+		
+		return connection;
+    }
+    
+    
+    
+    
     /**
      * Gets the driver value for this SpagoBiDataSource.
      * 
@@ -165,38 +233,46 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     public void setLabel(java.lang.String label) {
         this.label = label;
     }
+
+
     /**
-     * Gets the hibernate dialect class value for this SpagoBiDataSource.
+     * Gets the hibDialectClass value for this SpagoBiDataSource.
      * 
      * @return hibDialectClass
      */
-	public java.lang.String getHibDialectClass() {
-		return hibDialectClass;
-	}
+    public java.lang.String getHibDialectClass() {
+        return hibDialectClass;
+    }
+
+
     /**
-     * Sets the hibernate dialect class value for this SpagoBiDataSource.
+     * Sets the hibDialectClass value for this SpagoBiDataSource.
      * 
      * @param hibDialectClass
      */
-	public void setHibDialectClass(java.lang.String hibDialectClass) {
-		this.hibDialectClass = hibDialectClass;
-	}
+    public void setHibDialectClass(java.lang.String hibDialectClass) {
+        this.hibDialectClass = hibDialectClass;
+    }
+
+
     /**
-     * Gets the hibernate dialect name value for this SpagoBiDataSource.
+     * Gets the hibDialectName value for this SpagoBiDataSource.
      * 
      * @return hibDialectName
      */
-	public java.lang.String getHibDialectName() {
-		return hibDialectName;
-	}
+    public java.lang.String getHibDialectName() {
+        return hibDialectName;
+    }
+
+
     /**
-     * Sets the hibernate dialect name value for this SpagoBiDataSource.
+     * Sets the hibDialectName value for this SpagoBiDataSource.
      * 
      * @param hibDialectName
      */
-	public void setHibDialectName(java.lang.String hibDialectName) {
-		this.hibDialectName = hibDialectName;
-	}
+    public void setHibDialectName(java.lang.String hibDialectName) {
+        this.hibDialectName = hibDialectName;
+    }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
@@ -359,6 +435,5 @@ public class SpagoBiDataSource  implements java.io.Serializable {
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
-
 
 }

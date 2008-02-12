@@ -205,7 +205,7 @@ public interface IBIObjectDAO {
 	public List loadAllBIObjects() throws EMFUserError;
 	
 	/**
-	 * Loads all the BIObjects rdered by parameter column
+	 * Loads all the BIObjects ordered by parameter column
 	 * @return the list of BIObjects
 	 * @throws EMFUserError If an Exception occurred
 	 */

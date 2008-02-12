@@ -39,11 +39,12 @@ public class SpagoBIConstants {
 	
 	public static final String IGNORE_SUB_NODES = "IGNORE_SUB_NODES";
 	
-	public static final String ACTOR = "ACTOR";
+/*	public static final String ACTOR = "ACTOR";
 	public static final String TESTER_ACTOR = "TESTER_ACTOR";
 	public static final String USER_ACTOR = "USER_ACTOR";
 	public static final String ADMIN_ACTOR = "ADMIN_ACTOR";
 	public static final String DEV_ACTOR = "DEV_ACTOR";
+	*/
 	
 	public static final String OPERATION = "OPERATION";
 	public static final String FUNCTIONALITIES_OPERATION = "FUNCTIONALITIES_OPERATION";

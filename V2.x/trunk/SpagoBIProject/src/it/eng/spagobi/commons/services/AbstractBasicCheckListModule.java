@@ -23,7 +23,6 @@ package it.eng.spagobi.commons.services;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.SQLStatements;
@@ -31,7 +30,6 @@ import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
-import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -51,6 +49,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 
 	protected SourceBean config;
 	protected Map checkedObjectsMap = null;
+	protected List allElements = new ArrayList();
 	protected int pageNumber = 0;
 	protected boolean returnValues = true;
 	
@@ -185,23 +184,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		}
 		return statementStr;
 	}
-	
-	/*
-	private List getCheckedObjectKeys(SourceBean request){
-		List results = new ArrayList();
-		List attrs = request.getContainedAttributes();
-		for(int i = 0; i < attrs.size(); i++){
-			SourceBeanAttribute attr = (SourceBeanAttribute)attrs.get(i);
-			String key = (String)attr.getKey();
-			if(key.startsWith("checkbox")) {
-				String id = key.substring(key.indexOf(':')+1, key.length());
-				results.add(id);
-			}
-		}
-		
-		return results;
-	}
-	*/
+
 	
 	protected List getCheckedObjectKeys(SourceBean request){
 		List results = new ArrayList();
@@ -242,12 +225,14 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 			SourceBean chekedObjectsBean = scrollableDataResult.getSourceBean();
 			List checkedObjectsList = chekedObjectsBean
 					.getAttributeAsList("ROW");
-			for (int i = 0; i < checkedObjectsList.size(); i++) {
-				SourceBean objects = (SourceBean) checkedObjectsList.get(i);
-				String key = getObjectKey(objects);
-				checkedObjectsMap.put(key, key);
-			}
 
+			String tmpElements = (request.getAttribute("checkedElements")==null)?"":(String)request.getAttribute("checkedElements");
+		    String[] arrElements = tmpElements.split(",");
+			 for (int i = 0; i< arrElements.length; i++)
+				 allElements.add(arrElements[i]);
+			 
+			 checkedObjectsMap = copyLstObjects(allElements);
+			 
 		} catch (Exception e) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass()
 					.getName(), "createCheckedObjectMap", e.getMessage(), e);
@@ -258,29 +243,25 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	}
 	
 	public void updateCheckedObjectMap(SourceBean request) throws Exception {
-		checkedObjectsMap = new HashMap();
+		if (checkedObjectsMap == null)
+			checkedObjectsMap = new HashMap();
 		
-		//String sourceBeanStr = (String)request.getAttribute(CHECKED_OBJECTS);
-		//SourceBean checked = SourceBean.fromXMLString(sourceBeanStr);
-		SourceBean checked = (SourceBean)getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS);
-		List objectsList = checked.getAttributeAsList(OBJECT);
-		for(int i = 0; i < objectsList.size(); i++) {
-			SourceBean object = (SourceBean)objectsList.get(i);
-			String key = getObjectKey(object);	
-			checkedObjectsMap.put(key, key);
-		}		
-		
-		List checkedEntityKeys = getCheckedObjectKeys(request);
-		for(int i = 0; i < checkedEntityKeys.size(); i++) {
-			String key = (String)checkedEntityKeys.get(i);	
-			checkedObjectsMap.put(key, key);
-		}	
+		String tmpElements = (request.getAttribute("checkedElements")==null)?"":(String)request.getAttribute("checkedElements");
+		if (!tmpElements.equals("")){
+		    String[] arrElements = tmpElements.split(",");
+		    
+			 for (int i = 0; i< arrElements.length; i++)
+				 allElements.add(arrElements[i]);
+			 
+			 checkedObjectsMap = copyLstObjects(allElements);
+		}
 	}
 	
 	public void preprocess(SourceBean request) throws Exception {		
-		//if(request.getAttribute(CHECKED_OBJECTS) != null) {
+		
 		if(getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS) != null) {
 			updateCheckedObjectMap(request);
+			
 			getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);
 			String pageNumberStr = (String)request.getAttribute("PAGE_NUMBER");
 			if(pageNumberStr != null)
@@ -290,6 +271,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 			createCheckedObjectMap(request);
 			pageNumber = 1;
 		}		
+		
 	}
 	
 	
@@ -302,6 +284,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		SourceBean pagedList = (SourceBean)response.getAttribute("PAGED_LIST");
 		response.delAttribute("PAGED_LIST");
 		pagedList.delAttribute("ROWS");
+		
 		
 		List pendingDelete = new ArrayList();
 		
@@ -321,16 +304,18 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 			object.setAttribute("ROW_ID", getObjectKey(object));			
 			rows.setAttribute(object);
 		}		
-				
-		//	erase all items in panding delete
-		for(int i = 0; i < pendingDelete.size(); i++) 
-			checkedObjectsMap.remove((String)pendingDelete.get(i));
-		
 		SourceBean chekhedObjects = getCheckedObjects();
 		
 		pagedList.setAttribute(rows);
 		response.setAttribute(pagedList);
+		if (allElements != null && allElements.size()>0 )
+			response.setAttribute("checkedElements",getStringFromList(allElements));
+		else{
+			response.setAttribute("checkedElements",getStringFromList(pendingDelete));
+			allElements = pendingDelete;
+		}
 		response.setAttribute(chekhedObjects);
+		
 		
 		
 	}
@@ -348,26 +333,21 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		
 		String message = (String)request.getAttribute("MESSAGE");
 
-		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST")) {
+		if(message == null || message.equalsIgnoreCase("INIT_CHECKLIST") ) {
 			preprocess(request);	
 			super.service(request, response); 
 			postprocess(response); 
 			response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 		}
-		else if(message.equalsIgnoreCase("HANDLE_CHECKLIST")) {
+		else if(message.equalsIgnoreCase("HANDLE_CHECKLIST") ||  message.equalsIgnoreCase("LIST_PAGE")) {
 									
-			// events rised by navigation buttons defined in CheckListTag class (method makeNavigationButton)
-			if(request.getAttribute("prevPage") != null){
-				navigationHandler(request, response, false);
+			// events raised by navigation buttons defined in CheckListTag class (method makeNavigationButton)
+			if(request.getAttribute("LIST_PAGE") != null && !request.getAttribute("LIST_PAGE").equals("") ){
+				navigationHandler(request, response, Integer.valueOf(((String)request.getAttribute("LIST_PAGE"))));
 				return;
 			}
 			
-			if(request.getAttribute("nextPage") != null){
-				navigationHandler(request, response, true);
-				return;
-			}
-			
-			//	events rised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
+			//	events raised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
 			if(request.getAttribute("saveback") != null){
 				preprocess(request);
 				save();
@@ -379,9 +359,11 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 				preprocess(request);
 				save();
 				request.updAttribute("MESSAGE", "LIST_PAGE");	
-				request.setAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
+				request.updAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
 				super.service(request, response); 
 				postprocess(response); 
+				response.delAttribute("optChecked");
+				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
 				return;			
 			}
@@ -394,7 +376,9 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 			//reinit checklist according to the filter checkbox selection
 				preprocess(request);	
 				super.service(request, response); 
-				postprocess(response); 
+				postprocess(response);
+				response.delAttribute("optChecked");
+				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
 			}
 		}
@@ -410,10 +394,22 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		request.setAttribute("LIST_PAGE", "" + destPageNumber);			
 		super.service(request, response); 				
 		postprocess(response); 
+		response.delAttribute("optChecked");
+		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 	}
 	
-	
+	public void navigationHandler(SourceBean request, SourceBean response, Integer pageNumber) throws Exception{
+		preprocess(request);
+		request.updAttribute("MESSAGE", "LIST_PAGE");
+		request.delAttribute("LIST_PAGE");
+		request.setAttribute("LIST_PAGE", "" + pageNumber);			
+		super.service(request, response); 				
+		postprocess(response); 
+		response.delAttribute("optChecked");
+		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
+	}
 	
 	protected Object getAttribute(String attrName, SourceBean request) {
 		Object attrValue = null;
@@ -436,4 +432,29 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		return DelegatedBasicListService.delete(this, request, response);
 	} 
 	
+	/*
+	 * copies a list object into a map object
+	 */
+	private Map copyLstObjects(List originMap){
+		Map resultMap = new HashMap();
+		for (int i=0; i< originMap.size(); i++){
+			resultMap.put(originMap.get(i), originMap.get(i));
+		}
+		return resultMap;
+	}
+	
+	/*
+	 * returns a string whit all values of the input list
+	 */
+	private String getStringFromList(List lst){
+		String strReturn = "";
+		if (lst != null){
+			for (int i=0; i<lst.size(); i++){
+				strReturn = strReturn + (String)lst.get(i);
+				if (i < lst.size()-1)
+					strReturn = strReturn + ",";
+			}
+		}
+		return strReturn;
+	}
 }

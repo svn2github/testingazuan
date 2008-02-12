@@ -43,7 +43,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.AbstractBasicCheckListModule;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,11 +52,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * Loads the predefined lookup list of values 
  */
 public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListModule {
-		
+	private static transient Logger logger = Logger.getLogger(ChecklistLookupModalityValuesModule.class);
 	private String lovResult = null;
 	private ILovDetail lovProvDetail = null;
 	
@@ -72,6 +73,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {		
+		logger.debug( "IN" );
 		initSession(request);
 		BIObjectParameter biParam = getBIParameter(request);
 		Parameter par = biParam.getParameter();
@@ -98,10 +100,12 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			// events rised by navigation buttons defined in CheckListTag class (method makeNavigationButton)
 			if(request.getAttribute("prevPage") != null){
 				navigationHandler(request, response, false);
+				logger.debug( "OUT" );
 				return;
 			}
 			if(request.getAttribute("nextPage") != null){
 				navigationHandler(request, response, true);
+				logger.debug( "OUT" );
 				return;
 			}
 			//	events rised by action buttons defined in module.xml file (module name="ListLookupReportsModule")
@@ -109,6 +113,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				preprocess(request);
 				save();
 				exitFromModule(response, false);
+				logger.debug( "OUT" );
 				return;
 			}				
 			if(request.getAttribute("save") != null) {				
@@ -119,16 +124,18 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 				DelegatedBasicListService.service(this, request, response); 
 				postprocess(response); 
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
+				logger.debug( "OUT" );
 				return;			
 			}
 			if(request.getAttribute("back") != null) {			
 				exitFromModule(response, true);
+				logger.debug( "OUT" );
 				return;
 			}
 		} else {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					            "service", "The message parameter value " +message+ "is not allowed" );
-		}				
+			logger.error("The message parameter value " +message+ "is not allowed" );
+		}			
+		logger.debug( "OUT" );
 	}
 	
 	
@@ -137,6 +144,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	
 	public void createCheckedObjectMap(SourceBean request) throws Exception {
+		logger.debug( "IN" );
 		checkedObjectsMap = new HashMap();
 		String biobjParId = (String)request.getAttribute("LOOKUP_OBJ_PAR_ID");
 		String biobjParName = (String)request.getAttribute("LOOKUP_PARAMETER_NAME");
@@ -163,9 +171,11 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			String key = GeneralUtilities.encode(value);
 			checkedObjectsMap.put(key, key);
 		}
+		logger.debug( "OUT" );
 	}
 	
 	public void updateCheckedObjectMap(SourceBean request) throws Exception {
+		logger.debug( "IN" );
 		checkedObjectsMap = new HashMap();
 		
 		SourceBean checked = (SourceBean)getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS);
@@ -181,6 +191,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 			String key = (String)checkedEntityKeys.get(i);	
 			checkedObjectsMap.put(key, key);
 		}	
+		logger.debug( "OUT" );
 	}
 	
 	
@@ -211,6 +222,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	
 	
 	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
+		logger.debug( "IN" );
 		SessionContainer session = this.getRequestContainer().getSessionContainer();		
 		if(!abort && returnValues){
 			List valuesSBList = getCheckedObjects().getAttributeAsList("OBJECT");
@@ -238,6 +250,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		session.setAttribute("LOOKUP_PARAMETER_NAME", (String)getSession(_request).getAttribute("LOOKUP_PARAMETER_NAME"));
 		response.setAttribute("PUBLISHER_NAME", "returnToExecBIObjLoop");
 		clearSession();
+		logger.debug( "OUT" );
 	}
 	
 	
@@ -326,9 +339,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	private HashMap getParams(SourceBean request) {
 		HashMap paramsMap = new HashMap();
 		String lookupParameterName = (String) request.getAttribute("LOOKUP_PARAMETER_NAME");
-		String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
+		//String actor = (String) request.getAttribute(SpagoBIConstants.ACTOR);
 		paramsMap.put("LOOKUP_PARAMETER_NAME", lookupParameterName);
-		paramsMap.put(SpagoBIConstants.ACTOR, actor);
+		//paramsMap.put(SpagoBIConstants.ACTOR, actor);
 		paramsMap.put("mod_val_id", request.getAttribute("mod_val_id"));
 		return paramsMap;
 	}
@@ -489,7 +502,8 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	 * @param response The response SourceBean
 	 * @return ListIFace 
 	 */
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {		
+	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		logger.debug( "IN" );
 		ListIFace list = null;		
 		HashMap paramsMap = null;	
 								
@@ -512,7 +526,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		
 		response.setAttribute("PARAMETERS_MAP", paramsMap);		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME , "LookupPublisher");
-		
+		logger.debug( "OUT" );
 		return list;		
 	}
 	

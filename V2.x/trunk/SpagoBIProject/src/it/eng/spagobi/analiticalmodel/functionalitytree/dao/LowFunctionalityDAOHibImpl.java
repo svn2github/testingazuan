@@ -42,7 +42,6 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.RoleDAOHibImpl;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +51,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -66,12 +66,13 @@ import org.hibernate.criterion.MatchMode;
  * for a functionality. 
  */
 public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements ILowFunctionalityDAO{
-
+	private static transient Logger logger = Logger.getLogger(LowFunctionalityDAOHibImpl.class);
 	
 	
 	/* ********* start luca changes ************************************************** */
 	
 	public boolean checkUserRootExists(String username) throws EMFUserError {
+		logger.debug( "IN" );
 		boolean exists = false;
 		Session aSession = null;
 		Transaction tx = null;
@@ -99,11 +100,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return exists;
 	}
 	
 	
 	public void insertUserFunctionality(UserFunctionality userfunct) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -133,8 +136,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				parentCriteria.add(parentCriterion);
 				hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
 				if (hibParentFunct == null){
-					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						    "insertUserFunctionality", "The parent Functionality with id = " + parentId + " does not exist.");
+					logger.error("The parent Functionality with id = " + parentId + " does not exist.");
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 1038);
 				}
 			}
@@ -193,6 +195,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 
@@ -205,6 +208,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
 	 */
 	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
 		LowFunctionality funct = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -224,6 +228,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return funct;
 	}
 	
@@ -231,6 +236,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadRootLowFunctionality(boolean)
 	 */
 	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects)	throws EMFUserError {
+		logger.debug( "IN" );
 		LowFunctionality lowFunctionaliy = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -260,6 +266,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return lowFunctionaliy;
 	}
 	
@@ -267,6 +274,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByPath(java.lang.String)
 	 */
 	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects) throws EMFUserError {	
+		logger.debug( "IN" );
 		LowFunctionality lowFunctionaliy = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -291,6 +299,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return lowFunctionaliy;
 	}
 
@@ -300,7 +309,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 */
 	public void modifyLowFunctionality(LowFunctionality aLowFunctionality)
 			throws EMFUserError {
-
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -333,10 +342,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			criteria.add(domainCdCriterrion);
 			SbiDomains functTypeDomain = (SbiDomains) criteria.uniqueResult();
 			if (functTypeDomain == null){
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "LowFunctionalityDAOHibImpl", 
-					    "modifyLowFunctionality", 
-					    "The Domain with value_cd="+aLowFunctionality.getCodType()+" does not exist.");
+				logger.error("The Domain with value_cd="+aLowFunctionality.getCodType()+" does not exist.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1037);
 			}
 			
@@ -350,10 +356,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			parentCriteria.add(parentCriterion);
 			SbiFunctions hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
 			if (hibParentFunct == null){
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "LowFunctionalityDAOHibImpl", 
-					    "modifyLowFunctionality", 
-					    "The parent Functionality with id = " + parentId + " does not exist.");
+				logger.error("The parent Functionality with id = " + parentId + " does not exist.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1037);
 			}
 			hibFunct.setParentFunct(hibParentFunct);
@@ -404,6 +407,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 	}
 
 	/**
@@ -428,10 +432,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		criteria.add(domainCdCriterrion);
 		SbiDomains devStateDomain = (SbiDomains)criteria.uniqueResult();
 		if (devStateDomain == null){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-				    "LowFunctionalityDAOHibImpl", 
-				    "saveRolesFunctionality", 
-				    "The Domain with value_cd="+state+" does not exist.");
+			logger.error("The Domain with value_cd="+state+" does not exist.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1039);
 		}
 		Role[] roles = null;
@@ -468,6 +469,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 */
 	public void insertLowFunctionality(LowFunctionality aLowFunctionality,
 			IEngUserProfile profile) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -482,10 +484,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			criteria.add(domainCdCriterrion);
 			SbiDomains functTypeDomain = (SbiDomains) criteria.uniqueResult();
 			if (functTypeDomain == null){
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "LowFunctionalityDAOHibImpl", 
-					    "insertLowFunctionality", 
-					    "The Domain with value_cd="+aLowFunctionality.getCodType()+" does not exist.");
+				logger.error("The Domain with value_cd="+aLowFunctionality.getCodType()+" does not exist.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1038);
 			}
 			hibFunct.setFunctType(functTypeDomain);
@@ -502,10 +501,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				parentCriteria.add(parentCriterion);
 				hibParentFunct = (SbiFunctions) parentCriteria.uniqueResult();
 				if (hibParentFunct == null){
-					SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-						    "LowFunctionalityDAOHibImpl", 
-						    "insertLowFunctionality", 
-						    "The parent Functionality with id = " + parentId + " does not exist.");
+					logger.error("The parent Functionality with id = " + parentId + " does not exist.");
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 1038);
 				}
 			}
@@ -546,6 +542,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 
@@ -556,13 +553,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 */
 	public void eraseLowFunctionality(LowFunctionality aLowFunctionality, IEngUserProfile profile) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			if(hasChild(aLowFunctionality.getId())) {
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, BIObjectsModule.MODULE_PAGE);
-				params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
+				//params.put(SpagoBIConstants.ACTOR, SpagoBIConstants.ADMIN_ACTOR);
 				params.put(SpagoBIConstants.OPERATION, SpagoBIConstants.FUNCTIONALITIES_OPERATION);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1000, new Vector(), params);
 			}
@@ -607,6 +605,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			if(aSession != null)
 				if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 	}
@@ -621,7 +620,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @return the corrispondent output <code>LowFunctionality</code>
 	 */
 	public LowFunctionality toLowFunctionality(SbiFunctions hibFunct, boolean recoverBIObjects){
-		
+		logger.debug( "IN" );
 		LowFunctionality lowFunct = new LowFunctionality();
 		lowFunct.setId(hibFunct.getFunctId());
 		lowFunct.setCode(hibFunct.getCode());
@@ -689,7 +688,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 		
 		lowFunct.setBiObjects(biObjects);
-		
+		logger.debug( "OUT" );
 		return lowFunct;
 	}
 
@@ -734,6 +733,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 */
 	public List loadAllLowFunctionalities(boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -753,8 +753,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 					username = (String)profile.getUserUniqueIdentifier();
 				}
 			} catch (Exception e) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						            "loadAllLowFunctionalities", "Error while recovering user profile", e);
+				logger.error("Error while recovering user profile", e);
 			}
 			Query hibQuery = null;
 			if(username==null) {
@@ -785,6 +784,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return realResult;
 	}
 	
@@ -793,6 +793,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 */
 	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -834,6 +835,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return realResult;
 	}
 	
@@ -843,7 +845,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 */
 	public boolean hasChild(Integer id) throws EMFUserError {
-		
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -881,6 +883,8 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
+				
 			}
 		}
 	}
@@ -892,7 +896,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * @param rolesSet the set containing the roles to erase
 	 */
 	public void deleteInconsistentRoles (Set rolesSet) throws EMFUserError{
-		
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		String hql = null;
@@ -936,6 +940,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		}	finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 		
@@ -944,6 +949,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 
 
 	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -972,10 +978,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug( "OUT" );
 		return realResult;
 	}
 
 	public void moveDownLowFunctionality(Integer functionalityID) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -990,10 +998,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			Query query = aSession.createQuery(upperFolderHql);
 			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
 			if (hibUpperFunct == null) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "LowFunctionalityDAOHibImpl", 
-					    "moveDownLowFunctionality", 
-					    "The function with prog [" + newProg + "] does not exist.");
+				logger.error("The function with prog [" + newProg + "] does not exist.");
 				return;
 			}
 			
@@ -1012,11 +1017,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 	}
 
 	public void moveUpLowFunctionality(Integer functionalityID) throws EMFUserError {
+		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -1031,10 +1038,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			Query query = aSession.createQuery(upperFolderHql);
 			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
 			if (hibUpperFunct == null) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "LowFunctionalityDAOHibImpl", 
-					    "moveUpLowFunctionality", 
-					    "The function with prog [" + newProg + "] does not exist.");
+				logger.error("The function with prog [" + newProg + "] does not exist.");
 				return;
 			}
 			
@@ -1053,6 +1057,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
+				logger.debug( "OUT" );
 			}
 		}
 	}

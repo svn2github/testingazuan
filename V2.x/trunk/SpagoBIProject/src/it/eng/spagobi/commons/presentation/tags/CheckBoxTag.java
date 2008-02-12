@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -39,7 +40,6 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,11 +49,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Gioia
  *
  */
 public class CheckBoxTag extends TagSupport {
+	static private Logger logger = Logger.getLogger(CheckBoxTag.class);
 	
 	private HttpServletRequest httpRequest = null;
 	
@@ -79,6 +82,12 @@ public class CheckBoxTag extends TagSupport {
     protected String _filter = null;
     protected int pageNumber;
     protected int pagesNumber;
+    //the navigation's variables
+    protected String _prevUrl = null;
+    protected String _nextUrl = null;
+    protected String _firstUrl = null;
+    protected String _lastUrl = null;
+    protected String _lstElements = null;
     
 	protected EMFErrorHandler _errorHandler = null;
     
@@ -90,6 +99,8 @@ public class CheckBoxTag extends TagSupport {
     
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
+    
+    final static int END_RANGE_PAGES = 6;  
     
 	public int doStartTag() throws JspException {
 		
@@ -173,8 +184,8 @@ public class CheckBoxTag extends TagSupport {
 			_providerUrlMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "true");
 		}
 		
-		
-		
+		if (_content.getAttribute("optChecked") != null)
+			_providerUrlMap.put("optChecked",_content.getAttribute("optChecked"));
 		try {
 			
 		} 
@@ -202,15 +213,13 @@ public class CheckBoxTag extends TagSupport {
 		
 		_htmlStream = new StringBuffer();
 		HashMap params = new HashMap();
-		//params.put("PAGE", pageName);
 		params.putAll(_providerUrlMap);
 		params.put("MESSAGE", "HANDLE_CHECKLIST"); 
-		//params.put("LIGHT_NAVIGATOR_DISABLED", "true"); 
-		//params.put("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		_session.setAttribute("CHECKEDOBJECTS", _content.getAttribute("CHECKEDOBJECTS"));
 		params.put("PAGE_NUMBER", new Integer(pageNumber).toString());
 		String url = urlBuilder.getUrl(httpRequest, params);
 
+		_lstElements = (String)_content.getAttribute("checkedElements");
 		_htmlStream.append(" <form method='POST' id='form' action='" + url + "'>\n");
 		makeForm();
 		_htmlStream.append(" </form>\n");
@@ -246,14 +255,30 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append(				makeButton(buttons) + "\n");
 			_htmlStream.append("	</tr>\n");
 			_htmlStream.append(" </table>\n");
+			
+	
 		}
-
+		defineColumns();
+		makeNavigationButton();
 		makeColumns();
 		makeRows();
-		makeNavigationButton();
+		makeFooterList();
 		
 	} // public void makeForm()
 
+	protected void defineColumns() throws JspException{
+		_columns = new Vector();
+		List columnsVector = _layout.getAttributeAsList("COLUMNS.COLUMN");
+		for (int i = 0; i < columnsVector.size(); i++) {
+			String hidden = (String)((SourceBean) columnsVector.get(i)).getAttribute("HIDDEN");
+			if (hidden == null || hidden.trim().equalsIgnoreCase("FALSE"))
+				_columns.add((SourceBean) columnsVector.get(i));
+		}
+		if ((_columns == null) || (_columns.size() == 0)) {
+			logger.error("Columns names not defined");
+			throw new JspException("Columns names not defined");
+		} 
+	}
 	
 	/**
 	 * Builds Table list columns, reading all request information.
@@ -284,6 +309,7 @@ public class CheckBoxTag extends TagSupport {
 
 		for (int i = 0; i < _columns.size(); i++) {
 			String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
+			if (nameColumn.equalsIgnoreCase("description")) nameColumn = "descr";
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
 			if (labelColumnCode != null) labelColumn = 
@@ -292,7 +318,26 @@ public class CheckBoxTag extends TagSupport {
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
-			_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "</TD>\n");
+			//defines order url for dynamic ordering
+			HashMap orderParamsMap = new HashMap();
+			orderParamsMap.putAll(_providerUrlMap);			
+			orderParamsMap.put("FIELD_ORDER", nameColumn);
+			orderParamsMap.put("checkedElements",_lstElements);
+			orderParamsMap.put("TYPE_ORDER"," ASC");			
+			String orderUrlAsc = createUrl(orderParamsMap);
+			orderParamsMap.remove("TYPE_ORDER");
+			orderParamsMap.put("TYPE_ORDER"," DESC");
+			orderParamsMap.put("checkedElements",_lstElements);
+			String orderUrlDesc = createUrl(orderParamsMap);
+			//_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "</TD>\n");
+			_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "\n");
+			_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
+			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
+			_htmlStream.append("	</A>\n");
+			_htmlStream.append("	<A href=\""+orderUrlDesc+"\">\n");
+			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
+			_htmlStream.append("	</A>\n");
+			 _htmlStream.append("</TD>\n");
 		} 
 		for(int i=0; i<numCaps; i++) {
 			_htmlStream.append("<TD class='portlet-section-header' align='center'>&nbsp;</TD>\n");
@@ -315,7 +360,8 @@ public class CheckBoxTag extends TagSupport {
 	protected void makeRows() throws JspException {
 
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
-	    
+		 _htmlStream.append("<input type =\"hidden\" id=\"checkedElements\" name=\"checkedElements\" value=\""+_lstElements+"\" />");
+		 
 		// js function for item action confirm
 		String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
 		_htmlStream.append(" <script>\n");
@@ -324,10 +370,39 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("			location.href = url;\n");
 		_htmlStream.append("		}\n");
 		_htmlStream.append("	}\n");
+		
+		_htmlStream.append("	var lstElements = '" + _lstElements + "';\n");
+		_htmlStream.append("	function addRemoveElement(value, flgChecked){\n");
+		_htmlStream.append("		if (flgChecked){\n");
+		_htmlStream.append("			//adds new element \n");
+		_htmlStream.append("			if (lstElements != '')\n");
+		_htmlStream.append("				lstElements = lstElements + ',' + value;\n");
+		_htmlStream.append("		 	else \n");
+		_htmlStream.append("				lstElements = value;\n");
+		_htmlStream.append("		}else{\n");
+		_htmlStream.append("			//removes an element \n");
+		_htmlStream.append("			var tmpValue = lstElements.split(','); \n");
+		_htmlStream.append("			var tmpStr = '';\n");
+		_htmlStream.append("			for (i = 0; i < tmpValue.length; i++){\n");
+		_htmlStream.append("				if (tmpValue[i] != value){\n");
+		_htmlStream.append("					tmpStr = tmpStr + tmpValue[i];\n");
+		_htmlStream.append("					if (i < tmpValue.length -1 ) \n");
+		_htmlStream.append("						tmpStr = tmpStr +  ',';\n");
+		_htmlStream.append("				}\n");
+		_htmlStream.append("			}\n");
+		_htmlStream.append("			 \n");
+		_htmlStream.append("			lstElements = tmpStr;\n");
+		_htmlStream.append("			if (lstElements.substr(lstElements.length-1,1) == ',')\n");
+		_htmlStream.append("				lstElements = lstElements.substr(0, lstElements.length-1);\n");
+		_htmlStream.append("		}\n");
+		_htmlStream.append("		document.getElementById('form').checkedElements.value  = lstElements;\n");
+		_htmlStream.append("	}\n");
+		
 		_htmlStream.append(" </script>\n");
 		
 		boolean alternate = false;
         String rowClass;
+       
 		for(int i = 0; i < rows.size(); i++) {
 			SourceBean row = (SourceBean) rows.get(i);
             
@@ -353,11 +428,13 @@ public class CheckBoxTag extends TagSupport {
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 			List captions = captionsSB.getContainedSourceBeanAttributes();
 			Iterator iter = captions.iterator();
+			
 			while (iter.hasNext()) {
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				HashMap paramsMap = getParametersMap(parameters, row);
+				paramsMap.put("checkedElements",_lstElements);
 				String img = (String)captionSB.getAttribute("image");
 				String labelCode = (String)captionSB.getAttribute("label");
 				String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
@@ -383,15 +460,16 @@ public class CheckBoxTag extends TagSupport {
 			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");
 			Object key = row.getAttribute("ROW_ID");			
 			if(checked.equalsIgnoreCase("true")) {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' checked>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' checked onClick='addRemoveElement(this.value, this.checked);'>\n");
 			}
 			else {
-				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "'>\n");
+				_htmlStream.append("\t<input type='checkbox' name='checkbox' value='" + GeneralUtilities.substituteQuotesIntoString(key.toString()) + "' onClick='addRemoveElement(this.value,  this.checked);'>\n");
 			}
 			
 			_htmlStream.append(" </td>\n");
 			
 			_htmlStream.append(" </tr>\n");
+			
 		}
 		
 		_htmlStream.append(" </table>\n");
@@ -411,6 +489,29 @@ public class CheckBoxTag extends TagSupport {
 	
 
 	protected void makeNavigationButton() throws JspException {
+		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
+		int pageNumber = 1;
+		try {
+			pageNumber = Integer.parseInt(pageNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
+		} 
+		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
+		int pagesNumber = 1;
+		try {
+			pagesNumber = Integer.parseInt(pagesNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
+		} 
+		
 		int prevPage = pageNumber - 1;
 		if (prevPage < 1)
 			prevPage = 1;
@@ -418,27 +519,75 @@ public class CheckBoxTag extends TagSupport {
 		if (nextPage > pagesNumber)
 			nextPage = pagesNumber;
 				
+		_htmlStream.append("<script>\n");
+		
+		_htmlStream.append("function submitForm() {\n");
+		_htmlStream.append("	var checkFilter=document.getElementById('checkFilter'); \n");
+		_htmlStream.append("	var filterCheckbox=document.getElementById('filterCheckbox'); \n");
+		_htmlStream.append("	var checked=document.getElementById('checked'); \n");
+		_htmlStream.append("	if(filterCheckbox.checked == false){\n");
+		_htmlStream.append("		checked.value = 'false'\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	else{");
+		_htmlStream.append("		checked.value = 'true'\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	checkFilter.value='checkFilter';\n");
+		_htmlStream.append("	document.getElementById('form').submit();\n");
+		_htmlStream.append("} \n");
+		
+		_htmlStream.append("function changePage(type) {\n");
+		_htmlStream.append("	if(type == 'firstPage'){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = '"+  String.valueOf(prevPage)+"';\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	else if (type == 'prevPage'){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = '" +  String.valueOf(1)+"';\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	else if (type == 'nextPage'){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = '" +  String.valueOf(nextPage)+"';\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	else if (type == 'lastPage'){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = '" +  String.valueOf(pagesNumber)+"';\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("	else if (type.startsWith('goTo_')){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = type.substring(6);\n");
+		_htmlStream.append("	}\n");
+		_htmlStream.append("} \n");
+		
+		_htmlStream.append("</script>\n");
 				
 		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
+		_htmlStream.append("<input type =\"hidden\" id=\"LIST_PAGE\" name=\"LIST_PAGE\" value=\"\" />");
 		_htmlStream.append("	<TR>\n");
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='14'>\n");
-		
-		
-		
-		if(pageNumber != 1) {	
-			//_htmlStream.append("		<A href=\""+prevUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/prevPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+
+		if(pageNumber != 1) {
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "firstPage" + "' " +					  
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png") + "' " + 
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)' "+
+					  "alt='" + "GO To First Page" + "'>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "prevPage" + "' " +					  
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif") + "' " + 
-					  "align='left' border=0" +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png") + "' " + 
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)' " +
 					  "alt='" + "GO To Previous Page" + "'>\n");
+			_htmlStream.append("		</TD>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/prevPage.gif")+"' ALIGN=RIGHT border=0>\n");
-		}		
-		_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("		</TD>\n");			
+		}	
 				
 		// create center blank cell
-		_htmlStream.append("		<TD class='portlet-section-footer'>page " + pageNumber + " of " + pagesNumber + "\n");
+		_htmlStream.append("		<TD class='portlet-section-footer'>\n");
 		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
 		
 		
@@ -447,6 +596,8 @@ public class CheckBoxTag extends TagSupport {
 		if (_filter != null && _filter.equalsIgnoreCase("enabled")) {
 			String checked = "";
 			String isChecked = (String)_serviceRequest.getAttribute("checked");
+			if (isChecked  == null )
+				isChecked = (String) _content.getAttribute("optChecked");
 			if(isChecked == null){
 				isChecked = "true";
 			}
@@ -455,53 +606,207 @@ public class CheckBoxTag extends TagSupport {
 			}
 			
 			_htmlStream.append("						    <br/><br/>\n");
-			//_htmlStream.append("	<form method='POST' action='" + formUrl.toString() + "' id ='objectForm' name='objectForm'>\n");
 			String label = msgBuilder.getMessage("CheckboxTag.showChecked", "messages", httpRequest);
 			_htmlStream.append("						    "+label+"\n");
 			_htmlStream.append("<input type=\"checkbox\"" + checked + " \n");
 			_htmlStream.append("				onclick=\"submitForm()\" name=\"filterCheckbox\" id=\"filterCheckbox\" value=\"true\"/>\n");
 			_htmlStream.append("<input type =\"hidden\" id=\"checkFilter\" name=\"checkFilter\" value=\"\" />");
 			_htmlStream.append("<input type =\"hidden\" id=\"checked\" name=\"checked\" value=\"" + isChecked + "\" />");
-			//_htmlStream.append("						    </form> \n");
 			_htmlStream.append("						    </TD>\n");
-			_htmlStream.append("<script>\n");
-			_htmlStream.append("function submitForm() {\n");
-			_htmlStream.append("var checkFilter=document.getElementById('checkFilter'); ");
-			_htmlStream.append("var filterCheckbox=document.getElementById('filterCheckbox'); ");
-			_htmlStream.append("var checked=document.getElementById('checked'); ");
-			_htmlStream.append("if(filterCheckbox.checked == false){");
-			_htmlStream.append("checked.value = 'false'");
-			_htmlStream.append("}");
-			_htmlStream.append("else{");
-			_htmlStream.append("checked.value = 'true'");
-			_htmlStream.append("}");
-			_htmlStream.append("checkFilter.value='checkFilter';");
-			_htmlStream.append("document.getElementById('form').submit();\n");
-			_htmlStream.append("} \n");
-			_htmlStream.append("</script>");
+			
 		}
 		
 		
-		//	 create link for next page
-		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
+		//	 create links for navigation
 		if(pageNumber != pagesNumber) {	
-			//_htmlStream.append("		<A href=\""+nextUrl.toString()+"\"><IMG src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/img/nextPage.gif")+"' ALIGN=RIGHT border=0></a>\n"); 
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "nextPage" + "' " +
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif") + "' " +
-					  "align='right' border='0'" +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png") + "' " +
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)'"+
 					  "alt='" + "GO To Next Page" + "'>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "lastPage" + "' " +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png") + "' " +
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)'"+
+					  "alt='" + "GO To Last Page" + "'>\n");
+			_htmlStream.append("		</TD>\n");
 		} else {
-			_htmlStream.append("		<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/nextPage.gif")+"' ALIGN=RIGHT border=0>\n");
-		}		
-		_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
+			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("		</TD>\n");
+		}	
+	
 		
 		_htmlStream.append("	</TR>\n");
 		_htmlStream.append("</TABLE>\n");
 	} 
 
 	
-	
+	/**
+	 * Builds Table list footer, reading all request information.
+	 * 
+	 * @throws JspException If any Exception occurs.
+	 */
+	protected void makeFooterList() throws JspException {
+		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
+		int pageNumber = 1;
+		try {
+			pageNumber = Integer.parseInt(pageNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
+		} 
+		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
+		int pagesNumber = 1;
+		try {
+			pagesNumber = Integer.parseInt(pagesNumberString);
+		} 
+		catch (NumberFormatException ex) {
+			TracerSingleton.log(
+				Constants.NOME_MODULO,
+				TracerSingleton.WARNING,
+				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
+		} 
+				
+		int prevPage = pageNumber - 1;
+		if (prevPage < 1)
+			prevPage = 1;
+		int nextPage = pageNumber + 1;
+		if (nextPage > pagesNumber)
+			nextPage = pagesNumber;
+		
+		int startRangePages = 1;
+		int endRangePages = END_RANGE_PAGES;
+		int deltaPages = pagesNumber - endRangePages;
+		String dotsStart = "";
+		String dotsEnd = "";
+		if (deltaPages > 0){
+			startRangePages = (pageNumber - 3 > 0)?pageNumber - 3:1;
+			endRangePages = ((pageNumber + 3 <= pagesNumber) && (pageNumber + 3 >  END_RANGE_PAGES))?pageNumber + 3: END_RANGE_PAGES;
+			if (pageNumber + 3 <= pagesNumber){ 
+				if (pageNumber + 3 >  END_RANGE_PAGES) endRangePages = pageNumber + 3;				
+				else endRangePages = END_RANGE_PAGES;
+			}
+			else {
+				startRangePages = startRangePages - (pageNumber + 3 - pagesNumber);
+				endRangePages = pagesNumber;
+			}
+			if (endRangePages < pagesNumber) dotsEnd = "... ";
+			if (startRangePages > 1) dotsStart = "... ";			
+		}
+		else {
+			startRangePages = 1;
+			endRangePages = pagesNumber;
+		}
+					
+		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
+		_htmlStream.append("	<TR>\n");		
+        // visualize page numbers
+		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
+		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
+		_htmlStream.append("		<TD class='portlet-section-footer' align='left' width='10%'>\n");
+		_htmlStream.append("				<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
+		//_htmlStream.append("			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
+		_htmlStream.append("		</TD>\n");
+		_htmlStream.append("		<TD  class='portlet-section-footer' width='28%'>\n");
+		_htmlStream.append("			    &nbsp;\n");
+		_htmlStream.append("		</TD>\n");		
+		// visualize navigation's icons
+		if(pageNumber != 1) {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "firstPage" + "' " +					  
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png") + "' " + 
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)' "+
+					  "alt='" + "GO To First Page" + "'>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "prevPage" + "' " +					  
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png") + "' " + 
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)' " +
+					  "alt='" + "GO To Previous Page" + "'>\n");
+			_htmlStream.append("	</TD>\n");
+		} else {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("	</TD>\n");			
+		}		
+		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
+		_htmlStream.append(dotsStart+"\n");
+		for (int i=startRangePages; i <= endRangePages; i++){
+			// create link for last page
+			HashMap tmpParamsMap = new HashMap();
+			tmpParamsMap.putAll(_providerUrlMap);
+			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
+			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
+			tmpParamsMap.put("checkedElements",_lstElements);
+			String tmpUrl = createUrl(tmpParamsMap);
+			
+			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+			String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+			String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
+			if (valueFilter != null && columnFilter != null && typeFilter != null) {
+				tmpParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
+				tmpParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
+				tmpParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
+				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
+				tmpUrl = createUrl(tmpParamsMap);
+			}				 				
+			_htmlStream.append("	<A href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
+			_htmlStream.append("&nbsp;&nbsp;\n");			
+		}
+		_htmlStream.append(dotsEnd+"\n");
+		_htmlStream.append("	</TD>\n");
+		if(pageNumber != pagesNumber) {	
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "nextPage" + "' " +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png") + "' " +
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)'"+
+					  "alt='" + "GO To Next Page" + "'>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("<input type='image' " +
+					  "name='" + "lastPage" + "' " +
+					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png") + "' " +
+					  "align='right' border='0' " +
+					  "onClick='changePage(this.name)'"+
+					  "alt='" + "GO To Last Page" + "'>\n");
+			_htmlStream.append("	</TD>\n");
+		} else {
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("	</TD>\n");
+			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("	</TD>\n");
+		}		
+		_htmlStream.append("		<TD class='portlet-section-footer' width='38%'>\n");
+		_htmlStream.append("			    &nbsp;\n");
+		_htmlStream.append("		</TD>\n");		
+
+		_htmlStream.append("	</TR>\n");
+		_htmlStream.append("</TABLE>\n");
+	}
 	/**
 	 * Starting from the module <code>buttonsSB</code> object, 
 	 * creates all buttons for the jsp list. 
@@ -518,8 +823,6 @@ public class CheckBoxTag extends TagSupport {
 		while (iter.hasNext()) {
 			SourceBeanAttribute buttonSBA = (SourceBeanAttribute)iter.next();
 			SourceBean buttonSB = (SourceBean)buttonSBA.getValue();
-			List parameters = buttonSB.getAttributeAsList("PARAMETER");
-			HashMap paramsMap = getParametersMap(parameters, null);
 			
 			String name = (String) buttonSB.getAttribute("name");
 			String img = (String) buttonSB.getAttribute("image");
@@ -560,7 +863,6 @@ public class CheckBoxTag extends TagSupport {
 			String scope = (String) ((SourceBean) parameters.get(i)).getAttribute("SCOPE");
 			
 			if (name != null) {
-				//name = JavaScript.escape(name.toUpperCase());
 				name = name.toUpperCase();
 				
 				if ((type != null) && type.equalsIgnoreCase("RELATIVE")) {
@@ -594,19 +896,11 @@ public class CheckBoxTag extends TagSupport {
 	 * @param paramsMap The parameter HashMap
 	 * @return A <code>portletURL</code> object representing the navigation URL
 	 */
-//	protected PortletURL createUrl(HashMap paramsMap) {
-//		PortletURL url = renderResponse.createActionURL();
-//		Set paramsKeys = paramsMap.keySet();
-//		Iterator iter = paramsKeys.iterator();
-//		while(iter.hasNext()) {
-//			String paramKey = (String)iter.next();
-//			String paramValue = paramsMap.get(paramKey).toString();
-//            url.setParameter(paramKey, paramValue); 		
-//		}
-//		return url;
-//	}	
-	
-	
+	protected String createUrl(HashMap paramsMap) {
+		paramsMap.put("TYPE_LIST", "TYPE_LIST");
+		String url = urlBuilder.getUrl(httpRequest, paramsMap);
+		return url;
+	}
 	/**
 	 * Traces the setting of an action name.
 	 * 

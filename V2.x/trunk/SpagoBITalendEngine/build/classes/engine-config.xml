@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ENGINE-CONFIGURATION>
+	
+
+	<!-- ====================================================================================== -->
+	<!--  SSO settings 																	--> 
+	<!-- ====================================================================================== -->
+	<ACTIVE_SSO>false</ACTIVE_SSO>
+	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
+	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
+	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
+	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>
+	<ContentServiceProxy_URL>/services/ContentService</ContentServiceProxy_URL>
+	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
+	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
+	
+	
+
+</ENGINE-CONFIGURATION>

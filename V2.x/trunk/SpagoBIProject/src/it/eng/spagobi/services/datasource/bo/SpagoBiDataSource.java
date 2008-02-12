@@ -56,18 +56,18 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
 
-    public boolean isJndi() {
+    public boolean checkIsJndi() {
     	return getJndiName() != null 
     			&& getJndiName().equals("") == false;
     }
     
-    public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+    public Connection readConnection() throws NamingException, SQLException, ClassNotFoundException {
     	Connection connection = null;
     	 
-    	if( isJndi() ) {
-    		connection = getJndiConnection();
+    	if( checkIsJndi() ) {
+    		connection = readJndiConnection();
     	} else {    		
-    		connection = getDirectConnection();
+    		connection = readDirectConnection();
     	}
     	
     	return connection;
@@ -83,7 +83,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
      * @throws NamingException 
      * @throws SQLException 
      */
-    private Connection getJndiConnection() throws NamingException, SQLException {
+    private Connection readJndiConnection() throws NamingException, SQLException {
 		Connection connection = null;
 		
 		Context ctx;
@@ -103,7 +103,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
      * @throws ClassNotFoundException 
      * @throws SQLException 
      */
-    private Connection getDirectConnection() throws ClassNotFoundException, SQLException {
+    private Connection readDirectConnection() throws ClassNotFoundException, SQLException {
 		Connection connection = null;
 		
 		Class.forName( getDriver() );

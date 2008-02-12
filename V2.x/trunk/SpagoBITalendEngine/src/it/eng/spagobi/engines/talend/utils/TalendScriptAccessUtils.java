@@ -45,7 +45,9 @@ public class TalendScriptAccessUtils {
     		buffer.append(".");
     		buffer.append(job.getName().toLowerCase());
     		buffer.append(".");
-    		buffer.append(job.getName().substring(0,1).toUpperCase() + job.getName().substring(1));
+    		//not more Java convention but original name
+    		buffer.append(job.getName().substring(0,1) + job.getName().substring(1));
+    		//buffer.append(job.getName().substring(0,1).toUpperCase() + job.getName().substring(1));
     	} else{
     		return null;
     	}

@@ -125,7 +125,7 @@ INSERT INTO SBI_DOMAINS VALUES(103,'DATAMART','Datamart Model','BIOBJ_TYPE','BI 
 INSERT INTO SBI_DOMAINS VALUES(104,'EXT','External Engine','ENGINE_TYPE','Engine types','Business intelligence external engine of SpagoBI platform')
 INSERT INTO SBI_DOMAINS VALUES(105,'INT','Internal Engine','ENGINE_TYPE','Engine types','Business intelligence internal engine of SpagoBI platform')
 INSERT INTO SBI_DOMAINS VALUES(106,'MAP','Map','BIOBJ_TYPE','BI Object types','Map')
-INSERT INTO SBI_DOMAINS VALUES(107,'DOSSIER','DOSSIER','BIOBJ_TYPE','BI Object types','DOSSIER')
+INSERT INTO SBI_DOMAINS VALUES(107,'DOSSIER','Dossier','BIOBJ_TYPE','BI Object types','Dossier')
 INSERT INTO SBI_DOMAINS VALUES(108,'LIST','List values selection','SELECTION_TYPE','Selection modality of parameter values','Single-value selection from a list')
 INSERT INTO SBI_DOMAINS VALUES(109,'CHECK_LIST','CheckList values selection','SELECTION_TYPE','Selection modality of parameter values','Multi-value selection from a checklist')
 INSERT INTO SBI_DOMAINS VALUES(110,'COMBOBOX','ComboBox values selection','SELECTION_TYPE','Selection modality of parameter values','Single value selection from a combobox')

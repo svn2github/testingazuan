@@ -25,31 +25,29 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListParametersModule;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiEventRole;
 import it.eng.spagobi.commons.metadata.SbiEventRoleId;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.engines.config.service.ListEnginesModule;
+import it.eng.spagobi.engines.drivers.weka.WekaDriver;
 import it.eng.spagobi.events.bo.EventLog;
 import it.eng.spagobi.events.metadata.SbiEventsLog;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 
 /**
  * @author Gioia
@@ -57,11 +55,14 @@ import org.hibernate.Transaction;
  */
 public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLogDAO {
 	
+	 static private Logger logger = Logger.getLogger(AbstractHibernateDAO.class);
+	
 	/**
 	 * @see it.eng.spagobi.events.dao.IEventLogDAO#loadEventLogById(Integer)
 	 * 
 	 */
 	public EventLog loadEventLogById(Integer id) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		EventLog realResult = null;
@@ -101,7 +102,9 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
+		
 	}
 
 	
@@ -110,6 +113,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	 * 
 	 */
 	public List loadEventsLogByUser(IEngUserProfile profile) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -176,6 +180,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 
@@ -184,6 +189,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	 * 
 	 */
 	public Integer insertEventLog(EventLog eventLog) throws EMFUserError {
+		logger.debug("IN");
 		Session session = null;
 		Transaction tx = null;
 		session = getSession();
@@ -224,6 +230,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		}
 		hibEventLog.setRoles(hibEventRoles);
 		tx.commit();
+		logger.debug("OUT");
 		return hibEventLog.getId();
 	}
 
@@ -232,6 +239,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	 * 
 	 */
 	public void eraseEventLog(EventLog eventLog) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		
@@ -261,7 +269,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
-		}
+		}logger.debug("OUT");
 	}
 
 	/**
@@ -269,6 +277,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	 * 
 	 */
 	public void eraseEventsLogByUser(String user) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		String hql = null;
@@ -310,10 +319,11 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
-		}		
+		} logger.debug("OUT");		
 	}
 	
 	private EventLog toEventsLog(SbiEventsLog hibEventLog) {
+		logger.debug("IN");
 		EventLog eventLog = new EventLog();
 		eventLog.setId(hibEventLog.getId());
 		eventLog.setUser(hibEventLog.getUser());
@@ -330,6 +340,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		    roles.add(hibRole.getName());
 		}
 		eventLog.setRoles(roles);
+		logger.debug("OUT");
 		return eventLog;
 	}
 	

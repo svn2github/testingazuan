@@ -1,5 +1,8 @@
 package it.eng.spagobi.services.proxy;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import it.eng.spagobi.services.event.stub.EventServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
@@ -15,7 +18,13 @@ import org.apache.log4j.Logger;
  */
 public final class EventServiceProxy extends AbstractServiceProxy{
 
-
+	public static final String START_EVENT_ID = "startEventId";
+	public static final String BIOBJECT_ID = "biobjectId";
+	public static final String USER = "user";
+	public static final String EVENT_TYPE = "event-type";
+	public static final String DOCUMENT_EXECUTION_START = "biobj-start-execution";
+	public static final String DOCUMENT_EXECUTION_END = "biobj-end-execution";
+	
     static private Logger logger = Logger.getLogger(EventServiceProxy.class);
 
     /**
@@ -66,5 +75,43 @@ public final class EventServiceProxy extends AbstractServiceProxy{
 	}
 	return null;	
     }
+    
+    /**
+     * 
+     * @param description String
+     * @param parameters Map
+     * @param rolesHandler String
+     * @param presentationHandler String
+     * @return String
+     */
+    public String fireEvent(String description,Map parameters,String rolesHandler,String presentationHandler){
+	logger.debug("IN");
+	try {
+	    return lookUp().fireEvent( readTicket(), userId, description, getParamsStr(parameters), rolesHandler, presentationHandler);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("IN");
+	}
+	return null;	
+    }    
+    
+    
+    
+	private String getParamsStr(Map params) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator it = params.keySet().iterator();
+		boolean isFirstParameter = true;
+		while(it.hasNext()) {
+			String pname = (String)it.next();
+			String pvalue = (String)params.get(pname);
+			if(!isFirstParameter) buffer.append("&");
+			else isFirstParameter = false;
+			buffer.append(pname + "=" + pvalue);
+		}
+		return buffer.toString();
+	}
+	
 
 }

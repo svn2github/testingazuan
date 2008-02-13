@@ -82,6 +82,7 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			String descrnewdoc = "";
 			String labelnewdoc = "";
 			String queryStr = "";
+			String userId="";
 			Enumeration parNames = request.getParameterNames();
 			while(parNames.hasMoreElements()) {
 				String parName = (String)parNames.nextElement();
@@ -93,7 +94,10 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 					descrnewdoc = request.getParameter("descrnewdoc");
 				} else if(parName.equals("labelnewdoc")) {
 					labelnewdoc = request.getParameter("labelnewdoc");
-				} else {
+				} else if(parName.equals("userid")) {
+					userId = request.getParameter("userid");
+				} 
+				else {
 					String value = request.getParameter(parName);
 					queryStr += parName + "=" + value + "&";
 				}
@@ -122,11 +126,11 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-		 	        Principal principal = request.getUserPrincipal();
+		 	        //Principal principal = request.getUserPrincipal();
 				IEngUserProfile profile = null;
 				ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 			        try {
-			            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+			            SpagoBIUserProfile user= supplier.createUserProfile(userId);
 			            profile=new UserProfile(user);
 			        } catch (Exception e) {
 			            throw new SecurityException();
@@ -154,11 +158,10 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			objTemp.setContent(documentBytes);
 			objTemp.setName("document" + fileextension);
 			// load user root functionality 
-	 	        Principal principal = request.getUserPrincipal();
 			IEngUserProfile profile = null;
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		        try {
-		            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+		            SpagoBIUserProfile user= supplier.createUserProfile(userId);
 		            profile=new UserProfile(user);
 		        } catch (Exception e) {
 		            throw new SecurityException();
@@ -181,6 +184,7 @@ public class SaveToPersonalFolderServlet extends HttpServlet{
 			newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
 			newbiobj.setStateCode(relDom.getValueCd());
 			newbiobj.setStateID(relDom.getValueId());
+			newbiobj.setDataSourceId(new Integer(1));
 			newbiobj.setVisible(new Integer(0));
 			newbiobj.setFunctionalities(storeInFunctionalities);
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();

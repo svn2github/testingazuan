@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
@@ -416,11 +417,27 @@ public class BookletsManagementModule extends AbstractModule {
 		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
 		Integer objId = new Integer(objIdStr);
 		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
-		IDossierDAO dossierDao = new DossierDAOHibImpl();
-		// save information
-		dossierDao.storeTemplate(dossier);
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
 		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
+		IDossierDAO dossierDao = new DossierDAOHibImpl();
+		List docs = dossierDao.getConfiguredDocumentList(dossier);
+		EMFErrorHandler errorHandler = getErrorHandler();
+		if (dossierDao.getPresentationTemplateFileName(dossier) == null) {
+			logger.error("Presentation template not loaded");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "104", "component_booklets_messages");
+			errorHandler.addError(error);
+		}
+		if (dossierDao.getProcessDefinitionFileName(dossier) == null) {
+			logger.error("Process definition file not loaded");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "105", "component_booklets_messages");
+			errorHandler.addError(error);
+		}
+		if (docs == null || docs.size() == 0) {
+			logger.error("No documents configured in dossier");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "106", "component_booklets_messages");
+			errorHandler.addError(error);
+		}
+		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) dossierDao.storeTemplate(dossier);
 	}
 	
 }

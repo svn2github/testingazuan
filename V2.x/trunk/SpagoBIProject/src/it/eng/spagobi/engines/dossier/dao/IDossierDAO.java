@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.engines.dossier.dao;
 
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 
@@ -49,7 +48,7 @@ public interface IDossierDAO {
 	//**
 	public void unzipTemplate(BIObject dossier);
 	
-	public void storeTemplate(BIObject dossier) throws EMFUserError;
+	public void storeTemplate(BIObject dossier);
 	
 	public List getConfiguredDocumentList(BIObject dossier);
 	

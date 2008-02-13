@@ -24,8 +24,6 @@ package it.eng.spagobi.engines.dossier.dao;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
@@ -60,6 +58,7 @@ import org.xml.sax.InputSource;
 public class DossierDAOHibImpl implements IDossierDAO {
 
 	public static final String TEMPLATE_FILE_NAME = "dossierTemplate.zip";
+	public static final String DOSSIER_CONF_FILE_NAME = "dossier-config.sbidossier";
 	
 	static private Logger logger = Logger.getLogger(DossierDAOHibImpl.class);
 	
@@ -108,26 +107,13 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 	
-	public void storeTemplate(BIObject dossier) throws EMFUserError {
+	public void storeTemplate(BIObject dossier) {
 		logger.debug("IN");
 		File template = null;
 		try {
 			File presentationTemplate = getTemporaryPresentationTemplate(dossier);
 			File processDefinitionFile = getTemporaryProcessDefinitionFile(dossier);
 			File dossierConfigFile = getTemporaryDossierConfigurationFile(dossier);
-			List docs = getConfiguredDocumentList(dossier);
-			if (presentationTemplate == null) {
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 104);
-				throw error;
-			}
-			if (processDefinitionFile == null) {
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 105);
-				throw error;
-			}
-			if (docs == null || docs.size() == 0) {
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 106);
-				throw error;
-			}
 			String[] files = new String[] {
 					presentationTemplate.getAbsolutePath(), 
 					processDefinitionFile.getAbsolutePath(), 
@@ -137,8 +123,6 @@ public class DossierDAOHibImpl implements IDossierDAO {
 			ObjTemplate objTemplate = generateObjTemplate(template);
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 			objDAO.modifyBIObject(dossier, objTemplate);
-		} catch (EMFUserError e) {
-			throw e;
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {
@@ -309,7 +293,7 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		logger.debug("IN");
 		File toReturn = null;
 		File dossierTempFolder = getDossierTempFolder(dossier);
-		toReturn = new File(dossierTempFolder.getAbsolutePath() + "/dossier-config.sbidossier");
+		toReturn = new File(dossierTempFolder.getAbsolutePath() + "/" + DOSSIER_CONF_FILE_NAME);
 		logger.debug("OUT");
 		return toReturn;
 	}

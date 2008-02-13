@@ -98,6 +98,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String userId=(String)userProfile.getUserUniqueIdentifier();
    	
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
@@ -789,7 +790,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        <%
 			}
        %>
-       pars += "&to=" + document.getElementById('sendtoto').value;
+       
+	   pars += "&to=" + document.getElementById('sendtoto').value;
        pars += "&cc=" + document.getElementById('sendtocc').value;
        pars += "&object=" + document.getElementById('sendtoobject').value;
        pars += "&message=" + document.getElementById('sendtomessage').value;
@@ -852,6 +854,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        pars += "&namenewdoc=" + document.getElementById('stpfname').value;
        pars += "&descrnewdoc=" + document.getElementById('stpfdescription').value;
        pars += "&labelnewdoc=" + document.getElementById('stpflabel').value;
+       pars += "&userid=<%=userId%>"; 
        mstpfd = document.getElementById('messageSaveToPFDiv');
        mstpfd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
        new Ajax.Request(url,

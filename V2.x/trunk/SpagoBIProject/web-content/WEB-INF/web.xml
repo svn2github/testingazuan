@@ -11,8 +11,8 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 
-<!-- 
-     
+
+<!--  
  <filter>
  <filter-name>CAS_Filter</filter-name>
  <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
@@ -35,13 +35,15 @@
              <param-value>https://localhost:8443/SpagoBI/proxyReceptor</param-value> 
        </init-param>           
  </filter>    
- 
+    
+  	
   	
    <filter-mapping>
     <filter-name>CAS_Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
- -->
+
+	-->
 
  
     <!-- START LISTENERS -->
@@ -109,11 +111,12 @@
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.ExecuteAndSendServlet</servlet-class>
     </servlet>
-    <servlet>
+   
+   <!--  <servlet>
         <servlet-name>SaveToPersonalFolderServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.SaveToPersonalFolderServlet</servlet-class>
     </servlet>
-    
+    --> 
     
 
     <!-- END SERVLET DEFINITIONS -->
@@ -168,11 +171,12 @@
         <servlet-name>ExecuteAndSendServlet</servlet-name>
         <url-pattern>/ExecuteAndSendService</url-pattern>
     </servlet-mapping> 
-    <servlet-mapping>
+    
+    <!--  <servlet-mapping>
         <servlet-name>SaveToPersonalFolderServlet</servlet-name>
         <url-pattern>/SaveToPersonalFolderService</url-pattern>
     </servlet-mapping> 
-
+-->
 
      
 	<!-- END SERVLET MAPPINGS --> 

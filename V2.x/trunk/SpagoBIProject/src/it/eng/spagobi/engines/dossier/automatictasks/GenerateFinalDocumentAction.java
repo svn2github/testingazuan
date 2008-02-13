@@ -27,7 +27,7 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
@@ -78,7 +78,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	XComponent xComponent = null;
 	XDesktop xdesktop = null;
 	String pathTmpFold = null;
-	IBookletsCmsDao pampDao = null;
+	IDossierDAO pampDao = null;
 	String pathTmpFoldPamp = null;
 	String pathBookConf = null;
 	XBridge bridge = null;
@@ -190,7 +190,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		debug("execute", "Start examining page " + i);
 		// get images corresponding to that part of the template
 		String indexPartTemplate = new Integer(i + 1).toString();
-		IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
+		IDossierDAO pampdao = new BookletsCmsDaoImpl();
 		Map images = pampdao.getImagesOfTemplatePart(pathBookConf, indexPartTemplate);
 		debug("execute", "Images map retrieved: " + images);
 		// get draw page

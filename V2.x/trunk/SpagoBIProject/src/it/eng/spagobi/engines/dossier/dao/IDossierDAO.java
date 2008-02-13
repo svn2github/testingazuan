@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.engines.dossier.dao;
 
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 
 import java.io.InputStream;
@@ -36,38 +38,42 @@ import java.util.Map;
 /**
  * Defines all the methods needed for access contents of booklets into CMS Repository 
  */
-public interface IBookletsCmsDao {
+public interface IDossierDAO {
 
 	/**
 	 * Creates the cms node that holds the booklet configuration and returns the path of the node.
 	 * @param pathBiObject
 	 * @return the path of the booklet template node
 	 */
-	public String createNewConfigurationNode(String pathBiObject);// via
+	//public String createNewConfigurationNode(String pathBiObject);// via
 	//**
-	public List getConfiguredDocumentList(String pathBooklet);
+	public void unzipTemplate(BIObject dossier);
 	
-	public void addConfiguredDocument(String pathBooklet, ConfiguredBIDocument doc);
+	public void storeTemplate(BIObject dossier) throws EMFUserError;
 	
-	public void deleteConfiguredDocument(String pathBooklet, String conDocIdentifier);
+	public List getConfiguredDocumentList(BIObject dossier);
 	
-	public ConfiguredBIDocument getConfigureDocument(String pathBooklet, String conDocIdentifier);
+	public void addConfiguredDocument(BIObject dossier, ConfiguredBIDocument doc);
 	
-	public void storeBookletTemplate(String pathBooklet, String templateFileName, byte[] templateContent);
+	public void deleteConfiguredDocument(BIObject dossier, String docLogicalName);
 	
-	public String getBookletTemplateFileName(String pathBooklet);
+	public ConfiguredBIDocument getConfiguredDocument(BIObject dossier, String docLogicalName);
 	
-	public InputStream getBookletTemplateContent(String pathBooklet);
+	public void storePresentationTemplateFile(BIObject dossier, String templateFileName, byte[] templateContent);
 	
-	public void storeBookletProcessDefinition(String pathBooklet, String pdFileName, byte[] pdFileContent);
+	public String getPresentationTemplateFileName(BIObject dossier);
 	
-	public String getBookletProcessDefinitionFileName(String pathBooklet); 
+	public InputStream getPresentationTemplateContent(BIObject dossier);
+	
+	public void storeProcessDefinitionFile(BIObject dossier, String pdFileName, byte[] pdFileContent);
+	
+	public String getProcessDefinitionFileName(BIObject dossier); 
 	
 	
-	public InputStream getBookletProcessDefinitionContent(String pathBooklet);
+	public InputStream getProcessDefinitionContent(BIObject dossier);
 	//**
 	
-	public void createStructureForTemplate(String pathBooklet, int numTempParts);// via
+	//public void createStructureForTemplate(String pathBooklet, int numTempParts);// via
 	
 	public void storeTemplateImage(String pathBooklet, byte[] image, String docLogicalName, int indexTempPart);
 	
@@ -91,8 +97,8 @@ public interface IBookletsCmsDao {
 	
 	public byte[] getPresentationVersionContent(String pathBooklet, String verName);
 	
-	public String getBookletName(String pathBooklet);
+	public String getDossierName(String pathBooklet);
 	
-	public String getBiobjectPath(String pathBooklet);
+//	public String getBiobjectPath(String pathBooklet);
 
 }

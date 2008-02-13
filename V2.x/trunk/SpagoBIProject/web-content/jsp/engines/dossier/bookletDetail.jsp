@@ -29,69 +29,64 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument,
 				it.eng.spagobi.commons.constants.SpagoBIConstants,
 				it.eng.spagobi.engines.dossier.bo.WorkflowConfiguration" %>
-<%@page import="it.eng.spagobi.dossierutils.BookletServiceUtils"%>
-<%@page import="iit.eng.spagobi.dossierdao.BookletsCmsDaoImpl"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.dao.IBIObjectCMSDAO"%>
-<%@page import="iit.eng.spagobi.dossierdao.IBookletsCmsDao"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule"%>
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.dossier.dao.IDossierDAO"%>
+<%@page import="it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl"%>
+<%@page import="it.eng.spagobi.engines.dossier.utils.BookletServiceUtils"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
    List confDocList = (List)moduleResponse.getAttribute(BookletsConstants.CONFIGURED_DOCUMENT_LIST);
-   String pathConfNode = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+   String idBiObjStr = (String)aServiceRequest.getAttribute(SpagoBIConstants.OBJECT_ID);
+   Integer objId = new Integer(idBiObjStr);
    String templateOOFileName = (String)moduleResponse.getAttribute(BookletsConstants.OO_TEMPLATE_FILENAME);
    String wfProcDefFileName = (String)moduleResponse.getAttribute(BookletsConstants.WF_PROCESS_DEFINTIION_FILENAME);
    
-    // load the biobject
-   IBookletsCmsDao bookletsCmsDao = new BookletsCmsDaoImpl();
-   String biObjectPath = bookletsCmsDao.getBiobjectPath(pathConfNode);
-   BIObject biobject = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(biObjectPath);
-   // get the biobject id
-   String idBiObjStr = biobject.getId().toString();
-   // get the actor from session
-   String actor = (String)aSessionContainer.getAttribute(SpagoBIConstants.ACTOR);
+   // load the biobject
+   IDossierDAO dossierDao = new DossierDAOHibImpl();
+   BIObject biobject = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
    
    Iterator iterDoc = confDocList.iterator();
    
    Map backUrlPars = new HashMap();
    backUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
    backUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
-   backUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idBiObjStr);
-   backUrlPars.put(SpagoBIConstants.ACTOR, actor);
+   backUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
    Map formDetailUrlPars = new HashMap();
    formDetailUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formDetailUrlPars.put("OPERATION", BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT);
-   formDetailUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   formDetailUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
    formDetailUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String formDetailUrl = urlBuilder.getUrl(request, formDetailUrlPars);
    
    Map formEraseUrlPars = new HashMap();
    formEraseUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formEraseUrlPars.put("OPERATION", BookletsConstants.OPERATION_DELETE_CONFIGURED_DOCUMENT);
-   formEraseUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
+   formEraseUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
    formEraseUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String formEraseUrl = urlBuilder.getUrl(request, formEraseUrlPars);
    
    Map saveUrlPars = new HashMap();
-   //saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   //saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
-   //saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
+   saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
+   saveUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   String saveUrl = urlBuilder.getUrl(request, saveUrlPars); 
    
-   Map saveVersionUrlPars = new HashMap();
-   saveVersionUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-   saveVersionUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET);
-   saveVersionUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathConfNode);
-   saveVersionUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-   String saveVersionUrl = urlBuilder.getUrl(request, saveVersionUrlPars);
+   //Map saveVersionUrlPars = new HashMap();
+   //saveVersionUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
+   //saveVersionUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_NEW_VERSION_BOOKLET);
+   //saveVersionUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   //saveVersionUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+   //String saveVersionUrl = urlBuilder.getUrl(request, saveVersionUrlPars);
    
    Map formNewConfDocUrlPars = new HashMap();
    formNewConfDocUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
@@ -107,7 +102,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!-- ********************* TITOLO **************************  -->
 
-
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -118,36 +112,38 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
-				<a href="javascript:document.getElementById('saveForm').submit()"> 
+				<a href="<%= saveUrl %>"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.jpg")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.jpg")%>' 
 	      				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
+			<%--
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
 				<a href="<%=saveVersionUrl %>"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.saveVersion" bundle="component_booklets_messages" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/components/booklets/img/saveVersion32.jpg")%>' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/img/dossier/saveVersion32.jpg")%>' 
 	      				 alt='<spagobi:message key = "book.saveVersion"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>
+			--%>
 		</tr>
 	</table>
 	
 	<br/>
 	
 	
-
-
+	<!-- Errors, if any -->
+	<spagobi:error/>
 
 
 	<!-- ********************* START LEFT DIV **************************  -->
@@ -188,14 +184,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td width="20">
 						<a href='<%=formDetailUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "book.detail" bundle="component_booklets_messages" />' 
-      				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/detail.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLink(request, "/img/dossier/detail.gif")%>' 
       				 		alt='<spagobi:message key = "book.detail"  bundle="component_booklets_messages"/>' />
       				 	</a>
 					</td>
 					<td  width="20">
 					    <a href='<%=formEraseUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
-      				 		src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/erase.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLink(request, "/img/dossier/erase.gif")%>' 
       				 		alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
       				 	</a>
 					</td>
@@ -212,10 +208,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<!-- ********************* TEMPLATE FORM **************************  -->
 
-		<form action="<%=saveUrl%>" method='POST' id='saveForm' name='saveForm' enctype="multipart/form-data">
-			<input type="hidden" name="<%=BookletsConstants.PATH_BOOKLET_CONF %>"  value="<%=pathConfNode%>"/>
-			<input type="hidden" name="PAGE"  value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
-			<input type="hidden" name="OPERATION"  value="<%=BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET%>"/>
+		<form action="<%=urlBuilder.getUrl(request, new HashMap())%>" method='POST' id='loadTemplatePresentationForm' 
+				name='loadTemplatePresentationForm' enctype="multipart/form-data">
+			<input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID %>"  value="<%=idBiObjStr%>"/>
+			<input type="hidden" name="PAGE" value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
+			<input type="hidden" name="OPERATION" value="<%=BookletsConstants.OPERATION_LOAD_PRESENTATION_TEMPLATE%>"/>
 			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
 		
 		<br/>
@@ -239,12 +236,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String downOOTemplateUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE + "&" +
-										   BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;				   
+										   SpagoBIConstants.OBJECT_ID + "=" + idBiObjStr;				   
 		%>
 			&nbsp;&nbsp;&nbsp;
 			<a style='text-decoration:none;' href='<%=downOOTemplateUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
 					 alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
 			</a>
 		<%
@@ -252,17 +249,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<br/>
 		<br/>
-			<input size="30" type="file" name="templatefile" />
+			<input size="30" type="file" name="templatefile" onchange="document.getElementById('loadTemplatePresentationFormButton').style.display='inline';" />
+			<a style='text-decoration:none;display:none;' id='loadTemplatePresentationFormButton' 
+					href='javascript:document.getElementById("loadTemplatePresentationForm").submit();'>
+				<img title='<spagobi:message key="book.upload.presentationTemplate" bundle="component_booklets_messages" />' 
+					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/upload32.png")%>' 
+					 alt='<spagobi:message key="book.upload.presentationTemplate"  bundle="component_booklets_messages"/>' />
+			</a>
  		<br/>
  		<br/>
-		
+		</form>
 		
   
   
   
   
   		<!-- ********************* WORKFLOW FORM **************************  -->
-   
+  		
+   		<form action="<%=urlBuilder.getUrl(request, new HashMap())%>" method='POST' id='loadProcessDefinitionFileForm' 
+   				name='loadProcessDefinitionFileForm' enctype="multipart/form-data">
+			<input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID %>"  value="<%=idBiObjStr%>"/>
+			<input type="hidden" name="PAGE" value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
+			<input type="hidden" name="OPERATION" value="<%=BookletsConstants.OPERATION_LOAD_PROCESS_DEFINITION_FILE%>"/>
+			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
      	
 		<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header' style="float:left;width:100%;">	
 			<div style='width:100%;float:left;'>
@@ -285,13 +294,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String downWorkDefUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION + "&" +
-			   							BookletsConstants.PATH_BOOKLET_CONF + "=" + pathConfNode;	
+            							SpagoBIConstants.OBJECT_ID + "=" + idBiObjStr;	
 		%>
 		
 			&nbsp;&nbsp;&nbsp;
 			<a style='text-decoration:none;' href='<%=downWorkDefUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="book.download" bundle="component_booklets_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
 				 	alt='<spagobi:message key="book.download"  bundle="component_booklets_messages"/>' />
 			</a>
 		
@@ -300,7 +309,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<br/>
 		<br/>
-			<input size="30" type="file" name="wfdefinitionfile" />
+			<input size="30" type="file" name="wfdefinitionfile" onchange="document.getElementById('loadProcessDefinitionFileFormButton').style.display='inline';"/>
+			<a style='text-decoration:none;display:none;' id='loadProcessDefinitionFileFormButton'
+					href='javascript:document.getElementById("loadProcessDefinitionFileForm").submit();'>
+				<img title='<spagobi:message key="book.upload.processDefinitionFile" bundle="component_booklets_messages" />' 
+					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/upload32.png")%>' 
+					 alt='<spagobi:message key="book.upload.processDefinitionFile"  bundle="component_booklets_messages"/>' />
+			</a>
 		<br/>
 		<br/>
 		
@@ -318,7 +333,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<form action="<%=formNewConfDocUrl%>" method='POST' id='newForm' name='newForm'>
-		<input type="hidden" value="<%=pathConfNode%>" name="<%=BookletsConstants.PATH_BOOKLET_CONF%>" />
+		<input type="hidden" value="<%=idBiObjStr%>" name="<%=SpagoBIConstants.OBJECT_ID%>" />
 		<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header'>	
 				<div style='width:90%;float:left;'>
 						<spagobi:message key="book.addConfDoc" bundle="component_booklets_messages"/>
@@ -326,13 +341,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<div style="width:8%;float:left;">
 					<input style="margin-left:10px;" type="image" 
 								 title='<spagobi:message key="book.addDocument" bundle="component_booklets_messages" />' 
-								 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/add.gif")%>' 
+								 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/add.gif")%>' 
 								 alt='<spagobi:message key="book.addDocument"  bundle="component_booklets_messages"/>' />
 				</div>
 		</div>
 		<div>
 			<spagobi:treeObjects moduleName="<%=BookletsConstants.BOOKLET_MANAGEMENT_MODULE%>"  
-								 htmlGeneratorClass="iit.eng.spagobi.dossiertreegenerators.DocumentsTreeHtmlGenerator" />
+								 htmlGeneratorClass="it.eng.spagobi.engines.dossier.treegenerators.DocumentsTreeHtmlGenerator" />
 		    <br/>
 		    <br/>
 		</div>

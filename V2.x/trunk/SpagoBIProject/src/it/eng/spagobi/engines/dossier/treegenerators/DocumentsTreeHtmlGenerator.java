@@ -158,7 +158,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 			    && engine.getDriverName().toLowerCase().indexOf(technologyFilter) != -1) {
 			htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName()
 				+ "', 'javascript:linkEmpty()', '', '', '', '', '', '', '"
-				+ BookletsConstants.PATH_OBJECT + "', '" + obj.getPath() + "' );\n");
+				+ BookletsConstants.BOOKLET_CONFIGURED_BIOBJECT_ID + "', '" + obj.getId() + "' );\n");
 		    }
 		}
 	    }

@@ -62,7 +62,7 @@
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
       			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_DETAIL_BOOKLET" />
-      			<PARAMETER name="PATH_BOOKLET_CONF" type="RELATIVE" scope="SERVICE_RESPONSE" value="BookletsManagementModule.PATH_BOOKLET_CONF" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="BookletsManagementModule.OBJECT_ID" />
         	</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
@@ -70,7 +70,7 @@
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
       			<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
       			<PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="OPERATION_DETAIL_BOOKLET" />
-      			<PARAMETER name="PATH_BOOKLET_CONF" type="RELATIVE" scope="SERVICE_RESPONSE" value="BookletsManagementModule.PATH_BOOKLET_CONF" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="BookletsManagementModule.OBJECT_ID" />
         	</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -80,7 +80,7 @@
       		<RESOURCES>
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
       			<PARAMETER name="OPERATION" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OPERATION" />
-      			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.PATH" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OBJECT_ID" />
       			<PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" />
         	</RESOURCES>
    	 	</RENDERING>
@@ -88,7 +88,7 @@
       		<RESOURCES>
       			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BookletsManagementPage" />
       			<PARAMETER name="OPERATION" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OPERATION" />
-      			<PARAMETER name="PATH" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.PATH" />
+      			<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DocumentTemplateBuildModule.OBJECT_ID" />
       			<PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" type="ABSOLUTE" scope="" value="TRUE" />
         	</RESOURCES>
    	 	</RENDERING>

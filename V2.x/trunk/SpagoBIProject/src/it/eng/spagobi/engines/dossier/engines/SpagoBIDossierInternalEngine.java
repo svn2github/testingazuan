@@ -31,12 +31,12 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.List;
 
-public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
+public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 
 	public static final String messageBundle = "component_booklets_messages";
 	
@@ -54,7 +54,7 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 		String pathBook = pathBiObj + "/template";
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
     			            "execute", "using path " + pathBook);
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		IDossierDAO bookDao = new BookletsCmsDaoImpl();
 		List presVersions = bookDao.getPresentationVersions(pathBook);
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 	            			"execute", "Version list retrived " + presVersions);
@@ -89,7 +89,7 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 		try {
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
-			response.setAttribute(SpagoBIConstants.PATH, obj.getPath());
+			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);
@@ -101,7 +101,7 @@ public class SpagoBIBookletInternalEngine implements InternalEngineIFace {
 		try {
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
-			response.setAttribute(SpagoBIConstants.PATH, obj.getPath());
+			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {
 			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
 					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);

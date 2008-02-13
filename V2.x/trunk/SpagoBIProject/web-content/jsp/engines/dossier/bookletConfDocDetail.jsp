@@ -21,15 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.dossiernts.BookletsConstants,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				java.util.List,
 				java.util.Iterator,
 				it.eng.spagobi.commons.bo.Role,
-				it.eng.it.eng.spagobi.dossierfiguredBIDocument,
 				java.util.Map,
 				java.util.Set" %>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
@@ -38,8 +38,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String description = (String)moduleResponse.getAttribute("description");
    String label = (String)moduleResponse.getAttribute("label");
    String name = (String)moduleResponse.getAttribute("name");
-   Integer idobj = (Integer)moduleResponse.getAttribute("idobj");
-   String pathBookConf = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+   //Integer idobj = (Integer)moduleResponse.getAttribute("idobj");
+   String dossierIdStr = (String)moduleResponse.getAttribute(SpagoBIConstants.OBJECT_ID);
    String logicalname = (String)moduleResponse.getAttribute("logicalname");
    if(logicalname==null)
 	   logicalname = "";
@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    Map backUrlPars = new HashMap();
    backUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    backUrlPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
-   backUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+   backUrlPars.put(SpagoBIConstants.OBJECT_ID, dossierIdStr);
    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
@@ -59,7 +59,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
 %>
 
-
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -70,7 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
       				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -79,7 +78,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('saveForm').submit();"> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
       				 alt='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' />
 			</a>
 		</td>
@@ -96,9 +95,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<spagobi:message key="book.dataObject" bundle="component_booklets_messages" />
 	</div>
 	
-	<input name="<%=BookletsConstants.PATH_BOOKLET_CONF%>" type="hidden" value="<%=pathBookConf%>"/>
+	<input name="<%=SpagoBIConstants.OBJECT_ID%>" type="hidden" value="<%=dossierIdStr%>"/>
+	<%--
 	<input name="idbiobject" type="hidden" value="<%=idobj%>"/>
-	
+	--%>
+	<input name="biobject_label" type="hidden" value="<%=label%>"/>
 	<br/> 
 	
 	<div class="div_detail_area_forms" >

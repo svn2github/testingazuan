@@ -36,7 +36,7 @@ import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
@@ -127,7 +127,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	    debug("execute", "Create tmp folders " + pathTmpFoldBook);
 
 	    // GETS OO TEMPLATE AND WRITE IT INTO THE TMP DIRECTORY
-	    IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+	    IDossierDAO bookDao = new BookletsCmsDaoImpl();
 	    String templateFileName = bookDao.getBookletTemplateFileName(pathBookConf);
 	    debug("execute", "booklet oo template name retrived " + templateFileName);
 	    InputStream contentTempIs = bookDao.getBookletTemplateContent(pathBookConf);
@@ -221,7 +221,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	    int numPages = drawPages.getCount();
 	    debug("execute", "Template has " + numPages + " pages");
 	    // built the structure into the cms
-	    IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
+	    IDossierDAO pampdao = new BookletsCmsDaoImpl();
 	    pampdao.createStructureForTemplate(pathBookConf, numPages);
 	    // store as current version the template (in case of flow exception
 	    // there will be a file to download)
@@ -407,7 +407,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	    byte[] firstImg = decoder.decodeBuffer(firstImgBase64);
 	    debug("storeDocImages", "image bytes decoded " + firstImg);
 	    // store image into cms
-	    IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+	    IDossierDAO bookdao = new BookletsCmsDaoImpl();
 	    bookdao.storeTemplateImage(pathConfBook, firstImg, confDoc.getLogicalName(), numPage);
 	    debug("storeDocImages", "image stored into cms");
 	} catch (Exception e) {

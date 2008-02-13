@@ -44,7 +44,7 @@ import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
 import it.eng.spagobi.engines.dossier.utils.BookletServiceUtils;
 import it.eng.spagobi.monitoring.dao.AuditManager;
@@ -171,7 +171,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				Engine engine = (Engine)engines.get(0);
 				// load the template
 				UploadedFile uploadedFile = new UploadedFile();
-				IBookletsCmsDao bookletsCmsDao = new BookletsCmsDaoImpl();
+				IDossierDAO bookletsCmsDao = new BookletsCmsDaoImpl();
 				byte[] tempCont = bookletsCmsDao.getPresentationVersionContent(pathConfBook, presVerName);
 				String bookName = bookletsCmsDao.getBookletName(pathConfBook);
 				uploadedFile.setFieldNameInForm("template");
@@ -240,7 +240,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	            			"deletePresVerHandler", "method execution start");
 		String pathBookConf = null;
 		List presVersions = null;
-		IBookletsCmsDao bookDao = null;
+		IDossierDAO bookDao = null;
 		try{
 			pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 			String verName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
@@ -305,7 +305,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 		JbpmContext jbpmContext = null;
 		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 		String executionMsg = null;
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		IDossierDAO bookDao = new BookletsCmsDaoImpl();
 		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);
 		String objPath = bookDao.getBiobjectPath(pathBookConf);
 		BIObject biObject = null;
@@ -423,7 +423,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			contextInstance = taskInstance.getContextInstance();
 			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
 			// store presentation
-			IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+			IDossierDAO bookDao = new BookletsCmsDaoImpl();
 			byte[] currPresCont = bookDao.getCurrentPresentationContent(pathConfBook);
 			boolean approvedBool = false;
 			if(approved.equalsIgnoreCase("true")) {
@@ -530,7 +530,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private String recoverNotes(String pathConfBook, String index) {
-		IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+		IDossierDAO bookdao = new BookletsCmsDaoImpl();
 	    byte[] notesByte = 	bookdao.getNotesTemplatePart(pathConfBook, index);
 	    String notes = new String(notesByte);
 	    return notes;
@@ -539,7 +539,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private Map recoverImageUrls(String pathConfBook, String index) throws Exception {
-		IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
+		IDossierDAO bookdao = new BookletsCmsDaoImpl();
 		Map images = bookdao.getImagesOfTemplatePart(pathConfBook, index);
 		 // get temp directory for the pamphlet module
 	    ConfigSingleton configSing = ConfigSingleton.getInstance();
@@ -586,7 +586,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
 			String noteSent = (String)request.getAttribute("notes");
 			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
-			IBookletsCmsDao pampdao = new BookletsCmsDaoImpl();
+			IDossierDAO pampdao = new BookletsCmsDaoImpl();
 			pampdao.storeNote(pathBookConf, indexPart, noteSent.getBytes());
 			// recover from cms images and notes
 		    String notes = recoverNotes(pathBookConf, indexPart);

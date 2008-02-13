@@ -34,7 +34,7 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 
 /**
  * @author Andrea Gioia
@@ -55,7 +55,7 @@ public class BookletRefreshModule extends AbstractModule {
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
 	            "execute", "using path " + pathBook);
 
-		IBookletsCmsDao bookDao = new BookletsCmsDaoImpl();
+		IDossierDAO bookDao = new BookletsCmsDaoImpl();
 		List presVersions = bookDao.getPresentationVersions(pathBook);
 		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
     			"execute", "Version list retrived " + presVersions);

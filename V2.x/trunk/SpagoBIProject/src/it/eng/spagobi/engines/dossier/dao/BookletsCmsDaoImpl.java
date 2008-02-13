@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.engines.dossier.dao;
 
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 
 import java.io.InputStream;
@@ -33,7 +34,7 @@ import java.util.Map;
 /**
  * Implements all the methods for access the booklet cms contents
  */
-public class BookletsCmsDaoImpl implements IBookletsCmsDao {
+public class BookletsCmsDaoImpl implements IDossierDAO {
 
 	private static final String APPROVED_PRESENTATION = "/ApprovedPresentation";
 	private static final String CURRENT_PRESENTATION = "/CurrentPresentation";
@@ -204,7 +205,7 @@ public class BookletsCmsDaoImpl implements IBookletsCmsDao {
 
 
 
-	public void addConfiguredDocument(String pathBooklet, ConfiguredBIDocument doc) {
+	public void addConfiguredDocument(BIObject dossier, ConfiguredBIDocument doc) {
 		/*
 		try {
 			// build path 

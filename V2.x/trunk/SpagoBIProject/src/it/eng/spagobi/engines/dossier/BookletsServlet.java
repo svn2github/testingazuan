@@ -29,12 +29,15 @@ package it.eng.spagobi.engines.dossier;
 
 
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IBookletsCmsDao;
+import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,7 +67,7 @@ public class BookletsServlet extends HttpServlet{
 		OutputStream out = null;
 		String task = "";
 		try{
-	 		task = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_TASK);		
+	 		task = request.getParameter(BookletsConstants.BOOKLET_SERVICE_TASK);		
 	 		out = response.getOutputStream();
 	 		if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
 	 			String pathimg = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
@@ -97,14 +100,14 @@ public class BookletsServlet extends HttpServlet{
 	 				if (jbpmContext != null) jbpmContext.close();
 	 			}
 	 			if (pathConfBook != null) {
-		 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-		 			String bookName = bookdao.getBookletName(pathConfBook);
-			 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
-			 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
-				 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
-		 			response.setContentLength(finalDocBytes.length);
-		 			out.write(finalDocBytes);
-		 			out.flush();
+//		 			IDossierDAO bookdao = new BookletsCmsDaoImpl();
+//		 			String bookName = bookdao.getBookletName(pathConfBook);
+//			 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
+//			 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
+//				 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
+//		 			response.setContentLength(finalDocBytes.length);
+//		 			out.write(finalDocBytes);
+//		 			out.flush();
 	 			} else {
 	 				SpagoBITracer.major("SpagoBI",getClass().getName(),
 				               "service","Booklet configuration path not found!");
@@ -112,22 +115,24 @@ public class BookletsServlet extends HttpServlet{
 	            return;
 		 		
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
-	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
-                                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
-	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
-	 			String bookName = bookdao.getBookletName(pathBook);
-	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
-	 			response.setContentLength(finalDocBytes.length);
-	 			out.write(finalDocBytes);
-	 			out.flush();
+//	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
+//                                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+//	 			IDossierDAO bookdao = new BookletsCmsDaoImpl();
+//	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
+//	 			String bookName = bookdao.getBookletName(pathBook);
+//	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
+//	 			response.setContentLength(finalDocBytes.length);
+//	 			out.write(finalDocBytes);
+//	 			out.flush();
 	            return;
 	            
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE)) {
-	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
-	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-	 			String templateFileName = bookdao.getBookletTemplateFileName(pathBook);
-	 			InputStream templateIs = bookdao.getBookletTemplateContent(pathBook);
+	 			String objIdStr = request.getParameter(SpagoBIConstants.OBJECT_ID);
+	 			Integer objId = new Integer(objIdStr);
+	 			BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
+	 			String templateFileName = dossierDao.getPresentationTemplateFileName(dossier);
+	 			InputStream templateIs = dossierDao.getPresentationTemplateContent(dossier);
 	 			byte[] templateByts = GeneralUtilities.getByteArrayFromInputStream(templateIs);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + templateFileName + "\";");
 	 			response.setContentLength(templateByts.length);
@@ -136,10 +141,12 @@ public class BookletsServlet extends HttpServlet{
 	            return;
 	 			
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
-	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
-	 			IBookletsCmsDao bookdao = new BookletsCmsDaoImpl();
-	 			String workDefName = bookdao.getBookletProcessDefinitionFileName(pathBook);
-	 			InputStream workIs = bookdao.getBookletProcessDefinitionContent(pathBook);
+	 			String objIdStr = request.getParameter(SpagoBIConstants.OBJECT_ID);
+	 			Integer objId = new Integer(objIdStr);
+	 			BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
+	 			String workDefName = dossierDao.getProcessDefinitionFileName(dossier);
+	 			InputStream workIs = dossierDao.getProcessDefinitionContent(dossier);
 	 			byte[] workByts = GeneralUtilities.getByteArrayFromInputStream(workIs);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + workDefName + "\";");
 	 			response.setContentLength(workByts.length);

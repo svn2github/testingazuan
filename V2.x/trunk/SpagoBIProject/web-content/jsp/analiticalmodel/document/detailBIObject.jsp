@@ -133,7 +133,7 @@ function checkFormVisibility(docType) {
 	}
 	// hide template dynamic creation button for booklet and olap document 
 	var divLinkConf = document.getElementById("link_obj_conf");
-	if(type=="BOOKLET" || type=="OLAP") {
+	if(type=="BOOKLET" || type=="DOSSIER") {
 		divLinkConf.style.display="inline";
 	} else {
 		divLinkConf.style.display="none";
@@ -490,7 +490,7 @@ function checkFormVisibility(docType) {
 				<% 
 					String styleDivLinkConf = " ";
 					BIobjTypecode = obj.getBiObjectTypeCode();
-			    	if(BIobjTypecode.equalsIgnoreCase("BOOKLET") || BIobjTypecode.equalsIgnoreCase("OLAP"))
+			    	if(BIobjTypecode.equalsIgnoreCase("DOSSIER") || BIobjTypecode.equalsIgnoreCase("OLAP"))
 			    		styleDivLinkConf = " style='display:inline' ";
 			    	else styleDivLinkConf = " style='display:none' ";
 			    %>	

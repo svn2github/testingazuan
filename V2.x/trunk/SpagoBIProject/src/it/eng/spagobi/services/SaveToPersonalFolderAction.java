@@ -38,6 +38,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.analiticalmodel.document.service.GetOfficeContentAction;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.commons.bo.Domain;
@@ -61,18 +62,23 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 
 public class SaveToPersonalFolderAction extends AbstractHttpAction{
 
-
+    private static transient Logger logger=Logger.getLogger(SaveToPersonalFolderAction.class);
 
 	public void service(SourceBean request, SourceBean responseSb) {
 
+		 logger.debug("IN");
+		
 		final String OK = "30";
 		final String ERROR = "40";
 		final String NAMENOTFOUND = "80";
 		final String LABELNOTFOUND = "70";
 
+		
 		String retCode = "";
 		
 		HttpServletResponse response = getHttpResponse();
@@ -112,13 +118,16 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 			// CHECK PARAMETERS
 			if(namenewdoc.equals("")) {
 				retCode = NAMENOTFOUND;
+				logger.error("Document name not found");
 				throw new Exception("Document Name not found");
 			}
 			if(labelnewdoc.equals("")) {
 				retCode = LABELNOTFOUND;
+				logger.error("Document label not found");
 				throw new Exception("Document Label not found");
 			}
 			// EXECUTE BIOBJECT
+			logger.debug("Starting object execution");
 			String returnedContentType = "";
 			String fileextension = "";
 			byte[] documentBytes = null;
@@ -140,14 +149,17 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 					SpagoBIUserProfile user= supplier.createUserProfile(userId);
 					profile=new UserProfile(user);
 				} catch (Exception e) {
+					logger.error("Security error");
 					throw new SecurityException();
 				}    	
 				documentBytes = proxy.exec(profile);
 				returnedContentType = proxy.getReturnedContentType();
 				fileextension = proxy.getFileExtensionFromContType(returnedContentType);
+				logger.debug("Document executed succesfully");
 			}
 			// SAVE NEW DOCUMENT
 			// recover office document sbidomains
+			logger.debug("Start saving new document");
 			IDomainDAO domainDAO = DAOFactory.getDomainDAO();
 			Domain officeDocDom = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", "OFFICE_DOC");
 			// recover development sbidomains
@@ -156,6 +168,7 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 			List engines = engineDAO.loadAllEnginesForBIObjectType(officeDocDom.getValueCd());
 			if(engines.isEmpty()) {
+				logger.error("No suitable engines for the new document");
 				throw new Exception("No suitable engines for the new document");
 			}
 			Engine engine = (Engine)engines.get(0);
@@ -171,6 +184,7 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 				SpagoBIUserProfile user= supplier.createUserProfile(userId);
 				profile=new UserProfile(user);
 			} catch (Exception e) {
+				logger.error("No suitable engines for the new document");
 				throw new SecurityException();
 			}   
 			String username = (String)profile.getUserUniqueIdentifier();
@@ -198,15 +212,16 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 			// check if the object already exists and then insert it
 			BIObject biobjexist = objectDAO.loadBIObjectByLabel(labelnewdoc);
 			if(biobjexist==null){
+				logger.debug("Inserting new Object");
 				objectDAO.insertBIObject(newbiobj, objTemp);
 			} else {
+				logger.debug("Modifying already existing object");
 				newbiobj.setId(biobjexist.getId());
 				objectDAO.modifyBIObject(newbiobj, objTemp);
 			}
 			retCode = OK;
 		} catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					"service", "Error while executing and saving object ", e);
+			logger.error("Error while executing and saving object");
 			if(retCode.equals("")) {
 				retCode = ERROR;
 			}
@@ -217,8 +232,7 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction{
 				response.getOutputStream().flush();	
 				
 			} catch (Exception ex) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						"service", "Error while sending response to client", ex);
+				logger.error("Error while sending response to client");
 			}
 		}		
 	}

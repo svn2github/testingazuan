@@ -61,7 +61,7 @@ public class ExecutionProxy {
 	try {
 	    if (biObject == null)
 		return response;
-	    // get the engine of the bionject
+	    // get the engine of the biobject
 	    Engine eng = biObject.getEngine();
 	    // if engine is not an external it's not possible to call it using
 	    // url

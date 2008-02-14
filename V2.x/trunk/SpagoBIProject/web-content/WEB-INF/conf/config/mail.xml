@@ -3,9 +3,9 @@
 <MAIL>
 	<PROFILES>
 		<PROFILE name="scheduler" 
-		         smtphost="" 
+		         smtphost="mail.eng.it" 
 		         from="spagobi@eng.it" 
 		         user="" 
-		         password="" />
+		         password=""/>
 	</PROFILES>
 </MAIL>

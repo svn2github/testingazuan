@@ -131,11 +131,13 @@ public class ExecuteAndSendServlet extends HttpServlet{
 			if(execCtrl.directExecution()) {
 				ExecutionProxy proxy = new ExecutionProxy();
 				proxy.setBiObject(biobj);
-		 	        Principal principal = request.getUserPrincipal();
+		 	       
+				String userId="biadmin";// TODO   passarlo come parametro......
+				
 				IEngUserProfile profile = null;
 				ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 			        try {
-			            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
+			            SpagoBIUserProfile user= supplier.createUserProfile(userId);
 			            profile=new UserProfile(user);
 			        } catch (Exception e) {
 			            throw new SecurityException();
@@ -159,11 +161,13 @@ public class ExecuteAndSendServlet extends HttpServlet{
 			if( (from==null) || from.trim().equals(""))
 				from = "spagobi@eng.it";
 			String user = (String)mailProfSB.getAttribute("user");
-			if( (user==null) || user.trim().equals(""))
-				throw new Exception("Smtp user not configured");
 			String pass = (String)mailProfSB.getAttribute("password");
+			/*if( (user==null) || user.trim().equals(""))
+				throw new Exception("Smtp user not configured");
+			
 			if( (pass==null) || pass.trim().equals(""))
 				throw new Exception("Smtp password not configured");
+				*/
 			//Set the host smtp address
 		    Properties props = new Properties();
 		    props.put("mail.smtp.host", smtphost);

@@ -45,19 +45,22 @@ public class MapCatalogueAccessUtils {
 	public static final String GET_MAP_URL = "getMapUrl";
 	public static final String ERROR_PREFIX = "$";
 	public static final String ERROR_HIERARCHY_NOT_FOUND = ERROR_PREFIX + "01";
+	
 	public static final String ERROR_MAP_NOT_FOUND = ERROR_PREFIX + "02";
 	public static final String ERROR_FEATURE_NOT_FOUND = ERROR_PREFIX + "03";
 	public static final String ERROR_MAP_URL_NOT_FOUND = ERROR_PREFIX + "04";
 	
-	private HttpSession session=null;
+	private HttpSession session = null;
+	private String userId = null;
 	
-	public MapCatalogueAccessUtils(HttpSession session) {
-	    this.session=session;
+	public MapCatalogueAccessUtils(HttpSession session, String userId) {
+	    this.session = session;
+	    this.userId = userId;
 	}
 	
-	public String getStandardHierarchy(HttpSession sessione,String userId) throws Exception {
+	public String getStandardHierarchy() throws Exception {
 
-	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
+	ContentServiceProxy proxy = new ContentServiceProxy(userId, session);
 	String ris = proxy.mapCatalogue( GET_STANDARD_HIERARCHY, null, null, null);
 	if (ris == null)
 	    throw new Exception("Error while getting default hierarchy");
@@ -67,7 +70,7 @@ public class MapCatalogueAccessUtils {
 	return ris;
     }
 	
-	public List getMapNamesByFeature(String userId,String featureName) throws Exception {
+	public List getMapNamesByFeature(String featureName) throws Exception {
 
 	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
 	String ris = proxy.mapCatalogue( GET_MAPS_BY_FEATURE, null, featureName, null);
@@ -90,7 +93,7 @@ public class MapCatalogueAccessUtils {
 	return mapList;
     }
 
-	public List getFeatureNamesInMap(String userId,String mapName) throws Exception {
+	public List getFeatureNamesInMap(String mapName) throws Exception {
 
 	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
 	String ris = proxy.mapCatalogue( GET_FEATURES_IN_MAP, null, null, mapName);
@@ -111,7 +114,7 @@ public class MapCatalogueAccessUtils {
 	return featureList;
     }
 	
-	public String getMapUrl(String userId,String mapName) throws Exception {
+	public String getMapUrl(String mapName) throws Exception {
 
 	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
 	String ris = proxy.mapCatalogue(GET_MAP_URL, null, null, mapName);
@@ -125,7 +128,7 @@ public class MapCatalogueAccessUtils {
 	return ris;
     }
 	
-	public List getAllMapNames(String userId) throws Exception {
+	public List getAllMapNames() throws Exception {
 
 	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
 	String ris = proxy.mapCatalogue( GET_ALL_MAP_NAMES, null, null, null);
@@ -145,7 +148,7 @@ public class MapCatalogueAccessUtils {
 	return mapList;
     }
 	
-	public List getAllFeatureNames(String userId) throws Exception {
+	public List getAllFeatureNames() throws Exception {
 	ContentServiceProxy proxy = new ContentServiceProxy(userId,session);
 	String ris = proxy.mapCatalogue( GET_ALL_FEATURE_NAMES, null, null, null);
 	if (ris == null)

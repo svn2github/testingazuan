@@ -669,16 +669,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</a>
 			<div id="messageSaveToPFDiv" style="font-size:11px;font-family:arial;color:#074B88;"></div>
     	</div>
-    </div>
+ 
 
 	<div style='clear:left;'></div>
 	
-
-</div>
-
-
-
-
 <div id="formSendToDiv<%=executionId%>" style="display:none">
 
 	<table cellspacing='0' border='0'> 
@@ -734,6 +728,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    <textarea id="sendtomessage" class='portlet-form-input-field' name='message' cols='40' rows='10'></textarea>
 				</div>
 			</div>
+						<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "Login" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="sendtologin" class='portlet-form-input-field' type="text" name="login" size="50" value=""  >
+				    &nbsp;*
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "Password" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="sendtopwd" class='portlet-form-input-field' type="password" name="pwd" size="50" value="" >
+					 &nbsp;*
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -750,7 +766,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	</div>
     </div>
 
-	<div style='clear:left;'></div>
+<div style='clear:left;'></div>
 	
 </div>
 
@@ -760,7 +776,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     winsavepf<%=executionId%> = null;
 
 	function openSendToForm<%=executionId%>() {
-	   winsendto<%=executionId%> = new Window('win_send_to<%=executionId%>', {className: "alphacube", title: "", width:700, height:300, hideEffect:Element.hide, showEffect:Element.show});
+	   winsendto<%=executionId%> = new Window('win_send_to<%=executionId%>', {className: "alphacube", title: "", width:700, height:400, hideEffect:Element.hide, showEffect:Element.show});
   	   winsendto<%=executionId%>.setDestroyOnClose();
        winsendto<%=executionId%>.setContent('formSendToDiv<%=executionId%>', false, false);
        winsendto<%=executionId%>.showCenter();
@@ -768,14 +784,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        document.getElementById('sendtocc').value = '';
        document.getElementById('sendtoobject').value = '';
        document.getElementById('sendtomessage').value = '';
+       document.getElementById('sendtologin').value = '';
+       document.getElementById('sendtopwd').value = '';       
        mstd = document.getElementById('messageSendToDiv');
        mstd.innerHTML = "";
 	}
 	
+	
 	function sendTo<%=executionId%>() {
        
-       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/ExecuteAndSendService?";
-       pars = "objlabel=<%=obj.getLabel()%>";
+       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
+       pars = "ACTION_NAME=SEND_TO_ACTION&";
+       pars += "objlabel=<%=obj.getLabel()%>";
        <%
 			Set parKeys = mapPars.keySet();
 			Iterator parKeysIter = parKeys.iterator();
@@ -793,6 +813,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        
 	   pars += "&to=" + document.getElementById('sendtoto').value;
        pars += "&cc=" + document.getElementById('sendtocc').value;
+       pars += "&login=" + document.getElementById('sendtologin').value;
+       pars += "&pwd=" + document.getElementById('sendtopwd').value;
        pars += "&object=" + document.getElementById('sendtoobject').value;
        pars += "&message=" + document.getElementById('sendtomessage').value;
        mstd = document.getElementById('messageSendToDiv');

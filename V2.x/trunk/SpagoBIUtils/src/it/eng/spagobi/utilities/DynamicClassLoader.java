@@ -9,7 +9,7 @@ import java.util.zip.ZipFile;
  
 public class DynamicClassLoader extends URLClassLoader {
 	
-	private ClassLoader parentCL = null;
+	 private ClassLoader parentCL = null;
 	private File jar;
  
 	public DynamicClassLoader(String jarFileName, ClassLoader cl) {		

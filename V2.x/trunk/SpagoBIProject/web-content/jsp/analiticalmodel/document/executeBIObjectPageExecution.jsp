@@ -98,7 +98,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	// get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	String userId=(String)userProfile.getUserUniqueIdentifier();
    	
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
@@ -585,6 +584,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		margin-right:20px;
 	}
 	
+	.div_form_label_large {	
+		float: left;
+		width:300px;
+		margin-right:20px;
+	}
+	
 	.div_form_field {
 	}
 
@@ -624,38 +629,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<div class="div_form_container" style="margin-right:10px;">
 		<div class="div_form_margin" >
-			<div class="div_form_row" >
-				<div class='div_form_label'>
+		<div class="div_form_row" >
+				<div class='div_form_label_large'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key = "sbi.execution.stpf.label" />
+						<spagobi:message key = "sbi.execution.saveToPersonalFolder" />
 					</span>
 				</div>
-				<div class='div_form_field'>
-					<input id="stpflabel" class='portlet-form-input-field' type="text" name="newdoclabel" size="50" value=""  >
-				    &nbsp;*
-				</div>
-			</div>
-			<div class="div_form_row" >
-				<div class='div_form_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "sbi.execution.stpf.name" />
-					</span>
-				</div>
-				<div class='div_form_field'>
-					<input id="stpfname" class='portlet-form-input-field' type="text" name="newdocname" size="50" value=""  >
-				    &nbsp;*
-				</div>
-			</div>
-			<div class="div_form_row" >
-				<div class='div_form_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "sbi.execution.stpf.description" />
-					</span>
-				</div>
-				<div class='div_form_field'>
-					<input id="stpfdescription" class='portlet-form-input-field' type="text" name="newdocdescription" size="50" value="" >
-				</div>
-			</div>
+		</div>
 		</div>
 	</div>	
 	
@@ -845,21 +825,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      }
 	 
 	 
-	 function openSavePersonalFolderForm<%=executionId%>() {
+	
+	
+	
+	function openSavePersonalFolderForm<%=executionId%>() {
 	 	winsavepf<%=executionId%> = new Window('win_save_to_pf<%=executionId%>', {className: "alphacube", title: "", width:700, height:300, hideEffect:Element.hide, showEffect:Element.show});
   	    winsavepf<%=executionId%>.setDestroyOnClose();
         winsavepf<%=executionId%>.setContent('formSaveToPFDiv<%=executionId%>', false, false);
         winsavepf<%=executionId%>.showCenter();
-        document.getElementById('stpfname').value='';
-        document.getElementById('stpfdescription').value='';
-        document.getElementById('stpflabel').value='';
+
         mstpfd = document.getElementById('messageSaveToPFDiv');
         mstpfd.innerHTML = "";
 	 }
 	 
 	 function saveToPF<%=executionId%>() {
-       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/SaveToPersonalFolderService?";
-       pars = "objlabel=<%=obj.getLabel()%>";
+       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
+       pars ="ACTION_NAME=SAVE_PERSONAL_FOLDER";
+       pars += "&objlabel=<%=obj.getLabel()%>";
        <%
 			parKeysIter = parKeys.iterator();
 			while(parKeysIter.hasNext()) {
@@ -873,10 +855,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        <%
 			}
        %>
-       pars += "&namenewdoc=" + document.getElementById('stpfname').value;
-       pars += "&descrnewdoc=" + document.getElementById('stpfdescription').value;
-       pars += "&labelnewdoc=" + document.getElementById('stpflabel').value;
-       pars += "&userid=<%=userId%>"; 
+
+		pars+="&NEW_SESSION=TRUE";
+   
+
        mstpfd = document.getElementById('messageSaveToPFDiv');
        mstpfd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
        new Ajax.Request(url,
@@ -891,6 +873,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           }
         );
 	 }
+	 
+
 	 
 	 function somethingWentWrongSaveToPF<%=executionId%>() {
 	 	mstpfd = document.getElementById('messageSaveToPFDiv');
@@ -924,7 +908,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      		return "<spagobi:message key="sbi.execution.stpf.namenotfound" />";
      	if(messcode=="90")
      		return "<spagobi:message key="sbi.execution.stpf.tonotfound" />";
-     }
+     	if(messcode=="100")
+     		return "<spagobi:message key="sbi.execution.stpf.alreadyPresent" />";
+     		     }     	
      
      observerClose<%=executionId%> = {
       onClose: function(eventName, win) {

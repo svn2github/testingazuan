@@ -133,7 +133,8 @@ public class SpagoBIConstants {
 	public static final String DATA_MINING_TYPE_CODE = "DATA_MINING";
 	public static final String DASH_TYPE_CODE = "DASH";
 	public static final String LOW_FUNCTIONALITY_TYPE_CODE = "LOW_FUNCT";
-	
+	public static final String USER_FUNCTIONALITY_TYPE_CODE = "USER_FUNCT";
+		
 	public static final String SUBOBJECT_LIST = "SUBOBJECT_NAMES_LIST";
 	public static final String SNAPSHOT_LIST = "SNAPSHOT_LIST";
 	public static final String EXEC_SNAPSHOT_MESSAGE = "EXEC_SNAPSHOT_MESSAGE";

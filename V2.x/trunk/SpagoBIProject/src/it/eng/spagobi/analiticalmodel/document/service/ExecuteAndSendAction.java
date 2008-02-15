@@ -71,10 +71,6 @@ public class ExecuteAndSendAction extends AbstractHttpAction{
 			String login= "";
 			String pass = "";
 			
-			//Stampo cosa c'è nella request
-			String xml = request.toXML(false);
-			System.out.println(xml) ;
-			
 			//Creo una lista con un suo iteratore con dentro i parametri della request
 			List params = request.getContainedAttributes();
 	    	ListIterator it = params.listIterator();
@@ -161,10 +157,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction{
 			String from = (String)mailProfSB.getAttribute("from");
 			if( (from==null) || from.trim().equals(""))
 				from = "spagobi@eng.it";
-			//TODO richiederli all'utente
-			
-			//String user = (String)mailProfSB.getAttribute("user");
-			//String pass = (String)mailProfSB.getAttribute("password");
+
 			//Set the host smtp address
 		    Properties props = new Properties();
 		    props.put("mail.smtp.host", smtphost);

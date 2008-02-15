@@ -13,8 +13,14 @@
  <ACTION name="GET_SNAPSHOT_CONTENT" class="it.eng.spagobi.analiticalmodel.document.service.GetSnapshotContentAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+
+ <ACTION name="SAVE_PERSONAL_FOLDER" class="it.eng.spagobi.analiticalmodel.document.service.SaveToPersonalFolderAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+
   <ACTION name="SEND_TO_ACTION" class="it.eng.spagobi.analiticalmodel.document.service.ExecuteAndSendAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+
 </ACTIONS>
 

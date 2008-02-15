@@ -48,60 +48,22 @@ public class DataSourceUtilities {
 	 * @return the database connection
 	 */
 	public Connection getConnection(String dsLabel) {
+		Connection connection =  null;
 		//calls implementation for gets data source object
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
-		//  get sql connection
-		String jndi = ds.getJndiName();
-		if (jndi != null && !jndi.equals("")) {
-			return getConnectionFromJndiDS(ds);
-		} else {
-			return getDirectConnection(ds);
-		}
-	}
-	
-	/**
-	 * Get the connection from JNDI
-	 * @param connectionConfig SpagoBiDataSource describing data connection
-	 * @return Connection to database
-	 */
-	private Connection getConnectionFromJndiDS(SpagoBiDataSource connectionConfig) {
-		Connection connection = null;
-		Context ctx ;		
-		String resName = connectionConfig.getJndiName();		
 		try {
-			ctx = new InitialContext();								
-			DataSource ds = (DataSource) ctx.lookup(resName);		
-			connection = ds.getConnection();
-		} catch (NamingException ne) {
-			logger.error("JNDI error", ne);
-		} catch (SQLException sqle) {
-			logger.error("Cannot retrive connection", sqle);
-		}
-		return connection;
-	}
-	
-	/**
-	 * Get the connection using jdbc 
-	 * @param connectionConfig SpagoBiDataSource describing data connection
-	 * @return Connection to database
-	 */
-	private Connection getDirectConnection(SpagoBiDataSource connectionConfig) {
-		Connection connection = null;
-		try {
-			String driverName = connectionConfig.getDriver();
-			Class.forName(driverName);
-			String url = connectionConfig.getUrl();
-			String username = connectionConfig.getUser();
-			String password = connectionConfig.getPassword();
-			connection = DriverManager.getConnection(url, username, password);
-		} catch (ClassNotFoundException e) {
-			logger.error("Driver not found", e);
+			connection = ds.readConnection();
+		} catch (NamingException e) {
+			logger.error("JNDI error", e);
 		} catch (SQLException e) {
 			logger.error("Cannot retrive connection", e);
+		} catch (ClassNotFoundException e) {
+			logger.error("Driver not found", e);
 		}
+		
 		return connection;
-	}	
+	}
 	
 	/**
 	 * Creates a ago DataConnection object starting from a sql connection 

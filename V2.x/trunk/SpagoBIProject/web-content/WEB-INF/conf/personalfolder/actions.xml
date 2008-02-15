@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<ACTIONS>
-
- <ACTION name="SAVE_PERSONAL_FOLDER" class="it.eng.spagobi.services.SaveToPersonalFolderAction" scope="REQUEST">
- 	<CONFIG/>
- </ACTION>
-
-</ACTIONS>
-

@@ -45,8 +45,8 @@ public class UserUtilities {
 			UserFunctionality userFunct = new UserFunctionality();
 			userFunct.setCode("ufr_"+username);
 			userFunct.setDescription("User Functionality Root");
-			userFunct.setName("My Folder");
-			userFunct.setPath("/"+username);
+			userFunct.setName(username);
+			userFunct.setPath("/"+username);	
 			userFunct.setExecRoles(rolesArr);
 			ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 			functdao.insertUserFunctionality(userFunct);

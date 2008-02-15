@@ -75,9 +75,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/geoengine.xml" />  
   
-	
-<!-- personalfolder -->
-	<CONFIGURATOR path="/WEB-INF/conf/personalfolder/actions.xml" />  
+
 	
 	<!-- tools.importexport -->
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/importexport.xml" />

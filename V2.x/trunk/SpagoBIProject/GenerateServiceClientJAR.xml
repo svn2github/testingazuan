@@ -99,7 +99,13 @@
 	    	<fileset dir="./dist">
 	    		<include name="**/*.jar"/>
 	    	</fileset>
-	    </copy>	
+
+	    </copy>
+	    <copy todir="../SpagoBITalendEngine/WebContent/WEB-INF/lib" overwrite="true">
+	    	<fileset dir="./dist">
+	    		<include name="**/*.jar"/>
+	    	</fileset>
+	    </copy>		
 	    <copy todir="../SpagoBIWekaEngine/WebContent/WEB-INF/lib" overwrite="true">
 	    	<fileset dir="./dist">
 	    		<include name="**/*.jar"/>

@@ -24,7 +24,7 @@ package it.eng.spagobi.engines.talend.services;
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
-import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
+
 
 import java.io.File;
 import java.io.IOException;

@@ -31,13 +31,10 @@ import it.eng.spagobi.engines.talend.utils.ZipUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipException;
@@ -55,7 +52,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 
-import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**

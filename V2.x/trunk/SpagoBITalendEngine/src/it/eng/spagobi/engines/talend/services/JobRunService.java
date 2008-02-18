@@ -31,31 +31,19 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 import it.eng.spagobi.engines.talend.utils.EngineMessageBundle;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -64,12 +52,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-import com.sun.corba.se.spi.monitoring.MonitoringFactories;
 
 import sun.misc.BASE64Decoder;
 

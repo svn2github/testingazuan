@@ -23,13 +23,6 @@ public class JobRunnerFacilities {
 	
 	public static final String TALEND_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendRolesHandler";
 	public static final String TALEND_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendEventPresentationHandler";
-	public static final String START_EVENT_ID = "startEventId";
-	public static final String BIOBJECT_ID = "biobjectId";
-	public static final String USER_NAME = "userName";
-	public static final String EVENTS_MANAGER_URL = "events_manager_url";
-	public static final String EVENT_TYPE = "event-type";
-	public static final String DOCUMENT_EXECUTION_START = "biobj-start-execution";
-	public static final String DOCUMENT_EXECUTION_END = "biobj-end-execution";
 			
 	private String _command = null;
 	private File _executableJobDir = null;
@@ -57,9 +50,7 @@ public class JobRunnerFacilities {
 	
 	public void executeJob() {
 		
-		String events_manager_url = (String) _parameters.get(EVENTS_MANAGER_URL);
-		String user = (String) _parameters.get("userName");
-		
+	
 		String userId=(String) _parameters.get("userId");
 		
 		
@@ -87,21 +78,16 @@ public class JobRunnerFacilities {
 		parametersList += "</ul>";
 		
 		Map startEventParams = new HashMap();				
-		startEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_START);
-		//startEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-		startEventParams.put(BIOBJECT_ID, _parameters.get("document"));
+		startEventParams.put(EventServiceProxy.EVENT_TYPE, EventServiceProxy.DOCUMENT_EXECUTION_START);
+		startEventParams.put(EventServiceProxy.BIOBJECT_ID, _parameters.get("document"));
 		
 		Integer startEventId = null;
 		EventServiceProxy eventServiceProxy=new EventServiceProxy(userId,_session);
 
 		try {
 		
-			String startEventParamsStr=getParamsStr(startEventParams);
-			
-			eventServiceProxy.fireEvent(startExecutionEventDescription + parametersList, startEventParamsStr, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
-		
-			//startEventId = eventsAccessUtils.fireEvent(user, startExecutionEventDescription + parametersList, startEventParams, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
-		
+			eventServiceProxy.fireEvent(startExecutionEventDescription + parametersList, startEventParams, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
+
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + ":run: problems while registering the start process event", e);
 		}
@@ -115,11 +101,10 @@ public class JobRunnerFacilities {
 		}
 		
 		Map endEventParams = new HashMap();				
-		endEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_END);
-		//endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-		endEventParams.put(BIOBJECT_ID, _parameters.get(BIOBJECT_ID));
+		endEventParams.put(EventServiceProxy.EVENT_TYPE, EventServiceProxy.DOCUMENT_EXECUTION_END);
+		endEventParams.put(EventServiceProxy.BIOBJECT_ID, _parameters.get("document"));
 		if (startEventId != null) {
-			endEventParams.put(START_EVENT_ID, startEventId.toString());
+			endEventParams.put(EventServiceProxy.START_EVENT_ID, startEventId.toString());
 		}
 		
 		String endExecutionEventDescription = null;
@@ -165,9 +150,7 @@ public class JobRunnerFacilities {
 		
 		try {	
 			
-			String endEventParamsStr=getParamsStr(endEventParams);
-			
-			eventServiceProxy.fireEvent(endExecutionEventDescription + parametersList, endEventParamsStr, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
+			eventServiceProxy.fireEvent(endExecutionEventDescription + parametersList, endEventParams, TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
 
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + ":run: problems while registering the end process event", e);
@@ -175,22 +158,6 @@ public class JobRunnerFacilities {
 		
 		
 	}
-	
-	private String getParamsStr(Map params) {
-		logger.debug("IN");
-		StringBuffer buffer = new StringBuffer();
-		Iterator it = params.keySet().iterator();
-		boolean isFirstParameter = true;
-		while(it.hasNext()) {
-			String pname = (String)it.next();
-			String pvalue = (String)params.get(pname);
-			if(!isFirstParameter) buffer.append("&");
-			else isFirstParameter = false;
-			buffer.append(pname + "=" + pvalue);
-		}
-		logger.debug("parameters: "+buffer.toString());
-		logger.debug("OUT");
-		return buffer.toString();
-	}
+
 	
 }

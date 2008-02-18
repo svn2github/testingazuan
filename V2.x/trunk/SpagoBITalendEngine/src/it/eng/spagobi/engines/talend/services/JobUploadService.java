@@ -23,7 +23,6 @@ package it.eng.spagobi.engines.talend.services;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
 import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
-import it.eng.spagobi.engines.talend.callbacks.PublishAccessUtils;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
@@ -226,6 +225,10 @@ public class JobUploadService extends HttpServlet {
 		return template;
 	}
 	
+	
+	/*
+	 * TODO: implementare questa funzione tramite una API  WEB Service
+	 */
 	private void publishOnSpagoBI(String language, String projectName, String jobName) throws IOException {
 		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
 		
@@ -263,13 +266,16 @@ public class JobUploadService extends HttpServlet {
 		
 		try {
 			String spagobiurl = config.getSpagobiUrl();
-			PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
+			//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+	/*
+	 * TODO: implementare questa funzione tramite una API  WEB Service
+	 */
 	private void publishOnSpagoBI(FileItem item, JobDeploymentDescriptor jobDeploymentDescriptor) throws ZipException, IOException {
 		String fieldName = item.getFieldName();
 	    String fileName = item.getName();
@@ -313,7 +319,7 @@ public class JobUploadService extends HttpServlet {
 	    
 	    try {
 	    	String spagobiurl = config.getSpagobiUrl();
-	    	PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
+	    	//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

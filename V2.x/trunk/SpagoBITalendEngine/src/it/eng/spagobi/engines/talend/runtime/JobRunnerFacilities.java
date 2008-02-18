@@ -128,12 +128,13 @@ public class JobRunnerFacilities {
 			String line;
 			Process p = Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 			
-		//davide sparire
+		/*
 			input = new BufferedReader (new InputStreamReader(p.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				logger.debug(line);
 				//System.out.println(line);
-			}
+			}*/
+
 
 			endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 			endEventParams.put("operation-result", "success");

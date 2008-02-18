@@ -22,11 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.talend;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.talend.services.JobRunService;
 import it.eng.spagobi.services.common.EnginConf;
 
 import java.io.File;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -47,9 +45,7 @@ public class SpagoBITalendEngineConfig {
 
 	}
 
-
-	
-	
+		
 	public static boolean isAbsolutePath(String path) {
 		if(path == null) return false;
 		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
@@ -71,64 +67,87 @@ public class SpagoBITalendEngineConfig {
 	
 	public String getSpagobiTargetFunctionalityLabel() {
 		String label = null;
-		label = rrProps.getProperty("spagobi.functionality.label");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        label= (String)config.getAttribute("VIRTUALIZER.spagobi_functionality_label");
 		return label;
 	}
 	
 	public String getSpagobiUrl() {
 		String url = null;
-		url = rrProps.getProperty("spagobi.url");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        url= (String)config.getAttribute("VIRTUALIZER.spagobi_url");
 		return url;
 	}
 	
 	public boolean isAutoPublishActive() {
 		String autoPublishProp = null;
-		autoPublishProp = rrProps.getProperty("spagobi.autopublish");
-		if(autoPublishProp != null && autoPublishProp.equalsIgnoreCase("true")) return true;
+        SourceBean config = EnginConf.getInstance().getConfig();
+        autoPublishProp= (String)config.getAttribute("VIRTUALIZER.spagobi_autopublish");
+        if(autoPublishProp != null && autoPublishProp.equalsIgnoreCase("true")) return true;
 		return false;
 	}
 	
 	
 	// java properties
 	public String getJavaInstallDir() {
-		return javaProps.getProperty("java.install.dir");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String installDir= (String)config.getAttribute("VIRTUALIZER.java_install_dir");
+		return installDir;
 	}
 	
 	public String getJavaBinDir() {
-		return javaProps.getProperty("java.bin.dir");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String binDir= (String)config.getAttribute("VIRTUALIZER.java_bin_dir");
+		return binDir;
 	}
 	
 	public String getJavaCommand() {
-		return javaProps.getProperty("java.command");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String command= (String)config.getAttribute("VIRTUALIZER.java_command");	
+		return command;
 	}
 	
 	public String getJavaCommandOption(String optionName) {
-		return javaProps.getProperty("java.command.option." + optionName);
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String commandOption= (String)config.getAttribute("VIRTUALIZER.java_command_option_"+optionName);	
+		return commandOption;
 	}
 	
 	// perl properties
 	public String getJobSeparator() {
-		return perlProps.getProperty("jobSeparator");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String jobSeparator= (String)config.getAttribute("VIRTUALIZER.jobSeparator");
+		return jobSeparator;
 	}
 
 	public String getPerlBinDir() {
-		return perlProps.getProperty("perl.bin.dir");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String binDir= (String)config.getAttribute("VIRTUALIZER.perl_bin_dir");
+		return binDir;
 	}
 
 	public String getPerlCommand() {
-		return perlProps.getProperty("perl.command");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String command= (String)config.getAttribute("VIRTUALIZER.perl_command");
+		return command;
 	}
 
 	public String getPerlExt() {
-		return perlProps.getProperty("perlExt");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String ext= (String)config.getAttribute("VIRTUALIZER.perlExt");
+		return ext;
 	}
 
 	public String getPerlInstallDir() {
-		return perlProps.getProperty("perl.install.dir");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String install= (String)config.getAttribute("VIRTUALIZER.perl_install_dir");	
+		return install;
 	}
 
 	public String getWordSeparator() {
-		return perlProps.getProperty("wordSeparator");
+        SourceBean config = EnginConf.getInstance().getConfig();
+        String wordS= (String)config.getAttribute("VIRTUALIZER.wordSeparator");			
+		return wordS;
 	}
 
 	public File getEngineRootDir() {

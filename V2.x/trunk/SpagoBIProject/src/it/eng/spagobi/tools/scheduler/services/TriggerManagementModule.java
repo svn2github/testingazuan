@@ -254,7 +254,12 @@ public class TriggerManagementModule extends AbstractModule {
 					sInfo.setSendMail(true);
 					String mailtos = (String)request.getAttribute("mailtos_"+biobId);	
 					sInfo.setMailTos(mailtos);
+					String mailsubj = (String)request.getAttribute("mailsubj_"+biobId);	
+					sInfo.setMailSubj(mailsubj);
+					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId);	
+					sInfo.setMailTxt(mailtxt);
 				}
+				
 				saveOptions.put(biobId, sInfo);
 			}
 			triggerInfo.setSaveOptions(saveOptions);
@@ -334,7 +339,7 @@ public class TriggerManagementModule extends AbstractModule {
 			
 			//ordering of list
 			String typeOrder = (request.getAttribute("TYPE_ORDER")==null)?" ASC":(String)request.getAttribute("TYPE_ORDER");
-			String fieldOrder = (request.getAttribute("FIELD_ORDER")==null)?" jobDescription":(String)request.getAttribute("FIELD_ORDER");
+			String fieldOrder = (request.getAttribute("FIELD_ORDER")==null)?" triggerDescription":(String)request.getAttribute("FIELD_ORDER");
 			pageListSB = orderJobList(pageListSB, typeOrder, fieldOrder);
 
 			// populate response with the right values
@@ -421,7 +426,14 @@ public class TriggerManagementModule extends AbstractModule {
 				if( (sInfo.getMailTos()!=null) && !sInfo.getMailTos().trim().equals("") ) {
 					saveOptString += "mailtos="+sInfo.getMailTos()+"%26";
 				}
+				if( (sInfo.getMailSubj()!=null) && !sInfo.getMailSubj().trim().equals("") ) {
+					saveOptString += "mailsubj="+sInfo.getMailSubj()+"%26";
+				}
+				if( (sInfo.getMailTxt()!=null) && !sInfo.getMailTxt().trim().equals("") ) {
+					saveOptString += "mailtxt="+sInfo.getMailTxt()+"%26";
+				}
 			}
+			//TODO altri parametri prima della request
 			message.append("   	   <PARAMETER name=\"biobject_id_"+biobjid_so+"\" value=\""+saveOptString+"\" />");
 		}
 		

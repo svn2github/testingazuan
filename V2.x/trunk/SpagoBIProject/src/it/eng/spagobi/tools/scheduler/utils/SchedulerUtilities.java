@@ -278,6 +278,12 @@ public class SchedulerUtilities {
 			if(name.equals("mailtos")) {
 				sInfo.setMailTos(value);
 			}
+			if(name.equals("mailsubj")) {
+				sInfo.setMailSubj(value);
+			}
+			if(name.equals("mailtxt")) {
+				sInfo.setMailTxt(value);
+			}
 		}
 		return sInfo;
 	}

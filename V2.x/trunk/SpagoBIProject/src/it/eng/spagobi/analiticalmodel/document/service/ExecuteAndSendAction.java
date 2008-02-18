@@ -147,7 +147,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction{
 			}
 		    // SEND MAIL
 		    ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "scheduler");
+			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "user");
 			if(mailProfSB==null) {
 				throw new Exception("Mail profile configuration not found");
 			}

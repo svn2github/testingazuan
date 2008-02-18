@@ -1053,16 +1053,34 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
-				<div style="margin-left:50px;margin-top:10px;">
-  				<div class='div_detail_label_scheduler'>
+		<div style="margin-left:50px;margin-top:10px;">
+  			<div class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
   			       <spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
   		      </span>
-  	      </div>
-  	      <div class='div_detail_form'>
-  		        <input type="text" name="mailtos_<%=biobj.getId()%>" 
-  		               value="<%=sInfo.getMailTos()%>" size="35" />
-  	      </div>
+  	      	</div>
+	  	    <div class='div_detail_form'>
+	  		        <input type="text" name="mailtos_<%=biobj.getId()%>" 
+	  		               value="<%=sInfo.getMailTos()%>" size="35" />
+	  	    </div>
+	  	    <div class='div_detail_label_scheduler'>
+  		      <span class='portlet-form-field-label'>
+  			       <spagobi:message key="Mail subject" bundle="component_scheduler_messages"/>
+  		      </span>
+  	      	</div>
+	  	    <div class='div_detail_form'>
+	  		        <input type="text" name="mailsubj_<%=biobj.getId()%>" 
+	  		               value="<%=sInfo.getMailSubj()%>" size="35" />
+	  	    </div>
+	  	    <div class='div_detail_label_scheduler'>
+  		      <span class='portlet-form-field-label'>
+  			       <spagobi:message key="Mail text" bundle="component_scheduler_messages"/>
+  		      </span>
+  	      	</div>
+	  	    <div class='div_detail_form'>
+	  		        <input type="text" name="mailtxt_<%=biobj.getId()%>" 
+	  		               value="<%=sInfo.getMailTxt()%>" size="55" />
+	  	    </div>
   	    </div>
   	    
   	    <br/>

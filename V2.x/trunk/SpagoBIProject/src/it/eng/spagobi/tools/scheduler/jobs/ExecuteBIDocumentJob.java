@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -177,7 +178,7 @@ public class ExecuteBIDocumentJob implements Job {
 					if(numSnap>=histLen){
 						int delta = numSnap - histLen;
 						for(int i=0; i<=delta; i++) {
-							Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapName, histLen-1);
+							Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots, snapName, histLen-1);
 							Integer snapId = snap.getId();
 							snapDao.deleteSnapshot(snapId);
 						}
@@ -302,6 +303,10 @@ public class ExecuteBIDocumentJob implements Job {
 			if( (mailTos==null) || mailTos.trim().equals("")) {	
 				throw new Exception("No recipient address found");
 			}
+			String mailSubj = sInfo.getMailSubj();
+
+			String mailTxt = sInfo.getMailTxt();
+
 			String[] recipients = mailTos.split(",");
 			//Set the host smtp address
 		    Properties props = new Properties();
@@ -323,13 +328,15 @@ public class ExecuteBIDocumentJob implements Job {
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-			String subjectfinalpart = msgBuilder.getMessage("scheduler.mailsubject", "component_scheduler_messages");
-			String subject = biobj.getName() + " " + subjectfinalpart;
+			//Locale locale = new Locale("it", "IT");
+			//String subjectfinalpart = msgBuilder.getMessage("scheduler.mailsubject", "component_scheduler_messages", locale);
+			String subject = biobj.getName() + " " + mailSubj;
 			msg.setSubject(subject);
 		    // create and fill the first message part
 		    MimeBodyPart mbp1 = new MimeBodyPart();
-		    String mailtext = msgBuilder.getMessage("scheduler.mailtext", "component_scheduler_messages");
-		    mbp1.setText(mailtext);
+		    
+		    //String mailtext = msgBuilder.getMessage("scheduler.mailtext", "component_scheduler_messages", locale);
+		    mbp1.setText(mailTxt);
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();
 	        // attach the file to the message

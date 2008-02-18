@@ -34,6 +34,8 @@ public class SaveInfo {
 	private String documentHistoryLength = "";
 	private String mailTos = "";
 	private String functionalityIds = "";
+	private String mailSubj = "";
+	private String mailTxt = "";
 	
 	public String getDocumentDescription() {
 		return documentDescription;
@@ -58,6 +60,18 @@ public class SaveInfo {
 	}
 	public void setMailTos(String mailTos) {
 		this.mailTos = mailTos;
+	}
+	public String getMailSubj() {
+		return mailSubj;
+	}
+	public void setMailSubj(String mailSubj) {
+		this.mailSubj = mailSubj;
+	}
+	public String getMailTxt() {
+		return mailTxt;
+	}
+	public void setMailTxt(String mailTxt) {
+		this.mailTxt = mailTxt;
 	}
 	public boolean isSaveAsDocument() {
 		return saveAsDocument;

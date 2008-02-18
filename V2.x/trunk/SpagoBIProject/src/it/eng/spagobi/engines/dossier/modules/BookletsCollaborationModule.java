@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -186,10 +187,10 @@ public class BookletsCollaborationModule extends AbstractModule {
 				byte[] tempCont = dpDAO.getPresentationVersionContent(dossierId, versionId);
 				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
 				String bookName = dossier.getName();
-				uploadedFile.setFieldNameInForm("template");
-				uploadedFile.setFileName(bookName + ".ppt");
-				uploadedFile.setSizeInBytes(tempCont.length);
-				uploadedFile.setFileContent(tempCont);
+				ObjTemplate templ = new ObjTemplate();
+				templ.setActive(new Boolean(true));
+		        templ.setName(bookName + ".ppt");
+		        templ.setContent(tempCont);
 				// load all functionality
 				List storeInFunctionalities = new ArrayList();
 				List functIds = request.getAttributeAsList("FUNCT_ID");
@@ -206,6 +207,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				biobj.setName(name);
 				biobj.setEncrypt(new Integer(0));
 				biobj.setEngine(engine);
+				biobj.setDataSourceId(engine.getDataSourceId());
 				biobj.setRelName("");
 				biobj.setBiObjectTypeCode(officeDocDom.getValueCd());
 				biobj.setBiObjectTypeID(officeDocDom.getValueId());
@@ -218,7 +220,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				biobj.setVisible((visible? new Integer(1): new Integer(0)));
 				
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-				objectDAO.insertBIObject(biobj);
+				objectDAO.insertBIObject(biobj, templ);
 				// put data into response
 				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
@@ -233,7 +235,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				
 				response.setAttribute("PublishMessage", PortletUtilities.getMessage("book.presPublished", "component_booklets_messages"));
 				response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
-				response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, versionIdStr);
+				response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
 				
 			}
 		} catch(Exception e){

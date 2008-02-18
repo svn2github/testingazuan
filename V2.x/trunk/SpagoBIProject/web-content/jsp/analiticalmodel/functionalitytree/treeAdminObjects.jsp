@@ -34,7 +34,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.safehaus.uuid.UUID"%>
 
 <% 
-	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule");
+	//get original page (SbiAnaliticalModel or SbiFunctionality) from seviceRequest and set boolean indicator
+	String originalObject = (aServiceRequest.getAttribute("objectId")==null)?"":(String)aServiceRequest.getAttribute("objectId");
+	boolean flgFunc = false;
+	if (originalObject.equalsIgnoreCase("SBIFunctionality"))
+		 flgFunc = true; 
     
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("ACTION_NAME", "START_ACTION");
@@ -84,7 +89,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</a>
 		</td>		
 		<%
-			if(ChannelUtilities.isPortletRunning()){
+			if(ChannelUtilities.isPortletRunning() && !flgFunc){
 		%>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>

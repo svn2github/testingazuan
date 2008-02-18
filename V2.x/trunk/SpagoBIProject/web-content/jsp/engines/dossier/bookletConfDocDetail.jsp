@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String label = (String)moduleResponse.getAttribute("label");
    String name = (String)moduleResponse.getAttribute("name");
    //Integer idobj = (Integer)moduleResponse.getAttribute("idobj");
-   String dossierIdStr = (String)moduleResponse.getAttribute(SpagoBIConstants.OBJECT_ID);
+   String tempFolderPath = (String) moduleResponse.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
    String logicalname = (String)moduleResponse.getAttribute("logicalname");
    if(logicalname==null)
 	   logicalname = "";
@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    Map backUrlPars = new HashMap();
    backUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    backUrlPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
-   backUrlPars.put(SpagoBIConstants.OBJECT_ID, dossierIdStr);
+   backUrlPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolderPath);
    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
@@ -95,7 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<spagobi:message key="book.dataObject" bundle="component_booklets_messages" />
 	</div>
 	
-	<input name="<%=SpagoBIConstants.OBJECT_ID%>" type="hidden" value="<%=dossierIdStr%>"/>
+	<input name="<%=BookletsConstants.DOSSIER_TEMP_FOLDER%>" type="hidden" value="<%=tempFolderPath%>"/>
 	<%--
 	<input name="idbiobject" type="hidden" value="<%=idobj%>"/>
 	--%>

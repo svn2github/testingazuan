@@ -21,15 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.dossiernts.BookletsConstants,
-				java.util.List,
-				java.util.Iterator,
-				it.eng.spagobi.commons.bo.Role,
-				it.eng.it.eng.spagobi.dossierfiguredBIDocument,
-				it.eng.spagobi.commons.constants.SpagoBIConstants,
-				it.eng.it.eng.spagobi.dossierkflowConfiguration" %>
+
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
@@ -46,6 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<!-- ********************* TITOLO **************************  -->
 
 
+
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -56,7 +52,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 				</a>
 			</td>

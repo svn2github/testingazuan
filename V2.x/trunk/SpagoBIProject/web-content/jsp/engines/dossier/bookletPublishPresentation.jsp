@@ -21,16 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="it.eng.spago.navigation.LightNavigationManager,it.engit.eng.spagobi.dossiernts.BookletsConstants,
+<%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				java.util.*,
 				it.eng.spagobi.commons.bo.Domain" %>
 <%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
 		
 		
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("BookletsCollaborationModule"); 
-	String pathBookConf = (String)moduleResponse.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-	String presVerName = (String)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+	String dossierIdStr = (String)moduleResponse.getAttribute(BookletsConstants.DOSSIER_ID);
+	String versionId = (String)moduleResponse.getAttribute(BookletsConstants.VERSION_ID);
 	List listStates = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES);
 
 	String label = (String)moduleResponse.getAttribute("label");
@@ -49,14 +50,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
 	saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_PUBLISH_PRESENTATION);
 	saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	saveUrlPars.put(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
-	saveUrlPars.put(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+	saveUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
+	saveUrlPars.put(BookletsConstants.VERSION_ID, versionId);
    	String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	
 %>		
 		
 				
-
 <form method='POST' action='<%=saveUrl%>' id='publishForm' name='publishForm' >
 
 
@@ -70,7 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<input type='image' class='header-button-image-portlet-section' 
       			   title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
-      			   src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
+      			   src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
       			   alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
@@ -78,7 +78,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
 	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>

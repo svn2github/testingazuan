@@ -42,12 +42,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
 
 /**
@@ -77,51 +78,60 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    tempBaseFolder.mkdirs();
 	}
 	
-	public void unzipTemplate(BIObject dossier) {
+	public String init(BIObject dossier) {
 		logger.debug("IN");
 		try {
-			ObjTemplate objTemplate = dossier.getActiveTemplate();
-			byte[] bytes = objTemplate.getContent();
 			// TODO vedere se si può fare meglio di così
-			cleanDossierTempFolder(dossier);
-			File tempFolder = getDossierTempFolder(dossier);
+			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
+			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
+			String uuid = uuidObj.toString();
+			File tempFolder = new File(tempBaseFolder.getAbsolutePath() + "/" + dossier.getId().toString() + "/" + uuid);
+			if (tempFolder.exists()) deleteFolder(tempFolder);
+			tempFolder.mkdirs();
 			File template = new File(tempFolder.getAbsolutePath() + "/" + TEMPLATE_FILE_NAME);
-			FileOutputStream fos = new FileOutputStream(template);
-		    fos.write(bytes);
-		    fos.flush();
-		    fos.close();
-		    bytes = null;
-			ZipFile zip = new ZipFile(template);
-			Enumeration entries = zip.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = (ZipEntry) entries.nextElement();
-				copyInputStream(zip.getInputStream(entry),
-				           new BufferedOutputStream(new FileOutputStream(tempFolder.getAbsolutePath() + "/" + entry.getName())));
+			ObjTemplate objTemplate = dossier.getActiveTemplate();
+			if (objTemplate != null) {
+				byte[] bytes = objTemplate.getContent();
+				FileOutputStream fos = new FileOutputStream(template);
+			    fos.write(bytes);
+			    fos.flush();
+			    fos.close();
+			    bytes = null;
+				ZipFile zip = new ZipFile(template);
+				Enumeration entries = zip.entries();
+				while (entries.hasMoreElements()) {
+					ZipEntry entry = (ZipEntry) entries.nextElement();
+					copyInputStream(zip.getInputStream(entry),
+					           new BufferedOutputStream(new FileOutputStream(tempFolder.getAbsolutePath() + "/" + entry.getName())));
+				}
+				zip.close();
+				template.delete();
 			}
-			zip.close();
-			template.delete();
+			return tempFolder.getAbsolutePath();
 		} catch (Exception e) {
 			logger.error(e);
+			return null;
 		} finally {
 			logger.debug("OUT");
 		}
 	}
 	
-	public void storeTemplate(BIObject dossier) {
+	public void storeTemplate(Integer dossierId, String pathTempFolder) {
 		logger.debug("IN");
 		File template = null;
 		try {
-			File presentationTemplate = getTemporaryPresentationTemplate(dossier);
-			File processDefinitionFile = getTemporaryProcessDefinitionFile(dossier);
-			File dossierConfigFile = getTemporaryDossierConfigurationFile(dossier);
+			File presentationTemplate = getTemporaryPresentationTemplate(pathTempFolder);
+			File processDefinitionFile = getTemporaryProcessDefinitionFile(pathTempFolder);
+			File dossierConfigFile = getTemporaryDossierConfigurationFile(pathTempFolder);
 			String[] files = new String[] {
 					presentationTemplate.getAbsolutePath(), 
 					processDefinitionFile.getAbsolutePath(), 
 					dossierConfigFile.getAbsolutePath()
 			};
-			template = generateTemplateZipFile(files, dossier);
+			template = generateTemplateZipFile(files, pathTempFolder);
 			ObjTemplate objTemplate = generateObjTemplate(template);
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
+			BIObject dossier = objDAO.loadBIObjectById(dossierId);
 			objDAO.modifyBIObject(dossier, objTemplate);
 		} catch (Exception e) {
 			logger.error(e);
@@ -147,13 +157,12 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return objTemplate;
 	}
 	
-	private File generateTemplateZipFile(String[] files, BIObject dossier) throws Exception {
+	private File generateTemplateZipFile(String[] files, String pathTempFolder) throws Exception {
 		logger.debug("IN");
 		File template = null;
 		ZipOutputStream out = null;
 		try {
-			File tempFolder = getDossierTempFolder(dossier);
-			template = new File(tempFolder.getAbsolutePath() + "/" + TEMPLATE_FILE_NAME);
+			template = new File(pathTempFolder + "/" + TEMPLATE_FILE_NAME);
 			if (template.exists()) template.delete();
 			out = new ZipOutputStream(new FileOutputStream(template));
 	        for (int i = 0; i < files.length; i++) {
@@ -203,18 +212,17 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    out.close();
 	  }
 	
-	public void addConfiguredDocument(BIObject dossier,
-			ConfiguredBIDocument doc) {
+	public void addConfiguredDocument(ConfiguredBIDocument doc, String pathTempFolder) {
 		logger.debug("IN");
 		try {
-			File docsConfFile = getTemporaryDossierConfigurationFile(dossier);
+			File docsConfFile = getTemporaryDossierConfigurationFile(pathTempFolder);
 			SourceBean docsConfSb = null;
 			if (docsConfFile != null && docsConfFile.exists()) {
 				InputSource stream = new InputSource(new FileReader(docsConfFile));
 				docsConfSb = SourceBean.fromXMLStream(stream, true, false);
 				docsConfFile.delete();
 			} else {
-				docsConfFile = createTemporaryDocumentsConfigurationFile(dossier);
+				docsConfFile = createTemporaryDocumentsConfigurationFile(pathTempFolder);
 				docsConfSb = new SourceBean("DOSSIER_CONFIGURATION");
 			}
 			String docConfXml = doc.toXml();
@@ -235,10 +243,10 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 
-	private File getTemporaryPresentationTemplate(BIObject dossier) {
+	private File getTemporaryPresentationTemplate(String pathTempFolder) {
 		logger.debug("IN");
 		File toReturn = null;
-		File dossierTempFolder = getDossierTempFolder(dossier);
+		File dossierTempFolder = new File(pathTempFolder);
 		File[] files = dossierTempFolder.listFiles();
 		if (files != null && files.length > 0) {
 			for (int i = 0; i < files.length; i++) {
@@ -253,10 +261,10 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 	
-	private File getTemporaryProcessDefinitionFile(BIObject dossier) {
+	private File getTemporaryProcessDefinitionFile(String pathTempFolder) {
 		logger.debug("IN");
 		File toReturn = null;
-		File dossierTempFolder = getDossierTempFolder(dossier);
+		File dossierTempFolder = new File(pathTempFolder);
 		File[] files = dossierTempFolder.listFiles();
 		if (files != null && files.length > 0) {
 			for (int i = 0; i < files.length; i++) {
@@ -271,10 +279,10 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 	
-	private File getTemporaryDossierConfigurationFile(BIObject dossier) {
+	private File getTemporaryDossierConfigurationFile(String pathTempFolder) {
 		logger.debug("IN");
 		File toReturn = null;
-		File dossierTempFolder = getDossierTempFolder(dossier);
+		File dossierTempFolder = new File(pathTempFolder);
 		File[] files = dossierTempFolder.listFiles();
 		if (files != null && files.length > 0) {
 			for (int i = 0; i < files.length; i++) {
@@ -289,36 +297,16 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 	
-	private File createTemporaryDocumentsConfigurationFile(BIObject dossier) {
+	private File createTemporaryDocumentsConfigurationFile(String pathTempFolder) {
 		logger.debug("IN");
 		File toReturn = null;
-		File dossierTempFolder = getDossierTempFolder(dossier);
-		toReturn = new File(dossierTempFolder.getAbsolutePath() + "/" + DOSSIER_CONF_FILE_NAME);
-		logger.debug("OUT");
-		return toReturn;
-	}
-	
-	private File getDossierTempFolder(BIObject dossier) {
-		logger.debug("IN");
-		String uuid = dossier.getUuid();
-		String tempBasePath = tempBaseFolder.getAbsolutePath();
-		File toReturn = new File(tempBasePath + "/" + uuid);
-		toReturn.mkdir();
-		logger.debug("OUT");
-		return toReturn;
-	}
-
-	private boolean cleanDossierTempFolder(BIObject dossier) {
-		logger.debug("IN");
-		String uuid = dossier.getUuid();
-		String tempBasePath = tempBaseFolder.getAbsolutePath();
-		File folder = new File(tempBasePath + "/" + uuid);
-		boolean toReturn = deleteFolder(folder);
+		toReturn = new File(pathTempFolder + "/" + DOSSIER_CONF_FILE_NAME);
 		logger.debug("OUT");
 		return toReturn;
 	}
 	
 	public static boolean deleteFolder(File directory) {
+		logger.debug("IN");
 		try {
 			if (directory.isDirectory()) {
 				File[] files = directory.listFiles();
@@ -337,15 +325,16 @@ public class DossierDAOHibImpl implements IDossierDAO {
 				return false;
 		} catch (Exception e) {
 			return false;
+		} finally {
+			logger.debug("OUT");
 		}
 		return true;
 	}
 	
-	public void deleteConfiguredDocument(BIObject dossier,
-			String docLogicalName) {
+	public void deleteConfiguredDocument(String docLogicalName, String pathTempFolder) {
 		logger.debug("IN");
 		try {
-			File docsConfFile = getTemporaryDossierConfigurationFile(dossier);
+			File docsConfFile = getTemporaryDossierConfigurationFile(pathTempFolder);
 			SourceBean docsConfSb = null;
 			if (docsConfFile != null && docsConfFile.exists()) {
 				InputSource stream = new InputSource(new FileReader(docsConfFile));
@@ -368,45 +357,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 
 	}
 
-	
-	// TODO implementare
-	public void deletePresentationVersion(String pathBooklet, String verName) {
-		logger.debug("IN");
-		try {
-			
-		} finally {
-			logger.debug("OUT");
-		}
-
-	}
-
-	// TODO controllare a che serve
-	public String getDossierName(String pathBooklet) {
-		logger.debug("IN");
-		String biobjname = "";
-		try {
-			if(!pathBooklet.endsWith("/template")) {
-				return "";
-			}
-			try{
-				String pathBiObj = pathBooklet.substring(0, pathBooklet.lastIndexOf("/"));
-				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
-				BIObject biobj = objectDAO.loadBIObjectForDetail(pathBiObj);
-				biobjname = biobj.getName();
-			} catch (Exception e){
-				logger.error("Cannot recover booklet name ", e);
-			}
-		} finally {
-			logger.debug("OUT");
-		}
-		return biobjname;
-	}
-
-	public InputStream getProcessDefinitionContent(BIObject dossier) {
+	public InputStream getProcessDefinitionContent(String pathTempFolder) {
 		logger.debug("IN");
 		InputStream is = null;
 		try {
-			File processDefFile = getTemporaryProcessDefinitionFile(dossier);
+			File processDefFile = getTemporaryProcessDefinitionFile(pathTempFolder);
 			is = new FileInputStream(processDefFile);
 		} catch (Exception e) {
 			logger.error(e);
@@ -416,11 +371,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return is;
 	}
 
-	public String getProcessDefinitionFileName(BIObject dossier) {
+	public String getProcessDefinitionFileName(String pathTempFolder) {
 		logger.debug("IN");
 		String toReturn = null;
 		try {
-			File processDefFile = getTemporaryProcessDefinitionFile(dossier);
+			File processDefFile = getTemporaryProcessDefinitionFile(pathTempFolder);
 			toReturn = processDefFile.getName();
 			if (toReturn.contains("/")) {
 				toReturn = toReturn.substring(toReturn.lastIndexOf("/") + 1);
@@ -436,11 +391,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
-	public InputStream getPresentationTemplateContent(BIObject dossier) {
+	public InputStream getPresentationTemplateContent(String pathTempFolder) {
 		logger.debug("IN");
 		InputStream is = null;
 		try {
-			File presentationTemplate = getTemporaryPresentationTemplate(dossier);
+			File presentationTemplate = getTemporaryPresentationTemplate(pathTempFolder);
 			is = new FileInputStream(presentationTemplate);
 		} catch (Exception e) {
 			logger.error(e);
@@ -450,11 +405,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return is;
 	}
 
-	public String getPresentationTemplateFileName(BIObject dossier) {
+	public String getPresentationTemplateFileName(String pathTempFolder) {
 		logger.debug("IN");
 		String toReturn = null;
 		try {
-			File presentationTemplate = getTemporaryPresentationTemplate(dossier);
+			File presentationTemplate = getTemporaryPresentationTemplate(pathTempFolder);
 			toReturn = presentationTemplate.getName();
 			if (toReturn.contains("/")) {
 				toReturn = toReturn.substring(toReturn.lastIndexOf("/"));
@@ -470,11 +425,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
-	public ConfiguredBIDocument getConfiguredDocument(BIObject dossier, String docLogicalName) {
+	public ConfiguredBIDocument getConfiguredDocument(String docLogicalName, String pathTempFolder) {
 		logger.debug("IN");
 		ConfiguredBIDocument toReturn = null;
 		try {
-			File docsConfigured = getTemporaryDossierConfigurationFile(dossier);
+			File docsConfigured = getTemporaryDossierConfigurationFile(pathTempFolder);
 			InputSource stream = new InputSource(new FileReader(docsConfigured));
 			SourceBean docsConfiguredSb = SourceBean.fromXMLStream(stream, true, false);
 			SourceBean docSb = (SourceBean) docsConfiguredSb.getAttribute(docLogicalName);
@@ -487,11 +442,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
-	public List getConfiguredDocumentList(BIObject dossier) {
+	public List getConfiguredDocumentList(String pathTempFolder) {
 		logger.debug("IN");
 		List toReturn = new ArrayList();
 		try {
-			File docsConfigured = getTemporaryDossierConfigurationFile(dossier);
+			File docsConfigured = getTemporaryDossierConfigurationFile(pathTempFolder);
 			if (docsConfigured != null && docsConfigured.exists()) {
 				InputSource stream = new InputSource(new FileReader(docsConfigured));
 				SourceBean docsConfiguredSb = SourceBean.fromXMLStream(stream, true, false);
@@ -513,54 +468,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 		return toReturn;
 	}
-
-	public byte[] getCurrentPresentationContent(String pathBooklet) {
+	
+	public void storeProcessDefinitionFile(String pdFileName, byte[] pdFileContent, String pathTempFolder) {
 		logger.debug("IN");
 		try {
-			return null;
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-
-	public Map getImagesOfTemplatePart(String pathBooklet, String indPart) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public byte[] getNotesTemplatePart(String pathBooklet, String indPart) {
-		logger.debug("IN");
-		try {
-			return null;
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-
-	public byte[] getPresentationVersionContent(String pathBooklet,
-			String verName) {
-		logger.debug("IN");
-		try {
-			return null;
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-
-	public List getPresentationVersions(String pathBooklet) {
-		logger.debug("IN");
-		try {
-			return null;
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-
-	public void storeProcessDefinitionFile(BIObject dossier,
-			String pdFileName, byte[] pdFileContent) {
-		logger.debug("IN");
-		try {
-			File dossierTempFolder = getDossierTempFolder(dossier);
+			File dossierTempFolder = new File(pathTempFolder);
 			// deletes previous xml files, if any
 			deleteContainedFiles(dossierTempFolder, ".xml");
 			File processDefFile = new File(dossierTempFolder.getAbsolutePath() + "/" + pdFileName);
@@ -575,11 +487,10 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 
-	public void storePresentationTemplateFile(BIObject dossier,
-			String templateFileName, byte[] templateContent) {
+	public void storePresentationTemplateFile(String templateFileName, byte[] templateContent, String pathTempFolder) {
 		logger.debug("IN");
 		try {
-			File dossierTempFolder = getDossierTempFolder(dossier);
+			File dossierTempFolder = new File(pathTempFolder);
 			deleteContainedFiles(dossierTempFolder, ".ppt");
 			File presentationTemplateFile = new File(dossierTempFolder.getAbsolutePath() + "/" + templateFileName);
 			FileOutputStream fos = new FileOutputStream(presentationTemplateFile);
@@ -612,46 +523,24 @@ public class DossierDAOHibImpl implements IDossierDAO {
 			logger.debug("OUT");
 		}
 	}
-	
-	public void storeCurrentPresentationContent(String pathBooklet,
-			byte[] docContent) {
-		// TODO Auto-generated method stub
 
-	}
-
-	public void storeCurrentPresentationContent(String pathBooklet,
-			InputStream docContentIS) {
+	public Integer getDossierId(String pathTempFolder) {
 		logger.debug("IN");
 		try {
+			File file = new File(pathTempFolder);
+			File parent = file.getParentFile();
+			String dossierIdStr = parent.getName();
+			if (dossierIdStr.contains("/")) {
+				dossierIdStr = dossierIdStr.substring(dossierIdStr.lastIndexOf("/") + 1);
+			}
+			if (dossierIdStr.contains("\\")) {
+				dossierIdStr = dossierIdStr.substring(dossierIdStr.lastIndexOf("\\") + 1);
+			}
+			Integer dossierId = new Integer(dossierIdStr);
+			return dossierId;
 		} finally {
 			logger.debug("OUT");
 		}
-
-	}
-
-	public void storeNote(String pathBooklet, String indPart, byte[] noteContent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void storeTemplateImage(String pathBooklet, byte[] image,
-			String docLogicalName, int indexTempPart) {
-		logger.debug("IN");
-		try {
-		} finally {
-			logger.debug("OUT");
-		}
-
-	}
-
-	public void versionPresentation(String pathBooklet, byte[] presContent,
-			boolean approved) {
-		logger.debug("IN");
-		try {
-		} finally {
-			logger.debug("OUT");
-		}
-
 	}
 
 }

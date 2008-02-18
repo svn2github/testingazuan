@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,
 				it.eng.spagobi.engines.dossier.constants.BookletsConstants,
 				it.eng.spagobi.commons.constants.SpagoBIConstants" %>
-<%@page import="it.eng.spagobi.dossierutils.BookletServiceUtils"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.dossier.utils.DossierUtilities"%>
 
 <%
 	// RETRIVE ACTIVITY KEY	
@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     if(activityKey==null)
     	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
-	String recoverUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" +
+	String recoverUrl = DossierUtilities.getDossierServiceUrl(request) + "?" +
 						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 						BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
 						SpagoBIConstants.ACTIVITYKEY + "=" + activityKey;
@@ -55,10 +55,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 %>
 
-
-
-
-
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -69,7 +65,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
       				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
 			</a>
 		</td>
@@ -90,7 +86,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="<%=recoverUrl %>">
 			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/download32.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download32.png")%>' 
 	      				 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
 	        </a>
 		</td>
@@ -111,7 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td class='portlet-form-field-label'>
 						<input type="image" 
 			       			   title='<spagobi:message key = "book.approvalBotton" bundle="component_booklets_messages" />' 
-      		 	   			   src='<%= urlBuilder.getResourceLink(request, "/components/booklets/img/save32.png")%>' 
+      		 	   			   src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
       		 	  			   alt='<spagobi:message key = "book.approvalBotton"  bundle="component_booklets_messages"/>' />
 					</td>
 				</tr>

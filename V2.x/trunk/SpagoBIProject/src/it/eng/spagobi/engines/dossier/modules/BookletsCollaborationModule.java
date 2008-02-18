@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.dossier.modules;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
@@ -38,19 +39,21 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
-import it.eng.spagobi.engines.dossier.utils.BookletServiceUtils;
+import it.eng.spagobi.engines.dossier.utils.DossierUtilities;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.ContextInstance;
@@ -67,12 +71,15 @@ import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.taskmgmt.exe.TaskInstance;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * This class implements a module which  handles pamphlets collaboration.
  */
 public class BookletsCollaborationModule extends AbstractModule {
 	
+	static private Logger logger = Logger.getLogger(BookletsCollaborationModule.class);
 
 	public void init(SourceBean config) {
 	}
@@ -84,12 +91,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 	 * @throws exception If an exception occurs
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
 		EMFErrorHandler errorHandler = getErrorHandler();
 		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
 		try{
 			if((operation==null)||(operation.trim().equals(""))) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						            "service", "The operation parameter is null");
+				logger.error("The operation parameter is null");
 				throw new Exception("The operation parameter is null");
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_OPEN_NOTE_EDITOR)) {
 				openNoteEditorHandler(request, response);
@@ -113,6 +120,8 @@ public class BookletsCollaborationModule extends AbstractModule {
 			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
 			errorHandler.addError(internalError);
 			return;
+		} finally {
+			logger.debug("OUT");
 		}
 	}
 
@@ -144,8 +153,8 @@ public class BookletsCollaborationModule extends AbstractModule {
 			String visibleStr = (String)request.getAttribute("visible");
 			if(visibleStr != null && visibleStr.equalsIgnoreCase("0")) visible = false;
 			
-			String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-			String presVerName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+			String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+			String versionIdStr = (String)request.getAttribute(BookletsConstants.VERSION_ID);
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			EMFErrorHandler errorHandler = getResponseContainer().getErrorHandler();
 			if(!errorHandler.isOK()){
@@ -155,8 +164,8 @@ public class BookletsCollaborationModule extends AbstractModule {
 					response.setAttribute("label", label);
 					response.setAttribute("name", name);
 					response.setAttribute("description", description);
-					response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-					response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
+					response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+					response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
 					return;
 				}
 			} else {
@@ -171,9 +180,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 				Engine engine = (Engine)engines.get(0);
 				// load the template
 				UploadedFile uploadedFile = new UploadedFile();
-				IDossierDAO bookletsCmsDao = new BookletsCmsDaoImpl();
-				byte[] tempCont = bookletsCmsDao.getPresentationVersionContent(pathConfBook, presVerName);
-				String bookName = bookletsCmsDao.getBookletName(pathConfBook);
+				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+				Integer dossierId = new Integer(dossierIdStr);
+				Integer versionId = new Integer(versionIdStr);
+				byte[] tempCont = dpDAO.getPresentationVersionContent(dossierId, versionId);
+				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+				String bookName = dossier.getName();
 				uploadedFile.setFieldNameInForm("template");
 				uploadedFile.setFileName(bookName + ".ppt");
 				uploadedFile.setSizeInBytes(tempCont.length);
@@ -220,14 +232,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 			    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
 				
 				response.setAttribute("PublishMessage", PortletUtilities.getMessage("book.presPublished", "component_booklets_messages"));
-				response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-				response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
-				
+				response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+				response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, versionIdStr);
 				
 			}
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		                        "publishHandler","Error while publishing presentation", e);
+			logger.error("Error while publishing presentation", e);
 		}
 	    
 	}
@@ -236,64 +246,50 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private void deletePresVerHandler(SourceBean request, SourceBean response) throws Exception {
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            			"deletePresVerHandler", "method execution start");
-		String pathBookConf = null;
+		logger.debug("IN");
+		String dossierIdStr = null;
 		List presVersions = null;
-		IDossierDAO bookDao = null;
+		IDossierPresentationsDAO dpDAO = null;
 		try{
-			pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-			String verName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
-			bookDao = new BookletsCmsDaoImpl();
-			bookDao.deletePresentationVersion(pathBookConf, verName);
-		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-                    			"deletePresVerHandler", "error while deleting version " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-		try{
-			presVersions = bookDao.getPresentationVersions(pathBookConf);
-			SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-		            			"deletePresVerHandler", "Version list retrived " + presVersions);
-		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-		                        "deletePresVerHandler", "error while getting version list " + e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-		try{
+			dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+			String versionIdStr = (String) request.getAttribute(BookletsConstants.VERSION_ID);
+			dpDAO = DAOFactory.getDossierPresentationDAO();
+			Integer dossierId = new Integer(dossierIdStr);
+			Integer versionId = new Integer(versionIdStr);
+			dpDAO.deletePresentationVersion(dossierId, versionId);
+			presVersions = dpDAO.getPresentationVersions(dossierId);
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
 			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierId);
 		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-					            "deletePresVerHandler", "error while setting response attribute " + e);
+			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
 		}
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	                        "deletePresVerHandler", "end method execution");
-
 	}
 	
 	
 	
 	
 	private void preparePublishPageHandler(SourceBean request, SourceBean response) {
-		try{
-			String pathConfBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-			String presVerName = (String)request.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
+		logger.debug("IN");
+		try {
+			String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+			String versionIdStr = (String)request.getAttribute(BookletsConstants.VERSION_ID);
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
-			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME, presVerName);
-			
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+			response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
 			 // load list of states and engines
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List states = domaindao.loadListDomainsByType("STATE");
 		    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		                        "publishPresHandler","Error while preparing page for publishing", e);
+			logger.error("Error while preparing page for publishing", e);
+		} finally {
+			logger.debug("OUT");
 		}
 	    
 	}
@@ -301,41 +297,47 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 
-	private void runCollaborationHandler(SourceBean request, SourceBean response) {
-		JbpmContext jbpmContext = null;
-		String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		String executionMsg = null;
-		IDossierDAO bookDao = new BookletsCmsDaoImpl();
-		InputStream procDefIS = bookDao.getBookletProcessDefinitionContent(pathBookConf);
-		String objPath = bookDao.getBiobjectPath(pathBookConf);
-		BIObject biObject = null;
+	private void runCollaborationHandler(SourceBean request, SourceBean response) throws EMFUserError {
+		logger.debug("IN");
+		String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+		Integer dossierId = new Integer(dossierIdStr);
+		IDossierDAO dossierDAO = DAOFactory.getDossierDAO();
+		BIObject dossier;
+		String pathTempFolder;
 		try {
-			biObject = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(objPath);
+			dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+			pathTempFolder = dossierDAO.init(dossier);
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-    			    "runCollaborationHandler", "Error while recovering BIObject", e);
+			logger.error("Error while recovering dossier information: " + e);
+			throw e;
 		}
-		
+		JbpmContext jbpmContext = null;
+		InputStream procDefIS = null;
+		String executionMsg = null;
 		IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
-	    // AUDIT
 		AuditManager auditManager = AuditManager.getInstance();
+	    // AUDIT
 		Integer auditId = null;
-		if (biObject != null) {
-			auditId = auditManager.insertAudit(biObject, profile, "", "WORKFLOW");
+		if (dossier != null) {
+			auditId = auditManager.insertAudit(dossier, profile, "", "WORKFLOW");
 		}
-		
 		try {
+			try {
+				procDefIS = dossierDAO.getProcessDefinitionContent(pathTempFolder);
+			} catch (Exception e) {
+				logger.error("Error while reading process definition file content from dossier template: " + e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+			
 			// parse process definition
 			ProcessDefinition processDefinition = null;
 			try{
 				processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
 			} catch(Exception e) {
 				executionMsg = PortletUtilities.getMessage("book.processDefNotCorrect", "component_booklets_messages"); 
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-		            			    "runCollaborationHandler", "Process definition xml file not correct", e);
+				logger.error("Process definition xml file not correct", e);
 				throw e;
 			}	
-			procDefIS.close();
 		    // get name of the process
 			String nameProcess = processDefinition.getName();
 			// get jbpm context
@@ -346,15 +348,14 @@ public class BookletsCollaborationModule extends AbstractModule {
 				jbpmContext.deployProcessDefinition(processDefinition);  
 			} catch (Exception e) {
 				executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-        			                "runCollaborationHandler", "Error while deploying process definition", e);
+				logger.error("Error while deploying process definition", e);
 				throw e;
 			}
 			// create process instance
 			ProcessInstance processInstance = new ProcessInstance(processDefinition);
 			// get context instance and set the booklet path variable
 			ContextInstance contextInstance = processInstance.getContextInstance();
-			contextInstance.createVariable(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+			contextInstance.createVariable(BookletsConstants.DOSSIER_ID, dossierIdStr);
 			
 			// adding parameters for AUDIT updating
 			if (auditId != null) {
@@ -364,7 +365,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			// start workflow
 			Token token = processInstance.getRootToken();
 			GraphSession graphSess = jbpmContext.getGraphSession();
-			try{
+			try {
 				token.signal();
 			} catch (Exception e) {
 				if(e.getCause() instanceof OpenOfficeConnectionException ) {
@@ -375,33 +376,45 @@ public class BookletsCollaborationModule extends AbstractModule {
 			// save workflow data
 			jbpmContext.save(processInstance); 
 			
-	    } catch (Exception e){
-	    	if(executionMsg==null) {
+		    try {
+		    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
+		    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
+		    } catch (Exception e) {
+		    	logger.error("Error while setting attributes into response", e);
+		    }
+			
+	    } catch (Exception e) {
+	    	if (executionMsg == null) {
 	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
 	    	}
-	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                                "runCollaborationHandler","Error while starting workflow",  e);
+	    	logger.error("Error while starting workflow", e);
 			// AUDIT UPDATE
 			auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"STARTUP_FAILED", e.getMessage(), null);
 	    } finally {
-	    	if(executionMsg==null){
+	    	if (executionMsg == null) {
 	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartCorrectly", "component_booklets_messages");
+	    		try {
+					response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
+				} catch (SourceBeanException e) {
+					logger.error(e);
+				}
 	    		// AUDIT UPDATE
 	    		auditManager.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 						"EXECUTION_STARTED", null, null);
 	    	}
-	    	if(jbpmContext!=null){
+	    	if (jbpmContext != null) {
 	    		jbpmContext.close();
 	    	}
+	    	if (procDefIS != null)
+				try {
+					procDefIS.close();
+				} catch (IOException e) {
+					logger.error(e);
+				}
+	    	logger.debug("OUT");
 	    } 
-	    try{
-	    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
-	    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
-	    } catch (Exception e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-                                "runCollaborationHandler","Error while setting attributes into response", e);
-	    }
+
 	}
 	
 
@@ -411,27 +424,34 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	private void approveHandler(SourceBean request, SourceBean response) {
+		logger.debug("IN");
 		ContextInstance contextInstance = null;
 		JbpmContext jbpmContext = null;
 		try {
 			// recover task instance and variables
-			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
-			String approved = (String)request.getAttribute("approved");
+			String activityKey = (String) request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
+			String approved = (String) request.getAttribute("approved");
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
 			contextInstance = taskInstance.getContextInstance();
-			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+			ProcessInstance processInstance = contextInstance.getProcessInstance();
+			Long workflowProcessId = new Long(processInstance.getId());
+			String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+			Integer dossierId = new Integer(dossierIdStr);
 			// store presentation
-			IDossierDAO bookDao = new BookletsCmsDaoImpl();
-			byte[] currPresCont = bookDao.getCurrentPresentationContent(pathConfBook);
+			IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+			DossierPresentation currPresentation = dpDAO.getCurrentPresentation(dossierId, workflowProcessId);
 			boolean approvedBool = false;
-			if(approved.equalsIgnoreCase("true")) {
+			if (approved.equalsIgnoreCase("true")) {
 				approvedBool = true;
 			}
-			bookDao.versionPresentation(pathConfBook, currPresCont, approvedBool);
+			currPresentation.setApproved(new Boolean(approvedBool));
+			Integer nextProg = dpDAO.getNextProg(dossierId);
+			currPresentation.setProg(nextProg);
+			dpDAO.updatePresentation(currPresentation);
 			// put attributes into response
-			if(approved.equalsIgnoreCase("true")) {
+			if (approved.equalsIgnoreCase("true")) {
 				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletCompleteActivityLoopback");
 			} else {
 				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletRejecrActivityLoopback");
@@ -450,8 +470,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			}
 			
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		                        "approveHandler","Error while versioning presentation", e);
+			logger.error("Error while versioning presentation", e);
 			// AUDIT UPDATE
 			if (contextInstance != null) {
 				Object auditIdObj = contextInstance.getVariable(AuditManager.AUDIT_ID);
@@ -466,6 +485,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	if (jbpmContext != null) {
 	    		jbpmContext.close();
 	    	}
+	    	logger.debug("OUT");
 		}
 	    
 	}
@@ -482,8 +502,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			try {
 				auditId = new Integer(auditIdObj.toString());
 			} catch (Exception e ) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-						            "convertIdType", "Error while converting audit id type, " +
+				logger.error("Error while converting audit id type, " +
 						            "the audit log row will not be recorded", e);
 			}
 		}
@@ -501,24 +520,27 @@ public class BookletsCollaborationModule extends AbstractModule {
 			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
 			String index = (String)taskInstance.getVariable(BookletsConstants.BOOKLET_PART_INDEX);
+			int pageNum = Integer.parseInt(index);
 			ContextInstance contextInstance = taskInstance.getContextInstance();
-			String pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+			ProcessInstance processInstance = contextInstance.getProcessInstance();
+			Long workflowProcessId = new Long(processInstance.getId());
+			String dossierIdStr = (String)contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+			Integer dossierId = new Integer(dossierIdStr);
 			
-			// recover from cms images and notes
-		    String notes = recoverNotes(pathConfBook, index);
-		    Map imageurl = recoverImageUrls(pathConfBook, index);
+			// recovers images and notes
+		    String notes = recoverNotes(dossierId, pageNum, workflowProcessId);
+		    Map imageurl = recoverImageUrls(dossierId, pageNum, workflowProcessId);
 		    
 			// put attributes into response
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletEditNotesTemplatePart");
 			response.setAttribute(BookletsConstants.BOOKLET_PART_INDEX, index);
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathConfBook);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
 			response.setAttribute("mapImageUrls", imageurl);
 			response.setAttribute("notes", notes);
 			
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		                        "saveNoteHandler","Error while saving notes", e);
+			logger.error("Error while saving notes", e);
 		} finally {
 	    	if (jbpmContext != null) {
 	    		jbpmContext.close();
@@ -529,18 +551,18 @@ public class BookletsCollaborationModule extends AbstractModule {
 	
 	
 	
-	private String recoverNotes(String pathConfBook, String index) {
-		IDossierDAO bookdao = new BookletsCmsDaoImpl();
-	    byte[] notesByte = 	bookdao.getNotesTemplatePart(pathConfBook, index);
-	    String notes = new String(notesByte);
+	private String recoverNotes(Integer dossierId, int pageNum, Long workflowProcessId) throws Exception {
+		IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
+	    byte[] notesByte = 	dptDAO.getNotesOfDossierPart(dossierId, pageNum, workflowProcessId);
+	    String notes = notesByte != null ? new String(notesByte) : "";
 	    return notes;
 	}
 	
 	
 	
-	private Map recoverImageUrls(String pathConfBook, String index) throws Exception {
-		IDossierDAO bookdao = new BookletsCmsDaoImpl();
-		Map images = bookdao.getImagesOfTemplatePart(pathConfBook, index);
+	private Map recoverImageUrls(Integer dossierId, int pageNum, Long workflowProcessId) throws Exception {
+		IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
+		Map images = dptDAO.getImagesOfDossierPart(dossierId, pageNum, workflowProcessId);
 		 // get temp directory for the pamphlet module
 	    ConfigSingleton configSing = ConfigSingleton.getInstance();
 		SourceBean pathTmpFoldSB = (SourceBean)configSing.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
@@ -558,8 +580,13 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    Map imageurl = new HashMap();
 	    Iterator iterImgs = images.keySet().iterator();
 	    while(iterImgs.hasNext()){
-	    	String logicalName = (String)iterImgs.next();
-	    	String logicalNameForStoring = pathConfBook.replace('/', '_') + logicalName + ".jpg";
+	    	String logicalName = (String) iterImgs.next();
+	    	//String logicalNameForStoring = pathConfBook.replace('/', '_') + logicalName + ".jpg";
+			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
+			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
+			String uuid = uuidObj.toString();
+			// TODO perché salvare su file system? tanto vale tenere in memoria le immagini
+	    	String logicalNameForStoring = uuid + logicalName + ".jpg";
 	    	byte[] content = (byte[])images.get(logicalName);
 	    	File img = new File(tempDir, logicalNameForStoring);
 	    	FileOutputStream fos = new FileOutputStream(img);
@@ -568,7 +595,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	fos.close();
 	    	// the url to recover the image is a spagobi servlet url
 	    	
-	    	String recoverUrl = BookletServiceUtils.getBookletServiceUrl() + "?" + 
+	    	String recoverUrl = DossierUtilities.getDossierServiceUrl() + "?" + 
 	    						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 	    						BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
 	    						BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE + "=" +
@@ -581,32 +608,38 @@ public class BookletsCollaborationModule extends AbstractModule {
 			
 	
 	private void saveNoteHandler(SourceBean request, SourceBean response) {
-		try{
+		JbpmContext jbpmContext = null;
+		try {
 			String indexPart = (String)request.getAttribute(BookletsConstants.BOOKLET_PART_INDEX);
-			String pathBookConf = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
+			int pageNum = Integer.parseInt(indexPart);
+			String dossierIdStr = (String)request.getAttribute(BookletsConstants.DOSSIER_ID);
+			Integer dossierId = new Integer(dossierIdStr);
 			String noteSent = (String)request.getAttribute("notes");
 			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
-			IDossierDAO pampdao = new BookletsCmsDaoImpl();
-			pampdao.storeNote(pathBookConf, indexPart, noteSent.getBytes());
+			// TODO vedere se si può prendere dalla request
+			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+			jbpmContext = jbpmConfiguration.createJbpmContext();
+			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
+			ContextInstance contextInstance = taskInstance.getContextInstance();
+			ProcessInstance processInstance = contextInstance.getProcessInstance();
+			Long workflowProcessId = new Long(processInstance.getId());
+			IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
+			dptDAO.storeNote(dossierId, pageNum, noteSent.getBytes(), workflowProcessId);
 			// recover from cms images and notes
-		    String notes = recoverNotes(pathBookConf, indexPart);
-		    Map imageurl = recoverImageUrls(pathBookConf, indexPart);
+		    String notes = recoverNotes(dossierId, pageNum, workflowProcessId);
+		    Map imageurl = recoverImageUrls(dossierId, pageNum, workflowProcessId);
 			// put attributes into response
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletEditNotesTemplatePart");
 			response.setAttribute(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBookConf);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
 			response.setAttribute("mapImageUrls", imageurl);
 			response.setAttribute("notes", notes);
 			
 		} catch(Exception e){
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-		                        "saveNoteHandler","Error while saving notes", e);
+			logger.error("Error while saving notes", e);
 		}
 	    
 	}
-	
-	
-	
-	
+
 }

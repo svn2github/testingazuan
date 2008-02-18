@@ -33,11 +33,11 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,13 +51,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 
-public class BookletsServlet extends HttpServlet{
+public class BookletsServlet extends HttpServlet {
+	
+	static private Logger logger = Logger.getLogger(BookletsServlet.class);
 	
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -88,51 +92,53 @@ public class BookletsServlet extends HttpServlet{
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC)){
 	 			String activityKey = request.getParameter(SpagoBIConstants.ACTIVITYKEY);
 	 			JbpmContext jbpmContext = null;
-	 			String pathConfBook = null;
+	 			Integer dossierId = null;
+	 			Long workflowProcessId = null;
 	 			try {
 		 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 		 	    	        jbpmContext = jbpmConfiguration.createJbpmContext();
 		 			long activityKeyId = Long.valueOf(activityKey).longValue();
 		 			TaskInstance taskInstance = jbpmContext.getTaskInstance(activityKeyId);
 		 			ContextInstance contextInstance = taskInstance.getContextInstance();
-		 			pathConfBook = (String)contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
+		 			ProcessInstance processInstance = contextInstance.getProcessInstance();
+		 			workflowProcessId = new Long(processInstance.getId());
+		 			String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+		 			dossierId = new Integer(dossierIdStr);
 	 			} finally {
 	 				if (jbpmContext != null) jbpmContext.close();
 	 			}
-	 			if (pathConfBook != null) {
-//		 			IDossierDAO bookdao = new BookletsCmsDaoImpl();
-//		 			String bookName = bookdao.getBookletName(pathConfBook);
-//			 		//String bookName = bookdao.getBookletTemplateFileName(pathConfBook);
-//			 		byte[] finalDocBytes = bookdao.getCurrentPresentationContent(pathConfBook);
-//				 	response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
-//		 			response.setContentLength(finalDocBytes.length);
-//		 			out.write(finalDocBytes);
-//		 			out.flush();
+	 			if (dossierId != null) {
+	 				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+	 				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+	 				DossierPresentation presentation = dpDAO.getCurrentPresentation(dossierId, workflowProcessId);
+	 				byte[] finalDocBytes = presentation.getContent();
+				 	response.setHeader("Content-Disposition","attachment; filename=\"" + dossier.getName() + ".ppt" + "\";");
+		 			response.setContentLength(finalDocBytes.length);
+		 			out.write(finalDocBytes);
+		 			out.flush();
 	 			} else {
-	 				SpagoBITracer.major("SpagoBI",getClass().getName(),
-				               "service","Booklet configuration path not found!");
+	 				logger.error("Booklet configuration path not found!");
 	 			}
 	            return;
 		 		
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
-//	 			String pathBook = request.getParameter(BookletsConstants.PATH_BOOKLET_CONF);
-//                                String verName =  request.getParameter(BookletsConstants.BOOKLET_PRESENTATION_VERSION_NAME);
-//	 			IDossierDAO bookdao = new BookletsCmsDaoImpl();
-//	 			byte[] finalDocBytes = bookdao.getPresentationVersionContent(pathBook, verName);
-//	 			String bookName = bookdao.getBookletName(pathBook);
-//	 			response.setHeader("Content-Disposition","attachment; filename=\"" + bookName + ".ppt" + "\";");
-//	 			response.setContentLength(finalDocBytes.length);
-//	 			out.write(finalDocBytes);
-//	 			out.flush();
+	 			String dossierIdStr = request.getParameter(BookletsConstants.DOSSIER_ID);
+	 			Integer dossierId = new Integer(dossierIdStr);
+	 			String versionStr = request.getParameter(BookletsConstants.VERSION_ID);
+	 			Integer versionId = new Integer(versionStr);
+ 				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+ 				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+ 				byte[] finalDocBytes = dpDAO.getPresentationVersionContent(dossierId, versionId);
+			 	response.setHeader("Content-Disposition","attachment; filename=\"" + dossier.getName() + ".ppt" + "\";");
+	 			response.setContentLength(finalDocBytes.length);
+	 			out.write(finalDocBytes);
 	            return;
 	            
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE)) {
-	 			String objIdStr = request.getParameter(SpagoBIConstants.OBJECT_ID);
-	 			Integer objId = new Integer(objIdStr);
-	 			BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+	 			String tempFolder = request.getParameter(BookletsConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
-	 			String templateFileName = dossierDao.getPresentationTemplateFileName(dossier);
-	 			InputStream templateIs = dossierDao.getPresentationTemplateContent(dossier);
+	 			String templateFileName = dossierDao.getPresentationTemplateFileName(tempFolder);
+	 			InputStream templateIs = dossierDao.getPresentationTemplateContent(tempFolder);
 	 			byte[] templateByts = GeneralUtilities.getByteArrayFromInputStream(templateIs);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + templateFileName + "\";");
 	 			response.setContentLength(templateByts.length);
@@ -141,12 +147,10 @@ public class BookletsServlet extends HttpServlet{
 	            return;
 	 			
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
-	 			String objIdStr = request.getParameter(SpagoBIConstants.OBJECT_ID);
-	 			Integer objId = new Integer(objIdStr);
-	 			BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+	 			String tempFolder = request.getParameter(BookletsConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
-	 			String workDefName = dossierDao.getProcessDefinitionFileName(dossier);
-	 			InputStream workIs = dossierDao.getProcessDefinitionContent(dossier);
+	 			String workDefName = dossierDao.getProcessDefinitionFileName(tempFolder);
+	 			InputStream workIs = dossierDao.getProcessDefinitionContent(tempFolder);
 	 			byte[] workByts = GeneralUtilities.getByteArrayFromInputStream(workIs);
 	 			response.setHeader("Content-Disposition","attachment; filename=\"" + workDefName + "\";");
 	 			response.setContentLength(workByts.length);
@@ -155,9 +159,8 @@ public class BookletsServlet extends HttpServlet{
 	            return;
 	 		}
 	 		
-	 	}catch(Exception e){
-	 		SpagoBITracer.major("SpagoBI",getClass().getName(),
-	 				               "service","Exception during execution of task " + task, e);
+	 	} catch(Exception e) {
+	 		logger.error("Exception during execution of task " + task, e);
 	 	}
 	 }
 	

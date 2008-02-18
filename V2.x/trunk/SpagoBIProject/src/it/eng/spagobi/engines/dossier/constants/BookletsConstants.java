@@ -23,6 +23,8 @@ package it.eng.spagobi.engines.dossier.constants;
 
 	public class BookletsConstants {
 		
+		public static final String DOSSIER_TEMP_FOLDER = "DOSSIER_TEMP_FOLDER";
+		
 		public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
 		public static final String BOOKLET_MANAGEMENT_MODULE = "BookletsManagementModule";
 		public static final String BOOKLET_COLLABORATION_PAGE = "BookletsCollaborationPage";
@@ -39,7 +41,7 @@ package it.eng.spagobi.engines.dossier.constants;
 		public static final String OPERATION_APPROVE_PRESENTATION = "OPERATION_APPROVE_PRESENTATION";
 		public static final String OPERATION_NEW_CONFIGURED_DOCUMENT = "OPERATION_NEW_CONFIGURED_DOCUMENT";
 		public static final String OPERATION_RUN_NEW_COLLABORATION = "OPERATION_RUN_NEW_COLLABORATION";
-//		public static final String OPERATION_DELETE_PRESENTATION_VERSION = "OPERATION_DELETE_PRESENTATION_VERSION";
+		public static final String OPERATION_DELETE_PRESENTATION_VERSION = "OPERATION_DELETE_PRESENTATION_VERSION";
 		public static final String OPERATION_LOAD_PRESENTATION_TEMPLATE = "OPERATION_LOAD_PRESENTATION_TEMPLATE";
 		public static final String OPERATION_LOAD_PROCESS_DEFINITION_FILE = "OPERATION_LOAD_PROCESS_DEFINITION_FILE";
 		public static final String OPERATION_SAVE_DETAIL_BOOKLET = "OPERATION_SAVE_DETAIL_BOOKLET";
@@ -60,7 +62,8 @@ package it.eng.spagobi.engines.dossier.constants;
 		public static final String BOOKLET_PRESENTATION_VERSION_NAME = "BOOKLET_PRESENTATION_VERSION_NAME";
 		public static final String BOOKLET_PRESENTATION_LIST_STATES = "BOOKLET_PRESENTATION_LIST_STATES";
 		
-		public static final String BOOKLET_BIOBJECT_ID = "BIOBJ_ID";
+		public static final String DOSSIER_ID = "DOSSIER_ID";
+		public static final String VERSION_ID = "VERSION_ID";
 		public static final String BOOKLET_CONFIGURED_BIOBJECT_ID = "CONFIGURED_BIOBJECT_ID";
 		public static final String BOOKLET_SERVICE_TASK = "task";
 		public static final String BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE = "getTemplateImage";

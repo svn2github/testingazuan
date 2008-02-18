@@ -21,20 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.dossier.modules;
 
-import java.util.List;
-
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
-import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia
@@ -43,35 +40,27 @@ import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 public class BookletRefreshModule extends AbstractModule {
 	
 	public static final String MODULE_PAGE = "BookletRefreshPage";	
+	static private Logger logger = Logger.getLogger(BookletRefreshModule.class);
 	
 	public void init(SourceBean config) {}
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            "execute", "Start execute method");
-
-		
-		String pathBook = (String)request.getAttribute(BookletsConstants.PATH_BOOKLET_CONF);
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            "execute", "using path " + pathBook);
-
-		IDossierDAO bookDao = new BookletsCmsDaoImpl();
-		List presVersions = bookDao.getPresentationVersions(pathBook);
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-    			"execute", "Version list retrived " + presVersions);
-		
-		try{
+		logger.debug("IN");
+		try {
+			String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+			logger.debug("Using dossier id = " + dossierIdStr);
+			Integer dossierId = new Integer(dossierIdStr);
+			IDossierPresentationsDAO pdDAO = DAOFactory.getDossierPresentationDAO();
+			List presVersions = pdDAO.getPresentationVersions(dossierId);
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
 			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBook);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
 		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-		            "execute", "error while setting response attribute " + e);
+			logger.error("Error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
 		}
-		
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-				"execute", "End execute method");
 	}
 }
 	

@@ -38,13 +38,11 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 import it.eng.spagobi.engines.dossier.bo.WorkflowConfiguration;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 
@@ -53,8 +51,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -78,6 +74,11 @@ public class BookletsManagementModule extends AbstractModule {
 		EMFErrorHandler errorHandler = getErrorHandler();
 		String operation = (String) request.getAttribute(SpagoBIConstants.OPERATION);
 		logger.debug("Begin of detail Engine modify/visualization service with operation =" +operation);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
+		if (tempFolder == null) {
+			tempFolder = initDossier(request, response);
+		}
+		response.setAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder);
 		try{
 			if((operation==null)||(operation.trim().equals(""))) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_pamphlets_messages");
@@ -86,7 +87,6 @@ public class BookletsManagementModule extends AbstractModule {
 			} else if(operation.equalsIgnoreCase(SpagoBIConstants.NEW_DOCUMENT_TEMPLATE)) {
 				newTemplateHandler(request, response);
 			} else if(operation.equalsIgnoreCase(SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE)) {
-				initDossierTempFolder(request, response);
 				dossierDetailHandler(request, response);
 			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_NEW_CONFIGURED_DOCUMENT)) {
 				newConfiguredDocumentHandler(request, response);
@@ -121,19 +121,18 @@ public class BookletsManagementModule extends AbstractModule {
 	}
 
 	
-	private void initDossierTempFolder(SourceBean request, SourceBean response) throws EMFUserError {
+	private String initDossier(SourceBean request, SourceBean response) throws EMFUserError, SourceBeanException {
 		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
 		Integer objId = new Integer(objIdStr);
 		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
-		dossierDao.unzipTemplate(dossier);
+		String tempFolder = dossierDao.init(dossier);
+		return tempFolder;
 	}
 
 	private void loadProcessDefinitionFileHandler(SourceBean request,
 			SourceBean response) throws SourceBeanException, EMFUserError {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
 		UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
 		if (upFile != null) {
@@ -142,20 +141,18 @@ public class BookletsManagementModule extends AbstractModule {
 				// TODO error!!!
 			} else {
 				byte[] fileContent = upFile.getFileContent();
-				dossierDao.storeProcessDefinitionFile(dossier, fileName, fileContent);
+				dossierDao.storeProcessDefinitionFile(fileName, fileContent, tempFolder);
 			}
 		} else {
 			logger.warn("Upload file was null!!!");
 		}
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
+		//response.setAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder);
 	}
 
 	private void loadPresentationTemplateHandler(SourceBean request,
 			SourceBean response) throws SourceBeanException, EMFUserError {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
 		UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
 		if (upFile != null) {
@@ -164,13 +161,13 @@ public class BookletsManagementModule extends AbstractModule {
 				// TODO error!!!
 			} else {
 				byte[] fileContent = upFile.getFileContent();
-				dossierDao.storePresentationTemplateFile(dossier, fileName, fileContent);
+				dossierDao.storePresentationTemplateFile(fileName, fileContent, tempFolder);
 			}
 		} else {
 			logger.warn("Upload file was null!!!");
 		}
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
+		
 	}
 
 	private void newTemplateHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
@@ -197,12 +194,12 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	private void newConfiguredDocumentHandler(SourceBean request, SourceBean response) 
 											  throws SourceBeanException, EMFUserError {
-		String dossierIdStr = (String)request.getAttribute(SpagoBIConstants.OBJECT_ID);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		Object objIdObj = request.getAttribute(BookletsConstants.BOOKLET_CONFIGURED_BIOBJECT_ID);
 		if(!(objIdObj instanceof String)){
 			Map errBackPars = new HashMap();
 			errBackPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
-			errBackPars.put(SpagoBIConstants.OBJECT_ID, dossierIdStr);
+			errBackPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder);
 			errBackPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			errBackPars.put(SpagoBIConstants.OPERATION, BookletsConstants.OPERATION_DETAIL_BOOKLET);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "102", null, errBackPars, "component_booklets_messages");
@@ -247,17 +244,15 @@ public class BookletsManagementModule extends AbstractModule {
 		response.setAttribute("label", label);
 		response.setAttribute("name", name);
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletConfiguredDocumentDetail"); 
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, dossierIdStr); 
+		//response.setAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder); 
 	}
 	
 	
 	
 	
 	private void saveConfiguredDocumentHandler(SourceBean request, SourceBean response) throws Exception {
-		// get path pamphlet and id object
-		String dossierIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer dossierId = new Integer(dossierIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+		
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		
 		String label = (String)request.getAttribute("biobject_label");
 		// get logical name assigned to the configured document
@@ -304,9 +299,8 @@ public class BookletsManagementModule extends AbstractModule {
 		if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)){
 			// store the configured document
 			IDossierDAO dossierDao = new DossierDAOHibImpl();
-			dossierDao.addConfiguredDocument(dossier, confDoc);
+			dossierDao.addConfiguredDocument(confDoc, tempFolder);
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-			response.setAttribute(SpagoBIConstants.OBJECT_ID, dossierIdStr);
 		} else {
 			// set attribute into response
 			response.setAttribute("parnamemap", paramNameMap);
@@ -317,16 +311,14 @@ public class BookletsManagementModule extends AbstractModule {
 			response.setAttribute("name", confDoc.getName());
 			response.setAttribute("logicalname", confDoc.getLogicalName());
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletConfiguredDocumentDetail"); 
-			response.setAttribute(SpagoBIConstants.OBJECT_ID, dossierIdStr);
+			//response.setAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder);
 		}	
 	}
 	
 	
 	
 	private void dossierDetailHandler(SourceBean request, SourceBean response) throws SourceBeanException, EMFUserError {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
 //		List roleList = null;
 //		try{
@@ -336,12 +328,12 @@ public class BookletsManagementModule extends AbstractModule {
 //			logger.error("Error while loading all roles", e);
 //		}
 		// get the current template file name
-		String tempFileName = dossierDao.getPresentationTemplateFileName(dossier);
+		String tempFileName = dossierDao.getPresentationTemplateFileName(tempFolder);
 		if (tempFileName == null) tempFileName = "";
 		// get list of the configured document
-		List confDoc = dossierDao.getConfiguredDocumentList(dossier);
+		List confDoc = dossierDao.getConfiguredDocumentList(tempFolder);
 		// get the current process definition file name
-		String procDefFileName = dossierDao.getProcessDefinitionFileName(dossier);
+		String procDefFileName = dossierDao.getProcessDefinitionFileName(tempFolder);
 		if (procDefFileName == null) procDefFileName = "";
 		//WorkflowConfiguration workConf = bookDao.getWorkflowConfiguration(pathConfBook);
 		List functionalities;
@@ -361,27 +353,22 @@ public class BookletsManagementModule extends AbstractModule {
 	
 	
 	private void deleteConfiguredDocumentHandler(SourceBean request, SourceBean response) throws Exception {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		String confDocIdent = (String)request.getAttribute("configureddocumentidentifier");
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
 		// delete the configured document
-		dossierDao.deleteConfiguredDocument(dossier, confDocIdent);
+		dossierDao.deleteConfiguredDocument(confDocIdent, tempFolder);
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
 	}
 	
 	
 	
 	private void detailConfiguredDocumentHandler(SourceBean request, SourceBean response) throws Exception {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		String confDocIdent = (String)request.getAttribute("configureddocumentidentifier");
 		// get configured document
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
-		ConfiguredBIDocument confDoc = dossierDao.getConfiguredDocument(dossier, confDocIdent);
+		ConfiguredBIDocument confDoc = dossierDao.getConfiguredDocument(confDocIdent, tempFolder);
 		// get parameter value map
 		Map paramValueMap = confDoc.getParameters();
 		// create parameter name map
@@ -408,26 +395,23 @@ public class BookletsManagementModule extends AbstractModule {
 		response.setAttribute("name", confDoc.getName());
 		response.setAttribute("logicalname", confDoc.getLogicalName());
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletConfiguredDocumentDetail"); 
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
+		//response.setAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolder);
 	}
 	
 	
 	
 	private void saveBookletDetailHandler(SourceBean request, SourceBean response) throws Exception {
-		String objIdStr = (String) request.getAttribute(SpagoBIConstants.OBJECT_ID);
-		Integer objId = new Integer(objIdStr);
-		BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+		String tempFolder = (String) request.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 		response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsLoopbackBookletDetail");
-		response.setAttribute(SpagoBIConstants.OBJECT_ID, objIdStr);
 		IDossierDAO dossierDao = new DossierDAOHibImpl();
-		List docs = dossierDao.getConfiguredDocumentList(dossier);
+		List docs = dossierDao.getConfiguredDocumentList(tempFolder);
 		EMFErrorHandler errorHandler = getErrorHandler();
-		if (dossierDao.getPresentationTemplateFileName(dossier) == null) {
+		if (dossierDao.getPresentationTemplateFileName(tempFolder) == null) {
 			logger.error("Presentation template not loaded");
 			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "104", "component_booklets_messages");
 			errorHandler.addError(error);
 		}
-		if (dossierDao.getProcessDefinitionFileName(dossier) == null) {
+		if (dossierDao.getProcessDefinitionFileName(tempFolder) == null) {
 			logger.error("Process definition file not loaded");
 			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "105", "component_booklets_messages");
 			errorHandler.addError(error);
@@ -437,7 +421,9 @@ public class BookletsManagementModule extends AbstractModule {
 			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "", "106", "component_booklets_messages");
 			errorHandler.addError(error);
 		}
-		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) dossierDao.storeTemplate(dossier);
+		
+		Integer dossierId = dossierDao.getDossierId(tempFolder);
+		if (errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) dossierDao.storeTemplate(dossierId, tempFolder);
 	}
 	
 }

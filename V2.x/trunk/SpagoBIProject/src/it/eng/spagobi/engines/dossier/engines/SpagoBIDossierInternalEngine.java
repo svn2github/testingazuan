@@ -27,18 +27,21 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
-import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 
 	public static final String messageBundle = "component_booklets_messages";
+	
+	static private Logger logger = Logger.getLogger(SpagoBIDossierInternalEngine.class);
 	
 	/**
 	 * Executes the document and populates the response 
@@ -47,28 +50,19 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 	 * @param response The response <code>SourceBean</code> to be populated
 	 */
 	public void execute(RequestContainer requestContainer, BIObject biobj, SourceBean response) throws EMFUserError {
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-    			            "execute", "Start execute method");
-        
-		String pathBiObj = biobj.getPath();
-		String pathBook = pathBiObj + "/template";
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-    			            "execute", "using path " + pathBook);
-		IDossierDAO bookDao = new BookletsCmsDaoImpl();
-		List presVersions = bookDao.getPresentationVersions(pathBook);
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            			"execute", "Version list retrived " + presVersions);
-		try{
+		logger.debug("IN");
+		try {
+			IDossierPresentationsDAO dpDao = DAOFactory.getDossierPresentationDAO();
+			List presVersions = dpDao.getPresentationVersions(biobj.getId());
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
 			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.PATH_BOOKLET_CONF, pathBook);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, biobj.getId().toString());
 		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-					            "execute", "error while setting response attribute " + e);
+			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
 		}
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	            "execute", "End execute method");
 	}
 	
 	/**
@@ -79,10 +73,7 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 	 * @param subObjectInfo An object describing the subobject to be executed
 	 */
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError {
-		SpagoBITracer.debug(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-    			            "executeSubObject", "Start executeSubObject method");
-		SpagoBITracer.warning(BookletsConstants.NAME_MODULE, this.getClass().getName(),
-	                        "executeSubObject", "Method not implemented");
+		logger.error("Method not implemented");
 	}
 
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
@@ -91,8 +82,7 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
 			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);
+			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
@@ -103,8 +93,7 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
 			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-					            "handleDocumentTemplateEdit", "error while setting response attribute " + e);
+			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}

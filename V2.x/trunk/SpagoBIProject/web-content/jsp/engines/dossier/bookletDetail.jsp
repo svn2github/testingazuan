@@ -37,47 +37,42 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.engines.dossier.dao.IDossierDAO"%>
 <%@page import="it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl"%>
-<%@page import="it.eng.spagobi.engines.dossier.utils.BookletServiceUtils"%>
+<%@page import="it.eng.spagobi.engines.dossier.utils.DossierUtilities"%>
 
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE); 
    List confDocList = (List)moduleResponse.getAttribute(BookletsConstants.CONFIGURED_DOCUMENT_LIST);
-   String idBiObjStr = (String)aServiceRequest.getAttribute(SpagoBIConstants.OBJECT_ID);
-   Integer objId = new Integer(idBiObjStr);
+   String tempFolderPath = (String) moduleResponse.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
    String templateOOFileName = (String)moduleResponse.getAttribute(BookletsConstants.OO_TEMPLATE_FILENAME);
    String wfProcDefFileName = (String)moduleResponse.getAttribute(BookletsConstants.WF_PROCESS_DEFINTIION_FILENAME);
-   
-   // load the biobject
-   IDossierDAO dossierDao = new DossierDAOHibImpl();
-   BIObject biobject = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
    
    Iterator iterDoc = confDocList.iterator();
    
    Map backUrlPars = new HashMap();
    backUrlPars.put("PAGE", DetailBIObjectModule.MODULE_PAGE);
    backUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.DETAIL_SELECT);
-   backUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   backUrlPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolderPath);
    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
    Map formDetailUrlPars = new HashMap();
    formDetailUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formDetailUrlPars.put("OPERATION", BookletsConstants.OPERATION_DETAIL_CONFIGURED_DOCUMENT);
-   formDetailUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   formDetailUrlPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolderPath);
    formDetailUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String formDetailUrl = urlBuilder.getUrl(request, formDetailUrlPars);
    
    Map formEraseUrlPars = new HashMap();
    formEraseUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    formEraseUrlPars.put("OPERATION", BookletsConstants.OPERATION_DELETE_CONFIGURED_DOCUMENT);
-   formEraseUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   formEraseUrlPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolderPath);
    formEraseUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String formEraseUrl = urlBuilder.getUrl(request, formEraseUrlPars);
    
    Map saveUrlPars = new HashMap();
    saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_MANAGEMENT_PAGE);
    saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_DETAIL_BOOKLET);
-   saveUrlPars.put(SpagoBIConstants.OBJECT_ID, idBiObjStr);
+   saveUrlPars.put(BookletsConstants.DOSSIER_TEMP_FOLDER, tempFolderPath);
    saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String saveUrl = urlBuilder.getUrl(request, saveUrlPars); 
    
@@ -210,7 +205,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<form action="<%=urlBuilder.getUrl(request, new HashMap())%>" method='POST' id='loadTemplatePresentationForm' 
 				name='loadTemplatePresentationForm' enctype="multipart/form-data">
-			<input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID %>"  value="<%=idBiObjStr%>"/>
+			<input type="hidden" name="<%=BookletsConstants.DOSSIER_TEMP_FOLDER %>"  value="<%=tempFolderPath%>"/>
 			<input type="hidden" name="PAGE" value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
 			<input type="hidden" name="OPERATION" value="<%=BookletsConstants.OPERATION_LOAD_PRESENTATION_TEMPLATE%>"/>
 			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
@@ -233,10 +228,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    </span>
 		<% 	} else { 
 		    out.print("<span style='font-size:11px;font-family:verdana;'>"+templateOOFileName+"</span>");
-				String downOOTemplateUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
+				String downOOTemplateUrl = DossierUtilities.getDossierServiceUrl(request) + "?" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE + "&" +
-										   SpagoBIConstants.OBJECT_ID + "=" + idBiObjStr;				   
+						                   BookletsConstants.DOSSIER_TEMP_FOLDER + "=" + tempFolderPath;				   
 		%>
 			&nbsp;&nbsp;&nbsp;
 			<a style='text-decoration:none;' href='<%=downOOTemplateUrl%>' target="iframeForDownload">
@@ -268,7 +263,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		
    		<form action="<%=urlBuilder.getUrl(request, new HashMap())%>" method='POST' id='loadProcessDefinitionFileForm' 
    				name='loadProcessDefinitionFileForm' enctype="multipart/form-data">
-			<input type="hidden" name="<%=SpagoBIConstants.OBJECT_ID %>"  value="<%=idBiObjStr%>"/>
+			<input type="hidden" name="<%=BookletsConstants.DOSSIER_TEMP_FOLDER%>"  value="<%=tempFolderPath%>"/>
 			<input type="hidden" name="PAGE" value="<%=BookletsConstants.BOOKLET_MANAGEMENT_PAGE%>"/>
 			<input type="hidden" name="OPERATION" value="<%=BookletsConstants.OPERATION_LOAD_PROCESS_DEFINITION_FILE%>"/>
 			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"  value="TRUE"/>
@@ -291,10 +286,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    </span>
     <% 	} else { 
 				out.print("<span style='font-size:11px;font-family:verdana;'>"+wfProcDefFileName+"</span>");
-				String downWorkDefUrl = BookletServiceUtils.getBookletServiceUrl(request) + "?" + 
+				String downWorkDefUrl = DossierUtilities.getDossierServiceUrl(request) + "?" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION + "&" +
-            							SpagoBIConstants.OBJECT_ID + "=" + idBiObjStr;	
+            							BookletsConstants.DOSSIER_TEMP_FOLDER + "=" + tempFolderPath;	
 		%>
 		
 			&nbsp;&nbsp;&nbsp;
@@ -333,7 +328,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<form action="<%=formNewConfDocUrl%>" method='POST' id='newForm' name='newForm'>
-		<input type="hidden" value="<%=idBiObjStr%>" name="<%=SpagoBIConstants.OBJECT_ID%>" />
+		<input type="hidden" value="<%=tempFolderPath%>" name="<%=BookletsConstants.DOSSIER_TEMP_FOLDER%>" />
 		<div style='padding-top:10px;margin-right:5px;' class='portlet-section-header'>	
 				<div style='width:90%;float:left;'>
 						<spagobi:message key="book.addConfDoc" bundle="component_booklets_messages"/>

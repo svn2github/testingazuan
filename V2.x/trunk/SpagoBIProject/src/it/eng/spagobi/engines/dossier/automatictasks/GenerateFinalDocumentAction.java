@@ -23,11 +23,14 @@ package it.eng.spagobi.engines.dossier.automatictasks;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
-import it.eng.spagobi.engines.dossier.dao.BookletsCmsDaoImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
@@ -39,9 +42,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.jbpm.context.exe.ContextInstance;
 import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
+import org.jbpm.graph.exe.ProcessInstance;
 
 import com.sun.star.awt.Point;
 import com.sun.star.awt.Size;
@@ -74,81 +79,75 @@ import com.sun.star.util.XCloseable;
 
 public class GenerateFinalDocumentAction implements ActionHandler {
 
+	static private Logger logger = Logger.getLogger(GenerateFinalDocumentAction.class);
+	
     public void execute(ExecutionContext context) throws Exception {
 	XComponent xComponent = null;
 	XDesktop xdesktop = null;
-	String pathTmpFold = null;
-	IDossierDAO pampDao = null;
-	String pathTmpFoldPamp = null;
-	String pathBookConf = null;
+	IDossierDAO dossierDAO = null;
 	XBridge bridge = null;
+	String tempFolder = null;
 	ContextInstance contextInstance = null;
 	try {
-	    debug("execute", "Start execution");
+	    logger.debug("Start execution");
 	    contextInstance = context.getContextInstance();
-	    debug("execute", "Context Instance retrived " + contextInstance);
-	    pathBookConf = (String) contextInstance.getVariable(BookletsConstants.PATH_BOOKLET_CONF);
-	    debug("execute", "Booklet path variable retrived " + pathBookConf);
-	    ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean pathTmpFoldSB = (SourceBean) config.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
-	    pathTmpFold = (String) pathTmpFoldSB.getAttribute("path");
-	    debug("execute", "Path tmp =" + pathTmpFold);
-	    if (pathTmpFold.startsWith("/") || pathTmpFold.charAt(1) == ':') {
-		pathTmpFoldPamp = pathTmpFold + pathBookConf;
-	    } else {
-		String root = ConfigSingleton.getRootPath();
-		pathTmpFoldPamp = root + "/" + pathTmpFold + pathBookConf;
-	    }
-	    debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp);
-	    File tempDir = new File(pathTmpFoldPamp);
-	    tempDir.mkdirs();
-	    debug("execute", "Path tmp folder pamphlet =" + pathTmpFoldPamp + " created.");
+	    logger.debug("Context Instance retrived " + contextInstance);
+	    ProcessInstance processInstance = context.getProcessInstance();
+	    Long workflowProcessId = new Long(processInstance.getId());
+	    logger.debug("Workflow process id: " + workflowProcessId);
+	    String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+	    logger.debug("Dossier id variable retrived " + dossierIdStr);
+	    Integer dossierId = new Integer(dossierIdStr);
+	    BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+	    logger.debug("Dossier retrived " + dossier);
+	    dossierDAO = DAOFactory.getDossierDAO();
+	    tempFolder = dossierDAO.init(dossier);
+	    logger.debug("Path tmp folder dossier =" + tempFolder + " created.");
 
 	    // gets the template file data
-	    pampDao = new BookletsCmsDaoImpl();
-	    debug("execute", "Booklets CMS Dao instantiated");
-	    String templateFileName = pampDao.getBookletTemplateFileName(pathBookConf);
-	    debug("execute", "Template file name: " + templateFileName);
-	    InputStream contentTempIs = pampDao.getBookletTemplateContent(pathBookConf);
-	    debug("execute", "InputStream opened on booklet template.");
+	    String templateFileName = dossierDAO.getPresentationTemplateFileName(tempFolder);
+	    logger.debug("Template file name: " + templateFileName);
+	    InputStream contentTempIs = dossierDAO.getPresentationTemplateContent(tempFolder);
+	    logger.debug("InputStream opened on booklet template.");
 	    byte[] contentTempBytes = GeneralUtilities.getByteArrayFromInputStream(contentTempIs);
-	    debug("execute", "BookletTemplateContent stored into a byte array.");
+	    logger.debug("BookletTemplateContent stored into a byte array.");
 	    contentTempIs.close();
 	    // write template content into a temp file
-	    File templateFile = new File(tempDir, templateFileName);
+	    File templateFile = new File(tempFolder, templateFileName);
 	    FileOutputStream fosTemplate = new FileOutputStream(templateFile);
 	    fosTemplate.write(contentTempBytes);
 	    fosTemplate.flush();
 	    fosTemplate.close();
-	    debug("execute", "Booklet template content written into a temp file.");
+	    logger.debug("Dossier template content written into a temp file.");
 
 	    // initialize openoffice environment
+	    ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean officeConnectSB = (SourceBean) config.getAttribute("BOOKLETS.OFFICECONNECTION");
-	    debug("execute", "Office connection Sourcebean retrieved: " + officeConnectSB.toXML());
+	    logger.debug("Office connection Sourcebean retrieved: " + officeConnectSB.toXML());
 	    String host = (String) officeConnectSB.getAttribute("host");
 	    String port = (String) officeConnectSB.getAttribute("port");
-	    debug("execute", "Office connection host: " + host);
-	    debug("execute", "Office connection port: " + port);
+	    logger.debug("Office connection host: " + host);
+	    logger.debug("Office connection port: " + port);
 	    XComponentContext xRemoteContext = Bootstrap.createInitialComponentContext(null);
-	    debug("execute", "InitialComponentContext xRemoteContext created: " + xRemoteContext);
+	    logger.debug("InitialComponentContext xRemoteContext created: " + xRemoteContext);
 
 	    Object x = xRemoteContext.getServiceManager().createInstanceWithContext(
 		    "com.sun.star.connection.Connector", xRemoteContext);
 	    XConnector xConnector = (XConnector) UnoRuntime.queryInterface(XConnector.class, x);
-	    debug("execute", "XConnector retrieved: " + xConnector);
+	    logger.debug("XConnector retrieved: " + xConnector);
 	    XConnection connection = xConnector.connect("socket,host=" + host + ",port=" + port);
-	    debug("execute", "XConnection retrieved: " + connection);
+	    logger.debug("XConnection retrieved: " + connection);
 	    x = xRemoteContext.getServiceManager().createInstanceWithContext("com.sun.star.bridge.BridgeFactory",
 		    xRemoteContext);
 	    XBridgeFactory xBridgeFactory = (XBridgeFactory) UnoRuntime.queryInterface(XBridgeFactory.class, x);
-	    debug("execute", "XBridgeFactory retrieved: " + xBridgeFactory);
+	    logger.debug("XBridgeFactory retrieved: " + xBridgeFactory);
 	    // this is the bridge that you will dispose
 	    bridge = xBridgeFactory.createBridge("", "urp", connection, null);
-	    debug("execute", "XBridge retrieved: " + bridge);
+	    logger.debug("XBridge retrieved: " + bridge);
 	    XComponent xComp = (XComponent) UnoRuntime.queryInterface(XComponent.class, bridge);
 	    // get the remote instance
 	    x = bridge.getInstance("StarOffice.ServiceManager");
-	    debug("execute", "StarOffice.ServiceManager instance retrieved: " + x);
+	    logger.debug("StarOffice.ServiceManager instance retrieved: " + x);
 	    // Query the initial object for its main factory interface
 	    XMultiComponentFactory xRemoteServiceManager = (XMultiComponentFactory) UnoRuntime.queryInterface(
 		    XMultiComponentFactory.class, x);
@@ -156,52 +155,52 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    // XMultiComponentFactory xRemoteServiceManager =
 	    // (XMultiComponentFactory)UnoRuntime.queryInterface(XMultiComponentFactory.class,
 	    // initialObject);
-	    debug("execute", "xRemoteServiceManager: " + xRemoteServiceManager);
+	    logger.debug("xRemoteServiceManager: " + xRemoteServiceManager);
 	    XPropertySet xPropertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
 		    xRemoteServiceManager);
-	    debug("execute", "XPropertySet: " + xPropertySet);
+	    logger.debug("XPropertySet: " + xPropertySet);
 	    Object oDefaultContext = xPropertySet.getPropertyValue("DefaultContext");
-	    debug("execute", "DefaultContext: " + oDefaultContext);
+	    logger.debug("DefaultContext: " + oDefaultContext);
 	    xRemoteContext = (XComponentContext) UnoRuntime.queryInterface(XComponentContext.class, oDefaultContext);
-	    debug("execute", "xRemoteContext: " + xRemoteContext);
+	    logger.debug("xRemoteContext: " + xRemoteContext);
 	    Object desktop = xRemoteServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop",
 		    xRemoteContext);
-	    debug("execute", "Desktop object instance created: " + desktop);
+	    logger.debug("Desktop object instance created: " + desktop);
 	    xdesktop = (XDesktop) UnoRuntime.queryInterface(XDesktop.class, desktop);
-	    debug("execute", "XDesktop object: " + xdesktop);
+	    logger.debug("XDesktop object: " + xdesktop);
 
 	    XComponentLoader xComponentLoader = (XComponentLoader) UnoRuntime.queryInterface(XComponentLoader.class,
 		    xdesktop);
 	    // load the template into openoffice
-	    debug("execute", "Path template = " + templateFile.getAbsolutePath());
+	    logger.debug("Path template = " + templateFile.getAbsolutePath());
 	    xComponent = openTemplate(xComponentLoader, "file:///" + templateFile.getAbsolutePath());
-	    debug("execute", "Template opened: " + xComponent);
+	    logger.debug("Template opened: " + xComponent);
 	    XMultiServiceFactory xServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(
 		    XMultiServiceFactory.class, xComponent);
-	    debug("execute", "xServiceFactory: " + xServiceFactory);
+	    logger.debug("xServiceFactory: " + xServiceFactory);
 	    // get draw pages
 	    XDrawPagesSupplier xDrawPageSup = (XDrawPagesSupplier) UnoRuntime.queryInterface(XDrawPagesSupplier.class,
 		    xComponent);
 	    XDrawPages drawPages = xDrawPageSup.getDrawPages();
-	    debug("execute", "Draw pages found: " + drawPages);
+	    logger.debug("Draw pages found: " + drawPages);
 	    int numPages = drawPages.getCount();
-	    debug("execute", "Draw pages number: " + numPages);
+	    logger.debug("Draw pages number: " + numPages);
 	    for (int i = 0; i < numPages; i++) {
-		debug("execute", "Start examining page " + i);
+		logger.debug("Start examining page " + i);
 		// get images corresponding to that part of the template
-		String indexPartTemplate = new Integer(i + 1).toString();
-		IDossierDAO pampdao = new BookletsCmsDaoImpl();
-		Map images = pampdao.getImagesOfTemplatePart(pathBookConf, indexPartTemplate);
-		debug("execute", "Images map retrieved: " + images);
+		int pageNum = i + 1;
+		IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
+		Map images = dptDAO.getImagesOfDossierPart(dossierId, pageNum, workflowProcessId);
+		logger.debug("Images map retrieved: " + images);
 		// get draw page
 		Object pageObj = drawPages.getByIndex(i);
 		XDrawPage xDrawPage = (XDrawPage) UnoRuntime.queryInterface(XDrawPage.class, pageObj);
-		debug("execute", "Draw page: " + xDrawPage);
+		logger.debug("Draw page: " + xDrawPage);
 		// get shapes of the page
 		XShapes xShapes = (XShapes) UnoRuntime.queryInterface(XShapes.class, xDrawPage);
-		debug("execute", "Shapes found: " + xShapes);
+		logger.debug("Shapes found: " + xShapes);
 		int numShapes = xShapes.getCount();
-		debug("execute", "Shapes number: " + numShapes);
+		logger.debug("Shapes number: " + numShapes);
 		// prepare list for shapes to remove and to add
 		List shapetoremove = new ArrayList();
 		List shapetoadd = new ArrayList();
@@ -209,76 +208,76 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		XNameContainer oBitmaps = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class, oBitmapsObj);
 		// check each shape
 		for (int j = 0; j < numShapes; j++) {
-		    debug("execute", "Start examining shape " + j + " of page " + i);
+		    logger.debug("Start examining shape " + j + " of page " + i);
 		    Object shapeObj = xShapes.getByIndex(j);
 		    XShape xshape = (XShape) UnoRuntime.queryInterface(XShape.class, shapeObj);
-		    debug("execute", "xshape: " + xshape);
+		    logger.debug("xshape: " + xshape);
 		    XText xShapeText = (XText) UnoRuntime.queryInterface(XText.class, shapeObj);
-		    debug("execute", "XShapeText retrived " + xShapeText);
+		    logger.debug("XShapeText retrived " + xShapeText);
 		    if (xShapeText == null) {
 			continue;
 		    }
 		    String shapeText = xShapeText.getString();
-		    debug("execute", "shape text retrived " + shapeText);
+		    logger.debug("shape text retrived " + shapeText);
 		    shapeText = shapeText.trim();
 		    // sobstitute the placeholder with the correspondent image
 		    if (shapeText.startsWith("spagobi_placeholder_")) {
 			String nameImg = shapeText.substring(20);
-			debug("execute", "Name of the image corresponding to the placeholder: " + nameImg);
+			logger.debug("Name of the image corresponding to the placeholder: " + nameImg);
 			Size size = xshape.getSize();
 			Point position = xshape.getPosition();
-			debug("execute", "Stored shape size and position on local variables");
+			logger.debug("Stored shape size and position on local variables");
 			shapetoremove.add(xshape);
-			debug("execute", "Shape loaded on shapes to be removed");
+			logger.debug("Shape loaded on shapes to be removed");
 			Object newShapeObj = xServiceFactory.createInstance("com.sun.star.drawing.GraphicObjectShape");
-			debug("execute", "New shape object instantiated: " + newShapeObj);
+			logger.debug("New shape object instantiated: " + newShapeObj);
 			XShape xShapeNew = (XShape) UnoRuntime.queryInterface(XShape.class, newShapeObj);
-			debug("execute", "New XShape instantiated from the new shape object: " + xShapeNew);
+			logger.debug("New XShape instantiated from the new shape object: " + xShapeNew);
 			xShapeNew.setPosition(position);
 			xShapeNew.setSize(size);
-			debug("execute", "Stored size and position set for the new XShape");
+			logger.debug("Stored size and position set for the new XShape");
 			// write the corresponding image into file system
-			String pathTmpImgFolder = pathTmpFoldPamp + "/tmpImgs/";
-			debug("execute", "Path tmp images: " + pathTmpImgFolder);
+			String pathTmpImgFolder = tempFolder + "/tmpImgs/";
+			logger.debug("Path tmp images: " + pathTmpImgFolder);
 			File fileTmpImgFolder = new File(pathTmpImgFolder);
 			fileTmpImgFolder.mkdirs();
-			debug("execute", "Folder tmp images: " + pathTmpImgFolder + " created.");
+			logger.debug("Folder tmp images: " + pathTmpImgFolder + " created.");
 			String pathTmpImg = pathTmpImgFolder + nameImg + ".jpg";
-			debug("execute", "Path tmp image file: " + pathTmpImg);
+			logger.debug("Path tmp image file: " + pathTmpImg);
 			File fileTmpImg = new File(pathTmpImg);
 			FileOutputStream fos = new FileOutputStream(fileTmpImg);
 			byte[] content = (byte[]) images.get(nameImg);
 			if (content == null)
-			    debug("execute", "Image with name \"" + nameImg + "\" was NOT found!!!");
+			    logger.debug("Image with name \"" + nameImg + "\" was NOT found!!!");
 			else
-			    debug("execute", "Image with name \"" + nameImg + "\" was found");
+			    logger.debug("Image with name \"" + nameImg + "\" was found");
 			fos.write(content);
 			fos.flush();
 			fos.close();
-			debug("execute", "Tmp image file written");
+			logger.debug("Tmp image file written");
 			// load the image into document
 			XPropertySet xSPS = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, xShapeNew);
 			try {
 			    String fileoopath = transformPathForOpenOffice(fileTmpImg);
-			    debug("execute", "Path image loaded into openoffice = " + fileoopath);
+			    logger.debug("Path image loaded into openoffice = " + fileoopath);
 			    String externalGraphicUrl = "file:///" + fileoopath;
 			    if (!oBitmaps.hasByName(nameImg)) {
-				debug("execute", "Bitmap table does not contain an element with name '" + nameImg
+				logger.debug("Bitmap table does not contain an element with name '" + nameImg
 					+ "'.");
 				oBitmaps.insertByName(nameImg, externalGraphicUrl);
 			    } else {
-				debug("execute", "Bitmap table already contains an element with name '" + nameImg
+				logger.debug("Bitmap table already contains an element with name '" + nameImg
 					+ "'.");
 			    }
 			    Object internalGraphicUrl = oBitmaps.getByName(nameImg);
-			    debug("execute", "Retrieved internal url for image '" + nameImg + "': "
+			    logger.debug("Retrieved internal url for image '" + nameImg + "': "
 				    + internalGraphicUrl);
 			    xSPS.setPropertyValue("GraphicURL", internalGraphicUrl);
 			} catch (Exception e) {
-			    major("execute", "error while adding graphic shape", e);
+				logger.error("error while adding graphic shape", e);
 			}
 			shapetoadd.add(xShapeNew);
-			debug("execute", "New shape loaded on shapes to be added");
+			logger.debug("New shape loaded on shapes to be added");
 		    }
 		}
 		// add and remove shape
@@ -287,55 +286,54 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		    XShape shape = (XShape) iter.next();
 		    xShapes.remove(shape);
 		}
-		debug("execute", "Removed shapes to be removed from document");
+		logger.debug("Removed shapes to be removed from document");
 		iter = shapetoadd.iterator();
 		while (iter.hasNext()) {
 		    XShape shape = (XShape) iter.next();
 		    xShapes.add(shape);
 		}
-		debug("execute", "Added shapes to be added to the document");
+		logger.debug("Added shapes to be added to the document");
 		// add notes
 		XPresentationPage xPresPage = (XPresentationPage) UnoRuntime.queryInterface(XPresentationPage.class,
 			xDrawPage);
 		XDrawPage notesPage = xPresPage.getNotesPage();
-		debug("execute", "Notes page retrieved: " + notesPage);
+		logger.debug("Notes page retrieved: " + notesPage);
 		XShapes xShapesNotes = (XShapes) UnoRuntime.queryInterface(XShapes.class, notesPage);
-		debug("execute", "Shape notes retrieved: " + xShapesNotes);
+		logger.debug("Shape notes retrieved: " + xShapesNotes);
 		int numNoteShapes = xShapesNotes.getCount();
-		debug("execute", "Number of shape notes: " + numNoteShapes);
+		logger.debug("Number of shape notes: " + numNoteShapes);
 		for (int indShap = 0; indShap < numNoteShapes; indShap++) {
-		    debug("execute", "Start examining shape note number " + indShap + " of page " + i);
+		    logger.debug("Start examining shape note number " + indShap + " of page " + i);
 		    Object shapeNoteObj = xShapesNotes.getByIndex(indShap);
 		    XShape xshapeNote = (XShape) UnoRuntime.queryInterface(XShape.class, shapeNoteObj);
-		    debug("execute", "xshapeNote: " + xshapeNote);
+		    logger.debug("xshapeNote: " + xshapeNote);
 		    String type = xshapeNote.getShapeType();
-		    debug("execute", "Shape type: " + type);
+		    logger.debug("Shape type: " + type);
 		    if (type.endsWith("NotesShape")) {
 			XText textNote = (XText) UnoRuntime.queryInterface(XText.class, shapeNoteObj);
-			debug("execute", "XText: " + textNote);
-			byte[] notesByte = pampdao.getNotesTemplatePart(pathBookConf, indexPartTemplate);
+			logger.debug("XText: " + textNote);
+			byte[] notesByte = dptDAO.getNotesOfDossierPart(dossierId, pageNum, workflowProcessId);
 			if (notesByte == null)
-			    debug("execute", "Notes bytes array is null!!!!");
+			    logger.debug("Notes bytes array is null!!!!");
 			else
-			    debug("execute", "Notes bytes array retrieved");
+			    logger.debug("Notes bytes array retrieved");
 			String notes = new String(notesByte);
 			textNote.setString(notes);
-			debug("execute", "Notes applied to the XText");
+			logger.debug("Notes applied to the XText");
 		    }
 		}
 	    }
 
 	    // save final document
-	    String namePamp = pampDao.getBookletTemplateFileName(pathBookConf);
-	    String pathFinalDoc = pathTmpFoldPamp + "/" + namePamp + ".ppt";
-	    debug("execute", "Path final document = " + pathFinalDoc);
+	    String pathFinalDoc = tempFolder + "/" + dossier.getName() + ".ppt";
+	    logger.debug("Path final document = " + pathFinalDoc);
 	    File fileFinalDoc = new File(pathFinalDoc);
 	    String fileoopath = transformPathForOpenOffice(fileFinalDoc);
-	    debug("execute", "Open Office path: " + fileoopath);
+	    logger.debug("Open Office path: " + fileoopath);
 	    if (fileoopath.equals(""))
 		return;
 	    XStorable xStorable = (XStorable) UnoRuntime.queryInterface(XStorable.class, xComponent);
-	    debug("execute", "XStorable: " + xStorable);
+	    logger.debug("XStorable: " + xStorable);
 	    PropertyValue[] documentProperties = new PropertyValue[2];
 	    documentProperties[0] = new PropertyValue();
 	    documentProperties[0].Name = "Overwrite";
@@ -344,20 +342,27 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    documentProperties[1].Name = "FilterName";
 	    documentProperties[1].Value = "MS PowerPoint 97";
 	    try {
-		debug("execute", "Try to store document with path = " + "file:///" + fileoopath);
-		xStorable.storeAsURL("file:///" + fileoopath, documentProperties);
-		debug("execute", "Document stored with path = " + "file:///" + fileoopath);
+	    	logger.debug("Try to store document with path = " + "file:///" + fileoopath);
+	    	xStorable.storeAsURL("file:///" + fileoopath, documentProperties);
+	    	logger.debug("Document stored with path = " + "file:///" + fileoopath);
 	    } catch (IOException e) {
-		major("execute", "Error while storing the final document", e);
+	    	logger.error("Error while storing the final document", e);
 	    }
 	    FileInputStream fis = new FileInputStream(pathFinalDoc);
 	    byte[] docCont = GeneralUtilities.getByteArrayFromInputStream(fis);
-	    pampDao.storeCurrentPresentationContent(pathBookConf, docCont);
-	    debug("execute", "Document stored in CMS");
+	    IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+	    DossierPresentation dossierPresentation = new DossierPresentation();
+	    dossierPresentation.setApproved(null);
+	    dossierPresentation.setBiobjectId(dossier.getId());
+	    dossierPresentation.setContent(docCont);
+	    dossierPresentation.setName(dossier.getName());
+	    dossierPresentation.setWorkflowProcessId(workflowProcessId);
+	    dpDAO.insertPresentation(dossierPresentation);
+	    logger.debug("Document stored.");
 	    fis.close();
 
 	} catch (Exception e) {
-	    major("execute", "Error during the generation of the final document", e);
+		logger.error("Error during the generation of the final document", e);
 	    // AUDIT UPDATE
 	    if (contextInstance != null) {
 		Integer auditId = (Integer) contextInstance.getVariable(AuditManager.AUDIT_ID);
@@ -371,21 +376,21 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 
 	    // close open document and environment
 	    if (xComponent != null) {
-		XModel xModel = (XModel) UnoRuntime.queryInterface(XModel.class, xComponent);
-		XCloseable xCloseable = (XCloseable) UnoRuntime.queryInterface(XCloseable.class, xModel);
-		try {
-		    xCloseable.close(true);
-		} catch (Exception e) {
-		    major("execute", "Cannot close openoffice template document", e);
-		}
+			XModel xModel = (XModel) UnoRuntime.queryInterface(XModel.class, xComponent);
+			XCloseable xCloseable = (XCloseable) UnoRuntime.queryInterface(XCloseable.class, xModel);
+			try {
+			    xCloseable.close(true);
+			} catch (Exception e) {
+				logger.error("Cannot close openoffice template document", e);
+			}
 	    }
 
 	}
 
-	// delete all file inside tht patmphlet temp directory
-	File fileTmpFold = new File(pathTmpFold);
+	// delete all file inside temp directory
+	File fileTmpFold = new File(tempFolder);
 	GeneralUtilities.deleteContentDir(fileTmpFold);
-	debug("execute", "Deleted all files inside folder " + fileTmpFold);
+	logger.debug("Deleted all files inside folder " + fileTmpFold);
 
     }
 
@@ -402,7 +407,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    String loadUrl = "private:factory/simpress";
 	    xComponent = xComponentLoader.loadComponentFromURL(pathTempFile, "_blank", 0, pPropValues);
 	} catch (Exception e) {
-	    major("openTemplate", "Cannot open template document", e);
+		logger.error("Cannot open template document", e);
 	}
 	return xComponent;
     }
@@ -419,19 +424,9 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 		path = prefix.toLowerCase() + afterPrefix;
 	    }
 	} catch (Exception e) {
-	    major("transformPathForOpenOffice", "Error while transforming file path", e);
+		logger.error("Error while transforming file path", e);
 	}
 	return path;
-    }
-
-    private static void debug(String method, String message) {
-	SpagoBITracer
-		.debug(BookletsConstants.NAME_MODULE, GenerateFinalDocumentAction.class.getName(), method, message);
-    }
-
-    private static void major(String method, String message, Exception e) {
-	SpagoBITracer.major(BookletsConstants.NAME_MODULE, GenerateFinalDocumentAction.class.getName(), method,
-		message, e);
     }
 
 }

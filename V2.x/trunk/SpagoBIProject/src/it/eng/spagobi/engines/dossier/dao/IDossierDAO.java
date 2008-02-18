@@ -19,12 +19,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-/*
- * Created on 13-mag-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package it.eng.spagobi.engines.dossier.dao;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -35,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines all the methods needed for access contents of booklets into CMS Repository 
+ * Defines all the methods needed for access contents of dossier
  */
 public interface IDossierDAO {
 
@@ -46,57 +40,34 @@ public interface IDossierDAO {
 	 */
 	//public String createNewConfigurationNode(String pathBiObject);// via
 	//**
-	public void unzipTemplate(BIObject dossier);
+	public String init(BIObject dossier);
 	
-	public void storeTemplate(BIObject dossier);
+	public void storeTemplate(Integer dossierId, String pathTempFolder);
 	
-	public List getConfiguredDocumentList(BIObject dossier);
+	public Integer getDossierId(String pathTempFolder);
 	
-	public void addConfiguredDocument(BIObject dossier, ConfiguredBIDocument doc);
+	public List getConfiguredDocumentList(String pathTempFolder);
 	
-	public void deleteConfiguredDocument(BIObject dossier, String docLogicalName);
+	public void addConfiguredDocument(ConfiguredBIDocument doc, String pathTempFolder);
 	
-	public ConfiguredBIDocument getConfiguredDocument(BIObject dossier, String docLogicalName);
+	public void deleteConfiguredDocument(String docLogicalName, String pathTempFolder);
 	
-	public void storePresentationTemplateFile(BIObject dossier, String templateFileName, byte[] templateContent);
+	public ConfiguredBIDocument getConfiguredDocument(String docLogicalName, String pathTempFolder);
 	
-	public String getPresentationTemplateFileName(BIObject dossier);
+	public void storePresentationTemplateFile(String templateFileName, byte[] templateContent, String pathTempFolder);
 	
-	public InputStream getPresentationTemplateContent(BIObject dossier);
+	public String getPresentationTemplateFileName(String pathTempFolder);
 	
-	public void storeProcessDefinitionFile(BIObject dossier, String pdFileName, byte[] pdFileContent);
+	public InputStream getPresentationTemplateContent(String pathTempFolder);
 	
-	public String getProcessDefinitionFileName(BIObject dossier); 
+	public void storeProcessDefinitionFile(String pdFileName, byte[] pdFileContent, String pathTempFolder);
 	
+	public String getProcessDefinitionFileName(String pathTempFolder); 
 	
-	public InputStream getProcessDefinitionContent(BIObject dossier);
+	public InputStream getProcessDefinitionContent(String pathTempFolder);
 	//**
 	
 	//public void createStructureForTemplate(String pathBooklet, int numTempParts);// via
-	
-	public void storeTemplateImage(String pathBooklet, byte[] image, String docLogicalName, int indexTempPart);
-	
-	public Map getImagesOfTemplatePart(String pathBooklet, String indPart);
-	
-	public byte[] getNotesTemplatePart(String pathBooklet, String indPart);
-	
-	public void storeNote(String pathBooklet, String indPart, byte[] noteContent);
-	
-	public void storeCurrentPresentationContent(String pathBooklet, byte[] docContent);
-	
-	public void storeCurrentPresentationContent(String pathBooklet, InputStream docContentIS);
-	
-	public byte[] getCurrentPresentationContent(String pathBooklet);
-	
-	public void versionPresentation(String pathBooklet, byte[] presContent, boolean approved);
-	
-	public List getPresentationVersions(String pathBooklet);
-	
-	public void deletePresentationVersion(String pathBooklet, String verName);
-	
-	public byte[] getPresentationVersionContent(String pathBooklet, String verName);
-	
-	public String getDossierName(String pathBooklet);
 	
 //	public String getBiobjectPath(String pathBooklet);
 

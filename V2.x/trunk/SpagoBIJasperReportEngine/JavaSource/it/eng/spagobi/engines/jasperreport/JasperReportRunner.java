@@ -558,7 +558,7 @@ public class JasperReportRunner {
 	
 	private File[] compileSubreports(Map params, File destDir,ContentServiceProxy contentProxy) throws JRException, Exception {
 	    	logger.debug("IN");
- 		String subrptnumStr = (String)params.get("srptnum");
+ 		String subrptnumStr = (params.get("srptnum")==null)?"0":(String)params.get("srptnum");
 		int subrptnum = Integer.parseInt(subrptnumStr);
 		String[] subreports = new String[subrptnum];
 		String[] subreportsType = new String[subrptnum];

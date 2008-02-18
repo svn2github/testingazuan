@@ -14,6 +14,6 @@
 	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
 	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	
-	
+	<runtimeRepository_root_dir>RuntimeRepository</runtimeRepository_root_dir>
 
 </ENGINE-CONFIGURATION>

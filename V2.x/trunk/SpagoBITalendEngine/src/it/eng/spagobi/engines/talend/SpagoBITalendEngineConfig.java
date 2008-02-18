@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.talend;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.talend.services.JobRunService;
+import it.eng.spagobi.services.common.EnginConf;
 
 import java.io.File;
 import java.util.Properties;
@@ -34,9 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class SpagoBITalendEngineConfig {
 	
-	Properties rrProps = new Properties();
-	Properties perlProps = new Properties();
-	Properties javaProps = new Properties();
+
 	
 	File engineRootDir = new File("");
 	
@@ -44,26 +44,10 @@ public class SpagoBITalendEngineConfig {
 	
 	
 	SpagoBITalendEngineConfig() {
-		try {
-			rrProps.load(getClass().getResourceAsStream("/talend.properties"));
-    	} catch(Exception e){
-    		logger.warn("Error while reading talend.properties file", e);
-    	}
-		
-		try {
-    		perlProps.load(getClass().getResourceAsStream("/talend.perl.properties"));
-    	} catch(Exception e){
-    		logger.warn("Error while reading talend.perl.properties file", e);
-    	}
-    	
-    	try {
-    		javaProps.load(getClass().getResourceAsStream("/talend.java.properties"));
-    	} catch(Exception e){
-    		logger.warn("Error while reading talend.java.properties file", e);
-    	}
+
 	}
 
-	// rr properties
+
 	
 	
 	public static boolean isAbsolutePath(String path) {
@@ -73,8 +57,10 @@ public class SpagoBITalendEngineConfig {
 	
 	
 	public File getRuntimeRepositoryRootDir() {
+	    
+	        SourceBean config = EnginConf.getInstance().getConfig();
+         	String dirName = (String)config.getAttribute("VIRTUALIZER.runtimeRepository_root_dir");
 		File dir = null;
-		String dirName = rrProps.getProperty("runtimeRepository.rootDir");
 		if( !isAbsolutePath(dirName) )  {
 			dirName = engineRootDir.toString() + System.getProperty("file.separator") + dirName;
 		}		

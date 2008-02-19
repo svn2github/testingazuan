@@ -65,16 +65,16 @@ from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DASH'
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
--- VALUES (0, 'Booklet Internal Engine', 'Booklet Internal Engine', '', '', '', '', '', 'BookletInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.booklets.engines.Spa BIBookletInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='BOOKLET') go) 
+-- VALUES (0, 'Dossier Internal Engine', 'Dossier Internal Engine', '', '', '', '', '', 'DossierInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spagobi.engines.dossier.engines.SpagoBIDossierInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DOSSIER') go) 
 INSERT SBI_ENGINES
 (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR,
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
-SELECT 0, 'Booklet Internal Engine', 'Booklet Internal Engine', '', '',
-'', '', '', 'BookletInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.booklets.engines.Spa BIBookletInternalEngine', S2.VALUE_ID
+SELECT 0, 'Dossier Internal Engine', 'Dossier Internal Engine', '', '',
+'', '', '', 'DossierInternalEng',
+S1.VALUE_ID, 'it.eng.spagobi.engines.dossier.engines.SpagoBIDossierInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
-and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='BOOKLET'
+and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DOSSIER'
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) VALUES 
 --(0, 'Office Document Internal Engine', 'Office Document Internal Engine', '', '', '', '', '', 'OfficeInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.engines.officeDocuments.Spa BIOfficeDocumentInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='OFFICE_DOC') go) 
 INSERT SBI_ENGINES

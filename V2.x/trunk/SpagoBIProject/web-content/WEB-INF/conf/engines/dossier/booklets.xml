@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <BOOKLETS>
-   <PATH_TMP_FOLDER path="/temp" />
+   <PATH_TMP_FOLDER path="${java.io.tmpdir}/dossier-temp" />
    <OFFICECONNECTION host="localhost" port="9000" />
    <BOOKLET_SERVICE name="BookletService" />
    <!-- the compatible document engine driver must contain 

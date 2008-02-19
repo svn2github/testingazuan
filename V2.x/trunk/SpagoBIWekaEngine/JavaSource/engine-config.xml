@@ -15,6 +15,7 @@
 	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	
 	
+	
 	<!-- ====================================================================================== -->
 	<!--  General settings 																		--> 
 	<!-- ====================================================================================== -->
@@ -26,7 +27,17 @@
 		another letter or symbol it will be considered relative to the folder of the jasper report application 
 	-->
 	<!-- ====================================================================================== -->
+	
+	
 	<GENERALSETTINGS tmpdir="tmpdir"/>
+	<clusterNum>35</clusterNum>
+	<clusterer>weka.clusterers.SimpleKMeans</clusterer>
+	<keys>customer_id,version</keys>
+	
+	<writeMode>INSERT</writeMode>
+	<versioning>true</versioning>
+	<versionColumnName>version</versionColumnName>
+	<version>Test2_SimpleKMeans_35</version>
 
 
 </ENGINE-CONFIGURATION>

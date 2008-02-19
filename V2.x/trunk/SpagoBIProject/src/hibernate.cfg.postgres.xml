@@ -46,5 +46,10 @@
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoMaps.hbm.xml" />
         
+        <!-- dossier -->
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingpostgres/SbiDossierBinaryContentsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingpostgres/SbiDossierPartsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingpostgres/SbiDossierPresentations.hbm.xml" />
+        
     </session-factory>
 </hibernate-configuration>

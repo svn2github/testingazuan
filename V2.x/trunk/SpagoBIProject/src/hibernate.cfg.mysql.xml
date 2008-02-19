@@ -52,5 +52,10 @@
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingmysql/SbiGeoFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingmysql/SbiGeoMaps.hbm.xml" />
         
+        <!-- dossier -->
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingmysql/SbiDossierBinaryContentsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingmysql/SbiDossierPartsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingmysql/SbiDossierPresentations.hbm.xml" />
+        
     </session-factory>
 </hibernate-configuration>

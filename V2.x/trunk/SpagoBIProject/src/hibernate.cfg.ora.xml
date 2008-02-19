@@ -45,6 +45,11 @@
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMapFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingora/SbiGeoMaps.hbm.xml" />
-        
+
+        <!-- dossier -->
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingora/SbiDossierBinaryContentsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingora/SbiDossierPartsTemp.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingora/SbiDossierPresentations.hbm.xml" />
+
     </session-factory>
 </hibernate-configuration>

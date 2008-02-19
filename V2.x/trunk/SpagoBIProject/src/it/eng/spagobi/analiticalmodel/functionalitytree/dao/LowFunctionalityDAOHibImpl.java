@@ -24,6 +24,7 @@ package it.eng.spagobi.analiticalmodel.functionalitytree.dao;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -744,23 +745,35 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			/* ********* start luca changes *************** */
 			//Query hibQuery = aSession.createQuery(" from SbiFunctions s order by s.parentFunct.functId, s.prog");
 			String username = null;
+			IEngUserProfile profile=null;
 			try {
 				RequestContainer reqCont = RequestContainer.getRequestContainer();
 				if(reqCont!=null){
 					SessionContainer sessCont = reqCont.getSessionContainer();
 					SessionContainer permCont = sessCont.getPermanentContainer();
-					IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+					profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 					username = (String)profile.getUserUniqueIdentifier();
 				}
 			} catch (Exception e) {
 				logger.error("Error while recovering user profile", e);
 			}
+			// if user has admin functionality "ViewMyFolderAdmin" he can view all Low_func and all user func
+			// else he can view only his personal userFunc
+			
 			Query hibQuery = null;
-			if(username==null) {
-				hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' order by s.parentFunct.functId, s.prog");
-			} else {
-				hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"%' order by s.parentFunct.functId, s.prog");
+			try {
+				if(profile!=null && profile.isAbleToExecuteAction("ViewMyFolderAdmin")){
+					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.functTypeCd = 'USER_FUNCT' order by s.parentFunct.functId, s.prog");
+								}
+				else if(username==null) {
+					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' order by s.parentFunct.functId, s.prog");
+				} else {
+					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"' order by s.parentFunct.functId, s.prog");
+				}
+			} catch (EMFInternalError e) {
+				e.printStackTrace();
 			}
+			
 			/* ********* end luca changes ***************** */
 			
 			List hibList = hibQuery.list();

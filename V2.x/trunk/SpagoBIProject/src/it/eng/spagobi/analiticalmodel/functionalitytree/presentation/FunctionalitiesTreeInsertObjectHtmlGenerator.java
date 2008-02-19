@@ -61,6 +61,8 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	int progrJSTree = 0;
 	private IEngUserProfile profile = null;
 	private int dTreeRootId = -100;
+	private int dMyFolderRootId=-50;
+	private boolean privateFolderCreated=false;
 	protected String requestIdentity = null;
 
 	/**
@@ -155,10 +157,13 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		/* ********* start luca changes *************** */
-	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
-	   		if(isUserFunct) {
+	   		
+	   		
+	   		//boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		boolean isUserFunct =(folder.getCodType().equalsIgnoreCase(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE));
+	   	/*	if(isUserFunct) {
 	   			continue;
-	   		}
+	   		}*/
 	   		/* ********* end luca changes ***************** */
 	   		if (initialPath != null) {
 	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, obj, false, true);
@@ -188,6 +193,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		if (isInitialPath) parentId = new Integer (dTreeRootId);
 		else parentId = folder.getParentId();
 
+		if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)){
 		if (isRoot) {
 			htmlStream.append("	treeFunctIns.add(" + id + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
@@ -214,7 +220,61 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 				}
 			} 
 		}
-	}
+		}
+		if(codeType.equalsIgnoreCase(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE)){
+			if(!privateFolderCreated)	{
+				privateFolderCreated=true;
+				htmlStream.append("	treeFunctIns.add(" + dMyFolderRootId + ", " + dTreeRootId + ",'" + "Personal Folders" + "', '', '', '', '', '', 'true');\n");
+							}
+					String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/saveIntoPersonalFolder22.png");
+					String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/saveIntoPersonalFolder22.png");
+					try{
+						if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)|| ObjectsAccessVerifier.canDev(id, profile)){
+							boolean checked = false;
+							if (obj != null) {
+								List funcs = obj.getFunctionalities();
+								if (funcs.contains(id)) checked = true;
+							}
+							htmlStream.append("	treeFunctIns.add(" + id + ", " + dMyFolderRootId  + ",'" + name + 
+								          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
+								          "', '', '', '" + ObjectsTreeConstants.FUNCT_ID + "', '" + id + "'," + checked + ");\n");
+						} else if (ObjectsAccessVerifier.canExec(id, profile)) {
+							htmlStream.append("	treeFunctIns.add(" + id + ", " + parentId + ",'" + name + 
+							          "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + 
+							          "', '', '', '', '',false);\n");
+						}
+					}catch (Exception ex){
+						logger.error("Error in adding items " + ex.getMessage());
+					}
+				} 
+			
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
 
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub

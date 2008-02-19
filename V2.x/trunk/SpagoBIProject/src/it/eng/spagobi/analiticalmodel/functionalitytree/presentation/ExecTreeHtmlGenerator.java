@@ -297,7 +297,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				Integer idObj = obj.getId();
 				String stateObj = obj.getStateCode();
 				Integer visibleObj = obj.getVisible();
-				if( !stateObj.equalsIgnoreCase("REL") || visibleObj.intValue() != 0) {
+				if( !stateObj.equalsIgnoreCase("REL") || visibleObj.intValue() != 1) {
 					continue;
 				}
 				//insert the correct image for each BI Object type
@@ -314,7 +314,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 				//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
-				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj)+"\\', \\'\\', \\'\\')' );\n");
+				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\')' );\n");
 			}
 		} 
 		/* ********* end luca changes ***************** */
@@ -368,11 +368,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return null;
 	}
 	
-	private String createEraseDocumentLink(Integer iddoc) {
+	private String createEraseDocumentLink(Integer iddoc,Integer idFunct) {
 		HashMap execUrlParMap = new HashMap();
 		execUrlParMap.put(ObjectsTreeConstants.PAGE, "MYFOLDERMANAGEMENTPAGE");
 		execUrlParMap.put("TASK", "ERASE_DOCUMENT");
 		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, iddoc.toString());
+		execUrlParMap.put(ObjectsTreeConstants.FUNCT_ID, idFunct.toString());
 		String execUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
 		return execUrl;
 	}

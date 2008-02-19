@@ -74,7 +74,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    publishUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
    String publishUrl = urlBuilder.getUrl(request, publishUrlPars);
    
-   String downloadVersionUrl = DossierUtilities.getDossierServiceUrl(request) + "?" +
+   String downloadVersionUrl = DossierUtilities.getDossierServiceUrl(request) + "&" +
    							   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
    							   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
 		                       BookletsConstants.DOSSIER_ID+"="+dossierIdStr;

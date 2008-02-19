@@ -264,7 +264,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			presVersions = dpDAO.getPresentationVersions(dossierId);
 			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
 			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierId);
+			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
 		} catch (Exception e) {
 			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);

@@ -228,7 +228,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    </span>
 		<% 	} else { 
 		    out.print("<span style='font-size:11px;font-family:verdana;'>"+templateOOFileName+"</span>");
-				String downOOTemplateUrl = DossierUtilities.getDossierServiceUrl(request) + "?" + 
+				String downOOTemplateUrl = DossierUtilities.getDossierServiceUrl(request) + "&" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
 						                   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE + "&" +
 						                   BookletsConstants.DOSSIER_TEMP_FOLDER + "=" + tempFolderPath;				   
@@ -286,7 +286,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    </span>
     <% 	} else { 
 				out.print("<span style='font-size:11px;font-family:verdana;'>"+wfProcDefFileName+"</span>");
-				String downWorkDefUrl = DossierUtilities.getDossierServiceUrl(request) + "?" + 
+				String downWorkDefUrl = DossierUtilities.getDossierServiceUrl(request) + "&" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
             							BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION + "&" +
             							BookletsConstants.DOSSIER_TEMP_FOLDER + "=" + tempFolderPath;	

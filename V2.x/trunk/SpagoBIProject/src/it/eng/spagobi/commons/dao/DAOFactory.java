@@ -54,6 +54,7 @@ import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
+import it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO;
 
 /**
  * Contains all the data access object for all the BO objects defined into
@@ -268,6 +269,10 @@ public class DAOFactory {
 	 */
 	public static IUserFunctionalityDAO getUserFunctionalityDAO() throws EMFUserError {
 		return (IUserFunctionalityDAO)createDAOInstance("UserFunctionalityDAO");
+	}	
+	
+	public static IDistributionListDAO getDistributionListDAO() throws EMFUserError {
+		return (IDistributionListDAO)createDAOInstance("DistributionListDAO");
 	}
 	
 	public static IDossierPresentationsDAO getDossierPresentationDAO() throws EMFUserError{

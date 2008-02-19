@@ -31,10 +31,8 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
-import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -198,11 +196,5 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			}
 		}		
 	}
-
-
-
-	
-
-
 
 }

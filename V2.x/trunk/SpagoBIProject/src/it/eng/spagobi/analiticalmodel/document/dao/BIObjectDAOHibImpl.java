@@ -462,8 +462,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SbiDomains hibObjectType = (SbiDomains) aSession.load(SbiDomains.class, obj.getBiObjectTypeID());
 			hibBIObject.setObjectType(hibObjectType);
 			hibBIObject.setObjectTypeCode(obj.getBiObjectTypeCode());
-			SbiDataSource dSource=(SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
-			hibBIObject.setDataSource(dSource);
+			if (obj.getDataSourceId() != null) {
+				SbiDataSource dSource=(SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
+				hibBIObject.setDataSource(dSource);
+			}
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();

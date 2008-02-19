@@ -47,6 +47,9 @@ import it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
@@ -265,6 +268,17 @@ public class DAOFactory {
 	 */
 	public static IUserFunctionalityDAO getUserFunctionalityDAO() throws EMFUserError {
 		return (IUserFunctionalityDAO)createDAOInstance("UserFunctionalityDAO");
+	}
+	
+	public static IDossierPresentationsDAO getDossierPresentationDAO() throws EMFUserError{
+		return (IDossierPresentationsDAO)createDAOInstance("DossierPresentationDAO");
 	}	
-		
+	
+	public static IDossierDAO getDossierDAO() throws EMFUserError{
+		return (IDossierDAO)createDAOInstance("DossierDAO");
+	}
+	
+	public static IDossierPartsTempDAO getDossierPartsTempDAO() throws EMFUserError{
+		return (IDossierPartsTempDAO)createDAOInstance("DossierPartsTempDAO");
+	}
 }

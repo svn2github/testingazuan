@@ -58,6 +58,7 @@ import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -68,12 +69,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 /**
  * Tests the query and produces the list as output. 
  */
 
 public class LovLookupAjaxModule extends AbstractBasicListModule {
 	
+    static private Logger logger = Logger.getLogger(LovLookupAjaxModule.class);
 	/**
 	 * Class Constructor
 	 */
@@ -82,10 +86,14 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 	} 
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+	    logger.debug("IN");
 		ListIFace list = null;
 		// get role / par id / par field name name
 		String roleName = (String)request.getAttribute("roleName");
 		String parIdStr = (String)request.getAttribute("parameterId");
+		logger.debug("roleName="+roleName);
+		logger.debug("parameterId="+parIdStr);
+		
 		Integer parId = new Integer(parIdStr);
 		// check if the parameter use is manual input
 		IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
@@ -99,14 +107,17 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 		}
 		// fill response
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "LovLookupAjax");
+		logger.debug("OUT");
 		return list;
 	}
 
 	
 	private ListIFace loadSpagoList(SourceBean request, SourceBean response, Integer parId, String roleName) throws Exception {
+	        logger.debug("IN");
 		RequestContainer requestContainer = getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		String parameterFieldName = (String)request.getAttribute("parameterFieldName");
+		logger.debug("parameterFieldName="+parameterFieldName);
 		// define the spago paginator and list object
 		PaginatorIFace paginator = new GenericPaginator();
 		ListIFace list = new GenericList();
@@ -286,44 +297,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 		// fill response
 		response.setAttribute(SpagoBIConstants.PARAMETER_FIELD_NAME, parameterFieldName);
 		response.setAttribute(SpagoBIConstants.VALUE_COLUMN_NAME, valColName);
-		
+		logger.debug("OUT");	
 		return list;
 	}
 	
-	
-	/**
-	 * Executes a select statement.
-	 * 
-	 * @param requestContainer The request container object
-	 * @param responseContainer The response container object
-	 * @param pool The pool definition string
-	 * @param statement	The statement definition string
-	 * @return A generic object containing the Execution results
-	 * @throws EMFInternalError 
-	 * @deprecated
-	 */
-	/*
-	 public static Object executeSelect(RequestContainer requestContainer,
-			ResponseContainer responseContainer, String pool, String statement) throws EMFInternalError {
-		Object result = null;
-		DataConnectionManager dataConnectionManager = null;
-		DataConnection dataConnection = null;
-		SQLCommand sqlCommand = null;
-		DataResult dataResult = null;
-		try {
-			dataConnectionManager = DataConnectionManager.getInstance();
-			dataConnection = dataConnectionManager.getConnection(pool);
-			sqlCommand = dataConnection.createSelectCommand(statement);
-			dataResult = sqlCommand.execute();
-			ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
-					.getDataObject();
-			result = scrollableDataResult.getSourceBean();
-		} finally {
-			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-		}
-		return result;
-	}
-	 */
+
 	 /**
 		 * Executes a select statement.
 		 * 

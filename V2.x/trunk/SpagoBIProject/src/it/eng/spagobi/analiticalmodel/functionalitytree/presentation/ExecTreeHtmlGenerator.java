@@ -121,8 +121,13 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 	
+	/**
+	 * Function that builds the tree: It should build more common folders and one personal folder (user's one)
+	 */
+	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
+		logger.debug("IN");
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -184,8 +189,9 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
-	   		/* ********* start luca changes *************** */
 	   		boolean isRoot = false;
+	   		
+	   		//only user personal folder
 	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
 	   		if(!isUserFunct) {
 	   			if (initialPath != null) {
@@ -197,7 +203,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		   		}
 	   		}
 	   		addItemForJSTree(htmlStream, folder, isRoot, isUserFunct);
-	   		/* ********* end luca changes ***************** */
 	   	}
     	htmlStream.append("				document.getElementById('treeExecObjTd" + requestIdentity + "').innerHTML = " + treeName + ";\n");
     	makeJSFunctionForMenu(htmlStream);	
@@ -230,11 +235,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			htmlStream.append("	document.getElementById('viewOnlyTestDocument" + requestIdentity + "').style.display='inline';\n");
 			htmlStream.append("</script>\n");
 		}
+		logger.debug("OUT");
 		return htmlStream;
 	}
 
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot, boolean isUserFunct) {
-		
+		logger.debug("IN");
 		String nameLabel = folder.getName();
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer idFolder = folder.getId();
@@ -285,11 +291,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				}
 			}
 		} 
-		/* ********* start luca changes *************** */
+	
 		else if (isUserFunct) {
+			logger.debug("User Personal Folder");
 			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
 			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
-			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "(event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
+			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + "Personal Folder: "+name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "(event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
 		
 			List objects = folder.getBiObjects();
 			for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -313,11 +320,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-				//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\')' );\n");
 			}
 		} 
-		/* ********* end luca changes ***************** */
+	
 		else {
 			if (ObjectsAccessVerifier.canTest(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
 				htmlStream.append("	" + treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
@@ -361,6 +367,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				}
 			}
 		}
+		logger.debug("OUT");
 	}
 
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {

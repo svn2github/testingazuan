@@ -118,8 +118,13 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 	}
 	
 	
+	
+	/**
+	 * Function that builds the tree A separate root folder for personal folders
+	 */
+	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
-		
+		logger.debug("IN");
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -178,13 +183,14 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
+		logger.debug("OUT");
 		return htmlStream;
 		
 	}
 
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, BIObject obj, 
 			boolean isRoot, boolean isInitialPath) {
-		
+		logger.debug("IN");	
 		String nameLabel = folder.getName();
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String codeType = folder.getCodType();
@@ -226,8 +232,8 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 				privateFolderCreated=true;
 				htmlStream.append("	treeFunctIns.add(" + dMyFolderRootId + ", " + dTreeRootId + ",'" + "Personal Folders" + "', '', '', '', '', '', 'true');\n");
 							}
-					String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/saveIntoPersonalFolder22.png");
-					String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/saveIntoPersonalFolder22.png");
+					String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
+					String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
 					try{
 						if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)|| ObjectsAccessVerifier.canDev(id, profile)){
 							boolean checked = false;
@@ -248,27 +254,8 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 					}
 				} 
 			
-			
+		logger.debug("OUT");	
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		

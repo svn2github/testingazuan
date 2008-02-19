@@ -757,7 +757,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			} catch (Exception e) {
 				logger.error("Error while recovering user profile", e);
 			}
-			// if user has admin functionality "ViewMyFolderAdmin" he can view all Low_func and all user func
+			// Giulio: if user has admin functionality "ViewMyFolderAdmin" he can view all Low_func and all user func
 			// else he can view only his personal userFunc
 			
 			Query hibQuery = null;

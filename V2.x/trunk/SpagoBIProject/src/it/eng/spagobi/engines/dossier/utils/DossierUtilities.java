@@ -21,10 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.dossier.utils;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,29 +34,20 @@ public class DossierUtilities {
 
 	static private Logger logger = Logger.getLogger(DossierUtilities.class);
 	
-	private static String getDossierServiceName() {
-		logger.debug("IN");
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean bookServiceSB = (SourceBean)config.getAttribute("BOOKLETS.BOOKLET_SERVICE");
-		String bookletServName = (String)bookServiceSB.getAttribute("name");
-		logger.debug("OUT");
-		return bookletServName;
-	}
-	
 	public static String getDossierServiceUrl() {
 		logger.debug("IN");
 		String sbiContAdd = GeneralUtilities.getSpagoBiContextAddress();
-		String bookletServName = getDossierServiceName();
+		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
 		logger.debug("OUT");
-		return sbiContAdd + "/" + bookletServName;
+		return toReturn;
 	}
 	
 	public static String getDossierServiceUrl(HttpServletRequest request) {
 		logger.debug("IN");
 		String sbiContAdd = ChannelUtilities.getSpagoBIContextName(request);
-		String bookletServName = getDossierServiceName();
+		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
 		logger.debug("OUT");
-		return sbiContAdd + "/" + bookletServName;
+		return toReturn;
 	}
 	
 }

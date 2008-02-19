@@ -43,6 +43,7 @@ import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
 import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
@@ -589,7 +590,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	fos.close();
 	    	// the url to recover the image is a spagobi servlet url
 	    	
-	    	String recoverUrl = DossierUtilities.getDossierServiceUrl() + "?" + 
+	    	String recoverUrl = DossierUtilities.getDossierServiceUrl() + "&" + 
 	    						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 	    						BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
 	    						BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE + "=" +

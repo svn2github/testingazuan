@@ -25,13 +25,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package it.eng.spagobi.engines.dossier;
+package it.eng.spagobi.engines.dossier.actions;
 
-
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
@@ -41,13 +43,9 @@ import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,22 +57,23 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 
-public class BookletsServlet extends HttpServlet {
+public class DossierDownloadAction extends AbstractHttpAction {
 	
-	static private Logger logger = Logger.getLogger(BookletsServlet.class);
+	public static final String ACTION_NAME = "DOSSIER_DOWNLOAD_ACTION";
 	
-	public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-     } 
-
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	static private Logger logger = Logger.getLogger(DossierDownloadAction.class);
+	
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
+		logger.debug("IN");
+		freezeHttpResponse();
+		HttpServletResponse response = getHttpResponse();
 		OutputStream out = null;
 		String task = "";
 		try{
-	 		task = request.getParameter(BookletsConstants.BOOKLET_SERVICE_TASK);		
+	 		task = (String) serviceRequest.getAttribute(BookletsConstants.BOOKLET_SERVICE_TASK);		
 	 		out = response.getOutputStream();
 	 		if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
-	 			String pathimg = (String)request.getParameter(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
+	 			String pathimg = (String)serviceRequest.getAttribute(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
 			 	if(pathimg!=null) {
 			 		if (!pathimg.startsWith("/") && !(pathimg.charAt(1) == ':')) {
 			 			String root = ConfigSingleton.getRootPath();
@@ -90,7 +89,7 @@ public class BookletsServlet extends HttpServlet {
 		            return;
 			 	} 
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC)){
-	 			String activityKey = request.getParameter(SpagoBIConstants.ACTIVITYKEY);
+	 			String activityKey = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTIVITYKEY);
 	 			JbpmContext jbpmContext = null;
 	 			Integer dossierId = null;
 	 			Long workflowProcessId = null;
@@ -122,9 +121,9 @@ public class BookletsServlet extends HttpServlet {
 	            return;
 		 		
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
-	 			String dossierIdStr = request.getParameter(BookletsConstants.DOSSIER_ID);
+	 			String dossierIdStr = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_ID);
 	 			Integer dossierId = new Integer(dossierIdStr);
-	 			String versionStr = request.getParameter(BookletsConstants.VERSION_ID);
+	 			String versionStr = (String) serviceRequest.getAttribute(BookletsConstants.VERSION_ID);
 	 			Integer versionId = new Integer(versionStr);
  				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
  				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
@@ -135,7 +134,7 @@ public class BookletsServlet extends HttpServlet {
 	            return;
 	            
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE)) {
-	 			String tempFolder = request.getParameter(BookletsConstants.DOSSIER_TEMP_FOLDER);
+	 			String tempFolder = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
 	 			String templateFileName = dossierDao.getPresentationTemplateFileName(tempFolder);
 	 			InputStream templateIs = dossierDao.getPresentationTemplateContent(tempFolder);
@@ -147,7 +146,7 @@ public class BookletsServlet extends HttpServlet {
 	            return;
 	 			
 	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
-	 			String tempFolder = request.getParameter(BookletsConstants.DOSSIER_TEMP_FOLDER);
+	 			String tempFolder = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
 	 			String workDefName = dossierDao.getProcessDefinitionFileName(tempFolder);
 	 			InputStream workIs = dossierDao.getProcessDefinitionContent(tempFolder);
@@ -158,7 +157,7 @@ public class BookletsServlet extends HttpServlet {
 	 			out.flush();
 	            return;
 	 		}
-	 		
+	 		logger.debug("OUT");
 	 	} catch(Exception e) {
 	 		logger.error("Exception during execution of task " + task, e);
 	 	}

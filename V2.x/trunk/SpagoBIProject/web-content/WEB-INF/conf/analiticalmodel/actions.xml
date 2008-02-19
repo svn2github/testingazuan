@@ -14,11 +14,11 @@
  	<CONFIG/>
  </ACTION>
 
- <ACTION name="SAVE_PERSONAL_FOLDER" class="it.eng.spagobi.analiticalmodel.document.service.SaveToPersonalFolderAction" scope="REQUEST">
+ <ACTION name="SAVE_PERSONAL_FOLDER" class="it.eng.spagobi.analiticalmodel.execution.service.SaveToPersonalFolderAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
 
-  <ACTION name="SEND_TO_ACTION" class="it.eng.spagobi.analiticalmodel.document.service.ExecuteAndSendAction" scope="REQUEST">
+  <ACTION name="SEND_TO_ACTION" class="it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
 

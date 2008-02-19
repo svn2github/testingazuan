@@ -42,16 +42,26 @@ public class EraseDocumentModule extends AbstractModule {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		try {
+			boolean onlyOneFunct=false;
 			String objIdStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			String funcIdStr = (String)request.getAttribute(ObjectsTreeConstants.FUNCT_ID);
+			if(funcIdStr!=null && funcIdStr!="") onlyOneFunct=true;
 			Integer objId = new Integer(objIdStr);
 			IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 			BIObject obj = biobjdao.loadBIObjectById(objId);
 			List functs = obj.getFunctionalities();
+			Integer fId=Integer.decode(funcIdStr);
+			if(onlyOneFunct){
+				biobjdao.eraseBIObject(obj, fId);
+			}
+			else{
 			Iterator iterFuncts = functs.iterator();
 			while(iterFuncts.hasNext()) {
 				Integer functId = (Integer)iterFuncts.next();
 				biobjdao.eraseBIObject(obj, functId);
 			}
+			}
+			
 		} catch (Exception e ) {
 			logger.error("Error while deleting biobject " + e);
 		}

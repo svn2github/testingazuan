@@ -45,6 +45,7 @@ import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
 import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
@@ -567,16 +568,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 		Map images = dptDAO.getImagesOfDossierPart(dossierId, pageNum, workflowProcessId);
 		 // get temp directory for the pamphlet module
 	    ConfigSingleton configSing = ConfigSingleton.getInstance();
-		SourceBean pathTmpFoldSB = (SourceBean)configSing.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
-		String pathTmpFold = (String)pathTmpFoldSB.getAttribute("path");
-		String pathTmpFoldBook = null;
-		if (pathTmpFold.startsWith("/") || pathTmpFold.charAt(1) == ':') {
-			pathTmpFoldBook = pathTmpFold;
-		} else {
-			String root = ConfigSingleton.getRootPath();
-			pathTmpFoldBook = root + "/" + pathTmpFold;
-		}
-		File tempDir = new File(pathTmpFoldBook); 
+		File tempDir = DossierDAOHibImpl.tempBaseFolder; 
 		tempDir.mkdirs();
 		// for each image store into the temp directory and save the url useful to recover it into the map
 	    Map imageurl = new HashMap();
@@ -587,7 +579,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
 			String uuid = uuidObj.toString();
-			// TODO perché salvare su file system? tanto vale tenere in memoria le immagini
+			// TODO perché salvare su file system? tanto vale tenere in memoria le immagini, oppure scriverli sul file system e far puntare l'immagine al file
 	    	String logicalNameForStoring = uuid + logicalName + ".jpg";
 	    	byte[] content = (byte[])images.get(logicalName);
 	    	File img = new File(tempDir, logicalNameForStoring);
@@ -601,7 +593,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
 	    						BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
 	    						BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE + "=" +
-	    						pathTmpFold + "/" + logicalNameForStoring;
+	    						tempDir.getAbsolutePath() + "/" + logicalNameForStoring;
 	    	imageurl.put(logicalName, recoverUrl); 
 	    }
 	   return imageurl;

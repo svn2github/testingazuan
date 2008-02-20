@@ -295,12 +295,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     public SourceBean getDataDetails(String filterValue) throws EMFUserError {
     	SourceBean results = null;
     	
-        SQLCommand cmdSelect = null;
-        DataResult dr = null;
-        ScrollableDataResult sdr = null;
-        DataConnection dataConnection = null;
-        String connectionName = datamartProviderConfiguration.getConnectionName();
-        
+     
         DatamartProviderConfiguration.Hierarchy.Level level = datamartProviderConfiguration.getBaseLevel();        
     	String columnid = level.getColumnId();
     	
@@ -311,11 +306,10 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	int max_rows = 1000;
         
         try{
-            dataConnection = DataConnectionManager.getInstance().getConnection(connectionName);
-            cmdSelect = dataConnection.createSelectCommand(filteredQuery);
-            dr = cmdSelect.execute();
-            sdr = (ScrollableDataResult) dr.getDataObject();
-            ResultSet resultSet = sdr.getResultSet();
+        	Connection connection = datamartProviderConfiguration.getDataSource().readConnection();
+            Statement statement = connection.createStatement();
+            statement.execute(filteredQuery);
+            ResultSet resultSet =  statement.getResultSet();
             
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
@@ -350,7 +344,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         					    "Cannot load the data from the datawarehouse", ex);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
-            Utils.releaseResources(dataConnection, cmdSelect, dr);
+            
         }
         
         return results;

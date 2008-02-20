@@ -8,6 +8,10 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import org.apache.log4j.Logger;
 /**
+* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
+*/
+
+/**
  * Publishes the results of a list information request for distributionlists
  * into the correct jsp page according to what contained into the request. If any error occurred during the 
  * execution of the <code>ListDistributionListModule</code> class, the publisher

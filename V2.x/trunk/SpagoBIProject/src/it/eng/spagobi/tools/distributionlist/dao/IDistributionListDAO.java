@@ -41,7 +41,7 @@ public interface IDistributionListDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
-	public void modifyDistributionList(DistributionList aDistributionList) throws EMFUserError;
+	//public void modifyDistributionList(DistributionList aDistributionList) throws EMFUserError;
 	
 	/**
 	 * Implements the query to insert a distribution list. All information needed is stored 

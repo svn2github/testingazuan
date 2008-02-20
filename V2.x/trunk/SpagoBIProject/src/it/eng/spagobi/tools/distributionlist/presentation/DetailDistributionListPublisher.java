@@ -11,6 +11,9 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.datasource.presentation.DetailDataSourcePublisher;
+/**
+* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
+*/
 
 
 /**

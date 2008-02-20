@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGES>
+
+
+  	<PAGE name="ListDistributionListPage" scope="REQUEST" title="Distribution List Configuration" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListDistributionListPage" target="ListDistributionListModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListDistributionListModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	
+  	<PAGE name="DetailDistributionListPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailDistributionListPage" target="DetailDistributionListModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailDistributionListModule"/>
+    	</MODULES>
+  	</PAGE>  	
+</PAGES>

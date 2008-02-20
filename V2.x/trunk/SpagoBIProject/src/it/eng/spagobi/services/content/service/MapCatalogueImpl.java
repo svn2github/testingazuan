@@ -92,6 +92,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
  			}	 		
  		} else if(operation.equalsIgnoreCase(GET_MAP_URL)) {
  			//strRet = getMapUrl(request, mapName);
+ 			strRet = getMapUrl(mapName);
  		    // TODO   come fare ???
  			if (strRet == null){
  				strRet = ERROR_MAP_NOT_FOUND;
@@ -217,8 +218,9 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	    if (tmpMap == null)
 		return null;
 	    toReturn = tmpMap.getUrl();
-	    // toReturn =
-	    // toReturn.substring(ConfigSingleton.getRootPath().length());
+	    toReturn = ConfigSingleton.getInstance().getCharacters("SPAGOBI.SPAGOBI_CONTEXT_PATH") + toReturn;
+	    	
+	    	//toReturn.substring(ConfigSingleton.getRootPath().length());
 	   // toReturn = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 	//	    + toReturn;
 

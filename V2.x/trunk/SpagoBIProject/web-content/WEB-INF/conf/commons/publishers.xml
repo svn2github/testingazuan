@@ -158,5 +158,14 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
-  	</PUBLISHER>                                    	
+  	</PUBLISHER>  
+  	  	<PUBLISHER name="LoginSBIDistributionListPublisher">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/commons/startSBIDistributionList.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+  	                                  	
 </PUBLISHERS>

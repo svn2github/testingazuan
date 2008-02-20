@@ -109,6 +109,13 @@
     <CONFIGURATOR path="/WEB-INF/conf/tools/datasource/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/validation.xml" />
 	
+	<!-- tools.distributionlist -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/publishers.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/validation.xml" />
+	
 	
 	<!-- workflow -->	
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/modules.xml" />

@@ -95,5 +95,16 @@
                              PWD,
                              DRIVER
 					  FROM SBI_DATA_SOURCE "/>
+					  
+	<STATEMENT name="SELECT_ALL_DL" 
+               query="SELECT DL_ID as ID, 
+               				 NAME,        						 
+       						 DESCR
+					  FROM SBI_DISTRIBUTION_LIST "/>	
+					 
+	<STATEMENT name="SELECT_EMAILS_FROM_DL" 
+  				   query="SELECT DLU_ID, USER_ID, EMAIL  					 					
+				            FROM SBI_DISTRIBUTION_LIST_USER
+				            WHERE LIST_ID = ? "/>				  			  
   
 </STATEMENTS>

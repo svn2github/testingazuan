@@ -277,6 +277,7 @@ public class SpagoBIConstants {
 	public static final String SYNCRONIZE_ROLES_MANAGEMENT = "SyncronizeRolesManagement";
 	public static final String PROFILE_ATTRIBUTES_MANAGEMENT = "ProfileAttributeManagement";
 	public static final String DATASOURCE_MANAGEMENT = "DataSourceManagement";
+	public static final String DISTRIBUTIONLIST_MANAGEMENT = "DistributionListManagement";
 	public static final String DOCUMENT_DELETE_MANAGEMENT = "DocumentDeleteManagement";
 	public static final String DOCUMENT_DETAIL_MANAGEMENT = "DocumentDetailManagement";
 	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";

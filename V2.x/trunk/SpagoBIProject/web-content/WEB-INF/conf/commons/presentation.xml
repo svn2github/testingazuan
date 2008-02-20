@@ -12,5 +12,6 @@
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_CATALOGUES" publisher_name="LoginSBICataloguePublisher"/>
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_TOOLS" publisher_name="LoginSBIToolsPublisher"/>	
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_RESOURCES" publisher_name="LoginSBIResourcesPublisher"/>
+	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_DISTRIBUTIONLIST" publisher_name="LoginSBIDistributionListPublisher"/>
 </PRESENTATION>
 

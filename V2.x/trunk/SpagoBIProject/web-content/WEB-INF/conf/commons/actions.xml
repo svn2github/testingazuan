@@ -38,6 +38,9 @@
  <ACTION name="LOGIN_ACTION_SBI_RESOURCES" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION> 
+  <ACTION name="LOGIN_ACTION_SBI_DISTRIBUTIONLIST" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
  
 </ACTIONS>
 

@@ -78,7 +78,7 @@
      <!--  SqlServer: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.sqlserver.xml -->
      
-	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
+	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
 	
      <!-- ********************* END DATABASE CONFIGURATION ************************ -->
      
@@ -176,7 +176,9 @@
 		<DAO name="GeoMapFeatureDAO" implementation="it.eng.spagobi.mapcatalogue.bo.dao.hibernate.SbiGeoMapFeaturesDAOHibImpl"/>
 		<DAO name="UserFunctionalityDAO" implementation="it.eng.spagobi.commons.dao.UserFunctionalityDAO"/>
 		<DAO name="DistributionListDAO" implementation="it.eng.spagobi.tools.distributionlist.dao.DistributionListDaoImpl"/>
- 						
+		<DAO name="DossierDAO" implementation="it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl"/>
+		<DAO name="DossierPresentationDAO" implementation="it.eng.spagobi.engines.dossier.dao.DossierPresentationsDAOHibImpl"/>
+		<DAO name="DossierPartsTempDAO" implementation="it.eng.spagobi.engines.dossier.dao.DossierPartsTempDAOHibImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

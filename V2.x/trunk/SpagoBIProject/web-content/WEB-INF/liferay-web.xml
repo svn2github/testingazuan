@@ -170,11 +170,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>BookletServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.engines.dossier.BookletsServlet</servlet-class>
-    </servlet>
-
-    <servlet>
         <servlet-name>BIObjectNotesServlet</servlet-name>
         <servlet-class>it.eng.spagobi.services.BIObjectNotesServlet</servlet-class>
     </servlet>
@@ -293,11 +288,6 @@
     <servlet-mapping>
         <servlet-name>BIObjectNotesServlet</servlet-name>
         <url-pattern>/BIObjectNotesService</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>BookletServlet</servlet-name>
-        <url-pattern>/BookletService</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>

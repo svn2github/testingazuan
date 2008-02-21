@@ -124,16 +124,9 @@ function showEngField(docType) {
 function checkFormVisibility(docType) {
 	var ind = docType.indexOf(",");
 	var type = docType.substring(ind+1);
-	// hide or shiw template upload div for Booklet 
-	var divUpload = document.getElementById("form_upload");
-	if(type=="BOOKLET") {
-		divUpload.style.display="none";
-	} else {
-		divUpload.style.display="inline";
-	}
-	// hide template dynamic creation button for booklet and olap document 
+	// hide template dynamic creation button for dossier and olap document 
 	var divLinkConf = document.getElementById("link_obj_conf");
-	if(type=="BOOKLET" || type=="DOSSIER") {
+	if(type=="OLAP" || type=="DOSSIER") {
 		divLinkConf.style.display="inline";
 	} else {
 		divLinkConf.style.display="none";
@@ -463,16 +456,8 @@ function checkFormVisibility(docType) {
 						</input>
 				</div>
 
-
-				<%
-					String styleDivFormUpload = " ";
-					String BIobjTypecode = obj.getBiObjectTypeCode();
-				    if(BIobjTypecode.equalsIgnoreCase("BOOKLET"))
-				    	styleDivFormUpload = " style='display:none' ";
-				%>
-
 				<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
-				<div id="form_upload" <%=styleDivFormUpload%>>
+				<div id="form_upload">
 					<div class='div_detail_label'>
 						<span class='portlet-form-field-label'>
 							<spagobi:message key = "SBIDev.docConf.docDet.templateField" />
@@ -486,10 +471,10 @@ function checkFormVisibility(docType) {
 				
 				
 				
-			    <!-- TEMPLATE LABEL AND BUTTONS FOR BOOKLET AND OLAP -->
+			    <!-- TEMPLATE LABEL AND BUTTONS FOR DOSSIER AND OLAP -->
 				<% 
 					String styleDivLinkConf = " ";
-					BIobjTypecode = obj.getBiObjectTypeCode();
+					String BIobjTypecode = obj.getBiObjectTypeCode();
 			    	if(BIobjTypecode.equalsIgnoreCase("DOSSIER") || BIobjTypecode.equalsIgnoreCase("OLAP"))
 			    		styleDivLinkConf = " style='display:inline' ";
 			    	else styleDivLinkConf = " style='display:none' ";
@@ -523,7 +508,7 @@ function checkFormVisibility(docType) {
 							<a href="<%=hrefConf%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
-	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/configure_booklet.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/createTemplate.jpg")%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
 							</a>
 					<%
@@ -537,7 +522,7 @@ function checkFormVisibility(docType) {
 							<a href="<%=editUrlStr%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
-	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/edit_temp_booklet.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
 							</a> 	
 					<%

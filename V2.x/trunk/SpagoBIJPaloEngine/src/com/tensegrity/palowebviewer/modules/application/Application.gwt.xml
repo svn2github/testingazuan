@@ -1,0 +1,18 @@
+<module>
+
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	
+	<inherits name='com.tensegrity.palowebviewer.modules.ui.UI'/>
+	<inherits name='com.tensegrity.palowebviewer.modules.engine.Engine'/>
+	<inherits name='com.tensegrity.palowebviewer.modules.util.Util'/>
+	
+	<inherits name='it.eng.spagobi.engines.jpalo.modules.listeners.Listeners'/>
+
+	
+	<!-- <inherits name="rocket.User" /> -->
+	
+	<entry-point class='com.tensegrity.palowebviewer.modules.application.client.Application'/>
+	<extend-property name="locale" values="ru"/>
+	
+</module>

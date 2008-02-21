@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Palo Web Client</title>
+		<link type="text/css" rel="stylesheet" href="themes/default/style.css" />
+		<meta name='gwt:module' content='com.tensegrity.palowebviewer.modules.application.Application'>
+		
+	</head>
+
+	<script language="JavaScript" type="text/javascript">
+		window.name = "wpalo-main";
+		
+		function addIframe(e, u) {
+			var ifr = document.createElement('IFRAME')
+			
+			ifr.height = "100%"
+			ifr.width = "100%"
+			if ( ! document.all )
+				ifr.setAttribute("style", "border:0")
+				
+			ifr.src = u
+			e.appendChild(ifr)
+		}
+		
+	</script>
+	
+	<body>
+		<script language="javascript" src="gwt.js"></script>
+		<div id="testWidth" style="position: absolute; visibility: hidden; white-space: nowrap;">Width</div>
+	</body>
+</html>

@@ -179,10 +179,6 @@ public class SpagoBIConstants {
 	public static final String NEW_DOCUMENT_TEMPLATE = "NEW_DOCUMENT_TEMPLATE";
 	public static final String EDIT_DOCUMENT_TEMPLATE = "EDIT_DOCUMENT_TEMPLATE";
 	
-	//public static final String BOOKLET_MANAGEMENT_PAGE = "BookletsManagementPage";
-	//public static final String OPERATION_NEW_BOOKLET_TEMPLATE = "OPERATION_NEW_BOOKLET_TEMPLATE";
-	//public static final String OPERATION_EDIT_BOOKLET_TEMPLATE = "OPERATION_EDIT_BOOKLET_TEMPLATE";
-	
 	public static final String ACTIVITYKEY = "ACTIVITYKEY";
 	
 	public static final String PREFERENCE_MAXIMIZE_ABLE = "MAXIMIZE_ABLE";

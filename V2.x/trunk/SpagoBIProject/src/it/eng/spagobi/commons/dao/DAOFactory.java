@@ -279,5 +279,12 @@ public class DAOFactory {
 	public static IDossierDAO getDossierDAO() throws EMFUserError{
 		return (IDossierDAO)createDAOInstance("DossierDAO");
 	}
+	
+	public static IDossierPresentationsDAO getDossierPresentationDAO() throws EMFUserError{
+		return (IDossierPresentationsDAO)createDAOInstance("DossierPresentationDAO");
+	}
 
+	public static IDossierPartsTempDAO getDossierPartsTempDAO() throws EMFUserError{
+		return (IDossierPartsTempDAO)createDAOInstance("DossierPartsTempDAO");
+	}
 }

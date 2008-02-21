@@ -34,7 +34,7 @@
   
 <!-- engines.dossier -->
 	 
-	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/booklets.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/dossier.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/presentation.xml" />

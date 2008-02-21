@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <VALIDATIONS>
 
-	<SERVICE name="BookletsManagementPage" type="PAGE">
+	<SERVICE name="DossierManagementPage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
 				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_SAVE_CONFIGURED_DOCUMENT"/>
 			</CONDITIONS>
 			<FIELDS>
-				<FIELD name="logicalname" label="#book.logNameObject" boundle="component_booklets_messages">
+				<FIELD name="logicalname" label="#dossier.logNameObject" boundle="component_dossier_messages">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 			</FIELDS>
@@ -15,7 +15,7 @@
 	</SERVICE>
 	
 	
-	<SERVICE name="BookletsCollaborationPage" type="PAGE">
+	<SERVICE name="DossierCollaborationPage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
 				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_PUBLISH_PRESENTATION"/>

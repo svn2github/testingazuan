@@ -36,7 +36,7 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +98,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	htmlStream.append("	</tr>");
 	htmlStream.append("	<tr>");
 	htmlStream.append("		<td>&nbsp;</td>");
-	htmlStream.append("		<td id='treeBookletObjTd" + requestIdentity + "' name='treeBookletObjTd" + requestIdentity
+	htmlStream.append("		<td id='treeDossierObjTd" + requestIdentity + "' name='treeDossierObjTd" + requestIdentity
 		+ "'>&nbsp;</td>");
 	htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	htmlStream.append("				var nameTree = 'treeCMS';\n");
@@ -119,7 +119,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		    addItemForJSTree(htmlStream, folder, false);
 	    }
 	}
-	htmlStream.append("				document.getElementById('treeBookletObjTd" + requestIdentity
+	htmlStream.append("				document.getElementById('treeDossierObjTd" + requestIdentity
 		+ "').innerHTML = treeCMS;\n");
 	htmlStream.append("			</script>\n");
 	htmlStream.append("	</tr>");
@@ -152,13 +152,13 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		    String objTypeCode = obj.getBiObjectTypeCode();
 		    ConfigSingleton config = ConfigSingleton.getInstance();
 		    SourceBean technologyFilterSB = (SourceBean) config
-			    .getAttribute(BookletsConstants.BOOKLET_DRIVER_FILTER_SB);
+			    .getAttribute(DossierConstants.DOSSIER_DRIVER_FILTER_SB);
 		    String technologyFilter = (String) technologyFilterSB.getAttribute("match");
 		    if (objTypeCode.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE)
 			    && engine.getDriverName().toLowerCase().indexOf(technologyFilter) != -1) {
 			htmlStream.append("	treeCMS.add(" + dTreeObjects-- + ", " + idFolder + ",'" + obj.getName()
 				+ "', 'javascript:linkEmpty()', '', '', '', '', '', '', '"
-				+ BookletsConstants.BOOKLET_CONFIGURED_BIOBJECT_ID + "', '" + obj.getId() + "' );\n");
+				+ DossierConstants.DOSSIER_CONFIGURED_BIOBJECT_ID + "', '" + obj.getId() + "' );\n");
 		    }
 		}
 	    }
@@ -166,7 +166,6 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
     }
 
     public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
-	// TODO Auto-generated method stub
 	return null;
     }
 

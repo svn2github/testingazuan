@@ -29,7 +29,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 
 public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 
-	public static final String messageBundle = "component_booklets_messages";
+	public static final String messageBundle = "component_dossier_messages";
 	
 	static private Logger logger = Logger.getLogger(SpagoBIDossierInternalEngine.class);
 	
@@ -54,9 +54,9 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 		try {
 			IDossierPresentationsDAO dpDao = DAOFactory.getDossierPresentationDAO();
 			List presVersions = dpDao.getPresentationVersions(biobj.getId());
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
-			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.DOSSIER_ID, biobj.getId().toString());
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierPresentationVersion");
+			response.setAttribute(DossierConstants.DOSSIER_PRESENTATION_VERSIONS, presVersions);
+			response.setAttribute(DossierConstants.DOSSIER_ID, biobj.getId().toString());
 		} catch (Exception e) {
 			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -78,7 +78,7 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
 		try {
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierManagementLoopCall");
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.EDIT_DOCUMENT_TEMPLATE);
 			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {
@@ -89,7 +89,7 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
 		try {
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsManagementLoopCall");
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierManagementLoopCall");
 			response.setAttribute(SpagoBIConstants.OPERATION, SpagoBIConstants.NEW_DOCUMENT_TEMPLATE);
 			response.setAttribute(SpagoBIConstants.OBJECT_ID, obj.getId().toString());
 		} catch (Exception e) {

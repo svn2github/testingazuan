@@ -52,9 +52,10 @@ import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
 
 /**
+ * IDossierDAO implementation using database and hibernate mapping
+ * @see <code>it.eng.spagobi.engines.dossier.dao.IDossierDAO</code>
  * 
  * @author Zerbetto (davide.zerbetto@eng.it)
- * IDossierDAO implementation using database and hibernate mapping
  */
 public class DossierDAOHibImpl implements IDossierDAO {
 
@@ -67,7 +68,7 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	
 	static {
 	    ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean pathTmpFoldSB = (SourceBean) config.getAttribute("BOOKLETS.PATH_TMP_FOLDER");
+	    SourceBean pathTmpFoldSB = (SourceBean) config.getAttribute("DOSSIER.PATH_TMP_FOLDER");
 	    String pathTmpFold = (String) pathTmpFoldSB.getAttribute("path");
 	    pathTmpFold = checkForSystemProperty(pathTmpFold);
 	    logger.debug("Base temporary dossier folder =" + pathTmpFold);
@@ -109,7 +110,6 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	public String init(BIObject dossier) {
 		logger.debug("IN");
 		try {
-			// TODO vedere se si può fare meglio di così
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
 			String uuid = uuidObj.toString();
@@ -151,6 +151,11 @@ public class DossierDAOHibImpl implements IDossierDAO {
 			File presentationTemplate = getTemporaryPresentationTemplate(pathTempFolder);
 			File processDefinitionFile = getTemporaryProcessDefinitionFile(pathTempFolder);
 			File dossierConfigFile = getTemporaryDossierConfigurationFile(pathTempFolder);
+			if (presentationTemplate == null || !presentationTemplate.exists() || !presentationTemplate.isFile()
+				|| processDefinitionFile == null || !processDefinitionFile.exists() || !processDefinitionFile.isFile()
+				|| dossierConfigFile == null || !dossierConfigFile.exists() || !dossierConfigFile.isFile()) {
+				throw new Exception("Missing one or more file for template creation");
+			}
 			String[] files = new String[] {
 					presentationTemplate.getAbsolutePath(), 
 					processDefinitionFile.getAbsolutePath(), 
@@ -161,6 +166,7 @@ public class DossierDAOHibImpl implements IDossierDAO {
 			IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 			BIObject dossier = objDAO.loadBIObjectById(dossierId);
 			objDAO.modifyBIObject(dossier, objTemplate);
+			template.delete();
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {
@@ -170,10 +176,15 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	}
 	
 	private byte[] read(File file) throws IOException {
-	   InputStream in = new FileInputStream(file);
-	   byte[] data = new byte[in.available()];
-	   in.read(data);
-	   return data;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			byte[] data = new byte[fis.available()];
+			fis.read(data);
+			return data;
+		} finally {
+			if (fis != null) fis.close();
+		}
 	}
 
 	private ObjTemplate generateObjTemplate(File templateFile) throws IOException {
@@ -189,15 +200,20 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		logger.debug("IN");
 		File template = null;
 		ZipOutputStream out = null;
+		FileOutputStream fos = null;
 		try {
 			template = new File(pathTempFolder + "/" + TEMPLATE_FILE_NAME);
 			if (template.exists()) template.delete();
-			out = new ZipOutputStream(new FileOutputStream(template));
+			fos = new FileOutputStream(template);
+			out = new ZipOutputStream(fos);
 	        for (int i = 0; i < files.length; i++) {
 	        	addEntry(out, files[i]);
 	        }
+	        out.flush();
+	        out.finish();
 		} finally {
 			if (out != null) out.close();
+			if (fos != null) fos.close();
 			logger.debug("OUT");
 		}
 		return template;
@@ -333,7 +349,7 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 	
-	public static boolean deleteFolder(File directory) {
+	private static boolean deleteFolder(File directory) {
 		logger.debug("IN");
 		try {
 			if (directory.isDirectory()) {
@@ -566,6 +582,18 @@ public class DossierDAOHibImpl implements IDossierDAO {
 			}
 			Integer dossierId = new Integer(dossierIdStr);
 			return dossierId;
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+
+	public void clean(String pathTempFolder) {
+		logger.debug("IN");
+		try {
+			File folder = new File(pathTempFolder);
+			deleteFolder(folder);
+		} catch (Exception e) {
+			logger.warn("Error while deleting folder with path = [" + pathTempFolder + "]");
 		} finally {
 			logger.debug("OUT");
 		}

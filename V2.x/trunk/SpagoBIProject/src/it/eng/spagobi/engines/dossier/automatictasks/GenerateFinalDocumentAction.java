@@ -27,7 +27,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
@@ -95,7 +95,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    ProcessInstance processInstance = context.getProcessInstance();
 	    Long workflowProcessId = new Long(processInstance.getId());
 	    logger.debug("Workflow process id: " + workflowProcessId);
-	    String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+	    String dossierIdStr = (String) contextInstance.getVariable(DossierConstants.DOSSIER_ID);
 	    logger.debug("Dossier id variable retrived " + dossierIdStr);
 	    Integer dossierId = new Integer(dossierIdStr);
 	    BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
@@ -108,9 +108,9 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    String templateFileName = dossierDAO.getPresentationTemplateFileName(tempFolder);
 	    logger.debug("Template file name: " + templateFileName);
 	    InputStream contentTempIs = dossierDAO.getPresentationTemplateContent(tempFolder);
-	    logger.debug("InputStream opened on booklet template.");
+	    logger.debug("InputStream opened on dossier template.");
 	    byte[] contentTempBytes = GeneralUtilities.getByteArrayFromInputStream(contentTempIs);
-	    logger.debug("BookletTemplateContent stored into a byte array.");
+	    logger.debug("DossierTemplateContent stored into a byte array.");
 	    contentTempIs.close();
 	    // write template content into a temp file
 	    File templateFile = new File(tempFolder, templateFileName);
@@ -122,7 +122,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 
 	    // initialize openoffice environment
 	    ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean officeConnectSB = (SourceBean) config.getAttribute("BOOKLETS.OFFICECONNECTION");
+	    SourceBean officeConnectSB = (SourceBean) config.getAttribute("DOSSIER.OFFICECONNECTION");
 	    logger.debug("Office connection Sourcebean retrieved: " + officeConnectSB.toXML());
 	    String host = (String) officeConnectSB.getAttribute("host");
 	    String port = (String) officeConnectSB.getAttribute("port");
@@ -185,11 +185,11 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    logger.debug("Draw pages found: " + drawPages);
 	    int numPages = drawPages.getCount();
 	    logger.debug("Draw pages number: " + numPages);
+	    IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
 	    for (int i = 0; i < numPages; i++) {
 		logger.debug("Start examining page " + i);
 		// get images corresponding to that part of the template
 		int pageNum = i + 1;
-		IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
 		Map images = dptDAO.getImagesOfDossierPart(dossierId, pageNum, workflowProcessId);
 		logger.debug("Images map retrieved: " + images);
 		// get draw page
@@ -353,6 +353,7 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
 	    DossierPresentation dossierPresentation = new DossierPresentation();
 	    dossierPresentation.setApproved(null);
+	    dossierPresentation.setProg(null);
 	    dossierPresentation.setBiobjectId(dossier.getId());
 	    dossierPresentation.setContent(docCont);
 	    dossierPresentation.setName(dossier.getName());
@@ -360,7 +361,9 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    dpDAO.insertPresentation(dossierPresentation);
 	    logger.debug("Document stored.");
 	    fis.close();
-
+	    dptDAO.cleanDossierParts(dossierId, workflowProcessId);
+	    logger.debug("Dossier temporary parts relevant to document id = [" + dossierId + "] " +
+	    		"and workflow process id = [" + workflowProcessId + "] deleted.");
 	} catch (Exception e) {
 		logger.error("Error during the generation of the final document", e);
 	    // AUDIT UPDATE
@@ -373,7 +376,6 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 	    // store as final document the template
 
 	} finally {
-
 	    // close open document and environment
 	    if (xComponent != null) {
 			XModel xModel = (XModel) UnoRuntime.queryInterface(XModel.class, xComponent);
@@ -384,13 +386,13 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 				logger.error("Cannot close openoffice template document", e);
 			}
 	    }
-
+	    // cleans dossier temp folder
+	    if (dossierDAO != null && tempFolder != null) {
+	    	dossierDAO.clean(tempFolder);
+		    logger.debug("Deleted folder " + tempFolder);
+	    }
+	    logger.debug("OUT");
 	}
-
-	// delete all file inside temp directory
-	File fileTmpFold = new File(tempFolder);
-	GeneralUtilities.deleteContentDir(fileTmpFold);
-	logger.debug("Deleted all files inside folder " + fileTmpFold);
 
     }
 

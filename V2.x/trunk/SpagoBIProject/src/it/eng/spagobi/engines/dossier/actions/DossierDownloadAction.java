@@ -19,12 +19,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-/*
- * Created on 4-mag-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package it.eng.spagobi.engines.dossier.actions;
 
 import it.eng.spago.base.SourceBean;
@@ -36,7 +30,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
@@ -70,10 +64,10 @@ public class DossierDownloadAction extends AbstractHttpAction {
 		OutputStream out = null;
 		String task = "";
 		try{
-	 		task = (String) serviceRequest.getAttribute(BookletsConstants.BOOKLET_SERVICE_TASK);		
+	 		task = (String) serviceRequest.getAttribute(DossierConstants.DOSSIER_SERVICE_TASK);		
 	 		out = response.getOutputStream();
-	 		if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
-	 			String pathimg = (String)serviceRequest.getAttribute(BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE);
+	 		if(task.equalsIgnoreCase(DossierConstants.DOSSIER_SERVICE_TASK_GET_TEMPLATE_IMAGE)){
+	 			String pathimg = (String)serviceRequest.getAttribute(DossierConstants.DOSSIER_SERVICE_PATH_IMAGE);
 			 	if(pathimg!=null) {
 			 		if (!pathimg.startsWith("/") && !(pathimg.charAt(1) == ':')) {
 			 			String root = ConfigSingleton.getRootPath();
@@ -88,7 +82,7 @@ public class DossierDownloadAction extends AbstractHttpAction {
 		            imgFile.delete();
 		            return;
 			 	} 
-	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC)){
+	 		} else if(task.equalsIgnoreCase(DossierConstants.DOSSIER_SERVICE_TASK_DOWN_FINAL_DOC)){
 	 			String activityKey = (String) serviceRequest.getAttribute(SpagoBIConstants.ACTIVITYKEY);
 	 			JbpmContext jbpmContext = null;
 	 			Integer dossierId = null;
@@ -101,7 +95,7 @@ public class DossierDownloadAction extends AbstractHttpAction {
 		 			ContextInstance contextInstance = taskInstance.getContextInstance();
 		 			ProcessInstance processInstance = contextInstance.getProcessInstance();
 		 			workflowProcessId = new Long(processInstance.getId());
-		 			String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+		 			String dossierIdStr = (String) contextInstance.getVariable(DossierConstants.DOSSIER_ID);
 		 			dossierId = new Integer(dossierIdStr);
 	 			} finally {
 	 				if (jbpmContext != null) jbpmContext.close();
@@ -116,14 +110,14 @@ public class DossierDownloadAction extends AbstractHttpAction {
 		 			out.write(finalDocBytes);
 		 			out.flush();
 	 			} else {
-	 				logger.error("Booklet configuration path not found!");
+	 				logger.error("Dossier configuration path not found!");
 	 			}
 	            return;
 		 		
-	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
-	 			String dossierIdStr = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_ID);
+	 		} else if(task.equalsIgnoreCase(DossierConstants.DOSSIER_SERVICE_TASK_DOWN_PRESENTATION_VERSION)) {
+	 			String dossierIdStr = (String) serviceRequest.getAttribute(DossierConstants.DOSSIER_ID);
 	 			Integer dossierId = new Integer(dossierIdStr);
-	 			String versionStr = (String) serviceRequest.getAttribute(BookletsConstants.VERSION_ID);
+	 			String versionStr = (String) serviceRequest.getAttribute(DossierConstants.VERSION_ID);
 	 			Integer versionId = new Integer(versionStr);
  				BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
  				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
@@ -133,8 +127,8 @@ public class DossierDownloadAction extends AbstractHttpAction {
 	 			out.write(finalDocBytes);
 	            return;
 	            
-	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_OOTEMPLATE)) {
-	 			String tempFolder = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
+	 		} else if(task.equalsIgnoreCase(DossierConstants.DOSSIER_SERVICE_TASK_DOWN_OOTEMPLATE)) {
+	 			String tempFolder = (String) serviceRequest.getAttribute(DossierConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
 	 			String templateFileName = dossierDao.getPresentationTemplateFileName(tempFolder);
 	 			InputStream templateIs = dossierDao.getPresentationTemplateContent(tempFolder);
@@ -145,8 +139,8 @@ public class DossierDownloadAction extends AbstractHttpAction {
 	 			out.flush();
 	            return;
 	 			
-	 		} else if(task.equalsIgnoreCase(BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
-	 			String tempFolder = (String) serviceRequest.getAttribute(BookletsConstants.DOSSIER_TEMP_FOLDER);
+	 		} else if(task.equalsIgnoreCase(DossierConstants.DOSSIER_SERVICE_TASK_DOWN_WORKFLOW_DEFINITION)) {
+	 			String tempFolder = (String) serviceRequest.getAttribute(DossierConstants.DOSSIER_TEMP_FOLDER);
 	 			IDossierDAO dossierDao = new DossierDAOHibImpl();
 	 			String workDefName = dossierDao.getProcessDefinitionFileName(tempFolder);
 	 			InputStream workIs = dossierDao.getProcessDefinitionContent(tempFolder);

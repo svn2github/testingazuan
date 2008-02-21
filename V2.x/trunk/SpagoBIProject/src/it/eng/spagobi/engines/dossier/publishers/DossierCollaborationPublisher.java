@@ -31,12 +31,12 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 
-public class BookletsManagementPublisher implements PublisherDispatcherIFace {
+public class DossierCollaborationPublisher implements PublisherDispatcherIFace {
 
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
 	 * @param requestContainer The object containing all request information
@@ -45,38 +45,37 @@ public class BookletsManagementPublisher implements PublisherDispatcherIFace {
 	 * 		   call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		// GET THE MODULE RESPONSE
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		SourceBean serviceResp = responseContainer.getServiceResponse();
-		SourceBean moduleResponse = (SourceBean)serviceResp.getAttribute(BookletsConstants.BOOKLET_MANAGEMENT_MODULE);
+		SourceBean moduleResponse = (SourceBean)serviceResp.getAttribute(DossierConstants.DOSSIER_COLLABORATION_MODULE);
 		if(moduleResponse==null) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
+			SpagoBITracer.major(DossierConstants.NAME_MODULE, this.getClass().getName(), 
 					            "getPublisherName", "Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_dossier_messages");
 			errorHandler.addError(error);
+			return "error";
 		}
-		// get publisher name from response
-		String pubName = (String)moduleResponse.getAttribute(BookletsConstants.PUBLISHER_NAME);
-		// if publisher name is not setted generate error
-		if((pubName==null) || pubName.trim().equals("")) {
-			SpagoBITracer.major(BookletsConstants.NAME_MODULE, this.getClass().getName(), 
-		                       "getPublisherName", "Module Response doesn't contain a publisher name");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_booklets_messages");
+		// GET THE PUBLISHER NAME
+		String pubName = (String)moduleResponse.getAttribute(DossierConstants.PUBLISHER_NAME);
+		if((pubName==null) || pubName.trim().equals("")){
+			SpagoBITracer.major(DossierConstants.NAME_MODULE, this.getClass().getName(), 
+		                        "getPublisherName", "attribute "+DossierConstants.PUBLISHER_NAME+" " +
+		                        "not found in response or empty");
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_dossier_messages");
 			errorHandler.addError(error);
+			return "error";
 		}
-		
-		
-		//	if there are errors and they are only validation errors return the name for the detail publisher
-		if(!errorHandler.isOK()) {
+		// RETURN PUBLISHER NAME OR ERROR PUBLISHER
+		if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			return pubName;
+		} else {
 			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
 				return pubName;
 			} else {
 				return new String("error");
 			}
-		} else {
-			return pubName;
 		}
-		
-		
 	}
 
 }

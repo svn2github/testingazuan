@@ -39,13 +39,13 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
-import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
 import it.eng.spagobi.engines.dossier.bo.DossierPresentation;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
@@ -80,10 +80,12 @@ import org.safehaus.uuid.UUIDGenerator;
 /**
  * This class implements a module which  handles pamphlets collaboration.
  */
-public class BookletsCollaborationModule extends AbstractModule {
+public class DossierCollaborationModule extends AbstractModule {
 	
-	static private Logger logger = Logger.getLogger(BookletsCollaborationModule.class);
+	static private Logger logger = Logger.getLogger(DossierCollaborationModule.class);
 
+	private IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+	
 	public void init(SourceBean config) {
 	}
 
@@ -101,19 +103,19 @@ public class BookletsCollaborationModule extends AbstractModule {
 			if((operation==null)||(operation.trim().equals(""))) {
 				logger.error("The operation parameter is null");
 				throw new Exception("The operation parameter is null");
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_OPEN_NOTE_EDITOR)) {
+			} else if (operation.equalsIgnoreCase(DossierConstants.OPERATION_OPEN_NOTE_EDITOR)) {
 				openNoteEditorHandler(request, response);
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_SAVE_NOTE)) {
+			} else if (operation.equalsIgnoreCase(DossierConstants.OPERATION_SAVE_NOTE)) {
 				saveNoteHandler(request, response);
-			} else if (operation.equalsIgnoreCase(BookletsConstants.OPERATION_APPROVE_PRESENTATION)) {
+			} else if (operation.equalsIgnoreCase(DossierConstants.OPERATION_APPROVE_PRESENTATION)) {
 				approveHandler(request, response);
-			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_RUN_NEW_COLLABORATION)) {
+			} else if(operation.equalsIgnoreCase(DossierConstants.OPERATION_RUN_NEW_COLLABORATION)) {
 				runCollaborationHandler(request, response);
-			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION)) {
+			} else if(operation.equalsIgnoreCase(DossierConstants.OPERATION_DELETE_PRESENTATION_VERSION)) {
 				deletePresVerHandler(request, response);
-			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE)) {
+			} else if(operation.equalsIgnoreCase(DossierConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE)) {
 				preparePublishPageHandler(request, response);
-			} else if(operation.equalsIgnoreCase(BookletsConstants.OPERATION_PUBLISH_PRESENTATION)) {
+			} else if(operation.equalsIgnoreCase(DossierConstants.OPERATION_PUBLISH_PRESENTATION)) {
 				publishHandler(request, response);
 			} 
 			
@@ -156,19 +158,19 @@ public class BookletsCollaborationModule extends AbstractModule {
 			String visibleStr = (String)request.getAttribute("visible");
 			if(visibleStr != null && visibleStr.equalsIgnoreCase("0")) visible = false;
 			
-			String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
-			String versionIdStr = (String)request.getAttribute(BookletsConstants.VERSION_ID);
+			String dossierIdStr = (String) request.getAttribute(DossierConstants.DOSSIER_ID);
+			String versionIdStr = (String)request.getAttribute(DossierConstants.VERSION_ID);
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			EMFErrorHandler errorHandler = getResponseContainer().getErrorHandler();
 			if(!errorHandler.isOK()){
 				if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
 					response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-					response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
+					response.setAttribute(DossierConstants.PUBLISHER_NAME, "publishPresentation");
 					response.setAttribute("label", label);
 					response.setAttribute("name", name);
 					response.setAttribute("description", description);
-					response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
-					response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
+					response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
+					response.setAttribute(DossierConstants.VERSION_ID, versionIdStr);
 					return;
 				}
 			} else {
@@ -225,7 +227,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				objectDAO.insertBIObject(biobj, templ);
 				// put data into response
 				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
+				response.setAttribute(DossierConstants.PUBLISHER_NAME, "publishPresentation");
 				response.setAttribute("label", "");
 				response.setAttribute("name", "");
 				response.setAttribute("description", "");
@@ -233,11 +235,11 @@ public class BookletsCollaborationModule extends AbstractModule {
 				// load list of states and engines
 				IDomainDAO domaindao = DAOFactory.getDomainDAO();
 				List states = domaindao.loadListDomainsByType("STATE");
-			    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
+			    response.setAttribute(DossierConstants.DOSSIER_PRESENTATION_LIST_STATES, states);
 				
-				response.setAttribute("PublishMessage", PortletUtilities.getMessage("book.presPublished", "component_booklets_messages"));
-				response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
-				response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
+				response.setAttribute("PublishMessage", msgBuilder.getMessage("dossier.presPublished", "component_dossier_messages"));
+				response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
+				response.setAttribute(DossierConstants.VERSION_ID, versionIdStr);
 				
 			}
 		} catch(Exception e){
@@ -255,16 +257,16 @@ public class BookletsCollaborationModule extends AbstractModule {
 		List presVersions = null;
 		IDossierPresentationsDAO dpDAO = null;
 		try{
-			dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
-			String versionIdStr = (String) request.getAttribute(BookletsConstants.VERSION_ID);
+			dossierIdStr = (String) request.getAttribute(DossierConstants.DOSSIER_ID);
+			String versionIdStr = (String) request.getAttribute(DossierConstants.VERSION_ID);
 			dpDAO = DAOFactory.getDossierPresentationDAO();
 			Integer dossierId = new Integer(dossierIdStr);
 			Integer versionId = new Integer(versionIdStr);
 			dpDAO.deletePresentationVersion(dossierId, versionId);
 			presVersions = dpDAO.getPresentationVersions(dossierId);
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsPresentationVersion");
-			response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS, presVersions);
-			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierPresentationVersion");
+			response.setAttribute(DossierConstants.DOSSIER_PRESENTATION_VERSIONS, presVersions);
+			response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
 		} catch (Exception e) {
 			logger.error("error while setting response attribute " + e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -279,17 +281,17 @@ public class BookletsCollaborationModule extends AbstractModule {
 	private void preparePublishPageHandler(SourceBean request, SourceBean response) {
 		logger.debug("IN");
 		try {
-			String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
-			String versionIdStr = (String)request.getAttribute(BookletsConstants.VERSION_ID);
+			String dossierIdStr = (String) request.getAttribute(DossierConstants.DOSSIER_ID);
+			String versionIdStr = (String)request.getAttribute(DossierConstants.VERSION_ID);
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "publishPresentation");
-			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
-			response.setAttribute(BookletsConstants.VERSION_ID, versionIdStr);
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "publishPresentation");
+			response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
+			response.setAttribute(DossierConstants.VERSION_ID, versionIdStr);
 			 // load list of states and engines
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List states = domaindao.loadListDomainsByType("STATE");
-		    response.setAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES, states);
+		    response.setAttribute(DossierConstants.DOSSIER_PRESENTATION_LIST_STATES, states);
 		} catch(Exception e){
 			logger.error("Error while preparing page for publishing", e);
 		} finally {
@@ -303,29 +305,29 @@ public class BookletsCollaborationModule extends AbstractModule {
 
 	private void runCollaborationHandler(SourceBean request, SourceBean response) throws EMFUserError {
 		logger.debug("IN");
-		String dossierIdStr = (String) request.getAttribute(BookletsConstants.DOSSIER_ID);
+		String dossierIdStr = (String) request.getAttribute(DossierConstants.DOSSIER_ID);
 		Integer dossierId = new Integer(dossierIdStr);
 		IDossierDAO dossierDAO = DAOFactory.getDossierDAO();
 		BIObject dossier;
-		String pathTempFolder;
-		try {
-			dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
-			pathTempFolder = dossierDAO.init(dossier);
-		} catch (EMFUserError e) {
-			logger.error("Error while recovering dossier information: " + e);
-			throw e;
-		}
+		String pathTempFolder = null;
 		JbpmContext jbpmContext = null;
 		InputStream procDefIS = null;
 		String executionMsg = null;
-		IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
 		AuditManager auditManager = AuditManager.getInstance();
-	    // AUDIT
 		Integer auditId = null;
-		if (dossier != null) {
-			auditId = auditManager.insertAudit(dossier, profile, "", "WORKFLOW");
-		}
 		try {
+			try {
+				dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
+				pathTempFolder = dossierDAO.init(dossier);
+			} catch (EMFUserError e) {
+				logger.error("Error while recovering dossier information: " + e);
+				throw e;
+			}
+			IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
+		    // AUDIT
+			if (dossier != null) {
+				auditId = auditManager.insertAudit(dossier, profile, "", "WORKFLOW");
+			}
 			try {
 				procDefIS = dossierDAO.getProcessDefinitionContent(pathTempFolder);
 			} catch (Exception e) {
@@ -338,7 +340,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			try{
 				processDefinition = ProcessDefinition.parseXmlInputStream(procDefIS);
 			} catch(Exception e) {
-				executionMsg = PortletUtilities.getMessage("book.processDefNotCorrect", "component_booklets_messages"); 
+				executionMsg = msgBuilder.getMessage("dossier.processDefNotCorrect", "component_dossier_messages"); 
 				logger.error("Process definition xml file not correct", e);
 				throw e;
 			}	
@@ -351,15 +353,15 @@ public class BookletsCollaborationModule extends AbstractModule {
 			try{
 				jbpmContext.deployProcessDefinition(processDefinition);  
 			} catch (Exception e) {
-				executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
+				executionMsg = msgBuilder.getMessage("dossier.workProcessStartError", "component_dossier_messages");
 				logger.error("Error while deploying process definition", e);
 				throw e;
 			}
 			// create process instance
 			ProcessInstance processInstance = new ProcessInstance(processDefinition);
-			// get context instance and set the booklet path variable
+			// get context instance and set the dossier id variable
 			ContextInstance contextInstance = processInstance.getContextInstance();
-			contextInstance.createVariable(BookletsConstants.DOSSIER_ID, dossierIdStr);
+			contextInstance.createVariable(DossierConstants.DOSSIER_ID, dossierIdStr);
 			
 			// adding parameters for AUDIT updating
 			if (auditId != null) {
@@ -373,7 +375,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 				token.signal();
 			} catch (Exception e) {
 				if(e.getCause() instanceof OpenOfficeConnectionException ) {
-					executionMsg = PortletUtilities.getMessage("book.errorConnectionOO", "component_booklets_messages");
+					executionMsg = msgBuilder.getMessage("dossier.errorConnectionOO", "component_dossier_messages");
 				}
 			    throw e;
 			}
@@ -381,15 +383,15 @@ public class BookletsCollaborationModule extends AbstractModule {
 			jbpmContext.save(processInstance); 
 			
 		    try {
-		    	response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletsExecution");
-		    	response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
+		    	response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierExecution");
+		    	response.setAttribute(DossierConstants.EXECUTION_MESSAGE, executionMsg);
 		    } catch (Exception e) {
 		    	logger.error("Error while setting attributes into response", e);
 		    }
 			
 	    } catch (Exception e) {
 	    	if (executionMsg == null) {
-	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartError", "component_booklets_messages");
+	    		executionMsg = msgBuilder.getMessage("dossier.workProcessStartError", "component_dossier_messages");
 	    	}
 	    	logger.error("Error while starting workflow", e);
 			// AUDIT UPDATE
@@ -397,9 +399,9 @@ public class BookletsCollaborationModule extends AbstractModule {
 					"STARTUP_FAILED", e.getMessage(), null);
 	    } finally {
 	    	if (executionMsg == null) {
-	    		executionMsg = PortletUtilities.getMessage("book.workProcessStartCorrectly", "component_booklets_messages");
+	    		executionMsg = msgBuilder.getMessage("dossier.workProcessStartCorrectly", "component_dossier_messages");
 	    		try {
-					response.setAttribute(BookletsConstants.EXECUTION_MESSAGE, executionMsg);
+					response.setAttribute(DossierConstants.EXECUTION_MESSAGE, executionMsg);
 				} catch (SourceBeanException e) {
 					logger.error(e);
 				}
@@ -416,6 +418,11 @@ public class BookletsCollaborationModule extends AbstractModule {
 				} catch (IOException e) {
 					logger.error(e);
 				}
+		    // cleans dossier temp folder
+		    if (dossierDAO != null && pathTempFolder != null) {
+		    	dossierDAO.clean(pathTempFolder);
+			    logger.debug("Deleted folder " + pathTempFolder);
+		    }
 	    	logger.debug("OUT");
 	    } 
 
@@ -441,7 +448,7 @@ public class BookletsCollaborationModule extends AbstractModule {
 			contextInstance = taskInstance.getContextInstance();
 			ProcessInstance processInstance = contextInstance.getProcessInstance();
 			Long workflowProcessId = new Long(processInstance.getId());
-			String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+			String dossierIdStr = (String) contextInstance.getVariable(DossierConstants.DOSSIER_ID);
 			Integer dossierId = new Integer(dossierIdStr);
 			// store presentation
 			IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
@@ -456,9 +463,9 @@ public class BookletsCollaborationModule extends AbstractModule {
 			dpDAO.updatePresentation(currPresentation);
 			// put attributes into response
 			if (approved.equalsIgnoreCase("true")) {
-				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletCompleteActivityLoopback");
+				response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierCompleteActivityLoopback");
 			} else {
-				response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletRejecrActivityLoopback");
+				response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierRejecrActivityLoopback");
 			}
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
 			
@@ -523,12 +530,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
-			String index = (String)taskInstance.getVariable(BookletsConstants.BOOKLET_PART_INDEX);
+			String index = (String)taskInstance.getVariable(DossierConstants.DOSSIER_PART_INDEX);
 			int pageNum = Integer.parseInt(index);
 			ContextInstance contextInstance = taskInstance.getContextInstance();
 			ProcessInstance processInstance = contextInstance.getProcessInstance();
 			Long workflowProcessId = new Long(processInstance.getId());
-			String dossierIdStr = (String)contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+			String dossierIdStr = (String)contextInstance.getVariable(DossierConstants.DOSSIER_ID);
 			Integer dossierId = new Integer(dossierIdStr);
 			
 			// recovers images and notes
@@ -536,9 +543,9 @@ public class BookletsCollaborationModule extends AbstractModule {
 		    Map imageurl = recoverImageUrls(dossierId, pageNum, workflowProcessId);
 		    
 			// put attributes into response
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletEditNotesTemplatePart");
-			response.setAttribute(BookletsConstants.BOOKLET_PART_INDEX, index);
-			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierEditNotesTemplatePart");
+			response.setAttribute(DossierConstants.DOSSIER_PART_INDEX, index);
+			response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
 			response.setAttribute("mapImageUrls", imageurl);
 			response.setAttribute("notes", notes);
@@ -591,9 +598,9 @@ public class BookletsCollaborationModule extends AbstractModule {
 	    	// the url to recover the image is a spagobi servlet url
 	    	
 	    	String recoverUrl = DossierUtilities.getDossierServiceUrl() + "&" + 
-	    						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
-	    						BookletsConstants.BOOKLET_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
-	    						BookletsConstants.BOOKLET_SERVICE_PATH_IMAGE + "=" +
+	    						DossierConstants.DOSSIER_SERVICE_TASK + "=" +
+	    						DossierConstants.DOSSIER_SERVICE_TASK_GET_TEMPLATE_IMAGE + "&" +
+	    						DossierConstants.DOSSIER_SERVICE_PATH_IMAGE + "=" +
 	    						tempDir.getAbsolutePath() + "/" + logicalNameForStoring;
 	    	imageurl.put(logicalName, recoverUrl); 
 	    }
@@ -605,13 +612,12 @@ public class BookletsCollaborationModule extends AbstractModule {
 	private void saveNoteHandler(SourceBean request, SourceBean response) {
 		JbpmContext jbpmContext = null;
 		try {
-			String indexPart = (String)request.getAttribute(BookletsConstants.BOOKLET_PART_INDEX);
+			String indexPart = (String)request.getAttribute(DossierConstants.DOSSIER_PART_INDEX);
 			int pageNum = Integer.parseInt(indexPart);
-			String dossierIdStr = (String)request.getAttribute(BookletsConstants.DOSSIER_ID);
+			String dossierIdStr = (String)request.getAttribute(DossierConstants.DOSSIER_ID);
 			Integer dossierId = new Integer(dossierIdStr);
 			String noteSent = (String)request.getAttribute("notes");
 			String activityKey = (String)request.getAttribute(SpagoBIConstants.ACTIVITYKEY);
-			// TODO vedere se si può prendere dalla request
 			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
 			jbpmContext = jbpmConfiguration.createJbpmContext();
 			TaskInstance taskInstance = jbpmContext.getTaskInstance(new Long(activityKey).longValue());
@@ -624,9 +630,9 @@ public class BookletsCollaborationModule extends AbstractModule {
 		    String notes = recoverNotes(dossierId, pageNum, workflowProcessId);
 		    Map imageurl = recoverImageUrls(dossierId, pageNum, workflowProcessId);
 			// put attributes into response
-			response.setAttribute(BookletsConstants.PUBLISHER_NAME, "BookletEditNotesTemplatePart");
-			response.setAttribute(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
-			response.setAttribute(BookletsConstants.DOSSIER_ID, dossierIdStr);
+			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierEditNotesTemplatePart");
+			response.setAttribute(DossierConstants.DOSSIER_PART_INDEX, indexPart);
+			response.setAttribute(DossierConstants.DOSSIER_ID, dossierIdStr);
 			response.setAttribute(SpagoBIConstants.ACTIVITYKEY, activityKey);
 			response.setAttribute("mapImageUrls", imageurl);
 			response.setAttribute("notes", notes);

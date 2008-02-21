@@ -33,7 +33,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
-import it.eng.spagobi.engines.dossier.constants.BookletsConstants;
+import it.eng.spagobi.engines.dossier.constants.DossierConstants;
+import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
@@ -94,6 +95,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
     	String pathTmpFold = null;
 		ContextInstance contextInstance = null;
 		File tempDir = null;
+		IDossierDAO dossierDAO = null;
 		logger.debug("IN");
 		try {
 		    // RECOVER CONFIGURATION PARAMETER
@@ -101,12 +103,12 @@ public class ProcessOOTemplateAction implements ActionHandler {
 		    logger.debug("Context Instance retrived " + contextInstance);
 		    ProcessInstance processInstance = context.getProcessInstance();
 		    Long workflowProcessId = new Long(processInstance.getId());
-		    String dossierIdStr = (String) contextInstance.getVariable(BookletsConstants.DOSSIER_ID);
+		    String dossierIdStr = (String) contextInstance.getVariable(DossierConstants.DOSSIER_ID);
 		    logger.debug("Dossier id variable retrived " + dossierIdStr);
 		    Integer dossierId = new Integer(dossierIdStr);
 		    BIObject dossier = DAOFactory.getBIObjectDAO().loadBIObjectById(dossierId);
 		    logger.debug("Dossier variable retrived " + dossier);
-		    IDossierDAO dossierDAO = DAOFactory.getDossierDAO();
+		    dossierDAO = DAOFactory.getDossierDAO();
 		    pathTmpFold = dossierDAO.init(dossier);
 		    logger.debug("Using tmp folder path " + pathTmpFold);
 		    ConfigSingleton config = ConfigSingleton.getInstance();
@@ -115,14 +117,14 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	
 		    // GETS OO TEMPLATE AND WRITE IT INTO THE TMP DIRECTORY
 		    String templateFileName = dossierDAO.getPresentationTemplateFileName(pathTmpFold);
-		    logger.debug("booklet oo template name retrived " + templateFileName);
+		    logger.debug("dossier oo template name retrived " + templateFileName);
 		    InputStream contentTempIs = null;
 		    byte[] contentTempBytes = null;
 		    try {
 			    contentTempIs = dossierDAO.getPresentationTemplateContent(pathTmpFold);
-			    logger.debug("booklet oo template input stream retrived " + contentTempIs);
+			    logger.debug("dossier oo template input stream retrived " + contentTempIs);
 			    contentTempBytes = GeneralUtilities.getByteArrayFromInputStream(contentTempIs);
-			    logger.debug("booklet oo template bytes retrived ");
+			    logger.debug("dossier oo template bytes retrived ");
 		    } finally {
 		    	if (contentTempIs != null) contentTempIs.close();
 		    }
@@ -135,12 +137,12 @@ public class ProcessOOTemplateAction implements ActionHandler {
 		    fosTemplate.close();
 	
 		    // INITIALIZE OFFICE ENVIRONMENT
-		    SourceBean officeConnectSB = (SourceBean) config.getAttribute("BOOKLETS.OFFICECONNECTION");
+		    SourceBean officeConnectSB = (SourceBean) config.getAttribute("DOSSIER.OFFICECONNECTION");
 		    if (officeConnectSB == null) {
-		    	logger.error("Cannot found sourcebean BOOKLETS.OFFICECONNECTION into configuration");
-		    	throw new Exception("Cannot found sourcebean BOOKLETS.OFFICECONNECTION into configuration");
+		    	logger.error("Cannot found sourcebean DOSSIER.OFFICECONNECTION into configuration");
+		    	throw new Exception("Cannot found sourcebean DOSSIER.OFFICECONNECTION into configuration");
 		    } else {
-		    	logger.debug("Booklet office connection sourcebean retrived " + officeConnectSB);
+		    	logger.debug("Dossier office connection sourcebean retrived " + officeConnectSB);
 		    }
 		    String host = (String) officeConnectSB.getAttribute("host");
 		    String port = (String) officeConnectSB.getAttribute("port");
@@ -212,18 +214,6 @@ public class ProcessOOTemplateAction implements ActionHandler {
 		    int numPages = drawPages.getCount();
 		    logger.debug("Template has " + numPages + " pages");
 		    
-		    // TODO controllare a che serve
-		    /*
-		     * 		    // built the structure into the cms
-		    IDossierDAO pampdao = new BookletsCmsDaoImpl();
-		    pampdao.createStructureForTemplate(pathBookConf, numPages);
-		    // store as current version the template (in case of flow exception
-		    // there will be a file to download)
-		    InputStream tempContIS = bookDao.getBookletTemplateContent(pathBookConf);
-		    bookDao.storeCurrentPresentationContent(pathBookConf, tempContIS);
-		    logger.debug("Template cms structure created");
-		    */
-		    
 		    // for each part of the document gets the image images and stores
 		    // them into cms
 		    for (int i = 0; i < numPages; i++) {
@@ -291,12 +281,11 @@ public class ProcessOOTemplateAction implements ActionHandler {
 				logger.debug("Bridge disposed");
 		    }
 	
-		    // delete the temporary folder
-		    if (tempDir != null && tempDir.exists()) {
-				GeneralUtilities.deleteDir(tempDir);
-				logger.debug("Files contained into the dossier tmp directory deleted");
+		    // deletes the dossier temporary folder
+		    if (dossierDAO != null && pathTmpFold != null) {
+		    	dossierDAO.clean(pathTmpFold);
+		    	logger.debug("Dossier temp directory " + pathTmpFold + " deleted");
 		    }
-		    
 		    logger.debug("OUT");
 		}
 

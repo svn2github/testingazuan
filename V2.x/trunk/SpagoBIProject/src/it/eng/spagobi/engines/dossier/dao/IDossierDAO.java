@@ -26,21 +26,28 @@ import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Defines all the methods needed for access contents of dossier
+ * Defines all the methods needed for access contents of dossier template.<br>
+ * Dossier template is a zip file containing the presentation template (.ppt), <br>
+ * the process definition file (.xml file) and dossier configuration file (.sbidossier file).<br>
+ * The first operation you must perform is to unzipped the template using the <code>init</code> method: <br>
+ * this method returns the path of the temporary folder where template was unzipped:<br>
+ * this path is built as <b>BASE_TEMP_FOLDER + DOSSIER_ID + UUID</b> where:<br>
+ * BASE_TEMP_FOLDER is the temporary base folder configured in <b>dossier.xml</b>;<br>
+ * DOSSIER_ID is the document id;<br>
+ * UUID is a time based random string.<br>
+ * You have to keep this path in order to invoke other methods (those methods work on this folder).
+ * The <code>storeTemplate</code> method builds the new zip template file and saves it into the database.
+ * Then you can invoke <code>clean</code> method in order to delete temporary folder.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it) 
  */
 public interface IDossierDAO {
 
-	/**
-	 * Creates the cms node that holds the booklet configuration and returns the path of the node.
-	 * @param pathBiObject
-	 * @return the path of the booklet template node
-	 */
-	//public String createNewConfigurationNode(String pathBiObject);// via
-	//**
 	public String init(BIObject dossier);
+	
+	public void clean(String pathTempFolder);
 	
 	public void storeTemplate(Integer dossierId, String pathTempFolder);
 	
@@ -65,10 +72,5 @@ public interface IDossierDAO {
 	public String getProcessDefinitionFileName(String pathTempFolder); 
 	
 	public InputStream getProcessDefinitionContent(String pathTempFolder);
-	//**
-	
-	//public void createStructureForTemplate(String pathBooklet, int numTempParts);// via
-	
-//	public String getBiobjectPath(String pathBooklet);
 
 }

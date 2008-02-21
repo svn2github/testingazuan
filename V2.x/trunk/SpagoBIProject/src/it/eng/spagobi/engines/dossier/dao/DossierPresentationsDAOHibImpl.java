@@ -87,7 +87,6 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			// TODO controllare sintassi is not null
 			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and prog is not null";
 			Query query = aSession.createQuery(hql);
 			List list = query.list();
@@ -124,7 +123,15 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and sdp.prog=" + versionId;
 			Query query = aSession.createQuery(hql);
 			SbiDossierPresentations hibObjTemp = (SbiDossierPresentations) query.uniqueResult();
-			if (hibObjTemp != null) aSession.delete(hibObjTemp);
+			if (hibObjTemp != null) {
+				SbiBinContents hibBinCont = hibObjTemp.getSbiBinaryContent();
+				// deletes association first
+				aSession.delete(hibObjTemp);
+				// deletes binary contest at last
+				aSession.delete(hibBinCont);
+			} else {
+				logger.warn("No presentation found with prog = " + versionId + " for document with id = " + dossierId);
+			}
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -247,7 +254,6 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			// TODO mettere i criteria
 			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " " +
 					"and sdp.workflowProcessId=" + workflowProcessId;
 			Query query = aSession.createQuery(hql);

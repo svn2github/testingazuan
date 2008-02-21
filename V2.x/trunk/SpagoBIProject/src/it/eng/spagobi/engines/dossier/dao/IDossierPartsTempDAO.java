@@ -39,5 +39,7 @@ public interface IDossierPartsTempDAO {
 	public byte[] getNotesOfDossierPart(Integer dossierId, int pageNum, Long workflowProcessId) throws EMFInternalError;
 	
 	public void storeNote(Integer dossierId, int pageNum, byte[] noteContent, Long workflowProcessId) throws EMFInternalError;
+	
+	public void cleanDossierParts(Integer dossierId, Long workflowProcessId) throws EMFInternalError;
 
 }

@@ -140,7 +140,6 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
-					//if ("BOOKLET".equalsIgnoreCase(obj.getBiObjectTypeCode())) continue;
 					String nameObj = obj.getName();
 					Integer idObj = obj.getId();
 					obj.getFunctionalities();

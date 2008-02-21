@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.engines.dossier.constants.BookletsConstants,
+				it.eng.spagobi.engines.dossier.constants.DossierConstants,
 				it.eng.spagobi.commons.constants.SpagoBIConstants" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
@@ -35,8 +35,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	activityKey = (String)aServiceRequest.getAttribute("ActivityKey");
 	// BUILT URL TO DOWNLOAD THE DOCUMENT
 	String recoverUrl = DossierUtilities.getDossierServiceUrl(request) + "&" +
-						BookletsConstants.BOOKLET_SERVICE_TASK + "=" +
-						BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
+						DossierConstants.DOSSIER_SERVICE_TASK + "=" +
+						DossierConstants.DOSSIER_SERVICE_TASK_DOWN_FINAL_DOC + "&" +
 						SpagoBIConstants.ACTIVITYKEY + "=" + activityKey;
 	
 	// BUILT BACK URL 
@@ -47,8 +47,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	
 	// BUILT APPROVE URL 
 	Map checkedDocUrlPars = new HashMap();
-	checkedDocUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-	checkedDocUrlPars.put("OPERATION", BookletsConstants.OPERATION_APPROVE_PRESENTATION);
+	checkedDocUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+	checkedDocUrlPars.put("OPERATION", DossierConstants.OPERATION_APPROVE_PRESENTATION);
 	checkedDocUrlPars.put(SpagoBIConstants.ACTIVITYKEY, activityKey);
 	checkedDocUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String checkedDocUrl = urlBuilder.getUrl(request, checkedDocUrlPars);
@@ -58,15 +58,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "book.approval"  bundle="component_booklets_messages"/>
+			<spagobi:message key = "dossier.approval"  bundle="component_dossier_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
       				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
-      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 			</a>
 		</td>
 	</tr>
@@ -80,14 +80,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td width="2%">&nbsp;</td>
 		<td width="47%" style="padding:10px;" class="div_detail_area_forms">
 		    <span class='portlet-form-field-label'>
-				<spagobi:message key="book.downloadDescr"  bundle="component_booklets_messages"/>
+				<spagobi:message key="dossier.downloadDescr"  bundle="component_dossier_messages"/>
 			</span>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<a href="<%=recoverUrl %>">
 			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "dossier.download" bundle="component_dossier_messages" />' 
 	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download32.png")%>' 
-	      				 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
+	      				 alt='<spagobi:message key = "dossier.download"  bundle="component_dossier_messages"/>' />
 	        </a>
 		</td>
 		<td width="2%">&nbsp;</td>
@@ -96,7 +96,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<table>
 				<tr>
 					<td class='portlet-form-field-label'>
-						<spagobi:message key="book.finalDocApproved"  bundle="component_booklets_messages"/>
+						<spagobi:message key="dossier.finalDocApproved"  bundle="component_dossier_messages"/>
 					</td>
 					<td class='portlet-form-field-label'>
 						<input type="radio" name="approved" value="true" default>True<br>
@@ -106,9 +106,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</td>
 					<td class='portlet-form-field-label'>
 						<input type="image" 
-			       			   title='<spagobi:message key = "book.approvalBotton" bundle="component_booklets_messages" />' 
+			       			   title='<spagobi:message key = "dossier.approvalBotton" bundle="component_dossier_messages" />' 
       		 	   			   src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
-      		 	  			   alt='<spagobi:message key = "book.approvalBotton"  bundle="component_booklets_messages"/>' />
+      		 	  			   alt='<spagobi:message key = "dossier.approvalBotton"  bundle="component_dossier_messages"/>' />
 					</td>
 				</tr>
 			</table>

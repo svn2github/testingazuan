@@ -25,14 +25,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				java.util.*,
 				it.eng.spagobi.commons.bo.Domain" %>
 <%@page import="it.eng.spago.base.SourceBean"%>
-<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.DossierConstants"%>
 		
 		
 <%
-	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("BookletsCollaborationModule"); 
-	String dossierIdStr = (String)moduleResponse.getAttribute(BookletsConstants.DOSSIER_ID);
-	String versionId = (String)moduleResponse.getAttribute(BookletsConstants.VERSION_ID);
-	List listStates = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_LIST_STATES);
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DossierCollaborationModule"); 
+	String dossierIdStr = (String)moduleResponse.getAttribute(DossierConstants.DOSSIER_ID);
+	String versionId = (String)moduleResponse.getAttribute(DossierConstants.VERSION_ID);
+	List listStates = (List)moduleResponse.getAttribute(DossierConstants.DOSSIER_PRESENTATION_LIST_STATES);
 
 	String label = (String)moduleResponse.getAttribute("label");
 	if(label==null) label="";
@@ -47,11 +47,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	Map saveUrlPars = new HashMap();
-	saveUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-	saveUrlPars.put("OPERATION", BookletsConstants.OPERATION_PUBLISH_PRESENTATION);
+	saveUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+	saveUrlPars.put("OPERATION", DossierConstants.OPERATION_PUBLISH_PRESENTATION);
 	saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	saveUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
-	saveUrlPars.put(BookletsConstants.VERSION_ID, versionId);
+	saveUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
+	saveUrlPars.put(DossierConstants.VERSION_ID, versionId);
    	String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	
 %>		
@@ -64,22 +64,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
 		    style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key="book.Execution" bundle="component_booklets_messages" />
+			<spagobi:message key="dossier.Execution" bundle="component_dossier_messages" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>		
 		<td class='header-button-column-portlet-section'>
 			<input type='image' class='header-button-image-portlet-section' 
-      			   title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
+      			   title='<spagobi:message key = "dossier.save" bundle="component_dossier_messages" />' 
       			   src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
-      			   alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
+      			   alt='<spagobi:message key = "dossier.save"  bundle="component_dossier_messages"/>' />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
 	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
-	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+	      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 			</a>
 		</td>
 	</tr>
@@ -198,7 +198,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES   -->	     
 			<td width="60%">
 				<div style='display:inline;' id='folderTree'>
-					<spagobi:treeObjects moduleName="BookletsCollaborationModule"  
+					<spagobi:treeObjects moduleName="DossierCollaborationModule"  
 	 						 htmlGeneratorClass="it.eng.spagobi.analiticalmodel.functionalitytree.presentation.FunctionalitiesTreeInsertObjectHtmlGenerator" />    	
 				</div>
 			</td>

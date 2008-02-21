@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,
-				it.eng.spagobi.engines.dossier.constants.BookletsConstants,
+				it.eng.spagobi.engines.dossier.constants.DossierConstants,
 				java.util.List,
 				java.util.Iterator,
 				it.eng.spagobi.commons.bo.Role,
@@ -36,48 +36,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
    if(moduleResponse==null){
-	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
+	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(DossierConstants.DOSSIER_COLLABORATION_MODULE); 
    }
    if(moduleResponse==null){
-	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_REFRESH_MODULE); 
+	   moduleResponse = (SourceBean)aServiceResponse.getAttribute(DossierConstants.DOSSIER_REFRESH_MODULE); 
    }
    
-   List presVersions = (List)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PRESENTATION_VERSIONS);
-   String dossierIdStr = (String)moduleResponse.getAttribute(BookletsConstants.DOSSIER_ID);
+   List presVersions = (List)moduleResponse.getAttribute(DossierConstants.DOSSIER_PRESENTATION_VERSIONS);
+   String dossierIdStr = (String)moduleResponse.getAttribute(DossierConstants.DOSSIER_ID);
    
    Map backUrlPars = new HashMap();
    backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
    String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
    Map refreshUrlPars = new HashMap();
-   refreshUrlPars.put("PAGE", BookletsConstants.BOOKLET_REFRESH_PAGE);
-   refreshUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
+   refreshUrlPars.put("PAGE", DossierConstants.DOSSIER_REFRESH_PAGE);
+   refreshUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
    String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
    
    Map runCollaborationUrlPars = new HashMap();
-   runCollaborationUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   runCollaborationUrlPars.put("OPERATION", BookletsConstants.OPERATION_RUN_NEW_COLLABORATION);
-   runCollaborationUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
+   runCollaborationUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+   runCollaborationUrlPars.put("OPERATION", DossierConstants.OPERATION_RUN_NEW_COLLABORATION);
+   runCollaborationUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
    runCollaborationUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String runCollaborationUrl = urlBuilder.getUrl(request, runCollaborationUrlPars);
    
    Map eraseVersionUrlPars = new HashMap();
-   eraseVersionUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   eraseVersionUrlPars.put("OPERATION", BookletsConstants.OPERATION_DELETE_PRESENTATION_VERSION);
-   eraseVersionUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
+   eraseVersionUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+   eraseVersionUrlPars.put("OPERATION", DossierConstants.OPERATION_DELETE_PRESENTATION_VERSION);
+   eraseVersionUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
    eraseVersionUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
    String eraseVersionUrl = urlBuilder.getUrl(request, eraseVersionUrlPars);
    
    Map publishUrlPars = new HashMap();
-   publishUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-   publishUrlPars.put("OPERATION", BookletsConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE);
-   publishUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
+   publishUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+   publishUrlPars.put("OPERATION", DossierConstants.OPERATION_PREPARE_PUBLISH_PRESENTATION_PAGE);
+   publishUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
    String publishUrl = urlBuilder.getUrl(request, publishUrlPars);
    
    String downloadVersionUrl = DossierUtilities.getDossierServiceUrl(request) + "&" +
-   							   BookletsConstants.BOOKLET_SERVICE_TASK + "=" + 
-   							   BookletsConstants.BOOKLET_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
-		                       BookletsConstants.DOSSIER_ID+"="+dossierIdStr;
+   							   DossierConstants.DOSSIER_SERVICE_TASK + "=" + 
+   							   DossierConstants.DOSSIER_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
+		                       DossierConstants.DOSSIER_ID+"="+dossierIdStr;
    
 %>
 
@@ -89,23 +89,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key="book.Execution" bundle="component_booklets_messages" />
+				<spagobi:message key="dossier.Execution" bundle="component_dossier_messages" />
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
 	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
-	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+	      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='<%= refreshUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.refresh" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "dossier.refresh" bundle="component_dossier_messages" />' 
 	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/refresh.gif")%>' 
-	      				 alt='<spagobi:message key = "book.refresh"  bundle="component_booklets_messages"/>' />
+	      				 alt='<spagobi:message key = "dossier.refresh"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
 			
@@ -119,14 +119,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	<div style="float:left;" class='portlet-form-field-label'>
-		&nbsp;&nbsp;&nbsp;<spagobi:message key = "book.StartBookletDiscussion"  bundle="component_booklets_messages"/> ...
+		&nbsp;&nbsp;&nbsp;<spagobi:message key = "dossier.StartDossierDiscussion"  bundle="component_dossier_messages"/> ...
 	</div>
 	<div style="float:left;padding-left:15px;">
 		<a href='<%= runCollaborationUrl %>'> 
 	    <img class='header-button-image-portlet-section' 
-	    	 title='<spagobi:message key = "book.StartBookletDiscussion" bundle="component_booklets_messages" />' 
+	    	 title='<spagobi:message key = "dossier.StartDossierDiscussion" bundle="component_dossier_messages" />' 
 	    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/exec.jpg")%>' 
-	    	 alt='<spagobi:message key = "book.StartBookletDiscussion"  bundle="component_booklets_messages"/>' />
+	    	 alt='<spagobi:message key = "dossier.StartDossierDiscussion"  bundle="component_dossier_messages"/>' />
 		</a>
 	</div>
 	<div style="clear:left;">&nbsp;</div>
@@ -140,7 +140,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="first-tab-level" style="background-color:#f8f8f8">
 			<div style="overflow: hidden; width:100%">
 				<div class='tab'>
-					<spagobi:message key = "book.ApprovedPresentations"  bundle="component_booklets_messages"/>
+					<spagobi:message key = "dossier.ApprovedPresentations"  bundle="component_dossier_messages"/>
 				</div>
 			</div>
 		</div>
@@ -150,19 +150,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<table style='width:100%;'> 
 	     <tr>
 	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
-	           <spagobi:message key = "book.PresentationName"  bundle="component_booklets_messages"/>
+	           <spagobi:message key = "dossier.PresentationName"  bundle="component_dossier_messages"/>
 	       </td>
 	       <td align="left" class="portlet-section-header">&nbsp;</td>
 	       <td style='vertical-align:middle;' align="left" class="portlet-section-header">
-	          <spagobi:message key = "book.CreationDate"  bundle="component_booklets_messages"/>
+	          <spagobi:message key = "dossier.CreationDate"  bundle="component_dossier_messages"/>
 	       </td>
 	       <td align="left" class="portlet-section-header">&nbsp;</td>
 	       <td align="center" style='vertical-align:middle;' align="left" class="portlet-section-header">
-	          <spagobi:message key = "book.VersionName"  bundle="component_booklets_messages"/>
+	          <spagobi:message key = "dossier.VersionName"  bundle="component_dossier_messages"/>
 	       </td>
 	       <td align="left" class="portlet-section-header">&nbsp;</td>
 	       <td align="center" style='vertical-align:middle;' align="center" class="portlet-section-header">
-	          <spagobi:message key = "book.Approved"  bundle="component_booklets_messages"/>
+	          <spagobi:message key = "dossier.Approved"  bundle="component_dossier_messages"/>
 	       </td>
 	       <td align="left" class="portlet-section-header" colspan='4' >&nbsp;</td>
 	     </tr>
@@ -193,25 +193,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </td> 
             <td class='<%= rowClass %>' width="20px">&nbsp;</td> 
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                <a href='<%=eraseVersionUrl+"&"+BookletsConstants.VERSION_ID+"="+presVer.getProg()%>'> 
-			    <img title='<spagobi:message key = "book.erase" bundle="component_booklets_messages" />' 
+                <a href='<%=eraseVersionUrl+"&"+DossierConstants.VERSION_ID+"="+presVer.getProg()%>'> 
+			    <img title='<spagobi:message key = "dossier.erase" bundle="component_dossier_messages" />' 
 			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/erase.gif")%>' 
-			    	 alt='<spagobi:message key = "book.erase"  bundle="component_booklets_messages"/>' />
+			    	 alt='<spagobi:message key = "dossier.erase"  bundle="component_dossier_messages"/>' />
 				</a>
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
-                <a href='<%=downloadVersionUrl + "&" + BookletsConstants.VERSION_ID + "=" + presVer.getProg()%>'> 
-			    <img title='<spagobi:message key = "book.download" bundle="component_booklets_messages" />' 
+                <a href='<%=downloadVersionUrl + "&" + DossierConstants.VERSION_ID + "=" + presVer.getProg()%>'> 
+			    <img title='<spagobi:message key = "dossier.download" bundle="component_dossier_messages" />' 
 			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
-			    	 alt='<spagobi:message key = "book.download"  bundle="component_booklets_messages"/>' />
+			    	 alt='<spagobi:message key = "dossier.download"  bundle="component_dossier_messages"/>' />
 				</a>              		
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
             	<% if(presVer.getApproved() != null && presVer.getApproved().booleanValue()) { %>
-                <a href='<%=publishUrl+"&"+BookletsConstants.VERSION_ID+"="+presVer.getProg()%>'> 
-			    <img title='<spagobi:message key = "book.deploy" bundle="component_booklets_messages" />' 
+                <a href='<%=publishUrl+"&"+DossierConstants.VERSION_ID+"="+presVer.getProg()%>'> 
+			    <img title='<spagobi:message key = "dossier.deploy" bundle="component_dossier_messages" />' 
 			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/deploy16.png")%>' 
-			    	 alt='<spagobi:message key = "book.deploy"  bundle="component_booklets_messages"/>' />
+			    	 alt='<spagobi:message key = "dossier.deploy"  bundle="component_dossier_messages"/>' />
 				</a>
 				<% } else { out.print("&nbsp"); } %>        		
             </td>

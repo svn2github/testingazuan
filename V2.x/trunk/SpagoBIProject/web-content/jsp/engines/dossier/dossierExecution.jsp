@@ -24,11 +24,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.DossierConstants"%>
 
 <%
-   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
-   String execMessage = (String)moduleResponse.getAttribute(BookletsConstants.EXECUTION_MESSAGE);
+   SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(DossierConstants.DOSSIER_COLLABORATION_MODULE); 
+   String execMessage = (String)moduleResponse.getAttribute(DossierConstants.EXECUTION_MESSAGE);
    
    Map backUrlPars = new HashMap();
    backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
@@ -45,15 +45,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key="book.Execution" bundle="component_booklets_messages" />
+				<spagobi:message key="dossier.Execution" bundle="component_dossier_messages" />
 			</td>
 			<td class='header-empty-column-portlet-section'>&nbsp;</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+	      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
 	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
-	      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+	      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
 		</tr>

@@ -30,12 +30,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spago.base.SourceBean,
 				java.util.HashMap,
 				it.eng.spagobi.commons.constants.SpagoBIConstants" %>
-<%@page import="it.eng.spagobi.engines.dossier.constants.BookletsConstants"%>
+<%@page import="it.eng.spagobi.engines.dossier.constants.DossierConstants"%>
 
 <%
-	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(BookletsConstants.BOOKLET_COLLABORATION_MODULE); 
-	String dossierIdStr = (String)moduleResponse.getAttribute(BookletsConstants.DOSSIER_ID);
-	String indexPart = (String)moduleResponse.getAttribute(BookletsConstants.BOOKLET_PART_INDEX);
+	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute(DossierConstants.DOSSIER_COLLABORATION_MODULE); 
+	String dossierIdStr = (String)moduleResponse.getAttribute(DossierConstants.DOSSIER_ID);
+	String indexPart = (String)moduleResponse.getAttribute(DossierConstants.DOSSIER_PART_INDEX);
 	String activityKey = (String)moduleResponse.getAttribute(SpagoBIConstants.ACTIVITYKEY);
 	Map imageurl = (Map)moduleResponse.getAttribute("mapImageUrls");
     String notes = (String)moduleResponse.getAttribute("notes");
@@ -49,10 +49,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	// add parameters to save url
 	Map saveNoteUrlPars = new HashMap();
-	saveNoteUrlPars.put("PAGE", BookletsConstants.BOOKLET_COLLABORATION_PAGE);
-	saveNoteUrlPars.put("OPERATION", BookletsConstants.OPERATION_SAVE_NOTE);
-	saveNoteUrlPars.put(BookletsConstants.DOSSIER_ID, dossierIdStr);
-	saveNoteUrlPars.put(BookletsConstants.BOOKLET_PART_INDEX, indexPart);
+	saveNoteUrlPars.put("PAGE", DossierConstants.DOSSIER_COLLABORATION_PAGE);
+	saveNoteUrlPars.put("OPERATION", DossierConstants.OPERATION_SAVE_NOTE);
+	saveNoteUrlPars.put(DossierConstants.DOSSIER_ID, dossierIdStr);
+	saveNoteUrlPars.put(DossierConstants.DOSSIER_PART_INDEX, indexPart);
 	saveNoteUrlPars.put(SpagoBIConstants.ACTIVITYKEY, activityKey);
 	saveNoteUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 	String saveNoteUrl = urlBuilder.getUrl(request, saveNoteUrlPars);
@@ -70,15 +70,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "book.editnotes"  bundle="component_booklets_messages"/>
+			<spagobi:message key = "dossier.editnotes"  bundle="component_dossier_messages"/>
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "book.back" bundle="component_booklets_messages" />' 
+      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
       				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
-      				 alt='<spagobi:message key = "book.back"  bundle="component_booklets_messages"/>' />
+      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 			</a>
 		</td>
 		
@@ -86,9 +86,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('formNotes').submit();"> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "book.save" bundle="component_booklets_messages" />' 
+      				 title='<spagobi:message key = "dossier.save" bundle="component_dossier_messages" />' 
       				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.png")%>' 
-      				 alt='<spagobi:message key = "book.save"  bundle="component_booklets_messages"/>' />
+      				 alt='<spagobi:message key = "dossier.save"  bundle="component_dossier_messages"/>' />
 			</a>
 		</td>
 
@@ -96,9 +96,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=closeNoteUrl%>'> 
       			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "book.closeDiscussion" bundle="component_booklets_messages" />' 
+      				 title='<spagobi:message key = "dossier.closeDiscussion" bundle="component_dossier_messages" />' 
       				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/closeNotes32.png")%>' 
-      				 alt='<spagobi:message key = "book.closeDiscussion"  bundle="component_booklets_messages"/>' />
+      				 alt='<spagobi:message key = "dossier.closeDiscussion"  bundle="component_dossier_messages"/>' />
 			</a>
 		</td>
 		
@@ -237,7 +237,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div name="notesdiv" id="notesdiv" >
 				<form method="POST" id="formNotes" action="<%=saveNoteUrl%>" >
 				<center>
-					<b><spagobi:message key = "book.notes"  bundle="component_booklets_messages"/></b>
+					<b><spagobi:message key = "dossier.notes"  bundle="component_dossier_messages"/></b>
 					<br/>
 					<textarea name="notes" style="width:1000px;height:350px;"><%=notes%></textarea>
 				<center>

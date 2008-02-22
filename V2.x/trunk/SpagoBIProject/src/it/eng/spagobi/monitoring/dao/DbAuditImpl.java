@@ -289,7 +289,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			tx = aSession.beginTransaction();
 			StringBuffer hql = new StringBuffer();
 			hql.append(	"select ");
-			hql.append(	"		max(a.request_time) as t, ");
+			hql.append(	"		max(a.requestTime), ");
 			hql.append(	"		a.sbiObject.biobjId, ");
 			hql.append(	"		a.sbiObject.label, ");
 			hql.append(	"		a.sbiObject.name, ");
@@ -311,7 +311,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"			a.sbiObject.objectTypeCode, ");
 			hql.append(	"			a.documentParameters, ");
 			hql.append(	"			a.sbiEngine.name ");
-			hql.append(	"order by t desc ");
+			hql.append(	"order by max(a.requestTime) desc ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
 			hqlQuery.setMaxResults(limit);
 			List result = hqlQuery.list();

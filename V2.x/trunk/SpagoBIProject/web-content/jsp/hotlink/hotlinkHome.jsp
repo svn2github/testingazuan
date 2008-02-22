@@ -27,16 +27,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.RememberMe"%>
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.HotLink"%>
+<%@page import="it.eng.spagobi.hotlink.modules.HotLinkModule"%>
+<%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
 
 <%
+String mooFx = urlBuilder.getResourceLink(request, "/js/moo/moo.fx.js");
+String mooFxAccordion = urlBuilder.getResourceLink(request, "/js/moo/accordion.js");
+
 SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute(HotLinkModule.MODULE_NAME); 
 List rememberMeList = (List) moduleResponse.getAttribute(HotLinkConstants.REMEMBER_ME);
 List mostPopularList = (List) moduleResponse.getAttribute(HotLinkConstants.MOST_POPULAR);
 List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY_RECENTLY_USED);
 %>
 
-<%@page import="it.eng.spagobi.hotlink.modules.HotLinkModule"%>
-<%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
+<script type="text/javascript" src="<%=mooFx%>"></script>
+<script type="text/javascript" src="<%=mooFxAccordion%>"></script>
+
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section-no-buttons' 
@@ -48,7 +54,9 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 
 <div class="div_background_no_img">
 	<div style="width:40%;" class="div_detail_area_forms">
-	RememberMe
+	
+		<h3 class="toggler_introduction"><a href="#RememberMe">RememberMe</a></h3>
+		<div class="accordion">
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator rememberMeListIt = rememberMeList.iterator();
@@ -88,8 +96,11 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			}
 			%>
 		</table>
+		</div>
 		
-		Most popular
+		
+		<h3 class="toggler_introduction"><a href="#Most popular">Most popular</a></h3>
+		<div class="accordion">
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator mostPopularListIt = mostPopularList.iterator();
@@ -120,8 +131,10 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			}
 			%>
 		</table>
+		</div>
 		
-		My recently used
+		<h3 class="toggler_introduction"><a href="#My recently used">My recently used</a></h3>
+		<div class="accordion">
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator myRecentlyUsedListIt = myRecentlyUsedList.iterator();
@@ -152,8 +165,19 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			}
 			%>
 		</table>
+		</div>
 	</div>
 </div>
 
+<script type="text/javascript">
+
+//we define two arrays, containing our toggles and divs.
+var myDivs = document.getElementsByClassName('accordion');
+var myLinks = document.getElementsByClassName('toggler_introduction');
+
+//then we create the effect.
+var myAccordion = new Fx.Accordion(myLinks, myDivs, {opacity: true});
+	
+</script>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

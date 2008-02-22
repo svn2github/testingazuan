@@ -7,7 +7,7 @@
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
 			</CONDITIONS>
 			<FIELDS>
-				<FIELD name="NAME" label="#SBISet.ListDL.columnLabel">
+				<FIELD name="NAME" label="#SBISet.ListDL.columnName">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>				
 			</FIELDS>

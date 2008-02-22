@@ -4,6 +4,8 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionList;
@@ -69,26 +71,16 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			/*
-			Criterion aCriterion = Expression.eq("valueId",	aDistributionList.getId());
-			Criteria criteria = aSession.createCriteria(SbiDomains.class);
-			criteria.add(aCriterion);
-
-			SbiDomains dlId = (SbiDomains) criteria.uniqueResult();
-
-			if (dlId == null){
-				logger.error("The Distribution list with value_id = "+aDistributionList.getId()+" does not exist.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
-			}*/
+			
 			SbiDistributionList hibDistributionList = new SbiDistributionList();
-			//hibDistributionList.setDlId(dlId);
+			
 			hibDistributionList.setName(aDistributionList.getName());
 			hibDistributionList.setDescr(aDistributionList.getDescr());
-			hibDistributionList.setSbiDistributionListsObjectses(null);
+			
 			aSession.save(hibDistributionList);
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while inserting the distribution list with id " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getId())), he);
+			logger.error("Error while inserting the distribution list with name " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getName())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -173,8 +165,39 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		logger.debug("OUT");
 		return toReturn;
 	}
+	
+	public DistributionList loadDistributionListByName(String name) throws EMFUserError {
+		logger.debug("IN");
+		DistributionList biDL = null;
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			Criterion nameCriterrion = Expression.eq("name", name);
+			Criteria criteria = tmpSession.createCriteria(SbiDistributionList.class);
+			criteria.add(nameCriterrion);	
+			SbiDistributionList hibDL = (SbiDistributionList) criteria.uniqueResult();
+			if (hibDL == null) return null;
+			biDL = toDistributionList(hibDL);				
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while loading the distribution list with name " + name, he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return biDL;		
+	}
 
-	/*
+
+	
 	public void modifyDistributionList(DistributionList aDistributionList)
 			throws EMFUserError {
 		
@@ -185,26 +208,13 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			Criterion aCriterion = Expression.eq("valueId",	aDistributionList.getId());
-			Criteria criteria = aSession.createCriteria(SbiDomains.class);
-			criteria.add(aCriterion);
-
-			SbiDomains dialect = (SbiDomains) criteria.uniqueResult();
-
-			if (dialect == null){
-				logger.error("The Domain with value_id= "+aDistributionList.getId()+" does not exist.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
-			}
-
-
 			SbiDistributionList hibDistributionList = (SbiDistributionList) aSession.load(SbiDistributionList.class,
 					new Integer(aDistributionList.getId()));			
-			hibDistributionList.setDlId(dlId);
 			hibDistributionList.setName(aDistributionList.getName());
 			hibDistributionList.setDescr(aDistributionList.getDescr());
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while modifing the data source with id " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getDsId())), he);
+			logger.error("Error while modifing the distribution list with id " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -218,17 +228,54 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			}
 		}
 
-	}*/
+	}
 	
 	public DistributionList toDistributionList(SbiDistributionList hibDistributionList){
-		DistributionList ds = new DistributionList();
+		DistributionList dl = new DistributionList();
 		
-		ds.setId((hibDistributionList.getDlId()).intValue());
-		ds.setName(hibDistributionList.getName());
-		ds.setDescr(hibDistributionList.getDescr());
-		//ds.setEmails(hibDistributionList.getSbiDistributionListsObjectses());
+		dl.setId((hibDistributionList.getDlId()).intValue());
+		dl.setName(hibDistributionList.getName());
+		dl.setDescr(hibDistributionList.getDescr());		
+		return dl;
+	}
+	
+	public boolean hasBIObjAssociated (String dlId) throws EMFUserError{
+		logger.debug("IN");		
+		boolean bool = false; 
 		
-		return ds;
+		
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Integer dlIdInt = Integer.valueOf(dlId);
+			
+			String hql = " from SbiObjects s where s.distributionList.dlId = "+ dlIdInt;
+			Query aQuery = aSession.createQuery(hql);
+			
+			List biObjectsAssocitedWithDl = aQuery.list();
+			if (biObjectsAssocitedWithDl.size() > 0)
+				bool = true;
+			else
+				bool = false;
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while getting the objects associated with the distribution list with id " + dlId, he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return bool;
+		
 	}
 
 }

@@ -13,68 +13,57 @@ public class SbiDistributionListUser  implements java.io.Serializable {
     // Fields    
 
      private Integer dluId;
-     private Integer listId;
+     private SbiDistributionList sbiDistributionList;
      private String userId;
      private String EMail;
 
 
-    // Constructors
+     public SbiDistributionListUser() {
+     }
 
-    /** default constructor */
-    public SbiDistributionListUser() {
-    }
+     
+     /** full constructor */
+     public SbiDistributionListUser(Integer dluId, SbiDistributionList sbiDistributionList, String userId, String EMail) {
+         this.dluId = dluId;
+         this.sbiDistributionList = sbiDistributionList;
+         this.userId = userId;
+         this.EMail = EMail;
+     }
+     
 
     
-    /** full constructor */
-    public SbiDistributionListUser(Integer dluId, Integer listId, String userId, String EMail) {
-        this.dluId = dluId;
-        this.listId = listId;
-        this.userId = userId;
-        this.EMail = EMail;
-    }
+     // Property accessors
+
+     public Integer getDluId() {
+         return this.dluId;
+     }
+     
+     public void setDluId(Integer dluId) {
+         this.dluId = dluId;
+     }
+
+     public SbiDistributionList getSbiDistributionList() {
+         return this.sbiDistributionList;
+     }
+     
+     public void setSbiDistributionList(SbiDistributionList sbiDistributionList) {
+         this.sbiDistributionList = sbiDistributionList;
+     }
+
+     public String getUserId() {
+         return this.userId;
+     }
+     
+     public void setUserId(String userId) {
+         this.userId = userId;
+     }
+
+     public String getEMail() {
+         return this.EMail;
+     }
+     
+     public void setEMail(String EMail) {
+         this.EMail = EMail;
+     }
     
-
-   
-    // Property accessors
-
-    public Integer getDluId() {
-        return this.dluId;
-    }
-    
-    public void setDluId(Integer dluId) {
-        this.dluId = dluId;
-    }
-
-    public Integer getListId() {
-        return this.listId;
-    }
-    
-    public void setListId(Integer listId) {
-        this.listId = listId;
-    }
-
-    public String getUserId() {
-        return this.userId;
-    }
-    
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getEMail() {
-        return this.EMail;
-    }
-    
-    public void setEMail(String EMail) {
-        this.EMail = EMail;
-    }
-   
-
-
-
-
-
-
-
-
 }

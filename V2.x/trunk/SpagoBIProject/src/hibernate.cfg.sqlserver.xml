@@ -39,6 +39,9 @@
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappingsqlserver/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/config/metadata/mappingsqlserver/SbiEngines.hbm.xml" />        
 		<mapping resource="it/eng/spagobi/tools/datasource/metadata/mappingsqlserver/SbiDataSource.hbm.xml" />
+		<mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingsqlserver/SbiDistributionList.hbm.xml" />
+		<mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingsqlserver/SbiDistributionListsObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingsqlserver/SbiDistributionListUser.hbm.xml" />
                         
         <!-- map catalogue -->
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingsqlserver/SbiGeoMapFeatures.hbm.xml" />

@@ -13,17 +13,21 @@
 	        <COLUMN label="DL_ID" name="DL_ID" hidden="true" />
 	        <COLUMN label="SBISet.ListDL.columnName" name="NAME" />	        
 	        <COLUMN label="SBISet.ListDL.columnDescr" name="DESCR" />
+	        <COLUMN label="SBISet.ListDL.columnCountUsers" name="USERS" />
 	      </COLUMNS>
 	      <CAPTIONS>
 	      	<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
-		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="DL_ID"/>
+		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	        </SELECT_CAPTION>
-	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBISet.ListDL.deleteButton">
+	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBISet.ListDL.deleteCaption">
 	          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
+	          <CONFIRM_CONDITION msg='SBISet.ListDL.ConfirmDeleteFeature' bundle='messages' >
+				<PARAMETER name='USERS' scope='LOCAL' value='0' operator='GREATER_THAN' />
+			  </CONFIRM_CONDITION>
 	        </DELETE_CAPTION>
 	      </CAPTIONS>
 	      <BUTTONS>

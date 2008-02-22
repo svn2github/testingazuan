@@ -97,14 +97,11 @@
 					  FROM SBI_DATA_SOURCE "/>
 					  
 	<STATEMENT name="SELECT_ALL_DL" 
-               query="SELECT DL_ID as ID, 
-               				 NAME,        						 
-       						 DESCR
-					  FROM SBI_DISTRIBUTION_LIST "/>	
-					 
-	<STATEMENT name="SELECT_EMAILS_FROM_DL" 
-  				   query="SELECT DLU_ID, USER_ID, EMAIL  					 					
-				            FROM SBI_DISTRIBUTION_LIST_USER
-				            WHERE LIST_ID = ? "/>				  			  
+               query="SELECT SDL.DL_ID as ID,
+               				 SDL.NAME,
+       						 SDL.DESCR, COUNT(SDLU.DLU_ID) as USERS
+					  FROM SBI_DISTRIBUTION_LIST SDL LEFT OUTER JOIN  SBI_DISTRIBUTION_LIST_USER SDLU
+  					  ON SDL.DL_ID = SDLU.LIST_ID
+ 					  GROUP BY SDL.DL_ID,SDL.NAME,SDL.DESCR "/>				  			  
   
 </STATEMENTS>

@@ -1,18 +1,19 @@
 	<%@ include file="/jsp/commons/portlet_base.jsp"%>
 	
-	<%@ page         import="it.eng.spagobi.tools.datasource.bo.DataSource,
+	<%@ page         import="it.eng.spagobi.tools.distributionlist.bo.DistributionList,
+							 it.eng.spagobi.tools.distributionlist.bo.Email,
 	 				         it.eng.spago.navigation.LightNavigationManager,
 	 				         java.util.Map,java.util.HashMap,java.util.List,
 	 				         java.util.Iterator,
 	 				         it.eng.spagobi.commons.bo.Domain,
-	 				         it.eng.spagobi.tools.datasource.service.DetailDataSourceModule" %>
+	 				         it.eng.spagobi.tools.distributionlist.service.DetailDistributionListModule" %>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
 	<%
-		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSourceModule"); 
-		DataSource ds = (DataSource)moduleResponse.getAttribute("dsObj");
-		List listDialects = (List) moduleResponse.getAttribute(DetailDataSourceModule.NAME_ATTR_LIST_DIALECTS);
+		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListModule"); 
+		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
+		List listDialects = (List) moduleResponse.getAttribute(DetailDistributionListModule.NAME_ATTR_LIST_DIALECTS);
 		
 		String modality = (String)moduleResponse.getAttribute("modality");
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -20,60 +21,58 @@
 		
 		Map formUrlPars = new HashMap();
 		if(ChannelUtilities.isPortletRunning()) {
-			formUrlPars.put("PAGE", "DetailDataSourcePage");	
+			formUrlPars.put("PAGE", "DetailDistributionListPage");	
   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 		}
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
 		Map backUrlPars = new HashMap();
-		//backUrlPars.put("PAGE", "detailMapPage");
-		backUrlPars.put("PAGE", "ListDataSourcePage");
+		backUrlPars.put("PAGE", "ListDistributionListPage");
 		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
 	%>
 	
 	
 
-<form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
+<form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
-		<input type='hidden' name='PAGE' value='DetailDataSourcePage' />
+		<input type='hidden' name='PAGE' value='DetailDistributionListPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
 	<% } %>
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
-	<input type='hidden' value='<%=ds.getDsId()%>' name='id' />
+	<input type='hidden' value='<%=dl.getId()%>' name='id' />
 	
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' 
 			    style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key = "SBISet.ListDS.TitleDetail"  />
+				<spagobi:message key = "SBISet.ListDL.TitleDetail"  />
 			</td>
-	<!-- 		<td class='header-empty-column-portlet-section'>&nbsp;</td>-->
 			<td class='header-button-column-portlet-section'>
-				<a href="javascript:saveDS('SAVE')"> 
+				<a href="javascript:saveDL('SAVE')"> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDS.saveButton" />' 
+	      				 title='<spagobi:message key = "SBISet.ListDL.saveButton" />' 
 	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDS.saveButton"/>' 
+	      				 alt='<spagobi:message key = "SBISet.ListDL.saveButton"/>' 
 	      			/> 
 				</a>
 			</td>		 
 			<td class='header-button-column-portlet-section'>
-				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDS('SAVEBACK')" class='header-button-image-portlet-section'
+				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
-      				   title='<spagobi:message key = "SBISet.ListDS.saveBackButton" />'  
-                       alt='<spagobi:message key = "SBISet.ListDS.saveBackButton" />' 
+      				   title='<spagobi:message key = "SBISet.ListDL.saveBackButton" />'  
+                       alt='<spagobi:message key = "SBISet.ListDL.saveBackButton" />' 
 			   />
 			</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
 	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDS.backButton"  />' 
+	      				 title='<spagobi:message key = "SBISet.ListDL.backButton"  />' 
 	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDS.backButton" />' 
+	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
 	      			/>
 				</a>
 			</td>		
@@ -88,7 +87,7 @@
 	  <td>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBISet.ListDS.columnLabel" />
+				<spagobi:message key = "SBISet.ListDL.columnName" />
 			</span>
 		</div>
 		<%
@@ -96,170 +95,32 @@
 			  if (modality.equalsIgnoreCase("DETAIL_MOD")){
 			  		isReadonly = "readonly";
 			  }
-			  String label = ds.getLabel();
-			   if((label==null) || (label.equalsIgnoreCase("null"))  ) {
-				   label = "";
+			  String name = dl.getName();
+			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
+				   name = "";
 			   }
 		%>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' type="text" <%=isReadonly %>
-				   name="LABEL" size="50" value="<%=label%>" maxlength="50" />
+			<input class='portlet-form-input-field' type="text" 
+				   name="NAME" size="50" value="<%=name%>" maxlength="50" />
 			&nbsp;*
 		</div>
+		
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnDescr" />
+				<spagobi:message key = "SBISet.ListDL.columnDescr" />
 			</span>
 		</div>
 		<div class='div_detail_form'>
 		<%
-			   String desc = ds.getDescr();
-			   if((desc==null) || (desc.equalsIgnoreCase("null"))  ) {
-			   	   desc = "";
+			   String descr = dl.getDescr();
+			   if((descr==null) || (descr.equalsIgnoreCase("null"))  ) {
+			   	   descr = "";
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= desc %>" maxlength="160" />
+				   size="50" value="<%= descr %>" maxlength="160" />
 		</div>
-			
-		<div class='div_detail_label'>
-				<span class='portlet-form-field-label'>
-					<spagobi:message key = "SBISet.ListDS.columnDialect" />
-				</span>
-		</div>
-		
-	
-		<div class='div_detail_form'>
-      		<select class='portlet-form-input-field' style='width:250px;' 
-					name="DIALECT" id="DIALECT" >
-			<% if (listDialects != null){
-				Iterator iterDialect = listDialects.iterator();
-			   
-      			while(iterDialect.hasNext()) {
-      				Domain dialect = (Domain)iterDialect.next();
-      				Integer objDialect = ds.getDialectId();
-      				Integer currDialect = dialect.getValueId();
-                    boolean isDialect = false;
-      		    	if(objDialect.intValue() == currDialect.intValue()){
-      		    		isDialect = true;   
-      		    	}
-      		%>
-      			<option value="<%=dialect.getValueId() %>"<%if(isDialect) out.print(" selected='selected' ");  %>><%=dialect.getValueName()%></option>
-      		<% 	
-      			}
-			}
-      		%>
-      		</select>
-		</div> 
-			
-			
-    	<div class='div_detail_label'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBISet.ListDS.TypeDs" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-			<% 
-      	      boolean isJndi = false;
-      	      String jndiName = ds.getJndi();
-      	      if(jndiName != null && !jndiName.equals("")) { isJndi = true; }
-      	      
-      	      boolean isParameter = false;
-      	      String parameter = ds.getUrlConnection();
-      	      if(parameter != null && !parameter.equals("")) { isParameter = true; }
-      	      
-      	     %> 
-      	   	<input type="radio" name="typeDS" value="1" <% if(isJndi) { out.println(" checked='checked' "); } %> onClick="DisableFields('JNDI')">
-					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.jndiType" /></span>
-			</input>
-      	   	<input type="radio" name="typeDS" value="0" <% if(isParameter) { out.println(" checked='checked' "); } %> onClick="DisableFields('Parameter')">
-					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.parameterType" /></span>
-			</input>
-		</div>
-			
-		<div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnJndi" />
-			</span>
-		</div>
-		<div class='div_detail_form'>
-		<%
-			   String jndi = ds.getJndi();
-			   if((jndi==null) || (jndi.equalsIgnoreCase("null"))  ) {
-				   jndi = "";
-			   }
-			   String disabledParam="disabled";
-			   String disabledJndi="disabled";
-			   if(isJndi)
-				   disabledJndi="";
-			   else if (isParameter)
-			   	   disabledParam="";
-		%>
-			<input class='portlet-form-input-field' type="text" name="JNDI" 
-				   size="50" value="<%= jndi %>" maxlength="50" <%= disabledJndi %>/>
-	   </div>
-	   <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnUrl" />
-			</span>
-		</div>
-	   <div class='div_detail_form'>
-		<%
-			   String url = ds.getUrlConnection();
-			   if((url==null) || (url.equalsIgnoreCase("null"))  ) {
-				   url = "";
-			   }
-		%>
-			<input class='portlet-form-input-field' type="text" name="URL_CONNECTION" 
-				   size="50" value="<%= url %>" maxlength="50" <%= disabledParam %> />
-	   </div>
-	   <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnUser" />
-			</span>
-		</div>
-	    <div class='div_detail_form'>
-		<%
-			   String user = ds.getUser();
-			   if((user==null) || (user.equalsIgnoreCase("null"))  ) {
-				   user = "";
-			   }
-		%>
-			<input class='portlet-form-input-field' type="text" name="USER" 
-				   size="50" value="<%= user %>" maxlength="50" <%= disabledParam %> />
-	   </div>
-	   <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnPwd" />
-			</span>
-		</div>
-	    <div class='div_detail_form'>
-		<%
-			   String pwd = ds.getPwd();
-			   if((pwd==null) || (pwd.equalsIgnoreCase("null"))  ) {
-				   pwd = "";
-			   }
-		%>
-			<input class='portlet-form-input-field' type="password" name="PWD" 
-				   size="50" value="<%= pwd %>" maxlength="50" <%= disabledParam %> />
-	   </div>
-	   <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDS.columnDriver" />
-			</span>
-		</div>
-	    <div class='div_detail_form'>
-		<%
-			   String driver = ds.getDriver();
-			   if((driver==null) || (driver.equalsIgnoreCase("null"))  ) {
-				   driver = "";
-			   }
-		%>
-			<input class='portlet-form-input-field' type="text" name="DRIVER" 
-				   size="50" value="<%= driver %>" maxlength="160" <%= disabledParam %>/>
-	   </div>
-	   
-	
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 		
@@ -272,28 +133,15 @@
 	
 	<script>
 	
-	function isDsFormChanged () {
+	function isDlFormChanged () {
 	
 	var bFormModified = 'false';
 		
-	var dialect = document.dsForm.DIALECT.value;
-	var label = document.dsForm.LABEL.value;
-	var description = document.dsForm.DESCR.value;	
-	var jndi = document.dsForm.JNDI.value;
-	var url = document.dsForm.URL_CONNECTION.value;
-	var user = document.dsForm.USER.value;
-	var pwd = document.dsForm.PWD.value;
-	var driver = document.dsForm.DRIVER.value;
-
+	var name = document.dlForm.NAME.value;
+	var description = document.dlForm.DESCR.value;	
 	
-	if ((label != '<%=ds.getLabel()%>')
-	    || (dialect != '<%=(ds.getDialectId()==null)?"":ds.getDialectId()%>')
-		|| (description != '<%=(ds.getDescr()==null)?"":ds.getDescr()%>')
-		|| ( jndi != '<%=(ds.getJndi()==null)?"":ds.getJndi()%>')
-		|| ( url != '<%=(ds.getUrlConnection()==null)?"":ds.getUrlConnection()%>')
-		|| ( user != '<%=(ds.getUser()==null)?"":ds.getUser()%>')
-		|| ( pwd != '<%=(ds.getPwd()==null)?"":ds.getPwd()%>')
-		|| ( driver != '<%=(ds.getDriver()==null)?"":ds.getDriver()%>')) {
+	if ((name != '<%=dl.getName()%>')
+		|| (description != '<%=(dl.getDescr()==null)?"":dl.getDescr()%>')) {
 			
 		bFormModified = 'true';
 	}
@@ -305,7 +153,7 @@
 	
 	function goBack(message, url) {
 	  
-	  var bFormModified = isDsFormChanged();
+	  var bFormModified = isDlFormChanged();
 	  
 	  if (bFormModified == 'true'){
 	  	  if (confirm(message)) {
@@ -318,28 +166,10 @@
        }	  
 	}
 	
-	function saveDS(type) {	
-  	  	  document.dsForm.SUBMESSAGEDET.value=type;
+	function saveDL(type) {	
+  	  	  document.dlForm.SUBMESSAGEDET.value=type;
   	  	  if (type == 'SAVE')
-      		  document.getElementById('dsForm').submit();
-	}
-	
-	function DisableFields(type){
-
-		if (type == 'JNDI'){
-			document.dsForm.JNDI.disabled=false;
-			document.dsForm.URL_CONNECTION.disabled=true;
-			document.dsForm.USER.disabled=true;
-			document.dsForm.PWD.disabled=true;
-			document.dsForm.DRIVER.disabled=true;
-		}
-		else {
-			document.dsForm.JNDI.disabled=true;
-			document.dsForm.URL_CONNECTION.disabled=false;
-			document.dsForm.USER.disabled=false;
-			document.dsForm.PWD.disabled=false;
-			document.dsForm.DRIVER.disabled=false;
-		}
+      		  document.getElementById('dlForm').submit();
 	}
 	</script>
 	

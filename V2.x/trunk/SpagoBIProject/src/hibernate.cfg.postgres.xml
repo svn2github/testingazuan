@@ -54,5 +54,8 @@
         <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingpostgres/SbiDossierPartsTemp.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappingpostgres/SbiDossierPresentations.hbm.xml" />
         
+        <!-- rememberMe -->
+        <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
+        
     </session-factory>
 </hibernate-configuration>

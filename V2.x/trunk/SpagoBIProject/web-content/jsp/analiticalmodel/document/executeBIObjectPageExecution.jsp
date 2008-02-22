@@ -48,7 +48,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager,
                  it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance,
                  it.eng.spagobi.engines.drivers.IEngineDriver"%>
-
+<%@page import="it.eng.spagobi.commons.utilities.ParameterValuesEncoder"%>
 
 
 
@@ -357,6 +357,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                     title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
                     src='<%= urlBuilder.getResourceLink(request, "/img/saveIntoPersonalFolder22.png")%>'
                     alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
+           </a>
+         </td>
+         
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:saveRememberMe<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/saveRememberMe22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.saveRememberMe" />' />
            </a>
          </td>
        
@@ -928,7 +938,45 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- ************* end luca changes ************************** -->
 
+<!-- ************* save remember me script ************************** -->
+<script>
+winRememberMeSaved<%=executionId%> = null;
 
+function saveRememberMe<%=executionId%>() {
+	url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
+	url += "ACTION_NAME=SAVE_REMEMBER_ME";
+	url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
+	url += "&userId=<%=userProfile.getUserUniqueIdentifier().toString()%>";
+	<%
+	String documentParameters = "";
+	List parametersList = obj.getBiObjectParameters();
+	ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
+	if (parametersList != null && parametersList.size() > 0) {
+		for (int i = 0; i < parametersList.size(); i++) {
+			BIObjectParameter parameter = (BIObjectParameter) parametersList.get(i);
+			documentParameters += parameter.getParameterUrlName() + "%3D";
+			if (parameter.getParameterValues() != null) {
+				String value = parValuesEncoder.encode(parameter);
+				documentParameters += value;
+			} else 
+				documentParameters += "NULL";
+			if (i < parametersList.size() - 1) documentParameters += "%26";
+		}
+	}
+	%>
+	url += "&parameters=<%=documentParameters%>";
+	winRememberMeSaved<%=executionId%> = new Window('winRememberMeSaved<%=executionId%>', {className: "alphacube", title: "", width:300, height:50, hideEffect:Element.hide, showEffect:Element.show});
+	winRememberMeSaved<%=executionId%>.setDestroyOnClose();
+	winRememberMeSaved<%=executionId%>.setURL(url);
+	winRememberMeSaved<%=executionId%>.showCenter();
+}
+
+function somethingWentWrongSavingRememberMe() {
+	alert('Error while saving');
+}
+
+</script>
+<!-- ************* end save remember me script ************************** -->
 
 
 

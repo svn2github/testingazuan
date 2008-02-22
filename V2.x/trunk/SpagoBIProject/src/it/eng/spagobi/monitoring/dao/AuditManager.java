@@ -23,25 +23,30 @@ package it.eng.spagobi.monitoring.dao;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.monitoring.metadata.SbiAudit;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 public class AuditManager {
+	
+	static private Logger logger = Logger.getLogger(AuditManager.class);
 	
 	public static final String MODULE_NAME 		= "AuditService";
 	
@@ -59,9 +64,9 @@ public class AuditManager {
     private static IAuditDAO _auditDAO = null;
 
     private AuditManager() {
-    	SpagoBITracer.debug(MODULE_NAME, AuditManager.class.getName(), "<init>", "Begin istantiation of AuditManager");
+    	logger.debug("Begin istantiation of AuditManager");
     	SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("AUDIT.CONFIG");
-    	SpagoBITracer.debug(MODULE_NAME, AuditManager.class.getName(), "<init>", "Audit configuration found: \n" + config.toString());
+    	logger.debug("Audit configuration found: \n" + config.toString());
     	String disable = (String) config.getAttribute("disable");
     	if (disable != null && disable.toLowerCase().trim().equals("true")) {
     		_disabled = true;
@@ -80,8 +85,7 @@ public class AuditManager {
 					try {
 						availableStates = DAOFactory.getDomainDAO().loadListDomainsByType("STATE");
 					} catch (EMFUserError e) {
-						SpagoBITracer.critical(MODULE_NAME, AuditManager.class.getName(), "<init>", 
-			    				"Error while getting available document states from db", e);
+						logger.error("Error while getting available document states from db", e);
 					}
 	    			boolean stateFound = false;
 	    			Iterator it = availableStates.iterator();
@@ -106,12 +110,11 @@ public class AuditManager {
 	    		Class persistenceClass = Class.forName(persistenceClassName);
 	    		_auditDAO = (IAuditDAO) persistenceClass.newInstance();
 	    	} catch (Exception e) {
-	    		SpagoBITracer.critical(MODULE_NAME, AuditManager.class.getName(), "<init>", 
-	    				"Error while instantiating persistence class. Audit log will be disabled", e);
+	    		logger.error("Error while instantiating persistence class. Audit log will be disabled", e);
 	    		_disabled = true;
 	    	}
     	}	
-		SpagoBITracer.debug(MODULE_NAME, AuditManager.class.getName(), "<init>", "AuditManager instatiation end");
+		logger.debug("AuditManager instatiation end");
     }
 
     public static AuditManager getInstance() {
@@ -140,13 +143,11 @@ public class AuditManager {
     				_documentState.equalsIgnoreCase(aSbiAudit.getDocumentState())) {
     			return true;
     		} else {
-        		SpagoBITracer.debug(MODULE_NAME, AuditManager.class.getName(), "insertAudit", 
-					"AuditManager is disabled for documents with state " + aSbiAudit.getDocumentState());
+    			logger.debug("AuditManager is disabled for documents with state " + aSbiAudit.getDocumentState());
         		return false;
     		}
     	} else {
-    		SpagoBITracer.debug(MODULE_NAME, AuditManager.class.getName(), "modifyAudit", 
-					"AuditManager is disabled, so no records can be modified");
+    		logger.debug("AuditManager is disabled, so no records can be modified");
     		return false;
     	}
     }
@@ -170,14 +171,15 @@ public class AuditManager {
 		audit.setDocumentState(obj.getStateCode());
 		String documentParameters = "";
 		List parameters = obj.getBiObjectParameters();
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		if (parameters != null && parameters.size() > 0) {
 			for (int i = 0; i < parameters.size(); i++) {
 				BIObjectParameter parameter = (BIObjectParameter) parameters.get(i);
 				documentParameters += parameter.getParameterUrlName() + "=";
-				List values = parameter.getParameterValues();
-				if (values != null) 
-					documentParameters += values.toString();
-				else 
+				if (parameter.getParameterValues() != null) {
+					String value = parValuesEncoder.encode(parameter);
+					documentParameters += value;
+				} else 
 					documentParameters += "NULL";
 				if (i < parameters.size() - 1) documentParameters += "&";
 			}
@@ -191,8 +193,7 @@ public class AuditManager {
 		try {
 			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
 		} catch (EMFUserError e) {
-			 SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "auditLog", 
-		 				"Error retrieving document's engine information", e);
+			logger.error("Error retrieving document's engine information", e);
 		}
 		audit.setEngineType(engineType != null ? engineType.getValueCd() : null);
 		if (engineType != null) {
@@ -210,8 +211,7 @@ public class AuditManager {
 		try {
 			insertAudit(audit);
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "auditLog", 
-		 				"Error doing audit insertion", e);
+			logger.error("Error doing audit insertion", e);
 			return null;
 		}
 		return audit.getId();
@@ -220,8 +220,7 @@ public class AuditManager {
 	public void updateAudit(Integer auditId, Long startTime, Long endTime, String executionState, 
 			String errorMessage, String errorCode) {
 		if (auditId == null) {
-			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-					"Audit record id not specified, no updating is possible.");
+			logger.warn("Audit record id not specified, no updating is possible.");
 			return;
 		}
 		
@@ -229,14 +228,12 @@ public class AuditManager {
 		try {
 			audit = loadAudit(auditId);
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-					"Error loading audit record with id = [" + auditId.toString() + "]", e);
+			logger.error("Error loading audit record with id = [" + auditId.toString() + "]", e);
 			return;
 		}
 		
 		if (audit.getExecutionStartTime() != null && audit.getExecutionEndTime() != null) {
-			SpagoBITracer.warning(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-					"Audit record with id = [" + auditId.toString() + "] has already a start time and an " +
+			logger.warn("Audit record with id = [" + auditId.toString() + "] has already a start time and an " +
 							"end time. This record will not be modified.");
 			return;
 		}
@@ -289,10 +286,36 @@ public class AuditManager {
 		try {
 			modifyAudit(audit);
 		} catch (EMFUserError e) {
-			SpagoBITracer.major(AuditManager.MODULE_NAME, getClass().getName(), "updateAudit:", 
-					"Error updating audit record with id = [" + auditId.toString() + "]", e);
+			logger.error("Error updating audit record with id = [" + auditId.toString() + "]", e);
 			return;
 		}
 	}
 	
+	public List getMostPopular(IEngUserProfile profile, int limit) {
+		logger.debug("IN");
+		List toReturn = new ArrayList();
+		try {
+			Collection roles = profile.getRoles();
+			toReturn = _auditDAO.getMostPopular(roles, limit);
+		} catch (Exception e) {
+			logger.error("Error while loading most popular for user " + profile.getUserUniqueIdentifier().toString(), e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
+	
+	
+	public List getMyRecentlyUsed(IEngUserProfile profile, int limit) {
+		logger.debug("IN");
+		List toReturn = new ArrayList();
+		try {
+			toReturn = _auditDAO.getMyRecentlyUsed(profile.getUserUniqueIdentifier().toString(), limit);
+		} catch (Exception e) {
+			logger.error("Error while loading my recently used for user " + profile.getUserUniqueIdentifier().toString(), e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
 }

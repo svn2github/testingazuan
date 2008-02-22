@@ -50,6 +50,7 @@ import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
+import it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
@@ -286,5 +287,9 @@ public class DAOFactory {
 
 	public static IDossierPartsTempDAO getDossierPartsTempDAO() throws EMFUserError{
 		return (IDossierPartsTempDAO)createDAOInstance("DossierPartsTempDAO");
+	}
+	
+	public static IRememberMeDAO getRememberMeDAO() throws EMFUserError{
+		return (IRememberMeDAO)createDAOInstance("RememberMeDAO");
 	}
 }

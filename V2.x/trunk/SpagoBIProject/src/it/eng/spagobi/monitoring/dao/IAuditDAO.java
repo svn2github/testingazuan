@@ -24,6 +24,7 @@ package it.eng.spagobi.monitoring.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.monitoring.metadata.SbiAudit;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IAuditDAO {
@@ -97,5 +98,24 @@ public interface IAuditDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseAudit(Integer id) throws EMFUserError;
+	
+	/**
+	 * Finds the most popular executions for the specified roles as a list of <code>HotLink</code> objects.
+	 * 
+	 * @param roles: the roles list
+	 * @param limit: number of desired hot links
+	 * @return the list of hot links
+	 */
+	public List getMostPopular(Collection roles, int limit) throws EMFUserError;
+	
+	/**
+	 * Finds the most recent executions for the user with the specified user identifier as a list of <code>HotLink</code> objects.
+	 * 
+	 * @param userId: the user identifier
+	 * @param limit: number of desired hot links
+	 * @return the list of hot links
+	 * @throws EMFUserError
+	 */
+	public List getMyRecentlyUsed(String userId, int limit) throws EMFUserError;
 	
 }

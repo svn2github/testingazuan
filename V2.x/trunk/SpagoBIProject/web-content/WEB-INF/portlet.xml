@@ -282,7 +282,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-info>
 	</portlet>
 	
-		<portlet>
+	<portlet>
         <description>Workspace</description>		
         <portlet-name>SbiWorkspace</portlet-name>		
         <display-name>Workspace</display-name>		
@@ -473,5 +473,41 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-preferences>
 	</portlet>
 	
-	 
+	 <portlet>
+        <description>HotLink</description>		
+        <portlet-name>SbiHotLink</portlet-name>		
+        <display-name>HotLink</display-name>		
+        <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+        <init-param>
+            <name>serviceType</name>
+            <value>PAGE</value>
+        </init-param>
+        <init-param>
+            <name>serviceName</name>
+            <value>HOT_LINK_PAGE</value>
+        </init-param>
+        <init-param>
+            <name>light_navigation</name>
+            <value>ENABLED</value>
+        </init-param>		        
+        <expiration-cache>0</expiration-cache>
+        <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>     
+		<portlet-info>
+        	<title>HotLink</title>
+        	<short-title>HotLink</short-title>
+        	<keywords>HotLink</keywords>
+        </portlet-info>
+        <portlet-preferences>
+            <preference>
+        		<name>STYLE_NAME</name>
+        		<value>HotLink</value>
+        	</preference>
+        </portlet-preferences>
+	</portlet>
+	
 </portlet-app>

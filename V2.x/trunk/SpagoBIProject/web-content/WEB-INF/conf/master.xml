@@ -122,7 +122,15 @@
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/workflow/publishers.xml" /> 
+
 	
+	<!-- hotlink -->
+	<CONFIGURATOR path="/WEB-INF/conf/hotlink/hotlink.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/hotlink/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/hotlink/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/hotlink/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/hotlink/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/hotlink/publishers.xml" /> 	
 	
 	<!-- webapp -->
 	

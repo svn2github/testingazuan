@@ -107,6 +107,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
+
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all-debug.js")%>"></script>
+
+
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
@@ -148,6 +153,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLink(request, "css/menu.css")%>' 
       type='text/css' />
+      
+<LINK rel='StyleSheet' 
+	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>' 
+	  type='text/css' />
 
 <script>
 	document.onselectstart = function() { return true; }

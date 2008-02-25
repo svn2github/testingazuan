@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -362,12 +363,17 @@ public class ListTag extends TagSupport
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 			List captions = captionsSB.getContainedSourceBeanAttributes();
 			Iterator iter = captions.iterator();
+			int prog=0;
 			while (iter.hasNext()) {
+			        prog++;
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
 				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
-				if (!conditionsVerified) {
+				String popupStr = (String)captionSB.getAttribute("popup");
+				boolean popup=false;
+				if (popupStr!=null && popupStr.equalsIgnoreCase("true")) popup=true;
+				if ( !conditionsVerified) {
 					// if conditions are not verified puts an empty column
 					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
 					continue;
@@ -383,6 +389,7 @@ public class ListTag extends TagSupport
 					//String label = PortletUtilities.getMessage(labelCode, "messages");
 					String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
 					String buttonUrl = createUrl(paramsMap);
+					
 					boolean confirm = false;
 					// If caption's 'confirm' attribute is true, then all rows will have the confirmation alert
 					// with message code that is specified in the 'label' attribute of the caption tag);
@@ -406,10 +413,28 @@ public class ListTag extends TagSupport
 							confirm = true;
 						}
 					}
+
+					
 					if (confirm){
 						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
 					}else{
-						_htmlStream.append("     <a href='"+buttonUrl+"'>\n");	
+					    if (popup){
+						
+						_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
+						    // insert javascript for open popup
+						    _htmlStream.append(" <script>\n");
+						    
+						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
+						    _htmlStream.append("   var winDetail_"+prog+"; \n");
+						    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:400,height:400,closeAction:'hide',plain: true}); \n");
+						    _htmlStream.append("   winDetail_"+prog+".show();\n");
+						    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
+						    _htmlStream.append(");\n");
+						    _htmlStream.append(" </script>\n");						
+					    }else{
+						_htmlStream.append("     <a href='"+buttonUrl+"'>\n");
+					    }
+					    	
 					}
 					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 					_htmlStream.append("     </a>\n");
@@ -1024,7 +1049,12 @@ public class ListTag extends TagSupport
 		String url = urlBuilder.getUrl(httpRequest, paramsMap);
 		return url;
 	}
-	
+	protected String createUrl_popup(HashMap paramsMap) {
+	        IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
+		paramsMap.put("TYPE_LIST", "TYPE_LIST");
+		String url = urlBuilderWeb.getUrl(httpRequest, paramsMap);
+		return url;
+	}	
 	
 	/**
 	 * Traces the setting of an action name.

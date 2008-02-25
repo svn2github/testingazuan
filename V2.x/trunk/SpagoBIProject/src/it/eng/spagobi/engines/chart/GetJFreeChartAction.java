@@ -12,8 +12,8 @@ import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.engines.chart.chartTypes.SBISpeedometer;
-import it.eng.spagobi.engines.chart.chartTypes.utils.KpiInterval;
+import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
+import it.eng.spagobi.engines.chart.charttypes.utils.KpiInterval;
 import it.eng.spagobi.services.common.IProxyService;
 import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -127,7 +127,7 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 
 		type = (String)content.getAttribute("type");
 
-		it.eng.spagobi.engines.chart.chartTypes.SBISpeedometer sbi=null;
+		it.eng.spagobi.engines.chart.charttypes.SBISpeedometer sbi=null;
 		if(type.equalsIgnoreCase("speedometer")){
 			sbi=configureSpeedometer(content);
 		}

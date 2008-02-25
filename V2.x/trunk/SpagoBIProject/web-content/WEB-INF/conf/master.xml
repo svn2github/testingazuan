@@ -48,6 +48,11 @@
 <!-- engines.spagobidashboardIE -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/publishers.xml" />
+
+<!-- engines.chartkpi -->
+	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/publishers.xml" />
+
 	
 <!-- engines.spagobidashboardsCompositionIE -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardsCompositionIE/publishers.xml" />

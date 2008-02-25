@@ -27,17 +27,10 @@ package it.eng.spagobi.hotlink.rememberme.bo;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class RememberMe {
+public class RememberMe extends HotLink {
 
-	private Integer id;
-	private String userName;
-	private Integer objId;
-	private String documentLabel;
-	private String documentName;
-	private String documentDescription;
-	private String documentType;
-	private String parameters;
-	private String engineName;
+	protected Integer id;
+	protected String userName;
 	
 	public Integer getId() {
 		return id;
@@ -50,48 +43,6 @@ public class RememberMe {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-	public Integer getObjId() {
-		return objId;
-	}
-	public void setObjId(Integer objId) {
-		this.objId = objId;
-	}
-	public String getDocumentLabel() {
-		return documentLabel;
-	}
-	public void setDocumentLabel(String documentLabel) {
-		this.documentLabel = documentLabel;
-	}
-	public String getDocumentName() {
-		return documentName;
-	}
-	public void setDocumentName(String documentName) {
-		this.documentName = documentName;
-	}
-	public String getDocumentDescription() {
-		return documentDescription;
-	}
-	public void setDocumentDescription(String documentDescription) {
-		this.documentDescription = documentDescription;
-	}
-	public String getDocumentType() {
-		return documentType;
-	}
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
-	}
-	public String getParameters() {
-		return parameters;
-	}
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
-	public String getEngineName() {
-		return engineName;
-	}
-	public void setEngineName(String engineName) {
-		this.engineName = engineName;
 	}
 	
 }

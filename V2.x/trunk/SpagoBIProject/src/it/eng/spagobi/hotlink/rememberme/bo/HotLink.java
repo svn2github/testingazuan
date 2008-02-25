@@ -31,13 +31,13 @@ package it.eng.spagobi.hotlink.rememberme.bo;
  */
 public class HotLink {
 
-	private Integer objId;
-	private String documentLabel;
-	private String documentName;
-	private String documentDescription;
-	private String documentType;
-	private String parameters;
-	private String engineName;
+	protected Integer objId;
+	protected String documentLabel;
+	protected String documentName;
+	protected String documentDescription;
+	protected String documentType;
+	protected String parameters;
+	protected String engineName;
 	
 	public Integer getObjId() {
 		return objId;

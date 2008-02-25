@@ -49,9 +49,9 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 
 <div class="div_background_no_img">
 	<div style="width:40%;" class="div_detail_area_forms">
-	
-		<h3 class="toggler_introduction" id="toggler_RememberMe"><a href="#RememberMe">RememberMe</a></h3>
-		<div class="accordion" id="popout_RememberMe" >
+		<p>
+		<a href="#RememberMe" id="toggler_RememberMe" >RememberMe</a>
+		<div id="popout_RememberMe" >
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator rememberMeListIt = rememberMeList.iterator();
@@ -92,10 +92,11 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			%>
 		</table>
 		</div>
+		</p>
 		
-		
-		<h3 class="toggler_introduction"><a href="#Most popular">Most popular</a></h3>
-		<div class="accordion">
+		<p>
+		<a href="#Most popular" id="toggler_MostPopular">Most popular</a>
+		<div id="popout_MostPopular">
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator mostPopularListIt = mostPopularList.iterator();
@@ -127,9 +128,11 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			%>
 		</table>
 		</div>
+		</p>
 		
-		<h3 class="toggler_introduction"><a href="#My recently used">My recently used</a></h3>
-		<div class="accordion">
+		<p>
+		<a href="#My recently used" id="toggler_MyRecentlyUsed">My recently used</a>
+		<div id="popout_MyRecentlyUsed">
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator myRecentlyUsedListIt = myRecentlyUsedList.iterator();
@@ -161,12 +164,15 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			%>
 		</table>
 		</div>
+		</p>
 	</div>
 </div>
 
 <script type="text/javascript">
 
-toggle('popout_RememberMe','toggler_RememberMe');
+toggle('popout_RememberMe','toggler_RememberMe', false);
+toggle('popout_MostPopular','toggler_MostPopular', true);
+toggle('popout_MyRecentlyUsed','toggler_MyRecentlyUsed', true);
 
 </script>
 

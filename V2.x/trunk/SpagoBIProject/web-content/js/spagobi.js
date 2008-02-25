@@ -243,11 +243,11 @@ try {
 // END IFRAMES NAVIGATOR INITIALIZER
 */
 
-function toggle(elementId, togglerId) {
+function toggle(elementId, togglerId, toggled) {
 	Ext.onReady(function() {
 		var element = Ext.get(elementId);
 	    element.enableDisplayMode("block");
-	    element.toggle(true);
+	    if (toggled) element.toggle(true);
 	
 	    Ext.get(togglerId).on('click', function(){
 	        element.toggle(true);

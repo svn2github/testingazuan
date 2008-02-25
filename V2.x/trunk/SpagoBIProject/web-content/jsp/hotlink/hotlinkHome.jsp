@@ -31,17 +31,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
 
 <%
-String mooFx = urlBuilder.getResourceLink(request, "/js/moo/moo.fx.js");
-String mooFxAccordion = urlBuilder.getResourceLink(request, "/js/moo/accordion.js");
 
 SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute(HotLinkModule.MODULE_NAME); 
 List rememberMeList = (List) moduleResponse.getAttribute(HotLinkConstants.REMEMBER_ME);
 List mostPopularList = (List) moduleResponse.getAttribute(HotLinkConstants.MOST_POPULAR);
 List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY_RECENTLY_USED);
 %>
-
-<script type="text/javascript" src="<%=mooFx%>"></script>
-<script type="text/javascript" src="<%=mooFxAccordion%>"></script>
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -55,8 +50,8 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 <div class="div_background_no_img">
 	<div style="width:40%;" class="div_detail_area_forms">
 	
-		<h3 class="toggler_introduction"><a href="#RememberMe">RememberMe</a></h3>
-		<div class="accordion">
+		<h3 class="toggler_introduction" id="toggler_RememberMe"><a href="#RememberMe">RememberMe</a></h3>
+		<div class="accordion" id="popout_RememberMe" >
 		<table style="margin:10px;padding:10px">
 			<%
 			Iterator rememberMeListIt = rememberMeList.iterator();
@@ -171,13 +166,8 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 
 <script type="text/javascript">
 
-//we define two arrays, containing our toggles and divs.
-var myDivs = document.getElementsByClassName('accordion');
-var myLinks = document.getElementsByClassName('toggler_introduction');
+toggle('popout_RememberMe','toggler_RememberMe');
 
-//then we create the effect.
-var myAccordion = new Fx.Accordion(myLinks, myDivs, {opacity: true});
-	
 </script>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

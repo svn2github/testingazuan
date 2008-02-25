@@ -242,3 +242,15 @@ try {
 }
 // END IFRAMES NAVIGATOR INITIALIZER
 */
+
+function toggle(elementId, togglerId) {
+	Ext.onReady(function() {
+		var element = Ext.get(elementId);
+	    element.enableDisplayMode("block");
+	    element.toggle(true);
+	
+	    Ext.get(togglerId).on('click', function(){
+	        element.toggle(true);
+	    });
+	});
+}

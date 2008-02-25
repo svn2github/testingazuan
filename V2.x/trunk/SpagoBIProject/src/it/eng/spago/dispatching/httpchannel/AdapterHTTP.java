@@ -494,11 +494,15 @@ public class AdapterHTTP extends HttpServlet {
     private void checkSession(HttpSession session, RequestContextIFace requestContext)
     	throws SessionExpiredException {
     	
+    	// start modifications by Zerbetto on 25-02-2008: NEW_SESSION parameter can force a new session
         boolean isRequestedSessionIdValid = true;
+        boolean isRequiredNewSession = false;    // Zerbetto on 25-02-2008
         RequestContainer requestContainer = requestContext.getRequestContainer();
                 
         if (session.isNew()) {
             isRequestedSessionIdValid = (requestContainer.getAttribute(HTTP_REQUEST_REQUESTED_SESSION_ID) == null);
+        	String newSessionRequestAttr = (String) requestContainer.getServiceRequest().getAttribute(NEW_SESSION); // Zerbetto on 25-02-2008
+        	isRequiredNewSession = newSessionRequestAttr != null && newSessionRequestAttr.equalsIgnoreCase("TRUE"); // Zerbetto on 25-02-2008
         } // if (session.isNew())
         synchronized (session) {
             RequestContainer parentRequestContainer = (RequestContainer) session
@@ -521,10 +525,13 @@ public class AdapterHTTP extends HttpServlet {
             session.setAttribute(Constants.REQUEST_CONTAINER, requestContainer);
         } // synchronized (session)
         if (!isRequestedSessionIdValid) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.WARNING,
-                    "AdapterHTTP::service: sessione scaduta !");
-            throw new SessionExpiredException(EMFErrorSeverity.ERROR, "Expired Session");
+        	if (!isRequiredNewSession) { // Zerbetto on 25-02-2008
+	            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.WARNING,
+	                    "AdapterHTTP::service: sessione scaduta !");
+	            throw new SessionExpiredException(EMFErrorSeverity.ERROR, "Expired Session");
+        	} // Zerbetto on 25-02-2008
         } // if (!isRequestedSessionIdValid)
+        // end modifications by Zerbetto on 25-02-2008: NEW_SESSION parameter can force a new session
     }
 
     private void render(RequestContextIFace requestContext, Exception serviceException)

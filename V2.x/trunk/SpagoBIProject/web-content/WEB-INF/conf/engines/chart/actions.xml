@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+
+ <ACTION name="GET_JFREECHART" class="it.eng.spagobi.engines.chart.GetJFreeChartAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+
+</ACTIONS>
+

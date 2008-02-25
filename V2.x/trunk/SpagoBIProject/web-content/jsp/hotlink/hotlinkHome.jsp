@@ -48,12 +48,31 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 </table>
 
 <div class="div_background_no_img">
-	<div style="width:40%;" class="div_detail_area_forms">
+	<div style="width:80%;" class="div_detail_area_forms">
 		<p>
-		<a href="#RememberMe" id="toggler_RememberMe" >RememberMe</a>
+		<a href="#RememberMe" id="toggler_RememberMe" style="text-decoration:none;">RememberMe</a>
 		<div id="popout_RememberMe" >
 		<table style="margin:10px;padding:10px">
+			<thead>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.document" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.documentType" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.engineName" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.parameters" />
+				</th>
+				<th class='portlet-section-header'>
+					&nbsp;
+				</th>
+			</thead>
 			<%
+			boolean alternate = false;
+	        String rowClass;
 			Iterator rememberMeListIt = rememberMeList.iterator();
 			while (rememberMeListIt.hasNext()) {
 				RememberMe rm = (RememberMe) rememberMeListIt.next();
@@ -68,18 +87,17 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 				params.put("OPERATION", "DELETE_REMEMBER_ME");
 				params.put("REMEMBER_ME_ID", rm.getId().toString());
 				String deleteUrl = urlBuilder.getUrl(request, params);
+	            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+	            alternate = !alternate;  
 				%>
-				<tr>
-					<td>
-						<div class='portlet-section-subheader' style='margin:5px' >
-							<a href='<%= executeUrl %>'><%= rm.getDocumentName() + 
-								(rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "") %></a><br/>
-							<spagobi:message key = "sbi.hotlink.documentType" /> : <%= rm.getDocumentType() %><br/>
-							<spagobi:message key = "sbi.hotlink.engineName" /> : <%= rm.getEngineName() %><br/>
-							<spagobi:message key = "sbi.hotlink.parameters" /> : <%= (rm.getParameters() != null) ?  rm.getParameters() : "" %><br/>
-						</div>
+				<tr class='portlet-font'>
+					<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= rm.getDocumentName() + 
+								(rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "") %></a>
 					</td>
-					<td style="vertical-align:middle;">
+					<td class='<%= rowClass %>' ><%= rm.getDocumentType() %></td>
+					<td class='<%= rowClass %>' ><%= rm.getEngineName() %></td>
+					<td class='<%= rowClass %>' ><%= (rm.getParameters() != null) ?  rm.getParameters() : "" %></td>
+					<td class='<%= rowClass %>' style="vertical-align:middle;">
 						<a href='<%= deleteUrl %>'>
 							<img title='<spagobi:message key = "sbi.hotlink.deleteRememberMe" />'
 								src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>'
@@ -95,7 +113,7 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 		</p>
 		
 		<p>
-		<a href="#Most popular" id="toggler_MostPopular">Most popular</a>
+		<a href="#Most popular" id="toggler_MostPopular" style="text-decoration:none;">Most popular</a>
 		<div id="popout_MostPopular">
 		<table style="margin:10px;padding:10px">
 			<%
@@ -131,7 +149,7 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 		</p>
 		
 		<p>
-		<a href="#My recently used" id="toggler_MyRecentlyUsed">My recently used</a>
+		<a href="#My recently used" id="toggler_MyRecentlyUsed" style="text-decoration:none;">My recently used</a>
 		<div id="popout_MyRecentlyUsed">
 		<table style="margin:10px;padding:10px">
 			<%

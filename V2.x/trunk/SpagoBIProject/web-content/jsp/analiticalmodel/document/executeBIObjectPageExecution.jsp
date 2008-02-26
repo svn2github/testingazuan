@@ -84,6 +84,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	} else {
 	    obj = (BIObject)moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 	}
+	// get the subObject
+	SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
 	// get the url of the engine
 	Engine engine = obj.getEngine();
     String engineurl = engine.getUrl();
@@ -124,7 +126,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	AuditManager auditManager = AuditManager.getInstance();
 	String auditModality = (modality != null) ? modality : "NORMAL_EXECUTION";
-	Integer executionAuditId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
+	Integer executionAuditId = auditManager.insertAudit(obj, subObj, userProfile, executionRole, auditModality);
 	// adding parameters for AUDIT updating
 	if (executionAuditId != null) {
 		mapPars.put(AuditManager.AUDIT_ID, executionAuditId.toString());
@@ -240,6 +242,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(!isSingleObjExec) {
 %>
 
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.SubObject"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
@@ -975,6 +978,13 @@ function saveRememberMe<%=executionId%>() {
 	}
 	%>
 	url += "&parameters=<%=documentParameters%>";
+	<%
+	if (subObj != null) {
+		%>
+		url += "&subobject_id=<%=subObj.getId()%>";
+		<%
+	}
+	%>
 	winRememberMeSaved<%=executionId%> = new Window('winRememberMeSaved<%=executionId%>', {className: "alphacube", title: "", width:300, height:50, hideEffect:Element.hide, showEffect:Element.show});
 	winRememberMeSaved<%=executionId%>.setDestroyOnClose();
 	winRememberMeSaved<%=executionId%>.setURL(url);

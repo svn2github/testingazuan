@@ -31,6 +31,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -42,21 +43,25 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
-public class LoginModule extends AbstractHttpModule {
+public class HiddenLoginAction extends AbstractHttpAction {
 
-    static Logger logger = Logger.getLogger(LoginModule.class);
+    static Logger logger = Logger.getLogger(HiddenLoginAction.class);
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	    logger.debug("IN");
-		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqCont.getSessionContainer();
-		SessionContainer permSess = sessCont.getPermanentContainer();
-		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
+		freezeHttpResponse();
+		HttpServletRequest httpReq = getHttpRequest();
+		HttpServletResponse httpResp = getHttpResponse();
+	    	HttpSession session=httpReq.getSession();
+	    	
 		Principal principal=this.getHttpRequest().getUserPrincipal();
 		String userId=null;
 		if (principal==null){
@@ -66,28 +71,33 @@ public class LoginModule extends AbstractHttpModule {
 		    userId=principal.getName();
 		    logger.info("User read from Principal."+userId);
 		}
-		if (profile==null){
-			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		        try {
-		            SpagoBIUserProfile user= supplier.createUserProfile(userId);
-		            profile=new UserProfile(user);
-		            // put user profile into session
-		            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-		        } catch (Exception e) {
-		            logger.error("Reading user information... ERROR",e);
-		            throw new SecurityException();
-		        }		    
-		}else {
-		    	logger.debug("User already in session");
-		    	if (!userId.equalsIgnoreCase((String)profile.getUserUniqueIdentifier())){
-		    	logger.warn("UserId don't match");
-		    	}
-		    
-		}
 
-		// fill response attributes
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
-		logger.debug("OUT");		
+	        try {
+	            IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+		    if (profile==null){   	            
+    	            	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+    
+    	            	SpagoBIUserProfile user= supplier.createUserProfile(userId);
+    	            	profile=new UserProfile(user);
+    	            	session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+		    }else {
+			String sessionUserId=(String)profile.getUserUniqueIdentifier();
+			if (!sessionUserId.equalsIgnoreCase(userId)) {
+			    logger.warn("UserIds don't match.... "+sessionUserId+"/"+userId);
+			}
+		    }
+		    byte[] content = "".getBytes();
+		    httpResp.setContentLength(content.length);
+		    httpResp.getOutputStream().write(content);
+		    httpResp.getOutputStream().flush();
+			
+	        } catch (Exception e) {
+	            logger.error("Reading user information... ERROR",e);
+	            throw new SecurityException();
+	        }finally{
+	            logger.debug("OUT");
+	        }
 	}
 	
 }

@@ -254,6 +254,8 @@ public class SpagoBIConstants {
 	
 	public static final String SUBOBJECT_ID = "SUBOBJECT_ID";
 	
+	public static final String SUBOBJECT_NAME = "SUBOBJECT_NAME";
+	
 	public static final String SUBOBJECT = "SUBOBJECT";
 	
 	//constants for user profiles

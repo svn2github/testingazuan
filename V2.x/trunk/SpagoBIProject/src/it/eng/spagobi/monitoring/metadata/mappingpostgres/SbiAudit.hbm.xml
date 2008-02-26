@@ -44,16 +44,16 @@
             <column name="subobj_ref" not-null="false" />
         </many-to-one>
         <property name="subObjId" type="integer">
-            <column name="subobj_id" not-null="true" />
+            <column name="subobj_id" not-null="false" />
         </property>
         <property name="subObjName" type="string">
-            <column name="subobj_name" length="50" not-null="true" />
+            <column name="subobj_name" length="50" not-null="false" />
         </property>
         <property name="subObjOwner" type="string">
-            <column name="subobj_owner" length="50" not-null="true" />
+            <column name="subobj_owner" length="50" not-null="false" />
         </property>
         <property name="subObjIsPublic" type="short">
-            <column name="subobj_ispublic" />
+            <column name="subobj_ispublic" not-null="false" />
         </property>
         <many-to-one name="sbiEngine" class="it.eng.spagobi.engines.config.metadata.SbiEngines">
             <column name="engine_ref" not-null="false" />

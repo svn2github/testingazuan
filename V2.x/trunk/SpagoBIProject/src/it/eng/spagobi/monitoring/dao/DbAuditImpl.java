@@ -23,6 +23,7 @@ package it.eng.spagobi.monitoring.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
@@ -249,6 +250,8 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject.name, ");
 			hql.append(	"		a.sbiObject.descr, ");
 			hql.append(	"		a.sbiObject.objectTypeCode, ");
+			hql.append(	"		a.subObjId, ");
+			hql.append(	"		a.subObjName, ");
 			hql.append(	"		a.documentParameters, ");
 			hql.append(	"		a.sbiEngine.name "); 
 			hql.append(	"from ");
@@ -257,12 +260,15 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject is not null and ");
 			hql.append(	"		a.sbiEngine is not null and ");
 			hql.append(	"		a.sbiObject.label not like 'SBI_%' and ");
-			hql.append(	"		a.userGroup in (" + usergroups + ") ");
+			hql.append(	"		a.userGroup in (" + usergroups + ") and ");
+			hql.append(	"		(a.sbiSubObject is null or a.sbiSubObject.subObjId = a.subObjId) ");
 			hql.append(	"group by 	a.sbiObject.biobjId, ");
 			hql.append(	"			a.sbiObject.label, ");
 			hql.append(	"			a.sbiObject.name, ");
 			hql.append(	"			a.sbiObject.descr, ");
 			hql.append(	"			a.sbiObject.objectTypeCode, ");
+			hql.append(	"			a.subObjId, ");
+			hql.append(	"			a.subObjName, ");
 			hql.append(	"			a.documentParameters, ");
 			hql.append(	"			a.sbiEngine.name ");
 			hql.append(	"order by count(a.sbiObject.biobjId) desc ");
@@ -308,6 +314,8 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject.name, ");
 			hql.append(	"		a.sbiObject.descr, ");
 			hql.append(	"		a.sbiObject.objectTypeCode, ");
+			hql.append(	"		a.subObjId, ");
+			hql.append(	"		a.subObjName, ");
 			hql.append(	"		a.documentParameters, ");
 			hql.append(	"		a.sbiEngine.name "); 
 			hql.append(	"from ");
@@ -316,12 +324,15 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject is not null and ");
 			hql.append(	"		a.sbiEngine is not null and ");
 			hql.append(	"		a.sbiObject.label not like 'SBI_%' and ");
-			hql.append(	"		a.userName = '" + userId + "' ");
+			hql.append(	"		a.userName = '" + userId + "' and ");
+			hql.append(	"		(a.sbiSubObject is null or a.sbiSubObject.subObjId = a.subObjId) ");
 			hql.append(	"group by 	a.sbiObject.biobjId, ");
 			hql.append(	"			a.sbiObject.label, ");
 			hql.append(	"			a.sbiObject.name, ");
 			hql.append(	"			a.sbiObject.descr, ");
 			hql.append(	"			a.sbiObject.objectTypeCode, ");
+			hql.append(	"			a.subObjId, ");
+			hql.append(	"			a.subObjName, ");
 			hql.append(	"			a.documentParameters, ");
 			hql.append(	"			a.sbiEngine.name ");
 			hql.append(	"order by max(a.requestTime) desc ");
@@ -354,8 +365,10 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		toReturn.setDocumentName((String) row[3]);
 		toReturn.setDocumentDescription((String) row[4]);
 		toReturn.setDocumentType((String) row[5]);
-		toReturn.setParameters((String) row[6]);
-		toReturn.setEngineName((String) row[7]);
+		toReturn.setSubObjId((Integer) row[6]);
+		toReturn.setSubObjName((String) row[7]);
+		toReturn.setParameters((String) row[8]);
+		toReturn.setEngineName((String) row[9]);
 		return toReturn;
 	}
 

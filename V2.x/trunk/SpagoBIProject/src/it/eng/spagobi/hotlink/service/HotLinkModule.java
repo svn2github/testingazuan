@@ -110,6 +110,7 @@ public class HotLinkModule extends AbstractModule {
 			String docIdStr = (String) request.getAttribute("DOC_ID");
 			Integer docId = new Integer(docIdStr);
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(docId);
+			
 			String parameters = (String) request.getAttribute("PARAMETERS");
 			SessionContainer sessionContainer = this.getRequestContainer().getSessionContainer();
 			
@@ -122,6 +123,18 @@ public class HotLinkModule extends AbstractModule {
             // if the parameters is set put it into the session
             if (parameters != null && !parameters.trim().equals("")) 
             	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
+            // else clean for previous executions
+            else sessionContainer.delAttribute(SpagoBIConstants.PARAMETERS);
+            
+            
+			String subObjName = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
+            // if the subObjName is set put it into the session
+            if (subObjName != null && !subObjName.trim().equals("")) 
+            	sessionContainer.setAttribute("LABEL_SUB_OBJECT", subObjName);
+            // else clean for previous executions
+            else sessionContainer.delAttribute("LABEL_SUB_OBJECT");
+			
+            
             // set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
 					  SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);

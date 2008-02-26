@@ -148,8 +148,9 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 			SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, docId);
 			Criterion docIdCriterion = Expression.eq("sbiObject", obj);
 			criteria.add(docIdCriterion);
+			SbiSubObjects subObj = null;
 			if (subObjId != null) {
-				SbiSubObjects subObj = (SbiSubObjects) aSession.load(SbiSubObjects.class, subObjId);
+				subObj = (SbiSubObjects) aSession.load(SbiSubObjects.class, subObjId);
 				Criterion subObjIdCriterion = Expression.eq("sbiSubObject", subObj);
 				criteria.add(subObjIdCriterion);
 			}
@@ -161,6 +162,7 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 				SbiRememberMe temp = new SbiRememberMe();
 				temp.setUserName(userId);
 				temp.setSbiObject(obj);
+				temp.setSbiSubObject(subObj);
 				temp.setParameters(parameters);
 				aSession.save(temp);
 				tx.commit();

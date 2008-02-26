@@ -52,6 +52,7 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 		<p>
 		<a href="#RememberMe" id="toggler_RememberMe" style="text-decoration:none;">RememberMe</a>
 		<div id="popout_RememberMe" >
+		<%--
 		<table style="margin:10px;padding:10px">
 			<thead>
 				<th class='portlet-section-header'>
@@ -109,6 +110,71 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			}
 			%>
 		</table>
+		--%>
+<script type="text/javascript">
+Ext.onReady(function(){
+
+    Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+
+    var myData = [
+    	<%
+			Iterator rememberMeListIt = rememberMeList.iterator();
+			while (rememberMeListIt.hasNext()) {
+				RememberMe rm = (RememberMe) rememberMeListIt.next();
+				Map params = new HashMap();
+				params.put("PAGE", "HOT_LINK_PAGE");
+				params.put("OPERATION", "EXECUTE");
+				params.put("DOC_ID", rm.getObjId().toString());
+				params.put("PARAMETERS", rm.getParameters());
+				String subObjName = rm.getSubObjName();
+				if (subObjName != null) {
+					params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
+				}	
+				String executeUrl = urlBuilder.getUrl(request, params);
+				params = new HashMap();
+				params.put("PAGE", "HOT_LINK_PAGE");
+				params.put("OPERATION", "DELETE_REMEMBER_ME");
+				params.put("REMEMBER_ME_ID", rm.getId().toString());
+				String deleteUrl = urlBuilder.getUrl(request, params);
+				String doc = rm.getDocumentName() + (rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "");
+				%>['<a href="<%= executeUrl %>"><%= doc %></a>','<%= rm.getDocumentType() %>','<%= rm.getEngineName() %>'],<%
+			}
+			%>
+    ];
+    
+    // create the data store
+    var store = new Ext.data.SimpleStore({
+        fields: [
+           {name: 'Document'},
+           {name: 'Type'},
+           {name: 'Engine'}
+        ]
+    });
+    store.loadData(myData);
+    
+    // create the Grid
+    var grid = new Ext.grid.GridPanel({
+        store: store,
+        columns: [
+            {id: "Document", header: "Document", width: 75, sortable: false, dataIndex: 'Document'},
+            {header: "Type", width: 75, sortable: false, dataIndex: 'Type'},
+            {header: "Engine", width: 75, sortable: false, dataIndex: 'Engine'},
+        ],
+        stripeRows: true,
+        autoExpandColumn: 'Document',
+        height:350,
+        width:600,
+        title:'Array Grid'
+    });
+
+    grid.render('popout_RememberMe');
+
+    grid.getSelectionModel().selectFirstRow();
+});
+</script>
+		
+		
+		
 		</div>
 		</p>
 		
@@ -125,6 +191,10 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 				params.put("OPERATION", "EXECUTE");
 				params.put("DOC_ID", hotlink.getObjId().toString());
 				params.put("PARAMETERS", hotlink.getParameters());
+				String subObjName = hotlink.getSubObjName();
+				if (subObjName != null) {
+					params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
+				}
 				String executeUrl = urlBuilder.getUrl(request, params);
 				%>
 				<tr>
@@ -161,6 +231,10 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 				params.put("OPERATION", "EXECUTE");
 				params.put("DOC_ID", hotlink.getObjId().toString());
 				params.put("PARAMETERS", hotlink.getParameters());
+				String subObjName = hotlink.getSubObjName();
+				if (subObjName != null) {
+					params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
+				}
 				String executeUrl = urlBuilder.getUrl(request, params);
 				%>
 				<tr>

@@ -19,13 +19,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.hotlink.modules;
-
-import java.util.List;
+package it.eng.spagobi.hotlink.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -38,6 +35,8 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.hotlink.constants.HotLinkConstants;
 import it.eng.spagobi.monitoring.dao.AuditManager;
+
+import java.util.List;
 
 import org.apache.log4j.Logger;
 

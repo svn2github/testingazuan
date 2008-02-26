@@ -19,14 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.hotlink.actions;
-
-import java.io.OutputStream;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
+package it.eng.spagobi.hotlink.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
@@ -35,6 +28,10 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
+
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
 
 /**
  * 

@@ -80,6 +80,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 
     static private Logger logger = Logger.getLogger(SelectParametersLookupModule.class);
 
+	// define variable for value column name
+    private String valColName = "";
     /**
      * Class Constructor
      */
@@ -93,9 +95,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	// get role / par id / par field name name
 	String roleName = (String) request.getAttribute("roleName");
 	String parIdStr = (String) request.getAttribute("parameterId");
+	String returnParam = (String) request.getAttribute("returnParam");
 	logger.debug("roleName=" + roleName);
 	logger.debug("parameterId=" + parIdStr);
-
+	logger.debug("returnParam=" + returnParam);
 	if (roleName == null)
 	    logger.warn("roleName is null");
 	if (parIdStr == null)
@@ -113,7 +116,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    list = loadList(request, response, parId, roleName);
 	}
 	// fill response
-	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPagePub");
+	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPublisher");
+	response.setAttribute("returnParam", returnParam);
 	logger.debug("OUT");
 	return list;
     }
@@ -129,8 +133,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	PaginatorIFace paginator = new GenericPaginator();
 	ListIFace list = new GenericList();
 
-	// define variable for value column name
-	String valColName = "";
+
 
 	// recover lov object
 	IParameterDAO pardao = DAOFactory.getParameterDAO();
@@ -156,22 +159,22 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	// read data
 	SourceBean rowsSourceBean = null;
 	if (typeLov.equalsIgnoreCase("QUERY")) {
-	    rowsSourceBean = executeQuery(valColName,lovProvider, response, profile);
+	    rowsSourceBean = executeQuery(lovProvider, response, profile);
 	    if (rowsSourceBean == null)
 		return list;
 
 	} else if (typeLov.equalsIgnoreCase("FIXED_LIST")) {
-	    rowsSourceBean = executeFixedList(valColName,lovProvider, response, profile);
+	    rowsSourceBean = executeFixedList(lovProvider, response, profile);
 	    if (rowsSourceBean == null)
 		return list;
 
 	} else if (typeLov.equalsIgnoreCase("SCRIPT")) {
-	    rowsSourceBean = executeScript(valColName,lovProvider, response, profile);
+	    rowsSourceBean = executeScript(lovProvider, response, profile);
 	    if (rowsSourceBean == null)
 		return list;
 
 	} else if (typeLov.equalsIgnoreCase("JAVA_CLASS")) {
-	    rowsSourceBean = executeJavaClass(valColName,lovProvider, response, profile);
+	    rowsSourceBean = executeJavaClass(lovProvider, response, profile);
 	    if (rowsSourceBean == null)
 		return list;
 	}
@@ -246,9 +249,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
     }
 
     
-    private SourceBean executeQuery(String valColName,String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
+    private SourceBean executeQuery(String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
 	logger.debug("IN");
 	SourceBean result = null;
+	logger.debug("lovProvider="+lovProvider);
 	QueryDetail qd = QueryDetail.fromXML(lovProvider);
 	if (qd.requireProfileAttributes()) {
 	    String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported",
@@ -256,7 +260,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
 	    return result;
 	}
-	valColName = qd.getValueColumnName();	
+	valColName = qd.getValueColumnName();
+	logger.debug("valColName="+valColName);
 	String datasource = qd.getDataSource();
 	String statement = qd.getQueryDefinition();
 
@@ -274,9 +279,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	return result;
     }
 
-    private SourceBean executeFixedList(String valColName,String lovProvider, SourceBean response, IEngUserProfile profile)
+    private SourceBean executeFixedList(String lovProvider, SourceBean response, IEngUserProfile profile)
 	    throws Exception {
 	logger.debug("IN");
+	logger.debug("lovProvider."+lovProvider);
 	SourceBean resultSB = null;
 	FixedListDetail fixlistDet = FixedListDetail.fromXML(lovProvider);
 	if (fixlistDet.requireProfileAttributes()) {
@@ -286,6 +292,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    return null;
 	}
 	valColName = fixlistDet.getValueColumnName();
+	logger.debug("valColName:"+valColName);
+	
 	try {
 	    String result = fixlistDet.getLovResult(profile);
 	    resultSB = SourceBean.fromXMLString(result);
@@ -306,7 +314,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	return resultSB;
     }
 
-    private SourceBean executeScript(String valColName,String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
+    private SourceBean executeScript(String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
 	logger.debug("IN");
 	SourceBean resultSB = null;
 	ScriptDetail scriptDetail = ScriptDetail.fromXML(lovProvider);
@@ -332,7 +340,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	return resultSB;
     }
 
-    private SourceBean executeJavaClass(String valColName,String lovProvider, SourceBean response, IEngUserProfile profile)
+    private SourceBean executeJavaClass(String lovProvider, SourceBean response, IEngUserProfile profile)
 	    throws Exception {
 	logger.debug("IN");
 	SourceBean resultSB = null;

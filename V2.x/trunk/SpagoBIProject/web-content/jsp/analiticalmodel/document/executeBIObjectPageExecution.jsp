@@ -469,6 +469,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        
        <!-- *************** end luca changes ***************   -->
        
+        <td class='header-empty-column-portlet-section'>&nbsp;</td>
+        <td class='header-button-column-portlet-section'>
+           <a href='javascript:saveRememberMe<%=executionId%>()'>
+               <img width="22px" height="22px" 
+                    title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
+                    src='<%= urlBuilder.getResourceLink(request, "/img/saveRememberMe22.png")%>'
+                    alt='<spagobi:message key = "sbi.execution.saveRememberMe" />' />
+           </a>
+         </td>
+         
     </tr>
 </table>
 
@@ -944,7 +954,7 @@ winRememberMeSaved<%=executionId%> = null;
 
 function saveRememberMe<%=executionId%>() {
 	url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
-	url += "ACTION_NAME=SAVE_REMEMBER_ME";
+	url += "NEW_SESSION=TRUE&ACTION_NAME=SAVE_REMEMBER_ME";
 	url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
 	url += "&userId=<%=userProfile.getUserUniqueIdentifier().toString()%>";
 	<%

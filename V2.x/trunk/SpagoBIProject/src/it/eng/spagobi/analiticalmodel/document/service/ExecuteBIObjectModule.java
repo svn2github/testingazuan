@@ -841,7 +841,9 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 		// set into the reponse the parameters map
 		response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL, mapPars);
-
+		if (subObj != null) {
+			response.setAttribute(SpagoBIConstants.SUBOBJECT, subObj);
+		}
 		// set into the reponse the execution and flow ids
 		response.setAttribute("spagobi_execution_id", executionId);
 		// response.setAttribute("FLOW_ID", flowId);

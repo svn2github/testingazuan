@@ -25,11 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
-
-import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
@@ -49,8 +45,13 @@ public class SaveRememberMeAction extends AbstractHttpAction {
 			String docIdStr = (String) serviceRequest.getAttribute(SpagoBIConstants.OBJECT_ID);
 			Integer docId = new Integer(docIdStr);
 			String userId = (String) serviceRequest.getAttribute("userId");
+			String subobjectIdStr = (String) serviceRequest.getAttribute("subobject_id");
+			Integer subobjectId = null;
+			if (subobjectIdStr != null && !subobjectIdStr.trim().equals("")) {
+				subobjectId = new Integer(subobjectIdStr);
+			}
 			String parameters = (String) serviceRequest.getAttribute("parameters");
-			boolean inserted = DAOFactory.getRememberMeDAO().saveRememberMe(docId, userId, parameters);
+			boolean inserted = DAOFactory.getRememberMeDAO().saveRememberMe(docId, subobjectId, userId, parameters);
 			if (inserted) {
 				serviceResponse.setAttribute("NORMAL_MSG_CODE", "sbi.rememberme.saveOk");
 			} else {
@@ -63,32 +64,5 @@ public class SaveRememberMeAction extends AbstractHttpAction {
 			logger.debug("OUT");
 		}
 	}
-
-	private String createNormalHtml(String msgCode, Locale locale) {
-		String msg = getInternazionalizedMessage(msgCode, locale);
-		String html = 
-				"<table cellspacing='0' border='0'>\n";
-		html += "	<tr>";
-		html += "		<td class='header-title-column-single-object-execution-portlet-section' style='vertical-align:middle;'>";
-		html += "				&nbsp;&nbsp;&nbsp;" + msg;
-		html += "		</td>";
-		html += "	</tr>";
-		html += "</table>";
-		return html;
-	}
 	
-	private String createErrorHtml(String msgCode, Locale locale) {
-		return getInternazionalizedMessage(msgCode, locale);
-	}
-	
-	private String getInternazionalizedMessage(String msgCode, Locale locale) {
-		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-		String msg = null;
-		if (locale != null) {
-			msg = msgBuilder.getMessage(msgCode, locale);
-		} else {
-			msg = msgBuilder.getMessage(msgCode);
-		}
-		return msg;
-	}
 }

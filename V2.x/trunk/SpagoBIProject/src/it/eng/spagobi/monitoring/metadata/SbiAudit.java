@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.monitoring.metadata;
 
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
 import java.util.Date;
@@ -39,6 +40,11 @@ public class SbiAudit implements java.io.Serializable  {
 	private String documentType;
 	private String documentState;
 	private String documentParameters;
+	private SbiSubObjects sbiSubObject;
+	private Integer subObjId;
+	private String subObjName;
+	private String subObjOwner;
+	private Short subObjIsPublic;
 	private SbiEngines sbiEngine;
 	private Integer engineId;
 	private String engineLabel;
@@ -282,6 +288,46 @@ public class SbiAudit implements java.io.Serializable  {
 
 	public void setExecutionTime(Integer executionTime) {
 		this.executionTime = executionTime;
+	}
+
+	public SbiSubObjects getSbiSubObject() {
+		return sbiSubObject;
+	}
+
+	public void setSbiSubObject(SbiSubObjects sbiSubObject) {
+		this.sbiSubObject = sbiSubObject;
+	}
+
+	public String getSubObjName() {
+		return subObjName;
+	}
+
+	public void setSubObjName(String subObjName) {
+		this.subObjName = subObjName;
+	}
+
+	public String getSubObjOwner() {
+		return subObjOwner;
+	}
+
+	public void setSubObjOwner(String subObjOwner) {
+		this.subObjOwner = subObjOwner;
+	}
+
+	public Short getSubObjIsPublic() {
+		return subObjIsPublic;
+	}
+
+	public void setSubObjIsPublic(Short subObjIsPublic) {
+		this.subObjIsPublic = subObjIsPublic;
+	}
+
+	public Integer getSubObjId() {
+		return subObjId;
+	}
+
+	public void setSubObjId(Integer subObjId) {
+		this.subObjId = subObjId;
 	}
 	
 }

@@ -14,6 +14,9 @@
         <many-to-one name="sbiObject" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
             <column name="BIOBJ_ID" not-null="true" />
         </many-to-one>
+        <many-to-one name="sbiSubObject" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects">
+            <column name="SUBOBJ_ID" not-null="false" />
+        </many-to-one>
         <property name="parameters" type="string">
             <column name="PARAMETERS" length="400" not-null="false" />
         </property>

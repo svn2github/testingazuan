@@ -326,7 +326,7 @@ public class DossierCollaborationModule extends AbstractModule {
 			IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
 		    // AUDIT
 			if (dossier != null) {
-				auditId = auditManager.insertAudit(dossier, profile, "", "WORKFLOW");
+				auditId = auditManager.insertAudit(dossier, null, profile, "", "WORKFLOW");
 			}
 			try {
 				procDefIS = dossierDAO.getProcessDefinitionContent(pathTempFolder);

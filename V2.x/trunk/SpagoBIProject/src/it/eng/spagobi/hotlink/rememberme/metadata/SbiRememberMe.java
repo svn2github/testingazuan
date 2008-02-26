@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.hotlink.rememberme.metadata;
 
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 
 /**
  * 
@@ -34,6 +35,7 @@ public class SbiRememberMe implements java.io.Serializable  {
 	private Integer id;
 	private String userName;
 	private SbiObjects sbiObject;
+	private SbiSubObjects sbiSubObject;
 	private String parameters;
 	
     // Constructors
@@ -77,6 +79,14 @@ public class SbiRememberMe implements java.io.Serializable  {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+
+	public SbiSubObjects getSbiSubObject() {
+		return sbiSubObject;
+	}
+
+	public void setSbiSubObject(SbiSubObjects sbiSubObject) {
+		this.sbiSubObject = sbiSubObject;
 	}
     
 }

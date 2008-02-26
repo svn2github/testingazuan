@@ -24,6 +24,7 @@ package it.eng.spagobi.monitoring.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.hotlink.rememberme.bo.HotLink;
@@ -59,6 +60,13 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 				Integer objectId = aSbiAudit.getDocumentId();
 				SbiObjects sbiObject = (SbiObjects) session.load(SbiObjects.class, objectId);
 				aSbiAudit.setSbiObject(sbiObject);
+			}
+			if (aSbiAudit.getSbiSubObject() == null) {
+				Integer subObjId = aSbiAudit.getSubObjId();
+				if (subObjId != null) {
+					SbiSubObjects subObj = (SbiSubObjects) session.load(SbiSubObjects.class, subObjId);
+					aSbiAudit.setSbiSubObject(subObj);
+				}
 			}
 			if (aSbiAudit.getSbiEngine() == null) {
 				Integer engineId = aSbiAudit.getEngineId();
@@ -104,6 +112,11 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			aSbiAudit.getDocumentParameters();
 			aSbiAudit.getDocumentState();
 			aSbiAudit.getDocumentType();
+			aSbiAudit.getSbiSubObject();
+			aSbiAudit.getSubObjId();
+			aSbiAudit.getSubObjName();
+			aSbiAudit.getSubObjOwner();
+			aSbiAudit.getSubObjIsPublic();
 			aSbiAudit.getSbiEngine();
 			aSbiAudit.getEngineClass();
 			aSbiAudit.getEngineDriver();

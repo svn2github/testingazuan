@@ -36,6 +36,8 @@ public class HotLink {
 	protected String documentName;
 	protected String documentDescription;
 	protected String documentType;
+	protected Integer subObjId;
+	protected String subObjName;
 	protected String parameters;
 	protected String engineName;
 	
@@ -80,6 +82,18 @@ public class HotLink {
 	}
 	public void setEngineName(String engineName) {
 		this.engineName = engineName;
+	}
+	public Integer getSubObjId() {
+		return subObjId;
+	}
+	public void setSubObjId(Integer subObjId) {
+		this.subObjId = subObjId;
+	}
+	public String getSubObjName() {
+		return subObjName;
+	}
+	public void setSubObjName(String subObjName) {
+		this.subObjName = subObjName;
 	}
 	
 }

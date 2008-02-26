@@ -23,10 +23,10 @@ package it.eng.spagobi.monitoring.dao;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -160,7 +160,7 @@ public class AuditManager {
 	 * @param modality The execution modality
 	 * @return The Integer representing the execution id
 	 */
-	public Integer insertAudit(BIObject obj, IEngUserProfile profile, String role, String modality) {
+	public Integer insertAudit(BIObject obj, SubObject subObj, IEngUserProfile profile, String role, String modality) {
 		SbiAudit audit = new SbiAudit();
 		audit.setUserName(profile.getUserUniqueIdentifier().toString());
 		audit.setUserGroup(role);
@@ -185,6 +185,12 @@ public class AuditManager {
 			}
 		}
 		audit.setDocumentParameters(documentParameters);
+		if (subObj != null) {
+			audit.setSubObjId(subObj.getId());
+			audit.setSubObjName(subObj.getName());
+			audit.setSubObjOwner(subObj.getOwner());
+			audit.setSubObjIsPublic(subObj.getIsPublic().booleanValue() ? new Short((short) 1) : new Short((short) 0));
+		}
 		Engine engine = obj.getEngine();
 		audit.setEngineId(engine.getId());
 		audit.setEngineLabel(engine.getLabel());

@@ -32,7 +32,7 @@ import java.util.List;
  */
 public interface IRememberMeDAO {
 	
-	public boolean saveRememberMe(Integer docId, String userId, String parameters) throws EMFInternalError;
+	public boolean saveRememberMe(Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError;
 	
 	public List getMyRememberMe(String userId) throws EMFInternalError;
 	

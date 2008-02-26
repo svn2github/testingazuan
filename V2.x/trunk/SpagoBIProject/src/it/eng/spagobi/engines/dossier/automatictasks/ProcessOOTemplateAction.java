@@ -349,7 +349,7 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	    
 	    // AUDIT
 	    AuditManager auditManager = AuditManager.getInstance();
-	    Integer executionId = auditManager.insertAudit(biobj, profile, "", "WORKFLOW");
+	    Integer executionId = auditManager.insertAudit(biobj, null, profile, "", "WORKFLOW");
 	    // adding parameters for AUDIT updating
 	    if (executionId != null) {
 	    	mapPars.put(AuditManager.AUDIT_ID, executionId.toString());

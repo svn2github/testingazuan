@@ -104,7 +104,7 @@ public class ExecutionProxy {
 
 	    // AUDIT
 	    AuditManager auditManager = AuditManager.getInstance();
-	    Integer executionId = auditManager.insertAudit(biObject, profile, "", "SCHEDULATION");
+	    Integer executionId = auditManager.insertAudit(biObject, null, profile, "", "SCHEDULATION");
 	    // adding parameters for AUDIT updating
 	    if (executionId != null) {
 		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());

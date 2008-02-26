@@ -24,6 +24,7 @@ package it.eng.spagobi.hotlink.rememberme.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
@@ -126,23 +127,33 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		toReturn.setParameters(hibObj.getParameters());
 		SbiEngines engine = obj.getSbiEngines();
 		toReturn.setEngineName(engine.getName());
+		SbiSubObjects subObj = hibObj.getSbiSubObject();
+		if (subObj != null) {
+			toReturn.setSubObjId(subObj.getSubObjId());
+			toReturn.setSubObjName(subObj.getName());
+		}
 		return toReturn;
 	}
 
-	public boolean saveRememberMe(Integer docId, String userId, String parameters) throws EMFInternalError {
+	public boolean saveRememberMe(Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			Criteria criteria = aSession.createCriteria(SbiRememberMe.class);
 			Criterion userIdCriterion = Expression.eq("userName", userId);
+			criteria.add(userIdCriterion);
 			SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, docId);
 			Criterion docIdCriterion = Expression.eq("sbiObject", obj);
-			Criterion parametersCriterion = Expression.eq("parameters", parameters);
-			Criteria criteria = aSession.createCriteria(SbiRememberMe.class);
-			criteria.add(userIdCriterion);
 			criteria.add(docIdCriterion);
+			if (subObjId != null) {
+				SbiSubObjects subObj = (SbiSubObjects) aSession.load(SbiSubObjects.class, subObjId);
+				Criterion subObjIdCriterion = Expression.eq("sbiSubObject", subObj);
+				criteria.add(subObjIdCriterion);
+			}
+			Criterion parametersCriterion = Expression.eq("parameters", parameters);
 			criteria.add(parametersCriterion);
 			//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List list = criteria.list();

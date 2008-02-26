@@ -37,7 +37,7 @@ public class DossierUtilities {
 	public static String getDossierServiceUrl() {
 		logger.debug("IN");
 		String sbiContAdd = GeneralUtilities.getSpagoBiContextAddress();
-		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
+		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
 		logger.debug("OUT");
 		return toReturn;
 	}
@@ -45,7 +45,7 @@ public class DossierUtilities {
 	public static String getDossierServiceUrl(HttpServletRequest request) {
 		logger.debug("IN");
 		String sbiContAdd = ChannelUtilities.getSpagoBIContextName(request);
-		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
+		String toReturn = sbiContAdd + "/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=" + DossierDownloadAction.ACTION_NAME;
 		logger.debug("OUT");
 		return toReturn;
 	}

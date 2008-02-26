@@ -6,7 +6,9 @@
     <class name="it.eng.spagobi.hotlink.rememberme.metadata.SbiRememberMe" table="SBI_REMEMBER_ME">
         <id name="id" type="integer">
             <column name="ID" />
-            <generator class="identity" />
+            <generator class="sequence">
+            	<param name="sequence">SBI_REMEMBER_ME_SEQ</param>  
+            </generator>
         </id>
         <property name="userName" type="string">
             <column name="USERNAME" length="40" not-null="true" />

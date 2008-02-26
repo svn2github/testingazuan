@@ -26,4 +26,30 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailDistributionListModule"/>
     	</MODULES>
   	</PAGE>  	
+  	
+  	
+  	<PAGE name="ListDistributionListUserPage" scope="REQUEST" title="Distribution List Configuration" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListDistributionListUserPage" target="ListDistributionListUserModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListDistributionListUserModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	
+  	<PAGE name="DetailDistributionListUserPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailDistributionListUserPage" target="DetailDistributionListUserModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailDistributionListUserModule"/>
+    	</MODULES>
+  	</PAGE>  	
 </PAGES>

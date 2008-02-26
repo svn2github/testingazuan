@@ -49,6 +49,67 @@
     <MODULE class="it.eng.spagobi.tools.distributionlist.service.DetailDistributionListModule" name="DetailDistributionListModule">
      	<CONFIG/>
     </MODULE>
+    
+       
+	<MODULE class="it.eng.spagobi.tools.distributionlist.service.ListDistributionListUserModule" name="ListDistributionListUserModule">
+	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListDistributionList.title" >
+	      <QUERIES>
+	        <SELECT_QUERY statement="SELECT_ALL_DL_USER">
+	        	<PARAMETER type="RELATIVE" value="role0" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role1" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role2" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role3" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role4" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role5" scope="SESSION" />
+	        	<PARAMETER type="RELATIVE" value="role6" scope="SESSION" />
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+	        </SELECT_QUERY>
+	      </QUERIES>
+	      <COLUMNS>
+	        <COLUMN label="DL_ID" name="DL_ID" hidden="true" />
+	        <COLUMN label="SBISet.ListDL.columnName" name="NAME" />	        
+	        <COLUMN label="SBISet.ListDL.columnDescr" name="DESCR" />
+	      </COLUMNS>
+	      <CAPTIONS>
+	      	<SELECT_CAPTION popup= "TRUE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
+	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
+		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
+	        </SELECT_CAPTION>
+	        <ALREADYREGISTERED_CAPTION confirm="FALSE" image="/img/button_ok.gif" label="SBISet.ListDL.alreadyRegisteredCaption">
+	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
+		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
+	        </ALREADYREGISTERED_CAPTION>
+	        <SUBSCRIBE_CAPTION confirm="TRUE" image="/img/notes.jpg" label="SBISet.ListDL.subscribeCaption">
+	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
+		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
+	        </SUBSCRIBE_CAPTION>
+	        <UNSUBSCRIBE_CAPTION confirm="TRUE" image="/img/clear.gif" label="SBISet.ListDL.unsubscribeCaption">
+	          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
+	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListPage"/>
+	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
+	          <CONFIRM_CONDITION msg='SBISet.ListDL.ConfirmUnsubscribeFeature' bundle='messages' >
+			  </CONFIRM_CONDITION>
+	        </UNSUBSCRIBE_CAPTION>
+	      </CAPTIONS>
+	      <BUTTONS>
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListDL.backButton">
+	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
+	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIDistributionListUserPublisher"/>
+	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>
+	        </BACK_BUTTON>
+	      </BUTTONS>
+	    </CONFIG>
+  	</MODULE>
+
+
+    
+    <MODULE class="it.eng.spagobi.tools.distributionlist.service.DetailDistributionListUserModule" name="DetailDistributionListUserModule">
+     	<CONFIG/>
+    </MODULE>
 </MODULES>
 
 

@@ -14,6 +14,12 @@
         <property name="descr" type="string">
             <column name="DESCR" length="160" />
         </property>
+        <set name="sbiDistributionListUsers" inverse="true">
+            <key>
+                <column name="LIST_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListUser" />
+        </set>
         <set name="sbiDistributionListsObjectses" inverse="true">
             <key>
                 <column name="DL_ID" not-null="true" />

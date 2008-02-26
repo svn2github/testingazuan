@@ -25,22 +25,57 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          import="it.eng.spagobi.commons.constants.SpagoBIConstants,
          		 it.eng.spago.configuration.ConfigSingleton,
                  it.eng.spago.base.SourceBean,
-                 it.eng.spago.security.IEngUserProfile" %>
-
+                 it.eng.spago.security.IEngUserProfile,
+                 java.util.Collection,
+                 java.util.Iterator" %>
+<%@page import="it.eng.spago.base.RequestContainer"%>
+<%@page import="it.eng.spago.base.SessionContainer"%>
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 
 <portlet:defineObjects/>
-<% //get the user profile from session
+<% 
+	//get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	Collection c = userProfile.getRoles();
+	Iterator i = c.iterator();
+	int j = 0;
+	while (i.hasNext()){
+		String roles = (String)i.next();
+		aSessionContainer.setAttribute("role"+j,roles);
+		j++ ;
+	}
+		while (j<=6){
+			String s= "/";
+			aSessionContainer.setAttribute("role"+j,s);
+			j++ ;
+		}
 %>
 
 <div class="div_background">
     <br/>	
 	<table>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_USER)) {%>
+			<tr class="portlet-font" vAlign="middle">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/distributionlist/distributionlistuser.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+					    <br/> 
+						<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDistributionListUserPage"/>
+								<portlet:param name="PAGE" value="ListDistributionListUserPage"/></portlet:actionURL>' 
+							class="link_main_menu" >
+						 	<spagobi:message key="SBISet.linkDLUConf" />
+						</a>
+					</td>
+			</tr>
+		<%} %>
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT)) {%>		
 			<tr class="portlet-font">
 					<td width="100" align="center">

@@ -24,8 +24,8 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
  * another error is generated. 
  * 
  */
-public class DetailDistributionListPublisher implements PublisherDispatcherIFace{
-	static private Logger logger = Logger.getLogger(DetailDistributionListPublisher.class);
+public class DetailDistributionListUserPublisher implements PublisherDispatcherIFace{
+	static private Logger logger = Logger.getLogger(DetailDistributionListUserPublisher.class);
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -41,7 +41,7 @@ public class DetailDistributionListPublisher implements PublisherDispatcherIFace
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
 		// get the module response
-		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("DetailDistributionListModule");
+		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("DetailDistributionListUserModule");
 		
 		// if the module response is null throws an error and return the name of the errors publisher
 		if(moduleResponse==null) {
@@ -54,8 +54,8 @@ public class DetailDistributionListPublisher implements PublisherDispatcherIFace
 		// if there are errors and they are only validation errors return the name for the detail publisher
 		if(!errorHandler.isOK()) {
 			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
-				logger.info("Publish: detailDistributionList"  );
-				return "detailDistributionList";
+				logger.info("Publish: detailDistributionListUser"  );
+				return "detailDistributionListUser";
 			}
 		}
 		
@@ -66,13 +66,13 @@ public class DetailDistributionListPublisher implements PublisherDispatcherIFace
 
         Object loop = moduleResponse.getAttribute("loopback");
         if (loop != null) {
-        	logger.info("Publish: detailDistributionListLoop"  );
+        	logger.info("Publish: detailDistributionListUserLoop"  );
         	logger.debug("OUT");
-        	return "detailDistributionListLoop";
+        	return "detailDistributionListUserLoop";
 		} else {
-			logger.info("Publish: detailDistributionList"  );
+			logger.info("Publish: detailDistributionListUser"  );
 			logger.debug("OUT");
-			return "detailDistributionList";
+			return "detailDistributionListUser";
 		}
 	}
 

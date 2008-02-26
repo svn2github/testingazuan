@@ -17,6 +17,7 @@ public class SbiDistributionList  implements java.io.Serializable {
      private Integer dlId;
      private String name;
      private String descr;
+     private Set sbiDistributionListUsers = new HashSet(0);
      private Set sbiDistributionListsObjectses = new HashSet(0);
 
 
@@ -33,10 +34,11 @@ public class SbiDistributionList  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiDistributionList(Integer dlId, String name, String descr, Set sbiDistributionListsObjectses) {
+    public SbiDistributionList(Integer dlId, String name, String descr, Set sbiDistributionListUsers, Set sbiDistributionListsObjectses) {
         this.dlId = dlId;
         this.name = name;
         this.descr = descr;
+        this.sbiDistributionListUsers = sbiDistributionListUsers;
         this.sbiDistributionListsObjectses = sbiDistributionListsObjectses;
     }
     
@@ -68,6 +70,14 @@ public class SbiDistributionList  implements java.io.Serializable {
         this.descr = descr;
     }
 
+    public Set getSbiDistributionListUsers() {
+        return this.sbiDistributionListUsers;
+    }
+    
+    public void setSbiDistributionListUsers(Set sbiDistributionListUsers) {
+        this.sbiDistributionListUsers = sbiDistributionListUsers;
+    }
+
     public Set getSbiDistributionListsObjectses() {
         return this.sbiDistributionListsObjectses;
     }
@@ -76,10 +86,6 @@ public class SbiDistributionList  implements java.io.Serializable {
         this.sbiDistributionListsObjectses = sbiDistributionListsObjectses;
     }
    
-
-
-
-
 
 
 

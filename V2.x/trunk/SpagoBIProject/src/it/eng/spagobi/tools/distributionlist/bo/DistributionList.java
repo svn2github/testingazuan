@@ -9,7 +9,9 @@ public class DistributionList implements Serializable {
 	private String name = null;
 	private String descr = null;
 	private List emails = null;
+	private List documents = null;
 	
+
 	public int getId() {
 		return id;
 	}
@@ -33,6 +35,12 @@ public class DistributionList implements Serializable {
 	}
 	public void setEmails(List emails) {
 		this.emails = emails;
+	}
+	public List getDocuments() {
+		return documents;
+	}
+	public void setDocuments(List documents) {
+		this.documents = documents;
 	}
 	
 

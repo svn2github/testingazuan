@@ -12,7 +12,6 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ import org.apache.log4j.Logger;
 */
 
 public class DetailDistributionListModule extends AbstractModule {
-	
+
 	static private Logger logger = Logger.getLogger(DetailDistributionListModule.class);
 	public static final String MOD_SAVE = "SAVE";
 	public static final String MOD_SAVEBACK = "SAVEBACK";

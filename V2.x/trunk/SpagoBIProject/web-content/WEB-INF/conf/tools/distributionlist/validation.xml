@@ -22,4 +22,27 @@
 		</VALIDATION>
 	</SERVICE>
 	
+			
+	<SERVICE name="DetailDistributionListUserPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="NAME" label="#SBISet.ListDL.columnName">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>				
+			</FIELDS>
+		</VALIDATION>	
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+			</CONDITIONS>
+			<FIELDS>
+			 	
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+	
 </VALIDATIONS>

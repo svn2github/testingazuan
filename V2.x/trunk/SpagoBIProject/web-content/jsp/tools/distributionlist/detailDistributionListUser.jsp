@@ -7,14 +7,14 @@
 	 				         java.util.Iterator,
 	 				         it.eng.spagobi.commons.bo.Domain,
 	 				         it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects,
-	 				         it.eng.spagobi.tools.distributionlist.service.DetailDistributionListModule" %>
+	 				         it.eng.spagobi.tools.distributionlist.service.DetailDistributionListUserModule" %>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
 	<%
-		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListModule"); 
+		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
-		List listDialects = (List) moduleResponse.getAttribute(DetailDistributionListModule.NAME_ATTR_LIST_DIALECTS);
+		List listDialects = (List) moduleResponse.getAttribute(DetailDistributionListUserModule.NAME_ATTR_LIST_DIALECTS);
 		
 		String modality = (String)moduleResponse.getAttribute("modality");
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -22,13 +22,13 @@
 		
 		Map formUrlPars = new HashMap();
 		if(ChannelUtilities.isPortletRunning()) {
-			formUrlPars.put("PAGE", "DetailDistributionListPage");	
+			formUrlPars.put("PAGE", "DetailDistributionListUserPage");	
   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
 		}
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
 		Map backUrlPars = new HashMap();
-		backUrlPars.put("PAGE", "ListDistributionListPage");
+		backUrlPars.put("PAGE", "ListDistributionListUserPage");
 		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
 	%>
@@ -38,7 +38,7 @@
 <form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
-		<input type='hidden' name='PAGE' value='DetailDistributionListPage' />
+		<input type='hidden' name='PAGE' value='DetailDistributionListUserPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
 	<% } %>
 
@@ -51,22 +51,6 @@
 			<td class='header-title-column-portlet-section' 
 			    style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key = "SBISet.ListDL.TitleDetail"  />
-			</td>
-			<td class='header-button-column-portlet-section'>
-				<a href="javascript:saveDL('SAVE')"> 
-	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDL.saveButton" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDL.saveButton"/>' 
-	      			/> 
-				</a>
-			</td>		 
-			<td class='header-button-column-portlet-section'>
-				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
-      				   title='<spagobi:message key = "SBISet.ListDL.saveBackButton" />'  
-                       alt='<spagobi:message key = "SBISet.ListDL.saveBackButton" />' 
-			   />
 			</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
@@ -92,10 +76,6 @@
 			</span>
 		</div>
 		<%
-			  String isReadonly = "";
-			  if (modality.equalsIgnoreCase("DETAIL_MOD")){
-			  		isReadonly = "readonly";
-			  }
 			  String name = dl.getName();
 			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
 				   name = "";
@@ -103,7 +83,7 @@
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
-				   name="NAME" size="50" value="<%=name%>" maxlength="50" />
+				   name="NAME" size="50" value="<%=name%>" readonly maxlength="50" />
 			&nbsp;*
 		</div>
 		
@@ -120,7 +100,7 @@
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= descr %>" maxlength="160" />
+				   size="50" value="<%= descr %>" readonly maxlength="160" />
 		</div>
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
@@ -129,68 +109,7 @@
 		<spagobi:error/>
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
-	
-	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
-	<%
-			if (modality.equalsIgnoreCase("DETAIL_MOD")){
-			List users = dl.getEmails();
-			if(!users.isEmpty()){
-	%>		
-	<table width="100%" cellspacing="0" border="1" id = "usersTable" >
-	<tr>
-	  <td>
-	  	 <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnUser" />
-			</span>
-		</div>
-	
-	  	 <div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnEmail" />
-			</span>
-		</div>
 		
-	
-		
-		<%
-			Iterator it = users.iterator();
-			while(it.hasNext()){
-				
-				Email user=(Email)it.next();
-				String userName = user.getUserId();
-				if((userName==null) || (userName.equalsIgnoreCase("null"))  ) {
-					   userName = "";
-				   }
-				String userEmail = user.getEmail();
-				if((userEmail==null) || (userEmail.equalsIgnoreCase("null"))  ) {
-					   userEmail = "";
-				   }
-				
-		 %>
-				
-				 	
-				    	<div class='div_detail_label'><%=userName %>
-				   		</div>
-					
-				    	<div class='div_detail_form'><%=userEmail %>
-				   		</div>
-										
-								
-	<% } %>
-	
-		<spagobi:error/>
-		</td>
-	  </tr>
-	</table> 
-	<% } else {%>
-		  	 <div class='div_detail_form'>
-				<span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDL.noUsers" />
-				</span>
-			</div>
-	<% } %> <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
-	
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 		<%
 			List documents = dl.getDocuments();
@@ -242,7 +161,7 @@
 					<spagobi:message key = "SBISet.ListDL.noDoc" />
 				</span>
 			</div>
-	<% } } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
+	<% } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	
 	
 	</div>  
@@ -290,4 +209,3 @@
 	</script>
 	
 	<%@ include file="/jsp/commons/footer.jsp"%>
-	

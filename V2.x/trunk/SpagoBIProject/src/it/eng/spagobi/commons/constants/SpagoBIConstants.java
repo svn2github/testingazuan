@@ -61,6 +61,8 @@ public class SpagoBIConstants {
 	public static final String MESSAGEDET = "MESSAGEDET";
 	
 	public static final String DETAIL_SELECT = "DETAIL_SELECT";
+	public static final String DETAIL_SUBSC = "DETAIL_SUBSC";
+	public static final String DETAIL_UNSUBSC = "DETAIL_UNSUBSC";
 	public static final String DETAIL_NEW = "DETAIL_NEW";
 	public static final String DETAIL_MOD = "DETAIL_MOD";
 	public static final String DETAIL_INS = "DETAIL_INS";
@@ -276,6 +278,7 @@ public class SpagoBIConstants {
 	public static final String PROFILE_ATTRIBUTES_MANAGEMENT = "ProfileAttributeManagement";
 	public static final String DATASOURCE_MANAGEMENT = "DataSourceManagement";
 	public static final String DISTRIBUTIONLIST_MANAGEMENT = "DistributionListManagement";
+	public static final String DISTRIBUTIONLIST_USER = "DistributionListUser";
 	public static final String DOCUMENT_DELETE_MANAGEMENT = "DocumentDeleteManagement";
 	public static final String DOCUMENT_DETAIL_MANAGEMENT = "DocumentDetailManagement";
 	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";

@@ -35,19 +35,11 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 /**
  * A class to generate Speedometer charts
  */
-public class SBISpeedometer {
+public class SBISpeedometer extends KpiChart{
 
 
 	private static transient Logger logger=Logger.getLogger(SBISpeedometer.class);
 
-	/** The dataset. */
-	DefaultValueDataset dataset;
-
-	double lower;
-	double upper;
-	double increment;
-	int minorTickCount;
-	String name;
 	Vector intervals;
 
 
@@ -72,7 +64,7 @@ public class SBISpeedometer {
 	 * @return A chart that displays a value as a dial.
 	 */
 
-	public JFreeChart createStandardDialChart(String chartTitle, ValueDataset dataset) {
+	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
 		logger.debug("IN");
 		DialPlot plot = new DialPlot();
 		plot.setDataset(dataset);
@@ -132,75 +124,6 @@ public class SBISpeedometer {
 
 
 
-
-
-
-
-
-	public DefaultValueDataset getDataset() {
-		return dataset;
-	}
-
-
-
-
-
-	public void setDataset(DefaultValueDataset dataset) {
-		this.dataset = dataset;
-	}
-
-
-
-
-
-	public double getLower() {
-		return lower;
-	}
-
-
-
-
-
-	public void setLower(double lower) {
-		this.lower = lower;
-	}
-
-
-
-
-
-	public double getUpper() {
-		return upper;
-	}
-
-
-
-
-
-	public void setUpper(double upper) {
-		this.upper = upper;
-	}
-
-
-
-
-
-	public double getIncrement() {
-		return increment;
-	}
-
-
-
-
-
-	public void setIncrement(double increment) {
-		this.increment = increment;
-	}
-
-
-
-
-
 	public Vector getIntervals() {
 		return intervals;
 	}
@@ -217,33 +140,6 @@ public class SBISpeedometer {
 
 
 
-	public String getName() {
-		return name;
-	}
-
-
-
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-
-
-
-	public int getMinorTickCount() {
-		return minorTickCount;
-	}
-
-
-
-
-
-	public void setMinorTickCount(int minorTickCount) {
-		this.minorTickCount = minorTickCount;
-	}
 
 
 

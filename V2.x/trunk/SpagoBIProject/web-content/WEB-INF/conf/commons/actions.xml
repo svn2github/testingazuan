@@ -45,5 +45,8 @@
  	<CONFIG/>
  </ACTION> 
  
+ <ACTION name="HIDDEN_LOGIN" class="it.eng.spagobi.commons.services.HiddenLoginAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>   
 </ACTIONS>
 

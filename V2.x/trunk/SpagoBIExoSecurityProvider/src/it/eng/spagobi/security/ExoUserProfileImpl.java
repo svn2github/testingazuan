@@ -55,7 +55,7 @@ public class ExoUserProfileImpl implements ISecurityServiceSupplier {
     static private Logger logger = Logger.getLogger(ExoUserProfileImpl.class);
     
 	/**
-	 * Return an IEngUserProfile implementation starting the Principal of the user 
+	 * Return an SpagoBIUserProfile 
 	 * @param principal Principal of the current user
 	 * @return The User Profile Interface implementation object
 	 */

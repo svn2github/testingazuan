@@ -13,5 +13,9 @@
 <MAPPING business_type="ACTION" business_name="MOVE_DOWN_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>
 <MAPPING business_name="ValidateExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
 
+<MAPPING business_type="ACTION" business_name="SAVE_OBJECT" publisher_name="SaveObjectPublisher"/>
+<MAPPING business_name="SelectParameterPage" business_type="PAGE" publisher_name="SelectParameterPublisherJ"/>
+
+
 </PRESENTATION>
 

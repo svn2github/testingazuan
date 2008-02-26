@@ -197,5 +197,17 @@
       		<MODULE keep_instance="false" keep_response="false" name="ExecuteBIObjectModule"/>
     	</MODULES>
   	</PAGE>  
+  	
+  	<PAGE name="SelectParameterPage" scope="REQUEST" title="SelectParameterPage" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="SelectParameterPage" target="SelectParameterPageModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="SelectParameterPageModule"/>
+    	</MODULES>
+  	</PAGE> 	
 </PAGES>
 

@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
 
+  	<PUBLISHER name="SaveObjectPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/SaveObject.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/SaveObject.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="ReportsLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -235,7 +249,8 @@
   	<PUBLISHER name="ExecuteBIObjectPageParameter">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>
+        	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>  
+        	 <!--	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/> -->
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
@@ -590,5 +605,29 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
-                                  	
+  	<PUBLISHER name="SelectParameterPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/SelectParametersLookUp.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/SelectParametersLookUp.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>  	
+  	<PUBLISHER name="SelectParameterPublisherJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.analiticalmodel.document.presentation.SelectParametersLookupPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0"  resource="it.eng.spagobi.analiticalmodel.document.presentation.SelectParametersLookupPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>  	                                 	
 </PUBLISHERS>

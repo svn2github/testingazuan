@@ -99,3 +99,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</table>
 	<br/>
 </div>
+            <iframe id='iframeLogin'
+                    name='iframeLogin'
+                    src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
+                    frameborder='0' >
+			</iframe>

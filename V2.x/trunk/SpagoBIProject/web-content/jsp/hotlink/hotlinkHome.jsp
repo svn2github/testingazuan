@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.RememberMe"%>
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.HotLink"%>
-<%@page import="it.eng.spagobi.hotlink.modules.HotLinkModule"%>
+<%@page import="it.eng.spagobi.hotlink.service.HotLinkModule"%>
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
 
 <%
@@ -52,11 +52,14 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 		<p>
 		<a href="#RememberMe" id="toggler_RememberMe" style="text-decoration:none;">RememberMe</a>
 		<div id="popout_RememberMe" >
-		<%--
+		
 		<table style="margin:10px;padding:10px">
 			<thead>
 				<th class='portlet-section-header'>
 					<spagobi:message key = "sbi.hotlink.document" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.subobject" />
 				</th>
 				<th class='portlet-section-header'>
 					<spagobi:message key = "sbi.hotlink.documentType" />
@@ -95,6 +98,7 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 					<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= rm.getDocumentName() + 
 								(rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "") %></a>
 					</td>
+					<td class='<%= rowClass %>' ><%= rm.getSubObjName() != null ? rm.getSubObjName() : "" %></td>
 					<td class='<%= rowClass %>' ><%= rm.getDocumentType() %></td>
 					<td class='<%= rowClass %>' ><%= rm.getEngineName() %></td>
 					<td class='<%= rowClass %>' ><%= (rm.getParameters() != null) ?  rm.getParameters() : "" %></td>
@@ -110,7 +114,8 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 			}
 			%>
 		</table>
-		--%>
+		
+<%--
 <script type="text/javascript">
 Ext.onReady(function(){
 
@@ -172,7 +177,7 @@ Ext.onReady(function(){
     grid.getSelectionModel().selectFirstRow();
 });
 </script>
-		
+--%>
 		
 		
 		</div>
@@ -181,7 +186,6 @@ Ext.onReady(function(){
 		<p>
 		<a href="#Most popular" id="toggler_MostPopular" style="text-decoration:none;">Most popular</a>
 		<div id="popout_MostPopular">
-		<table style="margin:10px;padding:10px">
 			<%
 			Iterator mostPopularListIt = mostPopularList.iterator();
 			while (mostPopularListIt.hasNext()) {
@@ -197,31 +201,35 @@ Ext.onReady(function(){
 				}
 				String executeUrl = urlBuilder.getUrl(request, params);
 				%>
-				<tr>
-					<td>
-						<div class='portlet-section-subheader' style='margin:5px' >
-							<a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
-								(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a><br/>
-							<spagobi:message key = "sbi.hotlink.documentType" /> : <%= hotlink.getDocumentType() %><br/>
-							<spagobi:message key = "sbi.hotlink.engineName" /> : <%= hotlink.getEngineName() %><br/>
-							<spagobi:message key = "sbi.hotlink.parameters" /> : <%= (hotlink.getParameters() != null) ?  hotlink.getParameters() : "" %><br/>
-						</div>
-					</td>
-					<td style="vertical-align:middle;">
-						&nbsp;
-					</td>
-				</tr>
+				<div class='portlet-section-subheader' style='margin:5px' >
+					<a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
+						(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a><br/>
+					<spagobi:message key = "sbi.hotlink.documentType" /> : <%= hotlink.getDocumentType() %><br/>
+					<spagobi:message key = "sbi.hotlink.engineName" /> : <%= hotlink.getEngineName() %>
+					<%
+					if (hotlink.getParameters() != null && !hotlink.getParameters().trim().equals("")) {
+						%>
+						<br/>
+						<spagobi:message key = "sbi.hotlink.parameters" /> : <%= hotlink.getParameters() %>
+						<%
+					}
+					if (hotlink.getSubObjName() != null && !hotlink.getSubObjName().trim().equals("")) {
+						%>
+						<br/>
+						<spagobi:message key = "sbi.hotlink.subobject" /> : <%= hotlink.getSubObjName() %>
+						<%
+					}
+					%>
+				</div>
 			<%
 			}
 			%>
-		</table>
 		</div>
 		</p>
 		
 		<p>
 		<a href="#My recently used" id="toggler_MyRecentlyUsed" style="text-decoration:none;">My recently used</a>
 		<div id="popout_MyRecentlyUsed">
-		<table style="margin:10px;padding:10px">
 			<%
 			Iterator myRecentlyUsedListIt = myRecentlyUsedList.iterator();
 			while (myRecentlyUsedListIt.hasNext()) {
@@ -237,24 +245,30 @@ Ext.onReady(function(){
 				}
 				String executeUrl = urlBuilder.getUrl(request, params);
 				%>
-				<tr>
-					<td>
-						<div class='portlet-section-subheader' style='margin:5px' >
-							<a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
-								(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a><br/>
-							<spagobi:message key = "sbi.hotlink.documentType" /> : <%= hotlink.getDocumentType() %><br/>
-							<spagobi:message key = "sbi.hotlink.engineName" /> : <%= hotlink.getEngineName() %><br/>
-							<spagobi:message key = "sbi.hotlink.parameters" /> : <%= (hotlink.getParameters() != null) ?  hotlink.getParameters() : "" %><br/>
-						</div>
-					</td>
-					<td style="vertical-align:middle;">
-						&nbsp;
-					</td>
-				</tr>
+				<div class='portlet-section-subheader' style='margin:5px' >
+					<a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
+						(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a><br/>
+					<spagobi:message key = "sbi.hotlink.documentType" /> : <%= hotlink.getDocumentType() %><br/>
+					<spagobi:message key = "sbi.hotlink.engineName" /> : <%= hotlink.getEngineName() %><br/>
+					<%
+					if (hotlink.getParameters() != null && !hotlink.getParameters().trim().equals("")) {
+						%>
+						<br/>
+						<spagobi:message key = "sbi.hotlink.parameters" /> : <%= hotlink.getParameters() %>
+						<%
+					}
+					if (hotlink.getSubObjName() != null && !hotlink.getSubObjName().trim().equals("")) {
+						%>
+						<br/>
+						<spagobi:message key = "sbi.hotlink.subobject" /> : <%= hotlink.getSubObjName() %>
+						<%
+					}
+					%>
+				</div>
+
 			<%
 			}
 			%>
-		</table>
 		</div>
 		</p>
 	</div>

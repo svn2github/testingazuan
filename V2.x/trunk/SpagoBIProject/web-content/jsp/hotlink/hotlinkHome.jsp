@@ -30,6 +30,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.hotlink.service.HotLinkModule"%>
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
 
+<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
+<portlet:defineObjects/>
+
 <%
 
 SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute(HotLinkModule.MODULE_NAME); 
@@ -271,6 +275,78 @@ Ext.onReady(function(){
 			%>
 		</div>
 		</p>
+		
+		
+		<p>
+		<div id="popout_RememberMe2" >
+		<table style="margin:10px;padding:10px">
+			<thead>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.document" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.subobject" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.documentType" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.engineName" />
+				</th>
+				<th class='portlet-section-header'>
+					<spagobi:message key = "sbi.hotlink.parameters" />
+				</th>
+				<th class='portlet-section-header'>
+					&nbsp;
+				</th>
+			</thead>
+			<%
+			rememberMeListIt = rememberMeList.iterator();
+			while (rememberMeListIt.hasNext()) {
+				RememberMe rm = (RememberMe) rememberMeListIt.next();
+				Map params = new HashMap();
+				params.put("PAGE", "HOT_LINK_PAGE");
+				params.put("OPERATION", "EXECUTE");
+				params.put("DOC_ID", rm.getObjId().toString());
+				params.put("PARAMETERS", rm.getParameters());
+				String executeUrl = urlBuilder.getUrl(request, params);
+				params = new HashMap();
+				params.put("PAGE", "HOT_LINK_PAGE");
+				params.put("OPERATION", "DELETE_REMEMBER_ME");
+				params.put("REMEMBER_ME_ID", rm.getId().toString());
+				String deleteUrl = urlBuilder.getUrl(request, params);
+	            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
+	            alternate = !alternate;  
+				%>
+				<tr class='portlet-font'>
+					<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= rm.getDocumentName() + 
+								(rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "") %></a>
+					</td>
+					<td class='<%= rowClass %>' ><%= rm.getSubObjName() != null ? rm.getSubObjName() : "" %></td>
+					<td class='<%= rowClass %>' ><%= rm.getDocumentType() %></td>
+					<td class='<%= rowClass %>' ><%= rm.getEngineName() %></td>
+					<td class='<%= rowClass %>' ><%= (rm.getParameters() != null) ?  rm.getParameters() : "" %></td>
+					<td class='<%= rowClass %>' style="vertical-align:middle;">
+						<a href='<%= deleteUrl %>'>
+							<img title='<spagobi:message key = "sbi.hotlink.deleteRememberMe" />'
+								src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>'
+								alt='<spagobi:message key = "sbi.hotlink.deleteRememberMe" />' />
+						</a>
+					</td>
+				</tr>
+			<%
+			}
+			%>
+		</table>
+
+		</div>
+		</p>
+		
+		<p>
+		<div id="popout_RememberMe_renderTo">
+		</div>
+		</p>
+		
 	</div>
 </div>
 
@@ -281,6 +357,18 @@ toggle('popout_MostPopular','toggler_MostPopular', true);
 toggle('popout_MyRecentlyUsed','toggler_MyRecentlyUsed', true);
 
 </script>
+
+<script type="text/javascript">
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+        title: 'RememberMe',
+        collapsible:true,
+        renderTo: 'popout_RememberMe_renderTo',
+        contentEl: 'popout_RememberMe2'
+    });
+});
+</script>
+
 
 <iframe id='iframeLogin'
 	name='iframeLogin'

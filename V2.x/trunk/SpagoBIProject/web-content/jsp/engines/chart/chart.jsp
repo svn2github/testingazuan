@@ -134,8 +134,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    			</tr>
 		</table>
 	<div align=center>
-    <img id="image" src="<%=urlAction%>" BORDER=1 width="AUTO" height="AUTO"/>
+    <img id="image" src="<%=urlAction%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart"/>
     </div>
     
-    
+    <spagobi:error/>
     

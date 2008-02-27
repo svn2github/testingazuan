@@ -61,9 +61,18 @@ public class Thermometer extends KpiChart{
 	}
 
 
+	/**
+	 * Creates a chart of type thermometer.
+	 * 
+	 * @param chartTitle  the chart title.
+	 * @param dataset  the dataset.
+
+	 * @return A chart thermometer.
+	 */
 
 
 	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
+		logger.debug("IN");
 		ThermometerPlot plot = new ThermometerPlot(dataset);
 		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 
@@ -93,7 +102,7 @@ public class Thermometer extends KpiChart{
 			//plot.setDisplayRange(subrange.getRange(), subrange.getLower(), subrange.getUpper());	
 		}
 		//plot.setFollowDataInSubranges(true);
-
+		logger.debug("OUT");
 
 		return chart;       
 	}
@@ -101,7 +110,17 @@ public class Thermometer extends KpiChart{
 
 
 
+	/**
+	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * 
+	 * @param content the content of the template.
+
+	 * @return A chart that displays a value as a dial.
+	 */
+
+
 	public void configureKpiChart(SourceBean content) {
+		logger.debug("IN");
 		super.configureKpiChart(content);
 
 		if(!isLovConfDefined){
@@ -188,7 +207,7 @@ public class Thermometer extends KpiChart{
 				}
 			}
 		}
-
+		logger.debug("OUT");
 	}
 
 

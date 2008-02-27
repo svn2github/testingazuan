@@ -54,10 +54,17 @@ public class SimpleDial extends KpiChart{
 	int minorTickCount=0;
 
 	
-	
+	/**
+	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * 
+	 * @param content the content of the template.
+
+	 * @return A chart that displays a value as a dial.
+	 */
+
 	
 	public void configureKpiChart(SourceBean content) {
-
+		logger.debug("IN");
 		super.configureKpiChart(content);
 		
 		if(!isLovConfDefined){
@@ -89,13 +96,21 @@ public class SimpleDial extends KpiChart{
 		if(orientation==null)orientation="horizontal";
 		if(!(orientation.equalsIgnoreCase("horizontal")) && !(orientation.equalsIgnoreCase("vertical"))) orientation="horizontal";
 			setOrientation(orientation);		
-		
+		logger.debug("out");
 	}
 
+	/**
+	 * Creates the chart .
+	 * 
+	 * @param chartTitle  the chart title.
+	 * @param dataset  the dataset.
 
+	 * @return A chart .
+	 */
 
 	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
 		// get data for diagrams
+		logger.debug("IN");
 		DialPlot plot = new DialPlot();
 		plot.setDataset(dataset);
 
@@ -144,6 +159,7 @@ public class SimpleDial extends KpiChart{
 		plot.addLayer(needle);
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setTitle(chartTitle);
+		logger.debug("OUT");
 		return chart1;
 	}
 

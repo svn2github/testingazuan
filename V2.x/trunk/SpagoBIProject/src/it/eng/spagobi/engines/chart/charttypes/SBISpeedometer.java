@@ -69,23 +69,30 @@ public class SBISpeedometer extends KpiChart{
 		intervals=new Vector();	
 	}
 
+	/**
+	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * 
+	 * @param content the content of the template.
 
+	 * @return A chart that displays a value as a dial.
+	 */
 
 
 	public void configureKpiChart(SourceBean content) {
 
 		super.configureKpiChart(content);
 
-
+		logger.debug("IN");
 
 		if(!isLovConfDefined){
-
+			logger.debug("Configuration set in template");
 			if(confParameters.get("increment")!=null){	
 				String increment=(String)confParameters.get("increment");
 				setIncrement(Double.valueOf(increment).doubleValue());
 			}
 			else {
 				logger.error("increment not defined");
+				return;
 			}
 			if(confParameters.get("minortickcount")!=null){	
 				String minorTickCount=(String)confParameters.get("minortickcount");
@@ -104,6 +111,7 @@ public class SBISpeedometer extends KpiChart{
 			}
 
 			if(intervalsAttrsList==null || intervalsAttrsList.isEmpty()){ // if intervals are not defined realize a single interval
+				logger.warn("intervals not defined; default settings");
 				KpiInterval interval=new KpiInterval();
 				interval.setMin(getLower());
 				interval.setMax(getUpper());
@@ -135,7 +143,7 @@ public class SBISpeedometer extends KpiChart{
 			}
 		}
 		else{
-
+			logger.debug("configuration defined in LOV"+confName);
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
 			setIncrement(Double.valueOf(increment).doubleValue());
@@ -164,32 +172,20 @@ public class SBISpeedometer extends KpiChart{
 				}
 			}
 		}
-
-
-
-
-
-
-
-
+		logger.debug("out");
 	}
 
 
 
 
 
-
-
-
-
-
 	/**
-	 * Creates a chart displaying a circular dial.
+	 * Creates a chart of type speedometer.
 	 * 
 	 * @param chartTitle  the chart title.
 	 * @param dataset  the dataset.
 
-	 * @return A chart that displays a value as a dial.
+	 * @return A chart speedometer.
 	 */
 
 	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {

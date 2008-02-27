@@ -26,10 +26,14 @@ package it.eng.spagobi.engines.chart;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.engines.chart.charttypes.Dashboard;
 import it.eng.spagobi.engines.chart.charttypes.KpiChart;
 import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
 import it.eng.spagobi.engines.chart.charttypes.SimpleDial;
@@ -56,7 +60,8 @@ import org.jfree.data.general.DefaultValueDataset;
 
 /**
  * Action that returns a PNG of the chart as specified in template
- * @author Giulio Gavardi
+ * @author Giulio Gavardi 
+ *   giulio.gavardi@eng.it
  */
 
 
@@ -65,7 +70,7 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 
 	private static transient Logger logger=Logger.getLogger(GetJFreeChartAction.class);
 
-
+	private EMFErrorHandler errorHandler = null;
 	private String title="";
 	private String type="";
 	private IEngUserProfile profile = null;
@@ -86,6 +91,8 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 		ConfigSingleton config = ConfigSingleton.getInstance();
 		SourceBean validateSB =(SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		String active = (String) validateSB.getCharacters();
+		errorHandler = getErrorHandler();
+
 		if (active != null && active.equals("true")){
 			Principal principal= req.getUserPrincipal();
 			if (principal!=null) {
@@ -118,78 +125,91 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 		//get the template
 		logger.debug("getting template");
 
-		byte[] contentBytes = null;
+
 		try{
-			ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(Integer.valueOf(documentId));
-			if(template==null) throw new Exception("Active Template null");
-			contentBytes = template.getContent();
-			if(contentBytes==null) throw new Exception("Content of the Active template null");
-		} catch (Exception e) {
-			logger.error("Error while recovering template content: \n" + e);
-			return;
+			SourceBean content = null;
+
+			byte[] contentBytes = null;
+			try{
+				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(Integer.valueOf(documentId));
+				if(template==null) throw new Exception("Active Template null");
+				contentBytes = template.getContent();
+				if(contentBytes==null) throw new Exception("Content of the Active template null"); 
+
+			// get bytes of template and transform them into a SourceBean
+				
+				String contentStr = new String(contentBytes);
+				content = SourceBean.fromXMLString(contentStr);
+			} catch (Exception e) {
+				logger.error("Error while converting the Template bytes into a SourceBean object");
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2003);
+				throw userError;
+			}
+
+			type = (String)content.getAttribute("type");
+
+			if(type.equalsIgnoreCase("speedometer")){
+				sbi=new SBISpeedometer();
+			}
+			else if(type.equalsIgnoreCase("simpledial")){
+				sbi= new SimpleDial();
+			}
+			else if(type.equalsIgnoreCase("thermomether")){
+				sbi= new Thermometer();
+			}
+			else if(type.equalsIgnoreCase("dashboard")){
+				sbi= new Dashboard();
+			}
+			else {
+				logger.error("type in template not known");
+			}
+
+			sbi.setProfile(profile);
+			sbi.configureKpiChart(content);
+
+
+
+			// Get the value from the LOV
+
+			String res=LovAccessFunctions.getLovResult(profile, sbi.getDataName());
+
+			SourceBean sbRows=SourceBean.fromXMLString(res);
+			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
+			String result=(String)sbRow.getAttribute("value");
+
+			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
+
+
+
+			try{
+				JFreeChart chart = sbi.createDialChart(title,dataset);
+
+				logger.debug("successfull chart creation");
+				response.setContentType("image/png");
+				ChartUtilities.writeChartAsPNG(out, chart, sbi.getHeight(), sbi.getWidth()); 
+
+			}
+			catch (Exception eex) {
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);
+				logger.debug("The message parameter is null");
+				throw userError;
+			}
+
+			logger.debug("OUT");
+
+
 		}
-		// get bytes of template and transform them into a SourceBean
-		SourceBean content = null;
-		try {
-			String contentStr = new String(contentBytes);
-			content = SourceBean.fromXMLString(contentStr);
-		} catch (Exception e) {
-			logger.error("Error while converting the Template bytes into a SourceBean object");
-			return;
+		catch (EMFUserError e) {
+			errorHandler.addError(e);
 		}
-
-		type = (String)content.getAttribute("type");
-
-		if(type.equalsIgnoreCase("speedometer")){
-			sbi=new SBISpeedometer();
+		catch (Exception e) {
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
+			logger.error("Generic Error");
+			errorHandler.addError(userError);
 		}
-		else if(type.equalsIgnoreCase("simpledial")){
-			sbi= new SimpleDial();
-		}
-		else if(type.equalsIgnoreCase("thermomether")){
-			sbi= new Thermometer();
-		}
-		sbi.setProfile(profile);
-		sbi.configureKpiChart(content);
-		
-
-
-		// Get the value from the LOV
-
-
-		String res=LovAccessFunctions.getLovResult(profile, sbi.getDataName());
-
-		SourceBean sbRows=SourceBean.fromXMLString(res);
-		SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
-		String result=(String)sbRow.getAttribute("value");
-
-		DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
-
-
-		JFreeChart chart = sbi.createDialChart(title,dataset);
-
-		if (chart != null) {
-			logger.debug("successfull chart creation");
-			response.setContentType("image/png");
-			ChartUtilities.writeChartAsPNG(out, chart, sbi.getHeight(), sbi.getWidth()); 
-		}
-		else {
-			logger.error("error in chart creation");
-		}
-
-		logger.debug("OUT");
 	}
 
 
-
-
-	/**
-	 * Reads the template and sets the configuration for the chart
-.	 * 
-	 * @param content A source bean of the template
-	 */
-
-	
 
 
 

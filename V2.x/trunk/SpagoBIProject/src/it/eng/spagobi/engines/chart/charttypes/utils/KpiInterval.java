@@ -26,6 +26,7 @@ import java.awt.Color;
 
 public class KpiInterval {
 
+	private String label;
 	private double min;
 	private double max;
 	private Color color;
@@ -59,6 +60,14 @@ public class KpiInterval {
 	}
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 	

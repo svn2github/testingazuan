@@ -282,4 +282,10 @@ toggle('popout_MyRecentlyUsed','toggler_MyRecentlyUsed', true);
 
 </script>
 
+<iframe id='iframeLogin'
+	name='iframeLogin'
+	src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
+	frameborder='0' >
+</iframe>
+
 <%@ include file="/jsp/commons/footer.jsp"%>

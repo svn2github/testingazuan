@@ -1,10 +1,40 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
+
+/** Configure and draw a dialChart
+ *  * @author Giulio Gavardi
+ * 
+ */
+
 package it.eng.spagobi.engines.chart.charttypes;
+
+import it.eng.spago.base.SourceBean;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Point;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.ArcDialFrame;
 import org.jfree.chart.plot.dial.DialBackground;
@@ -16,8 +46,53 @@ import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 
 public class SimpleDial extends KpiChart{
-
+	
+	private static transient Logger logger=Logger.getLogger(SimpleDial.class);
+	
 	private String orientation="horizontal";
+	double increment=0.0;
+	int minorTickCount=0;
+
+	
+	
+	
+	public void configureKpiChart(SourceBean content) {
+
+		super.configureKpiChart(content);
+		
+		if(!isLovConfDefined){
+		if(confParameters.get("increment")!=null){	
+			String increment=(String)confParameters.get("increment");
+			setIncrement(Double.valueOf(increment).doubleValue());
+		}
+		else {
+			logger.error("increment not defined");
+		}
+		if(confParameters.get("minortickcount")!=null){	
+			String minorTickCount=(String)confParameters.get("minortickcount");
+			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
+		}
+		else {
+			setMinorTickCount(10);
+		}
+		}
+		else{
+			String increment=(String)sbRow.getAttribute("increment");
+			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
+			setIncrement(Double.valueOf(increment).doubleValue());
+			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());			
+			
+		}
+		
+		
+		String orientation = (String)content.getAttribute("orientation");
+		if(orientation==null)orientation="horizontal";
+		if(!(orientation.equalsIgnoreCase("horizontal")) && !(orientation.equalsIgnoreCase("vertical"))) orientation="horizontal";
+			setOrientation(orientation);		
+		
+	}
+
+
 
 	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
 		// get data for diagrams
@@ -78,6 +153,30 @@ public class SimpleDial extends KpiChart{
 
 	public void setOrientation(String orientation) {
 		this.orientation = orientation;
+	}
+
+
+
+	public double getIncrement() {
+		return increment;
+	}
+
+
+
+	public void setIncrement(double increment) {
+		this.increment = increment;
+	}
+
+
+
+	public int getMinorTickCount() {
+		return minorTickCount;
+	}
+
+
+
+	public void setMinorTickCount(int minorTickCount) {
+		this.minorTickCount = minorTickCount;
 	}
 
 

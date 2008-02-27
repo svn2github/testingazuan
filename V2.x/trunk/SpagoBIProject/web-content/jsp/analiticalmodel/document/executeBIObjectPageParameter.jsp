@@ -271,7 +271,7 @@ Ext.onReady(function() {
 <div class="buttons">
 		<ul>
 			<li><a href="javascript:document.getElementById('paramsValueForm<%=requestIdentity%>').submit()" id="v_execute_button" class="button"><b><b><b>Execute report</b></b></b></a></li>
-			<li><a href="javascript:saveViewpoint<%=requestIdentity%>(document.getElementById('nameVP<%=requestIdentity%>'),document.getElementById('descVP<%=requestIdentity%>'),document.getElementById('scopeVP<%=requestIdentity%>'))" id="v_save_button" class="button v_save_button"><b><b><b>Save view point</b></b></b></a></li>
+			<li><a href="javascript:opencloseViewPoint<%=requestIdentity%>()" id="v_save_button" class="button v_save_button"><b><b><b>Save view point</b></b></b></a></li>
 			
 		</ul> 
 </div>		

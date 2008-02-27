@@ -1,5 +1,6 @@
 package it.eng.spagobi.tools.distributionlist.service;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -7,19 +8,15 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.validation.EMFValidationError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -59,6 +56,9 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
 				getDistributionList(request, response);
 			} 
+			else if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_INSERTEMAIL)) {
+				insertEmail(request, SpagoBIConstants.DETAIL_INSERTEMAIL, response);
+				} 
 			else if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_SUBSC)) {
 				subscribeToDistributionList(request, SpagoBIConstants.DETAIL_SUBSC, response);
 				} 
@@ -75,6 +75,23 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		}
 	}
 	
+	/**
+	 * Gets a form to insert an email address
+	 *   
+	 * @param request The request Source Bean
+	 * @param mod The modality String
+	 * @param response The response Source Bean
+	 * @param response The response Source Bean
+	 * @throws EMFUserError If an exception occurs
+	 */  
+	private void insertEmail(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
+		
+		String id = (String) request.getAttribute("DL_ID");
+		response.setAttribute("DL_ID", id);
+		response.setAttribute("modality", mod);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
+		
+	}
 	
 	/**
 	 * Subscribes the user to the distribution list.
@@ -87,13 +104,22 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	 */   
 	private void subscribeToDistributionList(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {		
 		try {
+						
+			this.modalita = SpagoBIConstants.DETAIL_SUBSC;
+			
 			String id = (String) request.getAttribute("DL_ID");
-			String userId = (String) request.getAttribute("USER_ID");
+			String email = (String)request.getAttribute("EMAIL");
+			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
+			IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			//String email = (String)userProfile.getUserAttribute("BusinessMail");
+			String userId = (String)userProfile.getUserUniqueIdentifier();
 			
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			//load the user
-			Email user = DAOFactory.getDistributionListDAO().loadUserById(new Integer(userId));
+			Email user = new Email();
+			user.setEmail(email);
+			user.setUserId(userId);
 			//subscribe to the dl
 			DAOFactory.getDistributionListDAO().subscribeToDistributionList(dl,user);
 		}
@@ -124,14 +150,15 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	private void unsubscribeFromDistributionList(SourceBean request, String mod,SourceBean response)  throws EMFUserError, SourceBeanException {		
 		try {
 			String id = (String) request.getAttribute("DL_ID");
-			String userId = (String) request.getAttribute("USER_ID");
+			this.modalita = SpagoBIConstants.DETAIL_UNSUBSC;
+			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
+			IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String userId = (String)userProfile.getUserUniqueIdentifier();
 			
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
-			//load the user
-			Email user = DAOFactory.getDistributionListDAO().loadUserById(new Integer(userId));
-			//unsubscribe from the dl
-			DAOFactory.getDistributionListDAO().unsubscribeFromDistributionList(dl, user);
+
+			DAOFactory.getDistributionListDAO().unsubscribeFromDistributionList(dl, userId);
 		}
 		catch (EMFUserError e){
 			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
@@ -162,7 +189,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	private void getDistributionList(SourceBean request, SourceBean response) throws EMFUserError {		
 		try {		 									
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
-			this.modalita = "DETAIL_SELECT";
+			this.modalita = SpagoBIConstants.DETAIL_SELECT;
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List dialects = domaindao.loadListDomainsByType("DIALECT_HIB");
 			response.setAttribute(NAME_ATTR_LIST_DIALECTS, dialects);

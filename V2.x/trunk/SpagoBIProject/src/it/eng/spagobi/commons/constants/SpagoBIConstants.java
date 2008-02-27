@@ -63,6 +63,7 @@ public class SpagoBIConstants {
 	public static final String DETAIL_SELECT = "DETAIL_SELECT";
 	public static final String DETAIL_SUBSC = "DETAIL_SUBSC";
 	public static final String DETAIL_UNSUBSC = "DETAIL_UNSUBSC";
+	public static final String DETAIL_INSERTEMAIL = "DETAIL_INSERTEMAIL";
 	public static final String DETAIL_NEW = "DETAIL_NEW";
 	public static final String DETAIL_MOD = "DETAIL_MOD";
 	public static final String DETAIL_INS = "DETAIL_INS";

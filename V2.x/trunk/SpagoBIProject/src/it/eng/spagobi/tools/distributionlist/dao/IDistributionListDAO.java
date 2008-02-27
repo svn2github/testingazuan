@@ -1,10 +1,8 @@
 package it.eng.spagobi.tools.distributionlist.dao;
 
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
-import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListUser;
 
 import java.util.List;
 
@@ -84,7 +82,7 @@ public interface IDistributionListDAO {
 	 * 		    objects, else false 
 	 * @throws EMFUserError If any exception occurred 
 	 */
-	public boolean hasBIObjAssociated (String dsId) throws EMFUserError;
+	public boolean hasBIObjAssociated (String dsId) throws EMFUserError; 
 	
 	/**
 	 * Subscribes user to the distribution list 
@@ -104,15 +102,6 @@ public interface IDistributionListDAO {
 	 * @param user The user to be unsubscribed
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void unsubscribeFromDistributionList(DistributionList aDistributionList, Email user) throws EMFUserError;
-	
-	/**
-	 * Loads Email with userId and E-mail of the user with userId Id
-	 * 
-	 * @param user The user to be loaded
-	 * @return Email of the user
-	 * @throws EMFUserError If an Exception occurred
-	 */
-	
-	public Email loadUserById(Integer Id) throws EMFUserError ;
+	public void unsubscribeFromDistributionList(DistributionList aDistributionList, String user) throws EMFUserError;
+
 }

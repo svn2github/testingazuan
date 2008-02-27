@@ -64,7 +64,6 @@
 		</tr>
 	</table>
 	
-	
 	<div class='div_background' style='padding-top:5px;padding-left:5px;'>
 	
 	<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
@@ -109,16 +108,28 @@
 		<spagobi:error/>
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
+	<br>
+	<br>
 		
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 		<%
 			List documents = dl.getDocuments();
 			if(!documents.isEmpty()){
 	%>		
-	<table width="100%" cellspacing="0" border="1" id = "docTable" >
+	<table width="100%" cellspacing="0" border="0" id = "docTable" >
+	
+	<tr>
+		<td>
+ 		<div class='div_detail_label' style='width:350px;'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDL.relatedDoc" />
+			</span>
+		</div>
+		</td>
+	</tr>
 	<tr>
 	  <td>
-	  	 <div class='div_detail_label'>
+	  	 <div class='div_detail_label' style='width:250px;'>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDL.columnDocName" />
 			</span>
@@ -144,7 +155,7 @@
 				   }
 				
 		 %>
-				    	<div class='div_detail_label'><%=docName%>
+				    	<div class='div_detail_label' style='width:250px;'><%=docName%>
 				   		</div>
 					
 				    	<div class='div_detail_form'><%=docDescr %>

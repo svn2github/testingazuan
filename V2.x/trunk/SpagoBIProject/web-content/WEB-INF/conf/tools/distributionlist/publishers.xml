@@ -50,7 +50,7 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
-  	  	<PUBLISHER name="detailDistributionListUserLoop">
+  	 <PUBLISHER name="detailDistributionListUserLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDistributionListUserPage" />
@@ -64,6 +64,14 @@
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.ListDistributionListUserPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	  	
+  	<PUBLISHER name="insertEmailPubJ">
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.insertEmailPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -95,6 +103,21 @@
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
         		<ITEM prog="0" resource="/jsp/tools/distributionlist/detailDistributionListUser.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	 	
+  	<PUBLISHER name="insertEmail">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/insertEmail.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/distributionlist/insertEmail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

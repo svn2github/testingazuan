@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.tools.distributionlist.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -274,16 +295,6 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		return dl;
 	}
 	
-	
-	public Email toEmail(SbiDistributionListUser hibDistributionListUser){
-		Email e = new Email();
-		e.setUserId(hibDistributionListUser.getUserId());
-		e.setEmail(hibDistributionListUser.getEMail());
-	
-		return e;
-	}
-	
-	
 	public boolean hasBIObjAssociated (String dlId) throws EMFUserError{
 		logger.debug("IN");		
 		boolean bool = false; 
@@ -334,17 +345,14 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tx = aSession.beginTransaction();
 			
 			SbiDistributionList hibDistributionList = (SbiDistributionList) aSession.load(SbiDistributionList.class,
-					new Integer(aDistributionList.getId()));		
-			DistributionList dl = toDistributionList(hibDistributionList);
-			List emails = new ArrayList();
-			Set s = hibDistributionList.getSbiDistributionListUsers();
-			SbiDistributionListUser sdlu = new SbiDistributionListUser();
-			sdlu.setUserId(user.getUserId());
-			sdlu.setEMail(user.getEmail());
-			sdlu.setSbiDistributionList(hibDistributionList);
-			s.add(sdlu);
+					new Integer(aDistributionList.getId()));	
 			
-			hibDistributionList.setSbiDistributionListUsers(s);
+			SbiDistributionListUser hibDistributionListUser = new SbiDistributionListUser();
+			hibDistributionListUser.setUserId(user.getUserId());
+			hibDistributionListUser.setEMail(user.getEmail());
+			hibDistributionListUser.setSbiDistributionList(hibDistributionList);
+			
+			aSession.save(hibDistributionListUser);
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while subscribing to the distribution list with id " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getId())), he);
@@ -363,7 +371,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	}
 	
 	
-	public void unsubscribeFromDistributionList(DistributionList aDistributionList, Email user) throws EMFUserError{
+	public void unsubscribeFromDistributionList(DistributionList aDistributionList,String user) throws EMFUserError{
 		
 		logger.debug("IN");		
 		
@@ -374,21 +382,18 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tx = aSession.beginTransaction();
 			
 			SbiDistributionList hibDistributionList = (SbiDistributionList) aSession.load(SbiDistributionList.class,
-					new Integer(aDistributionList.getId()));		
-			DistributionList dl = toDistributionList(hibDistributionList);
-			List emails = new ArrayList();
+					new Integer(aDistributionList.getId()));	
+
 			Set s = hibDistributionList.getSbiDistributionListUsers();
 			Iterator i = s.iterator();
 			while(i.hasNext()){
 				SbiDistributionListUser dls =(SbiDistributionListUser) i.next();
 				String userId = dls.getUserId();
-				String e_mail = dls.getEMail();
-				if (userId.equals(user.getUserId()) && e_mail.equals(user.getEmail())){
-					s.remove(dls);
+				if (userId.equals(user)){
+					aSession.delete(dls);
 				}			
 			}
-			
-			hibDistributionList.setSbiDistributionListUsers(s);
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while unsubscribing to the distribution list with id " + ((aDistributionList == null)?"":String.valueOf(aDistributionList.getId())), he);
@@ -404,38 +409,6 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 				logger.debug("OUT");
 			}
 		}
-	}
-	
-	public Email loadUserById(Integer Id) throws EMFUserError {
-
-	logger.debug("IN");
-	Email toReturn = null;
-	Session aSession = null;
-	Transaction tx = null;
-	
-	try {
-		aSession = getSession();
-		tx = aSession.beginTransaction();
-		SbiDistributionListUser hibDistributionListUser = (SbiDistributionListUser)aSession.load(SbiDistributionListUser.class, Id);
-		toReturn = toEmail(hibDistributionListUser);
-		tx.commit();
-		
-	} catch (HibernateException he) {
-		logger.error("Error while loading the distribution list with id " + Id.toString(), he);			
-	
-		if (tx != null)
-			tx.rollback();
-	
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-	
-	} finally {
-		if (aSession!=null){
-			if (aSession.isOpen()) aSession.close();
-			logger.debug("OUT");
-		}
-	}
-	logger.debug("OUT");
-	return toReturn;
 	}
 	
 }

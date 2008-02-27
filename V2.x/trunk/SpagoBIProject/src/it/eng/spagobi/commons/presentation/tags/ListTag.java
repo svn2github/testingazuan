@@ -381,14 +381,25 @@ public class ListTag extends TagSupport
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
 					// if there are no parameters puts an empty column
-					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
+					 String img = (String)captionSB.getAttribute("image");
+					 String labelCode = (String)captionSB.getAttribute("label");
+					 String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);					 
+					 _htmlStream.append(" <td width='40px' class='" + rowClass + "'>\n");
+					 _htmlStream.append(" 	<a name='"+label+" '>\n");
+					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
+					_htmlStream.append(" 	</a>\n");
+					_htmlStream.append(" </td>\n");
+					
 				} else {
 					HashMap paramsMap = getParametersMap(parameters, row);
 					String img = (String)captionSB.getAttribute("image");
 					String labelCode = (String)captionSB.getAttribute("label");
 					//String label = PortletUtilities.getMessage(labelCode, "messages");
 					String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
-					String buttonUrl = createUrl(paramsMap);
+					String buttonUrl = null;
+					if (!paramsMap.isEmpty()){
+						buttonUrl = createUrl(paramsMap);
+					}
 					
 					boolean confirm = false;
 					// If caption's 'confirm' attribute is true, then all rows will have the confirmation alert
@@ -415,7 +426,7 @@ public class ListTag extends TagSupport
 					}
 
 					
-					if (confirm){
+					if (confirm && buttonUrl!=null){
 						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
 					}else{
 					    if (popup){
@@ -431,8 +442,8 @@ public class ListTag extends TagSupport
 						    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
 						    _htmlStream.append(");\n");
 						    _htmlStream.append(" </script>\n");						
-					    }else{
-						_htmlStream.append("     <a href='"+buttonUrl+"'>\n");
+					    }else{ 
+					    	if(buttonUrl!=null) _htmlStream.append("     <a href='"+buttonUrl+"'>\n");
 					    }
 					    	
 					}

@@ -40,6 +40,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//get the user profile from session
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String user = (String)userProfile.getUserUniqueIdentifier();
+	aSessionContainer.setAttribute("user_id",user);
+	
 	Collection c = userProfile.getRoles();
 	Iterator i = c.iterator();
 	int j = 0;
@@ -48,7 +51,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		aSessionContainer.setAttribute("role"+j,roles);
 		j++ ;
 	}
-		while (j<=6){
+		while (j<6){
 			String s= "/";
 			aSessionContainer.setAttribute("role"+j,s);
 			j++ ;

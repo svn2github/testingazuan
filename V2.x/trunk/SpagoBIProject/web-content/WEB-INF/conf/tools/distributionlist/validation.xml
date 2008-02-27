@@ -34,14 +34,19 @@
 				</FIELD>				
 			</FIELDS>
 		</VALIDATION>	
+	</SERVICE>
+	
+	<SERVICE name="InsertEmailPage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
-				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
 			</CONDITIONS>
 			<FIELDS>
-			 	
+				<FIELD name="EMAIL" label="#SBISet.ListDL.columnEmail">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>				
 			</FIELDS>
-		</VALIDATION>
+		</VALIDATION>	
 	</SERVICE>
 	
 	

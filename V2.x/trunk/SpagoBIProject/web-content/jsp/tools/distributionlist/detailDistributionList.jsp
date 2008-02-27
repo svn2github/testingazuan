@@ -129,17 +129,36 @@
 		<spagobi:error/>
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
+	<BR>
+	<BR>
 	
+<table width="100%" cellspacing="0" border="0" id = "usersTable" >
+	<tr>
 	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	<%
 			if (modality.equalsIgnoreCase("DETAIL_MOD")){
 			List users = dl.getEmails();
 			if(!users.isEmpty()){
 	%>		
-	<table width="100%" cellspacing="0" border="1" id = "usersTable" >
 	<tr>
+	   <td>
+ 		<div class='div_detail_label' style='width:350px;'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDL.relatedUsers" />
+			</span>
+		</div>
+		</td>
+		<td>
+ 		<div class='div_detail_label' style='width:350px;'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDL.relatedDoc" />
+			</span>
+		</div>
+		</td>
+	</tr>
+		
 	  <td>
-	  	 <div class='div_detail_label'>
+	  	 <div class='div_detail_label' style='width:150px;'>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDL.columnUser" />
 			</span>
@@ -170,36 +189,33 @@
 		 %>
 				
 				 	
-				    	<div class='div_detail_label'><%=userName %>
+				    	<div class='div_detail_label' style='width:150px;'><%=userName %>
 				   		</div>
 					
 				    	<div class='div_detail_form'><%=userEmail %>
 				   		</div>
 										
 								
-	<% } %>
-	
-		<spagobi:error/>
-		</td>
-	  </tr>
-	</table> 
+		<% } %>
+	</td>
 	<% } else {%>
+	     <td>
 		  	 <div class='div_detail_form'>
-				<span class='portlet-form-field-label'>	
+				
 					<spagobi:message key = "SBISet.ListDL.noUsers" />
-				</span>
+			
 			</div>
+		</td>	
 	<% } %> <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	
+	
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
-		<%
+	<%
 			List documents = dl.getDocuments();
 			if(!documents.isEmpty()){
 	%>		
-	<table width="100%" cellspacing="0" border="1" id = "docTable" >
-	<tr>
 	  <td>
-	  	 <div class='div_detail_label'>
+	  	 <div class='div_detail_label' style='width:250px;'>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDL.columnDocName" />
 			</span>
@@ -225,26 +241,31 @@
 				   }
 				
 		 %>
-				    	<div class='div_detail_label'><%=docName%>
+				    	<div class='div_detail_label' style='width:250px;'><%=docName%>
 				   		</div>
 					
 				    	<div class='div_detail_form'><%=docDescr %>
 				   		</div>			
 	<% } %>
 	
-		<spagobi:error/>
 			</td>					
-		</tr>
-	</table> 
 	<% } else {%>
+	      <td>
 		  	 <div class='div_detail_form'>
-				<span class='portlet-form-field-label'>	
+				
 					<spagobi:message key = "SBISet.ListDL.noDoc" />
-				</span>
+				
 			</div>
+		</td>	
 	<% } } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	
 	
+	
+		<spagobi:error/>
+	
+	  </tr>
+	</table> 
+		
 	</div>  
 
 	<script>

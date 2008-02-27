@@ -52,4 +52,17 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailDistributionListUserModule"/>
     	</MODULES>
   	</PAGE>  	
+  	
+  	<PAGE name="InsertEmailPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="InsertEmailPage" target="DetailDistributionListUserModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailDistributionListUserModule"/>
+    	</MODULES>
+  	</PAGE>  	
+ 
 </PAGES>

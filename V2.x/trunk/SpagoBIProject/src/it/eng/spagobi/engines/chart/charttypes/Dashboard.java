@@ -67,10 +67,11 @@ public class Dashboard extends KpiChart{
 
 	 * @return A chart that displays a value as a dial.
 	 */
-	
+
 	public void configureChart(SourceBean content) {
 		logger.info("IN");
 		super.configureChart(content);
+
 		if(!isLovConfDefined){
 			logger.info("Configuration parameters set in template");
 			//reading intervals information
@@ -135,8 +136,8 @@ public class Dashboard extends KpiChart{
 					String label="";
 					if(sbRow.getAttribute("label"+(new Integer(i)).toString())!=null){
 						label=(String)sbRow.getAttribute("label"+(new Integer(i)).toString());}
-					String min=(String)sbRow.getAttribute("lower"+(new Integer(i)).toString());
-					String max=(String)sbRow.getAttribute("upper"+(new Integer(i)).toString());
+					String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
+					String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
 					String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
 					interval.setLabel(label);
 					interval.setMin(Double.valueOf(min).doubleValue());
@@ -151,7 +152,7 @@ public class Dashboard extends KpiChart{
 		logger.debug("OUT");
 
 	}
-	
+
 	/**
 	 * Creates the chart .
 	 * 
@@ -160,7 +161,7 @@ public class Dashboard extends KpiChart{
 
 	 * @return A chart .
 	 */
-	
+
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 
 		super.createChart(chartTitle, dataset);

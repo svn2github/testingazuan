@@ -122,13 +122,11 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
-		//get the template
+		//		**************get the template*****************
 		logger.debug("getting template");
-
 
 		try{
 			SourceBean content = null;
-
 			byte[] contentBytes = null;
 			try{
 				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(Integer.valueOf(documentId));
@@ -136,8 +134,8 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 				contentBytes = template.getContent();
 				if(contentBytes==null) throw new Exception("Content of the Active template null"); 
 
-			// get bytes of template and transform them into a SourceBean
-				
+				// get bytes of template and transform them into a SourceBean
+
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
@@ -146,47 +144,23 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 				throw userError;
 			}
 
-			String nameSB=content.getName();
+
+			//		**************take informations on the chart type*****************
+
+			String nameofChart=content.getName();
 			type = (String)content.getAttribute("type");
-			
-			sbi=ChartImpl.createChart(nameSB, type);
-			
 
-		/*	if(type.equalsIgnoreCase("speedometer")){
-				sbi=new SBISpeedometer();
-			}
-			else if(type.equalsIgnoreCase("simpledial")){
-				sbi= new SimpleDial();
-			}
-			else if(type.equalsIgnoreCase("thermomether")){
-				sbi= new Thermometer();
-			}
-			else if(type.equalsIgnoreCase("dashboard")){
-				sbi= new Dashboard();
-			}
-			else {
-				logger.error("type in template not known");
-			}
-*/
+			// set the right chart type
+			sbi=ChartImpl.createChart(nameofChart, type);
 			sbi.setProfile(profile);
+		
+			// configure the chart with template parameters
 			sbi.configureChart(content);
-
-
-
-			// Get the value from the LOV
-/*
-			String res=LovAccessFunctions.getLovResult(profile, sbi.getDataName());
-
-			SourceBean sbRows=SourceBean.fromXMLString(res);
-			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
-			String result=(String)sbRow.getAttribute("value");
-
-			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
-
-*/
 			
+			// calculate values for the chart
 			Dataset dataset=sbi.calculateValue();
 
+			// create the chart
 			try{
 				JFreeChart chart = sbi.createChart(title,dataset);
 

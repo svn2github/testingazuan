@@ -47,14 +47,14 @@ import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 
 public class SimpleDial extends KpiChart{
-	
+
 	private static transient Logger logger=Logger.getLogger(SimpleDial.class);
-	
+
 	private String orientation="horizontal";
 	double increment=0.0;
 	int minorTickCount=0;
 
-	
+
 	/**
 	 * set parameters for the creation of the chart getting them from template or from LOV
 	 * 
@@ -63,40 +63,48 @@ public class SimpleDial extends KpiChart{
 	 * @return A chart that displays a value as a dial.
 	 */
 
-	
+
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
-		
+
 		if(!isLovConfDefined){
-		if(confParameters.get("increment")!=null){	
-			String increment=(String)confParameters.get("increment");
-			setIncrement(Double.valueOf(increment).doubleValue());
-		}
-		else {
-			logger.error("increment not defined");
-		}
-		if(confParameters.get("minortickcount")!=null){	
-			String minorTickCount=(String)confParameters.get("minortickcount");
-			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
-		}
-		else {
-			setMinorTickCount(10);
-		}
-		}
+			if(confParameters.get("increment")!=null){	
+				String increment=(String)confParameters.get("increment");
+				setIncrement(Double.valueOf(increment).doubleValue());
+			}
+			else {
+				logger.error("increment not defined");
+			}
+			if(confParameters.get("minortickcount")!=null){	
+				String minorTickCount=(String)confParameters.get("minortickcount");
+				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
+			}
+			else {
+				setMinorTickCount(10);
+			}
+			if(confParameters.get("orientation")!=null){	
+				String orientation=(String)confParameters.get("orientation");
+				setOrientation(orientation);
+			}
+			else {
+				setOrientation("horizontal");
+			}
+
+		} // LOV is defined
 		else{
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
+			String orientation=(String)sbRow.getAttribute("orientation");
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());			
-			
+			if(orientation!=null)
+				setOrientation(orientation);
+			else
+				setOrientation("horizontal");
+
 		}
-		
-		
-		String orientation = (String)content.getAttribute("orientation");
-		if(orientation==null)orientation="horizontal";
-		if(!(orientation.equalsIgnoreCase("horizontal")) && !(orientation.equalsIgnoreCase("vertical"))) orientation="horizontal";
-			setOrientation(orientation);		
+
 		logger.debug("out");
 	}
 

@@ -36,10 +36,10 @@ public interface IChart {
 	public void setHeight(int height);
 
 
-	public String getDataName();
+	public String getDataLov();
 
 
 
-	public void setDataName(String dataName);
+	public void setDataLov(String dataLov);
 
 }

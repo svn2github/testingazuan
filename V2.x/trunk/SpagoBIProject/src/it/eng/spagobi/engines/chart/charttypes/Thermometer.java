@@ -29,7 +29,7 @@ package it.eng.spagobi.engines.chart.charttypes;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.engines.chart.charttypes.utils.ThermometerSubrange;
+import it.eng.spagobi.engines.chart.charttypes.utils.KpiInterval;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -51,14 +51,14 @@ public class Thermometer extends KpiChart{
 
 	private static transient Logger logger=Logger.getLogger(Thermometer.class);
 
-	private	Vector subranges=null;
+	private	Vector intervals=null;
 	private String units="";
 
 
 
 	public Thermometer() {
 		super();
-		subranges=new Vector();
+		intervals=new Vector();
 	}
 
 
@@ -94,11 +94,16 @@ public class Thermometer extends KpiChart{
 
 
 		// set subranges	
-		for (Iterator iterator = subranges.iterator(); iterator.hasNext();){
-			ThermometerSubrange subrange = (ThermometerSubrange) iterator.next();
-			plot.setSubrange(subrange.getRange(), subrange.getLower(), subrange.getUpper());
+		for (Iterator iterator = intervals.iterator(); iterator.hasNext();){
+			KpiInterval subrange = (KpiInterval) iterator.next();
+			int range=0;
+			if(subrange.getLabel().equalsIgnoreCase("NORMAL"))range=(ThermometerPlot.NORMAL);
+			else if(subrange.getLabel().equalsIgnoreCase("WARNING"))range=(ThermometerPlot.WARNING);
+			else if(subrange.getLabel().equalsIgnoreCase("CRITICAL"))range=(ThermometerPlot.CRITICAL);
+
+			plot.setSubrange(range, subrange.getMin(), subrange.getMax());
 			if(subrange.getColor()!=null){
-				plot.setSubrangePaint(subrange.getRange(), subrange.getColor());
+				plot.setSubrangePaint(range, subrange.getColor());
 			}
 			//plot.setDisplayRange(subrange.getRange(), subrange.getLower(), subrange.getUpper());	
 		}
@@ -149,21 +154,16 @@ public class Thermometer extends KpiChart{
 				while(subrangesAttrsIter.hasNext()) {
 					SourceBeanAttribute paramSBA = (SourceBeanAttribute)subrangesAttrsIter.next();
 					SourceBean param = (SourceBean)paramSBA.getValue();
-					String range= (String)param.getAttribute("range");
+					String range= (String)param.getAttribute("label");
 					String min= (String)param.getAttribute("min");
 					String max= (String)param.getAttribute("max");
 					String col= (String)param.getAttribute("color");
 
-					ThermometerSubrange subrange=new ThermometerSubrange();
+					KpiInterval subrange=new KpiInterval();
 
-					int r=-1;
-					if(range.equalsIgnoreCase("NORMAL"))r=ThermometerPlot.NORMAL;
-					else if(range.equalsIgnoreCase("WARNING"))r=ThermometerPlot.WARNING;
-					else if(range.equalsIgnoreCase("CRITICAL"))r=ThermometerPlot.CRITICAL;
-
-					subrange.setRange(r);
-					subrange.setLower(Double.valueOf(min).doubleValue());
-					subrange.setUpper(Double.valueOf(max).doubleValue());
+					subrange.setLabel(range);
+					subrange.setMin(Double.valueOf(min).doubleValue());
+					subrange.setMax(Double.valueOf(max).doubleValue());
 
 					Color color=new Color(Integer.decode(col).intValue());
 					if(color!=null){
@@ -171,7 +171,7 @@ public class Thermometer extends KpiChart{
 					else{
 						subrange.setColor(Color.RED);
 					}
-					addSubranges(subrange);
+					addIntervals(subrange);
 				}
 			}
 		}
@@ -189,21 +189,18 @@ public class Thermometer extends KpiChart{
 			}
 			else{
 				for(int i=1;i<=3;i++){
-					ThermometerSubrange subrange=new ThermometerSubrange();
-					String range=(String)sbRow.getAttribute("range"+(new Integer(i)).toString());
-					String min=(String)sbRow.getAttribute("lower"+(new Integer(i)).toString());
-					String max=(String)sbRow.getAttribute("upper"+(new Integer(i)).toString());
+					KpiInterval subrange=new KpiInterval();
+					String label=(String)sbRow.getAttribute("label"+(new Integer(i)).toString());
+					String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
+					String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
 					String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
 
-					if(range.equalsIgnoreCase("NORMAL"))subrange.setRange(ThermometerPlot.NORMAL);
-					else if(range.equalsIgnoreCase("WARNING"))subrange.setRange(ThermometerPlot.WARNING);
-					else if(range.equalsIgnoreCase("CRITICAL"))subrange.setRange(ThermometerPlot.CRITICAL);
-
-					subrange.setLower(Double.valueOf(min).doubleValue());
-					subrange.setUpper(Double.valueOf(max).doubleValue());
+					subrange.setLabel(label);
+					subrange.setMin(Double.valueOf(min).doubleValue());
+					subrange.setMax(Double.valueOf(max).doubleValue());
 					Color color=new Color(Integer.decode(col).intValue());
 					subrange.setColor(color);
-					addSubranges(subrange);
+					addIntervals(subrange);
 
 				}
 			}
@@ -214,15 +211,15 @@ public class Thermometer extends KpiChart{
 
 
 
-	public Vector getSubranges() {
-		return subranges;
+	public Vector getIntervals() {
+		return intervals;
 	}
 
 
 
 
-	public void addSubranges(ThermometerSubrange subrange) {
-		this.subranges.add(subrange);
+	public void addIntervals(KpiInterval subrange) {
+		this.intervals.add(subrange);
 	}
 
 

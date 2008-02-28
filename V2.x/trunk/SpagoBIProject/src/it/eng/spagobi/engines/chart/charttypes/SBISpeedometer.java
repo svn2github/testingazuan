@@ -137,19 +137,21 @@ public class SBISpeedometer extends KpiChart{
 					if(color!=null){
 						interval.setColor(color);}
 					else{
-						interval.setColor(Color.RED);
+						// sets default color
+						interval.setColor(Color.WHITE);
 					}
 					addInterval(interval);
 				}
 			}
 		}
 		else{
-			logger.debug("configuration defined in LOV"+confName);
+			logger.debug("configuration defined in LOV"+confLov);
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 
+		
 			String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				KpiInterval interval=new KpiInterval();
@@ -161,8 +163,8 @@ public class SBISpeedometer extends KpiChart{
 			else{
 				for(int i=1;i<=Integer.valueOf(intervalsNumber).intValue();i++){
 					KpiInterval interval=new KpiInterval();
-					String min=(String)sbRow.getAttribute("lower"+(new Integer(i)).toString());
-					String max=(String)sbRow.getAttribute("upper"+(new Integer(i)).toString());
+					String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
+					String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
 					String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
 					interval.setMin(Double.valueOf(min).doubleValue());
 					interval.setMax(Double.valueOf(max).doubleValue());

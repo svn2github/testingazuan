@@ -13,6 +13,7 @@ import it.eng.spagobi.engines.chart.charttypes.Dashboard;
 import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
 import it.eng.spagobi.engines.chart.charttypes.SimpleDial;
 import it.eng.spagobi.engines.chart.charttypes.Thermometer;
+import it.eng.spagobi.engines.chart.charttypes.piecharts.Simple3DPie;
 import it.eng.spagobi.engines.chart.charttypes.piecharts.SimplePie;
 
 import org.apache.log4j.Logger;
@@ -24,35 +25,22 @@ public class ChartImpl implements IChart {
 	protected String name=null;
 	protected int width;
 	protected int height;
-	protected String dataName;
-	protected String confName;
+	protected String dataLov;
+	protected String confLov;
+	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
-	protected Map dataParameters;
 
-	public String getConfName() {
-		return confName;
-	}
 
-	public void setConfName(String confName) {
-		this.confName = confName; 
-	}
-
-	public IEngUserProfile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(IEngUserProfile profile) {
-		this.profile = profile;
-	}
 
 	public void configureChart(SourceBean content) {
 		// common part for all charts
 		if(content.getAttribute("name")!=null) 
 			setName((String)content.getAttribute("name"));
 		else setName("");
-		String widthS = (String)content.getAttribute("width");
-		String heightS = (String)content.getAttribute("height");
+
+		String widthS = (String)content.getAttribute("DIMENSION.width");
+		String heightS = (String)content.getAttribute("DIMENSION.height");
 		if(widthS==null || heightS==null){
 			logger.warn("Width or height non defined, use default ones");
 			widthS="400";
@@ -63,8 +51,9 @@ public class ChartImpl implements IChart {
 		height=Integer.valueOf(heightS).intValue();
 
 		// get all the data parameters 
-		try{
-			dataParameters = new HashMap();
+
+		try{					
+			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
 			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
 			Iterator dataAttrsIter = dataAttrsList.iterator();
@@ -76,12 +65,21 @@ public class ChartImpl implements IChart {
 				dataParameters.put(nameParam, valueParam);
 			}
 
-			if(dataParameters.get("dataname")!=null){	
-				dataName=(String)dataParameters.get("dataname");
+			if(dataParameters.get("datalov")!=null){	
+				dataLov=(String)dataParameters.get("datalov");
 			}
 			else {
-				logger.error("no data source specified");}
-			throw new Exception("No data source specified");
+				logger.error("no data source specified");
+				throw new Exception("No data source specified");}
+
+		
+			if(dataParameters.get("conflov")!=null && !(((String)dataParameters.get("conflov")).equalsIgnoreCase("") )){	
+				confLov=(String)dataParameters.get("conflov");
+				isLovConfDefined=true;
+			}
+			else {
+				isLovConfDefined=false;
+			}
 		}
 		catch (Exception e) {
 			logger.error("error in reading dataq source parameters");
@@ -114,6 +112,9 @@ public class ChartImpl implements IChart {
 			if(subtype.equalsIgnoreCase("simplepie")){
 				sbi=new SimplePie();
 			}
+			if(subtype.equalsIgnoreCase("3dpie")){
+				sbi=new Simple3DPie();
+			}
 		}
 		return sbi;
 	}
@@ -121,8 +122,8 @@ public class ChartImpl implements IChart {
 
 
 
-	public String getDataName() {
-		return dataName;
+	public String getDataLov() {
+		return dataLov;
 	}
 
 	public int getHeight() {
@@ -137,8 +138,8 @@ public class ChartImpl implements IChart {
 		return width;
 	}
 
-	public void setDataName(String _dataName) {
-		dataName=_dataName;		
+	public void setDataLov(String _dataLov) {
+		dataLov=_dataLov;		
 	}
 
 	public void setHeight(int _height) {
@@ -157,12 +158,28 @@ public class ChartImpl implements IChart {
 		return null;
 	}
 
-	public Map getDataParameters() {
-		return dataParameters;
+	public String getConfLov() {
+		return confLov;
 	}
 
-	public void setDataParameters(Map dataParameters) {
-		this.dataParameters = dataParameters;
+	public void setConfLov(String confLov) {
+		this.confLov = confLov; 
+	}
+
+	public IEngUserProfile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(IEngUserProfile profile) {
+		this.profile = profile;
+	}
+
+	public boolean isLovConfDefined() {
+		return isLovConfDefined;
+	}
+
+	public void setLovConfDefined(boolean isLovConfDefined) {
+		this.isLovConfDefined = isLovConfDefined;
 	}
 
 

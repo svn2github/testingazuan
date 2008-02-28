@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.chart.charttypes;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.ChartImpl;
 import it.eng.spagobi.engines.chart.charttypes.utils.LovAccessFunctions;
@@ -46,8 +45,6 @@ public class KpiChart extends ChartImpl {
 	protected double upper=0.0;
 
 
-	protected boolean isLovConfDefined;
-
 	Map confParameters;
 	SourceBean sbRow;
 
@@ -60,30 +57,20 @@ public class KpiChart extends ChartImpl {
 	public void configureChart(SourceBean content){
 		logger.debug("KpiChart");
 
-
 		super.configureChart(content);
 
-
 		try{
-
-			if(dataParameters.get("confname")!=null && dataParameters.get("confname")!=""){	
-				isLovConfDefined=true;
-				confName=(String)dataParameters.get("confname");
-			}
-			else {
-				isLovConfDefined=false;
-			}
-
 
 			if(isLovConfDefined==false){  // the configuration parameters are set in template
 				logger.debug("Configuration in template");
 				confParameters = new HashMap();
-				SourceBean confSB = (SourceBean)content.getAttribute("CONF.GENERAL");
-				List confAttrsList = confSB.getContainedSourceBeanAttributes();
+				SourceBean confSB = (SourceBean)content.getAttribute("CONF");
+
+				List confAttrsList = confSB.getAttributeAsList("PARAMETER");
+				
 				Iterator confAttrsIter = confAttrsList.iterator();
 				while(confAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)confAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
+					SourceBean param = (SourceBean)confAttrsIter.next();
 					String nameParam = (String)param.getAttribute("name");
 					String valueParam = (String)param.getAttribute("value");
 					confParameters.put(nameParam, valueParam);
@@ -108,7 +95,7 @@ public class KpiChart extends ChartImpl {
 			}
 			else{ // configuration parameters are set in a LOV
 				logger.debug("configuration parameters set in LOV");
-				String parameters=LovAccessFunctions.getLovResult(profile, confName);
+				String parameters=LovAccessFunctions.getLovResult(profile, confLov);
 
 				SourceBean sourceBeanResult=null;
 				try {
@@ -199,7 +186,7 @@ public class KpiChart extends ChartImpl {
 
 
 	public Dataset calculateValue() throws SourceBeanException {
-		String res=LovAccessFunctions.getLovResult(profile, getDataName());
+		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
 
 		SourceBean sbRows=SourceBean.fromXMLString(res);
 		SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");

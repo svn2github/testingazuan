@@ -396,7 +396,8 @@ public class ExecuteBIDocumentJob implements Job {
 				while(j.hasNext()){
 					Email e = (Email) j.next();
 					String email = e.getEmail();
-					mailTos = mailTos+","+email;
+					if (j.hasNext()) {mailTos = mailTos+email+",";}
+					else {mailTos = mailTos+email;}
 					
 				}
 			}

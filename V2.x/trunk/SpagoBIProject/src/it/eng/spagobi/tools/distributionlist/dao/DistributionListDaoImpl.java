@@ -411,4 +411,39 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		}
 	}
 	
+	public void insertDLforDocument(DistributionList dl, int objId, String xml) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
+			SbiDistributionList hibDistributionList = (SbiDistributionList) aSession.load(SbiDistributionList.class,
+					new Integer(dl.getId()));
+			SbiObjects hibObj = (SbiObjects) aSession.load(SbiObjects.class,new Integer(objId));
+			
+			hibDistributionListsObjects.setSbiDistributionList(hibDistributionList);
+			hibDistributionListsObjects.setSbiObjects(hibObj);
+			hibDistributionListsObjects.setXml(xml);
+			
+			aSession.save(hibDistributionListsObjects);
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while inserting the document to the distribution list with name " + ((dl == null)?"":String.valueOf(dl.getName())), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+	}
+	
 }

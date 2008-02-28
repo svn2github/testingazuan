@@ -21,11 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.scheduler.to;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SaveInfo {
 
 	private boolean saveAsSnapshot = false;
 	private boolean saveAsDocument = false;
 	private boolean sendMail = false;
+	private boolean sendToDl = false;
+	private boolean addToDl = false;
 	private String snapshotName = "";
 	private String snapshotDescription = "";
 	private String snapshotHistoryLength = "";
@@ -36,7 +41,16 @@ public class SaveInfo {
 	private String functionalityIds = "";
 	private String mailSubj = "";
 	private String mailTxt = "";
+	private int biobjId = 0;
+	private List dlIds = new ArrayList();
 	
+	public void removeDlId(Integer dlId) {
+		this.dlIds.remove(dlId);
+	}
+	
+	public void addDlId(Integer dlId) {
+		this.dlIds.add(dlId);
+	}
 	public String getDocumentDescription() {
 		return documentDescription;
 	}
@@ -114,6 +128,36 @@ public class SaveInfo {
 	}
 	public void setFunctionalityIds(String functionalityIds) {
 		this.functionalityIds = functionalityIds;
+	}
+	public List getDlIds() {
+		return dlIds;
+	}
+	public void setDlIds(List dlIds) {
+		this.dlIds = dlIds;
+	}
+
+	public boolean isSendToDl() {
+		return sendToDl;
+	}
+
+	public void setSendToDl(boolean sendToDl) {
+		this.sendToDl = sendToDl;
+	}
+
+	public boolean isAddToDl() {
+		return addToDl;
+	}
+
+	public void setAddToDl(boolean addToDl) {
+		this.addToDl = addToDl;
+	}
+
+	public int getBiobjId() {
+		return biobjId;
+	}
+
+	public void setBiobjId(int biobjId) {
+		this.biobjId = biobjId;
 	}
 	
 	

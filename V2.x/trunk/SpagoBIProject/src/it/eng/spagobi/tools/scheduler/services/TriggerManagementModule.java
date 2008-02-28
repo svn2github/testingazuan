@@ -30,10 +30,13 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
+import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
+import it.eng.spagobi.tools.distributionlist.service.ListDistributionListModule;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
@@ -46,10 +49,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 public class TriggerManagementModule extends AbstractModule {
+	
 	static private Logger logger = Logger.getLogger(TriggerManagementModule.class);
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
@@ -259,6 +264,23 @@ public class TriggerManagementModule extends AbstractModule {
 					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId);	
 					sInfo.setMailTxt(mailtxt);
 				}
+				String sendtodl = (String)request.getAttribute("saveasdl_"+biobId);	
+				if(sendtodl!=null) {
+					sInfo.setSendToDl(true);
+					sInfo.setBiobjId(biobId.intValue());
+					List dlist = DAOFactory.getDistributionListDAO().loadAllDistributionLists();	
+					Iterator it = dlist.iterator();
+					while(it.hasNext()){
+						DistributionList dl = (DistributionList)it.next();
+						int dlId = dl.getId();
+						String listID = (String)request.getAttribute("sendtodl_"+dlId+"_"+biobId);
+						if(listID!=null){
+							sInfo.addDlId(new Integer(listID));
+						}
+											
+					}
+					
+				}
 				
 				saveOptions.put(biobId, sInfo);
 			}
@@ -355,7 +377,7 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	
 	
-	private StringBuffer createMessageSaveSchedulation(TriggerInfo tInfo, boolean runImmediately) {
+	private StringBuffer createMessageSaveSchedulation(TriggerInfo tInfo, boolean runImmediately) throws EMFUserError {
 		StringBuffer message = new StringBuffer();
 		JobInfo jInfo = tInfo.getJobInfo();
 		Map saveOptions = tInfo.getSaveOptions();
@@ -433,7 +455,35 @@ public class TriggerManagementModule extends AbstractModule {
 					saveOptString += "mailtxt="+sInfo.getMailTxt()+"%26";
 				}
 			}
-			//TODO altri parametri prima della request
+			if(sInfo.isSendToDl()) {
+				saveOptString += "sendtodl=true%26";
+				List l= sInfo.getDlIds();
+				if(!l.isEmpty()){
+					
+					String dlIds = "dlId=";
+					int objId = sInfo.getBiobjId();
+					Iterator iter = l.iterator();
+					while (iter.hasNext()){
+						
+						Integer dlId = (Integer)iter.next();
+						try {
+							DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
+							String xml = message.toString();
+							DAOFactory.getDistributionListDAO().insertDLforDocument(dl, objId, xml);
+							
+						} catch (Exception ex) {
+							logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
+							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);			
+						}
+						
+						if (iter.hasNext()) {dlIds += dlId.intValue()+"," ;}
+						else {dlIds += dlId.intValue();}
+						
+					}
+					saveOptString += dlIds+"%26";
+				}
+			}
+			
 			message.append("   	   <PARAMETER name=\"biobject_id_"+biobjid_so+"\" value=\""+saveOptString+"\" />");
 		}
 		

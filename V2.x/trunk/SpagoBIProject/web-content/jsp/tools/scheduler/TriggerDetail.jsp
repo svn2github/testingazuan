@@ -35,6 +35,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.scheduler.to.TriggerInfo"%>
 <%@page import="it.eng.spagobi.tools.scheduler.to.JobInfo"%>
 <%@page import="it.eng.spagobi.tools.scheduler.to.SaveInfo"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
+<%@page import="it.eng.spagobi.tools.distributionlist.bo.DistributionList"%>
 
 <%  
    	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TriggerManagementModule"); 
@@ -1082,6 +1085,78 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  		               value="<%=sInfo.getMailTxt()%>" size="55" />
 	  	    </div>
   	    </div>
+  	    
+  	    <br/>
+
+		<input type="checkbox" name="saveasdl_<%=biobj.getId()%>" 
+				       <%if(sInfo.isSendToDl()){out.write(" checked='checked' " );} %>/>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.distributionlist" bundle="component_scheduler_messages" />
+				</span>
+			 <br/>	
+		<table width="100%" cellspacing="0" border="0" id = "usersTable" >
+		<tr>
+		<!-- LIST OF DISTRIBUTION LISTS  -->
+		<%
+			List dlist = DAOFactory.getDistributionListDAO().loadAllDistributionLists();	
+			if(!dlist.isEmpty()){
+		%>	
+				
+		<td>
+	  	 <div class='div_detail_label'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDL.columnName" />
+			</span>
+		</div>
+	  	 <div class='div_detail_form'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDL.columnDescr" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "checkBox" />
+			</span>
+		</div>
+		</td>
+		</tr>
+		
+		<%
+			
+			Iterator it2 = dlist.iterator();
+			while(it2.hasNext()){
+				
+				DistributionList dl = (DistributionList)it2.next();
+				int listID = dl.getId();
+				String listName = dl.getName();
+				String listDescr = dl.getDescr();
+				if((listName==null) || (listName.equalsIgnoreCase("null"))  ) {
+					listName = "";
+				   }
+				if((listDescr==null) || (listDescr.equalsIgnoreCase("null"))  ) {
+					listDescr = "";
+				   }
+				
+		 %>
+		 				<tr>
+		 				<td>
+				    	<div class='div_detail_label'><%=listName%>
+				   		</div>
+				   		<div class='div_detail_form'> <%=listDescr%>
+				   		</div>	
+				   		<div class='div_detail_form'>	
+				   		<input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
+               			<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
+               			
+               			</div>
+               			</td>
+               			</tr>
+				   		
+		<% 
+		} %>
+	<% } %>	
+  						
+ 
   	    
   	    <br/>
   	    

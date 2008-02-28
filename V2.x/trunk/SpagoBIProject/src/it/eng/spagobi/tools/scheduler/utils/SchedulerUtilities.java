@@ -284,6 +284,19 @@ public class SchedulerUtilities {
 			if(name.equals("mailtxt")) {
 				sInfo.setMailTxt(value);
 			}
+			if(name.equals("sendtodl")) {
+				sInfo.setSendToDl(true);
+			}
+			if(name.equals("dlId")) {
+				
+				String[] dlIds = value.split(",");
+				for (int j=0; j<dlIds.length; j++){
+					String dlId = dlIds[j];					
+					sInfo.addDlId(new Integer(dlId));
+				}
+				
+				sInfo.setSendToDl(true);
+			}
 		}
 		return sInfo;
 	}

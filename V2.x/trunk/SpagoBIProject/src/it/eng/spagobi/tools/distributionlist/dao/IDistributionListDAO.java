@@ -94,14 +94,23 @@ public interface IDistributionListDAO {
 	public void subscribeToDistributionList(DistributionList aDistributionList, Email user) throws EMFUserError;
 	
 	/**
-	 * Loads all distribution lists. 
-	 * All these informations,  achived by a query to the DB, are stored 
-	 * into a List object, which is returned.
+	 * Unubscribes user from the distribution list 
 	 * 
 	 * @param dsId The distribution list identifier
 	 * @param user The user to be unsubscribed
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void unsubscribeFromDistributionList(DistributionList aDistributionList, String user) throws EMFUserError;
+	
+	/**
+	 * Inserts the document with id objId in the list of documents for the DIstributionList dl
+	 * with the xml of its schedulation
+	 * 
+	 * @param dsId The distribution list identifier
+	 * @param objId The id of the document
+	 * @param xml The xml regarding the schedulation of the document
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertDLforDocument(DistributionList dl, int objId, String xml) throws EMFUserError ;
 
 }

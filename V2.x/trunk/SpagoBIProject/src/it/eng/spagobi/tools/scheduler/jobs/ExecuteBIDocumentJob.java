@@ -42,6 +42,9 @@ import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
 
+import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
+import it.eng.spagobi.tools.distributionlist.bo.Email;
+import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListUser;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -50,9 +53,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -131,6 +136,9 @@ public class ExecuteBIDocumentJob implements Job {
 
 					if(sInfo.isSendMail()) {
 						sendMail(sInfo, biobj, response, retCT, fileextension);
+					}
+					if(sInfo.isSendToDl()) {
+						SendToDl(sInfo, biobj, response, retCT, fileextension);
 					}
 	
 				} else {
@@ -328,14 +336,10 @@ public class ExecuteBIDocumentJob implements Job {
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-			//Locale locale = new Locale("it", "IT");
-			//String subjectfinalpart = msgBuilder.getMessage("scheduler.mailsubject", "component_scheduler_messages", locale);
 			String subject = biobj.getName() + " " + mailSubj;
 			msg.setSubject(subject);
 		    // create and fill the first message part
 		    MimeBodyPart mbp1 = new MimeBodyPart();
-		    
-		    //String mailtext = msgBuilder.getMessage("scheduler.mailtext", "component_scheduler_messages", locale);
 		    mbp1.setText(mailTxt);
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();
@@ -357,7 +361,96 @@ public class ExecuteBIDocumentJob implements Job {
 		    logger.debug("OUT");
 		}
 	}
-	
+
+	private void SendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt) {
+	    logger.debug("IN");
+		try{
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean mailProfSB = (SourceBean)config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name", "scheduler");
+			if(mailProfSB==null) {
+				throw new Exception("Mail profile configuration not found");
+			}
+			String smtphost = (String)mailProfSB.getAttribute("smtphost");
+			if( (smtphost==null) || smtphost.trim().equals(""))
+				throw new Exception("Smtp host not configured");
+			String from = (String)mailProfSB.getAttribute("from");
+			if( (from==null) || from.trim().equals(""))
+				from = "spagobi.scheduler@eng.it";
+			String user = (String)mailProfSB.getAttribute("user");
+			if( (user==null) || user.trim().equals(""))
+				throw new Exception("Smtp user not configured");
+			String pass = (String)mailProfSB.getAttribute("password");
+			if( (pass==null) || pass.trim().equals(""))
+				throw new Exception("Smtp password not configured");
+			
+			String mailTos = "";
+			List dlIds = sInfo.getDlIds();
+			Iterator it = dlIds.iterator();
+			while(it.hasNext()){
+				
+				Integer dlId = (Integer)it.next();
+				DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
+				List emails = new ArrayList();
+				emails = dl.getEmails();
+				Iterator j = emails.iterator();
+				while(j.hasNext()){
+					Email e = (Email) j.next();
+					String email = e.getEmail();
+					mailTos = mailTos+","+email;
+					
+				}
+			}
+			
+			if( (mailTos==null) || mailTos.trim().equals("")) {	
+				throw new Exception("No recipient address found");
+			}
+
+			String[] recipients = mailTos.split(",");
+			//Set the host smtp address
+		    Properties props = new Properties();
+		    props.put("mail.smtp.host", smtphost);
+		    props.put("mail.smtp.auth", "true");
+	        // create autheticator object
+		    Authenticator auth = new SMTPAuthenticator(user, pass);
+		    // open session
+		    Session session = Session.getDefaultInstance(props, auth);
+		    // create a message
+		    Message msg = new MimeMessage(session);
+		    // set the from and to address
+		    InternetAddress addressFrom = new InternetAddress(from);
+		    msg.setFrom(addressFrom);
+		    InternetAddress[] addressTo = new InternetAddress[recipients.length];
+		    for (int i = 0; i < recipients.length; i++)  {
+		        addressTo[i] = new InternetAddress(recipients[i]);
+		    }
+		    msg.setRecipients(Message.RecipientType.TO, addressTo);
+		    // Setting the Subject and Content Type
+			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+			String subject = biobj.getName();
+			msg.setSubject(subject);
+		    // create and fill the first message part
+		    //MimeBodyPart mbp1 = new MimeBodyPart();
+		    //mbp1.setText(mailTxt);
+		    // create the second message part
+		    MimeBodyPart mbp2 = new MimeBodyPart();
+	        // attach the file to the message
+		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + fileExt);
+		    mbp2.setDataHandler(new DataHandler(sds));
+		    mbp2.setFileName(sds.getName());
+		    // create the Multipart and add its parts to it
+		    Multipart mp = new MimeMultipart();
+		    //mp.addBodyPart(mbp1);
+		    mp.addBodyPart(mbp2);
+		    // add the Multipart to the message
+		    msg.setContent(mp);
+		    // send message
+		    Transport.send(msg);
+		} catch (Exception e) {
+		    logger.error("Error while sending schedule result mail",e);
+		}finally{
+		    logger.debug("OUT");
+		}
+	}
 	
 	
 	private class SMTPAuthenticator extends javax.mail.Authenticator

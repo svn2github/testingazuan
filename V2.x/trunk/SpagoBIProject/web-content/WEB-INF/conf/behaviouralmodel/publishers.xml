@@ -207,7 +207,7 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-  	<!--
+
    	<PUBLISHER name="DynamicPublisher">
 		<RENDERING channel="PORTLET" type="JAVA" mode="">
 			<RESOURCES>
@@ -221,7 +221,7 @@
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>   
-  -->
+
   	
 
     

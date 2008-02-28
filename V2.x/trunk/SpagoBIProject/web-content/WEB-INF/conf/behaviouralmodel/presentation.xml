@@ -2,7 +2,7 @@
 <PRESENTATION>
 
 <MAPPING business_name="DetailParameterPage" business_type="PAGE" publisher_name="DetailParameterPubJ"/> 	
-<!-- <MAPPING business_name="ParametersLookupPage" business_type="PAGE" publisher_name="DynamicPublisher"/>  -->
+<MAPPING business_name="ParametersLookupPage" business_type="PAGE" publisher_name="DynamicPublisher"/>
 <MAPPING business_name="ListObjParusePage" business_type="PAGE" publisher_name="ListObjParusePublisher"/>
 <MAPPING business_name="ListParametersPage" business_type="PAGE" publisher_name="ListParametersPubJ"/>
 <MAPPING business_name="CheckLinksPage" business_type="PAGE" publisher_name="CheckLinksDispatcherPublisher"/>

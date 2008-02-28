@@ -5,7 +5,7 @@
     <MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.DetailParameterModule" name="DetailParameterModule">
      	<CONFIG/>
     </MODULE>
- <!--    
+  
  	<MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListLookupParametersModule" name="ListLookupParametersModule">
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.ListParam.ListLookupParameters.title" >
 	      <QUERIES>
@@ -57,7 +57,7 @@
 	      </BUTTONS>
 	    </CONFIG>
   	</MODULE>
- -->
+
     <MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListObjParuseModule" name="ListObjParuseModule">
      	<CONFIG/>
     </MODULE>  	   

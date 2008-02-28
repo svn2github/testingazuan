@@ -11,7 +11,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailParameterModule"/>
     	</MODULES>
   	</PAGE> 
-<!--   	
+   	
   	<PAGE name="ParametersLookupPage" scope="REQUEST" title="ParametersLookupPage" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="ParametersLookupPage" target="ListLookupParametersModule">
@@ -23,8 +23,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListLookupParametersModule"/>
     	</MODULES>
   	</PAGE>
-   	
- -->
+
   	
   	
   	<PAGE name="ListObjParusePage" scope="REQUEST" title="ObjParuse list page" >

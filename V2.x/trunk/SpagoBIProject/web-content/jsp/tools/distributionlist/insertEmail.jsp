@@ -14,6 +14,7 @@
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		String dlid = (String)moduleResponse.getAttribute("DL_ID");
+		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
 
 		String modality = "DETAIL_SUBSC" ;
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -73,7 +74,25 @@
 		</tr>
 	</table>
 	
+		
+	
 	<div id='emailinsert' class='div_background' style='padding-top:5px;padding-left:5px;'>
+	<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.ListDL.columnName" />
+			</span>
+		</div>
+		<%
+			  
+			  String name = dl.getName();
+			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
+				   name = "";
+			   }
+		%>
+		<div class='div_detail_form' readonly >
+			<%=name%>
+		</div>
+		
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.ListDL.emailInsert" />

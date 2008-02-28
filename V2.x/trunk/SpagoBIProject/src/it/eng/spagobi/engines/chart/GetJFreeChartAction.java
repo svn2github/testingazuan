@@ -34,7 +34,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.chart.charttypes.Dashboard;
-import it.eng.spagobi.engines.chart.charttypes.KpiChart;
 import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
 import it.eng.spagobi.engines.chart.charttypes.SimpleDial;
 import it.eng.spagobi.engines.chart.charttypes.Thermometer;
@@ -54,6 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
 
 
@@ -74,7 +74,7 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 	private String title="";
 	private String type="";
 	private IEngUserProfile profile = null;
-	private KpiChart sbi=null;
+	private ChartImpl sbi=null;
 
 
 
@@ -146,9 +146,13 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 				throw userError;
 			}
 
+			String nameSB=content.getName();
 			type = (String)content.getAttribute("type");
+			
+			sbi=ChartImpl.createChart(nameSB, type);
+			
 
-			if(type.equalsIgnoreCase("speedometer")){
+		/*	if(type.equalsIgnoreCase("speedometer")){
 				sbi=new SBISpeedometer();
 			}
 			else if(type.equalsIgnoreCase("simpledial")){
@@ -163,14 +167,14 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 			else {
 				logger.error("type in template not known");
 			}
-
+*/
 			sbi.setProfile(profile);
-			sbi.configureKpiChart(content);
+			sbi.configureChart(content);
 
 
 
 			// Get the value from the LOV
-
+/*
 			String res=LovAccessFunctions.getLovResult(profile, sbi.getDataName());
 
 			SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -179,10 +183,12 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 
 			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
 
-
+*/
+			
+			Dataset dataset=sbi.calculateValue();
 
 			try{
-				JFreeChart chart = sbi.createDialChart(title,dataset);
+				JFreeChart chart = sbi.createChart(title,dataset);
 
 				logger.debug("successfull chart creation");
 				response.setContentType("image/png");

@@ -44,6 +44,7 @@ import org.jfree.chart.plot.dial.DialValueIndicator;
 import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
@@ -78,9 +79,9 @@ public class SBISpeedometer extends KpiChart{
 	 */
 
 
-	public void configureKpiChart(SourceBean content) {
+	public void configureChart(SourceBean content) {
 
-		super.configureKpiChart(content);
+		super.configureChart(content);
 
 		logger.debug("IN");
 
@@ -188,10 +189,10 @@ public class SBISpeedometer extends KpiChart{
 	 * @return A chart speedometer.
 	 */
 
-	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
+	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		logger.debug("IN");
 		DialPlot plot = new DialPlot();
-		plot.setDataset(dataset);
+		plot.setDataset((ValueDataset)dataset);
 		plot.setDialFrame(new StandardDialFrame());
 
 		plot.setBackground(new DialBackground());

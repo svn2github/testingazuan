@@ -41,6 +41,7 @@ import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
 import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
@@ -63,9 +64,9 @@ public class SimpleDial extends KpiChart{
 	 */
 
 	
-	public void configureKpiChart(SourceBean content) {
+	public void configureChart(SourceBean content) {
 		logger.debug("IN");
-		super.configureKpiChart(content);
+		super.configureChart(content);
 		
 		if(!isLovConfDefined){
 		if(confParameters.get("increment")!=null){	
@@ -108,11 +109,11 @@ public class SimpleDial extends KpiChart{
 	 * @return A chart .
 	 */
 
-	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
+	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		// get data for diagrams
 		logger.debug("IN");
 		DialPlot plot = new DialPlot();
-		plot.setDataset(dataset);
+		plot.setDataset((ValueDataset)dataset);
 
 		ArcDialFrame dialFrame=null;
 		if(orientation.equals("vertical")){

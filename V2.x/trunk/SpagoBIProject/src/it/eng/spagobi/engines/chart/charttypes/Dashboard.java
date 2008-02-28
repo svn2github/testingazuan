@@ -38,6 +38,7 @@ import org.jfree.chart.plot.DialShape;
 import org.jfree.chart.plot.MeterInterval;
 import org.jfree.chart.plot.MeterPlot;
 import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 
 /**
@@ -67,9 +68,9 @@ public class Dashboard extends KpiChart{
 	 * @return A chart that displays a value as a dial.
 	 */
 	
-	public void configureKpiChart(SourceBean content) {
+	public void configureChart(SourceBean content) {
 		logger.info("IN");
-		super.configureKpiChart(content);
+		super.configureChart(content);
 		if(!isLovConfDefined){
 			logger.info("Configuration parameters set in template");
 			//reading intervals information
@@ -160,11 +161,11 @@ public class Dashboard extends KpiChart{
 	 * @return A chart .
 	 */
 	
-	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
+	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 
-		super.createDialChart(chartTitle, dataset);
+		super.createChart(chartTitle, dataset);
 
-		MeterPlot plot = new MeterPlot(dataset);
+		MeterPlot plot = new MeterPlot((ValueDataset)dataset);
 		plot.setRange(new Range(lower, upper));
 
 

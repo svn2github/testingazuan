@@ -40,6 +40,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.ThermometerPlot;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.RectangleInsets;
 
@@ -71,9 +72,9 @@ public class Thermometer extends KpiChart{
 	 */
 
 
-	public JFreeChart createDialChart(String chartTitle, ValueDataset dataset) {
+	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		logger.debug("IN");
-		ThermometerPlot plot = new ThermometerPlot(dataset);
+		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
 		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 
 		plot.setInsets(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
@@ -119,9 +120,9 @@ public class Thermometer extends KpiChart{
 	 */
 
 
-	public void configureKpiChart(SourceBean content) {
+	public void configureChart(SourceBean content) {
 		logger.debug("IN");
-		super.configureKpiChart(content);
+		super.configureChart(content);
 
 		if(!isLovConfDefined){
 

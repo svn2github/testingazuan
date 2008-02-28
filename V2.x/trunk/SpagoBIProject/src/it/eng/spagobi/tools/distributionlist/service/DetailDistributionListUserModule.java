@@ -86,6 +86,8 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	 */  
 	private void insertEmail(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
 		
+		DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
+		response.setAttribute("dlObj", dl);
 		String id = (String) request.getAttribute("DL_ID");
 		response.setAttribute("DL_ID", id);
 		response.setAttribute("modality", mod);

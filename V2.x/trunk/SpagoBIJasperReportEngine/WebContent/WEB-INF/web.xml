@@ -99,6 +99,11 @@
 			it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet
 		</servlet-class>
 	</servlet>
+	
+    <servlet>
+        <servlet-name>SpagoBIRefreshServlet</servlet-name>
+        <servlet-class>it.eng.spagobi.utilities.callbacks.refresh.SpagoBIRefreshServlet</servlet-class>
+    </servlet>
 
  	<servlet-mapping>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
@@ -125,6 +130,11 @@
 		<servlet-name>SpagoBIDrillServlet</servlet-name>
 		<url-pattern>/SpagoBIDrillServlet</url-pattern>
 	</servlet-mapping>
+	
+    <servlet-mapping>
+        <servlet-name>SpagoBIRefreshServlet</servlet-name>
+        <url-pattern>/SpagoBIRefreshServlet</url-pattern>
+    </servlet-mapping>
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

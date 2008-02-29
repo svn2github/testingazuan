@@ -1,0 +1,24 @@
+
+
+<h1>Primo documento</h1>
+<p>Questo ... un  documento</p>
+
+<input type='button' name='Refresh' value='Refresh' id='refresh_1'/>
+
+<script type="text/javascript" >
+    
+    var bottone_refresh=Ext.get('refresh_1');
+    bottone_refresh.on('click', function(){
+      Ext.get('pannello_2').load({
+		    url: 'http://localhost:8080/SpagoBI/test/panel_2.html',
+		    discardUrl: false,
+		    nocache: false,
+		    text: "Sto caricando ...",
+		    timeout: 30,
+		    scripts: true
+		  }); 
+ 
+    });
+    
+</script>
+

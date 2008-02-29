@@ -2,7 +2,7 @@
 <SPAGOBI_SSO>
 	<ACTIVE>false</ACTIVE>
 	 <VALIDATE-USER>
-	 	<URL>https://localhost:8443/exo-cas-2/proxyValidate</URL>
+	 	<URL>https://localhost:8080/exo-cas-2/proxyValidate</URL>
 	 	<SERVICE>/proxyReceptor</SERVICE>
 	 </VALIDATE-USER>
 	 <FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT> 

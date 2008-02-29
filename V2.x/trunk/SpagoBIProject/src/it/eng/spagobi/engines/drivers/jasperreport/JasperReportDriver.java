@@ -108,6 +108,8 @@ public class JasperReportDriver implements IEngineDriver {
 	String documentId=biobj.getId().toString();
 	pars.put("document", documentId);
 	logger.debug("Add document parameter:"+documentId);
+	pars.put("documentLabel", biobj.getLabel());
+	logger.debug("Add document parameter:"+biobj.getLabel());
 	pars = addBISubreports(biobj, pars);
 	pars = addBIParameters(biobj, pars);
   

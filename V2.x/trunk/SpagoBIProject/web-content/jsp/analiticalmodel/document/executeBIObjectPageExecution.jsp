@@ -104,6 +104,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
+	// get the flag about document composition
+	String flgDocComposite = (String)aSessionContainer.getAttribute("flgDocComposite");
+	
     // get the map of parameters dor execution call
     Map mapPars = null;
     if (isRefreshRequest) {
@@ -1478,6 +1481,16 @@ function somethingWentWrongSavingRememberMe() {
 			alert('Cannot resize the document view area');
 		}
 
+	function execDrill(name, url){
+		var flgDocComposite= "<%=flgDocComposite%>";
+	
+		if (flgDocComposite != "true"){
+			var element = document.getElementById(name);
+			element.src = url;
+		}
+		
+		return;
+	}
 	</script>
 <%
   }

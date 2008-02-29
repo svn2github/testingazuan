@@ -71,6 +71,24 @@ public interface IDistributionListDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public void eraseDistributionList(DistributionList aDistributionList) throws EMFUserError;
+	
+	/**
+	 * Implements the query to erase distribution list objects. 
+	 * 
+	 * @param aDistributionList The object containing all informations to be deleted
+	 * @param biobId The id of the document
+	 * @param triggername The triggername regarding the schedulation of the document
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public void eraseDistributionListObjects(DistributionList dl, int biobId, String triggername) throws EMFUserError;
+	
+	/**
+	 * Implements the query to erase all distribution list objects with the related triggername. 
+	 * 
+	 * @param triggername The triggername regarding the schedulation of the document
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public void eraseAllRelatedDistributionListObjects(String triggername) throws EMFUserError;
 
 	/**
 	 * Tells if a distribution list is associated to any
@@ -112,5 +130,29 @@ public interface IDistributionListDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertDLforDocument(DistributionList dl, int objId, String xml) throws EMFUserError ;
+	
+	/**
+	 * Verifies if the document with id objId is already in the list of documents for the DIstributionList dl
+	 * with the xml of its schedulation
+	 * 
+	 * @param dsId The distribution list identifier
+	 * @param objId The id of the document
+	 * @param xml The xml regarding the schedulation of the document
+	 * @return True if already exists, else false 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public boolean isDocScheduleAlreadyLinkedToDL(DistributionList dl, int objId, String xml) throws EMFUserError ;
+	
+	/**
+	 * Verifies if the document with id objId is already in the list of documents for the DIstributionList dl
+	 * with another xml of schedulation
+	 * 
+	 * @param dsId The distribution list identifier
+	 * @param objId The id of the document
+	 * @param xml The xml regarding the schedulation of the document
+	 * @return True if already exists, else false 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public boolean isDocScheduledInOtherTime(DistributionList dl, int objId, String xml) throws EMFUserError ;
 
 }

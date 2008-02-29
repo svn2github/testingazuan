@@ -184,6 +184,7 @@ public class JobManagementModule extends AbstractModule {
 			   	SourceBean scheduleSB = (SourceBean)iterSchedules.next();
 			   	String triggerName = (String)scheduleSB.getAttribute("triggerName");
 			   	String triggerGroup = (String)scheduleSB.getAttribute("triggerGroup");
+			   	DAOFactory.getDistributionListDAO().eraseAllRelatedDistributionListObjects(triggerName);
 			   	String delResp = schedulerService.deleteSchedulation(triggerName, triggerGroup);
 				SourceBean schedModRespSB_DS = SchedulerUtilities.getSBFromWebServiceResponse(delResp);
 				if(schedModRespSB_DS==null) {

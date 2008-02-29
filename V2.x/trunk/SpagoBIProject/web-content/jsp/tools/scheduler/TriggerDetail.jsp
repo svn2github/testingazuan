@@ -1113,11 +1113,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDL.columnDescr" />
 			</span>
 		</div>
-		<div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "checkBox" />
-			</span>
-		</div>
 		</td>
 		</tr>
 		
@@ -1143,11 +1138,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	<div class='div_detail_label'><%=listName%>
 				   		</div>
 				   		<div class='div_detail_form'> <%=listDescr%>
-				   		</div>	
-				   		<div class='div_detail_form'>	
+				   		</div>				   		
+				   		</td>
+				   		<td>
+				   		<div class='div_detail_label'>	
 				   		<input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
                			<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
-               			
+               			</div>
+               			<div class='div_detail_form'>
                			</div>
                			</td>
                			</tr>

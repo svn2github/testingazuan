@@ -139,6 +139,7 @@ public class TriggerManagementModule extends AbstractModule {
 		String triggerName = (String) request.getAttribute("triggerName");
 		String triggerGroup = (String) request.getAttribute("triggerGroup");
 		try {
+				DAOFactory.getDistributionListDAO().eraseAllRelatedDistributionListObjects(triggerName);
 		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String resp = schedulerService.deleteSchedulation(triggerName, triggerGroup);
 			SourceBean schedModRespSB = SchedulerUtilities.getSBFromWebServiceResponse(resp);
@@ -277,6 +278,10 @@ public class TriggerManagementModule extends AbstractModule {
 						if(listID!=null){
 							sInfo.addDlId(new Integer(listID));
 						}
+						else{
+							
+							DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl,biobId.intValue(),triggername);
+						}
 											
 					}
 					
@@ -379,36 +384,48 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	private StringBuffer createMessageSaveSchedulation(TriggerInfo tInfo, boolean runImmediately) throws EMFUserError {
 		StringBuffer message = new StringBuffer();
+		String xml = "";
 		JobInfo jInfo = tInfo.getJobInfo();
 		Map saveOptions = tInfo.getSaveOptions();
 		Set biobjids_so =  saveOptions.keySet();
 		Iterator iterbiobjids_s = biobjids_so.iterator();
 		
+		xml += "<SCHEDULE ";
 		message.append("<SERVICE_REQUEST ");
+		
 		message.append(" jobName=\""+jInfo.getJobName()+"\" ");
+		xml += " jobName=\""+jInfo.getJobName()+"\" ";
 		message.append(" jobGroup=\""+jInfo.getJobGroupName()+"\" ");
 		if(runImmediately) {
 			message.append(" runImmediately=\"true\" ");
 		} else {
 			message.append(" triggerName=\""+tInfo.getTriggerName()+"\" ");
+			xml += " triggerName=\""+tInfo.getTriggerName()+"\" ";
 			message.append(" triggerDescription=\""+tInfo.getTriggerDescription()+"\" ");
 			message.append(" startDate=\""+tInfo.getStartDate()+"\" ");
+			xml += " startDate=\""+tInfo.getStartDate()+"\" ";
 			message.append(" startTime=\""+tInfo.getStartTime()+"\" ");
+			xml += " startTime=\""+tInfo.getStartTime()+"\" ";
 			message.append(" chronString=\""+tInfo.getChronString()+"\" ");
+			xml += " chronString=\""+tInfo.getChronString()+"\" ";
 			String enddate = tInfo.getEndDate();
 			String endtime = tInfo.getEndTime();
 			if(!enddate.trim().equals("")){
 				message.append(" endDate=\""+enddate+"\" ");
+				xml += " endDate=\""+enddate+"\" ";
 				if(!endtime.trim().equals("")){
 					message.append(" endTime=\""+endtime+"\" ");
+					xml += " endTime=\""+endtime+"\" ";
 				}
 			}
 		}
 		String repeatinterval = tInfo.getRepeatInterval();
 		if(!repeatinterval.trim().equals("")){
 			message.append(" repeatInterval=\""+repeatinterval+"\" ");
+			xml += " repeatInterval=\""+repeatinterval+"\" ";
 		}	
 		message.append(">");
+		xml += "></SCHEDULE>";
 		
 		
 		message.append("   <PARAMETERS>");
@@ -457,6 +474,7 @@ public class TriggerManagementModule extends AbstractModule {
 			}
 			if(sInfo.isSendToDl()) {
 				saveOptString += "sendtodl=true%26";
+				
 				List l= sInfo.getDlIds();
 				if(!l.isEmpty()){
 					
@@ -466,11 +484,10 @@ public class TriggerManagementModule extends AbstractModule {
 					while (iter.hasNext()){
 						
 						Integer dlId = (Integer)iter.next();
-						try {
+						try {if(!runImmediately){
 							DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
-							String xml = message.toString();
 							DAOFactory.getDistributionListDAO().insertDLforDocument(dl, objId, xml);
-							
+						}
 						} catch (Exception ex) {
 							logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);			
@@ -481,7 +498,8 @@ public class TriggerManagementModule extends AbstractModule {
 						
 					}
 					saveOptString += dlIds+"%26";
-				}
+				
+				}	
 			}
 			
 			message.append("   	   <PARAMETER name=\"biobject_id_"+biobjid_so+"\" value=\""+saveOptString+"\" />");

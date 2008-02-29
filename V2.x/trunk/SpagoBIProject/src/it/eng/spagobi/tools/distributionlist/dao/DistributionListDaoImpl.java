@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.distributionlist.dao;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -29,6 +31,7 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.hotlink.rememberme.metadata.SbiRememberMe;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionList;
@@ -44,6 +47,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
@@ -87,6 +91,103 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 
 	}
+
+	
+	public void eraseDistributionListObjects(DistributionList dl, int biobId, String triggername)
+	throws EMFUserError {
+		
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
+			
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+biobId;
+			Query query = aSession.createQuery(hql);
+				
+				List l = query.list();
+				if(!l.isEmpty()){
+			    Iterator it = l.iterator();
+			    while(it.hasNext()){
+			    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
+			    	String xmlstr = temp.getXml();
+			    	SourceBean sb = SourceBean.fromXMLString(xmlstr);
+			    	String trigName = (String)sb.getAttribute("triggerName");
+			    	if (trigName != null && trigName.equals(triggername)){ 
+			    		hibDistributionListsObjects = temp; 
+			    		aSession.delete(hibDistributionListsObjects);
+			    	}
+			    }			
+				}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while erasing the distribution list objects " , he);
+		
+			if (tx != null)
+				tx.rollback();
+		
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		
+		} catch (SourceBeanException e) {
+			logger.error("Error while generating Source Bean");
+			e.printStackTrace();
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+	}
+	
+	public void eraseAllRelatedDistributionListObjects(String triggername)
+	throws EMFUserError {
+		
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String hql = "from SbiDistributionListsObjects ";
+			Query query = aSession.createQuery(hql);
+				
+				List l = query.list();
+				if(!l.isEmpty()){
+			    Iterator it = l.iterator();
+			    while(it.hasNext()){
+			    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
+			    	String xmlstr = temp.getXml();
+			    	SourceBean sb = SourceBean.fromXMLString(xmlstr);
+			    	String trigName = (String)sb.getAttribute("triggerName");
+			    	if (trigName != null && trigName.equals(triggername)){ 
+			    		aSession.delete(temp);
+			    	}
+			    }			
+				}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while erasing the distribution list objects " , he);
+		
+			if (tx != null)
+				tx.rollback();
+		
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		
+		} catch (SourceBeanException e) {
+			logger.error("Error while generating Source Bean");
+			e.printStackTrace();
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+	}
+	
+
 
 	public void insertDistributionList(DistributionList aDistributionList)
 			throws EMFUserError {
@@ -413,13 +514,40 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	
 	public void insertDLforDocument(DistributionList dl, int objId, String xml) throws EMFUserError {
 		logger.debug("IN");
+		boolean otherSchedule = false;
 		Session aSession = null;
 		Transaction tx = null;
 		try {
+			if (DAOFactory.getDistributionListDAO().isDocScheduleAlreadyLinkedToDL(dl,objId,xml)){
+				logger.debug("");
+				return;
+			}
+			if (DAOFactory.getDistributionListDAO().isDocScheduledInOtherTime(dl,objId,xml)){
+				otherSchedule = true;
+			}
+			SourceBean sbOrig = SourceBean.fromXMLString(xml);
+			String trigNameOrig = (String)sbOrig.getAttribute("triggerName");
+			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
+			
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			if(otherSchedule == true){
+
+				String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+				Query query = aSession.createQuery(hql);
+					
+				List l = query.list();
+				
+			    Iterator it = l.iterator();
+			    while(it.hasNext()){
+			    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
+			    	String xmlstr = temp.getXml();
+			    	SourceBean sb = SourceBean.fromXMLString(xmlstr);
+			    	String trigName = (String)sb.getAttribute("triggerName");
+			    	if (trigName != null && trigName.equals(trigNameOrig)){ hibDistributionListsObjects = temp; };
+			    }			
+			}
 			
-			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
 			SbiDistributionList hibDistributionList = (SbiDistributionList) aSession.load(SbiDistributionList.class,
 					new Integer(dl.getId()));
 			SbiObjects hibObj = (SbiObjects) aSession.load(SbiObjects.class,new Integer(objId));
@@ -438,12 +566,87 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
+		} catch (SourceBeanException e) {
+			logger.error("Error while generating Source Bean");
+			e.printStackTrace();
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 				logger.debug("OUT");
 			}
 		}
+	}
+	
+	public boolean isDocScheduleAlreadyLinkedToDL(DistributionList dl, int objId, String xml) throws EMFUserError {
+		logger.debug("IN");
+
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" and sdlo.xml='"+xml+"'" ;
+			Query query = tmpSession.createQuery(hql);
+			
+			SbiDistributionListsObjects hibDL = (SbiDistributionListsObjects) query.uniqueResult();
+			if (hibDL == null) return false;							
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while loading the distribution list documents ", he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return true;		
+	}
+	
+	public boolean isDocScheduledInOtherTime(DistributionList dl, int objId, String xml) throws EMFUserError {
+		logger.debug("IN");
+		   	
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			SourceBean sbOrig = SourceBean.fromXMLString(xml);
+			String trigNameOrig = (String)sbOrig.getAttribute("triggerName");
+			
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+			Query query = tmpSession.createQuery(hql);
+			
+			List l = query.list();
+			if(!l.isEmpty()){
+		    Iterator it = l.iterator();
+		    while(it.hasNext()){
+		    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
+		    	String xmlstr = temp.getXml();
+		    	SourceBean sb = SourceBean.fromXMLString(xmlstr);
+		    	String trigName = (String)sb.getAttribute("triggerName");
+		    	if (trigName != null && trigName.equals(trigNameOrig)) return true;
+		    }	
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while loading the distribution list documents ", he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} catch (SourceBeanException e) {
+			logger.error("Error while generating Source Bean");
+			e.printStackTrace();
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return false;		
 	}
 	
 }

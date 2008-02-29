@@ -32,7 +32,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
@@ -41,10 +40,8 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
-
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
-import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListUser;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -55,9 +52,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -390,6 +385,7 @@ public class ExecuteBIDocumentJob implements Job {
 				
 				Integer dlId = (Integer)it.next();
 				DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
+				
 				List emails = new ArrayList();
 				emails = dl.getEmails();
 				Iterator j = emails.iterator();
@@ -400,7 +396,20 @@ public class ExecuteBIDocumentJob implements Job {
 					else {mailTos = mailTos+email;}
 					
 				}
+				//TODO Fare metodo nel DAOImpl per prendere l'xml di questa esecuzione: problema, potrei tirar su gli xml sbagliati
+				/*
+				String xml = DAOFactory.getDistributionListDAO().loadDistributionListObjectsXml(dl,(biobj.getId()).intValue());
+				SourceBean sb = SourceBean.fromXMLString(xml);
+		    	String triggername = (String)sb.getAttribute("triggerName");
+		    	String chronStr = (String)sb.getAttribute("chronString");
+		    	
+				if(chronStr!=null && chronStr.equals("single{}")){
+					
+					DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl, (biobj.getId()).intValue(), triggername);
+				}
+				*/
 			}
+			
 			
 			if( (mailTos==null) || mailTos.trim().equals("")) {	
 				throw new Exception("No recipient address found");

@@ -272,8 +272,11 @@ public class DetailEngineModule extends AbstractModule {
 		Integer engineTypeId = new Integer(engineTypeIdStr);
 		Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engineTypeId);
 		
-		String engineDefaultDS = (String) request.getAttribute("engineDefaultDS");		
-		Integer engineDSId = new Integer(engineDefaultDS);		
+		String engineDefaultDS = (String) request.getAttribute("engineDefaultDS");	
+		Integer engineDSId = null;
+		if (engineDefaultDS != null && !engineDefaultDS.trim().equals("")) {
+			engineDSId = new Integer(engineDefaultDS);
+		}
 		
 			String url = "";
 		String driverName = "";

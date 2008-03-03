@@ -178,6 +178,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>	
 	<div class='div_detail_form'>
 		<select class='portlet-form-field' name="engineDefaultDS" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType">			
+			<option></option>
 			<%
 			java.util.List engineDS = DAOFactory.getDataSourceDAO().loadAllDataSources();
 			java.util.Iterator engineDSIt = engineDS.iterator();

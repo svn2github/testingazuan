@@ -105,17 +105,7 @@ public class DetBIObjModHelper {
 		
 		String dsIdStr = (String) request.getAttribute("datasource");
 		DataSource ds = null;
-		if (dsIdStr == null || dsIdStr.equals("")) {
-			List lstDataSource = DAOFactory.getDataSourceDAO().loadAllDataSources();
-			if (lstDataSource.size() == 0) { 
-				HashMap errorParams = new HashMap();
-				errorParams.put(AdmintoolsConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);
-				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
-				Vector vector = new Vector();
-				vector.add(domain.getValueName());
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8008, vector, errorParams);
-			}			
-		} else {
+		if (dsIdStr != null && !dsIdStr.equals("")) {
 			Integer dsIdInt = new Integer(dsIdStr);
 			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);
 		}
@@ -178,7 +168,7 @@ public class DetBIObjModHelper {
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
 		obj.setEngine(engine);
-		obj.setDataSourceId((ds==null)?null:new Integer(ds.getDsId()));
+		obj.setDataSourceId(ds == null ? null : new Integer(ds.getDsId()));
 		obj.setId(id);
 		obj.setName(name);
 		obj.setLabel(label);

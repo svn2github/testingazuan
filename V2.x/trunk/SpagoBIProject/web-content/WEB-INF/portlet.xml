@@ -502,12 +502,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<short-title>HotLink</short-title>
         	<keywords>HotLink</keywords>
         </portlet-info>
-        <portlet-preferences>
-            <preference>
-        		<name>STYLE_NAME</name>
-        		<value>HotLink</value>
-        	</preference>
-        </portlet-preferences>
 	</portlet>
 	
 </portlet-app>

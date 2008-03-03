@@ -823,11 +823,11 @@ public class DetailBIObjectModule extends AbstractModule {
 			// based on the modality do different tasks
 			if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {
 				//if data source value is not specified, it gets the default data source associated at the engine
-				if (obj.getDataSourceId() == null){
-					Engine engine = obj.getEngine();
-					Integer dsId = engine.getDataSourceId();
-					obj.setDataSourceId(dsId);
-				}
+//				if (obj.getDataSourceId() == null){
+//					Engine engine = obj.getEngine();
+//					Integer dsId = engine.getDataSourceId();
+//					obj.setDataSourceId(dsId);
+//				}
 
 				// inserts into DB the new BIObject
 				if(objTemp==null) {
@@ -932,13 +932,6 @@ public class DetailBIObjectModule extends AbstractModule {
 						helper.fillResponse(initialPath);
 						prepareBIObjectDetailPage(response, obj, biObjPar, biObjPar.getId().toString(), ObjectsTreeConstants.DETAIL_MOD, false, false);
 						return;
-					}
-					
-					//if data source value is not specified, it gets the default data source associated at the engine
-					if (obj.getDataSourceId() == null){
-						Engine engine = obj.getEngine();
-						Integer dsId = engine.getDataSourceId();
-						obj.setDataSourceId(dsId);
 					}
 					
 					// it is requested to modify the main values of the BIObject

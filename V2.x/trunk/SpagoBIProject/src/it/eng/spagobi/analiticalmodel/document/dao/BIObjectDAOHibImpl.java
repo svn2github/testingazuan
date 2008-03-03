@@ -324,9 +324,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, biObject.getId());
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	biObject.getEngine().getId());
-			hibBIObject.setSbiEngines(hibEngine); 
-			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, biObject.getDataSourceId());			
-			hibBIObject.setDataSource(hibDataSource); // TO REVIEW			
+			hibBIObject.setSbiEngines(hibEngine);
+			SbiDataSource dSource = null;
+			if (biObject.getDataSourceId() != null) {
+				dSource = (SbiDataSource) aSession.load(SbiDataSource.class, biObject.getDataSourceId());
+			}
+			hibBIObject.setDataSource(dSource);
 			hibBIObject.setDescr(biObject.getDescription());
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
@@ -462,10 +465,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SbiDomains hibObjectType = (SbiDomains) aSession.load(SbiDomains.class, obj.getBiObjectTypeID());
 			hibBIObject.setObjectType(hibObjectType);
 			hibBIObject.setObjectTypeCode(obj.getBiObjectTypeCode());
+			SbiDataSource dSource = null;
 			if (obj.getDataSourceId() != null) {
-				SbiDataSource dSource=(SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
-				hibBIObject.setDataSource(dSource);
+				dSource = (SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
 			}
+			hibBIObject.setDataSource(dSource);
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();

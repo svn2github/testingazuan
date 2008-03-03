@@ -173,8 +173,10 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 					aEngine.getBiobjTypeId());
 			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getEngineTypeId());
-			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());						
-
+			SbiDataSource hibDataSource = null;
+			if (aEngine.getDataSourceId() != null) {
+				hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());
+			}
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());
 			hibEngine.setDescr(aEngine.getDescription());
@@ -219,7 +221,10 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 					aEngine.getBiobjTypeId());
 			SbiDomains hibDomainEngineType = (SbiDomains) aSession.load(SbiDomains.class,
 					aEngine.getEngineTypeId());
-			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());
+			SbiDataSource hibDataSource = null;
+			if (aEngine.getDataSourceId() != null) {
+				hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, aEngine.getDataSourceId());
+			}
 			SbiEngines hibEngine = new SbiEngines();
 			hibEngine.setName(aEngine.getName());
 			hibEngine.setLabel(aEngine.getLabel());

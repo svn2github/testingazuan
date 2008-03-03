@@ -53,7 +53,7 @@
             <column name="biobj_type" not-null="true" />
         </many-to-one>  
         <many-to-one name="dataSource" class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource">
-            <column name="default_ds_id" not-null="true" />
+            <column name="default_ds_id" not-null="false" />
         </many-to-one>    
     </class>
 </hibernate-mapping>

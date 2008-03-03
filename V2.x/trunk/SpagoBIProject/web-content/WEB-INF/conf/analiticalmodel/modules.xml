@@ -78,7 +78,6 @@
   	</MODULE>
  
      <MODULE class="it.eng.spagobi.analiticalmodel.execution.service.SelectParametersLookupModule" name="SelectParameterPageModule">
-     	<CONFIG/>
     </MODULE>
     	                    
 </MODULES>

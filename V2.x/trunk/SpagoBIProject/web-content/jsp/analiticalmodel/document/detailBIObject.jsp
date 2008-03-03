@@ -793,7 +793,7 @@ function isBIObjectFormChanged() {
 		|| (relName != '<%=initialBIObject.getRelName()%>')
 		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
 		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
-		|| (datasource != '<%=initialBIObject.getDataSourceId()%>')
+		|| (datasource != '<%=initialBIObject.getDataSourceId() != null ? initialBIObject.getDataSourceId() : ""%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true')) {

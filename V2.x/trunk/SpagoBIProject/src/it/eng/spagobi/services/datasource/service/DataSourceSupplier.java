@@ -4,6 +4,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -30,7 +31,20 @@ public class DataSourceSupplier {
 		logger.error("The object with id " + documentId + " is not found on the database.");
 		return null;
 	    }
-	    DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(obj.getDataSourceId());
+	    Integer dsId = null;
+	    if (obj.getDataSourceId() != null) {
+	    	dsId = obj.getDataSourceId();
+	    	logger.debug("Using document datasource id = " + dsId);
+	    } else {
+	    	Engine engine = obj.getEngine();
+	    	dsId = engine.getDataSourceId();
+	    	logger.debug("Using document's engine datasource id = " + dsId);
+	    }
+    	if (dsId == null) {
+    		logger.error("Data source is not configured neither for document nor for its engine.");
+    		return null;
+    	}
+	    DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsId);
 	    if (ds == null) {
 		logger.error("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
 		return null;

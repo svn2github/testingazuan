@@ -19,9 +19,11 @@
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
+				<!--
 				<FIELD name="engineDefaultDS" label="#SBISet.eng.dataSource">
 					<VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>	
+				</FIELD>
+				-->	
 				<FIELD name="url" label="#SBISet.eng.urlField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="URL"/>
@@ -58,9 +60,11 @@
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
+				<!--
 				<FIELD name="engineDefaultDS" label="#SBISet.eng.dataSource">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
+				-->
 				<FIELD name="className" label="#SBISet.eng.classNameField">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>

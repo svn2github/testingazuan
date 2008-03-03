@@ -433,13 +433,34 @@ public class ListTag extends TagSupport
 							_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
 							    // insert javascript for open popup
 							    _htmlStream.append(" <script>\n");
-							    
 							    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
 							    _htmlStream.append("  if (confirm(\"" + msg + "\")) {\n");
 							    _htmlStream.append("   var winDetail_"+prog+"; \n");
-							    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:600,height:400,closeAction:'hide',plain: true}); \n");
-							    _htmlStream.append("   winDetail_"+prog+".show();\n");
-							    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
+							    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',\n");
+							    _htmlStream.append("            bodyCfg:{");
+							    _htmlStream.append("                tag:'div'");
+							    _htmlStream.append("                ,cls:'x-panel-body'");
+							    _htmlStream.append("               ,children:[{");
+							    _htmlStream.append("                    tag:'iframe',");
+							    _htmlStream.append("                    name: 'dynamicIframe1',");
+							    _htmlStream.append("                    id  : 'dynamicIframe1',");
+							    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "',");
+							    _htmlStream.append("                    frameBorder:0,");
+							    _htmlStream.append("                    width:'100%',");
+							    _htmlStream.append("                    height:'100%',");
+							    _htmlStream.append("                    style: {overflow:'auto'}   ");        
+							    _htmlStream.append("               }]");
+							    _htmlStream.append("            },");
+							    _htmlStream.append("            modal: true,\n");
+							    _htmlStream.append("            layout:'fit',\n");
+							    _htmlStream.append("            width:600,\n");
+						        _htmlStream.append("            height:400,\n");
+						        _htmlStream.append("            closeAction:'hide',\n");
+						        _htmlStream.append("            plain: true \n");
+						        _htmlStream.append("        });\n");
+						        _htmlStream.append("    };\n");
+							    _htmlStream.append("   winDetail_"+prog+".show() \n");
+							    //_htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
 							    _htmlStream.append("  }\n");
 							    _htmlStream.append(");\n");
 							    _htmlStream.append(" </script>\n");						

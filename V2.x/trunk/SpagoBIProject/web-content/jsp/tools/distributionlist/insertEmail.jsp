@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		String dlid = (String)moduleResponse.getAttribute("DL_ID");
-		String userid = (String)moduleResponse.getAttribute("USER_ID");
+
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
 		String modality = "DETAIL_SUBSC" ;
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -62,7 +62,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%=dlid%>' name='DL_ID' />
-	<input type='hidden' value='<%=userid%>' name='USER_ID' />
 	
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
@@ -82,9 +81,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</tr>
 	</table>
 	
-		
-	
+
 	<div id='emailinsert' class='div_background' style='padding-top:5px;padding-left:5px;'>
+		<br>
+	<br>
+	<br>
+	<br>
+	<br>	
+	<br>
 	<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.ListDL.columnName" />

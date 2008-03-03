@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -119,11 +120,11 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
 		response.setAttribute("dlObj", dl);
 		String id = (String) request.getAttribute("DL_ID");
-		String userid = (String) request.getAttribute("USER_ID");
 		response.setAttribute("DL_ID", id);
-		response.setAttribute("USER_ID", userid);
+
 		response.setAttribute("modality", mod);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
+	    
 		
 	}
 	
@@ -143,27 +144,18 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			
 			String id = (String) request.getAttribute("DL_ID");
 			String email = (String)request.getAttribute("EMAIL");
-			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			HttpServletRequest httpRequest = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
-           String userId = null;
-           ConfigSingleton config = ConfigSingleton.getInstance();
-           SourceBean validateSB =(SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-           String active = (String) validateSB.getCharacters();
-           if (active != null && active.equals("true")){
-               IProxyService proxy=IProxyServiceFactory.createProxyService();
-               userId=proxy.readUserId(httpRequest.getSession());
-               logger.debug("got userId from IProxyService="+userId);
-           } else {
-               userId =(String) request.getAttribute("USER_ID");
-               logger.debug("got userId from Request="+userId);
-           }
+			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
+			HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+			HttpSession session = hsr.getSession();
+//			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			//load the user
 			Email user = new Email();
 			user.setEmail(email);
-			user.setUserId(userId);
+			user.setUserId(profile.getUserUniqueIdentifier().toString());
 			//subscribe to the dl
 			DAOFactory.getDistributionListDAO().subscribeToDistributionList(dl,user);
 		}

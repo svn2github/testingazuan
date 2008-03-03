@@ -96,7 +96,7 @@
 		          	<PARAMETER name='PRES' scope='LOCAL' value='1' operator='EQUAL_TO' /> 
 			  	  </CONDITIONS>
 	        </ALREADYREGISTERED_CAPTION>
-	        <SUBSCRIBE_CAPTION popup="TRUE" confirm="TRUE" image="/img/notes.jpg" label="SBISet.ListDL.subscribeCaption">
+	        <SUBSCRIBE_CAPTION popup="TRUE" confirm="TRUE" image="/img/tools/distributionlist/email_add.png" label="SBISet.ListDL.subscribeCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="InsertEmailPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_INSERTEMAIL"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
@@ -104,7 +104,7 @@
 	          		<PARAMETER name='PRES' scope='LOCAL' value='0' operator='EQUAL_TO' /> 
 			  	  </CONDITIONS>
 	        </SUBSCRIBE_CAPTION>
-	        <UNSUBSCRIBE_CAPTION image="/img/clear.gif" label="SBISet.ListDL.unsubscribeCaption">
+	        <UNSUBSCRIBE_CAPTION image="/img/tools/distributionlist/email_delete.png" label="SBISet.ListDL.unsubscribeCaption">
 	          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_UNSUBSC"/>

@@ -2,7 +2,7 @@
 <VALIDATIONS>
 		
 	<SERVICE name="DetailDistributionListPage" type="PAGE">
-		<VALIDATION blocking="false" validators="">
+		<VALIDATION blocking="true" validators="">
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
 			</CONDITIONS>
@@ -10,6 +10,12 @@
 				<FIELD name="NAME" label="#SBISet.ListDL.columnName">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>				
+				<FIELD name="DESCR" label="#SBISet.ListDL.columnDescr">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>
+				<FIELD name="NAME" label="#SBISet.ListDL.columnName">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
 			</FIELDS>
 		</VALIDATION>	
 		<VALIDATION blocking="false" validators="">
@@ -37,7 +43,7 @@
 	</SERVICE>
 	
 	<SERVICE name="InsertEmailPage" type="PAGE">
-		<VALIDATION blocking="false" validators="">
+		<VALIDATION blocking="true" validators="">
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
 			</CONDITIONS>

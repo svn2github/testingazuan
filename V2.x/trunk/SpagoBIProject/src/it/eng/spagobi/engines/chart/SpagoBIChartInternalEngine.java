@@ -87,7 +87,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 			//String result=getLovResult(profile, documentId,mode,dataParameters);
 
-			response.setAttribute("userid", userId);
+			//response.setAttribute("userid", userId);
 			response.setAttribute("documentid", documentId);
 			response.setAttribute("title", title);				
 

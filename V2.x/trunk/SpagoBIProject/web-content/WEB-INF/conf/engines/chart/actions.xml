@@ -4,6 +4,9 @@
  <ACTION name="GET_JFREECHART" class="it.eng.spagobi.engines.chart.GetJFreeChartAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ <ACTION name="GET_PNG" class="it.eng.spagobi.engines.chart.GetPngAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>
 

@@ -31,6 +31,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 
 
+<%@page import="org.jfree.chart.JFreeChart"%>
+<%@page import="it.eng.spagobi.engines.chart.charttypes.CreateJFreeChart"%>
+<%@page import="org.jfree.chart.ChartUtilities"%>
+<%@page import="java.io.PrintWriter"%>
+<%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
+<%@page import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
 
@@ -45,11 +51,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
     String title = (String)moduleResponse.getAttribute("title");
-    String userId= (String)moduleResponse.getAttribute("userid");
+    //String userId= (String)moduleResponse.getAttribute("userid");
     String documentId= (String)moduleResponse.getAttribute("documentid");
 	
+    IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    String userId=(String)profile.getUserUniqueIdentifier();
+   
+    
     String urlAction=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_JFREECHART&NEW_SESSION=TRUE&userid="+userId+"&documentid="+documentId);
 
+
+ 
+    boolean threeD=false;
+  	if(request.getParameter("threed")!=null){
+  		String three=(String)request.getParameter("threed");
+  		if(three.equalsIgnoreCase("true")){
+  			threeD=true;
+  		}
+  	}
     
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
@@ -133,9 +152,67 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        			<% } %>
    			</tr>
 		</table>
+				
+				
+				<%
+	   			Map refreshUrlPars = new HashMap();
+	   			//refreshUrlPars.put("userid", userId);
+	   			refreshUrlPars.put("title", title);
+	   			//refreshUrlPars.put("documentid", documentId);
+	   			refreshUrlPars.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");
+	   			refreshUrlPars.put("PAGE", "ExecuteBIObjectPage");
+	   			//refreshUrlPars.put("OBJECT_ID", "28");
+	   			refreshUrlPars.put("NAVIGATOR_FREEZE", "TRUE");
+	   			
+	   			
+	   			
+	   			//refreshUrlPars.put(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
+	   			String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+				String  rootUrl=urlBuilder.getUrl(request,new HashMap());
+				%>
+				
+				
+
+
+				
+
+				
 	<div align=center>
-    <img id="image" src="<%=urlAction%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart"/>
+		<%
+		CreateJFreeChart c=new CreateJFreeChart();
+		c.setThreeDCecked(threeD);
+		c.setRootUrl(rootUrl);
+		JFreeChart chart=c.createChart(userId,documentId);
+		String path=c.getPath();
+	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
+
+	    if(c.getChangeView().equals(new Boolean(true))){
+	    	%>
+	    	<form  name="threed" action="<%=refreshUrl%>" method="GET" >
+				<%if(threeD){ %>
+ 					<input name="threed" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"> 3D View</input>
+ 							<%}
+					else{%>
+								<input name="threed" type="checkbox" value="true" onclick="this.form.submit()" align="left"> 3D View</input>
+							<%} %>
+			</form> 
+	    	<%
+	    }
+	    
+	    if(c.getLinkable().equals(new Boolean(true))){
+		PrintWriter pw = new PrintWriter(out);
+		ChartUtilities.writeImageMap(pw, "chart", c.getInfo(),new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
+	    }
+
+	    
+	    
+	    
+	    %>
+		
+    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
     </div>
     
     <spagobi:error/>
+    
+
     

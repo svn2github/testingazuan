@@ -33,11 +33,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.engines.chart.charttypes.Dashboard;
-import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
-import it.eng.spagobi.engines.chart.charttypes.SimpleDial;
-import it.eng.spagobi.engines.chart.charttypes.Thermometer;
-import it.eng.spagobi.engines.chart.charttypes.utils.LovAccessFunctions;
 import it.eng.spagobi.services.common.IProxyService;
 import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -51,10 +46,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.data.general.Dataset;
-import org.jfree.data.general.DefaultValueDataset;
 
 
 
@@ -162,6 +158,7 @@ public class GetJFreeChartAction extends AbstractHttpAction {
 
 			// create the chart
 			try{
+	            ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 				JFreeChart chart = sbi.createChart(title,dataset);
 
 				logger.debug("successfull chart creation");

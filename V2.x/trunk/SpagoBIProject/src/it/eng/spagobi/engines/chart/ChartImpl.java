@@ -1,10 +1,5 @@
 package it.eng.spagobi.engines.chart;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
@@ -13,8 +8,14 @@ import it.eng.spagobi.engines.chart.charttypes.Dashboard;
 import it.eng.spagobi.engines.chart.charttypes.SBISpeedometer;
 import it.eng.spagobi.engines.chart.charttypes.SimpleDial;
 import it.eng.spagobi.engines.chart.charttypes.Thermometer;
-import it.eng.spagobi.engines.chart.charttypes.piecharts.Simple3DPie;
+import it.eng.spagobi.engines.chart.charttypes.barcharts.LinkableBar;
+import it.eng.spagobi.engines.chart.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.charttypes.piecharts.SimplePie;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
@@ -30,7 +31,8 @@ public class ChartImpl implements IChart {
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
-
+	boolean linkable=false;
+	boolean changeView=false;
 
 
 	public void configureChart(SourceBean content) {
@@ -112,10 +114,16 @@ public class ChartImpl implements IChart {
 			if(subtype.equalsIgnoreCase("simplepie")){
 				sbi=new SimplePie();
 			}
-			if(subtype.equalsIgnoreCase("3dpie")){
-				sbi=new Simple3DPie();
+		}
+		if(type.equals("BARCHART")){
+			if(subtype.equalsIgnoreCase("simplebar")){
+				sbi=new SimpleBar();
+			}
+			else if(subtype.equalsIgnoreCase("linkablebar")){
+				sbi=new LinkableBar();
 			}
 		}
+				
 		return sbi;
 	}
 
@@ -181,7 +189,21 @@ public class ChartImpl implements IChart {
 	public void setLovConfDefined(boolean isLovConfDefined) {
 		this.isLovConfDefined = isLovConfDefined;
 	}
+	public boolean isLinkable() {
+		return linkable;
+	}
 
+	public void setLinkable(boolean linkable) {
+		this.linkable = linkable;
+	}
+
+	public boolean isChangeView() {
+		return changeView;
+	}
+
+	public void setChangeView(boolean changeView) {
+		this.changeView = changeView;
+	}
 
 
 }

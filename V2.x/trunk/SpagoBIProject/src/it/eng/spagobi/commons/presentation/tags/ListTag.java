@@ -31,6 +31,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
@@ -427,7 +428,24 @@ public class ListTag extends TagSupport
 
 					
 					if (confirm && buttonUrl!=null){
+						if (popup){
+							
+							_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
+							    // insert javascript for open popup
+							    _htmlStream.append(" <script>\n");
+							    
+							    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
+							    _htmlStream.append("  if (confirm(\"" + msg + "\")) {\n");
+							    _htmlStream.append("   var winDetail_"+prog+"; \n");
+							    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:600,height:400,closeAction:'hide',plain: true}); \n");
+							    _htmlStream.append("   winDetail_"+prog+".show();\n");
+							    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
+							    _htmlStream.append("  }\n");
+							    _htmlStream.append(");\n");
+							    _htmlStream.append(" </script>\n");						
+						    }else{
 						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
+						    }
 					}else{
 					    if (popup){
 						
@@ -437,7 +455,7 @@ public class ListTag extends TagSupport
 						    
 						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
 						    _htmlStream.append("   var winDetail_"+prog+"; \n");
-						    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:400,height:400,closeAction:'hide',plain: true}); \n");
+						    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:600,height:400,closeAction:'hide',plain: true}); \n");
 						    _htmlStream.append("   winDetail_"+prog+".show();\n");
 						    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
 						    _htmlStream.append(");\n");
@@ -1063,6 +1081,8 @@ public class ListTag extends TagSupport
 	protected String createUrl_popup(HashMap paramsMap) {
 	        IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
 		paramsMap.put("TYPE_LIST", "TYPE_LIST");
+		IEngUserProfile profile = (IEngUserProfile)_requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		paramsMap.put("USER_ID",  profile.getUserUniqueIdentifier().toString());
 		String url = urlBuilderWeb.getUrl(httpRequest, paramsMap);
 		return url;
 	}	

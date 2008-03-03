@@ -1,24 +1,54 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.tools.distributionlist.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -89,7 +119,9 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
 		response.setAttribute("dlObj", dl);
 		String id = (String) request.getAttribute("DL_ID");
+		String userid = (String) request.getAttribute("USER_ID");
 		response.setAttribute("DL_ID", id);
+		response.setAttribute("USER_ID", userid);
 		response.setAttribute("modality", mod);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
 		
@@ -112,9 +144,19 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			String id = (String) request.getAttribute("DL_ID");
 			String email = (String)request.getAttribute("EMAIL");
 			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			//String email = (String)userProfile.getUserAttribute("BusinessMail");
-			String userId = (String)userProfile.getUserUniqueIdentifier();
+			HttpServletRequest httpRequest = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+           String userId = null;
+           ConfigSingleton config = ConfigSingleton.getInstance();
+           SourceBean validateSB =(SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+           String active = (String) validateSB.getCharacters();
+           if (active != null && active.equals("true")){
+               IProxyService proxy=IProxyServiceFactory.createProxyService();
+               userId=proxy.readUserId(httpRequest.getSession());
+               logger.debug("got userId from IProxyService="+userId);
+           } else {
+               userId =(String) request.getAttribute("USER_ID");
+               logger.debug("got userId from Request="+userId);
+           }
 			
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
@@ -137,7 +179,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			logger.error("Cannot fill response container" ,ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 	    }
-	    response.setAttribute("loopback", "true");
+	   // response.setAttribute("loopback", "true");
 		
 	}
 	

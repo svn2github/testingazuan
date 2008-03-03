@@ -8,6 +8,12 @@
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDistributionListPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+        	</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
   	
@@ -17,6 +23,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.ListDistributionListPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.ListDistributionListPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>     	 	
   	</PUBLISHER>
   	
   	<PUBLISHER name="listDistributionList">
@@ -26,6 +37,11 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/distributionlist/listDistributionList.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>    	
   	</PUBLISHER>
   	
   	<PUBLISHER name="detailDistributionListPubJ">
@@ -34,6 +50,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.DetailDistributionListPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.DetailDistributionListPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
   	
   	<PUBLISHER name="detailDistributionList">
@@ -57,6 +78,12 @@
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+      			<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDistributionListUserPage" />
+      			<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+        	</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
 
   	
@@ -66,10 +93,20 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.ListDistributionListUserPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.ListDistributionListUserPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
   	  	
   	<PUBLISHER name="insertEmailPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.insertEmailPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.insertEmailPublisher"/>
       		</RESOURCES>
@@ -83,10 +120,20 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/distributionlist/listDistributionListUser.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="detailDistributionListUserPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.DetailDistributionListUserPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.distributionlist.presentation.DetailDistributionListUserPublisher"/>
       		</RESOURCES>

@@ -78,7 +78,7 @@
      <!--  SqlServer: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.sqlserver.xml -->
      
-	 <HIBERNATE-CFGFILE>hibernate.cfg.hsql.xml</HIBERNATE-CFGFILE>
+	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
 	
      <!-- ********************* END DATABASE CONFIGURATION ************************ -->
      
@@ -94,7 +94,7 @@
      
      <LOOKUP numberRows = "20" />
     
- 	 <SPAGOBI_CONTEXT_PATH>http://192.168.9.34:8080/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	
 	 <PORTLET_EDIT_MODE_ROLES>

@@ -31,7 +31,9 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-
+/**
+* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
+*/
 
 /**
  * Publishes the results of a detail request for a distributionlist into the correct 

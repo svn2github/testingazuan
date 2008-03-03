@@ -1,3 +1,22 @@
+<!--
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-->
 	<%@ include file="/jsp/commons/portlet_base.jsp"%>
 	
 	<%@ page         import="it.eng.spagobi.tools.distributionlist.bo.DistributionList,
@@ -14,23 +33,21 @@
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		String dlid = (String)moduleResponse.getAttribute("DL_ID");
+		String userid = (String)moduleResponse.getAttribute("USER_ID");
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
-
 		String modality = "DETAIL_SUBSC" ;
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		
-		Map formUrlPars = new HashMap();
-		if(ChannelUtilities.isPortletRunning()) {
-			formUrlPars.put("PAGE", "InsertEmailPage");	
-  			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
-		}
-		String formUrl = urlBuilder.getUrl(request, formUrlPars);
+		request.setAttribute("dlObj", dl);
+		request.setAttribute("DL_ID", dlid);
+		request.setAttribute("modality", modality);
+		request.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
+		request.setAttribute("SUBMESSAGEDET",subMessageDet);
 		
-		Map backUrlPars = new HashMap();
-		backUrlPars.put("PAGE", "ListDistributionListUserPage");
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
+		Map formUrlPars = new HashMap();
+	
+		String formUrl = urlBuilder.getUrl(request, formUrlPars);		
 	%>
 	
 	
@@ -38,14 +55,14 @@
 
 <form method='POST' action='<%=formUrl%>' id='emailForm' name='emailForm' >
 
-	<% if(ChannelUtilities.isWebRunning()) { %>
 		<input type='hidden' name='PAGE' value='InsertEmailPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-	<% } %>
+
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%=dlid%>' name='DL_ID' />
+	<input type='hidden' value='<%=userid%>' name='USER_ID' />
 	
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
@@ -62,15 +79,6 @@
 	      			/> 
 				</a>
 			</td>
-			<td class='header-button-column-portlet-section'>
-				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
-	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDL.backButton"  />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
-	      			/>
-				</a>
-			</td>		
 		</tr>
 	</table>
 	
@@ -106,25 +114,6 @@
 	</div>	
 	
 	<script>
-	function isDlFormChanged () {
-	
-	var bFormModified = 'false';
-		
-	var email = document.dlForm.EMAIL.value;
-	
-	if (email != 'prova') {
-			bFormModified = 'true';
-	}
-	
-	return bFormModified;
-	
-	}
-	
-	function goBack(message, url) {
-	  
-	  //var bFormModified = isDlFormChanged();
-	  location.href = url;	  
-	}
 	
 	function saveDL(type) {	
   	  	  document.emailForm.SUBMESSAGEDET.value=type;

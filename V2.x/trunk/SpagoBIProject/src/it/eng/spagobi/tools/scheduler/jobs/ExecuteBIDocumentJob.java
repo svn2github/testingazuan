@@ -134,6 +134,16 @@ public class ExecuteBIDocumentJob implements Job {
 					}
 					if(sInfo.isSendToDl()) {
 						SendToDl(sInfo, biobj, response, retCT, fileextension);
+						if(jex.getNextFireTime()== null){
+							String triggername = jex.getTrigger().getName();
+							List dlIds = sInfo.getDlIds();
+							Iterator it = dlIds.iterator();
+							while(it.hasNext()){
+								Integer dlId = (Integer)it.next();
+								DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
+								DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl, (biobj.getId()).intValue(), triggername);
+							}
+						}
 					}
 	
 				} else {
@@ -143,6 +153,7 @@ public class ExecuteBIDocumentJob implements Job {
 							            "maybe some prameters are not filled ");
 				}
 			}
+			
 		} catch (Exception e) {
 		    logger.error("Error while executiong job ", e);
 	    }finally{
@@ -396,18 +407,6 @@ public class ExecuteBIDocumentJob implements Job {
 					else {mailTos = mailTos+email;}
 					
 				}
-				//TODO Fare metodo nel DAOImpl per prendere l'xml di questa esecuzione: problema, potrei tirar su gli xml sbagliati
-				/*
-				String xml = DAOFactory.getDistributionListDAO().loadDistributionListObjectsXml(dl,(biobj.getId()).intValue());
-				SourceBean sb = SourceBean.fromXMLString(xml);
-		    	String triggername = (String)sb.getAttribute("triggerName");
-		    	String chronStr = (String)sb.getAttribute("chronString");
-		    	
-				if(chronStr!=null && chronStr.equals("single{}")){
-					
-					DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl, (biobj.getId()).intValue(), triggername);
-				}
-				*/
 			}
 			
 			

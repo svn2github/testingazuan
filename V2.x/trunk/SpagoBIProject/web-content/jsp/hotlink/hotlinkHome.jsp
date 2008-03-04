@@ -29,8 +29,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.HotLink"%>
 <%@page import="it.eng.spagobi.hotlink.service.HotLinkModule"%>
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
+
 
 <portlet:defineObjects/>
 
@@ -40,6 +42,8 @@ SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute(HotLinkMo
 List rememberMeList = (List) moduleResponse.getAttribute(HotLinkConstants.REMEMBER_ME);
 List mostPopularList = (List) moduleResponse.getAttribute(HotLinkConstants.MOST_POPULAR);
 List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY_RECENTLY_USED);
+
+
 %>
 
 <table class='header-table-portlet-section'>		
@@ -369,11 +373,5 @@ Ext.onReady(function(){
 });
 </script>
 
-
-<iframe id='iframeLogin'
-	name='iframeLogin'
-	src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
-	frameborder='0' >
-</iframe>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

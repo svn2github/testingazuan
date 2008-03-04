@@ -146,7 +146,7 @@ public class CreateJFreeChart {
 				String dir=System.getProperty("java.io.tmpdir");
 				path=dir+"/"+executionId+".png";
 				java.io.File file1 = new java.io.File(path);
-				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getHeight(), sbi.getWidth(), info);
+				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
 
 
 

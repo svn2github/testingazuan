@@ -1,4 +1,4 @@
-package it.eng.spagobi.engines.chart.engines;
+package it.eng.spagobi.engines.chart;
 
 
 

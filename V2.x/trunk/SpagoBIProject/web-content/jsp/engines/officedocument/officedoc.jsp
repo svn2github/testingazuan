@@ -54,10 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Integer biobjectId = (Integer) moduleResponse.getAttribute("biobjectId");
     // get the name of the template file
 	String templateFileName = (String) moduleResponse.getAttribute("templateFileName");
-   	//get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	String userId=(String)userProfile.getUserUniqueIdentifier();
+
 	// get the string of the title
     String title = (String) moduleResponse.getAttribute("title");
     

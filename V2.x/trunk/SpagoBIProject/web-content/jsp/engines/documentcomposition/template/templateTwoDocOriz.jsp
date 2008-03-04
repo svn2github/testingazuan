@@ -68,10 +68,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
 	// get the BiObject from the response
     BIObject obj = (BIObject)moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-   	// get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 
     String title = (String)moduleResponse.getAttribute("title");

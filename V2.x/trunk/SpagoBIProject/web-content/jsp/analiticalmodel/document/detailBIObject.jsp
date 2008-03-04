@@ -58,9 +58,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List listDataSource = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS);
 	if (listDataSource == null) listDataSource = new ArrayList();
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
-	//get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
 	
 	// CREATE PAGE URLs

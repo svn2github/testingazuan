@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@page import="org.jfree.chart.JFreeChart"%>
-<%@page import="it.eng.spagobi.engines.chart.charttypes.CreateJFreeChart"%>
+<%@page import="it.eng.spagobi.engines.chart.utils.CreateJFreeChart"%>
 <%@page import="org.jfree.chart.ChartUtilities"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
@@ -45,19 +45,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
 
-    // get the user profile from session
-   	
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
     String title = (String)moduleResponse.getAttribute("title");
-    //String userId= (String)moduleResponse.getAttribute("userid");
     String documentId= (String)moduleResponse.getAttribute("documentid");
-	
-    IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    String userId=(String)profile.getUserUniqueIdentifier();
-   
-    
+
     String urlAction=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_JFREECHART&NEW_SESSION=TRUE&userid="+userId+"&documentid="+documentId);
 
 

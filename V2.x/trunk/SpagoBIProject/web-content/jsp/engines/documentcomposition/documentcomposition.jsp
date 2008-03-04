@@ -54,10 +54,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     //acquisizione info come template a cui girare la richiesta
     String nameTemplate = "";
    
-    // get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-    IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    logger.debug("userProfile: " + userProfile);
  	
     //get object configuration
     DocumentCompositionConfiguration docConfig = null;

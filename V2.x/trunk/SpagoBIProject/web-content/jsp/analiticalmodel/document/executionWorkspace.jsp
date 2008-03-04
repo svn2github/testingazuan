@@ -320,14 +320,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						
 						<%
 						if (!isRefreshRequest) {
-						   	// get the user profile from session
-							SessionContainer permSession = aSessionContainer.getPermanentContainer();
-							IEngUserProfile userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-							String username = userProfile.getUserUniqueIdentifier().toString();
+
 							%>
 							<input type="hidden" name="NEW_SESSION" value="TRUE" />
 							<input type="hidden" name="PAGE" value="DirectExecutionPage" />
-					        <input type="hidden" name="USERNAME" value="<%=username%>" />
+					        <input type="hidden" name="USERNAME" value="<%=userId%>" />
 					        <input type="hidden" name="DOCUMENT_LABEL" value="<%=objLabel%>" />
 					        <input type="hidden" name="spagobi_flow_id" value="<%=requestIdentity%>" />
 					        <input type="hidden" name="spagobi_execution_id" value="<%=requestIdentity%>" />

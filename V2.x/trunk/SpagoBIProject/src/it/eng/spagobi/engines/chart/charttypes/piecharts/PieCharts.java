@@ -51,15 +51,7 @@ public class PieCharts extends ChartImpl {
 			percentage=false;
 		}
 		
-		if(confParameters.get("linkable")!=null){	
-			String link=(String)confParameters.get("linkable");
-			if(link.equalsIgnoreCase("true"))setLinkable(true);
-			else setLinkable(false);
-		}
-		else
-		{
-			setLinkable(false);
-		}
+
 		
 	}
 

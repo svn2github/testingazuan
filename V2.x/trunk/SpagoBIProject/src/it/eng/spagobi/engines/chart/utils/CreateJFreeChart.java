@@ -157,7 +157,7 @@ public class CreateJFreeChart {
 			}
 			catch (Exception eex) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);
-				logger.debug("The message parameter is null");
+				logger.debug("The message parameter is null",eex);
 				throw userError;
 			}
 
@@ -166,12 +166,13 @@ public class CreateJFreeChart {
 
 		}
 		catch (EMFUserError e) {
+		    logger.error("EMFUserError Error",e);
 			errorHandler.addError(e);
 			return null;
 		}
 		catch (Exception e) {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-			logger.error("Generic Error");
+			logger.error("Exception",e);
 			errorHandler.addError(userError);
 			return null;
 		}

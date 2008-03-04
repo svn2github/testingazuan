@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 21-apr-2005
  *
@@ -36,6 +36,8 @@ import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -52,52 +54,58 @@ import org.apache.log4j.Logger;
 public class HiddenLoginAction extends AbstractHttpAction {
 
     static Logger logger = Logger.getLogger(HiddenLoginAction.class);
-	/**
-	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) throws Exception {
-	    logger.debug("IN");
-		freezeHttpResponse();
-		HttpServletRequest httpReq = getHttpRequest();
-		HttpServletResponse httpResp = getHttpResponse();
-	    	HttpSession session=httpReq.getSession();
-	    	
-		Principal principal=this.getHttpRequest().getUserPrincipal();
-		String userId=null;
-		if (principal==null){
-		    userId=(String)request.getAttribute("userId");
-		    logger.info("User read from request."+userId);
-		}else {
-		    userId=principal.getName();
-		    logger.info("User read from Principal."+userId);
+
+    /**
+     * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
+     *      it.eng.spago.base.SourceBean)
+     */
+    public void service(SourceBean request, SourceBean response) throws Exception {
+	logger.debug("IN");
+	freezeHttpResponse();
+	HttpServletRequest httpReq = getHttpRequest();
+	HttpServletResponse httpResp = getHttpResponse();
+	HttpSession session = httpReq.getSession();
+
+	RequestContainer reqCont = RequestContainer.getRequestContainer();
+	SessionContainer sessCont = reqCont.getSessionContainer();
+	SessionContainer permSess = sessCont.getPermanentContainer();
+
+	String userId = null;
+	try {
+
+	    IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+	    if (profile == null) {
+		logger.debug("Profile in sessione is null...");
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+		String active = (String) validateSB.getCharacters();
+		logger.debug("Active SSO:" + active);
+		if (active != null && active.equals("true")) {
+		    IProxyService proxy = IProxyServiceFactory.createProxyService();
+		    userId = proxy.readUserId(session);
+		    logger.debug("got userId from IProxyService=" + userId);
+		} else {
+		    userId = httpReq.getParameter("userId");
+		    logger.debug("got userId from Request=" + userId);
 		}
+		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 
-	        try {
-	            IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		SpagoBIUserProfile user = supplier.createUserProfile(userId);
+		profile = new UserProfile(user);
+		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	    } 
+	    byte[] content = "".getBytes();
+	    httpResp.setContentLength(content.length);
+	    httpResp.getOutputStream().write(content);
+	    httpResp.getOutputStream().flush();
 
-		    if (profile==null){   	            
-    	            	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-    
-    	            	SpagoBIUserProfile user= supplier.createUserProfile(userId);
-    	            	profile=new UserProfile(user);
-    	            	session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-		    }else {
-			String sessionUserId=(String)profile.getUserUniqueIdentifier();
-			if (!sessionUserId.equalsIgnoreCase(userId)) {
-			    logger.warn("UserIds don't match.... "+sessionUserId+"/"+userId);
-			}
-		    }
-		    byte[] content = "".getBytes();
-		    httpResp.setContentLength(content.length);
-		    httpResp.getOutputStream().write(content);
-		    httpResp.getOutputStream().flush();
-			
-	        } catch (Exception e) {
-	            logger.error("Reading user information... ERROR",e);
-	            throw new SecurityException();
-	        }finally{
-	            logger.debug("OUT");
-	        }
+	} catch (Exception e) {
+	    logger.error("Reading user information... ERROR", e);
+	    throw new SecurityException();
+	} finally {
+	    logger.debug("OUT");
 	}
-	
+    }
+
 }

@@ -1,4 +1,6 @@
-package it.eng.spagobi.engines.chart;
+package it.eng.spagobi.engines.chart.service;
+
+
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;

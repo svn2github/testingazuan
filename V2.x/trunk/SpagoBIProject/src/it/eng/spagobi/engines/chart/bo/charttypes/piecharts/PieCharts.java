@@ -1,10 +1,11 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.chart.ChartImpl;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.LovAccessFunctions;
+import it.eng.spagobi.engines.chart.bo.ChartImpl;
+import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 
 import java.util.HashMap;
 import java.util.Iterator;

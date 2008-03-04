@@ -25,7 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  */
 
-package it.eng.spagobi.engines.chart.bo.charttypes;
+package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
+
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
@@ -46,7 +47,7 @@ import org.jfree.ui.RectangleInsets;
 
 
 
-public class Thermometer extends KpiChart{
+public class Thermometer extends DialCharts{
 
 
 	private static transient Logger logger=Logger.getLogger(Thermometer.class);

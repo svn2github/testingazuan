@@ -1,4 +1,6 @@
-package it.eng.spagobi.engines.chart.bo.charttypes.utils;
+package it.eng.spagobi.engines.chart.utils;
+
+
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;

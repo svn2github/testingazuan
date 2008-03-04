@@ -20,12 +20,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  **/
 
-package it.eng.spagobi.engines.chart.bo.charttypes;
+package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
+
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.chart.ChartImpl;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.LovAccessFunctions;
+import it.eng.spagobi.engines.chart.bo.ChartImpl;
+import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,9 +39,9 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
 
 
-public class KpiChart extends ChartImpl {
+public class DialCharts extends ChartImpl {
 
-	private static transient Logger logger=Logger.getLogger(KpiChart.class);
+	private static transient Logger logger=Logger.getLogger(DialCharts.class);
 	protected double lower=0.0;
 	protected double upper=0.0;
 

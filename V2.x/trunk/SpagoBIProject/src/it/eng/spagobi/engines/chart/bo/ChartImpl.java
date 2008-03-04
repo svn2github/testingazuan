@@ -1,15 +1,15 @@
-package it.eng.spagobi.engines.chart;
+package it.eng.spagobi.engines.chart.bo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.engines.chart.bo.charttypes.Dashboard;
-import it.eng.spagobi.engines.chart.bo.charttypes.SBISpeedometer;
-import it.eng.spagobi.engines.chart.bo.charttypes.SimpleDial;
-import it.eng.spagobi.engines.chart.bo.charttypes.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Dashboard;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package it.eng.spagobi.engines.chart.bo.charttypes;
+package it.eng.spagobi.engines.chart.utils;
 
 
 
@@ -10,7 +10,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.engines.chart.ChartImpl;
+import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;

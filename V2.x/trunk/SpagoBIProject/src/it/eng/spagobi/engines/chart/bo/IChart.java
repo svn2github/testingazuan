@@ -1,4 +1,5 @@
-package it.eng.spagobi.engines.chart;
+package it.eng.spagobi.engines.chart.bo;
+
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;

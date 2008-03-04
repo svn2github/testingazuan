@@ -104,7 +104,7 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 			DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
 			SessionContainer session = requestContainer.getSessionContainer();
 			session.setAttribute("docConfig", docConf);
-			session.setAttribute("flgDocComposite", "true");
+			session.setAttribute("idDocComposite", obj.getId());
 			// set information for the publisher
 			response.setAttribute(content);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DOCUMENT_COMPOSITION");

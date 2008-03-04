@@ -105,7 +105,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
 	// get the flag about document composition
-	String flgDocComposite = (String)aSessionContainer.getAttribute("flgDocComposite");
+	String idDocComposite = (aSessionContainer.getAttribute("idDocComposite")==null)?"":((Integer)aSessionContainer.getAttribute("idDocComposite")).toString();
 	
     // get the map of parameters dor execution call
     Map mapPars = null;
@@ -1482,9 +1482,9 @@ function somethingWentWrongSavingRememberMe() {
 		}
 
 	function execDrill(name, url){
-		var flgDocComposite= "<%=flgDocComposite%>";
+		var idDocComposite= "<%=idDocComposite%>";
 	
-		if (flgDocComposite != "true"){
+		if (idDocComposite != "true"){
 			var element = document.getElementById(name);
 			element.src = url;
 		}

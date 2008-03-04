@@ -62,6 +62,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     //get object configuration
     DocumentCompositionConfiguration docConfig = null;
     docConfig = (DocumentCompositionConfiguration)aSessionContainer.getAttribute("docConfig");
+    
   
     //get template file
     nameTemplate = docConfig.getTemplateFile();
@@ -69,37 +70,45 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     //get list of documents
     List lstDoc = docConfig.getDocumentsArray();
-    //get url for engine
+    
+    //get information for document composition
     Map lstUrl = new HashMap();
     Map lstHeight = new HashMap();
     Map lstWidth = new HashMap();
-    Map lstParams  = new HashMap();
+    Map lstUrlParams  = new HashMap();
+    Map lstDocLinked = new HashMap();
     
     //for (int i = 0; i < docSbiLables.size(); i++){
-    for (int i = 0; i < lstDoc.size(); i++){
+    for (int i = 1; i <= lstDoc.size(); i++){
     	//gets url, parameters and other informations
-    	Document tmpDoc = (Document)lstDoc.get(i);
+    	Document tmpDoc = (Document)lstDoc.get(i-1);
     	String tmpUrl = DocumentCompositionUtils.getEngineUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
     	String tmpHeight = (tmpDoc.getDimensionHeight()==null)?"300px":tmpDoc.getDimensionHeight(); 
     	String tmpWidth = (tmpDoc.getDimensionWidth()==null)?"800px":tmpDoc.getDimensionWidth();
-    	HashMap tmpParams = (HashMap)aSessionContainer.getAttribute(tmpDoc.getLabel());
-    	lstUrl.put("URL_DOC_" + (i+1), tmpUrl);
-    	lstHeight.put("HEIGHT_DOC_"+(i+1),tmpHeight);
-    	lstWidth.put("WIDTH_DOC_"+(i+1),tmpWidth);
-    	lstParams.put("PARAMS_DOC_"+(i+1),tmpParams);
-    	lstParams.put("DOC_LABEL_"+(i+1), tmpDoc.getLabel());
+    	HashMap tmpUrlParams = (HashMap)aSessionContainer.getAttribute(tmpDoc.getLabel());
+    	List tmpDocLinked = (List)docConfig.getDocumentLinked(tmpDoc.getLabel());
+    	lstUrl.put("URL_DOC_" + (i), tmpUrl);
+    	lstHeight.put("HEIGHT_DOC_"+(i),tmpHeight);
+    	lstWidth.put("WIDTH_DOC_"+(i),tmpWidth);
+    	lstUrlParams.put("PARAMS_DOC_"+(i),tmpUrlParams);
+    	lstUrlParams.put("DOC_LABEL_"+(i), tmpDoc.getLabel());
+    	lstDocLinked.put("DOC_LABEL_LINKED_"+(i), tmpDocLinked);
     	
-    	logger.debug("url for iframe_"+(i+1)+ " : " + tmpUrl + " Height: " + tmpHeight + " Width: " + tmpWidth);
-    	logger.debug("parameters for iframe_"+(i+1)+ " : " + tmpParams);
+    	logger.debug("url for iframe_"+(i)+ " : " + tmpUrl + " Height: " + tmpHeight + " Width: " + tmpWidth);
+    	logger.debug("parameters for iframe_"+(i)+ " : " + tmpUrlParams);
+      
+    	
+		
     }
     aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
     aSessionContainer.setAttribute("docHeight", lstHeight);
     aSessionContainer.setAttribute("docWidth", lstWidth);
-    aSessionContainer.setAttribute("docParams", lstParams);
-    aSessionContainer.setAttribute("flgDocComposite", "true");
-     
+    aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
+    aSessionContainer.setAttribute("docLinked", lstDocLinked);
+
     //include jsp requested
+    request.setAttribute("docConfig", docConfig);
     getServletContext().getRequestDispatcher(nameTemplate).include(request,response);    
 	    
     logger.debug("OUT");

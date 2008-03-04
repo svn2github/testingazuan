@@ -293,7 +293,8 @@ public class DocumentCompositionUtils {
 			urlReturn += "&amp;document=" + obj.getId();
 		
 		
-		urlReturn += "&amp;flgDocComposite=" + (String)sessionContainer.getAttribute("flgDocComposite")+"&amp;";
+		//urlReturn += "&amp;idDocComposite=" + ((Integer)sessionContainer.getAttribute("idDocComposite")).toString()+"&amp;";
+		urlReturn += "&amp;docConfig=" + ((DocumentCompositionConfiguration)sessionContainer.getAttribute("docConfig"))+"&amp;";
 
 		//prepares and sets parameters value into session
 		HashMap parValueDoc = getAllParamsValue(urlReturn);

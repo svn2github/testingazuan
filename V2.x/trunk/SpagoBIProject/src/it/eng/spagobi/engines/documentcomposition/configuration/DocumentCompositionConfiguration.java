@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,17 +48,13 @@ public class DocumentCompositionConfiguration {
 		String label;
 		String sbiObjLabel;
 		String dimensionWidth;
-		String dimensionHeight;
-		
-		String refreshType;
-		Properties refreshDocLinked;
-		
+		String dimensionHeight;		
 		String namePar;
 		String sbiParName;
 		String type;
 		String defaultValue;
-		Properties parLinked;
 		Properties params;
+		//Properties refreshDocLinked;
 		
 		public String getLabel() {
 			return label;
@@ -83,18 +80,14 @@ public class DocumentCompositionConfiguration {
 		public void setDimensionHeight(String dimensionHeight) {
 			this.dimensionHeight = dimensionHeight;
 		}
-		public String getRefreshType() {
-			return refreshType;
-		}
-		public void setRefreshType(String refreshType) {
-			this.refreshType = refreshType;
-		}
+		/*
 		public Properties getRefreshDocLinked() {
 			return refreshDocLinked;
 		}
 		public void setRefreshDocLinked(Properties refreshDocLinked) {
 			this.refreshDocLinked = refreshDocLinked;
 		}
+		*/
 		public String getNamePar() {
 			return namePar;
 		}
@@ -119,12 +112,7 @@ public class DocumentCompositionConfiguration {
 		public void setDefaultValue(String defaultValue) {
 			this.defaultValue = defaultValue;
 		}
-		public Properties getParLinked() {
-			return parLinked;
-		}
-		public void setParLinked(Properties parLinked) {
-			this.parLinked = parLinked;
-		}
+
 		public Properties getParams() {
 			return params;
 		}
@@ -164,7 +152,6 @@ public class DocumentCompositionConfiguration {
 		List documentList;
 		List refreshDocList;
 		List paramList;
-		List paramLinkedList;
 		SourceBean documentSB;
 		SourceBean refreshSB;
 		SourceBean dimensionSB;
@@ -190,19 +177,6 @@ public class DocumentCompositionConfiguration {
 			attributeValue = (String)dimensionSB.getAttribute("height");
 			document.setDimensionHeight(attributeValue);				
 			
-			refreshSB = (SourceBean)documentSB.getAttribute("REFRESH");				
-			attributeValue = (String)refreshSB.getAttribute("type");
-			document.setRefreshType(attributeValue);		
-			
-			refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
-			Properties refreshDocLinked = new Properties();
-			for(int j = 0; j < refreshDocList.size(); j++) {
-				refreshDocLinkedSB = (SourceBean)refreshDocList.get(j);
-				String label = (refreshDocLinkedSB.getAttribute("label")==null)?"":(String)refreshDocLinkedSB.getAttribute("label");
-				refreshDocLinked.setProperty("refresh_doc_linked_"+i, label);
-			}
-			document.setRefreshDocLinked(refreshDocLinked);
-			
 			parametersSB = (SourceBean)documentSB.getAttribute("PARAMETERS");	
 			paramList = parametersSB.getAttributeAsList("PARAMETER");
 			Properties param = new Properties();
@@ -212,19 +186,25 @@ public class DocumentCompositionConfiguration {
 				param.setProperty("label_param_"+j, label);
 				String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
 				param.setProperty("sbi_par_label_param_"+j, sbiParLabel);
+				String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
+				param.setProperty("type_par_"+j, typePar);
 				String defaultValuePar = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
 				param.setProperty("default_value_param_"+j, defaultValuePar);
 				
-				paramLinkedList = parametersSB.getAttributeAsList("PAR_LINKED");
-				Properties paramLinked = new Properties();
-				for(int k = 0; k < paramLinkedList.size(); k++) {
-					String labelLinked = (paramSB.getAttribute("label")==null)?"":(String)paramSB.getAttribute("label");
-					paramLinked.setProperty("label_param_linked_"+k, labelLinked);
+				refreshSB = (SourceBean)paramSB.getAttribute("REFRESH");				
+				refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
+				Properties paramRefreshLinked = new Properties();
+				for(int k = 0; k < refreshDocList.size(); k++) {
+					refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
+					String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
+					paramRefreshLinked.setProperty("refresh_doc_linked_"+i, labelDoc);
+					String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
+					paramRefreshLinked.setProperty("refresh_par_linked_"+i, labelPar);
 					String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-					paramLinked.setProperty("default_value_linked_"+k, defaultValueLinked);
-					param.setProperty("param_linked_"+k, paramLinked.toString());
+					paramRefreshLinked.setProperty("default_value_linked_"+k, defaultValueLinked);
+					param.setProperty("param_linked_"+j+"_"+k, paramRefreshLinked.toString());
+					
 				}
-				
 			}
 			document.setParams(param);
 			addDocument(document);
@@ -241,6 +221,13 @@ public class DocumentCompositionConfiguration {
 	public String getLabel(String documentLabel) {
 		Document document = getDocument(documentLabel);
 		if(document != null) return document.getLabel();
+
+		return null;
+	}
+	
+	public Document getDocumentFromObjLabel(String objLabel) {
+		Document document = getDocument(objLabel);
+		if(document != null) return document;
 
 		return null;
 	}
@@ -301,6 +288,62 @@ public class DocumentCompositionConfiguration {
 
 	}
 	
+	public List getParametersForDocument(String docLabel) {
+		Collection collDocs = documentsMap.values();
+		List retParams = new ArrayList();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		try{
+			for(int i=0; i < arrPars.length; i++){
+				Document tmpDoc =(Document) arrPars[i];
+				if (tmpDoc.getLabel().equalsIgnoreCase(docLabel))
+					retParams.add(tmpDoc.getParams());
+			}
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return retParams;
+
+	}
+	
+	public List getDocumentLinked(String docLabel) {
+		Collection collDocs = documentsMap.values();
+		List retDocs = new ArrayList();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		try{
+			//gets all document linked with any pararmeters
+			List paramsDoc = getParametersForDocument(docLabel);
+			List tmpKeyLinked = new ArrayList();
+			for (int i=0; i< paramsDoc.size(); i++){
+				Properties tmpParam = (Properties)paramsDoc.get(i);
+				Enumeration enum =  tmpParam.keys();
+				while (enum.hasMoreElements() ){
+					String key = (String)enum.nextElement();
+					if (key.startsWith("param_linked_")){
+						//Properties tmpDocRefresh = (Properties)tmpParam.get(key);
+						String tmpDocRefresh = (String)tmpParam.get(key);
+						String[] tmpRefresh = null;
+						if (tmpDocRefresh != null){
+							tmpRefresh = tmpDocRefresh.split(",");
+						}
+						for (int k=0; k < tmpRefresh.length; k++){
+							String tmpValue = tmpRefresh[k].replace("{", "");
+							tmpValue = tmpValue.replace("}", "");
+							if (tmpValue.startsWith("refresh_doc_linked_")){
+								retDocs.add(tmpValue.substring(tmpValue.indexOf("=")+1));
+							}
+						}
+						System.out.println(tmpDocRefresh);
+					}
+				}
+			}
+			
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return retDocs;
+
+	}
+	
 	public List getDocumentsArray() {
 		Collection collDocs = documentsMap.values();
 		List retDocs = new ArrayList();
@@ -316,97 +359,5 @@ public class DocumentCompositionConfiguration {
 		return retDocs;
 
 	}
-	
-/*
-	public String toXml() {
-		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append("<MAP_RENDERER ");
-		buffer.append("\nclass_name=\"" + getClassName()+ "\" ");
-		buffer.append(">\n");
-		
-		Iterator it = measuresMap.keySet().iterator();
-		if(it.hasNext()) {
-			Measure measure = (Measure)it.next();
-			buffer.append("\n<MEASURES default_kpi=\"" + measure.getColumnId() + "\">\n");
-			
-			it = measuresMap.keySet().iterator();
-			while(it.hasNext()) {
-				String measureName = (String)it.next();
-				measure = getMeasure(measureName);
-				
-				String kpiDescription = measure.getDescription();
-				String kpiColour = measure.getColour();
-				String[] trasholds = getTresholdsArray(measure.getColumnId());
-				String trasholdsStr = "";
-				for(int i = 0; i < trasholds.length; i++) trasholdsStr += (i==0?"":",") + trasholds[i];
-				
-				String outboundColour = measure.getColurOutboundCol();
-				String nullColour = measure.getColurNullCol();
-				String[] colourRange = getColoursArray(measure.getColumnId());
-				String colourRangesStr = "";
-				for(int i = 0; i < colourRange.length; i++) colourRangesStr += (i==0?"":",") + colourRange[i];
-				
-				
-				buffer.append("\t<KPI ");
-				buffer.append("column_id=\"" + measure.getColumnId() + "\" ");
-				buffer.append("description=\"" + kpiDescription + "\" ");
-				buffer.append("colour=\"" + kpiColour + "\" ");
-				buffer.append(">\n");
-				
-				buffer.append("\t\t<TRESHOLDS ");
-				buffer.append("type=\"" + "static" + "\" ");
-				buffer.append("lb_value=\"" + "0" + "\" ");
-				buffer.append("ub_value=\"" + "none" + "\" ");
-				buffer.append(">\n");				
-				
-				buffer.append("\t\t\t<PARAM ");
-				buffer.append("name=\"" + "range" + "\" ");
-				buffer.append("value=\"" + trasholdsStr + "\" ");
-				buffer.append("/>\n");
-				
-				buffer.append("\t\t</TRESHOLDS>\n ");
-				
-				buffer.append("\t\t<COLOURS ");
-				buffer.append("type=\"" + "static" + "\" ");
-				buffer.append("outbound_colour=\"" + outboundColour + "\" ");
-				buffer.append("null_values_color=\"" + nullColour + "\" ");
-				buffer.append(">\n");				
-				
-				buffer.append("\t\t\t<PARAM ");
-				buffer.append("name=\"" + "range" + "\" ");
-				buffer.append("value=\"" + colourRangesStr + "\" ");
-				buffer.append("/>\n");
-				
-				buffer.append("\t\t</COLOURS>\n ");
-				
-				buffer.append("\t</KPI>\n ");
-			}
-			buffer.append("</MEASURES>\n");
-		}
-		
-		
-		buffer.append("\n<LAYERS>\n");
-		it = layersMap.keySet().iterator();
-		while(it.hasNext()) {
-			String layerName = (String)it.next();
-			Layer layer = (Layer)getLayer(layerName);
-			buffer.append("\t<LAYER ");
-			buffer.append("name=\"" + layerName + "\" ");
-			buffer.append("description=\"" + layer.getDescription() + "\" ");
-			buffer.append("selected=\"" + (layer.isSelected()?"true":"false") + "\" ");
-			buffer.append("default_fill_color=\"" + layer.getDefaultFillColor() + "\" ");				
-			buffer.append("/>\n");	
-		}		
-		buffer.append("</LAYERS>\n");
-		
-		
-		
-		buffer.append("\n</MAP_RENDERER>");
-		
-		return buffer.toString();
-	}
-	*/
-
 
 }

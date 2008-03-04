@@ -53,6 +53,7 @@ import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 
 import java.sql.Timestamp;
@@ -935,13 +936,19 @@ public class ExecuteBIObjectModule extends AbstractModule {
 							mapPars.put(name, value);
 					}
 				}
-				// GET FLAG FOR DOCUMENT COMPOSITION
-				if (session.getAttribute("flgDocComposite") != null
-						&& ((String) session.getAttribute("flgDocComposite"))
+				// GET ID FOR DOCUMENT COMPOSITION
+				/*
+				if (session.getAttribute("idDocComposite") != null
+						&& (((Integer) session.getAttribute("idDocComposite")).toString())
 								.equalsIgnoreCase("true")) {
-					mapPars.put("flgDocComposite", (String) session
-							.getAttribute("flgDocComposite"));
+					mapPars.put("idDocComposite", (String) session
+							.getAttribute("idDocComposite"));
 				}
+				*/
+				//GET DOC CONFIG FOR DOCUMENT COMPOSITION
+				if (session.getAttribute("docConfig") != null)
+						mapPars.put("docConfig", (DocumentCompositionConfiguration) session.getAttribute("docConfig"));
+			
 				// set into the reponse the parameters map
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL,
 						mapPars);

@@ -56,17 +56,17 @@ public class LoginModule extends AbstractHttpModule {
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
-		Principal principal=this.getHttpRequest().getUserPrincipal();
-		String userId=null;
-		if (principal==null){
-		    userId=(String)request.getAttribute("userId");
-		    logger.info("User read from request."+userId);
-		}else {
-		    userId=principal.getName();
-		    logger.info("User read from Principal."+userId);
-		}
 		if (profile==null){
+            		Principal principal=this.getHttpRequest().getUserPrincipal();
+            		String userId=null;
+            		if (principal==null){
+            		    userId=(String)request.getAttribute("userId");
+            		    logger.info("User read from request."+userId);
+            		}else {
+            		    userId=principal.getName();
+            		    logger.info("User read from Principal."+userId);
+            		}
+		
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		        try {
 		            SpagoBIUserProfile user= supplier.createUserProfile(userId);
@@ -77,12 +77,6 @@ public class LoginModule extends AbstractHttpModule {
 		            logger.error("Reading user information... ERROR",e);
 		            throw new SecurityException();
 		        }		    
-		}else {
-		    	logger.debug("User already in session");
-		    	if (!userId.equalsIgnoreCase((String)profile.getUserUniqueIdentifier())){
-		    	logger.warn("UserId don't match");
-		    	}
-		    
 		}
 
 		// fill response attributes

@@ -30,11 +30,14 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -44,6 +47,10 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import java.security.Principal;
 
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -56,45 +63,52 @@ import org.apache.log4j.Logger;
 public class PortletLoginAction extends AbstractHttpAction {
 
     static Logger logger = Logger.getLogger(PortletLoginAction.class);
+
     /**
      * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
      *      it.eng.spago.base.SourceBean)
      */
-    public void service(SourceBean request, SourceBean response)
-	    throws Exception {
+    public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
-	PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 
-	Principal principal = portletRequest.getUserPrincipal();
-	IEngUserProfile profile = null;
-	ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-        try {
-            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
-            profile=new UserProfile(user);
-        } catch (Exception e) {
-            logger.error("Reading user information... ERROR",e);
-            throw new SecurityException();
-        }
-
-	
-	logger.debug("userProfile created.UserID= " + (String)profile.getUserUniqueIdentifier());
-	logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
-	logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());
-	logger.debug("Roles of the user profile: "+ profile.getRoles());	
-
-
-	// put user profile into spago session container
 	RequestContainer reqCont = getRequestContainer();
 	SessionContainer sessionCont = reqCont.getSessionContainer();
 	SessionContainer permSession = sessionCont.getPermanentContainer();
-	permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-	
-	String username = (String) profile.getUserUniqueIdentifier();
-	if (!UserUtilities.userFunctionalityRootExists(username)) {
-	    UserUtilities.createUserFunctionalityRoot(profile);
+
+	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+	if (profile == null) {
+
+	    String userId = null;
+	    PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+	    Principal principal = portletRequest.getUserPrincipal();
+	    userId = principal.getName();
+	    logger.debug("got userId from Principal=" + userId);
+
+	    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	    try {
+		SpagoBIUserProfile user = supplier.createUserProfile(userId);
+		profile = new UserProfile(user);
+	    } catch (Exception e) {
+		logger.error("Reading user information... ERROR", e);
+		throw new SecurityException();
+	    }
+
+	    logger.debug("userProfile created.UserID= " + (String) profile.getUserUniqueIdentifier());
+	    logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());
+	    logger.debug("Functionalities of the user profile: " + profile.getFunctionalities());
+	    logger.debug("Roles of the user profile: " + profile.getRoles());
+
+	    permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+
+	    String username = (String) profile.getUserUniqueIdentifier();
+	    if (!UserUtilities.userFunctionalityRootExists(username)) {
+		UserUtilities.createUserFunctionalityRoot(profile);
+	    }
+
 	}
+
 	logger.debug("OUT");
     }
- 
-}
 
+}

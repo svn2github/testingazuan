@@ -2,6 +2,7 @@ package it.eng.spagobi.services.common;
 
 import java.io.IOException;
 
+import javax.portlet.PortletSession;
 import javax.servlet.http.HttpSession;
 
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -37,4 +38,12 @@ public interface IProxyService {
      * @return
      */
     String readUserId(HttpSession session);
+    
+    
+    /**
+     * 
+     * @param session Portlet Session
+     * @return
+     */
+    String readUserId(PortletSession session);
 }

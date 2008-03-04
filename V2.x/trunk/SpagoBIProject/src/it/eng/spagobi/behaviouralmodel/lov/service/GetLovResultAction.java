@@ -65,15 +65,13 @@ public class GetLovResultAction extends AbstractHttpAction {
 				userId=proxy.readUserId(request.getSession());
 				logger.debug("got userId from IProxyService="+userId);
 			} else {
-		    	userId = request.getParameter("userId");
-		    	logger.debug("got userId from Request="+userId);
+		    		userId = request.getParameter("userId");
+		    		logger.debug("got userId from Request="+userId);
 			}
 	 		
-//	 	    Principal principal = request.getUserPrincipal();
 			IEngUserProfile profile = null;
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	        try {
-//	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
 	            SpagoBIUserProfile user= supplier.createUserProfile(userId);
 	            profile=new UserProfile(user);
 	        } catch (Exception e) {

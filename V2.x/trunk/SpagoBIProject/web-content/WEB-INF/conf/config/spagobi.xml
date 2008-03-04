@@ -57,12 +57,7 @@
 	
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
-     
-     
-     
-     
-     
-     
+
      
      <!-- ********************* START DATABASE CONFIGURATION ************************ -->
      
@@ -94,7 +89,11 @@
      
      <LOOKUP numberRows = "20" />
     
- 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
+    <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
+ 	 <SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
+ 	 <BACKEND_SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>
+ 	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	
 	 <PORTLET_EDIT_MODE_ROLES>

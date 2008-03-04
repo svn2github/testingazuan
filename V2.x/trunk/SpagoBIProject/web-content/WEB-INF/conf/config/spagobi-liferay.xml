@@ -88,8 +88,9 @@
      
      <LOOKUP numberRows = "20" />
     
- 	 <SPAGOBI_CONTEXT_PATH>http://localhost:8080/spagobi</SPAGOBI_CONTEXT_PATH>
-	
+ 	 <SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	 <BACKEND_SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>
+ 	 	
 	 <PORTLET_EDIT_MODE_ROLES>
 		<ROLE name="/spagobi/admin" />
 	 </PORTLET_EDIT_MODE_ROLES>

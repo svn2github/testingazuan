@@ -79,11 +79,16 @@ public class SpagoBIAccessFilter implements Filter {
 	    session.setAttribute("userId", userId);
 	    session.setAttribute("document", document);
 	    String spagobiContextUrl = request.getParameter(SpagoBIConstants.SBICONTEXTURL);
+	    String backEndSpagobiContextUrl = request.getParameter(SpagoBIConstants.BACK_END_SBICONTEXTURL);
 	    logger.debug("spagobiContextUrl:" + spagobiContextUrl);
 	    if (spagobiContextUrl != null) {
 		session.setAttribute(SpagoBIConstants.SBICONTEXTURL, spagobiContextUrl);
 	    } else
 		logger.warn("spagobiContextUrl is null!!!!!!");
+	    if (backEndSpagobiContextUrl != null) {
+		session.setAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL, backEndSpagobiContextUrl);
+	    } else
+		logger.warn("backEndSpagobiContextUrl is null!!!!!!");	    
 	    IEngUserProfile profile = null;
 	    if (userId != null && !userId.equals("scheduler")) {
 		try {

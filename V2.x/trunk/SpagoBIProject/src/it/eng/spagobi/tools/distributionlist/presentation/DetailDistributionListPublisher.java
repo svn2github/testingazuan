@@ -61,13 +61,13 @@ public class DetailDistributionListPublisher implements PublisherDispatcherIFace
 
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		
-		// get the module response
+		// gets the module response
 		SourceBean moduleResponse = (SourceBean)responseContainer.getServiceResponse().getAttribute("DetailDistributionListModule");
 		
-		// if the module response is null throws an error and return the name of the errors publisher
+		// if the module response is null throws an error and returns the name of the error publisher
 		if(moduleResponse==null) {
 			logger.error("Module response null");
-			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10 );
+			EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 100 );
 			errorHandler.addError(error);			
 			return "error";
 		}

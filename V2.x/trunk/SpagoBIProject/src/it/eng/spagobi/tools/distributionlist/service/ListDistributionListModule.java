@@ -30,7 +30,7 @@ import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 */
 
 /**
- * Loads the distributionlist list
+ * Loads the Distributionlist List
  */
 public class ListDistributionListModule extends AbstractBasicListModule{
 	

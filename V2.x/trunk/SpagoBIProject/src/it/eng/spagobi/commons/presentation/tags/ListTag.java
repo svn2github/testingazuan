@@ -337,14 +337,16 @@ public class ListTag extends TagSupport
 		_htmlStream.append(" </script>\n");
 		
 		boolean alternate = false;
+		 int prog=0;
         String rowClass;
 		for(int i = 0; i < rows.size(); i++) 
 		{
+			prog++ ;
 			SourceBean row = (SourceBean) rows.get(i);
             
             rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
             alternate = !alternate;    
-            
+           
             _htmlStream.append(" <tr class='portlet-font'>\n");
 			for (int j = 0; j < _columns.size(); j++) {
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("NAME");
@@ -364,11 +366,12 @@ public class ListTag extends TagSupport
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 			List captions = captionsSB.getContainedSourceBeanAttributes();
 			Iterator iter = captions.iterator();
-			int prog=0;
+			
 			while (iter.hasNext()) {
-			        prog++;
+			       
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
+				String captionName = captionSB.getName();
 				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
 				String popupStr = (String)captionSB.getAttribute("popup");
@@ -435,8 +438,8 @@ public class ListTag extends TagSupport
 							    _htmlStream.append(" <script>\n");
 							    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
 							    _htmlStream.append("  if (confirm(\"" + msg + "\")) {\n");
-							    _htmlStream.append("   var winDetail_"+prog+"; \n");
-							    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',\n");
+							    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
+							    _htmlStream.append("   win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
 							    _htmlStream.append("            bodyCfg:{");
 							    _htmlStream.append("                tag:'div'");
 							    _htmlStream.append("                ,cls:'x-panel-body'");
@@ -453,13 +456,13 @@ public class ListTag extends TagSupport
 							    _htmlStream.append("            },");
 							    _htmlStream.append("            modal: true,\n");
 							    _htmlStream.append("            layout:'fit',\n");
-							    _htmlStream.append("            width:600,\n");
+							    _htmlStream.append("            width:500,\n");
 						        _htmlStream.append("            height:400,\n");
 						        _htmlStream.append("            closeAction:'hide',\n");
 						        _htmlStream.append("            plain: true \n");
 						        _htmlStream.append("        });\n");
 						        _htmlStream.append("    };\n");
-							    _htmlStream.append("   winDetail_"+prog+".show() \n");
+							    _htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
 							    //_htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
 							    _htmlStream.append("  }\n");
 							    _htmlStream.append(");\n");
@@ -474,11 +477,11 @@ public class ListTag extends TagSupport
 						    // insert javascript for open popup
 						    _htmlStream.append(" <script>\n");
 						    
+						    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
 						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
-						    _htmlStream.append("   var winDetail_"+prog+"; \n");
-						    _htmlStream.append("   winDetail_"+prog+"=new Ext.Window({id:'winDetail_"+prog+"',modal: true,layout:'fit',width:600,height:400,closeAction:'hide',plain: true}); \n");
-						    _htmlStream.append("   winDetail_"+prog+".show();\n");
-						    _htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
+						    _htmlStream.append("   if (!win"+captionName+"_"+prog+") {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',modal: true,layout:'fit',width:500,height:400,closeAction:'hide',plain: true});} \n");
+						    _htmlStream.append("   win"+captionName+"_"+prog+".show();\n");
+						    _htmlStream.append("   win"+captionName+"_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Loading ...',timeout: 30,scripts: true});} \n");					    
 						    _htmlStream.append(");\n");
 						    _htmlStream.append(" </script>\n");						
 					    }else{ 

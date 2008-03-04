@@ -24,23 +24,16 @@ package it.eng.spagobi.tools.distributionlist.service;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 
@@ -52,7 +45,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-
 /**
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
 */
@@ -68,7 +60,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	}
 
 	/**
-	 * Reads the operation asked by the user and calls the insertion, updation or deletion methods
+	 * Reads the operation asked by the user and calls the insert, update or delete methods
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
 	 * @throws exception If an exception occurs
@@ -141,6 +133,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		
 		String id = "";
 		String email = "";
+		String submessagedet = "";
 		DistributionList dl = null;
 		try {
 						
@@ -148,11 +141,12 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			
 			id = (String) request.getAttribute("DL_ID");
 			email = (String)request.getAttribute("EMAIL");
+			submessagedet = (String)request.getAttribute("SUBMESSAGEDET");
 			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
-			HttpSession session = hsr.getSession();
-//			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			/*HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+			HttpSession session = hsr.getSession();*/
+			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			//IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			//load the dl
 			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
@@ -167,7 +161,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			  HashMap params = new HashMap();		  
 			  params.put(AdmintoolsConstants.PAGE, ListDistributionListUserModule.MODULE_PAGE);
-			  throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
+			  throw new EMFUserError(EMFErrorSeverity.ERROR, 9002, new Vector(), params);
 				
 		}
 	    catch (Exception ex) {		
@@ -180,12 +174,14 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	    response.setAttribute("EMAIL", email);
 	    response.setAttribute("dlObj", dl);
 	    response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
-	   //response.setAttribute("loopback", "true");
+	    if (submessagedet != null && submessagedet.equals("SAVEBACK")){
+	    response.setAttribute("loopback", "true");
+	    }
 		
 	}
 	
 	/**
-	 * Unsubscribes the user to the distribution list.
+	 * Unsubscribes the user from the distribution list.
 	 *   
 	 * @param request The request Source Bean
 	 * @param mod The modality String
@@ -209,7 +205,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			  HashMap params = new HashMap();		  
 			  params.put(AdmintoolsConstants.PAGE, ListDistributionListUserModule.MODULE_PAGE);
-			  throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
+			  throw new EMFUserError(EMFErrorSeverity.ERROR, 9003, new Vector(), params);
 				
 		}
 	    catch (Exception ex) {		
@@ -223,9 +219,9 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	 
 	
 	/**
-	 * Gets the detail of a data source choosed by the user from the 
-	 * data sources list. It reaches the key from the request and asks to the DB all detail
-	 * data source information, by calling the method <code>loadDistributionListByID</code>.
+	 * Gets the detail of a Distribution List choosen by the user from the 
+	 * Distribution Lists list. It reaches the key from the request and asks to the DB all detail
+	 * Distribution List information, by calling the method <code>loadDistributionListByID</code>.
 	 *   
 	 * @param request The request Source Bean
 	 * @param response The response Source Bean
@@ -244,7 +240,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListUserModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9007, new Vector(), params);
 		}
 		
 	}

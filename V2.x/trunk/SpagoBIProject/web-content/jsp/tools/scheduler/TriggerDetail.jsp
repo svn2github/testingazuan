@@ -979,12 +979,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<br/>
 		<div class="div_detail_area_forms_scheduler" >    	
         
-        <input type="checkbox" name="saveassnapshot_<%=biobj.getId()%>" 
+        <input type="checkbox" id="saveassnapshot_<%=biobj.getId()%>" name="saveassnapshot_<%=biobj.getId()%>" 
                <%if(sInfo.isSaveAsSnapshot()){out.write(" checked='checked' " );} %> />
 			  <span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.saveassnap" bundle="component_scheduler_messages" />
 				</span>
-			  <div style="margin-left:50px;margin-top:10px;">
+		<div id="snapshot_<%=biobj.getId()%>"  style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
 					         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
@@ -1013,16 +1013,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				               value="<%=sInfo.getSnapshotHistoryLength()%>" size="35"/>
 			       </div>		       
         </div>
+        
+<script>
+toggle('snapshot_<%=biobj.getId()%>', 'saveassnapshot_<%=biobj.getId()%>', <%=sInfo.isSaveAsSnapshot()%> );
+</script> 
 
-				
+		<div> &nbsp;
+		</div>		
         <br/>
 		
-				<input type="checkbox" name="saveasdocument_<%=biobj.getId()%>" 
+				<input type="checkbox" id="saveasdocument_<%=biobj.getId()%>"  name="saveasdocument_<%=biobj.getId()%>" 
 				       <%if(sInfo.isSaveAsDocument()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.saveasdoc" bundle="component_scheduler_messages" />
 				</span>
-				<div style="margin-left:50px;margin-top:10px;">
+		<div id="document_<%=biobj.getId()%>" style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
 					         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
@@ -1047,23 +1052,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										treeName="<%="tree_" + biobj.getId()%>" />
 			       
         </div>
-				
+<script>
+toggle('document_<%=biobj.getId()%>', 'saveasdocument_<%=biobj.getId()%>', <%= sInfo.isSaveAsDocument()%>);
+</script>  
+		<div> &nbsp;
+		</div>			
 				
         <br/>
 
-				<input type="checkbox" name="sendmail_<%=biobj.getId()%>" 
-				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %>/>
+			<input type="checkbox" id="sendmail_<%=biobj.getId()%>"   name="sendmail_<%=biobj.getId()%>" 
+				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
-		<div style="margin-left:50px;margin-top:10px;">
-  			<div class='div_detail_label_scheduler'>
+		<div id="mail_<%=biobj.getId()%>" style="margin-left:50px;margin-top:10px;"> 
+  			<div  class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
   			       <spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
   		      </span>
   	      	</div>
 	  	    <div class='div_detail_form'>
-	  		        <input type="text" name="mailtos_<%=biobj.getId()%>" 
+	  		        <input  type="text" name="mailtos_<%=biobj.getId()%>" 
 	  		               value="<%=sInfo.getMailTos()%>" size="35" />
 	  	    </div>
 	  	    <div class='div_detail_label_scheduler'>
@@ -1081,40 +1090,44 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		      </span>
   	      	</div>
 	  	    <div class='div_detail_form'>
-	  		        <input type="text" name="mailtxt_<%=biobj.getId()%>" 
+	  		        <input  type="text" name="mailtxt_<%=biobj.getId()%>" 
 	  		               value="<%=sInfo.getMailTxt()%>" size="55" />
 	  	    </div>
-  	    </div>
-  	    
+  	     </div>
+
+<script>
+toggle('mail_<%=biobj.getId()%>', 'sendmail_<%=biobj.getId()%>', <%= sInfo.isSendMail() %>);
+</script>  	
+	<div> &nbsp;
+		</div>	    
   	    <br/>
 
-		<input type="checkbox" name="saveasdl_<%=biobj.getId()%>" 
+		<input type="checkbox" id="saveasdl_<%=biobj.getId()%>" name="saveasdl_<%=biobj.getId()%>" 
 				       <%if(sInfo.isSendToDl()){out.write(" checked='checked' " );} %>/>
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.distributionlist" bundle="component_scheduler_messages" />
 				</span>
-			 <br/>	
-		<table width="100%" cellspacing="0" border="0" id = "usersTable" >
-		<tr>
+	   <br/>	
+	    <br/>
+		<div id="dl_<%=biobj.getId()%>"  >	
+		<table style='width:100%;margin-top:1px' id ="dlTable" >
+	
 		<!-- LIST OF DISTRIBUTION LISTS  -->
 		<%
 			List dlist = DAOFactory.getDistributionListDAO().loadAllDistributionLists();	
 			if(!dlist.isEmpty()){
 		%>	
-				
-		<td>
-	  	 <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>	
+	<tr>	
+	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnName" />
-			</span>
-		</div>
-	  	 <div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnDescr" />
-			</span>
-		</div>
-		</td>
-		</tr>
+	  </td>			
+
+	  <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.columnDescr" />		
+	  </td>
+	  <td> &nbsp;
+	  </td>
+	</tr>				
 		
 		<%
 			
@@ -1133,32 +1146,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   }
 				
 		 %>
-		 				<tr>
-		 				<td>
-				    	<div class='div_detail_label'><%=listName%>
-				   		</div>
-				   		<div class='div_detail_form'> <%=listDescr%>
-				   		</div>				   		
-				   		</td>
-				   		<td>
-				   		<div class='div_detail_label'>	
-				   		<input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
+		 <tr class='portlet-font'>
+		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=listName%>	 			
+			</td>	
+			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=listDescr%>
+			</td>
+			<td  style='vertical-align:left;text-align:left;'> <input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
                			<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
-               			</div>
-               			<div class='div_detail_form'>
-               			</div>
-               			</td>
-               			</tr>
+			</td>
+	    </tr>
 				   		
 		<% 
 		} %>
 	<% } %>	
-  						
- 
-  	    
+  	</table>
+  </div>						
+<script>
+toggle('dl_<%=biobj.getId()%>', 'saveasdl_<%=biobj.getId()%>', <%=sInfo.isSendToDl()%> );
+</script> 
+  	    <div> &nbsp;
+		</div>	
   	    <br/>
   	    
-		</div>
+
 	</div>
 	
 	<%	

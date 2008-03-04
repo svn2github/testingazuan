@@ -103,11 +103,11 @@ public class DetailDistributionListModule extends AbstractModule {
 	 
 	
 	/**
-	 * Gets the detail of a data source choosed by the user from the 
-	 * data sources list. It reaches the key from the request and asks to the DB all detail
-	 * data source information, by calling the method <code>loadDistributionListByID</code>.
+	 * Gets the detail of a Distribution List choosed by the user from the 
+	 * Distribution Lists list. It reaches the key from the request and asks to the DB all detail
+	 * Distribution List information, by calling the method <code>loadDistributionListByID</code>.
 	 *   
-	 * @param key The choosed data source id key
+	 * @param key The choosed Distribution List id key
 	 * @param response The response Source Bean
 	 * @throws EMFUserError If an exception occurs
 	 */   
@@ -130,14 +130,14 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9007, new Vector(), params);
 		}
 		
 	}
 	 /**
-	 * Inserts/Modifies the detail of a distribution list according to the user request. 
-	 * When a data source is modified, the <code>modifyDistributionList</code> method is called; when a new
-	 * data source is added, the <code>insertDistributionList</code>method is called. These two cases are 
+	 * Inserts/Modifies the detail of a Distribution List according to the user request. 
+	 * When a Distribution List is modified, the <code>modifyDistributionList</code> method is called; when a new
+	 * Distribution List is added, the <code>insertDistributionList</code>method is called. These two cases are 
 	 * differentiated by the <code>mod</code> String input value .
 	 * 
 	 * @param request The request information contained in a SourceBean Object
@@ -156,7 +156,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			
 			EMFErrorHandler errorHandler = getErrorHandler();
 			 
-			// if there are some validation errors into the errorHandler does not write into DB
+			// if there are some validation errors into the errorHandler it does not write into DB
 			Collection errors = errorHandler.getErrors();
 			if (errors != null && errors.size() > 0) {
 				Iterator iterator = errors.iterator();
@@ -171,11 +171,11 @@ public class DetailDistributionListModule extends AbstractModule {
 			}
 			
 			if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {			
-				//if a dl with the same name not exists on db ok else error
+				//if a dl with the same name does not exist in the db ok, else error
 				if (DAOFactory.getDistributionListDAO().loadDistributionListByName(dlNew.getName()) != null){
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9000, new Vector(), params );
 					getErrorHandler().addError(error);
 					return;
 				}	 		
@@ -187,7 +187,7 @@ public class DetailDistributionListModule extends AbstractModule {
 				dlNew.setId(tmpDL.getId());
 				mod = SpagoBIConstants.DETAIL_MOD; 
 			} else {				
-				//update dl
+				//updates dl
 				DAOFactory.getDistributionListDAO().modifyDistributionList(dlNew);			
 			}  
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
@@ -209,7 +209,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, new Vector(), params);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9005, new Vector(), params);
 			
 		}
 		
@@ -220,7 +220,7 @@ public class DetailDistributionListModule extends AbstractModule {
 	}
 
 	/**
-	 * Deletes a distribution list choosed by user from the distribution lists list.
+	 * Deletes a Distribution List choosen by the user from the Distribution Lists list.
 	 * 
 	 * @param request	The request SourceBean
 	 * @param mod	A request string used to differentiate delete operation
@@ -234,7 +234,7 @@ public class DetailDistributionListModule extends AbstractModule {
 		try {
 			String id = (String) request.getAttribute("DL_ID");
 			
-			//delete the dl
+			//deletes the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			DAOFactory.getDistributionListDAO().eraseDistributionList(dl);
 		}
@@ -242,7 +242,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			  HashMap params = new HashMap();		  
 			  params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			  throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
+			  throw new EMFUserError(EMFErrorSeverity.ERROR, 9001, new Vector(), params);
 				
 		}
 	    catch (Exception ex) {		
@@ -256,7 +256,7 @@ public class DetailDistributionListModule extends AbstractModule {
 
 
 	/**
-	 * Instantiates a new <code>DistributionList<code> object when a new data source insertion is required, in order
+	 * Instantiates a new <code>DistributionList<code> object when a new Distribution List insertion is required, in order
 	 * to prepare the page for the insertion.
 	 * 
 	 * @param response The response SourceBean

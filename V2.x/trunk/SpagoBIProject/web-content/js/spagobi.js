@@ -247,6 +247,19 @@ function toggle(elementId, togglerId, toggled) {
 	Ext.onReady(function() {
 		var element = Ext.get(elementId);
 	    element.enableDisplayMode("block");
+	    if (!toggled) {
+	    		element.toggle(true);
+	    }
+	    Ext.get(togglerId).on('click', function() {
+	        element.toggle(true);
+	    });
+	});
+}
+
+function toggleWithCookie(elementId, togglerId, toggled) {
+	Ext.onReady(function() {
+		var element = Ext.get(elementId);
+	    element.enableDisplayMode("block");
 	    var value = getCookie(elementId);
 	    if (value == '') {
 	    	if (toggled) {

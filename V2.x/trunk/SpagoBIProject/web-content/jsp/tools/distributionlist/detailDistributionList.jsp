@@ -56,10 +56,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
-	<% if(ChannelUtilities.isWebRunning()) { %>
+	
 		<input type='hidden' name='PAGE' value='DetailDistributionListPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-	<% } %>
+
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
@@ -149,48 +149,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 	<BR>
-	<BR>
-	
-<table width="100%" cellspacing="0" border="0" id = "usersTable" >
-	<tr>
+
+<table style='width:80%;vertical-align:middle;margin-top:1px' >
+<tr>
+	<td>
+	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
+		<tr class='header-row-portlet-section'>	
+			<td class='header-title-column-portlet-section' style='text-align:center;vertical-align:middle'>
+					<spagobi:message key = "SBISet.ListDL.relatedUsers" />
+			</td>
+		</tr>
+	</table>
+		<table style='width:90%;margin-top:1px' id ="usersTable" >
 	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	<%
-			if (modality.equalsIgnoreCase("DETAIL_MOD")){
 			List users = dl.getEmails();
 			if(!users.isEmpty()){
 	%>		
-	<tr>
-	   <td>
- 		<div class='div_detail_label' style='width:350px;'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.relatedUsers" />
-			</span>
-		</div>
-		</td>
-		<td>
- 		<div class='div_detail_label' style='width:350px;'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.relatedDoc" />
-			</span>
-		</div>
-		</td>
-	</tr>
-		
-	  <td>
-	  	 <div class='div_detail_label' style='width:150px;'>
-			<span class='portlet-form-field-label'>	
+
+	<tr>	
+	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnUser" />
-			</span>
-		</div>
-	
-	  	 <div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnEmail" />
-			</span>
-		</div>
-		
-	
-		
+	  </td>			
+
+	  <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.columnEmail" />		
+	  </td>
+	</tr>	
 		<%
 			Iterator it = users.iterator();
 			while(it.hasNext()){
@@ -203,47 +188,56 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String userEmail = user.getEmail();
 				if((userEmail==null) || (userEmail.equalsIgnoreCase("null"))  ) {
 					   userEmail = "";
-				   }
-				
+				   }				
 		 %>
 				
-				 	
-				    	<div class='div_detail_label' style='width:150px;'><%=userName %>
-				   		</div>
-					
-				    	<div class='div_detail_form'><%=userEmail %>
-				   		</div>
+		<tr class='portlet-font'>
+		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=userName %>	 			
+			</td>	
+			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=userEmail %>
+			</td>
+	    </tr>
 										
-								
 		<% } %>
-	</td>
+
 	<% } else {%>
-	     <td>
-		  	 <div class='div_detail_form'>
-				
-					<spagobi:message key = "SBISet.ListDL.noUsers" />
-			
-			</div>
-		</td>	
+		<tr>
+	<td>
+	  <div class='portlet-msg-error' style='vertical-align:left;text-align:left;'>	     			
+			<spagobi:message key = "SBISet.ListDL.noUsers" />		 	
+		</div>
+		</td>
+	</tr>
+		
 	<% } %> <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
+	</table>
+</td>
 	
+<td>	
+	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
+		<tr class='header-row-portlet-section'>			
+			<td class='header-title-column-portlet-section' style='text-align:center;vertical-align:middle'>
+					<spagobi:message key = "SBISet.ListDL.relatedDoc" />
+			</td>
+		</tr>
+	</table>	
 	
+	<table style='width:90%;margin-top:1px' id ="documentsTable" >
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	<%
 			List documents = dl.getDocuments();
 			if(!documents.isEmpty()){
-	%>		
-	  <td>
-	  	 <div class='div_detail_label' style='width:250px;'>
-			<span class='portlet-form-field-label'>	
+	%>	
+	
+	<tr>	
+	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnDocName" />
-			</span>
-		</div>
-	  	 <div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />
-			</span>
-		</div>
+	  </td>			
+
+	  <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />		
+	  </td>
+	</tr>		
 		
 		<%
 			Iterator it2 = documents.iterator();
@@ -260,30 +254,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   }
 				
 		 %>
-				    	<div class='div_detail_label' style='width:250px;'><%=docName%>
-				   		</div>
-					
-				    	<div class='div_detail_form'><%=docDescr %>
-				   		</div>			
+		 <tr class='portlet-font'>
+		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>		 	
+			<%=docName%>
+			</td>	
+			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>
+			<%=docDescr %>
+			</td>
+	    </tr>
+				    		
 	<% } %>
 	
-			</td>					
+								
 	<% } else {%>
-	      <td>
-		  	 <div class='div_detail_form'>
-				
-					<spagobi:message key = "SBISet.ListDL.noDoc" />
-				
-			</div>
-		</td>	
-	<% } } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
+	<tr>
+	<td>
+	  <div class='portlet-msg-error' style='vertical-align:left;text-align:left;'>	     			
+			<spagobi:message key = "SBISet.ListDL.noDoc" />		 	
+		</div>
+		</td>
+	</tr>
+	<% } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	
 	
 	
 		<spagobi:error/>
 	
-	  </tr>
 	</table> 
+	</td>
+</tr>	
+</table>
 		
 	</div>  
 

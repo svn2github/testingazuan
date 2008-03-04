@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String dlid = (String)moduleResponse.getAttribute("DL_ID");
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
 		String modality = "DETAIL_SUBSC" ;
-		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
+		String subMessageDet = (((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET"));
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		String email = (String)moduleResponse.getAttribute("EMAIL");
 		
@@ -45,8 +45,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		request.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
 		request.setAttribute("SUBMESSAGEDET",subMessageDet);
 		
-		Map formUrlPars = new HashMap();
+		
+		Map backUrlPars = new HashMap();
+		backUrlPars.put("PAGE", "ListDistributionListUserPage");
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		String backUrl = urlBuilder.getUrl(request, backUrlPars);	
 	
+		Map formUrlPars = new HashMap();
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);		
 	%>
 	
@@ -78,17 +83,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      			/> 
 				</a>
 			</td>
+			<td class='header-button-column-portlet-section'>
+				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
+				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
+      				   title='<spagobi:message key = "SBISet.ListDL.saveBackButton" />'  
+                       alt='<spagobi:message key = "SBISet.ListDL.saveBackButton" />' 
+			   />
+			</td>
+			<td class='header-button-column-portlet-section'>
+				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "SBISet.ListDL.backButton"  />' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
+	      			/>
+				</a>
+			</td>		
 		</tr>
 	</table>
 	
 
 	<div id='emailinsert' class='div_background' style='padding-top:5px;padding-left:5px;'>
 		<br>
-	<br>
-	<br>
-	<br>
-	<br>	
-	<br>
+
 	<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.ListDL.columnName" />
@@ -125,6 +142,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>	
 	
 	<script>
+	function isDlFormChanged () {
+	
+	var bFormModified = 'false';
+		
+	var email1 = document.emailForm.EMAIL.value;	
+	
+	if ((email1 != '<%=email%>')
+		|| (email1 != '<%=((email)==null ?"":email)%>')) {
+			
+		bFormModified = 'true';
+	}
+	
+	return bFormModified;
+	
+	}
+	
+	function goBack(message, url) {
+	  
+	  var bFormModified = isDlFormChanged();
+	  
+	  if (bFormModified == 'true'){
+	  	  if (confirm(message)) {
+	  	      document.getElementById('saveAndGoBack').click(); 
+	  	  } else {
+			location.href = url;	
+    	  }	         
+       } else {
+			location.href = url;
+       }	  
+	}
 	
 	function saveDL(type) {	
   	  	  document.emailForm.SUBMESSAGEDET.value=type;

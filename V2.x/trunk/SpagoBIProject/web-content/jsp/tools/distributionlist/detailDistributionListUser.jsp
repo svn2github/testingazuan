@@ -56,25 +56,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
-	<% if(ChannelUtilities.isWebRunning()) { %>
+
 		<input type='hidden' name='PAGE' value='DetailDistributionListUserPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-	<% } %>
+
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%=dl.getId()%>' name='id' />
 	
-	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
+	<!-- table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section' 
 			    style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key = "SBISet.ListDL.TitleDetail"  />
 			</td>
 		</tr>
-	</table>
+	</table -->
 	
-	<div class='div_background' style='padding-top:5px;padding-left:5px;'>
+	<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
 	
 	<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 	<tr>
@@ -117,7 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<spagobi:error/>
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
-	<br>
+
 	<br>
 		
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
@@ -125,29 +125,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			List documents = dl.getDocuments();
 			if(!documents.isEmpty()){
 	%>		
-	<table width="100%" cellspacing="0" border="0" id = "docTable" >
 	
-	<tr>
-		<td>
- 		<div class='div_detail_label' style='width:350px;'>
-			<span class='portlet-form-field-label'>	
+
+	
+	<table style='width:100%;margin-top:1px' id = "docTable" >
+
+	<tr class='header-row-portlet-section'>
+	
+		<td class='header-title-column-portlet-section' style='text-align:center'>
 				<spagobi:message key = "SBISet.ListDL.relatedDoc" />
-			</span>
-		</div>
 		</td>
+	
 	</tr>
+	</table>
+	<table style='width:100%;margin-top:1px' id = "docTable" >
 	<tr>
-	  <td>
-	  	 <div class='div_detail_label' style='width:250px;'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnDocName" />
-			</span>
-		</div>
-	  	 <div class='div_detail_form'>
-			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />
-			</span>
-		</div>
+	  <td class='portlet-section-header' style='text-align:left'>
+
+				<spagobi:message key = "SBISet.ListDL.columnDocName" />		
+	</td>				
+	<td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />			
+
+	 </td>
+	</tr>	
+	
 		
 		<%
 			Iterator it2 = documents.iterator();
@@ -163,17 +165,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					docDescr = "";
 				   }
 				
-		 %>
-				    	<div class='div_detail_label' style='width:250px;'><%=docName%>
-				   		</div>
-					
-				    	<div class='div_detail_form'><%=docDescr %>
-				   		</div>			
+		 %>			
+		 			<tr class='portlet-font'>
+		 			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>
+				    	<%=docName%>
+				    	</td>
+				   	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=docDescr %>				   				
+				   	</td>		
+				   	</tr>
 	<% } %>
 	
 		<spagobi:error/>
-			</td>					
-		</tr>
+								
+		
 	</table> 
 	<% } else {%>
 		  	 <div class='div_detail_form'>

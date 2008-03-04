@@ -95,12 +95,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		engineBaseUrl=engineurl.subSequence(0, l).toString();	
     }
 
-    
-    	
-   	// get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-   	
 	// get the execution role
 	String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 	
@@ -117,9 +111,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	mapPars = (Map)moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
     }
 	
-    //mapPars.put("username", userProfile.getUserUniqueIdentifier().toString());
-    // Angelo: use the profile in session
+
     mapPars.put(SpagoBIConstants.SBICONTEXTURL, GeneralUtilities.getSpagoBiContextAddress());
+    mapPars.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, GeneralUtilities.getBackEndSpagoBiContextAddress());    
     
 	// try to get the modality
 	boolean isSingleObjExec = false;

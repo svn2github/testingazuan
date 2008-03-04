@@ -1,15 +1,10 @@
 package it.eng.spagobi.engines.chart.charttypes.barcharts;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+
 import java.awt.Color;
 import java.awt.GradientPaint;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.chart.charttypes.utils.LovAccessFunctions;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -20,12 +15,13 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
 public class SimpleBar extends BarCharts{
 
+	boolean changeViewChecked=false; //false is vertical, true is horizontal
 
+	public static final String CHANGE_VIEW_LABEL="Set Horizontal View";
 
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
@@ -36,12 +32,19 @@ public class SimpleBar extends BarCharts{
 		// TODO Auto-generated method stub
 		super.createChart(chartTitle, dataset);
 
+		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
+		if(changeViewChecked)
+		{
+			plotOrientation=PlotOrientation.HORIZONTAL;
+		}
+
+
 		JFreeChart chart = ChartFactory.createBarChart(
 				chartTitle,       // chart title
-				"Category",               // domain axis label
-				"Value",                  // range axis label
+				categoryLabel,               // domain axis label
+				valueLabel,                  // range axis label
 				(CategoryDataset)dataset,                  // data
-				PlotOrientation.VERTICAL, // orientation
+				plotOrientation, // orientation
 				true,                     // include legend
 				true,                     // tooltips?
 				false                     // URLs?
@@ -89,6 +92,18 @@ public class SimpleBar extends BarCharts{
 
 	public Dataset calculateValue() throws SourceBeanException {
 		return super.calculateValue();
+	}
+
+	public boolean isChangeViewChecked() {
+		return changeViewChecked;
+	}
+
+	public void setChangeViewChecked(boolean changeViewChecked) {
+		this.changeViewChecked = changeViewChecked;
+	}
+
+	public boolean isChangeableView() {
+		return true;	
 	}
 
 

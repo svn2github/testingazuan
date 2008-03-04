@@ -18,14 +18,15 @@ import org.jfree.data.general.Dataset;
 public class BarCharts extends ChartImpl {
 
 	Map confParameters;
-
+	String categoryLabel="";
+	String valueLabel="";
 
 
 	public Dataset calculateValue() throws SourceBeanException {
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
 
 
-		
+
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -80,17 +81,23 @@ public class BarCharts extends ChartImpl {
 			String valueParam = (String)param.getAttribute("value");
 			confParameters.put(nameParam, valueParam);
 		}	
-		
-		if(confParameters.get("linkable")!=null){	
-			String link=(String)confParameters.get("linkable");
-			if(link.equalsIgnoreCase("true"))setLinkable(true);
-			else setLinkable(false);
+
+		if(confParameters.get("categorylabel")!=null){	
+			categoryLabel=(String)confParameters.get("categorylabel");
 		}
 		else
 		{
-			setLinkable(false);
+			categoryLabel="category";
 		}
 		
+		if(confParameters.get("valuelabel")!=null){	
+			valueLabel=(String)confParameters.get("valuelabel");
+		}
+		else
+		{
+			valueLabel="values";
+		}
+
 	}
 
 	public Map getConfParameters() {
@@ -104,6 +111,22 @@ public class BarCharts extends ChartImpl {
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		// TODO Auto-generated method stub
 		return super.createChart(chartTitle, dataset);
+	}
+
+	public String getCategoryLabel() {
+		return categoryLabel;
+	}
+
+	public void setCategoryLabel(String categoryLabel) {
+		this.categoryLabel = categoryLabel;
+	}
+
+	public String getValueLabel() {
+		return valueLabel;
+	}
+
+	public void setValueLabel(String valueLabel) {
+		this.valueLabel = valueLabel;
 	}
 
 }

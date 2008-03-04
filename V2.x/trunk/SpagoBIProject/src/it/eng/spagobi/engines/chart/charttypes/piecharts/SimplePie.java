@@ -17,12 +17,12 @@ import org.jfree.util.Rotation;
 
 public class SimplePie extends PieCharts{
 
-	boolean threeD=false;
-
+	boolean changeViewChecked=false; //false is 2D, true is 3D
+	public static final String CHANGE_VIEW_LABEL="Set 3D View";
+	
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
-		setChangeView(true);
 	}
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
@@ -30,7 +30,7 @@ public class SimplePie extends PieCharts{
 		
 		JFreeChart chart=null; 
 
-		if(!threeD){
+		if(!changeViewChecked){
 			chart = ChartFactory.createPieChart(
 					chartTitle,  
 					(PieDataset)dataset,             // data
@@ -107,14 +107,17 @@ public class SimplePie extends PieCharts{
 
 	}
 
-	public boolean isThreeD() {
-		return threeD;
+	public boolean isChangeViewChecked() {
+		return changeViewChecked;
 	}
 
-	public void setThreeD(boolean threeD) {
-		this.threeD = threeD;
+	public void setChangeViewChecked(boolean changeViewChecked) {
+		this.changeViewChecked = changeViewChecked;
 	}
 
+	public boolean isChangeableView() {
+		return true;	
+	}
 
 
 }

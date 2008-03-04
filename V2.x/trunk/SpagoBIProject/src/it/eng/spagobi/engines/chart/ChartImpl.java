@@ -31,8 +31,8 @@ public class ChartImpl implements IChart {
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
-	boolean linkable=false;
-	boolean changeView=false;
+
+	
 
 
 	public void configureChart(SourceBean content) {
@@ -190,20 +190,15 @@ public class ChartImpl implements IChart {
 		this.isLovConfDefined = isLovConfDefined;
 	}
 	public boolean isLinkable() {
-		return linkable;
+		return false;
 	}
 
-	public void setLinkable(boolean linkable) {
-		this.linkable = linkable;
+
+
+	public boolean isChangeableView() {
+		return false;
 	}
 
-	public boolean isChangeView() {
-		return changeView;
-	}
-
-	public void setChangeView(boolean changeView) {
-		this.changeView = changeView;
-	}
 
 
 }

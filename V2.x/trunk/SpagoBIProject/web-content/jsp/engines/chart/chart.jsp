@@ -62,11 +62,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
  
-    boolean threeD=false;
-  	if(request.getParameter("threed")!=null){
-  		String three=(String)request.getParameter("threed");
+    boolean changeViewChecked=false;
+  	if(request.getParameter("changeviewchecked")!=null){
+  		String three=(String)request.getParameter("changeviewchecked");
   		if(three.equalsIgnoreCase("true")){
-  			threeD=true;
+  			changeViewChecked=true;
   		}
   	}
     
@@ -180,26 +180,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div align=center>
 		<%
 		CreateJFreeChart c=new CreateJFreeChart();
-		c.setThreeDCecked(threeD);
+		c.setChangeViewCecked(changeViewChecked);
 		c.setRootUrl(rootUrl);
 		JFreeChart chart=c.createChart(userId,documentId);
 		String path=c.getPath();
 	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
-	    if(c.getChangeView().equals(new Boolean(true))){
+	    if(c.isChangeableView()){
 	    	%>
-	    	<form  name="threed" action="<%=refreshUrl%>" method="GET" >
-				<%if(threeD){ %>
- 					<input name="threed" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"> 3D View</input>
+	    	<form  name="changeviewchecked" action="<%=refreshUrl%>" method="GET" >
+				<%if(changeViewChecked){ %>
+ 					<input name="changeviewchecked" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=c.getChangeViewLabel()%></input>
  							<%}
 					else{%>
-								<input name="threed" type="checkbox" value="true" onclick="this.form.submit()" align="left"> 3D View</input>
+								<input name="changeviewchecked" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=c.getChangeViewLabel()%></input>
 							<%} %>
 			</form> 
+			<BR>
 	    	<%
 	    }
 	    
-	    if(c.getLinkable().equals(new Boolean(true))){
+	    if(c.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
 		ChartUtilities.writeImageMap(pw, "chart", c.getInfo(),new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
 	    }

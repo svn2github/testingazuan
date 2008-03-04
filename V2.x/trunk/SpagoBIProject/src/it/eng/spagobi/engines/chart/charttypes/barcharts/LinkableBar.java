@@ -1,16 +1,11 @@
 package it.eng.spagobi.engines.chart.charttypes.barcharts;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 
-import org.jfree.chart.ChartFactory;
+import java.awt.Color;
+import java.awt.GradientPaint;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -19,12 +14,9 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
-import org.jfree.data.general.DatasetUtilities;
 
 public class LinkableBar extends BarCharts {
 
@@ -47,8 +39,8 @@ public class LinkableBar extends BarCharts {
 		// TODO Auto-generated method stub
 		super.createChart(chartTitle, dataset);
 
-	    CategoryAxis categoryAxis = new CategoryAxis("Category");
-        ValueAxis valueAxis = new NumberAxis("Value");
+	    CategoryAxis categoryAxis = new CategoryAxis(categoryLabel);
+        ValueAxis valueAxis = new NumberAxis(valueLabel);
         org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
         
         renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
@@ -107,5 +99,8 @@ public class LinkableBar extends BarCharts {
 		this.rootUrl = rootUrl;
 	}
 
+	public boolean isLinkable(){
+		return true;
+	}
 	
 }

@@ -102,9 +102,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
 	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
 
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	String userId=(String)userProfile.getUserUniqueIdentifier();
+	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String userId=null;
+	if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 	String srcIFrame=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId="+userId+"&NEW_SESSION=TRUE");
 
 %>

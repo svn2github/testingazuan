@@ -138,12 +138,16 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	 * @throws EMFUserError If an exception occurs
 	 */   
 	private void subscribeToDistributionList(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {		
+		
+		String id = "";
+		String email = "";
+		DistributionList dl = null;
 		try {
 						
 			this.modalita = SpagoBIConstants.DETAIL_SUBSC;
 			
-			String id = (String) request.getAttribute("DL_ID");
-			String email = (String)request.getAttribute("EMAIL");
+			id = (String) request.getAttribute("DL_ID");
+			email = (String)request.getAttribute("EMAIL");
 			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
 			HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
 			HttpSession session = hsr.getSession();
@@ -151,7 +155,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			//load the dl
-			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
+			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			//load the user
 			Email user = new Email();
 			user.setEmail(email);
@@ -171,7 +175,12 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			logger.error("Cannot fill response container" ,ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 	    }
-	   // response.setAttribute("loopback", "true");
+	    response.setAttribute("modality", mod);
+	    response.setAttribute("DL_ID", id);
+	    response.setAttribute("EMAIL", email);
+	    response.setAttribute("dlObj", dl);
+	    response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
+	   //response.setAttribute("loopback", "true");
 		
 	}
 	

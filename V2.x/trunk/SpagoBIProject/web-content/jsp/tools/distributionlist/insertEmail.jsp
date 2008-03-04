@@ -33,11 +33,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		String dlid = (String)moduleResponse.getAttribute("DL_ID");
-
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
 		String modality = "DETAIL_SUBSC" ;
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
+		String email = (String)moduleResponse.getAttribute("EMAIL");
 		
 		request.setAttribute("dlObj", dl);
 		request.setAttribute("DL_ID", dlid);
@@ -98,6 +98,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			  
 			  String name = dl.getName();
 			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
+				   
 				   name = "";
 			   }
 		%>
@@ -110,9 +111,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDL.emailInsert" />
 			</span>
 		</div>
+		<%
+			   if((email==null) || (email.equalsIgnoreCase("null"))  ) {
+				   
+				   email = "";
+			   }
+		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
-				   name="EMAIL" size="50" value="" maxlength="50" />
+				   name="EMAIL" size="50" value="<%=email%>" maxlength="50" />
 			&nbsp;*
 		</div>
 	</div>	

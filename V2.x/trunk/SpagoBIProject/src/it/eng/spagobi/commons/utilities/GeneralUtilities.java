@@ -308,6 +308,29 @@ public class GeneralUtilities {
 	logger.debug("OUT:" + path);
 	return path;
     }
+    
+    /**
+     * Returns the context address for SpagoBI as an URL and puts it into a
+     * string. The information contained are the Server name and port. Before
+     * saving, both them are written into the output console.
+     * 
+     * @return A String with SpagoBI's context adderss
+     */
+    public static String getBackEndSpagoBiContextAddress() {
+	logger.debug("IN");
+	String path = "";
+	try {
+	    logger.debug("Trying to recover spagobi context path from ConfigSingleton");
+	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+	    SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.BACKEND_SPAGOBI_CONTEXT_PATH");
+	    path = spagobiContextPathSB.getCharacters();
+	    logger.debug("using context path: " + path);
+	} catch (Exception e) {
+	    logger.error("Error while recovering SpagoBI context address", e);
+	}
+	logger.debug("OUT:" + path);
+	return path;
+    }    
 
     /**
      * Gets the spagoBI's dashboards servlet information as a string.

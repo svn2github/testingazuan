@@ -85,7 +85,8 @@ public class ExecutionProxy {
 
 	    // set spagobi context url
 	    if (!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
-		String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		String sbiconturl = GeneralUtilities.getBackEndSpagoBiContextAddress();
 		if (sbiconturl != null) {
 		    mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
 		}

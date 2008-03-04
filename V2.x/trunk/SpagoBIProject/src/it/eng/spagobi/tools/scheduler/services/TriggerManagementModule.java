@@ -59,7 +59,7 @@ public class TriggerManagementModule extends AbstractModule {
 	static private Logger logger = Logger.getLogger(TriggerManagementModule.class);
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
-	private String sbiconturl = null; 
+	 
 	
 	public void init(SourceBean config) {	
 		
@@ -70,7 +70,7 @@ public class TriggerManagementModule extends AbstractModule {
 		logger.debug("begin of trigger management service =" +message);
 		reqCont = getRequestContainer();
 		sessCont = reqCont.getSessionContainer();
-		sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+
 		EMFErrorHandler errorHandler = getErrorHandler();
 		try {
 			if(message == null) {

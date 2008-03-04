@@ -57,7 +57,6 @@ public class JobManagementModule extends AbstractModule {
 	
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
-	private String sbiconturl = null; 
 	
 	public void init(SourceBean config) {	
 	}
@@ -67,7 +66,6 @@ public class JobManagementModule extends AbstractModule {
 		logger.debug("begin of scheuling service =" +message);
 		reqCont = getRequestContainer();
 		sessCont = reqCont.getSessionContainer();
-		sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
 		EMFErrorHandler errorHandler = getErrorHandler();
 		try {
 			if(message == null) {

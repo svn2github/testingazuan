@@ -27,7 +27,7 @@ public abstract class AbstractServiceImpl {
 
     private void init() {
 	logger.debug("IN");
-	String SpagoBiUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getSpagoBiContextAddress();
+	String SpagoBiUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getBackEndSpagoBiContextAddress();
 	ConfigSingleton config = ConfigSingleton.getInstance();
 	SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.URL");
 	validateUrl = (String) validateSB.getCharacters();

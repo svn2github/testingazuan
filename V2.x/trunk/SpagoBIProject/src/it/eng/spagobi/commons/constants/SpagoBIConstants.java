@@ -246,6 +246,7 @@ public class SpagoBIConstants {
 	public static final String WEBMODE = "WEBMODE";
 	
 	public static final String SBICONTEXTURL = "spagobicontext";
+	public static final String BACK_END_SBICONTEXTURL = "BACK_END_SPAGOBI_CONTEXT";
 	
 	public static final String COUNTRY = "country";
 	

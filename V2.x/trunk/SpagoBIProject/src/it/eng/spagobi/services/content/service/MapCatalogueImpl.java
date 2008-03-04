@@ -219,11 +219,6 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 		return null;
 	    toReturn = tmpMap.getUrl();
 	    toReturn = ConfigSingleton.getInstance().getCharacters("SPAGOBI.SPAGOBI_CONTEXT_PATH") + toReturn;
-	    	
-	    	//toReturn.substring(ConfigSingleton.getRootPath().length());
-	   // toReturn = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
-	//	    + toReturn;
-
 	    return toReturn;
 	} catch (Exception e) {
 	    logger.error("Error",e);

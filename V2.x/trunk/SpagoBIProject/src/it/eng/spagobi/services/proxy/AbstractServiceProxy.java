@@ -64,7 +64,7 @@ public abstract class AbstractServiceProxy {
 	String className = this.getClass().getSimpleName();
 	logger.debug("Read className=" + className);
 	SourceBean engineConfig = EnginConf.getInstance().getConfig();
-	String spagoContext = (String) session.getAttribute(SpagoBIConstants.SBICONTEXTURL);
+	String spagoContext = (String) session.getAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL);
 	logger.debug("Read spagoContext=" + spagoContext);
 	if (spagoContext == null)
 	    logger.warn("SPAGO CONTEXT IS NULL!!!!");
@@ -89,7 +89,7 @@ public abstract class AbstractServiceProxy {
 	    }
 	} else {
 	    ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-	    String SpagoBiUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getSpagoBiContextAddress();
+	    String SpagoBiUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getBackEndSpagoBiContextAddress();
 	    // sono all'interno del contesto SpagoBI
 	    SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
 	    String active = (String) validateSB.getCharacters();

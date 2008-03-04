@@ -38,21 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <portlet:defineObjects/>
 
-<% 
-	//get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-%>
-<!-- 
-<table class='header-table-portlet-section'>
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section-no-buttons' 
-		    style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBIAdmin.titleMenu" />
-		</td>
-	</tr>
-</table>
- -->
+
 
 
 <div class="div_background">
@@ -99,8 +85,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</table>
 	<br/>
 </div>
-            <iframe id='iframeLogin'
-                    name='iframeLogin'
-                    src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
-                    frameborder='0' >
-			</iframe>
+<%@ include file="/jsp/commons/footer.jsp"%>

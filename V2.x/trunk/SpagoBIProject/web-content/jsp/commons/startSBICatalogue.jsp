@@ -38,21 +38,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <portlet:defineObjects/>
 
-<% //get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-%>
-<!-- 	
-<table class='header-table-portlet-section'>
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section-no-buttons' 
-		    style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBIAdmin.titleMenu" />
-		</td>
-	</tr>
-</table>
- -->
-
 
 <div class="div_background">
     <br/>	
@@ -74,58 +59,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</td>
 			</tr>
 		<%} %>
-		<!-- 
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/cubeCatalogueIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkDocMan" />
-				</a>
-			</td>
-		</tr>		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/qbeCatalogueIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkDocMan" />
-				</a>
-			</td>
-		</tr>		
-		<tr class="portlet-font" vAlign="middle">
-			<td width="100" align="center">
-				<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/etlCatalogueIcon.png")%>' />
-			</td>
-			<td width="20">
-				&nbsp;
-			</td>
-			<td vAlign="middle">
-			    <br/> 
-				<a href='<portlet:actionURL><portlet:param name="ACTION_NAME" value="START_SBI_MAP_CATALOGUE"/></portlet:actionURL>' 
-					class="link_main_menu" >
-					<spagobi:message key = "SBISet.linkDocMan" />
-				</a>
-			</td>
-		</tr>		
-	 -->
+
 	</table>
 	<br/>
 </div>
-            <iframe id='iframeLogin'
-                    name='iframeLogin'
-                    src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
-                    frameborder='0' >
-			</iframe>
+<%@ include file="/jsp/commons/footer.jsp"%>

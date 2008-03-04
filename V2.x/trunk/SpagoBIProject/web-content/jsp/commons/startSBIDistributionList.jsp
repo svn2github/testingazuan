@@ -37,11 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <portlet:defineObjects/>
 <% 
-	//get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	String user = (String)userProfile.getUserUniqueIdentifier();
-	aSessionContainer.setAttribute("user_id",user);
+
 	
 	Collection c = userProfile.getRoles();
 	Iterator i = c.iterator();
@@ -99,8 +95,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</table>
 	<br/>
 </div>
-            <iframe id='iframeLogin'
-                    name='iframeLogin'
-                    src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId=biadmin&NEW_SESSION=TRUE")%>'
-                    frameborder='0' >
-			</iframe>
+<%@ include file="/jsp/commons/footer.jsp"%>

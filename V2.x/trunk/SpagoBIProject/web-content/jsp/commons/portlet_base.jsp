@@ -47,6 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IMessageBuilder msgBuilder = null;
 	Locale locale = null;
 	
+
 	
 	// get configuration
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
@@ -100,7 +101,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String linkProtoEff = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/effects.js");
 	String linkProtoDefThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/default.css");
 	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
-	
+
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String userId=(String)userProfile.getUserUniqueIdentifier();
+	String srcIFrame=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId="+userId+"&NEW_SESSION=TRUE");
+
 %>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
@@ -115,6 +121,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 <html lang="<%=locale.getLanguage()%>">
 <body>
 <%} %>
@@ -158,3 +165,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	document.onselectstart = function() { return true; }
 </script>
 
+<iframe id='iframeLogin'
+                 name='iframeLogin'
+                 src='<%=srcIFrame%>'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>

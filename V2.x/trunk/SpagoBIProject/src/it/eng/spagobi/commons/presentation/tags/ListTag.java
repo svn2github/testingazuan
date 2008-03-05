@@ -337,7 +337,7 @@ public class ListTag extends TagSupport
 		_htmlStream.append(" </script>\n");
 		
 		boolean alternate = false;
-		 int prog=0;
+		int prog=0;
         String rowClass;
 		for(int i = 0; i < rows.size(); i++) 
 		{
@@ -368,7 +368,7 @@ public class ListTag extends TagSupport
 			Iterator iter = captions.iterator();
 			
 			while (iter.hasNext()) {
-			       
+				
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
 				String captionName = captionSB.getName();
@@ -479,9 +479,10 @@ public class ListTag extends TagSupport
 						    
 						    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
 						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
-						    _htmlStream.append("   if (!win"+captionName+"_"+prog+") {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',modal: true,layout:'fit',width:500,height:400,closeAction:'hide',plain: true});} \n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".show();\n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Loading ...',timeout: 30,scripts: true});} \n");					    
+						    _htmlStream.append("    if ( win"+captionName+"_"+prog+" == null ) { win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',modal: true,layout:'fit',width:500,height:400,closeAction:'hide',plain: true});} \n");
+						    _htmlStream.append("   win"+captionName+"_"+prog+".show(); \n");
+						    _htmlStream.append("   win"+captionName+"_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Loading ...',timeout: 30,scripts: true}); } \n");					    
+
 						    _htmlStream.append(");\n");
 						    _htmlStream.append(" </script>\n");						
 					    }else{ 
@@ -1105,8 +1106,8 @@ public class ListTag extends TagSupport
 	protected String createUrl_popup(HashMap paramsMap) {
 	        IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
 		paramsMap.put("TYPE_LIST", "TYPE_LIST");
-		IEngUserProfile profile = (IEngUserProfile)_requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		paramsMap.put("USER_ID",  profile.getUserUniqueIdentifier().toString());
+		//IEngUserProfile profile = (IEngUserProfile)_requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		//paramsMap.put("USER_ID",  profile.getUserUniqueIdentifier().toString());
 		String url = urlBuilderWeb.getUrl(httpRequest, paramsMap);
 		return url;
 	}	

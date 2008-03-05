@@ -105,12 +105,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div id='emailinsert' class='div_background' style='padding-top:5px;padding-left:5px;'>
 		<br>
-
-	<div class='div_detail_label'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBISet.ListDL.columnName" />
-			</span>
-		</div>
 		<%
 			  
 			  String name = dl.getName();
@@ -119,8 +113,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   name = "";
 			   }
 		%>
-		<div class='div_detail_form' readonly >
-			<%=name%>
+	<div class='div_detail_form'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.ListDL.columnNameInsertMail" /> <%=name%>
+			</span>
 		</div>
 		
 		<div class='div_detail_label'>

@@ -77,7 +77,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9001);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9101);
 
 		} finally {
 			if (aSession!=null){
@@ -125,7 +125,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 		
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9006);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
 		
 		} catch (SourceBeanException e) {
 			logger.error("Error while generating Source Bean");
@@ -171,7 +171,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 		
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9006);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
 		
 		} catch (SourceBeanException e) {
 			logger.error("Error while generating Source Bean");
@@ -209,7 +209,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9000);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9100);
 
 		} finally {
 			if (aSession!=null){
@@ -245,7 +245,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9004);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
 
 		} finally {
 			if (aSession!=null){
@@ -278,7 +278,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9004);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
 
 		} finally {
 			if (aSession!=null){
@@ -309,7 +309,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			logger.error("Error while loading the Distribution List with name " + name, he);
 			if (tx != null)
 				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9004);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
 		} finally {
 			if (tmpSession!=null){
 				if (tmpSession.isOpen()) tmpSession.close();
@@ -342,7 +342,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9005);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9105);
 
 		} finally {
 			if (aSession!=null){
@@ -458,7 +458,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9002);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9102);
 
 		} finally {
 			if (aSession!=null){
@@ -499,7 +499,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9003);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9103);
 
 		} finally {
 			if (aSession!=null){
@@ -561,7 +561,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9006);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
 
 		} catch (SourceBeanException e) {
 			logger.error("Error while generating Source Bean");
@@ -592,7 +592,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			logger.error("Error while loading the distribution list documents ", he);
 			if (tx != null)
 				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9006);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
 		} finally {
 			if (tmpSession!=null){
 				if (tmpSession.isOpen()) tmpSession.close();
@@ -633,7 +633,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			logger.error("Error while loading the distribution list documents ", he);
 			if (tx != null)
 				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9006);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
 		} catch (SourceBeanException e) {
 			logger.error("Error while generating Source Bean");
 			e.printStackTrace();

@@ -1110,7 +1110,7 @@ toggle('mail_<%=biobj.getId()%>', 'sendmail_<%=biobj.getId()%>', <%= sInfo.isSen
 	   <br/>	
 	    <br/>
 		<div id="dl_<%=biobj.getId()%>"  >	
-		<table style='width:100%;margin-top:1px' id ="dlTable" >
+		<table style='width:80%;margin-top:1px' id ="dlTable" >
 	
 		<!-- LIST OF DISTRIBUTION LISTS  -->
 		<%
@@ -1118,15 +1118,16 @@ toggle('mail_<%=biobj.getId()%>', 'sendmail_<%=biobj.getId()%>', <%= sInfo.isSen
 			if(!dlist.isEmpty()){
 		%>	
 	<tr>	
-	  <td class='portlet-section-header' style='text-align:left'>
+	<td> &nbsp;
+	  </td>
+	  <td class='portlet-section-header' style='text-align:left'> &nbsp; &nbsp;  
 				<spagobi:message key = "SBISet.ListDL.columnName" />
 	  </td>			
 
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnDescr" />		
 	  </td>
-	  <td> &nbsp;
-	  </td>
+	  
 	</tr>				
 		
 		<%
@@ -1147,12 +1148,12 @@ toggle('mail_<%=biobj.getId()%>', 'sendmail_<%=biobj.getId()%>', <%= sInfo.isSen
 				
 		 %>
 		 <tr class='portlet-font'>
-		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=listName%>	 			
-			</td>	
-			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=listDescr%>
+		 	<td  style='vertical-align:right;text-align:right;'> <input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
+               	<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
 			</td>
-			<td  style='vertical-align:left;text-align:left;'> <input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>"  value=<%=listID%>
-               			<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
+		 	<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'> &nbsp; &nbsp;  <%=listName%>	 			
+			</td>	
+			<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'><%=listDescr%>
 			</td>
 	    </tr>
 				   		

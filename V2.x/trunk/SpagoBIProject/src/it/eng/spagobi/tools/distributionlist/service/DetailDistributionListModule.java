@@ -130,7 +130,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9007, new Vector(), params);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9107, new Vector(), params);
 		}
 		
 	}
@@ -175,7 +175,7 @@ public class DetailDistributionListModule extends AbstractModule {
 				if (DAOFactory.getDistributionListDAO().loadDistributionListByName(dlNew.getName()) != null){
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9000, new Vector(), params );
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9100, new Vector(), params );
 					getErrorHandler().addError(error);
 					return;
 				}	 		
@@ -209,7 +209,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9005, new Vector(), params);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9105, new Vector(), params);
 			
 		}
 		
@@ -242,7 +242,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
 			  HashMap params = new HashMap();		  
 			  params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
-			  throw new EMFUserError(EMFErrorSeverity.ERROR, 9001, new Vector(), params);
+			  throw new EMFUserError(EMFErrorSeverity.ERROR, 9101, new Vector(), params);
 				
 		}
 	    catch (Exception ex) {		

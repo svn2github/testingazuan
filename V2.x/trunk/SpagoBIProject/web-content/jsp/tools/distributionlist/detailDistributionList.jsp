@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 	<%@ include file="/jsp/commons/portlet_base.jsp"%>
 	
+	
+	
 	<%@ page         import="it.eng.spagobi.tools.distributionlist.bo.DistributionList,
 							 it.eng.spagobi.tools.distributionlist.bo.Email,
 	 				         it.eng.spago.navigation.LightNavigationManager,
@@ -29,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         it.eng.spagobi.tools.distributionlist.service.DetailDistributionListModule" %>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListModule"); 
@@ -52,7 +55,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
 	%>
 	
-	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+	
 
 <form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
@@ -149,18 +152,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 	<BR>
-
+	
+<% if (modality.equalsIgnoreCase("DETAIL_MOD")){ %>
 <table style='width:80%;vertical-align:middle;margin-top:1px' >
 <tr>
 	<td>
-	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
+	<table style='width:70%;vertical-align:middle;margin-top:1px' id ="userTable" >
 		<tr class='header-row-portlet-section'>	
-			<td class='header-title-column-portlet-section' style='text-align:center;vertical-align:middle'>
+			<td class='header-title-column-portlet-section-nogrey' style='text-align:center;vertical-align:middle'>
 					<spagobi:message key = "SBISet.ListDL.relatedUsers" />
 			</td>
 		</tr>
 	</table>
-		<table style='width:90%;margin-top:1px' id ="usersTable" >
+		<table style='width:70%;margin-top:1px' id ="usersTable" >
 	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	<%
 			List users = dl.getEmails();
@@ -203,7 +207,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<% } else {%>
 		<tr>
 	<td>
-	  <div class='portlet-msg-error' style='vertical-align:left;text-align:left;'>	     			
+	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
 			<spagobi:message key = "SBISet.ListDL.noUsers" />		 	
 		</div>
 		</td>
@@ -216,7 +220,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <td>	
 	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
 		<tr class='header-row-portlet-section'>			
-			<td class='header-title-column-portlet-section' style='text-align:center;vertical-align:middle'>
+			<td class='header-title-column-portlet-section-nogrey' style='text-align:center;vertical-align:middle'>
 					<spagobi:message key = "SBISet.ListDL.relatedDoc" />
 			</td>
 		</tr>
@@ -269,7 +273,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<% } else {%>
 	<tr>
 	<td>
-	  <div class='portlet-msg-error' style='vertical-align:left;text-align:left;'>	     			
+	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
 			<spagobi:message key = "SBISet.ListDL.noDoc" />		 	
 		</div>
 		</td>
@@ -284,7 +288,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</td>
 </tr>	
 </table>
-		
+	<% } %>	
 	</div>  
 
 	<script>

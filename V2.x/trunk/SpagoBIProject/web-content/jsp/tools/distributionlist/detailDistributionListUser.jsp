@@ -132,7 +132,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<tr class='header-row-portlet-section'>
 	
-		<td class='header-title-column-portlet-section' style='text-align:center'>
+		<td class='header-title-column-portlet-section-nogrey' style='text-align:center'>
 				<spagobi:message key = "SBISet.ListDL.relatedDoc" />
 		</td>
 	

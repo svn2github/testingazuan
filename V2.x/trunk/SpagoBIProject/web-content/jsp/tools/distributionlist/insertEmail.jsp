@@ -115,7 +115,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 	<div class='div_detail_form'>
 			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBISet.ListDL.columnNameInsertMail" /> <%=name%>
+				<spagobi:message key = "SBISet.ListDL.columnNameInsertMail" /> &nbsp; <i style="color:#6495ED"> <%=name%> </i> 
 			</span>
 		</div>
 		

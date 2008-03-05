@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -80,14 +81,7 @@ public class DocumentCompositionConfiguration {
 		public void setDimensionHeight(String dimensionHeight) {
 			this.dimensionHeight = dimensionHeight;
 		}
-		/*
-		public Properties getRefreshDocLinked() {
-			return refreshDocLinked;
-		}
-		public void setRefreshDocLinked(Properties refreshDocLinked) {
-			this.refreshDocLinked = refreshDocLinked;
-		}
-		*/
+
 		public String getNamePar() {
 			return namePar;
 		}
@@ -197,11 +191,11 @@ public class DocumentCompositionConfiguration {
 				for(int k = 0; k < refreshDocList.size(); k++) {
 					refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
 					String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
-					paramRefreshLinked.setProperty("refresh_doc_linked_"+i, labelDoc);
+					paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
 					String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
-					paramRefreshLinked.setProperty("refresh_par_linked_"+i, labelPar);
+					paramRefreshLinked.setProperty("refresh_par_linked", labelPar);
 					String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-					paramRefreshLinked.setProperty("default_value_linked_"+k, defaultValueLinked);
+					paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
 					param.setProperty("param_linked_"+j+"_"+k, paramRefreshLinked.toString());
 					
 				}
@@ -225,12 +219,6 @@ public class DocumentCompositionConfiguration {
 		return null;
 	}
 	
-	public Document getDocumentFromObjLabel(String objLabel) {
-		Document document = getDocument(objLabel);
-		if(document != null) return document;
-
-		return null;
-	}
 	
 	public List getLabelsArray() {
 		Collection collLabels = documentsMap.values();
@@ -287,7 +275,7 @@ public class DocumentCompositionConfiguration {
 		return retParams;
 
 	}
-	
+	/*
 	public List getParametersForDocument(String docLabel) {
 		Collection collDocs = documentsMap.values();
 		List retParams = new ArrayList();
@@ -304,7 +292,42 @@ public class DocumentCompositionConfiguration {
 		return retParams;
 
 	}
+	*/
 	
+	public HashMap getParametersForDocument(String docLabel) {
+		Collection collDocs = documentsMap.values();
+		HashMap retParams = new HashMap();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		try{
+			for(int i=0; i < arrPars.length; i++){
+				int totParsLinked = 0;
+				Document tmpDoc =(Document) arrPars[i];
+				if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
+					Properties prop = (Properties)tmpDoc.getParams();
+					Enumeration enum =  prop.keys();
+					while (enum.hasMoreElements() ){
+						String key = (String)enum.nextElement();
+						retParams.put(key, (String)prop.get(key));
+						if (key.startsWith("param_linked_"+(i+1)))
+							totParsLinked ++;
+					}
+					retParams.put("num_doc_linked_"+(i+1), Integer.valueOf(totParsLinked));
+				}
+			}
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return retParams;
+
+	}
+	
+	/**
+	 * Returns a list with all labels of document linked at the document in input
+	 * @param docLabel label of document principal
+	 * @return a list with all document linked to the principal document
+	 * 
+	 */
+	/*
 	public List getDocumentLinked(String docLabel) {
 		Collection collDocs = documentsMap.values();
 		List retDocs = new ArrayList();
@@ -328,11 +351,10 @@ public class DocumentCompositionConfiguration {
 						for (int k=0; k < tmpRefresh.length; k++){
 							String tmpValue = tmpRefresh[k].replace("{", "");
 							tmpValue = tmpValue.replace("}", "");
-							if (tmpValue.startsWith("refresh_doc_linked_")){
+							if (tmpValue.trim().startsWith("refresh_doc_linked")){
 								retDocs.add(tmpValue.substring(tmpValue.indexOf("=")+1));
 							}
 						}
-						System.out.println(tmpDocRefresh);
 					}
 				}
 			}
@@ -343,7 +365,124 @@ public class DocumentCompositionConfiguration {
 		return retDocs;
 
 	}
+	*/
 	
+	public HashMap getInfoDocumentLinked(String docLabel) {
+		Collection collDocs = documentsMap.values();
+		String strParLinked = "";
+		HashMap retDocs = new HashMap();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		Document tmpDoc = null;
+		
+		for (int i=0; i<arrPars.length; i++){
+			tmpDoc = (Document)arrPars[i];
+			if (tmpDoc.getLabel().equalsIgnoreCase(docLabel))
+				break;
+		}
+		if (tmpDoc != null){
+			try{
+				//gets all document linked with any parameters
+				HashMap paramsDoc = getParametersForDocument(docLabel);
+				for (int i=0; i< paramsDoc.size(); i++){
+					String typePar = (paramsDoc.get("type_par_"+(i))==null)?"":(String)paramsDoc.get("type_par_"+(i));
+					if (typePar != null && typePar.equalsIgnoreCase("OUT")){
+						strParLinked += "SBI_LABEL_PAR_MASTER_"+(i)+"="+(String)paramsDoc.get("sbi_par_label_param_"+(i)) +",";
+					
+						Integer numDocLinked = (paramsDoc.get("num_doc_linked_"+(i))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(i));
+						strParLinked += "NUM_DOC_LINKED_"+(i)+"=" + numDocLinked + ",";
+						for (int j=0; j<numDocLinked.intValue(); j++){
+							String paramLinked = (paramsDoc.get("param_linked_"+(i)+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(i)+"_"+j);
+							String[] params = paramLinked.split(",");
+							for (int k=0; k<params.length; k++) {
+								String labelDocLinked = params[k];
+								labelDocLinked = labelDocLinked.replace("{", "");
+								labelDocLinked = labelDocLinked.replace("}", "");
+								if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
+									//get document linked 
+									Document linkedDoc = this.getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
+									strParLinked += "LABEL_DOC_"+(j+1)+"=" + linkedDoc.getLabel() + ",";
+									strParLinked += "SBI_LABEL_DOC_"+(j+1)+"=" + linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel() + ",";
+									
+									HashMap paramsDocLinked = getParametersForDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
+									for (int x=0; x< paramsDocLinked.size(); x++){
+										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+(x))==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(x));
+										String labelPar = (paramsDocLinked.get("label_param_"+(x))==null)?"":(String)paramsDocLinked.get("label_param_"+(x));
+										if (sbiLabelPar != null && !sbiLabelPar.equals(""))
+											strParLinked += "SBI_LABEL_PAR_"+(j+1)+"="+ sbiLabelPar +"|"+labelPar+",";
+									}
+									
+								}
+								if (labelDocLinked.trim().startsWith("refresh_par_linked")){
+									strParLinked += "LABEL_PAR_LINKED_"+(j+1)+"="+labelDocLinked.substring(labelDocLinked.indexOf("=")+1) +",";
+								}
+							}
+						}
+					}
+				}
+				
+			}catch(Exception e){
+				System.out.println(e);
+			}
+		}
+		if(strParLinked.endsWith(","))
+			strParLinked = strParLinked.substring(0, strParLinked.length()-1);
+		if (!strParLinked.equals(""))
+			retDocs = getMapFromString(strParLinked);
+		
+		return retDocs;
+
+	}
+	/**
+	 * Return a list with all labels of the fields that are linked to the principal document 
+	 * @param docLabel the label of principal document
+	 * @param docField the label of the principal field 
+	 * @return a list with all field labels linked to the document
+	 */
+	/*
+	public List getFieldsLinked(String docLabel, String docField) {
+		Collection collDocs = documentsMap.values();
+		List retFields = new ArrayList();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		try{
+			//gets all document linked with any pararmeters
+			List paramsDoc = getParametersForDocument(docLabel);
+			List tmpKeyLinked = new ArrayList();
+			for (int i=0; i< paramsDoc.size(); i++){
+				Properties tmpParam = (Properties)paramsDoc.get(i);
+				Enumeration enum =  tmpParam.keys();
+				while (enum.hasMoreElements() ){
+					String key = (String)enum.nextElement();
+					if (key.startsWith("param_linked_")){
+						//Properties tmpDocRefresh = (Properties)tmpParam.get(key);
+						String tmpDocRefresh = (String)tmpParam.get(key);
+						String[] tmpRefresh = null;
+						if (tmpDocRefresh != null){
+							tmpRefresh = tmpDocRefresh.split(",");
+						}
+						boolean isCorrectDoc = false;
+						for (int k=0; k < tmpRefresh.length; k++){
+							String tmpValue = tmpRefresh[k].replace("{", "");
+							tmpValue = tmpValue.replace("}", "");
+							if (tmpValue.startsWith("refresh_doc_linked_")){
+								String tmpDocLabel = tmpValue.substring(tmpValue.indexOf("=")+1);
+								if (tmpDocLabel.equalsIgnoreCase(docLabel)){
+									isCorrectDoc = true;
+								}
+								if (isCorrectDoc && tmpValue.startsWith("refresh_par_linked_")){
+									retFields.add(tmpValue.substring(tmpValue.indexOf("=")+1));
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return retFields;
+	}
+	*/
 	public List getDocumentsArray() {
 		Collection collDocs = documentsMap.values();
 		List retDocs = new ArrayList();
@@ -359,5 +498,15 @@ public class DocumentCompositionConfiguration {
 		return retDocs;
 
 	}
-
+	
+	private HashMap getMapFromString(String strToConvert){
+		HashMap retHash = new HashMap();
+		String[] tmpStr = strToConvert.split(",");
+		for (int i=0; i < tmpStr.length; i++){
+			String key = tmpStr[i].substring(0, tmpStr[i].indexOf("="));
+			String value = tmpStr[i].substring(tmpStr[i].indexOf("=")+1);
+			retHash.put(key, value);
+		}
+		return retHash;
+	}
 }

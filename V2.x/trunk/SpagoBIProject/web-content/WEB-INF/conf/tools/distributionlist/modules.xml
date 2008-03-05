@@ -96,7 +96,7 @@
 		          	<PARAMETER name='PRES' scope='LOCAL' value='1' operator='EQUAL_TO' /> 
 			  	  </CONDITIONS>
 	        </ALREADYREGISTERED_CAPTION>
-	        <SUBSCRIBE_CAPTION confirm="FALSE" image="/img/tools/distributionlist/email_add.png" label="SBISet.ListDL.subscribeCaption">
+	        <SUBSCRIBE_CAPTION popup="TRUE" image="/img/tools/distributionlist/email_add.png" label="SBISet.ListDL.subscribeCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="InsertEmailPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_INSERTEMAIL"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>

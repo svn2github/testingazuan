@@ -437,7 +437,7 @@ public class ListTag extends TagSupport
 							    // insert javascript for open popup
 							    _htmlStream.append(" <script>\n");
 							    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
-							    _htmlStream.append("  if (confirm(\"" + msg + "\")) {\n");
+							    _htmlStream.append("  if (confirm(\"" + msg + "\") and win"+captionName+"_"+prog+" == null ) {\n");
 							    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
 							    _htmlStream.append("   win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
 							    _htmlStream.append("            bodyCfg:{");
@@ -457,7 +457,7 @@ public class ListTag extends TagSupport
 							    _htmlStream.append("            modal: true,\n");
 							    _htmlStream.append("            layout:'fit',\n");
 							    _htmlStream.append("            width:500,\n");
-						        _htmlStream.append("            height:400,\n");
+						        _htmlStream.append("            height:200,\n");
 						        _htmlStream.append("            closeAction:'hide',\n");
 						        _htmlStream.append("            plain: true \n");
 						        _htmlStream.append("        });\n");
@@ -472,19 +472,40 @@ public class ListTag extends TagSupport
 						    }
 					}else{
 					    if (popup){
-						
-						_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
+					    	_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
 						    // insert javascript for open popup
 						    _htmlStream.append(" <script>\n");
-						    
 						    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
 						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
-						    _htmlStream.append("    if ( win"+captionName+"_"+prog+" == null ) { win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',modal: true,layout:'fit',width:500,height:400,closeAction:'hide',plain: true});} \n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".show(); \n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Loading ...',timeout: 30,scripts: true}); } \n");					    
 
+						    _htmlStream.append("   if ( win"+captionName+"_"+prog+" == null ) {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
+						    _htmlStream.append("            bodyCfg:{ \n" );
+						    _htmlStream.append("                tag:'div' \n");
+						    _htmlStream.append("                ,cls:'x-panel-body' \n");
+						    _htmlStream.append("               ,children:[{ \n");
+						    _htmlStream.append("                    tag:'iframe', \n");
+						    _htmlStream.append("                    name: 'dynamicIframe1', \n");
+						    _htmlStream.append("                    id  : 'dynamicIframe1', \n");
+						    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "', \n");
+						    _htmlStream.append("                    frameBorder:0, \n");
+						    _htmlStream.append("                    width:'100%', \n");
+						    _htmlStream.append("                    height:'100%', \n");
+						    _htmlStream.append("                    style: {overflow:'auto'}  \n ");        
+						    _htmlStream.append("               }] \n");
+						    _htmlStream.append("            }, \n");
+						    _htmlStream.append("            modal: true,\n");
+						    _htmlStream.append("            layout:'fit',\n");
+						    _htmlStream.append("            width:500,\n");
+					        _htmlStream.append("            height:200,\n");
+					        _htmlStream.append("            closeAction:'hide',\n");
+					        _htmlStream.append("            plain: true \n");
+					        _htmlStream.append("        }); }; \n");
+						    _htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
+						    //_htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true}); \n");					    
+						    _htmlStream.append("	} \n");
 						    _htmlStream.append(");\n");
-						    _htmlStream.append(" </script>\n");						
+						    _htmlStream.append(" </script>\n");
+										
 					    }else{ 
 					    	if(buttonUrl!=null) _htmlStream.append("     <a href='"+buttonUrl+"'>\n");
 					    }

@@ -143,10 +143,10 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			email = (String)request.getAttribute("EMAIL");
 			submessagedet = (String)request.getAttribute("SUBMESSAGEDET");
 			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			/*HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
-			HttpSession session = hsr.getSession();*/
-			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			//IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+			HttpSession session = hsr.getSession();
+			//IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			//load the dl
 			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));

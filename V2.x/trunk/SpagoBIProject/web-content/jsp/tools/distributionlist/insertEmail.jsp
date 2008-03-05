@@ -83,6 +83,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      			/> 
 				</a>
 			</td>
+			<!-- 
 			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
@@ -98,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
 	      			/>
 				</a>
-			</td>		
+			</td>	 -->	
 		</tr>
 	</table>
 	

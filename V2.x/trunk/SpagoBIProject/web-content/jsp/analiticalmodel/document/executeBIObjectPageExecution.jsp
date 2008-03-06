@@ -651,24 +651,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="div_form_margin" >
 		<div class="div_form_row" >
 				<div class='div_form_label_large'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key = "sbi.execution.saveToPersonalFolder" />
-					</span>
+					<span style="font-size:10pt;width: auto;">
+						<spagobi:message key = "sbi.execution.saveToPersonalFolderMessage" />
+					</span> 
 				</div>
 		</div>
 		</div>
-	</div>	
+		
 	
-	<div>
-        </div>
+     
+        <div>
 	    	<a style="text-decoration:none;" href='javascript:saveToPF<%=executionId%>()' >
 				<img width="32px" height="32px"
 					src='<%= urlBuilder.getResourceLink(request, "/img/save.png")%>'
 					alt='<%=msgBuilder.getMessage("sbi.execution.save", "messages", request)%>'
 					title='<%=msgBuilder.getMessage("sbi.execution.save", "messages", request)%>' />
 			</a>
-			<div id="messageSaveToPFDiv" style="font-size:11px;font-family:arial;color:#074B88;"></div>
-    	</div>
+		</div>
+		</div>
+			<div id="messageSaveToPFDiv" style="font-size:14px;font-family:arial;color:#074B88;width: auto;"></div>
+    </div>
  
 
 	<div style='clear:left;'></div>
@@ -849,7 +851,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	function openSavePersonalFolderForm<%=executionId%>() {
-	 	winsavepf<%=executionId%> = new Window('win_save_to_pf<%=executionId%>', {className: "alphacube", title: "", width:700, height:300, hideEffect:Element.hide, showEffect:Element.show});
+	 	winsavepf<%=executionId%> = new Window('win_save_to_pf<%=executionId%>', {className: "alphacube", title: "", width:400, height:130, hideEffect:Element.hide, showEffect:Element.show});
   	    winsavepf<%=executionId%>.setDestroyOnClose();
         winsavepf<%=executionId%>.setContent('formSaveToPFDiv<%=executionId%>', false, false);
         winsavepf<%=executionId%>.showCenter();

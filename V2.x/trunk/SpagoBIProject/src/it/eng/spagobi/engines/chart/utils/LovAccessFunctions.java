@@ -37,7 +37,7 @@ public class LovAccessFunctions {
 			}
 		}	
 		catch (Exception e) {
-			logger.error("Error");
+			logger.error("Error",e);
 		}
 		logger.debug("OUT");
 		return result;
@@ -54,7 +54,7 @@ public class LovAccessFunctions {
 			String type = lov.getITypeCd();
 			toReturn = type;
 		} catch (Exception e) {
-			logger.error("Error while recovering type of lov " + lovName);
+			logger.error("Error while recovering type of lov " + lovName,e);
 		}
 		logger.debug("OUT");
 		return toReturn;

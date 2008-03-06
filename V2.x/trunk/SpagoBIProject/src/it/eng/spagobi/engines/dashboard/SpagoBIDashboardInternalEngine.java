@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 package it.eng.spagobi.engines.dashboard;
 
@@ -34,7 +34,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -46,190 +45,191 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
-	
-	private static transient Logger logger = Logger.getLogger(SpagoBIDashboardInternalEngine.class);
 
-	public static final String messageBundle = "component_spagobidashboardIE_messages";
+    private static transient Logger logger = Logger.getLogger(SpagoBIDashboardInternalEngine.class);
 
-	/**
-	 * Executes the document and populates the response 
-	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param obj The <code>BIObject</code> representing the document to be executed
-	 * @param response The response <code>SourceBean</code> to be populated
-	 */
-	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
-		
-		logger.debug("IN");
-		
-		try {
-			
-			if (obj == null) {
-				logger.error("The input object is null.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
-			}
-			
-			if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
-				logger.error("The input object is not a dashboard.");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
-			}
-			
-			byte[] contentBytes = null;
-			try{
-				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
-	            if(template==null) throw new Exception("Active Template null");
-	            contentBytes = template.getContent();
-	            if(contentBytes==null) throw new Exception("Content of the Active template null");
-			} catch (Exception e) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
-			            			"execute", "Error while recovering template content: \n" + e);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
-			}
-			// get bytes of template and transform them into a SourceBean
-			SourceBean content = null;
-			try {
-				String contentStr = new String(contentBytes);
-				content = SourceBean.fromXMLString(contentStr);
-			} catch (Exception e) {
-				logger.error("Error while converting the Template bytes into a SourceBean object");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
-			}
-			// get information from the conf SourceBean and pass them into the response
-			String displayTitleBar = (String)content.getAttribute("displayTitleBar");
-			String movie = (String)content.getAttribute("movie");
-			String width = (String)content.getAttribute("DIMENSION.width");
-			String height = (String)content.getAttribute("DIMENSION.height");
-			
-			
-			String dataurl = (String)content.getAttribute("DATA.url");
-			// get all the parameters for data url
-			Map dataParameters = new HashMap();
-			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
-			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
-			Iterator dataAttrsIter = dataAttrsList.iterator();
-			while(dataAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				dataParameters.put(nameParam, valueParam);
-			}
-			// puts the document id
-			dataParameters.put("documentId", obj.getId().toString());
-			// puts the userId into parameters for data recovery
-			SessionContainer session = requestContainer.getSessionContainer();
-			IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			dataParameters.put("userId", profile.getUserUniqueIdentifier());
-			
-			// get all the parameters for dash configuration
-			Map confParameters = new HashMap();
-			SourceBean confSB = (SourceBean)content.getAttribute("CONF");
-			List confAttrsList = confSB.getContainedSourceBeanAttributes();
-			Iterator confAttrsIter = confAttrsList.iterator();
-			while(confAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)confAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				confParameters.put(nameParam, valueParam);
-			}
-			// create the title
-			String title = "";
-			title += obj.getName();
-			String objDescr = obj.getDescription();
-			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-				title += ": " + objDescr;
-			}
-			
-//			String actor = (String) session.getAttribute(SpagoBIConstants.ACTOR);
-			// get the possible state changes
-//			IDomainDAO domaindao = DAOFactory.getDomainDAO();
-//			List states = domaindao.loadListDomainsByType("STATE");
-//		    List possibleStates = new ArrayList();
-//		    if (actor.equalsIgnoreCase(SpagoBIConstants.DEV_ACTOR)){
-//		    	Iterator it = states.iterator();
-//		    	 while(it.hasNext()) {
-//		      		    	Domain state = (Domain)it.next();
-//		      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){ 
-//		      					possibleStates.add(state);
-//		      				}
-//		      	}  
-//		    } else if (actor.equalsIgnoreCase(it.eng.spagobi.commons.constants.SpagoBIConstants.TESTER_ACTOR)){
-//		    	Iterator it = states.iterator();
-//		    	 while(it.hasNext()) {
-//		      		    	Domain state = (Domain)it.next();
-//		      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) { 
-//		      					possibleStates.add(state);
-//		      				}
-//		      	}  
-//		    } 
-			// set information into reponse
-		    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-			response.setAttribute("movie", movie);
-			response.setAttribute("dataurl", dataurl);
-			response.setAttribute("width", width);
-			response.setAttribute("height", height);
-			response.setAttribute("displayTitleBar", displayTitleBar);
-			response.setAttribute("title", title);
-			response.setAttribute("confParameters", confParameters);
-			response.setAttribute("dataParameters", dataParameters);
-//			response.setAttribute("possibleStateChanges", possibleStates);
-			// set information for the publisher
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
-			
-		} catch (EMFUserError error) {
-			throw error;
-		} catch (Exception e) {
-			logger.error("Cannot exec the dashboard", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
-		} finally {
-			logger.debug("OUT");
-		}
+    public static final String messageBundle = "component_spagobidashboardIE_messages";
 
+    /**
+     * Executes the document and populates the response
+     * 
+     * @param requestContainer
+     *                The <code>RequestContainer</code> object (the session
+     *                can be retrieved from this object)
+     * @param obj
+     *                The <code>BIObject</code> representing the document to
+     *                be executed
+     * @param response
+     *                The response <code>SourceBean</code> to be populated
+     */
+    public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
+
+	logger.debug("IN");
+
+	try {
+
+	    if (obj == null) {
+		logger.error("The input object is null.");
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+	    }
+
+	    if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+		logger.error("The input object is not a dashboard.");
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
+	    }
+
+	    byte[] contentBytes = null;
+	    try {
+		ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+		if (template == null)
+		    throw new Exception("Active Template null");
+		contentBytes = template.getContent();
+		if (contentBytes == null)
+		    throw new Exception("Content of the Active template null");
+	    } catch (Exception e) {
+		logger.error("Error while recovering template content: \n" , e);
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "1002", messageBundle);
+	    }
+	    // get bytes of template and transform them into a SourceBean
+	    SourceBean content = null;
+	    try {
+		String contentStr = new String(contentBytes);
+		content = SourceBean.fromXMLString(contentStr);
+	    } catch (Exception e) {
+		logger.error("Error while converting the Template bytes into a SourceBean object");
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
+	    }
+	    // get information from the conf SourceBean and pass them into the
+	    // response
+	    String displayTitleBar = (String) content.getAttribute("displayTitleBar");
+	    String movie = (String) content.getAttribute("movie");
+	    String width = (String) content.getAttribute("DIMENSION.width");
+	    String height = (String) content.getAttribute("DIMENSION.height");
+
+	    String dataurl = (String) content.getAttribute("DATA.url");
+	    // get all the parameters for data url
+	    Map dataParameters = new HashMap();
+	    SourceBean dataSB = (SourceBean) content.getAttribute("DATA");
+	    List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
+	    Iterator dataAttrsIter = dataAttrsList.iterator();
+	    while (dataAttrsIter.hasNext()) {
+		SourceBeanAttribute paramSBA = (SourceBeanAttribute) dataAttrsIter.next();
+		SourceBean param = (SourceBean) paramSBA.getValue();
+		String nameParam = (String) param.getAttribute("name");
+		String valueParam = (String) param.getAttribute("value");
+		dataParameters.put(nameParam, valueParam);
+	    }
+	    // puts the document id
+	    dataParameters.put("documentId", obj.getId().toString());
+	    // puts the userId into parameters for data recovery
+	    SessionContainer session = requestContainer.getSessionContainer();
+	    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
+		    IEngUserProfile.ENG_USER_PROFILE);
+	    dataParameters.put("userId", profile.getUserUniqueIdentifier());
+
+	    // get all the parameters for dash configuration
+	    Map confParameters = new HashMap();
+	    SourceBean confSB = (SourceBean) content.getAttribute("CONF");
+	    List confAttrsList = confSB.getContainedSourceBeanAttributes();
+	    Iterator confAttrsIter = confAttrsList.iterator();
+	    while (confAttrsIter.hasNext()) {
+		SourceBeanAttribute paramSBA = (SourceBeanAttribute) confAttrsIter.next();
+		SourceBean param = (SourceBean) paramSBA.getValue();
+		String nameParam = (String) param.getAttribute("name");
+		String valueParam = (String) param.getAttribute("value");
+		confParameters.put(nameParam, valueParam);
+	    }
+	    // create the title
+	    String title = "";
+	    title += obj.getName();
+	    String objDescr = obj.getDescription();
+	    if ((objDescr != null) && !objDescr.trim().equals("")) {
+		title += ": " + objDescr;
+	    }
+
+
+	    // set information into reponse
+	    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+	    response.setAttribute("movie", movie);
+	    response.setAttribute("dataurl", dataurl);
+	    response.setAttribute("width", width);
+	    response.setAttribute("height", height);
+	    response.setAttribute("displayTitleBar", displayTitleBar);
+	    response.setAttribute("title", title);
+	    response.setAttribute("confParameters", confParameters);
+	    response.setAttribute("dataParameters", dataParameters);
+	    // response.setAttribute("possibleStateChanges", possibleStates);
+	    // set information for the publisher
+	    response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
+
+	} catch (EMFUserError error) {
+	    logger.error("Cannot exec the dashboard", error);
+	    throw error;
+	} catch (Exception e) {
+	    logger.error("Cannot exec the dashboard", e);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+	} finally {
+	    logger.debug("OUT");
 	}
 
-	/**
-	 * The <code>SpagoBIDashboardInternalEngine</code> cannot manage subobjects so this method must not be invoked
-	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param obj The <code>BIObject</code> representing the document
-	 * @param response The response <code>SourceBean</code> to be populated
-	 * @param subObjectInfo An object describing the subobject to be executed
-	 */
-	public void executeSubObject(RequestContainer requestContainer, BIObject obj, 
-			SourceBean response, Object subObjectInfo) throws EMFUserError {
-		// it cannot be invoked
-		logger.error("SpagoBIDashboardInternalEngine cannot exec subobjects.");
-		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
-	}
+    }
 
-	/**
-	 * Function not implemented. Thid method should not be called
-	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param biobject The BIOBject to edit
-	 * @param response The response <code>SourceBean</code> to be populated
-	 * @throws InvalidOperationRequest
-	 */
-	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
-			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
-		throw new InvalidOperationRequest();
-		
-	}
+    /**
+     * The <code>SpagoBIDashboardInternalEngine</code> cannot manage
+     * subobjects so this method must not be invoked
+     * 
+     * @param requestContainer
+     *                The <code>RequestContainer</code> object (the session
+     *                can be retrieved from this object)
+     * @param obj
+     *                The <code>BIObject</code> representing the document
+     * @param response
+     *                The response <code>SourceBean</code> to be populated
+     * @param subObjectInfo
+     *                An object describing the subobject to be executed
+     */
+    public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response,
+	    Object subObjectInfo) throws EMFUserError {
+	// it cannot be invoked
+	logger.error("SpagoBIDashboardInternalEngine cannot exec subobjects.");
+	throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
+    }
 
-	/**
-	 * Function not implemented. Thid method should not be called
-	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param biobject The BIOBject to edit
-	 * @param response The response <code>SourceBean</code> to be populated
-	 * @throws InvalidOperationRequest
-	 */
-	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
-			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
-		logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
-		throw new InvalidOperationRequest();
-	}
+    /**
+     * Function not implemented. Thid method should not be called
+     * 
+     * @param requestContainer
+     *                The <code>RequestContainer</code> object (the session
+     *                can be retrieved from this object)
+     * @param biobject
+     *                The BIOBject to edit
+     * @param response
+     *                The response <code>SourceBean</code> to be populated
+     * @throws InvalidOperationRequest
+     */
+    public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response)
+	    throws EMFUserError, InvalidOperationRequest {
+	logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
+	throw new InvalidOperationRequest();
+
+    }
+
+    /**
+     * Function not implemented. Thid method should not be called
+     * 
+     * @param requestContainer
+     *                The <code>RequestContainer</code> object (the session
+     *                can be retrieved from this object)
+     * @param biobject
+     *                The BIOBject to edit
+     * @param response
+     *                The response <code>SourceBean</code> to be populated
+     * @throws InvalidOperationRequest
+     */
+    public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response)
+	    throws EMFUserError, InvalidOperationRequest {
+	logger.error("SpagoBIDashboardInternalEngine cannot build document template.");
+	throw new InvalidOperationRequest();
+    }
 
 }

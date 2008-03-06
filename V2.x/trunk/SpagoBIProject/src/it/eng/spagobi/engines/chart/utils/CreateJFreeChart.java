@@ -65,7 +65,6 @@ public class CreateJFreeChart {
 
 
 
-
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
 		//		**************get the template*****************
@@ -166,6 +165,7 @@ public class CreateJFreeChart {
 
 		}
 		catch (EMFUserError e) {
+			
 		    logger.error("EMFUserError Error",e);
 			errorHandler.addError(e);
 			return null;

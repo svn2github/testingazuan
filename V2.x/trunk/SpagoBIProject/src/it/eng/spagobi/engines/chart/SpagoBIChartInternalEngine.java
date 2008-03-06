@@ -93,7 +93,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			response.setAttribute("title", title);				
 
 			// set information for the publisher
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
+			//response.setAttribute("ACTION_NAME", "CREATE_CHART");
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "LOOPCHART");
 
 		} catch (EMFUserError error) {
 			throw error;

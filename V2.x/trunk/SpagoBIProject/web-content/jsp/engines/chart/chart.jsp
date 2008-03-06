@@ -32,35 +32,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@page import="org.jfree.chart.JFreeChart"%>
-<%@page import="it.eng.spagobi.engines.chart.utils.CreateJFreeChart"%>
+
 <%@page import="org.jfree.chart.ChartUtilities"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
 <%@page import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.ChartImpl"%>
+<%@page import="org.jfree.chart.ChartRenderingInfo"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
+<%@page import="org.jfree.data.general.Dataset"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+
+<%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
+<%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
-
-<%
+  
+  
+  <% 
+  
+  
 	
-    // get module response
-    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
-
-
-    String title = (String)moduleResponse.getAttribute("title");
-    String documentId= (String)moduleResponse.getAttribute("documentid");
-
-    String urlAction=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_JFREECHART&NEW_SESSION=TRUE&userid="+userId+"&documentid="+documentId);
-
-
- 
-    boolean changeViewChecked=false;
-  	if(request.getParameter("changeviewchecked")!=null){
-  		String three=(String)request.getParameter("changeviewchecked");
-  		if(three.equalsIgnoreCase("true")){
-  			changeViewChecked=true;
-  		}
-  	}
+	String title=""; 
+	if(aServiceResponse.getAttribute("title")!=null){
+	title= (String)aServiceResponse.getAttribute("title");
+	}
+  
+     // build the back link
+	Map backUrlPars = new HashMap();
+    backUrlPars.put("PAGE", "BIObjectsPage");
+    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+    String backUrl = urlBuilder.getUrl(request, backUrlPars);
     
+    
+
 	IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	List states = domaindao.loadListDomainsByType("STATE");
     List possibleStates = new java.util.ArrayList();
@@ -83,11 +89,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	}
     }
     
-    // build the back link
-	Map backUrlPars = new HashMap();
-    backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-    String backUrl = urlBuilder.getUrl(request, backUrlPars);
+    
+
     
     %>
     
@@ -143,68 +146,103 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        			<% } %>
    			</tr>
 		</table>
+  
+  
+  <%
+ EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
+	if(!errorHandler.isOK()){
+  	
+  %>
+
+    <spagobi:error/>
+  
+  <%}
+	else
+	{%>
+    
+<%
+	
+ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
+String documentid=(String)aServiceResponse.getAttribute("documentid");
+Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
+Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
+
+
+
+
+
+	SessionContainer permSession = aSessionContainer.getPermanentContainer();
+	
+	if(userProfile==null){
+	userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    userId=(String)userProfile.getUserUniqueIdentifier();
+	}
+    
+	String  rootUrl=urlBuilder.getUrl(request,new HashMap());
+	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
+		((LinkableBar)sbi).setRootUrl(rootUrl);
+	}
+    
+	JFreeChart chart=null;
+	// create the chart
+			chart = sbi.createChart(title,dataset);
+
+
+		//Create the temporary dir
+		UUIDGenerator uuidGen = UUIDGenerator.getInstance();
+		UUID uuid = uuidGen.generateTimeBasedUUID();
+		String executionId = uuid.toString();
+		executionId = executionId.replaceAll("-", "");
+
+		ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+		//Saving image on a temporary file
+		String dir=System.getProperty("java.io.tmpdir");
+		String path=dir+"/"+executionId+".png";
+		java.io.File file1 = new java.io.File(path);
+		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
+		
+	//String urlAction=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_JFREECHART&NEW_SESSION=TRUE&userid="+userId+"&documentid="+documentId);
+
+
+    
+ 
 				
-				
-				<%
-	   			Map refreshUrlPars = new HashMap();
-	   			//refreshUrlPars.put("userid", userId);
-	   			refreshUrlPars.put("title", title);
-	   			//refreshUrlPars.put("documentid", documentId);
-	   			refreshUrlPars.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");
-	   			refreshUrlPars.put("PAGE", "ExecuteBIObjectPage");
-	   			//refreshUrlPars.put("OBJECT_ID", "28");
-	   			refreshUrlPars.put("NAVIGATOR_FREEZE", "TRUE");
-	   			
-	   			
-	   			
-	   			//refreshUrlPars.put(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
+
+	   		Map refreshUrlPars = new HashMap();
+	   			refreshUrlPars.put("ACTION_NAME", "CREATE_CHART");
+	   			refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	   			refreshUrlPars.put("documentid", documentid);
 	   			String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
-				String  rootUrl=urlBuilder.getUrl(request,new HashMap());
 				%>
-				
-				
 
-
-				
-
-				
 	<div align=center>
 		<%
-		CreateJFreeChart c=new CreateJFreeChart();
-		c.setChangeViewCecked(changeViewChecked);
-		c.setRootUrl(rootUrl);
-		JFreeChart chart=c.createChart(userId,documentId);
-		String path=c.getPath();
 	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
-	    if(c.isChangeableView()){
+	    if(sbi.isChangeableView()){
 	    	%>
-	    	<form  name="changeviewchecked" action="<%=refreshUrl%>" method="GET" >
-				<%if(changeViewChecked){ %>
- 					<input name="changeviewchecked" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=c.getChangeViewLabel()%></input>
+	    	<form  name="changeviewchecked" action="<%=refreshUrl%>" method="POST" >
+				<%if(changeViewChecked.equals(new Boolean(true))){ %>
+ 					<input name="changeviewchecked" type="checkbox" value="true" checked onclick="this.form.submit()" align="left">aaaa</input>
  							<%}
 					else{%>
-								<input name="changeviewchecked" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=c.getChangeViewLabel()%></input>
+								<input name="changeviewchecked" type="checkbox" value="true" onclick="this.form.submit()" align="left">aaa</input>
 							<%} %>
 			</form> 
 			<BR>
 	    	<%
 	    }
 	    
-	    if(c.isLinkable()){
+	    if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
-		ChartUtilities.writeImageMap(pw, "chart", c.getInfo(),new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
+		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
 	    }
-
-	    
-	    
-	    
 	    %>
 		
     <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
     </div>
-    
-    <spagobi:error/>
+    <%} %>
+
     
 
     

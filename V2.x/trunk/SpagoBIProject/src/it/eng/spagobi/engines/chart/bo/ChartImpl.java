@@ -31,6 +31,9 @@ public class ChartImpl implements IChart {
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
+protected String type="";
+protected String subtype="";
+
 
 	
 
@@ -194,6 +197,22 @@ public class ChartImpl implements IChart {
 	}
 
 
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+	}
 
 	public boolean isChangeableView() {
 		return false;

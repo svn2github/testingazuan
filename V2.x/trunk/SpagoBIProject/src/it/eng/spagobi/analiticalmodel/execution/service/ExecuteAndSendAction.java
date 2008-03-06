@@ -1,5 +1,7 @@
 package it.eng.spagobi.analiticalmodel.execution.service;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -11,6 +13,8 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -80,6 +84,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		Object par = it.next();
 		SourceBeanAttribute p = (SourceBeanAttribute) par;
 		String parName = (String) p.getKey();
+		logger.debug("got parName=" + parName);
 		if (parName.equals("objlabel")) {
 		    objLabel = (String) request.getAttribute("objLabel");
 		    logger.debug("got objLabel from Request=" + objLabel);
@@ -131,16 +136,37 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    if (execCtrl.directExecution()) {
 		ExecutionProxy proxy = new ExecutionProxy();
 		proxy.setBiObject(biobj);
-
+		
 		IEngUserProfile profile = null;
-		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		try {
-		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
-		    profile = new UserProfile(user);
-		} catch (Exception e) {
-		    logger.error("Security Exception", e);
-		    throw new SecurityException();
+		RequestContainer reqCont = RequestContainer.getRequestContainer();
+		SessionContainer sessCont = reqCont.getSessionContainer();
+		SessionContainer permSess = sessCont.getPermanentContainer();
+		profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+		if (profile == null) {
+		    ConfigSingleton config = ConfigSingleton.getInstance();
+		    SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+		    String active = (String) validateSB.getCharacters();
+		    if (active != null && active.equals("true")) {
+			IProxyService userProxy = IProxyServiceFactory.createProxyService();
+			userId = userProxy.readUserId(req.getSession());
+			logger.debug("got userId from IProxyService=" + userId);
+		    } else {
+			userId = req.getParameter("userId");
+			logger.debug("got userId from Request=" + userId);
+		    }
+
+		    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		    try {
+			SpagoBIUserProfile user = supplier.createUserProfile(userId);
+			profile = new UserProfile(user);
+		    } catch (Exception e) {
+			logger.error("Exception while creating user profile", e);
+			throw new SecurityException();
+		    }
+
 		}
+
 		documentBytes = proxy.exec(profile);
 		returnedContentType = proxy.getReturnedContentType();
 		fileextension = proxy.getFileExtensionFromContType(returnedContentType);
@@ -164,7 +190,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    props.put("mail.smtp.host", smtphost);
 	    props.put("mail.smtp.auth", "true");
 	    // create autheticator object
-	    Authenticator auth = new SMTPAuthenticator(login, pass);
+	    Authenticator auth = new SMTPAuthenticator("bernabei", "angelo70");
 	    // open session
 	    Session session = Session.getDefaultInstance(props, auth);
 

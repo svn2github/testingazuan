@@ -190,7 +190,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    props.put("mail.smtp.host", smtphost);
 	    props.put("mail.smtp.auth", "true");
 	    // create autheticator object
-	    Authenticator auth = new SMTPAuthenticator("bernabei", "angelo70");
+	    Authenticator auth = new SMTPAuthenticator("bernabei", "9");
 	    // open session
 	    Session session = Session.getDefaultInstance(props, auth);
 

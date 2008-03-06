@@ -16,7 +16,7 @@ import org.xml.sax.InputSource;
  */
 public class EnginConf {
 	private SourceBean config = null;
-	
+	private boolean ssoActive=false;
 	private static transient Logger logger = Logger.getLogger(EnginConf.class);
 
 	private static EnginConf instance = null;
@@ -35,7 +35,8 @@ public class EnginConf {
 			logger.debug("Resource: " + getClass().getResource("/engine-config.xml"));
 			if (getClass().getResource("/engine-config.xml")!=null){
 				InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
-				config = SourceBean.fromXMLStream(source);    
+				config = SourceBean.fromXMLStream(source);   
+				setSsoActive();
 			}else logger.debug("Impossible to load configuration for report engine");
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to load configuration for report engine", e);
@@ -47,6 +48,15 @@ public class EnginConf {
 	 */
 	public SourceBean getConfig() {
 		return config;
+	}
+	private void setSsoActive(){
+	    SourceBean validateSB = (SourceBean)config.getAttribute("ACTIVE_SSO");
+	    String active = (String) validateSB.getCharacters();
+	    if (active != null && active.equals("true")) ssoActive= true;
+	    else ssoActive= false;	    
+	}
+	public boolean isSsoActive(){
+	    return ssoActive;
 	}
 	
 }

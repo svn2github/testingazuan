@@ -27,13 +27,18 @@ public abstract class AbstractServiceProxy {
     private String filterReceipt = null;
     protected URL serviceUrl = null;
     protected String userId = null;
+    protected boolean isSecure=true; // if false don't sent a valid ticket
 
+   
     /**
      * 
      * @return String Ticket for SSO control
      * @throws IOException 
      */
     protected String readTicket() throws IOException {
+	if (!isSecure){
+	    return "BackEndInvocation";
+	}
 	if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
 	    IProxyService proxyService=IProxyServiceFactory.createProxyService();
 	    return proxyService.readTicket(session, filterReceipt);
@@ -61,21 +66,23 @@ public abstract class AbstractServiceProxy {
      * Initilize the configuration
      */
     protected void init() {
+	String secureAttributes=(String)session.getAttribute("isBackend");
+	if (secureAttributes!=null && secureAttributes.equals("true")){
+	    isSecure=false;
+	}
+	
 	String className = this.getClass().getSimpleName();
 	logger.debug("Read className=" + className);
 	SourceBean engineConfig = EnginConf.getInstance().getConfig();
 	String spagoContext = (String) session.getAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL);
 	logger.debug("Read spagoContext=" + spagoContext);
 	if (spagoContext == null)
-	    logger.warn("SPAGO CONTEXT IS NULL!!!!");
+	    logger.warn("BACK END SPAGO CONTEXT IS NULL!!!!");
 	if (engineConfig != null) {
 	    // sono sui motori...
-	    SourceBean validateSB = (SourceBean) engineConfig.getAttribute("ACTIVE_SSO");
-	    String active = (String) validateSB.getCharacters();
-	    if (active != null && active.equals("true"))
-		ssoIsActive = true;
+	    if (EnginConf.getInstance().isSsoActive()) ssoIsActive = true;
 	    logger.debug("Read activeSso=" + ssoIsActive);
-	    validateSB = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
+	    SourceBean validateSB = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
 	    filterReceipt = (String) validateSB.getCharacters();
 	    logger.debug("Read filterReceipt=" + filterReceipt);
 	    filterReceipt = spagoContext + filterReceipt;

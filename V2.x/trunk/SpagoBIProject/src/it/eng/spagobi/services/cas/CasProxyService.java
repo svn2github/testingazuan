@@ -52,6 +52,7 @@ public class CasProxyService implements IProxyService {
 	    logger.debug("IN");
 	    CASReceipt cr = (CASReceipt) session.getAttribute(CASFilter.CAS_FILTER_RECEIPT);
 	    logger.debug("Read cr=" + cr);
+	    if (cr==null) logger.warn("CASReceipt in session is NULL");
 	    return ProxyTicketReceptor.getProxyTicket(cr.getPgtIou(), filterReceipt);
     }
 

@@ -58,7 +58,8 @@ public abstract class AbstractServiceImpl {
 	}
 	if (activeSso) {
 	    logger.debug("activeSso checks are ON");
-	    if (UserProfile.isSchedulerUser(userId)) {
+	    // TODO ... 
+	    if (UserProfile.isSchedulerUser(userId) || ticket.equals("BackEndInvocation")) {
 		logger.info("User is a scheduler, JUMP che ticket validation");
 	    }else {
 		IProxyService proxyService=IProxyServiceFactory.createProxyService();

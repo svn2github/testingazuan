@@ -6,7 +6,7 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
-import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Dashboard;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
@@ -99,7 +99,7 @@ protected String subtype="";
 
 	public static ChartImpl createChart(String type,String subtype){
 		ChartImpl sbi=null;
-		if(type.equals("KPICHART")){
+		if(type.equals("DIALCHART")){
 			if(subtype.equalsIgnoreCase("speedometer")){
 				sbi=new SBISpeedometer();
 			}
@@ -109,8 +109,8 @@ protected String subtype="";
 			else if(subtype.equalsIgnoreCase("thermomether")){
 				sbi= new Thermometer();
 			}
-			else if(subtype.equalsIgnoreCase("dashboard")){
-				sbi= new Dashboard();
+			else if(subtype.equalsIgnoreCase("meter")){
+				sbi= new Meter();
 			}
 		}
 		if(type.equals("PIECHART")){

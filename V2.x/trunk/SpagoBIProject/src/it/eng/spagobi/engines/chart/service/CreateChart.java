@@ -13,8 +13,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
-import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 
 import org.apache.log4j.Logger;
 import org.jfree.data.general.Dataset;
@@ -48,13 +46,13 @@ public class CreateChart extends AbstractHttpAction {
 		String documentId = (String)request.getAttribute("documentid");
 
 		// check if it is redrawing the chart changing view
-		boolean changeViewChecked=false; 
+		/*boolean changeViewChecked=false; 
 		if(request.getAttribute("changeviewchecked")!=null){
 			String change=(String)request.getAttribute("changeviewchecked");
 			Boolean ch=new Boolean(change);
 			boolean chb=ch.booleanValue();
 			if(chb)changeViewChecked=true;
-		}
+		}*/
 		
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
@@ -101,14 +99,14 @@ public class CreateChart extends AbstractHttpAction {
 			//changeView=new Boolean(sbi.isChangeView());
 
 			//if it's a pie chart I must set if it has to be drawn in 2d or 3d version, if a bar chart horizontal or vertical			
-			if(sbi.isChangeableView()){
+		/*	if(sbi.isChangeableView()){
 				if(nameofChart.equalsIgnoreCase("PIECHART")){
 					((SimplePie)sbi).setChangeViewChecked(changeViewChecked);
 				}
 				if(nameofChart.equalsIgnoreCase("BARCHART") && type.equalsIgnoreCase("simplebar")){
 					((SimpleBar)sbi).setChangeViewChecked(changeViewChecked);
 				}
-			}
+			}*/
 			
 	
 			// calculate values for the chart
@@ -129,7 +127,7 @@ public class CreateChart extends AbstractHttpAction {
 				responseSb.setAttribute("title",title);
 				responseSb.setAttribute("documentid",documentId);
 				responseSb.setAttribute("dataset",dataset);
-				responseSb.setAttribute("changeviewchecked",new Boolean(changeViewChecked));
+				//responseSb.setAttribute("changeviewchecked",new Boolean(changeViewChecked));
 				responseSb.setAttribute("sbi",sbi);
 			}
 			catch (Exception eex) {

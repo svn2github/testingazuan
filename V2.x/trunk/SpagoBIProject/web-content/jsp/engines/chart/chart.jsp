@@ -17,8 +17,8 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ page import="java.util.Map" %>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
  <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
@@ -46,19 +46,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
   
   
   <% 
   
-  
-	
 	String title=""; 
 	if(aServiceResponse.getAttribute("title")!=null){
 	title= (String)aServiceResponse.getAttribute("title");
 	}
-  
+	
      // build the back link
 	Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "BIObjectsPage");
@@ -165,9 +166,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
-Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
+//Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
 
+boolean changeViewMode=false;
+if(request.getParameter("changeviewmode")!=null){
+	String ch=(String)request.getParameter("changeviewmode");
+	if(ch.equalsIgnoreCase("true")){
+		changeViewMode=true;
+	}
+}
 
+String changeVieLabel="";
+if(sbi.isChangeableView()){
+	if(sbi.getType().equalsIgnoreCase("PIECHART")){
+		changeVieLabel=SimplePie.CHANGE_VIEW_LABEL;
+		((SimplePie)sbi).setChangeViewChecked(changeViewMode);
+	}
+	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("simplebar")){
+		changeVieLabel=SimpleBar.CHANGE_VIEW_LABEL;
+		((SimpleBar)sbi).setChangeViewChecked(changeViewMode);
+	}
+}
 
 
 
@@ -213,12 +232,30 @@ Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchec
 	   			refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	   			refreshUrlPars.put("documentid", documentid);
 	   			String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+	   			
+
+		   		Map refreshUrlPars2 = new HashMap();
+			   			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		   			String refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars);
+		   			
+		   			
+		   			
+	   			
+	   			
+	   			
+	   			
+	   			
 				%>
 
 	<div align=center>
-		<%
+	<%
 	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
+	
+	
+	// It passess changeView in POST (recall the actions) Not used.
+	
+	/*
 	    if(sbi.isChangeableView()){
 	    	%>
 	    	<form  name="changeviewchecked" action="<%=refreshUrl%>" method="POST" >
@@ -231,7 +268,34 @@ Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchec
 			</form> 
 			<BR>
 	    	<%
+	    } 
+	*/
+	    
+	    
+	    
+	    if(sbi.isChangeableView()){
+	    	%>
+	    	<form  name="changeviewmode" action="<%=refreshUrl2%>" method="GET" >
+				<%if(changeViewMode){ %>
+ 					<input name="changeviewmode" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=changeVieLabel%></input>
+ 							<%}
+					else{%>
+								<input name="changeviewmode" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=changeVieLabel%></input>
+							<%} %>
+			</form> 
+			<BR>
+	    	<%
 	    }
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 	    
 	    if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);

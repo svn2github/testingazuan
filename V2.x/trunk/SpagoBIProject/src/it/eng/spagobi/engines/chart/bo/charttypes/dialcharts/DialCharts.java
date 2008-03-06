@@ -56,7 +56,7 @@ public class DialCharts extends ChartImpl {
 
 
 	public void configureChart(SourceBean content){
-		logger.debug("KpiChart");
+		logger.debug("IN");
 
 		super.configureChart(content);
 
@@ -187,14 +187,19 @@ public class DialCharts extends ChartImpl {
 
 
 	public Dataset calculateValue() throws SourceBeanException {
+	        logger.debug("IN");
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
-
-		SourceBean sbRows=SourceBean.fromXMLString(res);
-		SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
-		String result=(String)sbRow.getAttribute("value");
-
-		DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
-		return dataset;
+		if (res!=null){
+		        logger.debug("LOV result:"+res);
+			SourceBean sbRows=SourceBean.fromXMLString(res);
+			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
+			String result=(String)sbRow.getAttribute("value");
+			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
+			logger.debug("OUT");
+			return dataset;			
+		}
+		logger.error("dataset is null!!!!!!!!!");
+		return null;
 	}
 
 

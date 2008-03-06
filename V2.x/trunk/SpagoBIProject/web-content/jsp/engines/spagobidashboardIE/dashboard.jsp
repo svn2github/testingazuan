@@ -73,7 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// AUDIT insert
 	AuditManager auditManager = AuditManager.getInstance();
 	String auditModality = (modality != null) ? modality : "NORMAL_EXECUTION";
-	Integer auditId = auditManager.insertAudit(obj, userProfile, executionRole, auditModality);
+	Integer auditId = auditManager.insertAudit(obj,null, userProfile, executionRole, auditModality);
 	// adding parameters for AUDIT updating
 	if (auditId != null) {
 		dataParameters.put(AuditManager.AUDIT_ID, auditId.toString());

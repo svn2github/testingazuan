@@ -45,11 +45,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	String viewListUrl = urlBuilder.getUrl(request, viewListUrlPars);
 	
-	/* ************ start luca changes ******************* */
+
 	Map refreshUrlPars = new HashMap();
 	refreshUrlPars.put("PAGE", "MYFOLDERMANAGEMENTPAGE");
 	String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
-	/* ************ end luca changes ******************* */
+
 	
     // identity string for object of the page
     UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -75,7 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				alt='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' /> 
 			</a>		
 		</td>
-		<!-- ************ start luca changes *******************  --> 
+
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
@@ -86,7 +86,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					title='<spagobi:message key = "SBIExecution.refresh"/>' /> 
 			</a>	
 		</td>
-		<!-- ************ end luca changes *******************  --> 
+
 	</tr>
 </table>
 
@@ -100,7 +100,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<br/>
 	<br/>
 </div>
-
+<iframe id='iframeLogin'
+                 name='iframeLogin'
+                 src='<%=srcIFrame%>'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>
 
 
 

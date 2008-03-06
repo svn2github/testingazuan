@@ -28,6 +28,8 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -41,7 +43,7 @@ import org.apache.log4j.Logger;
 public class ExecutionProxy {
 
     static private Logger logger = Logger.getLogger(ExecutionProxy.class);
-    static private String schedulerExtension = "Scheduler";
+    static private String backEndExtension = "BackEnd";
     
     private BIObject biObject = null;
 
@@ -73,24 +75,32 @@ public class ExecutionProxy {
 	    
 	    String urlEngine = eng.getUrl();
 	    
-	    if (UserProfile.isSchedulerUser((String)profile.getUserUniqueIdentifier())){
-		// IF THE USER IS A SCHEDULER ADD THE SCEHDULER EXTENSION 
-		urlEngine = urlEngine+schedulerExtension;
-	    }
+	    // ADD this extension because this is a BackEnd engine invocation
+	    urlEngine = urlEngine+backEndExtension;
+	    
 	    
 	    // build an instance of the driver
 	    IEngineDriver aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
 	    // get the map of parameter to send to the engine
 	    Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
 
+	
 	    // set spagobi context url
-	    if (!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+	    if (!mapPars.containsKey(SpagoBIConstants.BACK_END_SBICONTEXTURL)) {
 		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
 		String sbiconturl = GeneralUtilities.getBackEndSpagoBiContextAddress();
 		if (sbiconturl != null) {
-		    mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+		    mapPars.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, sbiconturl);
 		}
 	    }
+	 // set spagobi context url for backend invocation
+	    if (!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		if (sbiconturl != null) {
+		    mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+		}
+	    }	    
 
 	    // set country and language (locale)
 	    Locale locale = GeneralUtilities.getDefaultLocale();

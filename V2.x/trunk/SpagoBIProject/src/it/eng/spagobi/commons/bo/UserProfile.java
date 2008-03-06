@@ -7,95 +7,119 @@ import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class contain the information about the user
  */
 public class UserProfile implements IEngUserProfile {
-    
-        private static String WORKFLOW_USER_NAME = "[SYSTEM - WORKFLOW]";
-        private static String SCHEDULER_USER_NAME = "scheduler";
-    
-	private String userUniqueIdentifier = null;
-	private Map userAttributes = null;
-	private Collection roles = null;
-	private Collection functionalities = null;
 
+    private static transient Logger logger = Logger.getLogger(UserProfile.class);
 
-	/**
-	 * 
-	 * @param profile SpagoBIUserProfile
-	 */
-    public UserProfile(SpagoBIUserProfile profile){
-	this.userUniqueIdentifier=profile.getUserId();
-	roles=new ArrayList();
-	if (profile.getRoles()!=null) {
-	    int l=profile.getRoles().length;
-		for (int i=0;i<l;i++){
-		    roles.add(profile.getRoles()[i]);
-		}
-	        
-	}
-	functionalities=new ArrayList();
-	if (profile.getFunctions()!=null) {
-	    int l=profile.getFunctions().length;
-		for (int i=0;i<l;i++){
-		    functionalities.add(profile.getFunctions()[i]);
-		}
-	        
-	}	
-	userAttributes=profile.getAttributes();
-    }
+    private static String WORKFLOW_USER_NAME = "[SYSTEM - WORKFLOW]";
+    private static String SCHEDULER_USER_NAME = "scheduler";
+
+    private String userUniqueIdentifier = null;
+    private Map userAttributes = null;
+    private Collection roles = null;
+    private Collection functionalities = null;
+
     /**
      * 
-     * @param user String
+     * @param profile
+     *                SpagoBIUserProfile
      */
-    public UserProfile(String user){
-	this.userUniqueIdentifier=user;
-    }  
-    
+    public UserProfile(SpagoBIUserProfile profile) {
+	logger.debug("IN");
+	this.userUniqueIdentifier = profile.getUserId();
+	roles = new ArrayList();
+	if (profile.getRoles() != null) {
+	    int l = profile.getRoles().length;
+	    for (int i = 0; i < l; i++) {
+		logger.debug("ROLE:" + profile.getRoles()[i]);
+		roles.add(profile.getRoles()[i]);
+	    }
+
+	}
+	functionalities = new ArrayList();
+	if (profile.getFunctions() != null) {
+	    int l = profile.getFunctions().length;
+	    for (int i = 0; i < l; i++) {
+		logger.debug("USER FUNCTIONALITY:" + profile.getFunctions()[i]);
+		functionalities.add(profile.getFunctions()[i]);
+	    }
+
+	}
+	userAttributes = profile.getAttributes();
+	if (userAttributes != null) {
+	    logger.debug("USER ATTRIBUTES----");
+	    Set keis = userAttributes.keySet();
+	    Iterator iter = keis.iterator();
+	    while (iter.hasNext()) {
+		String key = (String) iter.next();
+		logger.debug(key + "=" + userAttributes.get(key));
+	    }
+	    logger.debug("USER ATTRIBUTES----");
+	}
+
+	logger.debug("OUT");
+    }
+
+    /**
+     * 
+     * @param user
+     *                String
+     */
+    public UserProfile(String user) {
+	this.userUniqueIdentifier = user;
+    }
+
     /**
      * Usato solo nel workflow
+     * 
      * @param user
      * @param psw
      */
-    public static final UserProfile createWorkFlowUserProfile(){
-	UserProfile profile=new UserProfile("[SYSTEM - WORKFLOW]");
+    public static final UserProfile createWorkFlowUserProfile() {
+	UserProfile profile = new UserProfile("[SYSTEM - WORKFLOW]");
 	profile.roles = new ArrayList();
 	profile.userAttributes = new HashMap();
 	profile.userAttributes.put("password", WORKFLOW_USER_NAME);
 	return profile;
-    } 
-    
+    }
+
     /**
      * Usato solo per lanciare i job
+     * 
      * @param user
      * @param psw
-     */    
-    public static final UserProfile createSchedulerUserProfile(){
-	UserProfile profile=new UserProfile(SCHEDULER_USER_NAME);
+     */
+    public static final UserProfile createSchedulerUserProfile() {
+	UserProfile profile = new UserProfile(SCHEDULER_USER_NAME);
 	profile.roles = new ArrayList();
 	profile.userAttributes = new HashMap();
 	return profile;
-    }    
+    }
 
     /**
      * 
-     * @param userid String
+     * @param userid
+     *                String
      * @return
      */
-    public static boolean isSchedulerUser(String userid){
+    public static boolean isSchedulerUser(String userid) {
 	return SCHEDULER_USER_NAME.equals(userid);
     }
 
-	
     public Collection getFunctionalities() throws EMFInternalError {
 	return functionalities;
     }
 
-    public Collection getFunctionalitiesByRole(String arg0)
-	    throws EMFInternalError {
+    public Collection getFunctionalitiesByRole(String arg0) throws EMFInternalError {
 	return new ArrayList();
 
     }
@@ -121,27 +145,28 @@ public class UserProfile implements IEngUserProfile {
     }
 
     public boolean isAbleToExecuteAction(String arg0) throws EMFInternalError {
-	if (this.functionalities.contains(arg0)) return true;
-	else return false;
+	if (this.functionalities.contains(arg0))
+	    return true;
+	else
+	    return false;
     }
 
-    public boolean isAbleToExecuteModuleInPage(String arg0, String arg1)
-	    throws EMFInternalError {
+    public boolean isAbleToExecuteModuleInPage(String arg0, String arg1) throws EMFInternalError {
 	return true;
     }
 
     public void setApplication(String arg0) throws EMFInternalError {
     }
-    
+
     public void setFunctionalities(Collection functs) {
-		this.functionalities=functs;
+	this.functionalities = functs;
     }
-    
+
     public void setAttributes(Map attrs) {
-		this.userAttributes=attrs;
+	this.userAttributes = attrs;
     }
-	
+
     public void setRoles(Collection rols) {
-		this.roles=rols;
-   }    
+	this.roles = rols;
+    }
 }

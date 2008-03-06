@@ -74,7 +74,8 @@ public class PortletLoginAction extends AbstractHttpAction {
 	RequestContainer reqCont = getRequestContainer();
 	SessionContainer sessionCont = reqCont.getSessionContainer();
 	SessionContainer permSession = sessionCont.getPermanentContainer();
-
+	
+	
 	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 	if (profile == null) {

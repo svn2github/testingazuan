@@ -66,6 +66,7 @@ public class HiddenLoginAction extends AbstractHttpAction {
 	HttpServletResponse httpResp = getHttpResponse();
 	HttpSession session = httpReq.getSession();
 
+	
 	RequestContainer reqCont = RequestContainer.getRequestContainer();
 	SessionContainer sessCont = reqCont.getSessionContainer();
 	SessionContainer permSess = sessCont.getPermanentContainer();

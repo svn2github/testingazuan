@@ -308,7 +308,7 @@ Section: Main Contents
 div.buttons {
   float: left;
   margin: 5pt;
-  width: 200pt;
+  width: 500pt;
   float: left;
   font-size: 10pt;  
 }
@@ -382,6 +382,10 @@ div.buttons li {
 	background:url(../../img/analiticalmodel/ico_save.gif) top left no-repeat;
 }
 
+.p_hot_link_button b b b, .v_hot_link_button b b b{
+	background:url(../../img/analiticalmodel/ico_save.gif) top left no-repeat;
+}
+
 .v_send_button b b b{
 	background:url(../../img/analiticalmodel/ico_send.gif) top left no-repeat;
 }
@@ -392,6 +396,14 @@ div.buttons li {
 
 .v_note_button b b b{
 	background:url(../../img/analiticalmodel/ico_note.gif) top left no-repeat;
+}
+
+.v_print b b b{
+	background:url(../../img/analiticalmodel/ico_print.gif) top left no-repeat;
+}
+
+.v_meta_button b b b{
+	background:url(../../img/analiticalmodel/ico_search.gif) top left no-repeat;
 }
 
 
@@ -428,7 +440,6 @@ div.buttons li {
   font-size: 100%;
 }
 .feature ul {
-	margin: 0;
 	padding: 0;
 	list-style: none;
 }

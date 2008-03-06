@@ -96,3 +96,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<br/>
 </div>
 <%@ include file="/jsp/commons/footer.jsp"%>
+<iframe id='iframeLogin'
+                 name='iframeLogin'
+                 src='<%=srcIFrame%>'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>

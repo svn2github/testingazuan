@@ -32,9 +32,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 package it.eng.spagobi.utilities.filters;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.IProxyServiceFactory;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
@@ -71,30 +76,48 @@ public class SpagoBIAccessFilter implements Filter {
 	if (request instanceof HttpServletRequest) {
 	    HttpServletRequest httpRequest = (HttpServletRequest) request;
 	    HttpSession session = httpRequest.getSession();
-	    // USER PROFILE
+	    String requestUrl = httpRequest.getRequestURL().toString();
+	    logger.info("requestUrl:" + requestUrl);
+	    
 	    String userId = (String) request.getParameter("userId");
 	    String document = (String) request.getParameter("document");
-	    logger.info("Filter USER_ID:" + userId);
-	    logger.info("Filter document:" + document);
+	    logger.info("Filter USER_ID from request:" + userId);
+	    logger.info("Filter document  from request:" + document);
 	    session.setAttribute("userId", userId);
 	    session.setAttribute("document", document);
+	    
+	    boolean isBackend=false;
+	    if (requestUrl.endsWith("BackEnd")){
+		// if a request is coming from SpagoBI context
+		isBackend=true;
+		session.setAttribute("isBackend", "true");
+		logger.info("IS a backEnd Request ...");
+	    }
+	    
+
+
+	    if (userId != null && !isBackend)
+		checkUserWithSSO(userId, session);
+
 	    String spagobiContextUrl = request.getParameter(SpagoBIConstants.SBICONTEXTURL);
 	    String backEndSpagobiContextUrl = request.getParameter(SpagoBIConstants.BACK_END_SBICONTEXTURL);
-	    logger.debug("spagobiContextUrl:" + spagobiContextUrl);
 	    if (spagobiContextUrl != null) {
+		logger.debug("spagobiContextUrl:" + spagobiContextUrl);
 		session.setAttribute(SpagoBIConstants.SBICONTEXTURL, spagobiContextUrl);
 	    } else
 		logger.warn("spagobiContextUrl is null!!!!!!");
 	    if (backEndSpagobiContextUrl != null) {
+		logger.debug("backEndSpagobiContextUrl:" + backEndSpagobiContextUrl);
 		session.setAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL, backEndSpagobiContextUrl);
 	    } else
-		logger.warn("backEndSpagobiContextUrl is null!!!!!!");	    
+		logger.warn("backEndSpagobiContextUrl is null!!!!!!");
+
 	    IEngUserProfile profile = null;
 	    if (userId != null && !userId.equals("scheduler")) {
 		try {
 		    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		    if (profile == null) {
-			SecurityServiceProxy proxy = new SecurityServiceProxy(userId,session);
+			SecurityServiceProxy proxy = new SecurityServiceProxy(userId, session);
 			profile = proxy.getUserProfile();
 			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		    } else {
@@ -105,7 +128,7 @@ public class SpagoBIAccessFilter implements Filter {
 		    throw new ServletException();
 		}
 	    }
-	    if (userId != null && userId.equals("scheduler")){
+	    if (userId != null && userId.equals("scheduler")) {
 		session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
 	    }
 
@@ -121,6 +144,22 @@ public class SpagoBIAccessFilter implements Filter {
 	}
 	chain.doFilter(request, response);
 	logger.debug("OUT");
+    }
+
+    private void checkUserWithSSO(String userId, HttpSession session) throws ServletException {
+
+	if (EnginConf.getInstance().isSsoActive()) {
+	    IProxyService userProxy = IProxyServiceFactory.createProxyService();
+	    String ssoUserId = userProxy.readUserId(session);
+	    logger.debug("got userId from IProxyService=" + userId);
+	    if (!userId.equalsIgnoreCase(ssoUserId)) {
+		logger.debug("SSO is active but the user in request and sessione are different!!!");
+		throw new ServletException();
+	    }
+	} else {
+	    logger.debug("SSO is inactive...");
+	}
+
     }
 
     public void init(FilterConfig config) throws ServletException {

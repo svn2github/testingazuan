@@ -115,7 +115,11 @@
        <init-param>
   			 <param-name>edu.yale.its.tp.cas.client.filter.proxyCallbackUrl</param-name> 
              <param-value>https://localhost:8443/SpagoBIBirtReportEngine/proxyReceptor</param-value> 
-       </init-param>     
+       </init-param>  
+     <init-param>
+  			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
+             <param-value>true</param-value> 
+       </init-param>           
  </filter>
  -->
 	<filter>
@@ -205,7 +209,7 @@
     
     <servlet-mapping>
         <servlet-name>BirtReportServlet</servlet-name>
-        <url-pattern>/BirtReportServletScheduler</url-pattern>
+        <url-pattern>/BirtReportServletBackEnd</url-pattern>
     </servlet-mapping>    
 	
 	<!--

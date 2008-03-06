@@ -50,13 +50,13 @@ import org.jfree.data.general.ValueDataset;
  */
 
 
-public class Dashboard extends DialCharts{
+public class Meter extends DialCharts{
 
-	private static transient Logger logger=Logger.getLogger(Dashboard.class);
+	private static transient Logger logger=Logger.getLogger(Meter.class);
 	Vector intervals;
 
 
-	public Dashboard() {
+	public Meter() {
 		super();
 		intervals=new Vector();	
 	}

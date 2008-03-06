@@ -80,7 +80,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
 		    profile = new UserProfile(user);
 		} catch (Exception e) {
-		    logger.error("Exception while creating user profile",e);
+		    logger.error("Exception while creating user profile", e);
 		    throw new SecurityException();
 		}
 

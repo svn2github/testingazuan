@@ -38,9 +38,9 @@ public class ContentServiceImpl extends AbstractServiceImpl{
         try {
             validateTicket(token,user);
             ContentServiceImplSupplier c=new ContentServiceImplSupplier();
-            return c.readTemplate(user,document);
-	} catch (SecurityException e) {
-	    logger.error("SecurityException",e);
+	    return c.readTemplate(user, document);
+	} catch (Exception e) {
+	    logger.error("Exception",e); 
 	    return null;
 	}finally{
 	    monitor.stop();

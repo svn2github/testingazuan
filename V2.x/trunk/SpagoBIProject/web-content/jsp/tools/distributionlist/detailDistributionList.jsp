@@ -43,10 +43,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		
 		Map formUrlPars = new HashMap();
-		if(ChannelUtilities.isPortletRunning()) {
 			formUrlPars.put("PAGE", "DetailDistributionListPage");	
   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
-		}
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);
 		
 		Map backUrlPars = new HashMap();
@@ -59,11 +57,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
 
-	
+	<!-- 
 		<input type='hidden' name='PAGE' value='DetailDistributionListPage' />
-		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />  -->
 
-
+	<input type='hidden' value='<%=modality%>' name='modality' />	
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%=dl.getId()%>' name='id' />
@@ -114,10 +112,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<%
-			  String isReadonly = "";
-			  if (modality.equalsIgnoreCase("DETAIL_MOD")){
-			  		isReadonly = "readonly";
-			  }
 			  String name = dl.getName();
 			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
 				   name = "";
@@ -153,7 +147,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 	<BR>
 	
-<% if (modality.equalsIgnoreCase("DETAIL_MOD")){ %>
+<% if (modality!= null && modality.equalsIgnoreCase("DETAIL_MOD")){ %>
 <table style='width:80%;vertical-align:middle;margin-top:1px' >
 <tr>
 	<td>
@@ -177,7 +171,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	<%
 			List users = dl.getEmails();
-			if(!users.isEmpty()){
+			if(users!= null && !users.isEmpty()){
 	%>		
 
 	
@@ -205,18 +199,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										
 		<% } %>
 
-	<% } else { %>
-
-	<!-- 
-		<tr>
-	<td>
-	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
-			<spagobi:message key = "SBISet.ListDL.noUsers" />		 	
-		</div>
-		</td>
-	</tr> -->
-		
-	<% } %>   <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
+	<% } %>
+  <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	</table>
 </td>
 	
@@ -243,7 +227,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<%
 			List documents = dl.getDocuments();
-			if(!documents.isEmpty()){
+			if(documents!=null && !documents.isEmpty()){
 	%>	
 	
 	
@@ -275,20 +259,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<% } %>
 	
 								
-	<% } else {%>
-	
-<!-- 	<tr>
-	<td>
-	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
-			<spagobi:message key = "SBISet.ListDL.noDoc" />		 	
-		</div>
-		</td>
-	</tr> --> 
-	<% } %>  <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
-	
-	
-	
-		<spagobi:error/>
+	<% } %>
+<!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
+<spagobi:error/>
 	
 	</table> 
 	</td>
@@ -338,6 +311,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		  document.getElementById('dlForm').submit();
 	}
 	</script>
-	
+	</form>
 	<%@ include file="/jsp/commons/footer.jsp"%>
 	

@@ -49,7 +49,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Map backUrlPars = new HashMap();
 		backUrlPars.put("PAGE", "ListDistributionListUserPage");
 		backUrlPars.put("TYPE_LIST", "TYPE_LIST");
-		// backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);	
 	
 		Map formUrlPars = new HashMap();
@@ -85,33 +84,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    style='vertical-align:middle;padding-left:5px;font-size: 13px;font-weight:600;background:#e0e1e6;font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;color: #074B88;'>
 				<spagobi:message key = "SBISet.ListDL.emailInsertTitle"  /> &nbsp; <%=name%>
 			</td>
-			<!-- 
-			<td class='header-button-column-portlet-section'>
-				<a href="javascript:saveDL()"> 
-	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDL.saveButton" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDL.saveButton"/>' 
-	      			/> 
-				</a>
-			</td>
-			
-			<td class='header-button-column-portlet-section'>
-				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
-      				   title='<spagobi:message key = "SBISet.ListDL.saveBackButton" />'  
-                       alt='<spagobi:message key = "SBISet.ListDL.saveBackButton" />' 
-			   />
-			</td>
-			<td class='header-button-column-portlet-section'>
-				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
-	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "SBISet.ListDL.backButton"  />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
-	      			/>
-				</a>
-			</td>	 -->	
 		</tr>
 	</table>
 	
@@ -145,56 +117,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 <input type='hidden' value='<%=dlid%>' name='DL_ID' />
 
-	
 
-
-<script>	
-
-
-// function refreshParent() {
-	// document.forms[0].elements[1].value ;
-//	 parent.location.href = "https://localhost:8443/portal/faces/private/biadmin?portal:componentId=SBIDistributionList&portal:type=action&portal:isSecure=false&PAGE=ListDistributionListUserPage";
-	
-// }
-// onsubmit = refreshParent();
-//email =  document.forms[0].elements[0].value ;
-// if( email != null && email != '' ){ refreshParent();};
-</script>
-
-	<script>
-	function isDlFormChanged () {
-	
-	var bFormModified = 'false';
-		
-	var email1 = document.emailForm.EMAIL.value;	
-	
-	if ((email1 != '<%=email%>')
-		|| (email1 != '<%=((email)==null ?"":email)%>')) {
-			
-		bFormModified = 'true';
-	}
-	
-	return bFormModified;
-	
-	}
-	
-	function goBack(message, url) {
-	  
-	  var bFormModified = isDlFormChanged();
-	  
-	  if (bFormModified == 'true'){
-	  	  if (confirm(message)) {
-	  	      document.getElementById('saveAndGoBack').click(); 
-	  	  } else {
-			location.href = url;	
-    	  }	         
-       } else {
-			location.href = url;
-       }	  
-	}
-	
-
-
+<script>
 	function saveDL() {	
 	     email =  document.forms[0].elements[0].value ;
          if( email == null || email == '' ){ 
@@ -211,7 +135,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	  	  }
   	  	  
 	}
-	</script>	
+</script>	
 	</form>
 	
 	<%@ include file="/jsp/commons/footer.jsp"%>

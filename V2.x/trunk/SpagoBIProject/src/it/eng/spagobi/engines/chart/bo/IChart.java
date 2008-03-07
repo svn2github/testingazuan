@@ -43,7 +43,11 @@ public interface IChart {
 	public void setDataLov(String dataLov);
 
 	public boolean isChangeableView();
+	public String getChangeViewLabel();
+	public void setChangeViewChecked(boolean b);
+	
 	public boolean isLinkable();
 
+	
 	
 }

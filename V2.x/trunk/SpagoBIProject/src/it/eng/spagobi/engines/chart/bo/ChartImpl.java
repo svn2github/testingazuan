@@ -218,6 +218,13 @@ protected String subtype="";
 		return false;
 	}
 
+	public String getChangeViewLabel() {
+		return "";
+	}
+
+	public void setChangeViewChecked(boolean b) {
+		}
+
 
 
 }

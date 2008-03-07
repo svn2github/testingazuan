@@ -123,7 +123,7 @@ public class CreateChart extends AbstractHttpAction {
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
 
-				String title="titolo";
+				String title=sbi.getName();
 				responseSb.setAttribute("title",title);
 				responseSb.setAttribute("documentid",documentId);
 				responseSb.setAttribute("dataset",dataset);

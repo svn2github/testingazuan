@@ -119,5 +119,7 @@ public class SimplePie extends PieCharts{
 		return true;	
 	}
 
-
+	public String getChangeViewLabel() {
+		return CHANGE_VIEW_LABEL;	}
+	
 }

@@ -173,19 +173,19 @@ if(request.getParameter("changeviewmode")!=null){
 	String ch=(String)request.getParameter("changeviewmode");
 	if(ch.equalsIgnoreCase("true")){
 		changeViewMode=true;
+		if((sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("SIMPLEBAR"))
+		||	(sbi.getType().equalsIgnoreCase("DIALCHART") && sbi.getSubtype().equalsIgnoreCase("SIMPLEDIAL"))){
+			int temp=sbi.getWidth();
+			sbi.setWidth(sbi.getHeight());
+			sbi.setHeight(temp);
+		}
 	}
 }
 
 String changeVieLabel="";
 if(sbi.isChangeableView()){
-	if(sbi.getType().equalsIgnoreCase("PIECHART")){
-		changeVieLabel=SimplePie.CHANGE_VIEW_LABEL;
-		((SimplePie)sbi).setChangeViewChecked(changeViewMode);
-	}
-	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("simplebar")){
-		changeVieLabel=SimpleBar.CHANGE_VIEW_LABEL;
-		((SimpleBar)sbi).setChangeViewChecked(changeViewMode);
-	}
+	changeVieLabel=sbi.getChangeViewLabel();
+	sbi.setChangeViewChecked(changeViewMode);
 }
 
 

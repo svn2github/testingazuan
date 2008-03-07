@@ -106,6 +106,12 @@ public class SimpleBar extends BarCharts{
 		return true;	
 	}
 
+	public String getChangeViewLabel() {
+		return CHANGE_VIEW_LABEL;	}
+
+
+
+
 
 
 

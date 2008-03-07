@@ -21,9 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.distributionlist.service;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 /**
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
@@ -44,6 +50,30 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 	 */
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+	    RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+		SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String userId="";
+		if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
+		//sets the userid as input parameter for the query fo statements.xml
+		aSessionContainer.setAttribute("user_id",userId);
+		
+
+		Collection c = userProfile.getRoles();
+		Iterator i = c.iterator();
+		int j = 0;
+		while (i.hasNext()){
+			String roles = (String)i.next();
+			aSessionContainer.setAttribute("role"+j,roles);
+			j++ ;
+		}
+			while (j<6){
+				String s= "/";
+				aSessionContainer.setAttribute("role"+j,s);
+				j++ ;
+			}
+		
 		return DelegatedHibernateConnectionListService.getList(this, request, response);
 	} 
 

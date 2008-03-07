@@ -88,6 +88,7 @@ public class ListTag extends TagSupport
     protected String _nextUrl = null;
     protected String _firstUrl = null;
     protected String _lastUrl = null;
+    protected String _refreshUrl = null;
     
     protected HttpServletRequest httpRequest = null;
     protected IUrlBuilder urlBuilder = null;
@@ -374,9 +375,22 @@ public class ListTag extends TagSupport
 				String captionName = captionSB.getName();
 				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
+				
+				//gets the parameters for the pop up window
 				String popupStr = (String)captionSB.getAttribute("popup");
+				String popupWidth = (String)captionSB.getAttribute("popupW");
+				String popupHeight = (String)captionSB.getAttribute("popupH");
+				String popupCloseRefresh = (String)captionSB.getAttribute("popupCandR");
+				String popupSaveStr = (String)captionSB.getAttribute("popupSave");
+				String popupSaveFunction = (String)captionSB.getAttribute("popupSaveFunc");
+				
 				boolean popup=false;
+				boolean popupSave = false;
+				boolean closeRefresh = false;
 				if (popupStr!=null && popupStr.equalsIgnoreCase("true")) popup=true;
+				if (popupSaveStr!=null && popupSaveStr.equalsIgnoreCase("true")) popupSave=true;
+				if (popupCloseRefresh!=null && popupCloseRefresh.equalsIgnoreCase("true")) closeRefresh=true;
+				
 				if ( !conditionsVerified) {
 					// if conditions are not verified puts an empty column
 					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
@@ -456,14 +470,38 @@ public class ListTag extends TagSupport
 							    _htmlStream.append("            },");
 							    _htmlStream.append("            modal: true,\n");
 							    _htmlStream.append("            layout:'fit',\n");
-							    _htmlStream.append("            width:500,\n");
-						        _htmlStream.append("            height:200,\n");
+								    if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
+								    else {  _htmlStream.append("            height:200,\n");}
+								    if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
+								    else {  _htmlStream.append("            width:500,\n");}
 						        _htmlStream.append("            closeAction:'hide',\n");
-						        _htmlStream.append("            plain: true \n");
+						        if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
+						        
+						        _htmlStream.append("            scripts: true, \n");
+						        
+						        if(closeRefresh==true || popupSave==true) {
+							        _htmlStream.append("            buttons: [ \n");
+							        if(popupSave==true){
+							        _htmlStream.append("          { text: 'Save', \n");
+							      	_htmlStream.append("    	   handler: function(){ \n"); 
+							      	_htmlStream.append("           		dynamicIframe1."+popupSaveFunction+"(); \n");
+							        _htmlStream.append("              } } "); 
+							        }
+							        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
+							        if(closeRefresh==true){
+							        _htmlStream.append("          {text: 'Close', \n");
+							        _htmlStream.append("           handler: function(){ \n"); 
+							        _htmlStream.append("            	refresh(); \n");
+							        _htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
+							        _htmlStream.append("              }} \n"); 
+							        }
+							        _htmlStream.append("           ], \n");
+							        }
+							        
+							    _htmlStream.append("            plain: true \n");
 						        _htmlStream.append("        });\n");
 						        _htmlStream.append("    };\n");
 							    _htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
-							    //_htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true});} \n");					    
 							    _htmlStream.append("  }\n");
 							    _htmlStream.append(");\n");
 							    _htmlStream.append(" </script>\n");						
@@ -495,13 +533,39 @@ public class ListTag extends TagSupport
 						    _htmlStream.append("            }, \n");
 						    _htmlStream.append("            modal: true,\n");
 						    _htmlStream.append("            layout:'fit',\n");
-						    _htmlStream.append("            width:500,\n");
-					        _htmlStream.append("            height:200,\n");
+							    if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
+							    else {  _htmlStream.append("            height:200,\n");}
+							    if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
+							    else {  _htmlStream.append("            width:500,\n");}
+
 					        _htmlStream.append("            closeAction:'hide',\n");
+					        if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
+
+					        _htmlStream.append("            scripts: true, \n");
+					        
+					        if(closeRefresh==true || popupSave==true) {
+					        _htmlStream.append("            buttons: [ \n");
+					        if(popupSave==true){
+					        _htmlStream.append("          { text: 'Save', \n");
+					      	_htmlStream.append("    	   handler: function(){ \n"); 
+					      	_htmlStream.append("           		dynamicIframe1."+popupSaveFunction+"(); \n");
+					        _htmlStream.append("              } } "); 
+					        }
+					        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
+					        if(closeRefresh==true){
+					        _htmlStream.append("          {text: 'Close', \n");
+					        _htmlStream.append("           handler: function(){ \n"); 
+					        _htmlStream.append("            	refresh(); \n");
+					        _htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
+					        _htmlStream.append("              }} \n"); 
+					        }
+					        _htmlStream.append("           ], \n");
+					        }
+					        
 					        _htmlStream.append("            plain: true \n");
+					        
 					        _htmlStream.append("        }); }; \n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
-						    //_htmlStream.append("   winDetail_"+prog+".load({url: '"+createUrl_popup(paramsMap)+"',discardUrl: false,nocache: true, text: 'Sto caricando ...',timeout: 30,scripts: true}); \n");					    
+						    _htmlStream.append("   win"+captionName+"_"+prog+".show(); \n");
 						    _htmlStream.append("	} \n");
 						    _htmlStream.append(");\n");
 						    _htmlStream.append(" </script>\n");
@@ -520,6 +584,11 @@ public class ListTag extends TagSupport
 		}
 		
 		_htmlStream.append(" </table>\n");
+	    _htmlStream.append(" <script>\n");
+	    _htmlStream.append("        function refresh(){ \n");
+	    _htmlStream.append("  			location.href = '"+_refreshUrl+"' ; \n" );
+	    _htmlStream.append("        } \n");
+	    _htmlStream.append(" </script>\n");
 	} 
 	
 	protected boolean verifyConditions (SourceBean conditionsSB, SourceBean row) throws JspException {
@@ -661,6 +730,14 @@ public class ListTag extends TagSupport
 		prevParamsMap.put("MESSAGE", "LIST_PAGE");
 		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));		
 		_prevUrl = createUrl(prevParamsMap);	
+		
+		 // create url for refresh page		
+		HashMap refreshParamsMap = new HashMap();
+		refreshParamsMap.putAll(_providerUrlMap);
+		refreshParamsMap.put("MESSAGE", "LIST_PAGE");
+		refreshParamsMap.put("LIST_PAGE", String.valueOf(pageNumber));
+		_refreshUrl = createUrl(refreshParamsMap);
+		_refreshUrl = _refreshUrl.replaceAll("&amp;", "&");
 		
 		// create link for next page
 		HashMap nextParamsMap = new HashMap();
@@ -1127,8 +1204,6 @@ public class ListTag extends TagSupport
 	protected String createUrl_popup(HashMap paramsMap) {
 	        IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
 		paramsMap.put("TYPE_LIST", "TYPE_LIST");
-		//IEngUserProfile profile = (IEngUserProfile)_requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		//paramsMap.put("USER_ID",  profile.getUserUniqueIdentifier().toString());
 		String url = urlBuilderWeb.getUrl(httpRequest, paramsMap);
 		return url;
 	}	

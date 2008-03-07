@@ -133,6 +133,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		
 		String id = "";
 		String email = "";
+		String userId ="";
 		String submessagedet = "";
 		DistributionList dl = null;
 		try {
@@ -143,17 +144,18 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			email = (String)request.getAttribute("EMAIL");
 			submessagedet = (String)request.getAttribute("SUBMESSAGEDET");
 			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
-			HttpSession session = hsr.getSession();
-			//IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			//HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+			//HttpSession session = hsr.getSession();
 			
+			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			//IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			if (profile!=null) userId=(String)profile.getUserUniqueIdentifier();
 			//load the dl
 			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			//load the user
 			Email user = new Email();
 			user.setEmail(email);
-			user.setUserId(profile.getUserUniqueIdentifier().toString());
+			user.setUserId(userId);
 			//subscribe to the dl
 			DAOFactory.getDistributionListDAO().subscribeToDistributionList(dl,user);
 		}

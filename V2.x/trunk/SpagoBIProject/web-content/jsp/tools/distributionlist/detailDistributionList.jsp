@@ -165,12 +165,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</tr>
 	</table>
 		<table style='width:70%;margin-top:1px' id ="usersTable" >
-	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
-	<%
-			List users = dl.getEmails();
-			if(!users.isEmpty()){
-	%>		
-
 	<tr>	
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnUser" />
@@ -179,7 +173,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnEmail" />		
 	  </td>
-	</tr>	
+	</tr>
+	<!-- LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
+	<%
+			List users = dl.getEmails();
+			if(!users.isEmpty()){
+	%>		
+
+	
 		<%
 			Iterator it = users.iterator();
 			while(it.hasNext()){
@@ -204,16 +205,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										
 		<% } %>
 
-	<% } else {%>
+	<% } else { %>
+
+	<!-- 
 		<tr>
 	<td>
 	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
 			<spagobi:message key = "SBISet.ListDL.noUsers" />		 	
 		</div>
 		</td>
-	</tr>
+	</tr> -->
 		
-	<% } %> <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
+	<% } %>   <!-- CLOSE LIST OF USERS AND RESPECTIVE E_MAILS FOR A DISTRIBUTION LIST  -->
 	</table>
 </td>
 	
@@ -228,11 +231,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<table style='width:90%;margin-top:1px' id ="documentsTable" >
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
-	<%
-			List documents = dl.getDocuments();
-			if(!documents.isEmpty()){
-	%>	
-	
 	<tr>	
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnDocName" />
@@ -241,7 +239,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />		
 	  </td>
-	</tr>		
+	</tr>	
+	
+	<%
+			List documents = dl.getDocuments();
+			if(!documents.isEmpty()){
+	%>	
+	
+	
 		
 		<%
 			Iterator it2 = documents.iterator();
@@ -271,14 +276,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 								
 	<% } else {%>
-	<tr>
+	
+<!-- 	<tr>
 	<td>
 	  <div class='portlet-msg-error' style='vertical-align:top;text-align:center;'>	     			
 			<spagobi:message key = "SBISet.ListDL.noDoc" />		 	
 		</div>
 		</td>
-	</tr>
-	<% } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
+	</tr> --> 
+	<% } %>  <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	
 	
 	

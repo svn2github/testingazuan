@@ -5,6 +5,8 @@ import it.eng.spago.base.SourceBeanException;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
+import java.util.List;
+import java.util.Vector;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -19,9 +21,13 @@ import org.jfree.data.general.Dataset;
 
 public class SimpleBar extends BarCharts{
 
-	boolean changeViewChecked=false; //false is vertical, true is horizontal
+	boolean horizontalView=false; //false is vertical, true is horizontal
 
-	public static final String CHANGE_VIEW_LABEL="Set Horizontal View";
+	public static final String CHANGE_VIEW_HORIZONTAL="horizontal";
+
+	public static final String CHANGE_VIEW_LABEL="Set View Orientation";
+	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
+	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
 
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
@@ -33,7 +39,7 @@ public class SimpleBar extends BarCharts{
 		super.createChart(chartTitle, dataset);
 
 		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
-		if(changeViewChecked)
+		if(horizontalView)
 		{
 			plotOrientation=PlotOrientation.HORIZONTAL;
 		}
@@ -94,20 +100,57 @@ public class SimpleBar extends BarCharts{
 		return super.calculateValue();
 	}
 
-	public boolean isChangeViewChecked() {
-		return changeViewChecked;
+	public boolean isHorizontalView() {
+		return horizontalView;
 	}
 
-	public void setChangeViewChecked(boolean changeViewChecked) {
-		this.changeViewChecked = changeViewChecked;
+	public void setHorizontalView(boolean changeViewChecked) {
+		this.horizontalView = changeViewChecked;
 	}
 
 	public boolean isChangeableView() {
 		return true;	
 	}
 
-	public String getChangeViewLabel() {
-		return CHANGE_VIEW_LABEL;	}
+
+
+
+	public List getPossibleChangePars() {
+		List l=new Vector();
+		l.add(CHANGE_VIEW_HORIZONTAL);
+		return l;
+	}
+
+	public void setChangeViewsParameter(String changePar, boolean how) {
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+			horizontalView=how;
+			int temp=getWidth();
+			setWidth(getHeight());
+			setHeight(temp);
+		}
+
+	}
+
+	public boolean getChangeViewParameter(String changePar) {
+		boolean ret=false;
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+			ret=horizontalView;
+		}
+		return ret;
+	}
+
+	public String getChangeViewParameterLabel(String changePar, int i) {
+		String ret="";
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+		if(i==0)	
+			ret=CHANGE_VIEW_LABEL;
+		else if(i==1) ret=CHANGE_VIEW_LABEL1;
+		else if(i==2) ret=CHANGE_VIEW_LABEL2;
+
+		}
+		return ret;
+	}
+
 
 
 

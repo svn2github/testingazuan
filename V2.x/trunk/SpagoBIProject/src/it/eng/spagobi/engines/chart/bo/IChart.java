@@ -1,6 +1,9 @@
 package it.eng.spagobi.engines.chart.bo;
 
 
+import java.util.List;
+import java.util.Map;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 
@@ -43,11 +46,16 @@ public interface IChart {
 	public void setDataLov(String dataLov);
 
 	public boolean isChangeableView();
-	public String getChangeViewLabel();
 	public void setChangeViewChecked(boolean b);
 	
 	public boolean isLinkable();
 
+	public List getPossibleChangePars();
+	
+	public void setChangeViewsParameter(String changePar, boolean how);
+	public boolean getChangeViewParameter(String changePar);
+	public String getChangeViewParameterLabel(String changePar, int i);
+			
 	
 	
 }

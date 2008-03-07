@@ -19,7 +19,6 @@ import org.jfree.data.general.DefaultPieDataset;
 public class PieCharts extends ChartImpl {
 
 	Map confParameters;
-	boolean percentage=false;
 
 
 
@@ -42,7 +41,7 @@ public class PieCharts extends ChartImpl {
 			confParameters.put(nameParam, valueParam);
 		}	
 
-		if(confParameters.get("percentage")!=null){	
+		/*if(confParameters.get("percentage")!=null){	
 			String percent=(String)confParameters.get("percentage");
 			if(percent.equalsIgnoreCase("true"))percentage=true;
 			else percentage=false;
@@ -50,7 +49,7 @@ public class PieCharts extends ChartImpl {
 		else
 		{
 			percentage=false;
-		}
+		}*/
 		
 
 		
@@ -110,14 +109,6 @@ public class PieCharts extends ChartImpl {
 		public void setConfParameters(Map confParameters) {
 			this.confParameters = confParameters;
 		}
-		public boolean isPercentage() {
-			return percentage;
-		}
-
-		public void setPercentage(boolean percentage) {
-			this.percentage = percentage;
-		}
-
 
 
 	}

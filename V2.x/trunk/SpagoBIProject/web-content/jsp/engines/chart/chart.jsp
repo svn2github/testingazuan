@@ -49,6 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
+<%@page import="java.util.Vector"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
   
@@ -168,6 +169,26 @@ String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
 //Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
 
+// get wich pars are possible set
+
+Vector changePars=(Vector)sbi.getPossibleChangePars();
+//check for each one if a changeparameter has ben set
+		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+			String par = (String) iterator.next();
+			if(request.getParameter(par)!=null){
+				String ch=(String)request.getParameter(par);
+				if(ch.equalsIgnoreCase("true")){
+					sbi.setChangeViewsParameter(par,true);}
+				else {if(ch.equalsIgnoreCase("false"));
+					{
+						sbi.setChangeViewsParameter(par,false);}
+							}
+				}
+
+		}
+
+
+/*
 boolean changeViewMode=false;
 if(request.getParameter("changeviewmode")!=null){
 	String ch=(String)request.getParameter("changeviewmode");
@@ -187,7 +208,7 @@ if(sbi.isChangeableView()){
 	changeVieLabel=sbi.getChangeViewLabel();
 	sbi.setChangeViewChecked(changeViewMode);
 }
-
+*/
 
 
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
@@ -255,6 +276,7 @@ if(sbi.isChangeableView()){
 	
 	// It passess changeView in POST (recall the actions) Not used.
 	
+
 	/*
 	    if(sbi.isChangeableView()){
 	    	%>
@@ -269,34 +291,69 @@ if(sbi.isChangeableView()){
 			<BR>
 	    	<%
 	    } 
-	*/
 	    
 	    
-	    
+	  	
+	
 	    if(sbi.isChangeableView()){
+	    	
+	    	// for each possible parameter to change creates a checkbox
+	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+	    		String par = (String) iterator.next();
+	    		
 	    	%>
-	    	<form  name="changeviewmode" action="<%=refreshUrl2%>" method="GET" >
-				<%if(changeViewMode){ %>
- 					<input name="changeviewmode" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=changeVieLabel%></input>
+	    	<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
+				<%if(sbi.getChangeViewParameter(par)){ %>
+ 					<input name="<%=par%>" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=sbi.getChangeViewParameterLabel(par)%></input>
  							<%}
 					else{%>
-								<input name="changeviewmode" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=changeVieLabel%></input>
-							<%} %>
+					<input name="<%=par%>" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=sbi.getChangeViewParameterLabel(par)%></input>
+							<%} 
+							%>
 			</form> 
 			<BR>
-	    	<%
+	    <% 
+	    	}
 	    }
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+*/
+
+//I Try Radio Buttons
+	
+		    if(sbi.isChangeableView()){
+	    	
+	    	// for each possible parameter to change creates a checkbox
+	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+	    		String par = (String) iterator.next(); %>
+	    		<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
+	    		 <fieldset>
+	    		  <legend><%=sbi.getChangeViewParameterLabel(par,0)%></legend>
+	    		  <%if(sbi.getChangeViewParameter(par)){ %>
+	    		  <%=sbi.getChangeViewParameterLabel(par,1)%> <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/>
+ 					<%=sbi.getChangeViewParameterLabel(par,2)%><input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/>  
+ 			  <%}
+	    		  else {%>
+	    		  <%=sbi.getChangeViewParameterLabel(par,1)%> <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>
+				<%=sbi.getChangeViewParameterLabel(par,2)%><input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  
+ 	    		  <%} %>
+ 	    		  </fieldset>
+				</form>
+	    	<BR>
+	    	<BR>
+	    	
+	    	<% 
+	    	}
+		    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	    if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
 		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
@@ -305,8 +362,7 @@ if(sbi.isChangeableView()){
 		
     <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
     </div>
-    <%} %>
-
+<%} %>
     
 
     

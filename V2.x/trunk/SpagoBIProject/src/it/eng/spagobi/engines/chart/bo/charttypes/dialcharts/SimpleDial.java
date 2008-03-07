@@ -56,13 +56,26 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 public class SimpleDial extends DialCharts{
 
 	private static transient Logger logger=Logger.getLogger(SimpleDial.class);
-	boolean changeViewChecked=false;
-	private String orientation="horizontal";
+
 	double increment=0.0;
 	int minorTickCount=0;
 	Vector intervals;
-	public static final String CHANGE_VIEW_LABEL="Set Horizontal View";
 
+	
+	boolean horizontalView=false; //false is vertical, true is horizontal
+
+	public static final String CHANGE_VIEW_HORIZONTAL="horizontal";
+
+	public static final String CHANGE_VIEW_LABEL="Set View Orientation";
+	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
+	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
+	
+	
+	
+	
+	
+	
+	
 	public SimpleDial() {
 		super();
 		intervals=new Vector();
@@ -151,7 +164,7 @@ public class SimpleDial extends DialCharts{
 		else{
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
-			String orientation=(String)sbRow.getAttribute("orientation");
+			//String orientation=(String)sbRow.getAttribute("orientation");
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());			
 			
@@ -205,7 +218,7 @@ public class SimpleDial extends DialCharts{
 		plot.setDataset((ValueDataset)dataset);
 
 		ArcDialFrame dialFrame=null;
-		if(!changeViewChecked){
+		if(!horizontalView){
 			plot.setView(0.78, 0.37, 0.22, 0.26);     
 			dialFrame = new ArcDialFrame(-10.0, 20.0); 
 		}
@@ -226,7 +239,7 @@ public class SimpleDial extends DialCharts{
 		DialBackground sdb = new DialBackground(gp);
 
 		GradientPaintTransformType gradientPaintTransformType=GradientPaintTransformType.VERTICAL;
-		if(changeViewChecked){
+		if(horizontalView){
 			gradientPaintTransformType=GradientPaintTransformType.HORIZONTAL;
 		}
 		
@@ -235,7 +248,7 @@ public class SimpleDial extends DialCharts{
 		plot.addLayer(sdb);
 
 		StandardDialScale scale=null;
-		if(!changeViewChecked){
+		if(!horizontalView){
 			scale = new StandardDialScale(0, 100, -8, 16.0, 
 					10.0, 4);
 		}
@@ -269,13 +282,6 @@ public class SimpleDial extends DialCharts{
 		return chart1;
 	}
 
-	public String getOrientation() {
-		return orientation;
-	}
-
-	public void setOrientation(String orientation) {
-		this.orientation = orientation;
-	}
 
 
 
@@ -309,20 +315,48 @@ public class SimpleDial extends DialCharts{
 		this.intervals.add(interval);
 	}
 
-	public boolean isChangeViewChecked() {
-		return changeViewChecked;
-	}
 
-	public void setChangeViewChecked(boolean changeViewChecked) {
-		this.changeViewChecked = changeViewChecked;
-	}
 
-	public String getChangeViewLabel() {
-		return CHANGE_VIEW_LABEL;
-	}
 
 	public boolean isChangeableView() {
 		return true;
+	}
+
+	
+	public List getPossibleChangePars() {
+		List l=new Vector();
+		l.add(CHANGE_VIEW_HORIZONTAL);
+		return l;
+	}
+
+	public void setChangeViewsParameter(String changePar, boolean how) {
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+			horizontalView=how;
+			int temp=getWidth();
+			setWidth(getHeight());
+			setHeight(temp);
+		}
+
+	}
+
+	public boolean getChangeViewParameter(String changePar) {
+		boolean ret=false;
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+			ret=horizontalView;
+		}
+		return ret;
+	}
+
+	public String getChangeViewParameterLabel(String changePar, int i) {
+		String ret="";
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
+		if(i==0)	
+			ret=CHANGE_VIEW_LABEL;
+		else if(i==1) ret=CHANGE_VIEW_LABEL1;
+		else if(i==2) ret=CHANGE_VIEW_LABEL2;
+
+		}
+		return ret;
 	}
 
 

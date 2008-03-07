@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
@@ -31,11 +32,11 @@ public class ChartImpl implements IChart {
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
-protected String type="";
-protected String subtype="";
+	protected String type="";
+	protected String subtype="";
 
 
-	
+
 
 
 	public void configureChart(SourceBean content) {
@@ -57,6 +58,8 @@ protected String subtype="";
 
 		// get all the data parameters 
 
+
+		
 		try{					
 			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
@@ -77,7 +80,7 @@ protected String subtype="";
 				logger.error("no data source specified");
 				throw new Exception("No data source specified");}
 
-		
+
 			if(dataParameters.get("conflov")!=null && !(((String)dataParameters.get("conflov")).equalsIgnoreCase("") )){	
 				confLov=(String)dataParameters.get("conflov");
 				isLovConfDefined=true;
@@ -126,7 +129,7 @@ protected String subtype="";
 				sbi=new LinkableBar();
 			}
 		}
-				
+
 		return sbi;
 	}
 
@@ -218,12 +221,32 @@ protected String subtype="";
 		return false;
 	}
 
-	public String getChangeViewLabel() {
+	public String getChangeViewLabel(String theme, int i) {
 		return "";
 	}
 
 	public void setChangeViewChecked(boolean b) {
-		}
+	}
+
+	public List getPossibleChangePars() {
+		// TODO Auto-generated method stub
+		return new Vector();
+	}
+
+	public void setChangeViewsParameter(String changePar, boolean how) {
+		
+		
+	}
+
+	public boolean getChangeViewParameter(String changePar) {
+		return false;		
+	}
+
+	public String getChangeViewParameterLabel(String changePar, int i) {
+		return null;
+	}
+
+
 
 
 

@@ -4,6 +4,8 @@ package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 import it.eng.spago.base.SourceBean;
 
 import java.awt.Font;
+import java.util.List;
+import java.util.Vector;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -17,8 +19,24 @@ import org.jfree.util.Rotation;
 
 public class SimplePie extends PieCharts{
 
-	boolean changeViewChecked=false; //false is 2D, true is 3D
-	public static final String CHANGE_VIEW_LABEL="Set 3D View";
+	boolean threeD=false; //false is 2D, true is 3D
+	boolean percentage=false;
+	
+	public static final String CHANGE_VIEW_3D_LABEL="Set View Dimension";
+	public static final String CHANGE_VIEW_3D_LABEL1="Set 2D";
+	public static final String CHANGE_VIEW_3D_LABEL2="Set 3D";
+	
+	
+	public static final String CHANGE_VIEW_3D="threeD";
+
+	public static final String CHANGE_VIEW_PERCENTAGE_LABEL="Set Percentage Mode";
+	public static final String CHANGE_VIEW_PERCENTAGE_LABEL1="Absolute Values";
+	public static final String CHANGE_VIEW_PERCENTAGE_LABEL2="Percentage Values";
+
+	
+	public static final String CHANGE_VIEW_PERCENTAGE="percentage";
+
+	
 	
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
@@ -30,7 +48,7 @@ public class SimplePie extends PieCharts{
 		
 		JFreeChart chart=null; 
 
-		if(!changeViewChecked){
+		if(!threeD){
 			chart = ChartFactory.createPieChart(
 					chartTitle,  
 					(PieDataset)dataset,             // data
@@ -107,19 +125,65 @@ public class SimplePie extends PieCharts{
 
 	}
 
-	public boolean isChangeViewChecked() {
-		return changeViewChecked;
-	}
+	
 
-	public void setChangeViewChecked(boolean changeViewChecked) {
-		this.changeViewChecked = changeViewChecked;
-	}
-
+	
 	public boolean isChangeableView() {
 		return true;	
 	}
 
-	public String getChangeViewLabel() {
-		return CHANGE_VIEW_LABEL;	}
+	
+	
+	
+	
+	public void setChangeViewsParameter(String changePar, boolean how) {
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
+			threeD=how;
+			int temp=getWidth();
+			setWidth(getHeight());
+			setHeight(temp);
+		}
+		else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
+			percentage =how;
+		}
+
+
+	}
+
+	public boolean getChangeViewParameter(String changePar) {
+		boolean ret=false;
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
+			ret=threeD;
+		}
+		else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
+			ret=percentage;
+		}
+		return ret;
+	}
+
+	public String getChangeViewParameterLabel(String changePar, int i) {
+		String ret="";
+		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
+			if(i==0) ret=CHANGE_VIEW_3D_LABEL;
+			else if(i==1) ret=CHANGE_VIEW_3D_LABEL1;
+		 else if(i==2) ret=CHANGE_VIEW_3D_LABEL2;
+		}
+			 else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
+					if(i==0) ret=CHANGE_VIEW_PERCENTAGE_LABEL;
+					else if(i==1) ret=CHANGE_VIEW_PERCENTAGE_LABEL1;
+				 else if(i==2) ret=CHANGE_VIEW_PERCENTAGE_LABEL2;
+		}
+
+		return ret;
+	}
+	
+	
+	public List getPossibleChangePars() {
+		List l=new Vector();
+		l.add(CHANGE_VIEW_3D);
+		l.add(CHANGE_VIEW_PERCENTAGE);		
+		return l;
+	}
+	
 	
 }

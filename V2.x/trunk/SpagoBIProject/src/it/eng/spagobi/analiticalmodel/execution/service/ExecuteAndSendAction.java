@@ -105,10 +105,10 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		    logger.debug("got userId from Request=" + userId);
 		} else if (parName.equals("login")) {
 		    login = (String) request.getAttribute("login");
-		    logger.debug("got user from Request=");
+		    logger.debug("got user from Request");
 		} else if (parName.equals("pwd")) {
 		    pass = (String) request.getAttribute("pwd");
-		    logger.debug("got pwd from Request=");
+		    logger.debug("got pwd from Request");
 		} else {
 		    String value = (String) request.getAttribute(parName);
 		    queryStr += parName + "=" + value + "&";
@@ -190,7 +190,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    props.put("mail.smtp.host", smtphost);
 	    props.put("mail.smtp.auth", "true");
 	    // create autheticator object
-	    Authenticator auth = new SMTPAuthenticator("bernabei", "9");
+	    Authenticator auth = new SMTPAuthenticator(login,pass);
 	    // open session
 	    Session session = Session.getDefaultInstance(props, auth);
 

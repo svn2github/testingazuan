@@ -36,23 +36,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <portlet:defineObjects/>
-<% 
-
-	
-	Collection c = userProfile.getRoles();
-	Iterator i = c.iterator();
-	int j = 0;
-	while (i.hasNext()){
-		String roles = (String)i.next();
-		aSessionContainer.setAttribute("role"+j,roles);
-		j++ ;
-	}
-		while (j<6){
-			String s= "/";
-			aSessionContainer.setAttribute("role"+j,s);
-			j++ ;
-		}
-%>
 
 <div class="div_background">
     <br/>	
@@ -96,6 +79,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<br/>
 </div>
 <%@ include file="/jsp/commons/footer.jsp"%>
+
 <iframe id='iframeLogin'
                  name='iframeLogin'
                  src='<%=srcIFrame%>'

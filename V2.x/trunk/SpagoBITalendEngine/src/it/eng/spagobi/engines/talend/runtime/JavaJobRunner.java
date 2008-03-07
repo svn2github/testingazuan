@@ -28,6 +28,7 @@ import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -176,14 +177,21 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
 	    	
 	    	List filesToBeDeleted = new ArrayList();
 	    	filesToBeDeleted.add(contextFileDir);
+	    	
+	    	WorkManager wm=new WorkManager();
+	    	TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, 
+    			auditAccessUtils, auditId, parameters,session);
+	    	TalendWorkListener listener=new TalendWorkListener();
+	    	wm.run(jrt, listener);
 	    	// davide sparire usa run e destroy oppure fai classe statica che lancia comando 	Process p = Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 	    	/*JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted, 
 	    			auditAccessUtils, auditId, parameters,session);
 	    	jrt.start();*/
+	    	/*
 	    	JobRunnerFacilities jrt = new JobRunnerFacilities(cmd, null, executableJobDir, filesToBeDeleted, 
 	    			auditAccessUtils, auditId, parameters,session);
 	    	jrt.executeJob();
-	    	
+	    	*/
 	    	
     	} catch (Exception e) {
     		throw new JobExecutionException("Error while preparing java command:", e);

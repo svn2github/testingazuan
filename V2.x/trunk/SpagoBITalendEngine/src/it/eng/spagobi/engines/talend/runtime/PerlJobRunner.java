@@ -28,6 +28,7 @@ import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -143,10 +144,17 @@ public class PerlJobRunner implements IJobRunner {
     	
     	List filesToBeDeleted = new ArrayList();
     	filesToBeDeleted.add(contextTempScriptFile);
-    	JobRunnerThread jrt = new JobRunnerThread(cmd, null, executableJobDir, filesToBeDeleted, 
-    			auditAccessUtils, auditId, parameters,session);
-    	jrt.start();
-			
+    	
+    	try {
+	    WorkManager wm = new WorkManager();
+	    TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, auditAccessUtils, auditId,
+		    parameters, session);
+	    TalendWorkListener listener = new TalendWorkListener();
+	    wm.run(jrt, listener);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+		
     }
 
 	private File createTempContextScriptFile(File contextScriptFile, Map parameters) throws Exception {

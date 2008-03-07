@@ -26,6 +26,7 @@ import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +41,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-public class JobRunnerThread extends Thread {
+import commonj.work.Work;
 
-	private static transient Logger logger = Logger.getLogger(JobRunnerThread.class);
+public class TalendWork implements Work {
+
+	private static transient Logger logger = Logger.getLogger(TalendWork.class);
 	
 	public static final String TALEND_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendRolesHandler";
 	public static final String TALEND_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendEventPresentationHandler";
@@ -63,9 +66,15 @@ public class JobRunnerThread extends Thread {
 	private Map _parameters = null;
 	private HttpSession _session=null;
 	
+	private boolean completeWithoutError=false;
 	
 	
-	public JobRunnerThread(String command, String[] envr, File executableJobDir, 
+	
+	public boolean isCompleteWithoutError() {
+	    return completeWithoutError;
+	}
+
+	public TalendWork(String command, String[] envr, File executableJobDir, 
 			List filesToBeDeletedAfterJobExecution, AuditAccessUtils auditAccessUtils, String auditId,
 			Map parameters,HttpSession session) {
 		this._command = command;
@@ -194,7 +203,7 @@ public class JobRunnerThread extends Thread {
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + ":run: problems while registering the end process event", e);
 		}
-		
+		completeWithoutError=true;
 		
 	}
 	
@@ -213,6 +222,17 @@ public class JobRunnerThread extends Thread {
 		logger.debug("parameters: "+buffer.toString());
 		logger.debug("OUT");
 		return buffer.toString();
+	}
+
+
+	public boolean isDaemon() {
+	    return false;
+	}
+
+
+	public void release() {
+	    logger.debug("IN");
+	    
 	}
 	
 }

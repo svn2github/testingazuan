@@ -48,34 +48,46 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		Map backUrlPars = new HashMap();
 		backUrlPars.put("PAGE", "ListDistributionListUserPage");
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		backUrlPars.put("TYPE_LIST", "TYPE_LIST");
+		// backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);	
 	
 		Map formUrlPars = new HashMap();
 		String formUrl = urlBuilder.getUrl(request, formUrlPars);		
+
 	%>
 	
 	
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+	
+	
 
 <form method='POST' action='<%=formUrl%>' id='emailForm' name='emailForm' >
+		<%
+			  
+			  String name = dl.getName();
+			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
+				   
+				   name = "";
+			   }
+		%>
+		<%
+			   if((email==null) || (email.equalsIgnoreCase("null"))  ) {
+				   
+				   email = "";
+			   }
+		%>
 
-		<input type='hidden' name='PAGE' value='InsertEmailPage' />
-		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-
-
-	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
-	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
-	<input type='hidden' value='<%=dlid%>' name='DL_ID' />
 	
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
-			<td class='header-title-column-portlet-section' 
-			    style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key = "SBISet.ListDL.TitleDetail"  />
+			<td class='header-title-column-portlet-section-noimage' 
+			    style='vertical-align:middle;padding-left:5px;font-size: 13px;font-weight:600;background:#e0e1e6;font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;color: #074B88;'>
+				<spagobi:message key = "SBISet.ListDL.emailInsertTitle"  /> &nbsp; <%=name%>
 			</td>
+			<!-- 
 			<td class='header-button-column-portlet-section'>
-				<a href="javascript:saveDL('SAVE')"> 
+				<a href="javascript:saveDL()"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.ListDL.saveButton" />' 
 	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
@@ -83,7 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      			/> 
 				</a>
 			</td>
-			<!-- 
+			
 			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
@@ -106,17 +118,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div id='emailinsert' class='div_background' style='padding-top:5px;padding-left:5px;'>
 		<br>
-		<%
-			  
-			  String name = dl.getName();
-			   if((name==null) || (name.equalsIgnoreCase("null"))  ) {
-				   
-				   name = "";
-			   }
-		%>
+
 	<div class='div_detail_form'>
 			<span class='portlet-form-field-label'>
-				<spagobi:message key = "SBISet.ListDL.columnNameInsertMail" /> &nbsp; <i style="color:#6495ED"> <%=name%> </i> 
+				<spagobi:message key = "SBISet.ListDL.columnNameInsertMail" /> 
 			</span>
 		</div>
 		
@@ -125,19 +130,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDL.emailInsert" />
 			</span>
 		</div>
-		<%
-			   if((email==null) || (email.equalsIgnoreCase("null"))  ) {
-				   
-				   email = "";
-			   }
-		%>
+
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
 				   name="EMAIL" size="50" value="<%=email%>" maxlength="50" />
+			
 			&nbsp;*
 		</div>
 	</div>	
+
+<input type='hidden' name='PAGE' value='InsertEmailPage' />
+<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
+<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
+<input type='hidden' value='<%=dlid%>' name='DL_ID' />
+
 	
+
+
+<script>	
+
+
+// function refreshParent() {
+	// document.forms[0].elements[1].value ;
+//	 parent.location.href = "https://localhost:8443/portal/faces/private/biadmin?portal:componentId=SBIDistributionList&portal:type=action&portal:isSecure=false&PAGE=ListDistributionListUserPage";
+	
+// }
+// onsubmit = refreshParent();
+//email =  document.forms[0].elements[0].value ;
+// if( email != null && email != '' ){ refreshParent();};
+</script>
+
 	<script>
 	function isDlFormChanged () {
 	
@@ -170,11 +193,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        }	  
 	}
 	
-	function saveDL(type) {	
-  	  	  document.emailForm.SUBMESSAGEDET.value=type;
-  	  	  if (type == 'SAVE') document.getElementById('emailForm').submit();
+
+
+	function saveDL() {	
+	     email =  document.forms[0].elements[0].value ;
+         if( email == null || email == '' ){ 
+         							alert('Email Missing'); 
+         							}
+         else {	
+        var emailPat=/^(.+)@(.+)$/ ;
+		var matchArray = email.match(emailPat)
+		if (matchArray==null) {
+		alert('Email address seems incorrect');
+		return false ;
+		}						 	  	  
+  	  	 document.getElementById('emailForm').submit();
+  	  	  }
+  	  	  
 	}
 	</script>	
+	</form>
 	
 	<%@ include file="/jsp/commons/footer.jsp"%>
 	

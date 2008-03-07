@@ -135,6 +135,16 @@ td.header-title-column-portlet-section-nogrey {
 	color: #074B88;
 }
 
+/* Column with the header title for each section of the SpagoBI portlet without image on top right side*/
+td.header-title-column-portlet-section-noimage {
+	background-color: #e0e1e6; 
+ 	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
+	font-size: 13px;
+	font-weight: 600;
+	color: #074B88;
+	background-repeat: no-repeat;
+}
+
 /* Column with the header title for single object execution section of the SpagoBI portlet*/
 td.header-title-column-single-object-execution-portlet-section {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;

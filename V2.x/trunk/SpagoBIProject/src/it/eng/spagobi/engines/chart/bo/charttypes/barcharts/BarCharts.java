@@ -6,6 +6,7 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +21,10 @@ public class BarCharts extends ChartImpl {
 	Map confParameters;
 	String categoryLabel="";
 	String valueLabel="";
-
+	HashMap colorMap=null;  // keeps user selected colors
 
 	public Dataset calculateValue() throws SourceBeanException {
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
-
 
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -53,7 +53,6 @@ public class BarCharts extends ChartImpl {
 				if(name.equalsIgnoreCase("x"))catValue=value;
 				else series.put(name, value);
 			}
-
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				String valueS=(String)series.get(nameS);
@@ -89,13 +88,35 @@ public class BarCharts extends ChartImpl {
 		{
 			categoryLabel="category";
 		}
-		
+
 		if(confParameters.get("valuelabel")!=null){	
 			valueLabel=(String)confParameters.get("valuelabel");
 		}
 		else
 		{
 			valueLabel="values";
+		}
+
+		//reading series colors if present
+		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIESCOLORS");
+		if(colors!=null){
+			colorMap=new HashMap();
+			List atts=colors.getContainedAttributes();
+			String colorNum="";
+			String colorSerie="";
+			String num="";
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+				colorNum=new String(object.getKey());
+				num=colorNum.substring(5, colorNum.length()); // gets the number from color1, color2 
+				
+				colorSerie=new String((String)object.getValue());
+				Color col=new Color(Integer.decode(colorSerie).intValue());
+				if(col!=null){
+					colorMap.put(num,col); 
+				}
+			}		
+
 		}
 
 	}

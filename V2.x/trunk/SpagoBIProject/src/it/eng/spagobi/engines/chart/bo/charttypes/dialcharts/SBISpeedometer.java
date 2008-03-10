@@ -247,7 +247,9 @@ public class SBISpeedometer extends DialCharts{
 		plot.addPointer(p);
 
 		logger.debug("OUT");
-		return new JFreeChart(chartTitle, plot);
+		JFreeChart chart=new JFreeChart(chartTitle, plot);
+		chart.setBackgroundPaint(color);
+		return chart;
 	}
 
 

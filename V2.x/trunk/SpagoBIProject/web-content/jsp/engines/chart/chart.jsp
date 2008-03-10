@@ -173,6 +173,7 @@ Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
 
 Vector changePars=(Vector)sbi.getPossibleChangePars();
 //check for each one if a changeparameter has ben set
+
 		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 			String par = (String) iterator.next();
 			if(request.getParameter(par)!=null){

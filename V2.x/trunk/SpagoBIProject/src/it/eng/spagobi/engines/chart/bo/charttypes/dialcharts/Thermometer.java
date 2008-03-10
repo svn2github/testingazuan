@@ -77,7 +77,7 @@ public class Thermometer extends DialCharts{
 		logger.debug("IN");
 		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
 		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
-
+		chart.setBackgroundPaint(color);
 		plot.setInsets(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setPadding(new RectangleInsets(10.0, 10.0, 10.0, 10.0));
 		plot.setThermometerStroke(new BasicStroke(2.0f));

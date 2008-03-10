@@ -1,11 +1,10 @@
 package it.eng.spagobi.engines.chart.bo;
 
 
-import java.util.List;
-import java.util.Map;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+
+import java.util.List;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
@@ -56,6 +55,5 @@ public interface IChart {
 	public boolean getChangeViewParameter(String changePar);
 	public String getChangeViewParameterLabel(String changePar, int i);
 			
-	
 	
 }

@@ -22,9 +22,9 @@ import org.jfree.data.general.Dataset;
 public class SimpleBar extends BarCharts{
 
 	boolean horizontalView=false; //false is vertical, true is horizontal
+	boolean horizontalViewConfigured=false;
 
 	public static final String CHANGE_VIEW_HORIZONTAL="horizontal";
-
 	public static final String CHANGE_VIEW_LABEL="Set View Orientation";
 	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
 	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
@@ -32,6 +32,18 @@ public class SimpleBar extends BarCharts{
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
+		if(confParameters.get("orientation")!=null){	
+			String orientation=(String)confParameters.get("orientation");
+			if(orientation.equalsIgnoreCase("vertical")){
+				horizontalViewConfigured=true;
+				horizontalView=false;
+			}
+			else if(orientation.equalsIgnoreCase("horizontal")){
+				horizontalViewConfigured=true;
+				horizontalView=true;
+			}
+		}
+
 	}
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
@@ -59,7 +71,7 @@ public class SimpleBar extends BarCharts{
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
 		// set the background color for the chart...
-		chart.setBackgroundPaint(Color.white);
+		chart.setBackgroundPaint(color);
 
 		// get a reference to the plot for further customisation...
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -109,7 +121,7 @@ public class SimpleBar extends BarCharts{
 	}
 
 	public boolean isChangeableView() {
-		return true;	
+			return true;
 	}
 
 
@@ -117,7 +129,9 @@ public class SimpleBar extends BarCharts{
 
 	public List getPossibleChangePars() {
 		List l=new Vector();
-		l.add(CHANGE_VIEW_HORIZONTAL);
+		if(!horizontalViewConfigured){
+		l.add(CHANGE_VIEW_HORIZONTAL);}
+		
 		return l;
 	}
 
@@ -142,10 +156,10 @@ public class SimpleBar extends BarCharts{
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
-		if(i==0)	
-			ret=CHANGE_VIEW_LABEL;
-		else if(i==1) ret=CHANGE_VIEW_LABEL1;
-		else if(i==2) ret=CHANGE_VIEW_LABEL2;
+			if(i==0)	
+				ret=CHANGE_VIEW_LABEL;
+			else if(i==1) ret=CHANGE_VIEW_LABEL1;
+			else if(i==2) ret=CHANGE_VIEW_LABEL2;
 
 		}
 		return ret;

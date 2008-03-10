@@ -196,6 +196,8 @@ public class Meter extends DialCharts{
 
 		JFreeChart chart = new JFreeChart(name, 
 				JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+		chart.setBackgroundPaint(color);
+
 		return chart;
 	}
 

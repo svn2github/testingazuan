@@ -61,21 +61,21 @@ public class SimpleDial extends DialCharts{
 	int minorTickCount=0;
 	Vector intervals;
 
-	
-	boolean horizontalView=false; //false is vertical, true is horizontal
 
+	boolean horizontalView=false; //false is vertical, true is horizontal
+	boolean horizontalViewConfigured=false;
 	public static final String CHANGE_VIEW_HORIZONTAL="horizontal";
 
 	public static final String CHANGE_VIEW_LABEL="Set View Orientation";
 	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
 	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	public SimpleDial() {
 		super();
 		intervals=new Vector();
@@ -89,13 +89,13 @@ public class SimpleDial extends DialCharts{
 	 * @return A chart that displays a value as a dial.
 	 */
 
-	
+
 
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
 
-		
+
 		if(!isLovConfDefined){
 			if(confParameters.get("increment")!=null){	
 				String increment=(String)confParameters.get("increment");
@@ -112,14 +112,19 @@ public class SimpleDial extends DialCharts{
 				setMinorTickCount(10);
 			}
 
-		/*if(confParameters.get("orientation")!=null){	
+			if(confParameters.get("orientation")!=null){	
 				String orientation=(String)confParameters.get("orientation");
-				setOrientation(orientation);
+				if(orientation.equalsIgnoreCase("vertical")){
+					horizontalViewConfigured=true;
+					horizontalView=false;
+				}
+				else if(orientation.equalsIgnoreCase("horizontal")){
+					horizontalViewConfigured=true;
+					horizontalView=true;
+				}
 			}
-			else {
-				setOrientation("horizontal");
-			}*/
-			
+
+
 			//reading intervals information
 			SourceBean intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
 			List intervalsAttrsList=null;
@@ -164,40 +169,49 @@ public class SimpleDial extends DialCharts{
 		else{
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
-			//String orientation=(String)sbRow.getAttribute("orientation");
+
+			String orientation="";
+			if(sbRow.getAttribute("orientation")!=null){
+				orientation=(String)sbRow.getAttribute("orientation");
+				if(orientation.equalsIgnoreCase("vertical")){
+					horizontalView=false;
+					horizontalViewConfigured=true;
+				}
+				else if (orientation.equalsIgnoreCase("horizontal")){
+					horizontalView=true;
+					horizontalViewConfigured=true;
+				}
+			}
+
+
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());			
-			
-			
-			
-			/*if(orientation!=null)
-				setOrientation(orientation);
-			else
-				setOrientation("horizontal");
-		*/
-		String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
-		if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
-			/*KpiInterval interval=new KpiInterval();
+
+
+
+			String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
+			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
+				/*KpiInterval interval=new KpiInterval();
 			interval.setMin(getLower());
 			interval.setMax(getUpper());
 			interval.setColor(Color.WHITE);
 			addInterval(interval);*/
-		}
-		else{
-			for(int i=1;i<=Integer.valueOf(intervalsNumber).intValue();i++){
-				KpiInterval interval=new KpiInterval();
-				String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
-				String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
-				String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
-				interval.setMin(Double.valueOf(min).doubleValue());
-				interval.setMax(Double.valueOf(max).doubleValue());
-				Color color=new Color(Integer.decode(col).intValue());
-				interval.setColor(color);
-				addInterval(interval);
-
 			}
-		}
-		
+			else{
+				for(int i=1;i<=Integer.valueOf(intervalsNumber).intValue();i++){
+					KpiInterval interval=new KpiInterval();
+					String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
+					String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
+					String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
+					interval.setMin(Double.valueOf(min).doubleValue());
+					interval.setMax(Double.valueOf(max).doubleValue());
+					Color color=new Color(Integer.decode(col).intValue());
+					interval.setColor(color);
+					addInterval(interval);
+
+				}
+			}
+
 		}
 		logger.debug("out");
 	}
@@ -242,7 +256,7 @@ public class SimpleDial extends DialCharts{
 		if(horizontalView){
 			gradientPaintTransformType=GradientPaintTransformType.HORIZONTAL;
 		}
-		
+
 		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(
 				gradientPaintTransformType));
 		plot.addLayer(sdb);
@@ -277,6 +291,7 @@ public class SimpleDial extends DialCharts{
 		needle.setRadius(0.82);
 		plot.addLayer(needle);
 		JFreeChart chart1 = new JFreeChart(plot);
+		chart1.setBackgroundPaint(color);
 		chart1.setTitle(chartTitle);
 		logger.debug("OUT");
 		return chart1;
@@ -322,12 +337,16 @@ public class SimpleDial extends DialCharts{
 		return true;
 	}
 
+
 	
 	public List getPossibleChangePars() {
 		List l=new Vector();
-		l.add(CHANGE_VIEW_HORIZONTAL);
+		if(!horizontalViewConfigured){
+		l.add(CHANGE_VIEW_HORIZONTAL);}
+		
 		return l;
 	}
+	
 
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
@@ -350,10 +369,10 @@ public class SimpleDial extends DialCharts{
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
-		if(i==0)	
-			ret=CHANGE_VIEW_LABEL;
-		else if(i==1) ret=CHANGE_VIEW_LABEL1;
-		else if(i==2) ret=CHANGE_VIEW_LABEL2;
+			if(i==0)	
+				ret=CHANGE_VIEW_LABEL;
+			else if(i==1) ret=CHANGE_VIEW_LABEL1;
+			else if(i==2) ret=CHANGE_VIEW_LABEL2;
 
 		}
 		return ret;

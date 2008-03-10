@@ -12,6 +12,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ChartImpl implements IChart {
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected String type="";
 	protected String subtype="";
+	protected Color color;
 
 
 
@@ -44,6 +46,20 @@ public class ChartImpl implements IChart {
 		if(content.getAttribute("name")!=null) 
 			setName((String)content.getAttribute("name"));
 		else setName("");
+		
+		String colS = (String)content.getAttribute("COLORS.background");
+		if(colS!=null) 
+		{
+			Color col=new Color(Integer.decode(colS).intValue());
+			if(col!=null){
+				setColor(col);}
+			else{
+				setColor(Color.white);
+			}
+		}
+		else { 	
+			setColor(Color.white);
+		}
 
 		String widthS = (String)content.getAttribute("DIMENSION.width");
 		String heightS = (String)content.getAttribute("DIMENSION.height");
@@ -59,7 +75,7 @@ public class ChartImpl implements IChart {
 		// get all the data parameters 
 
 
-		
+
 		try{					
 			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
@@ -234,8 +250,8 @@ public class ChartImpl implements IChart {
 	}
 
 	public void setChangeViewsParameter(String changePar, boolean how) {
-		
-		
+
+
 	}
 
 	public boolean getChangeViewParameter(String changePar) {
@@ -245,6 +261,15 @@ public class ChartImpl implements IChart {
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		return null;
 	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
 
 
 

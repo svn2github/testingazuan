@@ -20,32 +20,60 @@ import org.jfree.util.Rotation;
 public class SimplePie extends PieCharts{
 
 	boolean threeD=false; //false is 2D, true is 3D
+	boolean isThreedViewConfigured=false;
 	boolean percentage=false;
-	
+	boolean isPercentageConfigured=false;
+
+
 	public static final String CHANGE_VIEW_3D_LABEL="Set View Dimension";
 	public static final String CHANGE_VIEW_3D_LABEL1="Set 2D";
 	public static final String CHANGE_VIEW_3D_LABEL2="Set 3D";
-	
-	
+
+
 	public static final String CHANGE_VIEW_3D="threeD";
 
 	public static final String CHANGE_VIEW_PERCENTAGE_LABEL="Set Percentage Mode";
 	public static final String CHANGE_VIEW_PERCENTAGE_LABEL1="Absolute Values";
 	public static final String CHANGE_VIEW_PERCENTAGE_LABEL2="Percentage Values";
 
-	
+
 	public static final String CHANGE_VIEW_PERCENTAGE="percentage";
 
-	
-	
+
+
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
+		if(confParameters.get("dimensions")!=null){	
+			String orientation=(String)confParameters.get("dimensions");
+			if(orientation.equalsIgnoreCase("3D")){
+				threeD=true;
+				isThreedViewConfigured=true;
+			}
+			else if(orientation.equalsIgnoreCase("2D")){
+				threeD=false;
+				isThreedViewConfigured=true;
+			}
+		}
+		if(confParameters.get("values")!=null){	
+			String orientation=(String)confParameters.get("values");
+			if(orientation.equalsIgnoreCase("percentage")){
+				percentage=true;
+				isPercentageConfigured=true;
+			}
+			else if(orientation.equalsIgnoreCase("absolute")){
+				percentage=false;
+				isPercentageConfigured=true;
+			}
+		}
+
+		
+		
 	}
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		super.createChart(chartTitle, dataset);
-		
+
 		JFreeChart chart=null; 
 
 		if(!threeD){
@@ -58,6 +86,7 @@ public class SimplePie extends PieCharts{
 			);
 
 
+			chart.setBackgroundPaint(color);
 
 			TextTitle title = chart.getTitle();
 			title.setToolTipText("A title tooltip!");
@@ -72,11 +101,11 @@ public class SimplePie extends PieCharts{
 
 			if(percentage==false){
 				plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-						"{0} ({1})"));}
+				"{0} ({1})"));}
 			else
 			{
 				plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-						"{0} ({2})"));
+				"{0} ({2})"));
 			}
 
 		}
@@ -90,6 +119,7 @@ public class SimplePie extends PieCharts{
 			);
 
 
+			chart.setBackgroundPaint(color);
 
 			TextTitle title = chart.getTitle();
 			title.setToolTipText("A title tooltip!");
@@ -111,11 +141,11 @@ public class SimplePie extends PieCharts{
 
 			if(percentage==false){
 				plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-						"{0} ({1})"));}
+				"{0} ({1})"));}
 			else
 			{
 				plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-						"{0} ({2})"));
+				"{0} ({2})"));
 			}
 		}
 
@@ -125,17 +155,17 @@ public class SimplePie extends PieCharts{
 
 	}
 
-	
 
-	
+
+
 	public boolean isChangeableView() {
 		return true;	
 	}
 
-	
-	
-	
-	
+
+
+
+
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
 			threeD=how;
@@ -166,24 +196,24 @@ public class SimplePie extends PieCharts{
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
 			if(i==0) ret=CHANGE_VIEW_3D_LABEL;
 			else if(i==1) ret=CHANGE_VIEW_3D_LABEL1;
-		 else if(i==2) ret=CHANGE_VIEW_3D_LABEL2;
+			else if(i==2) ret=CHANGE_VIEW_3D_LABEL2;
 		}
-			 else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
-					if(i==0) ret=CHANGE_VIEW_PERCENTAGE_LABEL;
-					else if(i==1) ret=CHANGE_VIEW_PERCENTAGE_LABEL1;
-				 else if(i==2) ret=CHANGE_VIEW_PERCENTAGE_LABEL2;
+		else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
+			if(i==0) ret=CHANGE_VIEW_PERCENTAGE_LABEL;
+			else if(i==1) ret=CHANGE_VIEW_PERCENTAGE_LABEL1;
+			else if(i==2) ret=CHANGE_VIEW_PERCENTAGE_LABEL2;
 		}
 
 		return ret;
 	}
-	
-	
+
+
 	public List getPossibleChangePars() {
 		List l=new Vector();
-		l.add(CHANGE_VIEW_3D);
-		l.add(CHANGE_VIEW_PERCENTAGE);		
+		if(!isThreedViewConfigured)	{l.add(CHANGE_VIEW_3D); }
+		if(!isPercentageConfigured){ l.add(CHANGE_VIEW_PERCENTAGE); }
 		return l;
 	}
-	
-	
+
+
 }

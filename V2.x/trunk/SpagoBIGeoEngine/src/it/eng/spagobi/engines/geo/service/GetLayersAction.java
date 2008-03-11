@@ -25,10 +25,10 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.commons.service.AbstractEngineStartAction;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class GetLayersAction extends AbstractGeoEngineAction {
     public static transient Logger logger = Logger.getLogger(GetLayersAction.class);
 	
     
-	public void service(SourceBean request, SourceBean response) throws GeoEngineException  {
+	public void service(SourceBean request, SourceBean response) throws EngineException  {
 		logger.debug("Starting service method...");
 		
 		super.service(request, response);

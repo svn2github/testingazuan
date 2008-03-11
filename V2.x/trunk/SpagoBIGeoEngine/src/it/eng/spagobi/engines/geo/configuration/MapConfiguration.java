@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.geo.configuration;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
@@ -212,6 +213,43 @@ public class MapConfiguration {
 		return legendString;
 	}
 
+	public void setAnalysisState( GeoEngineAnalysisState analysisState ) {	
+		
+		String selectedHiearchy = analysisState.getSelectedHierarchy();
+		String selectedHierarchyLevel = analysisState.getSelectedHierarchyLevel();
+		String selectedMap = analysisState.getSelectedMap();
+		String selectedLayers = analysisState.getSelectedLayers();
+		
+		if(selectedHiearchy != null) {
+			getDatamartProviderConfiguration().setHierarchyName(selectedHiearchy);
+		}
+		
+		if(selectedHierarchyLevel != null) getDatamartProviderConfiguration().setHierarchyLevel(selectedHierarchyLevel);
+		if(selectedMap != null) {
+			setMapName(selectedMap);
+			getMapProviderConfiguration().setMapName(selectedMap);
+		}	
+		if(selectedLayers != null) {
+			String[] layers = selectedLayers.split(",");
+			for(int i = 0; i < layers.length; i++) {
+				MapRendererConfiguration.Layer layer = getMapRendererConfiguration().getLayer(layers[i]);
+				if(layer != null) {
+					layer.setSelected(true);
+				} else {
+					layer = new MapRendererConfiguration.Layer();
+					layer.setName(layers[i]);
+					layer.setDescription(layers[i]);
+					layer.setSelected(true);
+					getMapRendererConfiguration().addLayer(layer);
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	
 	
 	
 	

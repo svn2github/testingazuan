@@ -28,6 +28,7 @@ import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -60,7 +61,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
      */
     public static transient Logger logger = Logger.getLogger(GetLayersAction.class);
 	
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
 		logger.debug("Starting service method...");
 		
 		super.service(serviceRequest, serviceResponse);
@@ -76,11 +77,11 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			MapConfiguration.setMapCatalogueAccessUtils(mapCatalogueAccessUtils);
 		}
 		
-		
+		/*
 		GeoEngineStartAction.SubObjectDetails subObjectDetails = getSpagoBISubObjectDetails()!= null? 
 																 getSpagoBISubObjectDetails(): 
 																 new GeoEngineStartAction.SubObjectDetails();
-		
+		*/
 		
 		Properties parameters = getParametersFromRequest(serviceRequest);
 				

@@ -16,7 +16,6 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.engines.geo.configuration.Constants;
 import it.eng.spagobi.engines.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spagobi.engines.geo.datamart.Datamart;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

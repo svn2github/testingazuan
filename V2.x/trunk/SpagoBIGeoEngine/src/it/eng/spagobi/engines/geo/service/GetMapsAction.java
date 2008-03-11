@@ -28,6 +28,7 @@ import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class GetMapsAction extends AbstractGeoEngineAction {
     private static transient Logger logger = Logger.getLogger(GetMapsAction.class);
 	
     
-	public void service(SourceBean request, SourceBean response) throws GeoEngineException  {
+	public void service(SourceBean request, SourceBean response) throws EngineException  {
 		logger.debug("Start processing a new request...");
 
 		String featureName = (String)request.getAttribute("featureName");

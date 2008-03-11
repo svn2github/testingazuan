@@ -6,7 +6,9 @@
 
 package it.eng.spagobi.engines.geo.commons.excpetion;
 
-public class GeoEngineException extends Exception {
+import it.eng.spagobi.utilities.engines.EngineException;
+
+public class GeoEngineException extends EngineException {
     
 	/**
      * Builds a <code>GeoEngineException</code> 

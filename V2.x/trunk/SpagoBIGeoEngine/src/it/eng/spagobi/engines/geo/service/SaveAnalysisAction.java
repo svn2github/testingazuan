@@ -17,6 +17,7 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.GenericSavingException;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -39,11 +40,11 @@ public class SaveAnalysisAction extends AbstractGeoEngineAction {
     private static transient Logger logger = Logger.getLogger(SaveAnalysisAction.class);
     
     
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException  {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
 		
 		super.service(serviceRequest, serviceResponse);
 		
-		GeoEngineStartAction.SubObjectDetails subObjectDetails = this.getSpagoBISubObjectDetails();
+		//GeoEngineStartAction.SubObjectDetails subObjectDetails = this.getSpagoBISubObjectDetails();
 			
 			
 		String name = (String)serviceRequest.getAttribute("name");
@@ -65,23 +66,6 @@ public class SaveAnalysisAction extends AbstractGeoEngineAction {
 	    	logger.error("Error while saving analysis.", gse);
 	    	getHttpSession().setAttribute("saveSubObjectMessage", "KO - " + gse.getMessage());
 	    }  
-	    
-		/*
-		SpagoBIAccessUtils spagoBIProxy = new SpagoBIAccessUtils();
-		try {
-			spagoBIProxy.saveSubObject(subObjectDetails.getSpagobiurl(), 
-				  					   subObjectDetails.getTemplatePath(), 
-									   subObjectDetails.getName(), 
-									   subObjectDetails.getDescription(), 
-									   subObjectDetails.getUser(), 
-									   subObjectDetails.getScope().equalsIgnoreCase("public"), 
-									   subObjectDetails.getData() == null?"": new String(subObjectDetails.getData()));
-		} catch (GenericSavingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		 
 		
 	}
 }

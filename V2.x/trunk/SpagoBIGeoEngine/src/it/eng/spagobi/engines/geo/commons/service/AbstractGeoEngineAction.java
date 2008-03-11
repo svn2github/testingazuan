@@ -29,6 +29,8 @@ import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import it.eng.spagobi.utilities.engines.AbstractEngineAction;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 
 import org.apache.log4j.Logger;
 
@@ -36,54 +38,22 @@ import org.apache.log4j.Logger;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AbstractGeoEngineAction extends AbstractBaseHttpAction {
+public class AbstractGeoEngineAction extends AbstractEngineAction {
 	
-	public static final String SPAGOBI_REQUEST = "SPAGOBI_REQUEST";
-	public static final String SPAGOBI_SUBOBJECT_DETAILS = "SUBOBJECT";
 	public static final String MAP_CONFIGURATION = "CONFIGURATION";
 	
 	/**
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(AbstractGeoEngineAction.class);
-    
+    	
 	
-	public void init(SourceBean config) {
-        super.init(config);
-    } 
-	
-	public void service(SourceBean request, SourceBean response) throws GeoEngineException {
-		setRequest( request );
-		setResponse( response );
-	}
-	
-	private SpagoBIRequest getSpagoBIRequest() {
-		return (SpagoBIRequest)getAttributeFromSession( SPAGOBI_REQUEST );
-	}
-	
-	public GeoEngineStartAction.SubObjectDetails getSpagoBISubObjectDetails() {
-		return (GeoEngineStartAction.SubObjectDetails)getAttributeFromSession( SPAGOBI_SUBOBJECT_DETAILS );
-	}
+
 	
 	public MapConfiguration getMapConfiguration() {
 		return (MapConfiguration)getAttributeFromSession( MAP_CONFIGURATION );
 	}
 	
-	public String getUserId() {
-		String userId = null;
-		if( getSpagoBIRequest() != null) {
-			userId = getSpagoBIRequest().getUserId();
-		}
-		return userId;
-	}
-	
-	public String getDocumentId() {
-		String documentId = null;
-		if( getSpagoBIRequest() != null) {
-			documentId = getSpagoBIRequest().getDocumentId();
-		}
-		return documentId;
-	}
 	
 	private MapCatalogueAccessUtils getMapCatalogue(){
 		MapCatalogueAccessUtils mapCatalogueClient = null;

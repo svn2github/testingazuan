@@ -29,7 +29,7 @@ public class ShowAnalysisDetailsAction extends AbstractHttpAction {
 	
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
-		GeoEngineStartAction.SubObjectDetails subObjectDetails = (GeoEngineStartAction.SubObjectDetails)getRequestContainer().getSessionContainer().getAttribute("SUBOBJECT");
+		//GeoEngineStartAction.SubObjectDetails subObjectDetails = (GeoEngineStartAction.SubObjectDetails)getRequestContainer().getSessionContainer().getAttribute("SUBOBJECT");
 		
 		
 		String selectedHiearchy = (String)serviceRequest.getAttribute("selected_hierachy");

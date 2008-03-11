@@ -41,6 +41,7 @@ initial version
 * 1.0.1 (2007-09-24)
 changed the name of ub variable to ub_values in order to avoid naming conflict with slider.js
 changed the name of lb variable to lb_values in order to avoid naming conflict with slider.js
+bug fixed in layer's checkboxes generation
 
 -->
 
@@ -302,8 +303,15 @@ preserveAspectRatio="xMidYMin meet">
 			var offset;
 			for(i = 0; i < layer_names.length; i++) {
 				offset = 45 + (30*i);
-				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",true,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
+				var mapLayer = document.getElementById(layer_names[i]);
+				//alert(layer_names[i] + " element -> " + mapLayer);
+				var displayStatus = mapLayer.getAttributeNS(null,"display");
+				var checked = false;
+				if(displayStatus == "inline") checked = true;
+				//alert(layer_names[i] + " checked -> " + checked);
+				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}
+
 			
 			// Navigation radio buttons
 			linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);

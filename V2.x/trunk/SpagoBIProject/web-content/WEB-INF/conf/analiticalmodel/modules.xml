@@ -5,6 +5,9 @@
      	<CONFIG/>
     </MODULE>
     
+    <MODULE class="it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule" name="MetadataBIObjectModule">
+    </MODULE>
+    
     <MODULE class="it.eng.spagobi.analiticalmodel.functionalitytree.service.DetailFunctionalityModule" name="DetailFunctionalityModule">
      	<CONFIG/>
     </MODULE>

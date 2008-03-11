@@ -51,5 +51,6 @@ public interface IStatement {
 	public SourceBean execute(IQuery query, Properties parameters, int offset, int fetchSize, int maxResults) throws Exception;
 	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception;	
 	public SourceBean executeWithPagination(IQuery query, Properties parameters,  int pageNumber, int pageSize, int maxResults) throws Exception;
+	public SourceBean executeWithPagination(int offset, int fetchSize, int maxResults) throws Exception;
 	
 }

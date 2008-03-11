@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
+import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -123,9 +124,9 @@ public class HQLStatement extends BasicStatement {
 		
 		
 		afterFirst = false;
-		buffer.append("where \n");
+		
 		Iterator it = query.getWhereFieldsIterator();
-		 	
+		if(it.hasNext()) buffer.append("where \n");
 		 	
 		IWhereField aWhereField = null;
 		String newFieldValue = null;
@@ -388,7 +389,10 @@ public class HQLStatement extends BasicStatement {
 		try{		
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
-			String queryString = getQueryString(query, parameters);				
+			String queryString = getQueryString(query, parameters);	
+			
+			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dataMartModel.getDataSource().getSessionFactory().openSession());
+			String sqlQuery = queryRewriter.rewrite( queryString );
 						
 			Query hibernateQuery = session.createQuery(queryString);			
 			
@@ -399,7 +403,9 @@ public class HQLStatement extends BasicStatement {
 						
 			// get query results
 			hibernateQuery.setFirstResult(offset < 0 ? 0 : offset);
-			if(fetchSize >= 0) hibernateQuery.setMaxResults(fetchSize);			
+			//if(fetchSize >= 0 && fetchSize < resultNumber) {
+				hibernateQuery.setMaxResults(fetchSize);			
+			//}
 			List result = hibernateQuery.list();
 				
 			// build the source bean that holds the resultset				
@@ -420,6 +426,10 @@ public class HQLStatement extends BasicStatement {
 			if (session != null && session.isOpen())
 			session.close();
 		}
+	}
+	
+	public SourceBean executeWithPagination(int offset, int fetchSize, int maxResults) throws Exception {
+		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
 	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception {

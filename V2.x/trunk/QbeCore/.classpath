@@ -42,7 +42,6 @@
 	<classpathentry kind="lib" path="lib/oscache-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-2.0-final-20040126.jar"/>
 	<classpathentry kind="lib" path="lib/proxool-0.8.3.jar"/>
-	<classpathentry kind="lib" path="lib/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/swarmcache-1.0rc2.jar"/>
 	<classpathentry kind="lib" path="lib/versioncheck.jar"/>
 	<classpathentry kind="lib" path="lib/xalan.jar"/>
@@ -50,15 +49,17 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/iReport.jar"/>
-	<classpathentry kind="lib" path="lib/spago-portlet-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/spago-web-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/jasperreports-1.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.0-JSR-06.jar"/>
 	<classpathentry kind="lib" path="lib/jug-asl-2.0.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="var" path="PORTLET_API_HOME/portlet-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreports-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/spago-core-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/spagoportlet-2.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/spago-profile-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/spago-web-2.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

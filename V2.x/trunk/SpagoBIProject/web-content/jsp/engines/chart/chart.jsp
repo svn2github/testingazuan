@@ -50,13 +50,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="java.util.Vector"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
+<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
+  <script language="JavaScript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/slider.js")%>" >
+</script>
+<link href="<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/default-slider.css")%>" rel="stylesheet" type="text/css" />
+  
+
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>"/>
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/prototype/javascripts/prototype.js")%>"></script>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
+
   
   
   <% 
   
 	String title=""; 
+	String maxSlider="";
+	String minSlider="";
+	String valueSlider="";
+	String refreshUrl2 = "";
+	Vector categories;
 	if(aServiceResponse.getAttribute("title")!=null){
 	title= (String)aServiceResponse.getAttribute("title");
 	}
@@ -149,6 +168,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    			</tr>
 		</table>
   
+
+  
+
+	
+
+
+
   
   <%
  EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
@@ -167,6 +193,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
+Dataset copyDataset;
+
 //Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
 
 // get wich pars are possible set
@@ -187,6 +215,30 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				}
 
 		}
+
+
+/////////////////////////////////////////////////////// Case one category has been selected//////////////////////////////////////////
+		if(sbi.getType().equalsIgnoreCase("BARCHART")){
+			categories=(Vector)((BarCharts)sbi).getCategories();
+			if(request.getParameter("category")!=null){
+				String catS=(String)request.getParameter("category");
+				Double catD=Double.valueOf(catS);
+				int cat=catD.intValue();
+				if(cat!=0){
+				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
+				String nameCat=(String)cats.get(new Integer(cat));
+				copyDataset=sbi.filterDataset(dataset,nameCat);				
+				}
+				else{copyDataset=dataset;}
+			}
+			else{copyDataset=dataset;}
+		} 
+			else{copyDataset=dataset;}
+
+///////////////////////////////////////////////////// End category case//////////////////////////////////////////
+
+
+
 
 
 /*
@@ -223,10 +275,17 @@ if(sbi.isChangeableView()){
 	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
 		((LinkableBar)sbi).setRootUrl(rootUrl);
 	}
-    
+   
+	
+	
+	
+
+	
+	
+	
 	JFreeChart chart=null;
 	// create the chart
-			chart = sbi.createChart(title,dataset);
+			chart = sbi.createChart(title,copyDataset);
 
 
 		//Create the temporary dir
@@ -258,7 +317,7 @@ if(sbi.isChangeableView()){
 
 		   		Map refreshUrlPars2 = new HashMap();
 			   			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		   			String refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars);
+		   			refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
 		   			
 		   			
 		   			
@@ -321,39 +380,44 @@ if(sbi.isChangeableView()){
 //I Try Radio Buttons
 	
 		    if(sbi.isChangeableView()){
-	    	
-	    	// for each possible parameter to change creates a checkbox
+	%>
+	
+	<table><tr>
+	<%     	
+	    // for each possible parameter to change creates a checkbox
 	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 	    		String par = (String) iterator.next(); %>
+	  
+	<td>
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<!--spagobi:message key = "SBIDev.docConf.docDet.nameField" /-->
+						<%=sbi.getChangeViewParameterLabel(par,0)%> 
+					</span>
+				</div>
+				<div class='div_detail_form' align="left">
 	    		<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
-	    		 <fieldset>
-	    		  <legend><%=sbi.getChangeViewParameterLabel(par,0)%></legend>
 	    		  <%if(sbi.getChangeViewParameter(par)){ %>
-	    		  <%=sbi.getChangeViewParameterLabel(par,1)%> <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/>
- 					<%=sbi.getChangeViewParameterLabel(par,2)%><input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/>  
+	    		  <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
+ 				  <input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
  			  <%}
 	    		  else {%>
-	    		  <%=sbi.getChangeViewParameterLabel(par,1)%> <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>
-				<%=sbi.getChangeViewParameterLabel(par,2)%><input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  
+	    		 <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
+				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
  	    		  <%} %>
- 	    		  </fieldset>
+ 	    		  </div>
 				</form>
-	    	<BR>
-	    	<BR>
-	    	
-	    	<% 
+	    </td>
+	   
+	  	    	<% 
 	    	}
+	%>  </tr></table>
+		<BR>
+		<BR>
+	<% 
 		    }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	    if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
@@ -363,7 +427,234 @@ if(sbi.isChangeableView()){
 		
     <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
     </div>
-<%} %>
     
+    
+    	
+	<% /////////////////////// Beginslider creation //////////////////////////
+	//if it's a barchart creates the slider!
+
+	if(sbi.getType().equalsIgnoreCase("BARCHART")){
+		maxSlider=(new Integer(((BarCharts)sbi).getCategoriesNumber())).toString(); 
+		minSlider="0"; 
+
+	
+	%>
+	<form>
+	<div id="slider1" align="center"></div> 
+	<div id="output1" align="center" >
+		<table align="center" width="75%" border="1">
+			<tr>
+				<td width="25%">Select Category</td>
+				<td id="slider_1_1_value" width="15%"></td>
+				<td width="60%"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>
+			</tr>
+		</table>
+	</div>
+	<BR>
+</form>
+
+
+
+	<% 
+	}
+	
+	/////////////////////// End slider creation ////////////////////////// 
+	%>
+	
+    
+    
+<%} %>
+
+ <script type="text/javascript" language="JavaScript">
+ 		function getValue() {return Test.slideZone1.getSlider('start1_1').value;}
+
+
+	function getActionUrl() {
+	
+		//var v='www.google.it';
+		//return v;
+		var variable="&category=";
+		var value=getValue();
+		var second=variable+value;
+		var url="<%=refreshUrl2%>";
+		var finalUrl=url+second;
+		return finalUrl;
+		}
+ 
+ </script>
+ 
+ 
+ 
+  <script type="text/javascript" language="JavaScript">
+
+Ext.onReady(function() {
+
+	Test = {};
+	twoWeeksAgo = 1000*60*60*24*14;
+
+	Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
+		type: 'horizontal',size: 500, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: 500,  name: 'start1_1'
+					}]
+		 });
+	
+	Test.slideZone1.getSlider('start1_1').on('drag',
+		function() {
+				$('slider_1_1_value').innerHTML = parseInt(this.value);
+				$('slider_1_1_percent').innerHTML = this.percent.toFixed(2);
+				$('slider_1_1_position').innerHTML = this.el.getX() +
+						1/2 * Test.slideZone1.sliderWidth;	
+				}
+	)
+	$('slider_1_1_value').innerHTML = parseInt(Test.slideZone1.getSlider('start1_1').value);
+	$('slider_1_1_percent').innerHTML = Test.slideZone1.getSlider('start1_1').percent.toFixed(2);	
+	$('slider_1_1_position').innerHTML = Test.slideZone1.getSlider('start1_1').el.getX() +
+			1/2 * Test.slideZone1.sliderWidth;	
+	
+	//miao
+	//Test.getValue : function() {
+	//			return Test.slideZone1.getSlider('start1_1').value;
+				//return this.slideZone1.getSlider('start1_1').value;
+				//return slideZone1.getSlider('start1_1').value;
+	//			}
+	
+		Test.slideZone1.getValue('start1_1').on('drag',
+		function() {return Test.slideZone1.getSlider('start1_1').value;})
+	
+	
+	Test.zone2 = new Ext.ux.SlideZone('slider2', {  
+					type: 'horizontal',
+					size: 700, 
+					sliderWidth: 18,
+					sliderHeight: 21,
+					allowSliderCrossing: false,
+					sliderSnap: 20,
+					maxValue: new Date().getTime(),
+					minValue: new Date().getTime() - (twoWeeksAgo)
+					});
+	var slider2_1 = new Ext.ux.ThumbSlider({
+				value: new Date().getTime() - twoWeeksAgo + twoWeeksAgo * 1/4 ,  
+				name: 'start2'
+				});
+	var slider2_2 = new Ext.ux.ThumbSlider({
+			value: new Date().getTime() - twoWeeksAgo + twoWeeksAgo * 1/2,  
+			name: 'middle2'
+			}); 
+
+	var slider2_3 = new Ext.ux.ThumbSlider({
+			value: new Date().getTime() - twoWeeksAgo + twoWeeksAgo * 3/4,  
+			name: 'stop2'
+			});
+
+	slider2_1.on('drag',function() {
+			$('slider_2_1_value').innerHTML = this.value + ' ' + new Date(this.value).toString();
+			$('slider_2_1_percent').innerHTML = this.percent.toFixed(2);
+			})
+	slider2_2.on('drag',function() {
+			$('slider_2_2_value').innerHTML = this.value + ' ' + new Date(this.value).toString();
+			$('slider_2_2_percent').innerHTML = this.percent.toFixed(2);
+			})
+	slider2_3.on('drag',function() {
+			$('slider_2_3_value').innerHTML = this.value + ' ' + new Date(this.value).toString();
+			$('slider_2_3_percent').innerHTML = this.percent.toFixed(2);
+			})
+	Test.zone2.add(slider2_1); 
+	Test.zone2.add(slider2_2); 
+	Test.zone2.add(slider2_3); 
+
+	//sliders can be accessed only after added
+	$('slider_2_1_value').innerHTML = Test.zone2.getSlider('start2').value + ' ' + 
+				new Date(Test.zone2.getSlider('start2').value).toString();
+	$('slider_2_1_percent').innerHTML = Test.zone2.getSlider('start2').percent.toFixed(2);
+	$('slider_2_2_value').innerHTML = Test.zone2.getSlider('middle2').value + ' ' + 
+				new Date(Test.zone2.getSlider('middle2').value).toString();
+	$('slider_2_2_percent').innerHTML = Test.zone2.getSlider('middle2').percent.toFixed(2);
+	$('slider_2_3_value').innerHTML = Test.zone2.getSlider('stop2').value + ' ' + 
+				new Date(Test.zone2.getSlider('stop2').value).toString();
+	$('slider_2_3_percent').innerHTML = Test.zone2.getSlider('stop2').percent.toFixed(2);
+
+
+	Test.zone3 = new Ext.ux.SlideZone('slider3', {  
+		type: 'horizontal',
+		size: 500, 
+		sliderHeight: 12,
+		maxValue: 1000,
+		minValue: 0,
+		sliderSnap: 1,
+		allowSliderCrossing: true
+		 });
+	
+	var rs1 = new Ext.ux.RangeSlider({
+			value: [100,500],  
+			name: '3_1',
+			cls: 'top'
+			});
+
+	var rs2 = new Ext.ux.RangeSlider({
+			value: [200,600],  
+			name: '3_2',
+			cls: 'bottom'
+			});
+			
+	Test.zone3.add(rs1);	
+	Test.zone3.add(rs2);		
+
+	Test.zone3.getSlider('3_1').on('drag',
+		function() {
+				$('slider_3_1_value').innerHTML = parseInt(this.value[0]) + "|" + parseInt(this.value[1]);
+				$('slider_3_1_percent').innerHTML = parseInt(this.percent[0]) + "|" + parseInt(this.percent[1]);	
+				}
+	)
+	$('slider_3_1_value').innerHTML  = parseInt(Test.zone3.getSlider('3_1').value[0]) + "|" + parseInt(Test.zone3.getSlider('3_1').value[1]);
+	$('slider_3_1_percent').innerHTML = parseInt(Test.zone3.getSlider('3_1').percent[0]) + "|" + parseInt(Test.zone3.getSlider('3_1').percent[1]);
+			
+	Test.zone3.getSlider('3_2').on('drag',
+		function() {
+				$('slider_3_2_value').innerHTML = parseInt(this.value[0]) + "|" + parseInt(this.value[1]);
+				$('slider_3_2_percent').innerHTML = parseInt(this.percent[0]) + "|" + parseInt(this.percent[1]);	
+				}
+	)
+	$('slider_3_2_value').innerHTML  = parseInt(Test.zone3.getSlider('3_2').value[0]) + "|" + parseInt(Test.zone3.getSlider('3_2').value[1]);
+	$('slider_3_2_percent').innerHTML = parseInt(Test.zone3.getSlider('3_2').percent[0]) + "|" + parseInt(Test.zone3.getSlider('3_2').percent[1]);
+
+
+	$('eventLog').value = '';
+
+	$('enableLogging').checked = false;
+	});
+	
+	
+
+
+function enableLogging(cb) {
+	var ssEvts = $A(['mouseover', 'mouseout', 'dragstart', 'drag', 'dragend']);
+	for(s in Test) {
+		var ss = Test[s];
+		ss.sliders.each( function(slider) {
+			ssEvts.each(
+				function(evt) {
+					if(cb.checked) {
+						slider.on(evt, function() {
+							$('eventLog').value = this.name + ', ' + evt + ', ' + this.value + "\n" + $('eventLog').value;
+						})
+					} else {
+						slider.purgeListeners();
+					}
+				}
+			)		
+		})
+	}			
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+
 
     

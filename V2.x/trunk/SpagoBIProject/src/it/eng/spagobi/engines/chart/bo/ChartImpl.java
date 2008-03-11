@@ -166,6 +166,7 @@ public class ChartImpl implements IChart {
 
 	public int getWidth() {
 		return width;
+
 	}
 
 	public void setDataLov(String _dataLov) {
@@ -268,6 +269,11 @@ public class ChartImpl implements IChart {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public Dataset filterDataset(Dataset dataset, String colKey) {
+
+		return null;
 	}
 
 

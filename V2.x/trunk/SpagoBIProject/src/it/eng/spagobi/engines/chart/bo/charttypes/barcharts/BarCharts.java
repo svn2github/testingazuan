@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -22,10 +23,12 @@ public class BarCharts extends ChartImpl {
 	String categoryLabel="";
 	String valueLabel="";
 	HashMap colorMap=null;  // keeps user selected colors
+	int categoriesNumber=0;
+	HashMap categories;
 
 	public Dataset calculateValue() throws SourceBeanException {
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
-
+		categories=new HashMap();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -34,6 +37,57 @@ public class BarCharts extends ChartImpl {
 
 
 		// run all categories (one for each row)
+		categoriesNumber=0;
+		categories.put(new Integer(0), "All Categories");
+		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
+			SourceBean category = (SourceBean) iterator.next();
+			List atts=category.getContainedAttributes();
+
+			HashMap series=new HashMap();
+			String catValue="";
+
+			String name="";
+			String value="";
+
+			//run all the attributes, to define series!
+			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+
+				name=new String(object.getKey());
+				value=new String((String)object.getValue());
+				if(name.equalsIgnoreCase("x"))
+				{
+					catValue=value;
+					categories.put(new Integer(categoriesNumber+1),value);
+					categoriesNumber=categoriesNumber+1;
+					
+				}
+				else {
+					series.put(name, value);
+				}
+			}
+			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
+				String nameS = (String) iterator3.next();
+				String valueS=(String)series.get(nameS);
+				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+			}
+
+		}
+
+		return dataset;
+	}
+
+	public Dataset calculateValue(String cat) throws SourceBeanException {
+		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
+
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		SourceBean sbRows=SourceBean.fromXMLString(res);
+		List listAtts=sbRows.getAttributeAsList("ROW");
+
+
+		// run all categories (one for each row)
+		categoriesNumber=0;
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -57,12 +111,14 @@ public class BarCharts extends ChartImpl {
 				String nameS = (String) iterator3.next();
 				String valueS=(String)series.get(nameS);
 				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+				categoriesNumber=categoriesNumber+1;
 			}
 
 		}
 
 		return dataset;
 	}
+
 
 	public void configureChart(SourceBean content) {
 
@@ -109,7 +165,7 @@ public class BarCharts extends ChartImpl {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
 				colorNum=new String(object.getKey());
 				num=colorNum.substring(5, colorNum.length()); // gets the number from color1, color2 
-				
+
 				colorSerie=new String((String)object.getValue());
 				Color col=new Color(Integer.decode(colorSerie).intValue());
 				if(col!=null){
@@ -150,4 +206,41 @@ public class BarCharts extends ChartImpl {
 		this.valueLabel = valueLabel;
 	}
 
+	public int getCategoriesNumber() {
+		return categoriesNumber;
+	}
+
+	public void setCategoriesNumber(int categoriesNumber) {
+		this.categoriesNumber = categoriesNumber;
+	}
+
+	public Map getCategories() {
+		return categories;
+	}
+
+	public Dataset filterDataset(Dataset dataset, String colKey) {
+		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
+		
+		DefaultCategoryDataset newDataSet=new DefaultCategoryDataset();
+		try {
+			newDataSet=(DefaultCategoryDataset)catDataset.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List columns=new Vector(newDataSet.getColumnKeys());
+			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
+			String col = (String) iterator.next();
+				if(!(col.equals(colKey))){
+					newDataSet.removeColumn(col);
+				}			
+			}
+
+			return newDataSet;
+	
+	}
+
+	
+	
 }

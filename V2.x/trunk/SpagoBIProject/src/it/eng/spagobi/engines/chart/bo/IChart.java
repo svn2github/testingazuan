@@ -55,5 +55,6 @@ public interface IChart {
 	public boolean getChangeViewParameter(String changePar);
 	public String getChangeViewParameterLabel(String changePar, int i);
 			
+	public Dataset filterDataset(Dataset dataset, String colKey);
 	
 }

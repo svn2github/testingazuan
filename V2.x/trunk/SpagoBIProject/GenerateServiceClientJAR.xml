@@ -99,9 +99,18 @@
 	    	<fileset dir="./dist">
 	    		<include name="**/*.jar"/>
 	    	</fileset>
-
-	    </copy>
-	    <copy todir="../SpagoBITalendEngine/WebContent/WEB-INF/lib" overwrite="true">
+	    </copy>			
+		<copy todir="../SpagoBIGeoEngine/WebContent/WEB-INF/lib" overwrite="true">
+			<fileset dir="./dist">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>		
+		<copy todir="../SpagoBIJPaloEngine/WebContent/WEB-INF/lib" overwrite="true">
+		  	<fileset dir="./dist">
+		   		<include name="**/*.jar"/>
+		   	</fileset>
+		 </copy>		
+		 <copy todir="../SpagoBITalendEngine/WebContent/WEB-INF/lib" overwrite="true">
 	    	<fileset dir="./dist">
 	    		<include name="**/*.jar"/>
 	    	</fileset>
@@ -111,12 +120,6 @@
 	    		<include name="**/*.jar"/>
 	    	</fileset>
 	    </copy>		
-		
-	    <copy todir="../SpagoBIGeoEngine/WebContent/WEB-INF/lib" overwrite="true">
-	    	<fileset dir="./dist">
-	    		<include name="**/*.jar"/>
-	    	</fileset>
-	    </copy>				
 	</target>
 </project>
 

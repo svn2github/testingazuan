@@ -22,9 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% 
 String urlDoc = (String)request.getParameter("urlDoc");
 String nameDoc = (request.getParameter("nameDoc")==null)?"":(String)request.getParameter("nameDoc");
+//System.out.println("nameDoc :" + nameDoc + " urlDoc: " + urlDoc);
 %>
 
 
-<iFrame id='iframe_<%=nameDoc%>' name='iframe_<%=nameDoc%>' src='<%=urlDoc%> %>' frameborder='1' width='100%' height='100%'>
+<iFrame id='iframe_<%=nameDoc%>' name='iframe_<%=nameDoc%>' src='<%=urlDoc%> %>' frameborder='1'  height='100%' width='100%'>
 </iFrame>
 

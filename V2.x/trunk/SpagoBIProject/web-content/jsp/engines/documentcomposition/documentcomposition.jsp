@@ -25,7 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document,
                  java.util.Map,
-                 it.eng.spago.security.IEngUserProfile,
                  it.eng.spagobi.commons.utilities.GeneralUtilities" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spago.base.SourceBean"%>
@@ -40,11 +39,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
     //acquisizione info come template a cui girare la richiesta
     String nameTemplate = "";
-   
-    // get the user profile from session
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
-    IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    logger.debug("userProfile: " + userProfile);
  	
     //get object configuration
     DocumentCompositionConfiguration docConfig = null;
@@ -59,51 +53,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     //get information for document composition
     Map lstUrl = new HashMap();
-    Map lstHeight = new HashMap();
-    Map lstWidth = new HashMap();
+    Map lstStyle = new HashMap();
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
     Map lstFieldLinked = new HashMap();
     
-    //for (int i = 0; i < docSbiLables.size(); i++){
+    //loop on documents
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations
     	Document tmpDoc = (Document)lstDoc.get(i);
     	String tmpUrl = DocumentCompositionUtils.getEngineUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
-    	String tmpHeight = (tmpDoc.getDimensionHeight()==null)?"300px":tmpDoc.getDimensionHeight(); 
-    	String tmpWidth = (tmpDoc.getDimensionWidth()==null)?"800px":tmpDoc.getDimensionWidth();
+    	String tmpStyle = (tmpDoc.getStyle()==null)?"":tmpDoc.getStyle(); 
     	HashMap tmpUrlParams = (HashMap)aSessionContainer.getAttribute(tmpDoc.getLabel());
-    	//List tmpDocLinked = (List)docConfig.getDocumentLinked(tmpDoc.getLabel());
     	HashMap tmpInfoDocLinked = (HashMap)docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
     	
     	if (tmpInfoDocLinked != null && tmpInfoDocLinked.size() > 0){
     		lstDocLinked.put("MAIN_DOC_LABEL_"+(i+1),tmpDoc.getLabel());
-    		lstFieldLinked.put("SBI_LABEL_PAR_MASTER_"+(i+1), (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_MASTER_"+(i+1)));
+    		//loop on document linked 
 	    	for (int j=0; j < tmpInfoDocLinked.size(); j++ ){
-				String tmpSbiLabelDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_DOC_"+(j+1));
-				System.out.println("tmpSbiLabelDoc: " + tmpSbiLabelDoc);
-				if (tmpSbiLabelDoc != null && !tmpSbiLabelDoc.equals("")){
-					lstDocLinked.put("DOC_LABEL_LINKED_"+(j+1), tmpSbiLabelDoc);
-					Integer numDocLinked = Integer.valueOf((String)tmpInfoDocLinked.get("NUM_DOC_LINKED_"+(i+1)));
-					//for(int k=0; k < numDocLinked.intValue(); k++){
-						String tmpParDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_"+(j+1));
+	    		String tmpLabelDoc = (String)tmpInfoDocLinked.get("LABEL_DOC_"+(j+1));
+				if (tmpLabelDoc != null && !tmpLabelDoc.equals("")){
+					if ((String)tmpInfoDocLinked.get("SBI_LABEL_PAR_MASTER_"+tmpDoc.getNumOrder()+"_"+(j)) != null) 
+		    			lstFieldLinked.put("SBI_LABEL_PAR_MASTER_"+i+"_"+(j+1), (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_MASTER_"+tmpDoc.getNumOrder()+"_"+(j)));
+					String strNumDocLinked = (String)tmpInfoDocLinked.get("NUM_DOC_LINKED_"+tmpDoc.getNumOrder()+"_"+(j));
+					Integer numDocLinked = new Integer("0");
+					if (strNumDocLinked != null && !strNumDocLinked.equals("")){
+						numDocLinked = Integer.valueOf(strNumDocLinked);
+						lstFieldLinked.put("NUM_DOC_FIELD_LINKED_"+i+"_"+(j+1), numDocLinked);
+					}
+					//loop on parameters of document linked
+					for(int k=0; k < numDocLinked.intValue(); k++){
+						String tmpSubDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_DOC_"+(k+1));
+						tmpSubDoc = tmpSubDoc.substring(tmpSubDoc.indexOf("|")+1);
+						String tmpParDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_"+(k+1));
+						//if (tmpSubDoc != null && tmpSubDoc.equalsIgnoreCase(tmpLabelDoc) &&
+							//tmpParDoc != null && !tmpParDoc.equals("")){
 						if (tmpParDoc != null && !tmpParDoc.equals("")){
-							lstFieldLinked.put("DOC_FIELD_LINKED_"+(j+1), tmpParDoc);
-							System.out.println("tmpParDoc: " + tmpParDoc);
+							lstDocLinked.put("DOC_LABEL_LINKED_"+i+"_"+(j+1)+"_"+k, (String)tmpInfoDocLinked.get("SBI_LABEL_DOC_"+(k+1)));
+							lstFieldLinked.put("DOC_FIELD_LINKED_"+i+"_"+(j+1)+"_"+k, tmpParDoc);
 						}
-					//}
+					}
 				}
 			}
     	}
     	lstUrl.put("URL_DOC_" + (i+1), tmpUrl);
-    	lstHeight.put("HEIGHT_DOC_"+(i+1),tmpHeight);
-    	lstWidth.put("WIDTH_DOC_"+(i+1),tmpWidth);
+    	lstStyle.put("STYLE_DOC_"+(i+1),tmpStyle);
     	lstUrlParams.put("PARAMS_DOC_"+(i+1),tmpUrlParams);
     	lstUrlParams.put("SBI_DOC_LABEL_"+(i+1),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
-    	//lstDocLinked.put("DOC_LABEL_LINKED_"+(i+1), tmpDocLinked);
-    	//lstFieldLinked.put("DOC_FIELD_LINKED_"+(i+1), tmpFieldLinked);
     	
-    	logger.debug("url for iframe_"+(i)+ " : " + tmpUrl + " Height: " + tmpHeight + " Width: " + tmpWidth);
+    	logger.debug("url for iframe_"+(i)+ " : " + tmpUrl + " Style: " + tmpStyle );
     	logger.debug("parameters for iframe_"+(i)+ " : " + tmpUrlParams);
       
     	
@@ -111,8 +109,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
     aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
-    aSessionContainer.setAttribute("docHeight", lstHeight);
-    aSessionContainer.setAttribute("docWidth", lstWidth);
+    aSessionContainer.setAttribute("docStyle", lstStyle);
     aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
     aSessionContainer.setAttribute("docLinked", lstDocLinked);
     aSessionContainer.setAttribute("fieldLinked", lstFieldLinked);

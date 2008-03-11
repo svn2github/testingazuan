@@ -115,7 +115,7 @@ public class DocumentCompositionUtils {
 			engine = obj.getEngine();
 
 			// get the initial url of the engine
-		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress();
+		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress()+"&amp;"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+GeneralUtilities.getBackEndSpagoBiContextAddress();
 		}
 		catch (Exception ex) {		
 			logger.error("Cannot obtain engine url " , ex);		
@@ -236,7 +236,7 @@ public class DocumentCompositionUtils {
 				}
 
 				// complete the url of the external engine
-			    urlReturn = engine.getUrl()+"?"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress();
+			    urlReturn = engine.getUrl()+"?"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress()+"&amp;"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+GeneralUtilities.getBackEndSpagoBiContextAddress();
 				
 			    Set parKeys = mapPars.keySet();
 				Iterator parKeysIter = parKeys.iterator();
@@ -289,12 +289,17 @@ public class DocumentCompositionUtils {
 		}
 		
 		//if into url therisn't yet document id, adds it
-		if (urlReturn.indexOf("document=") < 0)
-			urlReturn += "&amp;document=" + obj.getId();
+		if (urlReturn.indexOf("document=") < 0){
+			if (urlReturn.endsWith("DOCUMENT_PARAMETERS="))
+				urlReturn += "document=" + obj.getId();
+			else
+				urlReturn += "&amp;document=" + obj.getId();
+		}
 		
-		
+		//TEST
+		urlReturn += "&amp;";
 		//urlReturn += "&amp;idDocComposite=" + ((Integer)sessionContainer.getAttribute("idDocComposite")).toString()+"&amp;";
-		urlReturn += "&amp;docConfig=" + ((DocumentCompositionConfiguration)sessionContainer.getAttribute("docConfig"))+"&amp;";
+		//urlReturn += "&amp;docConfig=" + ((DocumentCompositionConfiguration)sessionContainer.getAttribute("docConfig"))+"&amp;";
 
 		//prepares and sets parameters value into session
 		HashMap parValueDoc = getAllParamsValue(urlReturn);
@@ -347,14 +352,14 @@ public class DocumentCompositionUtils {
 		String value = "";
 		int cont = 0;
 		while(enParams.hasMoreElements()) {
-	    	String tmpKey = "sbi_par_label_param_"+cont;
+	    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
     		key = lstParams.getProperty(tmpKey);
     		if (key == null) break;
 	    	//value = lstParams.getProperty(key);
     		value = (String)requestSB.getAttribute(key);
 	    	//if value isn't defined, gets the default value
 		    if(value == null || value.equals("")){
-			    value = lstParams.getProperty(("default_value_param_"+cont));
+			    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 	    	}
 		    if (value != null && !value.equals(""))
 	    		paramUrl += "&amp;"+ key + "=" + value;

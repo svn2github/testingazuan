@@ -7,11 +7,12 @@
 		 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
 		 version="2.4">
 
-	
-	<display-name>
+	<display-name>QBE</display-name>
+	<description>
 		Spago BI - Query By Example Web Version
-	</display-name>
+	</description>
 	
+
 	
 	<!--  ============================================================================ -->
 	<!--  FILTERS								 									   -->

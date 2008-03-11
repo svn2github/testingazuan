@@ -22,6 +22,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/initializer/publishers.xml" />
 	
 	<!-- start QUERY_BUILDER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/publishers.xml" />
+	
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/publishers.xml" />

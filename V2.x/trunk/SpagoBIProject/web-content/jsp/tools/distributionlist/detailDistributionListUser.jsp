@@ -33,46 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
-		List listDialects = (List) moduleResponse.getAttribute(DetailDistributionListUserModule.NAME_ATTR_LIST_DIALECTS);
-		
-		String modality = (String)moduleResponse.getAttribute("modality");
-		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
-		String msgWarningSave = msgBuilder.getMessage("8002", request);
-		
-		Map formUrlPars = new HashMap();
-		if(ChannelUtilities.isPortletRunning()) {
-			formUrlPars.put("PAGE", "DetailDistributionListUserPage");	
-  			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");	
-		}
-		String formUrl = urlBuilder.getUrl(request, formUrlPars);
-		
-		Map backUrlPars = new HashMap();
-		backUrlPars.put("PAGE", "ListDistributionListUserPage");
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
 	%>
 	
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 
-<form method='POST' action='<%=formUrl%>' id='dlForm' name='dlForm' >
-
-
-		<input type='hidden' name='PAGE' value='DetailDistributionListUserPage' />
-		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-
-
-	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
-	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
-	<input type='hidden' value='<%=dl.getId()%>' name='id' />
-	
-	<!-- table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
-		<tr class='header-row-portlet-section'>
-			<td class='header-title-column-portlet-section' 
-			    style='vertical-align:middle;padding-left:5px;'>
-				<spagobi:message key = "SBISet.ListDL.TitleDetail"  />
-			</td>
-		</tr>
-	</table -->
 	
 	<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
 	
@@ -191,46 +155,5 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	</div>  
 
-	<script>
-	
-	function isDlFormChanged () {
-	
-	var bFormModified = 'false';
-		
-	var name = document.dlForm.NAME.value;
-	var description = document.dlForm.DESCR.value;	
-	
-	if ((name != '<%=dl.getName()%>')
-		|| (description != '<%=(dl.getDescr()==null)?"":dl.getDescr()%>')) {
-			
-		bFormModified = 'true';
-	}
-	
-	return bFormModified;
-	
-	}
-
-	
-	function goBack(message, url) {
-	  
-	  var bFormModified = isDlFormChanged();
-	  
-	  if (bFormModified == 'true'){
-	  	  if (confirm(message)) {
-	  	      document.getElementById('saveAndGoBack').click(); 
-	  	  } else {
-			location.href = url;	
-    	  }	         
-       } else {
-			location.href = url;
-       }	  
-	}
-	
-	function saveDL(type) {	
-  	  	  document.dlForm.SUBMESSAGEDET.value=type;
-  	  	  if (type == 'SAVE')
-      		  document.getElementById('dlForm').submit();
-	}
-	</script>
 	
 	<%@ include file="/jsp/commons/footer.jsp"%>

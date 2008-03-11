@@ -31,7 +31,6 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
@@ -497,7 +496,7 @@ public class ListTag extends TagSupport
 							        }
 							        _htmlStream.append("           ], \n");
 							        }
-							        
+						        _htmlStream.append(" buttonAlign : 'left',\n");
 							    _htmlStream.append("            plain: true \n");
 						        _htmlStream.append("        });\n");
 						        _htmlStream.append("    };\n");
@@ -561,7 +560,7 @@ public class ListTag extends TagSupport
 					        }
 					        _htmlStream.append("           ], \n");
 					        }
-					        
+					        _htmlStream.append(" buttonAlign : 'left',\n");
 					        _htmlStream.append("            plain: true \n");
 					        
 					        _htmlStream.append("        }); }; \n");

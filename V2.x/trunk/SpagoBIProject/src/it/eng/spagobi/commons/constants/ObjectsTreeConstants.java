@@ -33,6 +33,7 @@ public class ObjectsTreeConstants {
 	public static final String NODE_CMS_TYPE = "NODE_CMS_TYPE";
 	
 	public static final String DETAIL_SELECT = "DETAIL_SELECT";
+	public static final String METADATA_SELECT = "METADATA_SELECT";
 	public static final String DETAIL_NEW = "DETAIL_NEW";
 	public static final String DETAIL_MOD = "DETAIL_MOD";
 	public static final String DETAIL_INS = "DETAIL_INS";

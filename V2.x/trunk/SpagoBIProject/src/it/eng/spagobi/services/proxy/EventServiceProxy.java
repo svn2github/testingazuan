@@ -71,7 +71,7 @@ public final class EventServiceProxy extends AbstractServiceProxy{
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;	
     }
@@ -92,7 +92,7 @@ public final class EventServiceProxy extends AbstractServiceProxy{
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;	
     }    

@@ -72,30 +72,37 @@ public class HiddenLoginAction extends AbstractHttpAction {
 	SessionContainer permSess = sessCont.getPermanentContainer();
 
 	String userId = null;
+	ConfigSingleton config = ConfigSingleton.getInstance();
+	SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+	String active = (String) validateSB.getCharacters();
+	logger.debug("Active SSO:" + active);
+	if (active != null && active.equals("true")) {
+	    IProxyService proxy = IProxyServiceFactory.createProxyService();
+	    userId = proxy.readUserId(session);
+	    logger.debug("got userId from IProxyService=" + userId);
+	} else {
+	    userId = httpReq.getParameter("userId");
+	    logger.debug("got userId from Request=" + userId);
+	}	
 	try {
 
 	    IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 	    if (profile == null) {
 		logger.debug("Profile in sessione is null...");
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-		String active = (String) validateSB.getCharacters();
-		logger.debug("Active SSO:" + active);
-		if (active != null && active.equals("true")) {
-		    IProxyService proxy = IProxyServiceFactory.createProxyService();
-		    userId = proxy.readUserId(session);
-		    logger.debug("got userId from IProxyService=" + userId);
-		} else {
-		    userId = httpReq.getParameter("userId");
-		    logger.debug("got userId from Request=" + userId);
-		}
-		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 
+		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		SpagoBIUserProfile user = supplier.createUserProfile(userId);
 		profile = new UserProfile(user);
 		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-	    } 
+	    } else if (!userId.equalsIgnoreCase((String)profile.getUserUniqueIdentifier())){
+		logger.debug("Change the user profile ...");
+		permSess.delAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		SpagoBIUserProfile user = supplier.createUserProfile(userId);
+		profile = new UserProfile(user);
+		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);		
+	    }
 	    byte[] content = "".getBytes();
 	    httpResp.setContentLength(content.length);
 	    httpResp.getOutputStream().write(content);

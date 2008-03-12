@@ -75,7 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String minSlider="";
 	String valueSlider="";
 	String refreshUrl2 = "";
-	Vector categories;
+	HashMap categories=null;
 	if(aServiceResponse.getAttribute("title")!=null){
 	title= (String)aServiceResponse.getAttribute("title");
 	}
@@ -219,7 +219,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 
 /////////////////////////////////////////////////////// Case one category has been selected//////////////////////////////////////////
 		if(sbi.getType().equalsIgnoreCase("BARCHART")){
-			categories=(Vector)((BarCharts)sbi).getCategories();
+			categories=(HashMap)((BarCharts)sbi).getCategories();
 			if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
 				Double catD=Double.valueOf(catS);
@@ -436,20 +436,22 @@ if(sbi.isChangeableView()){
 	if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		maxSlider=(new Integer(((BarCharts)sbi).getCategoriesNumber())).toString(); 
 		minSlider="0"; 
-
-	
+		String allCatsUrl=refreshUrl2+"&category=0";
 	%>
 	<form>
-	<div id="slider1" align="center"></div> 
-	<div id="output1" align="center" >
-		<table align="center" width="75%" border="1">
-			<tr>
-				<td width="25%">Select Category</td>
-				<td id="slider_1_1_value" width="15%"></td>
-				<td width="60%"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>
+		<table align="center" width="40%">
+	<tr>
+	<td width="75%" align="right">
+		<div id="slider1"></div> 
+	<div id="output1"> 
+		</td>
+		<td id="slider_1_1_value" width="10%" align="center"></td>
+		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>
+		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">All Categories</a></td>
+	</div>
 			</tr>
 		</table>
-	</div>
+	
 	<BR>
 </form>
 
@@ -468,11 +470,18 @@ if(sbi.isChangeableView()){
  <script type="text/javascript" language="JavaScript">
  		function getValue() {return Test.slideZone1.getSlider('start1_1').value;}
 
+	function getAllActionUrl() {
+	
+		var variable="&category=0";
+		var second=variable;
+		var url="<%=refreshUrl2%>";
+		var finalUrl=url+second;
+		return finalUrl;
+		}
+ 
 
 	function getActionUrl() {
 	
-		//var v='www.google.it';
-		//return v;
 		var variable="&category=";
 		var value=getValue();
 		var second=variable+value;

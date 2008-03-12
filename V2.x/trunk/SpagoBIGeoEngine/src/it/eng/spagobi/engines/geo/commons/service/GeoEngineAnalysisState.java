@@ -55,6 +55,11 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 		}
 	}
 
+	public void setRowData( byte[] rowData ) {
+		super.setRowData(rowData);
+		parseRowData();
+	}
+	
 	public String getSelectedHierarchy() {
 		return properties.getProperty("selected_hierachy");
 	}

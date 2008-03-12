@@ -25,12 +25,16 @@ import java.io.IOException;
 import java.util.List;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
+import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
+import it.eng.spagobi.utilities.engines.EngineAnalysisState;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 
@@ -40,7 +44,6 @@ import org.apache.log4j.Logger;
  */
 public class AbstractGeoEngineAction extends AbstractEngineAction {
 	
-	public static final String MAP_CONFIGURATION = "CONFIGURATION";
 	
 	/**
      * Logger component
@@ -51,9 +54,8 @@ public class AbstractGeoEngineAction extends AbstractEngineAction {
 
 	
 	public MapConfiguration getMapConfiguration() {
-		return (MapConfiguration)getAttributeFromSession( MAP_CONFIGURATION );
+		return (MapConfiguration)getAttributeFromSession( GeoEngineConstants.MAP_CONFIGURATION );
 	}
-	
 	
 	private MapCatalogueAccessUtils getMapCatalogue(){
 		MapCatalogueAccessUtils mapCatalogueClient = null;

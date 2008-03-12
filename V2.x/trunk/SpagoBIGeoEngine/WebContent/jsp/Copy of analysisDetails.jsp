@@ -96,7 +96,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="name" id="name" value="<%=analysisMetadata.getName()==null?"":analysisMetadata.getName()%>" maxlength="20"/>
+							name="name" id="name" value="<%=analysisMetadata.getName()%>" maxlength="20"/>
 				</div>
 				
 				<div class='div_detail_label'>
@@ -117,7 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<div class='div_detail_form'>
 					 <select id="scope" name="scope"/>
 					    <option value="Public" <%=analysisMetadata.isPublic()?"selected":""%> />Public
-					    <option value="Private" <%=analysisMetadata.isPublic()?"":"selected"%> />Private
+					    <option value="Private" <%=!analysisMetadata.isPublic()?"selected":""%> />Private
 					  </select>
 				</div>
 				
@@ -127,7 +127,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</tr>
 </table>
 
-</form>
+
 
 
 <!-- ============================================================================================================== -->

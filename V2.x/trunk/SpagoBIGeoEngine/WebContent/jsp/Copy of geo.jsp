@@ -43,8 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	selectedLayers = (String[])serviceResponse.getAttribute("selectedLayers");
 	baseUrl = (String)serviceResponse.getAttribute(GeoEngineStartAction.BASE_URL);
-	//isSubObject = (String)serviceResponse.getAttribute(GeoEngineStartAction.IS_SUBOBJECT);
-	isSubObject = null;
+	isSubObject = (String)serviceResponse.getAttribute(GeoEngineStartAction.IS_SUBOBJECT);
 	isSaveSubObjFuncActive = (String)serviceResponse.getAttribute("isSaveSubObjFuncActive");
 
 	actionUrl = baseUrl + "/servlet/AdapterHTTP?ACTION_NAME=MAP_DRAW_ACTION";

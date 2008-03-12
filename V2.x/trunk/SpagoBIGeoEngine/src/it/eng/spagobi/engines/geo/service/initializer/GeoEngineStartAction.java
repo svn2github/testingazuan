@@ -11,6 +11,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.configuration.Constants;
@@ -21,6 +22,7 @@ import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.Enumeration;
@@ -36,19 +38,21 @@ import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 
 /**
- * Spago Action which executes the map producing request  
+ * Geo entry point action
  */
 public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	//response 
-	public static final String IS_SUBOBJECT = "isSubObject";
 	public static final String BASE_URL = "baseUrl";
 	
 	// session
-	public static final String MAP_CONFIGURATION = "CONFIGURATION";
+	public static final String MAP_CONFIGURATION = GeoEngineConstants.MAP_CONFIGURATION;
+	public static final String ANALYSIS_METADATA = GeoEngineConstants.ANALYSIS_METADATA;
+	public static final String ANALYSIS_STATE = GeoEngineConstants.ANALYSIS_STATE;
+	
+	// ???
 	public static final String SPAGOBI_TEMPLATE = "template";
 	public static final String SPAGOBI_DATASOURCE = "SPAGOBI_DATASOURCE";
-	public static final String ANALYSIS_METADATA = "ANALYSIS_METADATA";
 	
 	
 	/**
@@ -99,9 +103,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		}
 				
 		analysisState = new GeoEngineAnalysisState( analysisStateRowData );				
-		if( analysisState != null ) {			
-			mapConfiguration.setAnalysisState( analysisState );
-		}
+		mapConfiguration.setAnalysisState( analysisState );
 		
 		
 		Properties props = new Properties();
@@ -120,16 +122,20 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		mapConfiguration.getDatamartProviderConfiguration().setParameters(props);	
 		
 		
-		if(analysisState != null) setAttribute("selectedLayers", analysisState.getSelectedLayers().split(","));
+		if(analysisState.getSelectedLayers() != null) setAttribute("selectedLayers", analysisState.getSelectedLayers().split(","));
 		setAttribute(BASE_URL, baseUrl);
 		
-		setAttributeInSession(USER_ID, userId );
-		setAttributeInSession(DOCUMENT_ID, documentId );
-		setAttributeInSession(AUDIT_ID, auditId );
+		setAttributeInSession(EngineConstants.USER_ID, userId );
+		setAttributeInSession(EngineConstants.DOCUMENT_ID, documentId );
+		setAttributeInSession(EngineConstants.AUDIT_ID, auditId );
 		setAttributeInSession(ANALYSIS_METADATA, analysisMetadata );
+		setAttributeInSession(ANALYSIS_STATE, analysisState );
 		setAttributeInSession(MAP_CONFIGURATION, mapConfiguration);
+		
 		setAttributeInSession(SPAGOBI_TEMPLATE, template );
 		setAttributeInSession(SPAGOBI_DATASOURCE, dataSource );		
+		
+		
 		
 		
 		logger.debug("End service method");

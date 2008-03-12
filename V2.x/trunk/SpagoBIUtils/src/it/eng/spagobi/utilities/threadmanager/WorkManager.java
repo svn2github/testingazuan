@@ -3,6 +3,12 @@
  */
 package it.eng.spagobi.utilities.threadmanager;
 
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.services.common.EnginConf;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -40,12 +46,13 @@ public class WorkManager {
     public void init() throws NamingException {
 	logger.debug("IN");
 	try {
+	    
+	    SourceBean jndiSB = (SourceBean)EnginConf.getInstance().getConfig().getAttribute("JNDI_THREAD_MANAGER");
+	    String jndi = (String) jndiSB.getCharacters();
+	    
 	    Context ctx = new InitialContext();
-	    wm = (FooWorkManager) ctx.lookup("java:/comp/env/wm/WorkManager");
-	    // wm = (FooWorkManager) ctx.lookup("wm/WorkManager");
-	    // Object o = ctx.lookup("wm/FooWorkManager");
-	    // System.out.println(o.getClass().getName());
-	    // wm = (WorkManager) o;
+	    wm = (FooWorkManager) ctx.lookup(jndi);
+
 	} catch (NamingException e) {
 	    logger.error("IN", e);
 	    throw e;

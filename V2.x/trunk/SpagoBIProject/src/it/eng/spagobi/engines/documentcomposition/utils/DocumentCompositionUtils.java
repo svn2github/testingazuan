@@ -283,6 +283,7 @@ public class DocumentCompositionUtils {
 			
 			urlReturn = GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
 						"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
+			
 			urlReturn += getParametersUrl(obj, document, requestSB);
 			
 			
@@ -297,10 +298,9 @@ public class DocumentCompositionUtils {
 		}
 		
 		//TEST
-		urlReturn += "&amp;";
-		//urlReturn += "&amp;idDocComposite=" + ((Integer)sessionContainer.getAttribute("idDocComposite")).toString()+"&amp;";
-		//urlReturn += "&amp;docConfig=" + ((DocumentCompositionConfiguration)sessionContainer.getAttribute("docConfig"))+"&amp;";
-
+		//urlReturn += "&amp;";
+		urlReturn += "&amp;" + SpagoBIConstants.EXECUTION_CONTEXT + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION +"&amp;";
+	
 		//prepares and sets parameters value into session
 		HashMap parValueDoc = getAllParamsValue(urlReturn);
 		sessionContainer.setAttribute(document.getLabel(), parValueDoc);

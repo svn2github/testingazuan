@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.apache.log4j.Logger"%>
 
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants" %>
                  
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 
@@ -103,9 +104,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	
     	logger.debug("url for iframe_"+(i)+ " : " + tmpUrl + " Style: " + tmpStyle );
     	logger.debug("parameters for iframe_"+(i)+ " : " + tmpUrlParams);
-      
-    	
-		
+
     }
     aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
@@ -113,6 +112,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
     aSessionContainer.setAttribute("docLinked", lstDocLinked);
     aSessionContainer.setAttribute("fieldLinked", lstFieldLinked);
+ //   aSessionContainer.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
+   
     //include jsp requested
     getServletContext().getRequestDispatcher(nameTemplate).include(request,response);    
 	    

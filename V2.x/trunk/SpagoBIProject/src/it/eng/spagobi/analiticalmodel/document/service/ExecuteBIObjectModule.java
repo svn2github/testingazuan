@@ -936,13 +936,12 @@ public class ExecuteBIObjectModule extends AbstractModule {
 							mapPars.put(name, value);
 					}
 				}
-				// GET ID FOR DOCUMENT COMPOSITION
 				/*
-				if (session.getAttribute("idDocComposite") != null
-						&& (((Integer) session.getAttribute("idDocComposite")).toString())
-								.equalsIgnoreCase("true")) {
-					mapPars.put("idDocComposite", (String) session
-							.getAttribute("idDocComposite"));
+				// GET CONTEXT FOR DOCUMENT COMPOSITION
+				if (session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT) != null
+						&& ((String) session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT))
+								.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
+					mapPars.put(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 				}
 				*/
 				//GET DOC CONFIG FOR DOCUMENT COMPOSITION
@@ -1002,13 +1001,14 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 			// starts engine's execution
 			try {
-				// GET FLAG FOR DOCUMENT COMPOSITION
-				if (session.getAttribute("flgDocComposite") != null
-						&& ((String) session.getAttribute("flgDocComposite"))
-								.equalsIgnoreCase("true")) {
-					response.setAttribute("flgDocComposite", (String) session
-							.getAttribute("flgDocComposite"));
+				/*
+				// GET CONTEXT FOR DOCUMENT COMPOSITION
+				if (session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT) != null
+						&& ((String) session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT))
+								.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
+					response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 				}
+				*/
 				if (subObj != null)
 					internalEngine.executeSubObject(this.getRequestContainer(),
 							obj, response, subObj);

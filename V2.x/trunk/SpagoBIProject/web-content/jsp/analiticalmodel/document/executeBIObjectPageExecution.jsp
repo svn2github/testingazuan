@@ -734,14 +734,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div class="div_form_row" >
 				
 					 <span class='portlet-form-field-label'>
-						<spagobi:message key = "If you want to use your e-mail account fill up the following form:" />
+						<spagobi:message key = "sbi.execution.sendTo.yourAccount" />
 					</span>
 				
 			</div>
 			<div class="div_form_row" >
 				<div class='div_form_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key = "Login" />
+						<spagobi:message key = "sbi.execution.sendTo.Login" />
 					</span>
 				</div>
 				<div class='div_form_field'>
@@ -752,7 +752,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div class="div_form_row" >
 				<div class='div_form_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key = "Password" />
+						<spagobi:message key = "sbi.execution.sendTo.Password" />
 					</span>
 				</div>
 				<div class='div_form_field'>
@@ -763,7 +763,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div class="div_form_row" >
 				<div class='div_form_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key = "Reply To" />
+						<spagobi:message key = "sbi.execution.sendTo.ReplyTo" />
 					</span>
 				</div>
 				<div class='div_form_field'>

@@ -73,6 +73,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    String userId = "";
 	    String login = "";
 	    String pass = "";
+	    String from = "";
 
 	    // Creo una lista con un suo iteratore con dentro i parametri della
 	    // request
@@ -109,6 +110,9 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		} else if (parName.equals("pwd")) {
 		    pass = (String) request.getAttribute("pwd");
 		    logger.debug("got pwd from Request");
+		} else if (parName.equals("replyto")) {
+			from = (String) request.getAttribute("replyto");
+		    logger.debug("got email to reply to, from Request");    
 		} else {
 		    String value = (String) request.getAttribute(parName);
 		    queryStr += parName + "=" + value + "&";
@@ -179,18 +183,21 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		throw new Exception("Mail profile configuration not found");
 	    }
 	    String smtphost = (String) mailProfSB.getAttribute("smtphost");
-	    if ((smtphost == null) || smtphost.trim().equals(""))
-		throw new Exception("Smtp host not configured");
-	    String from = (String) mailProfSB.getAttribute("from");
-	    if ((from == null) || from.trim().equals(""))
-		from = "spagobi@eng.it";
-
+	    
+	    if ((smtphost == null) || smtphost.trim().equals("")) throw new Exception("Smtp host not configured");
+	    if ((from == null) || from.trim().equals("")) from = (String) mailProfSB.getAttribute("from");
+	    if(login == null || login.trim().equals(""))login = (String) mailProfSB.getAttribute("user");
+	    if(pass == null || pass.trim().equals(""))pass = (String) mailProfSB.getAttribute("password");
+	    
+	    if ((from == null) || from.trim().equals("")) throw new Exception("From field missing from input form or not configured");
+	    if(login == null || login.trim().equals(""))throw new Exception("Login field missing from input form or not configured");
+	    if(pass == null || pass.trim().equals(""))throw new Exception("Password field missing from input form or not configured");
 	    // Set the host smtp address
 	    Properties props = new Properties();
 	    props.put("mail.smtp.host", smtphost);
 	    props.put("mail.smtp.auth", "true");
 	    // create autheticator object
-	    Authenticator auth = new SMTPAuthenticator(login,pass);
+	    Authenticator auth = new SMTPAuthenticator(login, pass);
 	    // open session
 	    Session session = Session.getDefaultInstance(props, auth);
 

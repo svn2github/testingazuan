@@ -33,4 +33,6 @@ public class EngineConstants {
 	public static final String DOCUMENT_ID = "document";
 	public static final String ANALYSIS_METADATA = "ANALYSIS_METADATA";
 	public static final String ANALYSIS_STATE = "ANALYSIS_STATE";
+	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
+	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";
 }

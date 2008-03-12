@@ -112,7 +112,8 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
      * @return The url link associated to the resultset row
      */
     private String createLink(SourceBean drillSB, ResultSet resultSet) {
-    	String link = "../SpagoBIDrillServlet?";
+    	//String link = "../SpagoBIDrillServlet?";
+    	String link = "javascript:parent.parent.execDrill(this.name,'/SpagoBIGeoEngine/SpagoBIDrillServlet?";
     	try{
 	    	String docLbl = (String)drillSB.getAttribute("document");
 	    	link += "DOCUMENT_LABEL=" + docLbl + "&amp;";
@@ -131,6 +132,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
 	    		}
 	    	}
 	    	link = link.substring(0, link.length()-5);
+	    	link += "')";
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

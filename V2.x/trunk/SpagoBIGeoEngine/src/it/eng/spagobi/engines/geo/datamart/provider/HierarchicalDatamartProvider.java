@@ -360,8 +360,8 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
      */
    
     private String createLink(SourceBean drillSB, ResultSet resultSet) {
-    	String link = "../SpagoBIDrillServlet?";
-    	
+    	//String link = "../SpagoBIDrillServlet?";
+    	String link = "javascript:parent.parent.execDrill(this.name,'/SpagoBIGeoEngine/SpagoBIDrillServlet?";
     	if(drillSB == null) return "javascript:void(0)";
     	
     	try{
@@ -384,6 +384,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
 		    	}
 	    	}
 	    	link = link.substring(0, link.length()-1);
+	    	link += "')";
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 

@@ -50,8 +50,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</td>
 				<td vAlign="middle">
 					    <br/> 
-						<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDistributionListUserPage"/>
-								<portlet:param name="PAGE" value="ListDistributionListUserPage"/></portlet:actionURL>' 
+						<a href='<portlet:actionURL> 
+						        <portlet:param name="PAGE" value="ListDistributionListUserPage"/>
+								</portlet:actionURL>' 
 							class="link_main_menu" >
 						 	<spagobi:message key="SBISet.linkDLUConf" />
 						</a>

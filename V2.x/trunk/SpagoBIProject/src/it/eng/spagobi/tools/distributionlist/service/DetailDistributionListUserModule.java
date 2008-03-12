@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 
@@ -143,12 +144,9 @@ public class DetailDistributionListUserModule extends AbstractModule {
 			id = (String) request.getAttribute("DL_ID");
 			email = (String)request.getAttribute("EMAIL");
 			submessagedet = (String)request.getAttribute("SUBMESSAGEDET");
-			SessionContainer permCont = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			//HttpServletRequest hsr = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
-			//HttpSession session = hsr.getSession();
 			
-			IEngUserProfile profile=(IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			//IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			IEngUserProfile profile=UserUtilities.getUserProfile();
+
 			if (profile!=null) userId=(String)profile.getUserUniqueIdentifier();
 			//load the dl
 			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
@@ -194,10 +192,8 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		try {
 			String id = (String) request.getAttribute("DL_ID");
 			this.modalita = SpagoBIConstants.DETAIL_UNSUBSC;
-			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			IEngUserProfile userProfile = UserUtilities.getUserProfile();
 			String userId = (String)userProfile.getUserUniqueIdentifier();
-			
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 

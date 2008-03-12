@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 /**
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
 */
+import it.eng.spagobi.commons.utilities.UserUtilities;
 
 /**
  * Loads the Distributionlist List
@@ -50,10 +51,14 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 	 */
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-	    RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
-		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-		SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	    
+	        RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+	        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+	        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	        /*
 		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		*/
+	    	IEngUserProfile userProfile =UserUtilities.getUserProfile();
 		String userId="";
 		if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 		//sets the userid as input parameter for the query fo statements.xml

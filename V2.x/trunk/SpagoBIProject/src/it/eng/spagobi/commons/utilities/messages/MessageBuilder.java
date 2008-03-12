@@ -23,6 +23,11 @@ package it.eng.spagobi.commons.utilities.messages;
 
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.RequestContainerAccess;
+import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.ResponseContainerAccess;
+import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.message.MessageBundle;
@@ -231,9 +236,7 @@ public class MessageBuilder implements IMessageBuilder {
 	
 	public Locale getLocale(HttpServletRequest request) {
 		logger.debug("IN");
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		// get mode of execution
-		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+		String sbiMode = getSpagoBIMode(request);
 		// based on mode get locale
 		Locale locale = null;
 		if (sbiMode.equalsIgnoreCase("WEB")) {
@@ -285,5 +288,27 @@ public class MessageBuilder implements IMessageBuilder {
 		} finally {
 			logger.debug("OUT");
 		}
+	}
+	
+	/**
+	 * Returns 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request
+	 * @param request The HttpServletRequest to be examined
+	 * @return 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request
+	 */
+	public String getSpagoBIMode(HttpServletRequest request) {
+		logger.debug("IN");
+		RequestContainer aRequestContainer = null;
+		String sbiMode = null;
+		// case of portlet mode
+		aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
+		if (aRequestContainer == null) {
+			// case of web mode
+			aRequestContainer = RequestContainerAccess.getRequestContainer(request);
+		}
+		String channelType = aRequestContainer.getChannelType();
+		if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
+		else sbiMode = "WEB";
+		logger.debug("OUT: sbiMode = " + sbiMode);
+		return sbiMode;
 	}
 }

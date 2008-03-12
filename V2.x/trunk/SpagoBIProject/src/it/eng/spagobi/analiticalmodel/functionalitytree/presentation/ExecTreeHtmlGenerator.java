@@ -30,6 +30,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
+import it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -39,6 +40,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,11 +81,14 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
 		/* ********* start luca changes *************** */
-		htmlStream.append("		function menu" + requestIdentity + "(event, urlExecution, urlEraseDoc, urlEraseFolder, urlAddFolder) {\n");
+		htmlStream.append("		function menu" + requestIdentity + "(prog, event, urlExecution, urlMetadata, urlEraseDoc, urlEraseFolder, urlAddFolder) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenu" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
+		String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		htmlStream.append("			if(urlMetadata!=''){ divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:makePopup(\\''+prog+'\\',\\''+urlMetadata+'\\')\" >"+capMetadata+"</a></div>'; }\n");
+		
 		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
         htmlStream.append("         if(urlEraseDoc!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseDoc+'\\');\">"+capErase+"</a></div>';\n");
         htmlStream.append("         if(urlEraseFolder!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseFolder+'\\');\">"+capErase+"</a></div>';\n");
@@ -111,6 +116,35 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
         htmlStream.append("     function eraseFolder(idF){\n");
         htmlStream.append("         alert('Not Implemented');");
         htmlStream.append("     }\n");
+        
+    	htmlStream.append("function makePopup(id, urlMetadata ) {\n");		
+		htmlStream.append(" var win = new Ext.Window({id:id , \n"
+					+"            bodyCfg:{ \n" 
+					+"                tag:'div' \n"
+					+"                ,cls:'x-panel-body' \n"
+					+"               ,children:[{ \n"
+					+"                    tag:'iframe', \n"
+					+"                    name: 'dynamicIframe1', \n"
+					+"                    id  : 'dynamicIframe1', \n"
+					+"                    src: urlMetadata , \n"
+					+"                    frameBorder:0, \n"
+					+"                    width:'100%', \n"
+					+"                    height:'100%', \n"
+					+"                    style: {overflow:'auto'}  \n "        
+					+"               }] \n"
+					+"            }, \n"
+					+"            modal: true,\n"
+					+"            layout:'fit',\n"
+					+"            height:400,\n"
+			+"            width:500,\n"
+			+"            closeAction:'close',\n"
+			+"            scripts: true, \n"
+			+"            plain: true \n"
+														        
+			+"        });  \n"
+			+"   win.show(); \n" );
+						
+		htmlStream.append("}\n");
         
         /* ********* end luca changes *************** */
 	}
@@ -267,7 +301,6 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
 				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 				
-				
 				Map execUrlPars = new HashMap();
 				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
@@ -296,7 +329,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			logger.debug("User Personal Folder");
 			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
 			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
-			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + "Personal Folder: "+name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "(event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
+			
+			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + "Personal Folder: "+name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "( \\'\\', event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
 		
 			List objects = folder.getBiObjects();
 			for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -320,7 +354,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'"+execUrl+"\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\')' );\n");
+				String prog = idObj.toString();
+				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'"+execUrl+"\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\')' );\n");
 			}
 		} 
 	
@@ -354,14 +389,18 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
 						logger.debug("NOT visible " + obj.getName());
 					} else {
+						String prog = idObj.toString();
 						logger.debug("VISIBLE " + obj.getName());
 						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'"+execUrl+"\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\')' );\n");
+							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+							
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'"+execUrl+"\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\')' );\n");
+							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 						}
 					}
 				}
@@ -373,6 +412,16 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private String createMetadataObjectLink(Integer id) {
+		IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
+		HashMap detUrlParMap = new HashMap();
+		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
+		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
+		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		String detUrl = urlBuilderWeb.getUrl(httpRequest, detUrlParMap);
+		return detUrl;
 	}
 	
 	private String createEraseDocumentLink(Integer iddoc,Integer idFunct) {

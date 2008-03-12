@@ -47,6 +47,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.events.EventsManager,
 				 it.eng.spagobi.events.bo.EventLog,
 				 it.eng.spago.configuration.ConfigSingleton,
+				 it.eng.spagobi.monitoring.metadata.SbiAudit,
+				  it.eng.spagobi.monitoring.dao.IAuditDAO,
 				 it.eng.spago.util.StringUtils,
 				 it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl,
 				 it.eng.spago.security.IEngUserProfile" %>
@@ -145,7 +147,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	}
 	if (lastExecDate != null )lastExecTime = lastExecDate.toString(); 
-	
 %>
 
 

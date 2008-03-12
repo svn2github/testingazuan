@@ -31,8 +31,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
 	<%
-		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule"); 
-		String dlid = (String)moduleResponse.getAttribute("DL_ID");
+	
+		String listPageName="ListDistributionListUserPage";
+		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule");
+		if (moduleResponse==null){
+		    System.out.println("cucucucu");
+		    listPageName="ListDistributionListUserPageWithOutback";
+		    moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModuleWithOutback");		    
+		}
+	
+	
+	    
+	    String dlid = (String)moduleResponse.getAttribute("DL_ID");
 		DistributionList dl = (DistributionList)moduleResponse.getAttribute("dlObj");
 		String modality = "DETAIL_SUBSC" ;
 		String subMessageDet = (((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET"));
@@ -47,7 +57,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		
 		Map backUrlPars = new HashMap();
-		backUrlPars.put("PAGE", "ListDistributionListUserPage");
+		backUrlPars.put("PAGE", listPageName);
 		backUrlPars.put("TYPE_LIST", "TYPE_LIST");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);	
 	

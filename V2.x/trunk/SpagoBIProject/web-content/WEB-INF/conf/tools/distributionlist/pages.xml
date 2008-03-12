@@ -40,6 +40,18 @@
     	</MODULES>
   	</PAGE>
   	
+  	<PAGE name="ListDistributionListUserPageWithOutback" scope="REQUEST" title="Distribution List Configuration" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListDistributionListUserPageWithOutback" target="ListDistributionListUserModuleWithOutback">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListDistributionListUserModuleWithOutback"/>
+    	</MODULES>
+  	</PAGE>  	
+  	
   	
   	<PAGE name="DetailDistributionListUserPage" scope="REQUEST" >
     	<DEPENDENCIES>

@@ -22,6 +22,7 @@ public class BarCharts extends ChartImpl {
 	Map confParameters;
 	String categoryLabel="";
 	String valueLabel="";
+	Integer numberCatVisualization=null;
 	HashMap colorMap=null;  // keeps user selected colors
 	int categoriesNumber=0;
 	HashMap categories;
@@ -152,6 +153,15 @@ public class BarCharts extends ChartImpl {
 		{
 			valueLabel="values";
 		}
+		
+		if(confParameters.get("numbercatvisualization")!=null){	
+			String nu=(String)confParameters.get("numbercatvisualization");
+		numberCatVisualization=Integer.valueOf(nu);
+		}
+		else
+		{
+			numberCatVisualization=new Integer(1);
+		}
 
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIESCOLORS");
@@ -239,6 +249,14 @@ public class BarCharts extends ChartImpl {
 
 			return newDataSet;
 	
+	}
+
+	public Integer getNumberCatVisualization() {
+		return numberCatVisualization;
+	}
+
+	public void setNumberCatVisualization(Integer numberCatVisualization) {
+		this.numberCatVisualization = numberCatVisualization;
 	}
 
 	

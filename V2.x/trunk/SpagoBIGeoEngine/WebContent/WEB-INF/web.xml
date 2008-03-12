@@ -42,7 +42,7 @@
         <servlet-name>SpagoBIDrillServlet</servlet-name>
         <url-pattern>/SpagoBIDrillServlet</url-pattern>
     </servlet-mapping>
-	
+    
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>

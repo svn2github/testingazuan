@@ -21,10 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities.engines;
 
+import it.eng.spago.security.IEngUserProfile;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public class EngineConstants {
-
+	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
+	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
+	public static final String DOCUMENT_ID = "document";
+	public static final String ANALYSIS_METADATA = "ANALYSIS_METADATA";
+	public static final String ANALYSIS_STATE = "ANALYSIS_STATE";
 }

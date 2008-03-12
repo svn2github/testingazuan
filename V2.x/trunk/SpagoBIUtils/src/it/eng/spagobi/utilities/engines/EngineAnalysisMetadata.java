@@ -83,7 +83,7 @@ public class EngineAnalysisMetadata {
 	}
 	
 	public boolean isPublic() {
-		return scope.equalsIgnoreCase( PUBLIC_SCOPE );
+		return scope!=null && scope.equalsIgnoreCase( PUBLIC_SCOPE );
 	}
 	
 	public boolean alreadySaved() {

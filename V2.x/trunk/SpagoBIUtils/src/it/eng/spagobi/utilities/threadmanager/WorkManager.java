@@ -3,20 +3,13 @@
  */
 package it.eng.spagobi.utilities.threadmanager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import commonj.work.Work;
-import commonj.work.WorkItem;
-import commonj.work.WorkListener;
-
-import de.myfoo.commonj.work.FooWorkManager;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 
 /**
  * @author Angelo Bernabei angelo.bernabei@eng.it

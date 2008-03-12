@@ -21,12 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities.engines;
 
-import java.io.IOException;
-import java.util.List;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import org.apache.log4j.Logger;
@@ -37,11 +33,7 @@ import org.apache.log4j.Logger;
  */
 public class AbstractEngineAction extends AbstractBaseHttpAction {
 	
-	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
-	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
-	public static final String DOCUMENT_ID = "document";
-	public static final String ANALYSIS_METADATA = "ANALYSIS_METADATA";
-	public static final String ANALYSIS_STATE = "ANALYSIS_STATE";
+	
 	
 	/**
      * Logger component
@@ -59,42 +51,42 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 	}	
 	
 	public String getUserId() {
-		return getAttributeFromSessionAsString( USER_ID );
+		return getAttributeFromSessionAsString( EngineConstants.USER_ID );
 	}
 	
 	public void setUserId(String userId) {
-		setAttributeInSession(USER_ID,userId);
+		setAttributeInSession(EngineConstants.USER_ID,userId);
 	}	
 	
 	public String getDocumentId() {
-		return getAttributeFromSessionAsString( DOCUMENT_ID );
+		return getAttributeFromSessionAsString( EngineConstants.DOCUMENT_ID );
 	}
 	
 	public void setDocumentId(String documentId) {
-		setAttributeInSession(DOCUMENT_ID,documentId);
+		setAttributeInSession(EngineConstants.DOCUMENT_ID,documentId);
 	}
 	
 	public String getAuditId() {
-		return getAttributeFromSessionAsString( AUDIT_ID );
+		return getAttributeFromSessionAsString( EngineConstants.AUDIT_ID );
 	}
 	
 	public void setAuditId(String auditId) {
-		setAttributeInSession(AUDIT_ID,auditId);
+		setAttributeInSession(EngineConstants.AUDIT_ID,auditId);
 	}
 	
 	public EngineAnalysisMetadata getAnalysisMetadata() {
-		return (EngineAnalysisMetadata)getAttributeFromSession( ANALYSIS_METADATA );
+		return (EngineAnalysisMetadata)getAttributeFromSession( EngineConstants.ANALYSIS_METADATA );
 	}
 	
-	public void setAuditId(EngineAnalysisMetadata analysisMetadata) {
-		setAttributeInSession(ANALYSIS_METADATA,analysisMetadata);
+	public void setAnalysisMetadata(EngineAnalysisMetadata analysisMetadata) {
+		setAttributeInSession(EngineConstants.ANALYSIS_METADATA,analysisMetadata);
 	}
 	
 	public EngineAnalysisState getAnalysisState() {
-		return (EngineAnalysisState)getAttributeFromSession( ANALYSIS_STATE );
+		return (EngineAnalysisState)getAttributeFromSession( EngineConstants.ANALYSIS_STATE );
 	}
 	
-	public void setAuditId(EngineAnalysisState analysisState) {
-		setAttributeInSession(ANALYSIS_STATE,analysisState);
+	public void setAnalysisState(EngineAnalysisState analysisState) {
+		setAttributeInSession(EngineConstants.ANALYSIS_STATE,analysisState);
 	}
 }

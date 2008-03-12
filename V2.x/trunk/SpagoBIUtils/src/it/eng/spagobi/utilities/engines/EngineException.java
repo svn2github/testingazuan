@@ -9,7 +9,7 @@ package it.eng.spagobi.utilities.engines;
 public class EngineException extends Exception {
     
 	/**
-     * Builds a <code>GeoEngineException</code> 
+     * Builds a <code>EngineException</code> 
      * @param message Text of the exception
      */
     public EngineException(String message) {
@@ -17,7 +17,7 @@ public class EngineException extends Exception {
     }
 	
     /**
-     * Builds a <code>GeoEngineException</code> 
+     * Builds a <code>EngineException</code> 
      * @param message Text of the exception
      * @param ex previous Throwable object
      */

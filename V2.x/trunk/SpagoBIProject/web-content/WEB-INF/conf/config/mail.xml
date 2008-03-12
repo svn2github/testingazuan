@@ -7,6 +7,7 @@
 		         from="spagobi@eng.it" 
 		         user="" 
 		         password=""/>
+		         
 	<PROFILE name="user" 
 		         smtphost="mail.eng.it" 
 		         from="spagobi@eng.it" 

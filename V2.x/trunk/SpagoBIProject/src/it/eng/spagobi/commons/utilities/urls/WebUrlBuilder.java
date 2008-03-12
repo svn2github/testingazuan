@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities.urls;
 
+import it.eng.spago.configuration.ConfigSingleton;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,10 +33,16 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WebUrlBuilder implements IUrlBuilder{
 
-	private String baseURL="/SpagoBI/servlet/AdapterHTTP";
-	private String baseResourceURL="/SpagoBI/";
+	private String baseURL="";
+	private String baseResourceURL="";
+	public void init(HttpServletRequest aHttpServletRequest){
+		baseResourceURL = aHttpServletRequest.getContextPath() + "/";
+		baseURL = aHttpServletRequest.getContextPath()+ "/servlet/AdapterHTTP";
+	}
 
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		init(aHttpServletRequest);
+		//ConfigSingleton.getInstance().getAttribute(dal master fin qua SPAGO_ADAPTERHTTP_URL)
 		StringBuffer sb = new StringBuffer();
 		sb.append(baseURL);
 		if (parameters != null){
@@ -58,6 +66,7 @@ public class WebUrlBuilder implements IUrlBuilder{
 	}
 	
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
+		init(aHttpServletRequest);
 		originalUrl = originalUrl.trim();
 		if(originalUrl.startsWith("/")) {
 			originalUrl = originalUrl.substring(1);

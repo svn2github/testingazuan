@@ -28,6 +28,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
+import it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -36,6 +37,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +45,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.axis.handlers.http.URLMapper;
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
@@ -118,28 +121,32 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 	}
 	 */
-
+	
 	/**
 	 * Creates the menu to make execution, detail, erasing for a tree element.
 	 * 
 	 * @param htmlStream The input String Buffer
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu" + requestIdentity + "(event, urlExecution, urlDetail, urlErase) {\n");
+		htmlStream.append("		function menu" + requestIdentity + "(prog , event, urlExecution, urlMetadata, urlDetail, urlErase) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
+		String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		htmlStream.append("			if(urlMetadata!=''){ divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:makePopup(\\''+prog+'\\',\\''+urlMetadata+'\\')\" >"+capMetadata+"</a></div>'; }\n");
+															
 		String capDetail = msgBuilder.getMessage("SBISet.devObjects.captionDetail", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
 		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
 		htmlStream.append("         if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
 		htmlStream.append("				showMenu(event, divM);\n");
+		
 		htmlStream.append("		}\n");
 
 		htmlStream.append("		function linkEmpty() {\n");
 		htmlStream.append("		}\n");
-
+		
 		// js function for item action confirm
 		String confirmCaption = msgBuilder.getMessage("SBISet.devObjects.confirmCaption", "messages", httpRequest);
 		htmlStream.append("     function actionConfirm(message, url){\n");
@@ -147,7 +154,35 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("             location.href = url;\n");
 		htmlStream.append("         }\n");
 		htmlStream.append("     }\n");
-
+		
+		htmlStream.append("function makePopup(id, urlMetadata ) {\n");		
+		htmlStream.append(" var win = new Ext.Window({id:id , \n"
+					+"            bodyCfg:{ \n" 
+					+"                tag:'div' \n"
+					+"                ,cls:'x-panel-body' \n"
+					+"               ,children:[{ \n"
+					+"                    tag:'iframe', \n"
+					+"                    name: 'dynamicIframe1', \n"
+					+"                    id  : 'dynamicIframe1', \n"
+					+"                    src: urlMetadata , \n"
+					+"                    frameBorder:0, \n"
+					+"                    width:'100%', \n"
+					+"                    height:'100%', \n"
+					+"                    style: {overflow:'auto'}  \n "        
+					+"               }] \n"
+					+"            }, \n"
+					+"            modal: true,\n"
+					+"            layout:'fit',\n"
+					+"            height:400,\n"
+			+"            width:500,\n"
+			+"            closeAction:'close',\n"
+			+"            scripts: true, \n"
+			+"            plain: true \n"
+														        
+			+"        });  \n"
+			+"   win.show(); \n" );
+						
+		htmlStream.append("}\n");
 	}
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
@@ -216,7 +251,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
-		htmlStream.append("</table>");
+		htmlStream.append("</table> \n");
+
 		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
@@ -253,9 +289,11 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String biObjState = obj.getStateCode();
 					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
 					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
-					Integer idObj = obj.getId();					
+					Integer idObj = obj.getId();		
+					String prog = idObj.toString();
 					//String stateObj = obj.getStateCode();
-					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+					
 					/*
 						if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
@@ -286,9 +324,11 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String biObjState = obj.getStateCode();
 				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
 				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
-				Integer idObj = obj.getId();					
+				Integer idObj = obj.getId();		
+				String prog = idObj.toString();
 				//String stateObj = obj.getStateCode();
-				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+			
 				/*
 					if (ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu(event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
@@ -317,6 +357,16 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return execUrl;
 	}
 
+	private String createMetadataObjectLink(Integer id) {
+		IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
+		HashMap detUrlParMap = new HashMap();
+		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
+		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
+		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		String detUrl = urlBuilderWeb.getUrl(httpRequest, detUrlParMap);
+		return detUrl;
+	}
+	
 	private String createDetailObjectLink(Integer id) {
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, DetailBIObjectModule.MODULE_PAGE);

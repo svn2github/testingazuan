@@ -730,7 +730,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    <textarea id="sendtomessage" class='portlet-form-input-field' name='message' cols='40' rows='10'></textarea>
 				</div>
 			</div>
-						<div class="div_form_row" >
+			<br>
+			<div class="div_form_row" >
+				
+					 <span class='portlet-form-field-label'>
+						<spagobi:message key = "If you want to use your e-mail account fill up the following form:" />
+					</span>
+				
+			</div>
+			<div class="div_form_row" >
 				<div class='div_form_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "Login" />
@@ -738,7 +746,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_form_field'>
 					<input id="sendtologin" class='portlet-form-input-field' type="text" name="login" size="50" value=""  >
-				    &nbsp;*
+				    
 				</div>
 			</div>
 			<div class="div_form_row" >
@@ -749,7 +757,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_form_field'>
 					<input id="sendtopwd" class='portlet-form-input-field' type="password" name="pwd" size="50" value="" >
-					 &nbsp;*
+					 
+				</div>
+			</div>
+			<div class="div_form_row" >
+				<div class='div_form_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "Reply To" />
+					</span>
+				</div>
+				<div class='div_form_field'>
+					<input id="replyto" class='portlet-form-input-field' type="text" name="replyto" size="50" value="" >
+					 
 				</div>
 			</div>
 		</div>
@@ -787,13 +806,42 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        document.getElementById('sendtoobject').value = '';
        document.getElementById('sendtomessage').value = '';
        document.getElementById('sendtologin').value = '';
-       document.getElementById('sendtopwd').value = '';       
+       document.getElementById('sendtopwd').value = ''; 
+       document.getElementById('replyto').value = '';      
        mstd = document.getElementById('messageSendToDiv');
        mstd.innerHTML = "";
 	}
 	
 	
 	function sendTo<%=executionId%>() {
+		var sendtoto = document.getElementById('sendtoto').value ;
+	        	  	  
+		if( sendtoto == '' ) {
+				alert ("Send to field missing");
+				return;
+				}
+		var emailPat=/^(.+)@(.+)$/ ;
+		var matchArray = sendtoto.match(emailPat)
+		if (matchArray==null) {
+			alert("Send To Email address seems incorrect");
+			return;
+			}						 	  	  	
+				
+		if( replyto != '' && ( sendtologin == '' || sendtopwd == '' )){ 
+       			alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
+       		    return; }
+		var replyto = document.getElementById('replyto').value ;
+		var sendtologin = document.getElementById('sendtologin').value ;
+		var sendtopwd = document.getElementById('sendtopwd').value ;
+       if( replyto != '' && ( sendtologin == '' || sendtopwd == '' )){ 
+       			alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
+       		    return; }
+       if( sendtologin != '' && ( replyto == '' || sendtopwd == '' )){ 
+       			alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
+       		    return; }
+       if( sendtopwd != '' && ( replyto == '' || sendtologin == '' )){ 
+       			alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
+       		    return; }
        
        url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
        pars = "ACTION_NAME=SEND_TO_ACTION&";
@@ -819,6 +867,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        pars += "&pwd=" + document.getElementById('sendtopwd').value;
        pars += "&object=" + document.getElementById('sendtoobject').value;
        pars += "&message=" + document.getElementById('sendtomessage').value;
+        pars += "&replyto=" + document.getElementById('replyto').value;
        mstd = document.getElementById('messageSendToDiv');
        mstd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
        new Ajax.Request(url,

@@ -45,8 +45,12 @@ public class MapConfiguration {
 	 * @param template The byte array of the xml template
 	 * @throws ConfigurationException raised If some configurations is missing or wrong
 	 */ 
-	public MapConfiguration(String contextPath, byte[] template, SourceBean servReq, 
-			String standardHierarchy, SpagoBiDataSource dataSource) throws ConfigurationException {
+	public MapConfiguration(byte[] template, 
+							SourceBean servReq, 
+							String standardHierarchy, 
+							SpagoBiDataSource dataSource) throws ConfigurationException {
+		
+		
 		// load template xml string into a sourcebean
 		SourceBean map = null;
 		
@@ -69,7 +73,7 @@ public class MapConfiguration {
 		// load mapRendererConfiguration
 		SourceBean mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
 		mapRendererConfiguration = new MapRendererConfiguration(this, mapRendererConfigurationSB);
-		mapRendererConfiguration.setContextPath(contextPath);
+		
 		
 		
 		SourceBean mapProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);

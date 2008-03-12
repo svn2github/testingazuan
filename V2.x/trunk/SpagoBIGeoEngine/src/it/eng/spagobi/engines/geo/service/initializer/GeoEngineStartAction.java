@@ -5,18 +5,10 @@
 **/
 package it.eng.spagobi.engines.geo.service.initializer;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
-import it.eng.spagobi.engines.geo.configuration.Constants;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
-import it.eng.spagobi.engines.geo.configuration.MapRendererConfiguration;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
@@ -27,23 +19,21 @@ import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Decoder;
 
 /**
  * Geo entry point action
  */
 public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
+	// request
+	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
+	
 	//response 
 	public static final String BASE_URL = "baseUrl";
+	public static final String IS_DOC_COMPOSITION_MODE_ACTIVE =  "isDocumentCompositionModeActive";
 	
 	// session
 	public static final String MAP_CONFIGURATION = GeoEngineConstants.MAP_CONFIGURATION;
@@ -74,6 +64,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		GeoEngineAnalysisState analysisState;
 		MapConfiguration mapConfiguration;
 		String baseUrl;
+		String executionContext;
 		
 		userId = getUserId();
 		documentId = getDocumentId();
@@ -82,6 +73,10 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		dataSource = getDataSource();
 		analysisMetadata = getAnalysisMetadata();
 		analysisStateRowData = getAnalysisStateRowData();
+		
+		executionContext = this.getAttributeAsString( EXECUTION_CONTEXT ); 
+		String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
+		
 		
 		baseUrl = null;		
 		mapConfiguration = null;
@@ -92,12 +87,14 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		
 	
 		try{
-			baseUrl = "http://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();			
 			
 			
 			String standardHierarchy = mapCatalogueAccessUtils.getStandardHierarchy( );
-			mapConfiguration = new MapConfiguration(baseUrl, getTemplate().toString().getBytes(), serviceRequest, 
-					standardHierarchy, getDataSource());			
+			mapConfiguration = new MapConfiguration(getTemplate().toString().getBytes(), serviceRequest, 
+					standardHierarchy, getDataSource());
+			
+			baseUrl = "http://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();			
+			mapConfiguration.getMapRendererConfiguration().setContextPath(baseUrl);
 		} catch (Exception e) {
 			logger.error("Error while reading map configuration", e);
 		}
@@ -122,8 +119,13 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		mapConfiguration.getDatamartProviderConfiguration().setParameters(props);	
 		
 		
-		if(analysisState.getSelectedLayers() != null) setAttribute("selectedLayers", analysisState.getSelectedLayers().split(","));
-		setAttribute(BASE_URL, baseUrl);
+		if(analysisState.getSelectedLayers() != null) {
+			setAttribute("selectedLayers", analysisState.getSelectedLayers().split(","));
+		}
+		
+		setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, isDocumentCompositionModeActive);
+		//setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, "TRUE");
+		
 		
 		setAttributeInSession(EngineConstants.USER_ID, userId );
 		setAttributeInSession(EngineConstants.DOCUMENT_ID, documentId );
@@ -140,9 +142,6 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		
 		logger.debug("End service method");
 	}
-	
-	
-	
 	
 	private String decodeParameterValue(String parValue) {
 		String newParValue;

@@ -34,10 +34,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.utilities.callbacks.mapcatalogue.* "%>
 				 
 
-
-	<link rel="stylesheet" href ="../css/spagobi.css" type="text/css"/>
+	<%-- Necessary for window Javascript library --%>
+	<script type="text/javascript" src='../js/lib/prototype-window/prototype.js'></script>
+  	<script type="text/javascript" src='../js/lib/prototype-window/effects.js'></script>
+  	<script type="text/javascript" src='../js/lib/prototype-window/window.js'></script>
+  	<script type="text/javascript" src='../js/lib/prototype-window/debug.js'></script>
+  	<script type="text/javascript" src='../js/lib/prototype-window/application.js"'/></script>
+  	
+  	
 	<link rel="stylesheet" href ="../css/jsr168.css" type="text/css"/>
 	<link rel="stylesheet" href ="../../../css/external.css" type="text/css"/>
+	
+	<link rel="stylesheet" href ="../css/spagobi.css" type="text/css"/>
+	
+	<%-- Necessary for window Javascript library --%>
+	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/default.css" type="text/css"/>	 
+  	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/alert.css" type="text/css"/>	 
+  	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/alert_lite.css" type="text/css" />
+  	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/mac_os_x.css" type="text/css"/>	
+  	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/debug.css" type="text/css"/>
 
 <% 
 	RequestContainer requestContainer = null;
@@ -49,6 +64,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	EngineAnalysisMetadata analysisMetadata = null;
 	MapConfiguration mapConfiguration = null;
 	SpagoBIRequest spagoBIRequest = null;
+	String baseUrl = null;
 	
 	requestContainer = RequestContainerAccess.getRequestContainer(request);
 	responseContainer = ResponseContainerAccess.getResponseContainer(request);
@@ -57,7 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	serviceRequest = requestContainer.getServiceRequest();
 	serviceResponse = responseContainer.getServiceResponse();
 	
-	//Object o = getHttpRequest();
+	baseUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();	
 	
 	analysisMetadata = (EngineAnalysisMetadata)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_METADATA);
 	analysisState = (GeoEngineAnalysisState)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_STATE);

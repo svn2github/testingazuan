@@ -200,7 +200,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	private void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
-	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/" + scriptName);
+	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/lib/svg-widgets/" + scriptName);
 	    Element importsBlock = map.getElementById("imports");
 	    importsBlock.appendChild(script);
 	    Node lf = map.createTextNode("\n");

@@ -111,7 +111,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			String standardHierarchy = MapConfiguration.getMapCatalogueAccessUtils().getStandardHierarchy( );
 			SpagoBiDataSource dataSource = (SpagoBiDataSource)getAttributeFromSession("SPAGOBI_DATASOURCE");
 			
-			mapConfiguration = new MapConfiguration(baseUrl, template, serviceRequest, standardHierarchy, dataSource);
+			mapConfiguration = new MapConfiguration(template, serviceRequest, standardHierarchy, dataSource);
+			mapConfiguration.getMapRendererConfiguration().setContextPath(baseUrl);
 			mapConfiguration.getDatamartProviderConfiguration().setParameters(parameters);
 			
 			String selectedHierarchyName = null;

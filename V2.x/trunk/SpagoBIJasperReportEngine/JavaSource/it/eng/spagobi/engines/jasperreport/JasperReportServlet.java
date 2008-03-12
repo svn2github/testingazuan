@@ -10,8 +10,9 @@ import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.cache.CacheInterface;
+import it.eng.spagobi.utilities.cache.CacheSingleton;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -91,20 +92,6 @@ public class JasperReportServlet extends HttpServlet {
 	}
 	logger.debug("documentId:"+documentId);
 	
-	String documentLabel = (String) request.getParameter("documentLabel");
-	if (documentLabel==null){
-		documentLabel=(String)session.getAttribute("documentLabel");
-	    logger.debug("documentLabel From Session:"+documentLabel);
-	}
-	logger.debug("documentLabel:"+documentLabel);
-	
-	String flgDocComposite = (String)request.getParameter("flgDocComposite");
-	if (flgDocComposite==null){
-		flgDocComposite=(String)session.getAttribute("flgDocComposite");
-	    logger.debug("flgDocComposite From Session:"+flgDocComposite);
-	}
-	logger.debug("flgDoc:"+flgDocComposite);
-	
 	//  operazioni fatte dal filtro ...OUT
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
@@ -121,12 +108,6 @@ public class JasperReportServlet extends HttpServlet {
 	}
 	logger.debug("Request parameters read sucesfully" + params);
 	
-	//inserts into session all parameters values for future refresh of document composition
-	if (documentLabel != null)
-		session.setAttribute(documentLabel, params);
-	if (flgDocComposite != null)
-		session.setAttribute("flgDocComposite", flgDocComposite);
-	
 	// AUDIT UPDATE
 	String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
 	AuditAccessUtils auditAccessUtils = (AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
@@ -136,6 +117,7 @@ public class JasperReportServlet extends HttpServlet {
 
 	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
 	Connection con = getConnection(session,(String)profile.getUserUniqueIdentifier(),documentId);
+	//Connection con = DataSourceUtilities.
 	if (con == null) {
 	    logger.error("Cannot obtain" + " connection for engine ["
 		    + this.getClass().getName() + "] control document configurations");

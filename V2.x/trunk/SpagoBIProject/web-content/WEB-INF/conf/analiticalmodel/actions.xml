@@ -18,7 +18,11 @@
  	<CONFIG/>
  </ACTION>
 
-  <ACTION name="SEND_TO_ACTION" class="it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction" scope="REQUEST">
+ <ACTION name="SHOW_SEND_TO_FORM" class="it.eng.spagobi.analiticalmodel.execution.service.ShowSendToFormAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+
+ <ACTION name="SEND_TO_ACTION" class="it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
 

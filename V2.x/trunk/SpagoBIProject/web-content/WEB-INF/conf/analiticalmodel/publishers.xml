@@ -249,7 +249,8 @@
   	<PUBLISHER name="ExecuteBIObjectPageParameter">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>
+        	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/> 
+        	 <!--	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/>  -->
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
@@ -655,5 +656,20 @@
         		<ITEM prog="0"  resource="it.eng.spagobi.analiticalmodel.document.presentation.SelectParametersLookupPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
-  	</PUBLISHER>  	                                 	
+  	</PUBLISHER>
+
+  	<PUBLISHER name="ShowSendToFormPublisher">
+    	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/sendToForm.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/sendToForm.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+
 </PUBLISHERS>

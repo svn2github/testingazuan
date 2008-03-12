@@ -18,14 +18,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --> 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-
 <%@ page import="java.util.Map,
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
-
-
+ 
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 	
 <%

@@ -188,34 +188,55 @@ function sendTo() {
 	var sendtoto = document.getElementById('sendtoto').value ;
         	  	  
 	if( sendtoto == '' ) {
-		alert ("Send to field missing");
-		return;
+		Ext.MessageBox.WARNING;
+		Ext.MessageBox.show({
+           title: 'WARNING',
+           msg: "<spagobi:message key = 'sbi.execution.sendTo.SendToMissing' />",
+           buttons: Ext.MessageBox.OK
+       });
+       return;
 	}
 	var emailPat=/^(.+)@(.+)$/ ;
 	var matchArray = sendtoto.match(emailPat)
 	if (matchArray == null) {
-		alert("Send To Email address seems incorrect");
+		Ext.MessageBox.WARNING;
+		Ext.MessageBox.show({
+           title: 'WARNING',
+           msg: "<spagobi:message key = 'sbi.execution.sendTo.SendToIncorrect' />",
+           buttons: Ext.MessageBox.OK
+       });
 		return;
 	}						 	  	  	
 			
-	if( replyto != '' && ( sendtologin == '' || sendtopwd == '' )){
-		alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
-	    return; 
-    }
 	var replyto = document.getElementById('replyto').value ;
 	var sendtologin = document.getElementById('sendtologin').value ;
 	var sendtopwd = document.getElementById('sendtopwd').value ;
     if( replyto != '' && ( sendtologin == '' || sendtopwd == '' )){ 
-		alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
-	    return; 
+    	Ext.MessageBox.WARNING;
+		Ext.MessageBox.show({
+           title: 'WARNING',
+           msg: "<spagobi:message key = 'sbi.execution.sendTo.MissingAccount' />",
+           buttons: Ext.MessageBox.OK
+       });
+		return;
     }
     if( sendtologin != '' && ( replyto == '' || sendtopwd == '' )){ 
-		alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
-	    return; 
+        Ext.MessageBox.WARNING;
+		Ext.MessageBox.show({
+           title: 'WARNING',
+           msg: "<spagobi:message key = 'sbi.execution.sendTo.MissingAccount' />",
+           buttons: Ext.MessageBox.OK
+       });
+		return;
     }
     if( sendtopwd != '' && ( replyto == '' || sendtologin == '' )){ 
-		alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
-	    return; 
+    	Ext.MessageBox.WARNING;
+		Ext.MessageBox.show({
+           title: 'WARNING',
+           msg:"<spagobi:message key = 'sbi.execution.sendTo.MissingAccount' />",
+           buttons: Ext.MessageBox.OK
+       });
+		return;
    	}
       
     url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";

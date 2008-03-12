@@ -33,7 +33,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
-						 "and owner = '"+profile.getUserUniqueIdentifier().toString()+"'";
+						 "and (isPublic = true or owner = '"+profile.getUserUniqueIdentifier().toString()+"')";
 			Query query = aSession.createQuery(hql);
 			List result = query.list();
 			Iterator it = result.iterator();

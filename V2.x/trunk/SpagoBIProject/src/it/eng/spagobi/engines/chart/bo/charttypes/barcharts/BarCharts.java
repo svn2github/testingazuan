@@ -38,7 +38,7 @@ public class BarCharts extends ChartImpl {
 
 		// run all categories (one for each row)
 		categoriesNumber=0;
-		categories.put(new Integer(0), "All Categories");
+		//categories.put(new Integer(0), "All Categories");
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -58,7 +58,7 @@ public class BarCharts extends ChartImpl {
 				if(name.equalsIgnoreCase("x"))
 				{
 					catValue=value;
-					categories.put(new Integer(categoriesNumber+1),value);
+					categories.put(new Integer(categoriesNumber),value);
 					categoriesNumber=categoriesNumber+1;
 					
 				}

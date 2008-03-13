@@ -10,8 +10,6 @@ import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.cache.CacheInterface;
-import it.eng.spagobi.utilities.cache.CacheSingleton;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.BufferedInputStream;

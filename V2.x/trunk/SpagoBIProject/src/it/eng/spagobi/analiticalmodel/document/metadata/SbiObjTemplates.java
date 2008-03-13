@@ -35,7 +35,28 @@ public class SbiObjTemplates  implements java.io.Serializable {
      private Integer prog;
      private Date creationDate;
      private Boolean active;
+     private String dimension=null;     
+     private String creationUser=null;
      
+	public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+
+
+
+	public String getCreationUser() {
+        return creationUser;
+    }
+
+    public void setCreationUser(String creationUser) {
+        this.creationUser = creationUser;
+    }
+
 	public Integer getObjTempId() {
 		return objTempId;
 	}

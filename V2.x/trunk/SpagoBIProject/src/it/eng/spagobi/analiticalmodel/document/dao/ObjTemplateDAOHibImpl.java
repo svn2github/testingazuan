@@ -171,6 +171,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		objTemp.setId(hibObjTemp.getObjTempId());
 		objTemp.setName(hibObjTemp.getName());
 		objTemp.setProg(hibObjTemp.getProg());
+		// metadata
+		objTemp.setDimension(hibObjTemp.getDimension());
+		objTemp.setCreationUser(hibObjTemp.getCreationUser());
 		return objTemp;
 	}
 

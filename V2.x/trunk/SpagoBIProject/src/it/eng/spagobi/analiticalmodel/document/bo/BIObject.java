@@ -29,6 +29,7 @@ import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,6 +87,14 @@ public class BIObject implements Serializable {
 	private String uuid = null;
 	
 	private List functionalities = null;
+	
+	// add this properties for metadata
+	private String extendedDescription=null;
+	private String objectve=null;
+	private Short rating=null;
+	private String language=null;
+	private Date creationDate=null;
+	private String creationUser=null;	
 
 
 	/**
@@ -335,6 +344,54 @@ public class BIObject implements Serializable {
 								"getTemplateList", "Error while recovering template list\n", e);
 		}
 		return templates;
+	}
+
+	public String getExtendedDescription() {
+	    return extendedDescription;
+	}
+
+	public void setExtendedDescription(String extendedDescription) {
+	    this.extendedDescription = extendedDescription;
+	}
+
+	public String getObjectve() {
+	    return objectve;
+	}
+
+	public void setObjectve(String objectve) {
+	    this.objectve = objectve;
+	}
+
+	public Short getRating() {
+	    return rating;
+	}
+
+	public void setRating(Short rating) {
+	    this.rating = rating;
+	}
+
+	public String getLanguage() {
+	    return language;
+	}
+
+	public void setLanguage(String language) {
+	    this.language = language;
+	}
+
+	public Date getCreationDate() {
+	    return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+	    this.creationDate = creationDate;
+	}
+
+	public String getCreationUser() {
+	    return creationUser;
+	}
+
+	public void setCreationUser(String creationUser) {
+	    this.creationUser = creationUser;
 	}
 	
 

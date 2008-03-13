@@ -42,6 +42,8 @@ public class ObjTemplate implements Serializable {
     Date creationDate = null;
     Boolean active = null;
     byte[] content = null;
+    String dimension=null;
+    String creationUser=null;    
     
 	public String getName() {
 		return name;
@@ -118,6 +120,20 @@ public class ObjTemplate implements Serializable {
 	public void setContent(byte[] content) {
 		this.content = content;
 	}
+	public String getDimension() {
+	    return dimension;
+	}
+	public void setDimension(String dimension) {
+	    this.dimension = dimension;
+	}
+	public String getCreationUser() {
+	    return creationUser;
+	}
+	public void setCreationUser(String creationUser) {
+	    this.creationUser = creationUser;
+	}
+
+
 	
 	
 }

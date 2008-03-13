@@ -805,6 +805,8 @@ public class DetailBIObjectModule extends AbstractModule {
 	 */
 	private void modBIObject(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException {
 		try {
+		    
+		    
 			// build a biobject using data in request
 			BIObject obj = helper.recoverBIObjectDetails(mod);
 			// define variable that contains the id of the parameter selected
@@ -833,6 +835,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				if(objTemp==null) {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj);
 				} else {
+				        
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
 				}
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {

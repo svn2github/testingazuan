@@ -58,6 +58,7 @@ public class DetBIObjModHelper {
 		SessionContainer session = reqCont.getSessionContainer();
 		SessionContainer permanentSession = session.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String userId=(String)profile.getUserUniqueIdentifier();
 		// GET THE INITIAL PATH 
 		String initialPath = (String)ChannelUtilities.getPreferenceValue(reqCont, TreeObjectsModule.PATH_SUBTREE, "");
 		// CREATE AN EMPTY BIOBJECT
@@ -176,6 +177,8 @@ public class DetBIObjModHelper {
 		obj.setStateCode(stateCode);
 		obj.setStateID(stateId);
 		obj.setPath(path);
+		// metadata
+		obj.setCreationUser(userId);
 		// RETURN OBJECT
 		return obj;
 	}
@@ -184,13 +187,20 @@ public class DetBIObjModHelper {
 	
 	
 	public ObjTemplate recoverBIObjTemplateDetails() throws Exception {
-		ObjTemplate templ = null;
+		// GET THE USER PROFILE
+		SessionContainer session = reqCont.getSessionContainer();
+		SessionContainer permanentSession = session.getPermanentContainer();	    
+		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String userId=(String)profile.getUserUniqueIdentifier();
+	        ObjTemplate templ = null;
 		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
 		if (uploaded != null) {
 			String fileName = uploaded.getFileName();
 			if (fileName != null && !fileName.trim().equals("")) {
 				templ = new ObjTemplate();
 				templ.setActive(new Boolean(true));
+				templ.setCreationUser(userId);
+				templ.setDimension(Long.toString(uploaded.getSizeInBytes()/1000)+" KByte");
 		        templ.setName(fileName);
 		        byte[] uplCont = uploaded.getFileContent();
 		        templ.setContent(uplCont);

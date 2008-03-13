@@ -7,15 +7,18 @@ package it.eng.spagobi.utilities.threadmanager;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.services.common.EnginConf;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import commonj.work.Work;
+import commonj.work.WorkItem;
+import commonj.work.WorkListener;
+import de.myfoo.commonj.work.FooWorkManager;
+
+
 
 /**
  * @author Angelo Bernabei angelo.bernabei@eng.it
@@ -49,7 +52,7 @@ public class WorkManager {
 	    
 	    SourceBean jndiSB = (SourceBean)EnginConf.getInstance().getConfig().getAttribute("JNDI_THREAD_MANAGER");
 	    String jndi = (String) jndiSB.getCharacters();
-	    
+	    logger.debug("lookup jndi:"+jndi);
 	    Context ctx = new InitialContext();
 	    wm = (FooWorkManager) ctx.lookup(jndi);
 

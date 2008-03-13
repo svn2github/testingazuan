@@ -169,7 +169,13 @@ CREATE TABLE SBI_OBJECTS (
        NAME                 VARCHAR(40) NOT NULL,
        VISIBLE              SMALLINT NOT NULL,
        UUID                 VARCHAR(40) NOT NULL,
-	   DATA_SOURCE_ID 		INTEGER,
+	     DATA_SOURCE_ID 		  INTEGER,
+	     DESCR_EXT            TEXT,
+	     OBJECTIVE            TEXT,
+	     RATING               INTEGER,
+	     LANGUAGE             VARCHAR(45),
+	     CREATION_DATE        TIMESTAMP NOT NULL,
+	     CREATION_USER        VARCHAR(45) NOT NULL,
               PRIMARY KEY (BIOBJ_ID)
 )TYPE=INNODB;
 
@@ -400,8 +406,10 @@ CREATE TABLE SBI_OBJECT_TEMPLATES (
 		BIOBJ_ID 	          INTEGER,
     BIN_ID 	            INTEGER,
     NAME 	              VARCHAR(50),  
-    PROG 	              INTEGER,   
+    PROG 	              INTEGER, 
+    DIMENSION           VARCHAR(20),  
 		CREATION_DATE 		  TIMESTAMP NOT NULL, 
+    CREATION_USER         VARCHAR(45) NOT NULL, 
     ACTIVE 	            BOOLEAN,                  
         PRIMARY KEY (OBJ_TEMP_ID)
 )TYPE=INNODB;

@@ -131,13 +131,11 @@ preserveAspectRatio="xMidYMin meet">
 			myMapApp.Windows["navWindow"].appendContent("infoButton",true);
 			myMapApp.Windows["navWindow"].appendContent("backwardExtent",true);
 			myMapApp.Windows["navWindow"].appendContent("forwardExtent",true);
-			myMapApp.Windows["navWindow"].minimize(true);
 			
 			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["basiclayer"].appendContent("checkBoxes",true);
 			myMapApp.Windows["basiclayer"].appendContent("linkRadioGroup",true);			
 			myMapApp.Windows["basiclayer"].minimize(true);
-			
 			
 			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["thematic"].appendContent("radioButtons",true);
@@ -150,15 +148,6 @@ preserveAspectRatio="xMidYMin meet">
 			myMapApp.Windows["legend"] = new Window("legend","Windows",210,200,862,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Legend","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["legend"].appendContent("coulourboxes",true);
 			myMapApp.Windows["legend"].minimize(true);
-			
-		}
-		
-		function closeAllWindows() {			
-			myMapApp.Windows["navWindow"].close(true);					
-			myMapApp.Windows["basiclayer"].close(true);		
-			myMapApp.Windows["thematic"].close(true);			
-			myMapApp.Windows["detail"].close(true);		
-			myMapApp.Windows["legend"].close(true);
 		}
 		
 		function initTabGroups() {
@@ -278,7 +267,6 @@ preserveAspectRatio="xMidYMin meet">
 			var shadeDarkStyles = {"fill":"dimgray"};
 			
 			//button instances creation
-			
 			myMapApp.buttons["zoomIn"] = new button("zoomIn",zoomImageButtons,"rect",undefined,"magnifyerZoomIn",7,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["zoomOut"] = new button("zoomOut",zoomImageButtons,"rect",undefined,"magnifyerZoomOut",32,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["infoButton"] = new switchbutton("infoButton",zoomImageSwitchButtons,"rect",undefined,"infoBut",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
@@ -290,7 +278,6 @@ preserveAspectRatio="xMidYMin meet">
 			myMapApp.buttons["recenterMap"] = new switchbutton("recenterMap",zoomImageSwitchButtons,"rect",undefined,"symbRecenter",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["backwardExtent"] = new button("backwardExtent",zoomImageButtons,"rect",undefined,"symbArrowLeft",157,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["forwardExtent"] = new button("forwardExtent",zoomImageButtons,"rect",undefined,"symbArrowRight",182,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			
 			
 			myMapApp.buttons["okbutton"] = new button("colourPickerApplay",buttonClick,"rect","Applay", undefined, 380, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["okbutton"] = new button("colourPickerOk",buttonClick,"rect","Ok", undefined, 430, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
@@ -475,9 +462,6 @@ preserveAspectRatio="xMidYMin meet">
 			
 			initMainMap();			
 			initWindows();
-			if(activeWindow == false) {
-				closeAllWindows();
-			}
 			initTabGroups();
 			initButtons();
 			initSliders();		      			
@@ -1347,9 +1331,10 @@ preserveAspectRatio="xMidYMin meet">
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
 					<g id="windowMainGroupnavWindow">
-					<g/>
-					
-					
+						<!--
+						<rect width="210" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
+						-->
+						<g/>
 						<svg id="referenceMap" x="10" y="8" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" width="190" height="150" 
 								 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" 
 								 preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify" cursor="crosshair" display="inherit">
@@ -1369,30 +1354,70 @@ preserveAspectRatio="xMidYMin meet">
 						</svg>
 						
 						<g id="zoomIn" cursor="pointer" display="inherit">
+							<rect x="6" y="164" width="20" height="20" points="7,185 7,165 27,165" fill="rgb(235,235,235)"/>
+							<rect x="8" y="166" width="20" height="20" points="7,185 7,165 27,165" fill="dimgray"/>
+							<rect x="7" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="17" y="175" href="#magnifyerZoomIn" pointer-events="none"/>
+							<rect x="6" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
 						<g id="mapZoomSlider" display="inherit">
+							<!--
+							<line x1="180" y1="153" x2="20" y2="153" stroke="dimgray" stroke-width="10" opacity="0" stroke-linecap="square" id="mapZoomSlider_invisibleSliderLine"/>
+							<line x1="180" y1="153" x2="20" y2="153" stroke="dimgray" stroke-width="2" id="mapZoomSlider_visibleSliderLine" pointer-events="none"/>
+							<use xlink:href="#sliderSymbol" transform="translate(20,153.00000000000003) rotate(180)" id="mapZoomSlider_sliderSymbol"/>
+							-->
 						</g>
 						
 						<g id="zoomOut" cursor="pointer" display="inherit">
+							<rect x="31" y="164" width="20" height="20" points="32,185 32,165 52,165" fill="rgb(235,235,235)"/>
+							<rect x="33" y="166" width="20" height="20" points="32,185 32,165 52,165" fill="dimgray"/>
+							<rect x="32" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="42" y="175" href="#magnifyerZoomOut" pointer-events="none"/>
+							<rect x="31" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="zoomFull" cursor="pointer" display="inherit">
+							<rect x="56" y="164" width="20" height="20" points="57,185 57,165 77,165" fill="rgb(235,235,235)"/>
+							<rect x="58" y="166" width="20" height="20" points="57,185 57,165 77,165" fill="dimgray"/>
+							<rect x="57" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="67" y="175" href="#magnifyerFull" pointer-events="none"/>
+							<rect x="56" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="zoomManual" cursor="pointer" display="inherit">
+							<rect x="81" y="164" width="20" height="20" points="82,185 82,165 102,165" fill="rgb(235,235,235)"/>
+							<rect x="83" y="166" width="20" height="20" points="82,185 82,165 102,165" fill="dimgray"/>
+							<rect x="82" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="92" y="175" href="#magnifyerManual" pointer-events="none"/>
+							<rect x="81" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
 						<g id="panManual" cursor="pointer" display="inherit">
+							<rect x="106" y="164" width="20" height="20" points="107,185 107,165 127,165" fill="rgb(235,235,235)"/>
+							<rect x="108" y="166" width="20" height="20" points="107,185 107,165 127,165" fill="dimgray"/>
+							<rect x="107" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="117" y="175" href="#symbPan" pointer-events="none"/>
+							<rect x="106" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="infoButton" cursor="pointer" display="inherit">
+							<rect x="131" y="164" width="20" height="20" points="132,185 132,165 152,165" fill="dimgray"/>
+							<rect x="133" y="166" width="20" height="20" points="132,185 132,165 152,165" fill="rgb(235,235,235)"/>
+							<rect x="132" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="142" y="175" href="#infoBut" pointer-events="none"/>
+							<rect x="131" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
 						
 						<g id="backwardExtent" cursor="pointer" display="inherit" />
 						
 						<g id="forwardExtent" cursor="pointer" display="inherit">
+							<rect x="181" y="164" width="20" height="20" points="182,185 182,165 202,165" fill="rgb(235,235,235)"/>
+							<rect x="183" y="166" width="20" height="20" points="182,185 182,165 202,165" fill="dimgray"/>
+							<rect x="182" y="165" width="20" height="20" fill="white" cursor="pointer"/>
+							<use x="192" y="175" href="#symbArrowRight" pointer-events="none"/>
+							<rect x="181" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 					</g>
@@ -1403,7 +1428,7 @@ preserveAspectRatio="xMidYMin meet">
 					<rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
-						<g id="windowMainGroupbasiclayer" display="none">
+					<g id="windowMainGroupbasiclayer" display="none">
 						<g/>
 						
 						<g id="checkBoxes" display="inherit">
@@ -1411,7 +1436,7 @@ preserveAspectRatio="xMidYMin meet">
 						</g>
 						
 						<g id="linkRadioGroup" display="inherit">
-						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
+							<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
 						
 						</g>					
 					</g>
@@ -1422,12 +1447,21 @@ preserveAspectRatio="xMidYMin meet">
 				<g id="thematic" transform="translate(223,537)"><rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
-					<g id="windowMainGroupthematic" display="inherit">					
+					<g id="windowMainGroupthematic">					
 						
 						<g id="radioButtons" display="inherit">
 							
 						</g>					
 					</g>
+					
+					<!--
+					<g>
+						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
+						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">Thematic Topics</text>
+						<use x="198.5" y="8.5" cursor="pointer" id="maximizeButtonthematic" href="#maximizeButton"/>
+						<use x="181.5" y="8.5" cursor="pointer" id="minimizeButtonthematic" href="#minimizeButton"/>
+					</g>
+					-->
 				</g>
 				
 				

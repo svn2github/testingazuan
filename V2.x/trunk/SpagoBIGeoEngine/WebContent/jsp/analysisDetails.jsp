@@ -106,7 +106,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="description" id="description" value="<%=analysisMetadata.getDescription()%>" maxlength="20"/>
+							name="description" id="description" value="<%=analysisMetadata.getDescription()==null?"":analysisMetadata.getDescription()%>" maxlength="20"/>
 				</div>
 				
 				<div class='div_detail_label'>

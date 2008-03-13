@@ -181,13 +181,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	function windowCloseHandler(eventName, win){
 	  	if(win.getId() == 'analysisDetailsWin') {
 	  		var mapIFrame = document.getElementById("mapIFrame");
-			mapIFrame.style.display = 'inline';
+			//mapIFrame.style.display = 'inline';
+			mapIFrame.style.visibility = 'visible';
+			//var executionForm = document.getElementById('executionForm');
+        	//executionForm.submit();
 	  	}  	
   	}
 	
 	function saveAnalysis() {
 		var mapIFrame = document.getElementById("mapIFrame");
-		mapIFrame.style.display = 'none';
+		//mapIFrame.style.display = 'none';
+		mapIFrame.style.visibility = 'hidden';
 	  	var url = "http://www.spagobi.org";
 	  	url = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_ANALYSIS_DETAILS_ACTION";
 	  	url += "&selected_hierachy=" + selectedHierarchy;

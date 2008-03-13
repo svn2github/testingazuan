@@ -39,6 +39,8 @@ public class MapRendererConfiguration {
 	
 	private String className;
 	
+	private boolean windowsActive = true;
+	
 		
 	private String contextPath;
 	
@@ -499,5 +501,15 @@ public class MapRendererConfiguration {
 		
 		return buffer.toString();
 	}
+
+	public boolean isWindowsActive() {
+		return windowsActive;
+	}
+
+	public void setWindowsActive(boolean windowsActive) {
+		this.windowsActive = windowsActive;
+	}
+
+
 	
 }

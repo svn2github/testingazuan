@@ -1,8 +1,56 @@
 <?xml version="1.0" standalone="no"?>
+
+<!--
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+
+DESCRIPTION:
+"spagonigeo.svg" is part of the SpagoBIGeoEngine. 
+It is used to perform dynamic geo-analysis.
+
+
+CREDITS:
+* none so far
+
+
+
+CURRENT VERSION: 
+1.0.0
+
+VERSION HISTORY:
+* 1.0.0 (2007-09-17)
+initial version
+
+* 1.0.1 (2007-09-24)
+changed the name of ub variable to ub_values in order to avoid naming conflict with slider.js
+changed the name of lb variable to lb_values in order to avoid naming conflict with slider.js
+bug fixed in layer's checkboxes generation
+
+-->
+
+
+
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg width="100%" height="100%" viewBox="0 0 1100 768" onload="init(evt);" zoomAndPan="disable" 
+<svg width="100%" height="100%" viewBox="0 0 1100 768" onload="init(evt);" 
 xmlns:batik="http://xml.apache.org/batik/ext" 
 xmlns:attrib="http://www.carto.net/attrib" 
 xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -13,7 +61,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 xmlns:dc="http://purl.org/dc/elements/1.1/"
 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
 xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32"
-preserveAspectRatio="xMidYMid meet">
+zoomAndPan="disable"
+preserveAspectRatio="xMidYMin meet">
 
 		<rect x="-3000" y="-500" width="10000" height="3000" stroke="none" fill="#e6e6e6"/>
 		
@@ -29,41 +78,7 @@ preserveAspectRatio="xMidYMid meet">
 		
 		<script type="text/ecmascript"><![CDATA[
 		
-		/*
-	   var num_group = new Array();
-	   for(i = 0; i < kpi_names.length; i++) num_group[kpi_names[i]] = 5;
-	   
-	   var lb = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb[kpi_names[i]] = 0;
-	    
-	   var ub = new Array();	
-	   for(i = 0; i < kpi_names.length; i++) ub[kpi_names[i]] = null;
-	    
-	   var lb_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) lb_color[kpi_names[i]] = "#FFFFFF";
-	    
-	   var ub_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) ub_color[kpi_names[i]] = "#000000";
-	    
-	   var null_values_color = new Array();
-	   for(i = 0; i < kpi_names.length; i++) null_values_color[kpi_names[i]] = "#123456";
-	   
 		
-	   var trasholdCalculationType = new Array();
-	   for(i = 0; i < kpi_names.length; i++) trasholdCalculationType[kpi_names[i]] = "uniform";
-		
-		var trasholdCalculationPercParams = new Array();
-		for(i = 0; i < kpi_names.length; i++) trasholdCalculationPercParams[kpi_names[i]] = [10, 25, 15, 50];
-		
-		var trasholdCalculationUniformParams = new Array();
-		for(i = 0; i < kpi_names.length; i++) trasholdCalculationUniformParams[kpi_names[i]] = 5;
-		
-	   var colorRangeCalculationType = new Array();
-	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationType[kpi_names[i]] = "gradient";
-	   
-	   var colorRangeCalculationGradParams = new Array();
-	   for(i = 0; i < kpi_names.length; i++) colorRangeCalculationGradParams[kpi_names[i]] = "#000088";
-	   */
 	   
 	   
 	   
@@ -75,45 +90,21 @@ preserveAspectRatio="xMidYMid meet">
 		var linkRadioGroup;
 		var checkBoxes = new Array();
 		
-		//var myRadioButtons = radioButtonGroup(radiobutton,functionToCall);
 		var attribNS="http://www.carto.net/attrib";
 		var xlinkNS = "http://www.w3.org/1999/xlink";
 		var suspendProcess;
 		var windowPositions = new Array();
 			
-		var detailTabGroup;	
+		//var detailTabGroup;	
 		
 		var isShowTableModalityActive = true;
 			
 		function init() {
-			window.setTimeout("initApplication()",500);
+			window.setTimeout("initApplication()", 500);
 		}
 			
-			
-		function initApplication(evt) {			
-			if (document.documentElement.suspendRedraw) {
-				suspendProcess = document.documentElement.suspendRedraw(30000);
-			}
-			
-			setTresholds();
-			setColourRange();
-			
-			//dynamic layer array that allow loading from database
-			var dynamicLayers = new Array();
-			//initialize digiLayers (layers that allow digitizing)
-			var digiLayers = new Array();
-			//define some styles for the map object
-			var zoomRectStyles = {"fill":"none","stroke":"crimson","stroke-width":0.002,"stroke-dasharray":"0.012,0.002"};
-			var highlightStyles = {"stroke":"crimson","stroke-width":0.002};
-			var dragRectStyles = {"fill":"dimgray","fill-opacity":0.3};
-			//initialize myMainMap object, you need to adopt the parameters here
 		
-
-			myMainMap = new map("mainMap",35910,35,0.6,0,26911,"m",1,false,"","",dynamicLayers,digiLayers,"",zoomRectStyles,highlightStyles,dragRectStyles,"referenceMap","myDragCrossSymbol",4750);
-			
-			//create zoom slider	
-			myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth,"mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
-					
+		function initWindows() {
 			//create windows
 			myMapApp.Windows = new Array();
 			
@@ -128,7 +119,7 @@ preserveAspectRatio="xMidYMid meet">
 			var titlebarHeight = 17;
 			var statusbarHeight = 13;
 			
-			//initialize windows
+			// window instances creation
 			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["navWindow"].appendContent("referenceMap",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomIn",true);
@@ -140,11 +131,13 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.Windows["navWindow"].appendContent("infoButton",true);
 			myMapApp.Windows["navWindow"].appendContent("backwardExtent",true);
 			myMapApp.Windows["navWindow"].appendContent("forwardExtent",true);
+			myMapApp.Windows["navWindow"].minimize(true);
 			
 			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["basiclayer"].appendContent("checkBoxes",true);
 			myMapApp.Windows["basiclayer"].appendContent("linkRadioGroup",true);			
 			myMapApp.Windows["basiclayer"].minimize(true);
+			
 			
 			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["thematic"].appendContent("radioButtons",true);
@@ -158,35 +151,134 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.Windows["legend"].appendContent("coulourboxes",true);
 			myMapApp.Windows["legend"].minimize(true);
 			
-		  //tab panel instance creation
-			var tabStyles = {"fill":"rgb(180,180,180)","stroke":"dimgray","stroke-width":1,"cursor":"pointer"};
-		      var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-		      var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
-		      var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
-		                
-		      //setting tabTitles
-		      var tabTitles = new Array("Values","Chart");
-		     
-		      detailTabGroup = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
-		              
-		      //add new content
-		      detailTabGroup.addContent("detailTabGroup__0_content",0,true);
-		      detailTabGroup.addContent("detailTabGroup__1_content",1,true);
-		                      
-		      //activate tab
-		      //detailTabGroup.activateTabByIndex(0,false);
-		      //detailTabGroup.resize(400,100);   
+		}
+		
+		function closeAllWindows() {			
+			myMapApp.Windows["navWindow"].close(true);					
+			myMapApp.Windows["basiclayer"].close(true);		
+			myMapApp.Windows["thematic"].close(true);			
+			myMapApp.Windows["detail"].close(true);		
+			myMapApp.Windows["legend"].close(true);
+		}
+		
+		function initTabGroups() {
 			
-			//now initialize buttons
+			//create tabGroups
+			myMapApp.TabGroups = new Array();
+			
+			//first a few styles
+			var tabStyles = {"fill":"rgb(180,180,180)","stroke":"dimgray","stroke-width":1,"cursor":"pointer"};
+		    var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
+		    var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
+		    var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
+		                
+		    //setting tabTitles
+		    var tabTitles = new Array("Values","Chart");
+		     
+		    // tabGroup instances creation
+		    myMapApp.TabGroups["detailTabGroup"] = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
+		      		              
+		    //add new content
+		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__0_content",0,true);
+		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__1_content",1,true);
+		}
+		
+		function buttonClick(groupId,evt,buttonText) {
+			if(buttonText == "Applay") {
+				var colPicker = document.getElementById("colourPickerPanel_1");
+				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
+				var colour = getRGB16(values);
+				myMapApp.colArray[groupIndex-1] = colour;
+				var rect = document.getElementById("rect" + groupIndex);
+				rect.setAttribute("fill", colour);
+				colourMap();            		
+			} else if(buttonText == "Ok") {
+				var colPicker = document.getElementById("colourPickerPanel_1");
+				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
+				var colour = getRGB16(values);
+				myMapApp.colArray[groupIndex-1] = colour;
+				var rect = document.getElementById("rect" + groupIndex);
+				rect.setAttribute("fill", colour);
+				colPicker.setAttribute("display", "none");
+				colourMap();           		
+			} else if(buttonText == "Cancel") {
+				var colPicker = document.getElementById("colourPickerPanel_1");
+				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
+				var colour = getRGB16(values);
+				myMapApp.colArray[groupIndex-1] = groupColourBkp;
+				var rect = document.getElementById("rect" + groupIndex);
+				rect.setAttribute("fill", groupColourBkp);
+				colPicker.setAttribute("display", "none");
+				colourMap(); 
+			}
+		}
+		
+		function getRGB16(values) {
+			var red = values.fill.red.toString(16);
+			if(red.length == 1) red = "0" + red;
+			var green = values.fill.green.toString(16);
+			if(green.length == 1) green = "0" + green;
+			var blue = values.fill.blue.toString(16);
+			if(blue.length == 1) blue = "0" + blue;
+			var colour = "#" + red + green + blue;
+			return colour;
+		}
+		
+		var groupIndex = 0;
+		var groupColourBkp = 0;
+		
+		function openColourPiker(evt) {
+		   var el = evt.target;
+           var id = el.getAttribute("id");
+           var fill = el.getAttribute("fill");
+           
+           groupIndex = parseInt(id.substring(4));
+           groupColourBkp = myMapApp.colArray[groupIndex-1];
+           
+           var rgb16 = new Array();
+           var rgb10 = new Array();
+           
+           rgb16["red"] = fill.substring(1,3);
+           rgb16["green"] = fill.substring(3,5);
+           rgb16["blue"] = fill.substring(5);
+           
+           rgb10["red"] = parseInt(rgb16["red"],16);
+           rgb10["green"] = parseInt(rgb16["green"],16);
+           rgb10["blue"] = parseInt(rgb16["blue"],16);
+           
+           
+           
+           /*
+           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["red"] = rgb10["red"];
+           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["green"] = rgb10["green"];
+           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["blue"] = rgb10["blue"];
+           myMapApp.colourPickers["colourPicker_1"].rebuild();
+           */
+           
+           var colPicker = document.getElementById("colourPickerPanel_1");
+           colPicker.setAttribute("display", "inherit");
+           
+           myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",rgb10["red"],rgb10["green"], rgb10["blue"],1, true);
+           /*
+           
+           myMapApp.colourPickers["colourPicker_1"].fillStartColors = [255,0,0,1];
+           myMapApp.colourPickers["colourPicker_1"].rebuild();
+           */
+           //myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",10,120, 0,1, myMapApp.colourPickers["colourPicker_1"].fireFunction);           
+		}
+		
+		function initButtons() {
+			// create buttons
 			myMapApp.buttons = new Array();
-			//button styles, adopt the style settings to match your needs
+			
+			//first a few styles
 			var buttonTextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":10};
 			var buttonStyles = {"fill":"white"};
 			var shadeLightStyles = {"fill":"rgb(235,235,235)"};
 			var shadeDarkStyles = {"fill":"dimgray"};
 			
-			//button instance creation
-			//groupId,functionToCall,buttonType,buttonText,buttonSymbolId,x,y,width,height,textStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,shadowOffset
+			//button instances creation
+			
 			myMapApp.buttons["zoomIn"] = new button("zoomIn",zoomImageButtons,"rect",undefined,"magnifyerZoomIn",7,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["zoomOut"] = new button("zoomOut",zoomImageButtons,"rect",undefined,"magnifyerZoomOut",32,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["infoButton"] = new switchbutton("infoButton",zoomImageSwitchButtons,"rect",undefined,"infoBut",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
@@ -198,29 +290,48 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.buttons["recenterMap"] = new switchbutton("recenterMap",zoomImageSwitchButtons,"rect",undefined,"symbRecenter",132,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["backwardExtent"] = new button("backwardExtent",zoomImageButtons,"rect",undefined,"symbArrowLeft",157,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["forwardExtent"] = new button("forwardExtent",zoomImageButtons,"rect",undefined,"symbArrowRight",182,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
+			
+			
+			myMapApp.buttons["okbutton"] = new button("colourPickerApplay",buttonClick,"rect","Applay", undefined, 380, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
+			myMapApp.buttons["okbutton"] = new button("colourPickerOk",buttonClick,"rect","Ok", undefined, 430, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
+			myMapApp.buttons["okbutton"] = new button("colourPickerCancel",buttonClick,"rect","Cancel", undefined, 480,425,40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
+			
+		
+		
 			//see if we need to disable buttons
 			myMainMap.checkButtons();
-			
-			//create checkbox array
+		}
+		
+		function intCheckBoxes() {
+		
+			//create checkboxes array
 			myMapApp.checkBoxes = new Array();
-			//labeltext styles
+			
+			//first a few styles
 			var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":14};
+						
+			//create  checkboxe instances
 			
+			// layers checkboxes
 			var offset;
-			
-			//create individual checkboxes
 			for(i = 0; i < layer_names.length; i++) {
 				offset = 45 + (30*i);
-				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",true,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
+				var mapLayer = document.getElementById(layer_names[i]);
+				//alert(layer_names[i] + " element -> " + mapLayer);
+				var displayStatus = mapLayer.getAttributeNS(null,"display");
+				var checked = false;
+				if(displayStatus == "inline") checked = true;
+				//alert(layer_names[i] + " checked -> " + checked);
+				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}
+
 			
-			//radio button group
+			// Navigation radio buttons
 			linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);
 			myMapApp.checkBoxes['cross_nav'] = new checkBox("cross_nav","linkRadioGroup",30,offset+40,"radioBorder","radioPoint",false, "Cross Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
-			
-			
-			//radio button group
+		
+			// Thematic radio buttons
 			radioGroup= new radioButtonGroup("radioButtons",setKpi);
 			//the following two checkboxes are added to the radio button group stored in the object instance 'radioGroupQuality'
 			for(i = 0; i < kpi_names.length; i++) {
@@ -228,10 +339,12 @@ preserveAspectRatio="xMidYMid meet">
 				myMapApp.checkBoxes[kpi_names[i]] = new checkBox(kpi_names[i],"radioButtons",30,offset,"radioBorder","radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
 			}
 			
-			
-			
-			
-			
+			//load function specific to the current map project
+			radioGroup.selectById(kpi_names[selected_kpi_index],true);
+			linkRadioGroup.selectById("drill_nav");
+		}
+		
+		function initDetailInfopanels() {
 			// create detail infopanels
 			myMapApp.infoPanel = new Array();
 			var dynamText = document.getElementById("dynamText");
@@ -253,7 +366,9 @@ preserveAspectRatio="xMidYMid meet">
 				
 				myMapApp.infoPanel[i] = panel;
 			}
-			
+		}
+		
+		function initLegendEntries() {
 			// create legendpanels & legendrect
 			myMapApp.legPanel = new Array();	
 			myMapApp.legRect = new Array();
@@ -285,22 +400,93 @@ preserveAspectRatio="xMidYMid meet">
 				rect.setAttribute("x","30");
 				rect.setAttribute("y",offset);
 				rect.setAttribute("width","30");
-				rect.setAttribute("height","20");
+				rect.setAttribute("height","50");
 				rect.setAttribute("fill","#500000");
+				rect.setAttribute("onclick","openColourPiker(evt)");
 				
 				coulourBoxes.appendChild(rect);
 				
 				myMapApp.legRect[i] = rect;
 			}	
+		}
+		
+		function initColourPikers() {
+			// Create colour pickers
+			myMapApp.colourPickers = new Array();
 			
+			// Colour picker styles
+			var cpBgStyles = {"fill":"gainsboro"};
+			var cpBgStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
+			var cpTextStyles = {"font-family":"Arial,Helvetica","font-size":12,"fill":"dimgray"};
+			
+			myMapApp.colourPickers["colourPicker_1"]  = 
+				new colourPicker("colourPicker_1", //the id of the colour picker
+								 "colourPickerBox_1", //the id or node reference of the parent group where the button can be appended
+								 300,300, //upper left corner of colour picker
+								 300,120, //width & height of colour picker
+								 cpBgStyles,
+								 cpTextStyles,
+								 "sliderSymbol", //id referencing the slider symbol to be used for the sliders
+								 true, // satSliderVisible
+								 true, // valSliderVisible
+								 false, // alphaSliderVisible
+								 true, // colValTextVisible
+								 true, // fillVisible
+								 false, // strokeVisible
+								 0, 360, // start & end hue in degree (0 to 360)
+								 7, //nr of stop vals in between, in addition to start and end
+								 "255,0,0,1", // fillStartColor: string, rgba.format, f.e. 255,0,0,1
+								 "0,0,0,0.7", // strokeStartColorstring, rgba.format, f.e. 255,0,0,1
+								 undefined);
+		}
+		
+		function initSliders() {
+			//create zoom slider	
+			//function slider(id,parentNode,x1,y1,value1,x2,y2,value2,startVal,sliderStyles,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
+			//function slider(x1,y1,value1,x2,y2,value2,startVal,sliderGroupId,sliderColor,visSliderWidth,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
+	
+			//myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth, "mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
+			
+			var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
+					
+			
+			myMapApp.zoomSlider = new slider("zoomSliderId", 
+											 "mapZoomSlider", 
+											 180,153,
+											 myMainMap.minWidth,
+											 20,153,
+											 myMainMap.maxWidth,
+											 myMainMap.maxWidth,
+											 sliderStyles, 
+											 15,
+											 "sliderSymbol",
+											 myMapApp.refMapDragger,			
+										     true);
+		}
+			
+		function initApplication(evt) {			
+			if (document.documentElement.suspendRedraw) {
+				suspendProcess = document.documentElement.suspendRedraw(30000);
+			}
+		
+			
+			setTresholds();
+			setColourRange();
+			
+			initMainMap();			
+			initWindows();
+			closeAllWindows();
+			initTabGroups();
+			initButtons();
+			initSliders();		      			
+			intCheckBoxes();
+			initDetailInfopanels();
+			initLegendEntries();			
+			initColourPikers();
 			
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.targetLayer = document.getElementById(layer_names[target_layer_index]);
-
-			//load function specific to the current map project
-			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			linkRadioGroup.selectById("drill_nav");
 			
 			loadProjectSpecific();
 			
@@ -308,6 +494,11 @@ preserveAspectRatio="xMidYMid meet">
 				document.documentElement.unsuspendRedraw(suspendProcess);
 			}
 		}
+		
+		
+		
+		
+		
 		
 	   //this function is called after each pan or zoom or change of map extent
        //you can place project specific functions here that need to re.on the map extent, e.g. adopting line-widths, loading additional data, etc.
@@ -418,6 +609,22 @@ preserveAspectRatio="xMidYMid meet">
        } 
 		
 	  
+		function initMainMap() {
+			//dynamic layer array that allow loading from database
+			var dynamicLayers = new Array();
+			
+			//initialize digiLayers (layers that allow digitizing)
+			var digiLayers = new Array();
+			
+			//define some styles for the map object
+			var zoomRectStyles = {"fill":"none","stroke":"crimson","stroke-width":0.002,"stroke-dasharray":"0.012,0.002"};
+			var highlightStyles = {"stroke":"crimson","stroke-width":0.002};
+			var dragRectStyles = {"fill":"dimgray","fill-opacity":0.3};
+						
+			//initialize myMainMap object, you need to adopt the parameters here
+			myMainMap = new map("mainMap",35910,35,0.6,0,26911,"m",1,false,"","",dynamicLayers,digiLayers,"",zoomRectStyles,highlightStyles,dragRectStyles,"referenceMap","myDragCrossSymbol",4750);
+		}
+		
 		
 		
 		function setColourRange() {
@@ -430,7 +637,7 @@ preserveAspectRatio="xMidYMid meet">
 					setGradientColourRange(kpi_names[i]);
 				}
 			}
-		}	
+		}
 		
 		function setGradientColourRange(kpiName) { 
 			var A = new Array();
@@ -478,22 +685,22 @@ preserveAspectRatio="xMidYMid meet">
 	   		//alert('setTresholds');
 			for(i = 0; i < kpi_names.length; i++) {					
 				
-				if(lb[kpi_names[i]] == null) {
-		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+				if(lb_values[kpi_names[i]] == null) {
+		   			lb_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
 		   		}
-		   		if(ub[kpi_names[i]] == null) {
-		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
-		   		}
-		   		
-		   		if(lb[kpi_names[i]] > ub[kpi_names[i]]) {
-		   			var t = lb[kpi_names[i]];
-		   			ub[kpi_names[i]] = lb[kpi_names[i]];
-		   			lb[kpi_names[i]] = t;
+		   		if(ub_values[kpi_names[i]] == null) {
+		   			ub_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
 		   		}
 		   		
-		   		if(ub[kpi_names[i]] < kpi_ordered_values[kpi_names[i]][0] || lb[kpi_names[i]] >  kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1]) {
-		   			lb[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
-		   			ub[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
+		   		if(lb_values[kpi_names[i]] > ub_values[kpi_names[i]]) {
+		   			var t = lb_values[kpi_names[i]];
+		   			ub_values[kpi_names[i]] = lb_values[kpi_names[i]];
+		   			lb_values[kpi_names[i]] = t;
+		   		}
+		   		
+		   		if(ub_values[kpi_names[i]] < kpi_ordered_values[kpi_names[i]][0] || lb_values[kpi_names[i]] >  kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1]) {
+		   			lb_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][0];
+		   			ub_values[kpi_names[i]] = kpi_ordered_values[kpi_names[i]][kpi_ordered_values[kpi_names[i]].length-1];
 		   		}
 				
 				
@@ -516,18 +723,18 @@ preserveAspectRatio="xMidYMid meet">
 		}
 		
 		function setPercTrasholds(kpiName) { 
-			var range = ub[kpiName] - lb[kpiName];
+			var range = ub_values[kpiName] - lb_values[kpiName];
 			
 			eval("thresh_"+kpiName+"=new Array()");
 		    var trasholds = eval("thresh_"+kpiName);
-		    trasholds[0] = lb[kpiName];
+		    trasholds[0] = lb_values[kpiName];
 		   
 			for(var j = 0; j < trasholdCalculationPercParams[kpiName].length-1; j++) {
 				var groupSize = (range / 100.0) * trasholdCalculationPercParams[kpiName][j];
 				trasholds[j+1] = trasholds[j] + groupSize;
 			}
 			
-			trasholds[trasholdCalculationPercParams[kpiName].length] = ub[kpiName];	
+			trasholds[trasholdCalculationPercParams[kpiName].length] = ub_values[kpiName];	
 			
 			num_group[kpiName] = trasholdCalculationPercParams[kpiName].length;
 		}
@@ -544,22 +751,22 @@ preserveAspectRatio="xMidYMid meet">
 		function setQuantileTrasholds(kpiName) {
 				
 				/*
-				if(lb[kpiName] == null) {
-		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
+				if(lb_values[kpiName] == null) {
+		   			lb_values[kpiName] = kpi_ordered_values[kpiName][0];
 		   		}
-		   		if(ub[kpiName] == null) {
-		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_name].length-1];
-		   		}
-		   		
-		   		if(lb[kpiName] > ub[kpiName]) {
-		   			var t = lb[kpiName];
-		   			ub[kpiName] = lb[kpiName];
-		   			lb[kpiName] = t;
+		   		if(ub_values[kpiName] == null) {
+		   			ub_values[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpi_name].length-1];
 		   		}
 		   		
-		   		if(ub[kpiName] < kpi_ordered_values[kpiName][0] || lb[kpiName] >  kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1]) {
-		   			lb[kpiName] = kpi_ordered_values[kpiName][0];
-		   			ub[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
+		   		if(lb_values[kpiName] > ub_values[kpiName]) {
+		   			var t = lb_values[kpiName];
+		   			ub_values[kpiName] = lb_values[kpiName];
+		   			lb_values[kpiName] = t;
+		   		}
+		   		
+		   		if(ub_values[kpiName] < kpi_ordered_values[kpiName][0] || lb_values[kpiName] >  kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1]) {
+		   			lb_values[kpiName] = kpi_ordered_values[kpiName][0];
+		   			ub_values[kpiName] = kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1];
 		   		}
 		   		*/
 				
@@ -568,12 +775,12 @@ preserveAspectRatio="xMidYMid meet">
 				
 				var diff_value_num = 0;	
 				var start_index = -1;	
-				if(kpi_ordered_values[kpiName][0] >= lb[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub[kpiName]) {
+				if(kpi_ordered_values[kpiName][0] >= lb_values[kpiName] && kpi_ordered_values[kpiName][kpi_ordered_values[kpiName].length-1] <= ub_values[kpiName]) {
 					diff_value_num = kpi_ordered_values[kpiName].length;
 					start_index = 0;
 				} else {
 					for(j = 0; j < kpi_ordered_values[kpiName].length; j++) {						
-			   			if(kpi_ordered_values[kpiName][j] >= lb[kpiName] && kpi_ordered_values[kpiName][j] <= ub[kpiName]) {
+			   			if(kpi_ordered_values[kpiName][j] >= lb_values[kpiName] && kpi_ordered_values[kpiName][j] <= ub_values[kpiName]) {
 			   				start_index = (start_index == -1?j:start_index);
 			   				diff_value_num++;
 			   			}
@@ -584,11 +791,11 @@ preserveAspectRatio="xMidYMid meet">
 				if(diff_value_num < num_group[kpiName]) num_group[kpiName] = diff_value_num;
 				var blockSize = Math.floor( diff_value_num / num_group[kpiName] );
 			
-				trasholds[0] = lb[kpiName];
+				trasholds[0] = lb_values[kpiName];
 				for(j = 1; j < num_group[kpiName] ; j++){
 					trasholds[j] = kpi_ordered_values[kpiName][start_index + (j*blockSize)];
 				}
-				trasholds[num_group[kpiName]] = ub[kpiName];
+				trasholds[num_group[kpiName]] = ub_values[kpiName];
 		}
 		
 			
@@ -655,22 +862,14 @@ preserveAspectRatio="xMidYMid meet">
 				rect.setAttribute("width","30");
 				rect.setAttribute("height","20");
 				rect.setAttribute("fill",myMapApp.colArray[i]);
+				rect.setAttribute("onclick", "openColourPiker(evt)");
+				rect.setAttribute("cursor", "pointer");
 				
 				coulourBoxes.appendChild(rect);
 				
 				myMapApp.legRect[i] = rect;
 			}	
 			
-			
-			/*
-			for (var i = 0;i<num_group[myMapApp.curKpi];i++) {
-				//color rectangle
-				eval("myMapApp.legRect["+i+"]").setAttributeNS(null,"fill",myMapApp.colArray[i]);
-				var closingChar = (i!=myMapApp.colArray.length-1?")":"]");
-				var textString = "-   ["+myMapApp.threshArray[i] + " - "+myMapApp.threshArray[i+1] + closingChar;
-				eval("myMapApp.legPanel["+i+"]").firstChild.nodeValue = textString;
-			}
-			*/
 			
 			myMapApp.loadStatus.setAttributeNS(null,"display","inline");		
 			
@@ -844,6 +1043,7 @@ preserveAspectRatio="xMidYMid meet">
              }
         } 
 			
+	
 		function colourMap() {
 			if (document.documentElement.suspendRedraw) {
 				suspendProcess = document.documentElement.suspendRedraw(20000);
@@ -866,23 +1066,24 @@ preserveAspectRatio="xMidYMid meet">
 					
 					
 					if(targetNode.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
-						//alert("FOUND " + null_values_color[myMapApp.curKpi]);
+						//alert("FOUND " + targetNode.getAttribute("id"));
 						targetColor = null_values_color[myMapApp.curKpi];
-					} else if(kpiAttrib < lb[myMapApp.curKpi]) {
+					} else if(kpiAttrib < lb_values[myMapApp.curKpi]) {
 						targetColor = lb_color[myMapApp.curKpi];
-					} else if(kpiAttrib > ub[myMapApp.curKpi]) {
+					} else if(kpiAttrib > ub_values[myMapApp.curKpi]) {
 						targetColor = ub_color[myMapApp.curKpi];
-					} else if(kpiAttrib == ub[myMapApp.curKpi]) {
+					} else if(kpiAttrib == ub_values[myMapApp.curKpi]) {
 						targetColor = myMapApp.colArray[myMapApp.threshArray.length-2];
 					} else  {
 						for (var i = 0;i<myMapApp.threshArray.length-1;i++) {
 							if (kpiAttrib >= myMapApp.threshArray[i] && kpiAttrib <  myMapApp.threshArray[i+1]) {
 								targetColor = myMapApp.colArray[i];
 								break;
-							}
+							} 
 						}
 					}
 					
+
 					
 					targetNode.setAttributeNS(null,"fill",targetColor);
 					
@@ -947,7 +1148,7 @@ preserveAspectRatio="xMidYMid meet">
 		
 		<defs>
 			<!-- Symbols for checkboxes -->
-			<symbol id="checkBoxRect" overflow="visible" preserveAspectRatio="xMidYMid meet">
+			<symbol id="checkBoxRect" overflow="visible" preserveAspectRatio="xMinYMin meet">
 				<rect x="-6" y="-6" width="12" height="12" fill="white" stroke="dimgray" stroke-width="1.5"/>
 			</symbol>
 			
@@ -1035,15 +1236,19 @@ preserveAspectRatio="xMidYMid meet">
 		<title>SpagoBI Geo Engine</title>
 		
 		
-		<!-- sfondo del pannello che contiene la mappa -->
+		<!-- sfondo del pannello che contiene la mappa 
 		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6"/>
+		-->
+		
+		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6;"/>
 		
 		<!-- sfondo della mappa -->
-		<rect x="4" y="4" width="1092" height="690" fill="#dce6fa"/>
+		<rect x="4" y="4" width="1092" height="690" fill="white"/>
 		
 		<!-- Main Map Frame -->
 		<svg id="mainMap" x="4" y="4" width="1092" height="690" viewBox="0 0 0 0" 
-			xmlns:attrib="http://www.carto.net/attrib" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" 
+			xmlns:attrib="http://www.carto.net/attrib" xmlns:xlink="http://www.w3.org/1999/xlink" 
+			xmlns="http://www.w3.org/2000/svg" 
 			preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify">
 			
 			<style type="text/css">
@@ -1140,10 +1345,9 @@ preserveAspectRatio="xMidYMid meet">
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
 					<g id="windowMainGroupnavWindow">
-						<!--
-						<rect width="210" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
-						-->
-						<g/>
+					<g/>
+					
+					
 						<svg id="referenceMap" x="10" y="8" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" width="190" height="150" 
 								 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" 
 								 preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify" cursor="crosshair" display="inherit">
@@ -1163,87 +1367,33 @@ preserveAspectRatio="xMidYMid meet">
 						</svg>
 						
 						<g id="zoomIn" cursor="pointer" display="inherit">
-							<rect x="6" y="164" width="20" height="20" points="7,185 7,165 27,165" fill="rgb(235,235,235)"/>
-							<rect x="8" y="166" width="20" height="20" points="7,185 7,165 27,165" fill="dimgray"/>
-							<rect x="7" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="17" y="175" href="#magnifyerZoomIn" pointer-events="none"/>
-							<rect x="6" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
 						<g id="mapZoomSlider" display="inherit">
-							<!--
-							<line x1="180" y1="153" x2="20" y2="153" stroke="dimgray" stroke-width="10" opacity="0" stroke-linecap="square" id="mapZoomSlider_invisibleSliderLine"/>
-							<line x1="180" y1="153" x2="20" y2="153" stroke="dimgray" stroke-width="2" id="mapZoomSlider_visibleSliderLine" pointer-events="none"/>
-							<use xlink:href="#sliderSymbol" transform="translate(20,153.00000000000003) rotate(180)" id="mapZoomSlider_sliderSymbol"/>
-							-->
 						</g>
 						
 						<g id="zoomOut" cursor="pointer" display="inherit">
-							<rect x="31" y="164" width="20" height="20" points="32,185 32,165 52,165" fill="rgb(235,235,235)"/>
-							<rect x="33" y="166" width="20" height="20" points="32,185 32,165 52,165" fill="dimgray"/>
-							<rect x="32" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="42" y="175" href="#magnifyerZoomOut" pointer-events="none"/>
-							<rect x="31" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="zoomFull" cursor="pointer" display="inherit">
-							<rect x="56" y="164" width="20" height="20" points="57,185 57,165 77,165" fill="rgb(235,235,235)"/>
-							<rect x="58" y="166" width="20" height="20" points="57,185 57,165 77,165" fill="dimgray"/>
-							<rect x="57" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="67" y="175" href="#magnifyerFull" pointer-events="none"/>
-							<rect x="56" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="zoomManual" cursor="pointer" display="inherit">
-							<rect x="81" y="164" width="20" height="20" points="82,185 82,165 102,165" fill="rgb(235,235,235)"/>
-							<rect x="83" y="166" width="20" height="20" points="82,185 82,165 102,165" fill="dimgray"/>
-							<rect x="82" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="92" y="175" href="#magnifyerManual" pointer-events="none"/>
-							<rect x="81" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
 						<g id="panManual" cursor="pointer" display="inherit">
-							<rect x="106" y="164" width="20" height="20" points="107,185 107,165 127,165" fill="rgb(235,235,235)"/>
-							<rect x="108" y="166" width="20" height="20" points="107,185 107,165 127,165" fill="dimgray"/>
-							<rect x="107" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="117" y="175" href="#symbPan" pointer-events="none"/>
-							<rect x="106" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
 						
 						<g id="infoButton" cursor="pointer" display="inherit">
-							<rect x="131" y="164" width="20" height="20" points="132,185 132,165 152,165" fill="dimgray"/>
-							<rect x="133" y="166" width="20" height="20" points="132,185 132,165 152,165" fill="rgb(235,235,235)"/>
-							<rect x="132" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="142" y="175" href="#infoBut" pointer-events="none"/>
-							<rect x="131" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="none" cursor="default"/>
 						</g>
 						
-						<g id="backwardExtent" cursor="pointer" display="inherit">
-							<rect x="156" y="164" width="20" height="20" points="157,185 157,165 177,165" fill="rgb(235,235,235)"/>
-							<rect x="158" y="166" width="20" height="20" points="157,185 157,165 177,165" fill="dimgray"/>
-							<rect x="157" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="167" y="175" href="#symbArrowLeft" pointer-events="none"/>
-							<rect x="156" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
-						</g>
+						
+						<g id="backwardExtent" cursor="pointer" display="inherit" />
 						
 						<g id="forwardExtent" cursor="pointer" display="inherit">
-							<rect x="181" y="164" width="20" height="20" points="182,185 182,165 202,165" fill="rgb(235,235,235)"/>
-							<rect x="183" y="166" width="20" height="20" points="182,185 182,165 202,165" fill="dimgray"/>
-							<rect x="182" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-							<use x="192" y="175" href="#symbArrowRight" pointer-events="none"/>
-							<rect x="181" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/>
 						</g>
+						
 					</g>
-					<!--
-					<g>
-						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarnavWindow" cursor="pointer"/>
-						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">
-						Navigation
-						</text>
-						<use x="198.5" y="8.5" cursor="pointer" id="maximizeButtonnavWindow" href="#maximizeButton"/>
-						<use x="181.5" y="8.5" cursor="pointer" id="minimizeButtonnavWindow" href="#minimizeButton"/>
-					</g>
-					-->
 				</g>
 					
 				<!-- Layers Window -->
@@ -1251,7 +1401,7 @@ preserveAspectRatio="xMidYMid meet">
 					<rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
-					<g id="windowMainGroupbasiclayer" display="none">
+						<g id="windowMainGroupbasiclayer" display="none">
 						<g/>
 						
 						<g id="checkBoxes" display="inherit">
@@ -1259,7 +1409,7 @@ preserveAspectRatio="xMidYMid meet">
 						</g>
 						
 						<g id="linkRadioGroup" display="inherit">
-							<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
+						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
 						
 						</g>					
 					</g>
@@ -1270,21 +1420,12 @@ preserveAspectRatio="xMidYMid meet">
 				<g id="thematic" transform="translate(223,537)"><rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					
-					<g id="windowMainGroupthematic">					
+					<g id="windowMainGroupthematic" display="inherit">					
 						
 						<g id="radioButtons" display="inherit">
 							
 						</g>					
 					</g>
-					
-					<!--
-					<g>
-						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
-						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">Thematic Topics</text>
-						<use x="198.5" y="8.5" cursor="pointer" id="maximizeButtonthematic" href="#maximizeButton"/>
-						<use x="181.5" y="8.5" cursor="pointer" id="minimizeButtonthematic" href="#minimizeButton"/>
-					</g>
-					-->
 				</g>
 				
 				
@@ -1335,6 +1476,17 @@ preserveAspectRatio="xMidYMid meet">
 				</g>
 				
 				
+				<g id="colourPickerPanel_1" display="none">
+					<g id="colourPickerBox_1" />
+					
+					<g id="colourPickerButtons">
+						<rect x="300" y="420" width="300" height="35" fill="white" stroke="dimgray" stroke-width="1"/>
+						<g id="colourPickerApplay" />
+						<g id="colourPickerOk" />
+						<g id="colourPickerCancel" />
+					</g>
+				</g>
+						
 				<!-- Legend Window -->
 				<g id="legend" transform="translate(649,720)">
 					<rect width="441" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
@@ -1342,39 +1494,15 @@ preserveAspectRatio="xMidYMid meet">
 						
 					<g id="windowMainGrouplegend" display="none">
 						
-						<!--
-						<rect width="441" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
-						<g/>
-						-->
+						
 							
 						<g id="coulourboxes" display="inherit">
 							
-							<!--
-							<text id="legpanel5" x="70" y="50" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 2.5 - 22</text>
-							<text id="legpanel4" x="70" y="75" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 1 - 2.5</text>
-							<text id="legpanel3" x="70" y="100" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.2 - 1</text>
-							<text id="legpanel2" x="70" y="125" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0.02 - 0.2</text>
-							<text id="legpanel1" x="70" y="150" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">&gt; 0 - 0.02</text>
-							
-							
-							<rect id="rect5" fill="#500000" stroke="dimgray" x="30" y="35" width="30" height="20"/> 
-							<rect id="rect4" fill="#BD3618" stroke="dimgray" x="30" y="60" width="30" height="20" stroke-width="1"/> 
-							<rect id="rect3" fill="#F77B11" stroke="dimgray" x="30" y="85" width="30" height="20" stroke-width="1"/> 
-							<rect id="rect2" fill="#FECC55" stroke="dimgray" x="30" y="110" width="30" height="20" stroke-width="1"/> 
-							<rect id="rect1" fill="#F7F791" stroke="dimgray" x="30" y="135" width="30" height="20" stroke-width="1"/>		
-						-->
 						
 						</g>
 					</g>
 				
-					<!--
-					<g>
-						<rect width="441" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarlegend" cursor="pointer"/>
-						<text x="3" y="14" font-family="Arial,Helvetica" font-size="14px" fill="white" pointer-events="none" startOffset="0">Legend and Values</text>
-						<use x="429.5" y="8.5" cursor="pointer" id="maximizeButtonlegend" href="#maximizeButton"/>
-						<use x="412.5" y="8.5" cursor="pointer" id="minimizeButtonlegend" href="#minimizeButton"/>
-					</g>
-					-->
+					
 				</g>
 		
 		</g>

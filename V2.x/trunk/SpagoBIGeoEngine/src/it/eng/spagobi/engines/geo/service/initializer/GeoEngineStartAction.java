@@ -95,6 +95,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			
 			baseUrl = "http://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();			
 			mapConfiguration.getMapRendererConfiguration().setContextPath(baseUrl);
+			mapConfiguration.getMapRendererConfiguration().setWindowsActive(isDocumentCompositionModeActive.equalsIgnoreCase("FALSE"));
 		} catch (Exception e) {
 			logger.error("Error while reading map configuration", e);
 		}

@@ -234,8 +234,10 @@ public class MapConfiguration {
 			getMapProviderConfiguration().setMapName(selectedMap);
 		}	
 		if(selectedLayers != null) {
-			String[] layers = selectedLayers.split(",");
+			getMapRendererConfiguration().resetLayers();
+			String[] layers = selectedLayers.split(",");			
 			for(int i = 0; i < layers.length; i++) {
+				
 				MapRendererConfiguration.Layer layer = getMapRendererConfiguration().getLayer(layers[i]);
 				if(layer != null) {
 					layer.setSelected(true);

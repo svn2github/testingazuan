@@ -73,7 +73,7 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    String targetLayer = datamartProvider.getDatamartProviderConfiguration().getHierarchyLevel();
 	    targetLayer = datamartProvider.getDatamartProviderConfiguration().getSelectedLevel().getFeatureName();
 	    buffer.append(getLayersConfigurationScript(targetMap, targetLayer));    
-	    
+	    buffer.append( mapRendererConfiguration.isWindowsActive()?"var activeWindow=true;":"var activeWindow=false;"  );
 	    
 	    
 	    
@@ -442,6 +442,4 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		File tmpDir = new File(tmpDirPath);
 		return File.createTempFile("SpagoBIGeoEngine_", "_tmpMap.svg", tmpDir);
 	}
-	
-
 }

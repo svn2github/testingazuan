@@ -52,15 +52,7 @@ import sun.misc.BASE64Decoder;
 /**
  * Spago Action which executes the map producing request  
  */
-public class MapDrawAction extends AbstractGeoEngineAction {
-	
-	// request 
-	public static final String HIERARCHY_NAME = "hierarchyName";
-	public static final String HIERARCHY_LEVEL = "level";
-	public static final String MAP = "map";
-	public static final String LAYERS = "layer";
-	
-	
+public class CopyOfMapDrawAction extends AbstractGeoEngineAction {
 	
 	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
@@ -73,83 +65,131 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		logger.debug("Starting service method...");
 		
 		super.service(serviceRequest, serviceResponse);
-		this.freezeHttpResponse();	
 		
-		String selectedHierarchyName = null;
-		String selectedLevelName = null;
-		String selectedMapName = null;
-		Object layers = null;
-		List selectedLayers = null;
-		MapRendererConfiguration mapRendererConfiguration = null;
-		DatamartProviderConfiguration datamartProviderConfiguration = null;
-		
-		selectedHierarchyName = getAttributeAsString( HIERARCHY_NAME );				
-		selectedLevelName = getAttributeAsString( HIERARCHY_LEVEL );
-		selectedMapName = getAttributeAsString( MAP);
-		layers = getAttribute( LAYERS);
+		HttpServletRequest request = this.getHttpRequest(); 
+		HttpServletResponse response = this.getHttpResponse();
+		this.freezeHttpResponse();
 		
 		
-		AuditAccessUtils auditAccessUtils = (AuditAccessUtils)getAttributeFromSession("SPAGOBI_AUDIT_UTILS");
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), new Long(System.currentTimeMillis()), null, 
+		String mapCatalogueManagerUrl = (String) serviceRequest.getAttribute(MAP_CATALOGUE_MANAGER_URL);
+		if(mapCatalogueManagerUrl != null) {
+			MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils( getHttpSession(), getUserId() );
+			MapConfiguration.setMapCatalogueAccessUtils(mapCatalogueAccessUtils);
+		}
+		
+		Properties parameters = getParametersFromRequest(serviceRequest);
+				
+		
+		String auditId = getAttributeAsString("SPAGOBI_AUDIT_ID");
+		auditId = request.getParameter("SPAGOBI_AUDIT_ID");
+		AuditAccessUtils auditAccessUtils = 
+			(AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, new Long(System.currentTimeMillis()), null, 
 				"EXECUTION_STARTED", null, null);
 		
-		
 				
-		if(layers != null) {
-			if(layers instanceof ArrayList) {
-				selectedLayers = (List)layers;
-			} else if (layers instanceof String) {
-				selectedLayers = new ArrayList();
-				selectedLayers.add( layers );
+		//ServletOutputStream outputStream = getOutputStream();
+		String outputFormat = getOutputFormat(parameters);		
+		String templateStr = getAttributeFromSessionAsString("template");
+		//delAttributeFromSession("template");
+		//templateStr = getAttributeAsString("template");
+		
+		byte[] template = templateStr.getBytes();
+		
+		
+		// read the map configuration
+		MapConfiguration mapConfiguration = null;
+		try{
+			String baseUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+			
+			String standardHierarchy = MapConfiguration.getMapCatalogueAccessUtils().getStandardHierarchy( );
+			SpagoBiDataSource dataSource = (SpagoBiDataSource)getAttributeFromSession("SPAGOBI_DATASOURCE");
+			
+			mapConfiguration = new MapConfiguration(template, serviceRequest, standardHierarchy, dataSource);
+			mapConfiguration.getMapRendererConfiguration().setContextPath(baseUrl);
+			mapConfiguration.getDatamartProviderConfiguration().setParameters(parameters);
+			
+			String selectedHierarchyName = null;
+			String selectedLevelName = null;
+			String selectedMapName = null;
+			List selectedLayers = null;
+			
+			String type = (String)serviceRequest.getAttribute("type");
+			if(type == null || type.equalsIgnoreCase("object")) {
+				selectedHierarchyName = (String)serviceRequest.getAttribute("hierarchyName");
+				
+				selectedLevelName = (String)serviceRequest.getAttribute("level");
+				selectedMapName = (String)serviceRequest.getAttribute("map");
+				selectedLayers = null;
+				if(serviceRequest.getAttribute("layer") != null) {
+					if(serviceRequest.getAttribute("layer") instanceof ArrayList) {
+						selectedLayers = (List)serviceRequest.getAttribute("layer");
+					} else if (serviceRequest.getAttribute("layer") instanceof String) {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("layer"));
+					} else {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("layer").toString());
+					}
+				}
 			} else {
-				selectedLayers = new ArrayList();
-				selectedLayers.add(layers.toString());
+				selectedHierarchyName = (String)serviceRequest.getAttribute("soHierarchyName");
+				
+				selectedLevelName = (String)serviceRequest.getAttribute("soLevel");
+				selectedMapName = (String)serviceRequest.getAttribute("soMap");
+				selectedLayers = null;
+				Object o = serviceRequest.getAttribute("soLayer");
+				if(serviceRequest.getAttribute("soLayer") != null) {
+					if(serviceRequest.getAttribute("soLayer") instanceof ArrayList) {
+						selectedLayers = (List)serviceRequest.getAttribute("soLayer");
+					} else if (serviceRequest.getAttribute("soLayer") instanceof String) {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("soLayer"));
+					} else {
+						selectedLayers = new ArrayList();
+						selectedLayers.add(serviceRequest.getAttribute("soLayer").toString());
+					}
+				}
 			}
+			
+			
+			
+			DatamartProviderConfiguration datamartProviderConfiguration = mapConfiguration.getDatamartProviderConfiguration();
+			if(selectedHierarchyName != null) datamartProviderConfiguration.setHierarchyName(selectedHierarchyName);
+			if(selectedLevelName != null) datamartProviderConfiguration.setHierarchyLevel(selectedLevelName);
+			if(selectedMapName != null) mapConfiguration.setMapName(selectedMapName);
+				
+			if(selectedLayers != null && selectedLayers.size() > 0) {
+				MapRendererConfiguration mapRendererConfiguration = mapConfiguration.getMapRendererConfiguration();				
+				mapRendererConfiguration.resetLayers();
+				for(int i = 0; i < selectedLayers.size(); i++) {
+					String layerName = (String)selectedLayers.get(i);
+					MapRendererConfiguration.Layer layer = new MapRendererConfiguration.Layer();
+					layer.setName(layerName);
+					layer.setDescription(layerName);
+					layer.setSelected(true);
+					layer.setDefaultFillColor("white");
+					mapRendererConfiguration.addLayer(layer);
+				}
+			}			
+		} catch (Exception e) {
+			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
+					"GeoAction :: service : " +
+					"Error while reading map configuration", e);
+			sendError(getOutputStream());
+			// AUDIT UPDATE
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
+					"EXECUTION_FAILED", "Error while reading map configuration", null);
+			return;
 		}
-		
-		// configre map
-		if(selectedMapName != null) {
-			getMapConfiguration().setMapName(selectedMapName);
-		}
-		
-		// configure datamartProvider
-		datamartProviderConfiguration = getMapConfiguration().getDatamartProviderConfiguration();
-		
-		Properties props = null;
-		props = datamartProviderConfiguration.getParameters();	
-		String outputFormat = null;
-		if(props != null) {
-			outputFormat = getOutputFormat(props);	
-		}	
-		
-		if(selectedHierarchyName != null) datamartProviderConfiguration.setHierarchyName(selectedHierarchyName);
-		if(selectedLevelName != null) datamartProviderConfiguration.setHierarchyLevel(selectedLevelName);
-		
-		
-		// configure mapRenderer
-		mapRendererConfiguration = getMapConfiguration().getMapRendererConfiguration();	
-		if(selectedLayers != null && selectedLayers.size() > 0) {			
-			mapRendererConfiguration.resetLayers();
-			for(int i = 0; i < selectedLayers.size(); i++) {
-				String layerName = (String)selectedLayers.get(i);
-				MapRendererConfiguration.Layer layer = new MapRendererConfiguration.Layer();
-				layer.setName(layerName);
-				layer.setDescription(layerName);
-				layer.setSelected(true);
-				layer.setDefaultFillColor("white");
-				mapRendererConfiguration.addLayer(layer);
-			}
-		}		
-		
-		
 		
 		// create the map renderer and render the map
 		IMapRenderer mapRenderer = null;
 		File maptmpfile = null;
 		try{
-			mapRenderer = MapRendererFactory.getMapRenderer(getMapConfiguration().getMapRendererConfiguration());
-			IMapProvider mapProvider = MapProviderFactory.getMapProvider(getMapConfiguration().getMapProviderConfiguration());			
-			IDatamartProvider datamartProvider = DatamartProviderFactory.getDatamartProvider(getMapConfiguration().getDatamartProviderConfiguration());
+			mapRenderer = MapRendererFactory.getMapRenderer(mapConfiguration.getMapRendererConfiguration());
+			IMapProvider mapProvider = MapProviderFactory.getMapProvider(mapConfiguration.getMapProviderConfiguration());			
+			IDatamartProvider datamartProvider = DatamartProviderFactory.getDatamartProvider(mapConfiguration.getDatamartProviderConfiguration());
 			
 			maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider);
 		} catch (Exception e) {
@@ -158,7 +198,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 								"Error while rendering the map", e);
 			sendError(getOutputStream());
 			// AUDIT UPDATE
-			if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
+			if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_FAILED", "Error while rendering the map", null);
 			return;
 		}
@@ -166,8 +206,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		// set the content type 
 		String contentType = getContentType(outputFormat);
-		getHttpResponse().setContentType(contentType);
-		
+		response.setContentType(contentType);
 		
 		// based on the format requested fill the response
 		if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
@@ -181,7 +220,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			            			"GeoAction :: service : error while transforming into jpeg", e);
 				sendError(getOutputStream());
 				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while transforming into jpeg", null);
 				return;
 			}
@@ -203,7 +242,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
             						"GeoAction :: service : error while flushing svg", e);
 				sendError(getOutputStream());
 				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Error while flushing svg", null);
 				return;
 			}
@@ -223,13 +262,30 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		}
 		
 		// AUDIT UPDATE
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
+		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_PERFORMED", null, null);
 		
 		// delete tmp map file
-		maptmpfile.delete();		
+		maptmpfile.delete();
+		
+		getRequestContainer().getSessionContainer().setAttribute("CONFIGURATION", mapConfiguration);
+		
 	}
 	
+	
+	private Properties getParametersFromRequest(SourceBean servReq) {
+		Properties parameters = new Properties();
+		List list = servReq.getContainedAttributes();
+		for(int i = 0; i < list.size(); i++) {
+			SourceBeanAttribute attrSB = (SourceBeanAttribute)list.get(i);
+			//if(attrSB.getKey().equals("template")) continue;
+			if(attrSB.getKey().equals("ACTION_NAME")) continue;
+			if(attrSB.getKey().equals("NEW_SESSION")) continue;
+			String className = attrSB.getClass().getName();
+			parameters.setProperty(attrSB.getKey(), attrSB.getValue().toString());
+		}
+		return parameters;
+	}
 	
 	private ServletOutputStream getOutputStream() {
 		ServletOutputStream outputStream = null;

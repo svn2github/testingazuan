@@ -58,6 +58,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
+<%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 
 <%
 	// GET RESPONSE OBJECTS
@@ -98,16 +99,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	ObjTemplate currTemplate = obj.getActiveTemplate();
 	Integer prog = currTemplate.getProg();
 
+    SbiAudit sba = AuditManager.getInstance().getLastExecution(docId);
+    if (lastExecUser != null ) lastExecUser = sba.getUserName();
+    Date lastExecDate = sba.getExecutionStartTime();
+    if (lastExecDate != null )lastExecTime = lastExecDate.toString();
+
+
+%>
+	<!--
 	EventsManager eventsManager = EventsManager.getInstance();		
 	List firedEventsList = eventsManager.getRegisteredEvents(userProfile);
-    //ConfigSingleton conf = ConfigSingleton.getInstance();
-    //SourceBean formatSB = (SourceBean) conf.getAttribute("SPAGOBI.DATE_FORMAT");
-    //String format = (formatSB==null)?"":(String) formatSB.getAttribute("format");
-    //format = format.replaceAll("D", "d");
-    //format = format.replaceAll("m", "M");
-    //format = format.replaceAll("Y", "y");
-	
-    //Creates the list of all times this document has been executed by someone
     List evLogList = new ArrayList() ;
 	Iterator it = firedEventsList.iterator();
 	while (it.hasNext()) {
@@ -146,8 +147,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			lastExecUser = eventLog.getUser() ;
 		}
 	}
-	if (lastExecDate != null )lastExecTime = lastExecDate.toString(); 
-%>
+	if (lastExecDate != null )lastExecTime = lastExecDate.toString(); -->
 
 
 <script>

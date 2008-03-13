@@ -324,4 +324,17 @@ public class AuditManager {
 		}
 		return toReturn;
 	}
+	
+	public SbiAudit getLastExecution(Integer objId) {
+		logger.debug("IN");
+		SbiAudit toReturn = new SbiAudit();
+		try {
+			toReturn = _auditDAO.getLastExecution(objId) ;
+		} catch (Exception e) {
+			logger.error("Error while loading my last execution for document " + objId, e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
 }

@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.hotlink.rememberme.bo.HotLink;
 import it.eng.spagobi.monitoring.metadata.SbiAudit;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -96,7 +97,8 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		logger.debug("OUT");
 		return null;
 	}
-
+	
+	
 	public SbiAudit loadAuditByID(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -152,6 +154,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		}
 		return aSbiAudit;
 	}
+	
 
 	public void modifyAudit(SbiAudit aSbiAudit) throws EMFUserError {
 		logger.debug("IN");
@@ -369,6 +372,69 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		toReturn.setSubObjName((String) row[7]);
 		toReturn.setParameters((String) row[8]);
 		toReturn.setEngineName((String) row[9]);
+		return toReturn;
+	}
+	
+	public SbiAudit getLastExecution(Integer objId) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		SbiAudit toReturn = new SbiAudit();
+		if (objId == null) {
+			logger.warn("The object id in input is null or empty.");
+			return toReturn;
+		}
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			StringBuffer hql = new StringBuffer();
+			hql.append(	"select ");
+			hql.append(	"		max(a.executionStartTime)");
+			hql.append(	"from ");
+			hql.append(	"		SbiAudit a ");
+			hql.append(	"where 	");
+			hql.append(	"		a.sbiObject is not null and ");
+			hql.append(	"		a.sbiObject.biobjId = '" + objId + "' ");
+			Query hqlQuery = aSession.createQuery(hql.toString());
+			
+			Timestamp date = (Timestamp) hqlQuery.uniqueResult();
+			toReturn.setDocumentId(objId);
+			toReturn.setExecutionStartTime(date);
+			
+			StringBuffer hql2 = new StringBuffer();
+			hql2.append(	"select ");
+			hql2.append(	"		a.userName, ");
+			hql2.append(	"		a.documentParameters, ");
+			hql2.append(	"		a.requestTime, ");
+			hql2.append(	"		a.executionEndTime, ");
+			hql2.append(	"		a.executionState ");
+			hql2.append(	"from ");
+			hql2.append(	"		SbiAudit a ");
+			hql2.append(	"where 	");
+			hql2.append(	"		a.sbiObject is not null and ");
+			hql2.append(	"		a.sbiObject.biobjId = '" + objId + "' and ");	
+			hql2.append(	"		a.executionStartTime = '" + date + "' ");
+			Query hqlQuery2 = aSession.createQuery(hql2.toString());
+			
+			Object[] row = (Object[]) hqlQuery2.uniqueResult();
+
+			toReturn.setUserName((String) row[0]);
+			toReturn.setDocumentParameters((String) row[1]);
+			toReturn.setRequestTime((Timestamp) row[2]);
+			toReturn.setExecutionEndTime((Timestamp) row[3]);
+			toReturn.setExecutionState((String) row[4]);			
+			
+		} catch (Exception ex) {
+			logger.error(ex);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+		} finally {
+			if (aSession != null){
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
 		return toReturn;
 	}
 

@@ -118,4 +118,13 @@ public interface IAuditDAO {
 	 */
 	public List getMyRecentlyUsed(String userId, int limit) throws EMFUserError;
 	
+	/**
+	 * Gets the last execution of a document with id objId 
+	 * 
+	 * @param objId: the document identifier
+	 * @return SbiAudit of last execution
+	 * @throws EMFUserError
+	 */
+	public SbiAudit getLastExecution(Integer objId) throws EMFUserError ;
+	
 }

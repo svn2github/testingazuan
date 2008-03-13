@@ -217,8 +217,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     		Integer id = getAttributeAsInteger( SUBOBJ_ID );
     		if(id == null) {
     			logger.warn( "Value [" + getAttribute( SUBOBJ_ID ).toString() + "] is not a valid subobject id");
-    			analysisMetadata.setId(id);
-    		}
+    		} 
+    		analysisMetadata.setId(id);
     		
 			if( requestContainsAttribute( SUBOBJ_NAME ) ) {
 				analysisMetadata.setName( getAttributeAsString( SUBOBJ_NAME ) );
@@ -255,6 +255,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 			spagoBISubObject = getContentServiceProxy().readSubObjectContent( getAnalysisMetadata().getId().toString() );	
 			try {
 				rowData = DECODER.decodeBuffer( spagoBISubObject.getContent() );
+				analysisStateRowData = rowData;
 			} catch (IOException e) {
 				logger.warn( "Impossible to decode the content of " + getAnalysisMetadata().getId().toString() + " subobject");
     			return null;

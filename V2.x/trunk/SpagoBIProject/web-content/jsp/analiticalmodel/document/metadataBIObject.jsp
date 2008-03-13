@@ -106,48 +106,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 %>
-	<!--
-	EventsManager eventsManager = EventsManager.getInstance();		
-	List firedEventsList = eventsManager.getRegisteredEvents(userProfile);
-    List evLogList = new ArrayList() ;
-	Iterator it = firedEventsList.iterator();
-	while (it.hasNext()) {
-		EventLog eventLog = (EventLog) it.next();
-		String descr= eventLog.getDesc();
-		
-		BIObjectDAOHibImpl biObjectDAO = new BIObjectDAOHibImpl();
-		String evPars = eventLog.getParams();
-		if (evPars != null && !evPars.equals("") ){
-			Map eventParams = EventsManager.parseParamsStr(evPars);
-			String biobjectIdStr = "";
-			String objEventType = "";
-			if((String) eventParams.get("biobjectId")!= null) biobjectIdStr = (String) eventParams.get("biobjectId");
-			if((String) eventParams.get("document")!= null) biobjectIdStr = (String) eventParams.get("document");
-			objEventType = (String) eventParams.get("event-type");
-			if (biobjectIdStr != "" && objEventType != "") {
-				  Integer biObjectId = new Integer(biobjectIdStr);
-				  BIObject biObject = biObjectDAO.loadBIObjectById(biObjectId);
-				  if(docId.equals(biObject.getId()) && objEventType.equals("biobj-start-execution")){
-						evLogList.add(eventLog);
-					}
-			}
-							
-		}
-				
-	}	
-	
-	Date lastExecDate = null ;
-
-	Iterator evIt = evLogList.iterator();
-	while (evIt.hasNext()) {
-		EventLog eventLog = (EventLog) evIt.next();
-		Date tempDate = eventLog.getDate();
-		if (lastExecDate == null || tempDate.after(lastExecDate)){
-			lastExecDate = tempDate ;
-			lastExecUser = eventLog.getUser() ;
-		}
-	}
-	if (lastExecDate != null )lastExecTime = lastExecDate.toString(); -->
 
 
 <script>

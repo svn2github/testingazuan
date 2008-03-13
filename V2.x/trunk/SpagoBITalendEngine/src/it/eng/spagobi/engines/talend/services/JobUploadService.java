@@ -27,6 +27,7 @@ import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 import it.eng.spagobi.engines.talend.utils.ZipUtils;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +44,7 @@ import java.util.zip.ZipFile;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -65,7 +67,7 @@ public class JobUploadService extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.debug("Starting JobUpload service method...");
-		
+		HttpSession session=request.getSession();
 		String engineRootDir = getServletContext().getRealPath("WEB-INF");
 		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
 		config.setEngineRootDir(new File(engineRootDir));
@@ -102,7 +104,7 @@ public class JobUploadService extends HttpServlet {
 		        if(config.isAutoPublishActive()) {
 		        	if(jobNames == null) continue;
 			        for(int i = 0; i < jobNames.length; i++) {
-			        	publishOnSpagoBI(jobDeploymentDescriptor.getLanguage(), jobDeploymentDescriptor.getProject(), jobNames[i]);		 
+			        	publishOnSpagoBI(session,jobDeploymentDescriptor.getLanguage(), jobDeploymentDescriptor.getProject(), jobNames[i]);		 
 			        }
 		        }
 		    }
@@ -225,21 +227,8 @@ public class JobUploadService extends HttpServlet {
 	/*
 	 * TODO: implementare questa funzione tramite una API  WEB Service
 	 */
-	private void publishOnSpagoBI(String language, String projectName, String jobName) throws IOException {
+	private void publishOnSpagoBI(HttpSession session,String language, String projectName, String jobName) throws IOException {
 		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
-		
-		/*
-		File jobsDir = new File(runtimeRepository.getRootDir(), language.toLowerCase());
-		File projectDir = new File(jobsDir, projectName);
-		File jobDir = new File(projectDir, jobName);
-		File templateFile = new File(jobDir, "spagobi.xml");
-		BufferedReader reader = new BufferedReader(new FileReader(templateFile));
-		String line = null;
-		String template = "";
-		while((line = reader.readLine()) != null) {
-			template += line + "\n";
-		}
-		*/
 		
 		String template = getTemplate(language, projectName, jobName);
 		
@@ -261,7 +250,9 @@ public class JobUploadService extends HttpServlet {
 		
 		
 		try {
-			String spagobiurl = config.getSpagobiUrl();
+		    session.setAttribute("", "");
+		    ContentServiceProxy contentProxy=new ContentServiceProxy(user,session);
+		    //contentProxy.publishTemplate(attributes);
 			//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -314,7 +305,7 @@ public class JobUploadService extends HttpServlet {
 		String state = "DEV";
 	    
 	    try {
-	    	String spagobiurl = config.getSpagobiUrl();
+
 	    	//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

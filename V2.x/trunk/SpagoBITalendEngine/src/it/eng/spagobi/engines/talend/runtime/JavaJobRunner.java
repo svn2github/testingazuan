@@ -53,7 +53,7 @@ import org.safehaus.uuid.UUIDGenerator;
  *
  */
 public class JavaJobRunner implements IJobRunner {
-private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
+private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	
 	private RuntimeRepository runtimeRepository;
 	

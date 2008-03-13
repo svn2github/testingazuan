@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ENGINE-CONFIGURATION>
 	
+	
 
 	<!-- ====================================================================================== -->
 	<!--  SSO settings 																	--> 
@@ -16,11 +17,12 @@
 	
 	<runtimeRepository_root_dir>RuntimeRepository</runtimeRepository_root_dir>
 	
+	<JNDI_THREAD_MANAGER>java:/comp/env/wm/SpagoWorkManager</JNDI_THREAD_MANAGER>
+	
 	<!-- General Properties -->
 	<spagobi_autopublish>false</spagobi_autopublish>
 	<spagobi_functionality_label>GENERAL_MANAGEMENT</spagobi_functionality_label>
-	<spagobi_url>https://localhost:8443/SpagoBI</spagobi_url>
-	
+
 	
 	
 	<!-- Properties needed to run perl script-->
@@ -33,7 +35,7 @@
 
 
 	<!--  Properties needed to run java script --> 
-	<java_install_dir>C:\Programmi\Java\jdk1.5.0_14</java_install_dir>
+	<java_install_dir>C:\Programmi\Java\jdk1.5.0_12</java_install_dir>
 	<java_bin_dir>bin</java_bin_dir>
 	<java_command>java</java_command>
 	<java_command_option_Xms>256</java_command_option_Xms>

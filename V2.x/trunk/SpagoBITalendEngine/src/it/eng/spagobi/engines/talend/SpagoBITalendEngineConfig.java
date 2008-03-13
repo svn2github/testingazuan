@@ -74,13 +74,6 @@ public class SpagoBITalendEngineConfig {
 		return label;
 	}
 	
-	public String getSpagobiUrl() {
-		String url = null;
-        SourceBean config = EnginConf.getInstance().getConfig();
-        url= (String)config.getCharacters("spagobi_url");
-		return url;
-	}
-	
 	public boolean isAutoPublishActive() {
 		String autoPublishProp = null;
         SourceBean config = EnginConf.getInstance().getConfig();

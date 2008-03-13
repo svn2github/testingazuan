@@ -11,7 +11,7 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
-	
+<!-- 	
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -42,7 +42,7 @@
 				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
 			</param-name>
 			<param-value>
-				https://localhost:8443/SpagoBIWekaEngine/proxyReceptor
+				https://localhost:8443/SpagoBITalendEngine/proxyReceptor
 			</param-value>
 		</init-param>	
 
@@ -53,23 +53,31 @@
        	
 	</filter>
 	
-	
+ -->	
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
-	
+<!-- 	
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/JobRunService/*</url-pattern>
 	</filter-mapping>
-		
+ -->		
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/JobRunService/*</url-pattern>
 	</filter-mapping>
 
-
+	<servlet>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
+		<init-param>
+  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
+  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
+  		</init-param>
+  </servlet>
+  
 	<servlet>
 		<servlet-name>JobRunService</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.talend.services.JobRunService</servlet-class>
@@ -84,7 +92,12 @@
 		<servlet-name>EngineInfoService</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.talend.services.EngineInfoService</servlet-class>
 	</servlet>
-	
+
+ 	<servlet-mapping>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<url-pattern>/proxyReceptor</url-pattern> 
+  	</servlet-mapping> 
+  		
 	<servlet-mapping>
 		<servlet-name>EngineInfoService</servlet-name>
 		<url-pattern>/EngineInfoService</url-pattern>

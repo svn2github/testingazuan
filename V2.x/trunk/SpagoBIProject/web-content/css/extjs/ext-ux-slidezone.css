@@ -3,6 +3,8 @@
 	background-repeat: repeat-x;
 	background-image: url('../../img/extjs/default/slider/slider-bg-h.gif');
 	z-index: 1;
+	position: absolute;
+
 
 }
 
@@ -14,6 +16,7 @@
 	top: 11px; 
 	background: url('../../img/extjs/default/slider/slider-thumb-h.gif') no-repeat;
 	z-index: 10;
+		position: absolute;
 }
 
 .x-range-slider-horizontal {
@@ -21,6 +24,7 @@
 	height: 10px;
 	background: url('../../img/extjs/default/slider/slider-range-h.gif') repeat-x;
 	/*opacity: .25*/;
+	position: absolute;
 }
 
 
@@ -106,4 +110,13 @@ h1, h2, h3, h4, h5, h6 {
 h4 {
 	font-weight: bold;
 	font-size: 14px;
+}
+
+.slidertableclass{
+	width: 40%
+}
+
+.sliderstatusclass{
+	font-family: tahoma;
+	font-size: 12px;
 }

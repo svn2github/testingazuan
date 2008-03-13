@@ -1,7 +1,7 @@
 <%--
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.F
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -160,8 +160,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       					<A id="linkText" HREF="#" onClick="window.print();return false">
       				<IMG class='header-button-image-portlet-section' 
       				       src='<%=urlBuilder.getResourceLink(request, "/img/Print.gif")%>' 
-      				       title='<spagobi:message key = "SBIDev.docConf.execBIObject.printDocument" />' 
-      				       alt='<spagobi:message key = "SBIDev.docConf.execBIObject.printDocument" />'/>  
+      				       title='<spagobi:message key = "sbi.execution.print" />' 
+      				       alt='<spagobi:message key = "sbi.execution.print" />'/>  
       				       </A>
       			</td>
         		</form>
@@ -221,6 +221,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 /////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
 		if(sbi.getType().equalsIgnoreCase("BARCHART")){
 			categories=(HashMap)((BarCharts)sbi).getCategories();
+			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
 			if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
@@ -242,32 +243,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 ///////////////////////////////////////////////////// End category case//////////////////////////////////////////
 
 
-
-
-
-/*
-boolean changeViewMode=false;
-if(request.getParameter("changeviewmode")!=null){
-	String ch=(String)request.getParameter("changeviewmode");
-	if(ch.equalsIgnoreCase("true")){
-		changeViewMode=true;
-		if((sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("SIMPLEBAR"))
-		||	(sbi.getType().equalsIgnoreCase("DIALCHART") && sbi.getSubtype().equalsIgnoreCase("SIMPLEDIAL"))){
-			int temp=sbi.getWidth();
-			sbi.setWidth(sbi.getHeight());
-			sbi.setHeight(temp);
-		}
-	}
-}
-
-String changeVieLabel="";
-if(sbi.isChangeableView()){
-	changeVieLabel=sbi.getChangeViewLabel();
-	sbi.setChangeViewChecked(changeViewMode);
-}
-*/
-
-
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	
 	if(userProfile==null){
@@ -286,14 +261,7 @@ if(sbi.isChangeableView()){
 	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
 		((LinkableBar)sbi).setRootUrl(rootUrl);
 	}
-   
-	
-	
-	
 
-	
-	
-	
 	JFreeChart chart=null;
 	// create the chart
 			chart = sbi.createChart(title,copyDataset);
@@ -329,84 +297,28 @@ if(sbi.isChangeableView()){
 		   		Map refreshUrlPars2 = new HashMap();
 			   			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		   			refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
-		   			
-		   			
-		   			
-	   			
-	   			
-	   			
-	   			
-	   			
-				%>
 
-	<div align=center>
-	<%
 	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
-	
-	
-	// It passess changeView in POST (recall the actions) Not used.
-	
-
-	/*
-	    if(sbi.isChangeableView()){
-	    	%>
-	    	<form  name="changeviewchecked" action="<%=refreshUrl%>" method="POST" >
-				<%if(changeViewChecked.equals(new Boolean(true))){ %>
- 					<input name="changeviewchecked" type="checkbox" value="true" checked onclick="this.form.submit()" align="left">aaaa</input>
- 							<%}
-					else{%>
-								<input name="changeviewchecked" type="checkbox" value="true" onclick="this.form.submit()" align="left">aaa</input>
-							<%} %>
-			</form> 
-			<BR>
-	    	<%
-	    } 
-	    
-	    
-	  	
-	
-	    if(sbi.isChangeableView()){
-	    	
-	    	// for each possible parameter to change creates a checkbox
-	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
-	    		String par = (String) iterator.next();
-	    		
-	    	%>
-	    	<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
-				<%if(sbi.getChangeViewParameter(par)){ %>
- 					<input name="<%=par%>" type="checkbox" value="true" checked onclick="this.form.submit()" align="left"><%=sbi.getChangeViewParameterLabel(par)%></input>
- 							<%}
-					else{%>
-					<input name="<%=par%>" type="checkbox" value="true" onclick="this.form.submit()" align="left"><%=sbi.getChangeViewParameterLabel(par)%></input>
-							<%} 
-							%>
-			</form> 
-			<BR>
-	    <% 
-	    	}
-	    }
-*/
-
-//I Try Radio Buttons
+////////////////////////////////////////////Try Radio Buttons//////////////////////////////////////////////////////////
 	
 		    if(sbi.isChangeableView()){
 	%>
 	
-	<table><tr>
+	<table align="center"><tr>
 	<%     	
 	    // for each possible parameter to change creates a checkbox
 	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 	    		String par = (String) iterator.next(); %>
 	  
-	<td>
-				<div class='div_detail_label'>
+	<td align="right">
+			<div class='div_detail_form'>
 					<span class='portlet-form-field-label'>
 						<!--spagobi:message key = "SBIDev.docConf.docDet.nameField" /-->
 						<%=sbi.getChangeViewParameterLabel(par,0)%> 
 					</span>
-				</div>
-				<div class='div_detail_form' align="left">
+				</td>
+				<td align="left">
 	    		<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
 	    		  <%if(sbi.getChangeViewParameter(par)){ %>
 	    		  <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
@@ -416,8 +328,8 @@ if(sbi.isChangeableView()){
 	    		 <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
 				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
  	    		  <%} %>
- 	    		  </div>
-				</form>
+ 	    		</form>
+ 	    				  </div>
 	    </td>
 	   
 	  	    	<% 
@@ -425,6 +337,7 @@ if(sbi.isChangeableView()){
 	%>  </tr></table>
 		<BR>
 		<BR>
+	</div>
 	<% 
 		    }
 	
@@ -434,14 +347,27 @@ if(sbi.isChangeableView()){
 		PrintWriter pw = new PrintWriter(out);
 		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
 	    }
+	    boolean makeSlider=false;
+	    if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
+		makeSlider=true;	    	
+	    }
+
+	    if(makeSlider==false){
 	    %>
-	    
-	    	<% /////////////////////// Beginslider creation //////////////////////////
-	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
-	catsnum=((BarCharts)sbi).getCategoriesNumber();    	
+  	 <div align="center">
 	
-	if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
+    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
+
+	</div>
+	<%}
+	else{%>
+		<div align="center">
 		
+    	    	<% /////////////////////// Beginslider creation //////////////////////////
+	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
+    	
+	
+	
 		//calculate the number of ticks
 		if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
 		else{ticks=((catsnum)/numberCatVisualization)+1;}
@@ -456,35 +382,35 @@ if(sbi.isChangeableView()){
 
 	
 	<form>
-		<table align="center" width="300px">
+		<table class="slidertableclass" align="center" >
 	<tr>
-	<td width="75%" align="right">
-		<div id="slider1"></div> 
+	<td width="75%" align="center">
+	<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"><div id="slider1"></div> </a>
 	<div id="output1"> 
-		</td>
-		<td id="slider_1_1_value" width="10%" align="center"></td>
-		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>
-		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">All Categories</a></td>
+		<table align="center">
+		<tr>
+		<td id="slider_1_1_value" width="10%" align="center"  class="sliderstatusclass"></td>
+		<!--<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>  -->
+		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View All Categories</a></td>
+	</tr>
+	</table>
 	</div>
+</td>
 			</tr>
 		</table>
 	
 	<BR>
 </form>
+    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
 
-
+</div>
 
 	<% 
 	}
 	
+	
 	/////////////////////// End slider creation ////////////////////////// 
 	%>
-	    
-		
-    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
-    </div>
-    
-    
     	
 
 	
@@ -533,7 +459,7 @@ Ext.onReady(function() {
 	Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
 		value= parseInt(this.value);
-		value=value;	
+		value="Zoom on categories: "+value;	
 		value=value+ " of "+<%=ticks%>	
 				$('slider_1_1_value').innerHTML =value;
 				//$('slider_1_1_position').innerHTML = this.el.getX() +
@@ -545,7 +471,7 @@ Ext.onReady(function() {
 	
 	if(current==0){current="All categories";}
 	else{
-		current=current;
+		current="Zoom on categories: "+current;
 		current=current+ " of "+<%=ticks%>;}
 				$('slider_1_1_value').innerHTML = current;
 	

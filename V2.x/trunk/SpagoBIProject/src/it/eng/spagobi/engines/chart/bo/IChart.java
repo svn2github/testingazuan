@@ -4,6 +4,7 @@ package it.eng.spagobi.engines.chart.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.jfree.chart.JFreeChart;
@@ -55,6 +56,6 @@ public interface IChart {
 	public boolean getChangeViewParameter(String changePar);
 	public String getChangeViewParameterLabel(String changePar, int i);
 			
-	public Dataset filterDataset(Dataset dataset, String colKey);
+	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization); 
 	
 }

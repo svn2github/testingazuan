@@ -46,12 +46,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar"%>
-<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
   
   <script language="JavaScript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/slider.js")%>" >
@@ -73,11 +69,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String title=""; 
 	String maxSlider="";
 	String minSlider="";
-	String valueSlider="0";
+	String valueSlider="1";
 	String refreshUrl2 = "";
 	HashMap categories=null;
 	int numberCatVisualization=1;
 	int nlength=200;
+	int catsnum=0;
+	int ticks=1;
+	int categoryCurrent=0;
 	if(aServiceResponse.getAttribute("title")!=null){
 	title= (String)aServiceResponse.getAttribute("title");
 	}
@@ -226,12 +225,13 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 			if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
 				Double catD=Double.valueOf(catS);
-				int cat=catD.intValue();
-				valueSlider=(new Integer(cat)).toString();
-				if(cat!=-1){
+				categoryCurrent=catD.intValue();
+				if(categoryCurrent==0) valueSlider="1";
+				else valueSlider=(new Integer(categoryCurrent)).toString();
+				if(categoryCurrent!=0){
 				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
-				String nameCat=(String)cats.get(new Integer(cat));
-				copyDataset=sbi.filterDataset(dataset,nameCat);				
+				//String nameCat=(String)cats.get(new Integer(cat));
+				copyDataset=sbi.filterDataset(dataset,categories,categoryCurrent,numberCatVisualization);				
 				}
 				else{copyDataset=dataset;}
 			}
@@ -437,35 +437,23 @@ if(sbi.isChangeableView()){
 	    %>
 	    
 	    	<% /////////////////////// Beginslider creation //////////////////////////
-	//if it's a barchart creates the slider!
-
-	if(sbi.getType().equalsIgnoreCase("BARCHART")){
-
-		maxSlider=(new Integer(((BarCharts)sbi).getCategoriesNumber()-1)).toString(); 
-		minSlider="0"; 
-		String allCatsUrl=refreshUrl2+"&category=-1";
-		int ncats=((BarCharts)sbi).getCategoriesNumber();
-		nlength=ncats*18;
+	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
+	catsnum=((BarCharts)sbi).getCategoriesNumber();    	
+	
+	if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
+		
+		//calculate the number of ticks
+		if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
+		else{ticks=((catsnum)/numberCatVisualization)+1;}
+		
+		//The maximun is number_categories/numbercatvisualization, parte intera		
+		maxSlider=new Integer(ticks).toString(); 
+		minSlider="1"; 
+		String allCatsUrl=refreshUrl2+"&category=0";
+		nlength=catsnum*18;
 	%>
 	
-		<script type="text/javascript" language="JAVASCRIPT">
-		<!--
-		arrayCats=new Array(<%=ncats%>);
-		-->
-	</script>
-		<%for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
-	Integer key=(Integer)iterator.next();
-	String name=(String)categories.get(key);
-	%>
 
-	<script type="text/javascript" language="JAVASCRIPT">
-	<!--
-	arrayCats[<%=key%>]='<%=name%>';
-	//-->
-	</script>
-	<%} %>
-	
-	
 	
 	<form>
 		<table align="center" width="300px">
@@ -474,7 +462,7 @@ if(sbi.isChangeableView()){
 		<div id="slider1"></div> 
 	<div id="output1"> 
 		</td>
-		<td id="slider_1_1_label" width="10%" align="center"></td>
+		<td id="slider_1_1_value" width="10%" align="center"></td>
 		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>
 		<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">All Categories</a></td>
 	</div>
@@ -509,7 +497,7 @@ if(sbi.isChangeableView()){
 
 	function getAllActionUrl() {
 	
-		var variable="&category=-1";
+		var variable="&category=0";
 		var second=variable;
 		var url="<%=refreshUrl2%>";
 		var finalUrl=url+second;
@@ -538,23 +526,28 @@ Ext.onReady(function() {
 	Test = {};
 
 	Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
-		type: 'horizontal',size:<%=nlength%>, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'
+		type: 'horizontal',size:500, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'
 					}]
 		 });
 	
 	Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
-			$('slider_1_1_label').innerHTML = arrayCats[parseInt(this.value)];
-				//$('slider_1_1_value').innerHTML = parseInt(this.value);
+		value= parseInt(this.value);
+		value=value;	
+		value=value+ " of "+<%=ticks%>	
+				$('slider_1_1_value').innerHTML =value;
 				//$('slider_1_1_position').innerHTML = this.el.getX() +
 				//		1/2 * Test.slideZone1.sliderWidth;	
 				}
 	)
-		//$('slider_1_1_label').innerHTML = arrayCats[parseInt(this.value)];
-	$('slider_1_1_label').innerHTML = ''
-	//$('slider_1_1_value').innerHTML = parseInt(Test.slideZone1.getSlider('start1_1').value);
-	//$('slider_1_1_position').innerHTML = Test.slideZone1.getSlider('start1_1').el.getX() +
-		//	1/2 * Test.slideZone1.sliderWidth;	
+	
+	current=<%=categoryCurrent%>;
+	
+	if(current==0){current="All categories";}
+	else{
+		current=current;
+		current=current+ " of "+<%=ticks%>;}
+				$('slider_1_1_value').innerHTML = current;
 	
 	
 	

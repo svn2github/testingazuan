@@ -59,8 +59,9 @@ public class BarCharts extends ChartImpl {
 				if(name.equalsIgnoreCase("x"))
 				{
 					catValue=value;
-					categories.put(new Integer(categoriesNumber),value);
 					categoriesNumber=categoriesNumber+1;
+					categories.put(new Integer(categoriesNumber),value);
+					
 					
 				}
 				else {
@@ -228,24 +229,39 @@ public class BarCharts extends ChartImpl {
 		return categories;
 	}
 
-	public Dataset filterDataset(Dataset dataset, String colKey) {
+	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
-		
 		DefaultCategoryDataset newDataSet=new DefaultCategoryDataset();
+		
+		int numCats=categories.size();
+		Vector visCat=new Vector();
+		// from the choice point to min(chose point+interval, end point)
+		int startPoint=((catSelected-1)*numberCatsVisualization)+1;
+		int endPoint;
+		if((startPoint+numberCatsVisualization-1)<=(categories.size()))
+			endPoint=startPoint+numberCatsVisualization-1;
+		else
+			endPoint=categories.size();
+		
+		for(int i=(startPoint);i<=endPoint;i++){
+			String name=(String)categories.get(new Integer(i));
+			visCat.add(name);
+		}
+		
 		try {
 			newDataSet=(DefaultCategoryDataset)catDataset.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		List columns=new Vector(newDataSet.getColumnKeys());
 			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
 			String col = (String) iterator.next();
-				if(!(col.equals(colKey))){
+				if(!(visCat.contains(col))){
 					newDataSet.removeColumn(col);
 				}			
 			}
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 			return newDataSet;
 	

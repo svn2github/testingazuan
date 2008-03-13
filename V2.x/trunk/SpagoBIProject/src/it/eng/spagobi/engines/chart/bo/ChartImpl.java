@@ -271,7 +271,7 @@ public class ChartImpl implements IChart {
 		this.color = color;
 	}
 
-	public Dataset filterDataset(Dataset dataset, String colKey) {
+	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 
 		return null;
 	}

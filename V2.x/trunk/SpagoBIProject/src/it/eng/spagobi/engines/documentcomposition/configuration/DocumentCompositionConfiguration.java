@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +43,10 @@ import java.util.Properties;
 public class DocumentCompositionConfiguration {
 	private String templateFile;
 	private Map documentsMap;
+	//constants for convert panel dimensions from percentage into pixel values
+	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
+	Integer[] widthPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
+	Integer[] heightPxValues = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
 	
 	public static class Document {
 		int numOrder;
@@ -171,6 +174,7 @@ public class DocumentCompositionConfiguration {
 			
 			dimensionSB = (SourceBean)documentSB.getAttribute("STYLE");			
 			attributeValue = (String)dimensionSB.getAttribute("style");
+			//attributeValue = (String)dimensionSB.getAttribute("class");
 			document.setStyle(attributeValue);			
 			
 			parametersSB = (SourceBean)documentSB.getAttribute("PARAMETERS");	
@@ -229,9 +233,15 @@ public class DocumentCompositionConfiguration {
 		List retLabels = new ArrayList();
 		Object[] arrDocs = (Object[])collLabels.toArray();
 		try{
-			for(int i=0; i < arrDocs.length; i++){
-				Document tmpDoc =(Document) arrDocs[i];
-				retLabels.add(tmpDoc.getLabel());
+			int numDocAdded = 0;
+			while (numDocAdded < arrDocs.length){
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
+					if (tmpDoc.getNumOrder() == numDocAdded){
+						retLabels.add(tmpDoc.getLabel());
+						numDocAdded ++;
+					}
+				}
 			}
 		}catch(Exception e){
 			System.out.println(e);
@@ -303,21 +313,27 @@ public class DocumentCompositionConfiguration {
 		HashMap retParams = new HashMap();
 		Object[] arrPars = (Object[])collDocs.toArray();
 		try{
-			//loop on documents
-			for(int i=0; i < arrPars.length; i++){
-				int totParsLinked = 0;
-				Document tmpDoc =(Document) arrPars[i];
-				if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
-					Properties prop = (Properties)tmpDoc.getParams();
-					Enumeration enum =  prop.keys();
-					//loop on parameters of single document
-					while (enum.hasMoreElements() ){
-						String key = (String)enum.nextElement();
-						retParams.put(key, (String)prop.get(key));
-						if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
-							totParsLinked ++;
+			int cont = 0;
+			while (cont < arrPars.length){
+				//loop on documents
+				for(int i=0; i < arrPars.length; i++){
+					int totParsLinked = 0;
+					Document tmpDoc =(Document) arrPars[i];
+					if (tmpDoc.getNumOrder() == cont){
+						if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
+							Properties prop = (Properties)tmpDoc.getParams();
+							Enumeration enum =  prop.keys();
+							//loop on parameters of single document
+							while (enum.hasMoreElements() ){
+								String key = (String)enum.nextElement();
+								retParams.put(key, (String)prop.get(key));
+								if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
+									totParsLinked ++;
+							}
+							retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
+						}
+						cont ++;
 					}
-					retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
 				}
 			}
 		}catch(Exception e){
@@ -377,19 +393,61 @@ public class DocumentCompositionConfiguration {
 		String strParLinked = "";
 		HashMap retDocs = new HashMap();
 		Document tmpDoc = getDocument(docLabel);
-	
+		int numDoc = 0;
+		
 		if (tmpDoc != null){
-			int numDoc = tmpDoc.getNumOrder();
+			numDoc = tmpDoc.getNumOrder();
+			//gets layout informations (width and height) for next settings of ext-panels
+			String docStyles = tmpDoc.getStyle();
+			if (docStyles != null){
+				String[] propValues = docStyles.split(";");
+				strParLinked += "STYLE_"  + docLabel + "=";
+				for (int i=0; i<propValues.length; i++){
+					String key = propValues[i].substring(0, propValues[i].indexOf(":"));
+					String value = propValues[i].substring(propValues[i].indexOf(":")+1);
+					if (key.equalsIgnoreCase("WIDTH") || key.equalsIgnoreCase("HEIGHT")){
+						if (value.endsWith("%")){
+							//if the value is defined in percentage, converts it in pixel value
+							for (int j=0; j<percentageValues.length; j++){
+								int diff = Integer.valueOf(value.substring(0, value.length()-1)).compareTo(percentageValues[j]);
+								if (diff == 0){
+									if (key.equalsIgnoreCase("WIDTH"))
+										value = widthPxValues[j].toString();
+									else if (key.equalsIgnoreCase("HEIGHT"))
+										value = heightPxValues[j].toString();
+									break;
+								}
+								else if (diff > 0 && j > 0){
+									if (key.equalsIgnoreCase("WIDTH"))
+										value = widthPxValues[j-1].toString();
+									else if (key.equalsIgnoreCase("HEIGHT"))
+										value = heightPxValues[j-1].toString();
+									break;
+								}
+							}
+						}
+						else if (value.endsWith("px"))
+							value = value.substring(0, value.length()-2);
+						
+						strParLinked += key.toUpperCase() + "_" + value + "|";
+					}
+				}
+				strParLinked = strParLinked.substring(0, strParLinked.length()-1);
+				strParLinked += ",";
+			
+			}
+				
 			try{
 				HashMap paramsDoc = getParametersForDocument(docLabel);
 				//loop on parameters of document
+				int contOutPar = 0;
 				for (int i=0; i< paramsDoc.size(); i++){
 					String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
 					if (typePar != null && typePar.equalsIgnoreCase("OUT")){
-						strParLinked += "SBI_LABEL_PAR_MASTER_"+(numDoc)+"_"+i+"="+(String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i) +",";
+						strParLinked += "SBI_LABEL_PAR_MASTER_"+(numDoc)+"_"+contOutPar+"="+(String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i) +",";
 					
 						Integer numDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
-						strParLinked += "NUM_DOC_LINKED_"+(numDoc)+"_"+i+"=" + numDocLinked + ",";
+						strParLinked += "NUM_DOC_LINKED_"+(numDoc)+"_"+contOutPar+"=" + numDocLinked + ",";
 						//loop on document linked to parameter
 						for (int j=0; j<numDocLinked.intValue(); j++){
 							String paramLinked = (paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j);
@@ -404,8 +462,8 @@ public class DocumentCompositionConfiguration {
 									//get document linked 
 									Document linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
 									
-									strParLinked += "LABEL_DOC_"+(j+1)+"=" + linkedDoc.getLabel() + ",";
-									strParLinked += "SBI_LABEL_DOC_"+(j+1)+"=" + linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel() + ",";
+									strParLinked += "LABEL_DOC_"+(j)+"=" + linkedDoc.getLabel() + ",";
+									strParLinked += "SBI_LABEL_DOC_"+(j)+"=" + linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel() + ",";
 									
 									HashMap paramsDocLinked = getParametersForDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
 									int numLinked = linkedDoc.getNumOrder();
@@ -413,15 +471,16 @@ public class DocumentCompositionConfiguration {
 										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
 										String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
 										if (sbiLabelPar != null && !sbiLabelPar.equals(""))
-											strParLinked += "SBI_LABEL_PAR_"+(j+1)+"="+ sbiLabelPar +"|"+labelPar+",";
+											strParLinked += "SBI_LABEL_PAR_"+(j)+"="+ sbiLabelPar +"|"+labelPar+",";
 									}
 									
 								}
 								if (labelDocLinked.trim().startsWith("refresh_par_linked")){
-									strParLinked += "LABEL_PAR_LINKED_"+(j+1)+"="+labelDocLinked.substring(labelDocLinked.indexOf("=")+1) +",";
+									strParLinked += "LABEL_PAR_LINKED_"+(j)+"="+labelDocLinked.substring(labelDocLinked.indexOf("=")+1) +",";
 								}
 							}
 						}
+						contOutPar ++;
 					}
 				}
 				
@@ -493,9 +552,15 @@ public class DocumentCompositionConfiguration {
 		List retDocs = new ArrayList();
 		Object[] arrDocs = (Object[])collDocs.toArray();
 		try{
-			for(int i=0; i < arrDocs.length; i++){
-				Document tmpDoc =(Document) arrDocs[i];
-				retDocs.add(tmpDoc);
+			int numDocAdded = 0;
+			while (numDocAdded < arrDocs.length){
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
+					if (tmpDoc.getNumOrder() == numDocAdded){
+						retDocs.add(tmpDoc);
+						numDocAdded ++;
+					}
+				}
 			}
 		}catch(Exception e){
 			System.out.println(e);

@@ -9,6 +9,7 @@
 var asUrls = new Object();
 var asLinkedDocs = new Object();
 var asLinkedFields = new Object();
+var asStylePanels = new Object();
 
 function setUrlIframe (pUrlIframe){
 	urlIframe = pUrlIframe;
@@ -25,6 +26,12 @@ function setLinkedDocs(pLinkedDocs){
 function setLinkedFields(pLinkedFields){
 	asLinkedFields = pLinkedFields;
 }
+
+
+function setStylePanels(pStylePanels){
+	asStylePanels = pStylePanels;
+}
+
 
 /* Update the input url with value for refresh linked documents and execute themes */
 function execDrill(name, urlDrill){
@@ -59,20 +66,6 @@ function execDrill(name, urlDrill){
 					if (fieldLabel.indexOf("SBI_LABEL_PAR_MASTER")>=0)
 						sbiParMaster = asLinkedFields[fieldLabel];
 					else if (labelSubDoc == labelDocLinked){
-					/*
-						var tmpDocLabel = tmpUrl.substring(tmpUrl.indexOf("DOCUMENT_LABEL=")+15);
-						tmpDocLabel = (tmpDocLabel.indexOf("&")>=0)?tmpDocLabel = tmpDocLabel.substring(0,tmpDocLabel.indexOf("&")):tmpDocLabel ;
-						//sobstitute params drill url with new field value 
-						tmpUrl = tmpUrl.replace(tmpDocLabel,sbiSubDoc);
-						tmpUrl = tmpUrl.replace(sbiParMaster, sbiLabelPar);
-						//sobsitute params from original url of document
-						var tmpNewValue = tmpUrl.substring(newUrl.indexOf(tmpDocLabel+"=")+1);
-						tmpNewValue = tmpUrl.substring(0, tmpValue.indexOf("&"));
-						var tmpOldValue = newUrl.substring(newUrl.indexOf(tmpDocLabel+"=")+1);
-						tmpOldValue = tmpValue.substring(0, tmpValue.indexOf("&"));
-						newUrl = newUrl.replace((tmpDocLabel+"="+tmpValue), tmpValue+"=");
-						j= j+1;
-						*/
 						var newUrl = asUrls[sbiSubDoc+"|"+labelSubDoc]; //final url
 						//testare con PIU' parametri!!!
 						var paramsNewValues = urlDrill.split("&");
@@ -148,15 +141,27 @@ Ext.onReady(function() {
   			for (var docLabel in asUrls){ 			
   				var totalDocLabel=docLabel;	
   				var strDocLabel = totalDocLabel.substring(totalDocLabel.indexOf('|')+1);
+  				//gets style (width and height)
+  				var style = asStylePanels[strDocLabel];
+				var widthPx = "";
+				var heightPx = "";
+				if (style != null){
+					widthPx = style[0].substring(0, style[0].indexOf("|"));
+					heightPx = style[0].substring(style[0].indexOf("|")+1);
+					widthPx = widthPx.substring(widthPx.indexOf("WIDTH_")+6);
+		       		heightPx = heightPx.substring(heightPx.indexOf("HEIGHT_")+7);
+				}
+				//create panel
   				var p = new Ext.Panel({
 				id:'p'+i,
 		        bodyBorder : true,
 		        collapsible:true,
+		       // width: widthPx,
+		        height:Number(heightPx),
 		        renderTo: 'divIframe_'+ strDocLabel
 			    });
 				
 			    p.show(this);
-			  //  alert(asUrls[docLabel] + " -  " + strDocLabel);
 				p.load({
 				   url:urlIframe,
 				    params: {urlDoc:asUrls[docLabel], nameDoc: strDocLabel},

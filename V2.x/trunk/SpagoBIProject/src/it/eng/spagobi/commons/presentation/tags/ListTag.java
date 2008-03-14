@@ -466,7 +466,11 @@ public class ListTag extends TagSupport
 
 					
 		if (confirm && buttonUrl!=null){
-						if (popup){
+						
+						if (onClickFunctionName != null) {
+							_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\", '" + onClickFunctionName + "()');'>\n");
+						} else 			
+							if (popup){
 							
 							_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
 							    // insert javascript for open popup
@@ -592,7 +596,13 @@ public class ListTag extends TagSupport
 						    _htmlStream.append(" </script>\n");
 										
 					    }else{ 
-					    	if(buttonUrl!=null) _htmlStream.append("     <a href='"+buttonUrl+"'>\n");
+					    	if(buttonUrl!=null) {
+					    		if (onClickFunctionName != null) {
+					    			_htmlStream.append("     <a href='javascript:" + onClickFunctionName + "();location.href=\"" + buttonUrl + "\"'>\n");
+					    		} else {
+					    			_htmlStream.append("     <a href='"+buttonUrl+"'>\n");
+					    		}
+					    	}
 					    }
 					    	
 					}

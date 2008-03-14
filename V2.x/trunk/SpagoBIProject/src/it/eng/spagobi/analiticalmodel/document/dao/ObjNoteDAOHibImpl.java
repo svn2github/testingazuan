@@ -27,6 +27,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.analiticalmodel.document.dao;
 
+import java.util.Iterator;
+import java.util.List;
+
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
@@ -140,6 +143,38 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		objNote.setExecReq(hibnotes.getExecReq());
 		objNote.setId(hibnotes.getObjNoteId());
 		return objNote;
+	}
+
+
+
+	public void eraseNotes(Integer biobjId) throws Exception {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId;
+			Query query = aSession.createQuery(hql);
+			List notes = query.list();
+			Iterator notesIt = notes.iterator();
+			while (notesIt.hasNext()) {
+				SbiObjNotes note = (SbiObjNotes) notesIt.next();
+				SbiBinContents noteBinContent = note.getSbiBinContents();
+				aSession.delete(note);
+				aSession.delete(noteBinContent);
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
 	}
 	
 	

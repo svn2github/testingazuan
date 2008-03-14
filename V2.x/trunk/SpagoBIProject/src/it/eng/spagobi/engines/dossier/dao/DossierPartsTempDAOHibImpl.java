@@ -216,7 +216,6 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
-		byte[] toReturn = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -233,7 +232,7 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while storing image content: ", he);
+			logger.error("Error while erasing dossier parts: ", he);
 			if (tx != null) tx.rollback();	
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, "100");  
 		} finally {
@@ -242,6 +241,37 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			logger.debug("OUT");
 		}
+	}
+
+	public void eraseDossierParts(Integer dossierId) throws EMFInternalError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId;
+			Query query = aSession.createQuery(hql);
+			List list = query.list();
+			Iterator it = list.iterator();
+			while (it.hasNext()) {
+				SbiDossierPartsTemp hibObj = (SbiDossierPartsTemp) it.next();
+				aSession.delete(hibObj);
+				// the temporary binary contents in table SbiDossierBinaryContentsTemp are deleted because 
+				// the foreign key is defined with the ON DELETE CASCADE clause
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while erasing dossier parts: ", he);
+			if (tx != null) tx.rollback();	
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "100");  
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
+		
 	}
 
 }

@@ -28,8 +28,8 @@ public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapsho
 			tx = aSession.beginTransaction();
 			SbiSnapshots hibSnapshot = (SbiSnapshots)aSession.load(SbiSnapshots.class, idSnap);
 			SbiBinContents hibBinCont = hibSnapshot.getSbiBinContents();
-			aSession.delete(hibBinCont);
 			aSession.delete(hibSnapshot);
+			aSession.delete(hibBinCont);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);

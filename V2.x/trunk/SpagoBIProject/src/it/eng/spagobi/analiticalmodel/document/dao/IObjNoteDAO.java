@@ -46,4 +46,9 @@ public interface IObjNoteDAO {
 	
 	public void modifyExecutionNotes(ObjNote objNote) throws Exception;
 	
+	/**
+	 * Deletes all notes associated to the BIObject with the id specified in input
+	 */
+	public void eraseNotes(Integer biobjId) throws Exception;
+	
 }

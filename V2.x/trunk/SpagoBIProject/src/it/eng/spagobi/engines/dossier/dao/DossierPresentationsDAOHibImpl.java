@@ -295,5 +295,37 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		toReturn.setProg(presentation.getProg());
 		return toReturn;
 	}
+
+	public void deletePresentations(Integer dossierId) throws EMFInternalError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId;
+			Query query = aSession.createQuery(hql);
+			List list = query.list();
+			Iterator it = list.iterator();
+			while (it.hasNext()) {
+				SbiDossierPresentations hibObjTemp = (SbiDossierPresentations) it.next();
+				SbiBinContents hibBinCont = hibObjTemp.getSbiBinaryContent();
+				// deletes association first
+				aSession.delete(hibObjTemp);
+				// deletes binary contest at last
+				aSession.delete(hibBinCont);
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "100");  
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
+	}
 	
 }

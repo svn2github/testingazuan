@@ -33,6 +33,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
@@ -48,14 +50,14 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.dao.EngineDAOHibImpl;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
+import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -583,6 +585,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					
 				}
 				
+				//delete subobjects eventually associated
+				ISubObjectDAO subobjDAO = DAOFactory.getSubObjectDAO();
+				List subobjects =  subobjDAO.getSubObjects(obj.getId());
+				for (int i=0; i < subobjects.size(); i++){
+					SubObject s = (SubObject) subobjects.get(i);
+					subobjDAO.deleteSubObject(s.getId());
+				}
+				
 				//delete viewpoints eventually associated
 				List viewpoints = new ArrayList();
 				IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
@@ -591,6 +601,18 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					Viewpoint vp =(Viewpoint)viewpoints.get(i);
 					biVPDAO.eraseViewpoint(vp.getVpId());
 				}
+				
+				//delete snapshots eventually associated
+				ISnapshotDAO snapshotsDAO = DAOFactory.getSnapshotDAO();
+				List snapshots = snapshotsDAO.getSnapshots(obj.getId());
+				for (int i=0; i < snapshots.size(); i++){
+					Snapshot aSnapshots = (Snapshot) snapshots.get(i);
+					snapshotsDAO.deleteSnapshot(aSnapshots.getId());
+				}
+				
+				//delete notes eventually associated
+				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
+				objNoteDAO.eraseNotes(obj.getId());
 				
 				// delete parameters associated
 				Set objPars = hibBIObject.getSbiObjPars();
@@ -609,13 +631,21 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					aSession.delete(aSbiObjPar);
 				}
 				
-				// delete object
-				aSession.delete(hibBIObject);
+				// delete dossier temp parts eventually associated
+				IDossierPartsTempDAO dptDAO = DAOFactory.getDossierPartsTempDAO();
+				dptDAO.eraseDossierParts(obj.getId());
+				// delete dossier presentations eventually associated
+				IDossierPresentationsDAO dpDAO = DAOFactory.getDossierPresentationDAO();
+				dpDAO.deletePresentations(obj.getId());
 				
 				// update subreports table 
 				ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
 				subrptdao.eraseSubreportByMasterRptId(obj.getId());
 				subrptdao.eraseSubreportBySubRptId(obj.getId());
+				
+				// delete object
+				aSession.delete(hibBIObject);
+
 			}
 			// commit all changes
 			tx.commit();				

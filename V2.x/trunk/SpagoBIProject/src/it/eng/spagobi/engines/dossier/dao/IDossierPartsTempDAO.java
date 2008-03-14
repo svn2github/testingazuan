@@ -40,6 +40,19 @@ public interface IDossierPartsTempDAO {
 	
 	public void storeNote(Integer dossierId, int pageNum, byte[] noteContent, Long workflowProcessId) throws EMFInternalError;
 	
+	/**
+	 * Erases the dossier temporary parts for the process specified at input
+	 * @param dossierId The id of the dossier
+	 * @param workflowProcessId The id of the process
+	 * @throws EMFInternalError
+	 */
 	public void cleanDossierParts(Integer dossierId, Long workflowProcessId) throws EMFInternalError;
+	
+	/**
+	 * Erases the dossier temporary parts for all the processes that involve the dossier specified at input
+	 * @param dossierId The dossier id
+	 * @throws EMFInternalError
+	 */
+	public void eraseDossierParts(Integer dossierId) throws EMFInternalError;
 
 }

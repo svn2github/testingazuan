@@ -40,11 +40,7 @@ public interface IDossierPresentationsDAO {
 	
 	public void deletePresentationVersion(Integer dossierId, Integer versionId) throws EMFInternalError;
 	
-//	public void storeCurrentPresentationContent(BIObject dossier, InputStream docContentIS);
-//	
-//	public void storeCurrentPresentationContent(BIObject dossier, byte[] docContent);
-//	
-//	public void versionPresentation(BIObject dossier, byte[] presContent, boolean approved);
+	public void deletePresentations(Integer dossierId) throws EMFInternalError;
 	
 	public void insertPresentation(DossierPresentation dossierPresentation) throws EMFUserError, EMFInternalError;
 	

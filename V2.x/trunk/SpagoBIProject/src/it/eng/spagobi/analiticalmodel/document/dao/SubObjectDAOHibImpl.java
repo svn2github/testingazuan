@@ -91,8 +91,8 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			tx = aSession.beginTransaction();
 			SbiSubObjects hibSubobject = (SbiSubObjects)aSession.load(SbiSubObjects.class, idSub);
 			SbiBinContents hibBinCont = hibSubobject.getSbiBinContents();
-			aSession.delete(hibBinCont);
 			aSession.delete(hibSubobject);
+			aSession.delete(hibBinCont);
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he);

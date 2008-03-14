@@ -332,7 +332,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	    %>
   	 <div align="center">
 	
-   <img id="image" src="<%=urlPng%>" BORDER="1" width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
+   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
 
 	</div>
 	<%}
@@ -377,7 +377,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	<BR>
 </form> 
  
- <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>    
+ <img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
 
 </div>
 

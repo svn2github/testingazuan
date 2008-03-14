@@ -44,15 +44,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 
-	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>"/>
+
+	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
-	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/prototype/javascripts/prototype.js")%>"></script>
-	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
-	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
-
   
   
   <% 
@@ -64,13 +60,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String refreshUrl2 = "";
 	HashMap categories=null;
 	int numberCatVisualization=1;
-	int nlength=200;
 	int catsnum=0;
 	int ticks=1;
 	int categoryCurrent=0;
-	if(aServiceResponse.getAttribute("title")!=null){
-	title= (String)aServiceResponse.getAttribute("title");
-	}
+	
 	
      // build the back link
 	Map backUrlPars = new HashMap();
@@ -181,20 +174,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	{%>
     
 <%
-	
-ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
+SessionContainer permSession = aSessionContainer.getPermanentContainer();
+
+if(userProfile==null){
+	userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	userId=(String)userProfile.getUserUniqueIdentifier();
+}
+
+
+if(aServiceResponse.getAttribute("title")!=null){title= (String)aServiceResponse.getAttribute("title");}
+	ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
 Dataset copyDataset;
 
-//Boolean changeViewChecked=(Boolean)aServiceResponse.getAttribute("changeviewchecked");
 
-// get wich pars are possible set
-
+// get wich pars can the user set
 Vector changePars=(Vector)sbi.getPossibleChangePars();
 //check for each one if a changeparameter has ben set
-
-		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 			String par = (String) iterator.next();
 			if(request.getParameter(par)!=null){
 				String ch=(String)request.getParameter(par);
@@ -205,7 +203,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 						sbi.setChangeViewsParameter(par,false);}
 							}
 				}
-
 		}
 
 
@@ -222,25 +219,20 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				else valueSlider=(new Integer(categoryCurrent)).toString();
 				if(categoryCurrent!=0){
 				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
-				//String nameCat=(String)cats.get(new Integer(cat));
 				copyDataset=sbi.filterDataset(dataset,categories,categoryCurrent,numberCatVisualization);				
 				}
 				else{copyDataset=dataset;}
 			}
 			else{copyDataset=dataset;}
 		} 
-			else{copyDataset=dataset;}
+			else{copyDataset=dataset;
+			}
 
 ///////////////////////////////////////////////////// End category case//////////////////////////////////////////
 
-
-	SessionContainer permSession = aSessionContainer.getPermanentContainer();
 	
-	if(userProfile==null){
-	userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    userId=(String)userProfile.getUserUniqueIdentifier();
-	}
-    
+///// Linkable chart case/////////////////777
+
 	HashMap rootPar=new HashMap();
 	rootPar.put("PAGE","DirectExecutionPage");
 	rootPar.put("MODULE","DirectExecutionModule");
@@ -253,12 +245,13 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		((LinkableBar)sbi).setRootUrl(rootUrl);
 	}
 
+	////////////// Chart creation/////////////////////77
+	
 	JFreeChart chart=null;
 	// create the chart
-			chart = sbi.createChart(title,copyDataset);
+	chart = sbi.createChart(title,copyDataset);
 
-
-		//Create the temporary dir
+		//Create the temporary file
 		UUIDGenerator uuidGen = UUIDGenerator.getInstance();
 		UUID uuid = uuidGen.generateTimeBasedUUID();
 		String executionId = uuid.toString();
@@ -270,32 +263,19 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		String path=dir+"/"+executionId+".png";
 		java.io.File file1 = new java.io.File(path);
 		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
-		
-	//String urlAction=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_JFREECHART&NEW_SESSION=TRUE&userid="+userId+"&documentid="+documentId);
 
-
-    
- 
-				
-
-	   		Map refreshUrlPars = new HashMap();
-	   			refreshUrlPars.put("ACTION_NAME", "CREATE_CHART");
-	   			refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	   			refreshUrlPars.put("documentid", documentid);
-	   			String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+		/// Chart created and saved
 	   			
+		Map refreshUrlPars2 = new HashMap();
+			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		   	refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
+		String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
-		   		Map refreshUrlPars2 = new HashMap();
-			   			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		   			refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
-
-	    String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
-
-////////////////////////////////////////////Try Radio Buttons//////////////////////////////////////////////////////////
+		
+////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
 	
 		    if(sbi.isChangeableView()){
 	%>
-	
 	<table align="center"><tr>
 	<%     	
 	    // for each possible parameter to change creates a checkbox
@@ -305,7 +285,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	<td align="right">
 			<div class='div_detail_form'>
 					<span class='portlet-form-field-label'>
-						<!--spagobi:message key = "SBIDev.docConf.docDet.nameField" /-->
 						<%=sbi.getChangeViewParameterLabel(par,0)%> 
 					</span>
 				</td>
@@ -320,10 +299,9 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
  	    		  <%} %>
  	    		</form>
- 	    				  </div>
-	    </td>
-	   
-	  	    	<% 
+ 	     </div>
+	   </td>
+	     	    	<% 
 	    	}
 	%>  </tr></table>
 		<BR>
@@ -333,33 +311,41 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		    }
 	
 
-	
+	/// If it is a linkable graph
 	    if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
 		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
 	    }
+	
+	
+	
+	
+	
+
 	    boolean makeSlider=false;
 	    if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
 		makeSlider=true;	    	
 	    }
 
+	    // No slider needed
 	    if(makeSlider==false){
 	    %>
   	 <div align="center">
 	
-    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
+   <img id="image" src="<%=urlPng%>" BORDER="1" width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
 
 	</div>
 	<%}
-	else{%>
+	else{
+	// Slider needed
+	%>
+	
 		<div align="center">
 		
     	    	<% /////////////////////// Beginslider creation //////////////////////////
 	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
     	
-	
-	
-		//calculate the number of ticks
+	//calculate the number of ticks
 		if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
 		else{ticks=((catsnum)/numberCatVisualization)+1;}
 		
@@ -367,11 +353,9 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		maxSlider=new Integer(ticks).toString(); 
 		minSlider="1"; 
 		String allCatsUrl=refreshUrl2+"&category=0";
-		nlength=catsnum*18;
 	%>
 	
 
-	
 	<form>
 		<table class="slidertableclass" align="center" >
 	<tr>
@@ -381,7 +365,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		<table align="center">
 		<tr>
 		<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
-		<!--<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>  -->
+		<!--  <td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td> --> 
 		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View All Categories</a></td>
 	</tr>
 	</table>
@@ -391,28 +375,28 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		</table>
 	
 	<BR>
-</form>
-    <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>
+</form> 
+ 
+ <img id="image" src="<%=urlPng%>" BORDER=1 width="AUTO" height="AUTO" alt="Error in displaying the chart" USEMAP="#chart"/>    
 
 </div>
 
 	<% 
 	}
-	
-	
 	/////////////////////// End slider creation ////////////////////////// 
 	%>
-    	
+    
+<%} // End no error case%>
 
-	
-    
-    
-<%} %>
+
+
+
  <script type="text/javascript" language="JavaScript">
+ 
  	function getValue() {return Test.slideZone1.getSlider('start1_1').value;}
 
 	function getAllActionUrl() {
-	
+		
 		var variable="&category=0";
 		var second=variable;
 		var url="<%=refreshUrl2%>";
@@ -429,29 +413,25 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		var finalUrl=url+second;
 		return finalUrl;
 		}
-  </script>
-
-  <script type="text/javascript" language="JavaScript">
-
-Ext.onReady(function() {
-
-	Test = {};
-
-	Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
-		type: 'horizontal',size:500, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'
-					}]
-		 });
 	
-	Test.slideZone1.getSlider('start1_1').on('drag',
+	
+	Ext.onReady(function() {
+
+		Test = {};
+
+		Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
+			type: 'horizontal',size:500, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'
+					}]
+			 });
+	
+		Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
 		value= parseInt(this.value);
 		value="Zoom on categories: "+value;	
-		value=value+ " of "+<%=ticks%>	
-				$('slider_1_1_value').innerHTML =value;
-				//$('slider_1_1_position').innerHTML = this.el.getX() +
-				//		1/2 * Test.slideZone1.sliderWidth;	
+		value=value+ " of "+<%=ticks%>;	
+		$('slider_1_1_value').innerHTML =value;
 				}
-	)
+		)
 	
 	current=<%=categoryCurrent%>;
 	
@@ -468,19 +448,9 @@ Ext.onReady(function() {
 				
 		$('slider_1_1_value').innerHTML = current;
 	
-	
-	
-	
-	//$('eventLog').value = '';
-
-
 	});
 	
-
-
 </script>
-
-
 
 
 

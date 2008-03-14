@@ -68,7 +68,7 @@
 	background-color: #453854;
 	opacity: 0.50;
 	filter: alpha(opacity=50);
-	-moz-opacity: 0.50
+	-moz-opacity: 0.50;
 	z-index: 10;
 }
 

@@ -39,6 +39,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
@@ -50,6 +51,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
@@ -60,6 +62,7 @@ import it.eng.spagobi.commons.utilities.PortletUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,6 +85,11 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 
 	// define variable for value column name
     private String valColName = "";
+    
+    private static final String RETURN_PARAM = "returnParam";
+    
+    private static final String RETURN_FIELD_NAME = "parameterFieldName";
+    
     /**
      * Class Constructor
      */
@@ -95,7 +103,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	// get role / par id / par field name name
 	String roleName = (String) request.getAttribute("roleName");
 	String parIdStr = (String) request.getAttribute("parameterId");
-	String returnParam = (String) request.getAttribute("returnParam");
+	String returnParam = (String) request.getAttribute(RETURN_PARAM);
 	logger.debug("roleName=" + roleName);
 	logger.debug("parameterId=" + parIdStr);
 	logger.debug("returnParam=" + returnParam);
@@ -117,7 +125,14 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 	// fill response
 	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPublisher");
-	response.setAttribute("returnParam", returnParam);
+	
+	HashMap parametersMap = new HashMap();
+	parametersMap.put("roleName", roleName);
+	parametersMap.put("parameterId", parIdStr);
+	parametersMap.put(RETURN_PARAM, returnParam);
+	parametersMap.put("parameterFieldName", request.getAttribute("parameterFieldName"));
+	response.setAttribute("PARAMETERS_MAP", parametersMap);
+	
 	logger.debug("OUT");
 	return list;
     }
@@ -180,15 +195,15 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 	logger.debug("valColName="+valColName);
 	// fill paginator
-	int count = 0;
+//	int count = 0;
 	if (rowsSourceBean != null) {
 	    List rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
 	    for (int i = 0; i < rows.size(); i++) {
 		paginator.addRow(rows.get(i));
-		count++;
+//		count++;
 	    }
 	}
-	paginator.setPageSize(count);
+//	paginator.setPageSize(count);
 	list.setPaginator(paginator);
 
 	// get all the columns name
@@ -209,26 +224,40 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 
 	// build module configuration for the list
-	String moduleConfigStr = "";
-	moduleConfigStr += "<CONFIG>";
-	moduleConfigStr += "	<QUERIES/>";
-	moduleConfigStr += "	<COLUMNS>";
+	StringBuffer moduleConfigStr = new StringBuffer("");
+	moduleConfigStr.append("<CONFIG>");
+	moduleConfigStr.append("	<QUERIES/>");
+	moduleConfigStr.append("	<COLUMNS>");
 	// if there's no colum name add a fake column to show that there's no
 	// data
 	if (colNames.size() == 0) {
-	    moduleConfigStr += "	<COLUMN name=\"No Result Found\" />";
+	    moduleConfigStr.append("	<COLUMN name=\"No Result Found\" />");
 	} else {
 	    Iterator iterColNames = colNames.iterator();
 	    while (iterColNames.hasNext()) {
 		String colName = (String) iterColNames.next();
-		moduleConfigStr += "	<COLUMN name=\"" + colName + "\" />";
+		moduleConfigStr.append("	<COLUMN name=\"" + colName + "\" />");
 	    }
 	}
-	moduleConfigStr += "	</COLUMNS>";
-	moduleConfigStr += "	<CAPTIONS/>";
-	moduleConfigStr += "	<BUTTONS/>";
-	moduleConfigStr += "</CONFIG>";
-	SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
+	moduleConfigStr.append("	</COLUMNS>");
+	moduleConfigStr.append("	<CAPTIONS>");
+	moduleConfigStr.append("		<SELECT_CAPTION  confirm=\"FALSE\" image=\"/img/button_ok.gif\" label=\"SBIListLookPage.selectButton\">");
+	moduleConfigStr.append("			<ONCLICK>");
+	moduleConfigStr.append("				<![CDATA[");
+	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+	moduleConfigStr.append("				parent.document.getElementById('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+	moduleConfigStr.append("				parent.document.getElementById('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+	moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
+//	moduleConfigStr.append("				Ext.get('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').dom.value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+//	moduleConfigStr.append("				Ext.get('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').dom.value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+//	moduleConfigStr.append("				Ext.get('spagobi_popup').hide();");
+	moduleConfigStr.append("				]]>");
+	moduleConfigStr.append("			</ONCLICK>");
+	moduleConfigStr.append("		</SELECT_CAPTION>");
+	moduleConfigStr.append("	</CAPTIONS>");
+	moduleConfigStr.append("	<BUTTONS/>");
+	moduleConfigStr.append("</CONFIG>");
+	SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr.toString());
 	response.setAttribute(moduleConfig);
 
 	// filter the list

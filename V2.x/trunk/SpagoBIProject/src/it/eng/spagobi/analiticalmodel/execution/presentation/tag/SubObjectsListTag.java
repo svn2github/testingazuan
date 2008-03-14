@@ -99,7 +99,7 @@ public class SubObjectsListTag extends TagSupport {
 				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append("<tr>\n");
 				buffer.append("	  <td style='vertical-align:middle;' align='left' class='portlet-section-header'>\n");
-				buffer.append("       " + msgBuilder.getMessage("SBIDev.docConf.subBIObject.name", httpRequest) + " />\n");
+				buffer.append("       " + msgBuilder.getMessage("SBIDev.docConf.subBIObject.name", httpRequest) + " \n");
 				buffer.append("   </td>\n");
 				buffer.append("   <td align='left' class='portlet-section-header'>&nbsp;</td>\n");
 				buffer.append("   <td style='vertical-align:middle;' align='left' class='portlet-section-header'>\n");

@@ -99,7 +99,7 @@ public class ViewPointsListTag extends TagSupport {
 				toReturn = "<div class='portlet-font'>" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.noViewPoints", httpRequest) + "</div>";
 			} else {
 				StringBuffer buffer = new StringBuffer();
-				buffer.append("table style='width:100%;' align='left'>\n");
+				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append(" <tr>\n");
 				buffer.append("   <td style='vertical-align:middle;' align='left' class='portlet-section-header'>\n");
 				buffer.append("       " + msgBuilder.getMessage("SBIDev.docConf.viewPoint.name", httpRequest) + "\n");

@@ -69,6 +69,8 @@ public class BIObjectNotesManager {
 			}
 			parUrlName = biobjpar.getParameterUrlName();
 		 	biparvalues = biobjpar.getParameterValues();
+		 	if (biparvalues == null) 
+		 		continue;
 		 	iterBiparValues = biparvalues.iterator();
 		 	parValueString = "";
 		 	while(iterBiparValues.hasNext()){

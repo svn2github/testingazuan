@@ -27,6 +27,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
@@ -58,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -129,11 +131,15 @@ public class ParametersGeneratorTag extends TagSupport {
   	    }
 	} catch (EMFUserError e) {
 	    logger.error("EMFUserError, reading roleName",e);
-	}	
+	}
+	
 	List parameters = obj.getBiObjectParameters();
 	boolean hasParametersToBeShown = false;
 	StringBuffer htmlStream = new StringBuffer();
 	if (parameters != null && parameters.size() > 0) {
+		createParametersFormButtons(htmlStream);
+		openParametersForm(htmlStream);
+		createFieldForViewPoints(htmlStream);
 	    //createSetLookupFieldJSFunction(htmlStream);
 	    createSetDeleteFlagJSFunction(htmlStream);
 	    createClearFieldsJSFunction(htmlStream);
@@ -182,13 +188,13 @@ public class ParametersGeneratorTag extends TagSupport {
 		htmlStream.append("		<div >\n");
 		htmlStream.append("			&nbsp;\n");
 		htmlStream.append("		</div>\n");
-		createClearFieldsButton(htmlStream);
+		//createClearFieldsButton(htmlStream);
 		// closes the div tag of the parameters form
 		htmlStream.append("</div>\n");
 	    } else {
 		createNoParametersMessage(htmlStream);
 	    }
-
+	    closeParametersForm(htmlStream);
 	} else {
 	    createNoParametersMessage(htmlStream);
 	}
@@ -223,6 +229,206 @@ public class ParametersGeneratorTag extends TagSupport {
 	return isSingleValue;
     }
 
+    private void openParametersForm(StringBuffer htmlStream) {
+    	Map executeUrlPars = new HashMap();
+    	executeUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
+    	executeUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
+    	executeUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+    	String execUrl = urlBuilder.getUrl(httpRequest, executeUrlPars);
+    	htmlStream.append("<div class='form'>\n");
+    	htmlStream.append("	<form id='parametersForm" + requestIdentity +"' name='parametersForm" + requestIdentity +"' " +
+    			"action='" + execUrl + "' method='POST'>\n");
+    }
+    
+    private void closeParametersForm(StringBuffer htmlStream) {
+    	htmlStream.append("	</form>\n");
+    	htmlStream.append("</div>\n");
+    }
+    
+    private void createFieldForViewPoints(StringBuffer htmlStream) {
+    	htmlStream.append("<input type='hidden' name='SUBMESSAGEDET' value='' />\n");
+    	htmlStream.append("<input type='hidden' name='tmp_nameVP' value='' />\n");
+    	htmlStream.append("<input type='hidden' name='tmp_descVP' value='' />\n");
+    	htmlStream.append("<input type='hidden' name='tmp_scopeVP' value='' />\n");
+    }
+    
+    
+    /**
+     * Displays the save as viewpoin, execute and reset fields buttons if the parameters form must be shown
+     * @param htmlStream The modified html stream
+     */
+    private void createParametersFormButtons(StringBuffer htmlStream) {
+    	boolean hasParametersFormToBeShown = hasParametersFormToBeShown();
+    	if (hasParametersFormToBeShown) {
+	    	String executeMsg = msgBuilder.getMessage("sbi.execution.parametersForm.execute", httpRequest);
+	    	String saveMsg = msgBuilder.getMessage("sbi.execution.parametersForm.save", httpRequest);
+	    	String resetMsg = msgBuilder.getMessage("sbi.execution.parametersForm.reset", httpRequest);
+	    	htmlStream.append("<div class='buttons'>\n");
+	    	htmlStream.append("	<ul>\n");
+	    	htmlStream.append("		<li><a href='javascript:void(0);' id='p_execute_button' class='button p_execute_button' onclick='document.getElementById(\"parametersForm" + requestIdentity + "\").submit();'><b><b><b>" + executeMsg + "</b></b></b></a></li>\n");
+	    	htmlStream.append("		<li><a href='javascript:void(0);' id='p_save_button" + requestIdentity + "'    class='button p_save_button'><b><b><b>" + saveMsg + "</b></b></b></a></li>\n");
+	    	htmlStream.append("		<li><a href='javascript:void(0);' id='p_reset_button'   class='button p_reset_button' onclick='clearFields" + requestIdentity + "()'><b><b><b>" + resetMsg + "</b></b></b></a></li>\n");
+	    	htmlStream.append("	</ul>\n");
+	    	htmlStream.append("</div>\n");
+	    	
+	    	htmlStream.append("<script>\n");
+	    	htmlStream.append("var saveVPForm" + requestIdentity + ";\n");
+	    	htmlStream.append("var viewpointname" + requestIdentity + ";\n");
+	    	htmlStream.append("var viewpointdescr" + requestIdentity + ";\n");
+	    	htmlStream.append("var comboVP" + requestIdentity + ";\n");
+	    	htmlStream.append("Ext.onReady(function(){\n");
+	    	htmlStream.append("    Ext.QuickTips.init();\n");
+	    	htmlStream.append("    var store = new Ext.data.SimpleStore({fields: ['scopeName', 'scopeDescr'],data : [['Public', '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.scopePublic", httpRequest) + "'],['Private', '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.scopePrivate", httpRequest) + "']]});\n");
+	    	htmlStream.append("    comboVP" + requestIdentity + " = new Ext.form.ComboBox({\n");
+	    	htmlStream.append("		   id:'comboVP" + requestIdentity + "',\n");
+	    	htmlStream.append("        fieldLabel: '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.scope", httpRequest) + "',\n");
+	    	htmlStream.append("        store: store,\n");
+	    	htmlStream.append("        displayField:'scopeDescr',\n");
+	    	htmlStream.append("        typeAhead: true,\n");
+	    	htmlStream.append("        mode: 'local',\n");
+	    	htmlStream.append("        triggerAction: 'all',\n");
+	    	htmlStream.append("        emptyText:'...',\n");
+	    	htmlStream.append("        selectOnFocus:true\n");
+	    	htmlStream.append("    });\n");
+	    	htmlStream.append("    viewpointname" + requestIdentity + " = new Ext.form.TextField({\n");
+	    	htmlStream.append("			id:'nameVP" + requestIdentity + "',\n");
+	    	htmlStream.append("			name:'nameVP',\n");
+	    	htmlStream.append("			allowBlank:false, \n");
+	    	htmlStream.append("			inputType:'text',  \n");
+	    	htmlStream.append("			fieldLabel:'" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.name", httpRequest) + "' \n");
+	    	htmlStream.append("    });\n");
+	    	htmlStream.append("    viewpointdescr" + requestIdentity + " = new Ext.form.TextField({\n");
+	    	htmlStream.append("			id:'descVP" + requestIdentity + "',\n");
+	    	htmlStream.append("			name:'descVP',\n");
+	    	htmlStream.append("			allowBlank:false, \n");
+	    	htmlStream.append("			inputType:'text',  \n");
+	    	htmlStream.append("			fieldLabel:'" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.description", httpRequest) + "' \n");
+	    	htmlStream.append("    });\n");
+	    	htmlStream.append("    Ext.form.Field.prototype.msgTarget = 'side';\n");
+	    	htmlStream.append("    saveVPForm" + requestIdentity + " = new Ext.form.FormPanel({\n");
+	    	htmlStream.append("        labelWidth: 75,\n");
+	    	htmlStream.append("        frame:true,\n");
+	    	htmlStream.append("        bodyStyle:'padding:5px 5px 0',\n");
+	    	htmlStream.append("        width: 350,\n");
+	    	htmlStream.append("        height: 50,\n");
+	    	htmlStream.append("        labelWidth: 150,\n");
+	    	htmlStream.append("        defaults: {width: 230},\n");
+	    	htmlStream.append("        defaultType: 'textfield',\n");
+//	    	htmlStream.append("        onSubmit: Ext.emptyFn,\n");
+//	    	htmlStream.append("        submit: function() {\n");
+//	    	htmlStream.append("            this.getForm().getEl().dom.submit();\n");
+//	    	htmlStream.append("        },\n");
+	    	htmlStream.append("        items: [viewpointname" + requestIdentity + ",viewpointdescr" + requestIdentity + ",comboVP" + requestIdentity + "],\n");
+	    	htmlStream.append("        buttons:[{text:'" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", httpRequest) + "',handler:function() {saveViewpoint" + requestIdentity + "()}}]\n");
+	    	htmlStream.append("    });\n");
+	    	htmlStream.append("});\n");
+	    	htmlStream.append("var win_saveVP" + requestIdentity + ";\n");
+	    	htmlStream.append("Ext.get('p_save_button" + requestIdentity + "').on('click', function(){\n");
+	    	htmlStream.append("	if(!win_saveVP" + requestIdentity + ") {\n");
+	    	htmlStream.append("		win_saveVP" + requestIdentity + " = new Ext.Window({\n");
+	    	htmlStream.append("			id:'popup_saveVP" + requestIdentity + "',\n");
+	    	htmlStream.append("			layout:'fit',\n");
+	    	htmlStream.append("			width:500,\n");
+	    	htmlStream.append("			height:200,\n");
+	    	htmlStream.append("			closeAction:'hide',\n");
+	    	htmlStream.append("			plain: true,\n");
+	    	htmlStream.append("			title: '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", httpRequest) + "',\n");
+	    	htmlStream.append("			items: saveVPForm" + requestIdentity + "\n");
+	    	htmlStream.append("		});\n");
+	    	htmlStream.append("	};\n");
+	    	htmlStream.append("	win_saveVP" + requestIdentity + ".show();\n");
+	    	htmlStream.append("	}\n");
+	    	htmlStream.append(");\n");
+	    	
+	    	htmlStream.append("function saveViewpoint" + requestIdentity + "() {\n");
+	    	htmlStream.append("	var nameVP = viewpointname" + requestIdentity + ".getValue();\n");
+	    	htmlStream.append("	var descVP = viewpointdescr" + requestIdentity + ".getValue();\n");
+	    	htmlStream.append("	var scopeVP = comboVP" + requestIdentity + ".getValue();\n");
+	    	htmlStream.append("	if (nameVP == null || nameVP.value == ''){\n");
+	    	htmlStream.append("		alert('" + msgBuilder.getMessage("6000", httpRequest) + "');\n");
+	    	htmlStream.append("		return;\n");
+	    	htmlStream.append("	}\n");
+	    	htmlStream.append("	if (scopeVP == null || scopeVP.value == ''){\n");
+	    	htmlStream.append("		alert('" + msgBuilder.getMessage("6001", httpRequest) + "');\n");
+	    	htmlStream.append("		return;\n");
+	    	htmlStream.append("	}\n");
+	    	htmlStream.append("	var mainForm = document.getElementById('parametersForm" + requestIdentity + "');\n");		
+	    	htmlStream.append("	mainForm.SUBMESSAGEDET.value = '"+ SpagoBIConstants.VIEWPOINT_SAVE + "';\n");
+	    	htmlStream.append("	mainForm.tmp_nameVP.value = nameVP;\n");
+	    	htmlStream.append("	mainForm.tmp_descVP.value = descVP;\n");	
+	    	htmlStream.append("	mainForm.tmp_scopeVP.value = scopeVP;\n");							
+	    	htmlStream.append("	mainForm.submit();\n");
+	    	htmlStream.append("}\n");
+	    	
+	    	/*
+	    	String url= GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=SHOW_SAVE_VIEW_POINT_FORM&NEW_SESSION=TRUE";
+	    	htmlStream.append("var win_saveVP" + requestIdentity + ";\n");
+	    	htmlStream.append("Ext.get('p_save_button" + requestIdentity + "').on('click', function(){\n");
+	    	htmlStream.append("	var urlSaveVP" + requestIdentity + " = '" + url + "';\n");
+	    	BIObject obj = getBIObject();
+	    	List parameters = obj.getBiObjectParameters();
+	    	if (parameters != null && parameters.size() > 0) {
+	    	    Iterator iter = parameters.iterator();
+	    	    while (iter.hasNext()) {
+	    	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+	    	    	htmlStream.append("	urlSaveVP" + requestIdentity + " += '&' + '" + biparam.getParameterUrlName() + "' + '=' + document.getElementById('" + biparam.getParameterUrlName() + requestIdentity + "').value;\n");
+	    	    }
+	    	}
+	    	htmlStream.append("	if(!win_saveVP" + requestIdentity + ") {\n");
+	    	htmlStream.append("		win_saveVP" + requestIdentity + " = new Ext.Window({\n");
+	    	htmlStream.append("			id:'popup_saveVP" + requestIdentity + "',\n");
+	    	htmlStream.append("			bodyCfg:{\n");
+	    	htmlStream.append("				tag:'div',\n");
+	    	htmlStream.append("    			cls:'x-panel-body',\n");
+	    	htmlStream.append("   			children:[{\n");
+	    	htmlStream.append("        			tag:'iframe',\n");
+	    	htmlStream.append("        			src: urlSaveVP" + requestIdentity + ",\n");
+	    	htmlStream.append("        			frameBorder:0,\n");
+	    	htmlStream.append("        			width:'100%',\n");
+	    	htmlStream.append("        			height:'100%',\n");
+	    	htmlStream.append("        			style: {overflow:'auto'}\n");  
+	    	htmlStream.append("   			}]\n");
+	    	htmlStream.append("			},\n");
+	    	htmlStream.append("			layout:'fit',\n");
+	    	htmlStream.append("			width:500,\n");
+	    	htmlStream.append("			height:150,\n");
+	    	htmlStream.append("			closeAction:'hide',\n");
+	    	htmlStream.append("			plain: true,\n");
+	    	htmlStream.append("			title: '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", httpRequest) + "'\n");
+	    	htmlStream.append("		});\n");
+	    	htmlStream.append("	};\n");
+	    	htmlStream.append("	win_saveVP" + requestIdentity + ".show();\n");
+	    	htmlStream.append("	}\n");
+	    	htmlStream.append(");\n");
+	    	*/
+	    	
+	    	
+	    	htmlStream.append("</script>\n");
+	    	
+    	}
+    }
+
+    /**
+     * Returns true if the parameters form must be shown, i.e. if at least one parameter has no values setted or has no valid values, false otherwise
+     * @return true if the parameters form must be shown, i.e. if at least one parameter has no values setted or has no valid values, false otherwise
+     */
+    private boolean hasParametersFormToBeShown() {
+    	boolean toReturn = false;
+    	BIObject obj = getBIObject();
+    	List parameters = obj.getBiObjectParameters();
+    	if (parameters != null && parameters.size() > 0) {
+    	    Iterator iter = parameters.iterator();
+    	    while (iter.hasNext()) {
+    	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+    	    	if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) || !biparam.hasValidValues()) {
+    	    		toReturn = true;
+    	    		break;
+    	    	}
+    	    }
+    	}
+    	return toReturn;
+    }
+    
     /**
      * Creates two empty hidden inputs and the correspondent JavaScript to
      * populate it in case there is a lookup call... - LOOKUP_OBJ_PAR_ID: is the
@@ -371,6 +577,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		+ "IsChanged", "false");
     }
 
+    /*
     private void createClearFieldsButton(StringBuffer htmlStream) {
 	String resetFieldsLbl = msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages",
 		httpRequest);
@@ -382,6 +589,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("				</a>\n");
 	htmlStream.append("		</div>\n");
     }
+    */
 
     private void createParameterLabelDiv(StringBuffer htmlStream, BIObjectParameter biparam) {
         htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
@@ -476,7 +684,7 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
-	String url=encodeURL("/servlet/AdapterHTTP?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+parameterId+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
+	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+parameterId+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
 	    
 	
 	
@@ -487,7 +695,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("<table border='0'>"); 
 	htmlStream.append("<tr>");
 	htmlStream.append("<td>");
-	htmlStream.append("<input value='test' type='text' style='width:230px;' " + "name='' " + "id='in_"+biparam.getParameterUrlName()+requestIdentity+"' "
+	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='in_"+biparam.getParameterUrlName()+requestIdentity+"' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("/>\n");
 	htmlStream.append("</td>");
@@ -503,10 +711,33 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("\n");
 	htmlStream.append("var win_"+parameterFieldName+";\n");
 	
-	htmlStream.append("Ext.get('"+id+"').on('click', function(){");
-	htmlStream.append("if(!win_"+parameterFieldName+"){win_"+parameterFieldName+" = new Ext.Window({id:'spagobi_popup',layout:'fit',width:500,height:300,closeAction:'hide',plain: true});};\n");
-	htmlStream.append("win_"+parameterFieldName+".show(this);\n");
-	htmlStream.append("win_"+parameterFieldName+".load({url: '"+url+"',discardUrl: false,nocache: false,text: 'Sto caricando ...',timeout: 30,scripts: true});}\n");
+	htmlStream.append("Ext.get('"+id+"').on('click', function(){\n");
+	htmlStream.append("	if(!win_"+parameterFieldName+") {\n");
+	htmlStream.append("		win_"+parameterFieldName+" = new Ext.Window({\n");
+	htmlStream.append("			id:'popup_" + parameterFieldName + "',\n");
+	htmlStream.append("			bodyCfg:{");
+	htmlStream.append("				tag:'div'");
+	htmlStream.append("    			,cls:'x-panel-body'");
+	htmlStream.append("   			,children:[{");
+	htmlStream.append("        			tag:'iframe',");
+	htmlStream.append("        			name: 'iframe_" + parameterFieldName + "',");
+	htmlStream.append("        			id  : 'iframe_" + parameterFieldName + "',");
+	htmlStream.append("        			src: '" + url + "',");
+	htmlStream.append("        			frameBorder:0,");
+	htmlStream.append("        			width:'100%',");
+	htmlStream.append("        			height:'100%',");
+	htmlStream.append("        			style: {overflow:'auto'}   ");  
+	htmlStream.append("   			}]");
+	htmlStream.append("			},");
+	htmlStream.append("			layout:'fit',\n");
+	htmlStream.append("			width:700,\n");
+	htmlStream.append("			height:300,\n");
+	htmlStream.append("			closeAction:'hide',\n");
+	htmlStream.append("			plain: true\n");
+	htmlStream.append("		});\n");
+	htmlStream.append("	};\n");
+	htmlStream.append("	win_"+parameterFieldName+".show();\n");
+	htmlStream.append("	}\n");
 	htmlStream.append(");\n");	
 	htmlStream.append("\n</script>");	
     }

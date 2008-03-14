@@ -102,7 +102,9 @@ public class ListTag extends TagSupport
     final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
     final static String[] EXCEPTION_ATTRIBUTES ={"JOBNAME","JOBGROUPNAME"};
 
+
     
+    private String rowColor="#FFFCCC";
     
     /**
      *Constructor
@@ -336,18 +338,18 @@ public class ListTag extends TagSupport
 		_htmlStream.append("	}\n");
 		_htmlStream.append(" </script>\n");
 		
-		boolean alternate = false;
+
 		int prog=0;
-        String rowClass;
+
 		for(int i = 0; i < rows.size(); i++) 
 		{
 			prog++ ;
 			SourceBean row = (SourceBean) rows.get(i);
             
-            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-            alternate = !alternate;    
+
+  
            
-            _htmlStream.append(" <tr class='portlet-font'>\n");
+            _htmlStream.append(" <tr onMouseOver=\"this.bgColor='"+rowColor+"';\" onMouseOut=\"this.bgColor='#FFFFFF';\">\n");
 			for (int j = 0; j < _columns.size(); j++) {
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("NAME");
 				Object fieldObject = row.getAttribute(nameColumn);
@@ -359,7 +361,7 @@ public class ListTag extends TagSupport
 				// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 				String align = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("horizontal-align");
 				if (align == null || align.trim().equals("")) align = "left";
-				_htmlStream.append(" <td class='" + rowClass + "' style='vertical-align:middle;text-overflow:ellipsis;text-align:" + align + ";' >" + field + "</td>\n");
+				_htmlStream.append(" <td>" + field + "</td>\n");
 			} 
 			
 			
@@ -392,7 +394,7 @@ public class ListTag extends TagSupport
 				
 				if ( !conditionsVerified) {
 					// if conditions are not verified puts an empty column
-					_htmlStream.append(" <td width='40px' class='" + rowClass + "' >&nbsp;</td>\n");
+					_htmlStream.append(" <td width='40px'  >&nbsp;</td>\n");
 					continue;
 				}
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
@@ -401,7 +403,7 @@ public class ListTag extends TagSupport
 					 String img = (String)captionSB.getAttribute("image");
 					 String labelCode = (String)captionSB.getAttribute("label");
 					 String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);					 
-					 _htmlStream.append(" <td width='40px' class='" + rowClass + "'>\n");
+					 _htmlStream.append(" <td width='40px'>\n");
 					 _htmlStream.append(" 	<a name='"+label+" '>\n");
 					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 					_htmlStream.append(" 	</a>\n");
@@ -429,7 +431,7 @@ public class ListTag extends TagSupport
 							((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
 						confirm = true;
 					}
-					_htmlStream.append(" <td width='40px' class='" + rowClass + "'>\n");
+					_htmlStream.append(" <td width='40px' >\n");
 					String msg = label;
 					SourceBean confirmConditionSB = (SourceBean) captionSB.getAttribute("CONFIRM_CONDITION");
 					if (confirmConditionSB != null) {

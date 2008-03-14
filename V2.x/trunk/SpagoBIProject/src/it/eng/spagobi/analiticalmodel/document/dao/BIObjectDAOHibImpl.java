@@ -698,8 +698,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if(idParameters.size() == 0) {
 				List allCorrectRoles = new ArrayList();
-				// if the object has not parameter associate all the roles can execute the 
-				// object correctly and in the same manner.
+				// if the object has not parameter associates all the roles that have the execution or
+				// test permissions on the containing folders are correct roles in the same manner.
 				SbiObjects hibBIObject = (SbiObjects)aSession.load(SbiObjects.class, id);
 				String objectState = hibBIObject.getState().getValueCd();
 				Set hibObjFuncs = hibBIObject.getSbiObjFuncs();
@@ -719,15 +719,24 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					allCorrectRoles.addAll(rolesNames);
 				}
 				Iterator rolesIt = roles.iterator();
+				/*
 				while (rolesIt.hasNext()) {
 					// if the role is a user role and can see the document (in REL or TEST state), 
 					// it is a correct role
 					String role = rolesIt.next().toString();
 					if (allCorrectRoles.contains(role)) correctRoles.add(role);
 				}
+				*/
+				
+				// considering only the first role
+				if (rolesIt.hasNext()) {
+					// if the role is a user role and can see the document (in REL or TEST state), 
+					// it is a correct role
+					String role = rolesIt.next().toString();
+					correctRoles.add(role);
+				}
 				return correctRoles;
-				// if the object has not parameter associates all the roles that have the execution or
-				// test permissions on the containing folders are correct roles in the same manner.
+
 			}
 			
 			Iterator iterRoles = roles.iterator();

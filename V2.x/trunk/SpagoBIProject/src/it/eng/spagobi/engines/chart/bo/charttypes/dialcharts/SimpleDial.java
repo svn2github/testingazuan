@@ -351,9 +351,6 @@ public class SimpleDial extends DialCharts{
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
 			horizontalView=how;
-			int temp=getWidth();
-			setWidth(getHeight());
-			setHeight(temp);
 		}
 
 	}

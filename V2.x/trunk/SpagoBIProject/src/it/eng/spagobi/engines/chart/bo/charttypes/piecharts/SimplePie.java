@@ -169,9 +169,6 @@ public class SimplePie extends PieCharts{
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
 			threeD=how;
-			int temp=getWidth();
-			setWidth(getHeight());
-			setHeight(temp);
 		}
 		else if(changePar.equalsIgnoreCase(CHANGE_VIEW_PERCENTAGE)){
 			percentage =how;

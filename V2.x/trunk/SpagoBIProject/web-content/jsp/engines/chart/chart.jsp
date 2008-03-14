@@ -20,8 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ page import="java.util.Map" %>
-<%@page import="it.eng.spago.security.IEngUserProfile"%>
- <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
@@ -29,10 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.Domain"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 <%@page import="java.util.Iterator"%>
-
-
 <%@page import="org.jfree.chart.JFreeChart"%>
-
 <%@page import="org.jfree.chart.ChartUtilities"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
@@ -49,11 +45,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
-  
-  <script language="JavaScript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/slider.js")%>" >
-</script>
-<link href="<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/default-slider.css")%>" rel="stylesheet" type="text/css" />
-  
 
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>"/>
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
@@ -389,7 +380,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	<div id="output1"> 
 		<table align="center">
 		<tr>
-		<td id="slider_1_1_value" width="10%" align="center"  class="sliderstatusclass"></td>
+		<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
 		<!--<td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td>  -->
 		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View All Categories</a></td>
 	</tr>
@@ -417,7 +408,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
     
     
 <%} %>
-
  <script type="text/javascript" language="JavaScript">
  	function getValue() {return Test.slideZone1.getSlider('start1_1').value;}
 
@@ -430,7 +420,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		return finalUrl;
 		}
  
-
 	function getActionUrl() {
 	
 		var variable="&category=";
@@ -440,11 +429,8 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		var finalUrl=url+second;
 		return finalUrl;
 		}
- 
- </script>
- 
- 
- 
+  </script>
+
   <script type="text/javascript" language="JavaScript">
 
 Ext.onReady(function() {
@@ -469,11 +455,18 @@ Ext.onReady(function() {
 	
 	current=<%=categoryCurrent%>;
 	
-	if(current==0){current="All categories";}
+	if(current==0)
+	{
+	
+	current="All categories";
+	
+	}
 	else{
 		current="Zoom on categories: "+current;
-		current=current+ " of "+<%=ticks%>;}
-				$('slider_1_1_value').innerHTML = current;
+		current=current+ " of "+<%=ticks%>;
+		}
+				
+		$('slider_1_1_value').innerHTML = current;
 	
 	
 	

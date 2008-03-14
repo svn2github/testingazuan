@@ -27,6 +27,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
@@ -102,7 +103,7 @@ public class ListTag extends TagSupport
     final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
     final static String[] EXCEPTION_ATTRIBUTES ={"JOBNAME","JOBGROUPNAME"};
 
-
+    protected String requestIdentity = null;
     
     private String rowColor="#FFFCCC";
     
@@ -125,6 +126,13 @@ public class ListTag extends TagSupport
 		_errorHandler = _responseContainer.getErrorHandler();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		
+		// identity string for object of the page
+	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	    UUID uuid = uuidGen.generateTimeBasedUUID();
+	    requestIdentity = uuid.toString();
+	    requestIdentity = requestIdentity.replaceAll("-", "");
+		
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {
 			_serviceName = _actionName;
@@ -328,11 +336,10 @@ public class ListTag extends TagSupport
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 	    
 		// js function for item action confirm
-		//String confirmCaption = msgBuilder.getMessage("ListTag.confirmCaption", "messages", httpRequest);
 		_htmlStream.append(" <script>\n");
-		_htmlStream.append("	function actionConfirm(message, url){\n");
-		//_htmlStream.append("		if (confirm('" + confirmCaption + " ' + message + '?')){\n");
+		_htmlStream.append("	function actionConfirm(message, url, functionToEval){\n");
 		_htmlStream.append("		if (confirm(message + '?')){\n");
+		_htmlStream.append("			if (functionToEval) eval(functionToEval);\n");
 		_htmlStream.append("			location.href = url;\n");
 		_htmlStream.append("		}\n");
 		_htmlStream.append("	}\n");
@@ -397,6 +404,19 @@ public class ListTag extends TagSupport
 					_htmlStream.append(" <td width='40px'  >&nbsp;</td>\n");
 					continue;
 				}
+				
+				// onclick function
+				SourceBean onClickSB = (SourceBean) captionSB.getAttribute("ONCLICK");
+				String onClickFunction = readOnClickFunction(onClickSB, row);
+				String onClickFunctionName = onClickSB != null ? captionSB.getName() + i + requestIdentity : null;
+				if (onClickFunction != null) {
+					_htmlStream.append("	<script type='text/javascript'>\n");
+					_htmlStream.append("	function " + onClickFunctionName + "() {\n");
+					_htmlStream.append(onClickFunction + "\n");
+					_htmlStream.append("	}\n");
+					_htmlStream.append("	</script>\n");
+				}
+				
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
 					// if there are no parameters puts an empty column
@@ -404,7 +424,7 @@ public class ListTag extends TagSupport
 					 String labelCode = (String)captionSB.getAttribute("label");
 					 String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);					 
 					 _htmlStream.append(" <td width='40px'>\n");
-					 _htmlStream.append(" 	<a name='"+label+" '>\n");
+					 _htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
 					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 					_htmlStream.append(" 	</a>\n");
 					_htmlStream.append(" </td>\n");
@@ -445,7 +465,7 @@ public class ListTag extends TagSupport
 					}
 
 					
-					if (confirm && buttonUrl!=null){
+		if (confirm && buttonUrl!=null){
 						if (popup){
 							
 							_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
@@ -592,6 +612,41 @@ public class ListTag extends TagSupport
 	    _htmlStream.append(" </script>\n");
 	} 
 	
+	private String readOnClickFunction(SourceBean onClickSB, SourceBean row) {
+		logger.debug("IN");
+		String onClickFunction = onClickSB != null ? onClickSB.getCharacters() : null;
+		if (onClickFunction != null) {
+			int startIndex = onClickFunction.indexOf("<PARAMETER ");
+			while (startIndex != -1) {
+				int endIndex = onClickFunction.indexOf("/>", startIndex);
+				String parameterSBStr = onClickFunction.substring(startIndex, endIndex + 2);
+				try {
+					SourceBean parameterSB = SourceBean.fromXMLString(parameterSBStr);
+					String parameterName = (String) parameterSB.getAttribute("NAME");
+					String parameterScope = (String) parameterSB.getAttribute("SCOPE");
+					String inParameterValue = null;
+					Object parameterValueObject = null;
+					if (parameterScope != null && parameterScope.equalsIgnoreCase("LOCAL")) {
+						parameterValueObject = row.getAttribute(parameterName);
+					} else {
+						parameterValueObject = ContextScooping.getScopedParameter(_requestContainer,
+								_responseContainer, parameterName, parameterScope);
+					}
+					if (parameterValueObject != null) {
+						inParameterValue = parameterValueObject.toString();
+						onClickFunction = onClickFunction.substring(0, startIndex) + inParameterValue + onClickFunction.substring(endIndex + 2);
+					}
+				} catch (SourceBeanException e) {
+					logger.error(e);
+				}
+				startIndex = onClickFunction.indexOf("<PARAMETER ", startIndex);
+			}
+		}
+		logger.debug("OUT");
+		return onClickFunction;
+	}
+
+
 	protected boolean verifyConditions (SourceBean conditionsSB, SourceBean row) throws JspException {
 		boolean conditionVerified = true;
 		if (conditionsSB != null) {
@@ -761,11 +816,6 @@ public class ListTag extends TagSupport
 		lastParamsMap.put("LIST_PAGE", String.valueOf(pagesNumber));
 		_lastUrl = createUrl(lastParamsMap);
 
-		// identity string for object of the page
-	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    String requestIdentity = uuid.toString();
-	    requestIdentity = requestIdentity.replaceAll("-", "");
 		String formId = "formFilter" + requestIdentity;
 		
 		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);

@@ -117,27 +117,28 @@ td.header-title-column-portlet-section {
 	/*padding: 0px 0px 0px 1px;*/
 	/*background-color: #cccccc;*/
 	/*text-align: left;*/
-	background-color: #e0e1e6; 
+	background-color: #CCCFFF; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
-	color: #074B88;
-	background-image: url('/SpagoBI/img/white_corner.gif');
+	/* color: #074B88; */
+	/* background-image: url('/SpagoBI/img/white_corner.gif');  
 	background-position: top right;
 	background-repeat: no-repeat;
+	*/
 }
 
 /* Column with the header title for each section of the SpagoBI portlet without grey background*/
 td.header-title-column-portlet-section-nogrey {
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: 600;
 	color: #074B88;
 }
 
 /* Column with the header title for each section of the SpagoBI portlet without image on top right side*/
 td.header-title-column-portlet-section-noimage {
-	background-color: #e0e1e6; 
+	background-color: #CCCFFF; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -156,32 +157,36 @@ td.header-title-column-single-object-execution-portlet-section {
 	height: 25px;
 	border-top: 1px solid #bbb;
 	text-align: left;
+	/*
 	background-image: url('/SpagoBI/img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
+	*/
 }
 
 /* Column with the header sub-title for each section of the SpagoBI portlet*/
 td.header-sub-title-column-portlet-section {
 	padding: 0px 0px 0px 1px;
 	/*background-color: lightgrey;*/
-	background-color: #e0e1e6; 
+	background-color: #CCCFFF; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;
 	color: #074B88;
 	horizontal-align: left;
 	vertical-align: middle;
-	background-image: url('/SpagoBI/img/white_corner.gif');
+	/*
+  background-image: url('/SpagoBI/img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
+	*/
 }
 
 /* Column with the header title for sections without buttons of the SpagoBI portlet*/
 td.header-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
 	/*background-color: #cccccc;*/
-	background-color: #e0e1e6; 
+	background-color: #CCCFFF; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -193,7 +198,7 @@ td.header-title-column-portlet-section-no-buttons {
 td.header-sub-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
 	/*background-color: lightgrey;*/
-	background-color: #e0e1e6; 
+	background-color: #CCCFFF; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;
@@ -205,15 +210,15 @@ td.header-sub-title-column-portlet-section-no-buttons {
 /* Column with the header title for sections with select form the SpagoBI portlet*/
 td.header-select-column-portlet-section {
 	vertical-align: middle;
-	width: 35px;
+	width: 30px;
 	background-color:white;
 }
 
 /* Column with a button for each section of the SpagoBI portlet*/
 td.header-button-column-portlet-section {
 	vertical-align: middle;
-	width: 35px;
-	background-color:white;
+	width: 30px;
+	background-color:#CCCFFF;
 }
 
 /* Column with a button for single object execution section of the SpagoBI portlet*/
@@ -241,13 +246,13 @@ input.header-button-image-portlet-section {
 
 /* Empty column in the header table for each section of the SpagoBI portlet*/
 td.header-empty-column-portlet-section {
-	background-color:white;
+	background-color:#CCCFFF; 
 	width:10px;
 }
 
 /* Empty column in the header table for single object execution section of the SpagoBI portlet*/
 td.header-empty-column-single-object-execution-portlet-section {
-	background-color:white;
+	background-color:#CCCFFF;
 	width:10px;
 	border-bottom: 1px solid #bbb;
 	border-top: 1px solid #bbb;
@@ -484,9 +489,11 @@ IMG {
 	height: 25px;
 	border-top: 1px solid #bbb;
 	text-align: left;
-	background-image: url('/SpagoBI/img/white_corner.gif');
+	/*
+  background-image: url('/SpagoBI/img/white_corner.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
+	*/
 	vertical-align:middle;
 }
 

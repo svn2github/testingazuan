@@ -106,6 +106,7 @@ public class MetadataBIObjectModule extends AbstractModule{
 			String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
 			Integer id = new Integer(idStr);
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(id);
+			
 			if (obj == null) {
 				logger.error("BIObject with id "+id+" cannot be retrieved.");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 1040);

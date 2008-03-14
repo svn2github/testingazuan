@@ -337,4 +337,17 @@ public class AuditManager {
 		}
 		return toReturn;
 	}
+	
+	public Double getMediumExecTime(Integer objId) {
+		logger.debug("IN");
+		Double toReturn = new Double(0);
+		try {
+			toReturn = _auditDAO.getMediumExecTime(objId) ;
+		} catch (Exception e) {
+			logger.error("Error while calculating the medium execution time for document " + objId, e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
 }

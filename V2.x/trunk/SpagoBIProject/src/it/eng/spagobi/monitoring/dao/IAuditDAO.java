@@ -127,4 +127,13 @@ public interface IAuditDAO {
 	 */
 	public SbiAudit getLastExecution(Integer objId) throws EMFUserError ;
 	
+	/**
+	 * Gets the last execution of a document with id objId 
+	 * 
+	 * @param objId: the document identifier
+	 * @return Medium Execution Time
+	 * @throws EMFUserError
+	 */
+	public Double getMediumExecTime(Integer objId) throws EMFUserError ;
+	
 }

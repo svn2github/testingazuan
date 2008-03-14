@@ -62,49 +62,79 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 	// GET RESPONSE OBJECTS
+	String docLabel = "";
+	String docName = "";
+	String docType = "";
+	String engineName = "";
+	String driverName = "";
+	String dataSource = "";
 	
-    SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("MetadataBIObjectModule"); 
-	BIObject obj = (BIObject) moduleResponse.getAttribute("biObj");
-	Integer docId = obj.getId();
-	String docLabel = obj.getLabel();
-	String docName = obj.getName();
-	Integer docTypeId = obj.getBiObjectTypeID();
-	Domain d = DAOFactory.getDomainDAO().loadDomainById(docTypeId);
-	String docType = d.getValueName();
-	Engine engine = obj.getEngine();	
-	String engineName = engine.getName();
-	String driverName = engine.getDriverName();
-	Integer dsID = obj.getDataSourceId();
-	DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsID);
-	String dataSource = ds.getLabel();
-	
-	String docDescr = obj.getDescription();
+	String docDescr = "";
 	String docObjective = ""; 
 	String docLongDescr = ""; 
 	String docImage = ""; 
 	String docRating = ""; 
 	
 	String docLanguage = ""; 
-	String templateDimension = ""; 
 	String creationDate = ""; 
-	String creationUser = ""; 
+	String creationUser = "";
+	String templateDimension = "";
+	
 	String lastModifDate = ""; 
 	String lastModifUser = ""; 
 	
 	String lastAccesDate = "";
 	String lastExecTime = "";
-	String mediumExecTime = "";	
-	String lastExecUser = "";
+	Double mediumExecTime = new Double(0);	
+	String lastExecUser = "";	
+	
+    SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("MetadataBIObjectModule"); 
+	BIObject obj = (BIObject) moduleResponse.getAttribute("biObj");
+	Integer docId = obj.getId();
+	docLabel = obj.getLabel();
+	docName = obj.getName();
+	Integer docTypeId = obj.getBiObjectTypeID();
+	Domain d = DAOFactory.getDomainDAO().loadDomainById(docTypeId);
+	if (d != null) docType = d.getValueName();
+	Engine engine = obj.getEngine();	
+	if (engine != null) engineName = engine.getName();
+
+	List param = DAOFactory.getBIObjectDAO().getBIObjectParameters(obj);
+	if (param != null && !param.isEmpty()) {
+		Iterator it = param.iterator();
+	    while (it.hasNext()){
+	    	BIObjectParameter part = (BIObjectParameter)it.next();
+		   String par = part.getLabel();
+		   driverName = driverName + par +" ; ";
+	   }	
+	}
+	Integer dsID = obj.getDataSourceId();
+	DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsID);
+	if (ds!=null) dataSource = ds.getLabel();
+	
+	docDescr = obj.getDescription();
+	docObjective = obj.getObjectve(); 
+	docLongDescr = obj.getExtendedDescription(); 
+	docRating = obj.getRating().toString(); 
+	
+	docLanguage = obj.getLanguage(); 
+	
+	creationDate = obj.getCreationDate().toString(); 
+	creationUser = obj.getCreationUser(); 
 	
 	ObjTemplate currTemplate = obj.getActiveTemplate();
-	Integer prog = currTemplate.getProg();
-
+	if (currTemplate !=null){
+	templateDimension = currTemplate.getDimension();
+	lastModifDate = currTemplate.getCreationDate().toString(); 
+	lastModifUser = currTemplate.getCreationUser(); 
+	}
+	
     SbiAudit sba = AuditManager.getInstance().getLastExecution(docId);
-    if (lastExecUser != null ) lastExecUser = sba.getUserName();
+    if (sba != null && sba.getUserName() != null) lastExecUser = sba.getUserName();
     Date lastExecDate = sba.getExecutionStartTime();
     if (lastExecDate != null )lastExecTime = lastExecDate.toString();
-
-
+    AuditManager sb = AuditManager.getInstance();
+    if (sb != null) mediumExecTime = sb.getMediumExecTime(docId);
 %>
 
 
@@ -273,7 +303,7 @@ Ext.onReady(function(){
 		<tr>
 		    <td class="portlet-section-header"  width="140" style="text-align:left"><spagobi:message key = "metadata.docTemplDim" />		
 			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=prog.toString()%>
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=templateDimension%>
 			</td>
 		</tr>
 		
@@ -289,7 +319,8 @@ Ext.onReady(function(){
 		<tr>
 		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docDriver" />		
 			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=driverName%>
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">
+			&nbsp;<%=driverName%>
 			</td>
 		</tr>
 		
@@ -345,7 +376,7 @@ Ext.onReady(function(){
 		<tr>
 		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docMediumTime" />		
 			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=mediumExecTime%>
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=mediumExecTime.doubleValue()%> &nbsp;sec
 			</td>
 		</tr>
 		

@@ -437,5 +437,54 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		}
 		return toReturn;
 	}
+	
+	public Double getMediumExecTime(Integer objId) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Double toReturn = new Double(0) ;
+		if (objId == null) {
+			logger.warn("The object id in input is null or empty.");
+			return toReturn;
+		}
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			StringBuffer hql = new StringBuffer();
+			hql.append(	"select ");
+			hql.append(	"		a.executionTime ");
+			hql.append(	"from ");
+			hql.append(	"		SbiAudit a ");
+			hql.append(	"where 	");
+			hql.append(	"		a.sbiObject is not null and ");
+			hql.append(	"		a.sbiObject.biobjId = '" + objId + "' ");
+			Query hqlQuery = aSession.createQuery(hql.toString());
+			
+			List l = hqlQuery.list();
+			int x = 0 ;
+			int count = 1 ;
+			if (!l.isEmpty()){
+				Iterator it = l.iterator();
+				while(it.hasNext()){
+					Integer tosum = (Integer)it.next();
+					if (tosum != null ){ x = x + tosum.intValue() ;
+					count ++ ;			}		
+				}
+			}
+			if (x != 0) toReturn =new Double( x / count) ;
+			
+		} catch (Exception ex) {
+			logger.error(ex);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+		} finally {
+			if (aSession != null){
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
 
 }

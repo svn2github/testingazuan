@@ -309,21 +309,25 @@ String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js
         frameFcke<%=uuid%>.width= <%=widthNotes%> - 5;
     }
     diviframeobj = document.getElementById('divIframe<%=uuid%>');
-    pos = findPos(diviframeobj);
+    //pos = findPos(diviframeobj);
     win<%=uuid%> = null;
   
     
     if(automatic) {
-       win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
+       //win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
+       win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
   	   win<%=uuid%>.setDestroyOnClose();
        win<%=uuid%>.setContent('divNotes<%=uuid%>', false, false);
-       win<%=uuid%>.show(false);
+       //win<%=uuid%>.show(false);
+       win<%=uuid%>.showCenter();
        win<%=uuid%>.minimize();
     } else {
-       win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
+       //win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
+       win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});
   	   win<%=uuid%>.setDestroyOnClose();
        win<%=uuid%>.setContent('divNotes<%=uuid%>', false, false);
-       win<%=uuid%>.show();
+       //win<%=uuid%>.show();
+       win<%=uuid%>.showCenter();
     }
 
 

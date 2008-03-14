@@ -691,21 +691,13 @@ public class ParametersGeneratorTag extends TagSupport {
 	String id="p_search_button_"+biparam.getParameterUrlName();
 
 	htmlStream.append("\n");
-
-	htmlStream.append("<table border='0'>"); 
-	htmlStream.append("<tr>");
-	htmlStream.append("<td>");
 	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='in_"+biparam.getParameterUrlName()+requestIdentity+"' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("/>\n");
-	htmlStream.append("</td>");
-	htmlStream.append("<td>");
-	htmlStream.append("<a href='#' id='"+id+"' class='button p_search_button'>Search</a>\n");
-
-	htmlStream.append("<td>");
-	htmlStream.append("</tr>");
-	htmlStream.append("</table>");
-
+	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' >\n");
+	htmlStream.append("	<img src= '" + encodeURL("/img/detail.gif") + "' title='Lookup' alt='Lookup' />\n");
+	htmlStream.append("</a>\n");
+	
 	htmlStream.append("\n<script>\n");
 	
 	htmlStream.append("\n");

@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
+<spagobi:list moduleName="SelectParameterPageModule" />
+
+<%--
+
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
@@ -155,7 +159,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	} 
 %>
-
+--%>
 
 
 

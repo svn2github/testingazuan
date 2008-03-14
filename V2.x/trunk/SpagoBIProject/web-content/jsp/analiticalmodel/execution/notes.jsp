@@ -319,7 +319,7 @@ String linkFck = urlBuilder.getResourceLink(request, "/js/FCKeditor/fckeditor.js
   	   win<%=uuid%>.setDestroyOnClose();
        win<%=uuid%>.setContent('divNotes<%=uuid%>', false, false);
        //win<%=uuid%>.show(false);
-       win<%=uuid%>.showCenter();
+       win<%=uuid%>.showCenter(false);
        win<%=uuid%>.minimize();
     } else {
        //win<%=uuid%> = new Window('win_notes_<%=uuid%>', {className: "alphacube", title: "Notes for <%=title%>", top:pos[1], left:pos[0], width:<%=widthNotes%>, height:<%=heightNotes%>, hideEffect:Element.hide, showEffect:Element.show});

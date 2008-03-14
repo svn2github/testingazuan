@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.utilities.ParameterValuesEncoder"%>
 <%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 
@@ -126,7 +127,7 @@ uuid = uuid.replaceAll("-", "");
 				</a>
 			</li>
 		    <li>		    
-				<a id="sendTo_button" href='javascript:void(0);'>
+				<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 					<img title='<spagobi:message key = "sbi.execution.sendTo" />'
 						src='<%= urlBuilder.getResourceLink(request, "/img/mail_generic22.png")%>'
 						alt='<spagobi:message key = "sbi.execution.sendTo" />' />
@@ -156,6 +157,13 @@ uuid = uuid.replaceAll("-", "");
 					<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
 						src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
 						alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
+				</a>
+			</li>
+			<li>
+				<a id="metadata_button<%= uuid %>" href='javascript:void(0);'">
+					<img width="22px" height="22px" title='<spagobi:message key = "SBISet.objects.captionMetadata" />'
+						src='<%= urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>'
+						alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
 				</a>
 			</li>
 			<li>
@@ -211,7 +219,7 @@ toggle('popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);
 <%-- Scripts for send mail to form --%>
 <script type="text/javascript">
 var win_sendTo_<%= uuid %>;
-Ext.get('sendTo_button').on('click', function(){
+Ext.get('sendTo_button<%= uuid %>').on('click', function(){
 	if(!win_sendTo_<%= uuid %>) {
 		win_sendTo_<%= uuid %> = new Ext.Window({
 			id:'win_sendTo_<%= uuid %>',
@@ -376,6 +384,38 @@ function somethingWentWrongSavingIntoMyFolder() {
 </div>
 <!-- end div for notes -->
 
+<%-- Scripts for metadata window --%>
+<script>
+var win_metadata_<%= uuid %>;
+Ext.get('metadata_button<%= uuid %>').on('click', function(){
+	if(!win_metadata_<%= uuid %>) {
+		win_metadata_<%= uuid %> = new Ext.Window({
+			id:'win_metadata_<%= uuid %>',
+			bodyCfg: {
+				tag:'div',
+				cls:'x-panel-body',
+				children:[{
+					tag:'iframe',
+      					src: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
+      					frameBorder:0,
+      					width:'100%',
+      					height:'100%',
+      					style: {overflow:'auto'}  
+ 						}]
+			},
+			layout:'fit',
+			width:600,
+			height:300,
+			closeAction:'hide',
+			plain: true,
+			title: '<spagobi:message key = "SBISet.objects.captionMetadata" />'
+		});
+	};
+	win_metadata_<%= uuid %>.show();
+});
+</script>
+<%-- End scripts for metadata window --%>
+
 <%-- Scripts for print --%>
 <script>
 function printIFrame<%= uuid %>() {
@@ -388,5 +428,6 @@ function printIFrame<%= uuid %>() {
 	} 
 }
 </script>
+<%-- End scripts for print --%>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

@@ -21,20 +21,6 @@
         		<ITEM prog="0" resource="/jsp/hotlink/hotlinkHome.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
-  	</PUBLISHER>
-  	
-  	<PUBLISHER name="SAVE_REMEMBER_ME_PUBLISHER">
-    	<RENDERING channel="PORTLET" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/hotlink/savedRememberMe.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-   	 	<RENDERING channel="HTTP" mode="" type="JSP">
-      		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/hotlink/savedRememberMe.jsp"/>
-      		</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>  	
+  	</PUBLISHER>	
   	
 </PUBLISHERS>

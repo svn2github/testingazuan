@@ -25,8 +25,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import it.eng.spago.base.RequestContainer;
-
 /**
  * This is the interface for classes that implements logic
  * to retrieve localized messages to be used in JSP pages 
@@ -124,12 +122,15 @@ public interface IMessageBuilder {
 	 */
 	public String getMessage(String code, String bundle, HttpServletRequest request, Locale locale);
 	
-	/**
-	 * Get the localized text contained into the resource
-	 * @param resourceName The complete name of the resource
-	 * @return the localized text contained into the resource
+	 /**
+	 * Gets a localized information text given the resource name which contains the text 
+	 * information. 
+	 * The resource will be searched into the classpath of the application
+	 * @param resourceName	The complete name of the resource. 
+	 * @param request The http request for locale retrieving 
+	 * @return	the localized text contained into the resource
 	 */
-	public String getMessageTextFromResource(String resourceName);
+	public String getMessageTextFromResource(String resourceName, HttpServletRequest request);
 	
 	/**
 	 * If the specified locale is valid, returns the localized text contained into the resource with the specified locale; 

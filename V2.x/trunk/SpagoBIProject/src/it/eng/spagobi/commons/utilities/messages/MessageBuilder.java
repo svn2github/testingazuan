@@ -25,9 +25,6 @@ package it.eng.spagobi.commons.utilities.messages;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerAccess;
-import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.message.MessageBundle;
@@ -48,18 +45,6 @@ import org.apache.log4j.Logger;
 public class MessageBuilder implements IMessageBuilder {
 
     static private Logger logger = Logger.getLogger(MessageBuilder.class);
-	 /**
-	 * Gets a localized information text given the resource name which contains the text 
-	 * information. 
-	 * @param resourceName	The complete name of the resource. 
-	 * The resource will be searched into the classpath of the application
-	 * @return	A string containing the text
-	 */
-	public String getMessageTextFromResource(String resourceName) {
-		Locale locale = this.getLocale(null);
-		String message = getMessageTextFromResource(resourceName, locale);
-		return message;
-	}
 	
 	public String getMessageTextFromResource(String resourceName, Locale locale) {
 	    logger.debug("IN-resourceName:"+resourceName);
@@ -297,18 +282,41 @@ public class MessageBuilder implements IMessageBuilder {
 	 */
 	public String getSpagoBIMode(HttpServletRequest request) {
 		logger.debug("IN");
-		RequestContainer aRequestContainer = null;
 		String sbiMode = null;
-		// case of portlet mode
-		aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
-		if (aRequestContainer == null) {
-			// case of web mode
-			aRequestContainer = RequestContainerAccess.getRequestContainer(request);
+		if (request != null) {
+			RequestContainer aRequestContainer = null;
+			// case of portlet mode
+			aRequestContainer = RequestContainerPortletAccess.getRequestContainer(request);
+			if (aRequestContainer == null) {
+				// case of web mode
+				aRequestContainer = RequestContainerAccess.getRequestContainer(request);
+			}
+			String channelType = aRequestContainer.getChannelType();
+			if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
+			else sbiMode = "WEB";
+		} else {
+			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+			// get mode of execution
+			sbiMode = (String) spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");  
 		}
-		String channelType = aRequestContainer.getChannelType();
-		if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
-		else sbiMode = "WEB";
 		logger.debug("OUT: sbiMode = " + sbiMode);
 		return sbiMode;
+	}
+
+	 /**
+	 * Gets a localized information text given the resource name which contains the text 
+	 * information. 
+	 * The resource will be searched into the classpath of the application
+	 * @param resourceName	The complete name of the resource. 
+	 * @param request The http request for locale retrieving 
+	 * @return	A string containing the text
+	 */
+	public String getMessageTextFromResource(String resourceName,
+			HttpServletRequest request) {
+		logger.debug("IN");
+		Locale locale = this.getLocale(request);
+		String message = getMessageTextFromResource(resourceName, locale);
+		logger.debug("OUT");
+		return message;
 	}
 }

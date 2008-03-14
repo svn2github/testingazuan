@@ -299,7 +299,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("</script>\n");
 			
 			output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
-			output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/fixlistwizardinfo"));
+			output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/fixlistwizardinfo", httpRequest));
 			output.append("</div>\n");
 			
             pageContext.getOut().print(output.toString());

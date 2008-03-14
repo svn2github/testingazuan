@@ -121,7 +121,7 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 		output.append("</script>\n");
 		
 		output.append("<div id='javawizardinfodiv' style='display:none;'>\n");	
-		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/jclasswizardinfo"));
+		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/jclasswizardinfo", httpRequest));
 		output.append("</div>\n");
 		
         try {

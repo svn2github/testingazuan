@@ -117,7 +117,7 @@ td.header-title-column-portlet-section {
 	/*padding: 0px 0px 0px 1px;*/
 	/*background-color: #cccccc;*/
 	/*text-align: left;*/
-	background-color: #CCCFFF; 
+	background-color: #E1E4E9; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -138,7 +138,7 @@ td.header-title-column-portlet-section-nogrey {
 
 /* Column with the header title for each section of the SpagoBI portlet without image on top right side*/
 td.header-title-column-portlet-section-noimage {
-	background-color: #CCCFFF; 
+	background-color: #E1E4E9; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -168,7 +168,7 @@ td.header-title-column-single-object-execution-portlet-section {
 td.header-sub-title-column-portlet-section {
 	padding: 0px 0px 0px 1px;
 	/*background-color: lightgrey;*/
-	background-color: #CCCFFF; 
+	background-color: #E1E4E9; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;
@@ -186,7 +186,7 @@ td.header-sub-title-column-portlet-section {
 td.header-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
 	/*background-color: #cccccc;*/
-	background-color: #CCCFFF; 
+	background-color: #E1E4E9; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;
@@ -198,7 +198,7 @@ td.header-title-column-portlet-section-no-buttons {
 td.header-sub-title-column-portlet-section-no-buttons {
 	padding: 0px 0px 0px 1px;
 	/*background-color: lightgrey;*/
-	background-color: #CCCFFF; 
+	background-color: #E1E4E9; 
  	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
 	font-size: 12px;
 	font-weight: 500;
@@ -218,7 +218,7 @@ td.header-select-column-portlet-section {
 td.header-button-column-portlet-section {
 	vertical-align: middle;
 	width: 30px;
-	background-color:#CCCFFF;
+	background-color:#E1E4E9;
 }
 
 /* Column with a button for single object execution section of the SpagoBI portlet*/
@@ -246,13 +246,13 @@ input.header-button-image-portlet-section {
 
 /* Empty column in the header table for each section of the SpagoBI portlet*/
 td.header-empty-column-portlet-section {
-	background-color:#CCCFFF; 
+	background-color:#E1E4E9; 
 	width:10px;
 }
 
 /* Empty column in the header table for single object execution section of the SpagoBI portlet*/
 td.header-empty-column-single-object-execution-portlet-section {
-	background-color:#CCCFFF;
+	background-color:#E1E4E9;
 	width:10px;
 	border-bottom: 1px solid #bbb;
 	border-top: 1px solid #bbb;

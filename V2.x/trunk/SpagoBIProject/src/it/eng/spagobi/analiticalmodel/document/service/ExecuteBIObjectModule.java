@@ -1303,10 +1303,10 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
 			} else {
 				refreshParameter(biparam, request);
-				String isChanged = (String) request.getAttribute(biparam
-						.getParameterUrlName()
-						+ "IsChanged");
-				if (isChanged != null && isChanged.equalsIgnoreCase("true")) {
+//				String isChanged = (String) request.getAttribute(biparam
+//						.getParameterUrlName()
+//						+ "IsChanged");
+//				if (isChanged != null && isChanged.equalsIgnoreCase("true")) {
 					// refresh also the description
 					List values = biparam.getParameterValues();
 					String desc = "";
@@ -1318,7 +1318,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					}
 					paramsDescriptionMap.put(biparam.getParameterUrlName(),
 							desc);
-				}
+//				}
 			}
 
 			session

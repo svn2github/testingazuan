@@ -49,7 +49,7 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
 	
 	var treeLoader = new Ext.tree.TreeLoader({
         baseParams:{DATAMART_NAME: 'xxx'},
-        dataUrl   :"http://127.0.0.1:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=GET_TREE_ACTION"
+        dataUrl   :"http://localhost:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=GET_TREE_ACTION"
     });
     
    

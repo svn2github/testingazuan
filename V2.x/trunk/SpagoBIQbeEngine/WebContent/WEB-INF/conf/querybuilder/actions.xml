@@ -3,21 +3,28 @@
 <ACTIONS>
 
 	<ACTION name="GET_TREE_ACTION" 
-			class="it.eng.spagobi.qbe.tree.service.GetTreeAction"  
+			class="it.eng.spagobi.qbe.core.service.GetTreeAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="EXEC_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.queryresultshandler.service.ExecQueryAction"  
+			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="REFRESH_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.queryresultshandler.service.RefreshQueryAction"  
+			class="it.eng.spagobi.qbe.core.service.RefreshQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SaveQueryAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

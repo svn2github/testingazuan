@@ -8,8 +8,6 @@
  
 var getQueryBuilderPanel = function() {
 
-           
-			alert('zippo');
             var menuTree1 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();                
             var menuTree2 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();    
        
@@ -105,7 +103,7 @@ var getQueryBuilderPanel = function() {
                     // hidden:true,
                     handler: function(event, toolEl, panel){
                       Ext.Ajax.request({
-						   url: 'http://127.0.0.1:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=REFRESH_QUERY_ACTION',
+						   url: 'http://172.21.6.49:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=REFRESH_QUERY_ACTION',
 						   success: handleExecQuery,
 						   failure: function(){alert('failure')},					
 						   params: getParams

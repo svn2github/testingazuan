@@ -25,9 +25,7 @@ it.eng.spagobi.engines.qbe.locale.module = function(){
 		,
 		
 		applyLocale : function() {
-			//alert("applyLocale");
-        	//Ext.apply(it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.labels, selectGridModuleLabels);
-        	//alert(it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.labels.filter);
+        	Ext.apply(it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.labels, selectGridModuleLabels);        	
         }
         
 	};

@@ -51,8 +51,7 @@ it.eng.spagobi.engines.qbe.app = function() {
             
             it.eng.spagobi.engines.qbe.locale.module.init();
             it.eng.spagobi.engines.qbe.locale.module.applyLocale();
-            alert(it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.labels.filter);
-
+           
             tabs[0] = getQueryBuilderPanel();
             tabs[1] = getQueryResultsPanel();           
             

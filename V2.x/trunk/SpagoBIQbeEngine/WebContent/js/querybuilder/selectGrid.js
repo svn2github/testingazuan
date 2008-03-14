@@ -212,8 +212,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		        data : orderingTypesData 
 		    });
 		    
-		   alert('---->>> ciccciopelliccio');
-		   
+		  
 		    var cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
 		        {

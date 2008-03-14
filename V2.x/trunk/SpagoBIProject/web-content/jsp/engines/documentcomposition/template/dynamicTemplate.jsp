@@ -38,7 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	HashMap lstUrlParams = (HashMap)aSessionContainer.getAttribute("docUrlParams");
 	HashMap lstDocLinked = (HashMap)aSessionContainer.getAttribute("docLinked");
 	HashMap lstFieldLinked = (HashMap)aSessionContainer.getAttribute("fieldLinked");
-	HashMap lstStyle = (HashMap)aSessionContainer.getAttribute("docStyle");
+	HashMap lstStyle = (HashMap)aSessionContainer.getAttribute("divStyle");
 	HashMap lstStylePanel = (HashMap)aSessionContainer.getAttribute("panelStyle");
 	
 	String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
@@ -88,13 +88,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- ***************************************************************** -->
 <%
 for (int i=0; i<lstUrl.size(); i++){
-	String styleDoc = (String)lstStyle.get("STYLE_DOC_"+i);
-	String totalSbiDocLabel = (String)lstUrlParams.get("SBI_DOC_LABEL_"+(i));
+	String styleDoc = (String)lstStyle.get("STYLE_DOC__"+i);
+	String totalSbiDocLabel = (String)lstUrlParams.get("SBI_DOC_LABEL__"+(i));
 	String labelDoc = totalSbiDocLabel.substring(totalSbiDocLabel.indexOf("|")+1);
 %>
  
- <div id="divIframe_<%=labelDoc%>" style="<%=styleDoc%>" >
-<!-- <div id="divIframe_<%=labelDoc%>" class="<%=styleDoc%>" >-->
+ <div id="divIframe_<%=labelDoc%>" style="<%=styleDoc%>" > 
 </div> 
 
 <%} %>
@@ -110,31 +109,30 @@ for (int i=0; i<lstUrl.size(); i++){
 	var arStylePanels  = new Object();
  	<% //loop on documents
  	for (int i = 0; i < lstUrl.size(); i++){
- 		String mainLabel = (String)lstDocLinked.get("MAIN_DOC_LABEL_"+(i));
- 		String totalSbiDocLabel = (String)lstUrlParams.get("SBI_DOC_LABEL_"+(i));
+ 		String mainLabel = (String)lstDocLinked.get("MAIN_DOC_LABEL__"+(i));
+ 		String totalSbiDocLabel = (String)lstUrlParams.get("SBI_DOC_LABEL__"+(i));
  		String labelDoc = totalSbiDocLabel.substring(totalSbiDocLabel.indexOf("|")+1);
  	%>
- 		arUrl['<%=totalSbiDocLabel%>'] = ['<%=(String)lstUrl.get("URL_DOC_"+(i))%>'];
- 		arStylePanels['<%=labelDoc%>'] = ['<%=(String)lstStylePanel.get("STYLE_"+labelDoc)%>'];
+ 		arUrl['<%=totalSbiDocLabel%>'] = ['<%=(String)lstUrl.get("URL_DOC__"+(i))%>'];
+ 		arStylePanels['<%=labelDoc%>'] = ['<%=(String)lstStylePanel.get("STYLE__"+labelDoc)%>'];
  	<%	//loop on document linked 
  		for (int j=0; j<lstDocLinked.size(); j++){ 
-		
  			if (mainLabel != null && mainLabel.equalsIgnoreCase(labelDoc)){
 
-		 		String fieldMaster =  (String)lstFieldLinked.get("SBI_LABEL_PAR_MASTER_"+i+"_"+(j));
+		 		String fieldMaster =  (String)lstFieldLinked.get("SBI_LABEL_PAR_MASTER__"+i+"__"+(j));
 				if (fieldMaster != null && !fieldMaster.equals("")){	
 	%>
-					arLinkedFields['<%="SBI_LABEL_PAR_MASTER_"+(j)%>'] = ['<%=fieldMaster%>'];
+					arLinkedFields['<%="SBI_LABEL_PAR_MASTER__"+(j)%>'] = ['<%=fieldMaster%>'];
 	<%    		}
-				Integer numDocLinked = (Integer)lstFieldLinked.get("NUM_DOC_FIELD_LINKED_"+(i)+"_"+(j));
+				Integer numDocLinked = (Integer)lstFieldLinked.get("NUM_DOC_FIELD_LINKED__"+(i)+"__"+(j));
 				if (numDocLinked != null && !numDocLinked.equals("")){
 					for (int k=0; k < numDocLinked.intValue(); k++){
-						String label = (String)lstDocLinked.get("DOC_LABEL_LINKED_"+(i)+"_"+(j)+"_"+k);
-		 				String field =  (String)lstFieldLinked.get("DOC_FIELD_LINKED_"+(i)+"_"+(j)+"_"+k);
+						String label = (String)lstDocLinked.get("DOC_LABEL_LINKED__"+(i)+"__"+(j));
+		 				String field =  (String)lstFieldLinked.get("DOC_FIELD_LINKED__"+(i)+"__"+(j)+"__"+k);
 		 				if (field != null && !field.equals("")){
 		 	%>
-		 					arLinkedDocs['<%=labelDoc +"_"+(j)+"_"+(k)%>'] = ['<%=label%>'];
-		 					arLinkedFields['<%=label%>'] = ['<%=field%>'];
+		 					arLinkedDocs['<%=labelDoc +"__"+(j)+"__"+(k)%>'] = ['<%=label%>'];
+		 					arLinkedFields['<%=label+"__"+j+"__"+k%>'] = ['<%=field%>'];
 	 		<%     		}
 	 				}		
 				}

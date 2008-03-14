@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page import="java.util.List,
+<%@ page import="java.util.List, 
                  it.eng.spagobi.engines.documentcomposition.utils.DocumentCompositionUtils,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document,
@@ -48,75 +48,44 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     //get template file
     nameTemplate = docConfig.getTemplateFile();
     logger.debug("name TemplateFile: " + nameTemplate);
-    
+     
     //get list of documents
     List lstDoc = docConfig.getDocumentsArray();
     
     //get information for document composition
     Map lstUrl = new HashMap();
-    Map lstStyle = new HashMap();
+    Map lstDivStyle = new HashMap();
+    Map lstPanelStyle = new HashMap();
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
     Map lstFieldLinked = new HashMap();
-    Map lstDocStyle = new HashMap();
+   
+    
     
     //loop on documents
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations
     	Document tmpDoc = (Document)lstDoc.get(i);
     	String tmpUrl = DocumentCompositionUtils.getEngineUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
-    	String tmpStyle = (tmpDoc.getStyle()==null)?"":tmpDoc.getStyle(); 
-    	HashMap tmpUrlParams = (HashMap)aSessionContainer.getAttribute(tmpDoc.getLabel());
-    	HashMap tmpInfoDocLinked = (HashMap)docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
-    	
-    	lstDocStyle.put("STYLE_"+tmpDoc.getLabel(), (String)tmpInfoDocLinked.get("STYLE_"+tmpDoc.getLabel()));
-
-    	if (tmpInfoDocLinked != null && tmpInfoDocLinked.size() > 0){
-    		lstDocLinked.put("MAIN_DOC_LABEL_"+(i),tmpDoc.getLabel());
-    		//loop on document linked 
-	    	for (int j=0; j<tmpInfoDocLinked.size(); j++){
-	    		String tmpLabelDoc = (String)tmpInfoDocLinked.get("LABEL_DOC_"+(j));
-				if (tmpLabelDoc != null && !tmpLabelDoc.equals("")){
-					if ((String)tmpInfoDocLinked.get("SBI_LABEL_PAR_MASTER_"+tmpDoc.getNumOrder()+"_"+(j)) != null) 
-		    			lstFieldLinked.put("SBI_LABEL_PAR_MASTER_"+i+"_"+(j), (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_MASTER_"+tmpDoc.getNumOrder()+"_"+(j)));
-					
-					//get parameters linked
-					Integer numDocLinked = new Integer("0");					
-					String strNumDocLinked = (String)tmpInfoDocLinked.get("NUM_DOC_LINKED_"+tmpDoc.getNumOrder()+"_"+(j));
-					if (strNumDocLinked != null && !strNumDocLinked.equals("")){
-						numDocLinked = Integer.valueOf(strNumDocLinked);
-						lstFieldLinked.put("NUM_DOC_FIELD_LINKED_"+i+"_"+(j), numDocLinked);
-					}
-					//loop on parameters of document linked
-					for(int k=0; k < numDocLinked.intValue(); k++){
-						String tmpSubDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_DOC_"+(k));
-						tmpSubDoc = tmpSubDoc.substring(tmpSubDoc.indexOf("|")+1);
-						String tmpParDoc = (String)tmpInfoDocLinked.get("SBI_LABEL_PAR_"+(k));
-						if (tmpParDoc != null && !tmpParDoc.equals("")){
-							lstDocLinked.put("DOC_LABEL_LINKED_"+i+"_"+(j)+"_"+k, (String)tmpInfoDocLinked.get("SBI_LABEL_DOC_"+(k)));
-							lstFieldLinked.put("DOC_FIELD_LINKED_"+i+"_"+(j)+"_"+k, tmpParDoc);
-						}
-					}
-				}
-			}
-    	}
-
-    	lstUrl.put("URL_DOC_" + (i), tmpUrl);
-    	lstStyle.put("STYLE_DOC_"+(i),tmpStyle);
-    	lstUrlParams.put("PARAMS_DOC_"+(i),tmpUrlParams);
-    	lstUrlParams.put("SBI_DOC_LABEL_"+(i),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
-    	
-    	logger.debug("url for iframe_"+(i)+ " : " + tmpUrl + " Style: " + tmpStyle );
-    	logger.debug("parameters for iframe_"+(i)+ " : " + tmpUrlParams);
-
+    	//lstUrlParams.put("PARAMS_DOC_"+(i),tmpUrlParams);
+    	lstUrlParams.put("SBI_DOC_LABEL__"+(i),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
+    	//prepare list of values for the document that it's loading
+    	docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
+  
+    	lstUrl.put("URL_DOC__" + (i), tmpUrl);
+        lstDivStyle = docConfig.getLstDivStyle();
+        lstPanelStyle = docConfig.getLstPanelStyle();
+        lstDocLinked = docConfig.getLstDocLinked();
+        lstFieldLinked = docConfig.getLstFieldLinked(); 
     }
+
     aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
     aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
     aSessionContainer.setAttribute("docLinked", lstDocLinked);
     aSessionContainer.setAttribute("fieldLinked", lstFieldLinked);
-    aSessionContainer.setAttribute("panelStyle", lstDocStyle);
-    aSessionContainer.setAttribute("docStyle", lstStyle);
+    aSessionContainer.setAttribute("panelStyle", lstPanelStyle);
+    aSessionContainer.setAttribute("divStyle", lstDivStyle);
    
     //include jsp requested
     getServletContext().getRequestDispatcher(nameTemplate).include(request,response);    

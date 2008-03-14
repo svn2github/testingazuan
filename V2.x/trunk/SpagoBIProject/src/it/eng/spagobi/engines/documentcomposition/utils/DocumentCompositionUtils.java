@@ -340,10 +340,16 @@ public class DocumentCompositionUtils {
 		return true;
 	}
 
-	
+	/**
+	 * Return a string representative an url with all parameters set with a request value (if it is present) or
+	 * with the default's value.
+	 * @param doc the document object that is managed
+	 * @param document the document configurator
+	 * @param requestSB the request object
+	 * @return a string with the url completed
+	 */
 	private static String getParametersUrl(BIObject doc, Document document, SourceBean requestSB){
 		String paramUrl = "";
-		
 		
 		//set others parameters value
 		Properties lstParams = document.getParams();
@@ -352,19 +358,23 @@ public class DocumentCompositionUtils {
 		String value = "";
 		int cont = 0;
 		while(enParams.hasMoreElements()) {
-	    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
-    		key = lstParams.getProperty(tmpKey);
-    		if (key == null) break;
-	    	//value = lstParams.getProperty(key);
-    		value = (String)requestSB.getAttribute(key);
-	    	//if value isn't defined, gets the default value
-		    if(value == null || value.equals("")){
-			    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
-	    	}
-		    if (value != null && !value.equals(""))
-	    		paramUrl += "&amp;"+ key + "=" + value;
-	    	
-		    cont++;
+			String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
+			//only for parameter in input to the document managed (type equal 'IN')
+			//if (typeParam.equalsIgnoreCase("IN")) {
+		    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
+	    		key = lstParams.getProperty(tmpKey);
+	    		if (key == null) break;
+		    	//value = lstParams.getProperty(key);
+	    		value = (String)requestSB.getAttribute(key);
+		    	//if value isn't defined, gets the default value
+			    if(value == null || value.equals("")){
+				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
+		    	}
+			    if (value != null && !value.equals(""))
+		    		paramUrl += "&amp;"+ key + "=" + value;
+		    	
+			    cont++;
+			//}
 	    }
 
 		return paramUrl;

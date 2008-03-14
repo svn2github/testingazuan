@@ -35,7 +35,6 @@ function setStylePanels(pStylePanels){
 
 /* Update the input url with value for refresh linked documents and execute themes */
 function execDrill(name, urlDrill){
-//alert(name, url);
 	var baseName = "iframe_";
 	var labelDocClicked = name.substring(baseName.length);
 	var tmpUrl = "";
@@ -53,31 +52,41 @@ function execDrill(name, urlDrill){
 				//gets iframe element
 				var nameIframe = "iframe_" + labelDocLinked;
 				var element = document.getElementById(nameIframe);
-	
+				
 				//updating url with fields found in object
 				var j=0;
 				var sbiParMaster = "";
+				var tmpOldSbiSubDoc = "";
+				var newUrl = "";
+				var tmpUrl = "";
+				var finalUrl = "";
 				for (var fieldLabel in asLinkedFields){ 
 					var totalLabelPar =  asLinkedFields[fieldLabel];
 					var labelPar 	= totalLabelPar[0].substring(totalLabelPar[0].indexOf('|')+1);
 					var	sbiLabelPar = totalLabelPar[0].substring(0, totalLabelPar[0].indexOf('|'));
-					var labelSubDoc = fieldLabel.substring(fieldLabel.indexOf('|')+1);;
+					var labelSubDoc = fieldLabel.substring(fieldLabel.indexOf('|')+1);
+					labelSubDoc = labelSubDoc.substring(0, labelSubDoc.indexOf("__"));
 					var sbiSubDoc 	= fieldLabel.substring(0, fieldLabel.indexOf('|'));
-					if (fieldLabel.indexOf("SBI_LABEL_PAR_MASTER")>=0)
-						sbiParMaster = asLinkedFields[fieldLabel];
-					else if (labelSubDoc == labelDocLinked){
-						var newUrl = asUrls[sbiSubDoc+"|"+labelSubDoc]; //final url
-						//testare con PIU' parametri!!!
+
+					if (labelSubDoc == labelDocLinked){
+						if (tmpOldSbiSubDoc != sbiSubDoc){
+							newUrl = asUrls[sbiSubDoc+"|"+labelSubDoc]; //final url
+						 	tmpUrl = newUrl[0].substring(newUrl[0].indexOf("?")+1);
+						 	finalUrl = newUrl[0];
+							tmpOldSbiSubDoc = sbiSubDoc;
+						}
+						
 						var paramsNewValues = urlDrill.split("&");
 						var tmpNewValue = "";
-						var tmpOldValue = "";
+						var tmpOldValue = "";	
 						if (paramsNewValues != null && paramsNewValues.length > 0) {
 							for (j = 0; j < paramsNewValues.length; j++) {
+								var idPar = fieldLabel.substring(fieldLabel.indexOf("__")+2);
+								sbiParMaster = asLinkedFields["SBI_LABEL_PAR_MASTER__" + idPar.substring(idPar.length-1)];
 								tmpNewValue = paramsNewValues[j];
 								if (tmpNewValue.substring(0, tmpNewValue.indexOf("=")) == sbiParMaster){
 									tmpNewValue = tmpNewValue.substring(tmpNewValue.indexOf("=")+1);
-									
-									var tmpUrl = newUrl[0].substring(newUrl[0].indexOf("?")+1);
+						
 									var paramsOldValues = tmpUrl.split("&amp;");
 									if (paramsOldValues != null && paramsOldValues.length > 0) {
 										for (k = 0; k < paramsOldValues.length; k++) {
@@ -85,30 +94,24 @@ function execDrill(name, urlDrill){
 											if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("=")) == sbiLabelPar){
 												tmpOldValue = paramsOldValues[k] ;
 												tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
-												break;
+												if (tmpOldValue != "" && tmpNewValue != ""){
+													finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
+													RE = new RegExp("&amp;", "ig");
+													newUrl = finalUrl.replace(RE, "&");
+													tmpOldValue = "";
+													tmpNewValue = "";
+													break;
+												}
 											}
 										}
 									}
 								}
-							}
-							if (tmpOldValue != "" && tmpNewValue != ""){
-								var tmp = newUrl[0];
-								tmp = tmp.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
-								RE = new RegExp("&amp;", "ig");
-								newUrl = tmp.replace(RE, "&");
-								tmpOldValue = "";
-								tmpNewValue = "";
-							}
-						
+							}						
 						}
 	
 					}
-				} //for (var fieldLabel in asLinkedFields){ 
-				
-				
-				
+				} //for (var fieldLabel in asLinkedFields){ 	
 				sendUrl(nameIframe, newUrl);
-				//pause(2000);
 			}//if (docLabel.indexOf(labelMasterDoc) >= 0){
 			i= i+1;	
 		}//for (var docLabel in asLinkedDocs){ 

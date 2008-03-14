@@ -43,6 +43,14 @@ import java.util.Properties;
 public class DocumentCompositionConfiguration {
 	private String templateFile;
 	private Map documentsMap;
+	//list used by final jsp
+	private Map lstUrl = new HashMap();
+	private Map lstDivStyle = new HashMap();
+	private Map lstUrlParams  = new HashMap();
+	private Map lstDocLinked = new HashMap();
+	private Map lstFieldLinked = new HashMap();
+	private Map lstPanelStyle = new HashMap();
+	
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
 	Integer[] widthPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
@@ -317,12 +325,12 @@ public class DocumentCompositionConfiguration {
 			while (cont < arrPars.length){
 				//loop on documents
 				for(int i=0; i < arrPars.length; i++){
-					int totParsLinked = 0;
 					Document tmpDoc =(Document) arrPars[i];
 					if (tmpDoc.getNumOrder() == cont){
 						if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
 							Properties prop = (Properties)tmpDoc.getParams();
 							Enumeration enum =  prop.keys();
+							int totParsLinked = 0;
 							//loop on parameters of single document
 							while (enum.hasMoreElements() ){
 								String key = (String)enum.nextElement();
@@ -344,64 +352,23 @@ public class DocumentCompositionConfiguration {
 	}
 	
 	/**
-	 * Returns a list with all labels of document linked at the document in input
-	 * @param docLabel label of document principal
-	 * @return a list with all document linked to the principal document
-	 * 
+	 * Reads and defines all maps with all information about configuration for refresh
+	 * @param docLabel the logical label of document presents into document composition
 	 */
-	/*
-	public List getDocumentLinked(String docLabel) {
-		Collection collDocs = documentsMap.values();
-		List retDocs = new ArrayList();
-		Object[] arrPars = (Object[])collDocs.toArray();
-		try{
-			//gets all document linked with any pararmeters
-			List paramsDoc = getParametersForDocument(docLabel);
-			List tmpKeyLinked = new ArrayList();
-			for (int i=0; i< paramsDoc.size(); i++){
-				Properties tmpParam = (Properties)paramsDoc.get(i);
-				Enumeration enum =  tmpParam.keys();
-				while (enum.hasMoreElements() ){
-					String key = (String)enum.nextElement();
-					if (key.startsWith("param_linked_")){
-						//Properties tmpDocRefresh = (Properties)tmpParam.get(key);
-						String tmpDocRefresh = (String)tmpParam.get(key);
-						String[] tmpRefresh = null;
-						if (tmpDocRefresh != null){
-							tmpRefresh = tmpDocRefresh.split(",");
-						}
-						for (int k=0; k < tmpRefresh.length; k++){
-							String tmpValue = tmpRefresh[k].replace("{", "");
-							tmpValue = tmpValue.replace("}", "");
-							if (tmpValue.trim().startsWith("refresh_doc_linked")){
-								retDocs.add(tmpValue.substring(tmpValue.indexOf("=")+1));
-							}
-						}
-					}
-				}
-			}
-			
-		}catch(Exception e){
-			System.out.println(e);
-		}
-		return retDocs;
-
-	}
-	*/
-	
-	public HashMap getInfoDocumentLinked(String docLabel) {
-		String strParLinked = "";
-		HashMap retDocs = new HashMap();
+	public void getInfoDocumentLinked(String docLabel) {
 		Document tmpDoc = getDocument(docLabel);
 		int numDoc = 0;
 		
 		if (tmpDoc != null){
 			numDoc = tmpDoc.getNumOrder();
+			//set syle for div
+			lstDivStyle.put("STYLE_DOC__"+numDoc, tmpDoc.getStyle());
+			lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getLabel());
 			//gets layout informations (width and height) for next settings of ext-panels
 			String docStyles = tmpDoc.getStyle();
+			String tmpStyle = "";
 			if (docStyles != null){
 				String[] propValues = docStyles.split(";");
-				strParLinked += "STYLE_"  + docLabel + "=";
 				for (int i=0; i<propValues.length; i++){
 					String key = propValues[i].substring(0, propValues[i].indexOf(":"));
 					String value = propValues[i].substring(propValues[i].indexOf(":")+1);
@@ -428,13 +395,12 @@ public class DocumentCompositionConfiguration {
 						}
 						else if (value.endsWith("px"))
 							value = value.substring(0, value.length()-2);
-						
-						strParLinked += key.toUpperCase() + "_" + value + "|";
+
+						tmpStyle += key.toUpperCase() + "_" + value + "|";
 					}
 				}
-				strParLinked = strParLinked.substring(0, strParLinked.length()-1);
-				strParLinked += ",";
-			
+				tmpStyle = tmpStyle.substring(0, tmpStyle.length()-1);
+				lstPanelStyle.put("STYLE__"  + docLabel , tmpStyle);
 			}
 				
 			try{
@@ -444,15 +410,13 @@ public class DocumentCompositionConfiguration {
 				for (int i=0; i< paramsDoc.size(); i++){
 					String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
 					if (typePar != null && typePar.equalsIgnoreCase("OUT")){
-						strParLinked += "SBI_LABEL_PAR_MASTER_"+(numDoc)+"_"+contOutPar+"="+(String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i) +",";
-					
+						lstFieldLinked.put("SBI_LABEL_PAR_MASTER__"+(numDoc)+"__"+contOutPar, (String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i));
 						Integer numDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
-						strParLinked += "NUM_DOC_LINKED_"+(numDoc)+"_"+contOutPar+"=" + numDocLinked + ",";
+						lstFieldLinked.put("NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, numDocLinked);
 						//loop on document linked to parameter
 						for (int j=0; j<numDocLinked.intValue(); j++){
 							String paramLinked = (paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j);
 							String[] params = paramLinked.split(",");
-							strParLinked += "NUM_PARAMS_LINKED_"+(numDoc)+"_"+i+"=" + params.length + ",";
 							//loop on parameters of document linked
 							for (int k=0; k<params.length; k++) {
 								String labelDocLinked = params[k];
@@ -461,22 +425,15 @@ public class DocumentCompositionConfiguration {
 								if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
 									//get document linked 
 									Document linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
-									
-									strParLinked += "LABEL_DOC_"+(j)+"=" + linkedDoc.getLabel() + ",";
-									strParLinked += "SBI_LABEL_DOC_"+(j)+"=" + linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel() + ",";
-									
+									lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
 									HashMap paramsDocLinked = getParametersForDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
 									int numLinked = linkedDoc.getNumOrder();
 									for (int x=0; x< paramsDocLinked.size(); x++){
 										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
 										String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
 										if (sbiLabelPar != null && !sbiLabelPar.equals(""))
-											strParLinked += "SBI_LABEL_PAR_"+(j)+"="+ sbiLabelPar +"|"+labelPar+",";
-									}
-									
-								}
-								if (labelDocLinked.trim().startsWith("refresh_par_linked")){
-									strParLinked += "LABEL_PAR_LINKED_"+(j)+"="+labelDocLinked.substring(labelDocLinked.indexOf("=")+1) +",";
+											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+j+"__"+x, sbiLabelPar +"|"+labelPar);
+									}								
 								}
 							}
 						}
@@ -488,65 +445,8 @@ public class DocumentCompositionConfiguration {
 				System.out.println(e);
 			}
 		}
-		if(strParLinked.endsWith(","))
-			strParLinked = strParLinked.substring(0, strParLinked.length()-1);
-		if (!strParLinked.equals(""))
-			retDocs = getMapFromString(strParLinked);
-		
-		return retDocs;
+	}
 
-	}
-	/**
-	 * Return a list with all labels of the fields that are linked to the principal document 
-	 * @param docLabel the label of principal document
-	 * @param docField the label of the principal field 
-	 * @return a list with all field labels linked to the document
-	 */
-	/*
-	public List getFieldsLinked(String docLabel, String docField) {
-		Collection collDocs = documentsMap.values();
-		List retFields = new ArrayList();
-		Object[] arrPars = (Object[])collDocs.toArray();
-		try{
-			//gets all document linked with any pararmeters
-			List paramsDoc = getParametersForDocument(docLabel);
-			List tmpKeyLinked = new ArrayList();
-			for (int i=0; i< paramsDoc.size(); i++){
-				Properties tmpParam = (Properties)paramsDoc.get(i);
-				Enumeration enum =  tmpParam.keys();
-				while (enum.hasMoreElements() ){
-					String key = (String)enum.nextElement();
-					if (key.startsWith("param_linked_")){
-						//Properties tmpDocRefresh = (Properties)tmpParam.get(key);
-						String tmpDocRefresh = (String)tmpParam.get(key);
-						String[] tmpRefresh = null;
-						if (tmpDocRefresh != null){
-							tmpRefresh = tmpDocRefresh.split(",");
-						}
-						boolean isCorrectDoc = false;
-						for (int k=0; k < tmpRefresh.length; k++){
-							String tmpValue = tmpRefresh[k].replace("{", "");
-							tmpValue = tmpValue.replace("}", "");
-							if (tmpValue.startsWith("refresh_doc_linked_")){
-								String tmpDocLabel = tmpValue.substring(tmpValue.indexOf("=")+1);
-								if (tmpDocLabel.equalsIgnoreCase(docLabel)){
-									isCorrectDoc = true;
-								}
-								if (isCorrectDoc && tmpValue.startsWith("refresh_par_linked_")){
-									retFields.add(tmpValue.substring(tmpValue.indexOf("=")+1));
-								}
-							}
-						}
-					}
-				}
-			}
-			
-		}catch(Exception e){
-			System.out.println(e);
-		}
-		return retFields;
-	}
-	*/
 	public List getDocumentsArray() {
 		Collection collDocs = documentsMap.values();
 		List retDocs = new ArrayList();
@@ -578,6 +478,54 @@ public class DocumentCompositionConfiguration {
 			retHash.put(key, value);
 		}
 		return retHash;
+	}
+
+	public Map getLstUrl() {
+		return lstUrl;
+	}
+
+	public void setLstUrl(Map lstUrl) {
+		this.lstUrl = lstUrl;
+	}
+
+	public Map getLstDivStyle() {
+		return lstDivStyle;
+	}
+
+	public void setLstStyle(Map lstDivStyle) {
+		this.lstDivStyle = lstDivStyle;
+	}
+
+	public Map getLstUrlParams() {
+		return lstUrlParams;
+	}
+
+	public void setLstUrlParams(Map lstUrlParams) {
+		this.lstUrlParams = lstUrlParams;
+	}
+
+	public Map getLstDocLinked() {
+		return lstDocLinked;
+	}
+
+	public void setLstDocLinked(Map lstDocLinked) {
+		this.lstDocLinked = lstDocLinked;
+	}
+
+	public Map getLstFieldLinked() {
+		return lstFieldLinked;
+	}
+
+	public void setLstFieldLinked(Map lstFieldLinked) {
+		this.lstFieldLinked = lstFieldLinked;
+	}
+
+	public Map getLstPanelStyle() {
+		return lstPanelStyle;
+	}
+
+	public void setLstPanelStyle(Map lstPanelStyle) {
+		this.lstPanelStyle = lstPanelStyle;
 	}
 
 }

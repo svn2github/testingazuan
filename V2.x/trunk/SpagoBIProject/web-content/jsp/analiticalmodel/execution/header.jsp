@@ -171,7 +171,7 @@ uuid = uuid.replaceAll("-", "");
 				</a>
 			</li>
 			<li>
-				<a href='javascript:void(0)' onClick="printIFrame<%= uuid %>();">
+				<a href='javascript:void(0)' onClick="print<%= uuid %>();">
 					<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.print" />'
 						src='<%= urlBuilder.getResourceLink(request, "/img/printer22.png")%>'
 						alt='<spagobi:message key = "sbi.execution.print" />' />
@@ -416,7 +416,7 @@ Ext.get('metadata_button<%= uuid %>').on('click', function(){
 
 <%-- Scripts for print --%>
 <script>
-function printIFrame<%= uuid %>() {
+function print<%= uuid %>() {
 	if (!isMoz()) {
 		document.iframeexec<%= uuid %>.focus();
 		document.iframeexec<%= uuid %>.print();

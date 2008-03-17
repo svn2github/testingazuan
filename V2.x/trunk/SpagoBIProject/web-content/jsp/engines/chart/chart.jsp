@@ -256,7 +256,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	
 	String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	
-	String completeUrl="javascript:parent.parent.execDrill(this.name, '/SpagoBIJasperReportEngine/SpagoBIDrillServlet?DOCUMENT_LABEL=SBI_LOVFORM&lov_id=214&param_output_format=HTML";
+	String completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
 
 		if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
 		((LinkableBar)sbi).setRootUrl(completeUrl);

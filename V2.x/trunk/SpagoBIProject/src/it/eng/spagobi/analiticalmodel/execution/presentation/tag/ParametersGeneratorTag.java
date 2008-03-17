@@ -683,7 +683,7 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
-	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+parameterId+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
+	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
 	    
 	
 	
@@ -721,8 +721,8 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("   			}]");
 	htmlStream.append("			},");
 	htmlStream.append("			layout:'fit',\n");
-	htmlStream.append("			width:700,\n");
-	htmlStream.append("			height:300,\n");
+	htmlStream.append("			width:800,\n");
+	htmlStream.append("			height:320,\n");
 	htmlStream.append("			closeAction:'hide',\n");
 	htmlStream.append("			plain: true\n");
 	htmlStream.append("		});\n");

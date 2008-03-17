@@ -2,9 +2,9 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.util.Iterator;
 
 import org.jfree.chart.JFreeChart;
@@ -15,7 +15,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.Dataset;
 
@@ -45,7 +44,7 @@ public class LinkableBar extends BarCharts {
         org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
         
         renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
-        renderer.setItemURLGenerator(new StandardCategoryURLGenerator(rootUrl));
+        renderer.setItemURLGenerator(new MyCategoryUrlGenerator(rootUrl));
         CategoryPlot plot = new CategoryPlot((CategoryDataset)dataset, categoryAxis, valueAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, true);

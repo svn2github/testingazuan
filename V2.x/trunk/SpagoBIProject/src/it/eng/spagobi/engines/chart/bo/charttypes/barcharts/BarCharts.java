@@ -26,7 +26,8 @@ public class BarCharts extends ChartImpl {
 	HashMap colorMap=null;  // keeps user selected colors
 	int categoriesNumber=0;
 	HashMap categories;
-
+	String currentSerie="";
+	
 	public Dataset calculateValue() throws SourceBeanException {
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
 		categories=new HashMap();
@@ -155,8 +156,8 @@ public class BarCharts extends ChartImpl {
 			valueLabel="values";
 		}
 		
-		if(confParameters.get("numbercatvisualization")!=null){	
-			String nu=(String)confParameters.get("numbercatvisualization");
+		if(confParameters.get("numbervisualization")!=null){	
+			String nu=(String)confParameters.get("numbervisualization");
 		numberCatVisualization=Integer.valueOf(nu);
 		}
 		else
@@ -231,7 +232,6 @@ public class BarCharts extends ChartImpl {
 
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
-		DefaultCategoryDataset newDataSet=new DefaultCategoryDataset();
 		
 		int numCats=categories.size();
 		Vector visCat=new Vector();
@@ -248,22 +248,36 @@ public class BarCharts extends ChartImpl {
 			visCat.add(name);
 		}
 		
-		try {
-			newDataSet=(DefaultCategoryDataset)catDataset.clone();
 		
-		List columns=new Vector(newDataSet.getColumnKeys());
+		List columns=new Vector(catDataset.getColumnKeys());
 			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
 			String col = (String) iterator.next();
 				if(!(visCat.contains(col))){
-					newDataSet.removeColumn(col);
+					catDataset.removeColumn(col);
 				}			
 			}
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-			return newDataSet;
+			return catDataset;
+	
+	}
+	
+	
+	public Dataset filterDatasetSeries(Dataset dataset, String serie) {
+				
+		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
+		
+			//List rowKeys=new Vector();
+		
+		List rowKeys=new Vector(catDataset.getRowKeys());
+				
+			for (Iterator iterator = rowKeys.iterator(); iterator.hasNext();) {
+			String row = (String) iterator.next();
+			if(!(row.equals(serie))){
+				catDataset.removeRow(row);			
+				}			
+			}
+
+			return catDataset;
 	
 	}
 

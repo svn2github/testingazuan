@@ -46,7 +46,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
 
 
-	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
+	<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
+<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
   
@@ -59,6 +60,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String valueSlider="1";
 	String refreshUrl2 = "";
 	HashMap categories=null;
+	String serie="allseries";
+	List series=null;
 	int numberCatVisualization=1;
 	int catsnum=0;
 	int ticks=1;
@@ -186,7 +189,7 @@ if(aServiceResponse.getAttribute("title")!=null){title= (String)aServiceResponse
 	ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
-Dataset copyDataset;
+Dataset copyDataset=null;
 
 
 // get wich pars can the user set
@@ -208,9 +211,14 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 
 /////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
 		if(sbi.getType().equalsIgnoreCase("BARCHART")){
+			series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
+			DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
+			copyDataset=new DefaultCategoryDataset();					
+			copyDataset=(DefaultCategoryDataset)catDataset.clone();
+
 			if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
 				Double catD=Double.valueOf(catS);
@@ -219,14 +227,20 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				else valueSlider=(new Integer(categoryCurrent)).toString();
 				if(categoryCurrent!=0){
 				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
-				copyDataset=sbi.filterDataset(dataset,categories,categoryCurrent,numberCatVisualization);				
+				copyDataset=sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization);				
 				}
-				else{copyDataset=dataset;}
 			}
-			else{copyDataset=dataset;}
-		} 
-			else{copyDataset=dataset;
+			
+			if(request.getParameter("serie")!=null)
+				{serie=(String)request.getParameter("serie");
+				if(!serie.equalsIgnoreCase("allseries")){
+					copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,serie);	
+				}
 			}
+		}
+
+
+	if(copyDataset==null){copyDataset=dataset;}
 
 ///////////////////////////////////////////////////// End category case//////////////////////////////////////////
 
@@ -234,17 +248,21 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 ///// Linkable chart case/////////////////777
 
 	HashMap rootPar=new HashMap();
-	rootPar.put("PAGE","DirectExecutionPage");
+		rootPar.put("PAGE","DirectExecutionPage");
 	rootPar.put("MODULE","DirectExecutionModule");
 	rootPar.put("DOCUMENT_LABEL","Report");
 	rootPar.put("OPERATION","Execute");
 	rootPar.put("USERNAME",userId);
 	
 	String  rootUrl=urlBuilder.getUrl(request,rootPar);
-	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
-		((LinkableBar)sbi).setRootUrl(rootUrl);
+	
+	String completeUrl="javascript:parent.parent.execDrill(this.name, '/SpagoBIJasperReportEngine/SpagoBIDrillServlet?DOCUMENT_LABEL=SBI_LOVFORM&lov_id=214&param_output_format=HTML";
+
+		if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
+		((LinkableBar)sbi).setRootUrl(completeUrl);
 	}
 
+		
 	////////////// Chart creation/////////////////////77
 	
 	JFreeChart chart=null;
@@ -272,9 +290,43 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 
 		
-////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
 	
-		    if(sbi.isChangeableView()){
+// form to limit the series if it is a barchart
+if(sbi.getType().equalsIgnoreCase("BARCHART")){
+	%>
+	<form name="serie" action="<%=refreshUrl2%>" method="GET" >	
+ 		<select name="serie" onchange="this.form.submit();">
+		
+		<%if(serie.equalsIgnoreCase("allseries")){ %>
+				<option value="allseries" selected="selected">View all series</option>
+		<%} else {%>
+			<option value="allseries">View all series</option>
+		<%} %>
+		
+	<%     	
+	    // for each possible serie 
+	    	for (Iterator iterator = series.iterator(); iterator.hasNext();) {
+	    		String ser = (String) iterator.next(); 
+	    		if(ser.equals(serie)){
+	    		%>
+		<option value="<%=ser%>" selected="selected"><%=ser%></option>
+	<%}else{ %>
+		<option value="<%=ser%>"><%=ser%></option>
+	<%} 
+	} %>
+	
+	
+	
+	</select>
+	</form>
+<% 
+}
+
+
+
+////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
+
+if(sbi.isChangeableView()){
 	%>
 	<table id="changepars" align="center"><tr>
 	<%     	
@@ -413,6 +465,8 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		var finalUrl=url+second;
 		return finalUrl;
 		}
+		
+
 	
 	
 	Ext.onReady(function() {

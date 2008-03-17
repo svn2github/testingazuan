@@ -24,11 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 String widthNotes = "700";
 String heightNotes = "300";
-String title = "";
-title = obj.getName();
-String objDescr = obj.getDescription();
-if( (objDescr!=null) && !(objDescr.trim().equals("")) )
-	title += ": " + objDescr;
 BIObjectNotesManager objectNotesManager = new BIObjectNotesManager();
 String execIdentifier = objectNotesManager.getExecutionIdentifier(obj);
 String nameUser = (String)userProfile.getUserUniqueIdentifier();

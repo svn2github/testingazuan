@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         it.eng.spagobi.commons.bo.Domain,
 	 				         it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects,
 	 				         it.eng.spagobi.tools.distributionlist.service.DetailDistributionListModule" %>
+	<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
@@ -148,17 +149,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<BR>
 	
 <% if (modality!= null && modality.equalsIgnoreCase("DETAIL_MOD")){ %>
-<table style='width:80%;vertical-align:middle;margin-top:1px' >
+<table style='width:98%;vertical-align:middle;margin-top:1px' >
 <tr>
 	<td>
-	<table style='width:70%;vertical-align:middle;margin-top:1px' id ="userTable" >
+	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
 		<tr class='header-row-portlet-section'>	
 			<td class='header-title-column-portlet-section-nogrey' style='text-align:center;vertical-align:middle'>
 					<spagobi:message key = "SBISet.ListDL.relatedUsers" />
 			</td>
 		</tr>
 	</table>
-		<table style='width:70%;margin-top:1px' id ="usersTable" >
+		<table style='width:90%;margin-top:1px' id ="usersTable" >
 	<tr>	
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnUser" />
@@ -205,7 +206,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </td>
 	
 <td>	
-	<table style='width:90%;vertical-align:middle;margin-top:1px' id ="userTable" >
+	<table style='width:95%;vertical-align:middle;margin-top:1px' id ="userTable" >
 		<tr class='header-row-portlet-section'>			
 			<td class='header-title-column-portlet-section-nogrey' style='text-align:center;vertical-align:middle'>
 					<spagobi:message key = "SBISet.ListDL.relatedDoc" />
@@ -213,7 +214,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</tr>
 	</table>	
 	
-	<table style='width:90%;margin-top:1px' id ="documentsTable" >
+	<table style='width:95%;margin-top:1px' id ="documentsTable" >
 	<!-- LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	<tr>	
 	  <td class='portlet-section-header' style='text-align:left'>
@@ -223,16 +224,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  <td class='portlet-section-header' style='text-align:left'>
 				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />		
 	  </td>
+	  		 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleStart" />			
+
+	 </td>
+	 	 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleEnd" />	
+	 </td>
+	 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleFrequence" />			
+
+	 </td>
 	</tr>	
 	
 	<%
 			List documents = dl.getDocuments();
 			if(documents!=null && !documents.isEmpty()){
-	%>	
-	
-	
-		
-		<%
+
 			Iterator it2 = documents.iterator();
 			while(it2.hasNext()){
 				
@@ -245,7 +253,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				if((docDescr==null) || (docDescr.equalsIgnoreCase("null"))  ) {
 					docDescr = "";
 				   }
-				
+				List xmls = DAOFactory.getDistributionListDAO().getXmlRelated(dl , bo.getId().intValue());
+				if (! xmls.isEmpty()){
+					Iterator xit = xmls.iterator();
+					while (xit.hasNext()){
+						String xml = (String) xit.next();						
+						SourceBean sbOrig = SourceBean.fromXMLString(xml);
+						
+						String schedStart = (String)sbOrig.getAttribute("startDate");
+						String schedStartTime = (String)sbOrig.getAttribute("startTime");
+						String schedBegin = schedStart + " " + schedStartTime ;
+						
+						String schedE = "";					
+						String schedEndTime = "";
+						if ( sbOrig.getAttribute("endDate") != null) schedE = (String)sbOrig.getAttribute("endDate");					
+						if ( sbOrig.getAttribute("endTime") != null) schedEndTime = (String)sbOrig.getAttribute("endTime");						
+						String schedEnd = schedE + " " + schedEndTime ;
+						
+						String frequency = (String)sbOrig.getAttribute("chronString");
 		 %>
 		 <tr class='portlet-font'>
 		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>		 	
@@ -254,9 +279,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>
 			<%=docDescr %>
 			</td>
+			 <td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=schedBegin %>				   				
+				   	</td>	
+				   	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=schedEnd %>				   				
+				   	</td>
+					<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=frequency %>				   				
+				   	</td>
 	    </tr>
 				    		
-	<% } %>
+	<%}} } %>
 	
 								
 	<% } %>

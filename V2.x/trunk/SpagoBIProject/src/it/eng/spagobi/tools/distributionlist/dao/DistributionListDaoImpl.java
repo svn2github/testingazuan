@@ -646,4 +646,40 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		return false;		
 	}
 	
+	
+	public List getXmlRelated(DistributionList dl, int objId) throws EMFUserError {
+		logger.debug("IN");
+		List xmls = new ArrayList();   	
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+			Query query = tmpSession.createQuery(hql);
+			
+			List l = query.list();
+			if(!l.isEmpty()){
+		    Iterator it = l.iterator();
+		    while(it.hasNext()){
+		    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
+		    	String xmlstr = temp.getXml();
+		    	xmls.add(xmlstr);
+		    }	
+			}
+		} catch (HibernateException he) {
+			logger.error("Error while loading the distribution list documents ", he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9106);
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return xmls;		
+	}
+	
 }

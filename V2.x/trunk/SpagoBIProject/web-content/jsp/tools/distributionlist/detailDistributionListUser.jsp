@@ -38,7 +38,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 
 	
-	<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
+	<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
 	
 	<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 	<tr>
@@ -92,7 +93,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 	
-	<table style='width:100%;margin-top:1px' id = "docTable" >
+	<table style='width:95%;margin-top:1px' id = "docTable" >
 
 	<tr class='header-row-portlet-section'>
 	
@@ -102,7 +103,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	</tr>
 	</table>
-	<table style='width:100%;margin-top:1px' id = "docTable" >
+	<table style='width:95%;margin-top:1px' id = "docTable" >
 	<tr>
 	  <td class='portlet-section-header' style='text-align:left'>
 
@@ -112,6 +113,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDL.columnDocDescr" />			
 
 	 </td>
+		 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleStart" />			
+
+	 </td>
+	 	 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleEnd" />	
+	 </td>
+	 <td class='portlet-section-header' style='text-align:left'>
+				<spagobi:message key = "SBISet.ListDL.ScheduleFrequence" />			
+
+	 </td>
+	
 	</tr>	
 	
 		
@@ -122,12 +135,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				BIObject bo = (BIObject)it2.next();
 				String docName = bo.getName();
 				String docDescr = bo.getDescription();
+				
 				if((docName==null) || (docName.equalsIgnoreCase("null"))  ) {
 					docName = "";
 				   }
 				if((docDescr==null) || (docDescr.equalsIgnoreCase("null"))  ) {
 					docDescr = "";
 				   }
+				
+				List xmls = DAOFactory.getDistributionListDAO().getXmlRelated(dl , bo.getId().intValue());
+				if (! xmls.isEmpty()){
+					Iterator xit = xmls.iterator();
+					while (xit.hasNext()){
+						String xml = (String) xit.next();						
+						SourceBean sbOrig = SourceBean.fromXMLString(xml);
+						
+						String schedStart = (String)sbOrig.getAttribute("startDate");
+						String schedStartTime = (String)sbOrig.getAttribute("startTime");
+						String schedBegin = schedStart + " " + schedStartTime ;
+						
+						String schedE = "";					
+						String schedEndTime = "";
+						if ( sbOrig.getAttribute("endDate") != null) schedE = (String)sbOrig.getAttribute("endDate");					
+						if ( sbOrig.getAttribute("endTime") != null) schedEndTime = (String)sbOrig.getAttribute("endTime");						
+						String schedEnd = schedE + " " + schedEndTime ;
+						
+						String frequency = (String)sbOrig.getAttribute("chronString");
 				
 		 %>			
 		 			<tr class='portlet-font'>
@@ -136,21 +169,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	</td>
 				   	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
 					<%=docDescr %>				   				
-				   	</td>		
+				   	</td>	
+				    <td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=schedBegin %>				   				
+				   	</td>	
+				   	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=schedEnd %>				   				
+				   	</td>
+					<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
+					<%=frequency %>				   				
+				   	</td>
+			
 				   	</tr>
-	<% } %>
+	<% }}} %>
 	
 		<spagobi:error/>
 								
 		
 	</table> 
-	<% } else {%>
-		  	 <div class='div_detail_form'>
-				<span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDL.noDoc" />
-				</span>
-			</div>
-	<% } %> <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
+	<% } %>
+ <!-- CLOSE LIST OF DOCUMENTS RELATED TO A DISTRIBUTION LIST  -->
 	
 	
 	</div>  

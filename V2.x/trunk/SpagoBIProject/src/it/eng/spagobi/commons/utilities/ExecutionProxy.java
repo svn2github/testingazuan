@@ -31,6 +31,7 @@ import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.services.common.IProxyService;
 import it.eng.spagobi.services.common.IProxyServiceFactory;
 
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -142,6 +143,7 @@ public class ExecutionProxy {
 		returnedContentType = "application/octet-stream";
 	    }
 
+	    auditManager.updateAudit(executionId,null , new Long(GregorianCalendar.getInstance().getTimeInMillis()), "EXECUTION_PERFORMED", null, null);
 	    httppost.releaseConnection();
 	} catch (Exception e) {
 	    logger.error("Error while executing object ", e);

@@ -175,5 +175,15 @@ public interface IDistributionListDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public boolean isDocScheduledInOtherTime(DistributionList dl, int objId, String xml) throws EMFUserError ;
+	
+	/**
+	 * Returns a list of the Xmls related to the specified Distribution List and the specified Document
+	 * 
+	 * @param dsId The distribution list identifier
+	 * @param objId The id of the document
+	 * @return List of Xml related to the DL and the doc with id objId 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List getXmlRelated(DistributionList dl, int objId) throws EMFUserError ;
 
 }

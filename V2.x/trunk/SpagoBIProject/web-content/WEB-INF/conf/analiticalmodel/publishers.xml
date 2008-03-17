@@ -249,14 +249,15 @@
   	<PUBLISHER name="ExecuteBIObjectPageParameter">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        	 <!--	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/> -->
+        	 <!--<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/> -->
         	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/>  
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0"  resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>
+        		<!--<ITEM prog="0"  resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>-->
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

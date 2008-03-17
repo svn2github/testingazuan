@@ -23,14 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.officedocument;
 
 import it.eng.spago.base.RequestContainer;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -65,18 +63,18 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		}
 		
 		try {
-			response.setAttribute("biobjectId", obj.getId());
-			ObjTemplate objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
-			String templateFileName = objTemp.getName();
-			response.setAttribute("templateFileName", templateFileName);
-			// create the title
-			String title = "";
-			title += obj.getName();
-			String objDescr = obj.getDescription();
-			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-				title += ": " + objDescr;
-			}
-			response.setAttribute("title", title);
+			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+//			ObjTemplate objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+//			String templateFileName = objTemp.getName();
+//			response.setAttribute("templateFileName", templateFileName);
+//			// create the title
+//			String title = "";
+//			title += obj.getName();
+//			String objDescr = obj.getDescription();
+//			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
+//				title += ": " + objDescr;
+//			}
+//			response.setAttribute("title", title);
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {

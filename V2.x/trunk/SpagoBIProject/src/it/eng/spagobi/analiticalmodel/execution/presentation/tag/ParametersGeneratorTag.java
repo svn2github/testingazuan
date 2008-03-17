@@ -300,7 +300,6 @@ public class ParametersGeneratorTag extends TagSupport {
 	    	htmlStream.append("    viewpointdescr" + requestIdentity + " = new Ext.form.TextField({\n");
 	    	htmlStream.append("			id:'descVP" + requestIdentity + "',\n");
 	    	htmlStream.append("			name:'descVP',\n");
-	    	htmlStream.append("			allowBlank:false, \n");
 	    	htmlStream.append("			inputType:'text',  \n");
 	    	htmlStream.append("			fieldLabel:'" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.description", httpRequest) + "' \n");
 	    	htmlStream.append("    });\n");

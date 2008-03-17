@@ -1,0 +1,9 @@
+/* CSS to print an image of dashboard*/
+#spagoBiHeader{display:none;}
+.UITabs{display: none;}
+.default-decorator{display: none;}
+.community-toolbar-container{display: none;}
+.portlet-info-bar{display: none;}
+#changepars{display: none;}
+#sliderform{display: none;}
+#image{display: block; min-height: 200px; height: auto !important; height: 200px; min-width: 200px; width: auto !important; width: 200px;} 

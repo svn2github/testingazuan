@@ -276,7 +276,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	
 		    if(sbi.isChangeableView()){
 	%>
-	<table align="center"><tr>
+	<table id="changepars" align="center"><tr>
 	<%     	
 	    // for each possible parameter to change creates a checkbox
 	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
@@ -356,7 +356,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	%>
 	
 
-	<form>
+	<form id="sliderform">
 		<table class="slidertableclass" align="center" >
 	<tr>
 	<td width="75%" align="center">

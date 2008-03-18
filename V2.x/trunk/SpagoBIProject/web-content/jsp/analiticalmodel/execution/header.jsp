@@ -33,6 +33,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.ParameterValuesEncoder"%>
 <%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule"%>
+<%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 
@@ -415,6 +417,18 @@ Ext.get('metadata_button<%= uuid %>').on('click', function(){
 <%-- End scripts for metadata window --%>
 
 <%-- Scripts for print --%>
+<%
+if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")) {
+	%>
+	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
+	<script>
+	function print<%= uuid %>() {
+		window.print();
+	}
+	</script>
+	<%
+} else {
+%>
 <script>
 function print<%= uuid %>() {
 	if (!isMoz()) {
@@ -426,4 +440,8 @@ function print<%= uuid %>() {
 	} 
 }
 </script>
+<%
+}
+%>
+
 <%-- End scripts for print --%>

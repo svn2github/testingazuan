@@ -7,7 +7,7 @@
 		portal. 
 	</description>
 
- <!-- 
+<!-- 
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -41,10 +41,15 @@
 				https://localhost:8443/SpagoBIJasperReportEngine/proxyReceptor
 			</param-value>
 		</init-param>	
-	
-	</filter>
 
--->
+     <init-param>
+  			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
+             <param-value>true</param-value> 
+       </init-param> 
+       	
+	</filter>
+ -->
+
 
 
 	<filter>
@@ -55,17 +60,21 @@
 	</filter>
 
 
- <!--
+<!-- 
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/JasperReportServlet/*</url-pattern>
 	</filter-mapping>
--->
 
+ -->
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/JasperReportServlet/*</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/JasperReportServletBackEnd/*</url-pattern>
+	</filter-mapping>	
 
 	
     
@@ -113,7 +122,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>JasperReportServlet</servlet-name>
-		<url-pattern>/JasperReportServletScheduler</url-pattern>
+		<url-pattern>/JasperReportServletBackEnd</url-pattern>
 	</servlet-mapping>	
 
 	<servlet-mapping>

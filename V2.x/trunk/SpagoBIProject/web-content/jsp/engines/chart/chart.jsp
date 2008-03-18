@@ -22,11 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="java.util.Map" %>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
-<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="java.util.List"%>
-<%@page import="it.eng.spagobi.commons.bo.Domain"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.jfree.chart.JFreeChart"%>
 <%@page import="org.jfree.chart.ChartUtilities"%>
@@ -47,14 +43,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 	<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
+
+
+	<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
   
   
   <% 
-  
-	String title=""; 
+  	String titleChart="";
 	String maxSlider="";
 	String minSlider="";
 	String valueSlider="1";
@@ -66,117 +65,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	int catsnum=0;
 	int ticks=1;
 	int categoryCurrent=0;
-	
-	
-     // build the back link
-	Map backUrlPars = new HashMap();
-    backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-    String backUrl = urlBuilder.getUrl(request, backUrlPars);
-    
-    
+	String refreshUrlCategory="";
 
-	IDomainDAO domaindao = DAOFactory.getDomainDAO();
-	List states = domaindao.loadListDomainsByType("STATE");
-    List possibleStates = new java.util.ArrayList();
-	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
-    	Iterator it = states.iterator();
-    	 while(it.hasNext()) {
-      		    	Domain state = (Domain)it.next();
-      		    	if (state.getValueCd().equalsIgnoreCase("TEST")){
-      					possibleStates.add(state);
-      				}
-      	}
-    } 
-    else if(userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
-    	Iterator it = states.iterator();
-    	 while(it.hasNext()) {
-      		    	Domain state = (Domain)it.next();
-      		    	if ((state.getValueCd().equalsIgnoreCase("DEV")) || ((state.getValueCd().equalsIgnoreCase("REL")))) {
-      					possibleStates.add(state);
-      				}
-      	}
-    }
-    
-    
-
-    
-    %>
-    
-
-<table id="spagoBiHeader" class='header-table-portlet-section'>
-			<tr class='header-row-portlet-section'>
-    			<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
-           			<%=title%>
-       			</td>
-       			<td class='header-empty-column-portlet-section'>&nbsp;</td>
-       			<td class='header-button-column-portlet-section'>
-           			<a href='<%=backUrl%>'>
-                 		<img title='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' 
-                      		 class='header-button-image-portlet-section'
-                      		 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-                      		 alt='<spagobi:message key = "SBIDev.docConf.execBIObject.backButt" />' />
-           			</a>
-       			</td>
-		   		<% if (!possibleStates.isEmpty()) {
-			   			Map formUrlPars = new HashMap();
-			   			formUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-			   			formUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CHANGE_STATE);
-			   			formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-			   		    String formUrl = urlBuilder.getUrl(request, formUrlPars);
-    			%>
-       			<form method='POST' action='<%=formUrl%>' id='changeStateForm'  name='changeStateForm'>
-	       		<td class='header-select-column-portlet-section'>
-      				<select class='portlet-form-field' name="newState">
-      				<% 
-      		    	Iterator iterstates = possibleStates.iterator();
-      		    	while(iterstates.hasNext()) {
-      		    		Domain state = (Domain)iterstates.next();
-      				%>
-      					<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"><%=state.getValueName()%></option>
-      				<%}%>
-      				</select>
-      			</td>
-      			<td class='header-select-column-portlet-section'>
-      				<input type='image' class='header-button-image-portlet-section' 
-      				       src='<%=urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
-      				       title='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />' 
-      				       alt='<spagobi:message key = "SBIDev.docConf.execBIObject.upStateButt" />'/> 
-      			</td>
-      			<td class='header-select-column-portlet-section'>
-      					<A id="linkText" HREF="#" onClick="window.print();return false">
-      				<IMG class='header-button-image-portlet-section' 
-      				       src='<%=urlBuilder.getResourceLink(request, "/img/Print.gif")%>' 
-      				       title='<spagobi:message key = "sbi.execution.print" />' 
-      				       alt='<spagobi:message key = "sbi.execution.print" />'/>  
-      				       </A>
-      			</td>
-        		</form>
-       			<% } %>
-   			</tr>
-		</table>
-  
-
-  
-
-	
-
-
-
-  
-  <%
  EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
-	if(!errorHandler.isOK()){
-  	
-  %>
-
-    <spagobi:error/>
-  
-  <%}
-	else
-	{%>
-    
-<%
+	if(errorHandler.isOK()){    
 SessionContainer permSession = aSessionContainer.getPermanentContainer();
 
 if(userProfile==null){
@@ -185,10 +77,13 @@ if(userProfile==null){
 }
 
 
-if(aServiceResponse.getAttribute("title")!=null){title= (String)aServiceResponse.getAttribute("title");}
-	ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
-String documentid=(String)aServiceResponse.getAttribute("documentid");
-Dataset dataset=(Dataset)aServiceResponse.getAttribute("dataset");
+if(moduleResponse.getAttribute("title")!=null){titleChart=(String)moduleResponse.getAttribute("title");}
+	//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
+ChartImpl sbi = (ChartImpl)moduleResponse.getAttribute("sbi");
+	
+String documentid=(obj.getId()).toString();
+//String documentid=(String)aServiceResponse.getAttribute("documentid");
+Dataset dataset=(Dataset)moduleResponse.getAttribute("dataset");
 Dataset copyDataset=null;
 
 
@@ -248,17 +143,28 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 ///// Linkable chart case/////////////////777
 
 	HashMap rootPar=new HashMap();
+	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
 		rootPar.put("PAGE","DirectExecutionPage");
-	rootPar.put("MODULE","DirectExecutionModule");
-	rootPar.put("DOCUMENT_LABEL","Report");
-	rootPar.put("OPERATION","Execute");
-	rootPar.put("USERNAME",userId);
+		rootPar.put("MODULE","DirectExecutionModule");
+		rootPar.put("DOCUMENT_LABEL","Report");
+		rootPar.put("OPERATION","Execute");
+		rootPar.put("USERNAME",userId);
 	
-	String  rootUrl=urlBuilder.getUrl(request,rootPar);
+		String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	
-	String completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
+		String completeUrl=rootUrl;
+	
+		if(request.getParameter(SpagoBIConstants.EXECUTION_CONTEXT)!=null){
+			if(request.getParameter(SpagoBIConstants.EXECUTION_CONTEXT).equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){
+				((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
+				completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
+				}
+			else
+			{
+				((LinkableBar)sbi).setMode("normal");
+			}
+		}
 
-		if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
 		((LinkableBar)sbi).setRootUrl(completeUrl);
 	}
 
@@ -267,11 +173,11 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	
 	JFreeChart chart=null;
 	// create the chart
-	chart = sbi.createChart(title,copyDataset);
+	chart = sbi.createChart(titleChart,copyDataset);
 
 		//Create the temporary file
-		UUIDGenerator uuidGen = UUIDGenerator.getInstance();
-		UUID uuid = uuidGen.generateTimeBasedUUID();
+		//UUIDGenerator uuidGen = UUIDGenerator.getInstance();
+		//UUID uuid = uuidGen.generateTimeBasedUUID();
 		String executionId = uuid.toString();
 		executionId = executionId.replaceAll("-", "");
 
@@ -288,15 +194,29 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		   	refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
 		String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
-
+		refreshUrlCategory=refreshUrl2+"&serie="+serie;
 		
 	
 // form to limit the series if it is a barchart
 if(sbi.getType().equalsIgnoreCase("BARCHART")){
+	String refreshUrlSerie=refreshUrl2+"&category="+categoryCurrent;
 	%>
-	<form name="serie" action="<%=refreshUrl2%>" method="GET" >	
- 		<select name="serie" onchange="this.form.submit();">
+	<div class='div_detail_form'>
+		<span class='portlet-form-field-label'>
+			Select a serie
+			</span>
+		</div>
 		
+	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
+<% 	refreshUrlPars2.put("category",new Integer(categoryCurrent));
+	for(Iterator iterator = refreshUrlPars2.keySet().iterator(); iterator.hasNext();){
+		String name = (String) iterator.next();
+		String value=(refreshUrlPars2.get(name)).toString();
+%>		
+	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+
+<%} %>
+		<select name="serie" onchange="this.form.submit();">
 		<%if(serie.equalsIgnoreCase("allseries")){ %>
 				<option value="allseries" selected="selected">View all series</option>
 		<%} else {%>
@@ -404,7 +324,7 @@ if(sbi.isChangeableView()){
 		//The maximun is number_categories/numbercatvisualization, parte intera		
 		maxSlider=new Integer(ticks).toString(); 
 		minSlider="1"; 
-		String allCatsUrl=refreshUrl2+"&category=0";
+		
 	%>
 	
 
@@ -451,7 +371,7 @@ if(sbi.isChangeableView()){
 		
 		var variable="&category=0";
 		var second=variable;
-		var url="<%=refreshUrl2%>";
+		var url="<%=refreshUrlCategory%>";
 		var finalUrl=url+second;
 		return finalUrl;
 		}
@@ -461,7 +381,7 @@ if(sbi.isChangeableView()){
 		var variable="&category=";
 		var value=getValue();
 		var second=variable+value;
-		var url="<%=refreshUrl2%>";
+		var url="<%=refreshUrlCategory%>";
 		var finalUrl=url+second;
 		return finalUrl;
 		}

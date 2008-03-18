@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
 
- <ACTION name="GET_JFREECHART" class="it.eng.spagobi.engines.chart.service.GetJFreeChartAction" scope="REQUEST">
- 	<CONFIG/>
- </ACTION>
+
  <ACTION name="GET_PNG" class="it.eng.spagobi.engines.chart.service.GetPngAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
-  <ACTION name="CREATE_CHART" class="it.eng.spagobi.engines.chart.service.CreateChart" scope="REQUEST">
+  <!-- <ACTION name="CREATE_CHART" class="it.eng.spagobi.engines.chart.service.CreateChart" scope="REQUEST">
  	<CONFIG/>
- </ACTION>
+ </ACTION>-->
 
 </ACTIONS>
 

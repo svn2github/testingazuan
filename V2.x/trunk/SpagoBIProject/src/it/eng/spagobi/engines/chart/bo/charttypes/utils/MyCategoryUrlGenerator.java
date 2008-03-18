@@ -5,6 +5,7 @@ import org.jfree.data.category.CategoryDataset;
 
 public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 
+
 	
 	public String generateURL(CategoryDataset dataset, int series, int category) {
 		// TODO Auto-generated method stub
@@ -28,6 +29,7 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		super(prefix);
 		// TODO Auto-generated constructor stub
 	}
+
 
 	
 	

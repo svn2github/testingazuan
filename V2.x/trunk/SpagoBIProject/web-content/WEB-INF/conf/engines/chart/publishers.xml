@@ -18,23 +18,4 @@
 
 
 
-    <PUBLISHER name="LOOPCHART">
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="CREATE_CHART" />
-        		<PARAMETER name="documentid" type="RELATIVE" scope="SERVICE_RESPONSE" value="EXECUTEBIOBJECTMODULE.documentid" />
-        		<PARAMETER name="title" type="RELATIVE" scope="SERVICE_RESPONSE" value="EXECUTEBIOBJECTMODULE.title" />
-        		<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" value="TRUE" />
- 			</RESOURCES>
-   	 	</RENDERING>
-   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="CREATE_CHART" />
-        		<PARAMETER name="documentid" type="RELATIVE" scope="SERVICE_RESPONSE" value="EXECUTEBIOBJECTMODULE.documentid" />
-        		<PARAMETER name="title" type="RELATIVE" scope="SERVICE_RESPONSE" value="EXECUTEBIOBJECTMODULE.title" />
-        	<PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" value="TRUE" />
- 			</RESOURCES>
-   	 	</RENDERING>
-  	</PUBLISHER>
-  	
   	</PUBLISHERS>

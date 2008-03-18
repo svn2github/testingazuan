@@ -78,21 +78,23 @@ public class ErrorTag extends TagSupport  {
     	
     	
     	if (!errors.isEmpty()) {
-	    	output.append("<div class='div_detail_errors'>\n");
-	    	output.append("	<div class='portlet-section-header'>\n");
+    		output.append("<div class='errors-object-details-div'>\n");
+	    	output.append("	<div class='div_detail_errors'>\n");
+	    	output.append("		<div class='portlet-section-header'>\n");
 	    	output.append("			ERRORS:\n");
-	    	output.append("	</div>\n");
-	    	output.append("	<div class='portlet-msg-error'>\n");
-	    	output.append("		<ul class='ul_detail_error'>\n");
+	    	output.append("		</div>\n");
+	    	output.append("		<div class='portlet-msg-error'>\n");
+	    	output.append("			<ul class='ul_detail_error'>\n");
 	    	EMFAbstractError error = null;
 	    	String description = "";
 	    	Iterator iter = errors.iterator();
 	    	while(iter.hasNext()) {
 	    		error = (EMFAbstractError)iter.next();
 	    	 	description = error.getDescription();
-	    	 	output.append("		<li>"+description+"</li>\n");
+	    	 	output.append("			<li>"+description+"</li>\n");
 	    	}
-	    	output.append("		</ul>\n");
+	    	output.append("			</ul>\n");
+	    	output.append("		</div>\n");
 	    	output.append("	</div>\n");
 	    	output.append("</div>\n");
     	}

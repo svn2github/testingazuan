@@ -1,13 +1,18 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -24,7 +29,12 @@ public class LinkableBar extends BarCharts {
 
 	String rootUrl=null;
 	String mode="";
+	String drillLabel="";
+	HashMap drillParameter=null;
 
+
+	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
+	
 	public Dataset calculateValue() throws SourceBeanException {
 		return super.calculateValue();		
 	}
@@ -33,7 +43,31 @@ public class LinkableBar extends BarCharts {
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
-	}
+		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		if(drillSB!=null){
+			String lab=(String)drillSB.getAttribute("document");
+			if(lab!=null) drillLabel=lab;
+			else{
+				logger.error("Drill label not found");
+			}
+			
+			List parameters =drillSB.getAttributeAsList("PARAM");
+			if(parameters!=null){
+			drillParameter=new HashMap();	
+			
+			for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
+				SourceBean att = (SourceBean) iterator.next();
+				String name=(String)att.getAttribute("name");
+				String value=(String)att.getAttribute("value");
+				drillParameter.put(name, value);
+				}
+			}
+			}
+		}
+		
+		
+		
+	
 
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
@@ -120,6 +154,26 @@ public class LinkableBar extends BarCharts {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+
+	public String getDrillLabel() {
+		return drillLabel;
+	}
+
+
+	public void setDrillLabel(String drillLabel) {
+		this.drillLabel = drillLabel;
+	}
+
+
+	public HashMap getDrillParameter() {
+		return drillParameter;
+	}
+
+
+	public void setDrillParameter(HashMap drillParameter) {
+		this.drillParameter = drillParameter;
 	}
 
 }

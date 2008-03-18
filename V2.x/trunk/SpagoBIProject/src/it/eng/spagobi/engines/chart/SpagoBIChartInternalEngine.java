@@ -171,6 +171,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			}
 			//JFreeChart chart=null;
 			// create the chart
+
+			
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
@@ -182,6 +184,12 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
 				//responseSb.setAttribute("changeviewchecked",new Boolean(changeViewChecked));
 				response.setAttribute("sbi",sbi);
+
+				String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+			    if (executionContext != null)
+			    		response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
+
+			
 			}
 			catch (Exception eex) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);

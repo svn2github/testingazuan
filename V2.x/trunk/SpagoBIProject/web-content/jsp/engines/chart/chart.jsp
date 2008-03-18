@@ -45,7 +45,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 
 
-	<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%
+BIObject objO=null;
+String uuidO="";
+
+SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+		
+<%	objO=obj;
+	uuidO=uuid;
+
+   } %>
 
 <!-- 
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
@@ -79,13 +91,13 @@ if(userProfile==null){
 }
 
 
-if(moduleResponse.getAttribute("title")!=null){titleChart=(String)moduleResponse.getAttribute("title");}
+if(sbModuleResponse.getAttribute("title")!=null){titleChart=(String)sbModuleResponse.getAttribute("title");}
 	//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
-ChartImpl sbi = (ChartImpl)moduleResponse.getAttribute("sbi");
+ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
 	
-String documentid=(obj.getId()).toString();
+String documentid=(objO.getId()).toString();
 //String documentid=(String)aServiceResponse.getAttribute("documentid");
-Dataset dataset=(Dataset)moduleResponse.getAttribute("dataset");
+Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
 Dataset copyDataset=null;
 
 
@@ -146,12 +158,26 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 
 	HashMap rootPar=new HashMap();
 	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
+		
 		rootPar.put("PAGE","DirectExecutionPage");
 		rootPar.put("MODULE","DirectExecutionModule");
-		rootPar.put("DOCUMENT_LABEL","Report");
-		rootPar.put("OPERATION","Execute");
+		//rootPar.put("OPERATION","Execute");
 		rootPar.put("USERNAME",userId);
-	
+
+		//get from the linkableBar the label and eventually the parameters to pass
+		if(((LinkableBar)sbi).getDrillLabel()!=null)
+					rootPar.put("DOCUMENT_LABEL",((LinkableBar)sbi).getDrillLabel());
+		
+		//for each parameter needed
+		HashMap parameters=((LinkableBar)sbi).getDrillParameter();
+		if(parameters!=null){
+			for(Iterator iterator=parameters.keySet().iterator(); iterator.hasNext();){
+				String name = (String) iterator.next();			
+				String value=(String)parameters.get(name);
+				rootPar.put(name,value);
+			}
+		}
+
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	
 		String completeUrl=rootUrl;
@@ -180,7 +206,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		//Create the temporary file
 		//UUIDGenerator uuidGen = UUIDGenerator.getInstance();
 		//UUID uuid = uuidGen.generateTimeBasedUUID();
-		String executionId = uuid.toString();
+		String executionId = uuidO;
 		executionId = executionId.replaceAll("-", "");
 
 		ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());

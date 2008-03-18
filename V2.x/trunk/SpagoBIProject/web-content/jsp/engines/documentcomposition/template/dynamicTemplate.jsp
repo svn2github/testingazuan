@@ -17,21 +17,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --> 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
-<%@ page import="java.util.Map,
-                 it.eng.spago.navigation.LightNavigationManager" %>
-<%@page import="java.util.HashMap"%>
+
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
- 
+<%@page import="java.util.HashMap"%>
+
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 	
 <%
 	logger.debug("IN");
-   	
-    // get module response
-    SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule");
-    String title = (String)moduleResponse.getAttribute("title");
     
 	//gets urls & co of documents
 	HashMap lstUrl = (HashMap)aSessionContainer.getAttribute("docUrls");
@@ -44,12 +40,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
 	String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id"); 
 	    
-	// build the back link
-	Map backUrlPars = new HashMap();
-    backUrlPars.put("PAGE", "BIObjectsPage");
-    backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-    String backUrl = urlBuilder.getUrl(request, backUrlPars);
-
     String urlIframe = (String)aSessionContainer.getAttribute("urlIframe");
 	logger.debug("urlIframe: " + urlIframe);
 
@@ -62,24 +52,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/documentcomposition/documentcomposition.css")%>' type='text/css' />
 
-<table class='header-table-portlet-section'>
-	<tr class='header-row-portlet-section'>
-    	<td class='header-title-column-portlet-section' style='vertical-align:middle;'>
-        <div id="navigationBar<%=executionId%>">
-           &nbsp;&nbsp;&nbsp;<%=title%>  
-        </div>
-       </td>
-       <td class='header-empty-column-portlet-section'>&nbsp;</td>
-       <td class='header-button-column-portlet-section'>
-           <a href='<%=backUrl%>'>
-                 <img title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />'
-                      class='header-button-image-portlet-section'
-                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>'
-                      alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
-           </a>
-       </td>
-   </tr>
-</table>
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->

@@ -6,6 +6,7 @@
 	<!-- ====================================================================================== -->
 	<ACTIVE_SSO>false</ACTIVE_SSO>
 	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
+	<PASS>PASS</PASS>
 	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
 	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>

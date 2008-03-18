@@ -29,4 +29,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </div>
 <%-- End execution iframe --%>
 
+<%-- start drill script --%>
+<script>
+function execDrill(name, url){
+	if (name == null || name == "")
+		name = "iframeexec<%=executionId%>";
+	var element = document.getElementById(name);
+	element.src = url;
+	return;
+}
+</script>
+<%-- end drill script --%>
+
 <%@ include file="/jsp/commons/footer.jsp"%>

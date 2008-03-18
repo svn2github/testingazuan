@@ -81,7 +81,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += "&editor-only=" + template.getEditorOnly();
 		} catch (DocumentException e) {
 			e.printStackTrace();
-			throw new  IOException(e);			
+			throw new  IOException();			
 		}
     			
 		//RequestDispatcher dispatcher = request.getRequestDispatcher( jpaloUrl );

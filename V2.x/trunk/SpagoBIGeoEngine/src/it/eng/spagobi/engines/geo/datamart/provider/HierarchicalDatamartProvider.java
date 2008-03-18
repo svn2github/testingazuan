@@ -248,7 +248,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             Map values = new HashMap();
             Map attributes = null;
             Map links = new HashMap();
-            resultSet.beforeFirst();
+
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
@@ -282,7 +282,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        					    "DefaultDatamartProvider :: getDatamartObject : " +
+        					    "HierarchicalDatamartProvider :: getDatamartObject : " +
         					    "Cannot load the data from the datawarehouse", ex);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
@@ -312,10 +312,10 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
-
+   
             results = new SourceBean("ROWS");
             SourceBean row;
-            resultSet.beforeFirst();
+            //resultSet.beforeFirst();
             int rowno = 0;
             while(resultSet.next()) {
             	if(++rowno > 1000) break;
@@ -339,7 +339,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             
         } catch (Exception ex) {
         	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        					    "DefaultDatamartProvider :: getDatamartObject : " +
+        					    "HierarchicalDatamartProvider :: getDatamartObject : " +
         					    "Cannot load the data from the datawarehouse", ex);
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
@@ -388,7 +388,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-				    			"DefaultDatamartProvider :: createLink : " +
+				    			"HierarchicalDatamartProvider :: createLink : " +
 				    			"Cannot create drill link", e);
     	}
     	return link;

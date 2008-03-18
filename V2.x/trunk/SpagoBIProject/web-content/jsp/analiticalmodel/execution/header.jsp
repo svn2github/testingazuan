@@ -99,9 +99,12 @@ String uuid = uuidObj.toString();
 uuid = uuid.replaceAll("-", "");
 
 %>
-<div class='errors-object-details-div'>
-	<spagobi:error/>
+
+<div class='execution-page-title'>
+	<span><spagobi:message key='sbi.execution.title'/>&nbsp;<%= title %></span>
 </div>
+
+<spagobi:error/>
 
 <div class="header">
 	<div class="slider_header">
@@ -183,37 +186,77 @@ uuid = uuid.replaceAll("-", "");
 	</div>
 </div>
 
-<!-- Parameters -->
+<%-- Parameters --%>
 <div id="popout_Parameters<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.parameters'/>:</h4> 
-		<spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/>
-	</div>
+	<div id="parametersRenderTo<%= uuid %>"></div>
+	<div id="parametersContentEl<%= uuid %>"><spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/></div>
 </div>
+<script>
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+    	title: "<spagobi:message key='sbi.execution.parameters'/>:",
+        collapsible:false,
+        frame: true,
+        renderTo: 'parametersRenderTo<%= uuid %>',
+        contentEl: 'parametersContentEl<%= uuid %>'
+    });
+});
+</script>
+<%-- End parameters --%>
 
-<!-- ViewPoints -->
+<%-- ViewPoints --%>
 <div id="popout_ViewPoint<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.viewpoints'/></h4>
-		<spagobi:viewPointsList biobjectId="<%= obj.getId() %>" />
-	</div>
+	<div id="viewpointsRenderTo<%= uuid %>"></div>
+	<div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div>
 </div>
-<div class="clear"></div>
-<!-- SubObjects -->
+<script>
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+    	title: "<spagobi:message key='sbi.execution.viewpoints'/>:",
+        collapsible:false,
+        frame: true,
+        renderTo: 'viewpointsRenderTo<%= uuid %>',
+        contentEl: 'viewpointsContentEl<%= uuid %>'
+    });
+});
+</script>
+<%-- End viewPoints --%>
+
+<%-- SubObjects --%>
 <div id="popout_SubObject<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.subobjects'/></h4>
-		<spagobi:subObjectsList biobjectId="<%= obj.getId() %>" />
-	</div>
+	<div id="subobjectsRenderTo<%= uuid %>"></div>
+	<div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div>
 </div>
-<div class="clear"></div>
-<!-- Snapshots -->
+<script>
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+    	title: "<spagobi:message key='sbi.execution.subobjects'/>:",
+        collapsible:false,
+        frame: true,
+        renderTo: 'subobjectsRenderTo<%= uuid %>',
+        contentEl: 'subobjectsContentEl<%= uuid %>'
+    });
+});
+</script>
+<%-- End SubObjects --%>
+
+<%-- Snapshots --%>
 <div id="popout_Snapshot<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.snapshots'/></h4>
-		<spagobi:snapshotsList biobjectId="<%= obj.getId() %>" />
-	</div>
+	<div id="snapshotsRenderTo<%= uuid %>"></div>
+	<div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div>
 </div>
+<script>
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+    	title: "<spagobi:message key='sbi.execution.snapshots'/>:",
+        collapsible:false,
+        frame: true,
+        renderTo: 'snapshotsRenderTo<%= uuid %>',
+        contentEl: 'snapshotsContentEl<%= uuid %>'
+    });
+});
+</script>
+<%-- End Snapshots --%>
 
 <script>
 toggle('popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', false);

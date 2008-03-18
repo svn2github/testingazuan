@@ -515,4 +515,15 @@ IMG {
 	border-bottom: 1px solid #bbb;
 }
 
+.execution-page-title {
+	width: 100%;
+	background-color: #E1E4E9;
+	padding: 5px;
+}
 
+.execution-page-title span {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 13px;
+	font-weight: 600;
+	text-align: left;
+}

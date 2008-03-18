@@ -147,7 +147,10 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		title += ": " + objDescr;
 	    }
 
-
+	    // get execution context
+	    String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+	    if (executionContext != null)
+	    		response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 	    // set information into reponse
 	    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 	    response.setAttribute("movie", movie);

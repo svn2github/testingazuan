@@ -296,9 +296,7 @@ public class DocumentCompositionUtils {
 			else
 				urlReturn += "&amp;document=" + obj.getId();
 		}
-		
-		//TEST
-		//urlReturn += "&amp;";
+		//set EXECUTION_CONTEXT (only for documentcomposition docs)
 		urlReturn += "&amp;" + SpagoBIConstants.EXECUTION_CONTEXT + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION +"&amp;";
 	
 		//prepares and sets parameters value into session

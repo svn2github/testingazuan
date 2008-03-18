@@ -35,6 +35,7 @@ function setStylePanels(pStylePanels){
 
 /* Update the input url with value for refresh linked documents and execute themes */
 function execDrill(name, urlDrill){
+alert(name, urlDrill); 
 	var baseName = "iframe_";
 	var labelDocClicked = name.substring(baseName.length);
 	var tmpUrl = "";

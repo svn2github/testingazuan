@@ -29,6 +29,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
@@ -90,7 +91,7 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 				logger.error("Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
-			
+			/*
 			// create the title
 			String title = "";
 			title += obj.getName();
@@ -99,12 +100,15 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 				title += ": " + objDescr;
 			}
 			response.setAttribute("title", title);
+			*/
 			
 			// read the configuration and set relative object into session
 			DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
 			SessionContainer session = requestContainer.getSessionContainer();
 			session.setAttribute("docConfig", docConf);
-			// set information for the publisher
+	       
+			// set information into reponse
+			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 			response.setAttribute(content);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DOCUMENT_COMPOSITION");
 		} catch (Exception e) {

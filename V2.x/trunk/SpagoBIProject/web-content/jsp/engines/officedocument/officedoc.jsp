@@ -20,11 +20,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<% SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%
+	}	
+	// identity string for object of the page
+	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	UUID uuidObj = uuidGen.generateTimeBasedUUID();
+	String strUuid = uuidObj.toString();
+	strUuid = strUuid.replaceAll("-", "");
+	//SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	BIObject biObj = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+%>
+
 
 <%-- Start execution iframe --%>
-<div id="divIframe<%= uuid %>" style="width:100%;overflow=auto;border: 0;display:inline;"> <!-- float:left; -->
-	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userProfile.getUserUniqueIdentifier().toString() + "&documentId=" + obj.getId().toString() %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
+<div id="divIframe<%= strUuid %>" style="width:100%;overflow=auto;border: 0;display:inline;"> <!-- float:left; -->
+	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userProfile.getUserUniqueIdentifier().toString() + "&documentId=" + biObj.getId().toString() %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>    
 <%-- End execution iframe --%>

@@ -131,6 +131,12 @@ public class DirectExecutionModule extends AbstractModule {
 			// get attribute from request
 			String documentLabel = (String)request.getAttribute("DOCUMENT_LABEL");
 			documentParameters = (String)request.getAttribute("DOCUMENT_PARAMETERS");
+			
+			 // get execution context
+		    String executionContext = (String)request.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+		    if (executionContext != null)
+		    	sessionContainer.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
+		    
 			// load biobject
 			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(documentLabel);
 			/*

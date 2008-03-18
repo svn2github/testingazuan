@@ -18,28 +18,32 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-
 <%@ page import="java.util.Set" %>
+
+<% SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%} %>
+
 <%
 
     String movie = ChannelUtilities.getSpagoBIContextName(request);
     //String movie = renderRequest.getContextPath();
-    String relMovie = (String)moduleResponse.getAttribute("movie");
+    String relMovie = (String)sbModuleResponse.getAttribute("movie");
     if(relMovie.startsWith("/"))
     	movie = movie + relMovie;
     else movie = movie + "/" + relMovie;
-	String width = (String)moduleResponse.getAttribute("width");
-	String height = (String)moduleResponse.getAttribute("height");
+	String width = (String)sbModuleResponse.getAttribute("width");
+	String height = (String)sbModuleResponse.getAttribute("height");
 	String dataurl = ChannelUtilities.getSpagoBIContextName(request);
 	//String dataurl = renderRequest.getContextPath();
-	String dataurlRel = (String)moduleResponse.getAttribute("dataurl");
+	String dataurlRel = (String)sbModuleResponse.getAttribute("dataurl");
 	if(dataurlRel.startsWith("/"))
 		dataurl = dataurl + dataurlRel;
 	else dataurl = dataurl + "/" + dataurlRel;
-	Map confParameters = (Map)moduleResponse.getAttribute("confParameters");
-	Map dataParameters = (Map)moduleResponse.getAttribute("dataParameters");
+	Map confParameters = (Map)sbModuleResponse.getAttribute("confParameters");
+	Map dataParameters = (Map)sbModuleResponse.getAttribute("dataParameters");
 	
 	// start to create the calling url
 	// put the two dimensio parameter

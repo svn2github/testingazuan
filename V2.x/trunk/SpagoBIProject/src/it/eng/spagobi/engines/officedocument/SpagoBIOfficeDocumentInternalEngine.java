@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.officedocument;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -52,6 +53,8 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		
 		logger.debug("IN");
 		
+		SessionContainer session = requestContainer.getSessionContainer();
+		
 		if (obj == null) {
 			logger.error("The input object is null");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
@@ -75,6 +78,10 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 //				title += ": " + objDescr;
 //			}
 //			response.setAttribute("title", title);
+			// set execution context
+		    String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+		    if (executionContext != null)
+		    		response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {

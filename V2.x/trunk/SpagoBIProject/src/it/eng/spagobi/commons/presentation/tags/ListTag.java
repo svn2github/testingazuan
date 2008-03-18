@@ -105,7 +105,7 @@ public class ListTag extends TagSupport
 
     protected String requestIdentity = null;
     
-    private String rowColor="#FFFCCC";
+    private String rowColor="#F5F6BE";
     
     /**
      *Constructor

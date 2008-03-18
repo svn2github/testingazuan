@@ -292,5 +292,7 @@ public class SpagoBIConstants {
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";
 	
+	public static final String PASS_TICKET = "PASS_TICKET";
+	
 	
 }

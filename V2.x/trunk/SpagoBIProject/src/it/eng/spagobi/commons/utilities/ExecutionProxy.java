@@ -21,15 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.commons.utilities;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
 
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -85,7 +84,13 @@ public class ExecutionProxy {
 	    // get the map of parameter to send to the engine
 	    Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
 
-	
+	    // pass ticket ...
+	    ConfigSingleton config = ConfigSingleton.getInstance();
+	    SourceBean passSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.PASS");
+	    String pass = (String) passSB.getCharacters();
+	    if (pass==null) logger.warn("Pass Ticket is null");
+	    mapPars.put(SpagoBIConstants.PASS_TICKET,pass);
+	    
 	    // set spagobi context url
 	    if (!mapPars.containsKey(SpagoBIConstants.BACK_END_SBICONTEXTURL)) {
 		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();

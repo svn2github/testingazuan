@@ -59,4 +59,10 @@ public class EnginConf {
 	    return ssoActive;
 	}
 	
+	public String getPass(){
+	    SourceBean passSB = (SourceBean)config.getAttribute("PASS");
+	    String pass = (String) passSB.getCharacters();
+	    return pass;
+	}
+	
 }

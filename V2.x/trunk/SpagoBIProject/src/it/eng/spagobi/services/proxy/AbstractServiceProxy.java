@@ -28,6 +28,7 @@ public abstract class AbstractServiceProxy {
     protected URL serviceUrl = null;
     protected String userId = null;
     protected boolean isSecure=true; // if false don't sent a valid ticket
+    private String pass=null;
 
    
     /**
@@ -37,7 +38,7 @@ public abstract class AbstractServiceProxy {
      */
     protected String readTicket() throws IOException {
 	if (!isSecure){
-	    return "BackEndInvocation";
+	    return pass;
 	}
 	if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
 	    IProxyService proxyService=IProxyServiceFactory.createProxyService();
@@ -94,6 +95,8 @@ public abstract class AbstractServiceProxy {
 	    } catch (MalformedURLException e) {
 		logger.error("MalformedURLException:" + serviceUrlStr, e);
 	    }
+	    pass=EnginConf.getInstance().getPass();
+	    if (pass==null) logger.warn("PassTicked don't set");
 	} else {
 	    ConfigSingleton serverConfig = ConfigSingleton.getInstance();
 	    String SpagoBiUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getBackEndSpagoBiContextAddress();
@@ -106,6 +109,9 @@ public abstract class AbstractServiceProxy {
 	    validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.FILTER_RECEIPT");
 	    filterReceipt = SpagoBiUrl + (String) validateSB.getCharacters();
 	    logger.debug("Read filterReceipt=" + filterReceipt);
+	    validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.PASS");
+	    pass=(String) validateSB.getCharacters();
+	    if (pass==null) logger.warn("PassTicked don't set");
 	}
     }
 

@@ -17,6 +17,7 @@ public abstract class AbstractServiceImpl {
     protected String validateUrl = null;
     protected String validateService = null;
     protected boolean activeSso = false;
+    private String pass = null;
 
     /**
      * 
@@ -40,29 +41,31 @@ public abstract class AbstractServiceImpl {
 	if (active != null && active.equals("true"))
 	    activeSso = true;
 	logger.debug("Read activeSso=" + activeSso);
+	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.PASS");
+	pass = (String) validateSB.getCharacters();
 
     }
 
     /**
      * check the ticket used for verify the user authentication
      * 
-     * @param ticket String
+     * @param ticket
+     *                String
      * @return String
      * @throws SecurityException
      */
     protected void validateTicket(String ticket, String userId) throws SecurityException {
 	logger.debug("IN");
-	if (userId==null){
+	if (userId == null) {
 	    logger.warn("UserID is NULL!!!!");
-	    throw new SecurityException();	    
+	    throw new SecurityException();
 	}
 	if (activeSso) {
 	    logger.debug("activeSso checks are ON");
-	    // TODO ... 
-	    if (UserProfile.isSchedulerUser(userId) || ticket.equals("BackEndInvocation")) {
-		logger.info("User is a scheduler, JUMP che ticket validation");
-	    }else {
-		IProxyService proxyService=IProxyServiceFactory.createProxyService();
+	    if (ticket.equals(pass)) {
+		logger.debug("JUMP che ticket validation");
+	    } else {
+		IProxyService proxyService = IProxyServiceFactory.createProxyService();
 		proxyService.validateTicket(ticket, userId, validateUrl, validateService);
 	    }
 	}

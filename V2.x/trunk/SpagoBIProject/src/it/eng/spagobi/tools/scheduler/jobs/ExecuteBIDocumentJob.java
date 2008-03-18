@@ -40,7 +40,6 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
-import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;

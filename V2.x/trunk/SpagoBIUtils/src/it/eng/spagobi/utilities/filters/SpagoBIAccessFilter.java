@@ -83,13 +83,21 @@ public class SpagoBIAccessFilter implements Filter {
 	    logger.info("Filter document  from request:" + document);
 	    session.setAttribute("userId", userId);
 	    session.setAttribute("document", document);
-	    
+	    session.setAttribute("isBackend", "false");
 	    boolean isBackend=false;
+	    
 	    if (requestUrl.endsWith("BackEnd")){
-		// if a request is coming from SpagoBI context
-		isBackend=true;
-		session.setAttribute("isBackend", "true");
-		logger.info("IS a backEnd Request ...");
+		
+		String passTicket=(String) request.getParameter(SpagoBIConstants.PASS_TICKET);
+		if (passTicket!=null && passTicket.equalsIgnoreCase(EnginConf.getInstance().getPass())){
+			// if a request is coming from SpagoBI context
+			isBackend=true;
+			session.setAttribute("isBackend", "true");
+			logger.info("IS a backEnd Request ...");		    
+		}else {
+		    	logger.warn("PassTicked is NULL in BackEnd call");
+		    	throw new ServletException();
+		}
 	    }
 	    
 

@@ -5,6 +5,7 @@
 	<!--  SSO settings 																	--> 
 	<!-- ====================================================================================== -->
 	<ACTIVE_SSO>false</ACTIVE_SSO>
+	<PASS>PASS</PASS>
 	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
 	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>

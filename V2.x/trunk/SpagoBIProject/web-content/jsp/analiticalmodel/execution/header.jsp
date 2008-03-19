@@ -191,8 +191,8 @@ uuid = uuid.replaceAll("-", "");
 <div id="parametersContentEl<%= uuid %>"><spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/></div>
 <div id="popout_Parameters<%= uuid %>" class="popout"></div>
 <script>
-Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.parameters"/>:', 'parametersContentEl<%= uuid %>', 'popout_Parameters<%= uuid %>'), 
-		it.eng.spagobi.core.box.toggle('toggle_Parameters<%= uuid %>', false));
+createBox('<spagobi:message key='sbi.execution.parameters'/>:', 'parametersContentEl<%= uuid %>', 'popout_Parameters<%= uuid %>');
+toggle('popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', false);
 </script>
 <%-- End parameters --%>
 
@@ -200,8 +200,8 @@ Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.pa
 <div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div>
 <div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 <script>
-Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.viewpoints"/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>'), 
-		it.eng.spagobi.core.box.toggle('toggle_ViewPoint<%= uuid %>', false));
+createBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>');
+toggle('popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', false);
 </script>
 <%-- End viewPoints --%>
 
@@ -209,8 +209,8 @@ Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.vi
 <div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div>
 <div id="popout_SubObject<%= uuid %>" class="popout"></div>
 <script>
-Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.subobjects"/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>'), 
-		it.eng.spagobi.core.box.toggle('toggle_SubObject<%= uuid %>', false));
+createBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>');
+toggle('popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
 </script>
 <%-- End SubObjects --%>
 
@@ -218,8 +218,8 @@ Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.su
 <div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div>
 <div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 <script>
-Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.snapshots"/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>'), 
-		it.eng.spagobi.core.box.toggle('toggle_Snapshot<%= uuid %>', false));
+createBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>');
+toggle('popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);
 </script>
 <%-- End Snapshots --%>
 

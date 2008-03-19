@@ -684,13 +684,9 @@ public class ParametersGeneratorTag extends TagSupport {
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
 	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
-	    
-	
-	
 	String id="p_search_button_"+biparam.getParameterUrlName();
-
 	htmlStream.append("\n");
-	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='in_"+biparam.getParameterUrlName()+requestIdentity+"' "
+	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("/>\n");
 	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' >\n");
@@ -698,14 +694,12 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("</a>\n");
 	
 	htmlStream.append("\n<script>\n");
-	
-	htmlStream.append("\n");
 	htmlStream.append("var win_"+parameterFieldName+";\n");
-	
 	htmlStream.append("Ext.get('"+id+"').on('click', function(){\n");
 	htmlStream.append("	if(!win_"+parameterFieldName+") {\n");
 	htmlStream.append("		win_"+parameterFieldName+" = new Ext.Window({\n");
 	htmlStream.append("			id:'popup_" + parameterFieldName + "',\n");
+	htmlStream.append("			title:'" + biparam.getLabel() + "',\n");
 	htmlStream.append("			bodyCfg:{");
 	htmlStream.append("				tag:'div'");
 	htmlStream.append("    			,cls:'x-panel-body'");

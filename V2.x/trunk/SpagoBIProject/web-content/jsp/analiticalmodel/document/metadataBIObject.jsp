@@ -356,14 +356,6 @@ Ext.onReady(function(){
 			</td>
 		</tr>
 		
-		<!-- LAST ACCESS DATE -->
-		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLastAccess" />		
-			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=lastAccesDate%>
-			</td>
-		</tr>
-		
 		<!-- LAST EXECUTION DATE/TIME DATE -->
 		<tr>
 		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLastExecTime" />		

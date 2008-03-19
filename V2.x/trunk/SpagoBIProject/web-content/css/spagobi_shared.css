@@ -516,12 +516,8 @@ IMG {
 }
 
 .execution-page-title {
-	width: 100%;
 	background-color: #E1E4E9;
-	padding: 5px;
-}
-
-.execution-page-title span {
+	padding: 5px 0px 5px 5px;
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 13px;
 	font-weight: 600;

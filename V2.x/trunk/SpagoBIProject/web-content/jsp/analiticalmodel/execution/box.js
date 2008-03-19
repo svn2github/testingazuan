@@ -13,13 +13,14 @@ box.renderTo;
 // shows the panel
 box.init = function(title, content, renderTo) {
 	box.renderTo = renderTo;
-	new Ext.Panel({
+	var p = new Ext.Panel({
 		title: title,
 		collapsible:false,
 		frame: true,
 		renderTo: renderTo,
 		contentEl: content
 	});
+	p.show();
 };
 
 // makes the box togglable

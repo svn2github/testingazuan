@@ -102,7 +102,7 @@ uuid = uuid.replaceAll("-", "");
 %>
 
 <div class='execution-page-title'>
-	<span><%= title %></span>
+	<%= title %>
 </div>
 
 <spagobi:error/>

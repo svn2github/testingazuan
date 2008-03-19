@@ -175,22 +175,22 @@ public class SubObjectsListTag extends TagSupport {
         		    buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "'>\n");
         		    buffer.append("			" + nameSub + "\n");
             		buffer.append("		</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td> \n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
             		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + owner + "</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td> \n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
             		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + descr + "</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td> \n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
             		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + creationDate + "</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td> \n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
             		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + lastModificationDate + "</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td> \n");
-            		buffer.append("		<td style='vertical-align:middle;' class='<" + rowClass + "' >" + visib + "</td>\n");
-            		buffer.append("		<td class='<" + rowClass + "' width='20px'>&nbsp;</td>\n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
+            		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + visib + "</td>\n");
+            		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td>\n");
             		if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
-                    	buffer.append("		<td style='vertical-align:middle;' class='<" + rowClass + "' width='40px'>\n");
+                    	buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
                 		String eraseMsg = msgBuilder.getMessage("ConfirmMessages.DeleteSubObject", "messages", httpRequest);
                 		buffer.append("			<a href=\"javascript:var conf = confirm('" + eraseMsg + "'); if (conf) {document.location='" + deleteSubObjUrl.toString() + "';}\">\n");
-                		buffer.append("				<img width='20px' height='20px' \n");
+                		buffer.append("				<img \n");
 		  	   			buffer.append("					src='" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
 		  	   			buffer.append("					name='deleteSub' \n");
 		  	            buffer.append("					alt='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "' \n");
@@ -198,13 +198,13 @@ public class SubObjectsListTag extends TagSupport {
                 		buffer.append("			</a>\n");
                 		buffer.append("		</td>\n");
             		} else {
-            			buffer.append("		<td style='vertical-align:middle;' class='<" + rowClass + "' width='40px'>\n");
+            			buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
             			buffer.append("			&nbsp;\n");
             			buffer.append("		</td>\n");
             		}
-                	buffer.append("		<td style='vertical-align:middle;' class='<" + rowClass + "' width='40px'>\n");
+                	buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
             		buffer.append("			<a href='" + execSubObjUrl + "'>\n");
-            		buffer.append("				<img width='20px' height='20px' \n");
+            		buffer.append("				<img \n");
 	  	   			buffer.append("					src='" + urlBuilder.getResourceLink(httpRequest, "/img/exec.gif") + "' \n");
 	  	   			buffer.append("					name='execSub' \n");
 	  	            buffer.append("					alt='" + msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", httpRequest) + "' \n");

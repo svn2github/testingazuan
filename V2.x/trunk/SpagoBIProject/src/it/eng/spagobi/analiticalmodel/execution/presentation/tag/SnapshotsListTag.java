@@ -163,7 +163,7 @@ public class SnapshotsListTag extends TagSupport {
                     } else {
                     	String eraseSnapMsg = msgBuilder.getMessage("ConfirmMessages.DeleteSnapshot", httpRequest);
                     	buffer.append("			<a href=\"javascript:var conf = confirm('" + eraseSnapMsg + "'); if (conf) {document.location='" + deleteSnapUrl.toString() + "';}\">\n");
-                    	buffer.append("				<img width='20px' height='20px' \n");
+                    	buffer.append("				<img \n");
                     	buffer.append("					src='" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
                     	buffer.append("					name='deleteSnapshot' alt='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "'\n"); 
                     	buffer.append("					title='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "' />\n");
@@ -172,7 +172,7 @@ public class SnapshotsListTag extends TagSupport {
                     buffer.append("		</td>\n");
 		            buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 		            buffer.append("			<a href='" + execSnapUrl + "'>\n");
-		            buffer.append("				<img width='20px' height='20px' \n");
+		            buffer.append("				<img \n");
 					buffer.append("					src='" + urlBuilder.getResourceLink(httpRequest, "/img/exec.gif") + "' \n");
 					buffer.append("					name='execSnap' \n");
 					buffer.append("					alt='" + msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", httpRequest) + "' \n");

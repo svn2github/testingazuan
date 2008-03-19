@@ -190,7 +190,7 @@ public class ViewPointsListTag extends TagSupport {
 		       		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + date + "</td>\n");
 		       		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 		       		buffer.append("     	<a href=\"javascript:document.location='" + viewVPUrl.toString() + "';\">\n");
-		       		buffer.append("     		<img width='20px' height='20px' \n");
+		       		buffer.append("     		<img \n");
 		       		buffer.append("     			src='" + urlBuilder.getResourceLink(httpRequest, "/img/notes.jpg") + "' \n");
 		       		buffer.append("        			name='getViewpoint' alt='" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", httpRequest) + "'\n"); 
 		       		buffer.append("         		title='" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", httpRequest) + "'\n");
@@ -202,7 +202,7 @@ public class ViewPointsListTag extends TagSupport {
 	                if (ownerVP.equals(userProfile.getUserUniqueIdentifier().toString())) {
 	                 	String eraseVPMsg = msgBuilder.getMessage("ConfirmMessages.DeleteViewpoint", httpRequest);
 	                 	buffer.append("		<a href=\"javascript:var conf = confirm('" + eraseVPMsg + "'); if (conf) {document.location='" + deleteVPUrl.toString() + "';}\">\n");
-	                 	buffer.append("			<img width='20px' height='20px' \n");
+	                 	buffer.append("			<img \n");
 	                 	buffer.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
 	                 	buffer.append("				name='deleteViewpoint' alt='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "'\n"); 
 	                 	buffer.append(" 			title='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "' \n");
@@ -211,7 +211,7 @@ public class ViewPointsListTag extends TagSupport {
 	                }
 	                buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 	                buffer.append("			<a href='" + execVPUrl + "'>\n");
-	                buffer.append("      		 <img width='20px' height='20px' \n");
+	                buffer.append("      		 <img \n");
 	                buffer.append("  	   			src='" + urlBuilder.getResourceLink(httpRequest, "/img/exec.gif") + "'\n");
 	                buffer.append("  	       		name='execSnap'\n");
 	                buffer.append("  	        	alt='" + msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", httpRequest) + "'\n");

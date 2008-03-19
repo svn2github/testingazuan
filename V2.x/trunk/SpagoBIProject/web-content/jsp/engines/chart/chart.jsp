@@ -57,7 +57,17 @@ SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("Execut
 <%	objO=obj;
 	uuidO=uuid;
 
-   } %>
+   }
+   else // in document composition case doesn't call header so set Object and uuid
+   {
+	   UUIDGenerator uuidGenO  = UUIDGenerator.getInstance();
+	   UUID uuidObjO = uuidGenO.generateTimeBasedUUID();
+	   uuidO = uuidObjO.toString();
+	   uuidO = uuidO.replaceAll("-", "");
+	   
+	   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+   }
+   %>
 
 <!-- 
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">

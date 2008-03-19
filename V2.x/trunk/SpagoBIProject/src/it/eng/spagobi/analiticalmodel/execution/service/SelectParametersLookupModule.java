@@ -85,6 +85,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 
 	// define variable for value column name
     private String valColName = "";
+    private String descriptionColName = "";
     
     private static final String RETURN_PARAM = "returnParam";
     
@@ -245,12 +246,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	moduleConfigStr.append("			<ONCLICK>");
 	moduleConfigStr.append("				<![CDATA[");
 	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-	moduleConfigStr.append("				parent.document.getElementById('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-	moduleConfigStr.append("				parent.document.getElementById('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value='<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
 	moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
-//	moduleConfigStr.append("				Ext.get('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').dom.value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-//	moduleConfigStr.append("				Ext.get('in_<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').dom.value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-//	moduleConfigStr.append("				Ext.get('spagobi_popup').hide();");
 	moduleConfigStr.append("				]]>");
 	moduleConfigStr.append("			</ONCLICK>");
 	moduleConfigStr.append("		</SELECT_CAPTION>");
@@ -291,6 +288,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 	valColName = qd.getValueColumnName();
 	logger.debug("valColName="+valColName);
+	descriptionColName = qd.getDescriptionColumnName();
+	logger.debug("descriptionColName="+descriptionColName);
 	String datasource = qd.getDataSource();
 	String statement = qd.getQueryDefinition();
 

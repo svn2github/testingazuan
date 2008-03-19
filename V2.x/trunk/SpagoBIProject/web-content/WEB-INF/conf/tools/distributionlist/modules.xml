@@ -85,7 +85,7 @@
 	        <COLUMN label="PRES" name="PRES" hidden="true"/>
 	      </COLUMNS>
 	      <CAPTIONS>
-	      	<SELECT_CAPTION popup="TRUE" popupW="1000" popupH="200" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
+	      	<SELECT_CAPTION popup="TRUE" popupW="700" popupH="300" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
@@ -153,7 +153,7 @@
 	        <COLUMN label="PRES" name="PRES" hidden="true"/>
 	      </COLUMNS>
 	      <CAPTIONS>
-	      	<SELECT_CAPTION popup="TRUE" popupW="500" popupH="200" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
+	      	<SELECT_CAPTION popup="TRUE" popupW="700" popupH="300" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>

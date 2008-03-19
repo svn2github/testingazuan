@@ -39,8 +39,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	
 	<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="java.util.ArrayList"%>
 <div class='div_background_no_img' style='padding-top:5px;padding-left:5px;'>
-	
+	<BR>
 	<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 	<tr>
 	  <td>
@@ -93,7 +94,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 	
-	<table style='width:95%;margin-top:1px' id = "docTable" >
+	<table style='width:98%;margin-top:1px' id = "docTable" >
 
 	<tr class='header-row-portlet-section'>
 	
@@ -103,7 +104,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	</tr>
 	</table>
-	<table style='width:95%;margin-top:1px' id = "docTable" >
+	<table style='width:98%;margin-top:1px' id = "docTable" >
 	<tr>
 	  <td class='portlet-section-header' style='text-align:left'>
 
@@ -151,17 +152,158 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						SourceBean sbOrig = SourceBean.fromXMLString(xml);
 						
 						String schedStart = (String)sbOrig.getAttribute("startDate");
-						String schedStartTime = (String)sbOrig.getAttribute("startTime");
+						String temp1 = (String)sbOrig.getAttribute("startTime");
+						String schedStartTime = temp1.substring(0,temp1.indexOf("+"));
 						String schedBegin = schedStart + " " + schedStartTime ;
 						
 						String schedE = "";					
 						String schedEndTime = "";
 						if ( sbOrig.getAttribute("endDate") != null) schedE = (String)sbOrig.getAttribute("endDate");					
-						if ( sbOrig.getAttribute("endTime") != null) schedEndTime = (String)sbOrig.getAttribute("endTime");						
+						if ( sbOrig.getAttribute("endTime") != null) {
+							String temp = (String)sbOrig.getAttribute("endTime");
+							schedEndTime = temp.substring(0,temp.indexOf("+"));	
+						}
 						String schedEnd = schedE + " " + schedEndTime ;
 						
-						String frequency = (String)sbOrig.getAttribute("chronString");
-				
+						String frequency = "";
+						String temp = (String)sbOrig.getAttribute("chronString");
+						int index = temp.indexOf("{");
+						int end = temp.indexOf("}");
+						String every = temp.substring(0,index);
+						String content = temp.substring(index+1, end);
+						
+						if (every.equals("single")){
+							frequency = msgBuilder.getMessage("sbi.frequency.singleEx", "messages", request)+" ";
+						}
+						if (every.equals("minute")){
+							
+							int begin = content.indexOf("=");
+							String numRep = content.substring(begin+1);
+							if (numRep.equals("1")){
+								frequency = msgBuilder.getMessage("sbi.frequency.everyMin", "messages", request)+" ";
+							}
+							else {frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+msgBuilder.getMessage("sbi.frequency.minutes", "messages", request)+" ";}
+						}
+						if (every.equals("hour")){
+							
+							int begin = content.indexOf("=");
+							String numRep = content.substring(begin+1);
+							if (numRep.equals("1")){
+								frequency = msgBuilder.getMessage("sbi.frequency.everyH", "messages", request)+" ";
+							}
+							else
+							{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+msgBuilder.getMessage("sbi.frequency.hours", "messages", request)+" ";}
+						}
+						if (every.equals("day")){
+							
+							int begin = content.indexOf("=");
+							String numRep = content.substring(begin+1);
+							if (numRep.equals("1")){
+								frequency = msgBuilder.getMessage("sbi.frequency.everyD", "messages", request)+" ";
+							}
+							else
+							{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+msgBuilder.getMessage("sbi.frequency.days", "messages", request)+" ";}
+						}
+						
+						if (every.equals("week")){
+							String[] params = content.split(";");
+							int l = params.length ;
+							String numRep = "";
+							String days = "";
+							for (int i =0;i<l;i++){
+								String param = params[i];
+								int begin = param.indexOf("=");
+								
+								if (param.startsWith("numRepetition")){		
+									numRep = param.substring(begin+1);
+								}
+									
+								if (param.startsWith("days")){
+									days = param.substring(begin+1);
+								}
+							}
+							days = days.replace(',',';');
+							if (numRep.equals("1")){
+								frequency = msgBuilder.getMessage("sbi.frequency.everyW", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days;
+							}
+							else
+							{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+msgBuilder.getMessage("sbi.frequency.weeks", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days+" ";}
+						}	
+							
+						if (every.equals("month")){	
+							
+							String[] params = content.split(";");
+							String numRep = "";
+							String months = "";
+							String dayRep = "";
+							String weeks = "";
+							String days = "";
+							int l = params.length ;
+							for (int i =0;i<l;i++){
+								String param = params[i];
+								int begin = param.indexOf("=");
+								
+								if (param.startsWith("numRepetition")){	
+									numRep = param.substring(begin+1);
+								}
+								if (param.startsWith("months")){
+									months = param.substring(begin+1);
+								}
+								if (param.startsWith("dayRepetition")){
+									dayRep = param.substring(begin+1);
+								}
+								if (param.startsWith("weeks")){
+									weeks = param.substring(begin+1);
+								}
+								if (param.startsWith("days")){
+									days = param.substring(begin+1);
+								}
+							}
+							if (numRep.equals("0")){
+								months = months.replace(',',';');
+								frequency = "Months: "+months+"." ;
+							}
+							else if (!numRep.equals("0")){
+								if (numRep.equals("1")){
+									frequency = msgBuilder.getMessage("sbi.frequency.everyMonth", "messages", request)+" ";
+								}
+								else
+								{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+ msgBuilder.getMessage("sbi.frequency.months", "messages", request) ;}
+							}	
+							
+							if (dayRep.equals("0")){
+								if (weeks.equals("NONE")){
+									days = days.replace(',',';');
+									frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days ;
+								}	
+								else if (!weeks.equals("NONE")){
+									weeks = weeks.replace(',',';');
+									if (weeks.equals("L")){
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.last", "messages", request) ;
+									}
+									else if (weeks.equals("F")){
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.first", "messages", request) ;
+									}
+									else
+									{frequency = frequency + " Week: "+weeks ;}
+									if (!days.equals("NONE")){
+										days = days.replace(',',';');
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days ;
+									}	
+								}	
+								
+							}
+							else if (!dayRep.equals("0")){
+								days = days.replace(',',';');
+								if (dayRep.equals("1")){
+									frequency = msgBuilder.getMessage("sbi.frequency.everyD", "messages", request)+" ";
+								}
+								else
+								{frequency = frequency + msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+dayRep+" "+msgBuilder.getMessage("sbi.frequency.days", "messages", request) ;}
+							}
+							
+						}	
+										
 		 %>			
 		 			<tr class='portlet-font'>
 		 			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>

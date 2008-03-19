@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
 
 <%
 // get module response
@@ -75,43 +76,40 @@ uuid = uuid.replaceAll("-", "");
 	</div>
 </div>
 
-<!-- Parameters -->
-<div id="popout_Parameters<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.parameters'/>:</h4> 
-		<spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/>
-	</div>
-</div>
-
-<!-- ViewPoints -->
-<div id="popout_ViewPoint<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.viewpoints'/></h4>
-		<spagobi:viewPointsList biobjectId="<%= obj.getId() %>" />
-	</div>
-</div>
-<div class="clear"></div>
-<!-- SubObjects -->
-<div id="popout_SubObject<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.subobjects'/></h4>
-		<spagobi:subObjectsList biobjectId="<%= obj.getId() %>" />
-	</div>
-</div>
-<div class="clear"></div>
-<!-- Snapshots -->
-<div id="popout_Snapshot<%= uuid %>" class="popout">
-	<div class="popout_selector">
-		<h4 class="popout_label"><spagobi:message key='sbi.execution.snapshots'/></h4>
-		<spagobi:snapshotsList biobjectId="<%= obj.getId() %>" />
-	</div>
-</div>
-
+<%-- Parameters --%>
+<div id="parametersContentEl<%= uuid %>"><spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/></div>
+<div id="popout_Parameters<%= uuid %>" class="popout"></div>
 <script>
-toggle('popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', true);
-toggle('popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', false);
-toggle('popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
-toggle('popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);
+Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.parameters"/>:', 'parametersContentEl<%= uuid %>', 'popout_Parameters<%= uuid %>'), 
+		it.eng.spagobi.core.box.toggle('toggle_Parameters<%= uuid %>', true));
 </script>
+<%-- End parameters --%>
+
+<%-- ViewPoints --%>
+<div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div>
+<div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
+<script>
+Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.viewpoints"/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>'), 
+		it.eng.spagobi.core.box.toggle('toggle_ViewPoint<%= uuid %>', false));
+</script>
+<%-- End viewPoints --%>
+
+<%-- SubObjects --%>
+<div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div>
+<div id="popout_SubObject<%= uuid %>" class="popout"></div>
+<script>
+Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.subobjects"/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>'), 
+		it.eng.spagobi.core.box.toggle('toggle_SubObject<%= uuid %>', false));
+</script>
+<%-- End SubObjects --%>
+
+<%-- Snapshots --%>
+<div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div>
+<div id="popout_Snapshot<%= uuid %>" class="popout"></div>
+<script>
+Ext.onReady(it.eng.spagobi.core.box.init('<spagobi:message key="sbi.execution.snapshots"/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>'), 
+		it.eng.spagobi.core.box.toggle('toggle_Snapshot<%= uuid %>', false));
+</script>
+<%-- End Snapshots --%>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

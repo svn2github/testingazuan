@@ -72,7 +72,8 @@ SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("Execut
 <!-- 
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 -->	
-	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
+	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
   
   
@@ -169,6 +170,8 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				{serie=(String)request.getParameter("serie");
 				if(!serie.equalsIgnoreCase("allseries")){
 					copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,serie);	
+					int wichSerie=series.indexOf(serie)+1;
+					((BarCharts)sbi).setCurrentSerie(wichSerie);
 				}
 			}
 		}

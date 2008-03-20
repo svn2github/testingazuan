@@ -26,7 +26,7 @@ public class BarCharts extends ChartImpl {
 	HashMap colorMap=null;  // keeps user selected colors
 	int categoriesNumber=0;
 	HashMap categories;
-	String currentSerie="";
+	int currentSerie=-1;
 	
 	public Dataset calculateValue() throws SourceBeanException {
 		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
@@ -181,7 +181,7 @@ public class BarCharts extends ChartImpl {
 				colorSerie=new String((String)object.getValue());
 				Color col=new Color(Integer.decode(colorSerie).intValue());
 				if(col!=null){
-					colorMap.put(num,col); 
+					colorMap.put("color"+num,col); 
 				}
 			}		
 
@@ -289,6 +289,14 @@ public class BarCharts extends ChartImpl {
 
 	public void setNumberCatVisualization(Integer numberCatVisualization) {
 		this.numberCatVisualization = numberCatVisualization;
+	}
+
+	public int getCurrentSerie() {
+		return currentSerie;
+	}
+
+	public void setCurrentSerie(int currentSerie) {
+		this.currentSerie = currentSerie;
 	}
 
 	

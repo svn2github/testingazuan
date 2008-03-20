@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
 
 <%@page import="java.util.Map"%>
-<%@page import="java.util.HashMap"%>
+<%@page import="java.util.HashMap"%>  
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 

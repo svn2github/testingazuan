@@ -355,10 +355,12 @@ public class DocumentCompositionUtils {
 		String key = "";
 		String value = "";
 		int cont = 0;
-		while(enParams.hasMoreElements()) {
+		//while(enParams.hasMoreElements()) {
+		for (int i=0; i<lstParams.size(); i++) {
 			String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
 			//only for parameter in input to the document managed (type equal 'IN')
-			//if (typeParam.equalsIgnoreCase("IN")) {
+			//if (typeParam != null && typeParam.equalsIgnoreCase("IN")) {
+			if (typeParam != null && typeParam.indexOf("IN")>=0) {
 		    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
 	    		key = lstParams.getProperty(tmpKey);
 	    		if (key == null) break;
@@ -372,7 +374,7 @@ public class DocumentCompositionUtils {
 		    		paramUrl += "&amp;"+ key + "=" + value;
 		    	
 			    cont++;
-			//}
+			}
 	    }
 
 		return paramUrl;

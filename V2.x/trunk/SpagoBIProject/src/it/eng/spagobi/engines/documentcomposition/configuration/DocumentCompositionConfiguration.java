@@ -204,7 +204,8 @@ public class DocumentCompositionConfiguration {
 				refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
 				Properties paramRefreshLinked = new Properties();
 				//loop on document linked to single parameter
-				for(int k = 0; k < refreshDocList.size(); k++) {
+				int k = 0;
+				for(k = 0; k < refreshDocList.size(); k++) {
 					refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
 					String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
 					paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
@@ -213,8 +214,8 @@ public class DocumentCompositionConfiguration {
 					String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
 					paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
 					param.setProperty("param_linked_"+i+"_"+j+"_"+k, paramRefreshLinked.toString());
-					
 				}
+				param.setProperty("num_doc_linked_param_"+i+"_"+j, new Integer(k).toString());
 			}
 			document.setParams(param);
 			addDocument(document);
@@ -319,13 +320,14 @@ public class DocumentCompositionConfiguration {
 	public HashMap getParametersForDocument(String docLabel) {
 		Collection collDocs = documentsMap.values();
 		HashMap retParams = new HashMap();
-		Object[] arrPars = (Object[])collDocs.toArray();
+		Object[] arrDocs = (Object[])collDocs.toArray();
+		
 		try{
 			int cont = 0;
-			while (cont < arrPars.length){
+			while (cont < arrDocs.length){
 				//loop on documents
-				for(int i=0; i < arrPars.length; i++){
-					Document tmpDoc =(Document) arrPars[i];
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
 					if (tmpDoc.getNumOrder() == cont){
 						if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
 							Properties prop = (Properties)tmpDoc.getParams();
@@ -407,16 +409,26 @@ public class DocumentCompositionConfiguration {
 				HashMap paramsDoc = getParametersForDocument(docLabel);
 				//loop on parameters of document
 				int contOutPar = 0;
+				
 				for (int i=0; i< paramsDoc.size(); i++){
+					int numParAdd = 0;
 					String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
-					if (typePar != null && typePar.equalsIgnoreCase("OUT")){
+					//if (typePar != null && typePar.equalsIgnoreCase("OUT")){
+					System.out.println("typePar: " + docLabel + " -" + typePar+"-");
+					
+					if (typePar != null && typePar.indexOf("OUT")>= 0){
 						lstFieldLinked.put("SBI_LABEL_PAR_MASTER__"+(numDoc)+"__"+contOutPar, (String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i));
-						Integer numDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
+						Integer totalNumDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
+						Integer numDocLinked = (paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i)==null)?new Integer(0):Integer.valueOf((String)paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i));
 						lstFieldLinked.put("NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, numDocLinked);
+						lstFieldLinked.put("TOT_NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, totalNumDocLinked);
 						//loop on document linked to parameter
 						for (int j=0; j<numDocLinked.intValue(); j++){
+							
 							String paramLinked = (paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j);
 							String[] params = paramLinked.split(",");
+							Document linkedDoc = null;
+							
 							//loop on parameters of document linked
 							for (int k=0; k<params.length; k++) {
 								String labelDocLinked = params[k];
@@ -424,21 +436,29 @@ public class DocumentCompositionConfiguration {
 								labelDocLinked = labelDocLinked.replace("}", "");
 								if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
 									//get document linked 
-									Document linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
+									linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
 									lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
-									HashMap paramsDocLinked = getParametersForDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
+								}
+								else if (labelDocLinked.trim().startsWith("refresh_par_linked")){
+									String tmpLabelLinked = labelDocLinked.substring(labelDocLinked.indexOf("=")+1);
+									HashMap paramsDocLinked = getParametersForDocument(linkedDoc.getLabel());
 									int numLinked = linkedDoc.getNumOrder();
 									for (int x=0; x< paramsDocLinked.size(); x++){
 										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
 										String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
-										if (sbiLabelPar != null && !sbiLabelPar.equals(""))
-											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+j+"__"+x, sbiLabelPar +"|"+labelPar);
+										if (sbiLabelPar != null && !sbiLabelPar.equals("") &&labelPar.equalsIgnoreCase(tmpLabelLinked)){
+											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getLabel()+"__"+sbiLabelPar +"|"+labelPar);
+											numParAdd ++;
+											break;
+										}
+										else if (sbiLabelPar == null || sbiLabelPar.equals(""))
+											break;
 									}								
 								}
 							}
 						}
 						contOutPar ++;
-					}
+					} 
 				}
 				
 			}catch(Exception e){

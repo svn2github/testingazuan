@@ -53,8 +53,11 @@ public class DocumentCompositionConfiguration {
 	
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
-	Integer[] widthPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
-	Integer[] heightPxValues = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
+	//Integer[] widthPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
+	//Integer[] heightPxValues = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
+	Integer[] widthPxValues = {new Integer("1400"), new Integer("1050"), new Integer("700"), new Integer("350")};
+	//Integer[] heightPxValues = {new Integer("1050"), new Integer("787"), new Integer("525"), new Integer("262")};
+	Integer[] heightPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
 	
 	public static class Document {
 		int numOrder;
@@ -414,7 +417,6 @@ public class DocumentCompositionConfiguration {
 					int numParAdd = 0;
 					String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
 					//if (typePar != null && typePar.equalsIgnoreCase("OUT")){
-					System.out.println("typePar: " + docLabel + " -" + typePar+"-");
 					
 					if (typePar != null && typePar.indexOf("OUT")>= 0){
 						lstFieldLinked.put("SBI_LABEL_PAR_MASTER__"+(numDoc)+"__"+contOutPar, (String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i));

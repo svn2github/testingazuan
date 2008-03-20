@@ -43,11 +43,11 @@ function execDrill(name, urlDrill){
 	for(var docMaster in asUrls){
 		var labelMasterDoc = docMaster.substring(docMaster.indexOf('|')+1);
 		var sbiLabelMasterDoc = docMaster.substring(0, docMaster.indexOf('|'));
-		var i=0;
+		var generalLabelDoc = "";
 		if (labelMasterDoc == labelDocClicked){
 			for (var docLabel in asLinkedDocs){ 
 				if (docLabel.indexOf(labelMasterDoc) >= 0){
-					var generalLabelDoc = asLinkedDocs[docLabel];
+					generalLabelDoc = asLinkedDocs[docLabel];
 					var labelDocLinked = generalLabelDoc[0].substring(generalLabelDoc[0].indexOf('|')+1);
 					var sbiLabelDocLinked = generalLabelDoc[0].substring(0, generalLabelDoc[0].indexOf('|'));
 					//gets iframe element
@@ -59,7 +59,7 @@ function execDrill(name, urlDrill){
 					var sbiParMaster = "";
 					var tmpOldSbiSubDoc = "";
 					var newUrl = "";
-					var tmpUrl = "";
+					tmpUrl = "";
 					var finalUrl = "";
 					for (var fieldLabel in asLinkedFields){ 
 						var totalLabelPar =  asLinkedFields[fieldLabel];
@@ -97,8 +97,7 @@ function execDrill(name, urlDrill){
 													tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
 													if (tmpOldValue != "" && tmpNewValue != ""){
 														finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
-														RE = new RegExp("&amp;", "ig");
-														newUrl = finalUrl.replace(RE, "&");
+														newUrl = finalUrl;
 														tmpOldValue = "";
 														tmpNewValue = "";
 														break;
@@ -112,9 +111,12 @@ function execDrill(name, urlDrill){
 		
 						}
 					} //for (var fieldLabel in asLinkedFields){ 	
+					//updated general url  with new values
+					asUrls[generalLabelDoc][0]=newUrl;
+					RE = new RegExp("&amp;", "ig");
+					newUrl = newUrl.replace(RE, "&");
 					sendUrl(nameIframe, newUrl);
 				}//if (docLabel.indexOf(labelMasterDoc) >= 0){
-				i= i+1;	
 			}//for (var docLabel in asLinkedDocs){ 
 		}
 	} 
@@ -123,7 +125,7 @@ function execDrill(name, urlDrill){
 }
 
 function sendUrl(nameIframe, url){
-	//alert("SendURL - nameIframe: " + nameIframe +  " - url: "+ url);
+//	alert("SendURL - nameIframe: " + nameIframe +  " - url: "+ url);
 	document.getElementById(nameIframe).src = url;
 	return;	
 }

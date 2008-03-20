@@ -49,7 +49,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/documentcomposition/documentcomposition.css")%>' type='text/css' />
 
-
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
 <!-- **************** START BLOCK DIV ******************************** -->
@@ -66,7 +65,7 @@ for (int i=0; i<lstUrl.size(); i++){
 </div> 
 
 <%} %>
-<br>
+<br> 
 
 <script>
 	//set general url for iframe page
@@ -81,7 +80,7 @@ for (int i=0; i<lstUrl.size(); i++){
  		String mainLabel = (String)lstDocLinked.get("MAIN_DOC_LABEL__"+(i));
  		String totalSbiDocLabel = (String)lstUrlParams.get("SBI_DOC_LABEL__"+(i));
  		String labelDoc = totalSbiDocLabel.substring(totalSbiDocLabel.indexOf("|")+1);
- 	%>
+ 	%> 
  		arUrl['<%=totalSbiDocLabel%>'] = ['<%=(String)lstUrl.get("URL_DOC__"+(i))%>'];
  		arStylePanels['<%=labelDoc%>'] = ['<%=(String)lstStylePanel.get("STYLE__"+labelDoc)%>'];
  	<%	//loop on document linked 
@@ -113,14 +112,14 @@ for (int i=0; i<lstUrl.size(); i++){
 					}
  				}
  			} 
- 		}
+ 		} 
  	}%> 
 	setDocs(arUrl);
 	setLinkedDocs(arLinkedDocs);
 	setLinkedFields(arLinkedFields);
 	setStylePanels(arStylePanels);
 </script> 
-
+ 
 <%	logger.debug("OUT"); %> 
 
 <!-- ***************************************************************** -->

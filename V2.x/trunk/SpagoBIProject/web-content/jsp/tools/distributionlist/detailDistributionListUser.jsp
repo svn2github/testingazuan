@@ -268,7 +268,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									frequency = msgBuilder.getMessage("sbi.frequency.everyMonth", "messages", request)+" ";
 								}
 								else
-								{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+ msgBuilder.getMessage("sbi.frequency.months", "messages", request) ;}
+								{frequency = msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+numRep+" "+ msgBuilder.getMessage("sbi.frequency.months", "messages", request)+" " ;}
 							}	
 							
 							if (dayRep.equals("0")){
@@ -279,10 +279,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								else if (!weeks.equals("NONE")){
 									weeks = weeks.replace(',',';');
 									if (weeks.equals("L")){
-										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.last", "messages", request) ;
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.last", "messages", request)+" " ;
 									}
 									else if (weeks.equals("F")){
-										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.first", "messages", request) ;
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.first", "messages", request)+" " ;
 									}
 									else
 									{frequency = frequency + " Week: "+weeks ;}

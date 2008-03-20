@@ -379,11 +379,9 @@ function somethingWentWrongSavingIntoMyFolder() {
 </script>
 <%-- End scripts for save into my personal folder --%>
 
-<!-- div for notes -->
-<div id='notes_div<%= uuid %>'>
-	<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
-</div>
-<!-- end div for notes -->
+<%-- notes --%>
+<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
+<%-- end notes --%>
 
 <%-- Scripts for metadata window --%>
 <script>

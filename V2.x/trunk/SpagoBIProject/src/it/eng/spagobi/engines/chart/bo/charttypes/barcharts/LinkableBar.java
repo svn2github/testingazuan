@@ -115,15 +115,37 @@ public class LinkableBar extends BarCharts {
 		//BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 
+		
+		if(currentSerie!=-1 && colorMap!=null){
+			Integer c=new Integer(currentSerie);
+			if(colorMap.get("color"+c.toString())!=null){
+				Color col= (Color)colorMap.get("color"+c);
+				renderer.setSeriesPaint(0, col);
+			}
+		}
+		else{
+			if(colorMap!=null){
+
+				for (Iterator iterator = colorMap.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Color col= (Color)colorMap.get(key);
+					String keyNum=key.substring(5, key.length());
+					int num=Integer.valueOf(keyNum).intValue();
+					num=num-1;
+					renderer.setSeriesPaint(num, col);
+				}
+			}
+		}
+		
 		// set up gradient paints for series...
-		if(colorMap!=null){
+		/*if(colorMap!=null){
 
 			for (Iterator iterator = colorMap.keySet().iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
 				Color col= (Color)colorMap.get(key);
 				renderer.setSeriesPaint((Integer.valueOf(key).intValue())-1, col);
 			}
-		}
+		}*/
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(

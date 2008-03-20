@@ -89,6 +89,9 @@ SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("Execut
 	int catsnum=0;
 	int ticks=1;
 	int categoryCurrent=0;
+	String categoryCurrentName="";
+	String catTitle="category";
+	String serTitle="serie";
 	String refreshUrlCategory="";
 
  EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
@@ -109,6 +112,7 @@ String documentid=(objO.getId()).toString();
 //String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
 Dataset copyDataset=null;
+
 
 
 // get wich pars can the user set
@@ -134,22 +138,33 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
+			catTitle=((BarCharts)sbi).getCategoryLabel();
+			serTitle=((BarCharts)sbi).getValueLabel();
 			DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
 			copyDataset=new DefaultCategoryDataset();					
 			copyDataset=(DefaultCategoryDataset)catDataset.clone();
 
+			// if slider specifies a category than set view from that point
 			if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
-				Double catD=Double.valueOf(catS);
+			Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
-				if(categoryCurrent==0) valueSlider="1";
-				else valueSlider=(new Integer(categoryCurrent)).toString();
-				if(categoryCurrent!=0){
+			}
+			else{ //else set view from first category
+				categoryCurrent=1;
+			}
+				valueSlider=(new Integer(categoryCurrent)).toString();
 				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
+				
+				if(categoryCurrent!=0){
+					categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
 				copyDataset=sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization);				
 				}
-			}
-			
+				else{
+					categoryCurrentName="All";
+				}
+				
+				// choose a serie
 			if(request.getParameter("serie")!=null)
 				{serie=(String)request.getParameter("serie");
 				if(!serie.equalsIgnoreCase("allseries")){
@@ -241,7 +256,7 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 	%>
 	<div class='div_detail_form'>
 		<span class='portlet-form-field-label'>
-			Select a serie
+			Select from <%=serTitle%>
 			</span>
 		</div>
 		
@@ -256,7 +271,7 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 <%} %>
 		<select name="serie" onchange="this.form.submit();">
 		<%if(serie.equalsIgnoreCase("allseries")){ %>
-				<option value="allseries" selected="selected">View all series</option>
+				<option value="allseries" selected="selected">View all</option>
 		<%} else {%>
 			<option value="allseries">View all series</option>
 		<%} %>
@@ -356,14 +371,36 @@ if(sbi.isChangeableView()){
 	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
     	
 	//calculate the number of ticks
-		if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
-		else{ticks=((catsnum)/numberCatVisualization)+1;}
+		//if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
+		//else{ticks=((catsnum)/numberCatVisualization)+1;}
 		
 		//The maximun is number_categories/numbercatvisualization, parte intera		
-		maxSlider=new Integer(ticks).toString(); 
-		minSlider="1"; 
+		//maxSlider=new Integer(ticks).toString(); 
 		
+		maxSlider=new Integer(catsnum).toString();
+		
+		minSlider="1";
 	%>
+	
+	<script type="text/javascript" language="JAVASCRIPT">
+		<!--
+		arrayCats=new Array(<%=catsnum%>);
+		-->
+	</script>
+		<%
+		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
+			Integer key=(Integer)iterator.next();
+			String name=(String)categories.get(key);
+	%>
+
+		<script type="text/javascript" language="JAVASCRIPT">
+			<!--
+				arrayCats[<%=key%>]='<%=name%>';
+			//-->
+		</script>
+	<%} %>
+	
+	
 	
 
 	<form id="sliderform">
@@ -376,7 +413,7 @@ if(sbi.isChangeableView()){
 		<tr>
 		<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
 		<!--  <td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td> --> 
-		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View All Categories</a></td>
+		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a></td>
 	</tr>
 	</table>
 	</div>
@@ -437,27 +474,18 @@ if(sbi.isChangeableView()){
 	
 		Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
-		value= parseInt(this.value);
-		value="Zoom on categories: "+value;	
-		value=value+ " of "+<%=ticks%>;	
+		value= arrayCats[parseInt(this.value)];
+		value="View <%=catTitle%>: "+value;	
+		value=value;	
 		$('slider_1_1_value').innerHTML =value;
 				}
 		)
 	
-	current=<%=categoryCurrent%>;
+		currentName="View giorni: ";
 	
-	if(current==0)
-	{
-	
-	current="All categories";
-	
-	}
-	else{
-		current="Zoom on categories: "+current;
-		current=current+ " of "+<%=ticks%>;
-		}
-				
-		$('slider_1_1_value').innerHTML = current;
+		//currentName="View <%=catTitle%>: "+currentName;
+					
+		$('slider_1_1_value').innerHTML = currentName;
 	
 	});
 	

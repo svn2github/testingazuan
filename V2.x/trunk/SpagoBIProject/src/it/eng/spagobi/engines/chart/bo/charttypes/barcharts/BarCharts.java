@@ -236,7 +236,9 @@ public class BarCharts extends ChartImpl {
 		int numCats=categories.size();
 		Vector visCat=new Vector();
 		// from the choice point to min(chose point+interval, end point)
-		int startPoint=((catSelected-1)*numberCatsVisualization)+1;
+		//int startPoint=((catSelected-1)*numberCatsVisualization)+1;
+		int startPoint=catSelected;
+
 		int endPoint;
 		if((startPoint+numberCatsVisualization-1)<=(categories.size()))
 			endPoint=startPoint+numberCatsVisualization-1;

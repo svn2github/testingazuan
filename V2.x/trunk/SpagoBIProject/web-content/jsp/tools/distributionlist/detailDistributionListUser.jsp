@@ -274,7 +274,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							if (dayRep.equals("0")){
 								if (weeks.equals("NONE")){
 									days = days.replace(',',';');
-									frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days ;
+									frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days +" ";
 								}	
 								else if (!weeks.equals("NONE")){
 									weeks = weeks.replace(',',';');
@@ -285,10 +285,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Week", "messages", request)+" "+msgBuilder.getMessage("sbi.frequency.first", "messages", request)+" " ;
 									}
 									else
-									{frequency = frequency + " Week: "+weeks ;}
+									{frequency = frequency + " Week: "+weeks+" " ;}
 									if (!days.equals("NONE")){
 										days = days.replace(',',';');
-										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days ;
+										frequency = frequency + msgBuilder.getMessage("sbi.frequency.Days", "messages", request)+" "+days +" ";
 									}	
 								}	
 								

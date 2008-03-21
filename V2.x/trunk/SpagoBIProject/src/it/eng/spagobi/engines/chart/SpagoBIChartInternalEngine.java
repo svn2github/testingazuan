@@ -53,6 +53,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
+
 public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 	private static transient Logger logger = Logger.getLogger(SpagoBIChartInternalEngine.class);
@@ -171,8 +172,21 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			}
 			//JFreeChart chart=null;
 			// create the chart
-
 			
+			
+			//in the re-drawing case in document-composition check if serie or categories have been set
+			SourceBean serviceRequest=requestContainer.getServiceRequest();
+			String serie=null;
+			String category=null;
+			if(serviceRequest.getAttribute("serie")!=null)
+				{serie=(String)serviceRequest.getAttribute("serie");
+				response.setAttribute("serie",serie);
+				}
+				if(serviceRequest.getAttribute("category")!=null)
+				{category=(String)serviceRequest.getAttribute("category");
+				response.setAttribute("category",category);
+				}
+				
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
@@ -182,6 +196,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				response.setAttribute("dataset",dataset);
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
+				//response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 				//responseSb.setAttribute("changeviewchecked",new Boolean(changeViewChecked));
 				response.setAttribute("sbi",sbi);
 

@@ -48,18 +48,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 BIObject objO=null;
 String uuidO="";
+boolean docComposition=false;
 
 SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
    String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
    if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-		
-<%	objO=obj;
+	<%	
+objO=obj;
 	uuidO=uuid;
 
    }
    else // in document composition case doesn't call header so set Object and uuid
    {
+	   docComposition=true;
 	   UUIDGenerator uuidGenO  = UUIDGenerator.getInstance();
 	   UUID uuidObjO = uuidGenO.generateTimeBasedUUID();
 	   uuidO = uuidObjO.toString();
@@ -82,7 +84,7 @@ SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("Execut
 	String maxSlider="";
 	String minSlider="";
 	String valueSlider="1";
-	String refreshUrl2 = "";
+	String refreshUrl = "";
 	HashMap categories=null;
 	String serie="allseries";
 	List series=null;
@@ -94,6 +96,7 @@ SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("Execut
 	String catTitle="category";
 	String serTitle="serie";
 	String refreshUrlCategory="";
+	String refreshUrlSerie="";
 
  EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
@@ -108,7 +111,10 @@ if(userProfile==null){
 if(sbModuleResponse.getAttribute("title")!=null){titleChart=(String)sbModuleResponse.getAttribute("title");}
 	//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-	
+
+
+
+
 String documentid=(objO.getId()).toString();
 //String documentid=(String)aServiceResponse.getAttribute("documentid");
 Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
@@ -133,9 +139,26 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		}
 
 
+
+	// in the case of document composition check if serie or category have been previously defined
+
+	if(docComposition){
+		if(sbModuleResponse.getAttribute("category")!=null){
+		String catS=(String)sbModuleResponse.getAttribute("category");
+		Double catD=Double.valueOf(catS);
+		categoryCurrent=catD.intValue();
+		}
+		if(sbModuleResponse.getAttribute("serie")!=null){
+		serie=(String)sbModuleResponse.getAttribute("serie");
+		
+		}
+		
+		
+	}
+
 /////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
 		if(sbi.getType().equalsIgnoreCase("BARCHART")){
-			series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
+	series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
@@ -167,12 +190,12 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				
 				// choose a serie
 			if(request.getParameter("serie")!=null)
-				{serie=(String)request.getParameter("serie");
-				if(!serie.equalsIgnoreCase("allseries")){
-					copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,serie);	
-					int wichSerie=series.indexOf(serie)+1;
-					((BarCharts)sbi).setCurrentSerie(wichSerie);
-				}
+				{serie=(String)request.getParameter("serie");}
+			if(!serie.equalsIgnoreCase("allseries")){
+				copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,serie);	
+				int wichSerie=series.indexOf(serie)+1;
+				((BarCharts)sbi).setCurrentSerie(wichSerie);
+				
 			}
 		}
 
@@ -245,39 +268,65 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
 
 		/// Chart created and saved
-	   			
-		Map refreshUrlPars2 = new HashMap();
-			refreshUrlPars2.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-		   	refreshUrl2 = urlBuilder.getUrl(request, refreshUrlPars2);
-		String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
-		refreshUrlCategory=refreshUrl2+"&serie="+serie;
+	   		
 		
-	
-// form to limit the series if it is a barchart
+		// Set the Url for refreshing the chart: in case of document composition specify also the execution page and document_id
+		Map refreshUrlPars = new HashMap();
+			refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			if(docComposition==true){
+		   	refreshUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+documentid;
+			}
+			else{
+		   	refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+			}
+		   	
+
+
+			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
+			String urlPng=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
+			refreshUrlCategory=refreshUrl+"&serie="+serie;
+		   	
+		   	
+		   	// form to limit the series if it is a barchart
 if(sbi.getType().equalsIgnoreCase("BARCHART")){
-	String refreshUrlSerie=refreshUrl2+"&category="+categoryCurrent;
+		//sets the URL
+	if(docComposition)
+	{
+		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
+		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
+		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
+		refreshUrlPars.put("OBJECT_ID",documentid);
+		
+	}
+	else
+	{
+		refreshUrlSerie=refreshUrl;
+	}
 	%>
 	<div class='div_detail_form'>
 		<span class='portlet-form-field-label'>
 			Select from <%=serTitle%>
-			</span>
-		</div>
+		</span>
+	</div>
 		
 	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
-<% 	refreshUrlPars2.put("category",new Integer(categoryCurrent));
-	for(Iterator iterator = refreshUrlPars2.keySet().iterator(); iterator.hasNext();){
-		String name = (String) iterator.next();
-		String value=(refreshUrlPars2.get(name)).toString();
+<% 	
+	refreshUrlPars.put("category",new Integer(categoryCurrent));
+	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+	{
+	String name = (String) iterator.next();
+	String value=(refreshUrlPars.get(name)).toString();
 %>		
 	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
 
-<%} %>
-		<select name="serie" onchange="this.form.submit();">
-		<%if(serie.equalsIgnoreCase("allseries")){ %>
-				<option value="allseries" selected="selected">View all</option>
-		<%} else {%>
-			<option value="allseries">View all series</option>
-		<%} %>
+	<%
+	}%>
+	<select name="serie" onchange="this.form.submit();">
+	<%if(serie.equalsIgnoreCase("allseries")){ %>
+		<option value="allseries" selected="selected">View all</option>
+	<%} else {%>
+		<option value="allseries">View all <%=serTitle%></option>
+	<%} %>
 		
 	<%     	
 	    // for each possible serie 
@@ -297,47 +346,6 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 	</form>
 <% 
 }
-
-
-
-////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
-
-if(sbi.isChangeableView()){
-	%>
-	<table id="changepars" align="center"><tr>
-	<%     	
-	    // for each possible parameter to change creates a checkbox
-	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
-	    		String par = (String) iterator.next(); %>
-	  
-	<td align="right">
-			<div class='div_detail_form'>
-					<span class='portlet-form-field-label'>
-						<%=sbi.getChangeViewParameterLabel(par,0)%> 
-					</span>
-				</td>
-				<td align="left">
-	    		<form  name="<%=par%>" action="<%=refreshUrl2%>" method="GET" >
-	    		  <%if(sbi.getChangeViewParameter(par)){ %>
-	    		  <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
- 				  <input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
- 			  <%}
-	    		  else {%>
-	    		 <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
-				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
- 	    		  <%} %>
- 	    		</form>
- 	     </div>
-	   </td>
-	     	    	<% 
-	    	}
-	%>  </tr></table>
-		<BR>
-		<BR>
-	</div>
-	<% 
-		    }
-	
 
 	/// If it is a linkable graph
 	    if(sbi.isLinkable()){
@@ -408,18 +416,20 @@ if(sbi.isChangeableView()){
 
 	<form id="sliderform">
 		<table class="slidertableclass" align="center" >
-	<tr>
-	<td width="75%" align="center">
-	<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"><div id="slider1"></div> </a>
-	<div id="output1"> 
-		<table align="center">
-		<tr>
-		<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
-		<!--  <td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td> --> 
-		<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a></td>
-	</tr>
-	</table>
-	</div>
+			<tr>
+				<td width="75%" align="center">
+					<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
+							<div id="slider1"></div> 
+					</a>
+					<div id="output1"> 
+						<table align="center">
+							<tr>
+								<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
+								<!--  <td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td> --> 
+								<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a></td>
+							</tr>
+						</table>
+					</div>
 </td>
 			</tr>
 		</table>
@@ -435,7 +445,63 @@ if(sbi.isChangeableView()){
 	/////////////////////// End slider creation ////////////////////////// 
 	%>
     
-<%} // End no error case%>
+    
+    
+    
+    
+    
+    
+<%
+
+	
+////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
+
+if(sbi.isChangeableView() && !docComposition){
+	%>
+	<table id="changepars" align="center"><tr>
+	<%     	
+	    // for each possible parameter to change creates a checkbox
+	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+	    		String par = (String) iterator.next(); %>
+	  
+	<td align="right">
+			<div class='div_detail_form'>
+					<span class='portlet-form-field-label'>
+						<%=sbi.getChangeViewParameterLabel(par,0)%> 
+					</span>
+				</td>
+				<td align="left">
+	    		<form  name="<%=par%>" action="<%=refreshUrl%>" method="GET" >
+	    		  <%if(sbi.getChangeViewParameter(par)){ %>
+	    		  <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
+ 				  <input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
+ 			  <%}
+	    		  else {%>
+	    		 <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
+				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
+ 	    		  <%} %>
+ 	    		</form>
+ 	     </div>
+	   </td>
+	     	    	<% 
+	    	}
+	%>  </tr></table>
+		<BR>
+		<BR>
+	</div>
+	<% 
+		    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	} // End no error case%>
 
 
 
@@ -454,7 +520,8 @@ if(sbi.isChangeableView()){
 		}
  
 	function getActionUrl() {
-	
+	// if we are in document composition case then call BObjectExecutePage
+		
 		var variable="&category=";
 		var value=getValue();
 		var second=variable+value;
@@ -485,9 +552,7 @@ if(sbi.isChangeableView()){
 		)
 	
 		currentName="View giorni: ";
-	
-		//currentName="View <%=catTitle%>: "+currentName;
-					
+						
 		$('slider_1_1_value').innerHTML = currentName;
 	
 	});

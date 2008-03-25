@@ -25,7 +25,6 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.DataRow;
@@ -39,7 +38,6 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
@@ -51,14 +49,12 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
-import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -321,6 +317,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 	valColName = fixlistDet.getValueColumnName();
 	logger.debug("valColName:"+valColName);
+	descriptionColName = fixlistDet.getDescriptionColumnName();
+	logger.debug("descriptionColName="+descriptionColName);
 	
 	try {
 	    String result = fixlistDet.getLovResult(profile);
@@ -353,6 +351,9 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    return null;
 	}
 	valColName = scriptDetail.getValueColumnName();
+	logger.debug("valColName="+valColName);
+	descriptionColName = scriptDetail.getDescriptionColumnName();
+	logger.debug("descriptionColName="+descriptionColName);
 	try {
 	    String result = scriptDetail.getLovResult(profile);
 	    resultSB = SourceBean.fromXMLString(result);
@@ -380,6 +381,9 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    return null;
 	}
 	valColName = javaClassDetail.getValueColumnName();
+	logger.debug("valColName="+valColName);
+	descriptionColName = javaClassDetail.getDescriptionColumnName();
+	logger.debug("descriptionColName="+descriptionColName);
 	try {
 	    String javaClassName = javaClassDetail.getJavaClassName();
 	    IJavaClassLov javaClassLov = (IJavaClassLov) Class.forName(javaClassName).newInstance();

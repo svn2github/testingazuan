@@ -649,7 +649,7 @@ public class ListTag extends TagSupport
 				} catch (SourceBeanException e) {
 					logger.error(e);
 				}
-				startIndex = onClickFunction.indexOf("<PARAMETER ", startIndex);
+				startIndex = onClickFunction.indexOf("<PARAMETER ", startIndex + 1);
 			}
 		}
 		logger.debug("OUT");

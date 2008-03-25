@@ -62,14 +62,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	// CREATE PAGE URLs
 	Map formUrlPars = new HashMap();
-	
-	//if(ChannelUtilities.isPortletRunning()) {
-	//	formUrlPars.put("PAGE", "detailBIObjectPage");
-	//	if(modality != null){
-	//		formUrlPars.put("MESSAGEDET", modality);
-   	//	}
-	//	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	//}
 
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 	
@@ -81,19 +73,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	
 %>
 
-
-
-
-
-
-
-
 <%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
+
+
 <script>
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
@@ -132,24 +119,10 @@ function checkFormVisibility(docType) {
 }
 </script>
 
-
-
-
-
-
-
-
-
-
-
 <form method='POST' action='<%=formUrl%>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
-	
-	<%-- if(ChannelUtilities.isWebRunning()) { --%>
+
 		<input type='hidden' name='PAGE' value='detailBIObjectPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
-	<%-- } --%>
-
-
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -411,7 +384,7 @@ function checkFormVisibility(docType) {
 		    <% } %>
                         
             <!-- DISPLAY RADIO BUTTON FOR CRYPT SELECTION -->
-			<!-- FOR THE CURRENT RELEASE THIS RADIO IS HIDE -->
+			<!-- FOR THE CURRENT RELEASE THIS RADIO IS HIDDEN -->
 		    	<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.criptableField" />
@@ -539,17 +512,13 @@ function checkFormVisibility(docType) {
 			
         </div> 
 
-
-
-
-
-
 	<!-- CLOSE COLUMN WITH DATA FORM  -->
 	</td>
 	
-
+	
+	
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
-	<td width="60%">
+	<td align="left">
 	<div style='padding:5px;'>
 		<a class="portlet-form-field-label" style="text-decoration:none;" 
 		   onmouseover="this.style.color='#074BF8';"
@@ -558,8 +527,6 @@ function checkFormVisibility(docType) {
 			<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />
 		</a>
 	</div>
-	
-	
 
 	<script>
 	function switchView() {
@@ -588,11 +555,6 @@ function checkFormVisibility(docType) {
 			<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
 		</span>
 		<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
-			
-			
-			
-			
-			
 			
 			<table> 
 				<% 
@@ -673,13 +635,6 @@ function checkFormVisibility(docType) {
 		      		%>    
 		      	</table>
 
-
-
-
-
-
-
-
 		</div>
 	</div>
 
@@ -687,24 +642,144 @@ function checkFormVisibility(docType) {
       </tr>
    </table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 
-	
-
-
-
-
-
-
 	<spagobi:error/>
 
 
 
+<!-- OPEN COLUMN WITH METADATA  -->	    
+<% 
+		      		String longDesc = obj.getExtendedDescription();
+		      		if(longDesc==null) {
+		      			longDesc = "";
+		      		}
+		      		longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
+		      		%> 
+<% 
+		      		String objective = obj.getObjectve();
+		      		if(objective==null) {
+		      			objective = "";
+		      			
+		      		}
+		      		objective = GeneralUtilities.replace(objective,"'","\\'");
+		      %>
+		      		
+		      		
+	<script>
+Ext.onReady(function(){
 
+    Ext.QuickTips.init();
+   // Ext.form.Field.prototype.msgTarget = 'side';
 
+	var top = new Ext.form.HtmlEditor({
+        labelAlign: 'top',
+        frame:true,
+        title: 'Extended Description',
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 150,
+        value: '<%=longDesc%>',
+        renderTo: 'containerLongDescr',
+            id:'longDescription',
+            fieldLabel:'Extended Description'  
+    });   
+    
+    var top1 = new Ext.form.HtmlEditor({
+        labelAlign: 'top',
+        frame:true,
+        title: 'Objective',
+        value: '<%=objective%>',
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 150,
+        renderTo: 'containerObjective',
+            id:'objective',
+            fieldLabel:'Objective'  
+    });   
+     
+	});	  
+	 	
+</script>	
+<table  class='header-sub-table-portlet-section' >		
+	<tr class='header-sub-row-portlet-section'>
+		<td class='header-sub-title-column-portlet-section'>
+			<spagobi:message key = "DOCUMENT METADATA" />
+		</td>
+	</tr>
+	<tr><td style='background:none;border:none'>&nbsp;</td></tr>
+</table>		
+  <table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
+  <tr>
+  <td>
+  <div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="Long Description" />
+					</span>
+				</div>
+	</td><td>			
+  <div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="Objective" />
+					</span>
+				</div>
+	</td>			
+	</tr>			
+	<tr>
+		<td>
+				
+					
+				<div id= "containerLongDescr">
+				</div> 
+</td><td>
 
-
-
+				<div id= "containerObjective">
+				</div> 
+	</td>
+	</tr><tr>
+	</tr><td>&nbsp;</td><tr>
+	<td>		
+						
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="Language" />
+					</span>
+				</div>
+				<div>
+					<% 
+		      		String language = obj.getLanguage();
+		      		if(language==null) {
+		      			language = "";
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 							name="language" id="language" value="<%=language%>" >
+				</div>	
+	</td>
+	</tr><tr>	
+	<td>		
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="Keywords" />
+					</span>
+				</div>
+				<div>
+					<% 
+		      		String Keywords = obj.getName();
+		      		if(Keywords==null) {
+		      			Keywords = "";
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 							name="Keywords" id="Keywords" value="<%=Keywords%>" >
+				</div>						
+	</td>
+  </tr>
+</table>  
+	
+</div>
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
 </form>
+
+
 <% } else if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
   		BIObjectParameter objPar = (BIObjectParameter) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT_PAR);
 %>
@@ -777,12 +852,17 @@ function isBIObjectFormChanged() {
 	
 	var label = document.getElementById('doc_label').value;
 	var name = document.getElementById('doc_name').value;
-	var description = document.getElementById('doc_description').value;
+	var description = document.getElementById('doc_description').value;	
 	var relName = document.getElementById('doc_relname').value;
 	var type = document.getElementById('doc_type').value;
 	var engine = document.getElementById('doc_engine').value;
 	var datasource = document.getElementById('doc_datasource').value;
 	var state = document.getElementById('doc_state').value;
+	
+	var longDescription = document.getElementById('longDescription').value;
+	var objective = document.getElementById('objective').value;
+	var language = document.getElementById('language').value;
+	var Keywords = document.getElementById('Keywords').value;
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
 		|| (name != '<%=initialBIObject.getName()%>')
@@ -793,7 +873,12 @@ function isBIObjectFormChanged() {
 		|| (datasource != '<%=initialBIObject.getDataSourceId() != null ? initialBIObject.getDataSourceId() : ""%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
-		|| (fileUploadChanged == 'true')) {
+		|| (fileUploadChanged == 'true') 
+		
+		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'")%>')
+		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'")%>')
+		|| (language != '<%=initialBIObject.getLanguage()%>')
+		|| (Keywords != '<%=initialBIObject.getLanguage()%>')){
 			
 		biobjFormModified = 'true';
 	}
@@ -945,15 +1030,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 }
 </script>
 
-
-
-
-
-
-
-
-
-
+		      
 <table  class='header-sub-table-portlet-section' >		
 	<tr class='header-sub-row-portlet-section'>
 		<% if (obj_par_id != -1) { %>
@@ -1097,7 +1174,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 			int objParsnumber = biObjParams.size();
 			for (int i = 0; i < objParsnumber; i++) {
 				%>
-				<option value="<%=i + 1%>" <% if (objPar.getPriority() != null && objPar.getPriority().intValue() == i + 1) out.print(" selected='selected' ");  %>><%=i+1%></option>
+				<option value="<%=i + 1%>" <% if (objPar.getPriority() != null && objPar.getPriority().intValue() == i + 1) out.print(" selected='selected' ");  %> ><%=i+1%></option>
 				<%
 			}
 			if (obj_par_id < 0) {
@@ -1172,12 +1249,11 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 	
 </form>
 
-<% } %>
 
+<% } %>
 
 <div id = 'parameterCannotBeChanged' class='portlet-msg-error' style='display:none;'>
 	<spagobi:message key = "SBIDev.docConf.docDetParam.cannotChangeParameter" />
 </div>
 
-</div> <!-- background -->
 

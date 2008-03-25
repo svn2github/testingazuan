@@ -346,9 +346,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setObjectTypeCode(biObject.getBiObjectTypeCode());
 			
 			// metadata ... to uncomment when the user interface managed that fields
-			//hibBIObject.setExtendedDescription(biObject.getExtendedDescription());
-			//hibBIObject.setLanguage(biObject.getLanguage());
-			//hibBIObject.setObjectve(biObject.getObjectve());
+			hibBIObject.setExtendedDescription(biObject.getExtendedDescription());
+			hibBIObject.setLanguage(biObject.getLanguage());
+			hibBIObject.setObjectve(biObject.getObjectve());
 			//hibBIObject.setRating(biObject.getRating());
 			
 			// functionalities erasing
@@ -467,6 +467,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	obj.getEngine().getId());
 			hibBIObject.setSbiEngines(hibEngine); 
 			hibBIObject.setDescr(obj.getDescription());
+			
 			hibBIObject.setLabel(obj.getLabel());
 			hibBIObject.setName(obj.getName());
 			hibBIObject.setEncrypt(new Short(obj.getEncrypt().shortValue()));

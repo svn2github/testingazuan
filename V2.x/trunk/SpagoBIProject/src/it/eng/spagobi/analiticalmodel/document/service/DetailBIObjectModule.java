@@ -87,6 +87,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_LIST_STATES = "states";		
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
 	public final static String NAME_ATTR_LIST_DS = "datasource";
+	public final static String NAME_ATTR_LIST_LANGUAGES = "languages";
 	
 	//private String actor = null;
 	private EMFErrorHandler errorHandler = null;
@@ -718,6 +719,7 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setEngine(null);
             obj.setDataSourceId(null);
             obj.setDescription("");
+            obj.setExtendedDescription("");
             obj.setLabel("");
             obj.setName("");
             obj.setEncrypt(new Integer(0));
@@ -767,21 +769,6 @@ public class DetailBIObjectModule extends AbstractModule {
 		session.delAttribute("modality");
 		response.setAttribute("loopback", "true");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/**

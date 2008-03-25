@@ -120,6 +120,13 @@
     <CONFIGURATOR path="/WEB-INF/conf/tools/datasource/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/validation.xml" />
 	
+	<!-- tools.dataset -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/tools/dataset/publishers.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/validation.xml" />
+	
 	<!-- tools.distributionlist -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/pages.xml" />

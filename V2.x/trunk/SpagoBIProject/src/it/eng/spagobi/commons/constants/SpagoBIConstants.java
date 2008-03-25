@@ -263,6 +263,7 @@ public class SpagoBIConstants {
 	
 	//constants for user profiles
 	public static final String ENGINES_MANAGEMENT = "EnginesManagement";
+	public static final String DATASET_MANAGEMENT = "DatasetManagement";
 	public static final String FUNCTIONALITIES_MANAGEMENT = "FunctionalitiesManagement";
 	public static final String LOVS_MANAGEMENT = "LovsManagement";
 	public static final String CONTSTRAINT_MANAGEMENT = "ConstraintManagement";

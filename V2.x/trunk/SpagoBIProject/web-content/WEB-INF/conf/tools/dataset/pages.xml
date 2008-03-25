@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGES>
+  	<PAGE name="ListDataSetPage" scope="REQUEST" title="Data Set Configuration" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="ListDataSetPage" target="ListDataSetModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListDataSetModule"/>
+    	</MODULES>
+  	</PAGE>
+  	
+  	
+  	<PAGE name="DetailDataSetPage" scope="REQUEST" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailDataSetPage" target="DetailDataSetModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailDataSetModule"/>
+    	</MODULES>
+  	</PAGE>  	
+</PAGES>
+

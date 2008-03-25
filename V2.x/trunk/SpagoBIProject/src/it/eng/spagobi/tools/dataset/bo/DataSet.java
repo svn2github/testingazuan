@@ -11,13 +11,20 @@ import it.eng.spagobi.tools.datasource.bo.DataSource;
  */
 public class DataSet {
 
+	private int dsId;
     	private String name=null;
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
+
     	
     	
-    	
+	public int getDsId() {
+			return dsId;
+		}
+		public void setDsId(int dsId) {
+			this.dsId = dsId;
+		}
 	public String getParameters() {
 	    return parameters;
 	}

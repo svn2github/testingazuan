@@ -2,8 +2,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" table="SBI_DATA_SET" >
-        <id name="id" type="int">
+    <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" table="SBI_DATA_SET" lazy="false">
+        <id name="dsId" type="int">
             <column name="DS_ID" />     
              <generator class="identity"/>      
         </id>
@@ -20,12 +20,12 @@
         <property name="parameters" type="string">
             <column name="PARAMS" />
         </property>   
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet">
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />
 	        </property>
 		</subclass>   
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet" discriminator-value="SbiQueryDataSet">
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet" discriminator-value="SbiQueryDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="query" type="string">
 	            <column name="QUERY" />
 	        </property>
@@ -33,7 +33,7 @@
 	            <column name="DATA_SOURCE_ID" not-null="false" />
 	        </many-to-one>	        
 		</subclass> 
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet" discriminator-value="SbiWSDataSet">
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet" discriminator-value="SbiWSDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="adress" type="string">
 	            <column name="ADRESS" />
 	        </property>

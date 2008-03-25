@@ -18,7 +18,21 @@ public class QueryDataSet extends DataSet {
     public void setQuery(String query) {
         this.query = query;
     }
-    public DataSource getDataSource() {
+    
+    
+    
+    public QueryDataSet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public QueryDataSet(DataSet a) {
+    	setDsId(a.getDsId());
+    	setLabel(a.getLabel());
+    	setName(a.getName());
+    	setDescription(a.getDescription());
+	}
+    
+	public DataSource getDataSource() {
         return dataSource;
     }
     public void setDataSource(DataSource dataSource) {

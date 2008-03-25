@@ -72,6 +72,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</td>
 			</tr>
 		<%} %>
+		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASET_MANAGEMENT)) {%>
+			<tr class="portlet-font">
+				<td width="100" align="center">
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/engineAdministrationIcon.png")%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListDatasetPage"/></portlet:actionURL>' 
+						class="link_main_menu" >
+					 	<spagobi:message key="SBISet.linkDSetConf" />
+					</a>
+				</td>
+			</tr>
+		<%} %>
+		
 	</table>
 	<br/>
 </div>

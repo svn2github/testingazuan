@@ -95,6 +95,14 @@
                              PWD,
                              DRIVER
 					  FROM SBI_DATA_SOURCE "/>
+
+	<STATEMENT name="SELECT_ALL_DATASET" 
+               query="SELECT DS_ID as ID,         						 
+       						 DESCR,
+       						 LABEL,
+       						 NAME					  
+       						 FROM SBI_DATA_SET "/>
+
 					  
 	<STATEMENT name="SELECT_ALL_DL" 
                query="SELECT SDL.DL_ID as ID,

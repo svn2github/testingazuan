@@ -8,7 +8,7 @@ package it.eng.spagobi.tools.dataset.metadata;
  *         angelo.bernabei@eng.it
  */
 public class SbiDataSet {
-    	private int id;
+	private int dsId;	
 	private String name=null;
     	private String description=null;
     	private String label=null;
@@ -38,11 +38,12 @@ public class SbiDataSet {
 	public void setLabel(String label) {
 	    this.label = label;
 	}
-	public int getId() {
-	    return id;
+	public int getDsId() {
+		return dsId;
 	}
-	public void setId(int id) {
-	    this.id = id;
+
+	public void setDsId(int dsId) {
+		this.dsId = dsId;
 	}
     	
 }

@@ -22,4 +22,17 @@ public class WSDataSet extends DataSet {
     public void setExecutorClass(String executorClass) {
         this.executorClass = executorClass;
     }
+	public WSDataSet(DataSet a) {
+    	setDsId(a.getDsId());
+    	setLabel(a.getLabel());
+    	setName(a.getName());
+    	setDescription(a.getDescription());
+	}
+	public WSDataSet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+    
+    
 }

@@ -109,18 +109,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   }	
 	}
 	Integer dsID = obj.getDataSourceId();
-	DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsID);
-	if (ds!=null) dataSource = ds.getLabel();
+	if (dsID != null){ DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsID);
+	if (ds!=null) dataSource = ds.getLabel();}
 	
-	docDescr = obj.getDescription();
-	docObjective = obj.getObjectve(); 
-	docLongDescr = obj.getExtendedDescription(); 
-	docRating = obj.getRating().toString(); 
+	docDescr = (obj.getDescription()!= null ? obj.getDescription() : "");
+	docObjective = (obj.getObjectve()!= null ? obj.getObjectve() : ""); 
+	docLongDescr = (obj.getExtendedDescription()!= null ? obj.getExtendedDescription() : ""); 
+	docRating = (obj.getRating()!= null ? obj.getRating().toString() : ""); 
 	
-	docLanguage = obj.getLanguage(); 
+	docLanguage = (obj.getLanguage()!= null ? obj.getLanguage() : ""); 
 	
-	creationDate = obj.getCreationDate().toString(); 
-	creationUser = obj.getCreationUser(); 
+	creationDate = (obj.getCreationDate() != null ? obj.getCreationDate().toString() : ""); 
+	creationUser = (obj.getCreationUser()!= null ? obj.getCreationUser() : ""); 
 	
 	ObjTemplate currTemplate = obj.getActiveTemplate();
 	if (currTemplate !=null){

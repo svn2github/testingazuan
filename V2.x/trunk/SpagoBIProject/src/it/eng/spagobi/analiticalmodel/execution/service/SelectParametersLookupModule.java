@@ -23,6 +23,7 @@ package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dbaccess.Utils;
@@ -159,12 +160,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	String typeLov = LovDetailFactory.getLovTypeCode(lovProvider);
 
 	// get the user profile
-	IEngUserProfile profile = null;
-	HttpServletRequest httpReq = (HttpServletRequest) requestContainer.getInternalRequest();
-	HttpSession httpSess = httpReq.getSession();
-	if (httpSess == null)
-	    logger.warn("HttpSession is null!!!!");
-	profile = (IEngUserProfile) httpSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
+	if (permSession == null)
+	    logger.warn("Permanent session container is null!!!!");
+	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	if (profile == null)
 	    logger.warn("IEngUserProfile is null!!!!");
 

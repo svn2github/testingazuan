@@ -34,13 +34,17 @@ import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail;
@@ -55,6 +59,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.ParameterValuesDecoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 
 import java.sql.Connection;
@@ -62,9 +67,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -78,7 +81,9 @@ import org.apache.log4j.Logger;
 
 public class SelectParametersLookupModule extends AbstractBasicListModule {
 
-    static private Logger logger = Logger.getLogger(SelectParametersLookupModule.class);
+	private static final long serialVersionUID = 1L;
+
+	static private Logger logger = Logger.getLogger(SelectParametersLookupModule.class);
 
 	// define variable for value column name
     private String valColName = "";
@@ -121,21 +126,292 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	} else {
 	    list = loadList(request, response, parId, roleName);
 	}
-	// fill response
-	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPublisher");
 	
 	HashMap parametersMap = new HashMap();
 	parametersMap.put("roleName", roleName);
 	parametersMap.put("parameterId", parIdStr);
 	parametersMap.put(RETURN_PARAM, returnParam);
 	parametersMap.put("parameterFieldName", request.getAttribute("parameterFieldName"));
+	parametersMap.put("objParId", request.getAttribute("objParId"));
+	
+	// dependencies filter
+	list = filterListForParametersCorrelation(paruse, request, list, parametersMap);
+	
+	// fill response
+	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPublisher");
+	
+	// propagates all parameters during list navigation
 	response.setAttribute("PARAMETERS_MAP", parametersMap);
 	
 	logger.debug("OUT");
 	return list;
     }
 
-    private ListIFace loadList(SourceBean request, SourceBean response, Integer parId, String roleName)
+    
+    /**
+     * Filters the list according to the parameters correlation
+     * @param paruse The modality in use
+     * @param request The SourceBean request
+     * @param list The list to be filtered
+     * @param parametersMap The map for the parameters to be propagated into the list
+     * @return the filtered list according to the parameters correlation
+     * @throws EMFUserError
+     */
+    private ListIFace filterListForParametersCorrelation(ParameterUse paruse,
+			SourceBean request, ListIFace list, HashMap parametersMap) throws EMFUserError {
+    	logger.debug("IN");
+    	String objParIdStr = (String) request.getAttribute("objParId");
+    	Integer objParId = new Integer(objParIdStr);
+    	IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+    	List dependencies = objParuseDAO.loadObjParuse(objParId, paruse.getId());
+    	if (dependencies != null && dependencies.size() > 0) {
+			if (dependencies.size() == 1) {
+				ObjParuse objparuse = (ObjParuse) dependencies.get(0);
+				list = filterForCorrelation(list, objparuse, request, parametersMap);
+			} else if (dependencies.size()==2) {
+				ObjParuse objpuse1 = (ObjParuse) dependencies.get(0);
+				ObjParuse objpuse2 = (ObjParuse) dependencies.get(1);
+				list = evaluateSingleLogicOperation(objpuse1, objpuse2, list, request, parametersMap);
+			} else {
+				// build the expression
+				int posinlist = 0;
+				String expr = "";
+				Iterator iterOps = dependencies.iterator();
+				while(iterOps.hasNext())  {
+					ObjParuse op = (ObjParuse) iterOps.next();
+					expr += op.getPreCondition() + posinlist + op.getPostCondition() + op.getLogicOperator();
+					posinlist ++;
+				}
+				expr = expr.trim();
+				expr = "(" + expr;
+				expr = expr + ")";
+				list = evaluateExpression(expr, list, dependencies, request, parametersMap);
+			}
+    	}
+    	logger.debug("OUT");
+    	return list;
+		
+	}
+
+	private ListIFace evaluateExpression(String expr, ListIFace list, List ops, SourceBean request, HashMap parametersMap) {
+		ListIFace previusCalculated = list;
+		try {
+			// check number of left and right break, if numbers are different the expression is wrong
+			int numberOfLeftRound = 0;
+			String tmpExpr = expr;
+			while(tmpExpr.indexOf("(")!=-1) {
+				numberOfLeftRound ++;
+				int indLR = tmpExpr.indexOf("(");
+				tmpExpr = tmpExpr.substring(indLR+1);
+			}
+			int numberOfRightRound = 0;
+			tmpExpr = expr;
+			while(tmpExpr.indexOf(")")!=-1) {
+				numberOfRightRound ++;
+				int indRR = tmpExpr.indexOf(")");
+				tmpExpr = tmpExpr.substring(indRR+1);
+			}
+			if(numberOfLeftRound!=numberOfRightRound) {
+				logger.warn("Expression is wrong: number of left breaks is different from right breaks. Returning list without evaluating expression");
+				return list;
+			}
+			
+			//TODO make some more formal check on the expression before start to process it
+			
+			// calculate the list filtered based on each objparuse setting
+			Map calculatedLists = new HashMap();
+			int posinlist = 0;
+			Iterator opsIter = ops.iterator();
+			while(opsIter.hasNext()) {
+				ObjParuse op = (ObjParuse)opsIter.next();
+				ListIFace listop = filterForCorrelation(list, op, request, parametersMap);
+				calculatedLists.put(String.valueOf(posinlist), listop);
+				posinlist ++;
+			}
+			
+			// generate final list evaluating expression
+			
+			while(expr.indexOf("(")!=-1) {
+				int indLR = expr.indexOf("(");
+				int indNextLR = expr.indexOf("(", indLR+1);
+				int indNextRR = expr.indexOf(")", indLR+1);
+				while( (indNextLR<indNextRR) && (indNextLR!=-1) ) {
+					indLR = indNextLR;
+					indNextLR = expr.indexOf("(", indLR+1);
+					indNextRR = expr.indexOf(")", indLR+1);
+				}
+				int indRR = indNextRR;
+				
+				String exprPart = expr.substring(indLR, indRR+1);
+				if(exprPart.indexOf("AND")!=-1) {
+					int indexOper = exprPart.indexOf("AND");
+					String firstListName = (exprPart.substring(1, indexOper)).replace("null", " ");
+					String secondListName = (exprPart.substring(indexOper+3, exprPart.length()-1)).replace("null", " ");
+					ListIFace firstList = null;
+					if(!firstListName.trim().equals("previousList")) {
+						firstList = (ListIFace)calculatedLists.get(firstListName.trim());
+					} else {
+						firstList = previusCalculated;
+					}
+					ListIFace secondList = null;
+					if(!secondListName.trim().equals("previousList")) {
+						secondList = (ListIFace)calculatedLists.get(secondListName.trim());
+					} else {
+						secondList = previusCalculated;
+					}
+					previusCalculated = intersectLists(firstList, secondList);
+				} else if( exprPart.indexOf("OR")!=-1 ) {
+					int indexOper = exprPart.indexOf("OR");
+					String firstListName = (exprPart.substring(1, indexOper)).replace("null", " ");
+					String secondListName = (exprPart.substring(indexOper+2, exprPart.length()-1)).replace("null", " ");
+					ListIFace firstList = null;
+					if(!firstListName.trim().equals("previousList")) {
+						firstList = (ListIFace)calculatedLists.get(firstListName.trim());
+					} else {
+						firstList = previusCalculated;
+					}
+					ListIFace secondList = null;
+					if(!secondListName.trim().equals("previousList")) {
+						secondList = (ListIFace)calculatedLists.get(secondListName.trim());
+					} else {
+						secondList = previusCalculated;
+					}
+					previusCalculated = mergeLists(firstList, secondList);
+				} else {
+					// previousList remains the same as before
+					logger.warn("A part of the Expression is wrong: inside a left break and right break there's no condition AND or OR");
+				}
+				expr = expr.substring(0, indLR) + "previousList" + expr.substring(indRR+1);
+			}
+		} catch (Exception e) {
+			logger.warn("An error occurred while evaluating expression, return the complete list");
+			return list;
+		}
+		return previusCalculated;
+	}
+
+	private ListIFace evaluateSingleLogicOperation(ObjParuse obpuLeft, ObjParuse obpuRight, ListIFace list, SourceBean request, HashMap parametersMap) {
+		ListIFace listToReturn = list;
+		ListIFace listLeft = filterForCorrelation(list, obpuLeft, request, parametersMap);
+		String lo = obpuLeft.getLogicOperator();
+		if(lo.equalsIgnoreCase("AND")) {
+			listToReturn = filterForCorrelation(listLeft, obpuRight, request, parametersMap);
+		} else if(lo.equalsIgnoreCase("OR")) {
+			ListIFace listRight = filterForCorrelation(list, obpuRight, request, parametersMap);
+			listToReturn = mergeLists(listLeft, listRight);
+		} else {
+			listToReturn = list;
+		}
+		return listToReturn;
+	}
+
+	protected ListIFace mergeLists(ListIFace list1, ListIFace list2) {
+		// transform all row sourcebean of the list 2 into strings and put them into a list
+		PaginatorIFace pagLis2 = list2.getPaginator();
+		SourceBean allRowsList2 = pagLis2.getAll();
+		List rowsSBList2 = allRowsList2.getAttributeAsList("ROW"); 
+		Iterator rowsSBList2Iter = rowsSBList2.iterator();
+		List rowsList2 = new ArrayList();
+		while(rowsSBList2Iter.hasNext()) {
+			SourceBean rowSBList2 = (SourceBean)rowsSBList2Iter.next();
+			String rowStrList2 = rowSBList2.toXML(false).toLowerCase();
+			rowsList2.add(rowStrList2);
+		}
+		// if a row of the list one is not contained into list 2 then add it to the list 2
+		SourceBean allRowsList1 = list1.getPaginator().getAll();
+		List rowsSBList1 = allRowsList1.getAttributeAsList("ROW"); 
+		Iterator rowsSBList1Iter = rowsSBList1.iterator();
+		while(rowsSBList1Iter.hasNext()) {
+			SourceBean rowSBList1 = (SourceBean)rowsSBList1Iter.next();
+			String rowStrList1 = rowSBList1.toXML(false).toLowerCase();
+			if(!rowsList2.contains(rowStrList1)) {
+				pagLis2.addRow(rowSBList1);
+			}
+		}
+		// return list 2
+		list2.setPaginator(pagLis2);
+		return list2;
+	}
+	
+	protected ListIFace intersectLists(ListIFace list1, ListIFace list2) {
+		
+		// transform all row sourcebean of the list 2 into strings and put them into a list
+		PaginatorIFace pagLis2 = list2.getPaginator();
+		SourceBean allRowsList2 = pagLis2.getAll();
+		List rowsSBList2 = allRowsList2.getAttributeAsList("ROW"); 
+		Iterator rowsSBList2Iter = rowsSBList2.iterator();
+		List rowsList2 = new ArrayList();
+		while(rowsSBList2Iter.hasNext()) {
+			SourceBean rowSBList2 = (SourceBean)rowsSBList2Iter.next();
+			String rowStrList2 = rowSBList2.toXML(false).toLowerCase();
+			rowsList2.add(rowStrList2);
+		}
+		
+		ListIFace newlist = new GenericList();	
+		PaginatorIFace newpaginator = new GenericPaginator();
+		newpaginator.setPageSize(pagLis2.getPageSize());
+		
+		
+		// if a row of the list one is contained into list 2 then add it to the reulting list
+		SourceBean allRowsList1 = list1.getPaginator().getAll();
+		List rowsSBList1 = allRowsList1.getAttributeAsList("ROW"); 
+		Iterator rowsSBList1Iter = rowsSBList1.iterator();
+		while(rowsSBList1Iter.hasNext()) {
+			SourceBean rowSBList1 = (SourceBean)rowsSBList1Iter.next();
+			String rowStrList1 = rowSBList1.toXML(false).toLowerCase();
+			if(rowsList2.contains(rowStrList1)) {
+				newpaginator.addRow(rowSBList1);
+			}
+		}
+		// return list 2
+		newlist.setPaginator(newpaginator);
+		return newlist;
+	}
+	
+	private ListIFace filterForCorrelation(ListIFace list, ObjParuse objParuse, SourceBean request, HashMap parametersMap) {
+		try {
+			// get the id of the parent parameter
+			Integer objParFatherId = objParuse.getObjParFatherId();
+	        // find the bi parameter for the correlation (biparameter father)
+			BIObjectParameter objParFather = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(objParFatherId);
+	        // get the general parameter associated to the bi parameter father
+	        IParameterDAO parameterDAO = DAOFactory.getParameterDAO();
+	        Parameter parameter = parameterDAO.loadForDetailByParameterID(objParFather.getParID());
+	        // get the type of the general parameter
+	        String valueTypeFilter = parameter.getType();
+			String valueFilter = "";
+			// get the values of the father parameter
+			String valuesDecoded = (String) request.getAttribute(objParFather.getParameterUrlName());
+			// if the father parameter is no valued, returns the list unfiltered
+			if (valuesDecoded == null || valuesDecoded.trim().equals("")) 
+				return list;
+			ParameterValuesDecoder decoder = new ParameterValuesDecoder();
+			List valuesFilter = decoder.decode(valuesDecoded);
+			if (valuesFilter == null) 
+				return list;
+			
+			// propagates the father parameter value
+			parametersMap.put(objParFather.getParameterUrlName(), valuesDecoded);
+			
+	        // based on the values number do different filter operations
+			switch (valuesFilter.size()) {
+				case 0: return list;
+				case 1: valueFilter = (String) valuesFilter.get(0);
+						if (valueFilter != null && !valueFilter.equals(""))
+							return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), this.getResponseContainer().getErrorHandler());
+						else return list;
+				default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), this.getResponseContainer().getErrorHandler());
+			}
+		} catch (Exception e) {
+			logger.error("Error while doing filter for corelation ", e);
+			return list;
+		}
+	}
+	
+	
+	private ListIFace loadList(SourceBean request, SourceBean response, Integer parId, String roleName)
 	    throws Exception {
 	logger.debug("IN");
 	RequestContainer requestContainer = getRequestContainer();

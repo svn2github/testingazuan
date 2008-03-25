@@ -49,6 +49,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -60,6 +61,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -683,7 +685,19 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
-	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
+	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&objParId=" + biparam.getId().toString() +  "&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
+	
+	// does this parameter depend on other parameters? if it is the case, puts in the url the values of the father parameters
+	Map dependencies = getDependencies(biparam);
+	Set keys = dependencies.keySet();
+	Iterator keysIt = keys.iterator();
+	while (keysIt.hasNext()) {
+		String key = (String) keysIt.next();
+		String value = (String) dependencies.get(key);
+		if (value == null) continue;
+		url += "&" + key + "=" + value;
+	}
+	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
 	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
@@ -727,7 +741,67 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("\n</script>");	
     }
 
-    private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
+    /**
+     * Finds the parameters the input parameter depends on.
+     * Returns a map: the key is the father parameter url name, the value is the current father parameter value
+     * @param biparam The dependent (if it is the case) parameter
+     * @return a map: the key is the father parameter url name, the value is the current father parameter value
+     */
+    private Map getDependencies(BIObjectParameter biparam) {
+    	Map toReturn = new HashMap();
+    	BIObject obj = getBIObject();
+		BIObjectParameter objParFather = null;
+		ObjParuse objParuse = null;
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
+		try {
+			IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+			IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
+			List objParuses = objParuseDAO.loadObjParuses(biparam.getId());
+			if (objParuses != null && objParuses.size() > 0) {
+				Iterator it = objParuses.iterator();
+				while (it.hasNext()) {
+					ObjParuse aObjParuse = (ObjParuse) it.next();
+					Integer paruseId = aObjParuse.getParuseId();
+					ParameterUse aParameterUse = paruseDAO.loadByUseID(paruseId);
+					Integer idLov = aParameterUse.getIdLov();
+					if (idLov.equals(getModalityValue(biparam).getId())) {
+						// the ModalitiesValue of the BIObjectParameter corresponds to a ParameterUse correlated
+						objParuse = aObjParuse;
+						logger.debug("Found correlation:" +
+								" dependent BIObjectParameter id = " + biparam.getId() + "," +
+								" ParameterUse with id = " + paruseId + ";" +
+								" BIObjectParameter father has id = " + objParuse.getObjParFatherId());
+						// now we have to find the BIObjectParameter father of the correlation
+						Integer objParFatherId = objParuse.getObjParFatherId();
+						List parameters = obj.getBiObjectParameters();
+						Iterator i = parameters.iterator();
+						while (i.hasNext()) {
+							BIObjectParameter aBIObjectParameter = (BIObjectParameter) i.next();
+							if (aBIObjectParameter.getId().equals(objParFatherId)) {
+								objParFather = aBIObjectParameter;
+								break;
+							}
+						}
+						if (objParFather == null) {
+							// the BIObjectParameter father of the correlation was not found
+							logger.error("Cannot find the BIObjectParameter father of the correlation");
+							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+						}
+						if (objParFather.getParameterValues() != null && objParFather.getParameterValues().size() > 0) {
+							String value = parValuesEncoder.encode(objParFather);
+							toReturn.put(objParFather.getParameterUrlName(), value);
+						}
+					}
+				}
+			}
+		} catch (EMFUserError e) {
+			logger.error("Error while retrieving information from db", e);
+			return new HashMap();
+		}
+		return toReturn;
+	}
+
+	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
 	    List lblBiParamDependent) {
 
 	htmlStream.append("<input type='text' style='width:230px;' " + "name='" + biparam.getParameterUrlName()

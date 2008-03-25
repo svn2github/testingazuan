@@ -4,6 +4,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -75,6 +76,11 @@ public class DetBIObjModHelper {
 		String typeAttr = (String) request.getAttribute("type");
 		String engineIdStr = (String) request.getAttribute("engine");
 		String stateAttr = (String) request.getAttribute("state");
+		
+		String longDescription = (String) request.getAttribute("longDescription");
+		String objective = (String) request.getAttribute("objective");
+		String language = (String) request.getAttribute("language");
+		//String Keywords = (String) request.getAttribute("Keywords");
 		// ELABORATE DATA RECOVERED FROM REQUEST
 		Integer id = null;
 		if(idStr!=null) id = new Integer(idStr);
@@ -179,6 +185,10 @@ public class DetBIObjModHelper {
 		obj.setPath(path);
 		// metadata
 		obj.setCreationUser(userId);
+		obj.setExtendedDescription(longDescription);
+		obj.setObjectve(objective);
+		obj.setLanguage(language);
+		// obj.setKeywords(Keywords);
 		// RETURN OBJECT
 		return obj;
 	}
@@ -264,10 +274,12 @@ public class DetBIObjModHelper {
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
 	        List datasource =  DAOFactory.getDataSourceDAO().loadAllDataSources();
+	       // List languages = ConfigSingleton.getInstance().getFilteredSourceBeanAttributeAsList("LANGUAGE_SUPPORTED", "LANGUAGE", "language");
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_ENGINES, engines);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS, datasource);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_STATES, states);
+		   // response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_LANGUAGES, languages);
 			List functionalities = new ArrayList();
 			try {
 				if (initialPath != null && !initialPath.trim().equals("")) {
@@ -287,18 +299,6 @@ public class DetBIObjModHelper {
 			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, "DetailBIObjectModule","fillResponse","Cannot fill the response ", e  );
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -338,6 +338,10 @@ public class DetBIObjModHelper {
 		objClone.setRelName(obj.getRelName());
 		objClone.setStateCode(obj.getStateCode());
 		objClone.setStateID(obj.getStateID());
+		objClone.setExtendedDescription(obj.getExtendedDescription());
+		objClone.setObjectve(obj.getObjectve());
+		objClone.setLanguage(obj.getLanguage());
+		//objClone.setKeywords(obj.getKeywords());
 		return objClone;
 	}
 

@@ -67,11 +67,9 @@ BIObject obj = (BIObject) moduleResponse.getAttribute(ObjectsTreeConstants.SESSI
 SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
 Map documentParametersMap = (Map) moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
 
-String title = "";
-title = obj.getName();
+String title = obj.getLabel() + ": " + obj.getName();
 String objDescr = obj.getDescription();
-if( (objDescr!=null) && !(objDescr.trim().equals("")) )
-	title += ": " + objDescr;
+if (objDescr != null && !objDescr.trim().equals("")) title += " [" + objDescr + "]";
 
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
@@ -375,7 +373,7 @@ function somethingWentWrongSavingIntoMyFolder() {
 </script>
 <%-- End scripts for save into my personal folder --%>
 
-<%-- notes 
+<%-- notes --%>
 <%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
 <%-- end notes --%>
 

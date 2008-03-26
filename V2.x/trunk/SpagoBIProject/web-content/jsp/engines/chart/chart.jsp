@@ -544,13 +544,12 @@ if(sbi.isChangeableView() && !docComposition){
 		Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
 		value= arrayCats[parseInt(this.value)];
-		value="View <%=catTitle%>: "+value;	
-		value=value;	
+		value="View <%=catTitle%>: "+value;		
 		$('slider_1_1_value').innerHTML =value;
 				}
 		)
 	
-		currentName="View "+value;
+		currentName="View <%=catTitle%>:";
 						
 		$('slider_1_1_value').innerHTML = currentName;
 	

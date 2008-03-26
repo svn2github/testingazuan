@@ -77,7 +77,7 @@ public class DocumentCompositionUtils {
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param sessionContainer session object
 	 * @param requestSB request object
-	 * @return String the complete url 
+	 * @return String the complete url. It use this format: <code_error>|<url>. If there is an error during the execution <code_error> is valorized and url is null, else it is null and the url is complete.
 	 */
 	public static String getEngineUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		String urlReturn = "";
@@ -86,9 +86,9 @@ public class DocumentCompositionUtils {
 		
 		if (objLabel == null || objLabel.equals("")){
 			logger.error("Object Label is null: cannot get engine's url.");
-			return null;
+			return "1008|";
 		}
-		
+	
 		 // get the user profile from session
 		SessionContainer permSession = sessionContainer.getPermanentContainer();
 	    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -96,29 +96,30 @@ public class DocumentCompositionUtils {
 	    // get the execution role
 		String executionRole = (String)sessionContainer.getAttribute(SpagoBIConstants.ROLE);
 		
-		 // identity string for object execution
+		// identity string for object execution
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
 	    String executionId = uuid.toString();
 	    executionId = executionId.replaceAll("-", "");
 
 		// GET ENGINE ASSOCIATED TO THE BIOBJECT
-		try{
+	    try{
 			obj = (BIObject)DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
 			if (obj == null){
 				logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database.");		
 				
 				List l = new ArrayList();
 				l.add(objLabel);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1005, l);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", l, messageBundle);
 			}
 			engine = obj.getEngine();
-
+		
 			// get the initial url of the engine
 		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress()+"&amp;"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+GeneralUtilities.getBackEndSpagoBiContextAddress();
 		}
 		catch (Exception ex) {		
-			logger.error("Cannot obtain engine url " , ex);		
+			logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database." , ex);		
+			return "1005|";
 		}	
 		
 		// GET THE TYPE OF ENGINE (INTERNAL / EXTERNAL) AND THE SUITABLE BIOBJECT TYPES
@@ -129,8 +130,10 @@ public class DocumentCompositionUtils {
 			compatibleBiobjType = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 		} catch (EMFUserError error) {
 			 logger.error("Error retrieving document's engine information", error);
-			// errorHandler.addError(error);
-			 return null;
+			 return "1009|";
+		} catch (Exception error) {
+			 logger.error("Error retrieving document's engine information", error);
+			 return "1009|";
 		}
 		String compatibleBiobjTypeCd = compatibleBiobjType.getValueCd();
 		String biobjTypeCd = obj.getBiObjectTypeCode();
@@ -146,7 +149,7 @@ public class DocumentCompositionUtils {
 			params.add(compatibleBiobjTypeCd);
 			params.add(biobjTypeCd);
 			//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2002, params));
-			return null;
+			return "2002|";
 		}
 		// get the list of the subObjects
 		List subObjects = getSubObjectsList(obj, profile);
@@ -167,7 +170,7 @@ public class DocumentCompositionUtils {
 		//response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 		
 		// IF USER CAN'T EXECUTE THE OBJECT RETURN
-		if (!canExecute(profile, obj)) return null; 
+		if (!canExecute(profile, obj)) return "1010|"; 
 		
 		//get object configuration
 		DocumentCompositionConfiguration docConfig = null;
@@ -193,7 +196,7 @@ public class DocumentCompositionUtils {
 			l.add(obj.getLabel());
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
 			logger.error("The object with label " + obj.getLabel() + " hasn't got a document into template" );
-			return ""; //testare caso per visualizzare msg errore all'interno del framte interessato
+			return "1002|"; 
 		}
 			
 	    
@@ -270,12 +273,10 @@ public class DocumentCompositionUtils {
 				Vector params = new Vector();
 				params.add(className);
 				params.add(engine.getName());
-				//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2001, params));
-				return null;
+				return "2001|";
 			} catch (Exception e) {
 				logger.error("Error while instantiating class " + className, e);
-				//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 100));
-				return null;
+				return "100|";
 			}
 			
 			logger.debug("Class " + className + " instantiated successfully. Now engine's execution starts.");
@@ -302,8 +303,8 @@ public class DocumentCompositionUtils {
 		//prepares and sets parameters value into session
 		HashMap parValueDoc = getAllParamsValue(urlReturn);
 		sessionContainer.setAttribute(document.getLabel(), parValueDoc);
-
-		return urlReturn;
+		//adds '|' char for management error into jsp if is necessary.
+		return "|"+urlReturn;
 	}
 	
 	private static boolean canExecute(IEngUserProfile profile, BIObject biobj) {

@@ -60,7 +60,7 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 			SourceBean response) throws EMFUserError {
 		
 		logger.debug("IN");
-		
+
 		if (obj == null) {
 			logger.error("The input object is null");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
@@ -91,29 +91,21 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 				logger.error("Error while converting the Template bytes into a SourceBean object");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
 			}
-			/*
-			// create the title
-			String title = "";
-			title += obj.getName();
-			String objDescr = obj.getDescription();
-			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-				title += ": " + objDescr;
-			}
-			response.setAttribute("title", title);
-			*/
 			
 			// read the configuration and set relative object into session
 			DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
 			SessionContainer session = requestContainer.getSessionContainer();
 			session.setAttribute("docConfig", docConf);
 	       
-			// set information into reponse
+			// set information into response
 			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 			response.setAttribute(content);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DOCUMENT_COMPOSITION");
+		} catch (EMFUserError ue) {
+			logger.error("Cannot exec the composite document", ue);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, ue.getErrorCode(), messageBundle);
 		} catch (Exception e) {
 			logger.error("Cannot exec the composite document", e);
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 	}

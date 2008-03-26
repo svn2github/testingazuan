@@ -10,12 +10,17 @@ var asUrls = new Object();
 var asLinkedDocs = new Object();
 var asLinkedFields = new Object();
 var asStylePanels = new Object();
+var numDocs = 0;
 
 function setUrlIframe (pUrlIframe){
 	urlIframe = pUrlIframe;
 }
 
 function setDocs(pUrls){
+	for (i in pUrls)
+	{
+	   numDocs++;
+	}
 	asUrls = pUrls;
 }
 
@@ -141,10 +146,10 @@ function pause(interval)
         if(now.getTime() > exitTime) return;
     }
 }
-
+ 
 //create panels for each document
-Ext.onReady(function() {
-			
+Ext.onReady(function() {  
+	if (numDocs > 0){   
   			for (var docLabel in asUrls){ 			
   				var totalDocLabel=docLabel;	
   				var strDocLabel = totalDocLabel.substring(totalDocLabel.indexOf('|')+1);
@@ -178,7 +183,7 @@ Ext.onReady(function() {
 				    timeout: 30,
 				    scripts: true
 				});   
-			    
   			}
-});
+  	}
+}); 
 

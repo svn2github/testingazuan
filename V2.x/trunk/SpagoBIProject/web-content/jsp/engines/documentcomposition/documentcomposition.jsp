@@ -18,30 +18,35 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
-
-
-
 <%@ page import="it.eng.spagobi.engines.documentcomposition.utils.DocumentCompositionUtils,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration,
-                 it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document"%>
+                 it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document,
+                 it.eng.spago.error.EMFErrorHandler,
+                 it.eng.spagobi.commons.utilities.ChannelUtilities,
+                 it.eng.spago.error.EMFUserError,
+                 it.eng.spago.error.EMFErrorSeverity,
+                 java.util.ArrayList,
+                 java.util.Collection"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
-
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>  
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
                  
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 
-<% 
-	logger.debug("IN");
-	
-    //acquisizione info come template a cui girare la richiesta
+
+<%  logger.debug("IN");
+	EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();
+	Collection errors = errorHandler.getErrors();
+
+   	//acquisizione info come template a cui girare la richiesta
     String nameTemplate = "";
- 	
+    String codeError = "";
+    
     //get object configuration
     DocumentCompositionConfiguration docConfig = null;
     docConfig = (DocumentCompositionConfiguration)aSessionContainer.getAttribute("docConfig");
@@ -59,27 +64,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Map lstPanelStyle = new HashMap();
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
-    Map lstFieldLinked = new HashMap();
-   
-    
+    Map lstFieldLinked = new HashMap(); 
     
     //loop on documents
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations
     	Document tmpDoc = (Document)lstDoc.get(i);
     	String tmpUrl = DocumentCompositionUtils.getEngineUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
-    	//lstUrlParams.put("PARAMS_DOC_"+(i),tmpUrlParams);
-    	lstUrlParams.put("SBI_DOC_LABEL__"+(i),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
-    	//prepare list of values for the document that it's loading
-    	docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
-  
-    	lstUrl.put("URL_DOC__" + (i), tmpUrl);
-        lstDivStyle = docConfig.getLstDivStyle();
-        lstPanelStyle = docConfig.getLstPanelStyle();
-        lstDocLinked = docConfig.getLstDocLinked();
-        lstFieldLinked = docConfig.getLstFieldLinked(); 
+    	codeError = tmpUrl.substring(0,tmpUrl.indexOf("|"));
+    	tmpUrl = tmpUrl.substring(tmpUrl.indexOf("|")+1);
+    	if (codeError!= null && !codeError.equals("")){
+    		List l = new ArrayList();
+			l.add(tmpDoc.getSbiObjLabel());
+    		EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, codeError, l, SpagoBIDocumentCompositionInternalEngine.messageBundle);
+			errorHandler.addError(error);
+    	}
+    	else{
+	    	lstUrlParams.put("SBI_DOC_LABEL__"+(i),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
+	    	//prepare list of values for the document that it's loading
+	    	docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
+	  
+	    	lstUrl.put("URL_DOC__" + (i), tmpUrl);
+	        lstDivStyle = docConfig.getLstDivStyle();
+	        lstPanelStyle = docConfig.getLstPanelStyle();
+	        lstDocLinked = docConfig.getLstDocLinked();
+	        lstFieldLinked = docConfig.getLstFieldLinked(); 
+    	}
     }
-
     aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
     aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
@@ -90,11 +101,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
     //include jsp requested
     getServletContext().getRequestDispatcher(nameTemplate).include(request,response);    
-	    
+
     logger.debug("OUT");
-
+  
     %>
-    
-    
-<spagobi:error/>
-
+  

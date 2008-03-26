@@ -233,16 +233,15 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	
 		String completeUrl=rootUrl;
 	
-		if(request.getParameter(SpagoBIConstants.EXECUTION_CONTEXT)!=null){
-			if(request.getParameter(SpagoBIConstants.EXECUTION_CONTEXT).equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){
-				((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
-				completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
+		if(docComposition){
+			((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
+			completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
 				}
 			else
 			{
 				((LinkableBar)sbi).setMode("normal");
 			}
-		}
+		
 
 		((LinkableBar)sbi).setRootUrl(completeUrl);
 	}

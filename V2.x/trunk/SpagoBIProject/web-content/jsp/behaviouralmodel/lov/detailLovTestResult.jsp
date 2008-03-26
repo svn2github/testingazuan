@@ -77,6 +77,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	ModalitiesValue modVal = (ModalitiesValue) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
   	String lovProv = modVal.getLovProvider();
   	ILovDetail lovDet = LovDetailFactory.getLovFromXML(lovProv);
+    String readonly = "" ;
+    boolean isreadonly = true;
+    if (userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){
+   	isreadonly = false;
+   	readonly = "readonly";
+   }
 %>
 
 

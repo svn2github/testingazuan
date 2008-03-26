@@ -47,6 +47,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	ModalitiesValue modVal = (ModalitiesValue)moduleResponse.getAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 	String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 	ArrayList list = (ArrayList)moduleResponse.getAttribute(SpagoBIConstants.LIST_INPUT_TYPE); 
+	  String readonly = "readonly" ;
+	    boolean isreadonly = true;
+	    String disabled = "disabled" ;
+	   if (userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT)){
+	   	isreadonly = false;
+	   	readonly = "";
+	   	disabled = "";
+	   }
 	
 	Map formUrlPars = new HashMap();
 	formUrlPars.put("PAGE", "detailModalitiesValuePage");
@@ -276,7 +284,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section' id='testButton'>
-		<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
+		<input type='image' class='header-button-image-portlet-section' id='testButtonImage' <%=readonly%>
 				onclick='setLovProviderModifiedField();'
 				name="testLovBeforeSave" value="testLovBeforeSave"  
 				src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
@@ -284,9 +292,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 		/>
 		</td>
-	<%if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { %>
+	<%if(modality.equals(SpagoBIConstants.DETAIL_MOD) && !isreadonly) { %>
 		<td class='header-button-column-portlet-section'>
-			<input type='hidden' id="saveLov" name="" value="" />
+			<input type='hidden' id="saveLov" name="" value=""  />
 			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
 					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
@@ -324,7 +332,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' type="text" name="label" 
+				<input class='portlet-form-input-field' type="text" name="label" <%=readonly%> 
 			      	   size="50" value="<%=modVal.getLabel()%>" maxlength="20">
 			    &nbsp;*
 			</div>
@@ -334,7 +342,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' type="text" name="name" 
+				<input class='portlet-form-input-field' type="text" name="name" <%=readonly%>
 			      	   size="50" value="<%=modVal.getName()%>" maxlength="40">
 			    &nbsp;*
 			</div>
@@ -350,7 +358,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			      		desc = "";
 			      } 
 			    %>
-			    <input class='portlet-form-input-field' type="text" name="description" 
+			    <input class='portlet-form-input-field' type="text" name="description" <%=readonly%>
 			      	   size="50" value="<%=desc%>" maxlength="160">
 			</div>
 			<div class='div_detail_label_lov'>
@@ -381,7 +389,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		      	       		selectedStr = " selected='selected' ";
 		      	       	}
 		   		%>
-		      	 	<option value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
+		      	 	<option <%=disabled%> value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <%=selectedStr%>  > 
 		      	    	<%= domain.getValueName()%>
 		      	    </option>
 				<% 

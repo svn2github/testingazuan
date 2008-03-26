@@ -24,6 +24,9 @@ package it.eng.spagobi.commons.presentation.tags;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
@@ -47,6 +50,9 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	private String javaClassName;
+	 String readonly = "readonly" ;
+	  boolean isreadonly = true ;
+	  String disabled = "disabled" ;
 	
 	public int doStartTag() throws JspException {
 		
@@ -57,6 +63,22 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
 				            "ScriptWizardTag::doStartTag:: invoked");
+		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		boolean isable = false;
+		try {
+			isable = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT);
+		} catch (EMFInternalError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 if (isable){
+			   	isreadonly = false;
+			   	readonly = "";
+			   	disabled = "";
+			   }
 		StringBuffer output = new StringBuffer();
 		
 		output.append("<table width='100%' cellspacing='0' border='0'>\n");
@@ -89,7 +111,7 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 		output.append("			</span>\n");
 		output.append("	</div>\n");
 		output.append("	<div class='div_detail_form'>\n");
-	    output.append("		<input type='text' id='javaClassName' name='javaClassName' size='50' onchange='setLovProviderModified(true)' class='portlet-form-input-field' value='" + javaClassName + "' maxlength='100'/>&nbsp;*\n");
+	    output.append("		<input type='text' "+readonly+" id='javaClassName' name='javaClassName' size='50' onchange='setLovProviderModified(true)' class='portlet-form-input-field' value='" + javaClassName + "' maxlength='100'/>&nbsp;*\n");
 	    output.append("	</div>\n");
 	    output.append("</div>\n");
 		

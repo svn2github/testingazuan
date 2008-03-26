@@ -24,6 +24,9 @@ package it.eng.spagobi.commons.presentation.tags;
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListItemDetail;
@@ -54,6 +57,9 @@ public class LovWizardTag extends CommonWizardLovTag {
 	protected ResponseContainer responseContainer = null;
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
+    String readonly = "readonly" ;
+	  boolean isreadonly = true ;
+	  String disabled = "disabled" ;
 
 	
 	public int doStartTag() throws JspException {
@@ -64,6 +70,23 @@ public class LovWizardTag extends CommonWizardLovTag {
 		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		boolean isable = false;
+		try {
+			isable = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT);
+		} catch (EMFInternalError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 if (isable){
+			   	isreadonly = false;
+			   	readonly = "";
+			   	disabled = "";
+			   }
+		
 		StringBuffer output = new StringBuffer();
 		
 		try {
@@ -100,7 +123,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("			</span>\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_form'>\n");
-			output.append("			<input class='portlet-form-input-field' type='text' id='valueOfFixedLovItemNew' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
+			output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" id='valueOfFixedLovItemNew' name='valueOfFixedLovItemNew' size='50' value=''>&nbsp;*\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_label_lov'>\n");
 			output.append("			<span class='portlet-form-field-label'>\n");
@@ -108,11 +131,12 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("			</span>\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_form'>\n");
-			output.append("			<input class='portlet-form-input-field' type='text' name='nameOfFixedLovItemNew' size='50' value=''/>&nbsp;*\n");
+			output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" name='nameOfFixedLovItemNew' size='50' value=''/>&nbsp;*\n");
 			output.append("		</div>\n");
 			output.append("		<div class='div_detail_label_lov'>\n");
 			output.append("			&nbsp;\n");
 			output.append("		</div>\n");
+			if(!isreadonly){
 			output.append("		<div class='div_detail_form'>\n");
 			output.append("			<input onclick='setLovProviderModified(true);' type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
 			output.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/attach.gif") + "'\n");
@@ -123,6 +147,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("				" + addButtMsg + "\n");
 			output.append("			</a>\n");
 			output.append("		</div>\n");
+			}
 			output.append("</div>\n");
 			List lovs = new ArrayList();
 			if (lovProvider != null  &&  !lovProvider.equals("")){
@@ -165,7 +190,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 					//substitute single and double quotes with their html encoding
 					name = GeneralUtilities.substituteQuotesIntoString(name);
 					description= GeneralUtilities.substituteQuotesIntoString(description);
-					String prova = GeneralUtilities.substituteQuotesIntoString("aaaa'aaa");
+				
 					output.append("		<input type='hidden' name='nameOfFixedListItem' value='" + name + "'/>\n");
 					output.append("		<input type='hidden' id='valueItem'  name='valueOfFixedListItem' value='"+description+"'/>\n");
 					rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
@@ -180,7 +205,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("          <span style='display:inline;' id='descrRow"+i+"'>"+descrDec+"</span>");
 					output.append("          <input type='text' style='display:none;' id='descrRow"+i+"InpText' name='descrRow"+i+"InpText' value='"+descrDec+"' />");
 					output.append("     </td>\n");
-					
+					if(!isreadonly){
 					output.append("		<td class='" + rowClass + "'>\n");
 					String tooltipRowDetail = msgBuilder.getMessage("SBIDev.lovWiz.tableCol3", "messages", httpRequest);
 					String tooltipRowSave = msgBuilder.getMessage("SBIDev.lovWiz.tableCol3.1", "messages", httpRequest);
@@ -197,7 +222,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
 					output.append("			</div>");
 					output.append("		</td>\n");
-					
+					}
 					
 					output.append("		<td class='" + rowClass + "'>\n");
 					String tableCol4 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol4", "messages", httpRequest);

@@ -23,7 +23,11 @@ package it.eng.spagobi.commons.presentation.tags;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -53,7 +57,10 @@ public class QueryWizardTag extends CommonWizardLovTag {
     protected IMessageBuilder msgBuilder = null;
     private String dataSourceLabel;
     private String queryDef;
-	
+	  String readonly = "readonly" ;
+	  boolean isreadonly = true ;
+	  String disabled = "disabled" ;
+	 
 	
 	public String getDataSourceLabel() {
 		return dataSourceLabel;
@@ -85,6 +92,24 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		String dsLabelField = msgBuilder.getMessage("SBIDev.queryWiz.dsLabelField", "messages", httpRequest);
 		String queryDefField = msgBuilder.getMessage("SBIDev.queryWiz.queryDefField", "messages", httpRequest);
+		
+		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		boolean isable = false;
+		try {
+			isable = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT);
+		} catch (EMFInternalError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 if (isable){
+			   	isreadonly = false;
+			   	readonly = "";
+			   	disabled = "";
+			   }
+			
 		List lstDs = new ArrayList();
 		try{			
 			lstDs =  DAOFactory.getDataSourceDAO().loadAllDataSources();			
@@ -132,7 +157,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 			
 			String dsLabeleSelected = "";
 			if (dataSourceLabel.equals(dataSource)) dsLabeleSelected = "selected=\"selected\"";
-			output.append("			<option value='" + dataSource + "' " + dsLabeleSelected + ">" + dataSourceDescription + "</option>\n");
+			output.append("			<option "+disabled+" value='" + dataSource + "' " + dsLabeleSelected + ">" + dataSourceDescription + "</option>\n");
 		}
 		output.append("			</select>\n");
 		output.append("		</div>\n");
@@ -142,7 +167,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("			</span>\n");
 		output.append("		</div>\n");
 		output.append("		<div style='height:110px;' class='div_detail_form'>\n");
-		output.append("			<textarea style='height:100px;' class='portlet-text-area-field' name='queryDef' onchange='setLovProviderModified(true);'  cols='50'>" + queryDef + "</textarea>\n");
+		output.append("			<textarea style='height:100px;' "+disabled+" class='portlet-text-area-field' name='queryDef' onchange='setLovProviderModified(true);'  cols='50'>" + queryDef + "</textarea>\n");
 		output.append("		</div>\n");
 		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			&nbsp;\n");

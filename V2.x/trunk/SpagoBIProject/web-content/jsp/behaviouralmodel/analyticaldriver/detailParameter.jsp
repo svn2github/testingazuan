@@ -64,6 +64,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
+     String readonly = "readonly" ;
+     String disabled = "disabled" ;
+     boolean isreadonly = true;
+    if (userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){
+    	isreadonly = false;
+    	readonly = "";
+    	disabled = "";
+    }
 %>
 
 
@@ -76,6 +84,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBIDev.param.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		
+		<%  if (!isreadonly){%>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('parametersForm').submit()"> 
       			<img class='header-button-image-portlet-section' 
@@ -90,6 +100,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       				title='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />'
 			/> 
 		</td>
+		<%}%>
+		
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
 				<a href='javascript:saveAndGoBackConfirm("<spagobi:message key = "SBIDev.param.saveConfirm" />","<%=backUrl%>")'> 
@@ -130,7 +142,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" 
                id="label" name="label" size="50" 
-               value="<%=parameter.getLabel()%>" maxlength="20" />
+               value="<%=parameter.getLabel()%>" maxlength="20" <%=readonly%> />
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -139,7 +151,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text"  <%=readonly%>
 			   id="name" name="name" size="50" value="<%=parameter.getName()%>" maxlength="40" />
         &nbsp;*
 	</div>
@@ -149,7 +161,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="description" name="description" size="50" 
  			   value="<%=(parameter.getDescription() != null ? parameter.getDescription() : "")%>" 
                maxlength="160" />
@@ -165,7 +177,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	       Domain domain = new Domain();
       	       domain = (Domain)list.get(i);
 		%>
-      	<input type="radio" id="modality" name="modality" 
+      	<input type="radio" id="modality" name="modality" <%=disabled%>
 			   onclick="radioButtonClicked(this.value)" 
 	           value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <% if(curr_value.equals(domain.getValueId().toString())) { out.println(" checked='checked' "); } %>>
 				<%= domain.getValueName()%>
@@ -178,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="checkbox" name="isFunctional" id="isFunctional" 
+		<input class='portlet-form-input-field' type="checkbox" name="isFunctional" id="isFunctional" <%=disabled%>
 			   value="true" <%=(parameter.isFunctional() ? "checked='checked'" : "")%>/>
 	</div>
 	<div class='div_detail_label' style='display:none;'>
@@ -188,7 +200,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form' style='display:none;'>
 		<input class='portlet-form-input-field' type="text" 
-			   id="length" name="length" size="5" value="<%=parameter.getLength()%>" maxlength="2" />
+			   id="length" name="length" size="5" value="<%=parameter.getLength()%>" maxlength="2" <%=readonly%> />
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
@@ -196,7 +208,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form' style='display:none;'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="mask" name="mask" size="50" 
 			   value="<%=(parameter.getMask() != null ? parameter.getMask() : "")%>" maxlength="20" />
 	</div>
@@ -311,7 +323,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%}
 	if(paruse_id < 0 || !foundSelectedParuseId) linkClass = "tab selected";
 		else linkClass = "tab";
-	if (hasRolesFreeForInsert) {
+	if (hasRolesFreeForInsert && !isreadonly) {
 %>
 
 			<div class='<%= linkClass%>'>
@@ -344,6 +356,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBIDev.paramUse.title" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<%  if (!isreadonly){%>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteParameterUseConfirm("<spagobi:message key="SBIDev.param.deleteParameterUseConfirm"/>")'>
 				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
@@ -351,6 +364,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				/>
 			</a>
 		</td>
+		<% }%>
 		<% } else { %>
 			<td class='header-sub-title-column-portlet-section-no-buttons'>
 				<spagobi:message key = "SBIDev.paramUse.title" />
@@ -362,10 +376,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-
-
-
-
 <div class="div_detail_area_sub_forms">
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
@@ -373,7 +383,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="paruseLabel" name="paruseLabel" size="50" value="<%=paruse.getLabel()%>" maxlength="20">
 		&nbsp;*
 	</div>
@@ -383,7 +393,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="paruseName" name="paruseName" size="50" value="<%=paruse.getName()%>" maxlength="40">
         &nbsp;*
 	</div>
@@ -393,7 +403,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div class='div_detail_form'>
-		<input class='portlet-form-input-field' type="text" 
+		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="paruseDescription" name="paruseDescription" size="50" 
 			   value="<%=paruse.getDescription() == null ? "" : paruse.getDescription()%>" maxlength="160">
 	</div>
@@ -426,13 +436,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	if(manual > 0) { isManualInput = true; }
     	else {isLov = true;}
     %> 
-  		<input type="radio" name="valueSelection"  id ="valueSelection" value="lov" <% if(isLov) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" />
+  		<input type="radio" name="valueSelection"  id ="valueSelection" value="lov" <%=disabled%> <% if(isLov) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" />
   	
-		<input 	class='portlet-form-input-field' type="text" id="paruseLovName" 
+		<input 	class='portlet-form-input-field' type="text" id="paruseLovName" <%=disabled%>
 		   		name="paruseLovName" size="40" 
 				value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly <%if(!isLov) {out.println("disabled = 'disabled'");} %>>
   		
-  		<input 	type='hidden' id='paruseLovId' value='<%=(idLov != null?(idLov.intValue() != -1 ? idLov.toString() : ""):"") %>' 
+  		<input 	type='hidden' id='paruseLovId' value='<%=(idLov != null?(idLov.intValue() != -1 ? idLov.toString() : ""):"") %>' <%=disabled%>
            		name='paruseLovId' />           		
   		<% 	
 	  		Map lovLookupURLPars = new HashMap();
@@ -441,7 +451,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  		String lovLookupURL = urlBuilder.getUrl(request, formUrlPars);
   		%>
   		&nbsp;*&nbsp;
-    	<input 	type='image' name="loadLovLookup"  id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
+    	<input 	type='image' name="loadLovLookup" <%=readonly%> id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
 		   		src='<%=urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
 		   		title='Lov Lookup' alt='Lov Lookup'/>
 			 
@@ -463,7 +473,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	       Domain domain = new Domain();
     	       domain = (Domain)selTypeList.get(i);		
 		%>		
-        	<option VALUE="<%=(String)domain.getValueCd()%>" <%if(curr_seltype_val.equals(domain.getValueCd().toString())) { out.println(" selected='selected' "); } %> >
+        	<option <%=disabled%> VALUE="<%=(String)domain.getValueCd()%>" <%if(curr_seltype_val.equals(domain.getValueCd().toString())) { out.println(" selected='selected' "); } %> >
         	<%=domain.getValueName()%>
        <%} %>
        </select>  
@@ -479,7 +489,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		
-		<input type="radio" name="valueSelection" id ="valueSelection" value="man_in" <% if(isManualInput) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" ></input>
+		<input type="radio"  name="valueSelection" <%=disabled%> id ="valueSelection" value="man_in" <% if(isManualInput) { out.println(" checked='checked' "); } %> onClick = "lovControl();manualInputSelection=this.value;" ></input>
     	
 
 	</div>
@@ -494,6 +504,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td align="left" class='portlet-section-header'>
   	   					<spagobi:message key = "SBIDev.paramUse.valTab3" />
   	   				</td>
+  	   				<%  if (!isreadonly){%>
   	   				<td width="50px" class='portlet-section-header'>
 			  	   		<a onclick = "checkAllFreeRoles()" title='<spagobi:message 
 			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
@@ -506,6 +517,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 						</a>
 					</td>
+					<%  }%>
 				</tr>
 			</table>
   	   	</td>
@@ -535,7 +547,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	    		}
   	    	}
   	    	out.print("<td class='portlet-section-body'>");
-  	    	out.print("   <input type='checkbox' name='paruseExtRoleId' id='extRole_" + i + "' value='"+roleId+"' ");
+  	    	out.print("   <input type='checkbox' name='paruseExtRoleId' "+disabled+" id='extRole_" + i + "' value='"+roleId+"' ");
   	    	if(isRole) {
   	    		out.print(" checked='checked' ");
   	    	}
@@ -596,7 +608,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                    			}
                    		}	    
   	    		 		out.print("<td class='portlet-section-body'>");
-  	    		 		out.print("   <input type='checkbox' name='paruseCheckId' value='"+checkId+"' ");
+  	    		 		out.print("   <input type='checkbox' name='paruseCheckId' "+disabled+" value='"+checkId+"' ");
   	    		 		if(isCheck) {
   	    		 			out.print(" checked='checked' ");
   	    		 		}
@@ -620,14 +632,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	    		  }
 	%>
 </table>   	
-
-
-
-
-
-
-
-
 
 <script>
 

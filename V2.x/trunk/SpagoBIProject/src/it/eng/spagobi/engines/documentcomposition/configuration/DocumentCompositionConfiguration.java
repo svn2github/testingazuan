@@ -334,11 +334,11 @@ public class DocumentCompositionConfiguration {
 					if (tmpDoc.getNumOrder() == cont){
 						if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
 							Properties prop = (Properties)tmpDoc.getParams();
-							Enumeration enum =  prop.keys();
+							Enumeration e =  prop.keys();
 							int totParsLinked = 0;
 							//loop on parameters of single document
-							while (enum.hasMoreElements() ){
-								String key = (String)enum.nextElement();
+							while (e.hasMoreElements() ){
+								String key = (String)e.nextElement();
 								retParams.put(key, (String)prop.get(key));
 								if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
 									totParsLinked ++;

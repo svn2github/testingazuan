@@ -31,11 +31,16 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -669,6 +674,30 @@ public class ListTag extends TagSupport
 					String parameterValue = (String) condition.getAttribute("VALUE");
 					String inParameterValue = null;
 					Object parameterValueObject = null;
+					
+					if (parameterScope != null && parameterScope.equalsIgnoreCase("USER_PROFILE")) {
+						IEngUserProfile profile = (IEngUserProfile) RequestContainer.getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+						Collection c;
+						try {
+							c = profile.getRoles();
+							Iterator i = c.iterator();
+							while (i.hasNext()) {
+								String rolename = (String) i.next();
+								Role role = DAOFactory.getRoleDAO().loadByName(rolename);
+								if (role.getRoleTypeCD().equals(parameterValue))return conditionVerified;
+							}
+							conditionVerified = false;
+							break;
+						} catch (EMFInternalError e) {
+							e.printStackTrace();
+							logger.error(e);
+						} catch (EMFUserError e) {
+							e.printStackTrace();
+							logger.error(e);
+						}
+					}
+					
+					
 					if (parameterScope != null && parameterScope.equalsIgnoreCase("LOCAL")) {
 						if (row == null) {
 							logger.error("Impossible to associate LOCAL scope: the row is null");
@@ -1176,11 +1205,23 @@ public class ListTag extends TagSupport
 			SourceBeanAttribute buttonSBA = (SourceBeanAttribute)iter.next();
 			SourceBean buttonSB = (SourceBean)buttonSBA.getValue();
 			
+			String buttonName = buttonSB.getName();
+			SourceBean conditionsSB = (SourceBean) buttonSB.getAttribute("CONDITIONS");
+			SourceBean row;
+			try {
+				row = new SourceBean("ROWS");
+				boolean conditionsVerified = verifyConditions(conditionsSB, row);
+									
 			if(ChannelUtilities.isWebRunning()){
 				String onlyPort = (String)buttonSB.getAttribute("onlyPortletRunning");
 				if( (onlyPort!=null) && onlyPort.equalsIgnoreCase("true"))  { 
 					continue;
 				}
+			}
+			if ( !conditionsVerified) {
+				// if conditions are not verified puts an empty column
+				_htmlStream.append(" <td class=\"header-button-column-portlet-section width='40px'  >&nbsp;</td>\n");
+				continue;
 			}
 			
 			List parameters = buttonSB.getAttributeAsList("PARAMETER");
@@ -1196,6 +1237,10 @@ public class ListTag extends TagSupport
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 			htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
 			htmlStream.append("</td>\n");
+			} catch (SourceBeanException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return htmlStream;

@@ -103,7 +103,6 @@ uuid = uuid.replaceAll("-", "");
 	<%= title %>
 </div>
 
-<spagobi:error/>
 
 <div class="header">
 	<div class="slider_header">
@@ -436,4 +435,5 @@ if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIC
 	<%
 }
 %>
+<spagobi:error/>
 <%-- End scripts for print --%>

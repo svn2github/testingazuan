@@ -551,7 +551,7 @@ if(sbi.isChangeableView() && !docComposition){
 				}
 		)
 	
-		currentName="View giorni: ";
+		currentName="View "+value;
 						
 		$('slider_1_1_value').innerHTML = currentName;
 	

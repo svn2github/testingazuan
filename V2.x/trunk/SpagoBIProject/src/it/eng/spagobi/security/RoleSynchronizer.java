@@ -175,8 +175,15 @@ public class RoleSynchronizer {
 			aRole.setRoleTypeCD("TEST_ROLE");
 			return;
 		}
+		if (isRoleType(aRole, "MODEL_ADMIN")) {
+			logger.debug("Role with name [" + aRole.getName() + "] is MODEL_ADMIN role type.");
+			Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "MODEL_ADMIN");
+			aRole.setRoleTypeID(roleTypeId);
+			aRole.setRoleTypeCD("MODEL_ADMIN");
+			return;
+		}
 		
-		// Role is not ADMIN/DEV_ROLE/TEST_ROLE, default is USER
+		// Role is not ADMIN/DEV_ROLE/TEST_ROLE/MODEL_ADMIN, default is USER
 		Integer roleTypeId = findSBIDomainValueID("ROLE_TYPE", "USER");
 		aRole.setRoleTypeID(roleTypeId);
 		aRole.setRoleTypeCD("USER");

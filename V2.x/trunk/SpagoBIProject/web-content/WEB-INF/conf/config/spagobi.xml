@@ -52,6 +52,7 @@
 	    	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
 	    	<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
 	    	<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
+	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
 	
@@ -90,9 +91,9 @@
      <LOOKUP numberRows = "20" />
     
     <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
- 	 <SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
  	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
- 	 <BACKEND_SPAGOBI_CONTEXT_PATH>http://localhost:8080/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>
+ 	 <BACKEND_SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

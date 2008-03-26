@@ -29,6 +29,9 @@
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>	          
 	        </CAPTION>
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParam.ListLookupParameters.deleteCaption">
+	          <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 	          <PARAMETER name="PAR_ID" scope="LOCAL" type="RELATIVE" value="PAR_ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ParametersLookupPage"/>        
               <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>	
@@ -44,6 +47,9 @@
 	      </COLUMNS>
 	      <BUTTONS>
 	      <NEW_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParam.ListLookupParameters.insertButton">
+	      	  <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 	        <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	        <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>	         
 	        <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
@@ -90,6 +96,9 @@
 	          <PARAMETER name="ID_DOMAIN" scope="LOCAL" type="RELATIVE" value="ID"/>
 	        </MODALITY_CAPTION-->
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParam.deleteCaption">
+	          <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>        
               <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
@@ -98,6 +107,9 @@
 	      </CAPTIONS>
 	      <BUTTONS>
 	        <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParam.insertButton">
+	          <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 	          <!--PARAMETER name="TARGET" scope="" type="ABSOLUTE" value="DETAIL"/-->
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailParameterPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
@@ -112,6 +124,8 @@
 	      </BUTTONS>
 	    </CONFIG>
   	</MODULE>
+  	
+  	
 <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.CheckLinksModule" name="CheckLinksModule">
 		<CONFIG pool="spagobi" rows="10" title="Check-List ">  		
       		<KEYS>
@@ -135,12 +149,20 @@
 		        	confirm="FALSE" 
 		        	name="save" 
 		        	image="/img/save.png" 
-		        	label="SBIDev.ListSubreport.saveCaption"/>
-	           	<SAVE_AND_GOBACK_BUTTON 
+		        	label="SBIDev.ListSubreport.saveCaption">
+		        	<CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  		</CONDITIONS>
+		        	</SAVE_BUTTON >
+	           	<SAVE_AND_GOBACK_BUTTON
 	           		confirm="FALSE" 
 	           		name="saveback" 
 	           		image="/img/saveAndGoBack.png" 
-	           		label="SBIDev.ListSubreport.savebackCaption"/>
+	           		label="SBIDev.ListSubreport.savebackCaption">
+	           		<CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  		</CONDITIONS>
+	           		</SAVE_AND_GOBACK_BUTTON> 
 	            <BACK_BUTTON 
 	            	confirm="FALSE" 
 	            	name="back" 
@@ -149,8 +171,10 @@
 	 		</BUTTONS>
     	</CONFIG>
   	</MODULE>
+  	
 	<MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">
-	</MODULE>	
+	</MODULE>
+		
     <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.DetailChecksModule" name="DetailChecksModule">
      	<CONFIG/>
     </MODULE>   
@@ -180,6 +204,9 @@
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
         </SELECT_CAPTION>
         <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListConfConst.deleteCaption">
+        	  <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
               <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesChecksPage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
@@ -187,6 +214,9 @@
       </CAPTIONS>
       <BUTTONS>
         <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListConfConst.insertButton">
+        	  <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
           <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	      <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesChecksPage"/>
         </INSERT_BUTTON>
@@ -254,6 +284,9 @@
 	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>-->		          
 	         </CAPTION>
 	        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.ListParamUse.ListLookupLov.deleteCaption">
+	          <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
@@ -269,6 +302,9 @@
 	      </COLUMNS>
 	      <BUTTONS>
 		      <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.ListParamUse.ListLookupLov.insertButton">
+		      <CONDITIONS>
+		      		<PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+			  </CONDITIONS>
 		          <!--PARAMETER name="TARGET" scope="" type="ABSOLUTE" value="DETAIL"/-->
 		          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
@@ -311,7 +347,10 @@
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
         </SELECT_CAPTION>
-        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.predLovList.deleteCaption">
+        <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.predLovList.deleteCaption" userRoleType="">
+        <CONDITIONS>
+		      <PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+		</CONDITIONS>
               <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_DEL"/>
@@ -320,6 +359,9 @@
       </CAPTIONS>
       <BUTTONS>
         <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIDev.predLovList.insertButton">
+        <CONDITIONS>
+		      <PARAMETER name='ROLE_TYPE' scope='USER_PROFILE' value='MODEL_ADMIN'/> 
+		</CONDITIONS>
           <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	      <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
         </INSERT_BUTTON>
@@ -332,7 +374,6 @@
       </BUTTONS>
     </CONFIG>
   	</MODULE>
- 	
 	
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListTestLovModule" name="ListTestLovModule">
 	</MODULE> 

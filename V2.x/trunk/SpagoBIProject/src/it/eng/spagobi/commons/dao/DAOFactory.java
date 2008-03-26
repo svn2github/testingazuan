@@ -54,6 +54,7 @@ import it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
+import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO;
 
@@ -79,7 +80,8 @@ public class DAOFactory {
 		SpagoBITracer.debug(MODULE_NAME, DAOFactory.class.getName(), "createDAOInstance", "Begin Istantiation of DAO ["+daoName+"]");
 		Object daoObject = null;
 		try{
-			SourceBean daoConfigSourceBean =(SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("SPAGOBI.DAO-CONF.DAO","name", daoName);
+			ConfigSingleton configSingleton=ConfigSingleton.getInstance();
+			SourceBean daoConfigSourceBean =(SourceBean) configSingleton.getFilteredSourceBeanAttribute("SPAGOBI.DAO-CONF.DAO","name", daoName);
 			String daoClassName = (String)daoConfigSourceBean.getAttribute("implementation");
 			SpagoBITracer.debug(MODULE_NAME, DAOFactory.class.getName(), "createDAOInstance", "DAO ["+daoName+"] Implementation class ["+daoClassName+"]");
 			daoObject = Class.forName(daoClassName).newInstance();
@@ -212,6 +214,10 @@ public class DAOFactory {
 	 
 	public static IDataSourceDAO getDataSourceDAO() throws EMFUserError{
 		return (IDataSourceDAO)createDAOInstance("DataSourceDAO");
+	}
+	
+	public static IDataSetDAO getDataSetDAO() throws EMFUserError{
+		return (IDataSetDAO)createDAOInstance("DataSetDAO");
 	}
 	
 	public static IBinContentDAO getBinContentDAO() throws EMFUserError{

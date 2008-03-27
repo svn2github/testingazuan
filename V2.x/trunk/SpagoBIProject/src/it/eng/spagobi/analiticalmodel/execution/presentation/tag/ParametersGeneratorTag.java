@@ -628,9 +628,18 @@ public class ParametersGeneratorTag extends TagSupport {
 	}
 
 	String typeCode = getModalityValue(biparam).getITypeCd();
-
+	Parameter par = biparam.getParameter();
+	String parType = "";
+	if (par != null){
+		parType = par.getType();
+	}
+	
 	if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-	    createHTMLManInputButton(biparam, htmlStream, lblBiParamDependent);
+		if (parType.equals("DATE")){
+			createDataInputButton(biparam, htmlStream, lblBiParamDependent);
+		}else{
+			createHTMLManInputButton(biparam, htmlStream, lblBiParamDependent);
+		}
 	    return null;
 	}
 
@@ -666,6 +675,26 @@ public class ParametersGeneratorTag extends TagSupport {
 	logger.debug("OUT");
 	return objParFathLbl;
     }
+    
+    /*PROVA CHIARA PER CALENDARIO*/
+    private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
+    	htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
+    		+ "<script type='text/javascript'>"
+    		+ " dojo.require('dojo.widget.DropdownDatePicker');"
+    		+ " </script>"
+    		+ " <input style='width:230px;' type='text' "
+    		+ "	   name='" + biparam.getParameterUrlName()+ "Desc' id='"+ biparam.getParameterUrlName()+requestIdentity+ "Desc'" 
+    		+ "	   dojoType='dropdowndatepicker' widgetId='startDateWidget' "
+    		+ "    class='portlet-form-input-field' " + "value='" + getParameterValuesAsString(biparam) + "' "
+    		+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
+    		+ requestIdentity + "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');");
+    	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+    	    htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+    	    htmlStream.append("this.form.submit();");
+    	}
+    	htmlStream.append("\" />\n");
+        }
+    /*PROVA CHIARA PER CALENDARIO*/
 
     private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
 	htmlStream.append("<input style='width:230px;' type='text' " + "name='" + biparam.getParameterUrlName()

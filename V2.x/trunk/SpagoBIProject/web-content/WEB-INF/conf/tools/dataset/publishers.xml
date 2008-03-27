@@ -52,4 +52,18 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="detailDataSetTestResult">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/tools/dataset/detailDataSetTestResult.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/dataset/detailDataSetTestResult.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
 </PUBLISHERS>

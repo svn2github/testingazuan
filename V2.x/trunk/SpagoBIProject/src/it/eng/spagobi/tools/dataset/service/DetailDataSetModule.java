@@ -18,9 +18,12 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.service;
 
+import it.businesslogic.ireport.chart.Dataset;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -29,6 +32,10 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
+import it.eng.spago.validation.coordinator.ValidationCoordinator;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -42,6 +49,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -53,9 +61,10 @@ public class DetailDataSetModule extends AbstractModule {
 	static private Logger logger = Logger.getLogger(DetailDataSetModule.class);
 	public static final String MOD_SAVE = "SAVE";
 	public static final String MOD_SAVEBACK = "SAVEBACK";
-
+	private SessionContainer session;
+	private EMFErrorHandler errorHandler;
 	private String modalita = "";
-	
+
 	public void init(SourceBean config) {
 	}
 
@@ -68,7 +77,9 @@ public class DetailDataSetModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of detail Data Set service with message =" +message);
-		EMFErrorHandler errorHandler = getErrorHandler();
+		errorHandler = getErrorHandler();
+		RequestContainer requestContainer = this.getRequestContainer();
+		session = requestContainer.getSessionContainer();
 		try {
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
@@ -86,254 +97,329 @@ public class DetailDataSetModule extends AbstractModule {
 				modifyDataSet(request, SpagoBIConstants.DETAIL_INS, response);
 			} else if (message.trim().equalsIgnoreCase(SpagoBIConstants.DETAIL_DEL)) {
 				deleteDataSet(request, SpagoBIConstants.DETAIL_DEL, response);
+			}	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
+				exitFromDetail(request, response);
 			}
-		} catch (EMFUserError eex) {
-			errorHandler.addError(eex);
-			return;
-		} catch (Exception ex) {
-			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
-			errorHandler.addError(internalError);
-			return;
 		}
-	}
-	
-	 
-	
-	/**
-	 * Gets the detail of a data set choosed by the user from the 
-	 * data Sets list. It reaches the key from the request and asks to the DB all detail
-	 * data Set information, by calling the method <code>loadDataSetByID</code>.
-	 *   
-	 * @param key The choosed data Set id key
-	 * @param response The response Source Bean
-	 * @throws EMFUserError If an exception occurs
-	 */   
-	private void getDataSet(SourceBean request, SourceBean response) throws EMFUserError {		
-		try {		 									
-			DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
-			this.modalita = SpagoBIConstants.DETAIL_MOD;
-			if (request.getAttribute("SUBMESSAGEDET") != null &&
-				((String)request.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
-			{
-				response.setAttribute("loopback", "true");
+			catch (EMFUserError eex) {
+				errorHandler.addError(eex);
+				return;
+			} catch (Exception ex) {
+				EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
+				errorHandler.addError(internalError);
 				return;
 			}
-			response.setAttribute("modality", modalita);
-			response.setAttribute("dsObj", ds);
-		} catch (Exception ex) {
-			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
 		}
-		
-	}
-	 /**
-	 * Inserts/Modifies the detail of a data set according to the user request. 
-	 * When a data Set is modified, the <code>modifyDataSet</code> method is called; when a new
-	 * data Set is added, the <code>insertDataSet</code>method is called. These two cases are 
-	 * differentiated by the <code>mod</code> String input value .
-	 * 
-	 * @param request The request information contained in a SourceBean Object
-	 * @param mod A request string used to differentiate insert/modify operations
-	 * @param response The response SourceBean 
-	 * @throws EMFUserError If an exception occurs
-	 * @throws SourceBeanException If a SourceBean exception occurs
-	 */
-	private void modifyDataSet(SourceBean serviceRequest, String mod, SourceBean serviceResponse)
+
+
+
+		/**
+		 * Gets the detail of a data set choosed by the user from the 
+		 * data Sets list. It reaches the key from the request and asks to the DB all detail
+		 * data Set information, by calling the method <code>loadDataSetByID</code>.
+		 *   
+		 * @param key The choosed data Set id key
+		 * @param response The response Source Bean
+		 * @throws EMFUserError If an exception occurs
+		 */   
+		private void getDataSet(SourceBean request, SourceBean response) throws EMFUserError {		
+			try {		 									
+				DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
+				this.modalita = SpagoBIConstants.DETAIL_MOD;
+				if (request.getAttribute("SUBMESSAGEDET") != null &&
+						((String)request.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
+				{
+					response.setAttribute("loopback", "true");
+					return;
+				}
+				response.setAttribute("modality", modalita);
+				response.setAttribute("dsObj", ds);
+			} catch (Exception ex) {
+				logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
+			}
+
+		}
+		/**
+		 * Inserts/Modifies the detail of a data set according to the user request. 
+		 * When a data Set is modified, the <code>modifyDataSet</code> method is called; when a new
+		 * data Set is added, the <code>insertDataSet</code>method is called. These two cases are 
+		 * differentiated by the <code>mod</code> String input value .
+		 * 
+		 * @param request The request information contained in a SourceBean Object
+		 * @param mod A request string used to differentiate insert/modify operations
+		 * @param response The response SourceBean 
+		 * @throws EMFUserError If an exception occurs
+		 * @throws SourceBeanException If a SourceBean exception occurs
+		 */
+		private void modifyDataSet(SourceBean serviceRequest, String mod, SourceBean serviceResponse)
 		throws EMFUserError, SourceBeanException {
-		
-		try {
-			
-			DataSet dsNew = recoverDataSetDetails(serviceRequest);
-			
-			EMFErrorHandler errorHandler = getErrorHandler();
-			 
-			// if there are some validation errors into the errorHandler does not write into DB
-			Collection errors = errorHandler.getErrors();
-			if (errors != null && errors.size() > 0) {
-				Iterator iterator = errors.iterator();
-				while (iterator.hasNext()) {
-					Object error = iterator.next();
-					if (error instanceof EMFValidationError) {
-						serviceResponse.setAttribute("dsObj", dsNew);
+
+			// to rember that the lov has been modified 
+			// necessary to show a confirm if the user change the lov and then go back without saving
+			String dataSetModified = (String) serviceRequest.getAttribute("dataSetModified");
+			if(dataSetModified != null && !dataSetModified.trim().equals("")) 
+				session.setAttribute("DATA_SET_MODIFIED", dataSetModified);
+
+
+			// check if we are coming from the test
+			String returnFromTestMsg = (String) serviceRequest.getAttribute("RETURN_FROM_TEST_MSG");
+			if(returnFromTestMsg!=null) {
+				// save after the test
+				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {		
+				Collection errors = errorHandler.getErrors();
+				if (errors != null && errors.size() > 0) {
+					Iterator iterator = errors.iterator();
+					while (iterator.hasNext()) {
+						Object error = iterator.next();
+						if(error instanceof EMFValidationError) {
+							serviceResponse.setAttribute("testLov", "true");
+							return;
+						}
+					}
+				}
+				DataSet dataset=(DataSet)session.getAttribute("dataset");
+				DAOFactory.getDataSetDAO().modifyDataSet(dataset);
+				serviceResponse.setAttribute("dsObj", dataset);
+				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
+				session.delAttribute("dataset");
+				session.delAttribute(SpagoBIConstants.MODALITY);
+			} 
+
+
+			// don't save after the test
+			else 
+				if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
+					DataSet	dat  = (DataSet) session.getAttribute("dataset");
+					session.delAttribute("dataset");
+					//serviceResponse.setAttribute("testLov", "true");
+					session.delAttribute(SpagoBIConstants.MODALITY);
+
+					serviceResponse.setAttribute("dsObj", dat);
+					serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);	
+					//prepareDetailModalitiesValuePage(modVal, mod, response);
+					// exits without writing into DB and without loop
+					return;
+				}
+			} 
+			else{
+				try {
+					boolean testCase=false;
+					Object test = serviceRequest.getAttribute("testDataSetBeforeSave");
+					if(test!=null)testCase=true;
+					
+					
+
+					DataSet dsNew = recoverDataSetDetails(serviceRequest);
+
+					EMFErrorHandler errorHandler = getErrorHandler();
+
+					// if there are some validation errors into the errorHandler does not write into DB
+					Collection errors = errorHandler.getErrors();
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								serviceResponse.setAttribute("dsObj", dsNew);
+								serviceResponse.setAttribute("modality", mod);
+								return;
+							}
+						}
+					}
+
+					if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		
+
+
+						//check the type and insert right parameters
+
+						String type=(String)serviceRequest.getAttribute("typeDataSet");
+
+
+
+
+						//if a ds with the same label not exists on db ok else error
+						if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
+							HashMap params = new HashMap();
+							params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+							EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
+							getErrorHandler().addError(error);
+							return;
+						}	 		
+
+						DAOFactory.getDataSetDAO().insertDataSet(dsNew);
+
+						DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
+						dsNew.setDsId(tmpDS.getDsId());
+						mod = SpagoBIConstants.DETAIL_MOD; 
+					} else {				
+						//update ds
+						if(!testCase)
+						DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
+					}  
+
+					if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
+							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
 						serviceResponse.setAttribute("modality", mod);
+						serviceResponse.setAttribute("dsObj", dsNew);				
 						return;
 					}
-				}
-			}
-			
-			if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		
-				
-				
-				//check the type and insert right parameters
-				
-				DataSet dsTemp=null;
-				String type=(String)serviceRequest.getAttribute("typeDataSet");
+					else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
+							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
+						serviceResponse.setAttribute("loopback", "true");
+						return;
+					}
 
-					
-	
-				
-				//if a ds with the same label not exists on db ok else error
-				if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsTemp.getLabel()) != null){
+					// Test Case
+					if (testCase) {
+						session.setAttribute(SpagoBIConstants.MODALITY, mod);
+						//session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
+						//boolean needProfAttrFill = checkProfileAttributes(response, (ILovDetail)objectToTest);
+						serviceResponse.setAttribute("testLov", "true");
+						// carry with the response the dataset
+						//serviceResponse.setAttribute("dataset", dsNew);
+
+						session.setAttribute("dataset", dsNew);
+
+						// exits without writing into DB 
+						return;
+					}
+
+
+
+				} catch (EMFUserError e){
+					logger.error("Cannot fill response container" + e.getLocalizedMessage());
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, new Vector(), params);
+
+				}
+
+				catch (Exception ex) {		
+					logger.error("Cannot fill response container" , ex);		
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+				}			
+			}
+		}
+
+		/**
+		 * Deletes a data Set choosed by user from the data Sets list.
+		 * 
+		 * @param request	The request SourceBean
+		 * @param mod	A request string used to differentiate delete operation
+		 * @param response	The response SourceBean
+		 * @throws EMFUserError	If an Exception occurs
+		 * @throws SourceBeanException If a SourceBean Exception occurs
+		 */
+		private void deleteDataSet(SourceBean request, String mod, SourceBean response)
+		throws EMFUserError, SourceBeanException {
+
+			try {
+				String id = (String) request.getAttribute("ID");
+//				if the ds is associated with any BIEngine or BIObjects, creates an error
+				boolean bObjects =  DAOFactory.getDataSetDAO().hasBIObjAssociated(id);
+				//boolean bEngines =  DAOFactory.getDataSetDAO().hasBIEngineAssociated(id);
+				//if (bObjects || bEngines){
+				if(bObjects){	
+					HashMap params = new HashMap();
+					params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8007, new Vector(), params );
 					getErrorHandler().addError(error);
 					return;
-				}	 		
-				 
-				DAOFactory.getDataSetDAO().insertDataSet(dsTemp);
-				
-				DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsTemp.getLabel());
-				dsTemp.setDsId(tmpDS.getDsId());
-				mod = SpagoBIConstants.DETAIL_MOD; 
-			} else {				
-				//update ds
-				DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
-			}  
-			
-			if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
-				((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
-				serviceResponse.setAttribute("modality", mod);
-				serviceResponse.setAttribute("dsObj", dsNew);				
-				return;
-			}
-			else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
-					((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
-					serviceResponse.setAttribute("loopback", "true");
-				    return;
-			}					     
-		} catch (EMFUserError e){
-			logger.error("Cannot fill response container" + e.getLocalizedMessage());
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, new Vector(), params);
-			
-		}
-		
-		catch (Exception ex) {		
-			logger.error("Cannot fill response container" , ex);		
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}			
-	}
+				}
 
-	/**
-	 * Deletes a data Set choosed by user from the data Sets list.
-	 * 
-	 * @param request	The request SourceBean
-	 * @param mod	A request string used to differentiate delete operation
-	 * @param response	The response SourceBean
-	 * @throws EMFUserError	If an Exception occurs
-	 * @throws SourceBeanException If a SourceBean Exception occurs
-	 */
-	private void deleteDataSet(SourceBean request, String mod, SourceBean response)
-		throws EMFUserError, SourceBeanException {
-		
-		try {
-			String id = (String) request.getAttribute("ID");
-//			if the ds is associated with any BIEngine or BIObjects, creates an error
-			boolean bObjects =  DAOFactory.getDataSetDAO().hasBIObjAssociated(id);
-			//boolean bEngines =  DAOFactory.getDataSetDAO().hasBIEngineAssociated(id);
-			//if (bObjects || bEngines){
-			if(bObjects){	
-			HashMap params = new HashMap();
+				//delete the ds
+				DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
+				DAOFactory.getDataSetDAO().eraseDataSet(ds);
+			}
+			catch (EMFUserError e){
+				logger.error("Cannot fill response container" + e.getLocalizedMessage());
+				HashMap params = new HashMap();		  
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8007, new Vector(), params );
-				getErrorHandler().addError(error);
-				return;
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
+
 			}
-			
-			//delete the ds
-			DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
-			DAOFactory.getDataSetDAO().eraseDataSet(ds);
-		}
-		catch (EMFUserError e){
-			  logger.error("Cannot fill response container" + e.getLocalizedMessage());
-			  HashMap params = new HashMap();		  
-			  params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-			  throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
-				
-		}
-	    catch (Exception ex) {		
-		    ex.printStackTrace();
-			logger.error("Cannot fill response container" ,ex);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-	    }
-	    response.setAttribute("loopback", "true");			
-	}
-
-
-
-	/**
-	 * Instantiates a new <code>dataset<code> object when a new data set insertion is required, in order
-	 * to prepare the page for the insertion.
-	 * 
-	 * @param response The response SourceBean
-	 * @throws EMFUserError If an Exception occurred
-	 */
-
-	private void newDataSet(SourceBean response) throws EMFUserError {
-		
-		try {
-			
-			DataSet ds = null;
-			this.modalita = SpagoBIConstants.DETAIL_INS;
-			response.setAttribute("modality", modalita);
-			ds = new DataSet();
-			ds.setDsId(-1);
-			ds.setDescription("");
-			ds.setLabel("");
-			ds.setName("");			
-			response.setAttribute("dsObj", ds);
-		} catch (Exception ex) {
-			logger.error("Cannot prepare page for the insertion" , ex);		
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-		
-	}
-
-
-	private DataSet recoverDataSetDetails (SourceBean serviceRequest) throws EMFUserError, SourceBeanException, IOException  {
-		DataSet ds  =null;
-		String type= (String)serviceRequest.getAttribute("typeDataSet");
-		
-		
-		if(type.equalsIgnoreCase("0")){
-			ds=new FileDataSet();
-			if(serviceRequest.getAttribute("FILENAME")!=null){
-				String fileName=(String)serviceRequest.getAttribute("FILENAME");
-				((FileDataSet)ds).setFileName(fileName);
+			catch (Exception ex) {		
+				ex.printStackTrace();
+				logger.error("Cannot fill response container" ,ex);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 			}
+			response.setAttribute("loopback", "true");			
 		}
-		else 
-			if(type.equalsIgnoreCase("1")){
-				ds=new QueryDataSet();
-				if(serviceRequest.getAttribute("QUERY")!=null){
-					String query=(String)serviceRequest.getAttribute("QUERY");
-					((QueryDataSet)ds).setQuery(query);
-				}
-				if(serviceRequest.getAttribute("DATASOURCE")!=null){
-					String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
-					DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
-					((QueryDataSet)ds).setDataSource(dataSource);
+
+
+
+		/**
+		 * Instantiates a new <code>dataset<code> object when a new data set insertion is required, in order
+		 * to prepare the page for the insertion.
+		 * 
+		 * @param response The response SourceBean
+		 * @throws EMFUserError If an Exception occurred
+		 */
+
+		private void newDataSet(SourceBean response) throws EMFUserError {
+
+			try {
+
+				DataSet ds = null;
+				this.modalita = SpagoBIConstants.DETAIL_INS;
+				response.setAttribute("modality", modalita);
+				ds = new DataSet();
+				ds.setDsId(-1);
+				ds.setDescription("");
+				ds.setLabel("");
+				ds.setName("");			
+				response.setAttribute("dsObj", ds);
+			} catch (Exception ex) {
+				logger.error("Cannot prepare page for the insertion" , ex);		
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+
+		}
+
+
+		private DataSet recoverDataSetDetails (SourceBean serviceRequest) throws EMFUserError, SourceBeanException, IOException  {
+			DataSet ds  =null;
+			String type= (String)serviceRequest.getAttribute("typeDataSet");
+
+
+			if(type.equalsIgnoreCase("0")){
+				ds=new FileDataSet();
+				if(serviceRequest.getAttribute("FILENAME")!=null){
+					String fileName=(String)serviceRequest.getAttribute("FILENAME");
+					((FileDataSet)ds).setFileName(fileName);
 				}
 			}
-		else 
-			if(type.equalsIgnoreCase("2")){
-					ds=new WSDataSet();
-					if(serviceRequest.getAttribute("ADDRESS")!=null){
-						String address=(String)serviceRequest.getAttribute("ADDRESS");
-						((WSDataSet)ds).setAdress(address);
+			else 
+				if(type.equalsIgnoreCase("1")){
+					ds=new QueryDataSet();
+					if(serviceRequest.getAttribute("QUERY")!=null){
+						String query=(String)serviceRequest.getAttribute("QUERY");
+						((QueryDataSet)ds).setQuery(query);
 					}
-					if(serviceRequest.getAttribute("EXECUTORCLASS")!=null){
-						String executorClass=(String)serviceRequest.getAttribute("EXECUTORCLASS");
-						((WSDataSet)ds).setExecutorClass(executorClass);
-					
+					if(serviceRequest.getAttribute("DATASOURCE")!=null){
+						String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
+						DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
+						((QueryDataSet)ds).setDataSource(dataSource);
 					}
 				}
-		
-		/*
+				else 
+					if(type.equalsIgnoreCase("2")){
+						ds=new WSDataSet();
+						if(serviceRequest.getAttribute("ADDRESS")!=null){
+							String address=(String)serviceRequest.getAttribute("ADDRESS");
+							((WSDataSet)ds).setAdress(address);
+						}
+						if(serviceRequest.getAttribute("EXECUTORCLASS")!=null){
+							String executorClass=(String)serviceRequest.getAttribute("EXECUTORCLASS");
+							((WSDataSet)ds).setExecutorClass(executorClass);
+
+						}
+					}
+
+			/*
 		//Case file DataSet
 		if(typeDataSet.equals("0")){
 			ds=new FileDataSet();
@@ -352,7 +438,7 @@ public class DetailDataSetModule extends AbstractModule {
 			DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceId));
 			((QueryDataSet)ds).setDataSource(dataSource);
 			}
-		
+
 		}
 		if(typeDataSet.equals("2")){
 			ds=new WSDataSet();
@@ -363,21 +449,27 @@ public class DetailDataSetModule extends AbstractModule {
 				((WSDataSet)ds).setAdress((String)serviceRequest.getAttribute("ADDRESS"));
 						}
 				}*/
-		
-		String idStr = (String)serviceRequest.getAttribute("ID");
-		String name = (String)serviceRequest.getAttribute("NAME");
-		String label = (String)serviceRequest.getAttribute("LABEL");
-		
-		String description = (String)serviceRequest.getAttribute("DESCR");	
-		Integer id = new Integer(idStr);
 
-		
-		ds.setDsId(id.intValue());
-		ds.setName(name);
-		ds.setLabel(label);
-		ds.setDescription(description);
-				
-		return ds;
+			String idStr = (String)serviceRequest.getAttribute("ID");
+			String name = (String)serviceRequest.getAttribute("NAME");
+			String label = (String)serviceRequest.getAttribute("LABEL");
+
+			String description = (String)serviceRequest.getAttribute("DESCR");	
+			Integer id = new Integer(idStr);
+
+
+			ds.setDsId(id.intValue());
+			ds.setName(name);
+			ds.setLabel(label);
+			ds.setDescription(description);
+
+			return ds;
+		}
+
+		private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
+			response.setAttribute("loopback", "true");
+			session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
+			session.delAttribute("dataset");
+		}
+
 	}
-
-}

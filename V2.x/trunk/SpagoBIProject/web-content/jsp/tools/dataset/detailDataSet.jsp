@@ -182,8 +182,9 @@
 					</span>
 				</div>	
 				    <div class='div_detail_form'>		
-						<span class='portlet-form-input-field'><%=type%></span>
+						<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;font-size: 8pt;"><%=type%></span>
 				</div>
+				
 			<%}
 			else
 				{%>
@@ -247,7 +248,7 @@
 				<spagobi:message key = "SBISet.ListDataSet.query" />
 			</span>
 		</div>
-	    <div class='div_detail_form'>
+	    <div style="height:90px;">
 		<%
 			   String query =""; 
 				if(ds instanceof QueryDataSet){		
@@ -257,8 +258,15 @@
 				   query = "";
 			   }
 		%>
+		
+		<textarea rows="4" cols="40" name="QUERY" <%=disabledQuery%>><%=query%></textarea>
+		<BR>
+		
+		<!-- 
 			<input class='portlet-form-input-field' type="text" name="QUERY" 
 				   size="50" value="<%=query%>" maxlength="50" <%=disabledQuery%> />
+	    -->
+	   
 	   </div>
 
 	   
@@ -268,7 +276,7 @@
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType" >			
+		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType" <%=disabledQuery%> >			
 			<option></option>
 			<%
 

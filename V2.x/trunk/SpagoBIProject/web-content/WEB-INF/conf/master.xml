@@ -114,6 +114,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/validation.xml" />
 	
 	<!-- tools.datasource -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/presentation.xml" />

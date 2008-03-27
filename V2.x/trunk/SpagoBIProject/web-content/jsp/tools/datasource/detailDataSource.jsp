@@ -8,6 +8,7 @@
 	 				         it.eng.spagobi.tools.datasource.service.DetailDataSourceModule" %>
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSourceModule"); 
@@ -50,6 +51,15 @@
 			<td class='header-title-column-portlet-section' 
 			    style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key = "SBISet.ListDS.TitleDetail"  />
+			</td>
+			<td class='header-button-column-portlet-section' id='testButton'>
+				<a href="javascript:testConnection()"> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
+	      				 src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
+	      				 alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
+	      			/> 
+				</a>
 			</td>
 	<!-- 		<td class='header-empty-column-portlet-section'>&nbsp;</td>-->
 			<td class='header-button-column-portlet-section'>
@@ -340,6 +350,89 @@
 			document.dsForm.PWD.disabled=false;
 			document.dsForm.DRIVER.disabled=false;
 		}
+	}
+
+	function testConnection() {
+			var jndi = document.dsForm.JNDI.value;
+			var isjndi = document.dsForm.typeDS[0].checked ;
+			var urlc = document.dsForm.URL_CONNECTION.value;
+			var user = document.dsForm.USER.value;
+			var pwd = document.dsForm.PWD.value;
+			var driver = document.dsForm.DRIVER.value;
+		if ( isjndi ){	
+		  if ( !jndi ){	
+			Ext.MessageBox.show({
+				msg: 'Please insert jndi name',
+				buttons: Ext.MessageBox.OK,
+				width:300
+			});
+			return;
+			}
+		}
+		if ( !isjndi  && !urlc ){	
+			Ext.MessageBox.show({
+				msg: 'Please insert url',
+				buttons: Ext.MessageBox.OK,
+				width:300
+			});
+			return;
+		}
+		if ( !isjndi  && !user ){	
+			Ext.MessageBox.show({
+				msg: 'Please insert user',
+				buttons: Ext.MessageBox.OK,
+				width:300
+			});
+			return;
+		}
+		if ( !isjndi  && !driver){	
+			Ext.MessageBox.show({
+				msg: 'Please insert driver',
+				buttons: Ext.MessageBox.OK,
+				width:300
+			});
+			return;
+		}
+	
+		url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";
+		pars = "NEW_SESSION=TRUE&ACTION_NAME=TEST_CONN";
+		
+			pars += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver  ;
+		
+		new Ajax.Request(url,
+			{
+				method: 'post',
+				parameters: pars,
+				onSuccess: function(transport){
+					response = transport.responseText || "";
+					showConnTestResult(response);
+				},
+				onFailure: somethingWentWrong
+			}
+		);
+	}
+	
+	function showConnTestResult(response) {
+		var iconRememberMe;
+		if (response=="sbi.connTestOk") {
+			response = "<spagobi:message key="sbi.connTestOk" />";
+			iconRememberMe = Ext.MessageBox.INFO;
+		}
+		if (response=="sbi.connTestError") {
+			response = "<spagobi:message key="sbi.connTestError" />";
+			iconRememberMe = Ext.MessageBox.ERROR;
+		}
+		Ext.MessageBox.show({
+			title: 'Status',
+			msg: response,
+			buttons: Ext.MessageBox.OK,
+			width:300,
+			icon: iconRememberMe
+		});
+	}
+	
+	function somethingWentWrong() {
+		alert('Error while Testing Connection');
 	}
 	</script>
 	

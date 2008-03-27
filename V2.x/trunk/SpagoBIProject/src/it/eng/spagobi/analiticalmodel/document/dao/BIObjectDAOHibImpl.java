@@ -38,6 +38,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjNotes;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
@@ -405,33 +406,41 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
 		// set to not active the current active template
 		String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId="+hibBIObject.getBiobjId();
-                Query query = aSession.createQuery(hql);
-                try{
-                	int rowCount = query.executeUpdate();
-                } catch (Exception e) {
-                	// TODO trace exception
-                	System.out.println(e);
-                }
-        	// get the next prog for the new template
-                Integer nextProg = null;
-                try {
-                	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
-                } catch (Exception e) {
-                	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-                }
-		// store the object template
+        Query query = aSession.createQuery(hql);
+        try{
+        	int rowCount = query.executeUpdate();
+        } catch (Exception e) {
+        	// TODO trace exception
+        	System.out.println(e);
+        }
+        // get the next prog for the new template
+        Integer nextProg = null;
+        try {
+        	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
+        } catch (Exception e) {
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        }
+        // store the object template
 		SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
-		hibObjTemplate.setActive(new Boolean(true));
-		hibObjTemplate.setCreationDate(new Date());
-		hibObjTemplate.setName(objTemp.getName());
-		hibObjTemplate.setProg(nextProg);
-		hibObjTemplate.setSbiBinContents(hibBinContent);
-		hibObjTemplate.setSbiObject(hibBIObject);
-		// metadata
-		hibObjTemplate.setCreationUser(objTemp.getCreationUser());
-		hibObjTemplate.setDimension(objTemp.getDimension());
+        //check if id is already defined. In positive case update template else insert a new one
+         if (objTemp.getId() != null && objTemp.getId().compareTo(new Integer("-1"))!=0){
+        	hibObjTemplate = (SbiObjTemplates)aSession.load(SbiObjTemplates.class, objTemp.getId());
+        	hibObjTemplate.setActive(new Boolean(true));
+         }
+         else{
+        	hibObjTemplate.setActive(new Boolean(true));
+     		hibObjTemplate.setCreationDate(new Date());
+     		hibObjTemplate.setName(objTemp.getName());
+     		hibObjTemplate.setProg(nextProg);
+     		hibObjTemplate.setSbiBinContents(hibBinContent);
+     		hibObjTemplate.setSbiObject(hibBIObject);
+     		// metadata
+     		hibObjTemplate.setCreationUser(objTemp.getCreationUser());
+     		hibObjTemplate.setDimension(objTemp.getDimension());
+     		
+     		aSession.save(hibObjTemplate);
+         }
 		
-		aSession.save(hibObjTemplate);
 	}
 	
 	

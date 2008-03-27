@@ -796,6 +796,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		    
 			// build a biobject using data in request
 			BIObject obj = helper.recoverBIObjectDetails(mod);
+			
 			// define variable that contains the id of the parameter selected
 			String selectedObjParIdStr = null;
 			selectedObjParIdStr = "-1";
@@ -809,6 +810,21 @@ public class DetailBIObjectModule extends AbstractModule {
 			}
 			// build and ObjTemplate object using data into request
 			ObjTemplate objTemp = helper.recoverBIObjTemplateDetails();
+			//if the template is not loaded check if default version is changed
+			if (objTemp == null){
+				Integer idCurTempVer = Integer.valueOf(((String)request.getAttribute("versionTemplate")).trim());
+				if (idCurTempVer != null) {
+					objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+					if (objTemp.getId().compareTo(idCurTempVer) != 0){
+						List lstTemplatesObj = DAOFactory.getObjTemplateDAO().getBIObjectTemplateList(obj.getId());
+						for (int i=0; i<lstTemplatesObj.size(); i++){
+							objTemp = (ObjTemplate)lstTemplatesObj.get(i);
+							if (objTemp.getId().compareTo(idCurTempVer) == 0)
+								break;							
+						}					
+					}
+				}
+			}
 			// based on the modality do different tasks
 			if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {
 				//if data source value is not specified, it gets the default data source associated at the engine
@@ -817,7 +833,7 @@ public class DetailBIObjectModule extends AbstractModule {
 //					Integer dsId = engine.getDataSourceId();
 //					obj.setDataSourceId(dsId);
 //				}
-
+				
 				// inserts into DB the new BIObject
 				if(objTemp==null) {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj);

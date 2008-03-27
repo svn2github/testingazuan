@@ -167,6 +167,7 @@ public class DetBIObjModHelper {
 		if (aBIObject != null && !aBIObject.getId().equals(id)) {
 			throw new DuplicateLabelException("The label " + label + " is assigned to another object");
 		}
+
 		// SET DATA INTO OBJECT
 		obj.setFunctionalities(functionalities);
 		obj.setBiObjectTypeCode(typeCode);
@@ -202,7 +203,7 @@ public class DetBIObjModHelper {
 		SessionContainer permanentSession = session.getPermanentContainer();	    
 		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userId=(String)profile.getUserUniqueIdentifier();
-	        ObjTemplate templ = null;
+	    ObjTemplate templ = null;
 		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
 		if (uploaded != null) {
 			String fileName = uploaded.getFileName();

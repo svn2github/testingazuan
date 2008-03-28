@@ -11,7 +11,7 @@
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
-		DataSet ds = (DataSet)moduleResponse.getAttribute("dsObj");
+		DataSet ds = (DataSet)moduleResponse.getAttribute("dataset");
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
 		String modality = (String)moduleResponse.getAttribute("modality");
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -38,6 +38,7 @@
 <%@page import="it.eng.spagobi.tools.dataset.bo.QueryDataSet"%>
 <%@page import="it.eng.spagobi.tools.dataset.bo.WSDataSet"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.DataSetParametersList"%>
 <form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
@@ -57,7 +58,7 @@
 			</td>
 			<td class='header-button-column-portlet-section' id='testButton'>
 			<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
-						onclick='setLovProviderModifiedField();'
+						onclick='setDatasetModifiedField();'
 						name="testDataSetBeforeSave" value="testDataSetBeforeSave"  
 						src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
 						title='<spagobi:message key = "SBIDev.DetailDataSet.TestBeforeSaveLbl" />'  
@@ -92,6 +93,38 @@
 		</tr>
 	</table>
 	
+				<% 
+				String disabledFile="disabled";
+				String disabledQuery="disabled";
+				String disabledWs="disabled";
+				String type="";
+				
+   	       if(ds instanceof FileDataSet){
+					type="file";
+					disabledFile="";
+				}
+				else if(ds instanceof QueryDataSet){
+					type="query";
+					disabledQuery="";
+				} 
+				else if(ds instanceof WSDataSet){
+					type="ws";
+					disabledWs="";
+				} 
+   	       
+			String datasetDisplay = "none";
+			 
+			DataSetParametersList dataSetParametersList=null;
+			 if(type.equals("query")){
+					dataSetParametersList = new DataSetParametersList();
+						datasetDisplay = "inline";
+						String parametersXML = ds.getParameters();
+					  	if (parametersXML != null  &&  !parametersXML.equals("")){
+					  		dataSetParametersList = DataSetParametersList.fromXML(parametersXML);
+					}
+				 
+				 }
+      	            	     %> 
 	
 	<div class='div_background' style='padding-top:5px;padding-left:5px;'>
 	
@@ -151,29 +184,21 @@
 				   size="50" value="<%= desc %>" maxlength="160" />
 		</div>
 					
-					<%	String disabledFile="disabled";
-			String disabledQuery="disabled";
-			String disabledWs="disabled";
-			   	       String type="";
-			
+					<%	
 			if(message.equalsIgnoreCase("DETAIL_SELECT")){ 
 		String mess="";
-			     if(ds instanceof FileDataSet){
-					type="file";
-					disabledFile="";
-					mess="0";
+			     if(type.equals("file")){
+						mess="0";
 				}
-				else if(ds instanceof QueryDataSet){
-					type="query";
-					disabledQuery="";
-				mess="1";
+				else if(type.equals("query")){
+						mess="1";
 				} 
-				else if(ds instanceof WSDataSet){
-					type="ws";
-					disabledWs="";
-				mess="2";
+				else if(type.equals("ws")){
+						mess="2";
 				} 
-			%>
+			     
+
+		%>
 			   	<input type="hidden"name="typeDataSet" value="<%=mess%>"/>
 			   	
 			   	<div class='div_detail_label'>
@@ -194,28 +219,13 @@
 			</span>
 		</div>
 		<div class='div_detail_form'>
-			<% 
 
-   
-			
-      	       if(ds instanceof FileDataSet){
-					type="file";
-					disabledFile="";
-				}
-				else if(ds instanceof QueryDataSet){
-					type="query";
-					disabledQuery="";
-				} 
-				else if(ds instanceof WSDataSet){
-					type="ws";
-					disabledWs="";
-				} 
-      	            	     %> 
       	   	
       	   	<input type="radio" name="typeDataSet" value="0" <% if(type.equalsIgnoreCase("file")) { out.println(" checked='checked' "); } %> onClick="DisableFields('file')">
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.fileType" /></span>
 			</input>
-      	   	<input type="radio" name="typeDataSet" value="1" <% if(type.equalsIgnoreCase("query")) { out.println(" checked='checked' "); } %> onClick="DisableFields('query')">
+      	   	<input type="radio" name="typeDataSet" value="1" 
+      	   			<% if(type.equalsIgnoreCase("query")) { out.println(" checked='checked' "); } %> onClick="DisableFields('query')">
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.queryType" /></span>
 			</input>
 			<input type="radio" name="typeDataSet" value="2" <% if(type.equalsIgnoreCase("ws")) { out.println(" checked='checked' "); } %> onClick="DisableFields('ws')">
@@ -350,6 +360,13 @@
 	
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
+	
+			<!-- START DIV FIX LIST WIZARD --> 
+        <div id="datasetWizard" style='width:100%;display:<%=datasetDisplay%>'>
+			<spagobi:datasetWizard parametersXML='<%= dataSetParametersList.toXML() %>' />
+		</div>	
+		<!-- DIV FIX LIST WIZARD CLOSED -->
+	
 		
 		
 		<spagobi:error/>
@@ -357,9 +374,38 @@
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 	
 	 <!--</div>  background -->
+	 
+	 
+	 
+	 
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 	
+	
+
+	 
+	 
 	
 	<script>
 	
+	<%
+		String datasetModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
+		if (datasetModified != null && !datasetModified.trim().equals("")) {
+	%>
+		var datasetModified = <%=datasetModified%>;
+	<%
+		} else {
+	%>
+		var datasetModified = false;
+	<%
+		}
+	%>
+
 	function isDsFormChanged () {
 	
 	var bFormModified = 'false';
@@ -428,27 +474,19 @@
 		}
 	}
 	
-	
-		<%
-		String lovProviderModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.LOV_MODIFIED);
-		if (lovProviderModified != null && !lovProviderModified.trim().equals("")) {
-	%>
-		var lovProviderModified = <%=lovProviderModified%>;
-	<%
-		} else {
-	%>
-		var lovProviderModified = false;
-	<%
-		}
-	%>
+			function setDatasetModified(newValue) {
+	   			 <%if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { %>
+					datasetModified = newValue;
+				<%}%>
+				}
 		
-			function setLovProviderModifiedField(){
-		if (lovProviderModified) {
-			document.getElementById("lovProviderModified").value = 'true';
-		} else {
-			document.getElementById("lovProviderModified").value = 'false';
-		}
-	}
+			function setDatasetModifiedField(){
+					if (modified) {
+						document.getElementById("datasetModified").value = 'true';
+					} else {
+						document.getElementById("datasetModified").value = 'false';
+						}
+				}
 		
 	</script>
 		

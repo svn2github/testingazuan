@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MAP>
+
+	<MAP_PROVIDER class_name="it.eng.spagobi.engines.geo.map.provider.FSMapProvider" dir="./maps" map_name="Circoscrizioni" />
+
+	<DATAMART_PROVIDER class_name="it.eng.spagobi.engines.geo.datamart.provider.FlatDatamartProvider"
+			   column_id="sez_codmun"
+			   hierarchy_name="Dummy Hierarchy"
+			   hierarchy_base_level="circoscrizioni"
+			   hierarchy_level="circoscrizioni"
+			   column_values="percentuale,votanti_totali"
+			   agg_type="sum,sum">
+			   
+		
+		<DATASET>
+      <DATASOURCE type="connection" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.14.90:1521:ELEGE" user="elege" password="elege"/>
+      <QUERY>
+        SELECT   aff_codele codice_elezione, a.sez_codmun as sez_codmun,
+         mun_descri descrizione, COUNT (*) numero_sezioni,
+         SUM (aff_vottot) votanti_totali,
+         (SELECT SUM (b.sez_isctot)
+            FROM ezsezion b
+           WHERE b.sez_codele = aff_codele
+             AND b.sez_codmun = a.sez_codmun) iscritti_totali,
+         TO_CHAR (  SUM (aff_vottot)
+                  / ((SELECT SUM (b.sez_isctot)
+                        FROM ezsezion b
+                       WHERE b.sez_codele = aff_codele
+                         AND b.sez_codmun = a.sez_codmun))
+                  * 100,
+                  '9999.99'
+                 ) AS percentuale
+    FROM ezafflue, eemunici, ezsezion a
+   WHERE aff_codele = 1
+     AND a.sez_codele = aff_codele
+     AND a.sez_codsez = aff_codsez
+     AND a.sez_codmun = mun_codice
+     AND (a.sez_squaff != 'N' OR (a.sez_squaff IS NULL))
+GROUP BY aff_codele, a.sez_codmun, mun_descri
+
+      </QUERY>
+		</DATASET>		   
+	
+		<HIERARCHIES>
+					
+			<HIERARCHY name="Dummy Hierarchy" type="custom">
+				<LEVEL name="circoscrizioni" column_id="sez_codmun" column_desc="sez_codmun" feature_name="circoscrizioni"/>                     
+			</HIERARCHY>
+			
+
+		</HIERARCHIES>
+		
+		
+
+
+	</DATAMART_PROVIDER>                       
+	
+		
+	<MAP_RENDERER class_name="it.eng.spagobi.engines.geo.map.renderer.DynamicMapRenderer">	
+	
+		<MEASURES default_kpi="percentuale">
+			<KPI column_id="percentuale" description="Percentuale" pattern="##0.00" unit="%" colour="#E19696">
+				<TRESHOLDS type="uniform" lb_value="none" ub_value="none" >
+					<PARAM name="GROUPS_NUMBER" value="6" />
+				</TRESHOLDS>
+				
+				<COLOURS type="gradient" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+					<PARAM name="BASE_COLOR" value="#00FF00"/>
+				</COLOURS>			
+			</KPI>
+			
+			<KPI column_id="votanti_totali" description="N.Votanti" pattern="###,###,##0.##" unit=""  colour="#9696B9">
+				<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+					<PARAM name="GROUPS_NUMBER" value="6" />
+				</TRESHOLDS>
+				
+				<COLOURS type="gradient" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+					<PARAM name="BASE_COLOR" value="#0000FF"/>
+				</COLOURS>				
+			</KPI>
+			
+		</MEASURES>
+		
+		<LABELS>
+        <LABEL position="header-left" class_name="it.eng.spagobi.engines.geo.map.renderer.DateLabelProducer">
+          <FORMAT day="dd/MM/yyyy" hour="HH:mm"/>   
+          <TEXT>
+            Ultimo aggiornamento del ${day} alle ore ${hour}
+          </TEXT>   
+        </LABEL>
+        
+        <LABEL position="header-right" class_name="it.eng.spagobi.engines.geo.map.renderer.QueryLabelProducer">
+           <DATASOURCE type="connection" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.14.90:1521:ELEGE" user="elege" password="elege"/>
+      
+          <QUERY>
+              select to_char(count(*),'99999')as tot_scrutinati, b.numsez as numsez
+              from ezscrute a, (select count(*) numsez from ezsezion where SEZ_CODELE= 1) b
+              where Sct_CODELE= 1
+              group by  b.numsez
+          </QUERY> 
+          <TEXT>
+            Sezioni: ${tot_scrutinati}/ ${numsez}
+          </TEXT>   
+        </LABEL>
+		</LABELS>
+		
+		<LAYERS>
+			<LAYER name="circoscrizioni" description="circoscrizioni" selected="true" default_fill_color="#4682B4"/>
+		</LAYERS>
+		
+		<LABEL position="footer-center" class_name="it.eng.spagobi.engines.geo.map.renderer.DateLabelProducer">
+          <FORMAT day="dd/MM/yyyy" hour="HH:mm"/>   
+          <TEXT>
+            Affluenza (valore e percentuale)
+          </TEXT>   
+        </LABEL>
+		
+	</MAP_RENDERER>
+	
+</MAP>

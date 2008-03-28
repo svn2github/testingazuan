@@ -673,27 +673,27 @@ Ext.onReady(function(){
 	var top = new Ext.form.HtmlEditor({
         labelAlign: 'top',
         frame:true,
-        title: 'Extended Description',
+        title: '<spagobi:message key ="metadata.docLongDescr" />',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 150,
         value: '<%=longDesc%>',
         renderTo: 'containerLongDescr',
             id:'longDescription',
-            fieldLabel:'Extended Description'  
+            fieldLabel:'<spagobi:message key ="metadata.docLongDescr" />'  
     });   
     
     var top1 = new Ext.form.HtmlEditor({
         labelAlign: 'top',
         frame:true,
-        title: 'Objective',
+        title: '<spagobi:message key ="metadata.docObjective" />',
         value: '<%=objective%>',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 150,
         renderTo: 'containerObjective',
             id:'objective',
-            fieldLabel:'Objective'  
+            fieldLabel:'<spagobi:message key ="metadata.docObjective" />'  
     });   
      
 	});	  
@@ -702,7 +702,7 @@ Ext.onReady(function(){
 <table  class='header-sub-table-portlet-section' >		
 	<tr class='header-sub-row-portlet-section'>
 		<td class='header-sub-title-column-portlet-section'>
-			<spagobi:message key = "DOCUMENT METADATA" />
+			<spagobi:message key = "metadata.docMetadata" />
 		</td>
 	</tr>
 	<tr><td style='background:none;border:none'>&nbsp;</td></tr>
@@ -712,13 +712,13 @@ Ext.onReady(function(){
   <td>
   <div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key ="Long Description" />
+						<spagobi:message key ="metadata.docLongDescr" />
 					</span>
 				</div>
 	</td><td>			
   <div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key ="Objective" />
+						<spagobi:message key ="metadata.docObjective" />
 					</span>
 				</div>
 	</td>			
@@ -740,7 +740,7 @@ Ext.onReady(function(){
 						
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key ="Language" />
+						<spagobi:message key ="metadata.docLanguage" />
 					</span>
 				</div>
 				<div>
@@ -758,7 +758,7 @@ Ext.onReady(function(){
 	<td>		
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
-						<spagobi:message key ="Keywords" />
+						<spagobi:message key ="metadata.docKeyword" />
 					</span>
 				</div>
 				<div>

@@ -362,34 +362,34 @@
 		if ( isjndi ){	
 		  if ( !jndi ){	
 			Ext.MessageBox.show({
-				msg: 'Please insert jndi name',
+				msg: '<spagobi:message key="sbi.noJndiName" />',
 				buttons: Ext.MessageBox.OK,
-				width:300
+				width:150
 			});
 			return;
 			}
 		}
 		if ( !isjndi  && !urlc ){	
 			Ext.MessageBox.show({
-				msg: 'Please insert url',
+				msg: '<spagobi:message key="sbi.noUrl" />',
 				buttons: Ext.MessageBox.OK,
-				width:300
+				width:150
 			});
 			return;
 		}
 		if ( !isjndi  && !user ){	
 			Ext.MessageBox.show({
-				msg: 'Please insert user',
+				msg: '<spagobi:message key="sbi.noUser" />',
 				buttons: Ext.MessageBox.OK,
-				width:300
+				width:150
 			});
 			return;
 		}
 		if ( !isjndi  && !driver){	
 			Ext.MessageBox.show({
-				msg: 'Please insert driver',
+				msg: '<spagobi:message key="sbi.noDriver" />',
 				buttons: Ext.MessageBox.OK,
-				width:300
+				width:150
 			});
 			return;
 		}
@@ -426,13 +426,13 @@
 			title: 'Status',
 			msg: response,
 			buttons: Ext.MessageBox.OK,
-			width:300,
+			width:250,
 			icon: iconRememberMe
 		});
 	}
 	
 	function somethingWentWrong() {
-		alert('Error while Testing Connection');
+		alert('<spagobi:message key="sbi.connTestError" />');
 	}
 	</script>
 	

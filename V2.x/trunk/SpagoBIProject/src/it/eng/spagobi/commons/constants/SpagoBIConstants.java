@@ -195,6 +195,8 @@ public class SpagoBIConstants {
 	public static final String LIST_BIOBJ_PARAMETERS = "LIST_BIOBJ_PARAMETERS";
 	
 	public static final String LOV_MODIFIED = "LOV_MODIFIED";
+	public static final String DATASET_MODIFIED = "DATASET_MODIFIED";
+	
 	
 	public static final String PROFILE_ATTRIBUTES_TO_FILL = "PROFILE_ATTRIBUTES_TO_FILL";
 	

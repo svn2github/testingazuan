@@ -21,25 +21,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.service;
 
-import it.businesslogic.ireport.chart.Dataset;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
+import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
+import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListItemDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
+import it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.security.ISecurityInfoProvider;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
+import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
@@ -126,14 +136,19 @@ public class DetailDataSetModule extends AbstractModule {
 			try {		 									
 				DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
 				this.modalita = SpagoBIConstants.DETAIL_MOD;
+				prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_MOD, response);
 				if (request.getAttribute("SUBMESSAGEDET") != null &&
 						((String)request.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
 				{
 					response.setAttribute("loopback", "true");
 					return;
 				}
-				response.setAttribute("modality", modalita);
-				response.setAttribute("dsObj", ds);
+				//response.setAttribute("modality", modalita);
+				//response.setAttribute("dataset", ds);
+				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+				session.setAttribute("dataset", ds);
+
+				
 			} catch (Exception ex) {
 				logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 				HashMap params = new HashMap();
@@ -142,6 +157,16 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		/**
 		 * Inserts/Modifies the detail of a data set according to the user request. 
 		 * When a data Set is modified, the <code>modifyDataSet</code> method is called; when a new
@@ -159,9 +184,11 @@ public class DetailDataSetModule extends AbstractModule {
 
 			// to rember that the lov has been modified 
 			// necessary to show a confirm if the user change the lov and then go back without saving
-			String dataSetModified = (String) serviceRequest.getAttribute("dataSetModified");
+			String dataSetModified = (String) serviceRequest.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
 			if(dataSetModified != null && !dataSetModified.trim().equals("")) 
-				session.setAttribute("DATA_SET_MODIFIED", dataSetModified);
+				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
+
+			DataSet	dsNew  = (DataSet) session.getAttribute("dataset");
 
 
 			// check if we are coming from the test
@@ -180,9 +207,8 @@ public class DetailDataSetModule extends AbstractModule {
 						}
 					}
 				}
-				DataSet dataset=(DataSet)session.getAttribute("dataset");
-				DAOFactory.getDataSetDAO().modifyDataSet(dataset);
-				serviceResponse.setAttribute("dsObj", dataset);
+				DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
+				serviceResponse.setAttribute("dataset", dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
 				session.delAttribute("dataset");
 				session.delAttribute(SpagoBIConstants.MODALITY);
@@ -192,12 +218,11 @@ public class DetailDataSetModule extends AbstractModule {
 			// don't save after the test
 			else 
 				if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
-					DataSet	dat  = (DataSet) session.getAttribute("dataset");
 					session.delAttribute("dataset");
 					//serviceResponse.setAttribute("testLov", "true");
 					session.delAttribute(SpagoBIConstants.MODALITY);
 
-					serviceResponse.setAttribute("dsObj", dat);
+					serviceResponse.setAttribute("dataset", dsNew);
 					serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);	
 					//prepareDetailModalitiesValuePage(modVal, mod, response);
 					// exits without writing into DB and without loop
@@ -209,11 +234,13 @@ public class DetailDataSetModule extends AbstractModule {
 					boolean testCase=false;
 					Object test = serviceRequest.getAttribute("testDataSetBeforeSave");
 					if(test!=null)testCase=true;
-					
-					
+					String type="";
+					dsNew = recoverDataSetDetails(serviceRequest,dsNew);
 
-					DataSet dsNew = recoverDataSetDetails(serviceRequest);
-
+					if(dsNew instanceof FileDataSet)type="0";
+					else if(dsNew instanceof QueryDataSet)type="1";
+					else if(dsNew instanceof WSDataSet)type="2";
+					
 					EMFErrorHandler errorHandler = getErrorHandler();
 
 					// if there are some validation errors into the errorHandler does not write into DB
@@ -223,24 +250,43 @@ public class DetailDataSetModule extends AbstractModule {
 						while (iterator.hasNext()) {
 							Object error = iterator.next();
 							if (error instanceof EMFValidationError) {
-								serviceResponse.setAttribute("dsObj", dsNew);
+								serviceResponse.setAttribute("dataset", dsNew);
 								serviceResponse.setAttribute("modality", mod);
 								return;
 							}
 						}
 					}
+					
+					// check if it has to change parameters		
+					if(type.equals("1")){
+						String parametersXML = dsNew.getParameters();
+						DataSetParametersList dslistDet = null;
+						if( (parametersXML==null) || (parametersXML.trim().equals("")) ) {
+							dslistDet = new DataSetParametersList();
+						} else {
+							dslistDet = new DataSetParametersList(parametersXML);
+						}
+						boolean itemTaskDone = doDatasetParameterItemTask(dsNew, dslistDet, serviceRequest);
+						if(itemTaskDone) {
+							prepareDetailDatasetPage(dsNew, mod, serviceResponse);
+							session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "true");
+							//session.setAttribute("dataset", dsNew);
+							// exits without writing into DB and without loop
+							return;
+						} else {
+							List items = dslistDet.getItems();
+							if(items.size()==0) {
+								dsNew.setParameters("<LOV/>");
+							}
+						}	
+					}
 
+					
 					if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		
 
 
 						//check the type and insert right parameters
-
-						String type=(String)serviceRequest.getAttribute("typeDataSet");
-
-
-
-
-						//if a ds with the same label not exists on db ok else error
+				//if a ds with the same label not exists on db ok else error
 						if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
 							HashMap params = new HashMap();
 							params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
@@ -263,7 +309,7 @@ public class DetailDataSetModule extends AbstractModule {
 					if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
 							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
 						serviceResponse.setAttribute("modality", mod);
-						serviceResponse.setAttribute("dsObj", dsNew);				
+						serviceResponse.setAttribute("dataset", dsNew);				
 						return;
 					}
 					else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
@@ -365,36 +411,50 @@ public class DetailDataSetModule extends AbstractModule {
 
 				DataSet ds = null;
 				this.modalita = SpagoBIConstants.DETAIL_INS;
-				response.setAttribute("modality", modalita);
+				//response.setAttribute("modality", modalita);
 				ds = new DataSet();
 				ds.setDsId(-1);
 				ds.setDescription("");
 				ds.setLabel("");
-				ds.setName("");			
-				response.setAttribute("dsObj", ds);
+				ds.setName("");
+				ds.setParameters("");
+				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+				session.setAttribute("dataset", ds);
+				//response.setAttribute("dataset", ds);
+				prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_INS, response);
+
 			} catch (Exception ex) {
 				logger.error("Cannot prepare page for the insertion" , ex);		
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 			}
-
 		}
 
 
-		private DataSet recoverDataSetDetails (SourceBean serviceRequest) throws EMFUserError, SourceBeanException, IOException  {
+		private DataSet recoverDataSetDetails (SourceBean serviceRequest, DataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
 			DataSet ds  =null;
-			String type= (String)serviceRequest.getAttribute("typeDataSet");
+			String typeds= (String)serviceRequest.getAttribute("typeDataSet");
 
 
-			if(type.equalsIgnoreCase("0")){
+			if(typeds.equalsIgnoreCase("0")){
+				if(dsOld==null){
 				ds=new FileDataSet();
+				}
+				else{
+					ds=dsOld;
+				}
 				if(serviceRequest.getAttribute("FILENAME")!=null){
 					String fileName=(String)serviceRequest.getAttribute("FILENAME");
 					((FileDataSet)ds).setFileName(fileName);
 				}
 			}
 			else 
-				if(type.equalsIgnoreCase("1")){
+				if(typeds.equalsIgnoreCase("1")){
+					if(dsOld==null){
 					ds=new QueryDataSet();
+					}
+					else{
+						ds=dsOld;
+					}
 					if(serviceRequest.getAttribute("QUERY")!=null){
 						String query=(String)serviceRequest.getAttribute("QUERY");
 						((QueryDataSet)ds).setQuery(query);
@@ -406,8 +466,13 @@ public class DetailDataSetModule extends AbstractModule {
 					}
 				}
 				else 
-					if(type.equalsIgnoreCase("2")){
+					if(typeds.equalsIgnoreCase("2")){
+						if(dsOld==null){
 						ds=new WSDataSet();
+						}
+						else{
+							ds=dsOld;
+						}
 						if(serviceRequest.getAttribute("ADDRESS")!=null){
 							String address=(String)serviceRequest.getAttribute("ADDRESS");
 							((WSDataSet)ds).setAdress(address);
@@ -419,42 +484,14 @@ public class DetailDataSetModule extends AbstractModule {
 						}
 					}
 
-			/*
-		//Case file DataSet
-		if(typeDataSet.equals("0")){
-			ds=new FileDataSet();
-			if((String)serviceRequest.getAttribute("FILENAME")!=null){
-			((FileDataSet)ds).setFileName((String)serviceRequest.getAttribute("FILENAME"));
-		}
-		}
-	// Case Query Data Set
-		if(typeDataSet.equals("1")){
-			ds=new QueryDataSet();
-			if((String)serviceRequest.getAttribute("QUERY")!=null){
-			((QueryDataSet)ds).setQuery((String)serviceRequest.getAttribute("QUERY"));
-		}
-			if((String)serviceRequest.getAttribute("DATASOURCE")!=null){
-			String dataSourceId=(String)serviceRequest.getAttribute("DATASOURCE");
-			DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceId));
-			((QueryDataSet)ds).setDataSource(dataSource);
-			}
 
-		}
-		if(typeDataSet.equals("2")){
-			ds=new WSDataSet();
-			if((String)serviceRequest.getAttribute("EXECUTORCLASS")!=null){
-			((WSDataSet)ds).setExecutorClass((String)serviceRequest.getAttribute("EXECUTORCLASS"));
-					}
-			if((String)serviceRequest.getAttribute("ADDRESS")!=null){
-				((WSDataSet)ds).setAdress((String)serviceRequest.getAttribute("ADDRESS"));
-						}
-				}*/
 
 			String idStr = (String)serviceRequest.getAttribute("ID");
 			String name = (String)serviceRequest.getAttribute("NAME");
 			String label = (String)serviceRequest.getAttribute("LABEL");
 
 			String description = (String)serviceRequest.getAttribute("DESCR");	
+			
 			Integer id = new Integer(idStr);
 
 
@@ -471,5 +508,205 @@ public class DetailDataSetModule extends AbstractModule {
 			session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
 			session.delAttribute("dataset");
 		}
+		
+		
+		private boolean doDatasetParameterItemTask(DataSet dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
+			boolean changeItems = false;
+			// checks if it is requested to delete a Fix Lov item
+			Object indexOfDatasetParameterItemToDeleteObj = request.getAttribute("indexOfDatasetParameterItemToDelete");
+			if (indexOfDatasetParameterItemToDeleteObj != null) {
+				// it is requested to delete a Fix Lov item
+				int indexOfDatasetParameterItemToDelete = new Integer((String)indexOfDatasetParameterItemToDeleteObj).intValue();
+				datasetlistDet = deleteDatasetParameterValue(datasetlistDet, indexOfDatasetParameterItemToDelete);
+				changeItems = true;
+			}
+			// checks if it is requested to change a Fix Lov item
+			Object indOfDatasetParameterItemToChangeObj = request.getAttribute("indexOfDatasetParameterItemToChange");
+			if (indOfDatasetParameterItemToChangeObj != null) {
+				// it is requested to change a Fix Lov item
+				int indexOfDatasetParameterItemToChange = new Integer((String)indOfDatasetParameterItemToChangeObj).intValue();
+				String newName = (String)request.getAttribute("nameRow"+indexOfDatasetParameterItemToChange+"InpText");
+				String newType = (String)request.getAttribute("typeRow"+indexOfDatasetParameterItemToChange+"InpText");
+				request.setAttribute("newNameRow", newName);
+				request.setAttribute("newTypeRow", newType);
+				//ValidationCoordinator.validate("PAGE", "FixLovChangeValidation", this);
+				//if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+					datasetlistDet = changeDatasetParameterValue(datasetlistDet, indexOfDatasetParameterItemToChange, newName, newType);
+					changeItems = true;
+				//}
+			}
+			//	checks if it is requested to move down a Fix Lov item
+			Object indexOfItemToDown = request.getAttribute("indexOfItemToDown");
+			if (indexOfItemToDown != null) {
+				// it is requested to move down a Fix Lov item
+				int indexOfItemToDownInt = new Integer((String)indexOfItemToDown).intValue();
+				datasetlistDet = moveDownDatasetParameterItem(datasetlistDet, indexOfItemToDownInt);
+				changeItems = true;
+			}
+			// checks if it is requested to move up a Fix Lov item
+			Object indexOfItemToUp = request.getAttribute("indexOfItemToUp");
+			if (indexOfItemToUp != null) {
+				// it is requested to move down a Fix Lov item
+				int indexOfItemToUpInt = new Integer((String)indexOfItemToUp).intValue();
+				datasetlistDet = moveUpDatasetParameterItem(datasetlistDet, indexOfItemToUpInt);
+				changeItems = true;
+			}
+			//	checks if it is requested to add a Fix Lov item
+			Object insertFixLovItem = request.getAttribute("insertDatasetParameterItem");
+			if (insertFixLovItem != null) {
+				//ValidationCoordinator.validate("PAGE", "FixLovWizardValidation", this);
+				if(errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+					datasetlistDet = addDatasetParameterItem(request, dataset);
+					changeItems = true;
+				}
+			}
+			// if the request was to insert/delete/modify item of the fix list update the lov
+			if(changeItems) {
+				String pars = datasetlistDet.toXML();
+				dataset.setParameters(pars);
+			}
+			return changeItems;
+		}
+
+		/**
+		 * Delete from the list of fix lov items the one at index indexOfFixedListItemToDelete
+		 * @param lovDetList	The list of Fix Lov
+		 * @param indexOfFixedListItemToDelete	The index of the item to be deleted
+	    */
+		private DataSetParametersList deleteDatasetParameterValue (DataSetParametersList dsDetList, int indexOfDatasetParameterItemToDelete)  {
+			List parameters = dsDetList.getItems();
+			parameters.remove(indexOfDatasetParameterItemToDelete);
+			dsDetList.setPars(parameters);
+			return dsDetList;
+		}
+		
+		/**
+		 * Chnage from the list of fix lov items the one at index indexOfFixedListItemToDelete
+		 * @param lovDetList	The list of Fix Lov
+		 * @param itemToChange	The index of the item to be changed
+		 * @param newName the new name of the item
+		 * @param newValue the new value of the item
+	    */
+		private DataSetParametersList changeDatasetParameterValue (DataSetParametersList dsDetList, int itemToChange, 
+				                                   String newName, String newType)  {
+			List parameters = dsDetList.getItems();
+			parameters.remove(itemToChange);
+			DataSetParameterItem dsdet = new DataSetParameterItem();
+			dsdet.setName(newName);
+			dsdet.setType(newType);
+			parameters.add(itemToChange, dsdet);
+			dsDetList.setPars(parameters);
+			return dsDetList;
+		}
+		
+		/**
+		 * Move up an item of the fix lov list
+		 * @param lovDetList	The list of Fix Lov
+		 * @param indexOfItemToUp	The index of the item to move up
+	    */
+		private DataSetParametersList moveUpDatasetParameterItem (DataSetParametersList dsDetList, int indexOfItemToUp)  {
+			List parameters = dsDetList.getItems();
+			Object o = parameters.get(indexOfItemToUp);
+			parameters.remove(indexOfItemToUp);
+			parameters.add((indexOfItemToUp-1), o);
+			dsDetList.setPars(parameters);
+			return dsDetList;
+		}
+		
+		/**
+		 * Move down an item of the fix lov list
+		 * @param lovDetList	The list of Fix Lov
+		 * @param indexOfItemToDown	The index of the item to move down
+	    */
+		private DataSetParametersList moveDownDatasetParameterItem (DataSetParametersList dsDetList, int indexOfItemToDown)  {
+			List parameters = dsDetList.getItems();
+			Object o = parameters.get(indexOfItemToDown);
+			parameters.remove(indexOfItemToDown);
+			parameters.add((indexOfItemToDown+1), o);
+			dsDetList.setPars(parameters);
+			return dsDetList;
+		}
+		
+		/**
+		 * Inserts a new Fixed LOV item in the FixedLov Wizard. When this type of Input is selected dring the insertion/
+		 * modify of a Value in the LOV list, it is possible to add a series of FixLov Values, showed
+		 * at runtime in a table.
+		 * 
+		 * @param request	The request SourceBean
+		 * @param modVal	The ModalitiesValue to modify with the new entry
+		 * @throws SourceBeanException	If a SourceBean Exception occurred
+		 */
+		private DataSetParametersList addDatasetParameterItem (SourceBean request, DataSet dataset) throws SourceBeanException {
+			String dsPars = dataset.getParameters();
+			DataSetParametersList dsDetList = null;
+			if ((dsPars==null) || (dsPars.trim().equals(""))) {
+				dsDetList = new DataSetParametersList();
+			} else {
+				dsDetList = DataSetParametersList.fromXML(dsPars);
+			}
+			String lovName = (String)request.getAttribute("nameOfDatasetParameterItemNew");
+			String lovType = (String)request.getAttribute("typeOfDatasetParameterItemNew");
+			dsDetList.add(lovName, lovType);
+			return dsDetList;
+		}
+		
+		/**
+		 * Sets some attributes into the response SourceBean. Those attributes are required for 
+		 * the correct visualization of the ModalitiesValue form page.
+		 * 
+		 * @param modVal The ModalitiesValue to visualize 
+		 * @param mod The modality (insert/modify)
+		 * @param response The SourceBean to set
+		 * @throws SourceBeanException
+		 * @throws EMFUserError
+		 * @throws EMFInternalError 
+		 */
+
+		private void prepareDetailDatasetPage (DataSet dataset, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
+			response.setAttribute("dataset", dataset);
+			response.setAttribute(SpagoBIConstants.MODALITY, mod);	
+			loadValuesDomain(response);
+			loadAllProfileAttributes(response);
+		}
+		
+		private void loadAllProfileAttributes(SourceBean response) throws SourceBeanException {
+			SourceBean configSingleton = ConfigSingleton.getInstance();
+			SourceBean portalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+			logger.debug(" Portal security class configuration " + portalSecuritySB);
+			String portalSecurityClassName = (String) portalSecuritySB.getAttribute("className");
+			logger.debug(" Portal security class name: " + portalSecurityClassName);
+			if (portalSecurityClassName == null || portalSecurityClassName.trim().equals("")) {
+				logger.error(" Portal security class name not set!!!!");
+				return;
+			}
+			portalSecurityClassName = portalSecurityClassName.trim();
+			ISecurityInfoProvider portalSecurityProvider = null;
+			try {
+				portalSecurityProvider = (ISecurityInfoProvider)Class.forName(portalSecurityClassName).newInstance();
+			} catch (Exception e) {
+				logger.error(" Error while istantiating portal security class '" + portalSecurityClassName + "'.", e);
+				return;
+			}
+			List profileattrs = portalSecurityProvider.getAllProfileAttributesNames();
+			response.setAttribute(SpagoBIConstants.PROFILE_ATTRS, profileattrs);
+		}
+		
+		/**
+		 * Loads into the Response Source Bean all the Input Type Domain objects
+		 * 
+		 * @param response The response Source Bean
+		 * @throws EMFUserError If any exception occurred
+		 */
+		private void loadValuesDomain(SourceBean response)  throws EMFUserError {
+			try {
+				List list = DAOFactory.getDomainDAO().loadListDomainsByType("INPUT_TYPE");
+				response.setAttribute (SpagoBIConstants.LIST_INPUT_TYPE, list);
+			} catch (Exception ex) {
+				logger.error("Cannot prepare page for the insertion", ex  );
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1021);
+			}
+		}
+
+			
 
 	}

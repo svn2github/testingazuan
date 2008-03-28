@@ -185,7 +185,8 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setLabel(aDataSet.getLabel());
 			hibDataSet.setName(aDataSet.getName());			
 			hibDataSet.setDescription(aDataSet.getDescription());
-
+			hibDataSet.setParameters(aDataSet.getParameters());
+			
 			
 			
 			tx.commit();
@@ -252,6 +253,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setLabel(aDataSet.getLabel());
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setName(aDataSet.getName());
+			hibDataSet.setParameters(aDataSet.getParameters());
 
 			aSession.save(hibDataSet);
 			tx.commit();
@@ -333,14 +335,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			((WSDataSet)ds).setAdress(((SbiWSDataSet)hibDataSet).getAdress());
 			((WSDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
 		}
-		
-		
-		
 
 		ds.setDsId(hibDataSet.getDsId());
 		ds.setName(hibDataSet.getName());
 		ds.setLabel(hibDataSet.getLabel());
 		ds.setDescription(hibDataSet.getDescription());		
+		ds.setParameters(hibDataSet.getParameters());		
 		
 		return ds;
 	}

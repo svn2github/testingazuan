@@ -794,7 +794,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		    
 			// build a biobject using data in request
 			BIObject obj = helper.recoverBIObjectDetails(mod);
-			
+			boolean flgReloadTemp = false;
 			// define variable that contains the id of the parameter selected
 			String selectedObjParIdStr = null;
 			selectedObjParIdStr = "-1";
@@ -816,6 +816,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					if (idCurTempVer != null) {
 						objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
 						if (objTemp.getId().compareTo(idCurTempVer) != 0){
+							flgReloadTemp = true;
 							List lstTemplatesObj = DAOFactory.getObjTemplateDAO().getBIObjectTemplateList(obj.getId());
 							for (int i=0; i<lstTemplatesObj.size(); i++){
 								objTemp = (ObjTemplate)lstTemplatesObj.get(i);
@@ -826,6 +827,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					}
 				}
 			}
+			else flgReloadTemp = true;
 			// based on the modality do different tasks
 			if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {
 				//if data source value is not specified, it gets the default data source associated at the engine
@@ -922,7 +924,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					biObjPar = helper.recoverBIObjectParameterDetails(obj.getId());
 					// If a new BIParameter was visualized and no fields were inserted, the BIParameter is not validated and saved
 					boolean biParameterToBeSaved = true;
-					if ((obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)) 
+					if ((obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) && flgReloadTemp) 
 						|| (GenericValidator.isBlankOrNull(biObjPar.getLabel()) && biObjPar.getId().intValue() == -1 
 						&& GenericValidator.isBlankOrNull(biObjPar.getParameterUrlName()) && biObjPar.getParID().intValue() == -1))
 						biParameterToBeSaved = false;

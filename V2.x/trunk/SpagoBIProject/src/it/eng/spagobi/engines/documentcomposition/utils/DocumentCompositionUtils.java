@@ -352,7 +352,6 @@ public class DocumentCompositionUtils {
 		
 		//set others parameters value
 		Properties lstParams = document.getParams();
-		Enumeration enParams =lstParams.keys();
 		String key = "";
 		String value = "";
 		int cont = 0;
@@ -360,12 +359,10 @@ public class DocumentCompositionUtils {
 		for (int i=0; i<lstParams.size(); i++) {
 			String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
 			//only for parameter in input to the document managed (type equal 'IN')
-			//if (typeParam != null && typeParam.equalsIgnoreCase("IN")) {
 			if (typeParam != null && typeParam.indexOf("IN")>=0) {
 		    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
 	    		key = lstParams.getProperty(tmpKey);
 	    		if (key == null) break;
-		    	//value = lstParams.getProperty(key);
 	    		value = (String)requestSB.getAttribute(key);
 		    	//if value isn't defined, gets the default value
 			    if(value == null || value.equals("")){
@@ -512,7 +509,7 @@ public class DocumentCompositionUtils {
 				List l = new ArrayList();
 				l.add(subObj.getName());
 				l.add(obj.getName());
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
+				//EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
 				//errorHandler.addError(userError);
 				return null;
 			}

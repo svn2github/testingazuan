@@ -10,8 +10,10 @@ import it.eng.spago.base.SourceBean;
  *
  */
 public class MapProviderConfiguration {
+	
 	private MapConfiguration parentConfiguration;
 	private String className;
+	private String dirName;
 	private String mapName;
 	
 	public MapProviderConfiguration(MapConfiguration parentConfiguration) {
@@ -22,6 +24,10 @@ public class MapProviderConfiguration {
 		setParentConfiguration(parentConfiguration);
 		String mapProviderClassName = (String) mapProviderConfigurationSB.getAttribute(Constants.CLASS_NAME);
 		setClassName(mapProviderClassName);
+		
+		
+		String dirName = (String)mapProviderConfigurationSB.getAttribute("dir");
+		setDirName(dirName);
 		
 		String mapName = (String)mapProviderConfigurationSB.getAttribute(Constants.MAP_NAME);
 		setMapName(mapName);
@@ -49,5 +55,13 @@ public class MapProviderConfiguration {
 
 	public void setParentConfiguration(MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
+	}
+
+	public String getDirName() {
+		return dirName;
+	}
+
+	public void setDirName(String dirName) {
+		this.dirName = dirName;
 	}
 }

@@ -13,6 +13,12 @@ public class Constants {
 	
 	// TAGS
 	
+	public static final String DATASET_TAG = "DATASET";
+	
+	public static final String DATASOURCE_TAG = "DATASOURCE";
+	
+	public static final String QUERY_TAG = "QUERY";
+	
 	public static final String HIERARCHIES_TAG = "HIERARCHIES";
 	
 	public static final String HIERARCHY_TAG = "HIERARCHY";
@@ -29,8 +35,6 @@ public class Constants {
 	
 	public static final String DP_CONNECTION_NAME_ATTR = "CONNECTION_NAME";
 	
-	public static final String DP_QUERY_ATTR = "QUERY";
-	
 	public static final String DP_COLUMN_ID_ATRR = "COLUMN_ID";
 	
 	public static final String DP_HIERARCHY_NAME_ATRR = "HIERARCHY_NAME";
@@ -42,6 +46,18 @@ public class Constants {
 	public static final String DP_KPI_COLUMN_NAMES_ATRR = "COLUMN_VALUES";
 	
 	public static final String DP_KPI_AGG_FUNCS_ATRR = "AGG_TYPE";
+	
+	public static final String DATASET_TYPE_ATTR = "TYPE";
+	
+	public static final String DATASET_RNAME_ATTR = "NAME";
+	
+	public static final String DATASET_DRIVER_ATTR = "DRIVER";
+	
+	public static final String DATASET_URL_ATTR = "URL";
+	
+	public static final String DATASET_USER_ATTR = "USER";	
+	
+	public static final String DATASET_PWD_ATTR = "PASSWORD";	
 	
 	public static final String HIERARCHY_NAME_ATRR = "NAME";
 	
@@ -126,6 +142,14 @@ public class Constants {
 
 
 	// OUTPUT FORMAT TYPES AND MIME TYPES
+	
+	public static final String XDSVG = "xdsvg";
+
+	public static final String XDSVG_MIME_TYPE = "image/svg+xml";
+	
+	public static final String DSVG = "dsvg";
+
+	public static final String DSVG_MIME_TYPE = "image/svg+xml";
 	
 	public static final String SVG = "svg";
 

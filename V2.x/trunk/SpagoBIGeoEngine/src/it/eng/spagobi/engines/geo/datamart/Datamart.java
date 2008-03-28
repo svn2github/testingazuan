@@ -71,33 +71,7 @@ public class Datamart {
     	return (Map)values.get(id);
     }
     
-    /**
-     * Recover the svg style associated to a particular id. The method recovers from the
-     * data map the value associated to the id and then, using the value, it recovers
-     * the svg style associated to the value (from the document template)
-     * @param id the id of the element 
-     * @param conf The configuration of the map
-     * @return the svg style string assocaited to the id 
-     */
-    public String getStyleById(String id, MapConfiguration conf) {
-    	Map attributes = getAttributeseById(id);
-    	Iterator it = attributes.keySet().iterator();
-    	if(it.hasNext()) {
-    		String attrName = (String)it.next();
-    		String attrValue = (String)attributes.get(attrName);
-    		Integer value = Integer.parseInt(attrValue);
-    		if(value!=null) {
-        		String style = conf.getStyle(value.intValue());
-        		if(style==null) {
-        			return " ";
-        		} else {
-            		return style;
-        		}	
-    		}
-    	}
-    	
-    	return " ";
-    }
+    
     
     /**
      * Recover the detail document link associated to a particular id. The method recovers from the

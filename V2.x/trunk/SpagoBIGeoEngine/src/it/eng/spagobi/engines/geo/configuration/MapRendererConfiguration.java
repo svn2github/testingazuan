@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
+import it.eng.spagobi.engines.geo.map.renderer.DefaultLabelProducer;
+import it.eng.spagobi.engines.geo.map.renderer.LabelProducer;
 
 /**
  * @author Andrea Gioia
@@ -39,10 +42,10 @@ public class MapRendererConfiguration {
 	
 	private String className;
 	
-	private boolean windowsActive = true;
-	
-		
+	private boolean windowsActive = true;	
 	private String contextPath;
+	
+	Map labelProducers;
 	
 	
 	private Map measuresMap;
@@ -57,6 +60,8 @@ public class MapRendererConfiguration {
 		String tresholdUb;
 		String tresholdCalculatorType;
 		Properties tresholdCalculatorParameters;
+		String pattern;
+		String unit;
 		
 		String colurOutboundCol;
 		String colurNullCol;
@@ -135,6 +140,18 @@ public class MapRendererConfiguration {
 		}
 		public void setAggFunc(String aggFunc) {
 			this.aggFunc = aggFunc;
+		}
+		public String getPattern() {
+			return pattern;
+		}
+		public void setPattern(String pattern) {
+			this.pattern = pattern;
+		}
+		public String getUnit() {
+			return unit;
+		}
+		public void setUnit(String unit) {
+			this.unit = unit;
 		} 
 	}
 	
@@ -174,13 +191,22 @@ public class MapRendererConfiguration {
 	
 	
 	
-	
+	public LabelProducer getLabelProducer(String key) {
+		return (LabelProducer)labelProducers.get(key);
+	}
 	
 	
 	public MapRendererConfiguration (MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
 		measuresMap = new HashMap();
 		layersMap = new HashMap();
+		labelProducers = new HashMap();
+		labelProducers.put("header-left", new DefaultLabelProducer() );
+		labelProducers.put("header-center", new DefaultLabelProducer() );
+		labelProducers.put("header-right", new DefaultLabelProducer() );
+		labelProducers.put("footer-left", new DefaultLabelProducer() );
+		labelProducers.put("footer-center", new DefaultLabelProducer() );
+		labelProducers.put("footer-right", new DefaultLabelProducer() );
 		
 	}
 
@@ -190,16 +216,55 @@ public class MapRendererConfiguration {
 		
 		SourceBean measuresConfigurationSB;
 		SourceBean layersConfigurationSB;
+		SourceBean labelsConfigurationSB;
 		
 		className = (String)mapRendererConfigurationSB.getAttribute("class_name");
 		
 		measuresMap = new HashMap();
 		layersMap = new HashMap();
 		
+		labelProducers = new HashMap();
+		labelProducers.put("header-left", new DefaultLabelProducer() );
+		labelProducers.put("header-center", new DefaultLabelProducer() );
+		labelProducers.put("header-right", new DefaultLabelProducer() );
+		labelProducers.put("footer-left", new DefaultLabelProducer() );
+		labelProducers.put("footer-center", new DefaultLabelProducer() );
+		labelProducers.put("footer-right", new DefaultLabelProducer() );
+		
 		measuresConfigurationSB = (SourceBean)mapRendererConfigurationSB.getAttribute("MEASURES");
 		initMeasures(measuresConfigurationSB);
 		layersConfigurationSB = (SourceBean)mapRendererConfigurationSB.getAttribute("LAYERS");
 		initLayers(layersConfigurationSB);
+		
+		labelsConfigurationSB = (SourceBean)mapRendererConfigurationSB.getAttribute("LABELS");
+		if(labelsConfigurationSB != null) {
+			List labels = labelsConfigurationSB.getAttributeAsList("LABEL");
+			Iterator labelIterator = labels.iterator();
+			while( labelIterator.hasNext() ) {
+				SourceBean label = (SourceBean)labelIterator.next();
+				String position = (String)label.getAttribute("position");
+				String clazz = (String)label.getAttribute("class_name");
+				
+				LabelProducer labelProducer = null;
+				try {
+					labelProducer = (LabelProducer) Class.forName(clazz).newInstance();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(labelProducer != null) {
+					labelProducer.init(label); 
+					labelProducers.put(position, labelProducer);
+				}
+			}
+			
+		}
 	}
 	
 	public void addMeasure(Measure measure) {
@@ -236,6 +301,10 @@ public class MapRendererConfiguration {
 			measure.setAggFunc(attributeValue);
 			attributeValue = (String)measureSB.getAttribute("colour");
 			measure.setColour(attributeValue);
+			attributeValue = (String)measureSB.getAttribute("pattern");
+			measure.setPattern(attributeValue);
+			attributeValue = (String)measureSB.getAttribute("unit");
+			measure.setUnit(attributeValue);
 			
 			tresholdsSB = (SourceBean)measureSB.getAttribute("TRESHOLDS");			
 			attributeValue = (String)tresholdsSB.getAttribute("lb_value");

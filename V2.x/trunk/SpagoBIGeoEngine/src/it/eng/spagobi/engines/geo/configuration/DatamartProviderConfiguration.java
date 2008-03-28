@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.geo.configuration;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,11 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
+import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia
@@ -44,27 +44,36 @@ public class DatamartProviderConfiguration {
 	
 	private String className;
 	
-	private String connectionName;
-	private SpagoBiDataSource dataSource;
+	private DataSource dataSource;
+	private DataSource bkpDataSource;
+	
 	private String query;
+	
 	private String columnId;
-	private  String hierarchyName;
-	private  String hierarchyBaseLevel;
-	private  String hierarchyLevel;
+	private String hierarchyName;
+	private String hierarchyBaseLevel;
+	private String hierarchyLevel;
 	
 	private String[] kpiColumnNames;
 	private String[] kpiAgregationFunctins;
 		
 	private Properties parameters;
 	
+
+
+	
 	private Map hierarchyMap;
 	private Map drillMap;
 	
 	private SourceBean drillConfigurationSB; 
-
-	
 	
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
+	
+	/**
+     * Logger component
+     */
+    public static transient Logger logger = Logger.getLogger(DatamartProviderConfiguration.class);
+    
 	
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
@@ -73,58 +82,59 @@ public class DatamartProviderConfiguration {
 	}
 	
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration, SourceBean datamartProviderConfigurationSB, 
-			String sdtHierarchy, SpagoBiDataSource dataSource) throws ConfigurationException {
+			String sdtHierarchy) throws ConfigurationException {
 
 		setParentConfiguration(parentConfiguration);
-		this.dataSource = dataSource;
+		
+		SourceBean geoEngineSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("GEO-ENGINE");
+		if(geoEngineSB != null) {
+			SourceBean datasourceSB = (SourceBean)geoEngineSB.getAttribute("DATASOURCE");
+			if(datasourceSB != null) {
+				logger.debug("bkp datasource has been defined");
+				bkpDataSource = buildDataSource(datasourceSB);
+				logger.debug("bkp datasource build succesfully");
+			}
+		}
+		
+		
 		// get the class name attribute
 		String className = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_CLASS_NAME_ATTR);
 		// set the default datamart provider class_name (if not already specified) 
 		if(className == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.WARNING, 
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider class name: attribute name " + Constants.DP_CLASS_NAME_ATTR);
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.INFORMATION, 
-        			"DatamartProviderConfiguration :: service : " +
-        			"default datamart provider class will be used: class name " + DEFAULT_CALSS_NAME);			
-			
+			logger.warn("Cannot find datamart provider class name: attribute name " + Constants.DP_CLASS_NAME_ATTR);
+			logger.info("Default datamart provider class will be used: class name " + DEFAULT_CALSS_NAME);			
 			className = DEFAULT_CALSS_NAME;
 		}
 		setClassName(className);
 		
 		
-		// get the connection name attribute
-		String connectionName = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_CONNECTION_NAME_ATTR);
-		if(connectionName == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's connection name: attribute name " + Constants.DP_CONNECTION_NAME_ATTR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's connection name: attribute name " + Constants.DP_CONNECTION_NAME_ATTR);
+		// get the dataset configuration
+		SourceBean datasetConfigurationSB = (SourceBean)datamartProviderConfigurationSB.getAttribute(Constants.DATASET_TAG);
+		if(datasetConfigurationSB == null) {
+			logger.warn("Cannot find dataset configuration settings: tag name " + Constants.DATASET_TAG);
+			logger.info("Dataset configuration settings must be injected at execution time");
+		} else {
+			SourceBean datasourceConfigurationSB = (SourceBean)datasetConfigurationSB.getAttribute(Constants.DATASOURCE_TAG);
+			if(datasourceConfigurationSB == null) {
+				logger.warn("Cannot find datasource configuration settings: tag name " + Constants.DATASOURCE_TAG);
+				logger.info("Datasource configuration settings must be injected at execution time");
+			} else {
+				dataSource = buildDataSource(datasourceConfigurationSB);
+			}
+			
+			SourceBean queryConfigurationSB = (SourceBean)datasetConfigurationSB.getAttribute(Constants.QUERY_TAG);
+			if(queryConfigurationSB != null) {
+				query = queryConfigurationSB.getCharacters();				
+			} else {
+				logger.error("Cannot find datamart provider's query tag: tag name " + Constants.QUERY_TAG);
+				throw new ConfigurationException("Cannot find datamart provider's query tag: tag name " + Constants.QUERY_TAG);
+			}
 		}
-		setConnectionName(connectionName);		
-		
-		
-		// get the query attribute
-		String query = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_QUERY_ATTR);
-		if(query == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's query: attribute name " + Constants.DP_QUERY_ATTR);
-			throw new ConfigurationException("cannot load DATAMART PROVIDER's query: attribute name " + Constants.DP_QUERY_ATTR);
-		}
-		setQuery(query);
 		
 		//	get the columnid attribute
 		String columnId = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_COLUMN_ID_ATRR);
 		if(columnId == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's query: attribute name " + Constants.DP_COLUMN_ID_ATRR);
+			logger.error("Ccannot find datamart provider's query: attribute name " + Constants.DP_COLUMN_ID_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's column id: attribute name " + Constants.DP_COLUMN_ID_ATRR);
 		}
 		setColumnId(columnId);	
@@ -133,10 +143,7 @@ public class DatamartProviderConfiguration {
 		//	get the hierarchyName attribute
 		String hierarchyName = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_NAME_ATRR);
 		if(hierarchyName == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_NAME_ATRR);
+			logger.error("Cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_NAME_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyName: attribute name " + Constants.DP_HIERARCHY_NAME_ATRR);
 		}
 		setHierarchyName(hierarchyName);	
@@ -144,10 +151,7 @@ public class DatamartProviderConfiguration {
 		// get the hierarchyBaseLevel attribute
 		String hierarchyBaseLevel = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
 		if(hierarchyBaseLevel == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
+			logger.error("Cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyBaseLevel: attribute name " + Constants.DP_HIERARCHY_BASE_LEVEL_ATRR);
 		}
 		setHierarchyBaseLevel(hierarchyBaseLevel);	
@@ -155,10 +159,7 @@ public class DatamartProviderConfiguration {
 		//	get the hierarchyLevel attribute
 		String hierarchyLevel = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_HIERARCHY_LEVEL_ATRR);
 		if(hierarchyLevel == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_LEVEL_ATRR);
+			logger.error("Cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_HIERARCHY_LEVEL_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's hierarchyLevel: attribute name " + Constants.DP_HIERARCHY_LEVEL_ATRR);
 		}
 		setHierarchyLevel(hierarchyLevel);	
@@ -168,10 +169,7 @@ public class DatamartProviderConfiguration {
 		// get the kpiColumnNames attribute
 		String kpiColumnNameStr = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_KPI_COLUMN_NAMES_ATRR);
 		if(kpiColumnNameStr == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
+			logger.error("Cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiColumnNames attribute name " + Constants.DP_KPI_COLUMN_NAMES_ATRR);
 		}
 		String[] kpiColumnName = kpiColumnNameStr.split(",");
@@ -183,10 +181,7 @@ public class DatamartProviderConfiguration {
 		// get the kpiAggFuncs attribute
 		String kpiAggFuncsStr = (String)datamartProviderConfigurationSB.getAttribute(Constants.DP_KPI_AGG_FUNCS_ATRR);
 		if(kpiAggFuncsStr == null) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-        			TracerSingleton.CRITICAL,
-        			"DatamartProviderConfiguration :: service : " +
-        			"cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_AGG_FUNCS_ATRR);
+			logger.error("Cannot find datamart provider's targetFeatureName: attribute name " + Constants.DP_KPI_AGG_FUNCS_ATRR);
 			throw new ConfigurationException("cannot load DATAMART PROVIDER's kpiAggFuncs attribute name " + Constants.DP_KPI_AGG_FUNCS_ATRR);
 		}
 		String[] kpiAggFuncs = kpiAggFuncsStr.split(",");
@@ -211,6 +206,7 @@ public class DatamartProviderConfiguration {
 				try {
 					hierarchySB = SourceBean.fromXMLString(sdtHierarchy);
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new ConfigurationException("Impossible to obtain default hierarchy");
 				}
 				String table = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TABLE_ATRR);
@@ -253,12 +249,6 @@ public class DatamartProviderConfiguration {
 	public void setColumnId(String columnId) {
 		this.columnId = columnId;
 	}
-	public String getConnectionName() {
-		return connectionName;
-	}
-	public void setConnectionName(String connectionName) {
-		this.connectionName = connectionName;
-	}
 	public String[] getKpiColumnNames() {
 		return kpiColumnNames;
 	}
@@ -279,10 +269,7 @@ public class DatamartProviderConfiguration {
 			String paramName = executableQuery.substring(startInd, endInd);
 			String paramValue = parameters.getProperty(paramName);
 			if(paramValue==null) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-	        			TracerSingleton.CRITICAL,
-	        			"DatamartProviderConfiguration :: service : " +
-	        			"cannot find in service request a valid value for parameter: parameter name " + paramName);
+				logger.error("Cannot find in service request a valid value for parameter: parameter name " + paramName);
 				
 				paramValue = "";
 			}
@@ -485,11 +472,57 @@ public class DatamartProviderConfiguration {
 		this.drillConfigurationSB = drillConfigurationSB;
 	}
 
-	public SpagoBiDataSource getDataSource() {
+	public DataSource getDataSource() {
 		return dataSource;
 	}
 
-	protected void setDataSource(SpagoBiDataSource dataSource) {
+	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
+
+	public DataSource getBkpDataSource() {
+		return bkpDataSource;
+	}
+
+	public void setBkpDataSource(DataSource bkpDataSource) {
+		this.bkpDataSource = bkpDataSource;
+	}
+	
+	private DataSource buildDataSource(SourceBean datasourceConfigurationSB) throws ConfigurationException {
+		DataSource result = null;
+		String type = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_TYPE_ATTR);				
+		if("connection".equalsIgnoreCase(type)) {
+			String jndiName = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_RNAME_ATTR);
+			logger.debug("Datasource jndi name: " + jndiName);
+			String driver = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_DRIVER_ATTR);
+			logger.debug("Datasource driver: " + driver);
+			String password = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_PWD_ATTR);
+			logger.debug("Datasource password: " + password);
+			String user = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_USER_ATTR);
+			logger.debug("Datasource user: " + user);
+			String url = (String)datasourceConfigurationSB.getAttribute(Constants.DATASET_URL_ATTR);
+			logger.debug("Datasource url: " + url);
+			
+			if(jndiName != null) {
+				logger.info("Datasource is of type jndi connection. Referenced jndi resource is " + jndiName);
+			} else if (driver == null || url == null){
+				logger.error("Missing driver name or url in datasource configuration settings");
+				throw new ConfigurationException("Missing driver name or url in datasource configuration settings");
+			}
+			
+			result = new DataSource(
+					   driver,
+			           jndiName,
+			           password,
+			           url,
+			           user,
+			           "GEO CONNECTION");
+		} else {
+			logger.error("Datasource type [" + type + "] not supported");
+			throw new ConfigurationException("Datasource type [" + type + "] not supported");
+		}
+			
+		return result;
+	}
+
 }

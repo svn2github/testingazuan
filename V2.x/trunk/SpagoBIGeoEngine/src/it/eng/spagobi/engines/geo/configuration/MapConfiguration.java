@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.geo.configuration;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.engines.geo.application.GeoEngineCLI;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
@@ -16,10 +17,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class MapConfiguration {
 
-	private String mapName = null;
-	
 	private MapRendererConfiguration mapRendererConfiguration = null;
 
 	private MapProviderConfiguration mapProviderConfiguration = null;
@@ -29,9 +30,12 @@ public class MapConfiguration {
 	
 	private static MapCatalogueAccessUtils mapCatalogueAccessUtils;
 	
-	private SourceBean legenda = null;
+	/**
+     * Logger component
+     */
+    public static transient Logger logger = Logger.getLogger(MapConfiguration.class);
 	
-	
+    
 	
 	public MapConfiguration() {
 		mapRendererConfiguration = new MapRendererConfiguration(this);
@@ -45,74 +49,71 @@ public class MapConfiguration {
 	 * @param template The byte array of the xml template
 	 * @throws ConfigurationException raised If some configurations is missing or wrong
 	 */ 
-	public MapConfiguration(byte[] template, 
+	public MapConfiguration(String template) throws ConfigurationException {
+		this(template, null, null);
+	}
+	
+	public MapConfiguration(String template, 
 							SourceBean servReq, 
-							String standardHierarchy, 
-							SpagoBiDataSource dataSource) throws ConfigurationException {
+							String standardHierarchy) throws ConfigurationException {
 		
 		
-		// load template xml string into a sourcebean
+		
 		SourceBean map = null;
-		
 		try {
 			map = SourceBean.fromXMLString(new String(template));
 		} catch (Exception e) {
 			throw new ConfigurationException("Cannot load template into SourceBean", e);
 		}
+		
 		if (map == null) {
 			throw new ConfigurationException("Cannot load map configuration from template");
 		}
 		
-		// load the logical name of the map  from the template
-		try {
-			mapName = (String) map.getAttribute(Constants.NAME);
-		} catch (Exception e) {
-			throw new ConfigurationException("Cannot load the name of the map from template", e);
-		}
+		
 		
 		// load mapRendererConfiguration
-		SourceBean mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
+		logger.debug("Start parsing map render configuration block from template");
+		SourceBean mapRendererConfigurationSB = null;
+		mapRendererConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_RENDERER);
+		if(mapRendererConfigurationSB == null) {
+			throw new ConfigurationException("cannot load MAP RENDERER configuration: tag " 
+					 + Constants.MAP_RENDERER);
+		}
 		mapRendererConfiguration = new MapRendererConfiguration(this, mapRendererConfigurationSB);
+		logger.debug("Parsing of map render configuration block ended successfully");
 		
-		
-		
-		SourceBean mapProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);
+		// load mapProviderConfiguration
+		logger.debug("Start parsing map provider configuration block from template");
+		SourceBean mapProviderConfigurationSB = null;
+		mapProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.MAP_PROVIDER);
+		if(mapProviderConfigurationSB == null) {
+			throw new ConfigurationException("cannot load MAP PROVIDER configuration: tag " 
+					 + Constants.MAP_PROVIDER);
+		}
 		mapProviderConfiguration = new MapProviderConfiguration(this, mapProviderConfigurationSB);
-		if(mapProviderConfiguration.getMapName() == null) {
-			mapName = (String) map.getAttribute(Constants.NAME);
-			mapProviderConfiguration.setMapName(mapName);
-		}		
-		
-		if(mapProviderConfiguration.getMapName() == null) {
-			throw new ConfigurationException("cannot set default datamart provider map name");
-		}
-		
-		// recover legenda
-		try {
-			legenda = (SourceBean) map.getAttribute(Constants.CONFIGURATION	+ "." + Constants.LEGEND);
-		} catch (Exception e) {
-			throw new ConfigurationException("cannot find legenda configuration: tag "+ Constants.CONFIGURATION	+ "." + Constants.LEGEND, e);
-		}
-		/*
-		if (legenda == null) {
-			throw new ConfigurationException("cannot load legenda configuration from template");
-		}
-		*/
-		
-		// recover DATAMART_PROVIDER configuration		
+		logger.debug("Parsing of map provider configuration block ended successfully");
+			
+				
+		// load datamartProviderConfiguration		
+		logger.debug("Start parsing datamart provider configuration block from template");
 		SourceBean datamartProviderConfigurationSB = null;
-		try {
-			datamartProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.DATAMART_PROVIDER);
-			if(datamartProviderConfigurationSB == null) throw new Exception();
-		} catch (Exception e) {
-			throw new ConfigurationException("cannot load DATAMART PROVIDER configuration: tag " + Constants.DATAMART_PROVIDER, e);
+		datamartProviderConfigurationSB = (SourceBean) map.getAttribute(Constants.DATAMART_PROVIDER);
+		if(datamartProviderConfigurationSB == null) {
+			throw new ConfigurationException("cannot load DATAMART PROVIDER configuration: tag " 
+					 + Constants.DATAMART_PROVIDER);
 		}		
+		datamartProviderConfiguration = new DatamartProviderConfiguration(this, datamartProviderConfigurationSB, 
+																			standardHierarchy);
+		logger.debug("Parsing of datamart provider configuration block ended successfully");
 		
-		DatamartProviderConfiguration datamartProviderConfiguration = new DatamartProviderConfiguration(this, datamartProviderConfigurationSB, 
-				standardHierarchy,  dataSource);
-		datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
-		
-		setDatamartProviderConfiguration(datamartProviderConfiguration);		
+				
+		if(servReq != null) {
+			datamartProviderConfiguration.setParameters(getParametersFromRequest(servReq));
+		} else {
+			datamartProviderConfiguration.setParameters(new Properties());
+		}
+			
 	}
 
 	
@@ -131,92 +132,9 @@ public class MapConfiguration {
 	}
 		
 	
-	/**
-	 * Recovers the svg style associated to the level of the legend which contains the value
-	 * @param value The value associated to an svg element of the map
-	 * @return the svg style associated to the level of the legend which contains the value
-	 */
-	public String getStyle(int value) {
-		// recover the list of levels
-		List hueList = legenda.getAttributeAsList(Constants.LEVELS + "." + Constants.LEVEL);
-		Iterator iterator = hueList.iterator();
-		// get the first level 
-		SourceBean level = (SourceBean) iterator.next();
-		// get the Threshold of the level
-		String lowThreshold = (String) level.getAttribute(Constants.THRESHOLD);
-		// get the style of the first level 
-		String style = (String) level.getAttribute(Constants.STYLE);
-		if (value < Integer.parseInt(lowThreshold)) {
-			// the value is lower than the first Threshold
-			return style;
-		}
-		while (iterator.hasNext()) {
-			level = (SourceBean) iterator.next();
-			String highThreshold = (String) level.getAttribute(Constants.THRESHOLD);
-			if (value >= Integer.parseInt(lowThreshold) && value < Integer.parseInt(highThreshold)) {
-				// exits when lowThreshold < value < highThreshold 
-				return style;
-			} else {
-				lowThreshold = highThreshold;
-				style = (String) level.getAttribute(Constants.STYLE);
-			}
-		}
-		// exit when value > highThreshold 
-		return style;
-	}
-
 	
 	
-	/**
-	 * Builds the svg code used for the legend rendering
-	 * @return the svg code of the legend
-	 */
-	public String getLegend() {
-		
-		String legendString = "<g>";
-		// get level definitions
-		List hueList = legenda.getAttributeAsList(Constants.LEVELS + "."+ Constants.LEVEL);
-		// get position and dimension of the legend
-		String x = (String) legenda.getAttribute(Constants.X);
-		String y = (String) legenda.getAttribute(Constants.Y);
-		String width = (String) legenda.getAttribute(Constants.WIDTH);
-		String height = (String) legenda.getAttribute(Constants.HEIGHT);
-		String style = (String) legenda.getAttribute(Constants.STYLE);
-        // build title for legend
-		SourceBean legendTitle = (SourceBean)legenda.getAttribute(Constants.TITLE);
-		style = (String) legendTitle.getAttribute(Constants.STYLE);
-		String description = (String) legendTitle.getAttribute(Constants.DESCRIPTION);
-		legendString = legendString + "<text  x=\"" + x + "\" y=\""
-					   + y + "\" style=\"" + style + "\">" + description
-					   + "</text>";
-		// build legend item for each level
-		int i = 0;
-		int xOffSet = Integer.parseInt(width) + Math.round(Integer.parseInt(width) / 5);
-		int xTest = Integer.parseInt(x) + xOffSet;
-		for (Iterator iterator = hueList.iterator(); iterator.hasNext();) {
-			int yOffSet = i * Integer.parseInt(height) + Math.round(Integer.parseInt(height) / 5);
-			int yRext = Integer.parseInt(y) + yOffSet;
-			int yText = Integer.parseInt(y) + yOffSet + Integer.parseInt(height) / 2;
-			SourceBean level = (SourceBean) iterator.next();
-			style = (String) level.getAttribute(Constants.STYLE);
-			legendString += "<rect x=\"" + x + "\" y=\"" + yRext + 
-						    "\" width=\"" + width + 
-						    "\" height=\"" + height + 
-						    "\" style=\"" + style + "\"/>";
-			// item text (description)
-			SourceBean text = (SourceBean) level.getAttribute(Constants.TEXT);
-			style = (String) text.getAttribute(Constants.STYLE);
-			description = (String) text.getAttribute(Constants.DESCRIPTION);
-			legendString = legendString + "<text  x=\"" + xTest + "\" y=\""
-					+ yText + "\" style=\"" + style + "\">" + description
-					+ "</text>";
-			i++;
-		}
-		// close legend
-		legendString = legendString + "</g>";
-		return legendString;
-	}
-
+	
 	public void setAnalysisState( GeoEngineAnalysisState analysisState ) {	
 		
 		String selectedHiearchy = analysisState.getSelectedHierarchy();
@@ -230,7 +148,6 @@ public class MapConfiguration {
 		
 		if(selectedHierarchyLevel != null) getDatamartProviderConfiguration().setHierarchyLevel(selectedHierarchyLevel);
 		if(selectedMap != null) {
-			setMapName(selectedMap);
 			getMapProviderConfiguration().setMapName(selectedMap);
 		}	
 		if(selectedLayers != null) {
@@ -259,22 +176,7 @@ public class MapConfiguration {
 	
 	
 	
-	/**
-	 * Gets the map name
-	 * @return the map name
-	 */
-	public String getMapName() {
-		return mapName;
-	}
-
-	/**
-	 * Sets the map name
-	 * @param mapName the map name
-	 */
-	public void setMapName(String mapName) {
-		this.mapName = mapName;
-	}
-
+	
 	/**
 	 * Gets the DatamartProvider Configuration 
 	 * @return SourceBean that contains the configuration
@@ -307,14 +209,7 @@ public class MapConfiguration {
 		this.mapProviderConfiguration = mapProviderConfiguration;
 	}
 
-	public SourceBean getLegenda() {
-		return legenda;
-	}
-
-	public void setLegenda(SourceBean legenda) {
-		this.legenda = legenda;
-	}
-
+	
 	public MapRendererConfiguration getMapRendererConfiguration() {
 		return mapRendererConfiguration;
 	}

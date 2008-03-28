@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.geo.service.initializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
+import it.eng.spagobi.engines.geo.configuration.DataSource;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
@@ -58,7 +59,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		String auditId;
 		String documentId;
 		SourceBean template;
-		SpagoBiDataSource dataSource;
+		DataSource dataSource;
 		EngineAnalysisMetadata analysisMetadata;
 		byte[] analysisStateRowData;
 		GeoEngineAnalysisState analysisState;
@@ -70,7 +71,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		documentId = getDocumentId();
 		auditId = getAuditId();
 		template = getTemplate();
-		dataSource = getDataSource();
+		dataSource = new DataSource(getDataSource());
 		analysisMetadata = getAnalysisMetadata();
 		analysisStateRowData = getAnalysisStateRowData();
 		
@@ -90,8 +91,10 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			
 			
 			String standardHierarchy = mapCatalogueAccessUtils.getStandardHierarchy( );
-			mapConfiguration = new MapConfiguration(getTemplate().toString().getBytes(), serviceRequest, 
-					standardHierarchy, getDataSource());
+			mapConfiguration = new MapConfiguration(getTemplate().toString(), serviceRequest, 
+					standardHierarchy);
+			
+			mapConfiguration.getDatamartProviderConfiguration().setDataSource( dataSource );
 			
 			baseUrl = "http://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();			
 			mapConfiguration.getMapRendererConfiguration().setContextPath(baseUrl);

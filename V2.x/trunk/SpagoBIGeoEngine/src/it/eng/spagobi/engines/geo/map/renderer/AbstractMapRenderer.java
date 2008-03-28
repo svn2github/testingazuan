@@ -49,6 +49,12 @@ public class AbstractMapRenderer implements IMapRenderer{
 	/**
 	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
 	 */
+	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider, String outputType) throws Exception {
+		return null;
+	}
+	/**
+	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
+	 */
 	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception {
 		return null;
 	}

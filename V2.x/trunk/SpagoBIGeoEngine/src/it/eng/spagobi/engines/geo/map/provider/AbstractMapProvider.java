@@ -5,9 +5,7 @@
 **/
 package it.eng.spagobi.engines.geo.map.provider;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.configuration.MapProviderConfiguration;
 import it.eng.spagobi.engines.geo.datamart.Datamart;
 

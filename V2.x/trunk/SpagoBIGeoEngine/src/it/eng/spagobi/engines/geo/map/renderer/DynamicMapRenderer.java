@@ -3,8 +3,10 @@
 **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.engines.geo.application.GeoEngineCLI;
 import it.eng.spagobi.engines.geo.configuration.Constants;
 import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.configuration.MapRendererConfiguration.Measure;
@@ -16,45 +18,83 @@ import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 
 /**
  * Defines methods which transform and render the map 
- * @author fiscato
+ * @author Andrea Gioia
  */
 public class DynamicMapRenderer extends AbstractMapRenderer {
 
 	private boolean closeLink = false;
 	
+	/**
+     * Logger component
+     */
+    public static transient Logger logger = Logger.getLogger(DynamicMapRenderer.class);
+	
+	
 	public DynamicMapRenderer() {
 		super();
 	}
 	
-	/**
-	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
-	 */
-	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception {
+	public File renderMap(IMapProvider mapProvider, 
+			  IDatamartProvider datamartProvider) throws Exception {
+		return renderMap(mapProvider, datamartProvider, Constants.DSVG);
+	}
 	
+	public File renderMap(IMapProvider mapProvider, 
+						  IDatamartProvider datamartProvider,
+						  String outputFormat) throws Exception {
+		
+		if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
+			return renderSVGMap(mapProvider, datamartProvider);
+		}else if(outputFormat.equalsIgnoreCase(Constants.DSVG)) {
+			return renderDSVGMap(mapProvider, datamartProvider, false);
+		} else if(outputFormat.equalsIgnoreCase(Constants.XDSVG)) {
+			return renderDSVGMap(mapProvider, datamartProvider, true);
+		} else if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
+			//return renderDSVGMap(mapProvider, datamartProvider, false);
+			return renderSVGMap(mapProvider, datamartProvider);
+		}
+		
+		
+		return renderDSVGMap(mapProvider, datamartProvider, true);
+	}
+	
+	private File renderDSVGMap(IMapProvider mapProvider, 
+	  						   IDatamartProvider datamartProvider, boolean includeScript) throws Exception {
 		SVGDocument targetMap;
 		SVGDocument masterMap;
 		Datamart datamart;
 		
 		datamart = (Datamart)datamartProvider.getDatamartObject();
 		
-		masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile());		
+		masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(true));		
 		targetMap = mapProvider.getSVGMapDOMDocument(datamart);				
 				
 		addData(targetMap, datamart);
@@ -62,7 +102,14 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 		
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
 		
-		importScripts(masterMap);
+		if( includeScript ) {
+			includeScripts(masterMap);
+		} else {
+			importScripts(masterMap);
+		}
+		
+		
+		
 		setMainMapDimension(masterMap, targetMap);
 		setMainMapBkgRectDimension(masterMap, targetMap);	   	   
 	    
@@ -73,16 +120,483 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    String targetLayer = datamartProvider.getDatamartProviderConfiguration().getHierarchyLevel();
 	    targetLayer = datamartProvider.getDatamartProviderConfiguration().getSelectedLevel().getFeatureName();
 	    buffer.append(getLayersConfigurationScript(targetMap, targetLayer));    
-	    buffer.append( mapRendererConfiguration.isWindowsActive()?"var activeWindow=true;":"var activeWindow=false;"  );
-	    
-	    
-	    
+	    buffer.append( mapRendererConfiguration.isWindowsActive()?"var activeWindow=true;":"var activeWindow=false;"  );	    
 	    scriptText.setNodeValue(buffer.toString());
 		
 		File tmpMap = getTempFile();				
 		SVGMapSaver.saveMap(masterMap, tmpMap);
 
 		return tmpMap;
+	}
+	
+	private File renderSVGMap(IMapProvider mapProvider, 
+			   IDatamartProvider datamartProvider) throws Exception {
+		
+		SVGDocument targetMap;
+		SVGDocument masterMap;
+		
+		Datamart datamart;
+		
+		datamart = (Datamart)datamartProvider.getDatamartObject();
+		
+	
+		targetMap = mapProvider.getSVGMapDOMDocument(datamart);		
+		masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(false));
+		
+		decorateMap(masterMap, targetMap, datamart);
+		
+		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
+		
+		setMainMapDimension(masterMap, targetMap);
+		setMainMapBkgRectDimension(masterMap, targetMap);	 
+		
+		File tmpMap = getTempFile();				
+		SVGMapSaver.saveMap(masterMap, tmpMap);
+		
+		return tmpMap;
+	}
+	
+	private void decorateMap(SVGDocument masterMap, SVGDocument targetMap, Datamart datamart) {
+		
+		String[] kpiNames = datamart.getKpiNames();
+		int selectedKpiIndex = datamart.getSelectedKpi();
+		String selectedKpiName = kpiNames[selectedKpiIndex];
+		Measure measure  = mapRendererConfiguration.getMeasure( selectedKpiName );
+		Double lb_value = null;
+		Double ub_value = null;
+		String lb_color = null;
+		String ub_color = null;
+		String null_values_color = null;
+		String[] trasholdCalculationPercParams = null;
+		Integer num_group = null;
+		Integer trasholdCalculationUniformParams = null;
+		String colorRangeCalculationGradParams = null;
+		String[] col_kpi_array = null;
+		Double[] trash_kpi_array = null;
+		Double[] kpi_ordered_values = null;
+		
+		
+		Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet( selectedKpiName );
+		kpi_ordered_values = (Double[])orderedKpiValuesSet.toArray(new Double[0]);
+    	
+		
+				
+		if( measure.getTresholdLb() == null 
+    			|| measure.getTresholdLb().trim().equalsIgnoreCase("")
+    			|| measure.getTresholdLb().equalsIgnoreCase("none") ) {
+			lb_value = null;
+    	} else {
+    		lb_value = Double.parseDouble( measure.getTresholdLb() );
+    	}
+		
+		if( measure.getTresholdUb() == null 
+    			|| measure.getTresholdUb().trim().equalsIgnoreCase("")
+    			|| measure.getTresholdUb().equalsIgnoreCase("none") ) {
+			ub_value = null;
+    	} else {
+    		ub_value = Double.parseDouble( measure.getTresholdUb() );
+    	}
+		
+		lb_color = measure.getColurOutboundCol();
+    	ub_color = measure.getColurOutboundCol();
+    	null_values_color = measure.getColurNullCol();
+    	
+	    
+    	String numGroupAttr = measure.getTresholdCalculatorParameters().getProperty("GROUPS_NUMBER");
+    	if( numGroupAttr != null ) {
+    		num_group = Integer.parseInt( numGroupAttr );
+    		trasholdCalculationUniformParams = num_group;
+    	}
+    	
+    	colorRangeCalculationGradParams = measure.getColurCalculatorParameters().getProperty("BASE_COLOR");
+    	
+
+    	
+    	
+    	//////////////////////////////////////////////////////////////////////////
+    	// SetTrashHolds
+    	///////////////
+    	if(lb_value == null) {
+   			lb_value = kpi_ordered_values[0];
+   		}
+   		if(ub_value == null) {
+   			ub_value = kpi_ordered_values[kpi_ordered_values.length-1];
+   		}
+   		
+   		if(lb_value.doubleValue() > ub_value.doubleValue()) {
+   			Double t = lb_value;
+   			ub_value = lb_value;
+   			lb_value = t;
+   		}
+   		
+   		if(ub_value < kpi_ordered_values[0] || lb_value >  kpi_ordered_values[kpi_ordered_values.length-1]) {
+   			lb_value = kpi_ordered_values[0];
+   			ub_value = kpi_ordered_values[kpi_ordered_values.length-1];
+   		}
+		
+		
+		
+		if( measure.getTresholdCalculatorType().equalsIgnoreCase("quantile") ) {			
+			
+			trash_kpi_array = new Double[num_group + 1];
+			
+			int diff_value_num = 0;	
+			int start_index = -1;	
+			if(kpi_ordered_values[0] >= lb_value && kpi_ordered_values[kpi_ordered_values.length-1] <= ub_value) {
+				diff_value_num = kpi_ordered_values.length;
+				start_index = 0;
+			} else {
+				for(int j = 0; j < kpi_ordered_values.length; j++) {						
+		   			if(kpi_ordered_values[j] >= lb_value && kpi_ordered_values[j] <= ub_value) {
+		   				start_index = (start_index == -1?j:start_index);
+		   				diff_value_num++;
+		   			}
+	   			}
+	   		}
+	   		
+	   		
+			if(diff_value_num < num_group) num_group = diff_value_num;
+			int blockSize = (int)Math.floor( diff_value_num / num_group );
+		
+			trash_kpi_array[0] = lb_value;
+			for(int j = 1; j < num_group; j++){
+				trash_kpi_array[j] = kpi_ordered_values[start_index + (j*blockSize)];
+			}
+			trash_kpi_array[num_group] = ub_value;
+			
+		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("perc") ) {
+			double range = ub_value - lb_value;
+			
+			trasholdCalculationPercParams = mapRendererConfiguration.getTresholdsArray(measure.getColumnId());
+			trash_kpi_array = new Double[trasholdCalculationPercParams.length + 1];
+			
+			trash_kpi_array[0] = lb_value;
+			for(int j = 0; j < trasholdCalculationPercParams.length; j++) {
+				double groupSize = (range / 100.0) * Double.parseDouble(trasholdCalculationPercParams[j]);
+				trash_kpi_array[j+1] = trash_kpi_array[j] + groupSize;
+			}
+			trash_kpi_array[ trash_kpi_array.length - 1] = ub_value;
+			num_group = trash_kpi_array.length - 1;
+		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("uniform") ) {
+			trash_kpi_array = new Double[ trasholdCalculationUniformParams.intValue() + 1 ];
+			double perc = 100 / (trasholdCalculationUniformParams.doubleValue());
+			trasholdCalculationPercParams = new String[trasholdCalculationUniformParams.intValue() + 1];
+			for(int j = 0; j < trasholdCalculationPercParams.length; j++) {
+				trasholdCalculationPercParams[j] = "" + perc;
+			}
+			
+			double range = ub_value - lb_value;
+			trash_kpi_array[0] = lb_value;
+			
+			for(int j = 0; j < trash_kpi_array.length-2; j++) {
+				double groupSize = (range / 100.0) * Double.parseDouble(trasholdCalculationPercParams[j]);
+				trash_kpi_array[j+1] = trash_kpi_array[j] + groupSize;
+			}
+			trash_kpi_array[ trash_kpi_array.length-1 ] = ub_value;
+			num_group = trasholdCalculationPercParams.length - 1;			
+		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("static") ) {
+			String[] trasholdsArray = mapRendererConfiguration.getTresholdsArray( selectedKpiName );
+			trash_kpi_array = new Double[trasholdsArray.length];
+	    	for(int j = 0; j < trasholdsArray.length; j++) {
+	    		trash_kpi_array[j] = new Double( trasholdsArray[j] );
+	    	}
+	    } else {
+			//setQuantileTrasholds(kpi_names[i]);
+		}
+	    
+	 
+		if(measure.getColurCalculatorType().equalsIgnoreCase("static"))  {
+			col_kpi_array = mapRendererConfiguration.getColoursArray( selectedKpiName ); 
+		} else if(measure.getColurCalculatorType().equalsIgnoreCase("gradient"))  {
+			col_kpi_array = getGradientColourRange(colorRangeCalculationGradParams, num_group);	
+		} else {
+			col_kpi_array = getGradientColourRange(colorRangeCalculationGradParams, num_group);	
+		}
+		logger.debug( Arrays.toString( col_kpi_array ) );
+		
+		
+		
+		Element targetLayer = targetMap.getElementById(datamart.getTargetFeatureName());
+		
+		NodeList nodeList = targetLayer.getChildNodes();
+	    for(int i = 0; i < nodeList.getLength(); i++){
+	    	Node childNode = (Node)nodeList.item(i);
+	    	if(childNode instanceof Element) {
+	    		SVGElement child = (SVGElement)childNode;
+	    		
+	    		String childId = child.getId();
+	        	String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
+	        	Map attributes = (Map)datamart.getAttributeseById(column_id);
+	        	
+	    		
+	        	String targetColor = null;
+	        	Double kpyValue = null;
+	        	if(attributes != null) {
+	    			String kpyValueAttr = (String)attributes.get( selectedKpiName );	
+	    			if(kpyValueAttr == null) {
+	    				targetColor = null_values_color;
+	    			} else {
+	    				kpyValue = Double.parseDouble(kpyValueAttr);
+	    				
+	    				if(kpyValue < lb_value.doubleValue()) {
+	    					targetColor = lb_color;
+	    				} else if(kpyValue > ub_value.doubleValue()) {
+	    					targetColor = ub_color;
+	    				} else if(kpyValue == ub_value.doubleValue()) {
+	    					targetColor = col_kpi_array[trash_kpi_array.length-2];
+	    				} else  {
+	    					for (int j = 0; j < trash_kpi_array.length-1; j++) {
+	    						if (kpyValue >= trash_kpi_array[j] && kpyValue <  trash_kpi_array[j+1]) {
+	    							targetColor = col_kpi_array[j];
+	    							break;
+	    						} 
+	    					}
+	    				}
+	    			}
+	    		}
+	        	
+	        	if(targetColor != null) {
+	        		child.setAttribute("fill", targetColor );
+	        	}
+	    		
+	    	} 
+	    }
+	    
+	    // add label
+	    Map values = datamart.getValues();
+	    Iterator it = values.keySet().iterator();
+	    while(it.hasNext()) {
+	    	String id = (String)it.next();
+	    	Map kpiValueMap = (Map)values.get(id);
+	    	String centroideId = "centroidi_" + datamart.getTargetFeatureName() + "_"  + id;
+	    	Element centroide = targetMap.getElementById( centroideId );
+			if( centroide != null ) {
+				Iterator kpiValueIterator = kpiValueMap.keySet().iterator();
+				int line = 0;
+				Element labelGroup = null;
+				if(kpiValueIterator.hasNext()) labelGroup = masterMap.createElement("g");
+				boolean isFirst = true;
+				while(kpiValueIterator.hasNext()) {
+					String tmpKpiName = (String)kpiValueIterator.next();
+					Measure kpi  = mapRendererConfiguration.getMeasure( tmpKpiName );
+					Object o = kpiValueMap.get(tmpKpiName);
+					String kpiValue = (String)kpiValueMap.get(tmpKpiName);
+					labelGroup.setAttribute("transform", "translate(" + centroide.getAttribute("cx") + "," + centroide.getAttribute("cy")+ ") scale(40)");
+					labelGroup.setAttribute("display", "inherit");
+					
+					Element label = masterMap.createElement("text");
+					label.setAttribute("x", "0");
+					label.setAttribute("y", "" + ( (line++ )* 16) );
+					label.setAttribute("text-anchor", "middle");
+					label.setAttribute("font-family", "Arial,Helvetica");
+					label.setAttribute("font-size", isFirst? "16px": "14px");
+					label.setAttribute("font-style", isFirst? "normal": "italic");
+					label.setAttribute("fill", "black");
+					isFirst = false;
+					
+					String kpiValueString = null;
+					if(kpi.getPattern() != null) {
+						String pattern = kpi.getPattern();
+						DecimalFormat df = new DecimalFormat( pattern );
+						kpiValueString = kpiValue != null? df.format(Double.parseDouble(kpiValue)): "?";
+					} else {
+						kpiValueString = kpiValue != null? kpiValue: "?";
+					}
+					
+					if(!kpiValueString.equalsIgnoreCase("?") && kpi.getUnit() != null) {
+						String unit = kpi.getUnit();
+						kpiValueString = kpiValueString + unit;
+					}
+					
+					
+					Node labelText = masterMap.createTextNode(kpiValueString);
+					label.appendChild(labelText);
+					
+					labelGroup.appendChild(label);
+				}
+				
+				if(labelGroup != null) {
+					Element valuesLayer = masterMap.getElementById("values");
+					valuesLayer.appendChild(labelGroup);
+				}				
+			}
+	    }
+	    
+	   
+	    
+	    // add legend
+	    Element windowBackground = masterMap.createElement("rect");
+	    windowBackground.setAttribute("width", "241");
+	    windowBackground.setAttribute("height", "200");
+	    windowBackground.setAttribute("fill", "#fffce6");
+	    windowBackground.setAttribute("stroke", "dimgray");
+	    windowBackground.setAttribute("stroke-width", "1");
+	    windowBackground.setAttribute("display", "inherit");
+	    
+	    Element windowTitleBar = masterMap.createElement("rect");
+	    windowTitleBar.setAttribute("width", "241");
+	    windowTitleBar.setAttribute("height", "17");
+	    windowTitleBar.setAttribute("fill", "steelblue");
+	    windowTitleBar.setAttribute("stroke", "dimgray");
+	    windowTitleBar.setAttribute("stroke-width", "1.5");
+	    windowTitleBar.setAttribute("display", "inherit");
+	    
+	    Element windowTitle = masterMap.createElement("text");
+	    windowTitle.setAttribute("x", "3");
+	    windowTitle.setAttribute("y", "14");
+	    windowTitle.setAttribute("font-family", "Arial,Helvetica");
+	    windowTitle.setAttribute("font-size", "14px");
+	    windowTitle.setAttribute("fill", "white");
+	    windowTitle.setAttribute("startOffset", "0");	    
+	    Node windowTitleText = masterMap.createTextNode("Legenda");
+	    windowTitle.appendChild(windowTitleText);
+	    
+	    Element windowBody = masterMap.createElement("g");
+	    for(int i = 0; i < col_kpi_array.length; i++) {
+	    	Double lb = trash_kpi_array[i];
+	    	Double ub = trash_kpi_array[i + 1];
+	    	String color = col_kpi_array[i];
+	    	
+	    	String lbValueString = null;
+	    	String ubValueString = null;
+			if(measure.getPattern() != null) {
+				String pattern = measure.getPattern();
+				DecimalFormat df = new DecimalFormat( pattern );
+				lbValueString = lb != null? df.format(lb.doubleValue()): "?";
+				ubValueString = ub != null? df.format(ub.doubleValue()): "?";
+			} else {
+				lbValueString = lb != null? lb.toString(): "?";
+				ubValueString = ub != null? ub.toString(): "?";
+			}
+			
+			if(!lb.toString().equalsIgnoreCase("?") && measure.getUnit() != null) {
+				String unit = measure.getUnit();
+				lbValueString = lbValueString + unit;
+			}
+			
+			if(!ub.toString().equalsIgnoreCase("?") && measure.getUnit() != null) {
+				String unit = measure.getUnit();
+				ubValueString = ubValueString + unit;
+			}
+	    	
+	    	Element colorBox = masterMap.createElement("rect");
+	    	int offset = 35 + (25 * i);
+	    	colorBox.setAttribute("x", "30");
+	    	colorBox.setAttribute("y", "" + offset);
+	    	colorBox.setAttribute("width", "30");
+	    	colorBox.setAttribute("height", "20");
+	    	colorBox.setAttribute("fill", color);
+	    	colorBox.setAttribute("stroke", "dimgray");
+	    	
+	    	offset = 50 + (25 * i);
+	    	Element labelBox = masterMap.createElement("text");
+	    	labelBox.setAttribute("x", "70");
+	    	labelBox.setAttribute("y", "" + offset);
+	    	labelBox.setAttribute("font-family", "Arial,Helvetica");
+	    	labelBox.setAttribute("font-size", "14px");
+	    	labelBox.setAttribute("fill", "dimgray");
+	    	labelBox.setAttribute("startOffset", "0");	    
+		    Node labelBoxText = masterMap.createTextNode(lbValueString + " - " + ubValueString);
+		    labelBox.appendChild(labelBoxText);
+		    
+	    	windowBody.appendChild(colorBox);
+	    	windowBody.appendChild(labelBox);
+	    }
+	    
+	    Element legend = masterMap.getElementById("legend");
+	    legend.appendChild(windowBackground);
+	    legend.appendChild(windowTitleBar);
+	    legend.appendChild(windowTitle);
+	    legend.appendChild(windowBody);
+	    
+	    // add labels
+	    Node labelText;
+	    Element label;
+	    
+	    label = masterMap.getElementById("header-left");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("header-left").getLabel() );
+	    label.appendChild(labelText);
+	    
+	    label = masterMap.getElementById("header-center");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("header-center").getLabel() );
+	    label.appendChild(labelText);
+	    
+	    label = masterMap.getElementById("header-right");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("header-right").getLabel() );
+	    label.appendChild(labelText);
+	    
+	    label = masterMap.getElementById("footer-left");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("footer-left").getLabel() );
+	    label.appendChild(labelText);
+	    
+	    label = masterMap.getElementById("footer-center");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("footer-center").getLabel() );
+	    label.appendChild(labelText);
+	    
+	    label = masterMap.getElementById("footer-right");	    
+	    labelText = masterMap.createTextNode( getMapRendererConfiguration().getLabelProducer("footer-right").getLabel() );
+	    label.appendChild(labelText);
+	}	
+	
+	
+	
+	
+	private static final int R = 0;
+	private static final int G = 1;
+	private static final int B = 2;
+	private static final String BASE_COLOR = "#";
+	public String[] getGradientColourRange(String base_color, int num_group) { 
+		int[] A = new int[3];
+		int[] RGB = new int[3];
+		int[] Grad = new int[3];
+		int new_rA;
+		int new_gA;
+		int new_bA;
+		String shade;
+		
+		
+		//if(!colurCalculatorType.equalsIgnoreCase("gradient")) return new String[]{"#FF0000","#00FF00","#FF00FF","#0000FF","#F0F0F0"};
+    	
+ 
+
+		A[R] = Integer.parseInt( base_color.substring(1,3), 16 );
+		A[G] = Integer.parseInt( base_color.substring(3,5), 16 );
+		A[B] = Integer.parseInt( base_color.substring(5), 16 );
+		
+		
+		System.arraycopy(A, 0, RGB, 0, 3);
+		Arrays.sort( RGB );
+		for(int i = 0; i < A.length; i++) {
+			if(A[i] == RGB[2]) {
+				Grad[i] =  (240 - A[i]) / (num_group - 1);	
+			} else if( A[i] == RGB[1] ) {
+				Grad[i] = (230 - A[i]) / (num_group- 1);
+			} else {
+				Grad[i] = (220 - A[i]) / (num_group- 1);
+			}
+		}
+		
+		String[] colorRangeArray = new String[num_group];
+		for(int i = 0; i < num_group; i++) {
+			new_rA = A[R] + Grad[R] * i;
+			new_gA = A[G] + Grad[G] * i;
+			new_bA = A[B] + Grad[B] * i;
+			String rA = Integer.toHexString(new_rA);
+			String gA = Integer.toHexString(new_gA);
+			String bA = Integer.toHexString(new_bA);
+			shade = "#" 
+					+ (rA.length() == 1?"0":"") + rA
+					+ (gA.length() == 1?"0":"") + gA
+					+ (bA.length() == 1?"0":"") + bA;
+			colorRangeArray[i] = shade;
+		}
+		List colorRangeList = Arrays.asList( colorRangeArray );
+		Collections.reverse( colorRangeList );
+		colorRangeArray = (String[])colorRangeList.toArray(new String[0]);
+	
+		
+		
+		return colorRangeArray;
 	}
 	
 	
@@ -182,6 +696,27 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    }
 	    
 	}
+	
+	private void includeScripts(SVGDocument doc) {
+		Element scriptInit = doc.getElementById("included_scripts");	    
+	    Node scriptText = scriptInit.getFirstChild();
+	    StringBuffer buffer = new StringBuffer();
+	    includeScript(buffer, "helper_functions.js");
+	    includeScript(buffer, "timer.js");
+	    includeScript(buffer, "mapApp.js");
+	    includeScript(buffer, "timer.js");
+	    includeScript(buffer, "slider.js");
+	    includeScript(buffer, "button.js");
+	    includeScript(buffer, "Window.js");
+	    includeScript(buffer, "checkbox_and_radiobutton.js");
+	    includeScript(buffer, "navigation.js");
+	    includeScript(buffer, "tabgroup.js");
+	    includeScript(buffer, "barchart.js");
+	    includeScript(buffer, "colourPicker.js");
+	    
+	    scriptText.setNodeValue(buffer.toString());
+	}
+	
 	private void importScripts(SVGDocument doc) {
 		importScipt(doc, "helper_functions.js");
 	    importScipt(doc, "timer.js");
@@ -197,11 +732,31 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	    importScipt(doc, "colourPicker.js");
 	}
 	
+	private void includeScript(StringBuffer buffer, String scriptName) {
+		//File file = new File("D:/Documenti/Prototipi/Test/exo-portal-1.1.4-SpagoBI-2.0/webapps/SpagoBIGeoEngine/js/lib/svg-widgets/" + scriptName);
+		
+		try {
+			URL scriptUrl = new URL(mapRendererConfiguration.getContextPath() + "/js/lib/svg-widgets/" + scriptName);
+			
+			BufferedReader reader = new BufferedReader( new InputStreamReader( scriptUrl.openStream() ) );
+			String line = null;
+			while ( (line = reader.readLine()) != null) {
+				buffer.append(line + "\n");
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
 	    script.setAttribute("xlink:href", mapRendererConfiguration.getContextPath() + "/js/lib/svg-widgets/" + scriptName);
-	    Element importsBlock = map.getElementById("imports");
+	    Element importsBlock = map.getElementById("imported_scripts");
 	    importsBlock.appendChild(script);
 	    Node lf = map.createTextNode("\n");
 	    importsBlock.appendChild(lf);
@@ -433,13 +988,52 @@ public class DynamicMapRenderer extends AbstractMapRenderer {
 	}
 	
 	
-	private File getMasterMapFile() {
-		return new File(ConfigSingleton.getRootPath() + "/maps/spagobigeo.svg");
+	private File getMasterMapFile(boolean interactiveMasterMap) {
+		File file = null;
+		if(interactiveMasterMap) {
+			file =  new File(ConfigSingleton.getRootPath() + "/maps/spagobigeo.svg");
+		} else {
+			file = new File(ConfigSingleton.getRootPath() + "/maps/export_spagobigeo.svg");
+		}
+		return file;
 	}
 	
-	public File getTempFile() throws IOException{
-		String tmpDirPath = System.getProperty("java.io.tmpdir");
-		File tmpDir = new File(tmpDirPath);
-		return File.createTempFile("SpagoBIGeoEngine_", "_tmpMap.svg", tmpDir);
+	public File getTempFile() throws IOException {
+		String tempDirName = null;
+		File tempDir = null;
+		File result = null;
+		SourceBean geoEngineConf = (SourceBean)ConfigSingleton.getInstance().getAttribute("GEO-ENGINE");
+		if(geoEngineConf != null) {
+			tempDirName = (String)geoEngineConf.getAttribute("tempDir");
+		}
+		
+		if(tempDirName != null) {
+			logger.debug("temp directory path configured: " + tempDirName);
+			if(tempDirName.startsWith("./")) {
+				logger.debug("temp directory path is relative to working directory: " + System.getProperty("user.dir"));
+				tempDir = new File(System.getProperty("user.dir") + "/" + tempDirName);
+				logger.debug("temp directory absolute path: " + tempDir);
+			} else {
+				tempDir = new File(tempDirName);
+			}
+			result = new File(tempDir, "SpagoBIGeoEngine_" + System.currentTimeMillis() + "_tmpMap.svg");
+			boolean isFileCreated = result.createNewFile();
+			if(isFileCreated) {
+				logger.debug("temp file successfully created: " + result);
+			} else {
+				logger.error("impossible to create a new temp file: " + result);
+			}
+		} else {
+			logger.debug("temp directory path not configured");
+			tempDirName = System.getProperty("java.io.tmpdir");
+			logger.debug("System temp directory will be used: " + tempDirName);
+			tempDir = new File(tempDirName);
+			result = File.createTempFile("SpagoBIGeoEngine_", "_tmpMap.svg", tempDir);
+			logger.debug("temp file successfully created: " + result);
+		}
+		
+		
+		
+		return result;
 	}
 }

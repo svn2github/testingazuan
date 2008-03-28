@@ -31,7 +31,6 @@ public interface IMapProvider {
      * map recovering
      */
 	public abstract SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError;
-
 	
 	public abstract MapProviderConfiguration getMapProviderConfiguration();
 

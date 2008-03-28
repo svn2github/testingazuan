@@ -109,7 +109,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		// configre map
 		if(selectedMapName != null) {
-			getMapConfiguration().setMapName(selectedMapName);
+			getMapConfiguration().getMapProviderConfiguration().setMapName(selectedMapName);
 		}
 		
 		// configure datamartProvider
@@ -151,7 +151,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			IMapProvider mapProvider = MapProviderFactory.getMapProvider(getMapConfiguration().getMapProviderConfiguration());			
 			IDatamartProvider datamartProvider = DatamartProviderFactory.getDatamartProvider(getMapConfiguration().getDatamartProviderConfiguration());
 			
-			maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider);
+			maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider, Constants.JPEG);
+			//maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider, Constants.DSVG);
 		} catch (Exception e) {
 			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
 								"GeoAction :: service : " +
@@ -165,6 +166,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		
 		// set the content type 
+		outputFormat = Constants.JPEG;
 		String contentType = getContentType(outputFormat);
 		getHttpResponse().setContentType(contentType);
 		

@@ -44,20 +44,28 @@ public class SVGMapConverter {
 	public static void SVGToJPEGTransform(InputStream inputStream,	OutputStream outputStream) throws Exception {
 		// create a JPEG transcoder
 		JPEGTranscoder t = new JPEGTranscoder();
+		
 		// set the transcoding hints
 		t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, new Float(1));
+		t.addTranscodingHint(JPEGTranscoder.KEY_WIDTH, new Float(1000));
+		t.addTranscodingHint(JPEGTranscoder.KEY_ALLOWED_SCRIPT_TYPES, "*");
+		t.addTranscodingHint(JPEGTranscoder.KEY_CONSTRAIN_SCRIPT_ORIGIN, new Boolean(true));
+		t.addTranscodingHint(JPEGTranscoder.KEY_EXECUTE_ONLOAD, new Boolean(true));
+		
+		
+		
+		
+		
 		// create the transcoder input
 		Reader reader = new InputStreamReader(inputStream);
 		TranscoderInput input = new TranscoderInput(reader);
+		
 		// create the transcoder output
 		TranscoderOutput output = new TranscoderOutput(outputStream);
+		
 		// save the image
 		t.transcode(input, output);
 	}
 
-	/* 
-	public void sVGToPDFTransform(InputStream inputStream, OutputStream outputStream) throws Exception {
-		
-	}
-    */
+	
 }

@@ -35,7 +35,7 @@ public class MapRendererFactory {
 	 * Builds and returns class instances of the  IMapRenderer interface 
 	 * @param className The class name 
 	 * @return an instance of the class which must implement the IMapRenderer interface
-	 * 
+	
 	 * @throws Exception if the class doesn't exist or it doens't implement the interface
 	 */
 	public static IMapRenderer getMapRenderer(MapRendererConfiguration mapRendererConfiguration) throws Exception {

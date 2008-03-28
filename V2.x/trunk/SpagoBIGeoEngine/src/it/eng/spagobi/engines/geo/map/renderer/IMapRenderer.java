@@ -34,6 +34,11 @@ import java.io.File;
  *
  */
 public interface IMapRenderer {
+	
+	public File renderMap(IMapProvider mapProvider, 
+			  IDatamartProvider datamartProvider,
+			  String outputFormat) throws Exception;
+			  
 	/**
 	 * Gets the original svg map and the datawarehouse data and then transfor the svg map
 	 * based on the template configuration and data recovered. The new map is stored in a 

@@ -14,11 +14,10 @@ import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.configuration.MapProviderConfiguration;
 import it.eng.spagobi.engines.geo.datamart.Datamart;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -29,26 +28,29 @@ import org.w3c.dom.svg.SVGDocument;
 /**
  * Defines methods to get an xml stream reader of the svg map.
  */
-public class DBMapProvider extends AbstractMapProvider {
+public class FSMapProvider extends AbstractMapProvider {
 
 	/**
 	 * Constructors
 	 */
-	public DBMapProvider() {
+	public FSMapProvider() {
 		 super();
 	}
 	
-	public DBMapProvider(MapProviderConfiguration mapProviderConfiguration) {
+	public FSMapProvider(MapProviderConfiguration mapProviderConfiguration) {
 		super(mapProviderConfiguration);
 	}
 	
 	
 	private String getMapUrl(String mapName) throws EMFUserError {
+		String url = null;
+		File map = new File(mapProviderConfiguration.getDirName() + "\\" + mapName + ".svg");
 		try {
-			return getMapProviderConfiguration().getParentConfiguration().getMapCatalogueAccessUtils().getMapUrl(mapName);
-		} catch (Exception e) {
-			return null;
-		}  
+			url = map.toURI().toURL().toString();
+		} catch (MalformedURLException e) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
+		}
+		return url;
 	}
 	
 	
@@ -81,9 +83,7 @@ public class DBMapProvider extends AbstractMapProvider {
 			//File file = new File(mapUrl);
 			svgDocument = SVGMapLoader.loadMapAsDocument(mapUrl);
 		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-					            "DefaultMapProvider :: getSVGMapStreamReader : " +
-					            "cannot load map file, path " + mapUrl);
+			e.printStackTrace();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
 		}
 		

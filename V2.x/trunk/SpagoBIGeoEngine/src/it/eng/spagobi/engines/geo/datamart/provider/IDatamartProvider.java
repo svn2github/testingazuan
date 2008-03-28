@@ -18,13 +18,10 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
  */
 public interface IDatamartProvider {
     
-	/**
-     * Executes the query and obtains the data associated to the svg map
-     * for the data recovering (see template definition into GeoAction class)
-     */
     public abstract Datamart getDatamartObject() throws EMFUserError;
     
     public SourceBean getDataDetails(String filterValue) throws EMFUserError;
+    
     
     public DatamartProviderConfiguration getDatamartProviderConfiguration() ;
 

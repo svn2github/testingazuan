@@ -20,6 +20,7 @@ import it.eng.spagobi.engines.geo.datamart.Datamart;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -217,8 +218,6 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         SQLCommand cmdSelect = null;
         DataResult dr = null;
         ScrollableDataResult sdr = null;
-        DataConnection dataConnection = null;
-        //String connectionName = datamartProviderConfiguration.getConnectionName();
         String connectionName = datamartProviderConfiguration.getDataSource().getJndiName();
         String query = getAggreagteQuery();
         
@@ -229,10 +228,10 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
         String[] kpiColumnNames = datamartProviderConfiguration.getKpiColumnNames();
         SourceBean drillSB = (SourceBean)datamartProviderConfiguration.getDrillConfigurationSB();
         
-        
+        Connection connection = null;
         try {
        
-            Connection connection = datamartProviderConfiguration.getDataSource().readConnection();
+            connection = datamartProviderConfiguration.getDataSource().readConnection();
             Statement statement = connection.createStatement();
             statement.execute(query);
             ResultSet resultSet = statement.getResultSet();
@@ -248,7 +247,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             Map values = new HashMap();
             Map attributes = null;
             Map links = new HashMap();
-
+            resultSet.beforeFirst();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
@@ -281,12 +280,17 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             
             
         } catch (Exception ex) {
-        	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        					    "HierarchicalDatamartProvider :: getDatamartObject : " +
-        					    "Cannot load the data from the datawarehouse", ex);
+        	ex.printStackTrace();
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
-            Utils.releaseResources(dataConnection, cmdSelect, dr);
+        	if(connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+		        	throw new EMFUserError(EMFErrorSeverity.ERROR, "Impossible to close connection");
+				}
+        	}
         }
         return datamart;
     }
@@ -304,18 +308,19 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	filteredQuery = getFilteredQuery(filterValue);
     	int max_rows = 1000;
         
+    	Connection connection = null;
         try{
-        	Connection connection = datamartProviderConfiguration.getDataSource().readConnection();
+        	connection = datamartProviderConfiguration.getDataSource().readConnection();
             Statement statement = connection.createStatement();
             statement.execute(filteredQuery);
             ResultSet resultSet =  statement.getResultSet();
             
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
-   
+
             results = new SourceBean("ROWS");
             SourceBean row;
-            //resultSet.beforeFirst();
+            resultSet.beforeFirst();
             int rowno = 0;
             while(resultSet.next()) {
             	if(++rowno > 1000) break;
@@ -338,12 +343,17 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
             
             
         } catch (Exception ex) {
-        	TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        					    "HierarchicalDatamartProvider :: getDatamartObject : " +
-        					    "Cannot load the data from the datawarehouse", ex);
+        	ex.printStackTrace();
         	throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
         } finally {
-            
+        	if(connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+		        	throw new EMFUserError(EMFErrorSeverity.ERROR, "Impossible to close connection");
+				}
+        	}
         }
         
         return results;
@@ -388,7 +398,7 @@ public class HierarchicalDatamartProvider extends AbstractDatamartProvider {
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     		TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-				    			"HierarchicalDatamartProvider :: createLink : " +
+				    			"DefaultDatamartProvider :: createLink : " +
 				    			"Cannot create drill link", e);
     	}
     	return link;

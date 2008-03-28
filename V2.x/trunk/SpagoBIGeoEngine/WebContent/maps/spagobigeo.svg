@@ -66,10 +66,13 @@ preserveAspectRatio="xMidYMin meet">
 
 		<rect x="-3000" y="-500" width="10000" height="3000" stroke="none" fill="#e6e6e6"/>
 		
-		<g id="imports">
+		<g id="imported_scripts">
 		
 		</g>
 		
+		<script id="included_scripts" type="text/ecmascript"><![CDATA[
+				
+		]]></script>
 		
 		<script id="init" type="text/ecmascript"><![CDATA[
 				
@@ -341,7 +344,6 @@ preserveAspectRatio="xMidYMin meet">
 			
 			//load function specific to the current map project
 			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			linkRadioGroup.selectById("drill_nav");
 		}
 		
 		function initDetailInfopanels() {
@@ -1242,7 +1244,7 @@ preserveAspectRatio="xMidYMin meet">
 		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6"/>
 		-->
 		
-		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6;"/>
+		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6"/>
 		
 		<!-- sfondo della mappa -->
 		<rect x="4" y="4" width="1092" height="690" fill="white"/>
@@ -1326,7 +1328,7 @@ preserveAspectRatio="xMidYMin meet">
 	        <g id="recenterMap" display="none"><rect x="131" y="164" width="20" height="20" points="132,185 132,165 152,165" fill="rgb(235,235,235)"/>
 					<rect x="133" y="166" width="20" height="20" points="132,185 132,165 152,165" fill="dimgray"/>
 					<rect x="132" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-					<use x="142" y="175" href="#symbRecenter" pointer-events="none"/>
+					<use x="142" y="175" xlink:href="#symbRecenter" pointer-events="none"/>
 					<rect x="131" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/></g>
 	        <!-- button for backwarding map extent (extent history) -->
 	        
@@ -1360,7 +1362,7 @@ preserveAspectRatio="xMidYMin meet">
 								<!-- here you can place any graphical elements for your reference/overview map -->
 								<use xlink:href="#mainMapGroup" fill="white" stroke-width="2419.9" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
 								<rect x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8" fill="dimgray" fill-opacity="0.3" pointer-events="none"/>
-								<use x="-2471570.4" y="-1631093.7" visibility="hidden" href="#myDragCrossSymbol"/>
+								<use x="-2471570.4" y="-1631093.7" visibility="hidden" xlink:href="#myDragCrossSymbol"/>
 								
 								<g visibility="hidden" stroke="crimson" stroke-width="55689.5" pointer-events="none">
 									<line x1="-2471570" x2="2373210" y1="-116028" y2="-116028"/>

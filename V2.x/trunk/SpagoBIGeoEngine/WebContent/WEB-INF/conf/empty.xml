@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASTER>
+	<GEO-ENGINE tempDir="./tmp">
+	<DATASOURCE type="connection" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@192.168.14.90:1521:ELEGE" user="elege" password="elege"/>
+	</GEO-ENGINE>
+</MASTER>

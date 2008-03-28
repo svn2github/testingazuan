@@ -294,6 +294,7 @@ public class SpagoBIConstants {
 	//for management of DOCUMENT COMPOSITION
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";
+	public static final String DOCUMENT_COMPOSITE_TYPE = "DOCUMENT_COMPOSITE";
 	
 	public static final String PASS_TICKET = "PASS_TICKET";
 	

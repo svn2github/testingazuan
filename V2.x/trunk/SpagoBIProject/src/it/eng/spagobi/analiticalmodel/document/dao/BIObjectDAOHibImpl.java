@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.analiticalmodel.document.dao;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -38,7 +39,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjNotes;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
@@ -50,15 +50,19 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.BIObjectParameterDAO
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.dao.EngineDAOHibImpl;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -326,6 +330,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, biObject.getId());
+			
 			SbiEngines hibEngine = (SbiEngines) aSession.load(SbiEngines.class,	biObject.getEngine().getId());
 			hibBIObject.setSbiEngines(hibEngine);
 			SbiDataSource dSource = null;
@@ -373,8 +378,24 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setSbiObjFuncs(hibObjFunc);
 			// update biobject template info 
 			if(objTemp != null) {
-				insertObjTemplate(aSession, objTemp, hibBIObject);
+				try{
+					ObjTemplate oldTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biObject.getId());
+					//insert or update new template
+					insertObjTemplate(aSession, objTemp, hibBIObject);
+					//if the input document is a document composition and template is changed deletes existing parameters 
+					//and creates all new parameters automatically 
+					//(the parameters are recovered from all documents that compose general document)
+					if (biObject.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) &&
+						(oldTemp==null || objTemp.getId()==null || objTemp.getId().compareTo(oldTemp.getId()) != 0)){
+							insertParametersDocComposition(aSession, biObject, objTemp, true);
+					}
+				 } catch (Exception e) {
+			        	logger.error("Error during creation of document composition parameters : ", e);
+			      }
+				
 			}
+			
+			
 			tx.commit();		
 		}  catch (HibernateException he) {
 			logger.error(he);
@@ -470,6 +491,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		Session aSession = null;
 		Transaction tx = null;
 		try {
+			
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiObjects hibBIObject = new SbiObjects();
@@ -528,6 +550,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if(objTemp != null) {
 				insertObjTemplate(aSession, objTemp, hibBIObject);
+			}
+			
+			//if the document is a document composition creates all parameters automatically 
+			//(the parameters are recovered from all documents that compose general document)
+			if (obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)){
+				insertParametersDocComposition(aSession, hibBIObject);
 			}
 			
 			tx.commit();
@@ -886,6 +914,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			return aBIObject;
 	}
 	
+	
 
 	public List loadAllBIObjects() throws EMFUserError {
 		Session aSession = null;
@@ -1070,4 +1099,149 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		return biObject;
 	}
 
+	/**
+	 * Called only for document composition (update object modality).
+	 * Puts parameters into the document composition getting these from document's children.
+	 * @param aSession the hibernate session
+	 * @param biObject the BI object of document composition
+	 * @param template the BI last active template 
+	 * @param flgDelete the flag that suggest if is necessary to delete parameters before the insertion
+	 * @throws EMFUserError
+	 */
+	private void insertParametersDocComposition(Session aSession, BIObject biObject, ObjTemplate template, boolean flgDelete) throws EMFUserError {
+		//get informations about documents child
+		try{
+			//gets document composition configuration
+	        if(template==null)  return;
+	        byte[] contentBytes = template.getContent();
+	        String contentStr = new String(contentBytes);
+	        SourceBean content = SourceBean.fromXMLString(contentStr);
+	        DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
+	        List lstLabeldDocs = docConf.getSbiObjLabelsArray();
+	        List totalParameters = new ArrayList();
+	        
+			//if flag flgDelete is true delete all parameters associated to document composition
+			if (flgDelete){
+				List lstDocParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(biObject.getId());
+				for (int i=0; i< lstDocParameters.size(); i++){
+					BIObjectParameter docParam = (BIObjectParameter)lstDocParameters.get(i);
+					SbiObjects aSbiObject = new SbiObjects();
+					Integer objId = biObject.getId();
+        			aSbiObject.setBiobjId( biObject.getId());
+        			
+        			SbiParameters aSbiParameter = new SbiParameters();
+        			aSbiParameter.setParId(docParam.getParameter().getId());    
+        			
+					SbiObjPar hibObjPar =  new SbiObjPar();
+					hibObjPar.setObjParId(docParam.getId());
+					hibObjPar.setLabel(docParam.getLabel());
+					
+        			hibObjPar.setSbiObject(aSbiObject);
+        			hibObjPar.setSbiParameter(aSbiParameter);
+        			
+					aSession.delete(hibObjPar);
+				}
+			}
+	        
+	      
+	        //for every document child gets parameters and inserts these into new document composition object
+	        for (int i=0; i<lstLabeldDocs.size(); i++){
+	        	BIObject docChild = DAOFactory.getBIObjectDAO().loadBIObjectByLabel((String)lstLabeldDocs.get(i));
+	        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
+	        	for (int j=0; j<lstDocChildParameters.size(); j++){
+	        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
+	        		if (!totalParameters.contains(objPar.getLabel())){
+	        			SbiObjects aSbiObject = new SbiObjects();
+	        			//aSbiObject.setBiobjId(biObject.getId());
+	        			Integer objId = biObject.getId();
+						if (objId == null || objId.compareTo(new Integer("0"))==0)
+							objId = biObject.getId();
+	        			aSbiObject.setBiobjId(objId);
+	        			
+	        			SbiParameters aSbiParameter = new SbiParameters();
+	        			aSbiParameter.setParId(objPar.getParID());
+	        			SbiObjPar sbiObjPar = new SbiObjPar();
+	        			sbiObjPar.setSbiObject(aSbiObject);
+	        			sbiObjPar.setSbiParameter(aSbiParameter);
+	        			sbiObjPar.setObjParId(new Integer("-1"));
+	        			sbiObjPar.setLabel(objPar.getLabel());
+	        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
+	        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
+	        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
+	        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
+	        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
+	        			sbiObjPar.setProg(objPar.getProg());
+	        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
+	        	        aSession.save(sbiObjPar);
+	        			totalParameters.add(objPar.getLabel());
+	        		}
+	        	}
+	        	
+	        }
+		} catch (Exception e) {
+			logger.error("Error while creating parameter for document composition.", e);
+		}
+	}
+	
+	/**
+	 * Called only for document composition (insert object modality).
+	 * Puts parameters into the document composition getting these from document's children.
+	 * @param aSession the hibernate session
+	 * @param sbiObject the hibernate object
+	 * @throws EMFUserError
+	 */
+	private void insertParametersDocComposition(Session aSession, SbiObjects sbiObject) throws EMFUserError {
+		//get informations about documents child
+		try{
+			//gets document composition configuration
+			ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(sbiObject.getBiobjId());
+	        if(template==null)  return;
+	        byte[] contentBytes = template.getContent();
+	        String contentStr = new String(contentBytes);
+	        SourceBean content = SourceBean.fromXMLString(contentStr);
+	        DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
+	        List lstLabeldDocs = docConf.getSbiObjLabelsArray();
+	        List totalParameters = new ArrayList();
+	        
+	      
+	        //for every document child gets parameters and inserts these into new document composition object
+	        for (int i=0; i<lstLabeldDocs.size(); i++){
+	        	BIObject docChild = DAOFactory.getBIObjectDAO().loadBIObjectByLabel((String)lstLabeldDocs.get(i));
+	        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
+	        	for (int j=0; j<lstDocChildParameters.size(); j++){
+	        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
+	        		if (!totalParameters.contains(objPar.getLabel())){
+	        			SbiObjects aSbiObject = new SbiObjects();
+	        			//aSbiObject.setBiobjId(biObject.getId());
+	        			Integer objId = sbiObject.getBiobjId();
+						if (objId == null || objId.compareTo(new Integer("0"))==0)
+							objId = sbiObject.getBiobjId();
+	        			aSbiObject.setBiobjId(objId);
+	        			
+	        			SbiParameters aSbiParameter = new SbiParameters();
+	        			aSbiParameter.setParId(objPar.getParID());
+	        			SbiObjPar sbiObjPar = new SbiObjPar();
+	        			sbiObjPar.setSbiObject(aSbiObject);
+	        			sbiObjPar.setSbiParameter(aSbiParameter);
+	        			sbiObjPar.setObjParId(new Integer("-1"));
+	        			sbiObjPar.setLabel(objPar.getLabel());
+	        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
+	        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
+	        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
+	        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
+	        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
+	        			sbiObjPar.setProg(objPar.getProg());
+	        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
+	        	        aSession.save(sbiObjPar);
+	        			totalParameters.add(objPar.getLabel());
+	        		}
+	        	}
+	        	
+	        }
+		} catch (Exception e) {
+			logger.error("Error while creating parameter for document composition.", e);
+		}
+	}
 }
+
+

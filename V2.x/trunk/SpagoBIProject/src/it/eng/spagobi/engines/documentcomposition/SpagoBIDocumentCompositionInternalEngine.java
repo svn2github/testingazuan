@@ -89,7 +89,7 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
 				logger.error("Error while converting the Template bytes into a SourceBean object");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1003", messageBundle);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 			}
 			
 			// read the configuration and set relative object into session

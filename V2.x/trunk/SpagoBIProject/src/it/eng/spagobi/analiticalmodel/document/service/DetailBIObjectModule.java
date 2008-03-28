@@ -52,9 +52,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.AbstractBasicCheckListModule;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SessionMonitor;
-import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -812,16 +810,19 @@ public class DetailBIObjectModule extends AbstractModule {
 			ObjTemplate objTemp = helper.recoverBIObjTemplateDetails();
 			//if the template is not loaded check if default version is changed
 			if (objTemp == null){
-				Integer idCurTempVer = Integer.valueOf(((String)request.getAttribute("versionTemplate")).trim());
-				if (idCurTempVer != null) {
-					objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
-					if (objTemp.getId().compareTo(idCurTempVer) != 0){
-						List lstTemplatesObj = DAOFactory.getObjTemplateDAO().getBIObjectTemplateList(obj.getId());
-						for (int i=0; i<lstTemplatesObj.size(); i++){
-							objTemp = (ObjTemplate)lstTemplatesObj.get(i);
-							if (objTemp.getId().compareTo(idCurTempVer) == 0)
-								break;							
-						}					
+				String strCurTempVer = (String)request.getAttribute("versionTemplate");
+				if (strCurTempVer != null && !strCurTempVer.equals("")) {
+					Integer idCurTempVer = Integer.valueOf((strCurTempVer).trim());
+					if (idCurTempVer != null) {
+						objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+						if (objTemp.getId().compareTo(idCurTempVer) != 0){
+							List lstTemplatesObj = DAOFactory.getObjTemplateDAO().getBIObjectTemplateList(obj.getId());
+							for (int i=0; i<lstTemplatesObj.size(); i++){
+								objTemp = (ObjTemplate)lstTemplatesObj.get(i);
+								if (objTemp.getId().compareTo(idCurTempVer) == 0)
+									break;							
+							}					
+						}
 					}
 				}
 			}
@@ -833,7 +834,6 @@ public class DetailBIObjectModule extends AbstractModule {
 //					Integer dsId = engine.getDataSourceId();
 //					obj.setDataSourceId(dsId);
 //				}
-				
 				// inserts into DB the new BIObject
 				if(objTemp==null) {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj);
@@ -922,8 +922,9 @@ public class DetailBIObjectModule extends AbstractModule {
 					biObjPar = helper.recoverBIObjectParameterDetails(obj.getId());
 					// If a new BIParameter was visualized and no fields were inserted, the BIParameter is not validated and saved
 					boolean biParameterToBeSaved = true;
-					if (GenericValidator.isBlankOrNull(biObjPar.getLabel()) && biObjPar.getId().intValue() == -1 
-						&& GenericValidator.isBlankOrNull(biObjPar.getParameterUrlName()) && biObjPar.getParID().intValue() == -1)
+					if ((obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)) 
+						|| (GenericValidator.isBlankOrNull(biObjPar.getLabel()) && biObjPar.getId().intValue() == -1 
+						&& GenericValidator.isBlankOrNull(biObjPar.getParameterUrlName()) && biObjPar.getParID().intValue() == -1))
 						biParameterToBeSaved = false;
 					if (biParameterToBeSaved) {
 						ValidationCoordinator.validate("PAGE", "BIObjectParameterValidation", this);

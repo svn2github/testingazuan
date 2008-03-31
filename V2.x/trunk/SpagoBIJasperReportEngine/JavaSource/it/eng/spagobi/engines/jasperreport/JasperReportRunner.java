@@ -304,11 +304,13 @@ public class JasperReportRunner {
 		}catch(Exception e){
 			logger.error("An exception has occured", e);
 			throw e;
-		}finally{	
+		}finally{	  
 			// delete tmp dir for dynamic template management
-			File tmpDir = getJRTempDir(servletContext, executionId).getParentFile();			
+			File tmpDir = getJRTempDir(servletContext, executionId);
+			//File tmpDir = getJRTempDir(servletContext, executionId).getParentFile();			
 			util.deleteDirectory(tmpDir);
 			logger.debug("Delating temporary directory: " + tmpDir);
+			 
 			monitor.stop();
 		}
 	        

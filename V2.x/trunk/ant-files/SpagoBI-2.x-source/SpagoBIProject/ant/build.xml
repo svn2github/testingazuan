@@ -70,10 +70,20 @@
         <exclude name="**/*.svn"/>
       </fileset>
     </copy>
-    <filter filtersfile="env.properties"/>
+    <!-- copies artifacts without filter (jars, jsp, js, ....) -->
     <copy todir="${build}/${webapp_name}" filtering="true">
       <fileset dir="${web.dir}">
         <exclude name="**/*.svn"/>
+        <exclude name="**/*.xml"/>
+        <exclude name="**/*.properties"/>
+      </fileset>
+    </copy>
+    <!-- copies artifacts with filter (*.xml, *.properties) -->
+    <filter filtersfile="env.properties"/>
+    <copy todir="${build}/${webapp_name}" filtering="true">
+      <fileset dir="${web.dir}">
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
       </fileset>
     </copy>
   </target>

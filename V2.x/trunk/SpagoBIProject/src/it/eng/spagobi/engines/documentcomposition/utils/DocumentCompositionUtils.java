@@ -48,7 +48,6 @@ import it.eng.spagobi.engines.documentcomposition.configuration.DocumentComposit
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -151,23 +150,6 @@ public class DocumentCompositionUtils {
 			//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2002, params));
 			return "2002|";
 		}
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		logger.debug("List subobject loaded: " + subObjects);
-		// put in response the list of subobject
-		//response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-        
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
-		logger.debug("List snapshot loaded: " + snapshots);
-		// put in response the list of snapshot 
-		//response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-		
-		// get the list of viewpoints
-		List viewpoints = getViewpointList(obj, (String)profile.getUserUniqueIdentifier());
-		logger.debug("List viewpoint loaded: " + viewpoints);
-		// put in response the list of viewpoint 
-		//response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 		
 		// IF USER CAN'T EXECUTE THE OBJECT RETURN
 		if (!canExecute(profile, obj)) return "1010|"; 
@@ -209,14 +191,7 @@ public class DocumentCompositionUtils {
 			    // get the map of the parameters
 				Map mapPars = null;
 				
-				// subObj is not null if specified on preferences
-				String subObjectName = (String) sessionContainer.getAttribute("LABEL_SUB_OBJECT");
-				SubObject subObj = getRequiredSubObject(obj, subObjects, subObjectName, (String)profile.getUserUniqueIdentifier());
-				if(subObj!=null) 
-					mapPars = aEngineDriver.getParameterMap(obj, subObj, profile, executionRole);
-				else 
-					mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
-				
+				mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
 				// adding or substituting parameters for viewpoint
 				String id = (String) requestSB.getAttribute("vpId");
 				if (id != null){
@@ -226,8 +201,8 @@ public class DocumentCompositionUtils {
 					if (vpParameters != null){
 						for (int i=0; i< vpParameters.length; i++){
 							String param = (String)vpParameters[i];
-							String name = param.substring(0, param.indexOf("="));
-							String value = param.substring(param.indexOf("=")+1);
+							String name = param.substring(0, param.indexOf("%3D"));
+							String value = param.substring(param.indexOf("%3D")+3);
 							if (mapPars.get(name) != null){
 								mapPars.remove(name);
 								mapPars.put(name, value);
@@ -418,105 +393,7 @@ public class DocumentCompositionUtils {
 		}
 		return isExecutableByUser;
 	}
-	
-	/**
-	 * Get the list of subObjects of a BIObject for the current user
-	 * @param obj BIObject container of the subObjects 
-	 * @param profile profile of the user
-	 * @return the List of the BIObject's subobjects visible to the current user
-	 */
-	private static List getSubObjectsList(BIObject obj, IEngUserProfile profile) {
-		List subObjects = new ArrayList();
-		try {
-			ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
-			subObjects =  subobjdao.getAccessibleSubObjects(obj.getId(), profile);
-		} catch (Exception e) {
-			logger.error("Error retriving the subObject list", e);
-		}
-		return subObjects;
-	}
-	
-	
-	
-	/**
-	 * Get the list of BIObject snapshots 
-	 * @param obj BIObject container of the snapshot 
-	 * @return the List of the BIObject snapshots 
-	 */
-	private static List getSnapshotList(BIObject obj) {
-		List snapshots = new ArrayList();
-		try {
-			ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
-			snapshots =  snapdao.getSnapshots(obj.getId());
-		} catch (Exception e) {
-			logger.error("Error retriving the snapshot list", e);
-		}
-		return snapshots;
-	}
-		
-	/**
-	 * Get the list of viewpoints 
-	 * @param obj BIObject container of the viewpoint
-	 * @return the List of the viewpoints 
-	 */
-	private static List getViewpointList(BIObject obj, String userName) {
-		List viewpoints = new ArrayList();
-		try {
-			IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
-			viewpoints =  biVPDAO.loadAllViewpointsByObjID(obj.getId());
-			//if scope is 'public' or scope is 'private' and user is the owner, then the viewpoint is visualized
-			for (int i=0; i<viewpoints.size(); i++){
-				Viewpoint vp =(Viewpoint)viewpoints.get(i);
-				if (vp.getVpScope().equals(PortletUtilities.getMessage("SBIDev.docConf.viewPoint.scopePrivate", "messages")) &&
-				   !vp.getVpOwner().equals(userName))
-				viewpoints.remove(i);
-			}
-		} catch (Exception e) {
-			logger.error("Error retriving the viewpoint list", e);
-		}
-		return viewpoints;
-	}
-	
-	/**
-	 * Find the subobject with the name specified by the attribute "LABEL_SUB_OBJECT" on 
-	 * SessionContainer. If such a subobject exists and the user can execute it, then it is returned;
-	 * if it doesn't exist, null is returned; if it exists but the user is not able to execute it, 
-	 * an error is added into the error handler and null is returned.
-	 * 
-	 * 
-	 * @param obj The BIObject being executed
-	 * @param subObjects The list of all the document suobjects
-	 * @param profile The user profile
-	 * @return the subobject to be executed if it exists and the user can execute it
-	 */
-	private static SubObject getRequiredSubObject(BIObject obj, List subObjects,String subObjectName, String userName) {
-		SubObject subObj = null;
-		if (subObjects.size() > 0) {
-			//String subObjectName = (String) session.getAttribute("LABEL_SUB_OBJECT");
-			if (subObjectName != null ) {
-				Iterator iterSubs = subObjects.iterator();
-				while (iterSubs.hasNext() && subObj == null) {
-					SubObject sd = (SubObject) iterSubs.next();
-					if (sd.getName().equals(subObjectName.trim())) {
-						subObj = sd;
-					}
-				}
-				// TODO - Error case if not found?
-			}
-		}
-		if (subObj != null) {
-			if (!subObj.getIsPublic().booleanValue() && !subObj.getOwner().equals(userName)) {
-				List l = new ArrayList();
-				l.add(subObj.getName());
-				l.add(obj.getName());
-				//EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
-				//errorHandler.addError(userError);
-				return null;
-			}
-		}
-		return subObj;
-	}
-	
+
 	/**
 	 * Return an hashmap of all parameters for the document managed
 	 * @param urlReturn String with url and parameters

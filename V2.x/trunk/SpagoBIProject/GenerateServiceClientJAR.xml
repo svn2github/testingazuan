@@ -120,6 +120,16 @@
 	    		<include name="**/*.jar"/>
 	    	</fileset>
 	    </copy>		
+	    <copy todir="../SpagoBIGeoEngine/WebContent/WEB-INF/lib" overwrite="true">
+	    	<fileset dir="./dist">
+	    		<include name="**/*.jar"/>
+	    	</fileset>
+	    </copy>		
+	    <copy todir="../SpagoBIJPaloEngine/WebContent/WEB-INF/lib" overwrite="true">
+	    	<fileset dir="./dist">
+	    		<include name="**/*.jar"/>
+	    	</fileset>
+	    </copy>			
 	</target>
 </project>
 

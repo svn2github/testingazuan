@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.commons.metadata.SbiUserFunctionality" table="sbi_user_functionality">
+    <class name="it.eng.spagobi.commons.metadata.SbiUserFunctionality" table="SBI_USER_FUNCTIONALITY">
         
         <id name="id" type="integer" column="USER_FUNCT_ID">
         </id>

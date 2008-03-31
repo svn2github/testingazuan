@@ -3,15 +3,15 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.commons.metadata.SbiBinContents" table="sbi_binary_contents">
+    <class name="it.eng.spagobi.commons.metadata.SbiBinContents" table="SBI_BINARY_CONTENTS">
         <id name="id" type="integer">
-            <column name="bin_id" />
+            <column name="BIN_ID" />
              <generator class="identity">
             	
             </generator>
         </id>
         <property name="content" type="binary">
-            <column name="bin_content" />
+            <column name="BIN_CONTENT" />
         </property>
     </class>
 </hibernate-mapping>

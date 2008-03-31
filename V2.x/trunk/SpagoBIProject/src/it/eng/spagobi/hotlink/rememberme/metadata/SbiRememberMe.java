@@ -33,6 +33,8 @@ public class SbiRememberMe implements java.io.Serializable  {
 
 	//	Fields
 	private Integer id;
+	private String name;
+	private String description;
 	private String userName;
 	private SbiObjects sbiObject;
 	private SbiSubObjects sbiSubObject;
@@ -87,6 +89,22 @@ public class SbiRememberMe implements java.io.Serializable  {
 
 	public void setSbiSubObject(SbiSubObjects sbiSubObject) {
 		this.sbiSubObject = sbiSubObject;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
     
 }

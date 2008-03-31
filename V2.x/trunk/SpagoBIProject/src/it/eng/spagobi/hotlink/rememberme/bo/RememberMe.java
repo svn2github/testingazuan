@@ -30,6 +30,8 @@ package it.eng.spagobi.hotlink.rememberme.bo;
 public class RememberMe extends HotLink {
 
 	protected Integer id;
+	protected String name;
+	protected String description;
 	protected String userName;
 	
 	public Integer getId() {
@@ -43,6 +45,18 @@ public class RememberMe extends HotLink {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }

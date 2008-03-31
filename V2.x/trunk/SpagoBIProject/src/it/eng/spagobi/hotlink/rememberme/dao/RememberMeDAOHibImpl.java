@@ -42,7 +42,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Distinct;
 import org.hibernate.criterion.Expression;
 
 /**
@@ -116,6 +115,8 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 	private Object toRememberMe(SbiRememberMe hibObj) {
 		RememberMe toReturn = new RememberMe();
 		toReturn.setId(hibObj.getId());
+		toReturn.setName(hibObj.getName());
+		toReturn.setDescription(hibObj.getDescription());
 		toReturn.setUserName(hibObj.getUserName());
 		SbiObjects obj = hibObj.getSbiObject();
 		toReturn.setObjId(obj.getBiobjId());
@@ -135,7 +136,7 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		return toReturn;
 	}
 
-	public boolean saveRememberMe(Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError {
+	public boolean saveRememberMe(String name, String description, Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -160,6 +161,8 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 			List list = criteria.list();
 			if (list.isEmpty()) {
 				SbiRememberMe temp = new SbiRememberMe();
+				temp.setName(name);
+				temp.setDescription(description);
 				temp.setUserName(userId);
 				temp.setSbiObject(obj);
 				temp.setSbiSubObject(subObj);

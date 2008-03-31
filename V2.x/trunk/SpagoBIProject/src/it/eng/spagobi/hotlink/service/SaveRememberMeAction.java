@@ -50,6 +50,8 @@ public class SaveRememberMeAction extends AbstractHttpAction {
 		freezeHttpResponse();
 		HttpServletResponse httResponse = getHttpResponse();
 		try {
+			String name = (String) serviceRequest.getAttribute("name");
+			String description = (String) serviceRequest.getAttribute("description");
 			String docIdStr = (String) serviceRequest.getAttribute(SpagoBIConstants.OBJECT_ID);
 			Integer docId = new Integer(docIdStr);
 			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
@@ -61,7 +63,7 @@ public class SaveRememberMeAction extends AbstractHttpAction {
 				subobjectId = new Integer(subobjectIdStr);
 			}
 			String parameters = (String) serviceRequest.getAttribute("parameters");
-			boolean inserted = DAOFactory.getRememberMeDAO().saveRememberMe(docId, subobjectId, userId, parameters);
+			boolean inserted = DAOFactory.getRememberMeDAO().saveRememberMe(name, description, docId, subobjectId, userId, parameters);
 			if (inserted) {
 				message = "sbi.rememberme.saveOk";
 			} else {

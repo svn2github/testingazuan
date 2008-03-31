@@ -10,6 +10,12 @@
             	<param name="sequence">SBI_REMEMBER_ME_SEQ</param>  
             </generator>
         </id>
+        <property name="name" type="string">
+            <column name="NAME" length="50" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" not-null="false" />
+        </property>
         <property name="userName" type="string">
             <column name="USERNAME" length="40" not-null="true" />
         </property>

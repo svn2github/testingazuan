@@ -56,13 +56,13 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 
 <div style="width:80%;" class="div_detail_area_forms">
 	<p style="margin: 10px">
-		<div id="renderTo_RememberMe" ></div>
+		<div id="renderTo_RememberMe"></div>
 	</p>	
 	<p style="margin: 10px">
-		<div id="renderTo_MostPopular" ></div>
+		<div id="renderTo_MostPopular"></div>
 	</p>
 	<p style="margin: 10px">
-		<div id="renderTo_MyRecentlyUsed" ></div>
+		<div id="renderTo_MyRecentlyUsed"></div>
 	</p>
 	
 <script type="text/javascript">
@@ -91,14 +91,18 @@ Ext.onReady(function(){
 			params.put("OPERATION", "DELETE_REMEMBER_ME");
 			params.put("REMEMBER_ME_ID", rm.getId().toString());
 			String deleteUrl = urlBuilder.getUrl(request, params);
-			%>['<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>','<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>'],<%
+			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>','<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>'],<%
 		}
 		%>
     ];
     
+    Ext.QuickTips.init();
+    
     // create the data store
     var storeRememberMe = new Ext.data.SimpleStore({
         fields: [
+           {name: 'Name'},
+           {name: 'Description'},
            {name: 'DocumentLabel'},
            {name: 'DocumentName'},
            {name: 'DocumentDescription'},
@@ -108,15 +112,45 @@ Ext.onReady(function(){
     });
     storeRememberMe.loadData(myDataRememberMe);
     
+	Ext.ToolTip.prototype.onTargetOver =
+		Ext.ToolTip.prototype.onTargetOver.createInterceptor(function(e) {
+			this.baseTarget = e.getTarget();
+		});
+	Ext.ToolTip.prototype.onMouseMove =
+		Ext.ToolTip.prototype.onMouseMove.createInterceptor(function(e) {
+			if (!e.within(this.baseTarget)) {
+				this.onTargetOver(e);
+				return false;
+			}
+		});
+    
     // create the Grid
     var gridRememberMe = new Ext.grid.GridPanel({
         store: storeRememberMe,
         columns: [
-            {id: "Document", header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
+            {id: "Name", header: "Name", sortable: true, dataIndex: 'Name'},
+            {header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
             {header: "Document name", sortable: true, dataIndex: 'DocumentName'},
             {header: "Document description", sortable: true, dataIndex: 'DocumentDescription'},
             {header: "Document type", sortable: true, dataIndex: 'DocumentType'},
         ],
+		onRender: function() {
+        	Ext.grid.GridPanel.prototype.onRender.apply(this, arguments);
+        	this.addEvents("beforetooltipshow");
+	        this.tooltip = new Ext.ToolTip({
+	        	renderTo: Ext.getBody(),
+	        	target: this.view.mainBody,
+	        	listeners: {
+	        		beforeshow: function(qt) {
+	        			var v = this.getView();
+			            var row = v.findRowIndex(qt.baseTarget);
+			            var cell = v.findCellIndex(qt.baseTarget);
+			            this.fireEvent("beforetooltipshow", this, row, cell);
+	        		},
+	        		scope: this
+	        	}
+	        });
+        },
 		viewConfig: {
         	forceFit: true
 		},
@@ -125,16 +159,27 @@ Ext.onReady(function(){
         //autoExpandColumn: 'Document',
         height:200,
         width:600,
-        title:'Remember Me'
+        title:'Remember Me',
+		listeners: {
+			render: function(g) {
+				g.on("beforetooltipshow", function(grid, row, col) {
+					if (storeRememberMe.getAt(row)) {
+						grid.tooltip.body.update(storeRememberMe.getAt(row).get('Description'));
+					}
+				});
+			}
+		}
     });
+    
 	gridRememberMe.on(
 		'rowclick', function(grid, rowIndex, e) {
 			location.href = storeRememberMe.getAt(rowIndex).get('Url');
 		}
 	);
+	
     gridRememberMe.render('renderTo_RememberMe');
 
-    gridRememberMe.getSelectionModel().selectFirstRow();
+    //gridRememberMe.getSelectionModel().selectFirstRow();
 });
 </script>
 
@@ -202,7 +247,7 @@ Ext.onReady(function(){
 	);
     gridMostPopular.render('renderTo_MostPopular');
 
-    gridMostPopular.getSelectionModel().selectFirstRow();
+    //gridMostPopular.getSelectionModel().selectFirstRow();
 });
 </script>
 
@@ -270,7 +315,7 @@ Ext.onReady(function(){
 	);
     gridMyRecentlyUsed.render('renderTo_MyRecentlyUsed');
 
-    gridMyRecentlyUsed.getSelectionModel().selectFirstRow();
+    //gridMyRecentlyUsed.getSelectionModel().selectFirstRow();
 });
 </script>
 <%--

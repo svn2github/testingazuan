@@ -148,7 +148,7 @@ uuid = uuid.replaceAll("-", "");
 				</a>
 			</li>
 			<li>
-				<a href='javascript:saveRememberMe<%= uuid %>()'>
+				<a id='saveRememberMe_button<%= uuid %>' href='javascript:void(0);'>
 					<img title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
 						src='<%= urlBuilder.getResourceLink(request, "/img/saveRememberMe22.png")%>'
 						alt='<spagobi:message key = "sbi.execution.saveRememberMe" />' />
@@ -250,10 +250,67 @@ Ext.get('sendTo_button<%= uuid %>').on('click', function(){
 
 <%-- Scripts for Remember Me saving --%>
 <script>
+var saveRememberMeForm<%= uuid %>;
+var rememberMeName<%= uuid %>;
+var rememberMeDescr<%= uuid %>;
+Ext.onReady(function(){
+    Ext.QuickTips.init();
+    rememberMeName<%= uuid %> = new Ext.form.TextField({
+			id:'nameRM<%= uuid %>',
+			name:'nameRM',
+			allowBlank:false, 
+			inputType:'text',
+			maxLength:50,
+			fieldLabel:'<spagobi:message key="sbi.rememberme.name" />' 
+    });
+    rememberMeDescr<%= uuid %> = new Ext.form.TextArea({
+			id:'descRM<%= uuid %>',
+			name:'descRM',  
+			fieldLabel:'<spagobi:message key="sbi.rememberme.descr" />' 
+    });
+    Ext.form.Field.prototype.msgTarget = 'side';
+    saveRememberMeForm<%= uuid %> = new Ext.form.FormPanel({
+        labelWidth: 75,
+        frame:true,
+        bodyStyle:'padding:5px 5px 0',
+        width: 350,
+        height: 50,
+        labelWidth: 150,
+        defaults: {width: 230},
+        defaultType: 'textfield',
+        items: [rememberMeName<%= uuid %>,rememberMeDescr<%= uuid %>],
+        buttons:[{text:'<spagobi:message key="sbi.rememberme.save" />',handler:function() {saveRememberMe<%= uuid %>()}}]
+    });
+});
+var win_saveRM<%= uuid %>;
+Ext.get('saveRememberMe_button<%= uuid %>').on('click', function(){
+	if(!win_saveRM<%= uuid %>) {
+		win_saveRM<%= uuid %> = new Ext.Window({
+			id:'popup_saveRM<%= uuid %>',
+			layout:'fit',
+			width:500,
+			height:200,
+			closeAction:'hide',
+			plain: true,
+			title: '<spagobi:message key="sbi.execution.saveRememberMe" />',
+			items: saveRememberMeForm<%= uuid %>
+		});
+	};
+	win_saveRM<%= uuid %>.show();
+	}
+);
+
 function saveRememberMe<%= uuid %>() {
+	win_saveRM<%= uuid %>.hide();
+	var nameRM = rememberMeName<%= uuid %>.getValue();
+	if (nameRM == null || nameRM == '') {
+		alert('Missing name');
+		return;
+	}
+	var descRM = rememberMeDescr<%= uuid %>.getValue();
 	Ext.MessageBox.wait('Please wait...', 'Processing');
 	url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";
-	pars = "NEW_SESSION=TRUE&ACTION_NAME=SAVE_REMEMBER_ME";
+	pars = "NEW_SESSION=TRUE&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
 	pars += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
 	<%
 	String documentParametersStr = "";

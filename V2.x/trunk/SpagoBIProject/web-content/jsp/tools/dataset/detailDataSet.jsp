@@ -27,6 +27,7 @@
 		Map backUrlPars = new HashMap();
 		//backUrlPars.put("PAGE", "detailMapPage");
 		backUrlPars.put("PAGE", "ListDataSetPage");
+	    backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
 		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		String backUrl = urlBuilder.getUrl(request, backUrlPars);		
 	%>
@@ -49,6 +50,8 @@
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%=ds.getDsId()%>' name='id' />
+	<input type='hidden' name='parametersXMLModified' value='' id='parametersXMLModified' />
+	
 	
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
@@ -58,7 +61,7 @@
 			</td>
 			<td class='header-button-column-portlet-section' id='testButton'>
 			<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
-						onclick='setDatasetModifiedField();'
+						onclick='setParametersXMLModifiedField();'
 						name="testDataSetBeforeSave" value="testDataSetBeforeSave"  
 						src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
 						title='<spagobi:message key = "SBIDev.DetailDataSet.TestBeforeSaveLbl" />'  
@@ -362,11 +365,12 @@
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
 			<!-- START DIV FIX LIST WIZARD --> 
+	<%if(type.equals("query")){ %>
         <div id="datasetWizard" style='width:100%;display:<%=datasetDisplay%>'>
 			<spagobi:datasetWizard parametersXML='<%= dataSetParametersList.toXML() %>' />
 		</div>	
 		<!-- DIV FIX LIST WIZARD CLOSED -->
-	
+	<% }%>
 		
 		
 		<spagobi:error/>
@@ -474,17 +478,17 @@
 		}
 	}
 	
-			function setDatasetModified(newValue) {
+			function setParametersXMLModified(newValue) {
 	   			 <%if(modality.equals(SpagoBIConstants.DETAIL_MOD)) { %>
 					datasetModified = newValue;
 				<%}%>
 				}
 		
-			function setDatasetModifiedField(){
+			function setParametersXMLModifiedField(){
 					if (modified) {
-						document.getElementById("datasetModified").value = 'true';
+						document.getElementById("parametersXMLModified").value = 'true';
 					} else {
-						document.getElementById("datasetModified").value = 'false';
+						document.getElementById("parametersXMLModified").value = 'false';
 						}
 				}
 		

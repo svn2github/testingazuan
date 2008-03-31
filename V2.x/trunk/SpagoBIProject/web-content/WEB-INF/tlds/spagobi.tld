@@ -281,6 +281,18 @@
         </attribute>
     </tag>
     
+        <tag>
+        <name>datasetWizard</name>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.DatasetWizardTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of the dataset parameters form</description>
+        <attribute>
+            <name>parametersXML</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
     
     <tag>
         <name>LovColumnsSelector</name>

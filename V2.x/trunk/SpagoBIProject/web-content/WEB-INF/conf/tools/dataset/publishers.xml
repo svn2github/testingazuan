@@ -66,4 +66,18 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	  <PUBLISHER name="detailDatasetFillParameters">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/tools/dataset/detailDatasetFillParameters.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/dataset/detailDatasetFillParameters.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
 </PUBLISHERS>

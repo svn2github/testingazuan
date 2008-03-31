@@ -29,9 +29,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.hotlink.rememberme.bo.HotLink"%>
 <%@page import="it.eng.spagobi.hotlink.service.HotLinkModule"%>
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
-
 
 <portlet:defineObjects/>
 
@@ -89,9 +89,12 @@ Ext.onReady(function(){
 			params = new HashMap();
 			params.put("PAGE", "HOT_LINK_PAGE");
 			params.put("OPERATION", "DELETE_REMEMBER_ME");
+			params.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 			params.put("REMEMBER_ME_ID", rm.getId().toString());
 			String deleteUrl = urlBuilder.getUrl(request, params);
-			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>','<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>'],<%
+			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
+			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>',
+				'<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>'],<%
 		}
 		%>
     ];
@@ -107,10 +110,23 @@ Ext.onReady(function(){
            {name: 'DocumentName'},
            {name: 'DocumentDescription'},
            {name: 'DocumentType'},
-           {name: 'Url'}
+           {name: 'Url'},
+           {name: 'DeleteUrl'}
         ]
     });
     storeRememberMe.loadData(myDataRememberMe);
+    
+   	var menu = 
+		new Ext.menu.Menu({
+			id:'submenu',
+			items: [{
+				text:'<spagobi:message key = "sbi.hotlink.deleteRememberMe" />',
+				scope: this,
+				handler:function(){
+					location.href = storeRememberMe.getAt(menu.rowIndex).get('DeleteUrl');
+				}
+			}]
+		});
     
 	Ext.ToolTip.prototype.onTargetOver =
 		Ext.ToolTip.prototype.onTargetOver.createInterceptor(function(e) {
@@ -174,6 +190,15 @@ Ext.onReady(function(){
 	gridRememberMe.on(
 		'rowclick', function(grid, rowIndex, e) {
 			location.href = storeRememberMe.getAt(rowIndex).get('Url');
+		}
+	);
+	
+	gridRememberMe.on(
+		'rowcontextmenu', function(grid, rowIndex, e) {
+			var record = grid.getStore().getAt(rowIndex);
+			e.stopEvent();
+			menu.rowIndex = rowIndex;
+			menu.showAt(e.getXY());
 		}
 	);
 	

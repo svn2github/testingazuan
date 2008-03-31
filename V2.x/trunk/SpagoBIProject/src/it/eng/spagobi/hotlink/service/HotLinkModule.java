@@ -149,7 +149,7 @@ public class HotLinkModule extends AbstractModule {
 			String rememberMeIdStr = (String) request.getAttribute("REMEMBER_ME_ID");
 			Integer rememberMeId = new Integer(rememberMeIdStr);
 			DAOFactory.getRememberMeDAO().delete(rememberMeId);
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "HOT_LINK_HOME");
+			getHotLinkListHandler(request, response);
 		} finally {
 			logger.debug("OUT");
 		}

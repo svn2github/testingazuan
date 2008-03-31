@@ -341,6 +341,163 @@ public class GeneralUtilities {
 	return getSpagoBiContextAddress() + "/DashboardService";
     }
 
+    
+    /**
+     * Substitutes parameters with sintax "${attribute_name}" whose value is set in the map
+
+     * @param statement
+     *                The string to be modified (tipically a query)
+     * @param valuesMap
+     *                Map name-value
+     * @return The statement with profile attributes replaced by their values.
+     * @throws Exception
+     */
+    public static String substituteParametersInString(String statement, Map valuesMap)
+	    throws Exception {
+	logger.debug("IN");
+	int profileAttributeStartIndex = statement.indexOf("${");
+	if (profileAttributeStartIndex != -1) {
+	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+	}
+	logger.debug("OUT");
+	return statement;
+    }
+    
+    /**
+     * Substitutes the parameters with sintax "${attribute_name}" with
+     * the correspondent value in the string passed at input.
+     * 
+     * @param statement
+     *                The string to be modified (tipically a query)
+     * @param profile
+     *                The IEngUserProfile object
+     * @param profileAttributeStartIndex
+     *                The start index for query parsing (useful for recursive
+     *                calling)
+     * @return The statement with profile attributes replaced by their values.
+     * @throws Exception
+     */
+    private static String substituteParametersInString(String statement, Map valuesMap,
+	    int profileAttributeStartIndex) throws Exception {
+	logger.debug("IN");
+	int profileAttributeEndIndex = statement.indexOf("}");
+	if (profileAttributeEndIndex == -1)
+	    throw new Exception("Not closed profile attribute: '}' expected.");
+	if (profileAttributeEndIndex < profileAttributeEndIndex)
+	    throw new Exception("Not opened profile attribute: '${' expected.");
+	String attribute = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex).trim();
+	int startConfigIndex = attribute.indexOf("(");
+	String attributeName = "";
+	String prefix = "";
+	String split = "";
+	String suffix = "";
+	boolean attributeExcpetedToBeMultiValue = false;
+	if (startConfigIndex != -1) {
+	    // the attribute profile is expected to be multivalue
+	    attributeExcpetedToBeMultiValue = true;
+	    int endConfigIndex = attribute.length() - 1;
+	    if (attribute.charAt(endConfigIndex) != ')')
+		throw new Exception(
+			"Sintax error: \")\" missing. The expected sintax for "
+				+ "attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
+				+ "or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters.");
+	    String configuration = attribute.substring(startConfigIndex + 1, endConfigIndex);
+	    String[] configSplitted = configuration.split(";");
+	    if (configSplitted == null || configSplitted.length != 3)
+		throw new Exception(
+			"Sintax error. The expected sintax for "
+				+ "attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
+				+ "or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters. "
+				+ "The (prefix;split;suffix) is not properly configured");
+	    prefix = configSplitted[0];
+	    split = configSplitted[1];
+	    suffix = configSplitted[2];
+	    logger.debug("Multi-value attribute profile configuration found: prefix: '" + prefix + "'; split: '"
+		    + split + "'; suffix: '" + suffix + "'.");
+	    attributeName = attribute.substring(0, startConfigIndex);
+	    logger.debug("Expected multi-value attribute profile name: '" + attributeName + "'");
+	} else {
+	    attributeName = attribute;
+	    logger.debug("Expected single-value attribute profile name: '" + attributeName + "'");
+	}
+
+	String value=(String)valuesMap.get(attributeName);
+	if(value==null){
+	    throw new Exception("Parameter '" + attributeName + "' not set.");
+
+	}
+	else{
+	
+	logger.debug("Profile attribute value found: '" + value+ "'");
+	String replacement = null;
+	String newListOfValues = null;
+	if (attributeExcpetedToBeMultiValue) {
+	    if (value.startsWith("{")) {
+		// the profile attribute is multi-value
+		String[] values = findAttributeValues(value);
+		logger.debug("N. " + values.length + " profile attribute values found: '" + values + "'");
+		newListOfValues = values[0];
+		for (int i = 1; i < values.length; i++) {
+		    newListOfValues = newListOfValues + split + values[i];
+		}
+	    } else {
+		logger
+			.warn("The attribute value has not the sintax of a multi value attribute; considering it as a single value.");
+		newListOfValues = value;
+	    }
+	} else {
+	    if (value.startsWith("{")) {
+		// the profile attribute is multi-value
+		logger
+			.warn("The attribute value seems to be a multi value attribute; trying considering it as a multi value using its own splitter and no prefix and suffix.");
+		try {
+		    // checks the sintax
+		    String[] values = findAttributeValues(value);
+		    newListOfValues = values[0];
+		    for (int i = 1; i < values.length; i++) {
+			newListOfValues = newListOfValues + value.charAt(1) + values[i];
+		    }
+		} catch (Exception e) {
+		    logger
+			    .error(
+				    "The attribute value does not respect the sintax of a multi value attribute; considering it as a single value.",
+				    e);
+		    newListOfValues = value;
+		}
+	    } else {
+		newListOfValues = value;
+	    }
+	}
+
+	replacement = prefix + newListOfValues + suffix;
+	attribute = quote(attribute);
+	statement = statement.replaceAll("\\$\\{" + attribute + "\\}", replacement);
+
+	profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
+	if (profileAttributeStartIndex != -1)
+	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+	logger.debug("OUT");
+	}
+	return statement;
+	
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Substitutes the profile attributes with sintax "${attribute_name}" with
      * the correspondent value in the string passed at input.
@@ -363,6 +520,8 @@ public class GeneralUtilities {
 	return statement;
     }
 
+    
+    
     /**
      * Substitutes the profile attributes with sintax "${attribute_name}" with
      * the correspondent value in the string passed at input.

@@ -1,19 +1,5 @@
 package it.eng.spagobi.tools.dataset.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.xml.sax.InputSource;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
@@ -32,23 +18,26 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.IJavaClassLov;
-import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
-import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.xml.sax.InputSource;
 
 public class ListTestDataSetModule extends AbstractBasicListModule  {
 
@@ -98,7 +87,15 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			String query = queryDataSet.getQuery();
 			// execute query
 			try {
-				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
+				//query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
+			
+				//check if there are parameters filled
+				Object par=(Object)session.getAttribute("parametersfilled");
+				
+				HashMap parametersFilled=(HashMap)par;
+				if(parametersFilled!=null && !parametersFilled.isEmpty()){
+					query = GeneralUtilities.substituteParametersInString(query, parametersFilled);	
+				}
 				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
 				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, query, colNames);
 			} catch (Exception e) {
@@ -184,6 +181,10 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		moduleConfigStr += "	<BUTTONS/>";
 		moduleConfigStr += "</CONFIG>";
 		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
+		
+		response.setAttribute("testExecuted", "true");
+
+		
 		response.setAttribute(moduleConfig);
 
 
@@ -200,7 +201,6 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		response.setAttribute("dataset",dataSet);
 		response.setAttribute("typedataset",typeDataset);
 
-		response.setAttribute("testExecuted", "true");
 
 		return list;
 	}

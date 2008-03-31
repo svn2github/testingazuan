@@ -18,8 +18,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.presentation;
+
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -48,7 +50,7 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 	private SourceBean detailMR 	= null;
 	public static final String DETAIL_DATA_SET_MODULE = "DetailDataSetModule";
 	public static final String LIST_TEST_DATA_SET_MODULE = "ListTestDataSetModule";
-	
+
 	/**
 	 *Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
@@ -58,28 +60,28 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 	 * @return A string representing the name of the correct publisher, which will
 	 * 		   call the correct jsp reference.
 	 */
-	
-	
+
+
 	public SourceBean getModuleResponse(ResponseContainer responseContainer, String moduleName) {
 		return (SourceBean) responseContainer.getServiceResponse().getAttribute(moduleName);
 	}
-	
+
 	public void getModuleResponses(ResponseContainer responseContainer) {
 		detailMR = getModuleResponse(responseContainer, DETAIL_DATA_SET_MODULE);
 		listTestLovMR = getModuleResponse(responseContainer, LIST_TEST_DATA_SET_MODULE);
 	}
 
-	
-	
+
+
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 		logger.debug("IN");
 
 		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
-		
+
 		// get the module response
-		
+
 		getModuleResponses(responseContainer);	
-		
+
 		// if the module response is null throws an error and return the name of the errors publisher
 
 		if (noModuledResponse()) {
@@ -88,9 +90,9 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 			errorHandler.addError(error);			
 			return "error";
 		}
-		
 
-		
+
+
 		// if there are errors and they are only validation errors return the name for the detail publisher
 		if(!errorHandler.isOK()) {
 			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
@@ -98,37 +100,46 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 				return "detailDataSet";
 			}
 		}
-		
+
 		// if there are some errors into the errorHandler (not validation errors), return the name for the errors publisher
 		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			return new String("error");
 		}
 
-		
-	      boolean afterTest = false;
-	        Object testExecuted = getAttributeFromModuleResponse(listTestLovMR, "testExecuted");
-	        if(testExecuted != null) {
-		    		afterTest = true;
-	        }
-		
-		
-		
-	        
-	        // switch to correct publisher
-			if (isLoop()) {
-				return new String("detailDataSetLoop");
-			} else if (afterTest) {
-				return new String("detailDataSetTestResult");
-//			} 
-//			else if(fillProfAttr) {
-//				return new String("detailLovFillProfileAttributes");
-			} else {
-				return new String("detailDataSet");
-			}
 
-	        
-		
-/*        Object loop = moduleResponse.getAttribute("loopback");
+		boolean parametersToFill=false;
+		List parameters=null;
+		if(detailMR!=null){
+			parameters=(List)detailMR.getAttribute("parameters");
+			if(parameters!=null && parameters.size()>0){
+				parametersToFill=true;
+			}
+		}
+
+		boolean afterTest = false;
+		Object testExecuted = getAttributeFromModuleResponse(listTestLovMR, "testExecuted");
+		if(testExecuted != null) {
+			afterTest = true;
+		}
+
+
+
+
+		// switch to correct publisher
+		if (isLoop()) {
+			return new String("detailDataSetLoop");
+		} else if (afterTest) {
+			return new String("detailDataSetTestResult");
+		} 
+		else if(parametersToFill) {
+			return new String("detailDatasetFillParameters");
+		} else {
+			return new String("detailDataSet");
+		}
+
+
+
+		/*        Object loop = moduleResponse.getAttribute("loopback");
         if (loop != null) {
         	logger.info("Publish: detailDataSetLoop"  );
         	logger.debug("OUT");
@@ -138,7 +149,7 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 			logger.debug("OUT");
 			return "detailDataSet";
 		}*/
-	
+
 	}
 
 	private boolean noModuledResponse() {
@@ -148,14 +159,14 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 	private Object getAttributeFromModuleResponse(SourceBean moduleResponse, String attributeName) {
 		return ( (moduleResponse == null)? null: moduleResponse.getAttribute(attributeName));
 	}
-	
+
 	private boolean isLoop() {
 		return isAttrbuteDefinedInModuleResponse(detailMR, "loopback");
 	}
-	
+
 
 	private boolean isAttrbuteDefinedInModuleResponse(SourceBean moduleResponse, String attributeName) {
 		return (getAttributeFromModuleResponse(moduleResponse, attributeName) != null);
 	}
-	
+
 }

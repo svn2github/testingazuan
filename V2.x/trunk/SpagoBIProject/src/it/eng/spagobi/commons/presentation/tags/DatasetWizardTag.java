@@ -88,8 +88,8 @@ public class DatasetWizardTag  extends TagSupport {
 				
 				output.append("<br/>\n");
 				
-				String newItemTypeField = msgBuilder.getMessage("SBIDev.DataSetWiz.newItemNameField", "messages", httpRequest);
-				String newItemNameField = msgBuilder.getMessage("SBIDev.DataSetWiz.wizardTitle", "messages", httpRequest);
+				String newItemTypeField = msgBuilder.getMessage("SBIDev.DataSetWiz.newItemTypeField", "messages", httpRequest);
+				String newItemNameField = msgBuilder.getMessage("SBIDev.DataSetWiz.newItemNameField", "messages", httpRequest);
 				output.append("<input type='hidden' id='insertDatasetParameterItem' name='' value=''/>\n");
 				output.append("<div class='div_detail_area_forms_lov'>\n");	
 				output.append("		<div class='div_detail_label_lov'>\n");
@@ -113,12 +113,12 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("		</div>\n");
 				if(!isreadonly){
 				output.append("		<div class='div_detail_form'>\n");
-				output.append("			<input onclick='setDatasetModified(true);' type='image' name='insertDatasetParameterItem' value='insertDatasetParameterItem'\n");
+				output.append("			<input onclick='setParametersXMLModified(true);' type='image' name='insertDatasetParameterItem' value='insertDatasetParameterItem'\n");
 				output.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/attach.gif") + "'\n");
 				String addButtMsg = msgBuilder.getMessage("SBIDev.DataSetWiz.addButt", "messages", httpRequest);
 				output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 				output.append("			/>\n");
-				output.append("			<a href='javascript:setDatasetModified(true);newDatasetParameterFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
+				output.append("			<a href='javascript:setParametersXMLModified(true);newDatasetParameterFormSubmit();' class='portlet-form-field-label' style='text-decoration:none;'>\n");
 				output.append("				" + addButtMsg + "\n");
 				output.append("			</a>\n");
 				output.append("		</div>\n");
@@ -137,7 +137,7 @@ public class DatasetWizardTag  extends TagSupport {
 			  	output.append(			tableCol1 + "\n");
 			  	output.append("		</td>\n");
 			  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
-			  	String tableCol2 = msgBuilder.getMessage("SBIDev.DataSet.tableCol1", "messages", httpRequest);
+			  	String tableCol2 = msgBuilder.getMessage("SBIDev.DataSetWiz.newItemTypeField", "messages", httpRequest);
 			  	output.append(			tableCol2 + "\n");
 			  	output.append("		</td>\n");
 			  	output.append("		<td colspan='1' width='20' class='portlet-section-header'>&nbsp;\n");
@@ -192,7 +192,7 @@ public class DatasetWizardTag  extends TagSupport {
 						output.append("				</a>");
 						output.append("			</div>");
 						output.append("			<div style='display:none;' id='divBtnSaveRow"+i+"'>");
-						output.append("				<input type='image' onclick='setDatasetModified(true);saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("				<input type='image' onclick='setParametersXMLModified(true);saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("					src= '" + urlBuilder.getResourceLink(httpRequest, "/img/save16.gif") + "' \n");
 						output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
 						output.append("			</div>");
@@ -201,7 +201,7 @@ public class DatasetWizardTag  extends TagSupport {
 						
 						output.append("		<td class='" + rowClass + "'>\n");
 						String tableCol4 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol4", "messages", httpRequest);
-						output.append("			<input type='image' onclick='setDatasetModified(true);setIndexOfDatasetParameterItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
+						output.append("			<input type='image' onclick='setParametersXMLModified(true);setIndexOfDatasetParameterItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
 						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
 						output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
 			  			output.append("		</td>\n");
@@ -209,7 +209,7 @@ public class DatasetWizardTag  extends TagSupport {
 			  			output.append("		<td class='" + rowClass + "'>\n");
 			  			if(i<(parameters.size()-1)) {
 							String tableCol5 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol5", "messages", httpRequest);
-							output.append("			<input type='image' onclick='setDatasetModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+							output.append("			<input type='image' onclick='setParametersXMLModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 							output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/down16.gif") + "' \n");
 							output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
 			  			} else {
@@ -220,7 +220,7 @@ public class DatasetWizardTag  extends TagSupport {
 			  			output.append("		<td class='" + rowClass + "'>\n");
 			  			if(i>0) {
 							String tableCol6 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol6", "messages", httpRequest);
-							output.append("			<input type='image' onclick='setDatasetModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
+							output.append("			<input type='image' onclick='setParametersXMLModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 							output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/up16.gif") + "' \n");
 							output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
 			  			} else {

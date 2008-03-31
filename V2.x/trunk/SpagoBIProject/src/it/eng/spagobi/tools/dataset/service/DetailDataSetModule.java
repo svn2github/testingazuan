@@ -43,6 +43,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -60,6 +61,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -110,6 +112,9 @@ public class DetailDataSetModule extends AbstractModule {
 			}	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
 				exitFromDetail(request, response);
 			}
+			else if(message.trim().equalsIgnoreCase("testafterparametersfilling")) {
+				testDatasetAfterParameterFilling(request, response);
+			}
 		}
 			catch (EMFUserError eex) {
 				errorHandler.addError(eex);
@@ -137,15 +142,17 @@ public class DetailDataSetModule extends AbstractModule {
 				DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
 				this.modalita = SpagoBIConstants.DETAIL_MOD;
 				prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_MOD, response);
+				
 				if (request.getAttribute("SUBMESSAGEDET") != null &&
 						((String)request.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
 				{
 					response.setAttribute("loopback", "true");
 					return;
 				}
+				
 				//response.setAttribute("modality", modalita);
 				//response.setAttribute("dataset", ds);
-				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, "false");
 				session.setAttribute("dataset", ds);
 
 				
@@ -187,15 +194,17 @@ public class DetailDataSetModule extends AbstractModule {
 			String dataSetModified = (String) serviceRequest.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
 			if(dataSetModified != null && !dataSetModified.trim().equals("")) 
 				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
-
+			String parametersXMLModified = (String) serviceRequest.getAttribute("parametersXMLModified");
+			if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
+				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, parametersXMLModified);
 			DataSet	dsNew  = (DataSet) session.getAttribute("dataset");
-
-
-			// check if we are coming from the test
+// check if we are coming from the test
 			String returnFromTestMsg = (String) serviceRequest.getAttribute("RETURN_FROM_TEST_MSG");
-			if(returnFromTestMsg!=null) {
+		
+			
+			if(returnFromTestMsg!=null) { // Case returning from Test View!
 				// save after the test
-				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {		
+				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {      // Save 		
 				Collection errors = errorHandler.getErrors();
 				if (errors != null && errors.size() > 0) {
 					Iterator iterator = errors.iterator();
@@ -207,6 +216,7 @@ public class DetailDataSetModule extends AbstractModule {
 						}
 					}
 				}
+				
 				DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
 				serviceResponse.setAttribute("dataset", dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
@@ -217,27 +227,26 @@ public class DetailDataSetModule extends AbstractModule {
 
 			// don't save after the test
 			else 
-				if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {
-					session.delAttribute("dataset");
-					//serviceResponse.setAttribute("testLov", "true");
-					session.delAttribute(SpagoBIConstants.MODALITY);
-
-					serviceResponse.setAttribute("dataset", dsNew);
-					serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);	
-					//prepareDetailModalitiesValuePage(modVal, mod, response);
+				if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {   // Don't save
+					try {
+					prepareDetailDatasetPage(dsNew, mod, serviceResponse);
+					} catch (EMFInternalError e) {
+						e.printStackTrace();
+					}
 					// exits without writing into DB and without loop
 					return;
 				}
 			} 
-			else{
+			else{ // if we are not coming from the test result page, the fields are in request
 				try {
 					boolean testCase=false;
-					Object test = serviceRequest.getAttribute("testDataSetBeforeSave");
+					Object test = serviceRequest.getAttribute("testDataSetBeforeSave"); // are we going to test Object
 					if(test!=null)testCase=true;
+					
 					String type="";
-					dsNew = recoverDataSetDetails(serviceRequest,dsNew);
+					dsNew = recoverDataSetDetails(serviceRequest,dsNew);   // build again the dataSet in case user wanted to change some fields
 
-					if(dsNew instanceof FileDataSet)type="0";
+					if(dsNew instanceof FileDataSet)type="0";			// what type is dataset?
 					else if(dsNew instanceof QueryDataSet)type="1";
 					else if(dsNew instanceof WSDataSet)type="2";
 					
@@ -257,7 +266,8 @@ public class DetailDataSetModule extends AbstractModule {
 						}
 					}
 					
-					// check if it has to change parameters		
+					// check if it has to change parameters		(now only in Query Case) 
+					//TODO: Insert a message that changes parameters only in case of necessity
 					if(type.equals("1")){
 						String parametersXML = dsNew.getParameters();
 						DataSetParametersList dslistDet = null;
@@ -267,55 +277,18 @@ public class DetailDataSetModule extends AbstractModule {
 							dslistDet = new DataSetParametersList(parametersXML);
 						}
 						boolean itemTaskDone = doDatasetParameterItemTask(dsNew, dslistDet, serviceRequest);
-						if(itemTaskDone) {
+						if(itemTaskDone) { // if something on on parameters is changed
 							prepareDetailDatasetPage(dsNew, mod, serviceResponse);
-							session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "true");
-							//session.setAttribute("dataset", dsNew);
+							session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, "true");
+							session.setAttribute("dataset", dsNew);
 							// exits without writing into DB and without loop
 							return;
 						} else {
 							List items = dslistDet.getItems();
 							if(items.size()==0) {
-								dsNew.setParameters("<LOV/>");
+								dsNew.setParameters("<PARAMETERSLIST/>");
 							}
 						}	
-					}
-
-					
-					if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		
-
-
-						//check the type and insert right parameters
-				//if a ds with the same label not exists on db ok else error
-						if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
-							HashMap params = new HashMap();
-							params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-							EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
-							getErrorHandler().addError(error);
-							return;
-						}	 		
-
-						DAOFactory.getDataSetDAO().insertDataSet(dsNew);
-
-						DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
-						dsNew.setDsId(tmpDS.getDsId());
-						mod = SpagoBIConstants.DETAIL_MOD; 
-					} else {				
-						//update ds
-						if(!testCase)
-						DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
-					}  
-
-					if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
-							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
-						serviceResponse.setAttribute("modality", mod);
-						serviceResponse.setAttribute("dataset", dsNew);				
-						return;
-					}
-					else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
-							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
-						serviceResponse.setAttribute("loopback", "true");
-						return;
 					}
 
 					// Test Case
@@ -323,6 +296,13 @@ public class DetailDataSetModule extends AbstractModule {
 						session.setAttribute(SpagoBIConstants.MODALITY, mod);
 						//session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
 						//boolean needProfAttrFill = checkProfileAttributes(response, (ILovDetail)objectToTest);
+
+						//check if there are parameters to fill
+						List parameters=getParametersToFill(dsNew);
+						if(parameters!=null && parameters.size()>0){
+							serviceResponse.setAttribute("parameters",parameters);
+						}
+						
 						serviceResponse.setAttribute("testLov", "true");
 						// carry with the response the dataset
 						//serviceResponse.setAttribute("dataset", dsNew);
@@ -332,8 +312,41 @@ public class DetailDataSetModule extends AbstractModule {
 						// exits without writing into DB 
 						return;
 					}
+					
+					
+					if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		// in case it is an insert
 
 
+						//check the type and insert right parameters
+						//if a ds with the same label not exists on db ok else error
+						if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
+							HashMap params = new HashMap();
+							params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+							EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
+							getErrorHandler().addError(error);
+							return;
+						}	 		
+						DAOFactory.getDataSetDAO().insertDataSet(dsNew);   //Insert DataSet
+						DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
+						dsNew.setDsId(tmpDS.getDsId());
+						mod = SpagoBIConstants.DETAIL_MOD; 
+					} else {				
+						//update ds
+						if(!testCase)
+						DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
+					}  
+
+				/*	if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
+							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
+						serviceResponse.setAttribute("modality", mod);
+						serviceResponse.setAttribute("dataset", dsNew);				
+						return;
+					}
+					else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
+							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
+						serviceResponse.setAttribute("loopback", "true");
+						return;
+					} */
 
 				} catch (EMFUserError e){
 					logger.error("Cannot fill response container" + e.getLocalizedMessage());
@@ -348,8 +361,33 @@ public class DetailDataSetModule extends AbstractModule {
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 				}			
 			}
+		
+			serviceResponse.setAttribute("loopback", "true");
+			session.delAttribute(SpagoBIConstants.DATASET_MODIFIED);
+		
+		
 		}
 
+		
+		
+		
+		/**
+		 * Before going into test mode checks if there are parameters to fill and in case puts them in List
+		 * @throws SourceBeanException 
+		 * 
+		 */
+		public List getParametersToFill(DataSet ds) throws SourceBeanException{
+			String parametersXML=ds.getParameters();
+			if(parametersXML!=null && !((parametersXML.trim()).equals(""))){
+			DataSetParametersList dsParam=new DataSetParametersList(parametersXML);
+			List parameters=dsParam.getItems();
+				return parameters;}
+			else return null;
+		}
+		
+		
+		
+		
 		/**
 		 * Deletes a data Set choosed by user from the data Sets list.
 		 * 
@@ -418,7 +456,7 @@ public class DetailDataSetModule extends AbstractModule {
 				ds.setLabel("");
 				ds.setName("");
 				ds.setParameters("");
-				session.setAttribute(SpagoBIConstants.LOV_MODIFIED, "false");
+				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, "false");
 				session.setAttribute("dataset", ds);
 				//response.setAttribute("dataset", ds);
 				prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_INS, response);
@@ -436,11 +474,11 @@ public class DetailDataSetModule extends AbstractModule {
 
 
 			if(typeds.equalsIgnoreCase("0")){
-				if(dsOld==null){
-				ds=new FileDataSet();
+				if(dsOld instanceof FileDataSet){
+					ds=dsOld;
 				}
 				else{
-					ds=dsOld;
+					ds=new FileDataSet();
 				}
 				if(serviceRequest.getAttribute("FILENAME")!=null){
 					String fileName=(String)serviceRequest.getAttribute("FILENAME");
@@ -449,11 +487,12 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 			else 
 				if(typeds.equalsIgnoreCase("1")){
-					if(dsOld==null){
-					ds=new QueryDataSet();
+					if(dsOld instanceof QueryDataSet){
+						ds=dsOld;
 					}
 					else{
-						ds=dsOld;
+						ds=new QueryDataSet();
+						
 					}
 					if(serviceRequest.getAttribute("QUERY")!=null){
 						String query=(String)serviceRequest.getAttribute("QUERY");
@@ -467,11 +506,11 @@ public class DetailDataSetModule extends AbstractModule {
 				}
 				else 
 					if(typeds.equalsIgnoreCase("2")){
-						if(dsOld==null){
-						ds=new WSDataSet();
+						if(dsOld instanceof WSDataSet){
+							ds=dsOld;
 						}
 						else{
-							ds=dsOld;
+							ds=new WSDataSet();						
 						}
 						if(serviceRequest.getAttribute("ADDRESS")!=null){
 							String address=(String)serviceRequest.getAttribute("ADDRESS");
@@ -505,7 +544,7 @@ public class DetailDataSetModule extends AbstractModule {
 
 		private void exitFromDetail (SourceBean request, SourceBean response) throws SourceBeanException {
 			response.setAttribute("loopback", "true");
-			session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
+			session.delAttribute(SpagoBIConstants.DATASET_MODIFIED);
 			session.delAttribute("dataset");
 		}
 		
@@ -707,6 +746,29 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 		}
 
-			
+		private void testDatasetAfterParameterFilling(SourceBean request, 	SourceBean response) throws EMFUserError, SourceBeanException  {
+			try {
+				DataSet ds = null;
+				ds = (DataSet) session.getAttribute("dataset");
+			  	List parametersFill = getParametersToFill(ds);
+				if(parametersFill.size()!=0) {
+					Map attributes = new HashMap();
+				    Iterator iterator = parametersFill.iterator();
+				    while(iterator.hasNext()) {
+				    	DataSetParameterItem dsItem=(DataSetParameterItem)iterator.next();
+				    	String name=dsItem.getName();
+				    	String nameRequest=name+"att";
+				    	String value = (String)request.getAttribute(nameRequest);
+				    		attributes.put(name, value);
+				    }
+				    session.setAttribute("parametersfilled", attributes);
+	    
+				}
+				response.setAttribute("testLov", "true");
+				return;
+			} catch (Exception e) {
+				logger.error("Error while creating user profile for test", e);
+			}
+		}	
 
 	}

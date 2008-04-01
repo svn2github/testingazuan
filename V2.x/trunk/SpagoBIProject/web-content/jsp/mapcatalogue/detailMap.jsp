@@ -236,21 +236,23 @@
 	         GeoFeature tmpFeature = new GeoFeature();
 	         GeoFeature featureSel = new GeoFeature();
 	         String linkClass = "tab";
-	     	  for (int i=0; i < lstMapFeatures.size(); i++) {
-	     	     tmpFeature = (GeoFeature)lstMapFeatures.get(i); 
-	     	     if (String.valueOf(tmpFeature.getFeatureId()).equals(selectedFeatureId)) {
-	         	linkClass = "tab selected";
-	         	featureSel = tmpFeature;
-	         	 }
-	         	 else linkClass = "tab";
+	         if (lstMapFeatures != null){
+		     	  for (int i=0; i < lstMapFeatures.size(); i++) {
+		     	     tmpFeature = (GeoFeature)lstMapFeatures.get(i); 
+		     	     if (String.valueOf(tmpFeature.getFeatureId()).equals(selectedFeatureId)) {
+		         	linkClass = "tab selected";
+		         	featureSel = tmpFeature;
+		         	 }
+		         	 else linkClass = "tab";
 	     %>
-	            <div class='<%=linkClass%>'>
-	            	<a href='javascript:changeFeature("<%= String.valueOf(tmpFeature.getFeatureId()) %>")'
-	            	   style="color:black;"> 
-	            		<%=tmpFeature.getName()%>
-	            	</a>
-	    			</div> 			
-	  <%	} //for
+		            <div class='<%=linkClass%>'>
+		            	<a href='javascript:changeFeature("<%= String.valueOf(tmpFeature.getFeatureId()) %>")'
+		            	   style="color:black;"> 
+		            		<%=tmpFeature.getName()%>
+		            	</a>
+		    			</div> 			
+		  <%	} //for
+	  }
 	  if (selectedFeatureId.equals ("NEW") ) 
 			linkClass = "tab selected";
 		else 

@@ -936,14 +936,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 							mapPars.put(name, value);
 					}
 				}
-				/*
-				// GET CONTEXT FOR DOCUMENT COMPOSITION
-				if (session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT) != null
-						&& ((String) session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT))
-								.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
-					mapPars.put(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
-				}
-				*/
+			
 				//GET DOC CONFIG FOR DOCUMENT COMPOSITION
 				if (session.getAttribute("docConfig") != null)
 						mapPars.put("docConfig", (DocumentCompositionConfiguration) session.getAttribute("docConfig"));
@@ -1001,14 +994,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 			// starts engine's execution
 			try {
-				/*
-				// GET CONTEXT FOR DOCUMENT COMPOSITION
-				if (session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT) != null
-						&& ((String) session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT))
-								.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
-					response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
-				}
-				*/
+				
 				if (subObj != null)
 					internalEngine.executeSubObject(this.getRequestContainer(),
 							obj, response, subObj);
@@ -1650,10 +1636,11 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		content = content.replace("%3D", "=");
 		obj = execContr.prepareBIObjectInSession(session, obj.getId(), role,
 				content);
+		
 		// load the object into the Execution controller
 		ExecutionController controller = new ExecutionController();
 		controller.setBiObject(obj);
-
+		
 		// if the object can be directly executed (because it hasn't any
 		// parameter to be
 		// filled by the user) then execute it directly without pass through
@@ -1672,6 +1659,17 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			}
 			execute(obj, null, null, response);
 			response.setAttribute("NO_PARAMETERS", "TRUE");
+		}
+		
+		//sets transient properties to false
+		List lstParams = obj.getBiObjectParameters();
+		for (int i=0; i<lstParams.size(); i++){
+			BIObjectParameter boPar = (BIObjectParameter)lstParams.get(i);
+			String strLovResult = boPar.getLovResult();
+			SourceBean tmpSB = SourceBean.fromXMLString(strLovResult);
+			List totValues = tmpSB.getAttributeAsList("ROW");
+			if (totValues.size() > 1)
+				boPar.setTransientParmeters(false);
 		}
 		logger.debug("OUT");
 	}

@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-                 
+         
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 
 
@@ -65,7 +65,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
     Map lstFieldLinked = new HashMap(); 
-    
+      
     //loop on documents
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations

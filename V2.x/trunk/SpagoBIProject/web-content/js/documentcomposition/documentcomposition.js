@@ -92,20 +92,41 @@ function execDrill(name, urlDrill){
 									tmpNewValue = paramsNewValues[j];
 									if (tmpNewValue.substring(0, tmpNewValue.indexOf("=")) == sbiParMaster){
 										tmpNewValue = tmpNewValue.substring(tmpNewValue.indexOf("=")+1);
-							
-										var paramsOldValues = tmpUrl.split("&amp;");
-										if (paramsOldValues != null && paramsOldValues.length > 0) {
-											for (k = 0; k < paramsOldValues.length; k++) {
-												//gets old value of parameter:
-												if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("=")) == sbiLabelPar){
-													tmpOldValue = paramsOldValues[k] ;
-													tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
-													if (tmpOldValue != "" && tmpNewValue != ""){
-														finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
-														newUrl = finalUrl;
-														tmpOldValue = "";
-														tmpNewValue = "";
-														break;
+										var paramsOldValues = null;
+										if (tmpUrl.indexOf("DirectExecutionPage")>0){
+											paramsOldValues = tmpUrl.split("%26");
+											if (paramsOldValues != null && paramsOldValues.length > 0) {
+												for (k = 0; k < paramsOldValues.length; k++) {
+													//gets old value of parameter:
+													if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("%3D")) == sbiLabelPar){
+														tmpOldValue = paramsOldValues[k] ;
+														tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("%3D")+3);
+														if (tmpOldValue != "" && tmpNewValue != ""){
+															finalUrl = finalUrl.replace(sbiLabelPar+"%3D"+tmpOldValue, sbiLabelPar+"%3D"+tmpNewValue);
+															newUrl[0] = finalUrl;
+															tmpOldValue = "";
+															tmpNewValue = "";
+															break;
+														}
+													}
+												}
+											}
+										}
+										else{
+										 	paramsOldValues = tmpUrl.split("&amp;");
+											if (paramsOldValues != null && paramsOldValues.length > 0) {
+												for (k = 0; k < paramsOldValues.length; k++) {
+													//gets old value of parameter:
+													if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("=")) == sbiLabelPar){
+														tmpOldValue = paramsOldValues[k] ;
+														tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
+														if (tmpOldValue != "" && tmpNewValue != ""){
+															finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
+															newUrl[0] = finalUrl;
+															tmpOldValue = "";
+															tmpNewValue = "";
+															break;
+														}
 													}
 												}
 											}
@@ -117,15 +138,17 @@ function execDrill(name, urlDrill){
 						}
 					} //for (var fieldLabel in asLinkedFields){ 	
 					//updated general url  with new values
-					asUrls[generalLabelDoc][0]=newUrl;
+					asUrls[generalLabelDoc][0]=newUrl[0];
 					RE = new RegExp("&amp;", "ig");
-					newUrl = newUrl.replace(RE, "&");
-					sendUrl(nameIframe, newUrl);
+					var lastUrl = newUrl[0];
+					lastUrl = lastUrl.replace(RE, "&");
+					//newUrl[0] = newUrl[0].replace(RE, "&");
+					sendUrl(nameIframe,lastUrl);
 				}//if (docLabel.indexOf(labelMasterDoc) >= 0){
 			}//for (var docLabel in asLinkedDocs){ 
 		}
-	} 
-	
+	}   
+  
 	return;
 }
 

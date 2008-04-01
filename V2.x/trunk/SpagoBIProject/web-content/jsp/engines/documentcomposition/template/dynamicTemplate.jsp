@@ -16,8 +16,8 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
---> 
-
+-->
+   
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
 <%@page import="java.util.HashMap"%>
@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
 
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
-	
 <% logger.debug("IN");
 	//gets urls & co of documents
 	HashMap lstUrl = (HashMap)aSessionContainer.getAttribute("docUrls");
@@ -40,14 +39,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    
     String urlIframe = (String)aSessionContainer.getAttribute("urlIframe");
 	logger.debug("urlIframe: " + urlIframe);
-
+ 
 %> 
 <!-- LIBS AJAX-->
     <script type="text/javascript" src="/SpagoBI/js/documentcomposition/documentcomposition.js"></script>
 <!-- ENDLIBS -->
 
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/documentcomposition/documentcomposition.css")%>' type='text/css' />
-
+ 
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->

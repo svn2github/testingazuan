@@ -227,7 +227,7 @@ public class DocumentCompositionUtils {
 		     	   	urlReturn += "&amp;"+parkey+"="+parvalue;
 				}
 		     	
-		     	urlReturn += getParametersUrl(obj, document, requestSB);
+		     	urlReturn += getParametersUrl(obj, document, requestSB, false);
 				
 			} catch (Exception e) {
 				 logger.error("Error During object execution", e);
@@ -260,7 +260,7 @@ public class DocumentCompositionUtils {
 			urlReturn = GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
 						"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
 			
-			urlReturn += getParametersUrl(obj, document, requestSB);
+			urlReturn += getParametersUrl(obj, document, requestSB, true);
 			
 			
 		}
@@ -268,7 +268,7 @@ public class DocumentCompositionUtils {
 		//if into url therisn't yet document id, adds it
 		if (urlReturn.indexOf("document=") < 0){
 			if (urlReturn.endsWith("DOCUMENT_PARAMETERS="))
-				urlReturn += "document=" + obj.getId();
+				urlReturn += "%26document%3D" + obj.getId();
 			else
 				urlReturn += "&amp;document=" + obj.getId();
 		}
@@ -322,7 +322,7 @@ public class DocumentCompositionUtils {
 	 * @param requestSB the request object
 	 * @return a string with the url completed
 	 */
-	private static String getParametersUrl(BIObject doc, Document document, SourceBean requestSB){
+	private static String getParametersUrl(BIObject doc, Document document, SourceBean requestSB, boolean forInternalEngine){
 		String paramUrl = "";
 		
 		//set others parameters value
@@ -343,13 +343,20 @@ public class DocumentCompositionUtils {
 			    if(value == null || value.equals("")){
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 		    	}
-			    if (value != null && !value.equals(""))
-		    		paramUrl += "&amp;"+ key + "=" + value;
-		    	
+			    
+			    if (forInternalEngine && value != null && !value.equals(""))
+			    	paramUrl += "%26" + key + "%3D" + value;
+			    else if (!forInternalEngine && value != null && !value.equals(""))
+			    	paramUrl += "&amp;" + key + "=" + value;
 			    cont++;
 			}
 	    }
-
+		/*
+		if (forInternalEngine)
+			paramUrl = paramUrl.substring(0, paramUrl.length()-3); 
+		else
+			paramUrl = paramUrl.substring(0, paramUrl.length()-5); 
+		*/
 		return paramUrl;
 	}
 
@@ -402,12 +409,37 @@ public class DocumentCompositionUtils {
 	private static HashMap getAllParamsValue(String urlReturn){
 		HashMap retHM = new HashMap();
 		String tmpStr = urlReturn.substring(urlReturn.indexOf("?")+1);
-		String[] tmpArr = tmpStr.split("&amp;");
-		for (int i=0; i<tmpArr.length; i++){
-			String strPar = (String)tmpArr[i];
-			String key = strPar.substring(0,strPar.indexOf("="));
-			String value = strPar.substring(strPar.indexOf("=")+1);
-			retHM.put(key, value);
+		String tmpStrDirect = "";
+		if (urlReturn.indexOf("DirectExecutionPage")>0){
+			String[] tmpArr = tmpStr.split("&amp;");
+			for (int i=0; i<tmpArr.length; i++){
+				String strPar = (String)tmpArr[i];
+				String key = strPar.substring(0,strPar.indexOf("="));
+				String value = strPar.substring(strPar.indexOf("=")+1);
+				if (key.equalsIgnoreCase("DOCUMENT_PARAMETERS"))
+					tmpStrDirect = value.substring(3);
+				else
+					retHM.put(key, value);
+				tmpStr = tmpStr.substring(tmpStr.indexOf((String)tmpArr[i])+((String)tmpArr[i]).length()+5);
+			}
+			
+			String[] tmpArrDirect = tmpStrDirect.split("%26");
+			for (int i=0; i<tmpArrDirect.length; i++){
+				String strPar = (String)tmpArrDirect[i];
+				int pos = strPar.indexOf("%3D");
+				String key = strPar.substring(0,strPar.indexOf("%3D"));
+				String value = strPar.substring(strPar.indexOf("%3D")+3);
+				retHM.put(key, value);
+			}
+		}
+		else{
+			String[] tmpArr = tmpStr.split("&amp;");
+			for (int i=0; i<tmpArr.length; i++){
+				String strPar = (String)tmpArr[i];
+				String key = strPar.substring(0,strPar.indexOf("="));
+				String value = strPar.substring(strPar.indexOf("=")+1);
+				retHM.put(key, value);
+			}
 		}
 		
 		return retHM;

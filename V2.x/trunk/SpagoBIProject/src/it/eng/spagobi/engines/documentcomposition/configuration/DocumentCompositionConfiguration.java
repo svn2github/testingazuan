@@ -43,6 +43,7 @@ import java.util.Properties;
 public class DocumentCompositionConfiguration {
 	private String templateFile;
 	private Map documentsMap;
+	private Map lstDimensions = new HashMap();
 	//list used by final jsp
 	private Map lstUrl = new HashMap();
 	private Map lstDivStyle = new HashMap();
@@ -53,14 +54,25 @@ public class DocumentCompositionConfiguration {
 	
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
-	//Integer[] widthPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
-	//Integer[] heightPxValues = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
-	Integer[] widthPxValues = {new Integer("1400"), new Integer("1050"), new Integer("700"), new Integer("350")};
-	//Integer[] heightPxValues = {new Integer("1050"), new Integer("787"), new Integer("525"), new Integer("262")};
-	Integer[] heightPxValues = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
-	
+	Integer[] widthPxValues800= {new Integer("800"), new Integer("600"), new Integer("400"), new Integer("200")};
+	Integer[] widthPxValues1024 = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
+	Integer[] widthPxValues1280 = {new Integer("1200"), new Integer("900"), new Integer("600"), new Integer("300")};
+	Integer[] widthPxValues1400 = {new Integer("1400"), new Integer("1050"), new Integer("700"), new Integer("350")};
+	Integer[] widthPxValues1680 = {new Integer("1600"), new Integer("1200"), new Integer("800"), new Integer("400")};
+	Integer[] heightPxValues600 = {new Integer("600"), new Integer("450"), new Integer("300"), new Integer("150")};
+	Integer[] heightPxValues768 = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
+	Integer[] heightPxValues1024= {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
+	Integer[] heightPxValues1050 = {new Integer("1050"), new Integer("787"), new Integer("525"), new Integer("262")};
+	Integer[] generalWidthDimensions = {new Integer("1680"), new Integer("1400"), new Integer("1280"),
+								   		new Integer("1024"), new Integer("800")};
+	Integer[] generalHeightDimensions = {new Integer("1050"), new Integer("1024"),  new Integer("768"), new Integer("600")};
+	private static Integer DEFAULT_WIDTH = new Integer("1024");
+	private static Integer DEFAULT_HEIGHT = new Integer("768");
+	 
 	public static class Document {
 		int numOrder;
+		Integer videoWidth[];
+		Integer videoHeight[];
 		String label;
 		String sbiObjLabel;
 		String style;
@@ -69,7 +81,6 @@ public class DocumentCompositionConfiguration {
 		String type;
 		String defaultValue;
 		Properties params;
-		//Properties refreshDocLinked;
 		
 		public String getLabel() {
 			return label;
@@ -127,21 +138,49 @@ public class DocumentCompositionConfiguration {
 		public void setNumOrder(int numOrder) {
 			this.numOrder = numOrder;
 		}
+		public Integer[] getVideoWidth() {
+			return videoWidth;
+		}
+		public void setVideoWidth(Integer[] videoWidth) {
+			this.videoWidth = videoWidth;
+		}
+		public Integer[] getVideoHeight() {
+			return videoHeight;
+		}
+		public void setVideoHeight(Integer[] videoHeight) {
+			this.videoHeight = videoHeight;
+		}
 	}
 	
 	public DocumentCompositionConfiguration () {
-		documentsMap = new HashMap();
+		init();
 	}
 
 	public DocumentCompositionConfiguration (SourceBean DocumentCompositionConfigurationSB){
-		
+		init();
 		SourceBean documentsConfigurationSB;
 		templateFile = (String)DocumentCompositionConfigurationSB.getAttribute("template_value");
-		documentsMap = new HashMap();
+
 	
 		documentsConfigurationSB = (SourceBean)DocumentCompositionConfigurationSB.getAttribute("DOCUMENTS_CONFIGURATION");
 	
 		initDocuments(documentsConfigurationSB);
+	}
+	
+	/**
+	 * initialize general objects
+	 */
+	private void init(){
+		documentsMap = new HashMap();
+		lstDimensions.put("widthPxValues800", widthPxValues800);
+		lstDimensions.put("widthPxValues1024", widthPxValues1024);
+		lstDimensions.put("widthPxValues1280", widthPxValues1280);
+		lstDimensions.put("widthPxValues1400", widthPxValues1400);
+		lstDimensions.put("widthPxValues1680", widthPxValues1680);
+		lstDimensions.put("heightPxValues600", heightPxValues600);
+		lstDimensions.put("heightPxValues768", heightPxValues768);
+		lstDimensions.put("heightPxValues1024", heightPxValues1024);
+		lstDimensions.put("heightPxValues1050", heightPxValues1050);
 	}
 	
 	public void addDocument(Document document) {
@@ -171,6 +210,8 @@ public class DocumentCompositionConfiguration {
 		
 		
 		documentList = documentsConfigurationSB.getAttributeAsList("DOCUMENT");
+		//create dimensions Map
+		
 		//loop on documents
 		for(int i = 0; i < documentList.size(); i++) {
 			
@@ -182,7 +223,12 @@ public class DocumentCompositionConfiguration {
 			document.setLabel(attributeValue);			
 			attributeValue = (String)documentSB.getAttribute("sbi_obj_label");
 			document.setSbiObjLabel(attributeValue);
-			
+
+			Integer width = (documentsConfigurationSB.getAttribute("video_width")==null)?DEFAULT_WIDTH:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_width"));
+			Integer height = (documentsConfigurationSB.getAttribute("video_height")==null)?DEFAULT_HEIGHT:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_height"));
+			document.setVideoWidth(getVideoDimensions("width", width));
+			document.setVideoHeight(getVideoDimensions("height", height));
+
 			dimensionSB = (SourceBean)documentSB.getAttribute("STYLE");			
 			attributeValue = (String)dimensionSB.getAttribute("style");
 			//attributeValue = (String)dimensionSB.getAttribute("class");
@@ -363,7 +409,6 @@ public class DocumentCompositionConfiguration {
 	public void getInfoDocumentLinked(String docLabel) {
 		Document tmpDoc = getDocument(docLabel);
 		int numDoc = 0;
-		
 		if (tmpDoc != null){
 			numDoc = tmpDoc.getNumOrder();
 			//set syle for div
@@ -372,6 +417,9 @@ public class DocumentCompositionConfiguration {
 			//gets layout informations (width and height) for next settings of ext-panels
 			String docStyles = tmpDoc.getStyle();
 			String tmpStyle = "";
+			Integer[] widthPxValues = tmpDoc.getVideoWidth();
+			Integer[] heightPxValues = tmpDoc.getVideoHeight();
+			
 			if (docStyles != null){
 				String[] propValues = docStyles.split(";");
 				for (int i=0; i<propValues.length; i++){
@@ -502,6 +550,45 @@ public class DocumentCompositionConfiguration {
 		return retHash;
 	}
 
+	private Integer[] getVideoDimensions(String type, Integer value){
+		Integer[] realDimensions = null;
+		int pos = 0;
+		if (type.equalsIgnoreCase("width")){
+			for (int i=0; i<generalWidthDimensions.length; i++){
+				if (value.compareTo(generalWidthDimensions[i])==0){
+					String labelDim = "widthPxValues"+generalWidthDimensions[i].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+				else if (value.compareTo(generalWidthDimensions[i])>0){
+					if (i>0)
+						pos = i-1;
+					String labelDim = "widthPxValues"+generalWidthDimensions[pos].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+			}
+		}
+		else if (type.equalsIgnoreCase("height")){
+			for (int i=0; i<generalHeightDimensions.length; i++){
+				if (value.compareTo(generalHeightDimensions[i])==0){
+					String labelDim = "heightPxValues"+generalHeightDimensions[i].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+				else if (value.compareTo(generalHeightDimensions[i])>0){
+					if (i>0)
+						pos = i-1;
+					String labelDim = "heightPxValues"+generalHeightDimensions[pos].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+			}
+		}
+	
+		return realDimensions;
+	}
+	
 	public Map getLstUrl() {
 		return lstUrl;
 	}

@@ -365,12 +365,14 @@
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
 			<!-- START DIV FIX LIST WIZARD --> 
-	<%if(type.equals("query")){ %>
-        <div id="datasetWizard" style='width:100%;display:<%=datasetDisplay%>'>
-			<spagobi:datasetWizard parametersXML='<%= dataSetParametersList.toXML() %>' />
-		</div>	
+        <table id="tag" style="display:<%=datasetDisplay%>;">
+  		<tr><td>
+		<spagobi:datasetWizard parametersXML='<%= dataSetParametersList!= null ? dataSetParametersList.toXML() : "" %>' /> 	
+		</td></tr></table>	
+		
+		
+		
 		<!-- DIV FIX LIST WIZARD CLOSED -->
-	<% }%>
 		
 		
 		<spagobi:error/>
@@ -458,6 +460,7 @@
 			document.dsForm.QUERY.disabled=true;
 			document.dsForm.EXECUTORCLASS.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
+			document.getElementById("tag").style.display = "none";
 		}
 		else 
 		if (type == 'query'){
@@ -466,6 +469,7 @@
 			document.dsForm.QUERY.disabled=false;
 			document.dsForm.EXECUTORCLASS.disabled=true;
 			document.dsForm.DATASOURCE.disabled=false;
+			document.getElementById("tag").style.display = "inline";
 		}
 	    else 
 	    if (type == 'ws'){
@@ -474,6 +478,7 @@
 			document.dsForm.QUERY.disabled=true;
 			document.dsForm.EXECUTORCLASS.disabled=false;
 			document.dsForm.DATASOURCE.disabled=true;
+			document.getElementById("tag").style.display = "none";
 		
 		}
 	}
@@ -492,6 +497,58 @@
 						}
 				}
 		
-	</script>
+	var profattrwinopen = false;
+	var winPA = null;
+	
+	function opencloseProfileAttributeWin() {
+		if(!profattrwinopen){
+			profattrwinopen = true;
+			openProfileAttributeWin();
+		}
+	}
+	
+	function openProfileAttributeWin(){
+		if(winPA==null) {
+			winPA = new Window('winPAId', {className: "alphacube", title: "<%=msgBuilder.getMessage("SBIDev.lov.avaiableProfAttr", "messages", request)%>", width:400, height:300, destroyOnClose: true});
+	      	winPA.setContent('profileattributeinfodiv', false, false);
+	      	winPA.showCenter(false);
+	    } else {
+	      	winPA.showCenter(false);
+	    }
+	}
+	
+	observerWPA = { 
+		onClose: function(eventName, win) {
+			if (win == winPA) {
+				profattrwinopen = false;
+			}
+		}
+	}
+	
+	Windows.addObserver(observerWPA);
+</script>
+
+<div id='profileattributeinfodiv' style='display:none;'>	
+	<hr/>
+	<br/>
+	<ul>
+    <%
+    List nameAttrs = (List) moduleResponse.getAttribute(SpagoBIConstants.PROFILE_ATTRS);
+    if(nameAttrs!=null && nameAttrs.size()>0){
+		Iterator profAttrsIter = nameAttrs.iterator();
+		while(profAttrsIter.hasNext()) {
+			String profAttrName = (String)profAttrsIter.next();
+	%>
+	 	<li><%=profAttrName%></li>
+	<% 	
+		}
+    }
+	%>
+	</ul>
+	<br/>
+</div>	
+</form>		
+		
+		
 		
 	

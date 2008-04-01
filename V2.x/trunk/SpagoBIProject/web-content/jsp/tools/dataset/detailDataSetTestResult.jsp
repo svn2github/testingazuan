@@ -50,6 +50,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (detailMR != null) modality = (String) detailMR.getAttribute("modality");
 	if (modality == null) modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
 
+	String parametersXMLModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
+	if (parametersXMLModified == null) 
+		parametersXMLModified = "false";
+	
+	
 	String messagedet = "";
   	if (modality.equals(SpagoBIConstants.DETAIL_INS))
 		messagedet = SpagoBIConstants.DETAIL_INS;
@@ -64,10 +69,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	
     Map backUrlPars = new HashMap();
     backUrlPars.put("PAGE", "DetailDataSetPage");
-    backUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
+    backUrlPars.put(SpagoBIConstants.MESSAGEDET, modality);
     backUrlPars.put("modality", modality);
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
+    if(!parametersXMLModified.trim().equals(""))
+    	backUrlPars.put("lovProviderModified", parametersXMLModified);
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
   	
 

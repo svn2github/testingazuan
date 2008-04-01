@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <VALIDATIONS>
-<SERVICE name="DetailDataSetPage" type="PAGE">
+<!-- <SERVICE name="DetailDataSetPage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
@@ -11,5 +11,5 @@
 				</FIELD>	
 			</FIELDS>
 		</VALIDATION>	
-	</SERVICE>
+	</SERVICE>-->
 </VALIDATIONS>

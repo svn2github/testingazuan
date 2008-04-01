@@ -261,23 +261,20 @@ Ext.onReady(function(){
 			allowBlank:false, 
 			inputType:'text',
 			maxLength:50,
+			width:250,
 			fieldLabel:'<spagobi:message key="sbi.rememberme.name" />' 
     });
-    rememberMeDescr<%= uuid %> = new Ext.form.TextArea({
-			id:'descRM<%= uuid %>',
-			name:'descRM',  
-			fieldLabel:'<spagobi:message key="sbi.rememberme.descr" />' 
-    });
+    rememberMeDescr<%= uuid %> = new Ext.form.HtmlEditor({
+        id:'descrRM<%= uuid %>',
+        width: 550,
+        height: 150,
+		fieldLabel:'<spagobi:message key="sbi.rememberme.descr" />'  
+    });   
+    
     Ext.form.Field.prototype.msgTarget = 'side';
     saveRememberMeForm<%= uuid %> = new Ext.form.FormPanel({
-        labelWidth: 75,
         frame:true,
         bodyStyle:'padding:5px 5px 0',
-        width: 350,
-        height: 50,
-        labelWidth: 150,
-        defaults: {width: 230},
-        defaultType: 'textfield',
         items: [rememberMeName<%= uuid %>,rememberMeDescr<%= uuid %>],
         buttons:[{text:'<spagobi:message key="sbi.rememberme.save" />',handler:function() {saveRememberMe<%= uuid %>()}}]
     });
@@ -288,8 +285,8 @@ Ext.get('saveRememberMe_button<%= uuid %>').on('click', function(){
 		win_saveRM<%= uuid %> = new Ext.Window({
 			id:'popup_saveRM<%= uuid %>',
 			layout:'fit',
-			width:500,
-			height:200,
+			width:700,
+			height:300,
 			closeAction:'hide',
 			plain: true,
 			title: '<spagobi:message key="sbi.execution.saveRememberMe" />',

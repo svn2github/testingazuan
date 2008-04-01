@@ -298,12 +298,17 @@ Ext.get('saveRememberMe_button<%= uuid %>').on('click', function(){
 );
 
 function saveRememberMe<%= uuid %>() {
-	win_saveRM<%= uuid %>.hide();
 	var nameRM = rememberMeName<%= uuid %>.getValue();
 	if (nameRM == null || nameRM == '') {
-		alert('Missing name');
+		Ext.MessageBox.show({
+			msg: '<spagobi:message key="sbi.rememberme.missingName" />',
+			buttons: Ext.MessageBox.OK,
+			width:300,
+			icon: Ext.MessageBox.WARNING
+		});
 		return;
 	}
+	win_saveRM<%= uuid %>.hide();
 	var descRM = rememberMeDescr<%= uuid %>.getValue();
 	Ext.MessageBox.wait('Please wait...', 'Processing');
 	url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";

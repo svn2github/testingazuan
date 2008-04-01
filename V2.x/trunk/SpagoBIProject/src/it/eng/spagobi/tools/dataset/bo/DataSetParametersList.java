@@ -140,8 +140,8 @@ public class DataSetParametersList {
 	public List getProfileAttributeNames() throws Exception {
 		List names = new ArrayList();
 		String lovResult = this.toXML();
-		while(lovResult.indexOf("${")!=-1) {
-			int startind = lovResult.indexOf("${");
+		while(lovResult.indexOf("$P{")!=-1) {
+			int startind = lovResult.indexOf("$P{");
 			int endind = lovResult.indexOf("}", startind);
 			String attributeDef = lovResult.substring(startind + 2, endind);
 			if(attributeDef.indexOf("(")!=-1) {

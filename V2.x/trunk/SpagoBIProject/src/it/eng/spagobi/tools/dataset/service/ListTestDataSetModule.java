@@ -12,6 +12,7 @@ import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
@@ -37,10 +38,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.axis.handlers.ErrorHandler;
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
 public class ListTestDataSetModule extends AbstractBasicListModule  {
 
+	 private static transient Logger logger = Logger.getLogger(ListTestDataSetModule.class);
+	
 	public ListTestDataSetModule() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -75,6 +80,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			session.delAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		}
 
+		EMFErrorHandler err=getResponseContainer().getErrorHandler();
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
@@ -89,9 +95,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			try {
 				//query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
 			
+				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
 				//check if there are parameters filled
 				Object par=(Object)session.getAttribute("parametersfilled");
-				
 				HashMap parametersFilled=(HashMap)par;
 				if(parametersFilled!=null && !parametersFilled.isEmpty()){
 					query = GeneralUtilities.substituteParametersInString(query, parametersFilled);	
@@ -289,6 +295,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		}
 		return result;
 	}
+	
 
 
 }

@@ -65,7 +65,7 @@ public class DatasetWizardTag  extends TagSupport {
 			StringBuffer output = new StringBuffer();
 			
 			try {
-				
+				//output.append("<table id='tag'><tr><td>");				
 				output.append("<table width='100%' cellspacing='0' border='0'>\n");
 				output.append("	<tr>\n");
 				output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
@@ -85,7 +85,7 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append(generateProfAttrTitleSection(urlImgProfAttr));
 				output.append("	</tr>\n");
 				output.append("</table>\n");
-				
+
 				output.append("<br/>\n");
 				
 				String newItemTypeField = msgBuilder.getMessage("SBIDev.DataSetWiz.newItemTypeField", "messages", httpRequest);
@@ -98,7 +98,7 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("			</span>\n");
 				output.append("		</div>\n");
 				output.append("		<div class='div_detail_form'>\n");
-				output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" id='nameOfDatasetParameterItemNew' name='nameOfDatasetParameterItemNew' size='50' value=''>&nbsp;*\n");
+				output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" id='nameOfDatasetParameterItemNew' name='nameOfDatasetParameterItemNew' size='50' value=''/>&nbsp;*\n");
 				output.append("		</div>\n");
 				output.append("		<div class='div_detail_label_lov'>\n");
 				output.append("			<span class='portlet-form-field-label'>\n");
@@ -106,7 +106,11 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("			</span>\n");
 				output.append("		</div>\n");
 				output.append("		<div class='div_detail_form'>\n");
-				output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" name='typeOfDatasetParameterItemNew' size='50' value=''/>&nbsp;*\n");
+				output.append("			<select class='portlet-form-input-field' "+readonly+" name='typeOfDatasetParameterItemNew'>&nbsp;*\n");
+				output.append("			<option value=\"String\">String</option>");
+				output.append("			<option value=\"Number\">Number</option>");
+				output.append("			<option value=\"Date\">Date</option></select>");
+				//output.append("			<input class='portlet-form-input-field' type='text' "+readonly+" name='typeOfDatasetParameterItemNew' size='50' value=''/>&nbsp;*\n");
 				output.append("		</div>\n");
 				output.append("		<div class='div_detail_label_lov'>\n");
 				output.append("			&nbsp;\n");
@@ -178,7 +182,17 @@ public class DatasetWizardTag  extends TagSupport {
 						output.append("     </td>\n");
 						output.append("		<td class='" + rowClass + "'>");
 						output.append("          <span style='display:inline;' id='typeRow"+i+"'>"+typeDec+"</span>");
-						output.append("          <input type='text' style='display:none;' id='typeRow"+i+"InpText' name='typeRow"+i+"InpText' value='"+typeDec+"' />");
+						//output.append("          <input type='text' style='display:none;' id='typeRow"+i+"InpText' name='typeRow"+i+"InpText' value='"+typeDec+"' />");
+						output.append("			<select class='portlet-form-input-field' style='display:none;' name='typeRow"+i+"InpText' id='typeRow"+i+"InpText'/>&nbsp;*\n");
+						String str="";
+						String num="";
+						String dat="";
+						if(typeDec.equals("String"))str="selected";
+						else if(typeDec.equals("Number"))num="selected";
+						else if(typeDec.equals("Date"))dat="selected";
+						output.append("			<option value=\"String\""+str+" >String</option>");
+						output.append("			<option value=\"Number\""+num+">Number</option>");
+						output.append("			<option value=\"Date\""+dat+">Date</option></select>");
 						output.append("     </td>\n");
 						if(!isreadonly){
 						output.append("		<td class='" + rowClass + "'>\n");
@@ -301,6 +315,8 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
 				output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/fixlistwizardinfo", httpRequest));
 				output.append("</div>\n");
+				//output.append("</td></tr></table>\n");
+				
 				
 	            pageContext.getOut().print(output.toString());
 	        }

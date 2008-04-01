@@ -343,7 +343,7 @@ public class GeneralUtilities {
 
     
     /**
-     * Substitutes parameters with sintax "${attribute_name}" whose value is set in the map
+     * Substitutes parameters with sintax "$P{parameter_name}" whose value is set in the map
 
      * @param statement
      *                The string to be modified (tipically a query)
@@ -355,7 +355,7 @@ public class GeneralUtilities {
     public static String substituteParametersInString(String statement, Map valuesMap)
 	    throws Exception {
 	logger.debug("IN");
-	int profileAttributeStartIndex = statement.indexOf("${");
+	int profileAttributeStartIndex = statement.indexOf("$P{");
 	if (profileAttributeStartIndex != -1) {
 	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
 	}
@@ -364,7 +364,7 @@ public class GeneralUtilities {
     }
     
     /**
-     * Substitutes the parameters with sintax "${attribute_name}" with
+     * Substitutes the parameters with sintax "$P{attribute_name}" with
      * the correspondent value in the string passed at input.
      * 
      * @param statement
@@ -380,12 +380,12 @@ public class GeneralUtilities {
     private static String substituteParametersInString(String statement, Map valuesMap,
 	    int profileAttributeStartIndex) throws Exception {
 	logger.debug("IN");
-	int profileAttributeEndIndex = statement.indexOf("}");
+	int profileAttributeEndIndex = statement.indexOf("}",profileAttributeStartIndex);
 	if (profileAttributeEndIndex == -1)
 	    throw new Exception("Not closed profile attribute: '}' expected.");
 	if (profileAttributeEndIndex < profileAttributeEndIndex)
-	    throw new Exception("Not opened profile attribute: '${' expected.");
-	String attribute = statement.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex).trim();
+	    throw new Exception("Not opened profile attribute: '$P{' expected.");
+	String attribute = statement.substring(profileAttributeStartIndex + 3, profileAttributeEndIndex).trim();
 	int startConfigIndex = attribute.indexOf("(");
 	String attributeName = "";
 	String prefix = "";
@@ -399,15 +399,15 @@ public class GeneralUtilities {
 	    if (attribute.charAt(endConfigIndex) != ')')
 		throw new Exception(
 			"Sintax error: \")\" missing. The expected sintax for "
-				+ "attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
-				+ "or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters.");
+				+ "attribute profile is $P{attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
+				+ "or $P{attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters.");
 	    String configuration = attribute.substring(startConfigIndex + 1, endConfigIndex);
 	    String[] configSplitted = configuration.split(";");
 	    if (configSplitted == null || configSplitted.length != 3)
 		throw new Exception(
 			"Sintax error. The expected sintax for "
-				+ "attribute profile is ${attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
-				+ "or ${attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters. "
+				+ "attribute profile is $P{attributeProfileName(prefix;split;suffix)} for multivalue profile attributes "
+				+ "or $P{attributeProfileName} for singlevalue profile attributes. 'attributeProfileName' must not contain '(' characters. "
 				+ "The (prefix;split;suffix) is not properly configured");
 	    prefix = configSplitted[0];
 	    split = configSplitted[1];
@@ -471,9 +471,11 @@ public class GeneralUtilities {
 
 	replacement = prefix + newListOfValues + suffix;
 	attribute = quote(attribute);
-	statement = statement.replaceAll("\\$\\{" + attribute + "\\}", replacement);
+	statement = statement.replaceAll("\\$P\\{" + attribute + "\\}", replacement);
 
-	profileAttributeStartIndex = statement.indexOf("${", profileAttributeEndIndex);
+//	statement = statement.replaceAll("\\P\\{" + attribute + "\\}", replacement);
+
+	profileAttributeStartIndex = statement.indexOf("$P{", profileAttributeEndIndex);
 	if (profileAttributeStartIndex != -1)
 	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
 	logger.debug("OUT");
@@ -539,7 +541,7 @@ public class GeneralUtilities {
     private static String substituteProfileAttributesInString(String statement, IEngUserProfile profile,
 	    int profileAttributeStartIndex) throws Exception {
 	logger.debug("IN");
-	int profileAttributeEndIndex = statement.indexOf("}");
+	int profileAttributeEndIndex = statement.indexOf("}",profileAttributeStartIndex);
 	if (profileAttributeEndIndex == -1)
 	    throw new Exception("Not closed profile attribute: '}' expected.");
 	if (profileAttributeEndIndex < profileAttributeEndIndex)

@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail;
@@ -57,6 +58,7 @@ import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -76,7 +78,9 @@ public class DetailDataSetModule extends AbstractModule {
 	private SessionContainer session;
 	private EMFErrorHandler errorHandler;
 	private String modalita = "";
+	private IEngUserProfile profile;
 
+	
 	public void init(SourceBean config) {
 	}
 
@@ -92,6 +96,9 @@ public class DetailDataSetModule extends AbstractModule {
 		errorHandler = getErrorHandler();
 		RequestContainer requestContainer = this.getRequestContainer();
 		session = requestContainer.getSessionContainer();
+		SessionContainer permSess = session.getPermanentContainer();
+		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
 		try {
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
@@ -160,7 +167,7 @@ public class DetailDataSetModule extends AbstractModule {
 				logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8003, new Vector(), params);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 9201, new Vector(), params);
 			}
 
 		}
@@ -191,21 +198,22 @@ public class DetailDataSetModule extends AbstractModule {
 
 			// to rember that the lov has been modified 
 			// necessary to show a confirm if the user change the lov and then go back without saving
-			String dataSetModified = (String) serviceRequest.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
-			if(dataSetModified != null && !dataSetModified.trim().equals("")) 
-				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
+			//String dataSetModified = (String) serviceRequest.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
+			//if(dataSetModified != null && !dataSetModified.trim().equals("")) 
+				//session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
 			String parametersXMLModified = (String) serviceRequest.getAttribute("parametersXMLModified");
 			if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, parametersXMLModified);
+			
 			DataSet	dsNew  = (DataSet) session.getAttribute("dataset");
 // check if we are coming from the test
 			String returnFromTestMsg = (String) serviceRequest.getAttribute("RETURN_FROM_TEST_MSG");
-		
+			boolean testCase=false;
 			
 			if(returnFromTestMsg!=null) { // Case returning from Test View!
 				// save after the test
 				if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {      // Save 		
-				Collection errors = errorHandler.getErrors();
+				/*Collection errors = errorHandler.getErrors();
 				if (errors != null && errors.size() > 0) {
 					Iterator iterator = errors.iterator();
 					while (iterator.hasNext()) {
@@ -215,9 +223,9 @@ public class DetailDataSetModule extends AbstractModule {
 							return;
 						}
 					}
-				}
+				}*/
 				
-				DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
+				//DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
 				serviceResponse.setAttribute("dataset", dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
 				session.delAttribute("dataset");
@@ -239,21 +247,20 @@ public class DetailDataSetModule extends AbstractModule {
 			} 
 			else{ // if we are not coming from the test result page, the fields are in request
 				try {
-					boolean testCase=false;
+					
 					Object test = serviceRequest.getAttribute("testDataSetBeforeSave"); // are we going to test Object
 					if(test!=null)testCase=true;
 					
 					String type="";
-					dsNew = recoverDataSetDetails(serviceRequest,dsNew);   // build again the dataSet in case user wanted to change some fields
+					dsNew = recoverDataSetDetails(serviceRequest,mod,dsNew);   // build again the dataSet in case user wanted to change some fields
 
 					if(dsNew instanceof FileDataSet)type="0";			// what type is dataset?
 					else if(dsNew instanceof QueryDataSet)type="1";
 					else if(dsNew instanceof WSDataSet)type="2";
 					
-					EMFErrorHandler errorHandler = getErrorHandler();
-
+					
 					// if there are some validation errors into the errorHandler does not write into DB
-					Collection errors = errorHandler.getErrors();
+				/*	Collection errors = errorHandler.getErrors();
 					if (errors != null && errors.size() > 0) {
 						Iterator iterator = errors.iterator();
 						while (iterator.hasNext()) {
@@ -264,7 +271,7 @@ public class DetailDataSetModule extends AbstractModule {
 								return;
 							}
 						}
-					}
+					}*/
 					
 					// check if it has to change parameters		(now only in Query Case) 
 					//TODO: Insert a message that changes parameters only in case of necessity
@@ -294,49 +301,59 @@ public class DetailDataSetModule extends AbstractModule {
 					// Test Case
 					if (testCase) {
 						session.setAttribute(SpagoBIConstants.MODALITY, mod);
-						//session.setAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT, modVal);
-						//boolean needProfAttrFill = checkProfileAttributes(response, (ILovDetail)objectToTest);
-
 						//check if there are parameters to fill
 						List parameters=getParametersToFill(dsNew);
+						//boolean needProfAttrFill = checkProfileAttributes(serviceResponse, (QueryDataSet)dsNew);
 						if(parameters!=null && parameters.size()>0){
 							serviceResponse.setAttribute("parameters",parameters);
 						}
-						
 						serviceResponse.setAttribute("testLov", "true");
-						// carry with the response the dataset
-						//serviceResponse.setAttribute("dataset", dsNew);
-
 						session.setAttribute("dataset", dsNew);
 
 						// exits without writing into DB 
 						return;
 					}
 					
+				}
+				 catch (EMFUserError e){
+						logger.error("Cannot fill response container" + e.getLocalizedMessage());
+						HashMap params = new HashMap();
+						params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+						throw new EMFUserError(EMFErrorSeverity.ERROR, 9203, new Vector(), params);
+
+					}
+
+					catch (Exception ex) {		
+						logger.error("Cannot fill response container" , ex);		
+						throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+					}
+			}	
+		
 					
-					if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		// in case it is an insert
-
-
+				if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		// in case it is an insert
 						//check the type and insert right parameters
 						//if a ds with the same label not exists on db ok else error
 						if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
 							HashMap params = new HashMap();
 							params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-							EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8004, new Vector(), params );
+							EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9202, new Vector(), params );
 							getErrorHandler().addError(error);
 							return;
 						}	 		
 						DAOFactory.getDataSetDAO().insertDataSet(dsNew);   //Insert DataSet
 						DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
-						dsNew.setDsId(tmpDS.getDsId());
-						mod = SpagoBIConstants.DETAIL_MOD; 
+						int t=tmpDS.getDsId();
+						dsNew.setDsId(t);
+						mod = SpagoBIConstants.DETAIL_MOD;
+						//session.setAttribute("dataset", dsNew);
 					} else {				
 						//update ds
 						if(!testCase)
 						DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
+						//session.setAttribute("dataset", dsNew);
 					}  
 
-				/*	if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
+					if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
 							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
 						serviceResponse.setAttribute("modality", mod);
 						serviceResponse.setAttribute("dataset", dsNew);				
@@ -346,22 +363,7 @@ public class DetailDataSetModule extends AbstractModule {
 							((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
 						serviceResponse.setAttribute("loopback", "true");
 						return;
-					} */
-
-				} catch (EMFUserError e){
-					logger.error("Cannot fill response container" + e.getLocalizedMessage());
-					HashMap params = new HashMap();
-					params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 8005, new Vector(), params);
-
-				}
-
-				catch (Exception ex) {		
-					logger.error("Cannot fill response container" , ex);		
-					throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-				}			
-			}
-		
+					} 
 			serviceResponse.setAttribute("loopback", "true");
 			session.delAttribute(SpagoBIConstants.DATASET_MODIFIED);
 		
@@ -409,7 +411,7 @@ public class DetailDataSetModule extends AbstractModule {
 				if(bObjects){	
 					HashMap params = new HashMap();
 					params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 8007, new Vector(), params );
+					EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9204, new Vector(), params );
 					getErrorHandler().addError(error);
 					return;
 				}
@@ -422,7 +424,7 @@ public class DetailDataSetModule extends AbstractModule {
 				logger.error("Cannot fill response container" + e.getLocalizedMessage());
 				HashMap params = new HashMap();		  
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 8006, new Vector(), params);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 9207, new Vector(), params);
 
 			}
 			catch (Exception ex) {		
@@ -453,7 +455,7 @@ public class DetailDataSetModule extends AbstractModule {
 				ds = new DataSet();
 				ds.setDsId(-1);
 				ds.setDescription("");
-				ds.setLabel("");
+				ds.setLabel("null");
 				ds.setName("");
 				ds.setParameters("");
 				session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, "false");
@@ -468,7 +470,7 @@ public class DetailDataSetModule extends AbstractModule {
 		}
 
 
-		private DataSet recoverDataSetDetails (SourceBean serviceRequest, DataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
+		private DataSet recoverDataSetDetails (SourceBean serviceRequest, String mod, DataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
 			DataSet ds  =null;
 			String typeds= (String)serviceRequest.getAttribute("typeDataSet");
 
@@ -532,7 +534,9 @@ public class DetailDataSetModule extends AbstractModule {
 			String description = (String)serviceRequest.getAttribute("DESCR");	
 			
 			Integer id = new Integer(idStr);
-
+			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
+				ds.setDsId(id.intValue());
+			} 
 
 			ds.setDsId(id.intValue());
 			ds.setName(name);
@@ -547,6 +551,7 @@ public class DetailDataSetModule extends AbstractModule {
 			session.delAttribute(SpagoBIConstants.DATASET_MODIFIED);
 			session.delAttribute("dataset");
 		}
+		
 		
 		
 		private boolean doDatasetParameterItemTask(DataSet dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
@@ -756,10 +761,32 @@ public class DetailDataSetModule extends AbstractModule {
 				    Iterator iterator = parametersFill.iterator();
 				    while(iterator.hasNext()) {
 				    	DataSetParameterItem dsItem=(DataSetParameterItem)iterator.next();
+				    	//I must now check the type and pass the right sintax for the type
 				    	String name=dsItem.getName();
 				    	String nameRequest=name+"att";
 				    	String value = (String)request.getAttribute(nameRequest);
-				    		attributes.put(name, value);
+				    	String type=dsItem.getType();
+				    	String valueToPass="";
+				    
+				    	if(type.equals("String")){
+				    		valueToPass="'"+value+"'";
+				    	}
+				    	else if(type.equals("Number")){
+				    		      try {
+				    		      Double doubleValue=new Double(Double.parseDouble(value));
+				    		      valueToPass=doubleValue.toString();
+				    		      } catch (NumberFormatException e) {
+				    		    	  throw new Exception();
+				    		      }
+				    		
+				    	}
+				    	else if(type.equals("Date")){
+				    		valueToPass="\'"+value+"\'";
+				    	}
+				    	
+				    	
+				    	
+				    		attributes.put(name, valueToPass);
 				    }
 				    session.setAttribute("parametersfilled", attributes);
 	    
@@ -768,6 +795,7 @@ public class DetailDataSetModule extends AbstractModule {
 				return;
 			} catch (Exception e) {
 				logger.error("Error while creating user profile for test", e);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 9200); 
 			}
 		}	
 

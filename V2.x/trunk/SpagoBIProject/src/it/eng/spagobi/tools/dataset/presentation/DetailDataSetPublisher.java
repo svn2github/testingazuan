@@ -32,6 +32,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 
@@ -106,6 +107,13 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 			return new String("error");
 		}
 
+        // check if the request want to do the test but he must fill profile attributes
+        boolean fillProfAttr = false;
+        Object profAttToFillList = getAttributeFromModuleResponse(detailMR, SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL);
+        if(profAttToFillList != null) {
+        	fillProfAttr = true;
+        }
+		
 
 		boolean parametersToFill=false;
 		List parameters=null;

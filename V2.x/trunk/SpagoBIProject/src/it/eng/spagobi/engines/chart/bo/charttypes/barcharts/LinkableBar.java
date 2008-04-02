@@ -31,6 +31,8 @@ public class LinkableBar extends BarCharts {
 	String mode="";
 	String drillLabel="";
 	HashMap drillParameter=null;
+	String categoryUrlName="category";
+	String serieUrlname="series";
 
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
@@ -59,7 +61,15 @@ public class LinkableBar extends BarCharts {
 				SourceBean att = (SourceBean) iterator.next();
 				String name=(String)att.getAttribute("name");
 				String value=(String)att.getAttribute("value");
+				if(name.equalsIgnoreCase("categoryurlname")){
+					categoryUrlName=value;
+				}
+				else if(name.equalsIgnoreCase("seriesurlname")){
+					serieUrlname=value;
+				}
+				else{
 				drillParameter.put(name, value);
+				}
 				}
 			}
 			}
@@ -83,7 +93,12 @@ public class LinkableBar extends BarCharts {
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){
-			renderer.setItemURLGenerator(new MyCategoryUrlGenerator(rootUrl));
+			MyCategoryUrlGenerator mycatUrl=new MyCategoryUrlGenerator(rootUrl);
+			mycatUrl.setCategoryUrlLabel(categoryUrlName);
+			mycatUrl.setSerieUrlLabel(serieUrlname);
+			
+			renderer.setItemURLGenerator(mycatUrl);
+			
 		}
 		else{
 			renderer.setItemURLGenerator(new StandardCategoryURLGenerator(rootUrl));
@@ -196,6 +211,26 @@ public class LinkableBar extends BarCharts {
 
 	public void setDrillParameter(HashMap drillParameter) {
 		this.drillParameter = drillParameter;
+	}
+
+
+	public String getCategoryUrlName() {
+		return categoryUrlName;
+	}
+
+
+	public void setCategoryUrlName(String categoryUrlName) {
+		this.categoryUrlName = categoryUrlName;
+	}
+
+
+	public String getSerieUrlname() {
+		return serieUrlname;
+	}
+
+
+	public void setSerieUrlname(String serieUrlname) {
+		this.serieUrlname = serieUrlname;
 	}
 
 }

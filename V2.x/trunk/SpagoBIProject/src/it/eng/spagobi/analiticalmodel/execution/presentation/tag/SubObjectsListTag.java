@@ -93,8 +93,12 @@ public class SubObjectsListTag extends TagSupport {
     		IEngUserProfile profile = getCurrentUserProfile();
     		List subObjectsList = DAOFactory.getSubObjectDAO().getAccessibleSubObjects(biobjectId, profile);
 			if (subObjectsList == null || subObjectsList.size() == 0) {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("subobjectsBoxOpen", "false");
 				toReturn = "<div class='portlet-font'>" + msgBuilder.getMessage("SBIDev.docConf.subBIObject.nosubobjects", httpRequest) + "</div>";
 			} else {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("subobjectsBoxOpen", "true");
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append("<tr>\n");

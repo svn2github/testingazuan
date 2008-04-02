@@ -33,6 +33,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
@@ -113,8 +114,6 @@ public class ParametersGeneratorTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 	logger.debug("IN");
-
-	
 	
 	httpRequest = (HttpServletRequest) pageContext.getRequest();
 	requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
@@ -135,6 +134,10 @@ public class ParametersGeneratorTag extends TagSupport {
 	    logger.error("EMFUserError, reading roleName",e);
 	}
 	
+	// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+	if (hasParametersFormToBeDisplayed()) pageContext.setAttribute("parametersBoxOpen", "true");
+	else pageContext.setAttribute("parametersBoxOpen", "false");
+	
 	List parameters = obj.getBiObjectParameters();
 	boolean hasParametersToBeShown = false;
 	StringBuffer htmlStream = new StringBuffer();
@@ -152,37 +155,32 @@ public class ParametersGeneratorTag extends TagSupport {
 	    createSetRefreshCorrelationJSFunction(htmlStream);
 	    Iterator iter = parameters.iterator();
 	    while (iter.hasNext()) {
-		BIObjectParameter biparam = (BIObjectParameter) iter.next();
-		// 
-		createParamValueHiddenInput(htmlStream, biparam);
-		createParamChangedHiddenInput(htmlStream, biparam);
-		// the biparameter is not showed if one of the following
-		// conditions is safisfied:
-		// 1. the biparameter is transient and has valid values
-		// 2. the biparameter has a single value and has valid value
-		if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) || !biparam.hasValidValues()) {
-
-		    // opens the div tag for the parameters form only the first
-		    // time
-		    if (!hasParametersToBeShown) {
-			//htmlStream.append("<div class='div_detail_area_forms' style='width:"
-			//	+ (getParamLabelDivWidth() + 300) + "px;'>\n");
-			htmlStream.append("<div>\n");
-			hasParametersToBeShown = true;
-		    }
-
-		    createParameterLabelDiv(htmlStream, biparam);
-		    String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
-
-		    if (objParFatherLabel != null) {
-			String correlation = msgBuilder.getMessage(
-				"SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages", httpRequest);
-			correlation += " " + objParFatherLabel;
-			htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
-			htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
-		    }
-		    htmlStream.append("		</div>\n");
-		}
+			BIObjectParameter biparam = (BIObjectParameter) iter.next();
+			createParamValueHiddenInput(htmlStream, biparam);
+			createParamChangedHiddenInput(htmlStream, biparam);
+			// the biparameter is not showed if the biparameter is single value and has valid value
+			if (!isSingleValue(biparam) || !biparam.hasValidValues()) {
+			    // opens the div tag for the parameters form only the first
+			    // time
+			    if (!hasParametersToBeShown) {
+				//htmlStream.append("<div class='div_detail_area_forms' style='width:"
+				//	+ (getParamLabelDivWidth() + 300) + "px;'>\n");
+				htmlStream.append("<div>\n");
+				hasParametersToBeShown = true;
+			    }
+	
+			    createParameterLabelDiv(htmlStream, biparam);
+			    String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
+	
+			    if (objParFatherLabel != null) {
+				String correlation = msgBuilder.getMessage(
+					"SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages", httpRequest);
+				correlation += " " + objParFatherLabel;
+				htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
+				htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
+			    }
+			    htmlStream.append("		</div>\n");
+			}
 	    }
 
 	    if (hasParametersToBeShown) {
@@ -256,11 +254,11 @@ public class ParametersGeneratorTag extends TagSupport {
     
     
     /**
-     * Displays the save as viewpoin, execute and reset fields buttons if the parameters form must be shown
+     * Displays the save as viewpoint, execute and reset fields buttons if the parameters form must be shown
      * @param htmlStream The modified html stream
      */
     private void createParametersFormButtons(StringBuffer htmlStream) {
-    	boolean hasParametersFormToBeShown = hasParametersFormToBeShown();
+    	boolean hasParametersFormToBeShown = hasParametersFormToBeDisplayed();
     	if (hasParametersFormToBeShown) {
 	    	String executeMsg = msgBuilder.getMessage("sbi.execution.parametersForm.execute", httpRequest);
 	    	String saveMsg = msgBuilder.getMessage("sbi.execution.parametersForm.save", httpRequest);
@@ -410,24 +408,46 @@ public class ParametersGeneratorTag extends TagSupport {
     }
 
     /**
-     * Returns true if the parameters form must be shown, i.e. if at least one parameter has no values setted or has no valid values, false otherwise
-     * @return true if the parameters form must be shown, i.e. if at least one parameter has no values setted or has no valid values, false otherwise
+     * Returns true if the parameters form must be displayed:
+     * the parameters forms must not be displayed if the document has no parameters or each parameters has a single value
+     * or modality is SINGLE_OBJECT and each parameters has a valid value
+     * @return true if the parameters form must be displayed, false otherwise
      */
-    private boolean hasParametersFormToBeShown() {
-    	boolean toReturn = false;
+    private boolean hasParametersFormToBeDisplayed() {
     	BIObject obj = getBIObject();
     	List parameters = obj.getBiObjectParameters();
-    	if (parameters != null && parameters.size() > 0) {
-    	    Iterator iter = parameters.iterator();
+    	// if the document has no parameters returns false
+    	if (parameters == null || parameters.size() == 0) return false;
+    	
+    	// looks if the parameters are all single value
+    	boolean allParametersAreSingleValue = true;
+	    Iterator iter = parameters.iterator();
+	    while (iter.hasNext()) {
+	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+	    	if (!isSingleValue(biparam)) {
+	    		allParametersAreSingleValue = false;
+	    		break;
+	    	}
+	    }
+	    // if all parameters are single value, returns false
+	    if (allParametersAreSingleValue) return false;
+    	
+    	// looks if modality is single_object 
+	    if (modality.equalsIgnoreCase(BIObjectsModule.SINGLE_OBJECT)) {
+	    	boolean allParametersHaveValidValues = true;
+    	    iter = parameters.iterator();
     	    while (iter.hasNext()) {
     	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
-    	    	if ((!biparam.isTransientParmeters() && !isSingleValue(biparam)) || !biparam.hasValidValues()) {
-    	    		toReturn = true;
+    	    	if (!biparam.hasValidValues()) {
+    	    		allParametersHaveValidValues = false;
     	    		break;
     	    	}
     	    }
-    	}
-    	return toReturn;
+    	    return allParametersHaveValidValues;
+	    } else {
+	    	// if modality is not single_object, parameters form must be shown
+	    	return true;
+	    }
     }
     
     /**

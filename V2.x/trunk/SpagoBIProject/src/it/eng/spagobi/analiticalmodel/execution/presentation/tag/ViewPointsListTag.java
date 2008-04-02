@@ -96,8 +96,12 @@ public class ViewPointsListTag extends TagSupport {
     		List viewPointsList = null;
 			viewPointsList = DAOFactory.getViewpointDAO().loadAllViewpointsByObjID(biobjectId);
 			if (viewPointsList == null || viewPointsList.size() == 0) {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("viewpointsBoxOpen", "false");
 				toReturn = "<div class='portlet-font'>" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.noViewPoints", httpRequest) + "</div>";
 			} else {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("viewpointsBoxOpen", "true");
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append(" <tr>\n");

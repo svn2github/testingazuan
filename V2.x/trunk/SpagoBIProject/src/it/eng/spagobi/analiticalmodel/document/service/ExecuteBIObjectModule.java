@@ -1660,17 +1660,6 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			execute(obj, null, null, response);
 			response.setAttribute("NO_PARAMETERS", "TRUE");
 		}
-		
-		//sets transient properties to false
-		List lstParams = obj.getBiObjectParameters();
-		for (int i=0; i<lstParams.size(); i++){
-			BIObjectParameter boPar = (BIObjectParameter)lstParams.get(i);
-			String strLovResult = boPar.getLovResult();
-			SourceBean tmpSB = SourceBean.fromXMLString(strLovResult);
-			List totValues = tmpSB.getAttributeAsList("ROW");
-			if (totValues.size() > 1)
-				boPar.setTransientParmeters(false);
-		}
 		logger.debug("OUT");
 	}
 

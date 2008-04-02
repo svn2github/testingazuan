@@ -95,8 +95,12 @@ public class SnapshotsListTag extends TagSupport {
     		IEngUserProfile profile = getCurrentUserProfile();
     		List snapshotsList = DAOFactory.getSnapshotDAO().getSnapshots(biobjectId);
 			if (snapshotsList == null || snapshotsList.size() == 0) {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("snapshotsBoxOpen", "false");
 				toReturn = "<div class='portlet-font'>" + msgBuilder.getMessage("SBIDev.docConf.snapshots.nosnapshots", httpRequest) + "</div>";
 			} else {
+				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
+				pageContext.setAttribute("snapshotsBoxOpen", "false");
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append("	<thead>\n");

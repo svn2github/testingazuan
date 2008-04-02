@@ -20,7 +20,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
+<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.CONTSTRAINT_MANAGEMENT)||userProfile.isAbleToExecuteAction(SpagoBIConstants.CONTSTRAINT_VIEW)) {%>
 
 <spagobi:list moduleName="ListModalitiesChecksModule"/>
 <br/>
 <spagobi:list moduleName="ListPredefinedChecksModule" filter="disabled"/>
+<% } %>

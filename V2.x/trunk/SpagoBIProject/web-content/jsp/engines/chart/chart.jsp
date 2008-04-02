@@ -209,7 +209,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 
 	HashMap rootPar=new HashMap();
 	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
-		
+			
 		rootPar.put("PAGE","DirectExecutionPage");
 		rootPar.put("MODULE","DirectExecutionModule");
 		//rootPar.put("OPERATION","Execute");

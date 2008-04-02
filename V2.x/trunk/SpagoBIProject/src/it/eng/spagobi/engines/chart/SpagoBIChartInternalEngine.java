@@ -17,6 +17,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import org.apache.axis.handlers.ErrorHandler;
@@ -111,6 +112,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 		//		**************get the template*****************
 		logger.debug("getting template");
+		SourceBean serviceRequest=requestContainer.getServiceRequest();
 
 		
 		try{
@@ -148,6 +150,19 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			// configure the chart with template parameters
 			sbi.configureChart(content);
 			boolean linkable=sbi.isLinkable();
+			if(linkable){
+			String serieurlname="";
+			String categoryurlname="";
+			
+			if(serviceRequest.getAttribute("serieurlname")!=null){
+				serieurlname=(String)serviceRequest.getAttribute("serieurlname");
+				((LinkableBar)sbi).setSerieUrlname(serieurlname);
+			}
+			if(serviceRequest.getAttribute("categoryurlname")!=null){
+				categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
+				((LinkableBar)sbi).setCategoryUrlName(categoryurlname);
+			}
+			}
 			
 			//changeView=new Boolean(sbi.isChangeView());
 
@@ -175,7 +190,6 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			
 			
 			//in the re-drawing case in document-composition check if serie or categories have been set
-			SourceBean serviceRequest=requestContainer.getServiceRequest();
 			String serie=null;
 			String category=null;
 			if(serviceRequest.getAttribute("serie")!=null)

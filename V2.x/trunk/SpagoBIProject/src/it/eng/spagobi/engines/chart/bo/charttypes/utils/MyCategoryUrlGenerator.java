@@ -7,12 +7,15 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 
 	private String serieUrlLabel="series";
 	private String categoryUrlLabel="catergory";
+	private boolean document_composition=false;
 
 
 	public String generateURL(CategoryDataset dataset, int series, int category) {
 		// TODO Auto-generated method stub
 		String URL=super.generateURL(dataset, series, category);
-		URL=URL+"');";
+		if(document_composition){
+			URL=URL+"');";
+		}
 
 		if(serieUrlLabel==null){serieUrlLabel="series";}
 		if(categoryUrlLabel==null){categoryUrlLabel="category";}
@@ -60,6 +63,14 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 
 	public void setCategoryUrlLabel(String categoryUrlLabel) {
 		this.categoryUrlLabel = categoryUrlLabel;
+	}
+
+	public boolean isDocument_composition() {
+		return document_composition;
+	}
+
+	public void setDocument_composition(boolean document_composition) {
+		this.document_composition = document_composition;
 	}
 
 

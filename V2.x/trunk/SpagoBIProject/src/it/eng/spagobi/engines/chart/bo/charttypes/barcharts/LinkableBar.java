@@ -1,10 +1,8 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 
 import java.awt.Color;
@@ -31,8 +29,8 @@ public class LinkableBar extends BarCharts {
 	String mode="";
 	String drillLabel="";
 	HashMap drillParameter=null;
-	String categoryUrlName="category";
-	String serieUrlname="series";
+	String categoryUrlName="";
+	String serieUrlname="";
 
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
@@ -92,17 +90,21 @@ public class LinkableBar extends BarCharts {
 
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
-		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){
-			MyCategoryUrlGenerator mycatUrl=new MyCategoryUrlGenerator(rootUrl);
-			mycatUrl.setCategoryUrlLabel(categoryUrlName);
+		boolean document_composition=false;
+		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+			
+		
+		MyCategoryUrlGenerator mycatUrl=new MyCategoryUrlGenerator(rootUrl);
+		mycatUrl.setDocument_composition(document_composition);
+		mycatUrl.setCategoryUrlLabel(categoryUrlName);
 			mycatUrl.setSerieUrlLabel(serieUrlname);
 			
 			renderer.setItemURLGenerator(mycatUrl);
 			
-		}
+/*		}
 		else{
 			renderer.setItemURLGenerator(new StandardCategoryURLGenerator(rootUrl));
-		}
+		}*/
 
 		CategoryPlot plot = new CategoryPlot((CategoryDataset)dataset, categoryAxis, valueAxis, renderer);
 		plot.setOrientation(PlotOrientation.VERTICAL);

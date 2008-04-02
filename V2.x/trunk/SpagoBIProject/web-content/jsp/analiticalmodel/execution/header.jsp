@@ -485,19 +485,37 @@ if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIC
 		//next variable is defined into documentcomposition.js
 		for(var docMaster in asUrls){
 			var iframeId = "iframe_" + docMaster.substring(docMaster.indexOf('|')+1);
-			var singleIframe = document.getElementById(iframeId);			
-			if (!isMoz()) {
-				singleIframe.focus();
-				singleIframe.print();
-			} else {
-				window.frames[iframeId].focus();
-				window.frames[iframeId].print();
-			} 			
+			var singleIframe = document.getElementById(iframeId);		
+			var msg = '<spagobi:message key="sbi.execution.printDocument" />';	
+			if (confirm(msg + " '" + docMaster.substring(docMaster.indexOf('|')+1) +"'?")){
+				if (!isMoz()) {
+					singleIframe.focus();
+					singleIframe.print();
+				} else {
+					window.frames[iframeId].focus();
+					window.frames[iframeId].print();
+				} 
+			}		
+			/*	
+			Ext.Msg.confirm("Print Document", msg + " " + docMaster.substring(docMaster.indexOf('|')+1) +"?", 
+					function(btn, singleIframe, iframeId){
+						if (btn == 'yes'){
+							if (!isMoz()) {
+								singleIframe.focus();
+								singleIframe.print();
+							} else {
+								window.frames[iframeId].focus();
+								window.frames[iframeId].print();
+							} 
+						}	
+					});
+					*/
 		}
-		return;
 	}
 	
-	
+	function processResult(){
+		
+	}
 	</script>
 	<%
 } else { %>

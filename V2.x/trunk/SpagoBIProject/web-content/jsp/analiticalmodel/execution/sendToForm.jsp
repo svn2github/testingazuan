@@ -282,7 +282,6 @@ function somethingWentWrongSendTo() {
 }
     
 function showSendToResult(response) {
-	alert(response);
 	mstd = document.getElementById('messageSendToDiv');
 	mess = getMessageFromCode(response);
 	mstd.innerHTML = mess;

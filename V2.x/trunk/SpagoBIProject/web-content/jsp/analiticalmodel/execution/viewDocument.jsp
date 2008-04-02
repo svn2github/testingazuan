@@ -80,7 +80,8 @@ uuid = uuid.replaceAll("-", "");
 <div style="display:none"><div id="parametersContentEl<%= uuid %>"><spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/></div></div>
 <div id="popout_Parameters<%= uuid %>" class="popout"></div>
 <script>
-createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'parametersContentEl<%= uuid %>', 'popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', true);
+createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'parametersContentEl<%= uuid %>', 
+		'popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', <%= pageContext.getAttribute("parametersBoxOpen") %>);
 </script>
 <%-- End parameters --%>
 
@@ -88,7 +89,8 @@ createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'paramete
 <div style="display:none"><div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 <script>
-createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', false);
+createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 
+		'popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', <%= pageContext.getAttribute("viewpointsBoxOpen") %>);
 </script>
 <%-- End viewPoints --%>
 
@@ -96,7 +98,8 @@ createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpoin
 <div style="display:none"><div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_SubObject<%= uuid %>" class="popout"></div>
 <script>
-createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
+createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 
+		'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', <%= pageContext.getAttribute("subobjectsBoxOpen") %>);
 </script>
 <%-- End SubObjects --%>
 
@@ -104,7 +107,8 @@ createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjec
 <div style="display:none"><div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 <script>
-createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);
+createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 
+		'popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', <%= pageContext.getAttribute("snapshotsBoxOpen") %>);
 </script>
 <%-- End Snapshots --%>
 

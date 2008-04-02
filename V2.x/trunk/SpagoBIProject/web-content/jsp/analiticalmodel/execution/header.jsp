@@ -504,47 +504,43 @@ if (toolbarIsVisible) {
 		}
 		</script>
 		<%
-} else if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine")) {
-	%>
-	<script>
-	function print<%= uuid %>() {
-		//next variable is defined into documentcomposition.js
-		for(var docMaster in asUrls){
-			var iframeId = "iframe_" + docMaster.substring(docMaster.indexOf('|')+1);
-			var singleIframe = document.getElementById(iframeId);		
-			var msg = '<spagobi:message key="sbi.execution.printDocument" />';	
-			if (confirm(msg + " '" + docMaster.substring(docMaster.indexOf('|')+1) +"'?")){
-				if (!isMoz()) {
-					singleIframe.focus();
-					singleIframe.print();
-				} else {
-					window.frames[iframeId].focus();
-					window.frames[iframeId].print();
-				} 
-			}		
-			/*	
-			Ext.Msg.confirm("Print Document", msg + " " + docMaster.substring(docMaster.indexOf('|')+1) +"?", 
-					function(btn, singleIframe, iframeId){
-						if (btn == 'yes'){
-							if (!isMoz()) {
-								singleIframe.focus();
-								singleIframe.print();
-							} else {
-								window.frames[iframeId].focus();
-								window.frames[iframeId].print();
-							} 
-						}	
-					});
-					*/
+	} else if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine")) {
+		%>
+		<script>
+		function print<%= uuid %>() {
+			//next variable is defined into documentcomposition.js
+			for(var docMaster in asUrls){
+				var iframeId = "iframe_" + docMaster.substring(docMaster.indexOf('|')+1);
+				var singleIframe = document.getElementById(iframeId);		
+				var msg = '<spagobi:message key="sbi.execution.printDocument" />';	
+				if (confirm(msg + " '" + docMaster.substring(docMaster.indexOf('|')+1) +"'?")){
+					if (!isMoz()) {
+						singleIframe.focus();
+						singleIframe.print();
+					} else {
+						window.frames[iframeId].focus();
+						window.frames[iframeId].print();
+					} 
+				}		
+				/*	
+				Ext.Msg.confirm("Print Document", msg + " " + docMaster.substring(docMaster.indexOf('|')+1) +"?", 
+						function(btn, singleIframe, iframeId){
+							if (btn == 'yes'){
+								if (!isMoz()) {
+									singleIframe.focus();
+									singleIframe.print();
+								} else {
+									window.frames[iframeId].focus();
+									window.frames[iframeId].print();
+								} 
+							}	
+						});
+						*/
+			}
 		}
-	}
-	
-	function processResult(){
-		
-	}
-	</script>
-	<%
-} else { %>
+		</script>
+		<%
+	} else { %>
 
 		<script>
 		function print<%= uuid %>() {

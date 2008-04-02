@@ -478,8 +478,29 @@ if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIC
 	}
 	</script>
 	<%
-} else {
+} else if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine")) {
 	%>
+	<script>
+	function print<%= uuid %>() {
+		//next variable is defined into documentcomposition.js
+		for(var docMaster in asUrls){
+			var iframeId = "iframe_" + docMaster.substring(docMaster.indexOf('|')+1);
+			var singleIframe = document.getElementById(iframeId);			
+			if (!isMoz()) {
+				singleIframe.focus();
+				singleIframe.print();
+			} else {
+				window.frames[iframeId].focus();
+				window.frames[iframeId].print();
+			} 			
+		}
+		return;
+	}
+	
+	
+	</script>
+	<%
+} else { %>
 	<script>
 	function print<%= uuid %>() {
 		if (!isMoz()) {

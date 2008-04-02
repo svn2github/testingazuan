@@ -242,9 +242,10 @@ function sendTo() {
     url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
     pars = "ACTION_NAME=SEND_TO_ACTION&";
     <%
-	Enumeration parKeys = request.getAttributeNames();
+	Enumeration parKeys = request.getParameterNames();
 	while(parKeys.hasMoreElements()) {
 		String parkey = parKeys.nextElement().toString();
+		if (parkey.equals("ACTION_NAME")) continue;
 		String parvalue = request.getParameter(parkey);
 		%>
 		pars += "&<%=parkey%>=<%=parvalue%>";
@@ -281,6 +282,7 @@ function somethingWentWrongSendTo() {
 }
     
 function showSendToResult(response) {
+	alert(response);
 	mstd = document.getElementById('messageSendToDiv');
 	mess = getMessageFromCode(response);
 	mstd.innerHTML = mess;

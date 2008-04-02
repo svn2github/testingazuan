@@ -862,7 +862,7 @@ function isBIObjectFormChanged() {
 	var longDescription = document.getElementById('longDescription').value;
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
-	var Keywords = document.getElementById('Keywords').value;
+
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
 		|| (name != '<%=initialBIObject.getName()%>')
@@ -877,8 +877,7 @@ function isBIObjectFormChanged() {
 		
 		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'")%>')
 		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'")%>')
-		|| (language != '<%=initialBIObject.getLanguage()%>')
-		|| (Keywords != '<%=initialBIObject.getLanguage()%>')){
+		|| (language != '<%=initialBIObject.getLanguage()%>')){
 			
 		biobjFormModified = 'true';
 	}

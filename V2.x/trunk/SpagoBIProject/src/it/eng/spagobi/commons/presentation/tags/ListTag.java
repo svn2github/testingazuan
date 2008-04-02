@@ -672,29 +672,26 @@ public class ListTag extends TagSupport
 					String parameterName = (String) condition.getAttribute("NAME");
 					String parameterScope = (String) condition.getAttribute("SCOPE");
 					String parameterValue = (String) condition.getAttribute("VALUE");
+					String functionality = (String) condition.getAttribute("user_functionality");
 					String inParameterValue = null;
 					Object parameterValueObject = null;
 					
-					if (parameterScope != null && parameterScope.equalsIgnoreCase("USER_PROFILE")) {
+					if (functionality != null && !functionality.equalsIgnoreCase("")) {
 						IEngUserProfile profile = (IEngUserProfile) RequestContainer.getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-						Collection c;
+						
 						try {
-							c = profile.getRoles();
-							Iterator i = c.iterator();
-							while (i.hasNext()) {
-								String rolename = (String) i.next();
-								Role role = DAOFactory.getRoleDAO().loadByName(rolename);
-								if (role.getRoleTypeCD().equals(parameterValue))return conditionVerified;
+							if (!profile.isAbleToExecuteAction(functionality)){
+								conditionVerified = false;
+								break;
 							}
-							conditionVerified = false;
-							break;
+							else {
+								continue;
+							}
+							
 						} catch (EMFInternalError e) {
 							e.printStackTrace();
 							logger.error(e);
-						} catch (EMFUserError e) {
-							e.printStackTrace();
-							logger.error(e);
-						}
+						} 
 					}
 					
 					

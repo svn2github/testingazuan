@@ -295,7 +295,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    		singleparchunks = parchunk.split('=');
 	    		key = singleparchunks[0];
 	    		value = singleparchunks[1];
-	    		if(key=='dayRepetition') {
+	    		if(key=='numRepetition') {
 	    			if(value!='0') {
 	    				$('month_selection_interval').checked = true;
 	    				selectOption($('monthrep_n'), value);

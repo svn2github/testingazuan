@@ -136,8 +136,10 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    execCtrl.setBiObject(biobj);
 	    // fill parameters
 	    execCtrl.refreshParameters(biobj, queryStr);
+	    
 	    // exec the document only if all its parameters are filled
-	    if (execCtrl.directExecution()) {
+	    // Why???? if a parameter is not mandatory and the user did not fill it????
+	    //if (execCtrl.directExecution()) {
 		ExecutionProxy proxy = new ExecutionProxy();
 		proxy.setBiObject(biobj);
 		
@@ -174,7 +176,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		documentBytes = proxy.exec(profile);
 		returnedContentType = proxy.getReturnedContentType();
 		fileextension = proxy.getFileExtensionFromContType(returnedContentType);
-	    }
+	    //} end if (execCtrl.directExecution()) {
 	    // SEND MAIL
 	    ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean mailProfSB = (SourceBean) config.getFilteredSourceBeanAttribute("MAIL.PROFILES.PROFILE", "name",
@@ -232,7 +234,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    // create the second message part
 	    MimeBodyPart mbp2 = new MimeBodyPart();
 	    // attach the file to the message
-	    SchedulerDataSource sds = new SchedulerDataSource(documentBytes, returnedContentType, "result."
+	    SchedulerDataSource sds = new SchedulerDataSource(documentBytes, returnedContentType, "result"
 		    + fileextension);
 	    mbp2.setDataHandler(new DataHandler(sds));
 	    mbp2.setFileName(sds.getName());

@@ -2,6 +2,9 @@ package it.eng.spagobi.engines.chart;
 
 
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
@@ -162,6 +165,24 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
 				((LinkableBar)sbi).setCategoryUrlName(categoryurlname);
 			}
+			//check if there are other parameters whose value is in the request
+			
+			
+			HashMap drillParameters=new HashMap();
+				drillParameters=(HashMap)((LinkableBar)sbi).getDrillParameter().clone();
+			
+			for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+				String name = (String) iterator.next();
+				if(serviceRequest.getAttribute(name)!=null){
+					String value=(String)serviceRequest.getAttribute(name);
+					((LinkableBar)sbi).getDrillParameter().remove(name);
+					((LinkableBar)sbi).getDrillParameter().put(name, value);
+			}
+				
+			}
+			
+			
+			
 			}
 			
 			//changeView=new Boolean(sbi.isChangeView());

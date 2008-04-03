@@ -235,4 +235,16 @@ public class LinkableBar extends BarCharts {
 		this.serieUrlname = serieUrlname;
 	}
 
+	public String getDocument_Parameters(HashMap drillParameters) {
+		String document_parameter="";
+		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			String value=(String)drillParameters.get(name);
+			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
+				document_parameter+="%26"+name+"%3D"+value;
+			}
+		}
+		return document_parameter;
+	}
+	
 }

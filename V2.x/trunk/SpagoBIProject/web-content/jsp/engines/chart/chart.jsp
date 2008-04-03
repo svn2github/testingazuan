@@ -209,15 +209,21 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 
 	HashMap rootPar=new HashMap();
 	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
-			
+		
+		String rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
+		if(!rootDocParameter.equals("")){
+		rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
+		
+		//rootPar.put("PAGE","ExecuteBIObjectPage");
 		rootPar.put("PAGE","DirectExecutionPage");
-		rootPar.put("MODULE","DirectExecutionModule");
-		//rootPar.put("OPERATION","Execute");
+		//rootPar.put("MODULE","DirectExecutionModule");
+		rootPar.put("OPERATION","Execute");
+		//rootPar.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
 		rootPar.put("USERNAME",userId);
 
 		//get from the linkableBar the label and eventually the parameters to pass
 		if(((LinkableBar)sbi).getDrillLabel()!=null)
-					rootPar.put("DOCUMENT_LABEL",((LinkableBar)sbi).getDrillLabel());
+					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkableBar)sbi).getDrillLabel());
 		
 		//for each parameter needed
 		HashMap parameters=((LinkableBar)sbi).getDrillParameter();

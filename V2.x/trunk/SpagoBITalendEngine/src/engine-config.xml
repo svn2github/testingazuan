@@ -21,8 +21,8 @@
 	<JNDI_THREAD_MANAGER>java:/comp/env/wm/SpagoWorkManager</JNDI_THREAD_MANAGER>
 	
 	<!-- General Properties -->
-	<spagobi_autopublish>false</spagobi_autopublish>
-	<spagobi_functionality_label>GENERAL_MANAGEMENT</spagobi_functionality_label>
+	<spagobi_autopublish>true</spagobi_autopublish>
+	<spagobi_functionality_label>Report</spagobi_functionality_label>
 
 	
 	

@@ -35,7 +35,9 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipException;
@@ -239,20 +241,34 @@ public class JobUploadService extends HttpServlet {
 		
 		String user = "biadmin";
 		String password = "biadmin";
-		String label = jobName.toUpperCase();
+		Date now = new Date();
+		String date = new Long (now.getTime()).toString();
+		String label = "ETL_"+date;
 		String name = jobName ;
 		String description = language + " job defined in " + projectName  + " project";
-		boolean encrypt = false;
-		boolean visible = true;
+		String encrypt = "false";
+		String visible = "true";
 		String functionalitiyCode = config.getSpagobiTargetFunctionalityLabel();		
 		String type = "ETL";
 		String state = "DEV";
 		
+		 HashMap<String, Object> attributes = new HashMap<String, Object>();
+		attributes.put("TEMPLATE", templateBase64Coded);
+		attributes.put("LABEL", label);
+		attributes.put("NAME", name);
+		attributes.put("DESCRIPTION", description);
+		attributes.put("ENCRYPTED", encrypt);
+		attributes.put("VISIBLE", visible);
+		attributes.put("TYPE", type);
+		attributes.put("FUNCTIONALITYCODE", functionalitiyCode);	
+		attributes.put("STATE", state);
+		attributes.put("USER", user);
 		
 		try {
-		    session.setAttribute("", "");
+			//String spagobiurl = config.getSpagobiUrl();
+		    //session.setAttribute("", "");
 		    ContentServiceProxy contentProxy=new ContentServiceProxy(user,session);
-		    //contentProxy.publishTemplate(attributes);
+		    contentProxy.publishTemplate(attributes);
 			//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

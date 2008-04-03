@@ -213,6 +213,10 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		String rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
 		if(!rootDocParameter.equals("")){
 		rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
+		String drillLabel=((LinkableBar)sbi).getDrillLabel();
+		if(drillLabel!=null && drillLabel!=""){
+			rootPar.put("DOCUMENT_LABEL",drillLabel);
+		}
 		
 		//rootPar.put("PAGE","ExecuteBIObjectPage");
 		rootPar.put("PAGE","DirectExecutionPage");
@@ -236,7 +240,23 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 			}
 		}*/
 
-		String  rootUrl=urlBuilder.getUrl(request,rootPar);
+		//New Way Web
+	boolean first=true;
+		String rootUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?";
+		for(Iterator iterator=rootPar.keySet().iterator(); iterator.hasNext();){
+			String name = (String) iterator.next();			
+			String value=(String)rootPar.get(name);
+			if(first){
+					first=false;
+					rootUrl=rootUrl+name+"="+value;
+			}
+			else{
+				rootUrl=rootUrl+"&"+name+"="+value;	
+			}
+		}
+		
+// Old way portlet		
+		//String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	
 		String completeUrl=rootUrl;
 	
@@ -302,7 +322,6 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
 		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
 		refreshUrlPars.put("OBJECT_ID",documentid);
-		
 	}
 	else
 	{

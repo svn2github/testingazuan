@@ -196,7 +196,9 @@ public class ParametersGeneratorTag extends TagSupport {
 	    }
 	    closeParametersForm(htmlStream);
 	} else {
+		openParametersForm(htmlStream);
 	    createNoParametersMessage(htmlStream);
+	    closeParametersForm(htmlStream);
 	}
 
 	try {
@@ -999,14 +1001,12 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("		<span class='portlet-font' >\n");
 	htmlStream.append("			"
 		+ msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition1", "messages", httpRequest) + "\n");
-	htmlStream.append("			<a href=\"javascript:document.getElementById('paramsValueForm" + requestIdentity
+	htmlStream.append("			<a href=\"javascript:document.getElementById('parametersForm" + requestIdentity
 		+ "').submit();\"\n");
 	htmlStream.append("				class='portlet-form-field-label'\n");
 	htmlStream.append("				onmouseover=\"this.style.color='#9297ac';\"\n");
-	htmlStream.append("				onmouseout=\"this.style.color='#074B88';\">\n");
-	htmlStream.append("				"
-		+ msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", httpRequest) + "\n");
-	htmlStream.append("			</a>\n");
+	htmlStream.append("				onmouseout=\"this.style.color='#074B88';\">");
+	htmlStream.append(msgBuilder.getMessage("SBIDev.docConf.subBIObject.newComposition2", "messages", httpRequest) + "</a>\n");
 	htmlStream.append("		</span>\n");
 	htmlStream.append("		<br/>\n");
 	htmlStream.append("		<br/>\n");

@@ -212,18 +212,21 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		
 		String rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
 		if(!rootDocParameter.equals("")){
-		rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
+		//rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
+		rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);}
 		String drillLabel=((LinkableBar)sbi).getDrillLabel();
 		if(drillLabel!=null && drillLabel!=""){
 			rootPar.put("DOCUMENT_LABEL",drillLabel);
 		}
 		
-		//rootPar.put("PAGE","ExecuteBIObjectPage");
-		rootPar.put("PAGE","DirectExecutionPage");
+		rootPar.put("PAGE","ExecuteBIObjectPage");
+		rootPar.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");
+		rootPar.put("LIGHT_NAVIGATOR_DISABLED","TRUE");
+		//anto rootPar.put("PAGE","DirectExecutionPage");
 		//rootPar.put("MODULE","DirectExecutionModule");
-		rootPar.put("OPERATION","Execute");
+		//anto rootPar.put("OPERATION","Execute");
 		//rootPar.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
-		rootPar.put("USERNAME",userId);
+		//anto rootPar.put("USERNAME",userId);
 
 		//get from the linkableBar the label and eventually the parameters to pass
 		if(((LinkableBar)sbi).getDrillLabel()!=null)
@@ -241,8 +244,10 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		}*/
 
 		//New Way Web
+	/*
 	boolean first=true;
 		String rootUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?";
+		
 		for(Iterator iterator=rootPar.keySet().iterator(); iterator.hasNext();){
 			String name = (String) iterator.next();			
 			String value=(String)rootPar.get(name);
@@ -254,9 +259,9 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				rootUrl=rootUrl+"&"+name+"="+value;	
 			}
 		}
-		
+		*/
 // Old way portlet		
-		//String  rootUrl=urlBuilder.getUrl(request,rootPar);
+		String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	
 		String completeUrl=rootUrl;
 	

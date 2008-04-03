@@ -289,8 +289,11 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		}
 
 		// get parameters statically defined in portlet preferences
-		String userProvidedParametersStr = (String) session
-				.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		String userProvidedParametersStr = (String) request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		if (userProvidedParametersStr == null)
+			userProvidedParametersStr = (String) session.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		
+		//String userProvidedParametersStr = (String) session.getAttribute(ObjectsTreeConstants.PARAMETERS);
 		logger.debug("using parameters " + userProvidedParametersStr);
 
 		// define the variable for execution role

@@ -241,8 +241,10 @@ public class LinkableBar extends BarCharts {
 			String name = (String) iterator.next();
 			String value=(String)drillParameters.get(name);
 			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				document_parameter+="%26"+name+"%3D"+value;
+				//document_parameter+="%26"+name+"%3D"+value;
+				document_parameter+="&"+name+"="+value;
 			}
+			
 		}
 		return document_parameter;
 	}

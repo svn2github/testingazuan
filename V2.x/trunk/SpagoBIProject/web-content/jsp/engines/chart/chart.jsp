@@ -225,7 +225,8 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		if(((LinkableBar)sbi).getDrillLabel()!=null)
 					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkableBar)sbi).getDrillLabel());
 		
-		//for each parameter needed
+		//for each parameter needed (MOVED IN DOCUMENT_PARAMETER)
+		/*
 		HashMap parameters=((LinkableBar)sbi).getDrillParameter();
 		if(parameters!=null){
 			for(Iterator iterator=parameters.keySet().iterator(); iterator.hasNext();){
@@ -233,7 +234,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				String value=(String)parameters.get(name);
 				rootPar.put(name,value);
 			}
-		}
+		}*/
 
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
 	

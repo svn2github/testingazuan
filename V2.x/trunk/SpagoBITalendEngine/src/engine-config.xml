@@ -23,8 +23,11 @@
 	<!-- General Properties -->
 	<spagobi_autopublish>true</spagobi_autopublish>
 	<spagobi_functionality_label>Report</spagobi_functionality_label>
-
 	
+	 <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
+ 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
+ 	 <BACKEND_SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>	
 	
 	<!-- Properties needed to run perl script-->
 	<perl_install_dir>C:/Programmi/Talend/TOS-2.0.0M2/TOS-Win32-r2461-V2.0.0M2/perl</perl_install_dir>

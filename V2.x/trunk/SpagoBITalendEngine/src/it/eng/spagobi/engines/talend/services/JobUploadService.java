@@ -229,7 +229,7 @@ public class JobUploadService extends HttpServlet {
 	/*
 	 * TODO: implementare questa funzione tramite una API  WEB Service
 	 */
-	private void publishOnSpagoBI(HttpSession session,String language, String projectName, String jobName) throws IOException {
+	private void publishOnSpagoBI(HttpSession session, String language, String projectName, String jobName) throws IOException {
 		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
 		
 		String template = getTemplate(language, projectName, jobName);
@@ -243,7 +243,8 @@ public class JobUploadService extends HttpServlet {
 		String password = "biadmin";
 		Date now = new Date();
 		String date = new Long (now.getTime()).toString();
-		String label = "ETL_"+date;
+		String label = jobName.toUpperCase();
+		if (label.length() > 20) label = label.substring(0,19);
 		String name = jobName ;
 		String description = language + " job defined in " + projectName  + " project";
 		String encrypt = "false";
@@ -265,8 +266,9 @@ public class JobUploadService extends HttpServlet {
 		attributes.put("USER", user);
 		
 		try {
-			//String spagobiurl = config.getSpagobiUrl();
-		    //session.setAttribute("", "");
+			
+			String spagobiurl = config.getSpagobiUrl();
+		    session.setAttribute("BACK_END_SPAGOBI_CONTEXT", spagobiurl);
 		    ContentServiceProxy contentProxy=new ContentServiceProxy(user,session);
 		    contentProxy.publishTemplate(attributes);
 			//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);

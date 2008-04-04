@@ -55,8 +55,6 @@ public class SpagoBITalendEngineConfig {
 	public File getRuntimeRepositoryRootDir() {
 	    
 	        SourceBean config = EnginConf.getInstance().getConfig();
-
-	        //String dirName = (String)config.getAttribute("RUNTIMEREPOSITORY_ROOT_DIR");
 	        String dirName = (String)config.getCharacters("RUNTIMEREPOSITORY_ROOT_DIR");
 	        File dir = null;
 		if( !isAbsolutePath(dirName) )  {
@@ -72,6 +70,13 @@ public class SpagoBITalendEngineConfig {
         SourceBean config = EnginConf.getInstance().getConfig();
         label= (String)config.getCharacters("spagobi_functionality_label");
 		return label;
+	}
+	
+	public String getSpagobiUrl() {
+		String url = null;
+        SourceBean config = EnginConf.getInstance().getConfig();
+        url= (String)config.getCharacters("spagobi_context_path");
+		return url;
 	}
 	
 	public boolean isAutoPublishActive() {

@@ -178,7 +178,7 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	List filesToBeDeleted = new ArrayList();
 	    	filesToBeDeleted.add(contextFileDir);
 	    	
-	    	WorkManager wm=new WorkManager();
+	    	WorkManager wm = new WorkManager();
 	    	TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, 
     			auditAccessUtils, auditId, parameters,session);
 	    	TalendWorkListener listener=new TalendWorkListener();

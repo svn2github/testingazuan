@@ -55,7 +55,7 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="compile" depends="svn.checkout" description="compile the source" >
     <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
-    <javac srcdir="${src}" destdir="${build}">
+    <javac srcdir="${src}" destdir="${build}" debug="on">
       <classpath refid="jar.classpath"/>
     </javac> 
   </target>

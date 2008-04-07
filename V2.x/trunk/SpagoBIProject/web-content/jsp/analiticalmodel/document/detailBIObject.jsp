@@ -862,8 +862,6 @@ function isBIObjectFormChanged() {
 	var longDescription = document.getElementById('longDescription').value;
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
-	alert(longDescription);
-	alert(language);
 
   
 	if ((label != '<%=initialBIObject.getLabel()%>')

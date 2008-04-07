@@ -55,14 +55,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @return Content
      */
     public Content readTemplate(String document) {
-	logger.debug("IN");
+	logger.debug("IN.document="+document);
 	try {
 	    return lookUp().readTemplate(readTicket(), userId, document);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }
@@ -79,7 +79,7 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }
@@ -99,7 +99,7 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;	
     }
@@ -109,14 +109,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @return Content
      */
     public Content readSubObjectContent(String nameSubObject){
-	logger.debug("IN");
+	logger.debug("IN.nameSubObject="+nameSubObject);
 	try {
 	    return lookUp().readSubObjectContent(readTicket(), userId, nameSubObject);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }
@@ -130,14 +130,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @return  String
      */
     public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
-	logger.debug("IN");
+	logger.debug("IN.documentiId="+documentiId);
 	try {
 	    return lookUp().saveSubObject(readTicket(), userId, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }
@@ -149,14 +149,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String saveObjectTemplate(String documentiId,String templateName,String content){
-	logger.debug("IN");
+	logger.debug("IN.documentiId="+documentiId);
 	try {
 	    return lookUp().saveObjectTemplate(readTicket(), userId, documentiId, templateName, content);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }
@@ -176,7 +176,7 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    logger.error("Error during service execution",e);
 
 	}finally{
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
 	return null;
     }

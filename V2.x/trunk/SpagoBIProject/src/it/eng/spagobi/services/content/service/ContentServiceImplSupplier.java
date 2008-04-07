@@ -24,6 +24,8 @@ public class ContentServiceImplSupplier {
 
     public Content readTemplate(String user, String document) throws SecurityException, EMFUserError, EMFInternalError {
 	logger.debug("IN");
+	logger.debug("user="+user);
+	logger.debug("document="+document);
 	BIObject biobj = null;
 	Content content = new Content();
 	try {
@@ -35,18 +37,22 @@ public class ContentServiceImplSupplier {
 	    IEngUserProfile profile = null;
 	    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	    try {
-		SpagoBIUserProfile userProfile = supplier.createUserProfile(user);
-		profile = new UserProfile(userProfile);
+      		SpagoBIUserProfile userProfile = supplier.createUserProfile(user);
+      		profile = new UserProfile(userProfile);
 	    } catch (Exception e) {
-		logger.error("Reading user information... ERROR", e);
-		throw new SecurityException();
+    		logger.error("Reading user information... ERROR", e);
+    		throw new SecurityException();
 	    }
 
 	    ObjectsAccessVerifier.canSee(biobj, profile);
 
 	    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
 	    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
-	    byte[] template = temp.getContent();
+	    if (temp==null){
+	       logger.warn("The template is NULL...");
+	       throw new EMFUserError();
+      } 
+      byte[] template = temp.getContent();
 
 	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
 	    content.setContent(bASE64Encoder.encode(template));

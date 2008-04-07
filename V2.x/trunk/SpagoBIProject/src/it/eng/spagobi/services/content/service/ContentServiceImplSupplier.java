@@ -50,7 +50,7 @@ public class ContentServiceImplSupplier {
 	    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
 	    if (temp==null){
 	       logger.warn("The template is NULL...");
-	       throw new EMFUserError();
+	       throw new SecurityException();
       } 
       byte[] template = temp.getContent();
 

@@ -27,8 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.tools.datasource.dao;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
@@ -184,9 +187,35 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
 			}
 
-
+			//If DataSource Label has changed all LOVS with that DS need to be changed
 			SbiDataSource hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class,
-					new Integer(aDataSource.getDsId()));			
+					new Integer(aDataSource.getDsId()));	
+			if (aDataSource.getLabel() != null && hibDataSource.getLabel() != null){
+			if (!aDataSource.getLabel().equals(hibDataSource.getLabel())){
+				Query hibQuery = aSession.createQuery(" from SbiLov s where s.inputTypeCd = 'QUERY'");
+				
+				List hibList = hibQuery.list();
+				if (!hibList.isEmpty()){
+				Iterator it = hibList.iterator();	
+				while (it.hasNext()) {
+					SbiLov lov = (SbiLov)it.next();
+					String prov = lov.getLovProvider();
+			    	SourceBean sb = SourceBean.fromXMLString(prov);
+			    	SourceBean conn = (SourceBean)sb.getAttribute("CONNECTION");
+			    	String conne = conn.getCharacters();
+			    	if (conne.equals(hibDataSource.getLabel())){
+			    		int cutStart = prov.indexOf("<CONNECTION>");
+			    		cutStart = cutStart+12;
+			    		int cutEnd = prov.indexOf("</CONNECTION>");
+			    		String firstPart = prov.substring(0, cutStart);
+			    		String secondPart = prov.substring(cutEnd, prov.length());
+			    		prov = firstPart+aDataSource.getLabel()+secondPart;
+			    		lov.setLovProvider(prov);
+			    		aSession.update(lov);
+			    	}
+			    	
+				}}
+			}}
 			hibDataSource.setLabel(aDataSource.getLabel());
 			hibDataSource.setDialect(dialect);
 			hibDataSource.setDialectDescr(dialect.getValueNm());
@@ -205,6 +234,9 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
+		} catch (SourceBeanException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();

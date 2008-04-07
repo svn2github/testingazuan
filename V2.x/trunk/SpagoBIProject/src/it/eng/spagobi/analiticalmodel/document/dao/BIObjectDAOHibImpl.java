@@ -66,8 +66,10 @@ import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -456,7 +458,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
      		hibObjTemplate.setSbiBinContents(hibBinContent);
      		hibObjTemplate.setSbiObject(hibBIObject);
      		// metadata
-     		hibObjTemplate.setCreationUser(objTemp.getCreationUser());
+     		String user = objTemp.getCreationUser();
+     		if (user == null || user.equals(""))user = hibBIObject.getCreationUser();
+     		hibObjTemplate.setCreationUser(user);
      		hibObjTemplate.setDimension(objTemp.getDimension());
      		
      		aSession.save(hibObjTemplate);
@@ -504,6 +508,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setEncrypt(new Short(obj.getEncrypt().shortValue()));
 			hibBIObject.setVisible(new Short(obj.getVisible().shortValue()));
 			hibBIObject.setRelName(obj.getRelName());
+			
 			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, obj.getStateID());
 			hibBIObject.setState(hibState);
 			hibBIObject.setStateCode(obj.getStateCode());
@@ -521,7 +526,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			String uuid = uuidObj.toString();
 			hibBIObject.setUuid(uuid);
 			
-			// metadata
+			// metadata		
 			hibBIObject.setCreationDate(new Date());
 			hibBIObject.setExtendedDescription(obj.getExtendedDescription());
 			hibBIObject.setCreationUser(obj.getCreationUser());

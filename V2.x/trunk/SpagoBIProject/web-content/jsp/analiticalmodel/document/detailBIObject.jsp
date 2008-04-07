@@ -653,8 +653,7 @@ function checkFormVisibility(docType) {
 		      			longDesc = "";
 		      		}
 		      		longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
-		      		%> 
-<% 
+
 		      		String objective = obj.getObjectve();
 		      		if(objective==null) {
 		      			objective = "";
@@ -722,7 +721,8 @@ Ext.onReady(function(){
 					</span>
 				</div>
 	</td>			
-	</tr>			
+	</tr>
+	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
 	<tr>
 		<td>
 				
@@ -862,6 +862,8 @@ function isBIObjectFormChanged() {
 	var longDescription = document.getElementById('longDescription').value;
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
+	alert(longDescription);
+	alert(language);
 
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
@@ -874,10 +876,10 @@ function isBIObjectFormChanged() {
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 
-		
-		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'")%>')
-		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'")%>')
-		|| (language != '<%=initialBIObject.getLanguage()%>')){
+		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
+		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
+		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
+		){
 			
 		biobjFormModified = 'true';
 	}

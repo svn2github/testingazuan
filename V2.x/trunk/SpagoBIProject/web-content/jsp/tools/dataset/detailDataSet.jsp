@@ -11,9 +11,9 @@
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
-		DataSet ds = (DataSet)moduleResponse.getAttribute("dataset");
+		DataSet ds = (DataSet)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
-		String modality = (String)moduleResponse.getAttribute("modality");
+		String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		
@@ -188,7 +188,7 @@
 		</div>
 					
 					<%	
-			if(message.equalsIgnoreCase("DETAIL_SELECT")){ 
+			if(message.equalsIgnoreCase("DETAIL_SELECT") || message.equalsIgnoreCase("DETAIL_MOD")){ 
 		String mess="";
 			     if(type.equals("file")){
 						mess="0";

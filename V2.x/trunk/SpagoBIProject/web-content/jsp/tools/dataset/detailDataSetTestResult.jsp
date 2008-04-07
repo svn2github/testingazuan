@@ -47,10 +47,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	
 	String modality = null;
-	if (detailMR != null) modality = (String) detailMR.getAttribute("modality");
+	if (detailMR != null) modality = (String) detailMR.getAttribute(SpagoBIConstants.MODALITY);
 	if (modality == null) modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
 
-	String parametersXMLModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
+	String parametersXMLModified = (String)aSessionContainer.getAttribute(DetailDataSetModule.DATASET_MODIFIED);
 	if (parametersXMLModified == null) 
 		parametersXMLModified = "false";
 	
@@ -74,7 +74,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
     if(!parametersXMLModified.trim().equals(""))
-    	backUrlPars.put("lovProviderModified", parametersXMLModified);
+    	backUrlPars.put(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
   	
 
@@ -82,6 +82,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+<%@page import="it.eng.spagobi.tools.dataset.service.DetailDataSetModule"%>
 <script type="text/javascript">
 
 	function showStacktrace(){
@@ -113,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href=<%=saveUrl%>>
 				<img class='header-button-image-portlet-section'
-					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+					src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
 				/>

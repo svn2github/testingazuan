@@ -57,6 +57,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List listStates = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_STATES);
 	List listDataSource = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS);
 	if (listDataSource == null) listDataSource = new ArrayList();
+	List listDataSet = (List) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DATASET);
+	if (listDataSet == null) listDataSet = new ArrayList();
+	
 	String modality = (String) moduleResponse.getAttribute(ObjectsTreeConstants.MODALITY);
 	IObjTemplateDAO objtempdao = DAOFactory.getObjTemplateDAO();
 	
@@ -81,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 
 
+<%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
 <script>
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
@@ -326,6 +330,37 @@ function checkFormVisibility(docType) {
 		      		%>
 		      		</select>
 				</div> 
+				
+				
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBISet.eng.dataSet" />
+					</span>
+				</div>
+				
+			
+				<div class='div_detail_form'>
+		      		<select class='portlet-form-input-field' style='width:230px;' 
+							name="dataset" id="doc_dataset" >
+							<option></option>
+					<%
+						Iterator iterdataset = listDataSet.iterator();
+		      			while(iterdataset.hasNext()) {
+		      		    	DataSet ds = (DataSet)iterdataset.next();
+		      		    	Integer objDsId = obj.getDataSetId();
+		      		    	Integer currDsId = new Integer(ds.getDsId());
+		      		    	boolean isDs = false;
+		      		    	if(objDsId != null && objDsId.equals(currDsId)){
+		      		    		isDs = true; 
+							}
+		      		%>
+		      			<option value="<%=String.valueOf(ds.getDsId()) %>"<%if (isDs) out.print(" selected='selected' ");  %>><%=ds.getLabel()%></option>
+		      		<% 	
+		      			}
+		      		%>
+		      		</select>
+				</div> 
+				
 
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE
@@ -857,6 +892,7 @@ function isBIObjectFormChanged() {
 	var type = document.getElementById('doc_type').value;
 	var engine = document.getElementById('doc_engine').value;
 	var datasource = document.getElementById('doc_datasource').value;
+	var dataset = document.getElementById('doc_dataset').value;
 	var state = document.getElementById('doc_state').value;
 	
 	var longDescription = document.getElementById('longDescription').value;
@@ -871,6 +907,7 @@ function isBIObjectFormChanged() {
 		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
 		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
 		|| (datasource != '<%=initialBIObject.getDataSourceId() != null ? initialBIObject.getDataSourceId() : ""%>')
+		|| (dataset != '<%=initialBIObject.getDataSetId() != null ? initialBIObject.getDataSetId() : ""%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 

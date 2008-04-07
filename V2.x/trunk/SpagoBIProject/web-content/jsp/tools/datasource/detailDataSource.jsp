@@ -112,7 +112,7 @@
 			   }
 		%>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' type="text" <%=isReadonly %>
+			<input class='portlet-form-input-field' type="text" 
 				   name="LABEL" size="50" value="<%=label%>" maxlength="50" />
 			&nbsp;*
 		</div>

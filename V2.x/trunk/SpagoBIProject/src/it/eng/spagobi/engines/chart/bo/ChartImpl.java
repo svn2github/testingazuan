@@ -1,8 +1,29 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
+
 package it.eng.spagobi.engines.chart.bo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
@@ -23,12 +44,18 @@ import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
 
+
+/**   @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
+ 
+
 public class ChartImpl implements IChart {
 
 	protected String name=null;
 	protected int width;
 	protected int height;
-	protected String dataLov;
+	protected String data;
 	protected String confLov;
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
@@ -37,11 +64,11 @@ public class ChartImpl implements IChart {
 	protected String subtype="";
 	protected Color color;
 
-
-
-
-
+/**  configureChart reads the content of the template and sets the chart parameters
+ * 
+ */
 	public void configureChart(SourceBean content) {
+		logger.debug("IN");
 		// common part for all charts
 		if(content.getAttribute("name")!=null) 
 			setName((String)content.getAttribute("name"));
@@ -89,13 +116,6 @@ public class ChartImpl implements IChart {
 				dataParameters.put(nameParam, valueParam);
 			}
 
-			if(dataParameters.get("datalov")!=null){	
-				dataLov=(String)dataParameters.get("datalov");
-			}
-			else {
-				logger.error("no data source specified");
-				throw new Exception("No data source specified");}
-
 
 			if(dataParameters.get("conflov")!=null && !(((String)dataParameters.get("conflov")).equalsIgnoreCase("") )){	
 				confLov=(String)dataParameters.get("conflov");
@@ -111,11 +131,20 @@ public class ChartImpl implements IChart {
 
 
 	}
+	
+	/**
+	 * This function creates the chart object
+	 */
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		return null;
 	}
 
+	
+	/**
+	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template
+	 */
+	
 	public static ChartImpl createChart(String type,String subtype){
 		ChartImpl sbi=null;
 		if(type.equals("DIALCHART")){
@@ -152,8 +181,8 @@ public class ChartImpl implements IChart {
 
 
 
-	public String getDataLov() {
-		return dataLov;
+	public String getData() {
+		return data;
 	}
 
 	public int getHeight() {
@@ -169,8 +198,8 @@ public class ChartImpl implements IChart {
 
 	}
 
-	public void setDataLov(String _dataLov) {
-		dataLov=_dataLov;		
+	public void setData(String _data) {
+		data=_data;		
 	}
 
 	public void setHeight(int _height) {
@@ -185,7 +214,7 @@ public class ChartImpl implements IChart {
 		width=_width;
 	}
 
-	public Dataset calculateValue() throws SourceBeanException {
+	public Dataset calculateValue(Map parameters) throws Exception {
 		return null;
 	}
 
@@ -216,8 +245,6 @@ public class ChartImpl implements IChart {
 		return false;
 	}
 
-
-
 	public String getType() {
 		return type;
 	}
@@ -246,7 +273,6 @@ public class ChartImpl implements IChart {
 	}
 
 	public List getPossibleChangePars() {
-		// TODO Auto-generated method stub
 		return new Vector();
 	}
 

@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
+/**   @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
+ 
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Defines method to manage dataset parametes
  */
@@ -41,7 +47,7 @@ public class DataSetParametersList {
 	 * items of the list
 	 */
 	List items = new ArrayList();
-	
+	private static transient Logger logger=Logger.getLogger(DataSetParametersList.class);	
 	
 	/**
 	 * constructor
@@ -61,6 +67,7 @@ public class DataSetParametersList {
 	 * @throws SourceBeanException 
 	 */
 	public void  loadFromXML (String dataDefinition) throws SourceBeanException {
+		logger.debug("IN");
 		dataDefinition.trim();
 		SourceBean source = SourceBean.fromXMLString(dataDefinition);
 		if(!source.getName().equals("PARAMETERSLIST")) {
@@ -82,6 +89,7 @@ public class DataSetParametersList {
 			parsList.add(par);
 		}
  		setPars(parsList);
+ 		logger.debug("OUT");
 	}	
 	
 	/**
@@ -89,6 +97,7 @@ public class DataSetParametersList {
 	 * @return the serialized xml string
 	 */
 	public String toXML() {
+		logger.debug("IN");
 		String lovXML = "";
 		lovXML += "<PARAMETERSLIST>";
 		lovXML += "<ROWS>";
@@ -104,16 +113,18 @@ public class DataSetParametersList {
 					  "/>";
 		}
 		lovXML += "</ROWS></PARAMETERSLIST>";
+		logger.debug("OUT");
 		return lovXML;
 	}
 	
 	/**
-	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * Returns the result of the Dataset using a user profile to fill the Datase profile attribute
 	 * @param profile the profile of the user
 	 * @return the string result of the lov
 	 * @throws Exception
 	 */
 	public String getDataSetResult(IEngUserProfile profile) throws Exception {
+		logger.debug("IN");
 		String lovResult = "<ROWS>";
 		DataSetParameterItem lov = null;
 		Iterator iter = items.iterator();
@@ -128,6 +139,7 @@ public class DataSetParametersList {
 		}
 		lovResult += "</ROWS>";
 		lovResult = GeneralUtilities.substituteProfileAttributesInString(lovResult, profile);
+		logger.debug("OUT");
 		return lovResult;
 	}
 		
@@ -138,6 +150,7 @@ public class DataSetParametersList {
 	 * @throws Exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
+		logger.debug("IN");
 		List names = new ArrayList();
 		String lovResult = this.toXML();
 		while(lovResult.indexOf("$P{")!=-1) {
@@ -153,12 +166,13 @@ public class DataSetParametersList {
 			}
 			lovResult = lovResult.substring(endind);
 		}
+		logger.debug("OUT");
 		return names;
 	}
 
 	/**
-	 * Checks if the lov requires one or more profile attributes
-	 * @return true if the lov require one or more profile attributes, false otherwise
+	 * Checks if the dataset requires one or more profile attributes
+	 * @return true if the dataset require one or more profile attributes, false otherwise
 	 * @throws Exception
 	 */
 	public boolean requireProfileAttributes() throws Exception {
@@ -172,9 +186,9 @@ public class DataSetParametersList {
 	
 	
 	/**
-	 * Adds a lov to the lov Detail List
-	 * @param name The added lov name
-	 * @param description The added lov description
+	 * Adds a dataset to the dataset Detail List
+	 * @param name The dataset lov name
+	 * @param description The added dataset description
 	 */
 	public void add(String name, String type) {
 		// if name or description are empty don't add
@@ -199,9 +213,9 @@ public class DataSetParametersList {
 	
 	
 	/**
-	 * Deletes a lov from the lov Detail List
-	 * @param value The deleted lov name
-	 * @param description The deleted lov description
+	 * Deletes a dataset from the dataset Detail List
+	 * @param value The deleted dataset name
+	 * @param description The deleted dataset description
 	 */
 	public void remove(String name, String type) {
 		Iterator iter = items.iterator();
@@ -220,7 +234,7 @@ public class DataSetParametersList {
 	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been 
 	 * built. 
 	 * @param dataDefinition	The XML input String
-	 * @return The corrispondent <code>LovDetailList</code> object
+	 * @return The corrispondent <code>DatasetParameterList</code> object
 	 * @throws SourceBeanException If a SourceBean Exception occurred
 	 */
 	public static DataSetParametersList  fromXML (String dataDefinition) throws SourceBeanException {

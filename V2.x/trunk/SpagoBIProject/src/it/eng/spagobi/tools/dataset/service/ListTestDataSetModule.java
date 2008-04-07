@@ -1,3 +1,25 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
+
 package it.eng.spagobi.tools.dataset.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -13,7 +35,9 @@ import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
@@ -36,24 +60,58 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.axis.handlers.ErrorHandler;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
+
+
+/**   @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
 
 public class ListTestDataSetModule extends AbstractBasicListModule  {
 
 	 private static transient Logger logger = Logger.getLogger(ListTestDataSetModule.class);
-	
+	 private EMFErrorHandler errorHandler;
+		public static final String messageBundle = "messages";
+	 
 	public ListTestDataSetModule() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
+	
+	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
+		errorHandler=getResponseContainer().getErrorHandler();
+		ListIFace listIFace=null;
+		try{
+			listIFace=getTestResultList(request, response);
+			
+		}
+		catch (EMFUserError eex) {
+			errorHandler.addError(eex);
+			return null;
+		} catch (Exception ex) {
+			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
+			errorHandler.addError(internalError);
+			return null;
+		}
+		return listIFace;
+		
+	}
+	
+	
 
+	
+	
+	
+	
+
+	public ListIFace getTestResultList(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
 		// define the spago paginator and list object
 		PaginatorIFace paginator = new GenericPaginator();
 		ListIFace list = new GenericList();
@@ -62,15 +120,15 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		SessionContainer session = requestContainer.getSessionContainer();
 
 
-		DataSet dataSet=(DataSet)session.getAttribute("dataset");
+		DataSet dataSet=(DataSet)session.getAttribute(DetailDataSetModule.DATASET);
 
 		String typeDataset=getDataSetType(dataSet);
 		//String typeDataset=(String)request.getAttribute("typeDataset");
 		//DataSet dataSet=(DataSet)request.getAttribute("dataset");
 
 
-		String typeLov="";
-		String looProvider="";
+
+				
 		IEngUserProfile profile = null;
 		profile = (IEngUserProfile)session.getAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		if(profile==null) {
@@ -80,7 +138,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			session.delAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		}
 
-		EMFErrorHandler err=getResponseContainer().getErrorHandler();
+		
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
@@ -89,8 +147,17 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			QueryDataSet queryDataSet=(QueryDataSet)dataSet;
 
 			DataSource dataSource=queryDataSet.getDataSource();
-			String datasource = dataSource.getLabel();
+			String datasource=null;
+			try{
+			datasource = dataSource.getLabel();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9212", messageBundle);
+			}
+			
 			String query = queryDataSet.getQuery();
+			
+			
 			// execute query
 			try {
 				//query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
@@ -113,17 +180,29 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				if (startIndex != -1 && endIndex != -1) 
 					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
 				response.setAttribute("testExecuted", "false");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9211", messageBundle);
+
 			}
 		} else if(typeDataset.equals("0")) {
 
 			FileDataSet fileDataSet=(FileDataSet)dataSet;
 			String pathFile=fileDataSet.getFileName();
 
-			FileInputStream fis=new FileInputStream(pathFile);
+			FileInputStream fis=null;
+			try{
+			fis=new FileInputStream(pathFile);
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				response.setAttribute("testExecuted", "false");
 
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9209", messageBundle);
+
+			}
+			try{
 			InputSource inputSource=new InputSource(fis);
 
-			try {
+
 				rowsSourceBean=SourceBean.fromXMLStream(inputSource);
 				//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
 				if(rowsSourceBean!=null){
@@ -152,6 +231,8 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
 				response.setAttribute("testExecuted", "false");
 				if(fis!=null)fis.close();
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9210", messageBundle);
+				//return null;
 			}
 			finally{
 				if(fis!=null)fis.close();
@@ -204,10 +285,10 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 					columnfilter, typeFilter, getResponseContainer().getErrorHandler());
 		}
 
-		response.setAttribute("dataset",dataSet);
+		response.setAttribute(DetailDataSetModule.DATASET,dataSet);
 		response.setAttribute("typedataset",typeDataset);
 
-
+		logger.debug("OUT");
 		return list;
 	}
 

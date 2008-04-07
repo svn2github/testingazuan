@@ -24,6 +24,11 @@ package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
 import java.awt.Color;
 
+/** 
+ *  * @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
+
 public class KpiInterval {
 
 	private String label;

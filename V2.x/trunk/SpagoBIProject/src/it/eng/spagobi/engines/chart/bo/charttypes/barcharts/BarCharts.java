@@ -1,10 +1,34 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
+
+
+
+
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
-import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -13,9 +37,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
+
+/**   @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
+
+
+
 
 public class BarCharts extends ChartImpl {
 
@@ -27,9 +59,16 @@ public class BarCharts extends ChartImpl {
 	int categoriesNumber=0;
 	HashMap categories;
 	int currentSerie=-1;
+	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	
-	public Dataset calculateValue() throws SourceBeanException {
-		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
+	
+	/**
+	 * Inherited by IChart: calculates chart value 
+	 */
+	
+	public Dataset calculateValue(Map parameters) throws Exception {
+		logger.debug("IN");
+		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
 		categories=new HashMap();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -76,12 +115,18 @@ public class BarCharts extends ChartImpl {
 			}
 
 		}
-
+		logger.debug("OUT");
 		return dataset;
 	}
 
-	public Dataset calculateValue(String cat) throws SourceBeanException {
-		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
+	
+	/**
+	 * Calculates chart value 
+	 */
+	
+	public Dataset calculateValue(String cat, Map parameters) throws Exception {
+		logger.debug("IN");
+		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -118,13 +163,13 @@ public class BarCharts extends ChartImpl {
 			}
 
 		}
-
+		logger.debug("OUT");
 		return dataset;
 	}
 
 
 	public void configureChart(SourceBean content) {
-
+		logger.debug("IN");
 		super.configureChart(content);
 		confParameters = new HashMap();
 		SourceBean confSB = (SourceBean)content.getAttribute("CONF");
@@ -186,7 +231,7 @@ public class BarCharts extends ChartImpl {
 			}		
 
 		}
-
+		logger.debug("OUT");
 	}
 
 	public Map getConfParameters() {
@@ -230,7 +275,16 @@ public class BarCharts extends ChartImpl {
 		return categories;
 	}
 
+	/**
+	 * Use for slider: limits the categories visualization from cat selected to cat selected+numberscatsVisualization
+	 * @param: dataset: the dataset to filter
+	 * @param: categories:
+	 *  @param: caSelected: position of the slider
+	 *  @param: numbersCatVisualization: parameter set in template
+	 */
+	
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
+		logger.debug("IN");
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
 		
 		int numCats=categories.size();
@@ -258,14 +312,22 @@ public class BarCharts extends ChartImpl {
 					catDataset.removeColumn(col);
 				}			
 			}
+			logger.debug("OUT");
 
 			return catDataset;
 	
 	}
 	
+	/**
+	 * Limits the dataset to a particular serie
+	 * @param: dataset: the dataset to filter
+	 * @param: categories:
+	 *  @param: caSelected: position of the slider
+	 *  @param: numbersCatVisualization: parameter set in template
+	 */
 	
 	public Dataset filterDatasetSeries(Dataset dataset, String serie) {
-				
+		logger.debug("IN");
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
 		
 			//List rowKeys=new Vector();
@@ -279,6 +341,7 @@ public class BarCharts extends ChartImpl {
 				}			
 			}
 
+			logger.debug("OUT");
 			return catDataset;
 	
 	}

@@ -53,6 +53,12 @@ import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 
+/**
+ * 
+ * @author Giulio Gavardi
+ * 
+ */
+
 public class SimpleDial extends DialCharts{
 
 	private static transient Logger logger=Logger.getLogger(SimpleDial.class);

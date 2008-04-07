@@ -32,6 +32,7 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.exceptions.NoEngineSuitableException;
+import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.ArrayList;
@@ -116,6 +117,14 @@ public class DetBIObjModHelper {
 			Integer dsIdInt = new Integer(dsIdStr);
 			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);
 		}
+		
+		String datasetIdStr = (String) request.getAttribute("dataset");
+		DataSet dataset  = null;
+		if (datasetIdStr != null && !datasetIdStr.equals("")) {
+			Integer datasetIdInt = new Integer(datasetIdStr);
+			dataset = DAOFactory.getDataSetDAO().loadDataSetByID(datasetIdInt);
+		}
+		
 		// TRY TO LOAD ALL THE FUNCTIONALITIES ASSOCIATED (into request) TO THE BIOBEJCT
 		List functionalities = new ArrayList();
 		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
@@ -177,6 +186,7 @@ public class DetBIObjModHelper {
 		obj.setVisible(visible);
 		obj.setEngine(engine);
 		obj.setDataSourceId(ds == null ? null : new Integer(ds.getDsId()));
+		obj.setDataSetId(dataset == null ? null : new Integer(dataset.getDsId()));
 		obj.setId(id);
 		obj.setName(name);
 		obj.setLabel(label);
@@ -275,9 +285,11 @@ public class DetBIObjModHelper {
 	        List states = domaindao.loadListDomainsByType("STATE");
 	        List engines =  DAOFactory.getEngineDAO().loadAllEngines();
 	        List datasource =  DAOFactory.getDataSourceDAO().loadAllDataSources();
-	       // List languages = ConfigSingleton.getInstance().getFilteredSourceBeanAttributeAsList("LANGUAGE_SUPPORTED", "LANGUAGE", "language");
+	       List dataset=DAOFactory.getDataSetDAO().loadAllDataSets();
+	        // List languages = ConfigSingleton.getInstance().getFilteredSourceBeanAttributeAsList("LANGUAGE_SUPPORTED", "LANGUAGE", "language");
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_ENGINES, engines);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DS, datasource);
+		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_DATASET, dataset);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_OBJ_TYPES, types);
 		    response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_STATES, states);
 		   // response.setAttribute(DetailBIObjectModule.NAME_ATTR_LIST_LANGUAGES, languages);
@@ -332,6 +344,7 @@ public class DetBIObjModHelper {
 		objClone.setVisible(obj.getVisible());
 		objClone.setEngine(obj.getEngine());
 		objClone.setDataSourceId(obj.getDataSourceId());
+		objClone.setDataSetId(obj.getDataSetId());
 		objClone.setId(obj.getId());
 		objClone.setLabel(obj.getLabel());
 		objClone.setName(obj.getName());

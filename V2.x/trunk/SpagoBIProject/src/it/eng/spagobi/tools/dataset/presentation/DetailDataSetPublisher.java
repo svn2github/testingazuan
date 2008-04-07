@@ -146,18 +146,6 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		}
 
 
-
-		/*        Object loop = moduleResponse.getAttribute("loopback");
-        if (loop != null) {
-        	logger.info("Publish: detailDataSetLoop"  );
-        	logger.debug("OUT");
-        	return "detailDataSetLoop";
-		} else {
-			logger.info("Publish: detailDataSet"  );
-			logger.debug("OUT");
-			return "detailDataSet";
-		}*/
-
 	}
 
 	private boolean noModuledResponse() {

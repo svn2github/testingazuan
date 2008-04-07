@@ -47,6 +47,9 @@ public class BIObject implements Serializable {
 	// DATA_SOURCE_ID NUMBER N DataSource idenitifier (FK)
 	private Integer dataSourceId = null;
 
+	// DATA_SOURCE_ID NUMBER N DataSource idenitifier (FK)
+	private Integer dataSetId = null;
+	
 	// DESCR VARCHAR2(128) Y BI Object description
 	private String name = null;
 	
@@ -393,6 +396,15 @@ public class BIObject implements Serializable {
 	public void setCreationUser(String creationUser) {
 	    this.creationUser = creationUser;
 	}
+
+	public Integer getDataSetId() {
+		return dataSetId;
+	}
+
+	public void setDataSetId(Integer dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+	
 	
 
 }

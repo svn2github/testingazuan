@@ -86,6 +86,8 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_OBJECT_PAR = "OBJECT_PAR";
 	public final static String NAME_ATTR_LIST_DS = "datasource";
 	public final static String NAME_ATTR_LIST_LANGUAGES = "languages";
+	public final static String NAME_ATTR_LIST_DATASET = "datasets";
+	
 	
 	//private String actor = null;
 	private EMFErrorHandler errorHandler = null;
@@ -716,6 +718,7 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setId(new Integer(0));
             obj.setEngine(null);
             obj.setDataSourceId(null);
+            obj.setDataSetId(null);
             obj.setDescription("");
             obj.setExtendedDescription("");
             obj.setLabel("");

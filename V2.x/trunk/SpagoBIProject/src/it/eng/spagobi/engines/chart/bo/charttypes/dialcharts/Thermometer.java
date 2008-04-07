@@ -45,6 +45,11 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.RectangleInsets;
 
+/**
+ * 
+ * @author Giulio Gavardi
+ * 
+ */
 
 
 public class Thermometer extends DialCharts{

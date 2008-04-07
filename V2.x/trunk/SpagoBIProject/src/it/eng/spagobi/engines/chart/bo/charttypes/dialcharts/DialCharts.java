@@ -26,6 +26,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
+import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 
 import java.util.HashMap;
@@ -38,6 +39,10 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
 
+/** 
+ *  * @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
 
 public class DialCharts extends ChartImpl {
 
@@ -186,11 +191,11 @@ public class DialCharts extends ChartImpl {
 	}
 
 
-	public Dataset calculateValue() throws SourceBeanException {
+	public Dataset calculateValue(Map parameters) throws Exception{
 	        logger.debug("IN");
-		String res=LovAccessFunctions.getLovResult(profile, getDataLov());
+		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
 		if (res!=null){
-		        logger.debug("LOV result:"+res);
+		        logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
 			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
 			String result=(String)sbRow.getAttribute("value");

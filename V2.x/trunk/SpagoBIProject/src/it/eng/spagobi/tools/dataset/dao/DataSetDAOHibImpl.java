@@ -324,10 +324,11 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			((QueryDataSet)ds).setQuery(((SbiQueryDataSet)hibDataSet).getQuery());
 			
 			SbiDataSource sbids=((SbiQueryDataSet)hibDataSet).getDataSource();
-			
+			if(sbids!=null){
 			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
 			DataSource dataSource=dataSourceDao.toDataSource(sbids);
 			((QueryDataSet)ds).setDataSource(dataSource);
+			}
 		}
 
 		if(hibDataSet instanceof SbiWSDataSet){

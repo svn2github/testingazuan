@@ -2,10 +2,10 @@ package it.eng.spagobi.engines.chart.bo;
 
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
@@ -23,11 +23,10 @@ public interface IChart {
 	public void setName(String name);
 
 
-
 	public int getWidth();
 
 
-	public Dataset calculateValue() throws SourceBeanException;
+	public Dataset calculateValue(Map parameters) throws Exception;
 
 	public void setWidth(int width);
 
@@ -40,10 +39,10 @@ public interface IChart {
 	public void setHeight(int height);
 
 
-	public String getDataLov();
+	public String getData();
 
 
-	public void setDataLov(String dataLov);
+	public void setData(String data);
 
 	public boolean isChangeableView();
 	public void setChangeViewChecked(boolean b);

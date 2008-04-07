@@ -62,6 +62,7 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -340,6 +341,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				dSource = (SbiDataSource) aSession.load(SbiDataSource.class, biObject.getDataSourceId());
 			}
 			hibBIObject.setDataSource(dSource);
+			
+			SbiDataSet dSet = null;
+			if (biObject.getDataSetId() != null) {
+				dSet = (SbiDataSet) aSession.load(SbiDataSet.class, biObject.getDataSetId());
+			}
+			hibBIObject.setDataSet(dSet);
+			
+			
 			hibBIObject.setDescr(biObject.getDescription());
 			hibBIObject.setLabel(biObject.getLabel());
 			hibBIObject.setName(biObject.getName());
@@ -520,6 +529,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				dSource = (SbiDataSource) aSession.load(SbiDataSource.class, obj.getDataSourceId());
 			}
 			hibBIObject.setDataSource(dSource);
+			
+			SbiDataSet dSet= null;
+			if (obj.getDataSetId() != null) {
+				dSet = (SbiDataSet) aSession.load(SbiDataSet.class, obj.getDataSetId());
+			}
+			hibBIObject.setDataSet(dSet);
+			
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
@@ -889,6 +905,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (hibBIObject.getDataSource()!=null){
 				aBIObject.setDataSourceId(new Integer(hibBIObject.getDataSource().getDsId()));
 			}
+			if (hibBIObject.getDataSet()!=null){
+				aBIObject.setDataSetId(new Integer(hibBIObject.getDataSet().getDsId()));
+			}
+			
 			// set id
 			aBIObject.setId(hibBIObject.getBiobjId());
 			aBIObject.setLabel(hibBIObject.getLabel());

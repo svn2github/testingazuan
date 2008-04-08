@@ -9,12 +9,15 @@
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.IMessageBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory"%>
-
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	String authFailed = "";
 	ResponseContainer aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
-	RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(request); 
+	//RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(request); 
+	
+	RequestContainer requestContainer = RequestContainer.getRequestContainer();
+	
+	 
 	if(aResponseContainer!=null) {
 		SourceBean aServiceResponse = aResponseContainer.getServiceResponse();
 		if(aServiceResponse!=null) {
@@ -67,7 +70,7 @@
 		        				    <table>
 		        				    	<tr>
 		        				    		<td width="150px">
-		        								<%=msgBuilder.getMessage("username", request)%>:
+		        								<%=msgBuilder.getMessage("username")%>:
 		        							</td>
 		        							<td width="30px">&nbsp;</td>
 		        							<td>
@@ -76,7 +79,7 @@
 		        						</tr>
 		        						<tr>
 		        				    	<td width="150px">
-		        								<%=msgBuilder.getMessage("password", request)%>:
+		        								<%=msgBuilder.getMessage("password")%>:
 		        							</td>
 		        							<td width="30px">&nbsp;</td>
 		        							<td>
@@ -89,8 +92,8 @@
 		        					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		        					<input type="image" 
 		        					       src="<%=contextName%>/img/wapp/next32.png" 
-		        					       title="<%=msgBuilder.getMessage("login", request)%>" 
-		        					       alt="<%=msgBuilder.getMessage("login", request)%>"/>
+		        					       title="<%=msgBuilder.getMessage("login")%>" 
+		        					       alt="<%=msgBuilder.getMessage("login")%>"/>
 		        				</td>
 		        			</tr>
 		        			<tr>

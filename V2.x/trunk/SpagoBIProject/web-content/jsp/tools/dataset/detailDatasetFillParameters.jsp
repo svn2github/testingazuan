@@ -49,19 +49,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	backUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
   	backUrlPars.put("modality", modality);
   	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-  	backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
+  	backUrlPars.put(DetailDataSetModule.RETURN_FROM_TEST_MSG, "DO_NOT_SAVE");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
   	
     Map testUrlPars = new HashMap();
     testUrlPars.put("PAGE", "DetailDatasetPage");
     testUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-    testUrlPars.put(SpagoBIConstants.MESSAGEDET, "testafterparametersfilling");
+    testUrlPars.put(SpagoBIConstants.MESSAGEDET, DetailDataSetModule.TEST_AFTER_PARAMETERS_FILLED);
     String testUrl = urlBuilder.getUrl(request, testUrlPars);	
     
     %>
 
 
 <%@page import="it.eng.spagobi.tools.dataset.bo.DataSetParameterItem"%>
+<%@page import="it.eng.spagobi.tools.dataset.service.DetailDataSetModule"%>
 <form id="formTest" method="post" action="<%=testUrl%>" >
 
 

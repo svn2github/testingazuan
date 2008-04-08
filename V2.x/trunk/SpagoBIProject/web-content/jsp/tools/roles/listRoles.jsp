@@ -236,7 +236,11 @@ Ext.onReady(function(){
         {
            header: "<spagobi:message key="SBISet.ListRoles.columnName" />",
            dataIndex: 'Name',
-           sortable: true
+           sortable: true,
+           renderer: function (value, p, record) {
+     			p.attr = 'ext:qtip="' + record.get('Description') + '"';
+     			return value;
+           }
         },{
            header: "Type",
            dataIndex: 'Type',

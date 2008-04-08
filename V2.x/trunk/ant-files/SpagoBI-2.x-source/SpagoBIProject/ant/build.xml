@@ -152,6 +152,12 @@
                    it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingStub.class,
                    it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingSkeleton.class,
 		    	
+		    	         it/eng/spagobi/services/dataset/stub/DataSetWsInterface.class,               
+	                 it/eng/spagobi/services/dataset/stub/DataSetWsInterfaceServiceLocator.class,
+				           it/eng/spagobi/services/dataset/stub/DataSetWsInterfaceService.class,
+			             it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingStub.class,
+				           it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingSkeleton.class,
+           		    	
                    it/eng/spagobi/services/proxy/AbstractServiceProxy.class,
                    it/eng/spagobi/services/proxy/ContentServiceProxy.class,
                    it/eng/spagobi/services/proxy/DataSourceServiceProxy.class,
@@ -159,6 +165,7 @@
                    it/eng/spagobi/services/proxy/SchedulerServiceProxy.class,
                    it/eng/spagobi/services/proxy/SecurityServiceProxy.class,
                    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
+			    	       it/eng/spagobi/services/proxy/DataSetWsServiceProxy.class,
 			    	
                    it/eng/spagobi/services/common/EnginConf.class,
                    it/eng/spagobi/services/common/IProxyService.class,

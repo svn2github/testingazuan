@@ -247,9 +247,15 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			
 			hibRole.setCode(aRole.getCode());
 			hibRole.setDescr(aRole.getDescription());
-			
-			
 			hibRole.setName(aRole.getName());
+			hibRole.setIsAbleToSeeSubobjects(new Boolean(aRole.isAbleToSeeSubobjects()));
+			hibRole.setIsAbleToSeeSnapshots(new Boolean(aRole.isAbleToSeeSnapshots()));
+			hibRole.setIsAbleToSeeViewpoints(new Boolean(aRole.isAbleToSeeViewpoints()));
+			hibRole.setIsAbleToSeeNotes(new Boolean(aRole.isAbleToSeeNotes()));
+			hibRole.setIsAbleToSeeMetadata(new Boolean(aRole.isAbleToSeeMetadata()));
+			hibRole.setIsAbleToSendMail(new Boolean(aRole.isAbleToSendMail()));
+			hibRole.setIsAbleToSaveRememberMe(new Boolean(aRole.isAbleToSaveRememberMe()));
+			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(aRole.isAbleToSaveIntoPersonalFolder()));
 			
 			SbiDomains roleType = (SbiDomains)aSession.load(SbiDomains.class,  aRole.getRoleTypeID());
 			hibRole.setRoleType(roleType);
@@ -404,6 +410,14 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setDescription(hibRole.getDescr());
 		role.setId(hibRole.getExtRoleId());
 		role.setName(hibRole.getName());
+		role.setIsAbleToSeeSubobjects(hibRole.getIsAbleToSeeSubobjects() == null || hibRole.getIsAbleToSeeSubobjects().booleanValue());
+		role.setIsAbleToSeeSnapshots(hibRole.getIsAbleToSeeSnapshots() == null || hibRole.getIsAbleToSeeSnapshots().booleanValue());
+		role.setIsAbleToSeeViewpoints(hibRole.getIsAbleToSeeViewpoints() == null || hibRole.getIsAbleToSeeViewpoints().booleanValue());
+		role.setIsAbleToSeeNotes(hibRole.getIsAbleToSeeNotes() == null || hibRole.getIsAbleToSeeNotes().booleanValue());
+		role.setIsAbleToSeeMetadata(hibRole.getIsAbleToSeeMetadata() == null || hibRole.getIsAbleToSeeMetadata().booleanValue());
+		role.setIsAbleToSendMail(hibRole.getIsAbleToSendMail() == null || hibRole.getIsAbleToSendMail().booleanValue());
+		role.setIsAbleToSaveRememberMe(hibRole.getIsAbleToSaveRememberMe() == null || hibRole.getIsAbleToSaveRememberMe().booleanValue());
+		role.setIsAbleToSaveIntoPersonalFolder(hibRole.getIsAbleToSaveIntoPersonalFolder() == null || hibRole.getIsAbleToSaveIntoPersonalFolder().booleanValue());
 		role.setRoleTypeCD(hibRole.getRoleTypeCode());
 		role.setRoleTypeID(hibRole.getRoleType().getValueId());
 		return role;

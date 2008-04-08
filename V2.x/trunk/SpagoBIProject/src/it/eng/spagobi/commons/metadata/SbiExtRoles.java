@@ -40,6 +40,14 @@ public class SbiExtRoles  implements java.io.Serializable {
      private String code;
      private String name;
      private String descr;
+     private Boolean isAbleToSeeSubobjects;
+     private Boolean isAbleToSeeViewpoints;
+     private Boolean isAbleToSeeSnapshots;
+     private Boolean isAbleToSeeNotes;
+     private Boolean isAbleToSendMail;
+     private Boolean isAbleToSaveIntoPersonalFolder;
+     private Boolean isAbleToSaveRememberMe;
+     private Boolean isAbleToSeeMetadata;
      private Set sbiFuncRoles;
      private Set sbiParuseDets;
 
@@ -147,6 +155,71 @@ public class SbiExtRoles  implements java.io.Serializable {
     public void setSbiParuseDets(Set sbiParuseDets) {
         this.sbiParuseDets = sbiParuseDets;
     }
+
+	public Boolean getIsAbleToSeeSubobjects() {
+		return isAbleToSeeSubobjects;
+	}
+
+	public void setIsAbleToSeeSubobjects(Boolean isAbleToSeeSubobjects) {
+		this.isAbleToSeeSubobjects = isAbleToSeeSubobjects;
+	}
+
+	public Boolean getIsAbleToSeeViewpoints() {
+		return isAbleToSeeViewpoints;
+	}
+
+	public void setIsAbleToSeeViewpoints(Boolean isAbleToSeeViewpoints) {
+		this.isAbleToSeeViewpoints = isAbleToSeeViewpoints;
+	}
+
+	public Boolean getIsAbleToSeeSnapshots() {
+		return isAbleToSeeSnapshots;
+	}
+
+	public void setIsAbleToSeeSnapshots(Boolean isAbleToSeeSnapshots) {
+		this.isAbleToSeeSnapshots = isAbleToSeeSnapshots;
+	}
+
+	public Boolean getIsAbleToSeeNotes() {
+		return isAbleToSeeNotes;
+	}
+
+	public void setIsAbleToSeeNotes(Boolean isAbleToSeeNotes) {
+		this.isAbleToSeeNotes = isAbleToSeeNotes;
+	}
+
+	public Boolean getIsAbleToSendMail() {
+		return isAbleToSendMail;
+	}
+
+	public void setIsAbleToSendMail(Boolean isAbleToSendMail) {
+		this.isAbleToSendMail = isAbleToSendMail;
+	}
+
+	public Boolean getIsAbleToSaveIntoPersonalFolder() {
+		return isAbleToSaveIntoPersonalFolder;
+	}
+
+	public void setIsAbleToSaveIntoPersonalFolder(
+			Boolean isAbleToSaveIntoPersonalFolder) {
+		this.isAbleToSaveIntoPersonalFolder = isAbleToSaveIntoPersonalFolder;
+	}
+
+	public Boolean getIsAbleToSaveRememberMe() {
+		return isAbleToSaveRememberMe;
+	}
+
+	public void setIsAbleToSaveRememberMe(Boolean isAbleToSaveRememberMe) {
+		this.isAbleToSaveRememberMe = isAbleToSaveRememberMe;
+	}
+
+	public Boolean getIsAbleToSeeMetadata() {
+		return isAbleToSeeMetadata;
+	}
+
+	public void setIsAbleToSeeMetadata(Boolean isAbleToSeeMetadata) {
+		this.isAbleToSeeMetadata = isAbleToSeeMetadata;
+	}
 
 
 

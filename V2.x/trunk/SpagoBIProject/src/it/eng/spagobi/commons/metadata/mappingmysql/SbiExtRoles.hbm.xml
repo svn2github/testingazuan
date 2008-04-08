@@ -28,6 +28,30 @@
         <property name="descr" type="string">
             <column name="DESCR" length="160" />
         </property>
+		<property name="isAbleToSeeSubobjects" type="boolean">
+            <column name="isAbleTo_see_subobjects" />
+        </property>
+		<property name="isAbleToSeeViewpoints" type="boolean">
+            <column name="isAbleTo_see_viewpoints" />
+        </property>
+        <property name="isAbleToSeeSnapshots" type="boolean">
+            <column name="isAbleTo_see_snapshots" />
+        </property>
+        <property name="isAbleToSeeNotes" type="boolean">
+            <column name="isAbleTo_see_notes" />
+        </property>
+        <property name="isAbleToSendMail" type="boolean">
+            <column name="isAbleTo_send_mail" />
+        </property>
+        <property name="isAbleToSaveIntoPersonalFolder" type="boolean">
+            <column name="isAbleTo_save_into_personal_folder" />
+        </property>
+        <property name="isAbleToSaveRememberMe" type="boolean">
+            <column name="isAbleTo_save_remember_me" />
+        </property>
+        <property name="isAbleToSeeMetadata" type="boolean">
+            <column name="isAbleTo_see_metadata" />
+        </property>
         <set name="sbiFuncRoles" inverse="true">
             <key>
                 <column name="ROLE_ID" not-null="true" />

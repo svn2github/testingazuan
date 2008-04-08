@@ -22,29 +22,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.role.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import it.eng.spago.dispatching.module.AbstractModule;
+
+import org.apache.log4j.Logger;
 
 /**
  * Loads the parameters list
  * 
  * @author sulis
  */
-public class ListRolesModule extends AbstractBasicListModule {
+public class ListRolesModule extends AbstractModule {
 	
-	public static final String MODULE_PAGE = "ListRolesPage";
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Gets the list
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * @return ListIFace 
-	 */
+	public static final String MODULE_PAGE = "ListEnginesPage";
+
+	static private Logger logger = Logger.getLogger(ListRolesModule.class);
 	
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedHibernateConnectionListService.getList(this, request, response);
-	} 
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
+			throws Exception {
+		logger.debug("IN");
+		logger.debug("This method does nothing");
+		logger.debug("OUT");
+	}
 
 } 
 

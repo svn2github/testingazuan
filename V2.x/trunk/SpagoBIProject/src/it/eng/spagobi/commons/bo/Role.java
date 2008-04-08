@@ -39,7 +39,64 @@ public class Role  implements Serializable  {
 	private String roleTypeCD = null;
 	private String code = null;
 	private Integer roleTypeID;
+    private boolean isAbleToSeeSubobjects;
+    private boolean isAbleToSeeViewpoints;
+    private boolean isAbleToSeeSnapshots;
+    private boolean isAbleToSeeNotes;
+    private boolean isAbleToSendMail;
+    private boolean isAbleToSaveIntoPersonalFolder;
+    private boolean isAbleToSaveRememberMe;
+    private boolean isAbleToSeeMetadata;
 
+	public boolean isAbleToSeeSubobjects() {
+		return isAbleToSeeSubobjects;
+	}
+	public void setIsAbleToSeeSubobjects(boolean isAbleToSeeSubobjects) {
+		this.isAbleToSeeSubobjects = isAbleToSeeSubobjects;
+	}
+	public boolean isAbleToSeeViewpoints() {
+		return isAbleToSeeViewpoints;
+	}
+	public void setIsAbleToSeeViewpoints(boolean isAbleToSeeViewpoints) {
+		this.isAbleToSeeViewpoints = isAbleToSeeViewpoints;
+	}
+	public boolean isAbleToSeeSnapshots() {
+		return isAbleToSeeSnapshots;
+	}
+	public void setIsAbleToSeeSnapshots(boolean isAbleToSeeSnapshots) {
+		this.isAbleToSeeSnapshots = isAbleToSeeSnapshots;
+	}
+	public boolean isAbleToSeeNotes() {
+		return isAbleToSeeNotes;
+	}
+	public void setIsAbleToSeeNotes(boolean isAbleToSeeNotes) {
+		this.isAbleToSeeNotes = isAbleToSeeNotes;
+	}
+	public boolean isAbleToSendMail() {
+		return isAbleToSendMail;
+	}
+	public void setIsAbleToSendMail(boolean isAbleToSendMail) {
+		this.isAbleToSendMail = isAbleToSendMail;
+	}
+	public boolean isAbleToSaveIntoPersonalFolder() {
+		return isAbleToSaveIntoPersonalFolder;
+	}
+	public void setIsAbleToSaveIntoPersonalFolder(
+			boolean isAbleToSaveIntoPersonalFolder) {
+		this.isAbleToSaveIntoPersonalFolder = isAbleToSaveIntoPersonalFolder;
+	}
+	public boolean isAbleToSaveRememberMe() {
+		return isAbleToSaveRememberMe;
+	}
+	public void setIsAbleToSaveRememberMe(boolean isAbleToSaveRememberMe) {
+		this.isAbleToSaveRememberMe = isAbleToSaveRememberMe;
+	}
+	public boolean isAbleToSeeMetadata() {
+		return isAbleToSeeMetadata;
+	}
+	public void setIsAbleToSeeMetadata(boolean isAbleToSeeMetadata) {
+		this.isAbleToSeeMetadata = isAbleToSeeMetadata;
+	}
 	/**
 	 * Class constructor
 	 *

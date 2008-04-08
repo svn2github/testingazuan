@@ -808,15 +808,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					allCorrectRoles.addAll(rolesNames);
 				}
 				Iterator rolesIt = roles.iterator();
-				/*
 				while (rolesIt.hasNext()) {
 					// if the role is a user role and can see the document (in REL or TEST state), 
 					// it is a correct role
 					String role = rolesIt.next().toString();
 					if (allCorrectRoles.contains(role)) correctRoles.add(role);
 				}
-				*/
 				
+				/*
 				// considering only the first role
 				if (rolesIt.hasNext()) {
 					// if the role is a user role and can see the document (in REL or TEST state), 
@@ -824,6 +823,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					String role = rolesIt.next().toString();
 					correctRoles.add(role);
 				}
+				*/
 				return correctRoles;
 
 			}

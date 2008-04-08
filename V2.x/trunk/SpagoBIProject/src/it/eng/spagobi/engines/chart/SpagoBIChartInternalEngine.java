@@ -166,11 +166,12 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			String data="";
 			try{
 				logger.error("Getting Data Set ID");
-				data=obj.getDataSetId().toString();
-				if(data==null){
-					logger.error("Data Set not defined");
-					throw new Exception("Data Set not defined");
-				} 
+				if(obj.getDataSetId()!=null){
+				    data=obj.getDataSetId().toString();
+				} else {
+				    logger.error("Data Set not defined");
+				    throw new Exception("Data Set not defined");				    
+				}
 			}catch (Exception e) {
 				logger.error("Error while getting the dataset");
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9207);

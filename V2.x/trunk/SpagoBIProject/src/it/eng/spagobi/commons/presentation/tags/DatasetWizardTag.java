@@ -99,7 +99,7 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("		</td>\n");
 				output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 				output.append("		<td class='titlebar_level_2_button_section'>\n");
-				output.append("			<a style='text-decoration:none;' href='javascript:opencloseFixListWizardInfo()'> \n");
+				output.append("			<a style='text-decoration:none;' href='javascript:opencloseDatasetListWizardInfo()'> \n");
 				output.append("				<img width='22px' height='22px'\n");
 				output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
 				output.append("					 name='info'\n");
@@ -160,7 +160,7 @@ public class DatasetWizardTag  extends TagSupport {
 					parameters = DataSetParametersList.fromXML(parametersXML).getItems();
 				}
 				
-				output.append("<table class=\"table_detail_fix_lov\">\n");
+				output.append("<table class=\"table_detail__lov\">\n");
 			  	output.append("	<tr>\n");
 			  	output.append("		<td colspan='1' class='portlet-section-header'>\n");
 			  	String tableCol1 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol2", "messages", httpRequest);
@@ -312,18 +312,18 @@ public class DatasetWizardTag  extends TagSupport {
 				
 				
 				output.append("<script>\n");
-				output.append("		var infowizardfixlistopen = false;\n");
+				output.append("		var infowizarddatasetlistopen = false;\n");
 				output.append("		var winFLWT = null;\n");
-				output.append("		function opencloseFixListWizardInfo() {\n");
-				output.append("			if(!infowizardfixlistopen){\n");
-				output.append("				infowizardfixlistopen = true;");
-				output.append("				openFixListWizardInfo();\n");
+				output.append("		function opencloseDatasetListWizardInfo() {\n");
+				output.append("			if(!infowizarddatasetlistopen){\n");
+				output.append("				infowizarddatasetlistopen = true;");
+				output.append("				openDatasetListWizardInfo();\n");
 				output.append("			}\n");
 				output.append("		}\n");
-				output.append("		function openFixListWizardInfo(){\n");
+				output.append("		function openDatasetListWizardInfo(){\n");
 				output.append("			if(winFLWT==null) {\n");
 				output.append("				winFLWT = new Window('winFLWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.DataSetWiz.rulesTitle", "messages", httpRequest)+"\", width:650, height:110, destroyOnClose: false});\n");
-				output.append("         	winFLWT.setContent('fixlistwizardinfodiv', false, false);\n");
+				output.append("         	winFLWT.setContent('datasetlistwizardinfodiv', false, false);\n");
 				output.append("         	winFLWT.showCenter(false);\n");
 				output.append("		    } else {\n");
 				output.append("         	winFLWT.showCenter(false);\n");
@@ -331,15 +331,15 @@ public class DatasetWizardTag  extends TagSupport {
 				output.append("		}\n");
 				output.append("		observerFLWT = { onClose: function(eventName, win) {\n");
 				output.append("			if (win == winFLWT) {\n");
-				output.append("				infowizardfixlistopen = false;");
+				output.append("				infowizarddatasetlistopen = false;");
 				output.append("			}\n");
 				output.append("		  }\n");
 				output.append("		}\n");
 				output.append("		Windows.addObserver(observerFLWT);\n");
 				output.append("</script>\n");
 				
-				output.append("<div id='fixlistwizardinfodiv' style='display:none;'>\n");	
-				output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/fixlistwizardinfo", httpRequest));
+				output.append("<div id='datasetlistwizardinfodiv' style='display:none;'>\n");	
+				output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/datasetlistwizardinfo", httpRequest));
 				output.append("</div>\n");
 				//output.append("</td></tr></table>\n");
 				

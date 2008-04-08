@@ -164,7 +164,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			
 				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
 				//check if there are parameters filled
-				Object par=(Object)session.getAttribute("parametersfilled");
+				Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 				HashMap parametersFilled=(HashMap)par;
 				if(parametersFilled!=null && !parametersFilled.isEmpty()){
 					query = GeneralUtilities.substituteParametersInString(query, parametersFilled);	
@@ -179,7 +179,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				if (endIndex == -1) endIndex = stacktrace.indexOf(" at ", startIndex);
 				if (startIndex != -1 && endIndex != -1) 
 					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
-				response.setAttribute("testExecuted", "false");
+				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9211", messageBundle);
 
 			}
@@ -194,7 +194,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			}
 			catch (Exception e) {
 				// TODO: handle exception
-				response.setAttribute("testExecuted", "false");
+				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
 
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9209", messageBundle);
 
@@ -229,7 +229,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				if (endIndex == -1) endIndex = stacktrace.indexOf(" at ", startIndex);
 				if (startIndex != -1 && endIndex != -1) 
 					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
-				response.setAttribute("testExecuted", "false");
+				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
 				if(fis!=null)fis.close();
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9210", messageBundle);
 				//return null;
@@ -269,7 +269,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		moduleConfigStr += "</CONFIG>";
 		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
 		
-		response.setAttribute("testExecuted", "true");
+		response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "true");
 
 		
 		response.setAttribute(moduleConfig);

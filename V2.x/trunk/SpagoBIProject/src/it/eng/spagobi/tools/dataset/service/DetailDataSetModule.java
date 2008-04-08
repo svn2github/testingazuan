@@ -72,7 +72,12 @@ public class DetailDataSetModule extends AbstractModule {
 	public static final String RETURN_FROM_TEST_MSG="RETURN_FROM_TEST_MSG";
 	public static final String TEST_BEFORE_SAVE="testDataSetBeforeSave";
 	public static final String TEST="testLov";	
+	public static final String TEST_AFTER_PARAMETERS_FILLED="testafterparametersfilling";
+	public static final String PARAMETERS_FILLED="parametersfilled";
+	public static final String TEST_EXECUTED="testExecuted";
+	
 
+	
 	public void init(SourceBean config) {
 	}
 	
@@ -111,7 +116,7 @@ public class DetailDataSetModule extends AbstractModule {
 			}	else if (message.trim().equalsIgnoreCase("EXIT_FROM_DETAIL")){
 				exitFromDetail(request, response);
 			}
-			else if(message.trim().equalsIgnoreCase("testafterparametersfilling")) {
+			else if(message.trim().equalsIgnoreCase(DetailDataSetModule.TEST_AFTER_PARAMETERS_FILLED)) {
 				testDatasetAfterParameterFilling(request, response);
 			}
 		}
@@ -201,22 +206,10 @@ public class DetailDataSetModule extends AbstractModule {
 		if(returnFromTestMsg!=null) { // Case returning from Test View!
 			// save after the test
 			if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {      // Save 		
-				/*Collection errors = errorHandler.getErrors();
-				if (errors != null && errors.size() > 0) {
-					Iterator iterator = errors.iterator();
-					while (iterator.hasNext()) {
-						Object error = iterator.next();
-						if(error instanceof EMFValidationError) {
-							serviceResponse.setAttribute("testLov", "true");
-							return;
-						}
-					}
-				}*/
-
 				//DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
 				serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
-				session.delAttribute(DetailDataSetModule.DATASET_MODIFIED);
+				session.delAttribute(DetailDataSetModule.DATASET);
 				session.delAttribute(SpagoBIConstants.MODALITY);
 			} 
 
@@ -771,9 +764,9 @@ public class DetailDataSetModule extends AbstractModule {
 					attributes.put(name, valueToPass);
 				}
 				session.setAttribute("parametersfilled", attributes);
-
 			}
-			response.setAttribute("testLov", "true");
+			response.setAttribute(DetailDataSetModule.PARAMETERS_FILLED,"true");
+			response.setAttribute(DetailDataSetModule.TEST, "true");
 			return;
 		} catch (Exception e) {
 			logger.error("Error while creating user profile for test", e);

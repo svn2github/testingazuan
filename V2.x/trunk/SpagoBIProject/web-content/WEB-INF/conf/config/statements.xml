@@ -75,7 +75,8 @@
      		SBI_DOMAINS D
 				WHERE D.DOMAIN_CD='CHECK'
 				AND T.VALUE_TYPE_CD = D.VALUE_CD "/>
-					
+
+	<!--			
 	<STATEMENT name="SELECT_ALL_ROLES" 
                query="SELECT EXT_ROLE_ID,  
        						NAME,
@@ -84,7 +85,8 @@
        						ROLE_TYPE_ID,
        						ROLE_TYPE_CD
 					FROM SBI_EXT_ROLES "/>
-
+	 -->
+	 
 	<STATEMENT name="SELECT_ALL_DS" 
                query="SELECT DS_ID as ID,         						 
        						 DESCR,

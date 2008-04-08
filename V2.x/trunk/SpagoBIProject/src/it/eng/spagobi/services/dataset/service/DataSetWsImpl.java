@@ -22,7 +22,7 @@ public class DataSetWsImpl implements DataSetWsInterface {
      */
     public String readData(HashMap parameters, String operation) throws RemoteException {
 
-	return null;
+	return "<ROWS><ROW name=\"io\" value=\"5\"/><ROW name=\"tu\" value=\"3\"/><ROW name=\"egli\" value=\"3\"/><ROW name=\"noi\" value=\"1\"/><ROW name=\"voi\" value=\"2\"/><ROW name=\"essi\" value=\"7\"/></ROWS>";
     }
 
 }

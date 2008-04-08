@@ -1,0 +1,75 @@
+package it.eng.spagobi.services.proxy;
+
+import it.eng.spagobi.services.dataset.stub.DataSetWsInterfaceServiceLocator;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+
+import java.net.URL;
+
+import javax.xml.rpc.ServiceException;
+
+import org.apache.log4j.Logger;
+
+/**
+ * 
+ * Proxy of Data Set Service
+ * @author Angelo Bernabei
+ *         angelo.bernabei@eng.it 
+ * 
+ */
+public final class DataSetWsServiceProxy {
+
+    static private Logger logger = Logger.getLogger(DataSetWsServiceProxy.class);
+
+    private URL url = null;
+
+    /**
+     * 
+     * @param user
+     *                userId
+     * @param session
+     *                Http Session
+     */
+    public DataSetWsServiceProxy(String adress) {
+	try {
+	    this.url = new URL(adress);
+	} catch (Exception e) {
+	    logger.error("Service Adress is incorrect", e);
+	}
+    }
+
+    private DataSetWsServiceProxy() {
+    }
+
+    private it.eng.spagobi.services.dataset.stub.DataSetWsInterface lookUp() throws SecurityException {
+	try {
+	    DataSetWsInterfaceServiceLocator locator = new DataSetWsInterfaceServiceLocator();
+	    it.eng.spagobi.services.dataset.stub.DataSetWsInterface service = null;
+	    service = locator.getDataSetService(url);
+	    return service;
+	} catch (ServiceException e) {
+	    logger.error("Error during service execution", e);
+	    throw new SecurityException();
+	}
+    }
+
+    /**
+     * 
+     * @param parameters
+     *                HashMap input par.
+     * @param operation
+     *                String operation
+     * @return String data
+     */
+    public String readData(java.util.HashMap parameters, java.lang.String operation) {
+	logger.debug("IN");
+	try {
+	    return lookUp().readData(parameters, operation);
+	} catch (Exception e) {
+	    logger.error("Error during service execution", e);
+
+	} finally {
+	    logger.debug("IN");
+	}
+	return null;
+    }
+}

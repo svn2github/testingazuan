@@ -97,22 +97,29 @@
 	</table>
 	
 				<% 
+				
+				/*
 				String disabledFile="disabled";
 				String disabledQuery="disabled";
 				String disabledWs="disabled";
+				*/
+				String disabledFile="style=\"display: none;\"";
+				String disabledQuery="style=\"display: none;\"";
+				String disabledWs="style=\"display: none;\"";
+				
 				String type="";
 				
    	       if(ds instanceof FileDataSet){
 					type="file";
-					disabledFile="";
+					disabledFile="";;
 				}
 				else if(ds instanceof QueryDataSet){
 					type="query";
-					disabledQuery="";
+					disabledQuery="";;
 				} 
 				else if(ds instanceof WSDataSet){
 					type="ws";
-					disabledWs="";
+					disabledWs="";;
 				} 
    	       
 			String datasetDisplay = "none";
@@ -237,7 +244,7 @@
 		</div>
 		<%} %>
 
-		<div class='div_detail_label'>
+		<div class='div_detail_label' id="FILENAMELABEL" <%=disabledFile%> >
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.fileName" />
 			</span>
@@ -252,11 +259,11 @@
 				   fileName = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="FILENAME" 
+			<input class='portlet-form-input-field' type="text" name="FILENAME" id="FILENAME"
 				   size="50" value="<%=fileName%>" maxlength="50" <%=disabledFile%> />
 	   </div>
 	   
-	   		<div class='div_detail_label'>
+	   		<div class='div_detail_label' id="QUERYLABEL" <%=disabledQuery%>>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.query" />
 			</span>
@@ -272,7 +279,7 @@
 			   }
 		%>
 		
-		<textarea rows="4" cols="40" name="QUERY" <%=disabledQuery%>><%=query%></textarea>
+		<textarea id="QUERY" rows="4" cols="40" name="QUERY" <%=disabledQuery%>><%=query%></textarea>
 		<BR>
 		
 		<!-- 
@@ -283,13 +290,13 @@
 	   </div>
 
 	   
-	   	<div class='div_detail_label'>
+	   	<div class='div_detail_label' id="DATASOURCELABEL" <%=disabledQuery%> >
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.dataSource" />
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType" <%=disabledQuery%> >			
+		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="DATASOURCE" <%=disabledQuery%> >			
 			<option></option>
 			<%
 
@@ -322,7 +329,7 @@
 		</select>
 	</div>
 		
-		<div class='div_detail_label'>
+		<div class='div_detail_label' id="ADDRESSLABEL" <%=disabledWs%>>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.address" />
 			</span>
@@ -337,11 +344,11 @@
 				   address = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="ADDRESS" 
+			<input class='portlet-form-input-field' type="text" name="ADDRESS" id="ADDRESS"
 				   size="50" value="<%=address%>" maxlength="50" <%=disabledWs%> />
 	   </div>
 	   
-	   		<div class='div_detail_label'>
+	   		<div class='div_detail_label' id="EXECUTORCLASSLABEL" <%=disabledWs%>>
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.executorClass" />
 			</span>
@@ -356,7 +363,7 @@
 				   executorClass = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="EXECUTORCLASS" 
+			<input class='portlet-form-input-field' type="text" name="EXECUTORCLASS" id="EXECUTORCLASS"
 				   size="50" value="<%=executorClass%>" maxlength="50" <%=executorClass%> <%=disabledWs%>/>
 	   </div>		
 			
@@ -397,7 +404,7 @@
 	 
 	 
 	
-	<script>
+	<script><!--
 	
 	<%
 		String datasetModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
@@ -455,30 +462,63 @@
 		function DisableFields(type){
 
 		if (type == 'file'){
-			document.dsForm.FILENAME.disabled=false;
-			document.dsForm.ADDRESS.disabled=true;
-			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=true;
-			document.dsForm.DATASOURCE.disabled=true;
+			//document.dsForm.FILENAME.disabled=false;
+			//document.dsForm.ADDRESS.disabled=true;
+			//document.dsForm.QUERY.disabled=true;
+			//document.dsForm.EXECUTORCLASS.disabled=true;
+			//document.dsForm.DATASOURCE.disabled=true;
 			document.getElementById("tag").style.display = "none";
+			document.getElementById("FILENAME").style.display = "inline";
+			document.getElementById("ADDRESS").style.display = "none";
+			document.getElementById("QUERY").style.display = "none";
+			document.getElementById("EXECUTORCLASS").style.display = "none";
+			document.getElementById("DATASOURCE").style.display = "none";
+			document.getElementById("FILENAMELABEL").style.display = "inline";
+			document.getElementById("ADDRESSLABEL").style.display = "none";
+			document.getElementById("QUERYLABEL").style.display = "none";
+			document.getElementById("EXECUTORCLASSLABEL").style.display = "none";
+			document.getElementById("DATASOURCELABEL").style.display = "none";
+
+			
 		}
 		else 
 		if (type == 'query'){
-			document.dsForm.FILENAME.disabled=true;
-			document.dsForm.ADDRESS.disabled=true;
-			document.dsForm.QUERY.disabled=false;
-			document.dsForm.EXECUTORCLASS.disabled=true;
-			document.dsForm.DATASOURCE.disabled=false;
+		//	document.dsForm.FILENAME.disabled=true;
+		//	document.dsForm.ADDRESS.disabled=true;
+		//	document.dsForm.QUERY.disabled=false;
+		//	document.dsForm.EXECUTORCLASS.disabled=true;
+		//	document.dsForm.DATASOURCE.disabled=false;
 			document.getElementById("tag").style.display = "inline";
+			document.getElementById("FILENAME").style.display = "none";
+			document.getElementById("ADDRESS").style.display = "none";
+			document.getElementById("QUERY").style.display = "inline";
+			document.getElementById("EXECUTORCLASS").style.display = "none";
+			document.getElementById("DATASOURCE").style.display = "inline";
+			document.getElementById("FILENAMELABEL").style.display = "none";
+			document.getElementById("ADDRESSLABEL").style.display = "none";
+			document.getElementById("QUERYLABEL").style.display = "inline";
+			document.getElementById("EXECUTORCLASSLABEL").style.display = "none";
+			document.getElementById("DATASOURCELABEL").style.display = "inline";
+			
 		}
 	    else 
 	    if (type == 'ws'){
-			document.dsForm.FILENAME.disabled=true;
-			document.dsForm.ADDRESS.disabled=false;
-			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=false;
-			document.dsForm.DATASOURCE.disabled=true;
+		//	document.dsForm.FILENAME.disabled=true;
+		//	document.dsForm.ADDRESS.disabled=false;
+		//	document.dsForm.QUERY.disabled=true;
+		//	document.dsForm.EXECUTORCLASS.disabled=false;
+		//	document.dsForm.DATASOURCE.disabled=true;
 			document.getElementById("tag").style.display = "none";
+			document.getElementById("FILENAME").style.display = "none";
+			document.getElementById("ADDRESS").style.display = "inline";
+			document.getElementById("QUERY").style.display = "none";
+			document.getElementById("EXECUTORCLASS").style.display = "inline";
+			document.getElementById("DATASOURCE").style.display = "none";
+			document.getElementById("FILENAMELABEL").style.display = "none";
+			document.getElementById("ADDRESSLABEL").style.display = "inline";
+			document.getElementById("QUERYLABEL").style.display = "none";
+			document.getElementById("EXECUTORCLASSLABEL").style.display = "inline";
+			document.getElementById("DATASOURCELABEL").style.display = "none";
 		
 		}
 	}
@@ -526,7 +566,7 @@
 	}
 	
 	Windows.addObserver(observerWPA);
-</script>
+--></script>
 
 <div id='profileattributeinfodiv' style='display:none;'>	
 	<hr/>

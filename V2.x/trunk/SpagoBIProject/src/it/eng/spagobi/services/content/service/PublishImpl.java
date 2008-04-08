@@ -13,6 +13,7 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -60,10 +61,8 @@ public class PublishImpl extends AbstractServiceImpl {
 	    if (obj == null) {
 		obj = createBIObject();
 		initBIObject(attributes, obj);
-		DAOFactory.getBIObjectDAO().insertBIObject(obj);
 	    } else {
-		updateBIObject(attributes, obj);
-		DAOFactory.getBIObjectDAO().modifyBIObject(obj);
+		obj = updateBIObject(attributes, obj);
 	    }
 	    return "OK";
 	} catch (EMFUserError e) {
@@ -77,7 +76,7 @@ public class PublishImpl extends AbstractServiceImpl {
 	}
     }
 
-    private void updateBIObject(Map mapPar, BIObject obj) {
+    private BIObject updateBIObject(Map mapPar, BIObject obj) {
 	logger.debug("IN");
 	String name = (String) mapPar.get("NAME");
 	String description = (String) mapPar.get("DESCRIPTION");
@@ -138,10 +137,12 @@ public class PublishImpl extends AbstractServiceImpl {
 	obj.setBiObjectTypeCode(domain.getValueCd());
 
 	obj.setBiObjectTypeID(typeIdInt);
+	
 	logger.debug("OUT");
+	return obj;
     }
 
-    private void initBIObject(Map mapPar, BIObject obj) {
+    private void initBIObject(Map mapPar, BIObject obj) throws EMFUserError {
 
 	logger.debug("IN");
 	String label = (String) mapPar.get("LABEL");
@@ -154,6 +155,7 @@ public class PublishImpl extends AbstractServiceImpl {
 	String functionalitiyCode = (String) mapPar.get("FUNCTIONALITYCODE");
 	String state = (String) mapPar.get("STATE");
 	String type = (String) mapPar.get("TYPE");
+	String user = (String) mapPar.get("USER");
 
 	int t = -1;
 	try {
@@ -191,27 +193,39 @@ public class PublishImpl extends AbstractServiceImpl {
 	obj.setVisible(visible);
 
 	obj.setEngine(engine);
+	obj.setCreationUser(user);
 
 	String template = (String) mapPar.get("TEMPLATE");
 	//ObjTemplate objTemp = obj.getActiveTemplate();
 	ObjTemplate objTemp = new ObjTemplate();
 	objTemp.setName("etlTemplate.xml");
 	objTemp.setContent(template.getBytes());
+	
+	obj.setBiObjectTypeID(typeIdInt);
+	obj.setBiObjectTypeCode(type);
+
+	obj.setStateCode(state);
+	Integer valueId = null;
+	List l = (List)DAOFactory.getDomainDAO().loadListDomainsByType("STATE");
+	if (!l.isEmpty()){
+		Iterator it = l.iterator();
+		while(it.hasNext()){
+			Domain dtemp = (Domain)it.next();
+			if (dtemp.getValueCd().equals(state)){
+				valueId = dtemp.getValueId();
+				break;
+			}
+		}
+	}
+	obj.setStateID(valueId);
 
 	Domain domain = null;
 	try {
-	    //DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
-		DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
 	    domain = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
 	} catch (EMFUserError e1) {
 	    logger.error("Error while reading domain by type");
 	}
-	obj.setBiObjectTypeCode(domain.getValueCd());
-
-	obj.setBiObjectTypeID(typeIdInt);
-
-	obj.setStateCode(state);
-	obj.setStateID(new Integer(55));
+	obj.setBiObjectTypeCode(domain.getValueCd());	
 
 	List functionalities = new ArrayList();
 	try {
@@ -232,6 +246,8 @@ public class PublishImpl extends AbstractServiceImpl {
 	}
 
 	obj.setFunctionalities(funcs);
+	DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
+	
 	logger.debug("OUT");
     }
 

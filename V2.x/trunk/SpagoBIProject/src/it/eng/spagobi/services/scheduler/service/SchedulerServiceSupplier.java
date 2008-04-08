@@ -341,7 +341,7 @@ public class SchedulerServiceSupplier {
 	
 	
 	
-	public   String scheduleJob(String xmlRequest) {
+	public String scheduleJob(String xmlRequest) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

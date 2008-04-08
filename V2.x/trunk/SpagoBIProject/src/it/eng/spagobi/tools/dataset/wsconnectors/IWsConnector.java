@@ -18,8 +18,8 @@ public interface IWsConnector {
      * @param adress String WS Address
      * @param params HasMap input parameters
      * @param operation String operation
-     * @return IDataSet result
+     * @return String result
      */
-    IDataSet readDataSet(String adress,HashMap params, String operation);  
+    String readDataSet(String adress,HashMap params, String operation);  
     
 }

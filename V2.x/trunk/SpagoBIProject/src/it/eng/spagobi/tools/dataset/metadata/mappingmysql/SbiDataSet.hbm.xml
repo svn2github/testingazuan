@@ -37,6 +37,9 @@
 	        <property name="adress" type="string">
 	            <column name="ADRESS" />
 	        </property>
+	        <property name="operation" type="string">
+	            <column name="OPERATION" />
+	        </property>	        
 	        <property name="executorClass" type="string">
 	            <column name="EXECUTOR_CLASS" />
 	        </property>	        

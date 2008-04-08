@@ -9,6 +9,7 @@ package it.eng.spagobi.tools.dataset.bo;
  */
 public class WSDataSet extends DataSet {
     private String adress=null;
+    private String operation=null;
     private String executorClass=null;
     public String getAdress() {
         return adress;
@@ -31,6 +32,12 @@ public class WSDataSet extends DataSet {
 	public WSDataSet() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	public String getOperation() {
+	    return operation;
+	}
+	public void setOperation(String operation) {
+	    this.operation = operation;
 	}
 	
     

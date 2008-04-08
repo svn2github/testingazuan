@@ -744,34 +744,32 @@ Ext.onReady(function(){
   <table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
   <tr>
   <td>
-  <div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
+  <div style="float:left;clear:left;width:200px;height:25px;" >
+					<span class='portlet-form-field-label' width="230" >
 						<spagobi:message key ="metadata.docLongDescr" />
 					</span>
 				</div>
-	</td><td>			
-  <div class='div_detail_label'>
+	</td></tr>
+	<tr><td>
+				<div id= "containerLongDescr">
+				</div> 
+   </td></tr>
+   <tr><td style='background:none;border:none'>&nbsp;</td></tr>
+	<tr><td>			
+  <div style="float:left;clear:left;width:200px;height:25px;" >
 					<span class='portlet-form-field-label'>
 						<spagobi:message key ="metadata.docObjective" />
 					</span>
 				</div>
-	</td>			
-	</tr>
-	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
-	<tr>
-		<td>
-				
-					
-				<div id= "containerLongDescr">
-				</div> 
-</td><td>
-
+	</td></tr>
+	<tr><td>
 				<div id= "containerObjective">
 				</div> 
-	</td>
-	</tr><tr>
-	</tr><td>&nbsp;</td><tr>
-	<td>		
+	</td></tr>			
+	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
+
+	<tr><td>&nbsp;</td></tr>
+	<tr><td>		
 						
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>

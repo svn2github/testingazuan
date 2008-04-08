@@ -3,6 +3,8 @@
  */
 package it.eng.spagobi.tools.dataset.wsconnectors;
 
+import java.util.HashMap;
+
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 /**
@@ -11,6 +13,13 @@ import it.eng.spagobi.tools.dataset.bo.IDataSet;
  */
 public interface IWsConnector {
 
-    IDataSet readDataSet(String adress,String[] params);  
+    /**
+     * 
+     * @param adress String WS Address
+     * @param params HasMap input parameters
+     * @param operation String operation
+     * @return IDataSet result
+     */
+    IDataSet readDataSet(String adress,HashMap params, String operation);  
     
 }

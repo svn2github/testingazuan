@@ -99,6 +99,7 @@
 	  
   
 	<!-- tools.role -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/role/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/presentation.xml" />

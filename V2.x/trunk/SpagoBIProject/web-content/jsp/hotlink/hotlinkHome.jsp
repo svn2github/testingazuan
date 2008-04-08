@@ -64,7 +64,8 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 	<p style="margin: 10px">
 		<div id="renderTo_MyRecentlyUsed"></div>
 	</p>
-	
+</div>
+
 <script type="text/javascript">
 Ext.onReady(function(){
 
@@ -94,7 +95,7 @@ Ext.onReady(function(){
 			String deleteUrl = urlBuilder.getUrl(request, params);
 			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
 			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>',
-				'<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>'],<%
+				'<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>']<%= rememberMeListIt.hasNext() ? "," : "" %><%
 		}
 		%>
     ];
@@ -148,7 +149,7 @@ Ext.onReady(function(){
             {header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
             {header: "Document name", sortable: true, dataIndex: 'DocumentName'},
             {header: "Document description", sortable: true, dataIndex: 'DocumentDescription'},
-            {header: "Document type", sortable: true, dataIndex: 'DocumentType'},
+            {header: "Document type", sortable: true, dataIndex: 'DocumentType'}
         ],
 		onRender: function() {
         	Ext.grid.GridPanel.prototype.onRender.apply(this, arguments);
@@ -229,7 +230,8 @@ Ext.onReady(function(){
 			}
 			String executeUrl = urlBuilder.getUrl(request, params);
 			executeUrl = executeUrl.replaceAll("&amp;", "&");
-			%>['<%= hotlink.getDocumentLabel() %>','<%= hotlink.getDocumentName() %>','<%= hotlink.getDocumentDescription() %>','<%= hotlink.getDocumentType() %>','<%= executeUrl %>'],<%
+			%>['<%= hotlink.getDocumentLabel() %>','<%= hotlink.getDocumentName() %>','<%= hotlink.getDocumentDescription() %>',
+				'<%= hotlink.getDocumentType() %>','<%= executeUrl %>']<%= mostPopularListIt.hasNext() ? "," : "" %><%
 		}
 		%>
     ];
@@ -253,7 +255,7 @@ Ext.onReady(function(){
             {id: "Document", header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
             {header: "Document name", sortable: true, dataIndex: 'DocumentName'},
             {header: "Document description", sortable: true, dataIndex: 'DocumentDescription'},
-            {header: "Document type", sortable: true, dataIndex: 'DocumentType'},
+            {header: "Document type", sortable: true, dataIndex: 'DocumentType'}
         ],
 		viewConfig: {
         	forceFit: true
@@ -297,7 +299,8 @@ Ext.onReady(function(){
 			}
 			String executeUrl = urlBuilder.getUrl(request, params);
 			executeUrl = executeUrl.replaceAll("&amp;", "&");
-			%>['<%= hotlink.getDocumentLabel() %>','<%= hotlink.getDocumentName() %>','<%= hotlink.getDocumentDescription() %>','<%= hotlink.getDocumentType() %>','<%= executeUrl %>'],<%
+			%>['<%= hotlink.getDocumentLabel() %>','<%= hotlink.getDocumentName() %>','<%= hotlink.getDocumentDescription() %>',
+				'<%= hotlink.getDocumentType() %>','<%= executeUrl %>']<%= myRecentlyUsedListIt.hasNext() ? "," : "" %><%
 		}
 		%>
     ];
@@ -321,7 +324,7 @@ Ext.onReady(function(){
             {id: "Document", header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
             {header: "Document name", sortable: true, dataIndex: 'DocumentName'},
             {header: "Document description", sortable: true, dataIndex: 'DocumentDescription'},
-            {header: "Document type", sortable: true, dataIndex: 'DocumentType'},
+            {header: "Document type", sortable: true, dataIndex: 'DocumentType'}
         ],
 		viewConfig: {
         	forceFit: true

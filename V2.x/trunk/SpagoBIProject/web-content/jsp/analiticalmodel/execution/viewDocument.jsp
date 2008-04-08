@@ -27,6 +27,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.commons.bo.Role"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
@@ -45,7 +48,18 @@ UUID uuidObj = uuidGen.generateTimeBasedUUID();
 String uuid = uuidObj.toString();
 uuid = uuid.replaceAll("-", "");
 
+String title = obj.getLabel() + ": " + obj.getName();
+
+//execution role
+String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
+Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
+
 %>
+
+<div class='execution-page-title'>
+	<%= title %>
+</div>
+
 <div class='errors-object-details-div'>
 	<spagobi:error/>
 </div>
@@ -54,9 +68,9 @@ uuid = uuid.replaceAll("-", "");
 	<div class="slider_header">
 		<ul>
 		    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
-			<li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li>
-			<li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li>
-			<li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li>
+			<% if (executionRoleObj.isAbleToSeeViewpoints()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
+			<% if (executionRoleObj.isAbleToSeeSubobjects()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
+			<% if (executionRoleObj.isAbleToSeeSnapshots()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 		</ul>
 	</div>
 	<div class="toolbar_header">
@@ -86,30 +100,36 @@ createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'paramete
 <%-- End parameters --%>
 
 <%-- ViewPoints --%>
+<% if (executionRoleObj.isAbleToSeeViewpoints()) { %>
 <div style="display:none"><div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 <script>
 createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 
 		'popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', <%= pageContext.getAttribute("viewpointsBoxOpen") %>);
 </script>
+<% } %>
 <%-- End viewPoints --%>
 
 <%-- SubObjects --%>
+<% if (executionRoleObj.isAbleToSeeSubobjects()) { %>
 <div style="display:none"><div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_SubObject<%= uuid %>" class="popout"></div>
 <script>
 createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 
 		'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', <%= pageContext.getAttribute("subobjectsBoxOpen") %>);
 </script>
+<% } %>
 <%-- End SubObjects --%>
 
 <%-- Snapshots --%>
+<% if (executionRoleObj.isAbleToSeeSnapshots()) { %>
 <div style="display:none"><div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div></div>
 <div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 <script>
 createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 
 		'popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', <%= pageContext.getAttribute("snapshotsBoxOpen") %>);
 </script>
+<% } %>
 <%-- End Snapshots --%>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

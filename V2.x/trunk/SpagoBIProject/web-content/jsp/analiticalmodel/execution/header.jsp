@@ -36,6 +36,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.commons.bo.Role"%>
+
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
@@ -83,8 +86,6 @@ SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBO
 Map documentParametersMap = (Map) moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
 
 String title = obj.getLabel() + ": " + obj.getName();
-String objDescr = obj.getDescription();
-if (objDescr != null && !objDescr.trim().equals("")) title += " [" + objDescr + "]";
 
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
@@ -94,7 +95,11 @@ executionParameters.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, GeneralUtilitie
 AuditManager auditManager = AuditManager.getInstance();
 String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
 if (modality == null) modality = "NORMAL_EXECUTION";
+
+// execution role
 String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
+Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
+
 Integer executionAuditId = auditManager.insertAudit(obj, subObj, userProfile, executionRole, modality);
 // adding parameters for AUDIT updating
 if (executionAuditId != null) {
@@ -131,9 +136,9 @@ if (toolbarIsVisible) {
 		<div class="slider_header">
 			<ul>
 			    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
-				<li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li>
-				<li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li>
-				<li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li>
+				<% if (executionRoleObj.isAbleToSeeViewpoints()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
+				<% if (executionRoleObj.isAbleToSeeSubobjects()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
+				<% if (executionRoleObj.isAbleToSeeSnapshots()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 			</ul>
 		</div>
 		<% } %>
@@ -157,6 +162,7 @@ if (toolbarIsVisible) {
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>' />
 					</a>
 				</li>
+				<% if (executionRoleObj.isAbleToSendMail()) { %>
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
@@ -164,6 +170,8 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.sendTo" />' />
 					</a>
 				</li>
+				<% } %>
+				<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder()) { %>
 			    <li>
 					<a href='javascript:saveIntoPersonalFolder<%= uuid %>()'>
 					    <img title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
@@ -171,6 +179,8 @@ if (toolbarIsVisible) {
 					         alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
 					</a>
 				</li>
+				<% } %>
+				<% if (executionRoleObj.isAbleToSaveRememberMe()) { %>
 				<li>
 					<a id='saveRememberMe_button<%= uuid %>' href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
@@ -178,6 +188,8 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.saveRememberMe" />' />
 					</a>
 				</li>
+				<% } %>
+				<% if (executionRoleObj.isAbleToSeeNotes()) { %>
 				<li>
 					<a id="iconNotesEmpty<%= uuid %>" href='javascript:opencloseNotesEditor<%= uuid %>()'>
 		               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
@@ -190,13 +202,16 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
 					</a>
 				</li>
+				<% } %>
+				<% if (executionRoleObj.isAbleToSeeMetadata()) { %>
 				<li>
-					<a id="metadata_button<%= uuid %>" href='javascript:void(0);'">
+					<a id="metadata_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "SBISet.objects.captionMetadata" />'
 							src='<%= urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>'
 							alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
 					</a>
 				</li>
+				<% } %>
 				<li>
 					<a href='javascript:void(0)' onClick="print<%= uuid %>();">
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.print" />'
@@ -218,31 +233,38 @@ if (toolbarIsVisible) {
 		<%-- End parameters --%>
 		
 		<%-- ViewPoints --%>
+		<% if (executionRoleObj.isAbleToSeeViewpoints()) { %>
 		<div style="display:none"><div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', false);
 		</script>
+		<% } %>
 		<%-- End viewPoints --%>
 		
 		<%-- SubObjects --%>
+		<% if (executionRoleObj.isAbleToSeeSubobjects()) { %>
 		<div style="display:none"><div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_SubObject<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
 		</script>
+		<% } %>
 		<%-- End SubObjects --%>
 		
 		<%-- Snapshots --%>
+		<% if (executionRoleObj.isAbleToSeeSnapshots()) { %>
 		<div style="display:none"><div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);
 		</script>
+		<% } %>
 		<%-- End Snapshots --%>
 	<% } %>
 	
 	<%-- Scripts for send mail to form --%>
+	<% if (executionRoleObj.isAbleToSendMail()) { %>
 	<script type="text/javascript">
 	var win_sendTo_<%= uuid %>;
 	Ext.get('sendTo_button<%= uuid %>').on('click', function(){
@@ -272,9 +294,11 @@ if (toolbarIsVisible) {
 		win_sendTo_<%= uuid %>.show();
 	});
 	</script>
+	<% } %>
 	<%-- End scripts for send mail to form --%>
 	
 	<%-- Scripts for Remember Me saving --%>
+	<% if (executionRoleObj.isAbleToSaveRememberMe()) { %>
 	<script>
 	var saveRememberMeForm<%= uuid %>;
 	var rememberMeName<%= uuid %>;
@@ -405,9 +429,11 @@ if (toolbarIsVisible) {
 		alert('Error while saving');
 	}
 	</script>
+	<% } %>
 	<%-- End scripts for Remember Me saving --%>
 	
 	<%-- Scripts for save into my personal folder --%>
+	<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder()) { %>
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
@@ -455,13 +481,17 @@ if (toolbarIsVisible) {
 		alert('Error while saving');
 	}
 	</script>
+	<% } %>
 	<%-- End scripts for save into my personal folder --%>
 	
 	<%-- notes --%>
+	<% if (executionRoleObj.isAbleToSeeNotes()) { %>
 	<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
+	<% } %>
 	<%-- end notes --%>
 	
 	<%-- Scripts for metadata window --%>
+	<% if (executionRoleObj.isAbleToSeeMetadata()) { %>
 	<script>
 	var win_metadata_<%= uuid %>;
 	Ext.get('metadata_button<%= uuid %>').on('click', function(){
@@ -491,6 +521,7 @@ if (toolbarIsVisible) {
 		win_metadata_<%= uuid %>.show();
 	});
 	</script>
+	<% } %>
 	<%-- End scripts for metadata window --%>
 	
 	<%-- Scripts for print --%>
@@ -555,8 +586,10 @@ if (toolbarIsVisible) {
 		</script>
 		<%
 	}
+	%>
+	<%-- End scripts for print --%>
+	<%
 }
 %>
 
 <spagobi:error/>
-<%-- End scripts for print --%>

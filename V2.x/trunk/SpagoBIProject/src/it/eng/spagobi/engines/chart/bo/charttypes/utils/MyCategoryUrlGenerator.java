@@ -49,9 +49,7 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 	public String generateURL(CategoryDataset dataset, int series, int category) {
 logger.debug("IN");
 		String URL=super.generateURL(dataset, series, category);
-		if(document_composition){
-			URL=URL+"');";
-		}
+
 
 		if(serieUrlLabel==null){serieUrlLabel="series";}
 		else{
@@ -75,7 +73,12 @@ logger.debug("IN");
 		if(URL.contains("category=")){
 			URL=URL.replace("category=", (categoryRep));
 		}
-logger.debug("OUT");
+		
+		if(document_composition){
+			URL=URL+"');";
+		}
+
+		logger.debug("OUT");
 		return URL;
 	}
 
@@ -135,20 +138,27 @@ logger.debug("OUT");
 			else{
 
 				int endIndex=URL.indexOf('&', startIndex);
-				String delete=URL.substring(startIndex, endIndex-1);
-
+				
+				String delete="";
+				if(!(endIndex==-1)){
+				delete=URL.substring(startIndex, endIndex);
+				}
+				else{
+					delete=URL.substring(startIndex, URL.length());
+				}
+				
 				char before=URL.charAt(startIndex-1);
 
 
 				if(URL.contains("?"+delete+"&")){ // in this case delete the & after
-					URL.replaceAll((delete+"&"), "");
+					URL=URL.replaceAll((delete+"&"), "");
 				}
 				else if(URL.contains("&"+delete)) 
 				{
-					URL.replaceAll(("&"+delete), "");
+					URL=URL.replaceAll(("&"+delete), "");
 				}
 				else{
-					URL.replaceAll(delete, "");
+					URL=URL.replaceAll(delete, "");
 				}
 			}
 		}

@@ -60,7 +60,7 @@ public class BIObjectsModule extends AbstractModule {
     public static final String PATH_SUBTREE = "PATH_SUBTREE";
     public static final String HEIGHT_AREA = "HEIGHT_AREA";
     public static final String SNAPSHOT_NAME = "SNAPSHOT_NAME";
-    public static final String SNAPSHOT_HISTORY = "SNAPSHOT_HISTORY";
+    public static final String SNAPSHOT_NUMBER = "SNAPSHOT_NUMBER";
 	
     SessionContainer sessionContainer = null;
     EMFErrorHandler errorHandler = null;
@@ -68,15 +68,15 @@ public class BIObjectsModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
 		try {
-			debug("service", "enter service method");
+			logger.debug("IN");
 			errorHandler = getErrorHandler();
-			debug("service", "error handler retrived");
+			logger.debug("error handler retrived");
 			RequestContainer requestContainer = getRequestContainer();
             sessionContainer = requestContainer.getSessionContainer();
-			debug("service", "sessionContainer and permanentContainer retrived");
-            debug("service", "user profile retrived");
+			logger.debug("sessionContainer and permanentContainer retrived");
+            logger.debug("user profile retrived");
             String modality = ChannelUtilities.getPreferenceValue(requestContainer, MODALITY, "");
-            debug("service", "using "+modality+" modality");
+            logger.debug("using "+modality+" modality");
             if (modality != null) {
                 if (modality.equalsIgnoreCase(SINGLE_OBJECT)) {
                 	singleObjectModalityHandler(request, response);
@@ -147,11 +147,11 @@ public class BIObjectsModule extends AbstractModule {
 	 *            Portlet Preferences
 	 */
 	private void singleObjectModalityHandler(SourceBean request, SourceBean response) throws Exception {
-		debug("singleObjectModalityHandler", "enter singleObjectModalityHandler");
+		logger.debug("enter singleObjectModalityHandler");
 		RequestContainer requestContainer = this.getRequestContainer();
 		// get from preferences the label of the object
 		String label = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SINGLE_OBJECT, "");
-		debug("singleObjectModalityHandler", "using object label " + label);
+		logger.debug("using object label " + label);
 		// if label is not set then throw an exception
 		if (label == null || label.trim().equals("")) {
 			logger.error("Object's label not set");
@@ -159,19 +159,19 @@ public class BIObjectsModule extends AbstractModule {
         }
 		// get from preferences the parameters used by the object during execution
 		String parameters = ChannelUtilities.getPreferenceValue(requestContainer, PARAMETERS_SINGLE_OBJECT, "");
-		debug("singleObjectModalityHandler", "using parameters " + parameters);
+		logger.debug("using parameters " + parameters);
 		// get from preferences the height of the area
 		String heightArea = ChannelUtilities.getPreferenceValue(requestContainer, HEIGHT_AREA, "");
-		debug("singleObjectModalityHandler", "using height of area " + heightArea);
+		logger.debug("using height of area " + heightArea);
 		// get from preferences the snapshot name
 		String snapName = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NAME, "");
-		debug("singleObjectModalityHandler", "using snapshot name " + snapName);
+		logger.debug("using snapshot name " + snapName);
 		// get from preferences the snapshot history
-		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_HISTORY, "0");
-		debug("singleObjectModalityHandler", "using snapshot history " + snapHistStr);
+		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NUMBER, "0");
+		logger.debug("using snapshot history " + snapHistStr);
 		// MPENNINGROTH 25-Jan-2008 add sub object label support
 		String labelSubObject = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SUB_OBJECT, "");
-		debug("singleObjectModalityHandler", "using subobject " + labelSubObject);
+		logger.debug("using subobject " + labelSubObject);
 		
 		// load biobject
 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
@@ -214,17 +214,7 @@ public class BIObjectsModule extends AbstractModule {
             }
         }
         
-        debug("singleObjectModalityHandler", "end method");
+        logger.debug("OUT");
 	}
-	
-	/**
-	 * Trace a debug message into the log
-	 * @param method Name of the method to store into the log
-	 * @param message Message to store into the log
-	 */
-	private void debug(String method, String message) {
-		logger.debug(message);
-	}
-
 
 }

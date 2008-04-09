@@ -287,7 +287,7 @@ Ext.onReady(function(){
 
 function saveRoles() {
 	var modifiedRecords = store.getModifiedRecords();
-	var url = '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+	var url = '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>';
 	var pars = '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder';
 	var modifiedRoles = '';
 	//for (key in modifiedRecords) {

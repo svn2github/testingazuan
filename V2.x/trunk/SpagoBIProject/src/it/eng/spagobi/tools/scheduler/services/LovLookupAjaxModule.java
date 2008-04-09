@@ -86,10 +86,8 @@ public class LovLookupAjaxModule extends AbstractBaseProfileListModule {
 		super();
 	} 
 	
+	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		
-		//Check of the userId in order to keep performing the request
-		super.service(request, response);
 		
 	    logger.debug("IN");
 		ListIFace list = null;

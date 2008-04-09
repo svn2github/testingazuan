@@ -96,6 +96,7 @@ public abstract class AbstractBaseProfileListModule extends AbstractBasicListMod
 			}
 	    }	
 	    logger.debug("OUT");
+	    super.service(request, response);
 	}
 
 }

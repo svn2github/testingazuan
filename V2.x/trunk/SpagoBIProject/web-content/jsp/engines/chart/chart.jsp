@@ -213,7 +213,8 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		String rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
 		if(!rootDocParameter.equals("")){
 		//rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
-		rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);}
+		//rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
+		}
 		String drillLabel=((LinkableBar)sbi).getDrillLabel();
 		if(drillLabel!=null && drillLabel!=""){
 			rootPar.put("DOCUMENT_LABEL",drillLabel);
@@ -262,6 +263,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		*/
 // Old way portlet		
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
+		rootUrl=rootUrl+rootDocParameter;
 	
 		String completeUrl=rootUrl;
 	

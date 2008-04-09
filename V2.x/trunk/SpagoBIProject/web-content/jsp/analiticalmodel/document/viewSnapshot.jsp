@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -16,9 +16,85 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 
+<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+
+<%
+// built the url for the content recovering
+String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&ACTION_NAME=GET_SNAPSHOT_CONTENT&" 
+		+ SpagoBIConstants.SNAPSHOT_ID + "=" + snapshot.getId();
+
+//tries to get from the session the heigh of the output area
+String heightArea = (String) aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
+String heightStr = "";
+if (heightArea == null || heightArea.trim().equals("")) {
+%>
+	<script>
+	
+	function adaptSize<%= uuid %>Funct() {
+		// evaluates the iframe current height
+		iframeEl = document.getElementById('iframeexec<%= uuid %>');
+		offsetHeight = 0;
+		clientHeight = 0;
+		if(isIE5) {
+			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+			clientHeight = iframeEl.clientHeight;
+		}
+		if(isIE6) {
+			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+			clientHeight = iframeEl.clientHeight;
+		}
+		if(isIE7) {
+			offsetHeight = iframeEl.contentWindow.document.body.scrollHeight;
+			clientHeight = iframeEl.clientHeight;
+		}
+		if(isMoz) {
+			offsetHeight = iframeEl.contentWindow.document.body.offsetHeight;
+			clientHeight = iframeEl.clientHeight;
+		}
+		// adjusts current iframe height
+		if (offsetHeight != clientHeight + 40) {
+			heightFrame = offsetHeight + 40;
+			iframeEl.style.height = heightFrame + 'px';
+		}
+		// saves the current iframe height into a variable
+		iframeHeight<%= uuid %> = heightFrame;
+	}
+		
+	try {
+		SbiJsInitializer.adaptSize<%=uuid%> = adaptSize<%=uuid%>Funct;
+	} catch (err) {
+		alert(err.description + ' Cannot resize the document view area');
+	}
+
+	try {
+		window.onload = SbiJsInitializer.initialize;
+	} catch (err) {
+		alert('Cannot execute javascript initialize functions');
+	}
+	</script>
+<%
+} else {
+	heightStr = "height:"+heightArea+"px;";
+}
+%>
+
+<div id="divIframe<%=uuid%>" style="width:98%;float:left;padding-left:2%;<%= heightStr %>">
+	<iframe src="<%=url%>"
+		style='display:inline;' 
+		id='iframeexec<%=uuid%>' 
+		name='iframeexec<%=uuid%>'
+		frameborder=0  
+		width='100%' >
+	</iframe> 
+</div>
+
+<%@ include file="/jsp/commons/footer.jsp"%>
+
+<%--
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@page import="java.util.List" %>
@@ -120,3 +196,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         </script>
             
 </div>
+--%>

@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.tools.importexport.bo.AssociationFile"%>
 
 <%  
@@ -339,33 +340,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 %>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 	<%
 	AssociationFile assFile = (AssociationFile) aServiceRequest.getAttribute(ImportExportConstants.IMPORT_ASSOCIATION_FILE);
@@ -410,9 +384,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		function showAssList(modality) {
 			if(winlistass!=null) return;
-			getlisturl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
-			getlisturl += "/servlet/AdapterHTTP?";
-			getlisturl += "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=GET_ASSOCIATION_FILE_LIST";
+			getlisturl = "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+			getlisturl += "&ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=GET_ASSOCIATION_FILE_LIST";
 			getlisturl += "&language=<%=locale.getLanguage()%>&country=<%=locale.getCountry()%>";
 			getlisturl += "&MODALITY=" + modality;
 			winlistass = new Window('win_list_ass', {className: "alphacube", title: "<spagobi:message key = "impexp.listAssFile" bundle="component_impexp_messages"/>", width:550, height:350, hideEffect:Element.hide, showEffect:Element.show, destroyOnClose:true});
@@ -443,11 +416,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      		 }
    	 	}
    		Windows.addObserver(observerClose);
-		
-		
-		
-		
-		
+			
 		
 		function selectAssFile(idass, nameass) {
 	    	text = document.getElementById('textReadOnlyAssName');
@@ -465,9 +434,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				return;
 			} 
 			// check if the association file alreay exists
-			checkAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
-			checkAssUrl += "/servlet/AdapterHTTP?";
-			pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=CHECK_IF_EXISTS&ID=" + document.getElementById('nameNewAssToSave').value;
+			checkAssUrl = "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+			pars = "&ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=CHECK_IF_EXISTS&ID=" + document.getElementById('nameNewAssToSave').value;
 			new Ajax.Request(checkAssUrl,
           		{
             		method: 'post',
@@ -484,9 +452,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		function saveAss(exists) {
 			if (exists != "true" || confirm("<spagobi:message key = "Sbi.saving.alreadyExisting" bundle="component_impexp_messages"/>")) {
-	       		saveAssUrl = "<%=ChannelUtilities.getSpagoBIContextName(request)%>";
-				saveAssUrl += "/servlet/AdapterHTTP?";
-				pars = "ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE&OVERWRITE=TRUE";
+	       		saveAssUrl = "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+				pars = "&ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE&OVERWRITE=TRUE";
 				pars += "&language=<%=locale.getLanguage()%>&country=<%=locale.getCountry()%>";
 				<%
 					if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	

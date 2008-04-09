@@ -168,8 +168,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		if(role==null) {
 			role = rolefield.options[rolefield.selectedIndex].value;
 		}
-		url = "<%=ChannelUtilities.getSpagoBIContextName(request)%>/servlet/AdapterHTTP";
-	    pars = "NEW_SESSION=TRUE&PAGE=LovLookupAjaxPage";
+		url = "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+	    pars = "&PAGE=LovLookupAjaxPage";
 	    pars +="&roleName="+role;
 	    pars += "&parameterId="+idPar;
 	    pars += "&parameterFieldName="+parfieldName;

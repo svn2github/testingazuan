@@ -394,8 +394,8 @@
 			return;
 		}
 	
-		url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";
-		pars = "NEW_SESSION=TRUE&ACTION_NAME=TEST_CONN";
+		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		pars = "&ACTION_NAME=TEST_CONN";
 		
 			pars += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver  ;
 		

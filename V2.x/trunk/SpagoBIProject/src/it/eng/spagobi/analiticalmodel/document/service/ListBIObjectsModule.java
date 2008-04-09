@@ -174,10 +174,12 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 					visibleInstances++;
 				}
 			}
-			// at this point the document is in DEV or REL state and there is one or more visible instances
+			// at this point the document is in DEV state and there is one or more visible instances
 			boolean canDev = true;
-			if (obj.getStateCode().equalsIgnoreCase("REL")) canDev = false;
-			if (obj.getStateCode().equalsIgnoreCase("TEST")) canDev = false;
+			if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) canDev = true ;
+			else if (obj.getStateCode().equalsIgnoreCase("REL")) canDev = false;
+			else if (obj.getStateCode().equalsIgnoreCase("TEST")) canDev = false;
+			
 			
 			if ((!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
 				 !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) &&
@@ -261,8 +263,8 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.DETAIL_SELECT + "\"/> " +
 			   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
 			   				   "		<CONDITIONS>"+
-			   				   "			<PARAMETER name=\"canDev\" scope='LOCAL' value='true' operator='EQUAL_TO' />"+
-			   			       "		</CONDITIONS>"+
+			  				   "			<PARAMETER name=\"canDev\" scope='LOCAL' value='true' operator='EQUAL_TO' />"+
+							   "		</CONDITIONS>"+
 			   				   "	</DETAIL_CAPTION>";
 		}
 		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_DELETE_MANAGEMENT)){

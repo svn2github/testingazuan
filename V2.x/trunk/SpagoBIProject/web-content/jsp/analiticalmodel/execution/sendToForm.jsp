@@ -239,8 +239,8 @@ function sendTo() {
 		return;
    	}
       
-    url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
-    pars = "ACTION_NAME=SEND_TO_ACTION&";
+    url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+    pars = "&ACTION_NAME=SEND_TO_ACTION&";
     <%
 	Enumeration parKeys = request.getParameterNames();
 	while(parKeys.hasMoreElements()) {

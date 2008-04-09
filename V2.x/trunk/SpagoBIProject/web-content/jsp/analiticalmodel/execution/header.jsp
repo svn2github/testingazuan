@@ -503,7 +503,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',

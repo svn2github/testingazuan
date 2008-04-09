@@ -94,6 +94,7 @@ public class ListTag extends TagSupport
     protected String _firstUrl = null;
     protected String _lastUrl = null;
     protected String _refreshUrl = null;
+    protected IEngUserProfile profile = null;
     
     protected HttpServletRequest httpRequest = null;
     protected IUrlBuilder urlBuilder = null;
@@ -131,6 +132,8 @@ public class ListTag extends TagSupport
 		_errorHandler = _responseContainer.getErrorHandler();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		
+		profile = (IEngUserProfile) _requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		
 		// identity string for object of the page
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -677,7 +680,6 @@ public class ListTag extends TagSupport
 					Object parameterValueObject = null;
 					
 					if (functionality != null && !functionality.equalsIgnoreCase("")) {
-						IEngUserProfile profile = (IEngUserProfile) RequestContainer.getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 						
 						try {
 							if (!profile.isAbleToExecuteAction(functionality)){

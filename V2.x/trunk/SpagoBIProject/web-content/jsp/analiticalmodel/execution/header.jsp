@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
 
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
@@ -82,6 +83,9 @@ boolean areAllParametersTransient(List parametersList) {
 SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 BIObject obj = (BIObject) moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
+boolean isExecutingSubObject = subObj != null;
+Snapshot snapshot = (Snapshot) moduleResponse.getAttribute(SpagoBIConstants.SNAPSHOT);
+boolean isExecutingSnapshot = snapshot != null;
 Map documentParametersMap = (Map) moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
 
 String title = obj.getLabel() + ": " + obj.getName();
@@ -156,6 +160,7 @@ if (toolbarIsVisible) {
 					</a>
 			    </li>
 			    <% } %>
+			    <% if (!isExecutingSnapshot) { %>
 			    <li>		    
 					<a style="text-decoration:none;" href='<%= getUrl(execUrl, documentParametersMap)  %>'>
 						<img width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
@@ -163,7 +168,8 @@ if (toolbarIsVisible) {
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>' />
 					</a>
 				</li>
-				<% if (executionRoleObj.isAbleToSendMail()) { %>
+				<% } %>
+				<% if (executionRoleObj.isAbleToSendMail() && !isExecutingSnapshot) { %>
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
@@ -172,7 +178,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder()) { %>
+				<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
 			    <li>
 					<a href='javascript:saveIntoPersonalFolder<%= uuid %>()'>
 					    <img title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
@@ -181,7 +187,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSaveRememberMe()) { %>
+				<% if (executionRoleObj.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
 				<li>
 					<a id='saveRememberMe_button<%= uuid %>' href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
@@ -190,7 +196,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSeeNotes()) { %>
+				<% if (executionRoleObj.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
 				<li>
 					<a id="iconNotesEmpty<%= uuid %>" href='javascript:opencloseNotesEditor<%= uuid %>()'>
 		               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
@@ -265,7 +271,7 @@ if (toolbarIsVisible) {
 	<% } %>
 	
 	<%-- Scripts for send mail to form --%>
-	<% if (executionRoleObj.isAbleToSendMail()) { %>
+	<% if (executionRoleObj.isAbleToSendMail() && !isExecutingSnapshot) { %>
 	<script type="text/javascript">
 	var win_sendTo_<%= uuid %>;
 	Ext.get('sendTo_button<%= uuid %>').on('click', function(){
@@ -299,7 +305,7 @@ if (toolbarIsVisible) {
 	<%-- End scripts for send mail to form --%>
 	
 	<%-- Scripts for Remember Me saving --%>
-	<% if (executionRoleObj.isAbleToSaveRememberMe()) { %>
+	<% if (executionRoleObj.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
 	<script>
 	var saveRememberMeForm<%= uuid %>;
 	var rememberMeName<%= uuid %>;
@@ -434,7 +440,7 @@ if (toolbarIsVisible) {
 	<%-- End scripts for Remember Me saving --%>
 	
 	<%-- Scripts for save into my personal folder --%>
-	<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder()) { %>
+	<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
@@ -485,7 +491,7 @@ if (toolbarIsVisible) {
 	<%-- End scripts for save into my personal folder --%>
 	
 	<%-- notes --%>
-	<% if (executionRoleObj.isAbleToSeeNotes()) { %>
+	<% if (executionRoleObj.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
 	<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
 	<% } %>
 	<%-- end notes --%>

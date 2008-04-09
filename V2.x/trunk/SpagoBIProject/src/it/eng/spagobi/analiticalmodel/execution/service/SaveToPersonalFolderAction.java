@@ -30,6 +30,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import java.util.List;
 
@@ -38,13 +39,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 
-public class SaveToPersonalFolderAction extends AbstractHttpAction{
+public class SaveToPersonalFolderAction extends BaseProfileAction{
 
 	private static final long serialVersionUID = 1L;
 	
 	private static transient Logger logger=Logger.getLogger(SaveToPersonalFolderAction.class);
 
-	public void service(SourceBean request, SourceBean responseSb) {
+	public void service(SourceBean request, SourceBean responseSb) throws Exception {
+		
+		//Check of the userId in order to keep performing the request
+		super.service(request, responseSb);
 
 		logger.debug("IN");
 

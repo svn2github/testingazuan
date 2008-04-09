@@ -21,26 +21,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.commons.services;
 
-import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
+import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+
+import org.apache.log4j.Logger;
 /**
 * @author Chiara Chiarelli
 */
 
-public abstract class BaseProfileModule extends AbstractHttpModule{
+public abstract class AbstractBaseProfileListModule extends AbstractBasicListModule{
 	
-	static Logger logger = Logger.getLogger(BaseProfileModule.class);
+	static Logger logger = Logger.getLogger(AbstractBaseProfileListModule.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
@@ -55,7 +58,8 @@ public abstract class BaseProfileModule extends AbstractHttpModule{
 	    
 	    //If CAS is active gets userid in session
 	    if (active != null && active.equals("true")) {
-	    	sessionUserId = (String) this.getHttpRequest().getSession().getAttribute("edu.yale.its.tp.cas.client.filter.user");
+	    	HttpServletRequest req =(HttpServletRequest) this.getRequestContainer().getInternalRequest();
+	    	sessionUserId = (String) req.getSession().getAttribute("edu.yale.its.tp.cas.client.filter.user");
 	    	if(requestUserId!=null && sessionUserId!= null){
 	    		//if userid in session different from userid in request throws exception
 		    	if (!requestUserId.equals(sessionUserId)){

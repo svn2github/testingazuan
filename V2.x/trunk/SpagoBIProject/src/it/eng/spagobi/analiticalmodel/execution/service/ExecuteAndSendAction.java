@@ -12,6 +12,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.services.common.IProxyService;
 import it.eng.spagobi.services.common.IProxyServiceFactory;
@@ -45,11 +46,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-public class ExecuteAndSendAction extends AbstractHttpAction {
+public class ExecuteAndSendAction extends BaseProfileAction {
 
     private static transient Logger logger = Logger.getLogger(ExecuteAndSendAction.class);
 
     public void service(SourceBean request, SourceBean responseSb) throws Exception {
+    	
+    	//Check of the userId in order to keep performing the request
+		super.service(request, responseSb);
+		
 	logger.debug("IN");
 
 	freezeHttpResponse();

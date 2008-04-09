@@ -27,6 +27,7 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class ModifyRolesAction extends AbstractHttpAction {
+public class ModifyRolesAction extends BaseProfileAction {
 	
 	private static final long serialVersionUID = 1L;
 	static private Logger logger = Logger.getLogger(ModifyRolesAction.class);
@@ -51,6 +52,10 @@ public class ModifyRolesAction extends AbstractHttpAction {
 	 * 
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
+		
+		//Check of the userId in order to keep performing the request
+		super.service(serviceRequest, serviceResponse);
+		
 		logger.debug("IN");
 		String message = null;
 		freezeHttpResponse();

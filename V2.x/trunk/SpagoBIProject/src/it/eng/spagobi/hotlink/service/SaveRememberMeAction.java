@@ -29,6 +29,7 @@ import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.engines.dossier.actions.DossierDownloadAction;
 
 import org.apache.log4j.Logger;
@@ -38,13 +39,17 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class SaveRememberMeAction extends AbstractHttpAction {
+public class SaveRememberMeAction extends BaseProfileAction {
 
 	private static final long serialVersionUID = 1L;
 	static private Logger logger = Logger.getLogger(DossierDownloadAction.class);
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 			throws Exception {
+		
+		//Check of the userId in order to keep performing the request
+		super.service(serviceRequest, serviceResponse);
+		
 		logger.debug("IN");
 		String message = null;
 		freezeHttpResponse();

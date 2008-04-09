@@ -53,6 +53,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.AbstractBaseProfileListModule;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -75,7 +76,7 @@ import org.apache.log4j.Logger;
  * Tests the query and produces the list as output. 
  */
 
-public class LovLookupAjaxModule extends AbstractBasicListModule {
+public class LovLookupAjaxModule extends AbstractBaseProfileListModule {
 	
     static private Logger logger = Logger.getLogger(LovLookupAjaxModule.class);
 	/**
@@ -86,6 +87,10 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 	} 
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
+		
+		//Check of the userId in order to keep performing the request
+		super.service(request, response);
+		
 	    logger.debug("IN");
 		ListIFace list = null;
 		// get role / par id / par field name name

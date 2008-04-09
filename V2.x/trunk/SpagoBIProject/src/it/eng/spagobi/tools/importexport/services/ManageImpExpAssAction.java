@@ -2,6 +2,7 @@ package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
-public class ManageImpExpAssAction extends AbstractHttpAction {
+public class ManageImpExpAssAction extends BaseProfileAction {
 
     private HttpServletRequest httpRequest = null;
     private HttpServletResponse httpResponse = null;
@@ -37,6 +38,10 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
     static private Logger logger = Logger.getLogger(ManageImpExpAssAction.class);
 
     public void service(SourceBean request, SourceBean response) throws Exception {
+    	
+    	//Check of the userId in order to keep performing the request
+		super.service(request, response);
+		
 	logger.debug("IN");
 	try {
 	    freezeHttpResponse();

@@ -45,9 +45,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 
-	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
-	IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	Collection roles = profile.getRoles();
+	Collection roles = userProfile.getRoles();
 	boolean hasPortletEditPermissionRoles = false;
 	ConfigSingleton configSingleton = ConfigSingleton.getInstance();
 	List rolesSB = (List) configSingleton.getAttributeAsList("SPAGOBI.PORTLET_EDIT_MODE_ROLES.ROLE");
@@ -83,7 +81,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form action="<%= formUrl.toString() %>" method="POST" > 
 
-<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO%>" value="true" />
+<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="true" />
 
 <table width="100%" cellspacing="0" border="0" >
   	<tr height='1'>

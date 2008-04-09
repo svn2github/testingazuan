@@ -455,36 +455,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value>FALSE</value>
         	</preference>
         	
-        	
-        	<!-- able / disable the notes editor into the execution pages -->
-            <preference> 
-        		<name>NOTES_EDITOR_ABLE</name>
-        		<!-- possible values are 	TRUE / FALSE -->
-        		<value>FALSE</value>
-        	</preference>
-        	
-        	
-        	<!-- set the width dimension of the notes editor  -->
-            <preference> 
-        		<name>NOTES_EDITOR_WIDTH</name>
-        		<!--the number will be treated as number of pixel  -->
-        		<value>600</value>
-        	</preference>
-        	
-        	<!-- set the height  dimension of the notes editor  -->
-            <preference> 
-        		<name>NOTES_EDITOR_HEIGHT</name>
-        		<!--the number will be treated as number of pixel  -->
-        		<value>300</value>
-        	</preference>
-        	
-        	<!-- if set to true the editor will be opened automatically at object execution  -->
-            <preference> 
-        		<name>NOTES_EDITOR_OPEN</name>
-        		<!-- possible values are 	TRUE / FALSE -->
-        		<value>FALSE</value>
-        	</preference>
-        	
         	<!--  The snapshot Name of the single object to exec --> 
             <preference> 
         		<name>SNAPSHOT_NAME</name>
@@ -494,13 +464,20 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value></value>
         	</preference>
         	
-        	<!--  The snapshot History of the single object to exec --> 
+        	<!--  The snapshot number (relevant to the snapshot with name specified by SNAPSHOT_NAME) of the single object to exec --> 
             <preference> 
-        		<name>SNAPSHOT_HISTORY</name>
-        		<!-- The Number of step back into the snapshot history (0 is the last, 1 is the previous one, ...)  -->
-        		<value>0</value>
+        		<name>SNAPSHOT_NUMBER</name>
+				<!-- The number of step back into the snapshot history (0 is the last, 1 is the previous one, ...)  -->
+        		<value></value>
         	</preference>
         	
+        	
+        	<!-- Preference for the toolbar visibility --> 
+            <preference> 
+        		<name>TOOLBAR_VISIBLE</name>
+        		<!-- Values are TRUE/FALSE: if TRUE the toolbar is displayed, false otherwise  -->
+        		<value>TRUE</value>
+        	</preference>
         </portlet-preferences>
 	</portlet>
 	

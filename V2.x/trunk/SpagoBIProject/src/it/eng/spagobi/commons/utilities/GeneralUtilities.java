@@ -307,7 +307,32 @@ public class GeneralUtilities {
 	}
 	logger.debug("OUT:" + path);
 	return path;
-    }
+    }    
+
+    /**
+     * Returns the complete HTTP URL and puts it into a
+     * string. 
+     * 
+     * @return A String with complete HTTP Url
+     */ 
+    public static String getSpagoBIProfileBaseUrl(String userId) {
+    	logger.debug("IN");
+    	String url = "";
+    	String path = "";
+    	String adapUrlStr = "";
+    	try {
+    		logger.debug("Trying to recover spago Adapter HTTP Url");
+    	    adapUrlStr = getSpagoAdapterHttpUrl();
+    	    logger.debug("Trying to recover spagobi context path from ConfigSingleton");
+    	    path= getSpagoBiContextAddress();
+    	    url = adapUrlStr + path + "?NEW_SESSION=TRUE&userid="+userId;
+    	    logger.debug("using URL: " + url);
+    	} catch (Exception e) {
+    	    logger.error("Error while recovering complete HTTP Url", e);
+    	}
+    	logger.debug("OUT");
+    	return url;
+        }
     
     /**
      * Returns the context address for SpagoBI as an URL and puts it into a

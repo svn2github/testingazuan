@@ -361,8 +361,8 @@ if (toolbarIsVisible) {
 		win_saveRM<%= uuid %>.hide();
 		var descRM = rememberMeDescr<%= uuid %>.getValue();
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";
-		pars = "NEW_SESSION=TRUE&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
+		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		pars = "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
 		pars += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
 		<%
 		String documentParametersStr = "";
@@ -437,10 +437,9 @@ if (toolbarIsVisible) {
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		url="<%=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?";
-		pars ="ACTION_NAME=SAVE_PERSONAL_FOLDER";
+		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
 		pars += "&documentId=<%=obj.getId().toString()%>";
-		pars += "&NEW_SESSION=TRUE";
 		new Ajax.Request(url,
 			{
 				method: 'post',

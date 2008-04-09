@@ -269,7 +269,7 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 	
 		if(docComposition){
 			((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
-			completeUrl="javascript:parent.parent.execDrill(this.name, '"+rootUrl;
+			completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
 				}
 			else
 			{

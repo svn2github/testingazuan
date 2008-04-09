@@ -54,6 +54,10 @@ String title = obj.getLabel() + ": " + obj.getName();
 String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
 Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
 
+// execution modality
+String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
+if (modality == null) modality = "NORMAL_EXECUTION";
+
 %>
 
 <div class='execution-page-title'>
@@ -75,6 +79,7 @@ Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
 	</div>
 	<div class="toolbar_header">
 		<ul>
+			<% if (!modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) { %>
 		    <li>
 		    	<%
 		    	Map backUrlPars = new HashMap();
@@ -86,6 +91,7 @@ Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
 						alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 				</a>
 		    </li>
+		    <% } %>
 		</ul>
 	</div>
 </div>
@@ -131,5 +137,25 @@ createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshots
 </script>
 <% } %>
 <%-- End Snapshots --%>
+
+<%-- If all sliders are initially closed, open the parameters slider --%>
+<script>
+Ext.onReady(function() {
+	var isParametersSliderOpen = <%= pageContext.getAttribute("parametersBoxOpen") %>;
+	var isViewpointsSliderOpen = <%= pageContext.getAttribute("viewpointsBoxOpen") != null ? pageContext.getAttribute("viewpointsBoxOpen") : "false" %>;
+	var isSubObjectsSliderOpen = <%= pageContext.getAttribute("subobjectsBoxOpen") != null ? pageContext.getAttribute("subobjectsBoxOpen") : "false" %>;
+	var isSnapshotsSliderOpen = <%= pageContext.getAttribute("snapshotsBoxOpen") != null ? pageContext.getAttribute("snapshotsBoxOpen") : "false" %>;
+	if (!isParametersSliderOpen && !isViewpointsSliderOpen && !isSubObjectsSliderOpen && !isSnapshotsSliderOpen) {
+		if (isMoz()) {
+			var evt = document.createEvent("MouseEvents");
+			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			document.getElementById('toggle_Parameters<%= uuid %>').dispatchEvent(evt);
+		} else {
+			document.getElementById('toggle_Parameters<%= uuid %>').click();
+		}
+	}
+});
+</script>
+<%-- End: If all sliders are initially closed, open the parameters slider --%>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

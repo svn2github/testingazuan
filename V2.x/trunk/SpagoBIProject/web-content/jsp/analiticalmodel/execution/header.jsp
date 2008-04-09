@@ -35,7 +35,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule"%>
 <%@page import="it.eng.spago.base.SourceBean"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 
@@ -120,7 +119,7 @@ uuid = uuid.replaceAll("-", "");
 boolean toolbarIsVisible = Boolean.parseBoolean(ChannelUtilities.getPreferenceValue(aRequestContainer, "TOOLBAR_VISIBLE", "TRUE"));
 // if the modality is SINGLE_OBJECT and there are no parameters or ALL parameters are transient, the slider for parameters, viewpoints, subobjects and snapshots is not displayed
 List params = obj.getBiObjectParameters();
-boolean sliderIsVisible = !modality.equalsIgnoreCase(BIObjectsModule.SINGLE_OBJECT) || (params != null && params.size() > 0 && !areAllParametersTransient(params));
+boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) || (params != null && params.size() > 0 && !areAllParametersTransient(params));
 %>
 
 <div class='execution-page-title'>
@@ -144,6 +143,7 @@ if (toolbarIsVisible) {
 		<% } %>
 		<div class="toolbar_header">
 			<ul>
+				<% if (!modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) { %>
 			    <li>
 			    	<%
 			    	Map backUrlPars = new HashMap();
@@ -155,6 +155,7 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 					</a>
 			    </li>
+			    <% } %>
 			    <li>		    
 					<a style="text-decoration:none;" href='<%= getUrl(execUrl, documentParametersMap)  %>'>
 						<img width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'

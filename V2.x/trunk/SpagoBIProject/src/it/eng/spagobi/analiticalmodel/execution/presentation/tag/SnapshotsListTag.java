@@ -100,7 +100,7 @@ public class SnapshotsListTag extends TagSupport {
 				toReturn = "<div class='portlet-font'>" + msgBuilder.getMessage("SBIDev.docConf.snapshots.nosnapshots", httpRequest) + "</div>";
 			} else {
 				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
-				pageContext.setAttribute("snapshotsBoxOpen", "false");
+				pageContext.setAttribute("snapshotsBoxOpen", "true");
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<table style='width:100%;' align='left'>\n");
 				buffer.append("	<thead>\n");

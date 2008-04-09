@@ -29,6 +29,7 @@ public class SpagoBIConstants {
 
 	public static final String PAGE = "PAGE";
 	public static final String URL = "URL";
+	public static final String OBJECT = "OBJECT";
 	public static final String OBJECT_ID = "OBJECT_ID";
 	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";
@@ -262,6 +263,8 @@ public class SpagoBIConstants {
 	public static final String SUBOBJECT_NAME = "SUBOBJECT_NAME";
 	
 	public static final String SUBOBJECT = "SUBOBJECT";
+	
+	public static final String SNAPSHOT = "SNAPSHOT";
 	
 	//constants for user profiles
 	public static final String ENGINES_MANAGEMENT = "EnginesManagement";

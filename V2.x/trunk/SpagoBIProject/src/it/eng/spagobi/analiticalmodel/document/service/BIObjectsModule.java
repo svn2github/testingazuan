@@ -168,6 +168,7 @@ public class BIObjectsModule extends AbstractModule {
 		logger.debug("using snapshot name " + snapName);
 		// get from preferences the snapshot history
 		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NUMBER, "0");
+		if (snapHistStr.equals("")) snapHistStr = "0";
 		logger.debug("using snapshot history " + snapHistStr);
 		// MPENNINGROTH 25-Jan-2008 add sub object label support
 		String labelSubObject = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SUB_OBJECT, "");
@@ -192,11 +193,12 @@ public class BIObjectsModule extends AbstractModule {
         		logger.error("Snapshot history preference value is not a valid integer number, using default 0");
         		snapHist = 0;
         	}
+        	response.setAttribute(SpagoBIConstants.OBJECT, obj);
         	// get the all the snapshots of the objects
-        	List allsnapshots = null;
+        	List allsnapshots = DAOFactory.getSnapshotDAO().getSnapshots(obj.getId());
     		// recover only the snapshot with the name requested
     		Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
-    		response.setAttribute(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
+    		response.setAttribute(SpagoBIConstants.SNAPSHOT_ID, snap.getId().toString());
     		// set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "loopbackSnapshotExecution");
         } else {

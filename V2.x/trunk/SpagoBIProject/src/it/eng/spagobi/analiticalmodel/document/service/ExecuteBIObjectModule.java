@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
@@ -45,6 +46,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -1118,16 +1120,95 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	private void execSnapshotHandler(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		String snapshotId = (String) request
-				.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
-		// built the url for the content recovering
-		String url = "?ACTION_NAME=GET_SNAPSHOT_CONTENT&"
-				+ SpagoBIConstants.SNAPSHOT_ID + "=" + snapshotId;
-		// set recover url into response
-		response.setAttribute(SpagoBIConstants.URL, url);
+		// if single object modality, object is in request
+		BIObject obj = (BIObject) request.getAttribute(SpagoBIConstants.OBJECT);
+		if (obj == null) {
+			// normal execution: object is in session
+			obj = getBIObject();
+		}
+		SessionContainer sessionContainer = this.getRequestContainer().getSessionContainer();
+		IEngUserProfile profile = (IEngUserProfile) sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+		if (!canSee) {
+			logger.error("Object with label = '" + obj.getLabel()
+					+ "' cannot be executed by the user!!");
+			Vector v = new Vector();
+			v.add(obj.getLabel());
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+					"1075", v, null));
+			return;
+		}
+		
+		String role = (String) sessionContainer.getAttribute(SpagoBIConstants.ROLE);
+		if (role == null) {
+			// define the variable for execution role
+			List correctRoles = null;
+			if (profile
+					.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
+					|| profile
+							.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
+					|| profile
+							.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
+				correctRoles = DAOFactory.getBIObjectDAO()
+						.getCorrectRolesForExecution(obj.getId(), profile);
+			else
+				correctRoles = DAOFactory.getBIObjectDAO()
+						.getCorrectRolesForExecution(obj.getId());
+			logger.debug("correct roles for execution retrived " + correctRoles);
+
+			if (role != null) {
+				// if the role is specified
+				if (!correctRoles.contains(role)) {
+
+					logger.warn("Role [" + role
+							+ "] is not a correct role for execution");
+					Vector v = new Vector();
+					v.add(role);
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							1078, v, null));
+					return;
+				}
+			} else {
+				// if correct roles is more than one the user has to select one of
+				// them
+				// put in the response the right inforamtion for publisher in order
+				// to show page role selection
+				if (correctRoles.size() > 1) {
+					response.setAttribute("selectionRoleForExecution", "true");
+					response.setAttribute("roles", correctRoles);
+					response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId());
+					logger
+							.debug("more than one correct roles for execution, redirect to the"
+									+ " role selection page");
+					return;
+
+					// if there isn't correct role put in the error stack a new
+					// error
+				} else if (correctRoles.size() < 1) {
+
+					logger.warn("Object cannot be executed by no role of the user");
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							1006));
+					return;
+
+					// the list contains only one role which is the right role
+				} else {
+					role = (String) correctRoles.get(0);
+				}
+			}
+			logger.debug("using role " + role);
+
+			// NOW THE EXECUTION ROLE IS SELECTED
+			// put in session the execution role
+			session.setAttribute(SpagoBIConstants.ROLE, role);
+		}
+		// propagates the object and the snapshot
+		response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+		String snapIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+		Snapshot snap = DAOFactory.getSnapshotDAO().loadSnapshot(new Integer(snapIdStr));
+		response.setAttribute(SpagoBIConstants.SNAPSHOT, snap);
 		// set information for the publisher
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-				"ViewSnapshotPubJ");
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ViewSnapshotPubJ");
 		logger.debug("OUT");
 	}
 

@@ -9,7 +9,7 @@ package it.eng.spagobi.tools.dataset.bo;
  */
 public class WSDataSet extends DataSet {
     private String adress=null;
-    private String operation=null;
+   private String operation=null;
     private String executorClass=null;
     public String getAdress() {
         return adress;

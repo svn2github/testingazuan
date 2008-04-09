@@ -840,7 +840,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        			alert("Missing ReplyTo, Login or Password! If you don't want to use your mail account just leave those fields blank. Eitherway, fill all of them!");
        		    return; }
        
-       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
+       url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
        pars = "ACTION_NAME=SEND_TO_ACTION&";
        pars += "objlabel=<%=obj.getLabel()%>";
        <%
@@ -907,7 +907,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 }
 	 
 	 function saveToPF<%=executionId%>() {
-       url="<%=GeneralUtilities.getSpagoBiContextAddress()%>/servlet/AdapterHTTP?";
+       url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
        pars ="ACTION_NAME=SAVE_PERSONAL_FOLDER";
        pars += "&objlabel=<%=obj.getLabel()%>";
        <%
@@ -923,8 +923,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
        <%
 			}
        %>
-
-		pars+="&NEW_SESSION=TRUE";
    
 
        mstpfd = document.getElementById('messageSaveToPFDiv');

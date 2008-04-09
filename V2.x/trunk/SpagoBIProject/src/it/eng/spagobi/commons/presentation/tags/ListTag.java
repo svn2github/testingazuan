@@ -42,6 +42,7 @@ import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -54,6 +55,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -1307,9 +1309,19 @@ public class ListTag extends TagSupport
 		return url;
 	}
 	protected String createUrl_popup(HashMap paramsMap) {
-	        IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
-		paramsMap.put("TYPE_LIST", "TYPE_LIST");
-		String url = urlBuilderWeb.getUrl(httpRequest, paramsMap);
+
+	        String url = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
+	        paramsMap.put("TYPE_LIST", "TYPE_LIST");
+			if (paramsMap != null){
+				Iterator keysIt = paramsMap.keySet().iterator();
+				String paramName = null;
+				Object paramValue = null;
+				while (keysIt.hasNext()){
+					paramName = (String)keysIt.next();
+					paramValue = paramsMap.get(paramName); 
+					url += "&"+paramName+"="+paramValue.toString();
+				}
+			}
 		return url;
 	}	
 	

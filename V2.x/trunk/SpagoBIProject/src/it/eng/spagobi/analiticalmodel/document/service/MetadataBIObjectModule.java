@@ -21,35 +21,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.document.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
-import it.eng.spagobi.analiticalmodel.document.utils.DetBIObjModHelper;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
-import it.eng.spagobi.tools.distributionlist.service.ListDistributionListUserModule;
+import it.eng.spagobi.commons.services.BaseProfileModule;
+
+import java.util.HashMap;
+import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 /**
 * @author Chiara Chiarelli
 */
-public class MetadataBIObjectModule extends AbstractModule{
+public class MetadataBIObjectModule extends BaseProfileModule{
 	
 	static private Logger logger = Logger.getLogger(MetadataBIObjectModule.class);
 	EMFErrorHandler errorHandler = null;
@@ -66,6 +61,9 @@ public class MetadataBIObjectModule extends AbstractModule{
 	
 	public void service(SourceBean request, SourceBean response)
 	throws Exception {
+		
+		//Check of the userId in order to keep performing the request
+		super.service(request, response);
 		
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of metadata service with message =" +message);

@@ -1604,6 +1604,16 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			List paramValues = getAsList(value);
 			biparam.setParameterValues(paramValues);
 		}
+		
+		controlInputParameters(obj.getBiObjectParameters(), profile,
+				role);
+		// if there are some errors into the errorHandler does not save the viewpoint
+		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
+					"ExecuteBIObjectPageParameter");
+			return;
+		}
+		
 		if (contentVP != null && contentVP.endsWith("%26")) {
 			contentVP = contentVP.substring(0, contentVP.length() - 3);
 		}

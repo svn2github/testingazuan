@@ -134,6 +134,8 @@ public class HotLinkModule extends AbstractModule {
             // else clean for previous executions
             else sessionContainer.delAttribute("LABEL_SUB_OBJECT");
 			
+            // set a flag for direct execution (permits to pass parameters page)
+            sessionContainer.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
             
             // set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 

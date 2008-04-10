@@ -403,8 +403,11 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 		// finds if it is requested to ignore sub-nodes
 		// (subobjects/snapshots/viewpoints)
-		String ignoreSubNodesStr = (String) request
+		String ignoreSubNodesStr = (String) session
 				.getAttribute(SpagoBIConstants.IGNORE_SUB_NODES);
+		if (ignoreSubNodesStr == null) {
+			ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUB_NODES);
+		}
 		boolean ignoreSubNodes = false;
 		if (ignoreSubNodesStr != null
 				&& ignoreSubNodesStr.trim().equalsIgnoreCase("true")) {

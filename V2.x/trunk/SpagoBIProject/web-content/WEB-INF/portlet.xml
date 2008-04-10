@@ -464,12 +464,12 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<value></value>
         	</preference>
         	
-        	<!--  The snapshot number (relevant to the snapshot with name specified by SNAPSHOT_NAME) of the single object to exec --> 
+        	<!--  The snapshot number (relevant to the snapshot with name specified by SNAPSHOT_NAME) of the single object to exec
             <preference> 
         		<name>SNAPSHOT_NUMBER</name>
-				<!-- The number of step back into the snapshot history (0 is the last, 1 is the previous one, ...)  -->
         		<value></value>
         	</preference>
+        	-->
         	
         	
         	<!-- Preference for the toolbar visibility --> 

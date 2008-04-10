@@ -76,6 +76,47 @@ boolean areAllParametersTransient(List parametersList) {
 	}
 	return toReturn;
 }
+
+// get the virtual role (a role that containes all permissions of the correct execution roles)
+Role getVirtualRole(IEngUserProfile profile, BIObject obj, String baseRoleName) throws Exception {
+	
+	Role virtualRole = new Role(baseRoleName, "");
+	virtualRole.setIsAbleToSeeSubobjects(false);
+	virtualRole.setIsAbleToSeeSnapshots(false);
+	virtualRole.setIsAbleToSeeViewpoints(false);
+	virtualRole.setIsAbleToSeeMetadata(false);
+	virtualRole.setIsAbleToSendMail(false);
+	virtualRole.setIsAbleToSeeNotes(false);
+	virtualRole.setIsAbleToSaveRememberMe(false);
+	virtualRole.setIsAbleToSaveIntoPersonalFolder(false);
+	
+	List correctRoles = null;
+	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
+			|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
+			|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
+		correctRoles = DAOFactory.getBIObjectDAO()
+				.getCorrectRolesForExecution(obj.getId(), profile);
+	else
+		correctRoles = DAOFactory.getBIObjectDAO()
+				.getCorrectRolesForExecution(obj.getId());
+	if (correctRoles == null || correctRoles.size() == 0) {
+		throw new Exception("No correct roles for execution!!!!");
+	}
+	Iterator it = correctRoles.iterator();
+	while (it.hasNext()) {
+		String roleName = (String) it.next();
+		Role anotherRole = DAOFactory.getRoleDAO().loadByName(roleName);
+		if (anotherRole.isAbleToSeeViewpoints()) virtualRole.setIsAbleToSeeSubobjects(true);
+		if (anotherRole.isAbleToSeeSnapshots()) virtualRole.setIsAbleToSeeSnapshots(true);
+		if (anotherRole.isAbleToSeeViewpoints()) virtualRole.setIsAbleToSeeViewpoints(true);
+		if (anotherRole.isAbleToSeeMetadata()) virtualRole.setIsAbleToSeeMetadata(true);
+		if (anotherRole.isAbleToSendMail()) virtualRole.setIsAbleToSendMail(true);
+		if (anotherRole.isAbleToSeeNotes()) virtualRole.setIsAbleToSeeNotes(true);
+		if (anotherRole.isAbleToSaveRememberMe()) virtualRole.setIsAbleToSaveRememberMe(true);
+		if (anotherRole.isAbleToSaveIntoPersonalFolder()) virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
+	}
+	return virtualRole;
+}
 %>
 
 <%
@@ -101,7 +142,7 @@ if (modality == null) modality = "NORMAL_EXECUTION";
 
 // execution role
 String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
-Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
+Role virtualRole = getVirtualRole(userProfile, obj, executionRole);
 
 Integer executionAuditId = auditManager.insertAudit(obj, subObj, userProfile, executionRole, modality);
 // adding parameters for AUDIT updating
@@ -139,9 +180,9 @@ if (toolbarIsVisible) {
 		<div class="slider_header">
 			<ul>
 			    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
-				<% if (executionRoleObj.isAbleToSeeViewpoints()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
-				<% if (executionRoleObj.isAbleToSeeSubobjects()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
-				<% if (executionRoleObj.isAbleToSeeSnapshots()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
+				<% if (virtualRole.isAbleToSeeViewpoints()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
+				<% if (virtualRole.isAbleToSeeSubobjects()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
+				<% if (virtualRole.isAbleToSeeSnapshots()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 			</ul>
 		</div>
 		<% } %>
@@ -169,7 +210,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSendMail() && !isExecutingSnapshot) { %>
+				<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot) { %>
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
@@ -178,7 +219,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
+				<% if (virtualRole.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
 			    <li>
 					<a href='javascript:saveIntoPersonalFolder<%= uuid %>()'>
 					    <img title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
@@ -187,7 +228,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
+				<% if (virtualRole.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
 				<li>
 					<a id='saveRememberMe_button<%= uuid %>' href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
@@ -196,7 +237,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
+				<% if (virtualRole.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
 				<li>
 					<a id="iconNotesEmpty<%= uuid %>" href='javascript:opencloseNotesEditor<%= uuid %>()'>
 		               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
@@ -210,7 +251,7 @@ if (toolbarIsVisible) {
 					</a>
 				</li>
 				<% } %>
-				<% if (executionRoleObj.isAbleToSeeMetadata()) { %>
+				<% if (virtualRole.isAbleToSeeMetadata()) { %>
 				<li>
 					<a id="metadata_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "SBISet.objects.captionMetadata" />'
@@ -240,7 +281,7 @@ if (toolbarIsVisible) {
 		<%-- End parameters --%>
 		
 		<%-- ViewPoints --%>
-		<% if (executionRoleObj.isAbleToSeeViewpoints()) { %>
+		<% if (virtualRole.isAbleToSeeViewpoints()) { %>
 		<div style="display:none"><div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 		<script>
@@ -250,7 +291,7 @@ if (toolbarIsVisible) {
 		<%-- End viewPoints --%>
 		
 		<%-- SubObjects --%>
-		<% if (executionRoleObj.isAbleToSeeSubobjects()) { %>
+		<% if (virtualRole.isAbleToSeeSubobjects()) { %>
 		<div style="display:none"><div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_SubObject<%= uuid %>" class="popout"></div>
 		<script>
@@ -260,7 +301,7 @@ if (toolbarIsVisible) {
 		<%-- End SubObjects --%>
 		
 		<%-- Snapshots --%>
-		<% if (executionRoleObj.isAbleToSeeSnapshots()) { %>
+		<% if (virtualRole.isAbleToSeeSnapshots()) { %>
 		<div style="display:none"><div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div></div>
 		<div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 		<script>
@@ -271,7 +312,7 @@ if (toolbarIsVisible) {
 	<% } %>
 	
 	<%-- Scripts for send mail to form --%>
-	<% if (executionRoleObj.isAbleToSendMail() && !isExecutingSnapshot) { %>
+	<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot) { %>
 	<script type="text/javascript">
 	var win_sendTo_<%= uuid %>;
 	Ext.get('sendTo_button<%= uuid %>').on('click', function(){
@@ -305,7 +346,7 @@ if (toolbarIsVisible) {
 	<%-- End scripts for send mail to form --%>
 	
 	<%-- Scripts for Remember Me saving --%>
-	<% if (executionRoleObj.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
+	<% if (virtualRole.isAbleToSaveRememberMe() && !isExecutingSnapshot) { %>
 	<script>
 	var saveRememberMeForm<%= uuid %>;
 	var rememberMeName<%= uuid %>;
@@ -440,7 +481,7 @@ if (toolbarIsVisible) {
 	<%-- End scripts for Remember Me saving --%>
 	
 	<%-- Scripts for save into my personal folder --%>
-	<% if (executionRoleObj.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
+	<% if (virtualRole.isAbleToSaveIntoPersonalFolder() && !isExecutingSnapshot) { %>
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
@@ -491,13 +532,13 @@ if (toolbarIsVisible) {
 	<%-- End scripts for save into my personal folder --%>
 	
 	<%-- notes --%>
-	<% if (executionRoleObj.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
+	<% if (virtualRole.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
 	<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
 	<% } %>
 	<%-- end notes --%>
 	
 	<%-- Scripts for metadata window --%>
-	<% if (executionRoleObj.isAbleToSeeMetadata()) { %>
+	<% if (virtualRole.isAbleToSeeMetadata()) { %>
 	<script>
 	var win_metadata_<%= uuid %>;
 	Ext.get('metadata_button<%= uuid %>').on('click', function(){

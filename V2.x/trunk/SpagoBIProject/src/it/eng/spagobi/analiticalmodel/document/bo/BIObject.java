@@ -96,6 +96,7 @@ public class BIObject implements Serializable {
 	private String objectve=null;
 	private Short rating=null;
 	private String language=null;
+	private String keywords=null;
 	private Date creationDate=null;
 	private String creationUser=null;	
 
@@ -379,6 +380,14 @@ public class BIObject implements Serializable {
 
 	public void setLanguage(String language) {
 	    this.language = language;
+	}
+	
+    public String getKeywords() {
+	    return keywords;
+    }
+
+	public void setKeywords(String keywords) {
+	    this.keywords = keywords;
 	}
 
 	public Date getCreationDate() {

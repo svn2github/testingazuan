@@ -81,7 +81,7 @@ public class DetBIObjModHelper {
 		String longDescription = (String) request.getAttribute("longDescription");
 		String objective = (String) request.getAttribute("objective");
 		String language = (String) request.getAttribute("language");
-		//String Keywords = (String) request.getAttribute("Keywords");
+		String Keywords = (String) request.getAttribute("Keywords");
 		String Rating = (String) request.getAttribute("Rating");
 		// ELABORATE DATA RECOVERED FROM REQUEST
 		Integer id = null;
@@ -201,7 +201,7 @@ public class DetBIObjModHelper {
 		obj.setObjectve(objective);
 		obj.setLanguage(language);
 		obj.setRating(new Short(Rating));
-		// obj.setKeywords(Keywords);
+		obj.setKeywords(Keywords);
 		// RETURN OBJECT
 		return obj;
 	}
@@ -357,7 +357,8 @@ public class DetBIObjModHelper {
 		objClone.setExtendedDescription(obj.getExtendedDescription());
 		objClone.setObjectve(obj.getObjectve());
 		objClone.setLanguage(obj.getLanguage());
-		//objClone.setKeywords(obj.getKeywords());
+		objClone.setKeywords(obj.getKeywords());
+		objClone.setRating(obj.getRating());
 		return objClone;
 	}
 

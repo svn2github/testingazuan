@@ -776,7 +776,7 @@ Ext.onReady(function(){
 				</div>
 				<div class='div_detail_form'>
 					<% 
-		      		String Keywords = obj.getName();
+		      		String Keywords = obj.getKeywords();
 		      		if(Keywords==null) {
 		      			Keywords = "";
 		      		}
@@ -912,6 +912,7 @@ function isBIObjectFormChanged() {
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
 	var rating = document.getElementById('rating').value;
+	var keywords = document.getElementById('keywords').value;
 
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
@@ -929,6 +930,7 @@ function isBIObjectFormChanged() {
 		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
 		|| (rating != '<%= initialBIObject.getRating()!= null ? initialBIObject.getRating() : "" %>')
+		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){
 			
 		biobjFormModified = 'true';

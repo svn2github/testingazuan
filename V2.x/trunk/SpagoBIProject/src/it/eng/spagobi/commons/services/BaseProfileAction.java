@@ -45,7 +45,7 @@ public abstract class BaseProfileAction extends AbstractHttpAction{
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
 	//Get userid from request
-	String requestUserId =(String)request.getAttribute("userid");
+	String requestUserId = request.getAttribute("userid").toString();
 	String sessionUserId = "";
 	String profileUser = "";
 	//Check if CAS is active

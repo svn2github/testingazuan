@@ -366,7 +366,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setExtendedDescription(biObject.getExtendedDescription());
 			hibBIObject.setLanguage(biObject.getLanguage());
 			hibBIObject.setObjectve(biObject.getObjectve());
-			//hibBIObject.setRating(biObject.getRating());
+			hibBIObject.setRating(biObject.getRating());
 			
 			// functionalities erasing
 			Set hibFunctionalities = hibBIObject.getSbiObjFuncs();

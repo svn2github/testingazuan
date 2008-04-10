@@ -246,6 +246,7 @@ function sendTo() {
 	while(parKeys.hasMoreElements()) {
 		String parkey = parKeys.nextElement().toString();
 		if (parkey.equals("ACTION_NAME")) continue;
+		if (parkey.equals("userId")) continue;
 		String parvalue = request.getParameter(parkey);
 		%>
 		pars += "&<%=parkey%>=<%=parvalue%>";

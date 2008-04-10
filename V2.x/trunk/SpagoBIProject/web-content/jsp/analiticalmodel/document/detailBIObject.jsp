@@ -134,7 +134,7 @@ function checkFormVisibility(docType) {
 		    style='vertical-align:middle;padding-left:5px;'>
 			<spagobi:message key = "SBIDev.docConf.docDet.title" />
 		</td>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		
 		<% 
 			if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){
 		%>
@@ -175,12 +175,7 @@ function checkFormVisibility(docType) {
 	</tr>
 </table>
 
-
-
-<div class='div_background_no_img' >
-
-
-
+<div  >
 
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
@@ -710,7 +705,7 @@ Ext.onReady(function(){
         title: '<spagobi:message key ="metadata.docLongDescr" />',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
-        height: 150,
+        height: 100,
         value: '<%=longDesc%>',
         renderTo: 'containerLongDescr',
             id:'longDescription',
@@ -724,7 +719,7 @@ Ext.onReady(function(){
         value: '<%=objective%>',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
-        height: 150,
+        height: 100,
         renderTo: 'containerObjective',
             id:'objective',
             fieldLabel:'<spagobi:message key ="metadata.docObjective" />'  
@@ -753,7 +748,66 @@ Ext.onReady(function(){
 	<tr><td>
 				<div id= "containerLongDescr">
 				</div> 
-   </td></tr>
+   </td>
+   
+   <td>		
+						
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="metadata.docLanguage" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<% 
+		      		String language = obj.getLanguage();
+		      		if(language==null) {
+		      			language = "";
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 							name="language" id="language" value="<%=language%>" >
+				</div>	
+		
+			
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="metadata.docKeyword" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<% 
+		      		String Keywords = obj.getName();
+		      		if(Keywords==null) {
+		      			Keywords = "";
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 							name="Keywords" id="Keywords" value="<%=Keywords%>" >
+				</div>		
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="metadata.Rating" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<% 
+		      		Short rat = obj.getRating();
+					String rating = "";
+		      		if(rat==null) {
+		      			rating = "";
+		      		}
+		      		else{
+		      			rating = rat.toString();
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 							name="rating" id="rating" value="<%=rating%>" >
+				</div>	
+						
+		
+	</td>
+  
+   </tr>
    <tr><td style='background:none;border:none'>&nbsp;</td></tr>
 	<tr><td>			
   <div style="float:left;clear:left;width:200px;height:25px;" >
@@ -765,47 +819,8 @@ Ext.onReady(function(){
 	<tr><td>
 				<div id= "containerObjective">
 				</div> 
-	</td></tr>			
+	</td></tr>		
 	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
-
-	<tr><td>&nbsp;</td></tr>
-	<tr><td>		
-						
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docLanguage" />
-					</span>
-				</div>
-				<div>
-					<% 
-		      		String language = obj.getLanguage();
-		      		if(language==null) {
-		      			language = "";
-		      		}
-		      		%>
-					<input class='portlet-form-input-field' style='width:230px' type="text" 
- 							name="language" id="language" value="<%=language%>" >
-				</div>	
-	</td>
-	</tr><tr>	
-	<td>		
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docKeyword" />
-					</span>
-				</div>
-				<div>
-					<% 
-		      		String Keywords = obj.getName();
-		      		if(Keywords==null) {
-		      			Keywords = "";
-		      		}
-		      		%>
-					<input class='portlet-form-input-field' style='width:230px' type="text" 
- 							name="Keywords" id="Keywords" value="<%=Keywords%>" >
-				</div>						
-	</td>
-  </tr>
 </table>  
 	
 </div>
@@ -896,6 +911,7 @@ function isBIObjectFormChanged() {
 	var longDescription = document.getElementById('longDescription').value;
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
+	var rating = document.getElementById('rating').value;
 
   
 	if ((label != '<%=initialBIObject.getLabel()%>')
@@ -912,6 +928,7 @@ function isBIObjectFormChanged() {
 		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
 		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
+		|| (rating != '<%= initialBIObject.getRating()!= null ? initialBIObject.getRating() : "" %>')
 		){
 			
 		biobjFormModified = 'true';

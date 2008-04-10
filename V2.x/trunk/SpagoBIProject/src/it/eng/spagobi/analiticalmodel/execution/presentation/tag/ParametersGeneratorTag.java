@@ -286,6 +286,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	    	htmlStream.append("        fieldLabel: '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.scope", httpRequest) + "',\n");
 	    	htmlStream.append("        store: store,\n");
 	    	htmlStream.append("        displayField:'scopeDescr',\n");
+	    	htmlStream.append("        valueField:'scopeName',\n");
 	    	htmlStream.append("        typeAhead: true,\n");
 	    	htmlStream.append("        mode: 'local',\n");
 	    	htmlStream.append("        triggerAction: 'all',\n");

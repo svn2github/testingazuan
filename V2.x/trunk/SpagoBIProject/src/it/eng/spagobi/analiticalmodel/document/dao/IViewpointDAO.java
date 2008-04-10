@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 
 import java.util.List;
@@ -112,5 +113,15 @@ public interface IViewpointDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	//public void modifyViewpoint(Viewpoint viewpoint) throws EMFUserError;
+	
+	/**
+	 * Loads all detail information for all viewpoints of a object specified accessibile to the user profile at input. 
+	 * For each of them, detail information is stored into a <code>ViewPoint</code> 
+	 * object. After that, all value constraints are stored into a <code>List</code>, which is returned.
+	 * 
+	 * @return A list containing all viewpoints objects
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadAccessibleViewpointsByObjId(Integer objId, IEngUserProfile userProfile) throws EMFUserError;
 
 }

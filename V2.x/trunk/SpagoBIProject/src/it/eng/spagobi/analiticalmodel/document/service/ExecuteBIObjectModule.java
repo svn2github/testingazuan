@@ -1549,22 +1549,9 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		List viewpoints = new ArrayList();
 		try {
 			IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
-			viewpoints = biVPDAO.loadAllViewpointsByObjID(obj.getId());
-			// if scope is 'public' or scope is 'private' and user is the owner,
-			// then the viewpoint is visualized
-			// get the current user profile
 			IEngUserProfile profile = (IEngUserProfile) permanentSession
 					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			for (int i = 0; i < viewpoints.size(); i++) {
-				Viewpoint vp = (Viewpoint) viewpoints.get(i);
-				if (vp.getVpScope().equals(
-						PortletUtilities.getMessage(
-								"SBIDev.docConf.viewPoint.scopePrivate",
-								"messages"))
-						&& !vp.getVpOwner().equals(
-								(String) profile.getUserUniqueIdentifier()))
-					viewpoints.remove(i);
-			}
+			viewpoints = biVPDAO.loadAccessibleViewpointsByObjId(obj.getId(), profile);
 		} catch (Exception e) {
 			logger.error("Error retriving the viewpoint list", e);
 		} finally {

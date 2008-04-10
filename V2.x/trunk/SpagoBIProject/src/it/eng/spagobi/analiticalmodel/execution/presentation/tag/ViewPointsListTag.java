@@ -93,8 +93,9 @@ public class ViewPointsListTag extends TagSupport {
     	logger.debug("IN");
     	String toReturn = null;
     	try {
+    		IEngUserProfile profile = getCurrentUserProfile();
     		List viewPointsList = null;
-			viewPointsList = DAOFactory.getViewpointDAO().loadAllViewpointsByObjID(biobjectId);
+			viewPointsList = DAOFactory.getViewpointDAO().loadAccessibleViewpointsByObjId(biobjectId, profile);
 			if (viewPointsList == null || viewPointsList.size() == 0) {
 				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
 				pageContext.setAttribute("viewpointsBoxOpen", "false");

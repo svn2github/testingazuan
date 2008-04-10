@@ -29,6 +29,7 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiViewpoints;
@@ -340,6 +341,44 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 		aViewpoint.setVpValueParams(hibViewpoint.getVpValueParams());
 		aViewpoint.setVpCreationDate(hibViewpoint.getVpCreationDate());
 		return  aViewpoint;
+	}
+
+	public List loadAccessibleViewpointsByObjId(Integer objId,
+			IEngUserProfile userProfile) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId + " and (vp.vpScope = 'Public' or " +
+					"vp.vpOwner = '" + userProfile.getUserUniqueIdentifier().toString() + "')";
+
+			Query hqlQuery = aSession.createQuery(hql);
+			List hibList = hqlQuery.list();
+			
+			tx.commit();
+			
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				realResult.add(toViewpoint((SbiViewpoints) it.next()));
+			}
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return realResult;
 	}
 	
 

@@ -49,11 +49,13 @@ public class CasProxyService implements IProxyService {
      *  @return String
      */
     public String readTicket(HttpSession session,String filterReceipt) throws IOException{
-	    logger.debug("IN");
+	    logger.debug("IN.filterReceipt="+filterReceipt);
 	    CASReceipt cr = (CASReceipt) session.getAttribute(CASFilter.CAS_FILTER_RECEIPT);
 	    logger.debug("Read cr=" + cr);
 	    if (cr==null) logger.warn("CASReceipt in session is NULL");
-	    return ProxyTicketReceptor.getProxyTicket(cr.getPgtIou(), filterReceipt);
+	    String ticket=ProxyTicketReceptor.getProxyTicket(cr.getPgtIou(), filterReceipt);
+	    logger.debug("OUT.ticket="+ticket);
+	    return ticket;
     }
 
     /**
@@ -77,7 +79,7 @@ public class CasProxyService implements IProxyService {
 	    if (pv.isAuthenticationSuccesful()) {
 		String tmpUserId = pv.getUser();
 		logger.debug("CAS User:" + tmpUserId);
-		if ( !userId.equals(tmpUserId)) {
+		if (  userId==null || !userId.equals(tmpUserId)) {
 		    logger.warn("Proxy and application users are not the same !!!!! " + userId + "-"
 			    + tmpUserId);
 		    throw new SecurityException();
@@ -86,7 +88,7 @@ public class CasProxyService implements IProxyService {
 		logger.error("Token NOT VALID");
 		throw new SecurityException();
 	    }
-	} catch (Exception e) {
+	} catch (Throwable e) {
 	    logger.error("Exception", e);
 	    throw new SecurityException();
 	} finally {

@@ -166,10 +166,12 @@ public class BIObjectsModule extends AbstractModule {
 		// get from preferences the snapshot name
 		String snapName = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NAME, "");
 		logger.debug("using snapshot name " + snapName);
+		
 		// get from preferences the snapshot history
-		String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NUMBER, "0");
-		if (snapHistStr.equals("")) snapHistStr = "0";
-		logger.debug("using snapshot history " + snapHistStr);
+		//String snapHistStr = ChannelUtilities.getPreferenceValue(requestContainer, SNAPSHOT_NUMBER, "0");
+		//if (snapHistStr.equals("")) snapHistStr = "0";
+		//logger.debug("using snapshot history " + snapHistStr);
+		
 		// MPENNINGROTH 25-Jan-2008 add sub object label support
 		String labelSubObject = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SUB_OBJECT, "");
 		logger.debug("using subobject " + labelSubObject);
@@ -185,22 +187,24 @@ public class BIObjectsModule extends AbstractModule {
 		
         if(!snapName.trim().equalsIgnoreCase("")) {
         	// get the snapshot history
-        	int snapHist = 0;
-        	try{
-        		Integer snapHistI = new Integer(snapHistStr);
-        		snapHist = snapHistI.intValue();
-        	} catch (Exception e) {
-        		logger.error("Snapshot history preference value is not a valid integer number, using default 0");
-        		snapHist = 0;
-        	}
+//        	int snapHist = 0;
+//        	try{
+//        		Integer snapHistI = new Integer(snapHistStr);
+//        		snapHist = snapHistI.intValue();
+//        	} catch (Exception e) {
+//        		logger.error("Snapshot history preference value is not a valid integer number, using default 0");
+//        		snapHist = 0;
+//        	}
         	response.setAttribute(SpagoBIConstants.OBJECT, obj);
         	// get the all the snapshots of the objects
         	List allsnapshots = DAOFactory.getSnapshotDAO().getSnapshots(obj.getId());
     		// recover only the snapshot with the name requested
-    		Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
+//    		Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,snapHist);
+    		Snapshot snap = SchedulerUtilities.getNamedHistorySnapshot(allsnapshots,snapName,0);
     		response.setAttribute(SpagoBIConstants.SNAPSHOT_ID, snap.getId().toString());
     		// set into the reponse the publisher name for object execution
             response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "loopbackSnapshotExecution");
+            sessionContainer.setAttribute(SNAPSHOT_NAME, snapName);
         } else {
         	// set into the response the right information for loopback
             response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId().toString());
@@ -215,8 +219,7 @@ public class BIObjectsModule extends AbstractModule {
             	sessionContainer.setAttribute(LABEL_SUB_OBJECT, labelSubObject);
             }
         }
-        
         logger.debug("OUT");
 	}
-
+	
 }

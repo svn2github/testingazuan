@@ -251,7 +251,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
 		   				   "	</EXEC_CAPTION>";
 		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_METADATA_MANAGEMENT)){
-			moduleConfigStr += "	<METADATA_CAPTION popup=\"TRUE\" popupH=\"300\" popupW=\"600\" confirm=\"FALSE\" image=\"/img/editTemplate.jpg\" label=\"SBISet.objects.captionMetadata\">" +
+			moduleConfigStr += "	<METADATA_CAPTION popup=\"TRUE\" popupH=\"350\" popupW=\"800\" confirm=\"FALSE\" image=\"/img/editTemplate.jpg\" label=\"SBISet.objects.captionMetadata\">" +
 			   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + MetadataBIObjectModule.MODULE_PAGE + "\"/> " +
 			   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.METADATA_SELECT + "\"/> " +
 			   				   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +

@@ -106,8 +106,8 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 		} else if (parName.equals("message")) {
 		    message = (String) request.getAttribute("message");
 		    logger.debug("got message from Request=" + message);
-		} else if (parName.equals("userId")) {
-		    userId = (String) request.getAttribute("userId");
+		} else if (parName.equals("userid")) {
+		    userId = (String) request.getAttribute("userid");
 		    logger.debug("got userId from Request=" + userId);
 		} else if (parName.equals("login")) {
 		    login = (String) request.getAttribute("login");

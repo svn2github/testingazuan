@@ -912,7 +912,7 @@ function isBIObjectFormChanged() {
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
 	var rating = document.getElementById('rating').value;
-	var keywords = document.getElementById('keywords').value;
+	var keywords = document.getElementById('Keywords').value;
 
   
 	if ((label != '<%=initialBIObject.getLabel()%>')

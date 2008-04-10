@@ -74,6 +74,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String docLongDescr = ""; 
 	String docImage = ""; 
 	String docRating = ""; 
+	String keywords = ""; 
 	
 	String docLanguage = ""; 
 	String creationDate = ""; 
@@ -116,6 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	docObjective = (obj.getObjectve()!= null ? obj.getObjectve() : ""); 
 	docLongDescr = (obj.getExtendedDescription()!= null ? obj.getExtendedDescription() : ""); 
 	docRating = (obj.getRating()!= null ? obj.getRating().toString() : ""); 
+	keywords = (obj.getKeywords()!= null ? obj.getKeywords() : ""); 
 	
 	docLanguage = (obj.getLanguage()!= null ? obj.getLanguage() : ""); 
 	
@@ -143,7 +145,7 @@ Ext.onReady(function(){
     var p = new Ext.Panel({
         title: 'General Data',
         collapsible:true,
-        collapsed : true,
+        collapsed : false,
         renderTo: 'container1',
         contentEl : 'generalData'
     });
@@ -264,14 +266,6 @@ Ext.onReady(function(){
 		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLabel" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docLabel%>
-			</td>
-		</tr>
-		
-		<!-- DOC NAME -->
-		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docName" />		
-			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docName%>
 			</td>
 		</tr>
 		
@@ -407,7 +401,7 @@ Ext.onReady(function(){
 		<tr>
 		    <td class="portlet-section-header" width="60" style="text-align:left"><spagobi:message key = "metadata.docKeyword" />		
 			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp; 
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=keywords%>
 			</td>
 		</tr>	
 		

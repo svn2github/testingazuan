@@ -937,6 +937,7 @@ public class GeneralUtilities {
 
     public static String substituteQuotesIntoString(String value) {
 	logger.debug("IN");
+	if (value == null) value = "";
 	String singleQuoteString = "'";
 	String doubleQuoteString = new String();
 	char doubleQuoteChar = '"';

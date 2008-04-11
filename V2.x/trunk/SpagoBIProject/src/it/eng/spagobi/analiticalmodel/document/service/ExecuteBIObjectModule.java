@@ -46,13 +46,11 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
@@ -1361,10 +1359,9 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		// refresh parameter values
 		List biparams = obj.getBiObjectParameters();
 		Iterator iterParams = biparams.iterator();
+		HashMap paramsDescriptionMap = (HashMap) session.getAttribute("PARAMS_DESCRIPTION_MAP");
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			HashMap paramsDescriptionMap = (HashMap) session
-					.getAttribute("PARAMS_DESCRIPTION_MAP");
 
 			String pendingDelete = (String) request
 					.getAttribute("PENDING_DELETE");
@@ -1381,22 +1378,20 @@ public class ExecuteBIObjectModule extends AbstractModule {
 //						+ "IsChanged");
 //				if (isChanged != null && isChanged.equalsIgnoreCase("true")) {
 					// refresh also the description
-					List values = biparam.getParameterValues();
-					String desc = "";
-					if (values != null) {
-						for (int i = 0; i < values.size(); i++) {
-							desc += (i == 0 ? "" : ";")
-									+ values.get(i).toString();
-						}
-					}
-					paramsDescriptionMap.put(biparam.getParameterUrlName(),
-							desc);
+//					List values = biparam.getParameterValues();
+//					String desc = "";
+//					if (values != null) {
+//						for (int i = 0; i < values.size(); i++) {
+//							desc += (i == 0 ? "" : ";")
+//									+ values.get(i).toString();
+//						}
+//					}
+//					paramsDescriptionMap.put(biparam.getParameterUrlName(),
+//							desc);
 //				}
 			}
 
-			session
-					.setAttribute("PARAMS_DESCRIPTION_MAP",
-							paramsDescriptionMap);
+//			session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
 		}
 
 		// it is a lookup call
@@ -1508,6 +1503,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			if (lov.getITypeCd().equals("MAN_IN")) {
 				continue;
 			}
+			String parameterValuesDescription = "";
 			// get the lov provider detail
 			String lovProvider = lov.getLovProvider();
 			ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProvider);
@@ -1533,9 +1529,14 @@ public class ExecuteBIObjectModule extends AbstractModule {
 						EMFUserError userError = new EMFUserError(
 								EMFErrorSeverity.ERROR, 1077, l);
 						errorHandler.addError(userError);
+					} else {
+						parameterValuesDescription += lovResultHandler.getValueDescription(value, 
+								lovProvDet.getValueColumnName(), lovProvDet.getDescriptionColumnName());
+						if (i < values.size() - 1) parameterValuesDescription += "; ";
 					}
 				}
 			}
+			biparam.setParameterValuesDescription(parameterValuesDescription);
 		}
 		logger.debug("OUT");
 	}
@@ -1798,6 +1799,8 @@ public class ExecuteBIObjectModule extends AbstractModule {
 				}
 			}
 		}
+		controlInputParameters(parameters, profile, role);
+		
 		// put in session the new object
 		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 

@@ -752,7 +752,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
-	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
+	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(biparam.getParameterValuesDescription()) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("/>\n");
 	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' >\n");
@@ -1104,7 +1104,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	return SourceBean.fromXMLString(stringXMLValues);
     }
 
-    public String getParameterDescription(BIObjectParameter biparam) {
+    private String getParameterDescription(BIObjectParameter biparam) {
 	String description = null;
 
 	HashMap paramsDescriptionMap = (HashMap) getSession().getAttribute("PARAMS_DESCRIPTION_MAP");

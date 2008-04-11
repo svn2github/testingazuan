@@ -27,10 +27,14 @@ import it.eng.spago.base.SourceBeanException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Defines method to manage lov result
  */
 public class LovResultHandler {
+	
+	static private Logger logger = Logger.getLogger(LovResultHandler.class);
 	
 	/**
 	 * Sourcebean of the lov result
@@ -105,6 +109,24 @@ public class LovResultHandler {
 			if (values.get(i) != null && values.get(i).toString().equalsIgnoreCase(value)) return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Gets the description specified on descriptionColumnName relevant to the row that has valueColumnName equal to value
+	 * @param value The value to search
+	 * @param valueColumnName The value column
+	 * @param descriptionColumnName The description column
+	 * @return the description specified on descriptionColumnName relevant to the row that has valueColumnName equal to value
+	 */
+	public String getValueDescription(String value, String valueColumnName, String descriptionColumnName) {
+		SourceBean sb = getRow(value, valueColumnName);
+		if (sb == null) {
+			logger.warn("Value [" + value + "] not found in column [" + valueColumnName + "]");
+			return null;
+		}
+		Object description = sb.getAttribute(descriptionColumnName);
+		if (description == null) return null;
+		else return description.toString();
 	}
 	
 	/**

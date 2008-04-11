@@ -43,6 +43,12 @@
         <property name="driverNm" type="string">
             <column name="driver_nm" length="400" />
         </property>
+       <property name="useDataSource" type="integer">
+            <column name="use_datasource" />
+        </property>
+        <property name="useDataSet" type="integer">
+            <column name="use_dataset" />
+        </property>
         <many-to-one name="engineType" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="engine_type" not-null="true" />
         </many-to-one>

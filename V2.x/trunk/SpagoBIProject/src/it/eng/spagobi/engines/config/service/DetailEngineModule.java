@@ -296,6 +296,21 @@ public class DetailEngineModule extends AbstractModule {
 		Integer criptable = new Integer(criptableStr);
 		String biobjTypeIdStr = (String)request.getAttribute("biobjTypeId");
 		Integer biobjTypeId = new Integer(biobjTypeIdStr);
+		String useDataSourceS = (String)request.getAttribute("useDataSource");
+		Integer useDataSource=new Integer(0);
+		if(useDataSourceS!=null){
+			useDataSource=Integer.valueOf(useDataSourceS);
+			if(!useDataSource.equals(new Integer("1")))
+						useDataSource=new Integer(0);
+		}
+		
+		String useDataSetS = (String)request.getAttribute("useDataSet");
+		Integer useDataSet=new Integer(0);
+		if(useDataSetS!=null){
+			useDataSet=Integer.valueOf(useDataSetS);
+			if(!useDataSet.equals(new Integer("1")))
+						useDataSet=new Integer(0);
+		}		
 		
 		Engine engine  = new Engine();
         engine.setCriptable(criptable);
@@ -312,7 +327,8 @@ public class DetailEngineModule extends AbstractModule {
 		engine.setClassName(className);
 		engine.setBiobjTypeId(biobjTypeId);
 		engine.setDataSourceId(engineDSId);
-		
+		engine.setUseDataSource(useDataSource);
+		engine.setUseDataSet(useDataSet);
 		
         List enginesList = DAOFactory.getEngineDAO().loadAllEngines();
 		Iterator i = enginesList.listIterator();

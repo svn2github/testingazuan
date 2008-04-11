@@ -167,10 +167,10 @@
                    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
 			    	       it/eng/spagobi/services/proxy/DataSetWsServiceProxy.class,
 			    	
-                   it/eng/spagobi/services/common/EnginConf.class,
-                   it/eng/spagobi/services/common/IProxyService.class,
-                   it/eng/spagobi/services/common/IProxyServiceFactory.class,
-                   it/eng/spagobi/services/cas/CasProxyService.class,
+		    	         it/eng/spagobi/services/common/EnginConf.class,
+		    	         it/eng/spagobi/services/common/SsoServiceInterface.class,
+		    	         it/eng/spagobi/services/common/SsoServiceFactory.class,
+		    	         it/eng/spagobi/services/cas/CasSsoService.class,
                    it/eng/spagobi/commons/bo/UserProfile.class"
 		    />
     </jar>      	           

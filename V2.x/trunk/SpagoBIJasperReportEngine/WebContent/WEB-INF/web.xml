@@ -7,7 +7,7 @@
 		portal. 
 	</description>
 
-<!-- 
+ 
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -48,9 +48,6 @@
        </init-param> 
        	
 	</filter>
- -->
-
-
 
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
@@ -59,14 +56,11 @@
 		</filter-class>
 	</filter>
 
-
-<!-- 
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/JasperReportServlet/*</url-pattern>
 	</filter-mapping>
 
- -->
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/JasperReportServlet/*</url-pattern>

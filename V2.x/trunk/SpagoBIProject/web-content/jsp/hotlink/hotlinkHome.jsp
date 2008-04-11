@@ -645,12 +645,4 @@ Ext.onReady(function(){
 </script>
 --%>
 
-<iframe id='iframeLogin'
-                 name='iframeLogin'
-                 src='<%=srcIFrame%>'
-                 height='0'
-                 width='0'
-                 frameborder='0' >
-</iframe>
-
 <%@ include file="/jsp/commons/footer.jsp"%>

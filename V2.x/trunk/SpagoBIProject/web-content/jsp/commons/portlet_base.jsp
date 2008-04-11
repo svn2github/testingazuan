@@ -106,8 +106,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	String userId=null;
 	if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
-	String srcIFrame=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=HIDDEN_LOGIN&userId="+userId+"&NEW_SESSION=TRUE");
-
 %>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>

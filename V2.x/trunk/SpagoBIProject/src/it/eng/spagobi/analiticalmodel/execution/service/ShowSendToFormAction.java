@@ -23,6 +23,7 @@ package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import org.apache.log4j.Logger;
 
@@ -31,7 +32,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class ShowSendToFormAction extends AbstractHttpAction {
+public class ShowSendToFormAction extends BaseProfileAction {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -39,6 +40,8 @@ public class ShowSendToFormAction extends AbstractHttpAction {
 
     public void service(SourceBean request, SourceBean responseSb) throws Exception {
     	logger.debug("IN");
+    	//Check of the userId in order to keep performing the request
+	super.service(request, responseSb);    	
     	logger.debug("OUT");
     }
 

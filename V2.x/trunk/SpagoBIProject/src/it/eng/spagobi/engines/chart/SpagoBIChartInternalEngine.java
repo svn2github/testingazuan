@@ -165,7 +165,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 			String data="";
 			try{
-				logger.error("Getting Data Set ID");
+				logger.debug("Getting Data Set ID");
 				if(obj.getDataSetId()!=null){
 				    data=obj.getDataSetId().toString();
 				} else {

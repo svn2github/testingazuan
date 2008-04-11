@@ -61,7 +61,7 @@ public class BirtReportServlet extends HttpServlet {
 	
 	private IReportEngine birtReportEngine = null;
 	protected static Logger logger = Logger.getLogger(BirtReportServlet.class);
-	
+	private static String CONNECTION_NAME="connectionName";
 
 	protected String documentId = null;
 	protected String userId = null;
@@ -236,28 +236,7 @@ public class BirtReportServlet extends HttpServlet {
 
 		return toReturn;
 	}
-	/**
-	 * 
-	 * @param documentId
-	 * @return jndi connection
-	 * @throws ConnectionDefinitionException
-	 */
-	private String findConnectionName(HttpSession session,String userId,String documentId) throws ConnectionDefinitionException {
-		String connectionLabel = null;
-		if (documentId == null) {
-			logger.error("Document identifier NOT found. Returning null.");
-				throw new ConnectionParameterNotValidException("No default connection defined in " +
-						"engine-config.xml file.");
-		}
-		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);		
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
-		//  get connection
-		String jndi = ds.getJndiName();
-		if (jndi != null && !jndi.equals("")) 
-			connectionLabel =  ds.getJndiName();
-		
-		return connectionLabel;
-	}
+
 	
 	/**
 	 * 
@@ -274,29 +253,7 @@ public class BirtReportServlet extends HttpServlet {
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);		
 		return  proxyDS.getDataSource(documentId);		
 	}
-	
-	
-	/**
-	 * Get the connection using jdbc 
-	 * @param connectionConfig SpagoBiDataSource describing data connection
-	 * @return Connection to database
-	 */
-	private Connection getDirectConnection(SpagoBiDataSource connectionConfig) {
-		Connection connection = null;
-		try {
-			String driverName = connectionConfig.getDriver();
-			Class.forName(driverName);
-			String url = connectionConfig.getUrl();
-			String username = connectionConfig.getUser();
-			String password = connectionConfig.getPassword();
-			connection = DriverManager.getConnection(url, username, password);
-		} catch (ClassNotFoundException e) {
-			logger.error("Driver not found", e);
-		} catch (SQLException e) {
-			logger.error("Cannot retrive connection", e);
-		}
-		return connection;
-	}
+
 	
 	protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -317,22 +274,28 @@ public class BirtReportServlet extends HttpServlet {
 		logger.debug(this.getClass().getName() + "runReport(): RunAndRenderTask created successfully.");
 		// Set parameters for the report
 		Map reportParams = findReportParams(request, design);
-		//String connection = findConnectionName(documentId);
-		//if (connection != null) reportParams.put("connectionName", connection);
-		SpagoBiDataSource sbds = findDataSource(request.getSession(),userId,documentId);
-		if (sbds != null){
-			logger.debug("DataSource founded.");
-			if(sbds.getJndiName() != null && sbds.getJndiName() != ""){
-				reportParams.put("connectionName", sbds.getJndiName());
-			}
-			else{
-				reportParams.put("driver", sbds.getDriver());
-				reportParams.put("url", sbds.getUrl());
-				reportParams.put("user", sbds.getUser());
-				reportParams.put("pwd", (sbds.getPassword().equals(""))?" ":sbds.getPassword());
-				
-			}
+
+		String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
+		logger.debug("requestConnectionName:"+requestConnectionName);
+		if (requestConnectionName!=null){
+		    reportParams.put(CONNECTION_NAME, requestConnectionName);
+		}else{
+			SpagoBiDataSource sbds = findDataSource(request.getSession(),userId,documentId);
+			if (sbds != null){
+				logger.debug("DataSource founded.");
+				if(sbds.getJndiName() != null && sbds.getJndiName() != ""){
+					reportParams.put("connectionName", sbds.getJndiName());
+				}
+				else{
+					reportParams.put("driver", sbds.getDriver());
+					reportParams.put("url", sbds.getUrl());
+					reportParams.put("user", sbds.getUser());
+					reportParams.put("pwd", (sbds.getPassword().equals(""))?" ":sbds.getPassword());
+					
+				}
+			}		    
 		}
+
 				
 		
 		task.setParameterValues(reportParams);

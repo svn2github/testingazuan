@@ -783,28 +783,7 @@ Ext.onReady(function(){
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px' type="text" 
  							name="Keywords" id="Keywords" value="<%=Keywords%>" >
-				</div>		
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.Rating" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-					<% 
-		      		Short rat = obj.getRating();
-					String rating = "";
-		      		if(rat==null) {
-		      			rating = "";
-		      		}
-		      		else{
-		      			rating = rat.toString();
-		      		}
-		      		%>
-					<input class='portlet-form-input-field' style='width:230px' type="text" 
- 							name="rating" id="rating" value="<%=rating%>" >
-				</div>	
-						
-		
+				</div>										
 	</td>
   
    </tr>
@@ -911,7 +890,6 @@ function isBIObjectFormChanged() {
 	var longDescription = document.getElementById('longDescription').value;
 	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
-	var rating = document.getElementById('rating').value;
 	var keywords = document.getElementById('Keywords').value;
 
   
@@ -929,7 +907,6 @@ function isBIObjectFormChanged() {
 		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
 		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
-		|| (rating != '<%= initialBIObject.getRating()!= null ? initialBIObject.getRating() : "" %>')
 		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){
 			

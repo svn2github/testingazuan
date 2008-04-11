@@ -21,38 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject,
-				 it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter,
-				 it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule,
-				 it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO,
-				 it.eng.spagobi.commons.dao.DAOFactory,
-				 it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter,
-				 java.util.List,
-				 it.eng.spagobi.commons.constants.ObjectsTreeConstants,
-				 it.eng.spagobi.commons.constants.AdmintoolsConstants,
+				 it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter,				 
+				 it.eng.spagobi.commons.dao.DAOFactory,			
+				 java.util.List,			 
 				 it.eng.spagobi.commons.bo.Domain,
 				 java.util.Iterator,
-				 it.eng.spagobi.engines.config.bo.Engine,
-				 it.eng.spagobi.commons.utilities.SpagoBITracer,
-				 it.eng.spago.navigation.LightNavigationManager,
-				 it.eng.spago.base.SourceBean,
-				 java.util.TreeMap,
-				 java.util.Collection,
-				 java.util.ArrayList,
-				 java.util.Date,
-				 it.eng.spagobi.commons.utilities.GeneralUtilities,
-				 it.eng.spagobi.commons.utilities.ChannelUtilities,
-				 java.util.Map,
-				 java.util.HashMap,
-				 it.eng.spagobi.commons.bo.Subreport,
-				 it.eng.spagobi.events.EventsManager,
-				 it.eng.spagobi.events.bo.EventLog,
-				 it.eng.spago.configuration.ConfigSingleton,
-				 it.eng.spagobi.monitoring.metadata.SbiAudit,
-				  it.eng.spagobi.monitoring.dao.IAuditDAO,
-				 it.eng.spago.util.StringUtils,
-				 it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl,
-				 it.eng.spago.security.IEngUserProfile" %>
-<%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
+				 it.eng.spagobi.engines.config.bo.Engine,			
+				 it.eng.spago.base.SourceBean,	
+				 it.eng.spagobi.monitoring.metadata.SbiAudit,		
+				 java.util.Date"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
 <%@page import="java.util.GregorianCalendar"%>
@@ -229,14 +206,6 @@ Ext.onReady(function(){
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docObjective%>
 			</td>
 		</tr>
-		
-		<!-- DOC IMAGE -->
-		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left"><spagobi:message key = "metadata.docImage" />		
-			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docImage%>
-			</td>
-		</tr>	
 		
 		<!-- DOC RATING -->
 		<tr>

@@ -511,7 +511,6 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("			var srcValue = document.getElementById(srcId).value;\n");
 	htmlStream.append("			var destObj = document.getElementById(destId);\n");
 	htmlStream.append("			destObj.value = srcValue;\n");
-	// htmlStream.append(" alert(destObj.value);\n");
 	htmlStream.append("		}\n");
 	htmlStream.append("</script>\n");
     }
@@ -519,7 +518,6 @@ public class ParametersGeneratorTag extends TagSupport {
     private void createClearFieldJSFunction(StringBuffer htmlStream) {
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function clearField" + requestIdentity + "(targetId) {\n");
-	// htmlStream.append(" alert('targetId: ' + targetId)\n");
 	htmlStream.append("			document.getElementById(targetId).value = '';\n");
 	htmlStream.append("		}\n");
 	htmlStream.append("</script>\n");
@@ -754,7 +752,13 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("\n");
 	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(biparam.getParameterValuesDescription()) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
-	htmlStream.append("/>\n");
+	htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
+	   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");
+	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+		htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+		htmlStream.append("this.form.submit();");
+	}
+	htmlStream.append("\" autocomplete='off'/>");
 	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' >\n");
 	htmlStream.append("	<img src= '" + encodeURL("/img/detail.gif") + "' title='Lookup' alt='Lookup' />\n");
 	htmlStream.append("</a>\n");

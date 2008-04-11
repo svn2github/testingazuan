@@ -987,8 +987,8 @@ function isBIObjectFormChanged() {
 	//var datasetLabel=document.getElementById('datasetLabel').value;
 	var state = document.getElementById('doc_state').value;
 	
-	//var longDescription = document.getElementById('longDescription').value;
-	//var objective = document.getElementById('objective').value;
+	var longDescription = document.getElementById('longDescription').value;
+	var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
 	var keywords = document.getElementById('Keywords').value;
 
@@ -1003,8 +1003,8 @@ function isBIObjectFormChanged() {
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 
-		// || (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
-		// || (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
+		 || (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
+		 || (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
 		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){

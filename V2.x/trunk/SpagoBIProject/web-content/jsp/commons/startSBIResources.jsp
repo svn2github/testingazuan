@@ -75,7 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASET_MANAGEMENT)) {%>
 			<tr class="portlet-font">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/engineAdministrationIcon.png")%>' />
+					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/dataset/img_menu.png")%>' />
 				</td>
 				<td width="20">
 					&nbsp;

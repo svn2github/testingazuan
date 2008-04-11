@@ -67,6 +67,7 @@
     <ant dir="../SpagoBIBirtReportEngine/ant" />
   </target>
   <target name="deploy.SpagoBIBirtReportEngine.war" depends="create.sbi.utils.jar,create.SpagoBIBirtReportEngine.war">
+    <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIBirtReportEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
     <unzip src="../dist/SpagoBIBirtReportEngine/SpagoBIBirtReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
@@ -76,6 +77,7 @@
     <ant dir="../SpagoBIGeoEngine/ant" />
   </target>
   <target name="deploy.SpagoBIGeoEngine.war" depends="create.sbi.utils.jar,create.SpagoBIGeoEngine.war">
+  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIGeoEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIGeoEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIGeoEngine" />
     <unzip src="../dist/SpagoBIGeoEngine/SpagoBIGeoEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoEngine" />
@@ -85,6 +87,7 @@
     <ant dir="../SpagoBIJasperReportEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJasperReportEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJasperReportEngine.war">
+    <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJasperReportEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
     <unzip src="../dist/SpagoBIJasperReportEngine/SpagoBIJasperReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
@@ -94,6 +97,7 @@
     <ant dir="../SpagoBIJPaloEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJPaloEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJPaloEngine.war">
+    <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJPaloEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
     <unzip src="../dist/SpagoBIJPaloEngine/SpagoBIJPaloEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
@@ -103,6 +107,7 @@
     <ant dir="../SpagoBIJPivotEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJPivotEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJPivotEngine.war">
+  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJPivotEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
     <unzip src="../dist/SpagoBIJPivotEngine/SpagoBIJPivotEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
@@ -115,6 +120,7 @@
     <ant dir="../SpagoBIQbeEngine/ant" />
   </target>
   <target name="deploy.SpagoBIQbeEngine.war" depends="create.sbi.utils.jar,create.qbe.core.jar,create.SpagoBIQbeEngine.war">
+    <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIQbeEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIQbeEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIQbeEngine" />
     <unzip src="../dist/SpagoBIQbeEngine/SpagoBIQbeEngine.war" dest="${tomcat.home}/webapps/SpagoBIQbeEngine" />
@@ -124,6 +130,7 @@
     <ant dir="../SpagoBITalendEngine/ant" />
   </target>
   <target name="deploy.SpagoBITalendEngine.war" depends="create.sbi.utils.jar,create.SpagoBITalendEngine.war">
+  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBITalendEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBITalendEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBITalendEngine" />
     <unzip src="../dist/SpagoBITalendEngine/SpagoBITalendEngine.war" dest="${tomcat.home}/webapps/SpagoBITalendEngine" />
@@ -133,6 +140,7 @@
     <ant dir="../SpagoBIWekaEngine/ant" />
   </target>
   <target name="deploy.SpagoBIWekaEngine.war" depends="create.sbi.utils.jar,create.SpagoBIWekaEngine.war">
+  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIWekaEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIWekaEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIWekaEngine" />
     <unzip src="../dist/SpagoBIWekaEngine/SpagoBIWekaEngine.war" dest="${tomcat.home}/webapps/SpagoBIWekaEngine" />

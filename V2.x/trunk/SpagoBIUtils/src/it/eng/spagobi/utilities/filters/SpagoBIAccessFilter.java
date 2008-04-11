@@ -36,8 +36,8 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.services.common.EnginConf;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
@@ -155,7 +155,7 @@ public class SpagoBIAccessFilter implements Filter {
     private void checkUserWithSSO(String userId, HttpSession session) throws ServletException {
 
 	if (EnginConf.getInstance().isSsoActive()) {
-	    IProxyService userProxy = IProxyServiceFactory.createProxyService();
+	    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 	    String ssoUserId = userProxy.readUserId(session);
 	    logger.debug("got userId from IProxyService=" + userId);
 	    if (!userId.equalsIgnoreCase(ssoUserId)) {

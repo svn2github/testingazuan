@@ -85,6 +85,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
+<%@page import="it.eng.spagobi.tools.dataset.dao.IDataSetDAO"%>
 <script>
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
@@ -102,12 +104,63 @@ function showEngField(docType) {
 		if (obj.getEngine() != null) {
 			out.print("	if ('" + en.getId().toString() + "' == '" + obj.getEngine().getId().toString() + "') {\n");
 			out.print("		document.getElementById('doc_engine').selectedIndex = engines.length -1;\n");
+			//out.print("  alert("cosa sei tu "+document.getElementById('doc_engine').value);");			
+			//out.print("  checkSourceVisibility(document.getElementById('doc_engine').value);");
 			out.print("	}\n");
 		}
 		out.print("}\n");
 	}
 	%>
 }
+
+		engineSource = new Array();
+		engineSet= new Array();
+		
+	<%
+	for (int i = 0; i < listEngines.size(); i++) {
+		Engine en = (Engine) listEngines.get(i);
+		String labelEng=en.getLabel();
+		Integer idEng=en.getId();
+		Integer useDataSource=en.getUseDataSource();
+		if(useDataSource==null)useDataSource=new Integer(0);
+		Integer useDataSet=en.getUseDataSet();
+		if(useDataSet==null)useDataSet=new Integer(0);
+		
+	%>
+		engineSource[<%=idEng%>]=<%=useDataSource%>;
+		engineSet[<%=idEng%>]=<%=useDataSet%>;
+
+	<%}%>
+		
+	
+function checkSourceVisibility(engineName) {
+	var datasource = engineSource[engineName];
+	var dataset = engineSet[engineName];;
+	// hide template dynamic creation button for dossier and olap document 
+	var datasourceLabel = document.getElementById("datasourceLabel");
+	var datasourceForm = document.getElementById("datasourceForm");
+	var datasetLabel = document.getElementById("datasetLabel");
+	var datasetForm = document.getElementById("datasetForm");
+
+	if(datasource=="1") {
+		datasourceLabel.style.display="inline";
+		datasourceForm.style.display="inline";
+
+	} else {
+		datasourceLabel.style.display="none";
+		datasourceForm.style.display="none";
+	}
+
+	if(dataset=="1") {
+		datasetLabel.style.display="inline";
+		datasetForm.style.display="inline";
+
+	} else {
+		datasetLabel.style.display="none";
+		datasetForm.style.display="none";
+	}
+	
+ }
 
 function checkFormVisibility(docType) {
 	var ind = docType.indexOf(",");
@@ -247,7 +300,7 @@ function checkFormVisibility(docType) {
 				<div class='div_detail_form'>
 					<select class='portlet-form-input-field' style='width:230px;' 
 							name="type" id="doc_type" 
-							onchange = 'showEngField(this.value);checkFormVisibility(this.value);'>
+							onchange = 'showEngField(this.value);checkFormVisibility(this.value);checkSourceVisibility(document.getElementById("doc_engine").value)'>
 		      		<% 
 		      		    Iterator iterdom = listTypes.iterator();
 		      		    while(iterdom.hasNext()) {
@@ -274,37 +327,52 @@ function checkFormVisibility(docType) {
 			
 				<div class='div_detail_form'>
 		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="engine" id="doc_engine" >
+							name="engine" id="doc_engine" onchange = 'javascript:checkSourceVisibility(this.value);' >
 					<%
+						Integer initialUseDataSet=new Integer(0);
+						Integer initialUseDataSource=new Integer(0);
+					
 						Iterator itereng = listEngines.iterator();
 		      			while(itereng.hasNext()) {
 		      		    	Engine engine = (Engine)itereng.next();
 		      		    	String objEngName = (obj.getEngine() != null ? obj.getEngine().getName() : null);
 		      		    	String currEngName = engine.getName();
 		      		    	boolean isEngine = false;
-		      		    	if( (!obj.getBiObjectTypeCode().equals("DATAMART")) && 
-		      		    		(!obj.getBiObjectTypeCode().equals("DASH")) && 
+		      		    	if( //(!obj.getBiObjectTypeCode().equals("DATAMART")) && 
+		      		    		//(!obj.getBiObjectTypeCode().equals("DASH")) && 
 		      		    		(objEngName != null) &&  
 		      		    		objEngName.equals(currEngName)){
 		      		    		isEngine = true; 
-							}
+		      		    		initialUseDataSet=(obj.getEngine()).getUseDataSet();
+		      		    		initialUseDataSource=(obj.getEngine()).getUseDataSource();
+		    						}
 		      		%>
 		      			<option value="<%=engine.getId().toString() %>"<%if (isEngine) out.print(" selected='selected' ");  %>><%=engine.getName()%></option>
 		      		<% 	
 		      			}
-		      		%>
+	String styleSource="style=\"display:none;\"";		      	
+	if(initialUseDataSource.equals(new Integer(1))){
+		styleSource="style=\"display:inline;\"";
+	}
+	
+	String styleSet="style=\"display:none;\"";		      	
+	if(initialUseDataSet.equals(new Integer(1))){
+		styleSet="style=\"display:inline;\"";
+	}
+	
+		      			%>
 		      		</select>
 				</div> 
 				
 				
-				<div class='div_detail_label'>
+				<div class='div_detail_label' id="datasourceLabel" <%=styleSource%>>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBISet.eng.dataSource" />
 					</span>
 				</div>
 				
 			
-				<div class='div_detail_form'>
+				<div class='div_detail_form' id="datasourceForm" <%=styleSource%>>
 		      		<select class='portlet-form-input-field' style='width:230px;' 
 							name="datasource" id="doc_datasource" >
 							<option></option>
@@ -327,35 +395,73 @@ function checkFormVisibility(docType) {
 				</div> 
 				
 				
-				<div class='div_detail_label'>
+				<div class='div_detail_label' id="datasetLabel" <%=styleSet%>>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBISet.eng.dataSet" />
 					</span>
 				</div>
 				
-			
-				<div class='div_detail_form'>
-		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="dataset" id="doc_dataset" >
-							<option></option>
-					<%
-						Iterator iterdataset = listDataSet.iterator();
-		      			while(iterdataset.hasNext()) {
-		      		    	DataSet ds = (DataSet)iterdataset.next();
-		      		    	Integer objDsId = obj.getDataSetId();
-		      		    	Integer currDsId = new Integer(ds.getDsId());
-		      		    	boolean isDs = false;
-		      		    	if(objDsId != null && objDsId.equals(currDsId)){
-		      		    		isDs = true; 
-							}
-		      		%>
-		      			<option value="<%=String.valueOf(ds.getDsId()) %>"<%if (isDs) out.print(" selected='selected' ");  %>><%=ds.getLabel()%></option>
-		      		<% 	
-		      			}
-		      		%>
-		      		</select>
-				</div> 
+			<%	
+			String url=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?" + "PAGE=SelectDatasetLookupPage&NEW_SESSION=TRUE";
+			 
+			String currDataSetLabel="";
+			Integer currDataSetId=null;
+			String currDataSetIdValue="";
+			if(obj.getDataSetId()!=null){
+				 currDataSetId=obj.getDataSetId();
+				 currDataSetIdValue=currDataSetId.toString();
+				 DataSet dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(currDataSetId); 
+				 if(dataSet!=null){	
+				 	currDataSetLabel=dataSet.getLabel();
+						}
+				}
+
+			 %>
+		<div class='div_detail_form' id="datasetForm" <%=styleSet%> >
+		  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>"/>	
+										
+			<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
+							name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 
+		
+		<a href='javascript:void(0);' id="datasetLink">
+				<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+			</a> 	
+		</div>
+	
+		<script>
+			var win_dataset;
+			Ext.get('datasetLink').on('click', function(){
+			if(!win_dataset){
+				win_dataset = new Ext.Window({
+				id:'popup_dataset',
+				title:'dataset',
+				bodyCfg:{
+					tag:'div', 
+					cls:'x-panel-body', 
+					children:[{tag:'iframe', 
+								name: 'iframe_par_dataset',        			
+								id  : 'iframe_par_dataset',        			
+								src: '<%=url%>',   
+								frameBorder:0,
+								width:'100%',
+								height:'100%',
+								style: {overflow:'auto'}  
+								}]
+						},
+					layout:'fit',
+					width:800,
+					height:320,
+					closeAction:'hide',
+					plain: true
+					});
+					};
+				win_dataset.show();
+				}
+				);
 				
+		</script>
+			
+
 
 			<!-- DISPLAY COMBO FOR STATE SELECTION -->
 			<!-- IF THE USER IS A DEV ACTOR THE COMBO FOR THE STATE SELECTION CONTAINS ONLY A VALUE
@@ -884,7 +990,8 @@ function isBIObjectFormChanged() {
 	var type = document.getElementById('doc_type').value;
 	var engine = document.getElementById('doc_engine').value;
 	var datasource = document.getElementById('doc_datasource').value;
-	var dataset = document.getElementById('doc_dataset').value;
+	//var dataset = document.getElementById('dataset').value;
+	//var datasetLabel=document.getElementById('datasetLabel').value;
 	var state = document.getElementById('doc_state').value;
 	
 	var longDescription = document.getElementById('longDescription').value;
@@ -900,7 +1007,6 @@ function isBIObjectFormChanged() {
 		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
 		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
 		|| (datasource != '<%=initialBIObject.getDataSourceId() != null ? initialBIObject.getDataSourceId() : ""%>')
-		|| (dataset != '<%=initialBIObject.getDataSetId() != null ? initialBIObject.getDataSetId() : ""%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 

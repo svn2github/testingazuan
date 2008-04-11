@@ -136,7 +136,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 		</select>
 	</div>
-	<div class='div_detail_label'>
+	
+	
+		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.engineTypeField" />
 		</span>
@@ -171,13 +173,82 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 		</select>
 	</div>
+	
+			<%Integer useDataSetI=engine.getUseDataSet();
+	boolean useDataSet=false;
+	if(useDataSetI!=null){
+		if(useDataSetI.equals(new Integer(1))){
+			useDataSet=true;
+		
+		}
+	}
+	%>
+		<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.eng.useDataSet" />
+		</span>
+	</div>		
+		<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="checkbox" name="useDataSet" id="useDataSet"
+			   value="1" <%=(useDataSet==true ? "checked='checked'" : "")%>/>
+	</div>
+	
+	
+	
+	<%
+	Integer useDataSourceI=engine.getUseDataSource();
+	boolean useDataSource=false;
+	if(useDataSourceI!=null){
+		if(useDataSourceI.equals(new Integer(1))){
+			useDataSource=true;
+		
+		}
+	}
+	%>
+	
 	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.eng.useDataSource" />
+		</span>
+	</div>	
+		<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="checkbox" name="useDataSource" id="useDataSource"
+			   value="1" <%=(useDataSource==true ? "checked='checked'" : "")%> onclick = "sourceControl();manualInputSelection=this.value;"/>
+			   
+	</div>
+	
+	<script type="text/javascript">
+	function sourceControl(){
+		var var1 = document.getElementById('dataSourceLabel');
+		var var2 = document.getElementById('dataSource');
+
+		if(var2.style.display != 'inline'){
+   			var2.style.display = 'inline';
+			var1.style.display = 'inline';
+ 			}
+ 		else {
+   			var2.style.display = 'none';
+			var1.style.display = 'none';
+ 			}
+		}
+
+	</script>
+	
+
+	<%
+	String dataSourceStyle="style=\"display: none\"";
+	if(useDataSource==true){
+		dataSourceStyle="style=\"display: inline\"";
+	}
+	%>
+
+	<div class='div_detail_label' id="dataSourceLabel" <%=dataSourceStyle%>>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.dataSource" />
 		</span>
 	</div>	
-	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="engineDefaultDS" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType">			
+	<div class='div_detail_form' <%=dataSourceStyle%> id="dataSource">
+		<select class='portlet-form-field' name="engineDefaultDS" onchange= "changeEngineType(this.options[this.selectedIndex].label)" >			
 			<option></option>
 			<%
 			java.util.List engineDS = DAOFactory.getDataSourceDAO().loadAllDataSources();

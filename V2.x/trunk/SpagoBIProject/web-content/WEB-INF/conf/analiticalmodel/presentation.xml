@@ -17,6 +17,6 @@
 <MAPPING business_type="ACTION" business_name="SAVE_OBJECT" publisher_name="SaveObjectPublisher"/>
 <MAPPING business_name="SelectParameterPage" business_type="PAGE" publisher_name="SelectParameterPublisherJ"/>
 <MAPPING business_type="ACTION" business_name="SHOW_SEND_TO_FORM" publisher_name="ShowSendToFormPublisher"/>
-
+<MAPPING business_type="PAGE" business_name="SelectDatasetLookupPage" publisher_name="SelectDatasetLookupPublisher"/>
 </PRESENTATION>
 

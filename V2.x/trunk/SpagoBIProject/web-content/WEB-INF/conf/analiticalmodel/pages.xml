@@ -220,6 +220,21 @@
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="SelectParameterPageModule"/>
     	</MODULES>
+  	</PAGE> 
+  	
+  	  	  	<PAGE name="SelectDatasetLookupPage" scope="REQUEST" title="SelectDatasetLookupPage" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="SelectDatasetLookupPage" target="SelectDatasetLookupModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="SelectDatasetLookupModule"/>
+    	</MODULES>
   	</PAGE> 	
+  	
+  	
+  		
 </PAGES>
 

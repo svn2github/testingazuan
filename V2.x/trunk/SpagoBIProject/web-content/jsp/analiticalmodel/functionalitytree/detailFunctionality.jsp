@@ -242,7 +242,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 			            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
 	 			            alternate = !alternate;
 	 			            %>
-					 <tr class='<%=rowClass%>'>
+	 			            
+					 <tr onMouseOver="this.bgColor='#F5F6BE'" onMouseOut="this.bgColor='#FFFFFF'">
 					 	<td class='portlet-font'><%= ruleName + " (" + ruleDescription + ")" %></td>
 					 	
 					 	<td align="center">

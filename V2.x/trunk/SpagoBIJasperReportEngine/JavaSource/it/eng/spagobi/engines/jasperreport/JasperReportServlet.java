@@ -65,6 +65,8 @@ public class JasperReportServlet extends HttpServlet {
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(JasperReportServlet.class);
+    private static String CONNECTION_NAME="connectionName";
+    private static String PARAM_OUTPUT_FORMAT="param_output_format";
 
     /**
      * Initialize the engine
@@ -90,6 +92,9 @@ public class JasperReportServlet extends HttpServlet {
 	}
 	logger.debug("documentId:"+documentId);
 	
+	String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
+	logger.debug("requestConnectionName:"+requestConnectionName);
+	
 	//  operazioni fatte dal filtro ...OUT
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
@@ -114,7 +119,7 @@ public class JasperReportServlet extends HttpServlet {
 		    .currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
 
 	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
-	Connection con = getConnection(session,(String)profile.getUserUniqueIdentifier(),documentId);
+	Connection con = getConnection(requestConnectionName,session,(String)profile.getUserUniqueIdentifier(),documentId);
 	//Connection con = DataSourceUtilities.
 	if (con == null) {
 	    logger.error("Cannot obtain" + " connection for engine ["
@@ -126,7 +131,7 @@ public class JasperReportServlet extends HttpServlet {
 	    return;
 	}
 	try {
-	    String outputType = (String) params.get("param_output_format");
+	    String outputType = (String) params.get(PARAM_OUTPUT_FORMAT);
 	    String tmpdir = (String) EnginConf.getInstance().getConfig().getAttribute("GENERALSETTINGS.tmpdir");
 	    if (!tmpdir.startsWith("/")) {
 		String contRealPath = getServletContext().getRealPath("/");
@@ -209,8 +214,11 @@ public class JasperReportServlet extends HttpServlet {
      * 
      * @return the database connection
      */
-    private Connection getConnection(HttpSession session,String userId,String documentId) {
+    private Connection getConnection(String requestConnectionName,HttpSession session,String userId,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
+	if (requestConnectionName!=null){
+	    return getConnectionFromJndiDS(requestConnectionName);
+	}
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
 	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
 	if (ds==null) return null;
@@ -218,7 +226,7 @@ public class JasperReportServlet extends HttpServlet {
 	String jndi = ds.getJndiName();
 	if (jndi != null && !jndi.equals("")) {
 	    logger.debug("OUT");
-	    return getConnectionFromJndiDS(ds);
+	    return getConnectionFromJndiDS(ds.getJndiName());
 	} else {
 	    logger.debug("OUT");
 	    return getDirectConnection(ds);
@@ -228,15 +236,15 @@ public class JasperReportServlet extends HttpServlet {
     /**
      * Get the connection from JNDI
      * 
-     * @param connectionConfig
-     *                SourceBean describing data connection
+     * @param jndiName
+     *                String describing data connection
      * @return Connection to database
      */
-    private Connection getConnectionFromJndiDS(SpagoBiDataSource connectionConfig) {
+    private Connection getConnectionFromJndiDS(String jndiName) {
 	logger.debug("IN");	
 	Connection connection = null;
 	Context ctx;
-	String resName = connectionConfig.getJndiName();
+	String resName = jndiName;
 	logger.debug("resName:"+resName);
 	try {
 	    ctx = new InitialContext();

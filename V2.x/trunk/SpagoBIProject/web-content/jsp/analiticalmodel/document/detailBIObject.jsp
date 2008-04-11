@@ -642,7 +642,9 @@ function checkFormVisibility(docType) {
 	        	var pos = document.getElementById('doc_type').selectedIndex;
 	        	typeValue = document.getElementById('doc_type').options[pos].value;
 				showEngField(typeValue);
-	        	checkFormVisibility(typeValue);					
+	        	checkFormVisibility(typeValue);
+	        	engineValue=document.getElementById('doc_engine').value;
+	        	checkSourceVisibility(engineValue);	 						
 			</script>
 			
 			

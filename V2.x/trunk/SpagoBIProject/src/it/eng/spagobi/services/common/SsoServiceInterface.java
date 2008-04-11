@@ -13,7 +13,7 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
  * Interface for read and validate a proxy ticket
  *
  */
-public interface IProxyService {
+public interface SsoServiceInterface {
 
     /**
      * 

@@ -14,8 +14,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -67,7 +67,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 		SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		String active = (String) validateSB.getCharacters();
 		if (active != null && active.equals("true")) {
-		    IProxyService proxy = IProxyServiceFactory.createProxyService();
+		    SsoServiceInterface proxy = SsoServiceFactory.createProxyService();
 		    userId = proxy.readUserId(request.getSession());
 		    logger.debug("got userId from IProxyService=" + userId);
 		} else {

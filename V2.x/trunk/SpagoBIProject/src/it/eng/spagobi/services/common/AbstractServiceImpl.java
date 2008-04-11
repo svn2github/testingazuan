@@ -69,7 +69,7 @@ public abstract class AbstractServiceImpl {
 	    if (ticket.equals(pass)) {
 		logger.debug("JUMP che ticket validation");
 	    } else {
-		IProxyService proxyService = IProxyServiceFactory.createProxyService();
+		SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
 		proxyService.validateTicket(ticket, userId, validateUrl, validateService);
 	    }
 	}

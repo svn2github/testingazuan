@@ -1,6 +1,6 @@
 package it.eng.spagobi.services.cas;
 
-import it.eng.spagobi.services.common.IProxyService;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.io.IOException;
@@ -18,9 +18,9 @@ import edu.yale.its.tp.cas.proxy.ProxyTicketReceptor;
 /**
  * This class contain the specific code of CAS 
  */
-public class CasProxyService implements IProxyService {
+public class CasSsoService implements SsoServiceInterface {
 
-    static private Logger logger = Logger.getLogger(CasProxyService.class);
+    static private Logger logger = Logger.getLogger(CasSsoService.class);
     
     /**
      *  @param session HttpSession

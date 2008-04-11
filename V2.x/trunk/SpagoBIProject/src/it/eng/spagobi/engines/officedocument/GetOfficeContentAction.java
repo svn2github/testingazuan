@@ -15,8 +15,8 @@ import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
 
@@ -47,7 +47,7 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 			userId=principal.getName();
 			logger.debug("got userId from Principal="+userId);
 		    }
-			IProxyService proxy=IProxyServiceFactory.createProxyService();
+			SsoServiceInterface proxy=SsoServiceFactory.createProxyService();
 			userId=proxy.readUserId(req.getSession());
 			logger.debug("got userId from IProxyService="+userId);
 		}else {

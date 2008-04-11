@@ -31,6 +31,8 @@ import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -59,7 +61,8 @@ public abstract class AbstractBaseProfileListModule extends AbstractBasicListMod
 	    //If CAS is active gets userid in session
 	    if (active != null && active.equals("true")) {
 	    	HttpServletRequest req =(HttpServletRequest) this.getRequestContainer().getInternalRequest();
-	    	sessionUserId = (String) req.getSession().getAttribute("edu.yale.its.tp.cas.client.filter.user");
+		SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
+		sessionUserId = ssoProxy.readUserId(req.getSession());
 	    	if(requestUserId!=null && sessionUserId!= null){
 	    		//if userid in session different from userid in request throws exception
 		    	if (!requestUserId.equals(sessionUserId)){

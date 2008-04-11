@@ -14,8 +14,8 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -159,7 +159,7 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 		    SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		    String active = (String) validateSB.getCharacters();
 		    if (active != null && active.equals("true")) {
-			IProxyService userProxy = IProxyServiceFactory.createProxyService();
+			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 			userId = userProxy.readUserId(req.getSession());
 			logger.debug("got userId from IProxyService=" + userId);
 		    } else {

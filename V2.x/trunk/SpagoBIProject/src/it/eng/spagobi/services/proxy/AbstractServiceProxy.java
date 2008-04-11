@@ -13,8 +13,8 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.services.common.EnginConf;
-import it.eng.spagobi.services.common.IProxyService;
-import it.eng.spagobi.services.common.IProxyServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.common.SsoServiceFactory;
 
 /**
  * Abstract Class of all Proxy 
@@ -41,7 +41,7 @@ public abstract class AbstractServiceProxy {
 	    return pass;
 	}
 	if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
-	    IProxyService proxyService=IProxyServiceFactory.createProxyService();
+	    SsoServiceInterface proxyService=SsoServiceFactory.createProxyService();
 	    return proxyService.readTicket(session, filterReceipt);
 	} else
 	    return "";

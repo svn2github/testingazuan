@@ -799,41 +799,7 @@ function checkFormVisibility(docType) {
 		      %>
 		      		
 		      		
-	<script>
-Ext.onReady(function(){
 
-    Ext.QuickTips.init();
-   // Ext.form.Field.prototype.msgTarget = 'side';
-
-	var top = new Ext.form.HtmlEditor({
-        labelAlign: 'top',
-        frame:true,
-        title: '<spagobi:message key ="metadata.docLongDescr" />',
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        value: '<%=longDesc%>',
-        renderTo: 'containerLongDescr',
-            id:'longDescription',
-            fieldLabel:'<spagobi:message key ="metadata.docLongDescr" />'  
-    });   
-    
-    var top1 = new Ext.form.HtmlEditor({
-        labelAlign: 'top',
-        frame:true,
-        title: '<spagobi:message key ="metadata.docObjective" />',
-        value: '<%=objective%>',
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        renderTo: 'containerObjective',
-            id:'objective',
-            fieldLabel:'<spagobi:message key ="metadata.docObjective" />'  
-    });   
-     
-	});	  
-	 	
-</script>	
 <table  class='header-sub-table-portlet-section' >		
 	<tr class='header-sub-row-portlet-section'>
 		<td class='header-sub-title-column-portlet-section'>
@@ -902,12 +868,39 @@ Ext.onReady(function(){
 				</div>
 	</td></tr>
 	<tr><td>
-				<div id= "containerObjective">
+					<div id= "containerObjective">
 				</div> 
 	</td></tr>		
 	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
 </table>  
-	
+	<script>
+Ext.onReady(function(){
+
+    Ext.QuickTips.init();
+
+	var top = new Ext.form.HtmlEditor({
+        frame: true,
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 100,
+        value: '<%=longDesc%>',
+        renderTo: 'containerLongDescr',
+            id:'longDescription'            
+    });   
+    
+    var top1 = new Ext.form.HtmlEditor({
+        frame: true,
+        value: '<%=objective%>',
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 100,
+        renderTo: 'containerObjective',
+            id:'objective'        
+    });   
+     
+	});	  
+	 	
+</script>	
 </div>
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
 </form>
@@ -994,8 +987,8 @@ function isBIObjectFormChanged() {
 	//var datasetLabel=document.getElementById('datasetLabel').value;
 	var state = document.getElementById('doc_state').value;
 	
-	var longDescription = document.getElementById('longDescription').value;
-	var objective = document.getElementById('objective').value;
+	//var longDescription = document.getElementById('longDescription').value;
+	//var objective = document.getElementById('objective').value;
 	var language = document.getElementById('language').value;
 	var keywords = document.getElementById('Keywords').value;
 
@@ -1010,8 +1003,8 @@ function isBIObjectFormChanged() {
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 
-		|| (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
-		|| (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
+		// || (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
+		// || (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
 		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){

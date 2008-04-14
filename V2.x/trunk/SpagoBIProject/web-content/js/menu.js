@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //***************************************************************
 //******** Functions for nested menu class **********************
 //***************************************************************  
+ var contextName = "";
  
  function openmenuNM(idmenu) {
 	  	try {
@@ -141,3 +142,89 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             $(idmenu).style.display= 'none';
       }
 	}
+	
+
+//***************************************************************
+//******** Functions for execution document menu **********************
+//*************************************************************** 
+function setContextName(context){
+		contextName = context;
+}
+ 
+function closeLoadingDocumentMenu() {
+ 	var load = document.getElementById('loadingDocumentMenu');
+ 	load.style.display='none';
+ 	var frame = document.getElementById('frameDocumentMenu');
+ 	frame.style.visibility='visible';
+ }
+ winDocumentMenu=null;
+ function open_win_DocumentMenu(src) { 
+ 	if(winDocumentMenu==null) { 
+		winDocumentMenu = new Window('winDocumentMenu', {className: "alphacube", title: "", resizable:true, destroyOnClose:false, width:800, height:500});
+		winDocumentMenu.getContent().innerHTML="<div style='position:absolute;top:30px;left:30px;' id='loadingDocumentMenu'><center><br/><br/><span style='font-size:13pt;font-weight:bold;color:darkblue;'>Loading</span><br/><br/><img src='/SpagoBI/img/wapp/loading.gif' /></center></div><iframe id='frameDocumentMenu' onload='parent.closeLoadingDocumentMenu()' style='width:800px;height:500px;visibility:hidden;' frameborder='0' scrolling='auto' noresize  src='"+src+"' />";
+		winDocumentMenu.showCenter(false);
+		observerResizeDocumentMenu = {
+			onResize: function(eventName, win) {
+				if(win == winDocumentMenu) { 
+					var heightwin = win.getSize().height;
+				 	var widthwin = win.getSize().width;
+				 	var frameapp = document.getElementById('frameDocumentMenu');
+				 	frameapp.style.height=heightwin + 'px';
+				 	frameapp.style.width=widthwin + 'px'; 
+				}
+			}
+		}
+		observerMaximizeDocumentMenu = {
+			onMaximize: function(eventName, win) {
+				if(win == winDocumentMenu) { 
+					var heightwin = win.getSize().height;
+				 	var widthwin = win.getSize().width;
+					if(win.isMaximized()) {
+						if(isMoz()) {
+					    	heightwin = (top.innerHeight)-60;
+				 	    	widthwin = (top.innerWidth)-40;
+				    	}
+						if(isIE7()) {
+					    	heightwin = heightwin-80;
+				 	    	widthwin = widthwin-20;
+				    	}
+				    }
+				 	win.setSize(widthwin, heightwin);
+				 	var frameapp = document.getElementById('frameDocumentMenu');
+				 	frameapp.style.height=heightwin + 'px';
+				 	frameapp.style.width=widthwin + 'px'; 
+		            win.showCenter();
+				}
+			}
+		}
+		observerMinimizeDocumentMenu = {
+			onMinimize: function(eventName, win) {
+				if(win == winDocumentMenu) { 
+					var heightwin = win.getSize().height;
+				 	var widthwin = win.getSize().width;
+					if(win.isMinimized()) {
+				 		var frameapp = document.getElementById('frameDocumentMenu');
+				 		frameapp.style.display='none';
+				 	} else {
+				 		var frameapp = document.getElementById('frameDocumentMenu');
+				 		frameapp.style.display='inline';
+				 	}
+				}
+			}
+		}
+		observerCloseDocumentMenu = {
+			onClose: function(eventName, win) {
+				if(win == winDocumentMenu) { 
+ 					win.destroy();
+ 					winDocumentMenu=null;
+				}
+			}
+		}
+		Windows.addObserver(observerResizeDocumentMenu);
+		Windows.addObserver(observerMaximizeDocumentMenu);
+		Windows.addObserver(observerMinimizeDocumentMenu);
+		Windows.addObserver(observerCloseDocumentMenu);
+	} else {
+		winDocumentMenu.show(false);
+	}
+}

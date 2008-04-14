@@ -46,8 +46,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/validation.xml" />  
   
 <!-- engines.spagobidashboardIE -->
-	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardIE/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/publishers.xml" />
 
 <!-- engines.chart -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/actions.xml" />
@@ -55,9 +55,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/presentation.xml" />
 
 	
-<!-- engines.spagobidashboardsCompositionIE -->
-	<CONFIGURATOR path="/WEB-INF/conf/engines/spagobidashboardsCompositionIE/publishers.xml" />
-
 <!-- engines.officedocument -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/actions.xml" />

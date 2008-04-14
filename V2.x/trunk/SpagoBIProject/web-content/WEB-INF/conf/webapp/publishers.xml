@@ -9,6 +9,14 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  	<PUBLISHER name="LoginPublisher">
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/wapp/login.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="LogoutPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -21,6 +29,14 @@
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
         		<ITEM prog="0" resource="/jsp/wapp/home.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  	</PUBLISHER>
+  	
+  	<PUBLISHER name="login">
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/wapp/login.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -61,6 +77,20 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
+  	<PUBLISHER name="MenuPublisherJava">
+    	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM PROG="0" resource="it.eng.spagobi.wapp.presentation.MenuPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+    	<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM PROG="0" resource="it.eng.spagobi.wapp.presentation.MenuPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
   	
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">

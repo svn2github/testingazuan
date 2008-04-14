@@ -16,5 +16,10 @@
     <MODULE class="it.eng.spagobi.analiticalmodel.document.service.DirectExecutionModule" name="DirectExecutionModule">
      	<CONFIG/>
     </MODULE>
+    
+    
+    <MODULE class="it.eng.spagobi.wapp.service.MenuModule" name="MenuModule">
+     	<CONFIG/>
+    </MODULE>
 	
 </MODULES>

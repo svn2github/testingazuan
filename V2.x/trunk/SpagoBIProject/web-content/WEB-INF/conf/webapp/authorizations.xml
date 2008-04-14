@@ -6,9 +6,10 @@
 			<USER userID="admin" password="0DPiKuNIrrVmD8IUCuw1hQxNqZc=" />
 			-->
 			<USER userID="admin" password="admin" />
+			<USER userID="user" password="user" />
 		</USERS>
 		<ROLES>
-			<ROLE roleName="Administrator" description="Administrator" />
+			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 		</ROLES>
 		<FUNCTIONALITIES>
@@ -34,23 +35,22 @@
 	</ENTITIES>
 	<RELATIONS>
 		<BEHAVIOURS>
-			<BEHAVIOUR userID="admin" roleName="Administrator" />
+			<BEHAVIOUR userID="user" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="admin" roleName="/spagobi/admin" />
 		</BEHAVIOURS>
 		<PRIVILEDGES>
-			<PRIVILEDGE roleName="Administrator" functionalityName="EnginesManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="FunctionalitiesManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="LovsManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="ConstraintManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="ParameterManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="DocumentDevManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="DocumentAdminManagement" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="ImportExport" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="Scheduler" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="Events" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="Worklist" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="WorkspaceExec" />
-			<PRIVILEDGE roleName="Administrator" functionalityName="MapCatalogue" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EnginesManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="FunctionalitiesManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="LovsManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ConstraintManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ParameterManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentAdminManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ImportExport" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Scheduler" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Events" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Worklist" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorkspaceExec" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MapCatalogue" />
 		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

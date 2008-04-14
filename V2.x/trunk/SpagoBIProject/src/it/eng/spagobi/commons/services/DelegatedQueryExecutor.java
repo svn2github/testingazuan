@@ -83,6 +83,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     public static Object executeQuery(final RequestContainer requestContainer,
             final ResponseContainer responseContainer, final String pool, final SourceBean query,
             final String type) {
+	logger.debug("IN");
         Object result = null;
         DataConnection dataConnection = null;
 
@@ -98,6 +99,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
         } // catch (Exception ex) try
         finally {
             Utils.releaseResources(dataConnection, null, null);
+            logger.debug("OUT");
         } // finally try
         return result;
     } // public static Object executeQuery(RequestContainer
@@ -117,6 +119,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     public static Object executeQuery(final RequestContainer requestContainer,
             final ResponseContainer responseContainer, DataConnection dataConnection,
             final SourceBean query, final String type) {
+	logger.debug("IN");
         Object result = null;
 
         try {
@@ -182,6 +185,9 @@ public class DelegatedQueryExecutor extends QueryExecutor {
             responseContainer.getErrorHandler().addError(
                     new EMFInternalError(EMFErrorSeverity.ERROR, ex));
         } // catch (Exception ex) try
+        finally{
+            logger.debug("OUT");
+        }
         return result;
     } // public static Object executeQuery(RequestContainer
 
@@ -197,7 +203,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
      */
     public static Object executeQuery(DataConnection dataConnection, String type, SourceBean query,
             ArrayList parameters) throws Exception {
-        logger.debug("DelagatedQueryExecutor::executeQuery: invocato");
+        logger.debug("IN");
         Object result = null;
         String statement = SQLStatements.getStatement((String) query.getAttribute("STATEMENT"));
         try {
@@ -212,15 +218,18 @@ public class DelegatedQueryExecutor extends QueryExecutor {
             return result;
         } // try
         catch (Exception ex) {
-            logger.error("QueryExecutor::executeQuery:", ex);
+            logger.error("", ex);
             throw ex;
         } // catch (Exception ex) try
+        finally{
+            logger.debug("OUT");
+        }
     } // public static SourceBean executeQuery(DataConnection dataConnection,
 
     protected static Object executeQuery(DataConnection dataConnection, final String statement,
             final String type, final ArrayList inputParameters) throws Exception {
         
-    	logger.error("QueryExecutor::executeQuery: invocato");
+    	logger.debug("IN");
         SQLCommand sqlCommand = null;
         DataResult dataResult = null;
         Object result = null;
@@ -244,11 +253,12 @@ public class DelegatedQueryExecutor extends QueryExecutor {
             return result;
         } // try
         catch (Exception ex) {
-            logger.error("QueryExecutor::executeQuery:", ex);
+            logger.error("", ex);
             throw ex;
         } // catch (Exception ex) try
         finally {
             Utils.releaseResources(null, sqlCommand, dataResult);
+            logger.debug("OUT");
         }
     }
 
@@ -308,7 +318,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
             final ResponseContainer responseContainer, final SourceBean parameter,
             ArrayList inputParameters, DataConnection dataConnection,
             final boolean isFilterParameter, StringBuffer statement, final String condizioneSql) {
-
+	logger.debug("IN");
         boolean parameterUsed = false;
         // gets attibutes of type 'PARAMETER'
         String parameterType = (String) parameter.getAttribute("TYPE");
@@ -359,6 +369,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
 
             } // if !inParameterValue
         } // else !isFilterParameter
+        logger.debug("OUT");
         return parameterUsed;
     } // elaboraParametro
 
@@ -371,7 +382,7 @@ public class DelegatedQueryExecutor extends QueryExecutor {
      */
     protected static void handleOrderByParameter(final RequestContainer requestContainer,final ResponseContainer responseContainer,
     		final SourceBean parameter, StringBuffer statement, final String condizioneSql) {
-    	
+	logger.debug("IN");
     	 String parameterType = (String) parameter.getAttribute("TYPE");
          String parameterValue = (String) parameter.getAttribute("VALUE");
          String parameterScope = (String) parameter.getAttribute("SCOPE");
@@ -398,7 +409,8 @@ public class DelegatedQueryExecutor extends QueryExecutor {
         // l'oggetto StringBuffer)
         statement.append(condizioneSql);
         //statement.append(sqlToAdd);
-        statement.append(inParameterValue);        
+        statement.append(inParameterValue);   
+        logger.debug("OUT");
 
     } 
 }

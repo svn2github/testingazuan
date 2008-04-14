@@ -19,28 +19,20 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-/*
- * Created on 21-apr-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-package it.eng.spagobi.commons.services;
+package it.eng.spagobi.wapp.presentation;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.AbstractHttpModule;
-import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.presentation.GenericPublisher;
 
-public class LogoutModule extends AbstractHttpModule {
+public class MenuPublisher extends GenericPublisher {
 
-	public void service(SourceBean request, SourceBean response) throws Exception {
-		// TODO clean session 
-		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqCont.getSessionContainer();
-		SessionContainer permSess = sessCont.getPermanentContainer();
-	    permSess.delAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		SourceBean serviceResp = responseContainer.getServiceResponse();
+		// get the response of the module
+		SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("MenuModule");
+		return getPublisherName(requestContainer, responseContainer, moduleResponse);
 	}
-	
+
 }

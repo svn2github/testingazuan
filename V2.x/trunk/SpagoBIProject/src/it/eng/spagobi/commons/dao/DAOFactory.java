@@ -57,6 +57,8 @@ import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO;
+import it.eng.spagobi.wapp.dao.IMenuDAO;
+import it.eng.spagobi.wapp.dao.IMenuRolesDAO;
 
 /**
  * Contains all the data access object for all the BO objects defined into
@@ -297,5 +299,13 @@ public class DAOFactory {
 	
 	public static IRememberMeDAO getRememberMeDAO() throws EMFUserError{
 		return (IRememberMeDAO)createDAOInstance("RememberMeDAO");
+	}
+	
+	public static IMenuDAO getMenuDAO() throws EMFUserError{
+		return (IMenuDAO)createDAOInstance("MenuDAO");
+	}
+	
+	public static IMenuRolesDAO getMenuRolesDAO() throws EMFUserError{
+		return (IMenuRolesDAO)createDAOInstance("MenuRolesDAO");
 	}
 }

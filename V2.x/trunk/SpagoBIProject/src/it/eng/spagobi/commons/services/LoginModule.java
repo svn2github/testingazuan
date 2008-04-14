@@ -30,23 +30,37 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+import it.eng.spagobi.wapp.bo.Menu;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 public class LoginModule extends AbstractHttpModule {
 
     static Logger logger = Logger.getLogger(LoginModule.class);
+    public static final String MODULE_PAGE = "LoginPage";
+    IEngUserProfile profile = null;
+    EMFErrorHandler errorHandler = null;
 	/**
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
@@ -55,21 +69,44 @@ public class LoginModule extends AbstractHttpModule {
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
-		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		if (profile==null){
-            		Principal principal=this.getHttpRequest().getUserPrincipal();
-            		String userId=null;
-            		if (principal==null){
-            		    userId=(String)request.getAttribute("userId");
-            		    logger.info("User read from request."+userId);
-            		}else {
-            		    userId=principal.getName();
-            		    logger.info("User read from Principal."+userId);
-            		}
 		
-			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");
+			logger.debug("OUT");
+			return;
+		}
+		errorHandler = getErrorHandler();
+		
+		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		if (profile==null){
+        		Principal principal=this.getHttpRequest().getUserPrincipal();
+        		String userId=null;
+        		if (principal==null){
+        		    userId=(String)request.getAttribute("userId");
+        		    logger.info("User read from request."+userId);
+        		}else {
+        		    userId=principal.getName();
+        		    logger.info("User read from Principal."+userId);
+        		}
+        		
+        		String pwd=(String)request.getAttribute("password");       
+        	
+        		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		        try {
+		        	if (!supplier.checkAuthorization(userId, pwd)){
+		        		logger.error("pwd uncorrect");
+		            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
+		    			errorHandler.addError(emfu); 		    	
+		    			return;
+		        	}
+		        			
 		            SpagoBIUserProfile user= supplier.createUserProfile(userId);
+		            if (user == null){		            	
+		            	logger.error("user not created");
+		            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
+		    			errorHandler.addError(emfu); 		    	
+		    			return;
+		            }
 		            profile=new UserProfile(user);
 		            // put user profile into session
 		            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
@@ -78,10 +115,68 @@ public class LoginModule extends AbstractHttpModule {
 		            throw new SecurityException();
 		        }		    
 		}
-
+		getMenuItems(request, response);
 		// fill response attributes
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
 		logger.debug("OUT");		
 	}
 	
+	/**
+	 * Gets the elements of menu relative by the user logged. It reaches the role from the request and 
+	 * asks to the DB all detail
+	 * menu information, by calling the method <code>loadMenuByRoleId</code>.
+	 *   
+	 * @param request The request Source Bean
+	 * @param response The response Source Bean
+	 * @throws EMFUserError If an exception occurs
+	 */   
+	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
+		try {	
+			List lstFinalMenu = new ArrayList();
+			Collection lstRolesForUser = profile.getRoles();
+			Object[] arrRoles = lstRolesForUser.toArray();
+			for (int i=0; i< arrRoles.length; i++){
+				Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
+				if (role != null){
+					List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
+					if (lstMenuItems == null)
+						logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
+					else {
+						for(int j=0; j<lstMenuItems.size(); j++){
+							Menu tmpObj = (Menu)lstMenuItems.get(j);
+							if (!containsMenu(lstFinalMenu, tmpObj)){						
+								lstFinalMenu.add((Menu)lstMenuItems.get(j));	
+							}
+						}
+					}
+				}
+				else
+					logger.debug("Role " + (String)arrRoles[i] + " not found on db");
+			}
+			response.setAttribute("LIST_MENU", lstFinalMenu);
+		} catch (Exception ex) {
+			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
+			HashMap params = new HashMap();
+			params.put(AdmintoolsConstants.PAGE, LoginModule.MODULE_PAGE);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 500, new Vector(), params);
+		}
+	}
+	
+	/**
+	 * Check if the menu element in input is already presents into the list
+	 * @param lst the list to check
+	 * @param menu the element to check
+	 * @return true if the element is already presents, false otherwise
+	 */
+	private boolean containsMenu(List lst, Menu menu){
+		if (lst == null)
+			return false;
+		
+		for (int i=0; i<lst.size(); i++){
+			Menu tmpMenu = (Menu)lst.get(i);
+			if (tmpMenu.getMenuId().intValue() == menu.getMenuId().intValue())
+				return true;	
+		}
+		return false;
+	}
 }

@@ -24,14 +24,26 @@ package it.eng.spagobi.commons.presentation;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 
 public class LoginPublisher extends GenericPublisher {
 
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 		SourceBean serviceResp = responseContainer.getServiceResponse();
 		// get the response of the module
 		SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("LoginModule");
-		return getPublisherName(requestContainer, responseContainer, moduleResponse);
+		String publisherName =  getPublisherName(requestContainer, responseContainer, moduleResponse);
+
+		/*if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			return new String("error");
+		}
+		*/
+		if (publisherName != null)
+			return publisherName;
+		else 
+			return new String("login");
 	}
 
 }

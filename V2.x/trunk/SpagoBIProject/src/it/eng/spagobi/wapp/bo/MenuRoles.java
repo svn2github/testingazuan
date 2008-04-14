@@ -19,28 +19,37 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-/*
- * Created on 21-apr-2005
+package it.eng.spagobi.wapp.bo;
+
+
+import java.io.Serializable;
+/**
+ * Defines a value constraint object.
+ * 
+ * @author Antonella Giachino (antonella.giachino@eng.it)
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-package it.eng.spagobi.commons.services;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.AbstractHttpModule;
-import it.eng.spago.security.IEngUserProfile;
 
-public class LogoutModule extends AbstractHttpModule {
+public class MenuRoles  implements Serializable   {
 
-	public void service(SourceBean request, SourceBean response) throws Exception {
-		// TODO clean session 
-		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqCont.getSessionContainer();
-		SessionContainer permSess = sessCont.getPermanentContainer();
-	    permSess.delAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	private Integer menuId;
+	private Integer extRoleId;
+	
+	public Integer getMenuId() {
+		return menuId;
+	}
+	public void setMenuId(Integer menuId) {
+		this.menuId = menuId;
+	}
+	public Integer getExtRoleId() {
+		return extRoleId;
+	}
+	public void setExtRoleId(Integer extRoleId) {
+		this.extRoleId = extRoleId;
 	}
 	
+		
+
+
 }

@@ -47,6 +47,7 @@
 		<USER-PROFILES>
 			<USER name="biadmin">
 				<ATTRIBUTE name="product" value="Food" />
+				<ATTRIBUTE name="Department" value="HQ Marketing" />
 				<ATTRIBUTE name="city" value="{,{Berkeley,Ballard}}" />
 			</USER>
 			<USER name="bidev">

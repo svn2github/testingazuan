@@ -92,7 +92,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				exists = true;
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+		        logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -189,7 +189,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -220,7 +220,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			funct = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -258,7 +258,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -291,7 +291,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			lowFunctionaliy = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -396,7 +396,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// commit all changes
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -533,7 +533,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -586,7 +586,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -714,7 +714,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -785,7 +785,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -836,7 +836,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -886,7 +886,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			return false;
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -941,7 +941,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -979,7 +979,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -1020,7 +1020,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();
@@ -1060,7 +1060,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+			logger.error( "HibernateException",he );
 
 			if (tx != null)
 				tx.rollback();

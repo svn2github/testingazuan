@@ -72,7 +72,7 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
             logger.error("Error during service execution",e);
             throw new SecurityException();
         }finally{
-            logger.debug("IN");
+            logger.debug("OUT");
         }
     }
 

@@ -45,7 +45,7 @@ public class AuditServiceImpl extends AbstractServiceImpl{
     }
 	
 	private String log(String user,String id,String start,String end,String state,String message,String errorCode){
-	        logger.debug("IN");
+	        logger.debug("IN.user="+user+" /id="+id+" /start="+start+" /end="+end+" /state="+state+" /message="+message+" /errorCode="+errorCode);
 		// getting audit record id
 		if (id == null) {
 		    logger.warn("No operations will be performed");

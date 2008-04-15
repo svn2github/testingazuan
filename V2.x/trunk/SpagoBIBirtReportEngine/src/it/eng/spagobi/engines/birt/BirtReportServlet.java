@@ -147,7 +147,7 @@ public class BirtReportServlet extends HttpServlet {
 
     protected HTMLRenderOption prepareHtmlRenderOption(ServletContext servletContext, HttpServletRequest servletRequest)
 	    throws Exception {
-
+	logger.debug("IN");
 	String imageDirectory = servletContext.getRealPath("/report/images");
 	String contextPath = servletRequest.getContextPath();
 	String imageBaseUrl = "/BirtImageServlet?imagePath=" + "/report/images" + "&" + "imageID=";
@@ -161,7 +161,7 @@ public class BirtReportServlet extends HttpServlet {
 	renderOption.setBaseImageURL(contextPath + imageBaseUrl);
 	renderOption.setEmbeddable(false);
 	this.birtReportEngine.getConfig().getEmitterConfigs().put("html", renderOption);
-
+	logger.debug("OUT");
 	return renderOption;
 
     }
@@ -192,7 +192,7 @@ public class BirtReportServlet extends HttpServlet {
 
     protected Map findReportParams(HttpServletRequest request, IReportRunnable design)
 	    throws ConnectionDefinitionException {
-
+	logger.debug("IN");
 	String dateformat = request.getParameter("dateformat");
 	if (dateformat != null) {
 	    dateformat = dateformat.replaceAll("D", "d");
@@ -228,9 +228,10 @@ public class BirtReportServlet extends HttpServlet {
 		paramValue = paramValueString;
 
 	    toReturn.put(paramName, paramValue);
+	    logger.debug("PUT "+paramName+"/"+paramValueString);
 
 	}
-
+	logger.debug("OUT");
 	return toReturn;
     }
 
@@ -242,12 +243,14 @@ public class BirtReportServlet extends HttpServlet {
      */
     private SpagoBiDataSource findDataSource(HttpSession session, String userId, String documentId)
 	    throws ConnectionDefinitionException {
+	logger.debug("IN");
 	if (documentId == null) {
 	    logger.error("Document identifier NOT found. Returning null.");
 	    throw new ConnectionParameterNotValidException("No default connection defined in "
 		    + "engine-config.xml file.");
 	}
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId, session);
+	logger.debug("OUT");
 	return proxyDS.getDataSource(documentId);
     }
 
@@ -298,8 +301,10 @@ public class BirtReportServlet extends HttpServlet {
 	task.validateParameters();
 
 	String outputFormat = request.getParameter("param_output_format");
-	logger.debug(this.getClass().getName() + "runReport() param_output_format -- [" + outputFormat + "]");
+	logger.debug("param_output_format -- [" + outputFormat + "]");
+	
 	String templateFileName = request.getParameter("template_file_name");
+	logger.debug("templateFileName -- [" + templateFileName + "]");
 	if (templateFileName == null || templateFileName.trim().equals(""))
 	    templateFileName = "report";
 	IRenderOption renderOption = null;
@@ -336,17 +341,21 @@ public class BirtReportServlet extends HttpServlet {
 	    // renderOption.setOutputFileName(templateFileName + ".ps");
 	    response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".ps");
 	} else {
-	    logger.debug(this.getClass().getName()
-		    + "runReport() Output format parameter not set or not valid. Using default output format: HTML.");
+	    logger.debug(" Output format parameter not set or not valid. Using default output format: HTML.");
 	    renderOption = prepareHtmlRenderOption(servletContext, request);
 	    renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
 	}
 
 	Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
+	logger.debug("set Context");
 	task.setAppContext(context);
+	logger.debug("set OutputStream");
 	renderOption.setOutputStream((OutputStream) response.getOutputStream());
+	logger.debug("set RenderOption");
 	task.setRenderOption(renderOption);
+	logger.debug("RUN");
 	task.run();
+	logger.debug("CLOSE");
 	task.close();
 	logger.debug("OUT");
 

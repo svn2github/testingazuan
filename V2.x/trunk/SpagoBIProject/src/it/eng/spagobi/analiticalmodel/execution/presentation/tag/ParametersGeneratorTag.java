@@ -735,7 +735,8 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
-	String url=encodeURL(GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=SelectParameterPage&NEW_SESSION=TRUE&objParId=" + biparam.getId().toString() +  "&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
+	String userId = getProfile().getUserUniqueIdentifier().toString();
+	String url=encodeURL(GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  "&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity);
 	
 	// does this parameter depend on other parameters? if it is the case, puts in the url the values of the father parameters
 	Map dependencies = getDependencies(biparam);

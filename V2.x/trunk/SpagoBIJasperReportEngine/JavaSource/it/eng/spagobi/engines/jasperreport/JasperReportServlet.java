@@ -120,7 +120,7 @@ public class JasperReportServlet extends HttpServlet {
 
 	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
 	Connection con = getConnection(requestConnectionName,session,(String)profile.getUserUniqueIdentifier(),documentId);
-	//Connection con = DataSourceUtilities.
+
 	if (con == null) {
 	    logger.error("Cannot obtain" + " connection for engine ["
 		    + this.getClass().getName() + "] control document configurations");

@@ -116,13 +116,13 @@
   	<PUBLISHER name="ViewSnapshot">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/viewSnapshot.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewSnapshot.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/viewSnapshot.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/viewSnapshot.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -237,13 +237,13 @@
   	<PUBLISHER name="ExecuteBIObjectPageExecution">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageExecution.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/executeBIObjectPageExecution.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/executeBIObjectPageExecution.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/executeBIObjectPageExecution.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -251,28 +251,26 @@
   	<PUBLISHER name="ExecuteBIObjectPageParameter">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        	 <!--<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/> -->
-        	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/>  
+        	 	<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/executeBIObjectPageParameter.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<!--<ITEM prog="0"  resource="/jsp/analiticalmodel/document/executeBIObjectPageParameter.jsp"/>-->
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/viewDocument.jsp"/>
+        		<ITEM prog="0"  resource="/jsp/analiticalmodel/execution/executeBIObjectPageParameter.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
   	<PUBLISHER name="ExecuteBIObjectSelectRole">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executeBIObjectSelectRole.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/executeBIObjectSelectRole.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0"  resource="/jsp/analiticalmodel/document/executeBIObjectSelectRole.jsp"/>
+        		<ITEM prog="0"  resource="/jsp/analiticalmodel/execution/executeBIObjectSelectRole.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -305,13 +303,13 @@
   	<PUBLISHER name="ExecutionWorkspacePublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/executionWorkspace.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/executionWorkspace.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/executionWorkspace.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/executionWorkspace.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>  
@@ -489,13 +487,13 @@
 	<PUBLISHER name="MetadataBIObjectPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/document/metadataBIObject.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/analiticalmodel/execution/metadataBIObject.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/metadataBIObject.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/metadataBIObject.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

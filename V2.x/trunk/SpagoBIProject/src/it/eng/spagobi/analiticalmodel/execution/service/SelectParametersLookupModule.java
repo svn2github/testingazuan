@@ -32,7 +32,6 @@ import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
-import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -56,6 +55,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.BaseProfileListModule;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -79,7 +79,7 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class SelectParametersLookupModule extends AbstractBasicListModule {
+public class SelectParametersLookupModule extends BaseProfileListModule {
 
 	private static final long serialVersionUID = 1L;
 

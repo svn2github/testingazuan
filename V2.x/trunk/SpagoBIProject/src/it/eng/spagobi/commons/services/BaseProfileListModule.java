@@ -21,10 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.commons.services;
 
+import javax.servlet.http.HttpServletRequest;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -32,20 +34,21 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import org.apache.log4j.Logger;
 
 /**
- * @author Chiara Chiarelli
+ * @author Zerbetto (davide.zerbetto@eng.it)
  */
 
-public abstract class BaseProfileAction extends AbstractHttpAction {
+public abstract class BaseProfileListModule extends AbstractBasicListModule {
 
-    static Logger logger = Logger.getLogger(BaseProfileAction.class);
+    static Logger logger = Logger.getLogger(BaseProfileListModule.class);
 
     public void service(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
 		try {
-			String userId = GeneralUtilities.findUserId(request, this.getHttpRequest());
+			HttpServletRequest httpRequest = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
+			String userId = GeneralUtilities.findUserId(request, httpRequest);
 			logger.debug("User id = " + userId);
 			// in case the user is not specified, throws an exception 
-			if (userId == null) throw new SecurityException("User identifier not specified");
+			if (userId == null && userId.trim().equals("")) throw new SecurityException("User identifier not specified");
 			RequestContainer reqCont = RequestContainer.getRequestContainer();
 			SessionContainer sessCont = reqCont.getSessionContainer();
 			SessionContainer permSess = sessCont.getPermanentContainer();
@@ -66,6 +69,7 @@ public abstract class BaseProfileAction extends AbstractHttpAction {
 		} finally {
 			logger.debug("OUT");
 		}
+		super.service(request, response);
     }
 
 }

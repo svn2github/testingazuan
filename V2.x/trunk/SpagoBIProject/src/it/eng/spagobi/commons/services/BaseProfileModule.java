@@ -24,17 +24,10 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import org.apache.log4j.Logger;
 

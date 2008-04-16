@@ -39,13 +39,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/publishers.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/initializers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/workflow.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/forms.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/validation.xml" />  
   
-<!-- engines.spagobidashboardIE -->
+<!-- engines.dashboard -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/publishers.xml" />
 

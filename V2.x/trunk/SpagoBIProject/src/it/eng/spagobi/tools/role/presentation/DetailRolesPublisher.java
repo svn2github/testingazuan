@@ -19,32 +19,24 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.tools.role.services;
+package it.eng.spagobi.tools.role.presentation;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.AbstractModule;
-
-import org.apache.log4j.Logger;
+import it.eng.spagobi.commons.presentation.GenericPublisher;
 
 /**
- * Loads the parameters list
  * 
- * @author sulis
+ * @author Zerbetto (davide.zerbetto@eng.it)
  */
-public class ListRolesModule extends AbstractModule {
-	
-	private static final long serialVersionUID = 1L;
+public class DetailRolesPublisher extends GenericPublisher {
 
-	public static final String MODULE_PAGE = "ListEnginesPage";
-
-	static private Logger logger = Logger.getLogger(ListRolesModule.class);
-	
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
-			throws Exception {
-		logger.debug("IN");
-		logger.debug("This method does nothing");
-		logger.debug("OUT");
+	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+		SourceBean serviceResp = responseContainer.getServiceResponse();
+		// get the response of the module
+		SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("DetailRolesModule");
+		return getPublisherName(requestContainer, responseContainer, moduleResponse);
 	}
 
-} 
-
+}

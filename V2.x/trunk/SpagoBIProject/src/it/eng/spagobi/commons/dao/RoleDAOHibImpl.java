@@ -34,7 +34,9 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.commons.metadata.SbiEventRole;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.events.metadata.SbiEventsLog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -213,8 +215,22 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 		
-			SbiExtRoles hibRole = (SbiExtRoles)aSession.load(SbiExtRoles.class,  aRole.getId());
-			
+			SbiExtRoles hibRole = (SbiExtRoles) aSession.load(SbiExtRoles.class,  aRole.getId());
+			// deletes associations with events (and events themselves, if they have no more associations)
+			Query hibQuery = aSession.createQuery(" from SbiEventRole ser where ser.id.role.extRoleId = " + hibRole.getExtRoleId().toString());
+			List eventsRole = hibQuery.list();
+			Iterator it = eventsRole.iterator();
+			while (it.hasNext()) {
+				SbiEventRole eventRole = (SbiEventRole) it.next();
+				SbiEventsLog event = eventRole.getId().getEvent();
+				aSession.delete(eventRole);
+				aSession.flush();
+				aSession.refresh(event);
+				Set roles = event.getRoles();
+				if (roles.isEmpty()) {
+					aSession.delete(event);
+				}
+			}
 			aSession.delete(hibRole);
 			tx.commit();
 		} catch (HibernateException he) {

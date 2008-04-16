@@ -35,7 +35,6 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.service.ListEnginesModule;
 import it.eng.spagobi.security.RoleSynchronizer;
 
@@ -44,12 +43,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class implements a module which  handles roles management. 
  */
 public class DetailRolesModule extends AbstractModule {
 	
-	//private String modalita = "";
+	private static final long serialVersionUID = 1L;
+
+	static private Logger logger = Logger.getLogger(DetailRolesModule.class);
 	
 	public void init(SourceBean config) {
 	}
@@ -61,18 +64,19 @@ public class DetailRolesModule extends AbstractModule {
 	 * @throws exception If an exception occurs
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
 		String message = (String) request.getAttribute("MESSAGEDET");
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, "DetailRolesModule", 
-				"service","begin of detail Roles synch/erasing service with message =" +message);
+		logger.debug("begin of detail Roles synch/erasing service with message =" + message);
 		EMFErrorHandler errorHandler = getErrorHandler();
 		try {
 			if (message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-				SpagoBITracer.debug(AdmintoolsConstants.NAME_MODULE, "DetailRolesModule", 
-						"service", "The message parameter is null");
+				logger.error("The message parameter is null");
 				throw userError;
 			}
-			if (message.trim().equalsIgnoreCase(AdmintoolsConstants.ROLES_SYNCH)) {
+			if (message.trim().equalsIgnoreCase("LIST_ROLES")) {
+				getRolesList(response);
+			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.ROLES_SYNCH)) {
 				synchronizeRoles(response);
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_DEL)) {
 				deleteRole(request, SpagoBIConstants.DETAIL_MOD, response);
@@ -84,11 +88,26 @@ public class DetailRolesModule extends AbstractModule {
 			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
 			errorHandler.addError(internalError);
 			return;
+		} finally {
+			logger.debug("OUT");
 		}
 	}
 	
-	 
-	
+	/**
+	 * Invokes roles list publisher
+	 * @param response
+	 * @throws Exception
+	 */
+	private void getRolesList(SourceBean response) throws Exception {
+		logger.debug("IN");
+		try {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,"listRolesJsp");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+	}
+
 	/**
 	 * Deletes a role choosed by user from the roles list.
 	 * 
@@ -100,6 +119,7 @@ public class DetailRolesModule extends AbstractModule {
 	 */
 	private void deleteRole(SourceBean request, String mod, SourceBean response)
 		throws EMFUserError, SourceBeanException {
+		logger.debug("IN");
 		try {
 			String id = (String) request.getAttribute("EXT_ROLE_ID");
 			Integer roleId = Integer.valueOf(id);
@@ -128,15 +148,17 @@ public class DetailRolesModule extends AbstractModule {
 				return;
 			}
 			roleDAO.eraseRole(role);
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,"listRolesJsp");
 		} catch (EMFUserError e){
 			  HashMap params = new HashMap();
 			  params.put(AdmintoolsConstants.PAGE, ListEnginesModule.MODULE_PAGE);
 			  throw new EMFUserError(EMFErrorSeverity.ERROR, 1042, new Vector(), params);
 		} catch (Exception ex) {
-			SpagoBITracer.major(AdmintoolsConstants.NAME_MODULE, "DetailRolesModule","deleteRole","Cannot fill response container", ex  );
+			logger.error("Cannot fill response container", ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
 		}
-		response.setAttribute("loopback", "true");
 	}
 	
 	
@@ -146,10 +168,15 @@ public class DetailRolesModule extends AbstractModule {
     * @param response The spago framework response sourcebean object
     * @throws SourceBeanException
     */
-	private void synchronizeRoles(SourceBean response) throws SourceBeanException{
-		RoleSynchronizer roleSynch = new RoleSynchronizer();
-		roleSynch.synchronize();
-		response.setAttribute("loopback", "true");
+	private void synchronizeRoles(SourceBean response) throws SourceBeanException {
+		logger.debug("IN");
+		try {
+			RoleSynchronizer roleSynch = new RoleSynchronizer();
+			roleSynch.synchronize();
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,"listRolesJsp");
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 
 }

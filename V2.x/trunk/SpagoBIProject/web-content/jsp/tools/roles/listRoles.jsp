@@ -277,6 +277,7 @@ Ext.onReady(function(){
 		viewConfig: {
         	forceFit: true
 		},
+		width: 1200,
         stripeRows: true,
         collapsible: false
     });

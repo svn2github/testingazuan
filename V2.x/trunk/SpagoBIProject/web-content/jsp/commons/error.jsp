@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
@@ -27,28 +27,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.navigation.LightNavigationManager,
                  java.util.HashMap,
                  java.util.Set,
-                 java.util.List,
                  java.util.Iterator" %>
-<%@page import="javax.portlet.PortletURL"%>
+<%@page import="java.util.Map"%>
 
 
 <%
     // delete validation xml envelope from session
-    List sessAttrs = aSessionContainer.getAttributeNames();
-    Iterator iterAttrs = sessAttrs.iterator();
-    String nameAttrs = null;
-    while(iterAttrs.hasNext()) {
-    	nameAttrs = (String)iterAttrs.next();
-    	if(nameAttrs.startsWith("VALIDATE_PAGE_")) {
-    		aSessionContainer.delAttribute(nameAttrs);
-    	}
-    }
-
-    // try to get from the session a pre-built back url 
-    PortletURL sessionback = null;
-    Object sessBackObj = aSessionContainer.getAttribute("NAVIGATION");
-    if(sessBackObj!= null)
-    	sessionback = (PortletURL)sessBackObj;
+    //List sessAttrs = aSessionContainer.getAttributeNames();
+    //Iterator iterAttrs = sessAttrs.iterator();
+    //String nameAttrs = null;
+    //while(iterAttrs.hasNext()) {
+    //	nameAttrs = (String)iterAttrs.next();
+    //	if(nameAttrs.startsWith("VALIDATE_PAGE_")) {
+    //		aSessionContainer.delAttribute(nameAttrs);
+    //	}
+    //}
 
 
     // recover error handler and error collection 
@@ -56,7 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Collection errors = errorHandler.getErrors();
 	Iterator iter = errors.iterator();  
 	
-	// try to get addition info from one of the errors (the first add info found will be taken)
+	// try to get addition info from one of the errors (only the first added info found will be considered)
 	Object addInfo = null;
 	while(iter.hasNext()) {
 		EMFAbstractError abErr = (EMFAbstractError)iter.next();
@@ -66,42 +59,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    	break;
 	    }
 	}
-%>
 
-
-
-
-<%
-    // built url
+    // build back url
 	String backUrl = null;
-
-    if(sessionback!=null) {
-    	backUrl = sessionback.toString();
-    } else {   
-    	Map backUrlPars = new HashMap();     	
-		if( (addInfo!=null) && (addInfo instanceof HashMap) ) {
-		     HashMap map = (HashMap)addInfo;
-		     Set keys = map.keySet();
-		     Iterator iterKey = keys.iterator();
-		     while(iterKey.hasNext()) {
-				String key = (String)iterKey.next();
-				String value = (String)map.get(key);
-				backUrlPars.put(key, value);	     
-		     }
+   	Map backUrlPars = new HashMap();     	
+	if( (addInfo!=null) && (addInfo instanceof HashMap) ) {
+	     HashMap map = (HashMap)addInfo;
+	     Set keys = map.keySet();
+	     Iterator iterKey = keys.iterator();
+	     while(iterKey.hasNext()) {
+			String key = (String)iterKey.next();
+			String value = (String)map.get(key);
+			backUrlPars.put(key, value);	     
+	     }
+	 } else {
+		 String lightNavigatorDisabled = (String) aServiceRequest.getAttribute(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED);
+		 if (lightNavigatorDisabled != null && lightNavigatorDisabled.trim().equalsIgnoreCase("true")) {
+			 backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "0");
 		 } else {
 			 backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 		 }
-		 backUrl = urlBuilder.getUrl(request, backUrlPars);
-    }
+		 
+	 }
+	 backUrl = urlBuilder.getUrl(request, backUrlPars);
     
 %>
 
-
-
-
-
-
-<%@page import="java.util.Map"%>
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'>
@@ -123,34 +106,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div style='width:100%;text-align:center;'>
 	<div class="portlet-msg-error">
-	    <% 
-	    	iter = errors.iterator(); 
-	        EMFAbstractError error = null;
-	        String description = "";
-	    	while(iter.hasNext()) {
-	    		error = (EMFAbstractError)iter.next();
-	 		    description = error.getDescription();
-	 		    if(addInfo==null) {
-	 		    	addInfo = error.getAdditionalInfo();
-	 		    }
-	    %>
-			<%= description %>
-			<br/>
+    	<% 
+    	iter = errors.iterator(); 
+        EMFAbstractError error = null;
+        String description = "";
+    	while(iter.hasNext()) {
+    		error = (EMFAbstractError)iter.next();
+ 		    description = error.getDescription();
+ 		    if(addInfo==null) {
+ 		    	addInfo = error.getAdditionalInfo();
+ 		    }
+    	%>
+		<%= description %>
+		<br/>
 		<% } %>
 	</div>
-</div>		
+</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<%@ include file="/jsp/commons/footer.jsp"%>

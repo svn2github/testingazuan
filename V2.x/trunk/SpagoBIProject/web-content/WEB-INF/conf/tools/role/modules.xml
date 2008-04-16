@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
-    
+
+    <!--
 	<MODULE class="it.eng.spagobi.tools.role.services.ListRolesModule" name="ListRolesModule">
-		<CONFIG/>
-		<!--
 	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListRoles.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_ROLES">
@@ -37,9 +36,8 @@
 	        </BACK_BUTTON>
 	      </BUTTONS>
 	    </CONFIG>
-	    -->
   	</MODULE>
-
+	-->
 
     
     <MODULE class="it.eng.spagobi.tools.role.services.DetailRolesModule" name="DetailRolesModule">

@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 <%@ page language="java"
          contentType="text/html; charset=UTF-8"
@@ -99,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</td>
 				<td vAlign="middle">
 				    <br/> 
-					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListRolesPage"/></portlet:actionURL>' 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="DetailRolesPage"/><portlet:param name="MESSAGEDET" value="LIST_ROLES"/></portlet:actionURL>' 
 						class="link_main_menu" >
 						<spagobi:message key = "SBISet.linkRolesSynch" />
 					</a>

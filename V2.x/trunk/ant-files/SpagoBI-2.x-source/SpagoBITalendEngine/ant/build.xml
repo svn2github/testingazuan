@@ -103,7 +103,7 @@
       </fileset>
     </copy>
     <filter filtersfile="env.properties"/>
-    <copy todir="${build}/${webapp_name}/WEB-INF/classes">
+    <copy todir="${build}/${webapp_name}/WEB-INF/classes" filtering="true">
       <fileset dir="${src}">
         <exclude name="**/*.java"/>
         <exclude name="**/*.svn"/>

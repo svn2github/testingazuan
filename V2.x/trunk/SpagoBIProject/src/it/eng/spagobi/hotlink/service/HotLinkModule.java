@@ -23,20 +23,14 @@ package it.eng.spagobi.hotlink.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.hotlink.constants.HotLinkConstants;
-import it.eng.spagobi.monitoring.dao.AuditManager;
-
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -77,27 +71,6 @@ public class HotLinkModule extends AbstractModule {
 	private void getHotLinkListHandler(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
 		try {
-			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
-			IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			ConfigSingleton config = ConfigSingleton.getInstance();
-			SourceBean hotlink = (SourceBean) config.getAttribute(HotLinkConstants.HOTLINK);
-			SourceBean mostPopular = (SourceBean) hotlink.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MOST_POPULAR);
-			SourceBean myRecentlyUsed = (SourceBean) hotlink.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MY_RECENTLY_USED);
-			SourceBean rememberMe = (SourceBean) hotlink.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.REMEMBER_ME);
-			if (mostPopular != null) {
-				int limit = Integer.parseInt((String) mostPopular.getAttribute(HotLinkConstants.ROWS_NUMBER));
-				List mostPopularList = AuditManager.getInstance().getMostPopular(profile, limit);
-				response.setAttribute(HotLinkConstants.MOST_POPULAR, mostPopularList);
-			}
-			if (myRecentlyUsed != null) {
-				int limit = Integer.parseInt((String) myRecentlyUsed.getAttribute(HotLinkConstants.ROWS_NUMBER));
-				List myRecentlyUsedList = AuditManager.getInstance().getMyRecentlyUsed(profile, limit);
-				response.setAttribute(HotLinkConstants.MY_RECENTLY_USED, myRecentlyUsedList);
-			}
-			if (rememberMe != null) {
-				List rememberMeList = DAOFactory.getRememberMeDAO().getMyRememberMe(profile.getUserUniqueIdentifier().toString());
-				response.setAttribute(HotLinkConstants.REMEMBER_ME, rememberMeList);
-			}
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "HOT_LINK_HOME");
 		} finally {
 			logger.debug("OUT");

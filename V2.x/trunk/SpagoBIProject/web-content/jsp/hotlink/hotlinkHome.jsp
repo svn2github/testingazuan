@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
@@ -30,18 +30,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.hotlink.service.HotLinkModule"%>
 <%@page import="it.eng.spagobi.hotlink.constants.HotLinkConstants"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
 <portlet:defineObjects/>
 
 <%
+List rememberMeList = null;
+List mostPopularList = null;
+List myRecentlyUsedList = null;
 
-SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute(HotLinkModule.MODULE_NAME); 
-List rememberMeList = (List) moduleResponse.getAttribute(HotLinkConstants.REMEMBER_ME);
-List mostPopularList = (List) moduleResponse.getAttribute(HotLinkConstants.MOST_POPULAR);
-List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY_RECENTLY_USED);
-
+SourceBean hotlinkSB = (SourceBean) spagoconfig.getAttribute(HotLinkConstants.HOTLINK);
+SourceBean mostPopular = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MOST_POPULAR);
+SourceBean myRecentlyUsed = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MY_RECENTLY_USED);
+SourceBean rememberMe = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.REMEMBER_ME);
+if (mostPopular != null) {
+	int limit = Integer.parseInt((String) mostPopular.getAttribute(HotLinkConstants.ROWS_NUMBER));
+	mostPopularList = AuditManager.getInstance().getMostPopular(userProfile, limit);
+}
+if (myRecentlyUsed != null) {
+	int limit = Integer.parseInt((String) myRecentlyUsed.getAttribute(HotLinkConstants.ROWS_NUMBER));
+	myRecentlyUsedList = AuditManager.getInstance().getMyRecentlyUsed(userProfile, limit);
+}
+if (rememberMe != null) {
+	rememberMeList = DAOFactory.getRememberMeDAO().getMyRememberMe(userProfile.getUserUniqueIdentifier().toString());
+}
 
 %>
 
@@ -66,6 +81,8 @@ List myRecentlyUsedList = (List) moduleResponse.getAttribute(HotLinkConstants.MY
 	</p>
 </div>
 
+<%-- Start scripts for Remember Me list --%>
+<% if (rememberMeList != null) { %>
 <script type="text/javascript">
 Ext.onReady(function(){
 
@@ -208,7 +225,11 @@ Ext.onReady(function(){
     //gridRememberMe.getSelectionModel().selectFirstRow();
 });
 </script>
+<% } %>
+<%-- End scripts for Remember Me list --%>
 
+<%-- Start scripts for most popular list --%>
+<% if (mostPopularList != null && mostPopularList.size() > 0) { %>
 <script type="text/javascript">
 Ext.onReady(function(){
 
@@ -277,7 +298,11 @@ Ext.onReady(function(){
     //gridMostPopular.getSelectionModel().selectFirstRow();
 });
 </script>
+<% } %>
+<%-- End scripts for most popular list --%>
 
+<%-- Start scripts for my recently used list --%>
+<% if (myRecentlyUsedList != null && myRecentlyUsedList.size() > 0) { %>
 <script type="text/javascript">
 Ext.onReady(function(){
 
@@ -346,303 +371,7 @@ Ext.onReady(function(){
     //gridMyRecentlyUsed.getSelectionModel().selectFirstRow();
 });
 </script>
-<%--
-<div style="width:80%;" class="div_detail_area_forms">
-	<p>
-	<div id="popout_RememberMe" >
-	
-	<table style="margin:10px;padding:10px">
-		<thead>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.document" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.subobject" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.documentType" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.engineName" />
-			</th>
-			<th class='portlet-section-header'>
-				&nbsp;
-			</th>
-		</thead>
-		<%
-		boolean alternate = false;
-        String rowClass;
-		Iterator rememberMeListIt = rememberMeList.iterator();
-		while (rememberMeListIt.hasNext()) {
-			RememberMe rm = (RememberMe) rememberMeListIt.next();
-			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", rm.getObjId().toString());
-			params.put("PARAMETERS", rm.getParameters());
-			String executeUrl = urlBuilder.getUrl(request, params);
-			params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "DELETE_REMEMBER_ME");
-			params.put("REMEMBER_ME_ID", rm.getId().toString());
-			String deleteUrl = urlBuilder.getUrl(request, params);
-            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-            alternate = !alternate;  
-			%>
-			<tr class='portlet-font'>
-				<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= rm.getDocumentName() + 
-							(rm.getDocumentDescription() != null && !rm.getDocumentDescription().trim().equals("")? ": " + rm.getDocumentDescription() : "") %></a>
-				</td>
-				<td class='<%= rowClass %>' ><%= rm.getSubObjName() != null ? rm.getSubObjName() : "" %></td>
-				<td class='<%= rowClass %>' ><%= rm.getDocumentType() %></td>
-				<td class='<%= rowClass %>' ><%= rm.getEngineName() %></td>
-				<td class='<%= rowClass %>' style="vertical-align:middle;">
-					<a href='<%= deleteUrl %>'>
-						<img title='<spagobi:message key = "sbi.hotlink.deleteRememberMe" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif")%>'
-							alt='<spagobi:message key = "sbi.hotlink.deleteRememberMe" />' />
-					</a>
-				</td>
-			</tr>
-		<%
-		}
-		%>
-	</table>
-	
-
-<script type="text/javascript">
-Ext.onReady(function(){
-
-    Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
-    var myDataRememberMe = [
-    	<%
-			rememberMeListIt = rememberMeList.iterator();
-			while (rememberMeListIt.hasNext()) {
-				RememberMe rm = (RememberMe) rememberMeListIt.next();
-				Map params = new HashMap();
-				params.put("PAGE", "HOT_LINK_PAGE");
-				params.put("OPERATION", "EXECUTE");
-				params.put("DOC_ID", rm.getObjId().toString());
-				params.put("PARAMETERS", rm.getParameters());
-				String subObjName = rm.getSubObjName();
-				if (subObjName != null) {
-					params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
-				}	
-				String executeUrl = urlBuilder.getUrl(request, params);
-				executeUrl = executeUrl.replaceAll("&amp;", "&");
-				System.out.println("executeUrl: " + executeUrl);
-				
-				params = new HashMap();
-				params.put("PAGE", "HOT_LINK_PAGE");
-				params.put("OPERATION", "DELETE_REMEMBER_ME");
-				params.put("REMEMBER_ME_ID", rm.getId().toString());
-				String deleteUrl = urlBuilder.getUrl(request, params);
-				%>['<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>','<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>'],<%
-			}
-			%>
-    ];
-    
-    // create the data store
-    var storeRememberMe = new Ext.data.SimpleStore({
-        fields: [
-           {name: 'DocumentLabel'},
-           {name: 'DocumentName'},
-           {name: 'DocumentDescription'},
-           {name: 'DocumentType'},
-           {name: 'Url'}
-        ]
-    });
-    storeRememberMe.loadData(myDataRememberMe);
-    
-    // create the Grid
-    var gridRememberMe = new Ext.grid.GridPanel({
-        store: storeRememberMe,
-        columns: [
-            {id: "Document", header: "Document", sortable: true, dataIndex: 'DocumentLabel'},
-            {header: "Document name", sortable: true, dataIndex: 'DocumentName'},
-            {header: "Document description", sortable: true, dataIndex: 'DocumentDescription'},
-            {header: "Document type", sortable: true, dataIndex: 'DocumentType'},
-        ],
-		viewConfig: {
-        	forceFit: true
-		},
-        stripeRows: true,
-        collapsible: true,
-        //autoExpandColumn: 'Document',
-        height:350,
-        width:600,
-        title:'Remember Me'
-    });
-	gridRememberMe.on(
-		'rowclick', function(grid, rowIndex, e) {
-			location.href = storeRememberMe.getAt(rowIndex).get('Url');
-		}
-	);
-    gridRememberMe.render('grid_renderTo');
-
-    gridRememberMe.getSelectionModel().selectFirstRow();
-});
-</script>
-	
-	
-	</div>
-	</p>
-	
-	<p>
-	<div id="popout_MostPopular">
-	<table style="margin:10px;padding:10px">
-		<thead>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.document" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.subobject" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.documentType" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.engineName" />
-			</th>
-		</thead>
-		<%
-		Iterator mostPopularListIt = mostPopularList.iterator();
-		while (mostPopularListIt.hasNext()) {
-			HotLink hotlink = (HotLink) mostPopularListIt.next();
-			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters());
-			String subObjName = hotlink.getSubObjName();
-			if (subObjName != null) {
-				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
-			}
-			String executeUrl = urlBuilder.getUrl(request, params);
-            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-            alternate = !alternate;  
-			%>
-			<tr class='portlet-font'>
-				<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
-							(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a>
-				</td>
-				<td class='<%= rowClass %>' ><%= hotlink.getSubObjName() != null ? hotlink.getSubObjName() : "" %></td>
-				<td class='<%= rowClass %>' ><%= hotlink.getDocumentType() %></td>
-				<td class='<%= rowClass %>' ><%= hotlink.getEngineName() %></td>
-			</tr>
-		<%
-		}
-		%>
-	</table>
-	</div>
-	</p>
-	
-	<p>
-	<div id="popout_MyRecentlyUsed">
-	<table style="margin:10px;padding:10px">
-		<thead>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.document" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.subobject" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.documentType" />
-			</th>
-			<th class='portlet-section-header'>
-				<spagobi:message key = "sbi.hotlink.engineName" />
-			</th>
-		</thead>
-		<%
-		Iterator myRecentlyUsedListIt = myRecentlyUsedList.iterator();
-		while (myRecentlyUsedListIt.hasNext()) {
-			HotLink hotlink = (HotLink) myRecentlyUsedListIt.next();
-			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters());
-			String subObjName = hotlink.getSubObjName();
-			if (subObjName != null) {
-				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
-			}
-			String executeUrl = urlBuilder.getUrl(request, params);
-            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-            alternate = !alternate;
-			%>
-			<tr class='portlet-font'>
-				<td class='<%= rowClass %>' ><a href='<%= executeUrl %>'><%= hotlink.getDocumentName() + 
-							(hotlink.getDocumentDescription() != null && !hotlink.getDocumentDescription().trim().equals("")? ": " + hotlink.getDocumentDescription() : "") %></a>
-				</td>
-				<td class='<%= rowClass %>' ><%= hotlink.getSubObjName() != null ? hotlink.getSubObjName() : "" %></td>
-				<td class='<%= rowClass %>' ><%= hotlink.getDocumentType() %></td>
-				<td class='<%= rowClass %>' ><%= hotlink.getEngineName() %></td>
-			</tr>
-
-		<%
-		}
-		%>
-	</table>
-	</div>
-	</p>
-	
-	<p style="margin: 10px">
-	<div id="popout_RememberMe_renderTo">
-	</div>
-	</p>
-	
-	<p style="margin: 10px">
-	<div id="popout_MostPopular_renderTo">
-	</div>
-	</p>
-	
-	<p style="margin: 10px">
-	<div id="popout_MyRecentlyUsed_renderTo">
-	</div>
-	</p>
-
-	<p style="margin: 10px">
-	<div id="grid_renderTo">
-	</div>
-	</p>
-	
-</div>
-
-
-<script type="text/javascript">
-Ext.onReady(function(){
-    var p = new Ext.Panel({
-        title: 'RememberMe',
-        collapsible:true,
-        renderTo: 'popout_RememberMe_renderTo',
-        contentEl: 'popout_RememberMe'
-    });
-});
-</script>
-
-<script type="text/javascript">
-Ext.onReady(function(){
-    var p = new Ext.Panel({
-        title: 'Most Popular',
-        collapsible:true,
-        renderTo: 'popout_MostPopular_renderTo',
-        contentEl: 'popout_MostPopular'
-    });
-});
-</script>
-
-<script type="text/javascript">
-Ext.onReady(function(){
-    var p = new Ext.Panel({
-        title: 'My Recently Used',
-        collapsible:true,
-        renderTo: 'popout_MyRecentlyUsed_renderTo',
-        contentEl: 'popout_MyRecentlyUsed'
-    });
-});
-</script>
---%>
+<% } %>
+<%-- End scripts for my recently used list --%>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

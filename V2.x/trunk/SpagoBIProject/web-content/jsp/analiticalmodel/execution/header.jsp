@@ -396,7 +396,7 @@ if (toolbarIsVisible) {
 	);
 	
 	function saveRememberMe<%= uuid %>() {
-		var nameRM = rememberMeName<%= uuid %>.getValue();
+		var nameRM = escape(rememberMeName<%= uuid %>.getValue());
 		if (nameRM == null || nameRM == '') {
 			Ext.MessageBox.show({
 				msg: '<spagobi:message key="sbi.rememberme.missingName" />',
@@ -407,11 +407,11 @@ if (toolbarIsVisible) {
 			return;
 		}
 		win_saveRM<%= uuid %>.hide();
-		var descRM = rememberMeDescr<%= uuid %>.getValue();
+		var descRM = escape(rememberMeDescr<%= uuid %>.getValue());
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
-		pars = "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
-		pars += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
+		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		url += "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
+		url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
 		<%
 		String documentParametersStr = "";
 		List parametersList = obj.getBiObjectParameters();
@@ -429,17 +429,18 @@ if (toolbarIsVisible) {
 			}
 		}
 		%>
-		pars += "&parameters=<%= documentParametersStr %>";
+		url += "&parameters=<%= documentParametersStr %>";
 		<%
 		if (subObj != null) {
 			%>
-			pars += "&subobject_id=<%=subObj.getId()%>";
+			url += "&subobject_id=<%=subObj.getId()%>";
 			<%
 		}
 		%>
+		var pars = '';
 		new Ajax.Request(url,
 			{
-				method: 'post',
+				method: 'get',
 				parameters: pars,
 				onSuccess: function(transport){
 					response = transport.responseText || "";
@@ -485,8 +486,8 @@ if (toolbarIsVisible) {
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
-		pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
+		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		var pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
 		pars += "&documentId=<%=obj.getId().toString()%>";
 		new Ajax.Request(url,
 			{

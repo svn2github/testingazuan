@@ -43,10 +43,15 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.constants.UtilitiesConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
+import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +66,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -1021,6 +1028,73 @@ public class GeneralUtilities {
 	}
 	logger.debug("OUT:" + valStr);
 	return valStr;
+    }
+    
+    /**
+     * Creates a new user profile, given his identifier
+     * @param userId The user identifier
+     * @return The newly created user profile
+     * @throws Exception
+     */
+    public static IEngUserProfile createNewUserProfile(String userId) throws Exception {
+    	logger.debug("IN");
+    	IEngUserProfile profile = null;
+	    try {
+	    	ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+			SpagoBIUserProfile user = supplier.createUserProfile(userId);
+			profile = new UserProfile(user);
+	    } catch (Exception e) {
+			logger.error("Reading user information... ERROR", e);
+			throw new SecurityException();
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	    return profile;
+    }
+    
+    /**
+     * Finds the user identifier from service request. 
+     * If SSO is enabled, this identifier must be equal to the user identifier detected by the SSO system.
+     * In case the service request does not contain the user identifier, null is returned.
+     * 
+     * @param request The service SourceBean request
+     * @param httpRequest The http request
+     * @return the current user unique identified
+     * @throws Exception in case the SSO is enabled and the user identifier specified on request is different from the SSO detected one. 
+     */
+    public static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
+    	logger.debug("IN");
+    	// Get userid from request
+    	String requestUserId = null;
+    	try {
+	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
+	    	if (requestUserIdObj == null) return null;
+	    	else requestUserId = requestUserIdObj.toString();
+	    	String sessionUserId = "";
+	    	// Check if SSO is active
+	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+	    	String active = (String) validateSB.getCharacters();
+	    	// If SSO is active gets userid in session
+	    	if (active != null && active.equals("true")) {
+	    	    SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
+	    	    sessionUserId = ssoProxy.readUserId(httpRequest.getSession());
+	    	    if (sessionUserId != null) {
+	    			// if userid in session is different from userid in request throws an exception
+	    			if (requestUserId != null && !requestUserId.equals(sessionUserId)) {
+	    			    logger.error("The user identifier specified on service request is diferent from the one detected by SSO system: " +
+	    			    		"requestUserId=" + requestUserId + "/sessionUserId=" + sessionUserId);
+	    			    throw new SecurityException("Invalid userid");
+	    			}
+	    	    } else {
+	    			logger.error("User id was not found in session");
+	    			throw new SecurityException("User id was not found in session");
+	    	    }
+	    	}
+    	} finally {
+    		logger.debug("OUT");
+    	}
+    	return requestUserId;
     }
 
 }

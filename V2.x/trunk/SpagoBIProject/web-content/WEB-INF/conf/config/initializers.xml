@@ -7,9 +7,9 @@
 	<INITIALIZER class="it.eng.spago.util.MonitorInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.message.MessageBundleInitializer" config="" />
 	<INITIALIZER class="it.eng.spagobi.tools.scheduler.init.QuartzInitializer" config="" />
-	<!-- Initializer for Workflow
+	<!-- Initializer for Workflow   -->  
 	<INITIALIZER class="it.eng.spagobi.workflow.JbpmContextInitializer" config="" />
-    -->
+
     <!-- Start Initializer to enable when running in web mode  -->
 	<!--
     <INITIALIZER class="it.eng.spagobi.security.init.SecurityInitializer" config="" />

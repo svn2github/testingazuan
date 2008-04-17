@@ -216,12 +216,18 @@ public class JasperReportServlet extends HttpServlet {
      */
     private Connection getConnection(String requestConnectionName,HttpSession session,String userId,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
-	if (requestConnectionName!=null){
-	    return getConnectionFromJndiDS(requestConnectionName);
-	}
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
-	if (ds==null) return null;
+	SpagoBiDataSource ds =null;
+	if (requestConnectionName!=null){
+	    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
+	}else{
+	    ds =proxyDS.getDataSource(documentId);
+	}
+
+	if (ds==null) {
+	    logger.warn("Data Source IS NULL. There are problems reading DataSource informations");
+	    return null;
+	}
 	// get connection
 	String jndi = ds.getJndiName();
 	if (jndi != null && !jndi.equals("")) {

@@ -18,6 +18,14 @@ public interface DataSourceService {
     SpagoBiDataSource getDataSource(String token,String user,String documentId);
     /**
      * 
+     * @param token  String
+     * @param user String
+     * @param label String
+     * @return SpagoBiDataSource
+     */
+    SpagoBiDataSource getDataSourceByLabel(String token,String user,String label);    
+    /**
+     * 
      * @param token String
      * @param user String
      * @return SpagoBiDataSource[]

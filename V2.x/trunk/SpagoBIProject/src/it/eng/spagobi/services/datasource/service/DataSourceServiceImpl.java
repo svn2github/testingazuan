@@ -49,6 +49,27 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
     }
     /**
      * 
+     * @param token  String
+     * @param user String
+     * @param label String
+     * @return SpagoBiDataSource
+     */    
+    public SpagoBiDataSource getDataSourceByLabel(String token,String user,String label){
+	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getDataSource");
+	try {
+	    validateTicket(token, user);
+	    return supplier.getDataSourceByLabel(label);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException", e);
+	    return null;
+	} finally {
+	    monitor.stop();
+	    logger.debug("OUT");
+	}	
+    }
+    /**
+     * 
      * @param token String
      * @param user String
      * @return SpagoBiDataSource[]

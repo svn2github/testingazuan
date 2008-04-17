@@ -14,6 +14,10 @@ public class DataSourceServiceSoapBindingImpl implements it.eng.spagobi.services
 	DataSourceServiceImpl service=new DataSourceServiceImpl();
 	return service.getDataSource(in0, in1,in2);
     }
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSourceByLabel(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+	DataSourceServiceImpl service=new DataSourceServiceImpl();
+	return service.getDataSourceByLabel(in0, in1,in2);
+    }
     public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[] getAllDataSource(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
 	DataSourceServiceImpl service=new DataSourceServiceImpl();
 	return service.getAllDataSource(in0,in1);

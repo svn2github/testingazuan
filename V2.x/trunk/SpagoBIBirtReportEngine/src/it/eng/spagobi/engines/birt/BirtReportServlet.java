@@ -241,7 +241,7 @@ public class BirtReportServlet extends HttpServlet {
      * @return jndi connection
      * @throws ConnectionDefinitionException
      */
-    private SpagoBiDataSource findDataSource(HttpSession session, String userId, String documentId)
+    private SpagoBiDataSource findDataSource(HttpSession session, String userId, String documentId,String requestConnectionName)
 	    throws ConnectionDefinitionException {
 	logger.debug("IN");
 	if (documentId == null) {
@@ -250,8 +250,18 @@ public class BirtReportServlet extends HttpServlet {
 		    + "engine-config.xml file.");
 	}
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId, session);
+	SpagoBiDataSource ds =null;
+	if (requestConnectionName!=null){
+	    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
+	}else{
+	    ds =proxyDS.getDataSource(documentId);
+	}
+	if (ds==null) {
+	    logger.warn("Data Source IS NULL. There are problems reading DataSource informations");
+	    return null;
+	}	
 	logger.debug("OUT");
-	return proxyDS.getDataSource(documentId);
+	return ds;
     }
 
     protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -279,10 +289,7 @@ public class BirtReportServlet extends HttpServlet {
 
 	String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
 	logger.debug("requestConnectionName:" + requestConnectionName);
-	if (requestConnectionName != null) {
-	    reportParams.put(CONNECTION_NAME, requestConnectionName);
-	} else {
-	    SpagoBiDataSource sbds = findDataSource(request.getSession(), userId, documentId);
+	SpagoBiDataSource sbds = findDataSource(request.getSession(), userId, documentId,requestConnectionName);
 	    if (sbds != null) {
 		logger.debug("DataSource founded.");
 		if (sbds.getJndiName() != null && sbds.getJndiName() != "") {
@@ -295,7 +302,6 @@ public class BirtReportServlet extends HttpServlet {
 
 		}
 	    }
-	}
 
 	task.setParameterValues(reportParams);
 	task.validateParameters();
@@ -347,15 +353,10 @@ public class BirtReportServlet extends HttpServlet {
 	}
 
 	Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
-	logger.debug("set Context");
 	task.setAppContext(context);
-	logger.debug("set OutputStream");
 	renderOption.setOutputStream((OutputStream) response.getOutputStream());
-	logger.debug("set RenderOption");
 	task.setRenderOption(renderOption);
-	logger.debug("RUN");
 	task.run();
-	logger.debug("CLOSE");
 	task.close();
 	logger.debug("OUT");
 

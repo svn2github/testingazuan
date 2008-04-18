@@ -7,8 +7,10 @@
 			-->
 			<USER userID="admin" password="admin" />
 			<USER userID="user" password="user" />
+			<USER userID="dev" password="dev" />
 		</USERS>
 		<ROLES>
+			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
 			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 		</ROLES>
@@ -37,6 +39,7 @@
 		<BEHAVIOURS>
 			<BEHAVIOUR userID="user" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="admin" roleName="/spagobi/admin" />
+			<BEHAVIOUR userID="dev" roleName="/spagobi/dev" />
 		</BEHAVIOURS>
 		<PRIVILEDGES>
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EnginesManagement" />

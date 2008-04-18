@@ -19,3 +19,5 @@ ALTER TABLE SBI_GEO_FEATURES COMMENT = 'The table contains all features usable b
 ALTER TABLE SBI_GEO_MAP_FEATURES COMMENT = 'The table contains all relations between maps and features';
 ALTER TABLE SBI_VIEWPOINTS COMMENT = 'The table contains all viewpoints';
 ALTER TABLE SBI_DATA_SOURCE COMMENT = 'The table contains all data sources';
+ALTER TABLE SBI_MENU COMMENT = 'The table contains all menu voices';
+ALTER TABLE SBI_MENU_ROLE COMMENT = 'The table contains all relations between menu and roles';

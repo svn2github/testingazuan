@@ -126,3 +126,6 @@ COMMENT ON TABLE SBI_DATA_SOURCE IS 'The table contains all data sources';
 
 COMMENT ON TABLE SBI_USER_FUNCTIONALITY IS 'The table contains all user functionalities';
 COMMENT ON TABLE SBI_ROLE_TYPE_USER_FUNCTIONALITY IS 'The table contains all relations between user role and user functionalities';
+
+COMMENT ON TABLE SBI_MENU COMMENT IS 'The table contains all menu voices';
+COMMENT ON TABLE SBI_MENU_ROLE COMMENT IS 'The table contains all relations between menu and roles';

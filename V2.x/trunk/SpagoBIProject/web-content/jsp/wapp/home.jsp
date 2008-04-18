@@ -24,24 +24,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
          session="true" 
-         import="it.eng.spago.base.*"
+         import="it.eng.spago.base.*,
+                 java.util.List,
+                 java.util.ArrayList"
 %>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="it.eng.spagobi.commons.services.LoginModule"%>
+<%@page import="it.eng.spagobi.wapp.bo.Menu"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-<%@page import="java.util.List"%>
-<%@page import="it.eng.spagobi.wapp.bo.Menu"%>
-
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
-	List lstMenu = (List)moduleResponse.getAttribute("LIST_MENU");	
+	List lstMenu = new ArrayList();
+	if (moduleResponse.getAttribute(LoginModule.LIST_MENU) != null)
+		lstMenu = (List)moduleResponse.getAttribute(LoginModule.LIST_MENU);
+	
+	String menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
+	String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
 %>
 
-
-<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <html>
   <head>
     <title>SpagoBI Home</title>
@@ -50,7 +55,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/prototype.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/window.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/effects.js"></script>
-    <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script> 
+    <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
+  <!--   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>-->  
     <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/> 
    
     
@@ -86,188 +92,347 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	bottom: 0px;
       	width: 50%;
       }
+      
+      iframe {
+		  background-color: transparent;
+	  }
     </style> 
 
   </head>
 
 
   <body>
-  <!--  
-  	<frameset cols="120,*">
-		<frame src="menupage.htm" name="menu">
-		<frameset rows="*,50">
-			<frame src="welcomepage.htm" name="main">
-			<frameset rows="*,50">
-				<frame src="welcomepage.htm" name="main">
-			</frameset>
-		</frameset>
-	</frameset>
-  -->
 	<div id="background" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
     	<div id="backgroundlogo" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;">   
-        <div id="header" style="width:100%;height:70px;">
-            <div id="logotitle" style="height:57px;background-image:url(<%=contextName%>/img/wapp/titlelogo.gif);background-repeat:no-repeat;background-position: top left;"> 
+        <div id="header" style="width:100%;height:70px;border-width:10px;">
+            <div id="logotitle" style="border-width:10px;height:57px;background-image:url(<%=contextName%>/img/wapp/titlelogo.gif);background-repeat:no-repeat;background-position: top left;"> 
             </div>                        	
-             <div id="menubar" style="float:left;width:100%;height:18px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
+             <div id="menubar" style="border-width:10px;float:left;width:100%;height:18px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
             </div>
         </div>
-        <div id="content" style="top:80px;width:100%;height:80%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
-	        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='100%' height='85%' frameborder='0' >
-			</iframe>
-        </div>
-        <div id="footer" style="width:100%;height:50px;">
-        	<spagobiwa:FisheyeMenu />
-        </div>
+        
+        <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
+	        <div id="footer" style="width:100%;height:50px;">
+	        	<spagobiwa:FisheyeMenu />
+	        </div>
+	    <%}else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
+		    <div id="content" style="float:left;top:90px;left:150px;width:100%;height:100%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
+		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='100%' height='100%' frameborder='0' Style='background-color: transparent'>
+				</iframe>
+	        </div>
+        <%}%>
+        <%if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
+			  <div id="leftMenu" style='float:left;background-color: transparent'></div>
+			  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
+		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='85%' height='90%' frameborder='0' Style='background-color: transparent'>
+				</iframe>
+	        </div>
+		 <%}%>
   </body>
   <script>
-  	setContextName("<%=contextName%>");
-
-  	Ext.onReady(function(){
+  	//setContextName("<%=contextName%>");
   	
-  	 		Ext.QuickTips.init();
-	 		//MENU MANAGEMENT
-			var tb = new Ext.Toolbar();
-			//if(isMoz()) {
+	<%//loading menu on TOP (max 4 levels)
+	  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
+	  	Ext.onReady(function(){  	
+	  	 		Ext.QuickTips.init();
+		 		//MENU MANAGEMENT
+				var tb = new Ext.Toolbar();			
 				tb.render('menubar');
-			//}
-		
-	    <%  Integer currParentId = new Integer("-1");
-	    	for (int i=0; i<lstMenu.size(); i++){
-		    	Menu menuElem = (Menu)lstMenu.get(i);		    	
-		    	if (menuElem.getParentId() != null && !menuElem.getParentId().equals("") && 
-		    		menuElem.getParentId().compareTo(currParentId) != 0)
-		    		currParentId = menuElem.getParentId();
-		    	else currParentId = menuElem.getMenuId();
-		    	if (menuElem.getLevel().intValue() == 1){
-		  %>
-			    var menu<%=i%> = new Ext.menu.Menu({
-			    id: 'basicMenu_<%=i%>',
-			    items: [
-			    	<%if (menuElem.getHasChildren()){			    		
-			    		  List lstChildrenLev2 = menuElem.getLstChildren();
-			    		  for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
-			    			Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);				    			
-			    			if (childElemLev2.getHasChildren()){%>
-			    			     {text: '<%=childElemLev2.getDescr()%>',
-			                	 menu: {        // <-- submenu 
-			                     items: [
-		    			    <%	 List lstChildrenLev3 = childElemLev2.getLstChildren();
-					    		 for (int k=0; k<lstChildrenLev3.size(); k++){ //LEVEL 3
-					    			 Menu childElemLev3 = (Menu)lstChildrenLev3.get(k);	
-		    			     %>						    			    
-				    			 <%if (childElemLev3.getHasChildren()){%>
-				    			    {text: '<%=childElemLev3.getDescr()%>',
-				                	menu: {        // <-- submenu 
-				                    items: [
-				    			    <%	 List lstChildrenLev4 = childElemLev3.getLstChildren();
-							    		 for (int x=0; x<lstChildrenLev4.size(); x++){ //LEVEL 4
-							    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);	
-				    			    %>
-						    			    new Ext.menu.CheckItem({
-					                            text: '<%=childElemLev4.getDescr()%>',
-					                            group: 'group_4', 
-					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
-					                            
-					                        })
-					                        <%if(x < lstChildrenLev4.size()-1){%>
-					                            ,
-					                         <%}%>	                  	                       
-				                   		
-				            			<%}//for LEVEL 4
-							    		 if(k < lstChildrenLev3.size()-1){%>
-				                            ,
-				                        <%}%>
-				                        ]}}
-				            		<%}
-				    			    else{ %>
-				                        new Ext.menu.CheckItem({
-				                            text: '<%=childElemLev3.getDescr()%>',
-				                            group: 'group_3', 
-				                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
-				                        })
-				                        
-				                   <%}%>	
-				                      
-				                    <%if(k < lstChildrenLev3.size()-1){%>
-				                            ,
-				                    <%}                             
-			    		    } //for LEVEL 3
-				    		/*if(j < lstChildrenLev2.size()-1){%>
-	                            ,
-	                        <%}*/%>
-	                        ]}} 
-		    			<%}
-	    			    else{ %>
-	                        new Ext.menu.CheckItem({
-	                            text: '<%=childElemLev2.getDescr()%>',
-	                            group: 'group_2', 
-	                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
-	                        })	                       
-	                    <%}%>	
-	                      
-	                    <%if(j < lstChildrenLev2.size()-1){%>
-	                            ,
-	                    <%}
-			    	  } //for LEVEL 2			    		  
-			    	}else{%>
-			    	 	new Ext.menu.CheckItem({
-	                            text: '<%=menuElem.getDescr()%>',
-	                            group: 'group_2', 
-	                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
-	                        })	     			    						     
-					   <%}%>      	 
-			         ]
-				});				
-				tb.add(
-					new Ext.Toolbar.MenuButton({
-						id:'<%=menuElem.getDescr()%>_<%=menuElem.getObjId()%>',
-			            text: '<%=menuElem.getDescr()%>',
-			            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-			            cls: 'x-btn-text-icon bmenu',			           
-			            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
-			            menu: menu<%=i%>  	  
-			            <%}%>
-			        })					    				        				
-				);
-				
-			<%}
-		} //for%>	
-		
-		//adds exit menu		
-		tb.add(
 			
+		    <%  Integer currParentId = new Integer("-1");
+		    	for (int i=0; i<lstMenu.size(); i++){
+			    	Menu menuElem = (Menu)lstMenu.get(i);		    	
+			    	if (menuElem.getParentId() != null && !menuElem.getParentId().equals("") && 
+			    		menuElem.getParentId().compareTo(currParentId) != 0)
+			    		currParentId = menuElem.getParentId();
+			    	else currParentId = menuElem.getMenuId();
+			    	if (menuElem.getLevel().intValue() == 1){
+			  %>
+				    var menu<%=i%> = new Ext.menu.Menu({
+				    id: 'basicMenu_<%=i%>',
+				    items: [
+				    	<%if (menuElem.getHasChildren()){			    		
+				    		  List lstChildrenLev2 = menuElem.getLstChildren();
+				    		  for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
+				    			Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);				    			
+				    			if (childElemLev2.getHasChildren()){%>
+				    			     {text: '<%=childElemLev2.getDescr()%>',
+				                	 menu: {        // <-- submenu 
+				                     items: [
+			    			    <%	 List lstChildrenLev3 = childElemLev2.getLstChildren();
+						    		 for (int k=0; k<lstChildrenLev3.size(); k++){ //LEVEL 3
+						    			 Menu childElemLev3 = (Menu)lstChildrenLev3.get(k);	
+			    			     %>						    			    
+					    			 <%if (childElemLev3.getHasChildren()){%>
+					    			    {text: '<%=childElemLev3.getDescr()%>',
+					                	menu: {        // <-- submenu 
+					                    items: [
+					    			    <%	 List lstChildrenLev4 = childElemLev3.getLstChildren();
+								    		 for (int x=0; x<lstChildrenLev4.size(); x++){ //LEVEL 4
+								    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);	
+					    			    %>
+							    			    new Ext.menu.CheckItem({
+						                            text: '<%=childElemLev4.getDescr()%>',
+						                            group: 'group_4', 
+						                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
+						                            
+						                        })
+						                        <%if(x < lstChildrenLev4.size()-1){%>
+						                            ,
+						                         <%}%>	                  	                       				                   		
+					            			<%}//for LEVEL 4
+								    		 if(k < lstChildrenLev3.size()-1){%>
+					                            ,
+					                        <%}%>
+					                        ]}}
+					            		<%}
+					    			    else{ %>
+					                        new Ext.menu.CheckItem({
+					                            text: '<%=childElemLev3.getDescr()%>',
+					                            group: 'group_3', 
+					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					                        })
+					                        
+					                   <%}%>					                      
+					                    <%if(k < lstChildrenLev3.size()-1){%>
+					                            ,
+					                    <%}                             
+				    		    } //for LEVEL 3
+					    		%>
+		                        ]}} 
+			    			<%}
+		    			    else{ %>
+		                        new Ext.menu.CheckItem({
+		                            text: '<%=childElemLev2.getDescr()%>',
+		                            group: 'group_2', 
+		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
+		                        })	                       
+		                    <%}%>		                      
+		                    <%if(j < lstChildrenLev2.size()-1){%>
+		                            ,
+		                    <%}
+				    	  } //for LEVEL 2			    		  
+				    	}else{%>
+				    	 	new Ext.menu.CheckItem({
+		                            text: '<%=menuElem.getDescr()%>',
+		                            group: 'group_2', 
+		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
+		                        })	     			    						     
+						   <%}%>      	 
+				         ]
+					});				
+					tb.add(
+						new Ext.Toolbar.MenuButton({
+							id:'<%=menuElem.getDescr()%>_<%=menuElem.getObjId()%>',
+				            text: '<%=menuElem.getDescr()%>',
+				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
+				            cls: 'x-btn-text-icon bmenu',			           
+				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
+				            menu: menu<%=i%>  	  
+				            <%}%>
+				        })					    				        				
+					);				
+				<%}
+			} //for%>			
+			//adds exit menu		
+			tb.add(
+				
+				new Ext.Toolbar.MenuButton({
+		            text: 'Logout',
+		            icon: '<%=contextName%>/img/wapp/exit16.png',
+		            cls: 'x-btn-text-icon bmenu',
+		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
+		            handler: logout	  
+		        })	
+		    );
+		});
+	
+	
+	 function execDirectDoc(btn){
+	 	var url = "";
+	 	var idDoc = btn.id;
+	 	idDoc = idDoc.substring(idDoc.indexOf("_")+1);
+	 	
+	 	if (idDoc != null && idDoc != 'null'){
+	 		url =  "<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+idDoc;
+			document.getElementById('iframeDoc').src = url;
+		}
+		return;
+	 }	 
+	 function execDirectUrl(url){ 	
+		document.getElementById('iframeDoc').src = url;
+		return;
+	 }
+<%} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
+
+    Ext.onReady(function(){
+	    //Logout
+		var tb = new Ext.Toolbar();			
+		tb.render('menubar');
+		tb.add(	
 			new Ext.Toolbar.MenuButton({
 	            text: 'Logout',
+	            icon: '<%=contextName%>/img/wapp/exit16.png',
 	            cls: 'x-btn-text-icon bmenu',
 	           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
 	            handler: logout	  
 	        })	
-	    );
-	});
+	    ); 
+	   var treeMenu = getMenuTreePanel();
+	  
+       var viewport = new Ext.Viewport({
+            layout:'border',
+            items:[{
+                region:'west',
+                id:'west-panel',
+                baseCls:'left-menu-item',
+                collapseMode:'mini',
+                animCollapse:false,
+                split:true,
+                useSplitTips:true,
+                width: 200,
+                minSize: 100,
+                maxSize: 500,
+                collapsible: true,
+                margins:'90 0 0 0',
+                layout:'accordion',
+                border:false,
+                layoutConfig:{
+                    animate:true,
+                    fill:false,
+                    hideCollapseTool:true
+                },
+                items:[treeMenu]                              
+            },{
+                region:'center',
+                id:'center-panel',
+                margins:'0 0 0 0',
+                x:300,
+                //layout:'column',
+                autoScroll:true,
+                //renderTo: 'content'                
+                items:[{
+                    columnWidth:1,
+                    baseCls:'x-plain',
+                    bodyStyle:'padding:5px 5px 5px 5px',
+                    items:[{                    
+                        html: '<iframe id="iframeDoc2"  name="iframeDoc2"  src="" width="50%" height="85%" frameborder="1"> </iframe>'
+                    }]  
+                 }]    
+         	}]
+        });  
+     
+     
+		
+});  
 
- function logout(){
- 	window.location = "<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
- }
+var getMenuTreePanel = function() {
+    // root node
+    var rootNode=new Ext.tree.TreeNode({text:'Choose a Dcoument...', icon:'<%=contextName%>/img/rememberMe22.png',expanded:true, id:'0'});
+    var  nodeLev1 = new Ext.tree.TreeNode({icon:'<%=contextName%>/img/attach.png',expanded:false});
+   	var  nodeLev2 = new Ext.tree.TreeNode({icon:'<%=contextName%>/img/attach.png',expanded:false});
+   	var  nodeLev3 = new Ext.tree.TreeNode({icon:'<%=contextName%>/img/attach.png',expanded:false});
+   	var  nodeLev4 = new Ext.tree.TreeNode({icon:'<%=contextName%>/img/attach.png',expanded:false});
  
- 
- function execDirectDoc(btn){
- 	var url = "";
- 	var idDoc = btn.id;
- 	idDoc = idDoc.substring(idDoc.indexOf("_")+1);
- 	
- 	if (idDoc != null && idDoc != 'null'){
- 		url =  "<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+idDoc;
-		//	open_win_DocumentMenu("<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+idDoc);
-		document.getElementById('iframeDoc').src = url;
+   	<%for (int i=0; i< lstMenu.size(); i++){
+   		Menu menuLev1 = (Menu)lstMenu.get(i);
+   		if (menuLev1.getLevel().intValue() == 1){   			 
+   	       if (menuLev1.getHasChildren()){ //first node
+   	 %>   	   
+   	    	nodeLev1 = new Ext.tree.TreeNode({text:'<%=menuLev1.getDescr()%>', icon:'<%=contextName%>/img/attach.png', id:'-<%=i%>'}); 
+   <%		List lstChildrenLev2 = menuLev1.getLstChildren();
+   				for (int j=0; j < lstChildrenLev2.size(); j++){
+   					Menu menuLev2 = (Menu)lstChildrenLev2.get(j);   
+   				    if (menuLev2.getHasChildren()){ //seconde node
+    %>
+    		nodeLev2 = new Ext.tree.TreeNode({text:'<%=menuLev2.getDescr()%>', icon:'<%=contextName%>/img/attach.png', id:'-<%=i%><%=j%>'});   
+   	<%	   				List lstChildrenLev3 = menuLev2.getLstChildren();	 
+   		   				for (int k=0; k < lstChildrenLev3.size(); k++){
+   		   					Menu menuLev3 = (Menu)lstChildrenLev3.get(k);     	
+   		   					if (menuLev3.getHasChildren()){ //third node	
+   	%>
+   			nodeLev3 = new Ext.tree.TreeNode({text:'<%=menuLev3.getDescr()%>', icon:'<%=contextName%>/img/attach.png', id:'-<%=i%><%=j%><%=k%>'});  
+	<%   	   		   				List lstChildrenLev4 = menuLev3.getLstChildren();	
+			   	   		   		for (int x=0; x < lstChildrenLev4.size(); x++){
+		   		   					Menu menuLev4 = (Menu)lstChildrenLev4.get(x);  //fourth node (lief)	
+	%>
+			nodeLev4 = new Ext.tree.TreeNode({text:'<%=menuLev4.getDescr()%>', icon:'<%=contextName%>/img/treepage.gif', id:'<%=menuLev4.getObjId()%>'});
+			nodeLev3.appendChild(nodeLev4);
+	<%	   		   								   	   		   			
+		   	   		   			}//for x
+    %>
+			nodeLev2.appendChild(nodeLev3); 
+	<%   	   		   			}else{
+	%>
+			nodeLev2.appendChild([new Ext.tree.TreeNode({text:'<%=menuLev3.getDescr()%>', icon:'<%=contextName%>/img/treepage.gif', id:'<%=menuLev3.getObjId()%>'})]);  //(lief)
+	<%   	   		   			}
+   		   				}//for k   		   				
+    %>
+   		   	nodeLev1.appendChild(nodeLev2); 
+    <%   			  }else{
+    %>
+	   		nodeLev1.appendChild([new Ext.tree.TreeNode({text:'<%=menuLev2.getDescr()%>', icon:'<%=contextName%>/img/treepage.gif', id:'<%=menuLev2.getObjId()%>'})]); //(lief)	
+    <%				  }
+   				} // for j 
+    	    }else{
+   %>
+   			nodeLev1 = new Ext.tree.TreeNode({text:'<%=menuLev1.getDescr()%>', icon:'<%=contextName%>/img/treepage.gif', id:'<%=menuLev1.getObjId()%>'}); //lief
+   <%		}
+   %>
+   			rootNode.appendChild(nodeLev1); 
+   <%	 } //if (menuLev1.getLevel().intValue() == 1)   		
+   	  }//for i
+   	%>
+   	
+   	
+    var menuTree=new Ext.tree.TreePanel({
+      root:rootNode,
+      //enableDD:true,
+      expandable:true,
+      collapsible:true,
+      autoHeight:true ,
+      bodyBorder:false ,
+      width:300,
+      leaf:false,
+      lines:true,
+      animate:true
+    });
+    
+    menuTree.addListener('click', this.selectNode);
+  
+    return menuTree;
+};
+
+var selectNode = function(node, e) {
+	if (node.id > 0){
+		document.getElementById('iframeDoc').src = "<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+node.id;		
 	}
 	return;
- }
- 
- function execDirectUrl(url){ 	
-	document.getElementById('iframeDoc').src = url;
-	return;
- }
+};  
 
+<%} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){ %>
+	    Ext.onReady(function(){  	
+		  	 		Ext.QuickTips.init();
+			 		//MENU MANAGEMENT
+					var tb = new Ext.Toolbar();			
+					tb.render('menubar');
+					tb.add(
+				
+						new Ext.Toolbar.MenuButton({
+				            text: 'Logout',
+				            icon: '<%=contextName%>/img/wapp/exit16.png',
+				            cls: 'x-btn-text-icon bmenu',
+				           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
+				            handler: logout	  
+				        })	
+				    );
+		 });
 
+    <%}%>
+    function logout(){
+		 	window.location = "<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
+	}	
+		 
   </script>
 </html>

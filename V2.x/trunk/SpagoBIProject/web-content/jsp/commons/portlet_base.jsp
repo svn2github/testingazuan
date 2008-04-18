@@ -156,10 +156,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       href='<%=urlBuilder.getResourceLink(request, "css/menu.css")%>' 
       type='text/css' />
       
+   
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>' 
 	  type='text/css' />
-
+ <!--   for web menu
+<LINK rel='StyleSheet' 
+	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/extSpagoBI.css")%>' 
+	  type='text/css' />
+  -->
 <script>
 	document.onselectstart = function() { return true; }
 </script>

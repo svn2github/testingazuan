@@ -9,7 +9,19 @@
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
      
-        
+    <!-- ********************* START MENU CONFIGURATION ************************ -->
+	<!-- Property 'mode' defines the style of menu: 
+			- 'ALL_TOP': all the menu voices are on the top of page
+			- 'ALL_LEFT': all the menu voices are on the left of the page
+			- 'TOP_LEFT': the first level is on the top, while others levels are on the left of the page
+		Property 'viewExtra' defines the visibility of extra contents for final users:
+			- 'YES': view the right menu with extra-contents like hotlink, distribution list, ...
+			' 'NO': non view right menu  
+	 -->
+	<!--  <MENU mode="ALL_TOP" viewExtra="YES"/> -->
+	 
+
+    <!-- ********************* END MENU CONFIGURATION ************************** -->
      
      
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
@@ -181,6 +193,8 @@
 		<DAO name="DossierPresentationDAO" implementation="it.eng.spagobi.engines.dossier.dao.DossierPresentationsDAOHibImpl"/>
 		<DAO name="DossierPartsTempDAO" implementation="it.eng.spagobi.engines.dossier.dao.DossierPartsTempDAOHibImpl"/>
 		<DAO name="RememberMeDAO" implementation="it.eng.spagobi.hotlink.rememberme.dao.RememberMeDAOHibImpl"/>
+		<DAO name="MenuDAO" implementation="it.eng.spagobi.wapp.dao.MenuDAOImpl"/>
+		<DAO name="MenuRolesDAO" implementation="it.eng.spagobi.wapp.dao.MenuRolesDAOImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

@@ -26,19 +26,18 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 import it.eng.spagobi.engines.dossier.constants.DossierConstants;
-import it.eng.spagobi.engines.dossier.dao.DossierDAOHibImpl;
 import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.exceptions.OpenOfficeConnectionException;
-import it.eng.spagobi.engines.dossier.utils.DossierUtilities;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
@@ -304,79 +303,21 @@ public class ProcessOOTemplateAction implements ActionHandler {
 	    IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 	    BIObject biobj = biobjdao.loadBIObjectByLabel(label);
 	    logger.debug("biobject loaded: " + biobj);
-	    // load the list of parameter of the biobject
-	    IBIObjectParameterDAO biobjpardao = DAOFactory.getBIObjectParameterDAO();
-	    List params = biobjpardao.loadBIObjectParametersById(biobj.getId());
-	    logger.debug("biobject parameter list " + params);
-	    // for each parameter set the configured value
-	    Iterator iterParams = params.iterator();
-	    boolean findOutPar = false;
-	    while (iterParams.hasNext()) {
-			BIObjectParameter par = (BIObjectParameter) iterParams.next();
-			String parUrlName = par.getParameterUrlName();
-			logger.debug("processing biparameter with url name " + parUrlName);
-			if (parUrlName.equalsIgnoreCase("param_output_format")) {
-			    findOutPar = true;
-			}
-			String value = (String) confPars.get(parUrlName);
-			logger.debug("usign " + value + " as value for the parameter");
-			if (value != null) {
-			    List values = new ArrayList();
-			    values.add(value);
-			    par.setParameterValues(values);
-			    logger.debug("parameter value set");
-			}
-	    }
-	    // set the parameters into the biobject
-	    biobj.setBiObjectParameters(params);
-	    // get the engine of the bionject
-	    Engine eng = biobj.getEngine();
-	    logger.debug("biobj engine retrived " + eng);
-	    // get driver class
-	    String driverClassName = eng.getDriverName();
-	    logger.debug("engine driver class " + driverClassName);
-	    // get the url of the engine
-	    String urlEngine = eng.getUrl();
-	    logger.debug("url engine  " + urlEngine);
-	    // build an instance of the driver
-	    IEngineDriver aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
-	    logger.debug("engine driver instance created " + aEngineDriver);
+		// create the execution controller 
+		ExecutionController execCtrl = new ExecutionController();
+		execCtrl.setBiObject(biobj);
+		// fill parameters 
+		execCtrl.refreshParameters(biobj, confPars);
+
 	    IEngUserProfile profile = UserProfile.createWorkFlowUserProfile();
-	    // get the map of parameter to send to the engine
-	    Map mapPars = aEngineDriver.getParameterMap(biobj, profile, "");
-	    logger.debug("parameter map returned by engine driver ");
-
 	    
-	    // AUDIT
-	    AuditManager auditManager = AuditManager.getInstance();
-	    Integer executionId = auditManager.insertAudit(biobj, null, profile, "", "WORKFLOW");
-	    // adding parameters for AUDIT updating
-	    if (executionId != null) {
-	    	mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
-	    }
+		ExecutionProxy proxy = new ExecutionProxy();
+		proxy.setBiObject(biobj);
+		
+		byte[] response = proxy.exec(profile, "WORKFLOW", "JPGBASE64");
 
-	    // built the request to sent to the engine
-	    Iterator iterMapPar = mapPars.keySet().iterator();
-	    HttpClient client = new HttpClient();
-	    PostMethod httppost = new PostMethod(urlEngine);
-	    while (iterMapPar.hasNext()) {
-			String parurlname = (String) iterMapPar.next();
-			String parvalue = (String) mapPars.get(parurlname);
-			httppost.addParameter(parurlname, parvalue);
-	    }
-	    if (!findOutPar) {
-		httppost.addParameter("param_output_format", "JPGBASE64");
-	    }
-	    logger.debug("post object created " + httppost);
-	    // sent request to the engine
-	    int statusCode = client.executeMethod(httppost);
-	    logger.debug("post request sent");
-	    byte[] responseBody = httppost.getResponseBody();
-	    logger.debug("engine response received " + responseBody);
-	    httppost.releaseConnection();
-	    logger.debug("http connection released");
 	    // extract image from the response
-	    String xmlRespStr = new String(responseBody);
+	    String xmlRespStr = new String(response);
 	    SourceBean xmlRespSB = SourceBean.fromXMLString(xmlRespStr);
 	    logger.debug("response parsed into a sourcebean");
 	    List images = xmlRespSB.getAttributeAsList("IMAGE");

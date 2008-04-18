@@ -48,8 +48,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class ExecutionController {
 
+	static private Logger logger = Logger.getLogger(ExecutionController.class);
+	
 	private BIObject biObject = null;
 	private Map lovResultMap = new HashMap();
 	
@@ -351,6 +355,36 @@ public class ExecutionController {
 	
 	public void setBiObject(BIObject biObject) {
 		this.biObject = biObject;
+	}
+
+
+	public void refreshParameters(BIObject biobj, Map confPars) throws Exception {
+		logger.debug("IN");
+		try {
+		    // load the list of parameter of the biobject
+		    IBIObjectParameterDAO biobjpardao = DAOFactory.getBIObjectParameterDAO();
+		    List params = biobjpardao.loadBIObjectParametersById(biobj.getId());
+		    logger.debug("biobject parameter list " + params);
+		    // for each parameter set the configured value
+		    Iterator iterParams = params.iterator();
+		    while (iterParams.hasNext()) {
+				BIObjectParameter par = (BIObjectParameter) iterParams.next();
+				String parUrlName = par.getParameterUrlName();
+				logger.debug("processing biparameter with url name " + parUrlName);
+				String value = (String) confPars.get(parUrlName);
+				logger.debug("usign " + value + " as value for the parameter");
+				if (value != null) {
+				    List values = new ArrayList();
+				    values.add(value);
+				    par.setParameterValues(values);
+				    logger.debug("parameter value set");
+				}
+		    }
+		    // set the parameters into the biobject
+		    biobj.setBiObjectParameters(params);
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 	
 	

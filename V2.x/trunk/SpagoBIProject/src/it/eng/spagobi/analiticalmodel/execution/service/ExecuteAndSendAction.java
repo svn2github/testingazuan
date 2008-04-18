@@ -178,7 +178,7 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 
 		}
 
-		documentBytes = proxy.exec(profile);
+		documentBytes = proxy.exec(profile, "SEND_MAIL", null);
 		returnedContentType = proxy.getReturnedContentType();
 		fileextension = proxy.getFileExtensionFromContType(returnedContentType);
 	    //} end if (execCtrl.directExecution()) {

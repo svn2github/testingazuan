@@ -115,7 +115,7 @@ public class ExecuteBIDocumentJob implements Job {
 					List roles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(biobj.getId());
 					Integer idEvent = eventManager.registerEvent("Scheduler", startExecMsg, "", roles);
 					
-					byte[] response = proxy.exec(profile);
+					byte[] response = proxy.exec(profile, "SCHEDULATION", null);
 					String retCT = proxy.getReturnedContentType();
 					String fileextension = proxy.getFileExtensionFromContType(retCT);
 					

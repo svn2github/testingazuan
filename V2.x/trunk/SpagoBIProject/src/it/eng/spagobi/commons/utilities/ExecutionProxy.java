@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -32,6 +33,7 @@ import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -57,7 +59,15 @@ public class ExecutionProxy {
 	this.biObject = biObject;
     }
 
-    public byte[] exec(IEngUserProfile profile) {
+    /**
+     * Executes a document in background with the given profile.
+     * 
+     * @param profile The user profile
+     * @param modality The execution modality (for auditing)
+     * @param defaultOutputFormat The default output format (optional), considered if the document has no output format parameter set
+     * @return
+     */
+    public byte[] exec(IEngUserProfile profile, String modality, String defaultOutputFormat) {
 	logger.debug("IN");
 	byte[] response = new byte[0];
 	try {
@@ -83,6 +93,24 @@ public class ExecutionProxy {
 	    IEngineDriver aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
 	    // get the map of parameter to send to the engine
 	    Map mapPars = aEngineDriver.getParameterMap(biObject, profile, "");
+	    if (defaultOutputFormat != null && !defaultOutputFormat.trim().equals("")) {
+			List params = biObject.getBiObjectParameters();
+		    Iterator iterParams = params.iterator();
+		    boolean findOutPar = false;
+		    while (iterParams.hasNext()) {
+				BIObjectParameter par = (BIObjectParameter) iterParams.next();
+				String parUrlName = par.getParameterUrlName();
+				List values = par.getParameterValues();
+				logger.debug("processing biparameter with url name " + parUrlName);
+				if (parUrlName.equalsIgnoreCase("param_output_format") && values != null && values.size() > 0) {
+				    findOutPar = true;
+				    break;
+				}
+		    }
+		    if (!findOutPar) {
+		    	mapPars.put("param_output_format", defaultOutputFormat);
+		    }
+	    }
 
 	    // pass ticket ...
 	    ConfigSingleton config = ConfigSingleton.getInstance();
@@ -121,7 +149,7 @@ public class ExecutionProxy {
 
 	    // AUDIT
 	    AuditManager auditManager = AuditManager.getInstance();
-	    Integer executionId = auditManager.insertAudit(biObject, null, profile, "", "SCHEDULATION");
+	    Integer executionId = auditManager.insertAudit(biObject, null, profile, "", modality != null ? modality : "");
 	    // adding parameters for AUDIT updating
 	    if (executionId != null) {
 		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-apr-2008 12.18.26 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.wapp.metadata.SbiMenu" table="sbi_menu">
+        <id name="menuId" type="integer">
+            <column name="menu_id" />
+            <generator class="sequence">
+            	<param name="sequence">sbi_menu_seq</param> 
+            </generator>
+        </id>
+        <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
+            <column name="biobj_id" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" />
+        </property>
+        <property name="descr" type="string">
+            <column name="descr" />
+        </property>
+        <property name="parentId" type="integer">
+            <column name="parent_id" />
+        </property>
+        <!-- 
+        <set name="sbiMenuRoles" inverse="true">
+            <key>
+                <column name="MENU_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.wapp.metadata.SbiMenuRole" />
+        </set>
+        -->
+    </class>
+</hibernate-mapping>

@@ -57,5 +57,8 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingora/SbiRememberMe.hbm.xml" />
 
+ 		<!-- Menu -->
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenu.hbm.xml" />
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenuRole.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

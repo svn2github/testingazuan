@@ -41,10 +41,10 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
-				  " where mf.id.menuId = m.menuId " + 
-				  " and mf.id.extRoleId = " + roleId.toString() +
-				  " order by m.parentId, m.menuId";
+				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
+					  " where mf.id.menuId = m.menuId " + 
+					  " and mf.id.extRoleId = " + roleId.toString() +
+					  " order by m.parentId, m.menuId";
 			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();

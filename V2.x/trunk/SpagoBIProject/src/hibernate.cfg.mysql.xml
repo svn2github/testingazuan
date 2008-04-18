@@ -64,5 +64,9 @@
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingmysql/SbiRememberMe.hbm.xml" />
         
         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSet.hbm.xml" />
+        
+         <!-- Menu -->
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenu.hbm.xml" />
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenuRole.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

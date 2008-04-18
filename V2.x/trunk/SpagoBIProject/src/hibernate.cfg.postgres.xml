@@ -57,5 +57,8 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
         
+        <!-- Menu -->
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenu.hbm.xml" />
+        <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenuRole.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

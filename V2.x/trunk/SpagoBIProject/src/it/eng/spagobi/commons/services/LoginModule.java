@@ -30,6 +30,7 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -59,6 +60,16 @@ public class LoginModule extends AbstractHttpModule {
 
     static Logger logger = Logger.getLogger(LoginModule.class);
     public static final String MODULE_PAGE = "LoginPage";
+    public static final String DEFAULT_LAYOUT_MODE = "ALL_TOP";
+    public static final String LAYOUT_ALL_TOP = "ALL_TOP";
+    public static final String LAYOUT_ALL_LEFT = "ALL_LEFT";
+    public static final String LAYOUT_TOP_LEFT = "TOP_LEFT";
+    public static final String LAYOUT_ADMIN_MENU = "ADMIN_MENU";
+    public static final String DEFAULT_EXTRA = "NO";
+    public static final String MENU_MODE = "MENU_MODE";
+    public static final String MENU_EXTRA = "MENU_EXTRA";
+    public static final String LIST_MENU = "LIST_MENU";
+    
     IEngUserProfile profile = null;
     EMFErrorHandler errorHandler = null;
 	/**
@@ -133,27 +144,40 @@ public class LoginModule extends AbstractHttpModule {
 	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
 		try {	
 			List lstFinalMenu = new ArrayList();
-			Collection lstRolesForUser = profile.getRoles();
-			Object[] arrRoles = lstRolesForUser.toArray();
-			for (int i=0; i< arrRoles.length; i++){
-				Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
-				if (role != null){
-					List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-					if (lstMenuItems == null)
-						logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
-					else {
-						for(int j=0; j<lstMenuItems.size(); j++){
-							Menu tmpObj = (Menu)lstMenuItems.get(j);
-							if (!containsMenu(lstFinalMenu, tmpObj)){						
-								lstFinalMenu.add((Menu)lstMenuItems.get(j));	
+			// get config
+			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
+
+			//if the user isn't an administrator the menu is created and putted into the response with other informations like the type of layout,
+			//otherwise don't because the administrator can view only classic services of administration. 
+			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
+				String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode"); 
+				String menuExtra = (configSingleton.getAttribute("SPAGOBI.MENU.viewExtra")==null)?DEFAULT_EXTRA:(String)configSingleton.getAttribute("SPAGOBI.MENU.viewExtra"); 
+				Collection lstRolesForUser = profile.getRoles();
+				Object[] arrRoles = lstRolesForUser.toArray();
+				for (int i=0; i< arrRoles.length; i++){
+					Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
+					if (role != null){
+						List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
+						if (lstMenuItems == null)
+							logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
+						else {
+							for(int j=0; j<lstMenuItems.size(); j++){
+								Menu tmpObj = (Menu)lstMenuItems.get(j);
+								if (!containsMenu(lstFinalMenu, tmpObj)){						
+									lstFinalMenu.add((Menu)lstMenuItems.get(j));	
+								}
 							}
 						}
 					}
+					else
+						logger.debug("Role " + (String)arrRoles[i] + " not found on db");
 				}
-				else
-					logger.debug("Role " + (String)arrRoles[i] + " not found on db");
-			}
-			response.setAttribute("LIST_MENU", lstFinalMenu);
+				response.setAttribute(LIST_MENU, lstFinalMenu);
+				response.setAttribute(MENU_MODE, menuMode);
+				response.setAttribute(MENU_EXTRA, menuExtra);
+			}	
+			else
+				response.setAttribute(MENU_MODE, LAYOUT_ADMIN_MENU);
 		} catch (Exception ex) {
 			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();

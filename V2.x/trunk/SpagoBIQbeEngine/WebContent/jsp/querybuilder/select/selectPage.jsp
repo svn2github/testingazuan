@@ -20,6 +20,21 @@
 	<link rel="styleSheet" href ="${href}" type="text/css" />
 	
 	
+	<qbe:url type="resource" var="src" ref="../js/querybuilder/serviceRegistry.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<script type="text/javascript">   
+    	var url = {
+			host: '<%= request.getServerName()%>',
+	        port: '<%= request.getServerPort()%>',
+	        contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
+	        				  request.getContextPath().substring(1):
+	        				  request.getContextPath()%>'
+    	};
+    	it.eng.spagobi.engines.qbe.serviceregistry.module.init();
+    	it.eng.spagobi.engines.qbe.serviceregistry.module.setBaseUrl(url);
+    </script>
+	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/buttonColumn.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
@@ -45,7 +60,6 @@
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/qbe.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
-    
     
     
     <script type="text/javascript">    

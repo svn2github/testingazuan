@@ -103,7 +103,7 @@ var getQueryBuilderPanel = function() {
                     // hidden:true,
                     handler: function(event, toolEl, panel){
                       Ext.Ajax.request({
-						   url: 'http://localhost:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=REFRESH_QUERY_ACTION',
+						   url: it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('REFRESH_QUERY_ACTION'),
 						   success: handleExecQuery,
 						   failure: function(){alert('failure')},					
 						   params: getParams

@@ -6,13 +6,14 @@
 var cm;
 var store;
 var reader = new Ext.data.JsonReader();
+var execServiceUrl = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('EXEC_QUERY_ACTION');
 
 var storeConfig = {
 
         params: {start:0,
                  limit: 25 },
         proxy: new Ext.data.HttpProxy({
-            url: 'http://localhost:8080/SpagoBIQbeEngine/servlet/AdapterHTTP?ACTION_NAME=EXEC_QUERY_ACTION'
+           url: execServiceUrl
         }),
 
         // create reader that reads the Topic records

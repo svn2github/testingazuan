@@ -1053,24 +1053,24 @@ public class GeneralUtilities {
     }
     
     /**
-     * Finds the user identifier from service request. 
-     * If SSO is enabled, this identifier must be equal to the user identifier detected by the SSO system.
-     * In case the service request does not contain the user identifier, null is returned.
+     * Finds the user identifier from service request or from SSO system (by the http request in input). 
+     * If SSO is enabled, the identifier specified on service request must be equal to the user identifier detected by the SSO system.
+     * In case the service request does not contain the user identifier and SSO in disabled, null is returned.
      * 
      * @param request The service SourceBean request
      * @param httpRequest The http request
      * @return the current user unique identified
-     * @throws Exception in case the SSO is enabled and the user identifier specified on request is different from the SSO detected one. 
+     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one. 
      */
     public static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
     	logger.debug("IN");
-    	// Get userid from request
-    	String requestUserId = null;
+    	String userId = null;
     	try {
+    		String requestUserId = null;
+    		// Get userid from request
 	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
-	    	if (requestUserIdObj == null) return null;
-	    	else requestUserId = requestUserIdObj.toString();
-	    	String sessionUserId = "";
+	    	if (requestUserIdObj != null) requestUserId = requestUserIdObj.toString();
+	    	String sessionUserId = null;
 	    	// Check if SSO is active
 	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
 	    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
@@ -1091,10 +1091,13 @@ public class GeneralUtilities {
 	    			throw new SecurityException("User id was not found in session");
 	    	    }
 	    	}
+	    	if (sessionUserId != null) userId = sessionUserId;
+	    	// warning: the request user id can be null
+	    	else userId = requestUserId;
     	} finally {
     		logger.debug("OUT");
     	}
-    	return requestUserId;
+    	return userId;
     }
 
 }

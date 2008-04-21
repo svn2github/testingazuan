@@ -37,7 +37,7 @@ public class EngineAnalysisMetadata {
 	private Date lastSavingDate;
 	
 	public static final String PUBLIC_SCOPE = "public";
-	public static final String PRIVATE_SCOPE = "public";
+	public static final String PRIVATE_SCOPE = "private";
 
 	public Integer getId() {
 		return id;
@@ -89,4 +89,20 @@ public class EngineAnalysisMetadata {
 	public boolean alreadySaved() {
 		return firstSavingDate != null;
 	}
+	
+	public String toString() {
+    	String str = "";
+    	
+    	str += "[";
+    	str += "id:" + id + "; ";
+    	str += "name:" + name + "; ";
+    	str += "description:" + description + "; ";
+    	str += "owner:" + owner + "; ";
+    	str += "scope:" + scope + "; ";
+    	str += "firstSavingDate:" + firstSavingDate;
+    	str += "firstSavingDate:" + lastSavingDate;
+    	str += "]";
+    	
+    	return str;
+    }
 }

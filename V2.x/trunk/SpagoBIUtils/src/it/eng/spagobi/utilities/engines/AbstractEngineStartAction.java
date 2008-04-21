@@ -188,6 +188,9 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		String country;
 		
     	if(locale == null) {
+    		
+    		logger.debug("IN");
+    		
     		language = getAttributeAsString( LANGUAGE );
     		country = getAttributeAsString( COUNTRY );
     		logger.debug("Locale parameters received: language = [" + language + "] ; country = [" + country + "]");
@@ -200,6 +203,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     		    logger.debug("Creating default locale [en,US].");
     		    locale = new Locale("en", "US");
     		}
+    		
+    		logger.debug("IN");
     	}
     	
     	return locale;
@@ -210,6 +215,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 			return analysisMetadata;
 		}
     	
+		logger.debug("IN");
+		
 		analysisMetadata = new EngineAnalysisMetadata();
 		
     	if( requestContainsAttribute(SUBOBJ_ID) ) {
@@ -244,6 +251,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 			}
     	}
     	
+    	logger.debug("OUT");
+    	
     	return analysisMetadata;
 	}
 
@@ -252,6 +261,9 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     	byte[] rowData;
     	
 		if ( analysisStateRowData == null && getAnalysisMetadata().getId() != null ) {
+			
+			logger.debug("IN");
+			
 			spagoBISubObject = getContentServiceProxy().readSubObjectContent( getAnalysisMetadata().getId().toString() );	
 			try {
 				rowData = DECODER.decodeBuffer( spagoBISubObject.getContent() );
@@ -260,6 +272,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 				logger.warn( "Impossible to decode the content of " + getAnalysisMetadata().getId().toString() + " subobject");
     			return null;
 			}
+			
+			logger.debug("OUT");
 		}
 		
 		return analysisStateRowData;

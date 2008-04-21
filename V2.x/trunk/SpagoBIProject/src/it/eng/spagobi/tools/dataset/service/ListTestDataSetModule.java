@@ -159,11 +159,18 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			
 			
 			// execute query
-			try {
+		
 				//query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
-			
+			try{
 				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
+			}
+			catch (Exception e) {
+				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9213", messageBundle);	
+			}
+				
 				//check if there are parameters filled
+			try {
 				Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 				HashMap parametersFilled=(HashMap)par;
 				if(parametersFilled!=null && !parametersFilled.isEmpty()){
@@ -172,13 +179,6 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
 				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, query, colNames);
 			} catch (Exception e) {
-				String stacktrace = e.toString();
-				response.setAttribute("stacktrace", stacktrace);
-				int startIndex = stacktrace.indexOf("java.sql.");
-				int endIndex = stacktrace.indexOf("\n\tat ", startIndex);
-				if (endIndex == -1) endIndex = stacktrace.indexOf(" at ", startIndex);
-				if (startIndex != -1 && endIndex != -1) 
-					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
 				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9211", messageBundle);
 
@@ -222,15 +222,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			}
 
 			catch (Exception e) {
-				String stacktrace = e.toString();
-				response.setAttribute("stacktrace", stacktrace);
-				int startIndex = stacktrace.indexOf("java.sql.");
-				int endIndex = stacktrace.indexOf("\n\tat ", startIndex);
-				if (endIndex == -1) endIndex = stacktrace.indexOf(" at ", startIndex);
-				if (startIndex != -1 && endIndex != -1) 
-					response.setAttribute("errorMessage", stacktrace.substring(startIndex, endIndex));
-				response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
-				if(fis!=null)fis.close();
+
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9210", messageBundle);
 				//return null;
 			}

@@ -262,6 +262,7 @@ public class ExecuteBIDocumentJob implements Job {
 			
 			BIObject newbiobj = new BIObject();
 			newbiobj.setDescription(docDesc);
+			newbiobj.setCreationUser("scheduler");
 			newbiobj.setLabel(label);
 			newbiobj.setName(docName);
 			newbiobj.setEncrypt(new Integer(0));

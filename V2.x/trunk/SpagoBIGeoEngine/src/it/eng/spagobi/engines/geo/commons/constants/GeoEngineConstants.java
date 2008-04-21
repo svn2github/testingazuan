@@ -28,5 +28,5 @@ import it.eng.spagobi.utilities.engines.EngineConstants;
  *
  */
 public class GeoEngineConstants extends EngineConstants {
-	public static final String MAP_CONFIGURATION = "CONFIGURATION";
+	public static final String GEO_ENGINE_INSTANCE = "GEO_ENGINE_INSTANCE";
 }

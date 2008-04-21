@@ -26,7 +26,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.EngineException;
 
@@ -36,12 +35,21 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * @author Andrea Gioia
- * 
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
  */
 public class GetMapsAction extends AbstractGeoEngineAction {
 	
-	static int counter = 0;
+	/**
+     * Request parameters
+     */
+	public static final String FEATURE_NAME = "featureName";
+	
+	
+	/**
+     * Default serial version number (just to keep eclipse happy)
+     */
+	private static final long serialVersionUID = 1L;
 	
 	/**
      * Logger component
@@ -50,27 +58,31 @@ public class GetMapsAction extends AbstractGeoEngineAction {
 	
     
 	public void service(SourceBean request, SourceBean response) throws EngineException  {
-		logger.debug("Start processing a new request...");
-
-		String featureName = (String)request.getAttribute("featureName");
+		
+		logger.debug("IN");
+		
+		String featureName = null;
+		List maps = null;
+		StringBuffer buffer = null;
+		SourceBean result = null;
 		
 		super.service(request, response);
 		
-		MapCatalogueAccessUtils mapCatalogueClient = null;
-		mapCatalogueClient = MapConfiguration.getMapCatalogueAccessUtils();;
-		List maps = new ArrayList();
-		
-		if(mapCatalogueClient == null) {
-			counter++;
-			maps.add("MapA" + counter);
-			maps.add("MapB" + counter);
-			maps.add("MapC" + counter);
-		} else {
-			maps = getMapNamesByFeature(featureName);
+		featureName = getAttributeAsString(FEATURE_NAME);
+				
+		try {
+			maps = getGeoEngineInstance().getMapProvider().getMapNamesByFeature(featureName);
+			if(maps == null) throw new Exception("The map list returned by the map provider is NULL");
+		} catch (Exception e) {
+			logger.error("Impossible to get a list of map containing layer [" + featureName + "] ");
+			throw new EngineException("Impossible to get a list of map containing layer [" + featureName + "] ", e);
 		}
 		
+		if(maps.size() == 0) {
+			logger.warn("The list of map containing layer [" + featureName + "] is empty");
+		}
 		
-		StringBuffer buffer = new StringBuffer();
+		buffer = new StringBuffer();
 		buffer.append("<MAPS>");
 		for(int i = 0; i < maps.size(); i++) {
 			String mapName = (String)maps.get(i);
@@ -78,7 +90,8 @@ public class GetMapsAction extends AbstractGeoEngineAction {
 		}
 		buffer.append("</MAPS>");
 		
-		SourceBean result;
+		logger.debug( "Map list: " + buffer.toString() );
+		
 		try {
 			result = new SourceBean("RESPONSE");
 			result.setAttribute(SourceBean.fromXMLString(buffer.toString()));
@@ -88,5 +101,9 @@ public class GetMapsAction extends AbstractGeoEngineAction {
 		
 		response.setBean(result);
 		response.setName(result.getName());
+		
+		logger.debug( "Generated service response: " + response );
+		
+		logger.debug("OUT");
 	}
 }

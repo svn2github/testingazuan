@@ -15,35 +15,55 @@ import it.eng.spagobi.utilities.engines.EngineException;
 import org.apache.log4j.Logger;
 
 /**
- * Spago Action which executes the map producing request  
+ * @author Andrea Gioia
+ * 
  */
 public class SaveAnalysisAction extends AbstractGeoEngineAction {	
 	
-	// request parameters
+	/**
+     * Request parameters
+     */
 	private static final String ANALYSYS_NAME = "name";
 	private static final String ANALYSYS_DESCRIPTION = "description";
 	private static final String ANALYSYS_SCOPE = "scope";
+	
+	/**
+     * Default serial version number (just to keep eclipse happy)
+     */
+	private static final long serialVersionUID = 1L;
 	
 	/**
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(SaveAnalysisAction.class);
     
-    
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
 		
+		logger.debug("IN");
+		
+		String name = null;
+		String description  = null;
+		String scope = null;
+		EngineAnalysisMetadata analysisMetadata = null;
+		GeoEngineAnalysisState analysisState = null;
+				
 		super.service(serviceRequest, serviceResponse);
 		
-		String name = getAttributeAsString( ANALYSYS_NAME );
-		String description  = getAttributeAsString( ANALYSYS_DESCRIPTION );
-		String scope = getAttributeAsString( ANALYSYS_SCOPE );
+		name = getAttributeAsString( ANALYSYS_NAME );
+		logger.debug("Analysy name: " + name);
+		description  = getAttributeAsString( ANALYSYS_DESCRIPTION );
+		logger.debug("Analysy description: " + description);
+		scope = getAttributeAsString( ANALYSYS_SCOPE );
+		logger.debug("Analysy scope: " + scope);
 
-		EngineAnalysisMetadata analysisMetadata = getAnalysisMetadata();
-		GeoEngineAnalysisState analysisState = (GeoEngineAnalysisState)getAnalysisState();		
+				
+		analysisMetadata = getAnalysisMetadata();
+		analysisState = (GeoEngineAnalysisState)getAnalysisState();		
 		
 		analysisMetadata.setName(name);
 		analysisMetadata.setDescription(description);
 		analysisMetadata.setScope(scope);
+		analysisState.refreshRowData();
 		
 		ContentServiceProxy proxy = new ContentServiceProxy( getUserId(), getHttpSession() );
 	    try {

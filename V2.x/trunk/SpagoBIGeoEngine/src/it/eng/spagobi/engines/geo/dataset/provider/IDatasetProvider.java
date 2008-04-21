@@ -6,25 +6,31 @@
 package it.eng.spagobi.engines.geo.dataset.provider;
 
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.Set;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.configuration.DatamartProviderConfiguration;
-import it.eng.spagobi.engines.geo.datamart.Datamart;
+import it.eng.spagobi.engines.geo.IGeoEngineComponent;
+import it.eng.spagobi.engines.geo.dataset.DataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
 /**
- * Defines methods for the recovering of the datawarehouse data
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
  */
-public interface IDatasetProvider {
+public interface IDatasetProvider extends IGeoEngineComponent {
     
-    public abstract Datamart getDatamartObject() throws EMFUserError;
+    DataSet getDataSet();    
+    SourceBean getDataDetails(String filterValue);
     
-    public SourceBean getDataDetails(String filterValue) throws EMFUserError;
+    void setSelectedHierarchyName(String hierarchyName);
+    String getSelectedHierarchyName();
+    void setSelectedLevelName(String levelName);
+    String getSelectedLevelName();
     
-    
-    public DatamartProviderConfiguration getDatamartProviderConfiguration() ;
-
-	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration);
-
+    Set getHierarchyNames();
+    Hierarchy getHierarchy(String name);    
+    Hierarchy getSelectedHierarchy();
+    Hierarchy.Level getSelectedLevel();
 }

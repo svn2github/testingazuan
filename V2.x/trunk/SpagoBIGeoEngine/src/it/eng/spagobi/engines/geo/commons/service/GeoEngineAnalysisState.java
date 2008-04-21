@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.geo.commons.service;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
@@ -60,20 +62,74 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 		parseRowData();
 	}
 	
+	public void refreshRowData( ) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator it = properties.keySet().iterator();
+		while( it.hasNext() ) {
+			String pName = (String)it.next();
+			String pValue = properties.getProperty(pName);
+			buffer.append(pName + "=" + pValue + ";");
+		}
+		
+		super.setRowData(buffer.toString().getBytes());
+	}
+	
 	public String getSelectedHierarchy() {
 		return properties.getProperty("selected_hierachy");
+	}
+	
+	public void setSelectedHierarchyName(String hierarchyName) {
+		properties.setProperty("selected_hierachy", hierarchyName);
 	}
 
 	public String getSelectedHierarchyLevel() {
 		return properties.getProperty("selected_hierarchy_level");		
 	}
+	
+	public void setSelectedLevelName(String levelName) {
+		properties.setProperty("selected_hierarchy_level", levelName);		
+	}
 
-	public String getSelectedMap() {
+	public String getSelectedMapName() {
 		return properties.getProperty("selected_map");
+	}
+	
+	public void setSelectedMapName(String mapName) {
+		properties.setProperty("selected_map", mapName);
 	}
 
 	public String getSelectedLayers() {
 		return properties.getProperty("selected_layers");
 	}
+	
+	public void setSelectedLayers(String layers) {
+		properties.setProperty("selected_layers", layers);
+	}
+	
+	public void setSelectedLayers(List layers) {
+		String layersStr = null;
+		
+		if(layers.size() > 0) layersStr = (String)layers.get(0);
+		for(int i = 1; i < layers.size(); i++) {
+			layersStr += "," + (String)layers.get(i);
+		}
+		
+		if(layersStr != null){
+			setSelectedLayers(layersStr);
+		}
+	}
+	
+	public String toString() {
+    	String str = "";
+    	
+    	str += "[";
+    	str += "selectedHierachy:" + getSelectedHierarchy() + "; ";
+    	str += "selectedLevel:" + getSelectedHierarchyLevel() + "; ";
+    	str += "selectedMap:" + getSelectedMapName() + "; ";
+    	str += "selectedLayers:" + getSelectedLayers();
+    	str += "]";
+    	
+    	return str;
+    }
 	
 }

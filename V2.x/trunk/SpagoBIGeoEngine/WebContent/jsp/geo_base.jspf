@@ -25,13 +25,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
 <%@ page import="java.util.*,
 				 it.eng.spago.base.*,
+				 it.eng.spagobi.engines.geo.*,
 				 it.eng.spagobi.engines.geo.service.*,
 				 it.eng.spagobi.engines.geo.service.initializer.*,
 				 it.eng.spagobi.engines.geo.commons.service.*,
 				 it.eng.spagobi.utilities.engines.*,
 				 it.eng.spagobi.engines.geo.commons.constants.*,
-				 it.eng.spagobi.engines.geo.configuration.*,
-				 it.eng.spagobi.utilities.callbacks.mapcatalogue.* "%>
+				 it.eng.spagobi.utilities.callbacks.mapcatalogue.*,
+				 it.eng.spagobi.engines.geo.map.provider.*,
+				 it.eng.spagobi.engines.geo.map.renderer.*,
+				 it.eng.spagobi.engines.geo.dataset.provider.* "%>
 				 
 
 	<%-- Necessary for window Javascript library --%>
@@ -62,7 +65,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	SourceBean serviceResponse = null;
 	GeoEngineAnalysisState analysisState = null;
 	EngineAnalysisMetadata analysisMetadata = null;
-	MapConfiguration mapConfiguration = null;
+	
+	GeoEngineInstance geoEngineInstance = null;
+	IDatasetProvider datamartProvider = null;
+	IMapProvider mapProvider = null;
+	IMapRenderer mapRenderer = null;
 	SpagoBIRequest spagoBIRequest = null;
 	String baseUrl = null;
 	
@@ -78,6 +85,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	analysisMetadata = (EngineAnalysisMetadata)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_METADATA);
 	analysisState = (GeoEngineAnalysisState)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_STATE);
 	
-	mapConfiguration = (MapConfiguration)sessionContainer.getAttribute(GeoEngineConstants.MAP_CONFIGURATION);
+	geoEngineInstance = (GeoEngineInstance)sessionContainer.getAttribute( GeoEngineConstants.GEO_ENGINE_INSTANCE );
+	
+	mapRenderer = geoEngineInstance.getMapRenderer();
+	mapProvider = geoEngineInstance.getMapProvider();
+	datamartProvider = geoEngineInstance.getDatasetProvider();
 %>
     

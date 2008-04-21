@@ -36,6 +36,12 @@
 	<ACTION name="GET_LAYERS_ACTION" class="it.eng.spagobi.engines.geo.service.GetLayersAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="SERVICE_EXCEPTION_ACTION" class="it.eng.spagobi.engines.geo.service.ServiceExceptionAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
     
     
 </ACTIONS>

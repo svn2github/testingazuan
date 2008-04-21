@@ -5,35 +5,33 @@
 **/
 package it.eng.spagobi.engines.geo.map.provider;
 
+import java.util.List;
+
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.configuration.MapProviderConfiguration;
-import it.eng.spagobi.engines.geo.datamart.Datamart;
+import it.eng.spagobi.engines.geo.IGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.dataset.DataSet;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.w3c.dom.svg.SVGDocument;
 
 /**
- * Defines methods for the svg map stream recovering
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
  */
-public interface IMapProvider {
+public interface IMapProvider extends IGeoEngineComponent {
     
-	/**
-     * Gets an xml stream reader of the svg map.
-     * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
-     * map recovering
-     */
-	public abstract XMLStreamReader getSVGMapStreamReader() throws EMFUserError;
 	
-	/**
-     * Gets the DOM of the svg map.
-     * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
-     * map recovering
-     */
-	public abstract SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError;
+	XMLStreamReader getSVGMapStreamReader() throws GeoEngineException;
+	XMLStreamReader getSVGMapStreamReader(String mapName) throws GeoEngineException;
 	
-	public abstract MapProviderConfiguration getMapProviderConfiguration();
-
-	public abstract void setMapProviderConfiguration(MapProviderConfiguration mapProviderConfiguration);
+	SVGDocument getSVGMapDOMDocument() throws GeoEngineException;	
+	SVGDocument getSVGMapDOMDocument(String mapName) throws GeoEngineException;
 	
+	String getSelectedMapName();
+	void setSelectedMapName(String mapName);
+	
+	List getMapNamesByFeature(String featureName) throws Exception;
+	List getFeatureNamesInMap(String mapName) throws Exception;
 }

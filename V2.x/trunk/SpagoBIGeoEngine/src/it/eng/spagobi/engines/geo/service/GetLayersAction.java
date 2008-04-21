@@ -26,7 +26,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.EngineException;
 
@@ -41,38 +40,50 @@ import org.apache.log4j.Logger;
  */
 public class GetLayersAction extends AbstractGeoEngineAction {
 	
-	static int counter = 0;
+	/**
+     * Request parameters
+     */
+	public static final String MAP_NAME = "mapName";
+	
+	
+	/**
+     * Default serial version number (just to keep eclipse happy)
+     */
+	private static final long serialVersionUID = 1L;
 	
 	/**
      * Logger component
      */
-    public static transient Logger logger = Logger.getLogger(GetLayersAction.class);
+    private static transient Logger logger = Logger.getLogger(GetLayersAction.class);
 	
     
 	public void service(SourceBean request, SourceBean response) throws EngineException  {
-		logger.debug("Starting service method...");
+		
+		logger.debug("IN");
+		
+		String mapName = null;
+		List layers = null;
+		StringBuffer buffer = null;
+		SourceBean resultSB = null;
 		
 		super.service(request, response);
 		
-		String mapName = (String)request.getAttribute("mapName");
+		mapName = getAttributeAsString(MAP_NAME);
 		
-		MapCatalogueAccessUtils mapCatalogueClient = null;
-		mapCatalogueClient = MapConfiguration.getMapCatalogueAccessUtils();
-		List layers = new ArrayList();
+		try {
+			layers = getGeoEngineInstance().getMapProvider().getFeatureNamesInMap(mapName);
+			if(layers == null) throw new Exception("The layers list returned by the map provider is NULL");
+		} catch (Exception e) {
+			logger.error("Impossible to get a list of layers contained into map [" + mapName + "] ");
+			throw new EngineException("Impossible to get a list of layers contained into map [" + mapName + "] ", e);
+		}
 		
-		
-		
-		if(mapCatalogueClient == null) {
-			counter++;
-			layers.add("LayerA" + counter);
-			layers.add("LayerB" + counter);
-			layers.add("LayerC" + counter);
-		} else {
-			layers = getFeatureNamesInMap(mapName);
+		if(layers.size() == 0) {
+			logger.warn("The list of layers contained into mapr [" + mapName + "] is empty");
 		}
 		
 		
-		StringBuffer buffer = new StringBuffer();
+		buffer = new StringBuffer();
 		buffer.append("<LAYERS>");
 		for(int i = 0; i < layers.size(); i++) {
 			String layerName = (String)layers.get(i);
@@ -82,15 +93,21 @@ public class GetLayersAction extends AbstractGeoEngineAction {
 		buffer.append("<LAYER>" + "valori" + "</LAYER>");
 		buffer.append("</LAYERS>");
 		
-		SourceBean result = null;
+		logger.debug( "Layers list: " + buffer.toString() );
+		
+		
 		try {
-			result = new SourceBean("RESPONSE");
-			result.setAttribute(SourceBean.fromXMLString(buffer.toString()));
+			resultSB = new SourceBean("RESPONSE");
+			resultSB.setAttribute(SourceBean.fromXMLString(buffer.toString()));
 		} catch (SourceBeanException e) {
 			throw new GeoEngineException("Impossible to generate service responce bean in " + GetLayersAction.class, e);
 		}
 		
-		response.setBean(result);
-		response.setName(result.getName());
+		response.setBean(resultSB);
+		response.setName(resultSB.getName());
+		
+		logger.debug( "Generated service response: " + response );
+		
+		logger.debug("OUT");
 	}
 }

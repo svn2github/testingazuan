@@ -28,6 +28,14 @@
 		</RENDERING>
 	</PUBLISHER>
 	
+	<PUBLISHER name="DATA_DETAILS_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/dataDetails.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
 	
 	<PUBLISHER name="SECURITY_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
@@ -37,7 +45,7 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
+	<PUBLISHER name="SERVICE_EXCEPTION_ACTION_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
 				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
@@ -45,10 +53,10 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-	<PUBLISHER name="DATA_DETAILS_PUBLISHER">
+	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/dataDetails.jsp" />
+				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>

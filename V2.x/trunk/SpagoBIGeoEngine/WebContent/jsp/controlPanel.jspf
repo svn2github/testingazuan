@@ -83,7 +83,8 @@
 					
 					<div class="panelBody">		
 						<center>	
-						<input type="submit" value="Refresh Map"/>	
+						<!--  input type="submit" value="Refresh Map"/ -->	
+						<input type="button" value="Refresh Map" onClick="refreshAnalysis()"/>	
 						</center>	
 						
 						<%

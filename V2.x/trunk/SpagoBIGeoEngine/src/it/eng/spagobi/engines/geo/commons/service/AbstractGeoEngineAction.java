@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.util.List;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
 import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
@@ -53,32 +53,9 @@ public class AbstractGeoEngineAction extends AbstractEngineAction {
 	
 
 	
-	public MapConfiguration getMapConfiguration() {
-		return (MapConfiguration)getAttributeFromSession( GeoEngineConstants.MAP_CONFIGURATION );
+	public GeoEngineInstance getGeoEngineInstance() {
+		return (GeoEngineInstance)getAttributeFromSession( GeoEngineConstants.GEO_ENGINE_INSTANCE );
 	}
 	
-	private MapCatalogueAccessUtils getMapCatalogue(){
-		MapCatalogueAccessUtils mapCatalogueClient = null;
-		mapCatalogueClient = MapConfiguration.getMapCatalogueAccessUtils();
-		if(mapCatalogueClient == null) {
-			logger.warn("Impossible to get MapCatalogueAccessUtils from MapConfiguration");
-		}
-		return mapCatalogueClient;
-	}
 	
-	public List getFeatureNamesInMap(String mapName) throws GeoEngineException  {
-		try {
-			return getMapCatalogue().getFeatureNamesInMap(mapName);
-		} catch (Exception e) {
-			throw new GeoEngineException("Impossible to get names of features enbedded in map " + mapName, e);
-		}
-	}
-	
-	public List getMapNamesByFeature(String featureName) throws GeoEngineException {
-		try {
-			return getMapCatalogue().getMapNamesByFeature(featureName);
-		} catch (Exception e) {
-			throw new GeoEngineException("Impossible to get names of maps that contain feature " + featureName, e);
-		}
-	}
 }

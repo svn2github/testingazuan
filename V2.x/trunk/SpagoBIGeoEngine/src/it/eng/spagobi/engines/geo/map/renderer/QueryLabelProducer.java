@@ -33,8 +33,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.engines.geo.configuration.Constants;
-import it.eng.spagobi.engines.geo.configuration.DataSource;
+import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.datasource.DataSource;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -49,19 +49,7 @@ public class QueryLabelProducer implements LabelProducer {
 	
 	public void init(SourceBean conf) {
 		SourceBean dataSourceSB = (SourceBean)conf.getAttribute("DATASOURCE");
-		String jndiName = (String)dataSourceSB.getAttribute(Constants.DATASET_RNAME_ATTR);		
-		String driver = (String)dataSourceSB.getAttribute(Constants.DATASET_DRIVER_ATTR);		
-		String password = (String)dataSourceSB.getAttribute(Constants.DATASET_PWD_ATTR);		
-		String user = (String)dataSourceSB.getAttribute(Constants.DATASET_USER_ATTR);		
-		String url = (String)dataSourceSB.getAttribute(Constants.DATASET_URL_ATTR);	
-		
-		dataSource = new DataSource(
-				   driver,
-		           jndiName,
-		           password,
-		           url,
-		           user,
-		           "GEO CONNECTION");
+		dataSource = new DataSource(dataSourceSB);
 		
 		SourceBean querySB = (SourceBean)conf.getAttribute("QUERY");
 		query = querySB.getCharacters();
@@ -83,7 +71,7 @@ public class QueryLabelProducer implements LabelProducer {
 		String label = text;
 		Connection connection = null;
 		try {       
-            connection = dataSource.readConnection();
+            connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
             statement.execute(query);
             ResultSet resultSet = statement.getResultSet(); 

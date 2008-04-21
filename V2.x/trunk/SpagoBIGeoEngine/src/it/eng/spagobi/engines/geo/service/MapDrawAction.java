@@ -6,167 +6,114 @@
 package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.tracing.TracerSingleton;
+import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.engines.geo.configuration.Constants;
-import it.eng.spagobi.engines.geo.configuration.DatamartProviderConfiguration;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
-import it.eng.spagobi.engines.geo.configuration.MapRendererConfiguration;
-import it.eng.spagobi.engines.geo.datamart.Datamart;
-import it.eng.spagobi.engines.geo.datamart.provider.DatamartProviderFactory;
-import it.eng.spagobi.engines.geo.datamart.provider.IDatamartProvider;
-import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
-import it.eng.spagobi.engines.geo.map.provider.MapProviderFactory;
-import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
-import it.eng.spagobi.engines.geo.map.renderer.MapRendererFactory;
+import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
-import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.EngineException;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import sun.misc.BASE64Decoder;
 
-/**
- * Spago Action which executes the map producing request  
- */
 public class MapDrawAction extends AbstractGeoEngineAction {
 	
-	// request 
+	/**
+     * Request parameters
+     */
 	public static final String HIERARCHY_NAME = "hierarchyName";
 	public static final String HIERARCHY_LEVEL = "level";
 	public static final String MAP = "map";
-	public static final String LAYERS = "layer";
-	
-	
+	public static final String LAYERS = "layer";	
 	
 	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
+	
 	/**
      * Logger component
      */
-    public static transient Logger logger = Logger.getLogger(GetLayersAction.class);
+    public static transient Logger logger = Logger.getLogger(MapDrawAction.class);
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
-		logger.debug("Starting service method...");
-		
-		super.service(serviceRequest, serviceResponse);
-		this.freezeHttpResponse();	
 		
 		String selectedHierarchyName = null;
 		String selectedLevelName = null;
 		String selectedMapName = null;
 		Object layers = null;
 		List selectedLayers = null;
-		MapRendererConfiguration mapRendererConfiguration = null;
-		DatamartProviderConfiguration datamartProviderConfiguration = null;
+		String outputFormat = null;
+		File maptmpfile = null;
+		AuditAccessUtils auditAccessUtils = null;
+		
+		logger.debug("IN");
+		
+		try {
+		
+		auditAccessUtils = (AuditAccessUtils)getAttributeFromSession("SPAGOBI_AUDIT_UTILS");
+		if (auditAccessUtils != null) {
+			auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), new Long(System.currentTimeMillis()), null, 
+					"EXECUTION_STARTED", null, null);
+		}
+		
+		super.service(serviceRequest, serviceResponse);
+		
+		
 		
 		selectedHierarchyName = getAttributeAsString( HIERARCHY_NAME );				
 		selectedLevelName = getAttributeAsString( HIERARCHY_LEVEL );
-		selectedMapName = getAttributeAsString( MAP);
-		layers = getAttribute( LAYERS);
+		selectedMapName = getAttributeAsString( MAP );
+		layers = getAttribute( LAYERS );
 		
+		selectedLayers = parseLayers( layers );		
 		
-		AuditAccessUtils auditAccessUtils = (AuditAccessUtils)getAttributeFromSession("SPAGOBI_AUDIT_UTILS");
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), new Long(System.currentTimeMillis()), null, 
-				"EXECUTION_STARTED", null, null);
-		
-		
-				
-		if(layers != null) {
-			if(layers instanceof ArrayList) {
-				selectedLayers = (List)layers;
-			} else if (layers instanceof String) {
-				selectedLayers = new ArrayList();
-				selectedLayers.add( layers );
-			} else {
-				selectedLayers = new ArrayList();
-				selectedLayers.add(layers.toString());
-			}
-		}
-		
-		// configre map
+		GeoEngineAnalysisState analysisState =  (GeoEngineAnalysisState)getAnalysisState();
 		if(selectedMapName != null) {
-			getMapConfiguration().getMapProviderConfiguration().setMapName(selectedMapName);
+			analysisState.setSelectedMapName( selectedMapName );
+		}
+		if(selectedHierarchyName != null) {
+			analysisState.setSelectedHierarchyName( selectedHierarchyName );
+		}
+		if(selectedLevelName != null) {
+			analysisState.setSelectedLevelName( selectedLevelName );
+		}
+		if(selectedLayers != null && selectedLayers.size() > 0) {
+			analysisState.setSelectedLayers( selectedLayers );
 		}
 		
-		// configure datamartProvider
-		datamartProviderConfiguration = getMapConfiguration().getDatamartProviderConfiguration();
+		getGeoEngineInstance().setAnalysisState( analysisState );
+	
+		outputFormat = Constants.DSVG;
 		
-		Properties props = null;
-		props = datamartProviderConfiguration.getParameters();	
-		String outputFormat = null;
-		if(props != null) {
-			outputFormat = getOutputFormat(props);	
-		}	
+	
 		
-		if(selectedHierarchyName != null) datamartProviderConfiguration.setHierarchyName(selectedHierarchyName);
-		if(selectedLevelName != null) datamartProviderConfiguration.setHierarchyLevel(selectedLevelName);
+		maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
 		
-		
-		// configure mapRenderer
-		mapRendererConfiguration = getMapConfiguration().getMapRendererConfiguration();	
-		if(selectedLayers != null && selectedLayers.size() > 0) {			
-			mapRendererConfiguration.resetLayers();
-			for(int i = 0; i < selectedLayers.size(); i++) {
-				String layerName = (String)selectedLayers.get(i);
-				MapRendererConfiguration.Layer layer = new MapRendererConfiguration.Layer();
-				layer.setName(layerName);
-				layer.setDescription(layerName);
-				layer.setSelected(true);
-				layer.setDefaultFillColor("white");
-				mapRendererConfiguration.addLayer(layer);
-			}
-		}		
-		
-		
-		
-		// create the map renderer and render the map
-		IMapRenderer mapRenderer = null;
-		File maptmpfile = null;
-		try{
-			mapRenderer = MapRendererFactory.getMapRenderer(getMapConfiguration().getMapRendererConfiguration());
-			IMapProvider mapProvider = MapProviderFactory.getMapProvider(getMapConfiguration().getMapProviderConfiguration());			
-			IDatamartProvider datamartProvider = DatamartProviderFactory.getDatamartProvider(getMapConfiguration().getDatamartProviderConfiguration());
-			
-			maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider, Constants.JPEG);
-			//maptmpfile = mapRenderer.renderMap(mapProvider, datamartProvider, Constants.DSVG);
 		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-								"GeoAction :: service : " +
-								"Error while rendering the map", e);
-			sendError(getOutputStream());
-			// AUDIT UPDATE
-			if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
-					"EXECUTION_FAILED", "Error while rendering the map", null);
-			return;
+			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
+			
+			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			description += "<br>The root cause of the error is: " + str;
+			List hints = new ArrayList();
+			hints.add("Sorry, there are no hints available right now on how to fix this problem");
+			throw new GeoEngineException("Service error", description, hints, e);
 		}
 		
+		this.freezeHttpResponse();	
 		
-		// set the content type 
-		outputFormat = Constants.JPEG;
 		String contentType = getContentType(outputFormat);
 		getHttpResponse().setContentType(contentType);
 		
@@ -178,9 +125,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 				inputStream = new FileInputStream(maptmpfile);
 				SVGMapConverter.SVGToJPEGTransform(inputStream, getOutputStream());
 			} catch (Exception e) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-			            			TracerSingleton.CRITICAL, 
-			            			"GeoAction :: service : error while transforming into jpeg", e);
+				logger.error("error while transforming into jpeg", e);
 				sendError(getOutputStream());
 				// AUDIT UPDATE
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
@@ -190,19 +135,17 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			try{
 				inputStream.close();
 			} catch (Exception e ){
-				TracerSingleton.log(Constants.LOG_NAME, 
-            						TracerSingleton.CRITICAL, 
-            						"GeoAction :: service : error while closing input stream", e);
+				logger.error("error while closing input stream", e);
 			}
-		} else if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
+		} else if(outputFormat.equalsIgnoreCase(Constants.SVG) 
+				|| outputFormat.equalsIgnoreCase(Constants.DSVG)
+				|| outputFormat.equalsIgnoreCase(Constants.XDSVG)) {
 			InputStream inputStream = null;
 			try {
 				inputStream = new FileInputStream(maptmpfile);
 				flushFromInputStreamToOutputStream(inputStream, getOutputStream(), false);
 			} catch (Exception e) {
-				TracerSingleton.log(Constants.LOG_NAME, 
-            						TracerSingleton.CRITICAL, 
-            						"GeoAction :: service : error while flushing svg", e);
+				logger.error("error while flushing svg", e);
 				sendError(getOutputStream());
 				// AUDIT UPDATE
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
@@ -212,14 +155,10 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			try{
 				inputStream.close();
 			} catch (Exception e ){
-				TracerSingleton.log(Constants.LOG_NAME, 
-									TracerSingleton.CRITICAL, 
-									"GeoAction :: service : error while closing input stream", e);
+				logger.error("error while closing input stream", e);
 			}
 		} else {
-			TracerSingleton.log(Constants.LOG_NAME, 
-					            TracerSingleton.CRITICAL, 
-					            "GeoAction :: service : Output Format not specified");
+			logger.error("Output Format not specified");
 			sendError(getOutputStream());
 			return;
 		}
@@ -233,14 +172,28 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	}
 	
 	
+	private List parseLayers(Object layers) {
+		List selectedLayers = null;
+		if(layers != null) {
+			if(layers instanceof ArrayList) {
+				selectedLayers = (List)layers;
+			} else if (layers instanceof String) {
+				selectedLayers = new ArrayList();
+				selectedLayers.add( layers );
+			} else {
+				selectedLayers = new ArrayList();
+				selectedLayers.add(layers.toString());
+			}
+		}
+		return selectedLayers;
+	}
+	
 	private ServletOutputStream getOutputStream() {
 		ServletOutputStream outputStream = null;
 		try{
 			outputStream = getHttpResponse().getOutputStream();
 		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-								"GeoAction :: service : " +
-								"Error while getting output stream", e);
+			logger.error("Error while getting output stream", e);
 		}
 		return outputStream;
 	}
@@ -251,7 +204,9 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	 * @return the string code of the content type for the output format
 	 */
 	private String getContentType(String outFormat) {
-		if (outFormat.equalsIgnoreCase(Constants.SVG))
+		if (outFormat.equalsIgnoreCase(Constants.SVG)
+				|| outFormat.equalsIgnoreCase(Constants.DSVG)
+				|| outFormat.equalsIgnoreCase(Constants.XDSVG))
 			return Constants.SVG_MIME_TYPE;
 		else if (outFormat.equalsIgnoreCase(Constants.PDF))
 			return Constants.PDF_MIME_TYPE;
@@ -270,14 +225,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		else return Constants.TEXT_MIME_TYPE;
 	}
 	
-	private String getOutputFormat(Properties parameters) {
-		// get the output format parameter (SVG is the default)
-		String outputFormat = parameters.getProperty(Constants.OUTPUT_FORMAT_PARAMETER);
-		if(!checkOutputFormat(outputFormat)) {
-			outputFormat = Constants.SVG;
-		}
-		return outputFormat;
-	}
+	
 	
 	/**
 	 * Checks if the output format requested is allowed
@@ -301,35 +249,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		return true;
 	}
 	
-	private byte[] getTemplate(SourceBean serviceRequest) {
-		byte[] template = null;
-		
-		// get the bytes of the template xml file from the request (the template is encoded in byte64)
-		String templateBase64Coded ;
-		Object object = serviceRequest.getAttribute(Constants.TEMPLATE_PARAMETER);
-		if(object instanceof ArrayList) {
-			List list = (List)object;
-			templateBase64Coded = (String)list.get(0);
-		} else {
-			templateBase64Coded = (String)object;
-		}
-		
-		
-		BASE64Decoder bASE64Decoder = new BASE64Decoder();
-		
-		try{
-			template = bASE64Decoder.decodeBuffer(templateBase64Coded);
-		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-        						"GeoAction :: service : " +
-        						"Error while decoding base64 template", e);
-			sendError(getOutputStream());
-			auditExecutionFailure("Error while decoding base64 template");
-			return null;
-		}
-		
-		return template;
-	}
+	
 	
 	
 	private void auditExecutionFailure(String msg) {
@@ -352,9 +272,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			out.write("</body>".getBytes());
 			out.write("</html>".getBytes());
 		} catch (Exception e) {
-			TracerSingleton.log(Constants.LOG_NAME, TracerSingleton.MAJOR, 
-								"GeoAction :: sendError : " +
-								"Unable to write into output stream ", e);
+			logger.error("Unable to write into output stream ", e);
 		}
 	}	
 	
@@ -382,9 +300,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 				is.close();
 			}
 		} catch (IOException ioe) {
-			TracerSingleton.log(Constants.LOG_NAME, 
-		            TracerSingleton.CRITICAL, 
-		            "GeoAction :: flushFromInputStreamToOutputStream : Error while flushing", ioe);
+			logger.error("Error while flushing", ioe);
 		}
 	}
 	

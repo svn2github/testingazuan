@@ -21,34 +21,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
-import it.eng.spagobi.engines.geo.configuration.MapRendererConfiguration;
-import it.eng.spagobi.engines.geo.datamart.provider.IDatamartProvider;
+import it.eng.spagobi.engines.geo.IGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * @author Andrea Gioia
  *
  */
-public interface IMapRenderer {
+public interface IMapRenderer  extends IGeoEngineComponent {
 	
 	public File renderMap(IMapProvider mapProvider, 
-			  IDatamartProvider datamartProvider,
-			  String outputFormat) throws Exception;
+			  IDatasetProvider datamartProvider,
+			  String outputFormat) throws GeoEngineException;
 			  
-	/**
-	 * Gets the original svg map and the datawarehouse data and then transfor the svg map
-	 * based on the template configuration and data recovered. The new map is stored in a 
-	 * temporary file 
-	 * @return the File object associated to the temporary file of the new svg map 
-	 * @throws Exception If some errors occur during the elaboration
-	 */
-	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception;
 	
-	public MapRendererConfiguration getMapRendererConfiguration();
-
-	public void setMapRendererConfiguration(MapRendererConfiguration mapRendererConfiguration);
+	File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider) throws GeoEngineException;
+	
+	public String[] getLayerNames();
+	public Layer getLayer(String layerName);
+	public void addLayer(Layer layer);
+	void clearLayers();
 }

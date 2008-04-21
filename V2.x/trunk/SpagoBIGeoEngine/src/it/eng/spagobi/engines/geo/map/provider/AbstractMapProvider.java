@@ -5,59 +5,80 @@
 **/
 package it.eng.spagobi.engines.geo.map.provider;
 
+import java.util.List;
+
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.configuration.MapProviderConfiguration;
-import it.eng.spagobi.engines.geo.datamart.Datamart;
+import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
+import it.eng.spagobi.engines.geo.dataset.provider.configurator.AbstractDatasetProviderConfigurator;
+import it.eng.spagobi.engines.geo.map.provider.configurator.AbstractMapProviderConfigurator;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
- * Defines methods to get an xml stream reader of the svg map.
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
  */
-public class AbstractMapProvider implements IMapProvider {
+public class AbstractMapProvider extends AbstractGeoEngineComponent implements IMapProvider {
 
-	protected MapProviderConfiguration mapProviderConfiguration;
-	
-    /**
-     * Constructors
+	private String selectedMapName;
+		
+	/**
+     * Logger component
      */
+    public static transient Logger logger = Logger.getLogger(AbstractMapProvider.class);
+	
+	
 	public AbstractMapProvider() {
         super();
     }
 	
-    public AbstractMapProvider(MapProviderConfiguration mapProviderConfiguration) {
-        super();
-        setMapProviderConfiguration(mapProviderConfiguration);
+	public void init(Object conf) throws GeoEngineException {
+		super.init(conf);
+		AbstractMapProviderConfigurator.configure( this, getConf() );
+	}
+	
+   
+	public XMLStreamReader getSVGMapStreamReader() throws GeoEngineException {
+    	return getSVGMapStreamReader(selectedMapName);
     }
-
-    /**
-     * Gets an xml stream reader of the svg map.
-     * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
-     * map recovering
-     */
-    public XMLStreamReader getSVGMapStreamReader() throws EMFUserError {
+	
+    public XMLStreamReader getSVGMapStreamReader(String mapName) throws GeoEngineException {
     	return null;
     }
     
-	/**
-     * Gets the DOM of the svg map.
-     * @param mapProviderConfiguration SourceBean object which contains the configuration for the 
-     * map recovering
-     */
-	public SVGDocument getSVGMapDOMDocument(Datamart datamart) throws EMFUserError {
+    public SVGDocument getSVGMapDOMDocument() throws GeoEngineException {
+		return getSVGMapDOMDocument(selectedMapName);
+	}
+    
+	public SVGDocument getSVGMapDOMDocument(String mapName) throws GeoEngineException {
+		return null;
+	}
+
+
+	public String getSelectedMapName() {
+		return selectedMapName;
+	}
+
+
+	public void setSelectedMapName(String selectedMapName) {
+		this.selectedMapName = selectedMapName;
+	}
+
+	public List getMapNamesByFeature(String featureName) throws Exception {
+		return null;
+	}
+
+	public List getFeatureNamesInMap(String mapName) throws Exception {
 		return null;
 	}
 
 	
-	public MapProviderConfiguration getMapProviderConfiguration() {
-		return mapProviderConfiguration;
-	}
-
-	public void setMapProviderConfiguration(MapProviderConfiguration mapProviderConfiguration) {
-		this.mapProviderConfiguration = mapProviderConfiguration;
-	}
    
 
 }

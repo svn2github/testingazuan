@@ -1,5 +1,5 @@
 <%-- 
-
+f
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -35,26 +35,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%	
+	boolean isDrillPanelVisible = true;
+	String isSaveSubObjFuncActive = null;
 	String actionUrl = null;
 	String isDocumentCompositionModeActive = null;
-	String isSaveSubObjFuncActive = null;	
-	boolean isDrillPanelVisible = true;
-	
-	
-	isSaveSubObjFuncActive = (String)serviceResponse.getAttribute("isSaveSubObjFuncActive");
-	isDocumentCompositionModeActive = (String)serviceResponse.getAttribute("isDocumentCompositionModeActive");
-	if(isDocumentCompositionModeActive != null && isDocumentCompositionModeActive.equalsIgnoreCase("TRUE")) {
-		isDrillPanelVisible = false;
-	}
-
-	actionUrl = baseUrl + "/servlet/AdapterHTTP?ACTION_NAME=MAP_DRAW_ACTION";
-	
-	
-	List hierachies = mapConfiguration.getDatamartProviderConfiguration().getHierarchies();
-	DatamartProviderConfiguration.Hierarchy selectedHierarchy = mapConfiguration.getDatamartProviderConfiguration().getSelectedHierarchy();
-	List selectedHierarchyLevels =  selectedHierarchy.getLevels();
-	DatamartProviderConfiguration.Hierarchy.Level selectedHierarchyAggregationLevel  = mapConfiguration.getDatamartProviderConfiguration().getSelectedLevel();
-	
 	
 	String hierarchiesInitScript = "";
 	String selectedHierarchyInitScript = "";
@@ -72,23 +56,47 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String selectedLayersMapInitScript = "";
 	String selectedLayersInitScript = "";
 	
+	
+	try {
+	
+		
+	
+	
+	
+	isSaveSubObjFuncActive = (String)serviceResponse.getAttribute("isSaveSubObjFuncActive");
+	isDocumentCompositionModeActive = (String)serviceResponse.getAttribute("isDocumentCompositionModeActive");
+	if(isDocumentCompositionModeActive != null && isDocumentCompositionModeActive.equalsIgnoreCase("TRUE")) {
+		isDrillPanelVisible = false;
+	}
+
+	actionUrl = baseUrl + "/servlet/AdapterHTTP?ACTION_NAME=MAP_DRAW_ACTION";
+	
+	
+	String[] hierachieNames = (String[])datamartProvider.getHierarchyNames().toArray(new String[0]);
+	
+	Hierarchy selectedHierarchy = datamartProvider.getSelectedHierarchy();
+	List selectedHierarchyLevels =  selectedHierarchy.getLevels();
+	Hierarchy.Level selectedHierarchyAggregationLevel  = datamartProvider.getSelectedLevel();
+	
+	
+	
+	
 	// --- HIERACHY ----------------------------------------------------------------------------------------------
 	hierarchiesInitScript = "hierarchies = [";
-	for(int i = 0; i < hierachies.size(); i++) {
-		DatamartProviderConfiguration.Hierarchy hierarchy = (DatamartProviderConfiguration.Hierarchy)hierachies.get(i);
-		hierarchiesInitScript += ((i>0?",":"") + "\"" + hierarchy.getName()) + "\"";
+	for(int i = 0; i < hierachieNames.length; i++) {
+		hierarchiesInitScript += ((i>0?",":"") + "\"" + hierachieNames[i]) + "\"";
 	}
 	hierarchiesInitScript += "];";
 	selectedHierarchyInitScript = "selectedHierarchy = \"" + selectedHierarchy.getName() + "\";";
 	
 	// --- HIERACHY LEVELS----------------------------------------------------------------------------------------------
-	for(int j = 0; j < hierachies.size(); j++) {
-		DatamartProviderConfiguration.Hierarchy hierarchy = (DatamartProviderConfiguration.Hierarchy)hierachies.get(j);
+	for(int j = 0; j < hierachieNames.length; j++) {
+		Hierarchy hierarchy = datamartProvider.getHierarchy(hierachieNames[j]);
 		hierarchyLevelsInitScript += "hierarchyLevels[\"" + hierarchy.getName() + "\"] = new Array();\n";
 		hierarchyFeaturesInitScript += "hierarchyFeatures[\"" + hierarchy.getName() + "\"] = new Array();\n";
 		List levels = hierarchy.getLevels();
 		for(int i = 0; i < levels.size(); i++) {
-			DatamartProviderConfiguration.Hierarchy.Level level = (DatamartProviderConfiguration.Hierarchy.Level)levels.get(i);
+			Hierarchy.Level level = (Hierarchy.Level)levels.get(i);
 			hierarchyLevelsInitScript += "hierarchyLevels[\"" + hierarchy.getName() + "\"][" + i + "] = \"" + level.getName()  + "\";\n";
 			hierarchyFeaturesInitScript += "hierarchyFeatures[\"" + hierarchy.getName() + "\"][" + i + "] = \"" + level.getFeatureName()  + "\";\n";
 		}
@@ -98,21 +106,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	//	 --- MAPS ----------------------------------------------------------------------------------------------
 	
-	MapCatalogueAccessUtils mapCatalogueClient = MapConfiguration.getMapCatalogueAccessUtils();
-	List maps = mapCatalogueClient.getMapNamesByFeature(selectedHierarchyAggregationLevel.getFeatureName());
+	List maps = null;
+	maps = mapProvider.getMapNamesByFeature(selectedHierarchyAggregationLevel.getFeatureName());
+	
 	mapsInitScript = "maps = [";
 	for(int i = 0; i < maps.size(); i++) {
 		String map = (String)maps.get(i);
 		mapsInitScript += ((i>0?",":"") + "\"" + map + "\"");
 	}
 	mapsInitScript += "];";
-	String mapName = mapConfiguration.getMapProviderConfiguration().getMapName();
+	String mapName = mapProvider.getSelectedMapName();
 	if(mapName == null) mapName = (String)maps.get(0);
 	selectedMapInitScript = "selectedMap = \"" + mapName + "\";";
 	
 	//	 --- LAYERS ----------------------------------------------------------------------------------------------
 	
-	List layers = mapCatalogueClient.getFeatureNamesInMap(mapName);
+	List layers = mapProvider.getFeatureNamesInMap(mapName);
 	layers.add("grafici");
 	layers.add("valori");
 	layersInitScript = "layers = [";
@@ -122,7 +131,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String layerName = (String)layers.get(i);
 		layersInitScript += ((i>0?",":"") + "\"" + layerName + "\"");
 		
-		MapRendererConfiguration.Layer layer = mapConfiguration.getMapRendererConfiguration().getLayer(layerName);
+		Layer layer = mapRenderer.getLayer(layerName);
 		if(layer != null && layer.isSelected()) {
 			selectedLayersMapInitScript +=  "selectedLayersMap[\""+ layerName +"\"] = " + "true" + ";\n";
 			selectedLayersInitScript += ((i>0?";":"") + "" + layerName + "");
@@ -132,20 +141,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	layersInitScript += "];";
 	selectedLayersInitScript += "\";";
-	
-	
-	System.out.println(hierarchiesInitScript);
-	System.out.println(selectedHierarchyInitScript);
-	System.out.println(hierarchyLevelsInitScript);
-	System.out.println(hierarchyFeaturesInitScript);
-	System.out.println(selectedLevelInitScript);
-	System.out.println(selectedFeatureInitScript);	
-	System.out.println(mapsInitScript);	
-	System.out.println(selectedMapInitScript);	
-	
-	System.out.println(layersInitScript);	
-	System.out.println(selectedLayersMapInitScript);	
-	System.out.println(selectedLayersInitScript);	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
 %>
 
 	
@@ -158,6 +156,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <script>
+
+<%="actionUrl = '" + actionUrl + "';"%>
+
 <%=hierarchiesInitScript%>
 <%=selectedHierarchyInitScript%>	
 
@@ -192,7 +193,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			        src=""
 			        width="100%"
 			        height="100%"
-			        frameborder="3">
+			        frameborder="3"
+			        style="background-color:white;">
 			</iframe>
 			
 			
@@ -210,6 +212,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</td>
 
 	<%if(isDrillPanelVisible) {%>
+	
 	<td width="15%">
 		<%@include file="../jsp/controlPanel.jspf"%>
 	</td>
@@ -232,10 +235,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		//alert(offsetHeightParent);
 		
 		var iframe = document.getElementById('mapIFrame');
-		iframe.height = '615';
-		
-		
-		
+		iframe.height = '615';		
 		
 		var executionForm = document.getElementById('executionForm');
         executionForm.submit();

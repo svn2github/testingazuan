@@ -22,51 +22,111 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.geo.map.renderer;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.configuration.MapConfiguration;
-import it.eng.spagobi.engines.geo.configuration.MapRendererConfiguration;
-import it.eng.spagobi.engines.geo.datamart.Datamart;
-import it.eng.spagobi.engines.geo.datamart.provider.IDatamartProvider;
+import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
+import it.eng.spagobi.engines.geo.map.provider.configurator.AbstractMapProviderConfigurator;
+import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
+import it.eng.spagobi.engines.geo.map.renderer.configurator.AbstractMapRendererConfigurator;
 
 /**
  * @author Andrea Gioia
  *
  */
-public class AbstractMapRenderer implements IMapRenderer{
-
-	protected MapRendererConfiguration mapRendererConfiguration;
+public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements  IMapRenderer {
+	
+	private Map measures;
+	private Map layers;
 	
 	/**
-	 * Builds the class
-	 */
+     * Logger component
+     */
+    public static transient Logger logger = Logger.getLogger(AbstractMapRenderer.class);
+	
+    
 	public AbstractMapRenderer() {
 		  super();
-	}
-
-	/**
-	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
-	 */
-	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider, String outputType) throws Exception {
-		return null;
-	}
-	/**
-	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(MapConfiguration)
-	 */
-	public File renderMap(IMapProvider mapProvider, IDatamartProvider datamartProvider) throws Exception {
-		return null;
-	}
-
-	public MapRendererConfiguration getMapRendererConfiguration() {
-		return mapRendererConfiguration;
-	}
-
-	public void setMapRendererConfiguration(
-			MapRendererConfiguration mapRendererConfiguration) {
-		this.mapRendererConfiguration = mapRendererConfiguration;
+		  measures = new HashMap();
 	}
 	
+	public void init(Object conf) throws GeoEngineException {
+		super.init(conf);
+		AbstractMapRendererConfigurator.configure( this, getConf() );
+	}
+
+	public File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider, String outputType) throws GeoEngineException {
+		return null;
+	}
+	
+	public File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider) throws GeoEngineException {
+		return null;
+	}
+	
+	public Measure getMeasure(String measureName) {
+		Measure measure = (Measure)measures.get( measureName );
+		return  measure;
+	}
+	
+	public String[] getTresholdsArray(String measureName) {
+		Measure measure = getMeasure(measureName);
+		if(measure != null) {
+			Properties params = (Properties)measure.getTresholdCalculatorParameters();
+			if(params == null) return null;
+			String pValue = params.getProperty("range");
+			String[] trasholds = pValue.split(",");
+			return trasholds;
+		}
+
+		return null;
+	}
+	
+	public String[] getColoursArray(String measureName) {
+		Measure measure = getMeasure(measureName);
+		if(measure != null) {
+			Properties params = (Properties)measure.getColurCalculatorParameters();
+			if(params == null) return null;
+			String pValue = params.getProperty("range");
+			if(pValue == null) return new String[0];
+			String[] colours = pValue.split(",");
+			return colours;
+		}
+
+		return null;
+	}
+	
+	public Layer getLayer(String layerName) {
+		return (Layer)layers.get(layerName);
+	}
+	
+	public void addLayer(Layer layer) {
+		layers.put(layer.getName(), layer);
+	}
+	
+	public String[] getLayerNames() {
+		if(layers == null) return null;
+		return (String[])layers.keySet().toArray(new String[0]);
+	}
+
+	public void setMeasures(Map measures) {
+		this.measures = measures;
+	}
+
+	public void setLayers(Map layers) {
+		this.layers = layers;
+	}
+	
+	public void clearLayers() {
+		layers.clear();
+	}
 
 }

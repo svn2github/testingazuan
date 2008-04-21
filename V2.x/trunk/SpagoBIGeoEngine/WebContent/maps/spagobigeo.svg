@@ -322,9 +322,9 @@ preserveAspectRatio="xMidYMin meet">
 				var mapLayer = document.getElementById(layer_names[i]);
 				//alert(layer_names[i] + " element -> " + mapLayer);
 				var displayStatus = mapLayer.getAttributeNS(null,"display");
-				var checked = false;
-				if(displayStatus == "inline") checked = true;
-				//alert(layer_names[i] + " checked -> " + checked);
+				var checked = true;
+				if(displayStatus == "none") checked = fase;
+				//alert(layer_names[i] + " checked -> " + checked + " - " + displayStatus);
 				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}
 
@@ -344,6 +344,7 @@ preserveAspectRatio="xMidYMin meet">
 			
 			//load function specific to the current map project
 			radioGroup.selectById(kpi_names[selected_kpi_index],true);
+			linkRadioGroup.selectById("drill_nav");
 		}
 		
 		function initDetailInfopanels() {

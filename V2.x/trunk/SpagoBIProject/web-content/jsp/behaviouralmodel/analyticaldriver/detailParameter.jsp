@@ -793,7 +793,7 @@ function arraysChanged(array1, array2) {
 	if (array1.length != array2.length) return true;
 	array1.sort();
 	array2.sort();
-	for (x=0; x<checkableRoles.length;x=x+1) {
+	for (x in array1) {
 		if (array1[x] != array2[x]) return true;
 	}
 	return false;
@@ -826,24 +826,20 @@ if(var1.style.display != 'inline'){
 
 
 var checkableRoles = new Array(); 
-
 <%
-  if (checkableRolesStr.endsWith(",")){
-	  checkableRolesStr = checkableRolesStr.substring(0, checkableRolesStr.length() - 1);
-  }	  
+  if (checkableRolesStr.endsWith(",")) checkableRolesStr = checkableRolesStr.substring(0, checkableRolesStr.length() - 1);
   String[] checkableRoles = checkableRolesStr.split(",");
   if (checkableRoles != null && checkableRoles.length > 0) {
 	  for (int k = 0; k < checkableRoles.length; k++) {
 	  	%>
 		checkableRoles[<%=k%>]='<%=checkableRoles[k]%>';
-		alert(k);
 	  	<%
 	  }
   }
 %>
 
 function checkAllFreeRoles() {
-	for (x=0; x<checkableRoles.length;x=x+1) {
+	for (x=0;x<checkableRoles.length;x=x+1)  {
 		aFreeCheckId = checkableRoles[x];
 		aFreeCheck = document.getElementById('extRole_' + aFreeCheckId);
 		aFreeCheck.checked = true;
@@ -851,7 +847,7 @@ function checkAllFreeRoles() {
 }
 
 function uncheckAllFreeRoles() {
-	for (x=0; x<checkableRoles.length;x=x+1) {
+	for (x=0;x<checkableRoles.length;x=x+1) {
 		aFreeCheckId = checkableRoles[x];
 		aFreeCheck = document.getElementById('extRole_' + aFreeCheckId);
 		aFreeCheck.checked = false;

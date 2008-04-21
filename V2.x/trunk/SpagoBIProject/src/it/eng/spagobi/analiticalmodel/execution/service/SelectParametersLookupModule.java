@@ -87,6 +87,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 
 	// define variable for value column name
     private String valColName = "";
+    private List visibleColNames = new ArrayList();
     private String descriptionColName = "";
     
     private static final String RETURN_PARAM = "returnParam";
@@ -482,15 +483,29 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	rowsSourceBean = list.getPaginator().getAll();
 	List colNames = new ArrayList();
 	List rows = null;
+	
 	if (rowsSourceBean != null) {
 	    rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
+	    	
 	    if ((rows != null) && (rows.size() != 0)) {
 		SourceBean row = (SourceBean) rows.get(0);
 		List rowAttrs = row.getContainedAttributes();
 		Iterator rowAttrsIter = rowAttrs.iterator();
 		while (rowAttrsIter.hasNext()) {
 		    SourceBeanAttribute rowAttr = (SourceBeanAttribute) rowAttrsIter.next();
-		    colNames.add(rowAttr.getKey());
+		    String rowKey = rowAttr.getKey();
+		    
+		    if (!visibleColNames.isEmpty()){
+		    	Iterator iterateVisCol = visibleColNames.iterator(); 
+		    	while(iterateVisCol.hasNext()){
+		    		String visibleCol = (String)iterateVisCol.next();
+		    		if (visibleCol.equals(rowKey)){
+		    			colNames.add(rowKey);
+		    		}
+		    	}
+		    }
+		    
+		    
 		}
 	    }
 	}
@@ -558,6 +573,8 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	    return result;
 	}
 	valColName = qd.getValueColumnName();
+	visibleColNames = qd.getVisibleColumnNames();
+	
 	logger.debug("valColName="+valColName);
 	descriptionColName = qd.getDescriptionColumnName();
 	logger.debug("descriptionColName="+descriptionColName);
@@ -591,6 +608,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	    return null;
 	}
 	valColName = fixlistDet.getValueColumnName();
+	visibleColNames = fixlistDet.getVisibleColumnNames();
 	logger.debug("valColName:"+valColName);
 	descriptionColName = fixlistDet.getDescriptionColumnName();
 	logger.debug("descriptionColName="+descriptionColName);
@@ -626,6 +644,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	    return null;
 	}
 	valColName = scriptDetail.getValueColumnName();
+	visibleColNames = scriptDetail.getVisibleColumnNames();
 	logger.debug("valColName="+valColName);
 	descriptionColName = scriptDetail.getDescriptionColumnName();
 	logger.debug("descriptionColName="+descriptionColName);
@@ -656,6 +675,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	    return null;
 	}
 	valColName = javaClassDetail.getValueColumnName();
+	visibleColNames = javaClassDetail.getVisibleColumnNames();
 	logger.debug("valColName="+valColName);
 	descriptionColName = javaClassDetail.getDescriptionColumnName();
 	logger.debug("descriptionColName="+descriptionColName);

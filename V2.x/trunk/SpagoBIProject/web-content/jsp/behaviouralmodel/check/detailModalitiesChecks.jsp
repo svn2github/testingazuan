@@ -191,28 +191,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 
 
-
-
-
-
-
-
- 
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
 <div id="checkDiv2" style='display:none;'>
 	<form method='POST' action='<%= formUrl %>' name='checkForm2' id='checkForm2'>
 	<input type='hidden' value=<%=(check.getCheckId() != null ? String.valueOf(check.getCheckId().intValue()) : "")%> name='id' />

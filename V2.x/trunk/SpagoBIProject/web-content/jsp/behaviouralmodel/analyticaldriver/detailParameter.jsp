@@ -826,13 +826,17 @@ if(var1.style.display != 'inline'){
 
 
 var checkableRoles = new Array(); 
+
 <%
-  if (checkableRolesStr.endsWith(",")) checkableRolesStr = checkableRolesStr.substring(0, checkableRolesStr.length() - 1);
+  if (checkableRolesStr.endsWith(",")){
+	  checkableRolesStr = checkableRolesStr.substring(0, checkableRolesStr.length() - 1);
+  }	  
   String[] checkableRoles = checkableRolesStr.split(",");
   if (checkableRoles != null && checkableRoles.length > 0) {
 	  for (int k = 0; k < checkableRoles.length; k++) {
 	  	%>
 		checkableRoles[<%=k%>]='<%=checkableRoles[k]%>';
+		alert(k);
 	  	<%
 	  }
   }

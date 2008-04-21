@@ -45,7 +45,7 @@ public abstract class BaseProfileModule extends AbstractHttpModule {
 			String userId = GeneralUtilities.findUserId(request, this.getHttpRequest());
 			logger.debug("User id = " + userId);
 			// in case the user is not specified, does nothing
-			if (userId == null && userId.trim().equals("")) {
+			if (userId == null || userId.trim().equals("")) {
 				logger.warn("User identifier not found.");
 			} else {
 				RequestContainer reqCont = RequestContainer.getRequestContainer();

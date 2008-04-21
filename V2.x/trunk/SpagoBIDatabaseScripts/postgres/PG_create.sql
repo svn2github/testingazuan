@@ -210,6 +210,14 @@ CREATE TABLE SBI_OBJECTS (
        NAME                 VARCHAR(40) NOT NULL,
        VISIBLE              SMALLINT NOT NULL,
        UUID                 VARCHAR(40) NOT NULL,
+	     DATA_SET_ID 		  INTEGER,
+	     DESCR_EXT            TEXT,
+	     OBJECTIVE            TEXT,
+	     RATING               INTEGER,
+	     LANGUAGE             VARCHAR(45),
+	     CREATION_DATE        TIMESTAMP NOT NULL,
+	     CREATION_USER        VARCHAR(45) NOT NULL,
+		 KEYWORDS			  TEXT,
 	   DATA_SOURCE_ID		INTEGER,
        CONSTRAINT XPKSBI_OBJECTS 
               PRIMARY KEY (BIOBJ_ID)

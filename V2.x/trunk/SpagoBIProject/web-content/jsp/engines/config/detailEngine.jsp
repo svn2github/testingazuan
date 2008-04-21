@@ -174,14 +174,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</select>
 	</div>
 	
-			<%Integer useDataSetI=engine.getUseDataSet();
-	boolean useDataSet=false;
-	if(useDataSetI!=null){
-		if(useDataSetI.equals(new Integer(1))){
-			useDataSet=true;
-		
-		}
-	}
+			<%boolean useDataSet=engine.getUseDataSet();
 	%>
 		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
@@ -190,20 +183,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>		
 		<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="checkbox" name="useDataSet" id="useDataSet"
-			   value="1" <%=(useDataSet==true ? "checked='checked'" : "")%>/>
+			   value="true" <%=(useDataSet==true ? "checked='checked'" : "")%>/>
 	</div>
 	
 	
 	
 	<%
-	Integer useDataSourceI=engine.getUseDataSource();
-	boolean useDataSource=false;
-	if(useDataSourceI!=null){
-		if(useDataSourceI.equals(new Integer(1))){
-			useDataSource=true;
-		
-		}
-	}
+	boolean useDataSource=engine.getUseDataSource();
 	%>
 	
 	<div class='div_detail_label'>
@@ -213,7 +199,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>	
 		<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="checkbox" name="useDataSource" id="useDataSource"
-			   value="1" <%=(useDataSource==true ? "checked='checked'" : "")%> onclick = "sourceControl();manualInputSelection=this.value;"/>
+			   value="true" <%=(useDataSource==true ? "checked='checked'" : "")%> onclick = "sourceControl();manualInputSelection=this.value;"/>
 			   
 	</div>
 	

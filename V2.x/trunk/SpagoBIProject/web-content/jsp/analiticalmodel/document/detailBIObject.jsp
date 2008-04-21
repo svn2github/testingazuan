@@ -121,10 +121,8 @@ function showEngField(docType) {
 		Engine en = (Engine) listEngines.get(i);
 		String labelEng=en.getLabel();
 		Integer idEng=en.getId();
-		Integer useDataSource=en.getUseDataSource();
-		if(useDataSource==null)useDataSource=new Integer(0);
-		Integer useDataSet=en.getUseDataSet();
-		if(useDataSet==null)useDataSet=new Integer(0);
+		boolean useDataSource=en.getUseDataSource();
+		boolean useDataSet=en.getUseDataSet();
 		
 	%>
 		engineSource[<%=idEng%>]=<%=useDataSource%>;
@@ -325,8 +323,8 @@ function checkFormVisibility(docType) {
 		      		<select class='portlet-form-input-field' style='width:230px;' 
 							name="engine" id="doc_engine" onchange = 'javascript:checkSourceVisibility(this.value);' >
 					<%
-						Integer initialUseDataSet=new Integer(0);
-						Integer initialUseDataSource=new Integer(0);
+						boolean initialUseDataSet=false;
+						boolean initialUseDataSource=false;
 					
 						Iterator itereng = listEngines.iterator();
 		      			while(itereng.hasNext()) {
@@ -347,12 +345,12 @@ function checkFormVisibility(docType) {
 		      		<% 	
 		      			}
 	String styleSource="style=\"display:none;\"";		      	
-	if(initialUseDataSource.equals(new Integer(1))){
+	if(initialUseDataSource==true){
 		styleSource="style=\"display:inline;\"";
 	}
 	
 	String styleSet="style=\"display:none;\"";		      	
-	if(initialUseDataSet.equals(new Integer(1))){
+	if(initialUseDataSet==true){
 		styleSet="style=\"display:inline;\"";
 	}
 	

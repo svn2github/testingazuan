@@ -115,11 +115,9 @@ public class DetailDistributionListUserModule extends BaseProfileModule {
 		DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
 		response.setAttribute("dlObj", dl);
 		String id = (String) request.getAttribute("DL_ID");
-		String userid = (String) request.getAttribute("userid");
 		response.setAttribute("DL_ID", id);
 
 		response.setAttribute("modality", mod);
-		response.setAttribute("userid",userid);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
 	    
 		

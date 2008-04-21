@@ -98,28 +98,32 @@
 	
 				<% 
 				
-				/*
-				String disabledFile="disabled";
-				String disabledQuery="disabled";
-				String disabledWs="disabled";
-				*/
-				String disabledFile="style=\"display: none;\"";
-				String disabledQuery="style=\"display: none;\"";
-				String disabledWs="style=\"display: none;\"";
+			
+				String disableFile="disabled";
+				String disableQuery="disabled";
+				String disableWs="disabled";
+				
+				String hideFile="style=\"display: none;\"";
+				String hideQuery="style=\"display: none;\"";
+				String hideWs="style=\"display: none;\"";
 				
 				String type="";
 				
    	       if(ds instanceof FileDataSet){
 					type="file";
-					disabledFile="";;
-				}
+					disableFile="";
+					hideFile="";
+   	       }
 				else if(ds instanceof QueryDataSet){
 					type="query";
-					disabledQuery="";;
+					disableQuery="";
+					hideQuery="";
 				} 
 				else if(ds instanceof WSDataSet){
 					type="ws";
-					disabledWs="";;
+					disableWs="";
+					hideWs="";
+				
 				} 
    	       
 			String datasetDisplay = "none";
@@ -244,7 +248,8 @@
 		</div>
 		<%} %>
 
-		<div class='div_detail_label' id="FILENAMELABEL" <%=disabledFile%> >
+	<div id="filecontainer" <%=hideFile%>>
+		<div class='div_detail_label' id="FILENAMELABEL" >
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.fileName" />
 			</span>
@@ -260,10 +265,12 @@
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="FILENAME" id="FILENAME"
-				   size="50" value="<%=fileName%>" maxlength="50" <%=disabledFile%> />
+				   size="50" value="<%=fileName%>" maxlength="50" <%=disableFile%> />
+	   </div>
 	   </div>
 	   
-	   		<div class='div_detail_label' id="QUERYLABEL" <%=disabledQuery%>>
+	   <div id="querycontainer" <%=hideQuery%>>
+	   		<div class='div_detail_label' id="QUERYLABEL">
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.query" />
 			</span>
@@ -279,24 +286,19 @@
 			   }
 		%>
 		
-		<textarea id="QUERY" rows="4" cols="40" name="QUERY" <%=disabledQuery%>><%=query%></textarea>
+		<textarea id="QUERY" rows="4" cols="80" name="QUERY" <%=disableQuery%>><%=query%></textarea>
 		<BR>
-		
-		<!-- 
-			<input class='portlet-form-input-field' type="text" name="QUERY" 
-				   size="50" value="<%=query%>" maxlength="50" <%=disabledQuery%> />
-	    -->
 	   
 	   </div>
 
 	   
-	   	<div class='div_detail_label' id="DATASOURCELABEL" <%=disabledQuery%> >
+	   	<div class='div_detail_label' id="DATASOURCELABEL">
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.dataSource" />
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="DATASOURCE" <%=disabledQuery%> >			
+		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="DATASOURCE" <%=disableQuery%> >			
 			<option></option>
 			<%
 
@@ -328,8 +330,9 @@
 			%>
 		</select>
 	</div>
-		
-		<div class='div_detail_label' id="ADDRESSLABEL" <%=disabledWs%>>
+	</div>
+	<div id="wscontainer" <%=hideWs%>>		
+		<div class='div_detail_label' id="ADDRESSLABEL">
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.address" />
 			</span>
@@ -345,10 +348,10 @@
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="ADDRESS" id="ADDRESS"
-				   size="50" value="<%=address%>" maxlength="50" <%=disabledWs%> />
+				   size="50" value="<%=address%>" maxlength="50" <%=disableWs%> />
 	   </div>
 	   
-	   		<div class='div_detail_label' id="EXECUTORCLASSLABEL" <%=disabledWs%>>
+	   		<div class='div_detail_label' id="EXECUTORCLASSLABEL">
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.executorClass" />
 			</span>
@@ -364,10 +367,10 @@
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="EXECUTORCLASS" id="EXECUTORCLASS"
-				   size="50" value="<%=executorClass%>" maxlength="50" <%=executorClass%> <%=disabledWs%>/>
+				   size="50" value="<%=executorClass%>" maxlength="50" <%=executorClass%> <%=disableWs%>/>
 	   </div>		
 			
-	
+	</div>
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
@@ -462,64 +465,43 @@
 		function DisableFields(type){
 
 		if (type == 'file'){
-			//document.dsForm.FILENAME.disabled=false;
-			//document.dsForm.ADDRESS.disabled=true;
-			//document.dsForm.QUERY.disabled=true;
-			//document.dsForm.EXECUTORCLASS.disabled=true;
-			//document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.FILENAME.disabled=false;
+			document.dsForm.ADDRESS.disabled=true;
+			document.dsForm.QUERY.disabled=true;
+			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.DATASOURCE.disabled=true;
 			document.getElementById("tag").style.display = "none";
-			document.getElementById("FILENAME").style.display = "inline";
-			document.getElementById("ADDRESS").style.display = "none";
-			document.getElementById("QUERY").style.display = "none";
-			document.getElementById("EXECUTORCLASS").style.display = "none";
-			document.getElementById("DATASOURCE").style.display = "none";
-			document.getElementById("FILENAMELABEL").style.display = "inline";
-			document.getElementById("ADDRESSLABEL").style.display = "none";
-			document.getElementById("QUERYLABEL").style.display = "none";
-			document.getElementById("EXECUTORCLASSLABEL").style.display = "none";
-			document.getElementById("DATASOURCELABEL").style.display = "none";
-
+			document.getElementById("filecontainer").style.display = "inline";
+			document.getElementById("querycontainer").style.display = "none";
+			document.getElementById("wscontainer").style.display = "none";
+	
 			
 		}
 		else 
 		if (type == 'query'){
-		//	document.dsForm.FILENAME.disabled=true;
-		//	document.dsForm.ADDRESS.disabled=true;
-		//	document.dsForm.QUERY.disabled=false;
-		//	document.dsForm.EXECUTORCLASS.disabled=true;
-		//	document.dsForm.DATASOURCE.disabled=false;
+			document.dsForm.FILENAME.disabled=true;
+			document.dsForm.ADDRESS.disabled=true;
+			document.dsForm.QUERY.disabled=false;
+			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.DATASOURCE.disabled=false;
 			document.getElementById("tag").style.display = "inline";
-			document.getElementById("FILENAME").style.display = "none";
-			document.getElementById("ADDRESS").style.display = "none";
-			document.getElementById("QUERY").style.display = "inline";
-			document.getElementById("EXECUTORCLASS").style.display = "none";
-			document.getElementById("DATASOURCE").style.display = "inline";
-			document.getElementById("FILENAMELABEL").style.display = "none";
-			document.getElementById("ADDRESSLABEL").style.display = "none";
-			document.getElementById("QUERYLABEL").style.display = "inline";
-			document.getElementById("EXECUTORCLASSLABEL").style.display = "none";
-			document.getElementById("DATASOURCELABEL").style.display = "inline";
+			document.getElementById("filecontainer").style.display = "none";
+			document.getElementById("querycontainer").style.display = "inline";
+			document.getElementById("wscontainer").style.display = "none";
 			
 		}
 	    else 
 	    if (type == 'ws'){
-		//	document.dsForm.FILENAME.disabled=true;
-		//	document.dsForm.ADDRESS.disabled=false;
-		//	document.dsForm.QUERY.disabled=true;
-		//	document.dsForm.EXECUTORCLASS.disabled=false;
-		//	document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.FILENAME.disabled=true;
+			document.dsForm.ADDRESS.disabled=false;
+			document.dsForm.QUERY.disabled=true;
+			document.dsForm.EXECUTORCLASS.disabled=false;
+			document.dsForm.DATASOURCE.disabled=true;
 			document.getElementById("tag").style.display = "none";
-			document.getElementById("FILENAME").style.display = "none";
-			document.getElementById("ADDRESS").style.display = "inline";
-			document.getElementById("QUERY").style.display = "none";
-			document.getElementById("EXECUTORCLASS").style.display = "inline";
-			document.getElementById("DATASOURCE").style.display = "none";
-			document.getElementById("FILENAMELABEL").style.display = "none";
-			document.getElementById("ADDRESSLABEL").style.display = "inline";
-			document.getElementById("QUERYLABEL").style.display = "none";
-			document.getElementById("EXECUTORCLASSLABEL").style.display = "inline";
-			document.getElementById("DATASOURCELABEL").style.display = "none";
-		
+			document.getElementById("filecontainer").style.display = "none";
+			document.getElementById("querycontainer").style.display = "none";
+			document.getElementById("wscontainer").style.display = "inline";
+	
 		}
 	}
 	

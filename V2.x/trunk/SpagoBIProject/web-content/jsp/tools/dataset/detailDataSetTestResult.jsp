@@ -23,20 +23,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page import="javax.portlet.PortletURL,
 			it.eng.spagobi.commons.constants.SpagoBIConstants,
-			it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue,
-			it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail,
-			it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail,
-			it.eng.spagobi.behaviouralmodel.lov.bo.FixedListDetail,
-			it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse,
 			it.eng.spagobi.commons.dao.DAOFactory,
 			it.eng.spago.navigation.LightNavigationManager,
 			java.util.List,
 			java.util.ArrayList,
 			java.util.Iterator"%>
-<%@page import="it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory"%>
-<%@page import="it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail"%>
+
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-<%@page import="it.eng.spagobi.behaviouralmodel.lov.handlers.LovManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
@@ -83,20 +76,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@page import="it.eng.spagobi.tools.dataset.service.DetailDataSetModule"%>
-<script type="text/javascript">
 
-	function showStacktrace(){
-		document.getElementById("stacktrace").style.display = 'inline';
-		document.getElementById("showStacktraceDiv").style.display = 'none';
-		document.getElementById("hideStacktraceDiv").style.display = 'inline';
-	}
-					
-	function hideStacktrace(){
-		document.getElementById("stacktrace").style.display = 'none';
-		document.getElementById("showStacktraceDiv").style.display = 'inline';
-		document.getElementById("hideStacktraceDiv").style.display = 'none';
-	}
-</script>
 
 
 
@@ -104,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- TITLE -->
 
+<%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
@@ -134,109 +115,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<form id="formTest" method="post" action="<%=saveUrl%>" >
 
 <!-- BODY -->
 
 
-<div class='div_background_no_img' >
+<div class=''>
 
 
    <!-- ERROR TAG --> 
 	<spagobi:error/>
 
-
-
-<%
-	String errorMessage = (String) listLovMR.getAttribute("errorMessage");	
-	String stack = (String) listLovMR.getAttribute("stacktrace");
-	if (errorMessage != null) {				  
-%>
-		<br/>
-		<div style="left:10%;width:80%" class='portlet-form-field-label' >
-			<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
-		</div>	
-<%
-		if (!errorMessage.trim().equals("")) { 
-%>					  
-			<br/>
-		 	<div style="left:10%;width:80%" class='portlet-form-field-label' >
-		 		<spagobi:message key = "SBIDev.predLov.testErrorMessage" />
-		 	</div>
-			<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
-				<div style="left:10%;width:70%" class='portlet-section-alternate'>
-					<spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" />
-				</div>
-			<% } else { %>
-				<div style="left:10%;width:70%" class='portlet-section-alternate'>
-					<%= errorMessage %>
-				</div>
-			<% } %>
-			<br/>
-<% 
-		}
-
-		if (stack != null) { 
-%>
-			<div id='errorDescriptionJS' style='display:inline;'>
-			  	<br/>
-			  	<div style="left:10%;width:80%;display:inline;" class='portlet-form-field-label' id='showStacktraceDiv'>
-			  		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace1" />
-			  		<a href='javascript:showStacktrace()'>
-			 	 		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace2" />
-					</a>
-			 		.
-			 	</div>
-			    <div style="left:10%;width:80%;display:none;" class='portlet-form-field-label' id='hideStacktraceDiv'>
-			 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace1" />
-			 		<a href='javascript:hideStacktrace()'>
-				 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace2" />
-			 		</a>
-			 		.
-			 	</div>
-				<br/>	
-				<div id='stacktrace' style="left:10%;width:70%;display:none;" class='portlet-section-alternate'>
-					<%= stack %>
-				</div>
-			 </div>
-<%
-		}		
-		String result = (String) listLovMR.getAttribute("result");
-		if(result != null) { 				  
-	  		result = result.replaceAll(">", "&gt;");
-	  		result = result.replaceAll("<", "&lt;");
-	  		result = result.replaceAll("\"", "&quot;");					  
-%>			  
-			<div width="100%">
-				<br/>
-				<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' >
-					<spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" />
-				</div>
-				<br/>	
-				<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'>
-					<%= result %>
-				</div>
-			</div>
-			<br/>					  
-<% 
-		} 
-	}else {
-%>
-		
-		
-		<div width="100%">
+<% EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
+if(errorHandler.isOK()){    %>
+	<div width="100%">
 			<spagobi:list moduleName="ListTestDataSetModule"/>
 		</div>
-<%
-	}
-%>
-				 
+<%} %>			 
 
 </div>
 
 
 				
-</form>
 
 
 

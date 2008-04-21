@@ -21,6 +21,14 @@
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
+      		<!--   Dependence to redraw the list -->
+      		 <DEPENDENCE source="DetailDataSetPage" target="ListTestDataSetModule">
+				<CONDITIONS>
+					<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestDataSetModule" />
+        		</CONDITIONS>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
       		<DEPENDENCE source="DetailDataSetModule" target="ListTestDataSetModule">
         		<CONDITIONS>
         			<PARAMETER name="DetailDataSetModule.testLov" scope="SERVICE_RESPONSE" value="AF_DEFINED" />
@@ -41,13 +49,7 @@
         		<!-- <PARAMETER name="dataset" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailDataSetModule.dataset" />-->
         		</CONSEQUENCES>
       		</DEPENDENCE>
-      		<!-- <DEPENDENCE source="DetailDataSetPage" target="ListTestDataSetModule">
-				<CONDITIONS>
-        			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
-        			<PARAMETER name="MODULE" scope="SERVICE_REQUEST" value="ListTestDataSetModule" />
-        		</CONDITIONS>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE> -->
+
     	</DEPENDENCIES>
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="DetailDataSetModule"/>

@@ -277,19 +277,23 @@ function askForConfirmIfNecessary() {
 			                            invisibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getInvisibleColumnNames(), ",")%>" />
 		</div>
 		
-		<br/>
-		
+
+<%
+	}%>
+	
+	</div>			
+</form>
+	
+	<% 
+
+	if(errorMessage == null){
+%>
+<br/>
 		<div width="100%">
 			<spagobi:list moduleName="ListTestLovModule"/>
 		</div>
-<%
-	}
-%>
+	<%} %>
 				 
 
-</div>
-
-				
-</form>
 
 

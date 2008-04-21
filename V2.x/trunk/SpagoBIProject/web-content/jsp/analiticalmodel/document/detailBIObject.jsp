@@ -137,27 +137,23 @@ function checkSourceVisibility(engineName) {
 	var datasource = engineSource[engineName];
 	var dataset = engineSet[engineName];;
 	// hide template dynamic creation button for dossier and olap document 
-	var datasourceLabel = document.getElementById("datasourceLabel");
-	var datasourceForm = document.getElementById("datasourceForm");
-	var datasetLabel = document.getElementById("datasetLabel");
-	var datasetForm = document.getElementById("datasetForm");
+	var datasourcecontainer = document.getElementById("datasourcecontainer");
+
+	var datasetcontainer = document.getElementById("datasetcontainer");
+
 
 	if(datasource=="1") {
-		datasourceLabel.style.display="inline";
-		datasourceForm.style.display="inline";
+		datasourcecontainer.style.display="inline";
 
 	} else {
-		datasourceLabel.style.display="none";
-		datasourceForm.style.display="none";
+		datasourcecontainer.style.display="none";
 	}
 
 	if(dataset=="1") {
-		datasetLabel.style.display="inline";
-		datasetForm.style.display="inline";
+		datasetcontainer.style.display="inline";
 
 	} else {
-		datasetLabel.style.display="none";
-		datasetForm.style.display="none";
+		datasetcontainer.style.display="none";
 	}
 	
  }
@@ -364,15 +360,16 @@ function checkFormVisibility(docType) {
 		      		</select>
 				</div> 
 				
+				<div id="datasourcecontainer" <%=styleSource%>>	
 				
-				<div class='div_detail_label' id="datasourceLabel" <%=styleSource%>>
+				<div class='div_detail_label' id="datasourceLabel" >
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBISet.eng.dataSource" />
 					</span>
 				</div>
 				
 			
-				<div class='div_detail_form' id="datasourceForm" <%=styleSource%>>
+				<div class='div_detail_form' id="datasourceForm" >
 		      		<select class='portlet-form-input-field' style='width:230px;' 
 							name="datasource" id="doc_datasource" >
 							<option></option>
@@ -392,10 +389,12 @@ function checkFormVisibility(docType) {
 		      			}
 		      		%>
 		      		</select>
-				</div> 
+				</div>
+				</div>
+			
+			<div id="datasetcontainer" <%=styleSet%>>	
 				
-				
-				<div class='div_detail_label' id="datasetLabel" <%=styleSet%>>
+				<div class='div_detail_label' id="datasetLabel" >
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBISet.eng.dataSet" />
 					</span>
@@ -417,7 +416,7 @@ function checkFormVisibility(docType) {
 				}
 
 			 %>
-		<div class='div_detail_form' id="datasetForm" <%=styleSet%> >
+		<div class='div_detail_form' id="datasetForm" >
 		  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>"/>	
 										
 			<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
@@ -427,7 +426,7 @@ function checkFormVisibility(docType) {
 				<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
 			</a> 	
 		</div>
-	
+	</div>
 		<script>
 			var win_dataset;
 			Ext.get('datasetLink').on('click', function(){

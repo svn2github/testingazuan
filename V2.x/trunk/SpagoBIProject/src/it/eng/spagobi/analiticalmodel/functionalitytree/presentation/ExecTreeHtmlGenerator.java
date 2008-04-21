@@ -35,6 +35,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -415,12 +416,21 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	}
 	
 	private String createMetadataObjectLink(Integer id) {
-		IUrlBuilder urlBuilderWeb =  new WebUrlBuilder();
+		String detUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
-		String detUrl = urlBuilderWeb.getUrl(httpRequest, detUrlParMap);
+		if (detUrlParMap != null){
+			Iterator keysIt = detUrlParMap.keySet().iterator();
+			String paramName = null;
+			Object paramValue = null;
+			while (keysIt.hasNext()){
+				paramName = (String)keysIt.next();
+				paramValue = detUrlParMap.get(paramName); 
+				detUrl += "&"+paramName+"="+paramValue.toString();
+			}
+		}
 		return detUrl;
 	}
 	

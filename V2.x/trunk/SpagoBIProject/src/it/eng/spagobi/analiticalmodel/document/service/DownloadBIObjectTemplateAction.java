@@ -5,12 +5,14 @@ import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class DownloadBIObjectTemplateAction extends AbstractHttpAction {
+public class DownloadBIObjectTemplateAction extends BaseProfileAction {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		super.service(request, response);
 		freezeHttpResponse();
 		HttpServletResponse httpResp = getHttpResponse();
 		String idTemplateStr = (String)request.getAttribute("TEMP_ID");

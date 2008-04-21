@@ -35,7 +35,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String listPageName="ListDistributionListUserPage";
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModule");
 		if (moduleResponse==null){
-		    System.out.println("cucucucu");
 		    listPageName="ListDistributionListUserPageWithOutback";
 		    moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDistributionListUserModuleWithOutback");		    
 		}

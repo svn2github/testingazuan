@@ -1,4 +1,4 @@
-#Thu Nov 08 14:31:19 WAT 2007
+#Tue Mar 11 12:03:24 CET 2008
 classpath.helper/org.eclipse.jdt.launching.JRE_CONTAINER/owners=jst.java\:1.4
-classpath.helper/org.eclipse.jst.server.core.container\:\:org.eclipse.jst.server.tomcat.runtimeTarget\:\:Apache\ Tomcat\ v5.0/owners=jst.web\:2.4
+classpath.helper/org.eclipse.jst.server.core.container\:\:org.eclipse.jst.server.tomcat.runtimeTarget\:\:SpagoBI2\ Runtime/owners=jst.web\:2.4
 eclipse.preferences.version=1

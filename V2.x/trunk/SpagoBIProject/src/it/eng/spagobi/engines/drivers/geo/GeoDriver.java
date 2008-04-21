@@ -99,6 +99,7 @@ public class GeoDriver implements IEngineDriver {
 			map = getMap(biobj);
 			SubObject subObjectDetail = (SubObject) subObject;
 			
+			Integer id = subObjectDetail.getId();
 			
 			map.put("nameSubObject",  subObjectDetail.getName() );
 			map.put("descriptionSubObject", subObjectDetail.getDescription() );

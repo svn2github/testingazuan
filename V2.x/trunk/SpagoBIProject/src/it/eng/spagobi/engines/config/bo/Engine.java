@@ -50,8 +50,8 @@ public class Engine implements Serializable {
 	private Integer biobjTypeId;
 	private Integer engineTypeId;
 	private Integer dataSourceId = null;
-	private Integer useDataSource = null;
-	private Integer useDataSet = null;
+	private boolean useDataSource = false;
+	private boolean useDataSet = false;
 
 	/**
 	 * @return Returns the criptable.
@@ -199,16 +199,16 @@ public class Engine implements Serializable {
 	public void setDataSourceId(Integer dataSourceId) {
 		this.dataSourceId = dataSourceId;
 	}
-	public Integer getUseDataSource() {
+	public boolean getUseDataSource() {
 		return useDataSource;
 	}
-	public void setUseDataSource(Integer useDataSource) {
+	public void setUseDataSource(boolean useDataSource) {
 		this.useDataSource = useDataSource;
 	}
-	public Integer getUseDataSet() {
+	public boolean getUseDataSet() {
 		return useDataSet;
 	}
-	public void setUseDataSet(Integer useDataSet) {
+	public void setUseDataSet(boolean useDataSet) {
 		this.useDataSet = useDataSet;
 	}
 	

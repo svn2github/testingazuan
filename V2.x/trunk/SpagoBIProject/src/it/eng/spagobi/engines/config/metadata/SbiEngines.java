@@ -49,8 +49,8 @@ public class SbiEngines  implements java.io.Serializable {
      private String classNm;
      private SbiDomains biobjType; 
      private SbiDataSource dataSource;
-     private Integer useDataSource;
-     private Integer useDataSet;
+     private Boolean useDataSource;
+     private Boolean useDataSet;
 
 
     // Constructors
@@ -207,19 +207,19 @@ public class SbiEngines  implements java.io.Serializable {
 		this.dataSource = dataSource;
 	}
 
-	public Integer getUseDataSource() {
+	public Boolean getUseDataSource() {
 		return useDataSource;
 	}
 
-	public void setUseDataSource(Integer useDataSource) {
+	public void setUseDataSource(Boolean useDataSource) {
 		this.useDataSource = useDataSource;
 	}
 
-	public Integer getUseDataSet() {
+	public Boolean getUseDataSet() {
 		return useDataSet;
 	}
 
-	public void setUseDataSet(Integer useDataSet) {
+	public void setUseDataSet(Boolean useDataSet) {
 		this.useDataSet = useDataSet;
 	}
 

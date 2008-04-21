@@ -297,19 +297,15 @@ public class DetailEngineModule extends AbstractModule {
 		String biobjTypeIdStr = (String)request.getAttribute("biobjTypeId");
 		Integer biobjTypeId = new Integer(biobjTypeIdStr);
 		String useDataSourceS = (String)request.getAttribute("useDataSource");
-		Integer useDataSource=new Integer(0);
+		boolean useDataSource=false;
 		if(useDataSourceS!=null){
-			useDataSource=Integer.valueOf(useDataSourceS);
-			if(!useDataSource.equals(new Integer("1")))
-						useDataSource=new Integer(0);
+			useDataSource=Boolean.valueOf(useDataSourceS).booleanValue();
 		}
 		
 		String useDataSetS = (String)request.getAttribute("useDataSet");
-		Integer useDataSet=new Integer(0);
+		boolean useDataSet=false;
 		if(useDataSetS!=null){
-			useDataSet=Integer.valueOf(useDataSetS);
-			if(!useDataSet.equals(new Integer("1")))
-						useDataSet=new Integer(0);
+			useDataSet=Boolean.valueOf(useDataSetS).booleanValue();
 		}		
 		
 		Engine engine  = new Engine();

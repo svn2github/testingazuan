@@ -190,8 +190,8 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setEngineType(hibDomainEngineType);
 			hibEngine.setClassNm(aEngine.getClassName());
 			hibEngine.setBiobjType(hibDomainBiobjType);
-			hibEngine.setUseDataSet(aEngine.getUseDataSet());			
-			hibEngine.setUseDataSource(aEngine.getUseDataSource());						
+			hibEngine.setUseDataSet(new Boolean(aEngine.getUseDataSet()));			
+			hibEngine.setUseDataSource(new Boolean(aEngine.getUseDataSource()));						
 			hibEngine.setDataSource(hibDataSource);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -242,8 +242,8 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			hibEngine.setClassNm(aEngine.getClassName());
 			hibEngine.setBiobjType(hibDomainBiobjType);
 			hibEngine.setDataSource(hibDataSource);
-			hibEngine.setUseDataSet(aEngine.getUseDataSet());
-			hibEngine.setUseDataSource(aEngine.getUseDataSource());
+			hibEngine.setUseDataSet(new Boolean(aEngine.getUseDataSet()));
+			hibEngine.setUseDataSource(new Boolean(aEngine.getUseDataSource()));
 			hibEngine.setDataSource(hibDataSource);			
 			aSession.save(hibEngine);
 			tx.commit();
@@ -309,8 +309,8 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setId(hibEngine.getEngineId());
 		eng.setName(hibEngine.getName());
 		eng.setLabel(hibEngine.getLabel());
-		eng.setUseDataSet(hibEngine.getUseDataSet());
-		eng.setUseDataSource(hibEngine.getUseDataSource());		
+		eng.setUseDataSet(hibEngine.getUseDataSet().booleanValue());
+		eng.setUseDataSource(hibEngine.getUseDataSource().booleanValue());		
 		eng.setSecondaryUrl(hibEngine.getSecnUrl());
 		eng.setUrl(hibEngine.getMainUrl());
 		eng.setLabel(hibEngine.getLabel());

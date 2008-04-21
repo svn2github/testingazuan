@@ -44,23 +44,26 @@ public abstract class BaseProfileModule extends AbstractHttpModule {
 		try {
 			String userId = GeneralUtilities.findUserId(request, this.getHttpRequest());
 			logger.debug("User id = " + userId);
-			// in case the user is not specified, throws an exception 
-			if (userId == null && userId.trim().equals("")) throw new SecurityException("User identifier not specified");
-			RequestContainer reqCont = RequestContainer.getRequestContainer();
-			SessionContainer sessCont = reqCont.getSessionContainer();
-			SessionContainer permSess = sessCont.getPermanentContainer();
-			IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			if (profile == null) {
-				logger.debug("User profile not found in session, creating a new one and putting in session....");
-				// in case the profile does not exist, creates a new one
-				profile = GeneralUtilities.createNewUserProfile(userId);
-				permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+			// in case the user is not specified, does nothing
+			if (userId == null && userId.trim().equals("")) {
+				logger.warn("User identifier not found.");
 			} else {
-				// in case the profile is different, creates a new one and overwrites the existing
-				if (!profile.getUserUniqueIdentifier().toString().equals(userId)) {
-					logger.debug("Different user profile found in session, creating a new one and replacing in session....");
+				RequestContainer reqCont = RequestContainer.getRequestContainer();
+				SessionContainer sessCont = reqCont.getSessionContainer();
+				SessionContainer permSess = sessCont.getPermanentContainer();
+				IEngUserProfile profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				if (profile == null) {
+					logger.debug("User profile not found in session, creating a new one and putting in session....");
+					// in case the profile does not exist, creates a new one
 					profile = GeneralUtilities.createNewUserProfile(userId);
 					permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+				} else {
+					// in case the profile is different, creates a new one and overwrites the existing
+					if (!profile.getUserUniqueIdentifier().toString().equals(userId)) {
+						logger.debug("Different user profile found in session, creating a new one and replacing in session....");
+						profile = GeneralUtilities.createNewUserProfile(userId);
+						permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+					}
 				}
 			}
 		} finally {

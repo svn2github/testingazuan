@@ -494,8 +494,8 @@ public class ListTag extends TagSupport
 							    _htmlStream.append("                ,cls:'x-panel-body'");
 							    _htmlStream.append("               ,children:[{");
 							    _htmlStream.append("                    tag:'iframe',");
-							    _htmlStream.append("                    name: 'dynamicIframe1',");
-							    _htmlStream.append("                    id  : 'dynamicIframe1',");
+							    _htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"',");
+							    _htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"',");
 							    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "',");
 							    _htmlStream.append("                    frameBorder:0,");
 							    _htmlStream.append("                    width:'100%',");
@@ -519,7 +519,7 @@ public class ListTag extends TagSupport
 							        if(popupSave==true){
 							        _htmlStream.append("          { text: 'Save', \n");
 							      	_htmlStream.append("    	   handler: function(){ \n"); 
-							      	_htmlStream.append("           		dynamicIframe1."+popupSaveFunction+"(); \n");
+							      	_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
 							        _htmlStream.append("              } } "); 
 							        }
 							        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
@@ -557,8 +557,8 @@ public class ListTag extends TagSupport
 						    _htmlStream.append("                ,cls:'x-panel-body' \n");
 						    _htmlStream.append("               ,children:[{ \n");
 						    _htmlStream.append("                    tag:'iframe', \n");
-						    _htmlStream.append("                    name: 'dynamicIframe1', \n");
-						    _htmlStream.append("                    id  : 'dynamicIframe1', \n");
+						    _htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"', \n");
+						    _htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"', \n");
 						    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "', \n");
 						    _htmlStream.append("                    frameBorder:0, \n");
 						    _htmlStream.append("                    width:'100%', \n");
@@ -583,7 +583,7 @@ public class ListTag extends TagSupport
 					        if(popupSave==true){
 					        _htmlStream.append("          { text: 'Save', \n");
 					      	_htmlStream.append("    	   handler: function(){ \n"); 
-					      	_htmlStream.append("           		dynamicIframe1."+popupSaveFunction+"(); \n");
+					      	_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
 					        _htmlStream.append("              } } "); 
 					        }
 					        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 

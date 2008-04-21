@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.commons.services.BaseProfileModule;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
@@ -50,7 +51,7 @@ import org.apache.log4j.Logger;
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
 */
 
-public class DetailDistributionListUserModule extends AbstractModule {
+public class DetailDistributionListUserModule extends BaseProfileModule {
 	
 	static private Logger logger = Logger.getLogger(DetailDistributionListUserModule.class);
 	public final static String NAME_ATTR_LIST_DIALECTS = "dialects";
@@ -67,6 +68,7 @@ public class DetailDistributionListUserModule extends AbstractModule {
 	 * @throws exception If an exception occurs
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		super.service(request, response);
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of detail Distribution List service with message =" +message);
 		EMFErrorHandler errorHandler = getErrorHandler();
@@ -113,9 +115,11 @@ public class DetailDistributionListUserModule extends AbstractModule {
 		DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
 		response.setAttribute("dlObj", dl);
 		String id = (String) request.getAttribute("DL_ID");
+		String userid = (String) request.getAttribute("userid");
 		response.setAttribute("DL_ID", id);
 
 		response.setAttribute("modality", mod);
+		response.setAttribute("userid",userid);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
 	    
 		

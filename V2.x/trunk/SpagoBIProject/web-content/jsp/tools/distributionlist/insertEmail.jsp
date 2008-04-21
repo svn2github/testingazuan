@@ -47,8 +47,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String subMessageDet = (((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET"));
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		String email = (String)moduleResponse.getAttribute("EMAIL");
+		String userid = (String)moduleResponse.getAttribute("userid");
 		
 		request.setAttribute("dlObj", dl);
+		request.setAttribute("userid", userid);
 		request.setAttribute("DL_ID", dlid);
 		request.setAttribute("modality", modality);
 		request.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertEmailPubJ");
@@ -134,6 +136,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 <input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 <input type='hidden' value='<%=dlid%>' name='DL_ID' />
+<input type='hidden' value='<%=userid%>' name='userid' />
 
 
 <script>

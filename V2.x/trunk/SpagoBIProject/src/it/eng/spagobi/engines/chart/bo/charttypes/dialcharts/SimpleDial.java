@@ -269,8 +269,8 @@ public class SimpleDial extends DialCharts{
 
 		StandardDialScale scale=null;
 		if(!horizontalView){
-			scale = new StandardDialScale(0, 100, -8, 16.0, 
-					10.0, 4);
+			scale = new StandardDialScale(lower, upper, -8, 16.0, 
+					increment, minorTickCount);
 		}
 		else{
 			scale = new StandardDialScale(lower, upper, 115.0, 

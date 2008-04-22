@@ -146,7 +146,7 @@ public class Thermometer extends DialCharts{
 
 
 			//reading intervals information
-			SourceBean subrangesSB = (SourceBean)content.getAttribute("CONF.SUBRANGES");
+			SourceBean subrangesSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
 			List subrangesAttrsList=null;
 			if(subrangesSB!=null){
 				subrangesAttrsList = subrangesSB.getContainedSourceBeanAttributes();
@@ -190,7 +190,7 @@ public class Thermometer extends DialCharts{
 				setUnits("");
 
 			String subranges=(String)sbRow.getAttribute("subranges");
-			if(subranges.equalsIgnoreCase("NO")){ // if intervals are not specified
+			if(subranges!=null && subranges.equalsIgnoreCase("NO")){ // if intervals are not specified
 				logger.warn("no subranges defined");
 			}
 			else{

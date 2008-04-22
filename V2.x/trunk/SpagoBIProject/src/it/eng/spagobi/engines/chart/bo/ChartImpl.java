@@ -105,7 +105,7 @@ public class ChartImpl implements IChart {
 
 		try{					
 			Map dataParameters = new HashMap();
-			SourceBean dataSB = (SourceBean)content.getAttribute("DATA");
+			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
 			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
 			Iterator dataAttrsIter = dataAttrsList.iterator();
 			while(dataAttrsIter.hasNext()) {

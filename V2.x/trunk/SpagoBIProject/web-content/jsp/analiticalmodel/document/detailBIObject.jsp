@@ -142,16 +142,20 @@ function checkSourceVisibility(engineName) {
 
 	if(datasource=="1") {
 		datasourcecontainer.style.display="inline";
-
+	document.getElementById("doc_datasource").disabled=false;
 	} else {
 		datasourcecontainer.style.display="none";
+	document.getElementById("doc_datasource").disabled=true;
 	}
 
 	if(dataset=="1") {
 		datasetcontainer.style.display="inline";
+		document.getElementById("dataset").disabled=false;
 
 	} else {
 		datasetcontainer.style.display="none";
+		document.getElementById("dataset").disabled=true;
+		
 	}
 	
  }
@@ -344,14 +348,18 @@ function checkFormVisibility(docType) {
 		      			<option value="<%=engine.getId().toString() %>"<%if (isEngine) out.print(" selected='selected' ");  %>><%=engine.getName()%></option>
 		      		<% 	
 		      			}
-	String styleSource="style=\"display:none;\"";		      	
+	String styleSource="style=\"display:none;\"";	
+	String disableSource="disabled";
 	if(initialUseDataSource==true){
 		styleSource="style=\"display:inline;\"";
+		disableSource="";
 	}
 	
 	String styleSet="style=\"display:none;\"";		      	
+	String disableSet="disabled";
 	if(initialUseDataSet==true){
 		styleSet="style=\"display:inline;\"";
+		disableSet="";
 	}
 	
 		      			%>
@@ -369,7 +377,7 @@ function checkFormVisibility(docType) {
 			
 				<div class='div_detail_form' id="datasourceForm" >
 		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="datasource" id="doc_datasource" >
+							name="datasource" id="doc_datasource" <%=disableSource%>>
 							<option></option>
 					<%
 						Iterator iterds = listDataSource.iterator();
@@ -415,7 +423,7 @@ function checkFormVisibility(docType) {
 
 			 %>
 		<div class='div_detail_form' id="datasetForm" >
-		  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>"/>	
+		  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>" <%=disableSet%>/>	
 										
 			<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
 							name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 

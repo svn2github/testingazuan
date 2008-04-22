@@ -40,12 +40,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
@@ -82,29 +85,31 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
     
     
     
-    public DataSet getDataSet() {
+    public DataSet getDataSet() throws GeoEngineException {
 
     	DataSet dataSet = new DataSet();
         
     	SQLCommand cmdSelect = null;
         DataResult dr = null;
-        String query = getAggreagteQuery();
-        
-        
-    	dataSet.setTargetFeatureName( getSelectedLevel().getFeatureName() ); 
-        
-    	String columnid = getSelectedLevel().getColumnId();
-        
-    	
-    	
-    	String[] measureColumnNames = (String[])getMetaData().getMeasureColumnNames().toArray(new String[0]);
+        String aggregateQuery = getAggreagteQuery();
         
         Connection connection = null;
+        
+    	
+        
+        
         try {
-       
-            connection = getDataSource().getConnection();
+        	dataSet.setTargetFeatureName( getSelectedLevel().getFeatureName() ); 
+            
+        	String columnid = getSelectedLevel().getColumnId();
+            
+        	
+        	
+        	String[] measureColumnNames = (String[])getMetaData().getMeasureColumnNames().toArray(new String[0]);
+     
+        	connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
-            statement.execute(query);
+            statement.execute(aggregateQuery);
             ResultSet resultSet = statement.getResultSet();
                            
             
@@ -125,20 +130,20 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
             	
             	attributes = new HashMap();
             	for(int i = 0; i < measureColumnNames.length; i++) {
-	            	String value = resultSet.getString(resultSet.findColumn(measureColumnNames[i]));
-	            	if((value==null) || (value.trim().equals(""))) {
-	            		continue;
-	            	}
-	            	attributes.put(measureColumnNames[i], value);
-	            	
-	            	((Set)orderedKpiValuesMap.get(measureColumnNames[i])).add(new Double(value));
-	            	
+                	String value = resultSet.getString(resultSet.findColumn(measureColumnNames[i]));
+                	if((value==null) || (value.trim().equals(""))) {
+                		continue;
+                	}
+                	attributes.put(measureColumnNames[i], value);
+                	
+                	((Set)orderedKpiValuesMap.get(measureColumnNames[i])).add(new Double(value));
+                	
             	}
             	
             	values.put(id, attributes);           	
             	
-	            String link = getSelectedLevel().getLink().toString(resultSet);
-	            links.put(id, link);
+                String link = getSelectedLevel().getLink().toString(resultSet);
+                links.put(id, link);
             	
             }
             dataSet.setValues(values);
@@ -148,16 +153,51 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
             dataSet.setOrderedKpiValuesMap(orderedKpiValuesMap);
             
             
-        } catch (Exception ex) {
-        	ex.printStackTrace();
-        	//throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
-        } finally {
+            
+        } catch (SQLException e) {  
+        	logger.error("Impossible to execute query: " + aggregateQuery, e);
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String rootCause = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			String description = "Impossible to execute query: " + aggregateQuery;
+			description += "<br><br>The root cause of the error is: " + rootCause;
+			List hints = new ArrayList();
+			hints.add("Check if your database connection is properly configured: " + getDataSource()!=null?getDataSource().toString():"NULL");
+			hints.add("Check if your base query is correct (" + query + ")");
+			hints.add("Check if the generated query is correct (" + aggregateQuery + ")");
+			hints.add("Check if the configuration of hierarchies and of metadata is correct");
+			throw new GeoEngineException("Database error", description, hints, e);
+        } catch (NamingException e) {
+        	logger.error("Impossible to execute query: " + aggregateQuery, e);
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String rootCause = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			String description = "Impossible to get connection instance from JNDI server: " + getDataSource()!=null?getDataSource().toString():"NULL" ;
+			description += "<br>The root cause of the error is: " + rootCause;
+			List hints = new ArrayList();
+			hints.add("Check if the jndi name is correct: " + getDataSource()!=null?getDataSource().getJndiName():"NULL");
+			hints.add("Check if the jndi resorce is properly bound in this context");
+			hints.add("Check if JNDI server had encountered an error during resource " +
+					"instantiation, maybe due to a wrong connection definition inside server configuration");
+
+			throw new GeoEngineException("Database error", description, hints, e);
+		} catch (ClassNotFoundException e) {
+			logger.error("Impossible to execute query: " + aggregateQuery, e);
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String rootCause = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			String description = "Impossible to find JDBC driver class for datasource " + getDataSource()!=null?getDataSource().toString():"NULL" ;
+			description += "<br>The root cause of the error is: " + rootCause;
+			List hints = new ArrayList();
+			hints.add("Check if the driver name is correct: " + getDataSource()!=null?getDataSource().getDriver():"NULL");
+			hints.add("Check if the jdbc driver class is in the class path");
+			throw new GeoEngineException("Database error", description, hints, e);
+		} finally {
         	if(connection != null) {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
-		        	//throw new EMFUserError(EMFErrorSeverity.ERROR, "Impossible to close connection");
+					logger.warn("Impossible to close connection to: " + getDataSource().toString(), e);
 				}
         	}
         }

@@ -35,7 +35,7 @@ public class AbstractDatasetProvider extends AbstractGeoEngineComponent implemen
 		AbstractDatasetProviderConfigurator.configure( this, getConf() );
 	}
   
-    public DataSet getDataSet() {
+    public DataSet getDataSet() throws GeoEngineException {
         return null;
     }
 

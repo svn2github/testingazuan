@@ -12,6 +12,7 @@ import java.util.Set;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.geo.IGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
@@ -21,8 +22,8 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
  */
 public interface IDatasetProvider extends IGeoEngineComponent {
     
-    DataSet getDataSet();    
-    SourceBean getDataDetails(String filterValue);
+    DataSet getDataSet() throws GeoEngineException;    
+    SourceBean getDataDetails(String filterValue) throws GeoEngineException;   
     
     void setSelectedHierarchyName(String hierarchyName);
     String getSelectedHierarchyName();

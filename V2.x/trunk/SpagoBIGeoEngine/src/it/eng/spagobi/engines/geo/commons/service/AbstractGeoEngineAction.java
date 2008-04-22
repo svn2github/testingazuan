@@ -50,9 +50,7 @@ public class AbstractGeoEngineAction extends AbstractEngineAction {
      */
     private static transient Logger logger = Logger.getLogger(AbstractGeoEngineAction.class);
     	
-	
-
-	
+		
 	public GeoEngineInstance getGeoEngineInstance() {
 		return (GeoEngineInstance)getAttributeFromSession( GeoEngineConstants.GEO_ENGINE_INSTANCE );
 	}

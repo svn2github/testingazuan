@@ -28,6 +28,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
@@ -37,6 +38,7 @@ import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -78,76 +80,85 @@ public class QbeEngineStartAction extends AbstractHttpAction {
     private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
 	
 	
-    public void service(SourceBean request, SourceBean response) {
-    	logger.debug("Start processing a new request...");
+    public void service(SourceBean request, SourceBean response) throws QbeEngineException {
+    	logger.debug("IN");
        
-    	SessionContainer session = getRequestContainer().getSessionContainer();
-    	
-    	String userId = getUserId();
-    	logger.debug("userId:" + userId);
-    	
-    	String auditId = getAuditId();
-    	logger.debug("auditId:" + auditId);
-    	
-    	// AUDIT UPDATE
-		updateAudit(auditId, userId);		
-		session.setAttribute("SPAGOBI_AUDIT_ID", auditId);
-    	    
-		Map parameters = getParameters(request);
-    	logger.debug("Request parameters read sucesfully");
-    	
-		String documentId = getDocumentId(parameters);   
-    	logger.debug("documentId:" + documentId);    	
-    		
-		String queryId = (String)parameters.get(IP_QUERY_ID);
-		logger.debug("queryId:" + documentId);  
-		parameters.remove("query");
-		
-		SourceBean templateSB = getTemplate(userId, documentId);
-		QbeTemplate template = new QbeTemplate(templateSB);
-		
-		SpagoBiDataSource dataSource = getDataSource(userId, documentId);		
+    	try {
+	    	SessionContainer session = getRequestContainer().getSessionContainer();
+	    	
+	    	String userId = getUserId();
+	    	logger.debug("userId:" + userId);
+	    	
+	    	String auditId = getAuditId();
+	    	logger.debug("auditId:" + auditId);
+	    	
+	    	// AUDIT UPDATE
+			updateAudit(auditId, userId);		
+			session.setAttribute("SPAGOBI_AUDIT_ID", auditId);
+	    	    
+			Map parameters = getParameters(request);
+	    	logger.debug("Request parameters read sucesfully");
+	    	
+			String documentId = getDocumentId(parameters);   
+	    	logger.debug("documentId:" + documentId);    	
+	    		
+			String queryId = (String)parameters.get(IP_QUERY_ID);
+			logger.debug("queryId:" + documentId);  
+			parameters.remove("query");
 			
-		Locale locale = getLocale(parameters);
-		
-		/*
-		 MapCatalogueAccessUtils mapCatalogueAccessUtils = new MapCatalogueAccessUtils(getHttpRequest().getSession());
-			setAttributeInSession("MAP_CATALOGUE_CLIENT", mapCatalogueAccessUtils);
-			setAttributeInSession("MAP_CATALOGUE_CLIENT_URL", mapCatalogueManagerUrl);
-		 */
-		
-		SpagoBIRequest spagoBIRequest = new SpagoBIRequest(request);	
-		spagoBIRequest.setUserId(userId);
-		spagoBIRequest.setAuditId(auditId);
-		spagoBIRequest.setDocumentId(documentId);
-		spagoBIRequest.setQueryId(queryId);		
-		spagoBIRequest.setTemplate(template);
-		spagoBIRequest.setDataSource(dataSource);
-		spagoBIRequest.setLocale(locale);	
-		
-		
-		String props = "";
-		Iterator it = parameters.keySet().iterator();
-		while(it.hasNext()) {
-			String parameterName = (String)it.next();
-			Object parameterValue = parameters.get(parameterName);
-			if(parameterValue.getClass().getName().equalsIgnoreCase(String.class.getName())) {
-				props += parameterName + "=" + parameterValue + "\n";
+			SourceBean templateSB = getTemplate(userId, documentId);
+			QbeTemplate template = new QbeTemplate(templateSB);
+			
+			SpagoBiDataSource dataSource = getDataSource(userId, documentId);		
+				
+			Locale locale = getLocale(parameters);
+			
+			SpagoBIRequest spagoBIRequest = new SpagoBIRequest(request);	
+			spagoBIRequest.setUserId(userId);
+			spagoBIRequest.setAuditId(auditId);
+			spagoBIRequest.setDocumentId(documentId);
+			spagoBIRequest.setQueryId(queryId);		
+			spagoBIRequest.setTemplate(template);
+			spagoBIRequest.setDataSource(dataSource);
+			spagoBIRequest.setLocale(locale);	
+			
+			
+			String props = "";
+			Iterator it = parameters.keySet().iterator();
+			while(it.hasNext()) {
+				String parameterName = (String)it.next();
+				Object parameterValue = parameters.get(parameterName);
+				if(parameterValue.getClass().getName().equalsIgnoreCase(String.class.getName())) {
+					props += parameterName + "=" + parameterValue + "\n";
+				}
 			}
-		}
-		
-		
-		session.delAttribute("FUNCTIONALITIES");			
-		Map functionalities = template.getFunctionalities();
-		if(functionalities != null) session.setAttribute("FUNCTIONALITIES", functionalities);
-		
-		
-		try {			
+			
+			
+			session.delAttribute("FUNCTIONALITIES");			
+			Map functionalities = template.getFunctionalities();
+			if(functionalities != null) session.setAttribute("FUNCTIONALITIES", functionalities);
+			
+			
+					
 			response.setAttribute(OP_SPAGOBI_REQUEST, spagoBIRequest);
 			response.setAttribute(OP_DATAMART_PROPERTIES, props.toString());
-		} catch (SourceBeanException e) {
-			e.printStackTrace();
-		} 
+		} catch (Exception e) {
+			//EMFInternalError error = new EMFInternalError(EMFErrorSeverity.ERROR, "Errore orrore", e, "error object description");
+			//getErrorHandler().addError( error );
+			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
+			
+			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			description += "<br>The root cause of the error is: " + str;
+			List hints = new ArrayList();
+			hints.add("Sorry, there are no hints available right now on how to fix this problem");
+			throw new QbeEngineException("Service error", description, hints, e);
+		}
+		
+
+		logger.debug("OUT");
 	}
 	
     

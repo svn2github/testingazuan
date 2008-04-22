@@ -73,34 +73,12 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-	<!--  START PAGE WITH AUTHORIZATION CHECK DISABLED -->
-	<!--
-	<PUBLISHER name="START_PUBLISHER">
+	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/initializer/qbeAppMainUnprofiledPage.jsp" />
+				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
-	-->
-	
-	
-	<!-- Deprecated -->
-  	<!-- 
-	<PUBLISHER name="INDEX_PUBLISHER">
-		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
-			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/initializer/qbeAppMainUnprofiledPage.jsp" />
-			</RESOURCES>
-		</RENDERING>
-		
-		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
-      		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/initializer/qbeAppMainUnprofiledPage.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/initializer/qbeAppMainUnprofiledPage.jsp" />
-      		</RESOURCES>
-    	</RENDERING>
-	</PUBLISHER>
-	-->
 	                        	
 </PUBLISHERS>

@@ -21,31 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.core.service;
 
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.IOrderByField;
+import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.IWhereField;
+import it.eng.qbe.wizard.EntityClass;
+import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.locale.IQbeMessageHelper;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.IWhereField;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-
-import org.hibernate.HibernateException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +44,7 @@ import org.json.JSONObject;
 public class RefreshQueryAction extends AbstractQbeEngineAction {
 	
 		
-	public void service(SourceBean request, SourceBean response)  {				
+	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		super.service(request, response);		
 		
 		String recordsSTR = getAttributeAsString("records");

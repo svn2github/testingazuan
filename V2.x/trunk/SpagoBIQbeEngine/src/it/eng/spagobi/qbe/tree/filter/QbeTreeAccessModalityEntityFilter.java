@@ -24,13 +24,9 @@ package it.eng.spagobi.qbe.tree.filter;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.utility.QbeProperties;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

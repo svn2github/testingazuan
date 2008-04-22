@@ -21,74 +21,87 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.core.service;
 
+import it.eng.qbe.model.IStatement;
+import it.eng.qbe.query.ISelectField;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.locale.IQbeMessageHelper;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-
-import org.hibernate.HibernateException;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 
 
 public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
+	
+	public static final String LIMIT = "limit";
+	public static final String START = "start";
+	public static final int MAX_RESULT = 14000;
+	
+	/**
+     * Logger component
+     */
+    public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
+    
+	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		
-	public void service(SourceBean request, SourceBean response)  {				
-		super.service(request, response);		
-		
-		
-		IStatement statement = getDatamartModel().createStatement( getQuery() );
-		
-		String limit = getAttributeAsString("limit");
-		String start = getAttributeAsString("start");
-		int l = Integer.parseInt(limit);
-		int s = Integer.parseInt(start);
-		
-		int maxResults = 14000;
-		
-		statement.setMaxResults(maxResults);
-		statement.setParameters(getDatamartModel().getDataMartProperties());
+		IStatement statement = null;
+		Integer limit = null;
+		Integer start = null;
 		SourceBean queryResponseSourceBean = null;
-		try {
-			queryResponseSourceBean = statement.executeWithPagination(s, l, maxResults);
-			//queryResponseSourceBean = statement.executeWithPagination(1, 50);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-				
-		List results = (List)queryResponseSourceBean.getAttribute("list");
-		Integer resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
-		Iterator it = results.iterator();
-		Object o = null;
-		Object[] row;
-		
 		JSONObject gridDataFeed = new JSONObject();
-		JSONObject metadata = new JSONObject();
-		JSONArray fields = null;
-		JSONArray rows = new JSONArray();
+		
+		
+			
+		logger.debug("IN");
 		
 		try {
+		
+			super.service(request, response);		
+				
+			statement = getDatamartModel().createStatement( getQuery() );			
+			
+			limit = getAttributeAsInteger( LIMIT );
+			start = getAttributeAsInteger( START );			
+		
+			statement.setMaxResults( MAX_RESULT );
+			statement.setParameters( getDatamartModel().getDataMartProperties() );
+			
+			try {
+				queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
+			} catch (Exception e) {
+				String query = statement.getQueryString();
+				logger.error("An error occurred while executing query: " + query, e);
+				String description = "An error occurred in " + getActionName() + " service while executing query: " + query;
+				String str = e.getMessage()!=null? e.getMessage(): e.getClass().getName();
+				description += "<br>The root cause of the error is: " + str;
+				List hints = new ArrayList();
+				hints.add("Check connection configuration");
+				hints.add("Check the qbe jar file");
+				throw new QbeEngineException("Service error", description, hints, e);
+			}
+				
+			List results = (List)queryResponseSourceBean.getAttribute("list");
+			Integer resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
+			Iterator it = results.iterator();
+			Object o = null;
+			Object[] row;
+			
+			JSONObject metadata = new JSONObject();
+			JSONArray fields = null;
+			JSONArray rows = new JSONArray();
+		
+		
 			
 			metadata.put("totalProperty", "results");
 			metadata.put("root", "rows");
@@ -137,35 +150,27 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 						record = new JSONObject();
 						record.put("id", ++recNo);
 					}
-					record.put("column-" + (j+1), row[j].toString());
+					record.put("column-" + (j+1), row[j]!=null?row[j].toString():" ");
 				}
 				if(record != null) rows.put(record);
-			}
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			}		
+		} catch (Exception e) {
+			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
+			
+			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
+			Throwable rootException = e;
+			while(rootException.getCause() != null) rootException = rootException.getCause();
+			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			description += "<br>The root cause of the error is: " + str;
+			List hints = new ArrayList();
+			hints.add("Sorry, there are no hints available right now on how to fix this problem");
+			throw new QbeEngineException("Service error", description, hints, e);
 		}
 		
 		freezeHttpResponse();
-		HttpServletResponse httpResp = getHttpResponse();
-		
+		HttpServletResponse httpResp = getHttpResponse();		
 		try {
 			httpResp.getOutputStream().print(gridDataFeed.toString());
-			/*
-			httpResp.getOutputStream().print("{" +
-					"'metaData': {" +
-					"    totalProperty: 'results'," +
-					"    root: 'rows'," +
-					"    id: 'id'," +
-					"    fields: [" +
-					"      {name: 'name', header: 'Name', dataIndex: 'name'}," +
-					"      {name: 'occupation', header: 'Occupation', dataIndex: 'occupation'} ]" +
-					"   }," +
-					"  'results': 2, 'rows': [" +
-					"    { 'id': 1, 'name': 'Bill', occupation: 'Gardener' }," +
-					"    { 'id': 2, 'name': 'Ben', occupation: 'Horticulturalist' } ]" +
-					"}");
-					*/
 			httpResp.getOutputStream().flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

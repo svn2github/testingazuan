@@ -23,6 +23,7 @@ package it.eng.spagobi.qbe.querybuilder.select.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 public class AddCalculatedFieldAction extends AbstractQbeEngineAction {
@@ -33,7 +34,7 @@ public class AddCalculatedFieldAction extends AbstractQbeEngineAction {
 	public static final String CFIELD_COMPLETE_NAME = "CFIELD_COMPLETE_NAME";
 
 	
-	public void service(SourceBean request, SourceBean response) {	
+	public void service(SourceBean request, SourceBean response) throws EngineException {	
 		super.service(request, response);
 		
 		String fieldId = getAttributeAsString(CFIELD_ID);

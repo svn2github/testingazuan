@@ -21,19 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.tree.filter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.utility.JsTreeUtils;
-import it.eng.qbe.utility.QbeProperties;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
+
+import java.util.List;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

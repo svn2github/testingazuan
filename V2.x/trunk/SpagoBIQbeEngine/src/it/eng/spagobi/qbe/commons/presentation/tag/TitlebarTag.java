@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.utility.Utils;
-
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;

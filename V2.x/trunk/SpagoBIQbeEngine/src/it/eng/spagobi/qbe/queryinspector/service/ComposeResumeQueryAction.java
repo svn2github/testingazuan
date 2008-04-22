@@ -21,15 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.queryinspector.service;
 
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 /**
@@ -42,7 +36,7 @@ import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
  */
 public class ComposeResumeQueryAction extends AbstractQbeEngineAction {
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);
 		getDatamartWizard().composeQuery(getDatamartModel());		
 	}

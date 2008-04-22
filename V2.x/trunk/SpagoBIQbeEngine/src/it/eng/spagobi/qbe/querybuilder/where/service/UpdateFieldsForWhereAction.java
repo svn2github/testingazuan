@@ -21,13 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.where.service;
 
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.IWhereField;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.Iterator;
 
@@ -66,7 +65,7 @@ public class UpdateFieldsForWhereAction extends AbstractQbeEngineAction {
 	
 	
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);
 		
 		String fieldUniqueName = getAttributeAsString(FIELD_UNIQUE_NAME);	

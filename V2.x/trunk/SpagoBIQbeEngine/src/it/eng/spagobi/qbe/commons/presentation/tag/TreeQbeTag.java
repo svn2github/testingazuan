@@ -23,7 +23,6 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 
 import it.eng.qbe.javascript.QbeJsTreeBuilder;
 import it.eng.qbe.javascript.QbeSelectJsTreeBuilder;
-import it.eng.qbe.utility.Utils;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 
 import javax.servlet.jsp.JspException;

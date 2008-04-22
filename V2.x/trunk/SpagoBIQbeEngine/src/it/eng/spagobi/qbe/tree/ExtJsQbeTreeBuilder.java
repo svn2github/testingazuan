@@ -21,55 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.tree;
 
-import it.eng.qbe.datasource.BasicHibernateDataSource;
-import it.eng.qbe.datasource.CompositeHibernateDataSource;
-import it.eng.qbe.javascript.QbeJsTreeNodeId;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.urlgenerator.IURLGenerator;
-import it.eng.qbe.urlgenerator.SelectFieldForSelectionURLGenerator;
 import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.utility.JsTreeUtils;
 import it.eng.qbe.utility.QbeProperties;
-import it.eng.qbe.utility.RelationField;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.presentation.tag.DatamartImageFactory;
 import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
 import it.eng.spagobi.qbe.tree.urlgenerator.IQbeTreeUrlGenerator;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.impl.SessionFactoryImpl;
-import org.hibernate.mapping.Column;
-import org.hibernate.mapping.PersistentClass;
-import org.hibernate.mapping.Property;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.CollectionType;
-import org.hibernate.type.ComponentType;
-import org.hibernate.type.ManyToOneType;
-import org.hibernate.type.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSObject;

@@ -24,14 +24,12 @@ package it.eng.spagobi.qbe.queryresultshandler.service;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import org.hibernate.HibernateException;
 
@@ -144,7 +142,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		}
 	}
 	
-	public void service(SourceBean request, SourceBean response)  {				
+	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		super.service(request, response);	
 		
 		if (!getQuery().isEmpty()){

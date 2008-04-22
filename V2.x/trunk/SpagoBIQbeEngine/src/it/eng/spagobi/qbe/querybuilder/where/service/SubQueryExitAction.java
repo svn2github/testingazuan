@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.where.service;
 
-import it.eng.qbe.query.IQuery;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 /**
@@ -36,7 +36,7 @@ public class SubQueryExitAction extends AbstractQbeEngineAction {
 	// valid input parameter names
 	public static final String SAVE = "SAVE";
 	
-	public void service(SourceBean request, SourceBean response) {		
+	public void service(SourceBean request, SourceBean response) throws EngineException {		
 		super.service(request, response);
 		
 		boolean save = getAttributeAsBoolean(SAVE);

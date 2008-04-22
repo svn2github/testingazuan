@@ -21,13 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.tree.urlgenerator;
 
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.querybuilder.select.service.AddCalculatedFieldAction;
-import it.eng.spagobi.qbe.querybuilder.select.service.AddSelectFieldAction;
 
 import java.util.HashMap;
 import java.util.Map;

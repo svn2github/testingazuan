@@ -21,13 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.tree.presentation.tag;
 
-import java.util.Locale;
-
 import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+
+import java.util.Locale;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

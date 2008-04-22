@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.qbe.querysaver.service;
 
 import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.qbe.utility.Utils;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;

@@ -24,6 +24,7 @@ package it.eng.spagobi.qbe.querybuilder.where.service;
 import it.eng.qbe.query.IWhereField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.Iterator;
 
@@ -39,7 +40,7 @@ public class UpdateBracketsInWhereAction extends AbstractQbeEngineAction {
 	public static final String SIDE = "SIDE";
 	public static final String ACTION = "ACTION";
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);
 		
 		String fieldId = getAttributeAsString(FIELD_ID); 

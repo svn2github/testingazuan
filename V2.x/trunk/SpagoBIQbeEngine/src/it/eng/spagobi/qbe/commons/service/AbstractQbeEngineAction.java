@@ -24,37 +24,23 @@ package it.eng.spagobi.qbe.commons.service;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
+import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 
 import java.util.Locale;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public abstract class AbstractQbeEngineAction extends AbstractBaseHttpAction {
+public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	
 	/**
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(AbstractQbeEngineAction.class);
     
-	
-	
-	public void init(SourceBean config) {
-        super.init(config);
-    } 
-	
-	public void service(SourceBean request, SourceBean response) {
-		super.service(request, response);
-	}
 	
 	
 

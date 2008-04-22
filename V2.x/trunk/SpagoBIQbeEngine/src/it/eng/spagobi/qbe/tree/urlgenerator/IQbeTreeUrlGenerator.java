@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.tree.urlgenerator;
 
-import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
 
 

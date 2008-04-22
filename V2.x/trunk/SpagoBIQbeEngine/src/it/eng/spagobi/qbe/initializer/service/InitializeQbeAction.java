@@ -34,6 +34,7 @@ import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
 import it.eng.spagobi.qbe.initializer.engine.service.QbeEngineStartAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class InitializeQbeAction extends AbstractQbeEngineAction {
 	
 	
 
-	public void service(SourceBean request, SourceBean response)  {
+	public void service(SourceBean request, SourceBean response) throws EngineException  {
 		super.service(request, response);		
 		
 		IDataSource dataSource = null;

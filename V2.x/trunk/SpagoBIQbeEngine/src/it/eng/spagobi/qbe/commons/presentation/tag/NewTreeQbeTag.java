@@ -21,24 +21,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import java.util.List;
-
-import it.eng.qbe.javascript.QbeJsTreeBuilder;
-import it.eng.qbe.javascript.QbeSelectJsTreeBuilder;
-import it.eng.qbe.utility.Utils;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.tree.DTree;
 import it.eng.spagobi.qbe.tree.IQbeTree;
 import it.eng.spagobi.qbe.tree.QbeTreeBuilder;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeFieldFilter;
-import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
-import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeSelectEntityFilter;
 import it.eng.spagobi.qbe.tree.urlgenerator.IQbeTreeUrlGenerator;
 import it.eng.spagobi.qbe.tree.urlgenerator.QbeTreeUrlGenerator;
+
+import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;

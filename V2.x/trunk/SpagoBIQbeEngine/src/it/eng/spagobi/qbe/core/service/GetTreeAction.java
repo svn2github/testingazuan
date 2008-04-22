@@ -23,15 +23,14 @@ package it.eng.spagobi.qbe.core.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.qbe.tree.DTree;
 import it.eng.spagobi.qbe.tree.ExtJsQbeTreeBuilder;
-import it.eng.spagobi.qbe.tree.QbeTreeBuilder;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,9 +38,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSObject;
 
 
 /** * 
@@ -54,7 +50,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 	// valid input parameter names
 	public static final String DATAMART_NAME = "DATAMART_NAME";
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);	
 		
 		String datamartName = getAttributeAsString(DATAMART_NAME); 		

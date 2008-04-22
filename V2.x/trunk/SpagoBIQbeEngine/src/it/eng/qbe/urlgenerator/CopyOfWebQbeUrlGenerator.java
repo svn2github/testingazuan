@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
-
 import java.util.Iterator;
 import java.util.Map;
 

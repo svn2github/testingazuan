@@ -22,14 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.qbe.queryresultshandler.service;
 
 import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractAction;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import org.hibernate.HibernateException;

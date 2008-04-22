@@ -24,7 +24,6 @@ package it.eng.qbe.utility;
 import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;

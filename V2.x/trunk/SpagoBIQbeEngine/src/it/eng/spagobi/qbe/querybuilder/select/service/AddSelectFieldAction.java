@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.querybuilder.select.service;
 
-import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 public class AddSelectFieldAction extends AbstractQbeEngineAction {
@@ -42,7 +42,7 @@ public class AddSelectFieldAction extends AbstractQbeEngineAction {
 	
 	
 	
-	public void service(SourceBean request, SourceBean response) {	
+	public void service(SourceBean request, SourceBean response) throws EngineException {	
 		super.service(request, response);
 				
 		String fieldUniqueName = getAttributeAsString(FIELD_UNIQUE_NAME);	

@@ -23,6 +23,7 @@ package it.eng.spagobi.qbe.querybuilder.groupby.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class AddGroupByFieldAction extends AbstractQbeEngineAction {
 	public static final String FIELD_NAME = "COMPLETE_FIELD_NAME";
 	public static final String FIELDS = "field";
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);	
 		
 		String fieldName = getAttributeAsString(FIELD_NAME); 

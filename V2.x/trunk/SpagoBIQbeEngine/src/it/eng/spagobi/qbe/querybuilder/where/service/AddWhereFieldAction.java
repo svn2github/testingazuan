@@ -23,6 +23,7 @@ package it.eng.spagobi.qbe.querybuilder.where.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 /**
@@ -37,7 +38,7 @@ public class AddWhereFieldAction extends AbstractQbeEngineAction {
 	public static final String HIB_TYPE = "HIB_TYPE";
 	
 	
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);
 				
 		String fieldName = getAttributeAsString(COMPLETE_FIELD_NAME); 

@@ -24,15 +24,7 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerAccess;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.ResponseContainerAccess;
-import it.eng.spago.base.ResponseContainerPortletAccess;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
@@ -40,9 +32,6 @@ import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

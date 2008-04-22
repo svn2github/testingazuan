@@ -114,8 +114,14 @@ public class QbeTemplate {
 	
 	private void parseFunctionalities(SourceBean functionalitiesSB) {
 		functionalities = new HashMap();
+		if(functionalitiesSB == null) {
+			return;
+		}
 		
 		List list = functionalitiesSB.getAttributeAsList("FUNCTIONALITY");
+		if(list == null) {
+			return;
+		}
 		for(int i = 0; i < list.size(); i++) {
 			SourceBean functionalitySB = (SourceBean)list.get(i);
 			String functionalityName = (String)functionalitySB.getAttribute("name");

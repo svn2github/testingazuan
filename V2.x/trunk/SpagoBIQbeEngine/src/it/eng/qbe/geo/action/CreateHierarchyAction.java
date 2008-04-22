@@ -23,6 +23,7 @@ package it.eng.qbe.geo.action;
 
 import it.eng.qbe.geo.configuration.DatamartProviderConfiguration;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.util.ArrayList;
@@ -32,9 +33,9 @@ import java.util.List;
  * @author Andrea Gioia
  * 
  */
-public class CreateHierarchyAction extends GeoAbstractAction {
+public class CreateHierarchyAction  extends AbstractQbeEngineAction {
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	public void service(SourceBean request, SourceBean response)  {
 		super.service(request, response);
 		
 		DatamartProviderConfiguration.Hierarchy hierarchy;		

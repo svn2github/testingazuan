@@ -25,11 +25,8 @@ import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;

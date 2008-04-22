@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.urlgenerator;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
-
 import java.util.Iterator;
 import java.util.Map;
 

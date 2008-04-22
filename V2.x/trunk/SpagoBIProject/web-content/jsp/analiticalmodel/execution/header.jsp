@@ -39,6 +39,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
 
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.BIObjectNotesManager"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
@@ -123,6 +126,10 @@ Role getVirtualRole(IEngUserProfile profile, BIObject obj, String baseRoleName) 
 // get module response, biobejct, subobject, parameters map
 SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 BIObject obj = (BIObject) moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+BIObjectNotesManager objectNManager = new BIObjectNotesManager();
+String execIdentifier = objectNManager.getExecutionIdentifier(obj);
+
+
 SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
 boolean isExecutingSubObject = subObj != null;
 Snapshot snapshot = (Snapshot) moduleResponse.getAttribute(SpagoBIConstants.SNAPSHOT);
@@ -239,12 +246,7 @@ if (toolbarIsVisible) {
 				<% } %>
 				<% if (virtualRole.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
 				<li>
-					<a id="iconNotesEmpty<%= uuid %>" href='javascript:opencloseNotesEditor<%= uuid %>()'>
-		               <img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/notesEmpty.jpg")%>'
-							alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
-					</a>
-					<a id="iconNotesFilled<%= uuid %>" style="display:none;" href='javascript:opencloseNotesEditor<%= uuid %>()'>
+					<a id="notes_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
 							src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
 							alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
@@ -259,6 +261,15 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
 					</a>
 				</li>
+				
+				<li>
+					<a id="rating_button<%= uuid %>" href='javascript:void(0);'>
+						<img width="22px" height="22px" title='<spagobi:message key = "metadata.Rating" />'
+							src='<%= urlBuilder.getResourceLink(request, "/img/rating.png")%>'
+							alt='<spagobi:message key = "metadata.Rating" />' />
+					</a>
+				</li>
+					
 				<% } %>
 				<li>
 					<a href='javascript:void(0)' onClick="print<%= uuid %>();">
@@ -534,7 +545,44 @@ if (toolbarIsVisible) {
 	
 	<%-- notes --%>
 	<% if (virtualRole.isAbleToSeeNotes() && !isExecutingSnapshot) { %>
-	<%@ include file="/jsp/analiticalmodel/execution/notes.jsp"%>
+	<script>
+	var win_notes_<%= uuid %>;
+	Ext.get('notes_button<%= uuid %>').on('click', function(){
+		if(!win_notes_<%= uuid %>) {
+			win_notes_<%= uuid %> = new Ext.Window({
+				id:'win_notes_<%= uuid %>',
+				bodyCfg: {
+					tag:'div',
+					cls:'x-panel-body',
+					children:[{
+						tag:'iframe',
+							name: 'dynamicIframeNotes', 
+                    		id  : 'dynamicIframeNotes', 
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=INSERT_NOTES_ACTION&execIdentifier="+execIdentifier+"&MESSAGEDET=OPEN_NOTES_EDITOR&OBJECT_ID=" + obj.getId().toString() %>',
+	      					frameBorder:0,
+	      					width:'100%',
+	      					height:'100%',
+	      					style: {overflow:'auto'}  
+	 						}]
+				},
+				layout:'fit',
+				width:700,
+				height:350,
+				closeAction:'hide',
+				scripts: true, 
+           		 buttons: [ 
+         		 { text: '<spagobi:message key = "sbi.execution.notes.savenotes" />', 
+    	  		 handler: function(){ 
+           		dynamicIframeNotes.saveNotes(); 
+             	 } } ], 
+ 				buttonAlign : 'left',
+				plain: true,
+				title: '<spagobi:message key = "sbi.execution.notes.insertNotes" />'
+			});
+		};
+		win_notes_<%= uuid %>.show();
+	});
+	</script>
 	<% } %>
 	<%-- end notes --%>
 	
@@ -559,8 +607,8 @@ if (toolbarIsVisible) {
 	 						}]
 				},
 				layout:'fit',
-				width:600,
-				height:300,
+				width:700,
+				height:400,
 				closeAction:'hide',
 				plain: true,
 				title: '<spagobi:message key = "SBISet.objects.captionMetadata" />'
@@ -571,6 +619,49 @@ if (toolbarIsVisible) {
 	</script>
 	<% } %>
 	<%-- End scripts for metadata window --%>
+	
+	<%-- Scripts for rating window --%>
+	<% if (virtualRole.isAbleToSeeMetadata()) { %>
+	<script>
+	var win_rating_<%= uuid %>;
+	Ext.get('rating_button<%= uuid %>').on('click', function(){
+		if(!win_rating_<%= uuid %>) {
+			win_rating_<%= uuid %> = new Ext.Window({
+				id:'win_rating_<%= uuid %>',
+				bodyCfg: {
+					tag:'div',
+					cls:'x-panel-body',
+					children:[{
+						tag:'iframe',
+						    name: 'dynamicIframe1', 
+                    		id  : 'dynamicIframe1', 
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=" + obj.getId().toString() %>',
+	      					frameBorder:0,
+	      					width:'100%',
+	      					height:'100%',
+	      					style: {overflow:'auto'}  
+	 						}]
+				},
+				layout:'fit',
+				width:220,
+				height:240,
+				closeAction:'hide',
+				scripts: true, 
+           		 buttons: [ 
+         		 { text: 'Vote', 
+    	  		 handler: function(){ 
+           		dynamicIframe1.saveDL(); 
+             	 } } ], 
+ 				buttonAlign : 'left',
+				plain: true,
+				title: '<spagobi:message key = "metadata.docRating" />'
+			});
+		};
+		win_rating_<%= uuid %>.show();
+	});
+	</script>
+	<% } %>
+	<%-- End scripts for rating window --%>
 	
 	<%-- Scripts for print --%>
 	<%

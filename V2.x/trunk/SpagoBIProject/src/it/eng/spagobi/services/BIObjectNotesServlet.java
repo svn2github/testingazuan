@@ -75,19 +75,19 @@ public class BIObjectNotesServlet extends HttpServlet{
 	public void service(HttpServletRequest request, HttpServletResponse response) {
 		try{
 			String task = (String)request.getParameter("task");
-			if((task!=null) && (task.equalsIgnoreCase("requireLock"))){
+			/* if((task!=null) && (task.equalsIgnoreCase("requireLock"))){
 				requireLockHandler(request, response);
 				return;
-			} else if((task!=null) && (task.equalsIgnoreCase("saveNotes"))) {
+			} else */ if((task!=null) && (task.equalsIgnoreCase("saveNotes"))) {
 				saveNotesHandler(request, response);
 				return;
 			} else if((task!=null) && (task.equalsIgnoreCase("getNotes"))) {
 				getNotesHandler(request, response);
 				return;
-			} else if((task!=null) && (task.equalsIgnoreCase("holdLock"))) {
+			}/* else if((task!=null) && (task.equalsIgnoreCase("holdLock"))) {
 				holdLockHandler(request, response);
 				return;
-			} 
+			} */
 		} finally {}
 	}
 		
@@ -166,20 +166,20 @@ public class BIObjectNotesServlet extends HttpServlet{
 			String notes = request.getParameter("notes");
 			String userName = request.getParameter("user");
 			// check if the user have the lock
-			boolean hasLock = true;
+			// boolean hasLock = true;
 			synchronized(this) {
 				List execdata = (List)execIdMap.get(execIdent);
-				if(execdata!=null){
+				/*if(execdata!=null){
 					String existingLockUser = (String)execdata.get(0);
 					if(!existingLockUser.equals(userName)) {
 						hasLock = false;
 					}
 				} else {
 					hasLock = false;
-				}
+				}*/
 			}
 			// if the user doesn't have lock send error otherwise send empty message
-			if(hasLock){
+			// if(hasLock){
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
 				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
@@ -194,9 +194,9 @@ public class BIObjectNotesServlet extends HttpServlet{
 					objNote.setExecReq(execIdent);
 					objNoteDAO.saveExecutionNotes(biobject.getId(), objNote);
 				}
-			} else {
+			/*} else {
 				respStr = "SpagoBIError:Editor locked by another user";
-			}
+			}*/
 		} catch (Exception e) {
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 								   "saveNotesHandler", "Error while saving notes" + e);
@@ -217,7 +217,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 	}
 	
 	
-	private void requireLockHandler(HttpServletRequest request, HttpServletResponse response) {
+	/* private void requireLockHandler(HttpServletRequest request, HttpServletResponse response) {
 		try{	
 			String biobjIdStr = request.getParameter("biobjid");
 			String userName = request.getParameter("user");
@@ -248,7 +248,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 			String respStr = "";
 			if(locked){
 				respStr = "SpagoBIError:Editor locked by another user";
-			} else {
+			} else { 
 				int biobjId = new Integer(biobjIdStr).intValue();
 				IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 				BIObject biobject = objectDAO.loadBIObjectById(new Integer(biobjId));
@@ -256,7 +256,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 				ObjNote objnotes = objNoteDAO.getExecutionNotes(new Integer(biobjIdStr), execIdentifier);
 				String notes = new String(objnotes.getContent());
 				respStr = notes;
-			}
+			// }
 			response.getOutputStream().write(respStr.getBytes());
 			response.getOutputStream().flush();	
 						
@@ -264,7 +264,7 @@ public class BIObjectNotesServlet extends HttpServlet{
 			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 								   "requireLockManager", "Error while getting lock" + e);
 		} finally {	}
-	}
+	} */
 
 	
 

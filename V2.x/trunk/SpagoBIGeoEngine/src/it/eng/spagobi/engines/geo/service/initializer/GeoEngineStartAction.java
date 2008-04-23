@@ -110,6 +110,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			
 			
 			executionContext = getAttributeAsString( EXECUTION_CONTEXT ); 
+			//executionContext = "DOCUMENT_COMPOSITION";
 			logger.debug("Execution context: " + executionContext);
 			String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
 			logger.debug("Document composition mode active: " + isDocumentCompositionModeActive);
@@ -123,6 +124,14 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			env.put(Constants.ENV_CONTEXT_URL, contextUrl);
 			env.put(Constants.ENV_DATASOURCE, dataSource);
 			env.put(Constants.ENV_MAPCATALOGUE_SERVICE_PROXY, mapCatalogueServiceProxy);
+			if("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive)) {
+				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
+				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
+			} else {
+				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "TRUE");
+				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
+			}
+			
 			if(standardHierarchy != null) {
 				env.put(Constants.ENV_STD_HIERARCHY, standardHierarchy);
 			}				

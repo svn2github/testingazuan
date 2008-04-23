@@ -344,7 +344,20 @@ preserveAspectRatio="xMidYMin meet">
 			
 			//load function specific to the current map project
 			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			linkRadioGroup.selectById("drill_nav");
+			//linkRadioGroup.selectById("drill_nav");
+			//linkRadioGroup.selectById("cross_nav");
+			if (defaultDrillNav == true){
+				//setLinkAction("linkRadioGroup", "drill_nav", "Drill Nav.");
+				linkRadioGroup.selectById("drill_nav");
+				//alert("drill_nav");
+			}
+			else{
+				//setLinkAction("linkRadioGroup", "cross_nav", "Cross Nav.");
+				linkRadioGroup.selectById("cross_nav");
+				//alert("cross_nav");
+			}
+			
+			
 		}
 		
 		function initDetailInfopanels() {
@@ -547,7 +560,11 @@ preserveAspectRatio="xMidYMin meet">
 					drillUrl += "&featureValue=" + featureValue;
 					targetNode.setAttributeNS(attribNS, "crossUrl", crossUrl);
 					targetNode.setAttributeNS(attribNS, "drillUrl", drillUrl);
-					targetNode.setAttributeNS(xlinkNS, "href", drillUrl);
+					if (defaultDrillNav == true){
+						targetNode.setAttributeNS(xlinkNS, "href", drillUrl);
+					} else {
+						targetNode.setAttributeNS(xlinkNS, "href", crossUrl);
+					}
 	               	targetNode = targetNode.firstChild;
                }
 			   
@@ -906,7 +923,6 @@ preserveAspectRatio="xMidYMin meet">
 		}	
 		
 		function setLinkAction(cbId,radioId,label) {
-				
 			var child = myMapApp.targetLayer.firstChild;
 		 	
 			while(child) {

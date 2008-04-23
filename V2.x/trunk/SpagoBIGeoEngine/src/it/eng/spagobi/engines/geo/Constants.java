@@ -55,6 +55,8 @@ public class Constants {
 	public static final String ENV_MAPCATALOGUE_SERVICE_PROXY = "MAPCATALOGUE_SERVICE_PROXY";
 	public static final String ENV_CONTEXT_URL = "CONTEXT_URL";
 	public static final String ENV_STD_HIERARCHY = "STD_HIERARCHY";
+	public static final String ENV_IS_DAFAULT_DRILL_NAV = "ENV_IS_DAFAULT_DRILL_NAV";
+	public static final String ENV_IS_WINDOWS_ACTIVE = "ENV_IS_WINDOWS_ACTIVE";
 	
 	// OUTPUT FORMAT TYPES AND MIME TYPES
 	
@@ -89,5 +91,7 @@ public class Constants {
 	public static final String HTML_MIME_TYPE = "image/html";
 	
 	public static final String TEXT_MIME_TYPE = "text/plan";
+	
+	
 		
 }

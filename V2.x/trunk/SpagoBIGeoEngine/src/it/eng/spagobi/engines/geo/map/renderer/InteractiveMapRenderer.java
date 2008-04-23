@@ -1105,7 +1105,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("// GUI SETTINGS\n");
-		buffer.append("var activeWindow=true;\n");
+		String pVal = null;
+		
+		pVal =(String)getEnv().get(Constants.ENV_IS_WINDOWS_ACTIVE);
+		boolean activeWindow = pVal==null||pVal.equalsIgnoreCase("TRUE");
+		buffer.append("var activeWindow=" + (activeWindow?"true":"false")+ ";\n");
+		
+		pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
+		boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
+		buffer.append("var defaultDrillNav=" + (defaultDrillNav?"true":"false")+ ";\n");		
 		
 		return buffer.toString();		
 	}

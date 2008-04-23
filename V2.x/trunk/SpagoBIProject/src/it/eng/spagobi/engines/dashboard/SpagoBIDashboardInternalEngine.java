@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -112,6 +113,11 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	    SourceBean dataSB = (SourceBean) content.getAttribute("DATA");
 	    List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
 	    Iterator dataAttrsIter = dataAttrsList.iterator();
+	    if(obj.getDataSetId()!=null){
+	    String dataSetId=obj.getDataSetId().toString();
+	    dataParameters.put("datasetid", dataSetId);
+	    }
+	    
 	    while (dataAttrsIter.hasNext()) {
 		SourceBeanAttribute paramSBA = (SourceBeanAttribute) dataAttrsIter.next();
 		SourceBean param = (SourceBean) paramSBA.getValue();
@@ -119,6 +125,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		String valueParam = (String) param.getAttribute("value");
 		dataParameters.put(nameParam, valueParam);
 	    }
+	    
 	    // puts the document id
 	    dataParameters.put("documentId", obj.getId().toString());
 	    // puts the userId into parameters for data recovery
@@ -146,6 +153,29 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	    if ((objDescr != null) && !objDescr.trim().equals("")) {
 		title += ": " + objDescr;
 	    }
+	    
+		String parameters="";
+	    //Search if the chart has parameters
+		List parametersList=obj.getBiObjectParameters();
+		logger.debug("Check for BIparameters and relative values");
+		if(parametersList!=null){
+			for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+				BIObjectParameter par= (BIObjectParameter) iterator.next();
+				String url=par.getParameterUrlName();
+				List values=par.getParameterValues();
+				if(values!=null){
+					if(values.size()==1){
+						String value=(String)values.get(0);
+						parameters+="&"+url+"="+value;
+						dataParameters.put(url, value);
+						//parametersMap.put(url, value);
+					}
+				}
+
+			}	
+
+		}	   
+	    
 
 	    // get execution context
 	    String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
@@ -160,7 +190,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	    response.setAttribute("displayTitleBar", displayTitleBar);
 	    response.setAttribute("title", title);
 	    response.setAttribute("confParameters", confParameters);
-	    response.setAttribute("dataParameters", dataParameters);
+	    response.setAttribute("dataParameters", dataParameters);	    
 	    // response.setAttribute("possibleStateChanges", possibleStates);
 	    // set information for the publisher
 	    response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");

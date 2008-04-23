@@ -47,7 +47,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IMessageBuilder msgBuilder = null;
 	Locale locale = null;
 	
-
 	
 	// get configuration
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
@@ -110,11 +109,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
-<script type="text/javascript" src="<%=linkProto%>"></script>
-<script type="text/javascript" src="<%=linkProtoWin%>"></script>
-<script type="text/javascript" src="<%=linkProtoEff%>"></script>
-<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
    
 <!-- based on ecexution mode include initial html  -->   

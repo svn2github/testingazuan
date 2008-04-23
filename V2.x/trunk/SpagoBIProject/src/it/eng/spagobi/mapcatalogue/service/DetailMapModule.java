@@ -5,7 +5,6 @@
 **/
 package it.eng.spagobi.mapcatalogue.service;
 
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -20,13 +19,14 @@ import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +37,10 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 /**
  * Spago Module which executes the map producing request  
@@ -51,7 +55,7 @@ public class DetailMapModule extends AbstractHttpModule {
 	public static final String MOD_RETURN_FROM_LOOKUP = "RETURN_FROM_LOOKUP";
 	public static final String MOD_DOWNLOAD_MAP = "DOWNLOAD_MAP";
 	
-	
+	static private Logger logger = Logger.getLogger(DetailMapModule.class);
 	
 	private String modalita = "";
 	
@@ -103,6 +107,8 @@ public class DetailMapModule extends AbstractHttpModule {
 				delRelMapFeature(serviceRequest, serviceResponse);				
 			} else if (message.trim().equalsIgnoreCase(MOD_RETURN_FROM_LOOKUP)) {
 				insRelMapFeature(serviceRequest, serviceResponse);				
+			}else if (message.trim().equalsIgnoreCase(MOD_DOWNLOAD_MAP)) {
+				downloadFile();				
 			}
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
@@ -633,4 +639,40 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 5011, new Vector(), params);
 		}
 	}	
+	
+	/**
+	 * Handle a download request of a map file. Reads the file, sends it as an http response attachment.
+	 * and in the end deletes the file.
+	 * @param request the http request
+	 * @param response the http response
+	 */
+	private void downloadFile () throws Exception {			
+		 	freezeHttpResponse();
+		    HttpServletRequest request = getHttpRequest();
+		    HttpServletResponse response = getHttpResponse();
+			String filePathName = ConfigSingleton.getRootPath() + (String)request.getParameter("path");
+			
+ 			//download file
+ 			try{			
+			File fileMap = new File(filePathName);
+			String fileName = fileMap.getName();
+			response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\";");
+			byte[] fileContent = "".getBytes();
+			FileInputStream fis = null;
+			try{
+				fis = new FileInputStream(filePathName);
+				fileContent = GeneralUtilities.getByteArrayFromInputStream(fis);
+			} catch (IOException ioe) {
+				logger.error("Cannot get bytes of the exported file" + ioe);
+			}
+			response.setContentLength(fileContent.length);
+			response.getOutputStream().write(fileContent);
+			response.getOutputStream().flush();
+		 	if(fis!=null)
+		 		fis.close();
+
+		} catch (IOException ioe) {
+			logger.error("Cannot flush response" + ioe);
+		}
+	}
 }

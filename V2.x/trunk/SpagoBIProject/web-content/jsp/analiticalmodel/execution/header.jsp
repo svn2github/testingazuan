@@ -38,10 +38,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
-
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.handlers.BIObjectNotesManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-
+<%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
@@ -175,6 +176,27 @@ boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJ
 %>
 
 <div class='execution-page-title'>
+	<%
+	ExecutionManager executionManager = (ExecutionManager) aSessionContainer.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+	String executionFlowId = (String) aSessionContainer.getAttribute("EXECUTION_FLOW_ID");
+	if (executionFlowId != null) aSessionContainer.delAttribute("EXECUTION_FLOW_ID");
+	else executionFlowId = uuid;
+	if (!executionFlowId.equals(uuid) && executionManager != null) {
+		List list = executionManager.getBIObjectsExecutionFlow(executionFlowId);
+		for (int i = 0; i < list.size(); i++) {
+			ExecutionManager.ExecutionInstance instance = (ExecutionManager.ExecutionInstance) list.get(i);
+			BIObject aBIObject = instance.getBIObject();
+			Map recoverExecutionParams = new HashMap();
+			recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			recoverExecutionParams.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION);
+			recoverExecutionParams.put("EXECUTION_FLOW_ID", instance.getFlowId());
+			recoverExecutionParams.put("EXECUTION_ID", instance.getExecutionId());
+			recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
+			String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
+			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getLabel() + ": " + aBIObject.getName()%></a>&gt;<%
+		}
+	}
+	%>
 	<%= title %>
 </div>
 
@@ -261,7 +283,6 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
 					</a>
 				</li>
-				
 				<li>
 					<a id="rating_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "metadata.Rating" />'
@@ -269,7 +290,6 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "metadata.Rating" />' />
 					</a>
 				</li>
-					
 				<% } %>
 				<li>
 					<a href='javascript:void(0)' onClick="print<%= uuid %>();">

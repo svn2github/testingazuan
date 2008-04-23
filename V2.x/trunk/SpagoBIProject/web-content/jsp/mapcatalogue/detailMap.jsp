@@ -40,9 +40,9 @@
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
 		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/MapCatalogueManagerServlet";
+		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/servlet/AdapterHTTP?PAGE=DetailMapPage";
 		String filePath = (map.getUrl()).replace('\\', '/');		
-   	    downloadUrl += "?operation=DOWNLOAD&path="+  filePath;
+   	    downloadUrl += "&MESSAGEDET=DOWNLOAD_MAP&path="+  filePath;
     	//renderResponse.encodeURL("/" + downloadUrl).toString();
 	   
 		//checks if there are some features that will be erased (if user wants)
@@ -165,8 +165,10 @@
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' type="file" 
-	      		       size="58" name="URL" value="<%= map.getUrl() %>"  onchange='fileToUploadInserted()'/>
+				<!-- <input class='portlet-form-input-field' type="file" 
+	      		       size="58" name="URL" value="<%= map.getUrl() %>"  onchange='fileToUploadInserted()'/>-->
+	      		<input class='portlet-form-input-field' type="file" 
+	      		       size="58" name="uploadFile" id="uploadFile" value="<%= map.getUrl() %>"  onchange='fileToUploadInserted()'/>
 				<input style="height:19px;vertical-align: middle;font-size: 12px;" type="button" value='<spagobi:message key = "SBIMapCatalogue.downloadMap" bundle="component_mapcatalogue_messages"/>'
 	      		       name="URL_DOWNLOAD" value=""  onClick="downloadFile('<%=downloadUrl%>');" />      		      
 

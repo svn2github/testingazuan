@@ -121,7 +121,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
             Map values = new HashMap();
             Map attributes = null;
             Map links = new HashMap();
-            resultSet.beforeFirst();
+          //  resultSet.beforeFirst();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {
@@ -416,7 +416,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
 
 	            results = new SourceBean("ROWS");
 	            SourceBean row;
-	            resultSet.beforeFirst();
+	            //resultSet.beforeFirst();
 	            int rowno = 0;
 	            while(resultSet.next()) {
 	            	if(++rowno > 1000) break;

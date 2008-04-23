@@ -92,12 +92,13 @@ public class Link {
 
 	public String toString(ResultSet resultSet) {
 		
-		String link = null;
+		/*String link = null;
 			
 		if(baseUrl == null) return DEFAULT_BASE_URL;
 		
 		link = baseUrl + "?";
-    	//String link = "javascript:parent.execDrill(this.name,'/SpagoBIGeoEngine/SpagoBIDrillServlet?";
+		*/
+    	String link = "javascript:parent.execDrill(this.name,'/SpagoBIGeoEngine/SpagoBIDrillServlet?";
 		
     	try{
     		Iterator it = parameters.keySet().iterator();

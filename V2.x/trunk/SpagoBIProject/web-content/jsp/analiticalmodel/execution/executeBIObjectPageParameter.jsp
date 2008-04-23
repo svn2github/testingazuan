@@ -101,7 +101,7 @@ if (modality == null) modality = "NORMAL_EXECUTION";
 <div id="popout_Parameters<%= uuid %>" class="popout"></div>
 <script>
 createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'parametersContentEl<%= uuid %>', 
-		'popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', <%= pageContext.getAttribute("parametersBoxOpen") %>);
+		'popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', false);
 </script>
 <%-- End parameters --%>
 

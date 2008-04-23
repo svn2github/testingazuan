@@ -83,7 +83,8 @@ public class BIObjectParameter implements Serializable {
 	
 	private String lovResult;
 	
-	private boolean hasValidValues = true;
+	// default value is false; when the parameter values are set and they are correct, this field must be set to true
+	private boolean hasValidValues = false;
 	
 	/**
 	 * @return Returns the id of the BIObjectParameter

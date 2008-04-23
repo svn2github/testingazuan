@@ -179,6 +179,8 @@ public class SpagoBIConstants {
 	public static final String EXEC_PHASE_RETURN_FROM_LOOKUP = "EXEC_PHASE_RETURN_FROM_LOOKUP";
 	public static final String EXEC_CHANGE_STATE = "EXEC_CHANGE_STATE";
 	public static final String EXEC_PHASE_RUN = "EXEC_PHASE_RUN";
+	public static final String EXEC_CROSS_NAVIGATION = "EXEC_CROSS_NAVIGATION";
+	public static final String RECOVER_EXECUTION_FROM_CROSS_NAVIGATION = "RECOVER_EXECUTION_FROM_CROSS_NAVIGATION";
 	
 	public static final String DOCUMENT_TEMPLATE_BUILD = "DocumentTemplateBuildPage";
 	public static final String NEW_DOCUMENT_TEMPLATE = "NEW_DOCUMENT_TEMPLATE";

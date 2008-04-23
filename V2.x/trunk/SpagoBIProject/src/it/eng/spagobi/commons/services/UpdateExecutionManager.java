@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.services;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.navigation.LightNavigationManager;
@@ -28,6 +29,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
@@ -66,7 +68,12 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 		} else {
 			flowId = flowId.substring(10);
 		}
-		ExecutionManager executionManager = ExecutionManager.getInstance();
+		SessionContainer sessionContainer = this.getRequestContainer().getSessionContainer();
+		ExecutionManager executionManager = (ExecutionManager) sessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		if (executionManager == null) {
+			executionManager = new ExecutionManager();
+			sessionContainer.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, executionManager);
+		}
 		executionManager.registerExecution(flowId, executionId, obj, executionRole);
 		List list = executionManager.getBIObjectsExecutionFlow(flowId);
 		String html = "";

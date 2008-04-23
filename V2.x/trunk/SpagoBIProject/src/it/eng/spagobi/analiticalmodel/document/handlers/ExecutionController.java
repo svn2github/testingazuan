@@ -85,6 +85,11 @@ public class ExecutionController {
             	continue;
         	}
         	
+        	if(biParameter.hasValidValues()) {
+        		countHidePar ++;
+            	continue;
+        	}
+        	
         	if (par == null) {
 				SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE, 
 		 				"ExecuteBIObjectMOdule", 

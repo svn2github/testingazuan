@@ -134,10 +134,6 @@ public class ParametersGeneratorTag extends TagSupport {
 	    logger.error("EMFUserError, reading roleName",e);
 	}
 	
-	// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
-	if (hasParametersFormToBeDisplayed()) pageContext.setAttribute("parametersBoxOpen", "true");
-	else pageContext.setAttribute("parametersBoxOpen", "false");
-	
 	List parameters = obj.getBiObjectParameters();
 	boolean hasParametersToBeShown = false;
 	StringBuffer htmlStream = new StringBuffer();

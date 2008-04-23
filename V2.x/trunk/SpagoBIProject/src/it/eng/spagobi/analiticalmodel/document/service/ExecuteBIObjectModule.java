@@ -40,6 +40,8 @@ import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
@@ -182,6 +184,12 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.VIEWPOINT_VIEW)) {
 				viewViewpoint(request, response);
+			} else if (messageExec
+					.equalsIgnoreCase(SpagoBIConstants.EXEC_CROSS_NAVIGATION)) {
+				executeCrossNavigationHandler(request, response);
+			} else if (messageExec
+					.equalsIgnoreCase(SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION)) {
+				recoverExecutionFromCrossNavigationHandler(request, response);
 			} else {
 				logger.error("Illegal request of service");
 				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
@@ -194,6 +202,52 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		}
 	}
 
+	private void recoverExecutionFromCrossNavigationHandler(SourceBean request, SourceBean response)
+		throws Exception {
+		logger.debug("IN");
+		try {
+			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
+			String executionId = (String) request.getAttribute("EXECUTION_ID");
+			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+			if (executionManager == null) {
+				throw new Exception("Execution Manager not found. Cannot recover execution details.");
+			}
+			ExecutionInstance instance = executionManager.recoverExecution(executionFlowId, executionId);
+			BIObject obj = instance.getBIObject();
+			setBIObject(obj);
+	    	String executionRole = instance.getExecutionRole();
+	    	request.setAttribute("spagobi_execution_role", executionRole);
+	    	request.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
+	    	session.delAttribute(ObjectsTreeConstants.PARAMETERS);
+	    	pageCreationHandler(request, response);
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
+	private void executeCrossNavigationHandler(SourceBean request, SourceBean response)
+		throws Exception {
+		logger.debug("IN");
+		try {
+			// registers the current execution
+			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
+			String sourceExecutionId = (String) request.getAttribute("SOURCE_EXECUTION_ID");
+			session.setAttribute("EXECUTION_FLOW_ID", sourceExecutionId);
+			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+			if (executionManager == null) {
+				executionManager = new ExecutionManager();
+				session.setAttribute(ObjectsTreeConstants.EXECUTION_MANAGER, executionManager);
+			}
+			BIObject obj = getBIObject();
+			String executionRole = (String) session.getAttribute(SpagoBIConstants.ROLE);
+			executionManager.registerExecution(executionFlowId, sourceExecutionId, obj, executionRole);
+			// starts new execution 
+			pageCreationHandler(request, response);
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
 	private void eraseSnapshotHandler(SourceBean request, SourceBean response)
 			throws EMFUserError, SourceBeanException {
 		logger.debug("IN");
@@ -1261,6 +1315,13 @@ public class ExecuteBIObjectModule extends AbstractModule {
 				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 	}
 
+	/**
+	 * set object in session
+	 */
+	private void setBIObject(BIObject obj) {
+		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+	}
+	
 	private boolean isMultivalueParameter(BIObjectParameter biparam) {
 		return (biparam.getParameterValues() != null && biparam
 				.getParameterValues().size() > 1);
@@ -1530,6 +1591,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 								EMFErrorSeverity.ERROR, 1077, l);
 						errorHandler.addError(userError);
 					} else {
+						biparam.setHasValidValues(true);
 						parameterValuesDescription += lovResultHandler.getValueDescription(value, 
 								lovProvDet.getValueColumnName(), lovProvDet.getDescriptionColumnName());
 						if (i < values.size() - 1) parameterValuesDescription += "; ";

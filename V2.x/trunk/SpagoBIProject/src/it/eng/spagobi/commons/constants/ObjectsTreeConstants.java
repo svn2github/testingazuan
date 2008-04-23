@@ -66,6 +66,8 @@ public class ObjectsTreeConstants {
 
 	public static final String SESSION_OBJ_ATTR = "SESSION_OBJ_ATTR";
 	
+	public static final String EXECUTION_MANAGER = "EXECUTION_MANAGER";
+	
 	public static final String INPUT_TYPE_QUERY_CODE = "QUERY";
 	public static final String INPUT_TYPE_FIX_LOV_CODE = "FIX_LOV";
 	public static final String INPUT_TYPE_MAN_IN_CODE = "MAN_IN";

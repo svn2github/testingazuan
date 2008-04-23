@@ -88,7 +88,10 @@ public class DirectExecutionModule extends AbstractModule {
 				response.setAttribute("spagobi_execution_id", executionId);
 				response.setAttribute("spagobi_flow_id", flowId);
 				response.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
-				ExecutionManager executionManager = ExecutionManager.getInstance();
+				ExecutionManager executionManager = (ExecutionManager) sessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+				if (executionManager == null) {
+					throw new Exception("Execution Manager not found. Cannot recover execution details.");
+				}
 				ExecutionInstance instance = executionManager.recoverExecution(flowId, executionId);
 				obj = instance.getBIObject();
 				List parameters = obj.getBiObjectParameters();

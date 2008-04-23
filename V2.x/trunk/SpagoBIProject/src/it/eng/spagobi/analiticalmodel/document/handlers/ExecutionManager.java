@@ -35,15 +35,16 @@ import java.util.Set;
 
 public class ExecutionManager {
 
-	private static ExecutionManager _instance = null;
+	//private static ExecutionManager _instance = null;
 	// exections before 2 hours ago are deleted  
-	private static int hoursAgo = 2;
+	//private static int hoursAgo = 2;
 	private Map _flows = null;
 	
-	private ExecutionManager() {
+	public ExecutionManager() {
 		_flows = new HashMap(); 
 	}
 	
+	/*
     public static ExecutionManager getInstance() {
         if (_instance == null) {
         	_instance = new ExecutionManager();
@@ -68,6 +69,7 @@ public class ExecutionManager {
         }
         return _instance;
     }
+    */
     
     public void registerExecution(String flowId, String executionId, BIObject obj, String executionRole) {
     	ExecutionInstance newInstance = new ExecutionInstance(flowId, executionId, obj, executionRole);
@@ -116,10 +118,10 @@ public class ExecutionManager {
     				break;
     			}
     		}
-    		// removes execution instances starting from the requested one (excluded)
+    		// removes execution instances starting from the requested one
     		int initialLength = instances.size();
-    		for (int k = 0; k < initialLength - i - 1; k++) {
-    			instances.remove(i + 1);
+    		for (int k = 0; k < initialLength - i; k++) {
+    			instances.remove(i);
     		}
     		return toReturn;
     	} else {

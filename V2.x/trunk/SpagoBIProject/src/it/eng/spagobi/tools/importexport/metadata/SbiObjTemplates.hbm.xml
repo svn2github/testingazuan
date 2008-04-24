@@ -5,7 +5,9 @@
     <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates" table="sbi_object_templates" >
         <id name="objTempId" type="integer">
             <column name="obj_temp_id" />
-
+            <generator class="native">
+            	<param name="sequence">sbi_obj_temp_seq</param>
+            </generator>
         </id>   
         
         <many-to-one name="sbiObject" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
@@ -27,7 +29,12 @@
         <property name="creationDate" type="timestamp">
             <column name="creation_date"/>
         </property>
-        
+        <property name="dimension" type="string">
+            <column name="dimension" />
+        </property>  
+        <property name="creationUser" type="string">
+            <column name="CREATION_USER" />
+        </property>         
         <property name="active" type="boolean">
             <column name="active"/>
         </property>

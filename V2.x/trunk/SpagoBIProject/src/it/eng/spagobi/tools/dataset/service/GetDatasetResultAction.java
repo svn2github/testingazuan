@@ -104,7 +104,9 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 			// if dataset needs parameter I must recover them from request
 			 DataSet dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(Integer.valueOf(dataName)); 
 			 if(dataSet!=null){	
-			 	String parametersXML=dataSet.getParameters();
+			 	Object parametersO=dataSet.getParameters();
+			 	if(parametersO!=null){
+			 		String parametersXML=parametersO.toString();
 			 	DataSetParametersList dsList=new DataSetParametersList(parametersXML);
 			 	for (Iterator iterator = dsList.getItems().iterator(); iterator.hasNext();) {
 					DataSetParameterItem item = (DataSetParameterItem) iterator.next();
@@ -117,6 +119,7 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 					}
 					
 				}
+			 	}
 					}
 			
 	    } catch (Exception e) {

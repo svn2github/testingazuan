@@ -63,6 +63,7 @@ public class ChartImpl implements IChart {
 	protected String type="";
 	protected String subtype="";
 	protected Color color;
+	protected boolean legend=true;
 
 /**  configureChart reads the content of the template and sets the chart parameters
  * 
@@ -102,6 +103,7 @@ public class ChartImpl implements IChart {
 		// get all the data parameters 
 
 
+		
 
 		try{					
 			Map dataParameters = new HashMap();
@@ -124,6 +126,15 @@ public class ChartImpl implements IChart {
 			else {
 				isLovConfDefined=false;
 			}
+			
+			legend=true;
+			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get("legend");
+				if(leg.equalsIgnoreCase("false"))
+					legend=false;
+			}
+			
+			
 		}
 		catch (Exception e) {
 			logger.error("error in reading dataq source parameters");
@@ -300,6 +311,14 @@ public class ChartImpl implements IChart {
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 
 		return null;
+	}
+
+	public boolean isLegend() {
+		return legend;
+	}
+
+	public void setLegend(boolean legend) {
+		this.legend = legend;
 	}
 
 

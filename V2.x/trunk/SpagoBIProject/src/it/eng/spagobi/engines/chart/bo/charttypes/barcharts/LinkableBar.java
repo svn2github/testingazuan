@@ -136,7 +136,7 @@ public class LinkableBar extends BarCharts {
 
 		CategoryPlot plot = new CategoryPlot((CategoryDataset)dataset, categoryAxis, valueAxis, renderer);
 		plot.setOrientation(PlotOrientation.VERTICAL);
-		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 
 
 

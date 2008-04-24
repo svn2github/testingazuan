@@ -106,7 +106,7 @@ public class SimplePie extends PieCharts{
 			chart = ChartFactory.createPieChart(
 					chartTitle,  
 					(PieDataset)dataset,             // data
-					true,                // include legend
+					legend,                // include legend
 					true,
 					false
 			);

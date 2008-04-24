@@ -95,7 +95,7 @@ logger.debug("IN");
 				valueLabel,                  // range axis label
 				(CategoryDataset)dataset,                  // data
 				plotOrientation, // orientation
-				true,                     // include legend
+				legend,                     // include legend
 				true,                     // tooltips?
 				false                     // URLs?
 		);

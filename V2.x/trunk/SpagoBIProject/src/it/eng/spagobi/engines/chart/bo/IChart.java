@@ -57,4 +57,7 @@ public interface IChart {
 			
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization); 
 	
+	public boolean isLegend();
+	public void setLegend(boolean legend);
+	
 }

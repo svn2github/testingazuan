@@ -482,10 +482,10 @@ public class ListTag extends TagSupport
 						} else 			
 							if (popup){
 							
-							_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
+							_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
 							    // insert javascript for open popup
 							    _htmlStream.append(" <script>\n");
-							    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
+							    _htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
 							    _htmlStream.append("  if (confirm(\"" + msg + "\") and win"+captionName+"_"+prog+" == null ) {\n");
 							    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
 							    _htmlStream.append("   win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
@@ -545,11 +545,11 @@ public class ListTag extends TagSupport
 						    }
 					}else{
 					    if (popup){
-					    	_htmlStream.append("     <a id='linkDetail_"+prog+"' href='#'>\n");
+					    	_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
 						    // insert javascript for open popup
 						    _htmlStream.append(" <script>\n");
 						    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
-						    _htmlStream.append("Ext.get('linkDetail_"+prog+"').on('click', function(){ \n");
+						    _htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
 
 						    _htmlStream.append("   if ( win"+captionName+"_"+prog+" == null ) {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
 						    _htmlStream.append("            bodyCfg:{ \n" );

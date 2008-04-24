@@ -30,6 +30,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>

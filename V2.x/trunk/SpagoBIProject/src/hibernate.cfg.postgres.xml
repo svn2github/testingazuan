@@ -30,6 +30,7 @@
         <mapping resource="it/eng/spagobi/behaviouralmodel/check/metadata/mappingpostgres/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjPar.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjectsRating.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjFunc.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiSubreports.hbm.xml"/>

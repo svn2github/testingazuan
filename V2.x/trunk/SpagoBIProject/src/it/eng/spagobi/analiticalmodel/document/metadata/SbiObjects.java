@@ -64,7 +64,6 @@ public class SbiObjects  implements java.io.Serializable {
      // add this properties for metadata
      private String extendedDescription=null;
      private String objectve=null;
-     private Short rating=null;
      private String language=null;
      private String keywords=null;
      private Date creationDate=null;
@@ -88,14 +87,6 @@ public class SbiObjects  implements java.io.Serializable {
 
     public void setObjectve(String objectve) {
         this.objectve = objectve;
-    }
-
-    public Short getRating() {
-        return rating;
-    }
-
-    public void setRating(Short rating) {
-        this.rating = rating;
     }
 
     public String getLanguage() {

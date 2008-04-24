@@ -367,7 +367,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setLanguage(biObject.getLanguage());
 			hibBIObject.setObjectve(biObject.getObjectve());
 			hibBIObject.setKeywords(biObject.getKeywords());
-			hibBIObject.setRating(biObject.getRating());
 			
 			// functionalities erasing
 			Set hibFunctionalities = hibBIObject.getSbiObjFuncs();
@@ -549,7 +548,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setCreationUser(obj.getCreationUser());
 			hibBIObject.setLanguage(obj.getLanguage());
 			hibBIObject.setObjectve(obj.getObjectve());
-			hibBIObject.setRating(obj.getRating());
 			hibBIObject.setKeywords(obj.getKeywords());
 			
 			// save biobject
@@ -938,7 +936,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setLanguage(hibBIObject.getLanguage());
 			aBIObject.setObjectve(hibBIObject.getObjectve());
 			aBIObject.setKeywords(hibBIObject.getKeywords());
-			aBIObject.setRating(hibBIObject.getRating());
 			return aBIObject;
 	}
 	

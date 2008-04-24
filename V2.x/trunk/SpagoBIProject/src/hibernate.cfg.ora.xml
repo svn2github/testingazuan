@@ -30,6 +30,7 @@
         <mapping resource="it/eng/spagobi/behaviouralmodel/check/metadata/mappingora/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiObjPar.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiObjectsRating.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiObjFunc.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingora/SbiSubreports.hbm.xml"/>

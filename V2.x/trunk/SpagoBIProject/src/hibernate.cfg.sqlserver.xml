@@ -29,7 +29,8 @@
         <mapping resource="it/eng/spagobi/behaviouralmodel/lov/metadata/mappingsqlserver/SbiLov.hbm.xml" />        
         <mapping resource="it/eng/spagobi/behaviouralmodel/check/metadata/mappingsqlserver/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjPar.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjects.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjects.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjectsRating.hbm.xml" />       
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjFunc.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingsqlserver/SbiSubreports.hbm.xml"/>

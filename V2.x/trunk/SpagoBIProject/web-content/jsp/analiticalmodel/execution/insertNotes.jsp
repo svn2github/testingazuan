@@ -63,12 +63,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% } %>	
 	
 	<div id= "notes"></div> 
-	<script>
+<script>
+	var top1 ;
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
     
-    var top1 = new Ext.form.HtmlEditor({
+    top1 = new Ext.form.HtmlEditor({
         frame: true,
         value: '<%=notes%>',
         bodyStyle:'padding:5px 5px 0',
@@ -78,7 +79,17 @@ Ext.onReady(function(){
             id:'notes'        
     });   
      
-	});	  
+	});	
+	
+	function saveNotes() {	
+      	var objid = document.insertNotesForm.OBJECT_ID.value ; 
+		var note = top1.getValue();
+  	    if (objid != null && note != null) {
+  	    	document.getElementById('insertNotesForm').submit();
+	    } 
+	}  
+	
+
 </script>	
 					
 <input type='hidden' value='<%=notes%>' name='OLD_NOTES' />	
@@ -96,15 +107,6 @@ Ext.onReady(function(){
 	</table>
 <% } %>	
 
-<script>
-	function saveNotes() {	
-      	var objid = document.insertNotesForm.OBJECT_ID.value ; 
-		var notes = document.insertNotesForm.notes.value ;			 	  	  
-  	    if (objid != null && notes != null) {
-  	    	document.getElementById('insertNotesForm').submit();
-	    } 
-	}
-</script>	
 </form>
 
 

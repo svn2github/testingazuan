@@ -721,8 +721,6 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setEncrypt(new Integer(0));
             obj.setVisible(new Integer(1));
             obj.setRelName("");
-            Integer temp = new Integer(0);
-            obj.setRating(new Short(temp.shortValue()));
             obj.setStateID(null);
             obj.setStateCode("");
             obj.setBiObjectTypeID(null);

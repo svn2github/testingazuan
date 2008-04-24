@@ -50,7 +50,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String docObjective = ""; 
 	String docLongDescr = ""; 
 	String docImage = ""; 
-	String docRating = ""; 
+	Double docRating = new Double (0); 
 	String keywords = ""; 
 	
 	String docLanguage = ""; 
@@ -93,7 +93,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	docDescr = (obj.getDescription()!= null ? obj.getDescription() : "");
 	docObjective = (obj.getObjectve()!= null ? obj.getObjectve() : ""); 
 	docLongDescr = (obj.getExtendedDescription()!= null ? obj.getExtendedDescription() : ""); 
-	docRating = (obj.getRating()!= null ? obj.getRating().toString() : ""); 
+	Double temp =  DAOFactory.getBIObjectRatingDAO().calculateBIObjectRating(obj);
+	docRating = ( temp != null ? temp :new Double (0) );
 	keywords = (obj.getKeywords()!= null ? obj.getKeywords() : ""); 
 	
 	docLanguage = (obj.getLanguage()!= null ? obj.getLanguage() : ""); 
@@ -211,7 +212,7 @@ Ext.onReady(function(){
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left"><spagobi:message key = "metadata.docRating" />		
 			</td>				
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docRating%>
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docRating.toString()%>
 			</td>
 		</tr>
 		<spagobi:error/>

@@ -72,6 +72,7 @@ public class DocumentRatingAction extends BaseProfileAction{
 			
 			String objId = "";
 			String rating = "";
+			String userId= (String)request.getAttribute("userid");
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -92,19 +93,9 @@ public class DocumentRatingAction extends BaseProfileAction{
 		    
 		    if (objId != null && !objId.equals("")){
 		    	if (rating != null && !rating.equals("")){
-					//load the obj
-					BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objId));
-					//load the user
-					Double oldRat = new Double (0);
-					if (obj.getRating()!=null){
-						oldRat = new Double(obj.getRating().doubleValue());
-					}
-					Double ratToAdd = new Double(rating);
-					Double newRat = new Double((ratToAdd.doubleValue() + oldRat.doubleValue())/2);
-					obj.setRating(new Short(newRat.shortValue()));
-					//TODO aggiungi uno al numero di utenti che hanno votato
-					//subscribe to the dl
-					DAOFactory.getBIObjectDAO().modifyBIObject(obj);
+					//VOTE!
+		    		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objId));
+					DAOFactory.getBIObjectRatingDAO().voteBIObject(obj, userId, rating);
 		       }
 		     }
 		   

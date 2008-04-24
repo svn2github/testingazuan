@@ -32,6 +32,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectRating;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
@@ -307,5 +308,9 @@ public class DAOFactory {
 	
 	public static IMenuRolesDAO getMenuRolesDAO() throws EMFUserError{
 		return (IMenuRolesDAO)createDAOInstance("MenuRolesDAO");
+	}
+	
+	public static IBIObjectRating getBIObjectRatingDAO() throws EMFUserError{
+		return (IBIObjectRating)createDAOInstance("BIObjectRatingDAO");
 	}
 }

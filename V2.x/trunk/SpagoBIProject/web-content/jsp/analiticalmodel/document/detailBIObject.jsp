@@ -273,7 +273,7 @@ function checkFormVisibility(docType) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="description" id="doc_description" value="<%=desc%>" maxlength="160">
+ 							name="description" id="doc_description" value="<%=desc%>" maxlength="160" >
 				</div>
 				<div class='div_detail_label' style='display:none;'>
 					<span class='portlet-form-field-label'>
@@ -1071,6 +1071,7 @@ function saveAndGoBackConfirm(message, url){
 		var biobjParFormModified = isBIParameterFormChanged();
 		if (biobjFormModified == 'true' || biobjParFormModified == 'true') {
 			if (confirm(message)) {
+				
 				document.getElementById('saveAndGoBack').click();
 			} else {
 				location.href = url;
@@ -1149,6 +1150,7 @@ function checkDocumentType(message) {
 		} else {
 			document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
 			document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
+			
 			document.getElementById('save').click();
 		}
 	} else {

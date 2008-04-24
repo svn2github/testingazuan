@@ -29,7 +29,8 @@
         <mapping resource="it/eng/spagobi/behaviouralmodel/lov/metadata/mappingmysql/SbiLov.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/check/metadata/mappingmysql/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjPar.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjects.hbm.xml" />        
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjects.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjectsRating.hbm.xml" />          
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjFunc.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiSubreports.hbm.xml"/>

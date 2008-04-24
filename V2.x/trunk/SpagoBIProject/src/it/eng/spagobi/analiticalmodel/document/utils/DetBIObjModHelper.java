@@ -358,7 +358,6 @@ public class DetBIObjModHelper {
 		objClone.setObjectve(obj.getObjectve());
 		objClone.setLanguage(obj.getLanguage());
 		objClone.setKeywords(obj.getKeywords());
-		objClone.setRating(obj.getRating());
 		return objClone;
 	}
 

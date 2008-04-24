@@ -61,7 +61,11 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
      * @return SpagoBiDataSource object
      */
     public SpagoBiDataSource getDataSource(String documentId) {
-	logger.debug("IN");
+	logger.debug("IN.documentId="+documentId);
+	if (documentId==null || documentId.length()==0){
+	    logger.error("documentId is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().getDataSource(readTicket(), userId,documentId);
 	} catch (Exception e) {
@@ -78,7 +82,11 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
      * @return SpagoBiDataSource object
      */
     public SpagoBiDataSource getDataSourceByLabel(String label) {
-	logger.debug("IN");
+	logger.debug("IN.label="+label);
+	if (label==null || label.length()==0){
+	    logger.error("label is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().getDataSourceByLabel(readTicket(), userId,label);
 	} catch (Exception e) {

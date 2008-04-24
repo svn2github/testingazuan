@@ -70,7 +70,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String getJobSchedulationList(String jobName, String jobGroup) {
-    	logger.debug("IN");
+    	logger.debug("IN.jobName="+jobName+" /jobGroup="+jobGroup);
     	try {
     	    return lookUp().getJobSchedulationList(readTicket(),userId,jobName, jobGroup);
     	} catch (Exception e) {
@@ -88,7 +88,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String deleteSchedulation(String triggerName, String triggerGroup) {
-    	logger.debug("IN");
+    	logger.debug("IN.triggerName="+triggerName+" /triggerGroup="+triggerGroup);
     	try {
     	    return lookUp().deleteSchedulation(readTicket(),userId,triggerName, triggerGroup);
     	} catch (Exception e) {
@@ -106,7 +106,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String deleteJob(String jobName, String jobGroupName) {
-    	logger.debug("IN");
+    	logger.debug("IN.jobName="+jobName+" /jobGroupName="+jobGroupName);
     	try {
     	    return lookUp().deleteJob(readTicket(),userId,jobName, jobGroupName);
     	} catch (Exception e) {
@@ -123,7 +123,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String defineJob(String xmlRequest) {
-    	logger.debug("IN");
+    	logger.debug("IN.xmlRequest="+xmlRequest);
     	try {
     	    return lookUp().defineJob(readTicket(),userId,xmlRequest);
     	} catch (Exception e) {
@@ -141,7 +141,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String getJobDefinition(String jobName, String jobGroup) {
-    	logger.debug("IN");
+    	logger.debug("IN.jobName="+jobName+" /jobGroup="+jobGroup);
     	try {
     	    return lookUp().getJobDefinition(readTicket(),userId,jobName, jobGroup);
     	} catch (Exception e) {
@@ -158,7 +158,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String scheduleJob(String xmlRequest) {
-    	logger.debug("IN");
+    	logger.debug("IN.xmlRequest="+xmlRequest);
     	try {
     	    return lookUp().scheduleJob(readTicket(),userId,xmlRequest);
     	} catch (Exception e) {
@@ -176,7 +176,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
-    	logger.debug("IN");
+    	logger.debug("IN.triggerName="+triggerName+" /triggerGroup="+triggerGroup);
     	try {
     	    return lookUp().getJobSchedulationDefinition(readTicket(),userId,triggerName, triggerGroup);
     	} catch (Exception e) {
@@ -194,7 +194,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
      * @return String
      */
     public String existJobDefinition(String jobName, String jobGroup) {
-    	logger.debug("IN");
+    	logger.debug("IN.jobName="+jobName+" /jobGroup="+jobGroup);
     	try {
     	    return lookUp().existJobDefinition(readTicket(),userId,jobName, jobGroup);
     	} catch (Exception e) {

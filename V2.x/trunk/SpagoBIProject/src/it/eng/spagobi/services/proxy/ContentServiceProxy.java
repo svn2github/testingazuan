@@ -28,6 +28,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public ContentServiceProxy(String user,HttpSession session) {
 	super( user,session);
+	if (user==null) logger.error("User ID IS NULL....");
+	if (session==null) logger.error("HttpSession IS NULL....");
     }
     
     private ContentServiceProxy() {
@@ -56,6 +58,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public Content readTemplate(String document) {
 	logger.debug("IN.document="+document);
+	if (document==null || document.length()==0){
+	    logger.error("Documenti ID is NULL");
+	    return null;
+	}
 	try {
 	    return lookUp().readTemplate(readTicket(), userId, document);
 	} catch (Exception e) {
@@ -73,6 +79,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public String publishTemplate( HashMap attributes) {
 	logger.debug("IN");
+	if (attributes==null ){
+	    logger.error("attributes is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().publishTemplate(readTicket(), userId, attributes);
 	} catch (Exception e) {
@@ -93,6 +103,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public String mapCatalogue( String operation,String path,String featureName,String mapName){
 	logger.debug("IN");
+	if (operation==null || operation.length()==0){
+	    logger.error("operation is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().mapCatalogue(readTicket(), userId, operation,path,featureName,mapName);
 	} catch (Exception e) {
@@ -110,6 +124,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public Content readSubObjectContent(String nameSubObject){
 	logger.debug("IN.nameSubObject="+nameSubObject);
+	if (nameSubObject==null || nameSubObject.length()==0){
+	    logger.error("SubObject is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().readSubObjectContent(readTicket(), userId, nameSubObject);
 	} catch (Exception e) {
@@ -131,6 +149,10 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN.documentiId="+documentiId);
+	if (documentiId==null || documentiId.length()==0){
+	    logger.error("documentiId is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().saveSubObject(readTicket(), userId, documentiId,analysisName, analysisDescription, visibilityBoolean, content);
 	} catch (Exception e) {
@@ -150,6 +172,17 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public String saveObjectTemplate(String documentiId,String templateName,String content){
 	logger.debug("IN.documentiId="+documentiId);
+	if (documentiId==null || documentiId.length()==0){
+	    logger.error("documentiId is NULL");
+	    return null;
+	}
+	if (templateName==null || templateName.length()==0){
+	    logger.error("templateName is NULL");
+	    return null;
+	}
+	if (content==null || content.length()==0){
+	    logger.warn("templateName is NULL");
+	}	
 	try {
 	    return lookUp().saveObjectTemplate(readTicket(), userId, documentiId, templateName, content);
 	} catch (Exception e) {
@@ -170,6 +203,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      */
     public Content downloadAll(String biobjectId,String fileName){
 	logger.debug("IN");
+	if (biobjectId==null || biobjectId.length()==0){
+	    logger.error("biobjectId is NULL");
+	    return null;
+	}
+	if (fileName==null || fileName.length()==0){
+	    logger.error("fileName is NULL");
+	    return null;
+	}	
 	try {
 	    return lookUp().downloadAll(readTicket(), userId, biobjectId, fileName);
 	} catch (Exception e) {

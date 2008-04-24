@@ -6,6 +6,8 @@
 	 				         java.util.Iterator,
 	 				         it.eng.spagobi.commons.bo.Domain,
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
+	 				         <script type="text/javascript" src="<%=linkProto%>"></script>
+	 				         
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 	
@@ -40,6 +42,14 @@
 <%@page import="it.eng.spagobi.tools.dataset.bo.WSDataSet"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.tools.dataset.bo.DataSetParametersList"%>
+
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+
+
+
 <form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
 
 	<% if(ChannelUtilities.isWebRunning()) { %>

@@ -306,6 +306,15 @@ public class DetailDataSetModule extends AbstractModule {
 		if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		// in case it is an insert
 			//check the type and insert right parameters
 			//if a ds with the same label not exists on db ok else error
+			if(dsNew.getLabel()==null || dsNew.getLabel().equalsIgnoreCase("")){
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+				logger.error("Campo Label obbligatorio");
+				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9214, new Vector(), params );
+				getErrorHandler().addError(error);
+				return;				
+			}
+			
 			if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);

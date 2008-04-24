@@ -114,7 +114,7 @@ public class Link {
     		}
     		link = link.substring(0, link.length()-1);
     		
-	    	//link += "')";
+	    	link += "')";
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     	}

@@ -29,6 +29,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.importexport.IImportManager"%>
 <%@page import="it.eng.spagobi.tools.importexport.UserAssociationsKeeper"%>
 
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
 	List curEngines = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_CURRENT_ENGINES);

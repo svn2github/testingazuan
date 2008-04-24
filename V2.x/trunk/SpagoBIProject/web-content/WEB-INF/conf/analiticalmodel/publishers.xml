@@ -709,7 +709,7 @@
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/analiticalmodel/execution/selectDatasetLookup.jsp"/>
+        		<ITEM prog="0" resource="/jsp/analiticalmodel/document/selectDatasetLookup.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER> 

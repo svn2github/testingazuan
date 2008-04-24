@@ -64,6 +64,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    		heightSetted = true;
    	}
    	
+    
+	String backEndContext=GeneralUtilities.getBackEndSpagoBiContextAddress();
+	String param1="?"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+backEndContext;
+String context=GeneralUtilities.getSpagoBiContextAddress();
+String param2="&"+SpagoBIConstants.SBICONTEXTURL+"="+context;
+	
+	String urlToCall=engineurl.getMainURL();
+	urlToCall+=param1;
+	urlToCall+=param2;
+	
+   	
    	// build the back link
    	Map backUrlPars = new HashMap();
    	backUrlPars.put(SpagoBIConstants.PAGE, "DetailBIObjectPage");
@@ -73,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 %>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
     	<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
@@ -139,7 +151,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          	</iframe>       
                                 
          	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
-         	      action="<%=engineurl.getMainURL()%>" 
+         	      action="<%=urlToCall%>" 
          	      target='iframeexec<%=requestIdentity%>'>
          	<%
          		Map mapPars = engineurl.getParameters();

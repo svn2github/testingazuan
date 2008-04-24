@@ -198,9 +198,16 @@ public class DialCharts extends ChartImpl {
 		        logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
 			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
-			String result=(String)sbRow.getAttribute("value");
+			String result="";
+			if(sbRow==null){
+				result=(new Double(lower)).toString();
+			}
+			else{
+			result=(String)sbRow.getAttribute("value");
+			}
 			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
 			logger.debug("OUT");
+			
 			return dataset;			
 		}
 		logger.error("dataset is null!!!!!!!!!");

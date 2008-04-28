@@ -245,7 +245,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
 				int endInd = executableQuery.indexOf("}", startInd);
 				String paramName = executableQuery.substring(startInd, endInd);
 				String paramValue = null;
-				if( getEnv().containsValue( paramName ) ) {
+				if( getEnv().containsKey( paramName ) ) {
 					paramValue = getEnv().get(paramName).toString();
 				}
 				if(paramValue==null) {

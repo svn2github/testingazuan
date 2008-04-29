@@ -78,6 +78,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			statement.setParameters( getDatamartModel().getDataMartProperties() );
 			
 			try {
+			logger.debug("Execute Query.");
 				queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
 			} catch (Exception e) {
 				String query = statement.getQueryString();
@@ -90,9 +91,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				hints.add("Check the qbe jar file");
 				throw new QbeEngineException("Service error", description, hints, e);
 			}
+			logger.debug("After executeWithPagination");
 				
 			List results = (List)queryResponseSourceBean.getAttribute("list");
 			Integer resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
+			logger.debug("ResultNumber="+resultNumber);
 			Iterator it = results.iterator();
 			Object o = null;
 			Object[] row;
@@ -111,7 +114,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			gridDataFeed.put("rows", rows);
 			
 			int recNo = 0;
-			while (it.hasNext()){	
+			while (it.hasNext()){
+      logger.debug("Reading result.");	
 				o = it.next();
 				
 			    if (!(o instanceof Object[])){
@@ -155,6 +159,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				if(record != null) rows.put(record);
 			}		
 		} catch (Exception e) {
+		  logger.error("Exception in JASON Creation",e);
 			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
 			
 			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
@@ -173,8 +178,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			httpResp.getOutputStream().print(gridDataFeed.toString());
 			httpResp.getOutputStream().flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+      logger.error("IOException in Output Flush",e);
 		}
 	}
 

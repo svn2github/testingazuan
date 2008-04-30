@@ -400,22 +400,21 @@
 			return;
 		}
 	
-		url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
-		pars = "&ACTION_NAME=TEST_CONN";
+		urll="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		urll += "&ACTION_NAME=TEST_CONN";
 		
-			pars += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver  ;
+			urll += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver  ;
 		
-		new Ajax.Request(url,
-			{
-				method: 'post',
-				parameters: pars,
-				onSuccess: function(transport){
-					response = transport.responseText || "";
+		 Ext.Ajax.request({
+ 				 url: urll,
+ 				 method: 'get',
+				 success: function (result, request) {
+					response = result.responseText || "";
 					showConnTestResult(response);
 				},
-				onFailure: somethingWentWrong
-			}
-		);
+ 		 failure: somethingWentWrong
+		 });
+		 	 
 	}
 	
 	function showConnTestResult(response) {

@@ -101,6 +101,7 @@ public class DocumentRatingAction extends BaseProfileAction{
 		   
 		    response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
+			response.setAttribute("OBJECT_ID",objId);
 			
 		 }
 }

@@ -671,7 +671,7 @@ if (toolbarIsVisible) {
 				},
 				layout:'fit',
 				width:220,
-				height:240,
+				height:340,
 				closeAction:'hide',
 				scripts: true, 
            		 buttons: [ 

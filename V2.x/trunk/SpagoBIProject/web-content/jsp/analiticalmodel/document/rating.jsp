@@ -45,7 +45,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    Map formUrlPars = new HashMap();
 		String ratingForm = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=RATING_ACTION";	
 	    String starUrl = urlBuilder.getResourceLink(request, "/img/star.jpg");
+	    String halfStarUrl = urlBuilder.getResourceLink(request, "/img/halfStar.jpg");
+	    String smileUrl = urlBuilder.getResourceLink(request, "/img/smile.gif");
+	    BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objid));
+	    Double rating = DAOFactory.getBIObjectRatingDAO().calculateBIObjectRating(obj);
+	   
 %>
+
+	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
+		<tr class='header-row-portlet-section'>
+			<td class='header-title-column-portlet-section-noimage' 
+			    style='vertical-align:middle;padding-left:5px;font-size: 13px;font-weight:600;background:#e0e1e6;font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;color: #074B88;'>
+				<spagobi:message key = "metadata.currentRate" /> 
+			</td>
+		</tr>
+	</table>
+	<div id='rating1' class='div_background' style='text-align:center;'>
+	
+	<% for (int k= 0 ; k < rating.intValue(); k++ ){%>
+	
+	<a><img width="22px" height="22px" src='<%= starUrl%>' /></a>
+	
+	<%}
+	Double wholePart = new Double (rating.intValue());
+	double rest = rating.doubleValue()- wholePart.doubleValue();
+	if ((0.3 < rest) && (rest < 0.7)){
+	%>
+	<a><img width="22px" height="22px" src='<%= halfStarUrl%>' /></a>
+	<%}
+	else if (rest > 0.7){
+	%>
+	<a><img width="22px" height="22px" src='<%= starUrl%>' /></a>
+	<%} %>
+	</div>
+<br>
+
 <form method='POST' action='<%=ratingForm%>' id='ratingForm' name='ratingForm' >
 <% if (!alreadyVoted){ %>
 <table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
@@ -86,10 +120,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section-noimage' 
 			    style='vertical-align:middle;padding-left:5px;font-size: 13px;font-weight:600;background:#e0e1e6;font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;color: #074B88;'>
-				<spagobi:message key = "Thank you for Voting!!!"  /> 
+				<spagobi:message key = "metadata.ThankYou" /> 
 			</td>
 		</tr>
 	</table>
+	<div  style='text-align:center;'>
+	<a><img  src='<%= smileUrl%>' /></a>
+	</div>
 <% } %>
 
 <script>

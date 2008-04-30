@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
+import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -222,10 +223,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					if(serviceRequest.getAttribute("categoryurlname")!=null){
 						categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
 					
-						if(linkableBar)
-						((LinkableBar)sbi).setCategoryUrlName(categoryurlname);
-						else 
-							((LinkablePie)sbi).setCategoryUrlName(categoryurlname);
+						((ILinkableChart)sbi).setCategoryUrlName(categoryurlname);
 												
 					}
 					
@@ -234,25 +232,15 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					logger.debug("Linkable chart: search in the request for other parameters");
 					HashMap drillParameters=new HashMap();
 					
-					if(linkableBar){
-					drillParameters=(HashMap)((LinkableBar)sbi).getDrillParameter().clone();
-					}
-					else{
-						drillParameters=(HashMap)((LinkablePie)sbi).getDrillParameter().clone();
-											}
+					drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
 					
 					for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
 						String name = (String) iterator.next();
 						if(serviceRequest.getAttribute(name)!=null){
 							String value=(String)serviceRequest.getAttribute(name);
-							if(linkableBar){
-							((LinkableBar)sbi).getDrillParameter().remove(name);
-							((LinkableBar)sbi).getDrillParameter().put(name, value);
-							}
-							else{
-								((LinkablePie)sbi).getDrillParameter().remove(name);
-								((LinkablePie)sbi).getDrillParameter().put(name, value);
-							}
+							((ILinkableChart)sbi).getDrillParameter().remove(name);
+							((ILinkableChart)sbi).getDrillParameter().put(name, value);
+
 						}
 
 					}

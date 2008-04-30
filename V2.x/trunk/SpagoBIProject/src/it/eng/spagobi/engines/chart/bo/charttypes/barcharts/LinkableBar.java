@@ -25,6 +25,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 
 import java.awt.Color;
@@ -49,7 +50,7 @@ import org.jfree.data.general.Dataset;
  */
 
 
-public class LinkableBar extends BarCharts {
+public class LinkableBar extends BarCharts implements ILinkableChart {
 
 	String rootUrl=null;
 	String mode="";

@@ -69,7 +69,7 @@ public class ContentServiceImplSupplier {
 	    logger.error("EMFUserError", e);
 	    throw e;
 	} finally {
-	    logger.error("OUT");
+	    logger.debug("OUT");
 	}
     }
 

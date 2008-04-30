@@ -126,6 +126,8 @@ public class ExporterMetadata {
 			if(!hibList.isEmpty()) {
 				return;
 			}
+			SbiDomains dialect=(SbiDomains)session.load(SbiDomains.class, ds.getDialectId());
+			
 			SbiDataSource hibDS = new SbiDataSource(ds.getDsId());
 			hibDS.setDescr(ds.getDescr());
 			hibDS.setDriver(ds.getDriver());
@@ -134,6 +136,7 @@ public class ExporterMetadata {
 			hibDS.setPwd(ds.getPwd());
 			hibDS.setUrl_connection(ds.getUrlConnection());
 			hibDS.setUser(ds.getUser());
+			hibDS.setDialect(dialect);
 			
 		// va aggiunto il legame con gli engine e il doc ????
 			

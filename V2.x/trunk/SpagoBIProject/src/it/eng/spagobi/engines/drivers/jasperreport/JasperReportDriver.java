@@ -171,7 +171,7 @@ public class JasperReportDriver implements IEngineDriver {
     private Map addBIParameters(BIObject biobj, Map pars) {
 	logger.debug("IN");
 	if (biobj == null) {
-	    logger.warn("BIObject parameter null");	    
+	    logger.warn("BIObject is null");	    
 	    return pars;
 	}
 
@@ -182,7 +182,8 @@ public class JasperReportDriver implements IEngineDriver {
 		try {
 		    biobjPar = (BIObjectParameter) it.next();
 		    String value = parValuesEncoder.encode(biobjPar);
-		    pars.put(biobjPar.getParameterUrlName(), value);
+		    if (value!=null) pars.put(biobjPar.getParameterUrlName(), value);
+		    else logger.warn("value encoded IS null");
 		    logger.debug("Add parameter:"+biobjPar.getParameterUrlName()+"/"+value);
 		} catch (Exception e) {
 		    logger.error("Error while processing a BIParameter",e);
@@ -195,7 +196,7 @@ public class JasperReportDriver implements IEngineDriver {
 
 
     /**
-     * Function not implemented. Thid method should not be called
+     * Function not implemented. This method should not be called
      * 
      * @param biobject The BIOBject to edit
      * @throws InvalidOperationRequest

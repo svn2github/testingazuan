@@ -73,6 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
@@ -207,12 +208,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		else linkableBar=false;
 
 		String rootDocParameter="";
-		if(linkableBar){
-		rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
-		}
-		else{
-		rootDocParameter=((LinkablePie)sbi).getDocument_Parameters(((LinkablePie)sbi).getDrillParameter());
-		}
+		rootDocParameter=((ILinkableChart)sbi).getDocument_Parameters(((ILinkableChart)sbi).getDrillParameter());
+
 		
 		if(!rootDocParameter.equals("")){
 		//rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
@@ -220,10 +217,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	
 		String drillLabel="";
-		if(linkableBar)
-			drillLabel=((LinkableBar)sbi).getDrillLabel();
-		else 
-			drillLabel=((LinkablePie)sbi).getDrillLabel();
+			drillLabel=((ILinkableChart)sbi).getDrillLabel();
 
 		
 		if(drillLabel!=null && drillLabel!=""){
@@ -239,14 +233,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		//anto rootPar.put("USERNAME",userId);
 
 		//get from the linkableBar the label and eventually the parameters to pass
-	if(linkableBar){
-		if(((LinkableBar)sbi).getDrillLabel()!=null)
-					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkableBar)sbi).getDrillLabel());
-	}
-	else{
-		if(((LinkablePie)sbi).getDrillLabel()!=null)
-			rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkablePie)sbi).getDrillLabel());		
-	}
+		if(((ILinkableChart)sbi).getDrillLabel()!=null)
+					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((ILinkableChart)sbi).getDrillLabel());
+
 
 		// Old way portlet		
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
@@ -255,34 +244,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String completeUrl=rootUrl;
 	
 		
-		if(linkableBar){
 		if(docComposition){
 			
-			((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
+			((ILinkableChart)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
 			completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
 				}
 			else
 			{
-				((LinkableBar)sbi).setMode("normal");
+				((ILinkableChart)sbi).setMode("normal");
 			}
 		
 
-		((LinkableBar)sbi).setRootUrl(completeUrl);
-		}
-		else{
-			if(docComposition){
-				((LinkablePie)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
-				completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
-					}
-				else
-				{
-					((LinkablePie)sbi).setMode("normal");
-				}
-			
+		((ILinkableChart)sbi).setRootUrl(completeUrl);
 
-			((LinkablePie)sbi).setRootUrl(completeUrl);
-		
-			}
 		}
 
 		

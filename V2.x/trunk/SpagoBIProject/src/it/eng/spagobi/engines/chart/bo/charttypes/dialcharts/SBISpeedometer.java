@@ -146,7 +146,7 @@ public class SBISpeedometer extends DialCharts{
 			}
 		}
 		else{
-			logger.debug("configuration defined in LOV"+confLov);
+			logger.debug("configuration defined in LOV"+confDataset);
 			String increment=(String)sbRow.getAttribute("increment");
 			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
 			setIncrement(Double.valueOf(increment).doubleValue());

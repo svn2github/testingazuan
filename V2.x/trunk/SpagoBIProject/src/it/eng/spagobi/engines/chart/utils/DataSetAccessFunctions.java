@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.chart.utils;
 
 
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -63,14 +64,38 @@ public class DataSetAccessFunctions {
 	 *	it is used both to get the value of the chart and to get its configuration parameters if there defined	  
 	 * @param profile IEngUserProfile of the user
 	 * @param lovLabel Label of the love to retrieve
+	 * @throws EMFUserError 
+	 * @throws NumberFormatException 
 	 */
 
 
 
-	public static String getDataSetResult(IEngUserProfile profile,String dsId, Map parameters) throws Exception {
-		logger.debug("IN");
+	public static String getDataSetResultFromId(IEngUserProfile profile,String dsId, Map parameters) throws Exception {
+		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
 		DataSet ds = dsDAO.loadDataSetByID(Integer.valueOf(dsId));
+	
+		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
+		return result;
+	}
+
+	
+
+	public static String getDataSetResultFromLabel(IEngUserProfile profile,String label, Map parameters) throws Exception {
+		
+		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
+		DataSet ds = dsDAO.loadDataSetByLabel(label);
+	
+		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
+		return result;
+		
+	}
+	
+	
+	
+	public static String getDataSetResult(IEngUserProfile profile,DataSet ds, Map parameters) throws Exception {
+		logger.debug("IN");
+
 
 		if (profile == null) {
 			profile = new UserProfile("anonymous");

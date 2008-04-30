@@ -57,7 +57,7 @@ public class ChartImpl implements IChart {
 	protected int width;
 	protected int height;
 	protected String data;
-	protected String confLov;
+	protected String confDataset;
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
 	protected String type="";
@@ -65,6 +65,7 @@ public class ChartImpl implements IChart {
 	protected Color color;
 	protected boolean legend=true;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
+	protected Map parametersObject;
 
 	
 /**  configureChart reads the content of the template and sets the chart parameters
@@ -119,8 +120,8 @@ public class ChartImpl implements IChart {
 			}
 
 
-			if(dataParameters.get("conflov")!=null && !(((String)dataParameters.get("conflov")).equalsIgnoreCase("") )){	
-				confLov=(String)dataParameters.get("conflov");
+			if(dataParameters.get("confdataset")!=null && !(((String)dataParameters.get("confdataset")).equalsIgnoreCase("") )){	
+				confDataset=(String)dataParameters.get("confdataset");
 				isLovConfDefined=true;
 			}
 			else {
@@ -229,16 +230,16 @@ public class ChartImpl implements IChart {
 		width=_width;
 	}
 
-	public Dataset calculateValue(Map parameters) throws Exception {
+	public Dataset calculateValue() throws Exception {
 		return null;
 	}
 
-	public String getConfLov() {
-		return confLov;
+	public String getConfDataset() {
+		return confDataset;
 	}
 
-	public void setConfLov(String confLov) {
-		this.confLov = confLov; 
+	public void setConfDataset(String confDataset) {
+		this.confDataset = confDataset; 
 	}
 
 	public IEngUserProfile getProfile() {
@@ -323,6 +324,14 @@ public class ChartImpl implements IChart {
 
 	public void setLegend(boolean legend) {
 		this.legend = legend;
+	}
+
+	public Map getParametersObject() {
+		return parametersObject;
+	}
+
+	public void setParametersObject(Map parametersObject) {
+		this.parametersObject = parametersObject;
 	}
 
 

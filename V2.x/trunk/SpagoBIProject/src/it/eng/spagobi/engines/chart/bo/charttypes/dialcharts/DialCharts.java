@@ -99,8 +99,13 @@ public class DialCharts extends ChartImpl {
 			}
 			else{ // configuration parameters are set in a LOV
 				logger.debug("configuration parameters set in LOV");
-				String parameters=LovAccessFunctions.getLovResult(profile, confLov);
+				//String parameters=LovAccessFunctions.getLovResult(profile, confLov);
 
+				
+				
+				String parameters=DataSetAccessFunctions.getDataSetResultFromLabel(profile, confDataset, parametersObject);
+				
+				
 				SourceBean sourceBeanResult=null;
 				try {
 					sourceBeanResult = SourceBean.fromXMLString(parameters);
@@ -133,9 +138,9 @@ public class DialCharts extends ChartImpl {
 
 
 
-	public Dataset calculateValue(Map parameters) throws Exception{
+	public Dataset calculateValue() throws Exception{
 		logger.debug("IN");
-		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
+		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		if (res!=null){
 			logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -214,6 +219,9 @@ public class DialCharts extends ChartImpl {
 	public void setSbRow(SourceBean sbRow) {
 		this.sbRow = sbRow;
 	}
+
+
+
 
 
 

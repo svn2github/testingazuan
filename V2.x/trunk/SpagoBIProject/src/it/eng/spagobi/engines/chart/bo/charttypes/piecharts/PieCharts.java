@@ -75,9 +75,9 @@ logger.debug("IN");
 
 		}
 
-		public Dataset calculateValue(Map parameters) throws Exception {
+		public Dataset calculateValue() throws Exception {
 			logger.debug("IN");
-			String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
+			String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 
 			SourceBean sbRows=SourceBean.fromXMLString(res);
 			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");

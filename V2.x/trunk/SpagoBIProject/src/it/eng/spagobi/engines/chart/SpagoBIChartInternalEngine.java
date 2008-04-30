@@ -184,6 +184,27 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 			HashMap parametersMap=null;
 			
+			//Search if the chart has parameters
+			List parametersList=obj.getBiObjectParameters();
+			logger.debug("Check for BIparameters and relative values");
+			if(parametersList!=null){
+				parametersMap=new HashMap();
+				for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+					BIObjectParameter par= (BIObjectParameter) iterator.next();
+					String url=par.getParameterUrlName();
+					List values=par.getParameterValues();
+					if(values!=null){
+						if(values.size()==1){
+							String value=(String)values.get(0);
+							parametersMap.put(url, value);
+						}
+					}
+
+				}	
+
+			} // end looking for parameters
+			
+			
 			
 			
 			try{
@@ -194,7 +215,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				sbi.setType(type);
 				sbi.setSubtype(subtype);
 				sbi.setData(data);
-
+				sbi.setParametersObject(parametersMap);
 				// configure the chart with template parameters
 				sbi.configureChart(content);
 				
@@ -248,25 +269,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				}
 
 
-				//Search if the chart has parameters
-				List parametersList=obj.getBiObjectParameters();
-				logger.debug("Check for BIparameters and relative values");
-				if(parametersList!=null){
-					parametersMap=new HashMap();
-					for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
-						BIObjectParameter par= (BIObjectParameter) iterator.next();
-						String url=par.getParameterUrlName();
-						List values=par.getParameterValues();
-						if(values!=null){
-							if(values.size()==1){
-								String value=(String)values.get(0);
-								parametersMap.put(url, value);
-							}
-						}
 
-					}	
-
-				} // end looking for parameters
 			
 			}
 			catch (Exception e) {
@@ -281,7 +284,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			// calculate values for the chart
 			try{
 				logger.debug("Retrieve value by executing the dataset");
-				dataset=sbi.calculateValue(parametersMap);
+				dataset=sbi.calculateValue();
 			}	
 			catch (Exception e) {
 				logger.error("Error in retrieving the value");

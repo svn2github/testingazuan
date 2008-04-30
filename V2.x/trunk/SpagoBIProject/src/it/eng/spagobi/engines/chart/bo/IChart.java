@@ -17,7 +17,7 @@ public interface IChart {
 
 	public void configureChart(SourceBean content);
 
-	public Dataset calculateValue(Map parameters) throws Exception;
+	public Dataset calculateValue() throws Exception;
 
 	
 	
@@ -41,5 +41,8 @@ public interface IChart {
 	public String getChangeViewParameterLabel(String changePar, int i);	
 	public boolean isLegend();
 	public void setLegend(boolean legend);
+	public Map getParametersObject();
+	public void setParametersObject(Map paramsObject);
 	
+		
 }

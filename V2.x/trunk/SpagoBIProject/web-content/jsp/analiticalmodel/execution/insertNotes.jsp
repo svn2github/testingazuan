@@ -90,8 +90,7 @@ Ext.onReady(function(){
 	}  
 	
 
-</script>	
-<textarea name="prova" ><%=notes%></textarea>					
+</script>					
 <input type='hidden' value='<%=notes%>' name='OLD_NOTES' />	
 <input type='hidden' value='<%=objid%>' name='OBJECT_ID' />
 <input type='hidden' value='<%=msg%>' name='MESSAGEDET' />

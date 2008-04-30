@@ -47,7 +47,7 @@ import org.jfree.data.general.Dataset;
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it
  */
- 
+
 
 public class SimpleBar extends BarCharts{
 
@@ -60,9 +60,9 @@ public class SimpleBar extends BarCharts{
 	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
 	private static transient Logger logger=Logger.getLogger(SimpleBar.class);
 
-	
+
 	public void configureChart(SourceBean content) {
-logger.debug("IN");
+		logger.debug("IN");
 		super.configureChart(content);
 		if(confParameters.get("orientation")!=null){	
 			String orientation=(String)confParameters.get("orientation");
@@ -78,6 +78,8 @@ logger.debug("IN");
 		logger.debug("OUT");
 	}
 
+	
+	
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		logger.debug("IN");
 		super.createChart(chartTitle, dataset);
@@ -100,7 +102,6 @@ logger.debug("IN");
 				false                     // URLs?
 		);
 
-		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);

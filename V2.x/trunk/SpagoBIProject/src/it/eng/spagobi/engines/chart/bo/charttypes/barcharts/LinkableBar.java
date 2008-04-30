@@ -194,6 +194,28 @@ public class LinkableBar extends BarCharts {
 
 	}
 
+
+
+	/**
+	 * Gets document parameters and return a string in the form &param1=value1&param2=value2 ... 
+	 */
+			
+	public String getDocument_Parameters(HashMap drillParameters) {
+		String document_parameter="";
+		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			String value=(String)drillParameters.get(name);
+			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
+				//document_parameter+="%26"+name+"%3D"+value;
+				document_parameter+="&"+name+"="+value;
+			}
+
+		}
+		return document_parameter;
+	}
+	
+	
+	
 	public String getRootUrl() {
 		return rootUrl;
 	}
@@ -257,23 +279,5 @@ public class LinkableBar extends BarCharts {
 	}
 
 
-	/**
-	 * Gets document parameters and return a string in the form &param1=value1&param2=value2 ... 
-	 */
-		
-	
-	public String getDocument_Parameters(HashMap drillParameters) {
-		String document_parameter="";
-		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
-			String value=(String)drillParameters.get(name);
-			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				//document_parameter+="%26"+name+"%3D"+value;
-				document_parameter+="&"+name+"="+value;
-			}
-
-		}
-		return document_parameter;
-	}
 
 }

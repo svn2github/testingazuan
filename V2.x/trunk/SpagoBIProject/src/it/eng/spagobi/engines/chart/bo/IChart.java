@@ -15,48 +15,30 @@ public interface IChart {
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset);
 
-
 	public void configureChart(SourceBean content);
-
-	public String getName();
-
-	public void setName(String name);
-
-
-	public int getWidth();
-
 
 	public Dataset calculateValue(Map parameters) throws Exception;
 
+	
+	
+	
+	
+	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization); 	
+	public String getName();
+	public void setName(String name);
+	public int getWidth();
 	public void setWidth(int width);
-
-
-
-
 	public int getHeight();
-
-
 	public void setHeight(int height);
-
-
 	public String getData();
-
-
 	public void setData(String data);
-
 	public boolean isChangeableView();
 	public void setChangeViewChecked(boolean b);
-	
 	public boolean isLinkable();
-
 	public List getPossibleChangePars();
-	
 	public void setChangeViewsParameter(String changePar, boolean how);
 	public boolean getChangeViewParameter(String changePar);
-	public String getChangeViewParameterLabel(String changePar, int i);
-			
-	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization); 
-	
+	public String getChangeViewParameterLabel(String changePar, int i);	
 	public boolean isLegend();
 	public void setLegend(boolean legend);
 	

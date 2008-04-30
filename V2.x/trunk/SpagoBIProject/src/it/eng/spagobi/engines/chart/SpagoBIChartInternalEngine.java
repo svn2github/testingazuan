@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.HashMap;
@@ -93,6 +94,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
 	 */
+
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
 
 
@@ -158,8 +160,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			//		**************take informations on the chart type*****************
 
 
-			String nameofChart=content.getName();
-			String type = (String)content.getAttribute("type");
+			String type=content.getName();
+			String subtype = (String)content.getAttribute("type");
 
 
 
@@ -180,44 +182,77 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			}
 
 			HashMap parametersMap=null;
+			
+			
+			
 			try{
-
 				logger.debug("create the chart");
 				// set the right chart type
-				sbi=ChartImpl.createChart(nameofChart, type);
+				sbi=ChartImpl.createChart(type, subtype);
 				sbi.setProfile(userProfile);
-				sbi.setType(nameofChart);
-				sbi.setSubtype(type);
+				sbi.setType(type);
+				sbi.setSubtype(subtype);
 				sbi.setData(data);
 
 				// configure the chart with template parameters
 				sbi.configureChart(content);
+				
 				boolean linkable=sbi.isLinkable();
 				if(linkable){
 					logger.debug("Linkable chart, search in request for serieurlname or categoryurlname");
 					String serieurlname="";
 					String categoryurlname="";
 
+					//checjk if is a linkable bar or pie
+					boolean linkableBar=false;
+					if(sbi instanceof LinkableBar)linkableBar=true;
+					else linkableBar=false;
+					
+					
+					//check is these parameters are in request, if not take them from template, if not use series and category by default
+					
+					if(linkableBar){
 					if(serviceRequest.getAttribute("serieurlname")!=null){
 						serieurlname=(String)serviceRequest.getAttribute("serieurlname");
 						((LinkableBar)sbi).setSerieUrlname(serieurlname);
 					}
+					}
+					
+					//category is defined both for pie and bar linkable charts
 					if(serviceRequest.getAttribute("categoryurlname")!=null){
 						categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
+					
+						if(linkableBar)
 						((LinkableBar)sbi).setCategoryUrlName(categoryurlname);
+						else 
+							((LinkablePie)sbi).setCategoryUrlName(categoryurlname);
+												
 					}
-					//check if there are other parameters whose value is in the request
-
+					
+					
+					//check if there are other parameters from the drill parameters whose value is in the request; elsewhere take them from template
 					logger.debug("Linkable chart: search in the request for other parameters");
 					HashMap drillParameters=new HashMap();
+					
+					if(linkableBar){
 					drillParameters=(HashMap)((LinkableBar)sbi).getDrillParameter().clone();
-
+					}
+					else{
+						drillParameters=(HashMap)((LinkablePie)sbi).getDrillParameter().clone();
+											}
+					
 					for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
 						String name = (String) iterator.next();
 						if(serviceRequest.getAttribute(name)!=null){
 							String value=(String)serviceRequest.getAttribute(name);
+							if(linkableBar){
 							((LinkableBar)sbi).getDrillParameter().remove(name);
 							((LinkableBar)sbi).getDrillParameter().put(name, value);
+							}
+							else{
+								((LinkablePie)sbi).getDrillParameter().remove(name);
+								((LinkablePie)sbi).getDrillParameter().put(name, value);
+							}
 						}
 
 					}
@@ -243,7 +278,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 					}	
 
-				}
+				} // end looking for parameters
+			
 			}
 			catch (Exception e) {
 				logger.error("Error while creating the chart");

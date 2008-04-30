@@ -49,8 +49,6 @@ public class DialCharts extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(DialCharts.class);
 	protected double lower=0.0;
 	protected double upper=0.0;
-
-
 	Map confParameters;
 	SourceBean sbRow;
 
@@ -73,7 +71,7 @@ public class DialCharts extends ChartImpl {
 				SourceBean confSB = (SourceBean)content.getAttribute("CONF");
 
 				List confAttrsList = confSB.getAttributeAsList("PARAMETER");
-				
+
 				Iterator confAttrsIter = confAttrsList.iterator();
 				while(confAttrsIter.hasNext()) {
 					SourceBean param = (SourceBean)confAttrsIter.next();
@@ -134,6 +132,33 @@ public class DialCharts extends ChartImpl {
 
 
 
+
+	public Dataset calculateValue(Map parameters) throws Exception{
+		logger.debug("IN");
+		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
+		if (res!=null){
+			logger.debug("Dataset result:"+res);
+			SourceBean sbRows=SourceBean.fromXMLString(res);
+			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
+			String result="";
+			if(sbRow==null){
+				result=(new Double(lower)).toString();
+			}
+			else{
+				result=(String)sbRow.getAttribute("value");
+			}
+			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
+			logger.debug("OUT");
+
+			return dataset;			
+		}
+		logger.error("dataset is null!!!!!!!!!");
+		return null;
+	}
+
+
+
+
 	public double getLower() {
 		return lower;
 	}
@@ -191,28 +216,6 @@ public class DialCharts extends ChartImpl {
 	}
 
 
-	public Dataset calculateValue(Map parameters) throws Exception{
-	        logger.debug("IN");
-		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
-		if (res!=null){
-		        logger.debug("Dataset result:"+res);
-			SourceBean sbRows=SourceBean.fromXMLString(res);
-			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
-			String result="";
-			if(sbRow==null){
-				result=(new Double(lower)).toString();
-			}
-			else{
-			result=(String)sbRow.getAttribute("value");
-			}
-			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
-			logger.debug("OUT");
-			
-			return dataset;			
-		}
-		logger.error("dataset is null!!!!!!!!!");
-		return null;
-	}
 
 
 

@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
+import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 
 import java.awt.Color;
@@ -59,12 +60,13 @@ public class ChartImpl implements IChart {
 	protected String confLov;
 	protected boolean isLovConfDefined;
 	protected IEngUserProfile profile;
-	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected String type="";
 	protected String subtype="";
 	protected Color color;
 	protected boolean legend=true;
+	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 
+	
 /**  configureChart reads the content of the template and sets the chart parameters
  * 
  */
@@ -103,8 +105,6 @@ public class ChartImpl implements IChart {
 		// get all the data parameters 
 
 
-		
-
 		try{					
 			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
@@ -137,7 +137,7 @@ public class ChartImpl implements IChart {
 			
 		}
 		catch (Exception e) {
-			logger.error("error in reading dataq source parameters");
+			logger.error("error in reading data source parameters");
 		}
 
 
@@ -176,7 +176,11 @@ public class ChartImpl implements IChart {
 			if(subtype.equalsIgnoreCase("simplepie")){
 				sbi=new SimplePie();
 			}
+			if(subtype.equalsIgnoreCase("linkablepie")){
+				sbi=new LinkablePie();
+			}			
 		}
+		
 		if(type.equals("BARCHART")){
 			if(subtype.equalsIgnoreCase("simplebar")){
 				sbi=new SimpleBar();

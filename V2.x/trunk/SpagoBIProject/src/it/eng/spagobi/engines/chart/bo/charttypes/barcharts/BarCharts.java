@@ -121,8 +121,8 @@ public class BarCharts extends ChartImpl {
 
 	
 	/**
-	 * Calculates chart value 
-	 */
+	 * Calculates chart value; 
+	 
 	
 	public Dataset calculateValue(String cat, Map parameters) throws Exception {
 		logger.debug("IN");
@@ -166,7 +166,7 @@ public class BarCharts extends ChartImpl {
 		logger.debug("OUT");
 		return dataset;
 	}
-
+*/
 
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
@@ -234,47 +234,7 @@ public class BarCharts extends ChartImpl {
 		logger.debug("OUT");
 	}
 
-	public Map getConfParameters() {
-		return confParameters;
-	}
-
-	public void setConfParameters(Map confParameters) {
-		this.confParameters = confParameters;
-	}
-
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
-		// TODO Auto-generated method stub
-		return super.createChart(chartTitle, dataset);
-	}
-
-	public String getCategoryLabel() {
-		return categoryLabel;
-	}
-
-	public void setCategoryLabel(String categoryLabel) {
-		this.categoryLabel = categoryLabel;
-	}
-
-	public String getValueLabel() {
-		return valueLabel;
-	}
-
-	public void setValueLabel(String valueLabel) {
-		this.valueLabel = valueLabel;
-	}
-
-	public int getCategoriesNumber() {
-		return categoriesNumber;
-	}
-
-	public void setCategoriesNumber(int categoriesNumber) {
-		this.categoriesNumber = categoriesNumber;
-	}
-
-	public Map getCategories() {
-		return categories;
-	}
-
+	
 	/**
 	 * Use for slider: limits the categories visualization from cat selected to cat selected+numberscatsVisualization
 	 * @param: dataset: the dataset to filter
@@ -345,6 +305,52 @@ public class BarCharts extends ChartImpl {
 			return catDataset;
 	
 	}
+	
+	
+
+	
+	public Map getConfParameters() {
+		return confParameters;
+	}
+
+	public void setConfParameters(Map confParameters) {
+		this.confParameters = confParameters;
+	}
+
+	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+		// TODO Auto-generated method stub
+		return super.createChart(chartTitle, dataset);
+	}
+
+	public String getCategoryLabel() {
+		return categoryLabel;
+	}
+
+	public void setCategoryLabel(String categoryLabel) {
+		this.categoryLabel = categoryLabel;
+	}
+
+	public String getValueLabel() {
+		return valueLabel;
+	}
+
+	public void setValueLabel(String valueLabel) {
+		this.valueLabel = valueLabel;
+	}
+
+	public int getCategoriesNumber() {
+		return categoriesNumber;
+	}
+
+	public void setCategoriesNumber(int categoriesNumber) {
+		this.categoriesNumber = categoriesNumber;
+	}
+
+	public Map getCategories() {
+		return categories;
+	}
+
+
 
 	public Integer getNumberCatVisualization() {
 		return numberCatVisualization;

@@ -222,6 +222,8 @@ public class SimpleDial extends DialCharts{
 		logger.debug("out");
 	}
 
+	
+	
 	/**
 	 * Creates the chart .
 	 * 

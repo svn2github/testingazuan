@@ -157,6 +157,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeFunctIns';\n");
 	   	htmlStream.append("				treeFunctIns = new dTree('treeFunctIns', '" + httpRequest.getContextPath() + "');\n");
+	   	htmlStream.append("				treeFunctIns.config.useCookies=false;\n");	   	
 	   	htmlStream.append("	        	treeFunctIns.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {

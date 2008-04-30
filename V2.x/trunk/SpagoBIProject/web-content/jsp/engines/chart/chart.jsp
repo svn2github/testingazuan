@@ -46,36 +46,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%
-BIObject objO=null;
-String uuidO="";
-boolean docComposition=false;
+	BIObject objO=null;
+	String uuidO="";
+	boolean docComposition=false;
 
-SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-	<%	
-objO=obj;
-	uuidO=uuid;
+	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+   	String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+   	
+   	// if in document composition case do not include header.jsp
+	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+				<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+		<%	
+					objO=obj;
+					uuidO=uuid;
+			   }
+   		else // in document composition case doesn't call header so set Object and uuid
+			   {
+	   				docComposition=true;
+				   UUIDGenerator uuidGenO  = UUIDGenerator.getInstance();
+				   UUID uuidObjO = uuidGenO.generateTimeBasedUUID();
+				   uuidO = uuidObjO.toString();
+				   uuidO = uuidO.replaceAll("-", "");
+	   			   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+			   }
+   		%>
 
-   }
-   else // in document composition case doesn't call header so set Object and uuid
-   {
-	   docComposition=true;
-	   UUIDGenerator uuidGenO  = UUIDGenerator.getInstance();
-	   UUID uuidObjO = uuidGenO.generateTimeBasedUUID();
-	   uuidO = uuidObjO.toString();
-	   uuidO = uuidO.replaceAll("-", "");
-	   
-	   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-   }
-   %>
 
-<!-- 
+		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
--->	
+		
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
-<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
   
   
@@ -98,34 +99,27 @@ objO=obj;
 	String refreshUrlCategory="";
 	String refreshUrlSerie="";
 
- EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
+ 	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
-SessionContainer permSession = aSessionContainer.getPermanentContainer();
+		SessionContainer permSession = aSessionContainer.getPermanentContainer();
 
-if(userProfile==null){
-	userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	userId=(String)userProfile.getUserUniqueIdentifier();
-}
+		if(userProfile==null){
+			userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			userId=(String)userProfile.getUserUniqueIdentifier();
+			}
 
+		if(sbModuleResponse.getAttribute("title")!=null){titleChart=(String)sbModuleResponse.getAttribute("title");}
+			//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
+		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
+		String documentid=(objO.getId()).toString();
+		//String documentid=(String)aServiceResponse.getAttribute("documentid");
+		Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
+		Dataset copyDataset=null;
 
-if(sbModuleResponse.getAttribute("title")!=null){titleChart=(String)sbModuleResponse.getAttribute("title");}
-	//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
-ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-
-
-
-
-String documentid=(objO.getId()).toString();
-//String documentid=(String)aServiceResponse.getAttribute("documentid");
-Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
-Dataset copyDataset=null;
-
-
-
-// get wich pars can the user set
-Vector changePars=(Vector)sbi.getPossibleChangePars();
-//check for each one if a changeparameter has ben set
-	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+		// get wich pars can the user set
+		Vector changePars=(Vector)sbi.getPossibleChangePars();
+		//check for each one if a changeparameter has ben set
+		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 			String par = (String) iterator.next();
 			if(request.getParameter(par)!=null){
 				String ch=(String)request.getParameter(par);
@@ -139,7 +133,6 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		}
 
 
-
 	// in the case of document composition check if serie or category have been previously defined
 
 	if(docComposition){
@@ -150,15 +143,12 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		}
 		if(sbModuleResponse.getAttribute("serie")!=null){
 		serie=(String)sbModuleResponse.getAttribute("serie");
-		
 		}
-		
-		
 	}
 
 /////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
 		if(sbi.getType().equalsIgnoreCase("BARCHART")){
-	series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
+			series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
@@ -197,29 +187,48 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 				((BarCharts)sbi).setCurrentSerie(wichSerie);
 				
 			}
+			else{
+				((BarCharts)sbi).setCurrentSerie(-1);
+			}
 		}
-
-
 	if(copyDataset==null){copyDataset=dataset;}
 
 ///////////////////////////////////////////////////// End category case//////////////////////////////////////////
 
-	
-///// Linkable chart case/////////////////777
+
+
+///// Linkable chart case/////////////////
 
 	HashMap rootPar=new HashMap();
-	if(sbi.getType().equalsIgnoreCase("BARCHART") && sbi.getSubtype().equalsIgnoreCase("linkablebar")){
+	if(sbi.isLinkable()){
 		
-		String rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
+		boolean linkableBar=false;
+		if(sbi instanceof LinkableBar)linkableBar=true;
+		else linkableBar=false;
+
+		String rootDocParameter="";
+		if(linkableBar){
+		rootDocParameter=((LinkableBar)sbi).getDocument_Parameters(((LinkableBar)sbi).getDrillParameter());
+		}
+		else{
+		rootDocParameter=((LinkablePie)sbi).getDocument_Parameters(((LinkablePie)sbi).getDrillParameter());
+		}
+		
 		if(!rootDocParameter.equals("")){
 		//rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
 		//rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
 		}
-		String drillLabel=((LinkableBar)sbi).getDrillLabel();
+	
+		String drillLabel="";
+		if(linkableBar)
+			drillLabel=((LinkableBar)sbi).getDrillLabel();
+		else 
+			drillLabel=((LinkablePie)sbi).getDrillLabel();
+
+		
 		if(drillLabel!=null && drillLabel!=""){
 			rootPar.put("DOCUMENT_LABEL",drillLabel);
 		}
-		
 		rootPar.put("PAGE","ExecuteBIObjectPage");
 		rootPar.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");
 		rootPar.put("LIGHT_NAVIGATOR_DISABLED","TRUE");
@@ -230,44 +239,25 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		//anto rootPar.put("USERNAME",userId);
 
 		//get from the linkableBar the label and eventually the parameters to pass
+	if(linkableBar){
 		if(((LinkableBar)sbi).getDrillLabel()!=null)
 					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkableBar)sbi).getDrillLabel());
-		
-		//for each parameter needed (MOVED IN DOCUMENT_PARAMETER)
-		/*
-		HashMap parameters=((LinkableBar)sbi).getDrillParameter();
-		if(parameters!=null){
-			for(Iterator iterator=parameters.keySet().iterator(); iterator.hasNext();){
-				String name = (String) iterator.next();			
-				String value=(String)parameters.get(name);
-				rootPar.put(name,value);
-			}
-		}*/
+	}
+	else{
+		if(((LinkablePie)sbi).getDrillLabel()!=null)
+			rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((LinkablePie)sbi).getDrillLabel());		
+	}
 
-		//New Way Web
-	/*
-	boolean first=true;
-		String rootUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?";
-		
-		for(Iterator iterator=rootPar.keySet().iterator(); iterator.hasNext();){
-			String name = (String) iterator.next();			
-			String value=(String)rootPar.get(name);
-			if(first){
-					first=false;
-					rootUrl=rootUrl+name+"="+value;
-			}
-			else{
-				rootUrl=rootUrl+"&"+name+"="+value;	
-			}
-		}
-		*/
-// Old way portlet		
+		// Old way portlet		
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
 		rootUrl=rootUrl+rootDocParameter;
 	
 		String completeUrl=rootUrl;
 	
+		
+		if(linkableBar){
 		if(docComposition){
+			
 			((LinkableBar)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
 			completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
 				}
@@ -278,18 +268,31 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		
 
 		((LinkableBar)sbi).setRootUrl(completeUrl);
-	}
+		}
+		else{
+			if(docComposition){
+				((LinkablePie)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
+				completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
+					}
+				else
+				{
+					((LinkablePie)sbi).setMode("normal");
+				}
+			
+
+			((LinkablePie)sbi).setRootUrl(completeUrl);
+		
+			}
+		}
 
 		
 	////////////// Chart creation/////////////////////77
 	
-	JFreeChart chart=null;
-	// create the chart
-	chart = sbi.createChart(titleChart,copyDataset);
+		JFreeChart chart=null;
+		// create the chart
+		chart = sbi.createChart(titleChart,copyDataset);
 
 		//Create the temporary file
-		//UUIDGenerator uuidGen = UUIDGenerator.getInstance();
-		//UUID uuid = uuidGen.generateTimeBasedUUID();
 		String executionId = uuidO;
 		executionId = executionId.replaceAll("-", "");
 
@@ -313,28 +316,27 @@ Vector changePars=(Vector)sbi.getPossibleChangePars();
 		   	refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 			}
 		   	
-
-
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 			String urlPng=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
 			refreshUrlCategory=refreshUrl+"&serie="+serie;
 		   	
 		   	
 		   	// form to limit the series if it is a barchart
-if(sbi.getType().equalsIgnoreCase("BARCHART")){
+	if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		//sets the URL
-	if(docComposition)
-	{
+		if(docComposition)
+		{
 		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
 		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
 		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
 		refreshUrlPars.put("OBJECT_ID",documentid);
-	}
-	else
-	{
+		}
+		else
+		{
 		refreshUrlSerie=refreshUrl;
-	}
+		}
 	%>
+	
 	<div class='div_detail_form'>
 		<span class='portlet-form-field-label'>
 			Select from <%=serTitle%>
@@ -385,10 +387,6 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
 	    }
 	
-	
-	
-	
-	
 
 	    boolean makeSlider=false;
 	    if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
@@ -414,17 +412,13 @@ if(sbi.getType().equalsIgnoreCase("BARCHART")){
 	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
     	
 	//calculate the number of ticks
-		//if((catsnum%numberCatVisualization)==0){ticks=catsnum/numberCatVisualization;}
-		//else{ticks=((catsnum)/numberCatVisualization)+1;}
-		
-		//The maximun is number_categories/numbercatvisualization, parte intera		
-		//maxSlider=new Integer(ticks).toString(); 
 		
 		maxSlider=new Integer(catsnum).toString();
-		
 		minSlider="1";
 	%>
 	
+
+
 	<script type="text/javascript" language="JAVASCRIPT">
 		<!--
 		arrayCats=new Array(<%=catsnum%>);

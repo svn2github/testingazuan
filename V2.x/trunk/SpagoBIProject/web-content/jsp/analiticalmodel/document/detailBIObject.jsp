@@ -786,7 +786,12 @@ function checkFormVisibility(docType) {
 
 	<spagobi:error/>
 
-
+<input  style="float:left;clear:left;width:50px;" type="checkbox" id="metadataDiv" name="metadataDiv" /> 
+		<span class='portlet-form-field-label'>
+			<spagobi:message key="metadata.insertMetadata"  />
+		</span>
+<div> &nbsp; </div>	 
+<div id="metadata"  >
 
 <!-- OPEN COLUMN WITH METADATA  -->	    
 <% 
@@ -908,6 +913,12 @@ Ext.onReady(function(){
 	 	
 </script>	
 </div>
+
+</div>
+<script>
+toggle('metadata', 'metadataDiv', false );
+</script> 
+
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
 </form>
 
@@ -915,7 +926,13 @@ Ext.onReady(function(){
 <% } else if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
   		BIObjectParameter objPar = (BIObjectParameter) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT_PAR);
 %>
-	
+	<input style="float:left;clear:left;width:50px;" align="middle" type="checkbox" id="parDiv" name="parDiv" /> 
+		<span class='portlet-form-field-label'>
+			<spagobi:message key="SBIDev.docConf.confPar"  />
+		</span>
+<div> &nbsp; </div>	 
+<div id="par"  >
+
 <div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
 	<div class="first-tab-level" style="background-color:#f8f8f8">
 		<div style="overflow: hidden; width:  100%">
@@ -1382,7 +1399,10 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 	</div>
 </div>
 
-
+</div>
+<script>
+toggle('par', 'parDiv', false );
+</script> 
 	
 </form>
 
@@ -1392,5 +1412,4 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 <div id = 'parameterCannotBeChanged' class='portlet-msg-error' style='display:none;'>
 	<spagobi:message key = "SBIDev.docConf.docDetParam.cannotChangeParameter" />
 </div>
-
 

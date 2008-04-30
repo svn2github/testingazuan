@@ -428,7 +428,7 @@ CREATE TABLE SBI_OBJECT_TEMPLATES (
     NAME 	              VARCHAR(50),  
     PROG 	              INTEGER, 
     DIMENSION           VARCHAR(20),  
-		CREATION_DATE 		  TIMESTAMP NOT NULL, 
+		CREATION_DATE 		  DATETIME, 
     CREATION_USER         VARCHAR(45) NOT NULL, 
     ACTIVE 	            BOOLEAN,                  
         PRIMARY KEY (OBJ_TEMP_ID)

@@ -131,7 +131,7 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 			 
 			
 			
-			String res=DataSetAccessFunctions.getDataSetResult(profile, dataName,parameters);
+			String res=DataSetAccessFunctions.getDataSetResultFromId(profile, dataName,parameters);
 			if (res!=null){
 				SourceBean sbRows=SourceBean.fromXMLString(res);
 				//SourceBean myResultBean=(SourceBean)sbRows.getAttribute("ROW");

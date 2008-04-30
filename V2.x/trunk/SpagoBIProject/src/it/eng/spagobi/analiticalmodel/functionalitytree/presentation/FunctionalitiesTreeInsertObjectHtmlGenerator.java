@@ -230,7 +230,7 @@ public class FunctionalitiesTreeInsertObjectHtmlGenerator implements ITreeHtmlGe
 		if(codeType.equalsIgnoreCase(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE)){
 			if(!privateFolderCreated)	{
 				privateFolderCreated=true;
-				htmlStream.append("	treeFunctIns.add(" + dMyFolderRootId + ", " + dTreeRootId + ",'" + "Personal Folders" + "', '', '', '', '', '', 'true');\n");
+				htmlStream.append("	treeFunctIns.add(" + dMyFolderRootId + ", " + dTreeRootId + ",'" + "Personal Folders" + "', '', '', '', '', '', false);\n");
 							}
 					String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
 					String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");

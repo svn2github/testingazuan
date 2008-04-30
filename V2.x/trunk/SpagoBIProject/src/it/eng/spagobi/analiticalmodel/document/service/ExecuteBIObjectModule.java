@@ -242,6 +242,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			String executionRole = (String) session.getAttribute(SpagoBIConstants.ROLE);
 			executionManager.registerExecution(executionFlowId, sourceExecutionId, obj, executionRole);
 			// starts new execution 
+			request.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
 			pageCreationHandler(request, response);
 		} finally {
 			logger.debug("OUT");

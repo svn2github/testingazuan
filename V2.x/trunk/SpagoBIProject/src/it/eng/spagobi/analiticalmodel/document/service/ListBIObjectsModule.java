@@ -136,9 +136,12 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		
 		Integer visible = obj.getVisible();
 		String state = obj.getStateCode();
+		
 		List functionalities = obj.getFunctionalities();
 		int visibleInstances = 0;
 		boolean canAddIstances = true;
+		boolean stateUp = false ;
+		boolean stateDown = false ;
 		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
 				if (initialPath != null && !initialPath.trim().equals("")) {
 					// in case of local administrator, he can admin only a part of the instances of the document
@@ -176,21 +179,40 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			}
 			// at this point the document is in DEV state and there is one or more visible instances
 			boolean canDev = true;
-			if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) canDev = true ;
-			else if (obj.getStateCode().equalsIgnoreCase("REL")) canDev = false;
-			else if (obj.getStateCode().equalsIgnoreCase("TEST")) canDev = false;
-			
-			
-			if ((!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
-				 !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) &&
-				 !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))){
-				if (!"DEV".equalsIgnoreCase(state)) {
-					// the documents that aren't in development state are excluded
-					return null;
+			if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) {
+				canDev = true ;
+				 if (obj.getStateCode().equalsIgnoreCase("REL")) {
+						stateUp = false ;
+						stateDown = true ;
+					}
+				 else if (obj.getStateCode().equalsIgnoreCase("DEV")){
+						stateUp = true ;
+						stateDown = false ;
+					}
+				 else if (obj.getStateCode().equalsIgnoreCase("TEST")){
+						stateUp = true ;
+						stateDown = true ;
+					}
+			}
+			else if (obj.getStateCode().equalsIgnoreCase("REL")) {
+				canDev = false;
+			}
+			else if (obj.getStateCode().equalsIgnoreCase("TEST")){
+				canDev = false;
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+				stateUp = true ;
+				stateDown = true ;
+				}
+			}
+			else if (obj.getStateCode().equalsIgnoreCase("DEV")){
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+				canDev = true;
+				stateUp = true ;
+				stateDown = false ;
 				}
 			}
 			rowSBStr += "		canDev=\"" + canDev + "\"";
-		}
+		}	
 
 		if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
 		    profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) &&
@@ -208,10 +230,31 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 					visibleInstances++;
 				}
 			}
-
-		}
+			
+			if ( profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
+				if (obj.getStateCode().equalsIgnoreCase("REL")) {
+					stateUp = false ;
+					stateDown = false ;
+				}
+				else if (obj.getStateCode().equalsIgnoreCase("TEST")){
+					
+					if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+					stateUp = true ;
+					stateDown = true ;
+					}
+				}
+				else if (obj.getStateCode().equalsIgnoreCase("DEV")){
+					if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					stateUp = false ;
+					stateDown = false ;
+					}
+				}
+			}	
+		  }
 		if (visibleInstances == 0) return null;
 		
+		rowSBStr += "		stateUp=\"" + stateUp + "\"";
+		rowSBStr += "		stateDown=\"" + stateDown + "\"";
 		rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 		rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
 		rowSBStr += "		NAME=\"" + obj.getName() + "\"";
@@ -276,6 +319,55 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			   				   "			<PARAMETER name=\"canDev\" scope='LOCAL' value='true' operator='EQUAL_TO' />"+
 			   			       "		</CONDITIONS>"+
 							   "	</DELETE_CAPTION>";
+		}
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MOVE_DOWN_STATE)){
+			// if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
+			moduleConfigStr += "	<MOVEDOWN_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowDown1.gif\" label=\"SBISet.objects.captionMoveDown\">" +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> " +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.MOVE_STATE_DOWN + "\"/> " +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
+							   "		<PARAMETER name=\"LIGHT_NAVIGATOR_DISABLED\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
+			   				   "		<CONDITIONS>" +
+			   				   "			<PARAMETER name=\"stateDown\" scope='LOCAL' value='true' operator='EQUAL_TO' />"+   				  
+			   			       "		</CONDITIONS>"+
+							   "	</MOVEDOWN_CAPTION>";
+			/*	}
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN )){
+			moduleConfigStr += "	<MOVEDOWN_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowDown1.gif\" label=\"SBISet.objects.captionMoveDown\">" +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> " +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.MOVE_STATE_DOWN + "\"/> " +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
+			   "		<PARAMETER name=\"LIGHT_NAVIGATOR_DISABLED\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
+			   "		<CONDITIONS>" +
+			  
+			   "			<PARAMETER name=\"STATE\" scope='LOCAL' value='TEST' operator='EQUAL_TO' />"+
+		       "		</CONDITIONS>"+
+			   "	</MOVEDOWN_CAPTION>";
+			}*/
+		}
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MOVE_UP_STATE)){
+			// if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN )){
+			moduleConfigStr += "	<MOVEUP_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowUp1.gif\" label=\"SBISet.objects.captionMoveUp\">" +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE  + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> " +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.MOVE_STATE_UP + "\"/> " +
+							   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
+							   "		<PARAMETER name=\"LIGHT_NAVIGATOR_DISABLED\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
+							   "		<CONDITIONS>" +
+			   				   "			<PARAMETER name=\"stateUp\" scope='LOCAL' value='true' operator='EQUAL_TO' />"+
+			   			       "		</CONDITIONS>"+
+							   "	</MOVEUP_CAPTION>";
+			/*}
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN )){
+			moduleConfigStr += "	<MOVEUP_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowUp1.gif\" label=\"SBISet.objects.captionMoveUp\">" +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.PAGE  + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> " +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.MESSAGE_DETAIL + "\" scope=\"\" type=\"ABSOLUTE\" value=\"" + ObjectsTreeConstants.MOVE_STATE_UP + "\"/> " +
+			   "		<PARAMETER name=\"" + ObjectsTreeConstants.OBJECT_ID + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " +
+			   "		<PARAMETER name=\"LIGHT_NAVIGATOR_DISABLED\" scope=\"\" type=\"ABSOLUTE\" value=\"true\"/> " +
+			   "		<CONDITIONS>" +		 
+			   "			<PARAMETER name=\"STATE\" scope='LOCAL' value='TEST' operator='EQUAL_TO' />"+
+		       "		</CONDITIONS>"+
+			   "	</MOVEUP_CAPTION>";
+			}*/
 		}
 		moduleConfigStr += "	</CAPTIONS>";
 		moduleConfigStr += "	<BUTTONS>";

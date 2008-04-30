@@ -29,6 +29,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule;
+import it.eng.spagobi.analiticalmodel.document.service.UpdateBIObjectStateModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -119,7 +120,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
 	private void makeJSFunctionForMenu(StringBuffer htmlStream) {
-		htmlStream.append("		function menu" + requestIdentity + "(prog, event, urlExecution, urlMetadata, urlDetail, urlErase) {\n");
+		htmlStream.append("		function menu" + requestIdentity + "(prog, event, urlExecution, urlMetadata, urlDetail, urlErase, urlDown, urlUp) {\n");
 		
 		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
@@ -132,6 +133,12 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
 		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
 		htmlStream.append("         if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
+		String capMoveDown = msgBuilder.getMessage("SBISet.objects.captionMoveDownShort", "messages", httpRequest);
+		htmlStream.append("         if(urlDown!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capMoveDown+"\\', \\''+urlDown+'\\');\">"+capMoveDown+"</a></div>';\n");
+		String capMoveUp = msgBuilder.getMessage("SBISet.objects.captionMoveUpShort", "messages", httpRequest);
+		htmlStream.append("         if(urlUp!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capMoveUp+"\\', \\''+urlUp+'\\');\">"+capMoveUp+"</a></div>';\n");
+	
+		
 		htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
 		
@@ -273,9 +280,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateObj = obj.getStateCode();
 					String prog = idObj.toString();
 					if (ObjectsAccessVerifier.canDev(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\', \\'\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 					} else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
-						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\')' );\n");
+						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\', \\'\\')' );\n");
 					}
 				}
 			}
@@ -314,6 +321,27 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		}
 		return detUrl;
 	}
+	
+	private String createMoveUpObjectLink(Integer id) {
+		HashMap detUrlParMap = new HashMap();
+		detUrlParMap.put(ObjectsTreeConstants.PAGE,"UpdateBIObjectStatePage" );
+		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.MOVE_STATE_UP);
+		detUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		String detUrl = urlBuilder.getUrl(httpRequest, detUrlParMap);
+		return detUrl;
+	}
+	
+	private String createMoveDownObjectLink(Integer id) {
+		HashMap detUrlParMap = new HashMap();
+		detUrlParMap.put(ObjectsTreeConstants.PAGE, "UpdateBIObjectStatePage" );
+		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.MOVE_STATE_DOWN);
+		detUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		String detUrl = urlBuilder.getUrl(httpRequest, detUrlParMap);
+		return detUrl;
+	}
+	
 
 	private String createDetailObjectLink(Integer id) {
 		HashMap detUrlParMap = new HashMap();

@@ -299,6 +299,8 @@ public class SpagoBIConstants {
 	public static final String DOCUMENT_DETAIL_MANAGEMENT = "DocumentDetailManagement";
 	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";
 	public static final String DOCUMENT_METADATA_MANAGEMENT = "DocumentMetadataManagement";
+	public static final String DOCUMENT_MOVE_DOWN_STATE = "DocumentMoveDownState" ;
+	public static final String DOCUMENT_MOVE_UP_STATE = "DocumentMoveUpState" ;
 	//for management of DOCUMENT COMPOSITION
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";

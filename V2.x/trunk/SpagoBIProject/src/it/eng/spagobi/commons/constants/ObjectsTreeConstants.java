@@ -42,6 +42,7 @@ public class ObjectsTreeConstants {
 	
 	public static final String PATH_PARENT = "PATH_PARENT";
 	public static final String PAGE = "PAGE";
+	public static final String ACTION = "ACTION_NAME";
 	public static final String MESSAGE_DETAIL = "MESSAGEDET";
 
 	public static final String EXEC_PHASE_CREATE_PAGE = "EXEC_PHASE_CREATE_PAGE";
@@ -67,6 +68,9 @@ public class ObjectsTreeConstants {
 	public static final String SESSION_OBJ_ATTR = "SESSION_OBJ_ATTR";
 	
 	public static final String EXECUTION_MANAGER = "EXECUTION_MANAGER";
+	
+	public static final String MOVE_STATE_UP = "MOVE_STATE_UP" ;
+	public static final String MOVE_STATE_DOWN = "MOVE_STATE_DOWN" ;
 	
 	public static final String INPUT_TYPE_QUERY_CODE = "QUERY";
 	public static final String INPUT_TYPE_FIX_LOV_CODE = "FIX_LOV";

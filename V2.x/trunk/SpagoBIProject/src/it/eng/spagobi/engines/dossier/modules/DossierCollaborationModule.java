@@ -587,7 +587,7 @@ public class DossierCollaborationModule extends AbstractModule {
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
 			String uuid = uuidObj.toString();
-			// TODO perché salvare su file system? tanto vale tenere in memoria le immagini, oppure scriverli sul file system e far puntare l'immagine al file
+			// TODO perche salvare su file system? tanto vale tenere in memoria le immagini, oppure scriverli sul file system e far puntare l'immagine al file
 	    	String logicalNameForStoring = uuid + logicalName + ".jpg";
 	    	byte[] content = (byte[])images.get(logicalName);
 	    	File img = new File(tempDir, logicalNameForStoring);

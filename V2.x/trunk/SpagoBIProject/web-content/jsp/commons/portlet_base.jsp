@@ -106,6 +106,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String userId="";
 	if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 %>
+
+
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>

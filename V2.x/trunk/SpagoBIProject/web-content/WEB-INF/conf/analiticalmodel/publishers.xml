@@ -101,6 +101,19 @@
    	 	</RENDERING>
   	</PUBLISHER>
   	
+  		<PUBLISHER name="UpdateBIObjectStatePublisher">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="0" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="0" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
   	<PUBLISHER name="ViewSnapshotPubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
@@ -539,6 +552,7 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	
 
   	<PUBLISHER name="detailBIObject">
     	<RENDERING channel="PORTLET" mode="" type="JSP">

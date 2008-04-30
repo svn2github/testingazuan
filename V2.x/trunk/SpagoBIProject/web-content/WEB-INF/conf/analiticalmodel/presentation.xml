@@ -21,8 +21,8 @@
 <MAPPING business_name="INSERT_NOTES_ACTION" business_type="ACTION" publisher_name="insertNotesBIObjectPubJ"/>
 <MAPPING business_name="RATING_ACTION" business_type="ACTION" publisher_name="ratingBIObjectPubJ"/>
 
-
 <MAPPING business_type="PAGE" business_name="SelectDatasetLookupPage" publisher_name="SelectDatasetLookupPublisher"/>
+<MAPPING business_type="PAGE" business_name="UpdateBIObjectStatePage" publisher_name="UpdateBIObjectStatePublisher"/>
 
 </PRESENTATION>
 

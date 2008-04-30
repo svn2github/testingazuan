@@ -27,17 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
-<%
-	// get configuration
-	ConfigSingleton spagoconfigfooter = ConfigSingleton.getInstance();
-	// get mode of execution
-	String sbiModefooter = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-%>
- 
- 
-   
 <!-- based on ecexution mode include initial html  -->   
-<% if (sbiModefooter.equalsIgnoreCase("WEB")){ %> 
+<% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 </body>
 </html>
 <%} %>

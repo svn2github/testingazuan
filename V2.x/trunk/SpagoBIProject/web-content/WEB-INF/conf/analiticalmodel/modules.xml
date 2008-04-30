@@ -33,6 +33,9 @@
      	<CONFIG/>
     </MODULE>
     
+      <MODULE class="it.eng.spagobi.analiticalmodel.document.service.UpdateBIObjectStateModule" name="UpdateBIObjectStateModule">
+     	<CONFIG/>
+    </MODULE>
     
     <MODULE class="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule" name="ExecuteBIObjectModule">
      	<CONFIG/>

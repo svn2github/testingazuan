@@ -68,6 +68,17 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailFunctionalityModule"/>
     	</MODULES>
   	</PAGE>
+  	<PAGE name="UpdateBIObjectStatePage" scope="REQUEST" title="Update BI Object" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="UpdateBIObjectStatePage" target="UpdateBIObjectStateModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="UpdateBIObjectStateModule"/>
+    	</MODULES>
+  	</PAGE>
 	<PAGE name="BIObjectsPage" scope="REQUEST" >
     	<DEPENDENCIES>
     		<DEPENDENCE source="BIObjectsPage" target="BIObjectsModule">

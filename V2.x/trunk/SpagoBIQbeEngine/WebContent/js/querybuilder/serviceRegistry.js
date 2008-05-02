@@ -30,7 +30,7 @@ it.eng.spagobi.engines.qbe.serviceregistry.module = function(){
         	var baseUrlStr = baseUrl.protocol + "://" + baseUrl.host + ":" + baseUrl.port + "/" + baseUrl.contextPath + "/" + baseUrl.controllerPath;
         	var serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
         	return serviceUrl;
-        }        
+        }       
         
 	};
 }();

@@ -103,9 +103,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			JSONObject metadata = new JSONObject();
 			JSONArray fields = null;
 			JSONArray rows = new JSONArray();
-		
-		
-			
+				
 			metadata.put("totalProperty", "results");
 			metadata.put("root", "rows");
 			metadata.put("id", "id");

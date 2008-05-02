@@ -148,7 +148,22 @@ public class SpagoBIAccessFilter implements Filter {
 		}
 	    }
 	}
-	chain.doFilter(request, response);
+	
+	try {
+		chain.doFilter(request, response);
+	} catch (Exception e){
+		logger.error("--------------------------------------------------------------------------------");
+		logger.error("SpagoBIAccessFilter" + ":doFilter ServletException !!");
+		logger.error(" msg: [" + e.getMessage() + "]");
+		Throwable t = e.getCause();
+		logger.error("-----------------------------");
+		logger.error("ROOT CAUSE:");
+		logger.error("-----------------------------");
+		logger.error(" msg: [" +t.getMessage() + "]");
+		logger.error(" stacktrace:");
+		t.printStackTrace();
+	}
+		
 	logger.debug("OUT");
     }
 

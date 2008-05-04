@@ -41,7 +41,7 @@ import org.json.JSONObject;
 
 
 
-public class ExecuteQueryAction extends AbstractQbeEngineAction {
+public class CopyOfExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	
 	public static final String LIMIT = "limit";
@@ -51,7 +51,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	/**
      * Logger component
      */
-    public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(CopyOfExecuteQueryAction.class);
     
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		
@@ -130,13 +130,14 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 					Iterator fieldsIterator = getQuery().getSelectFieldsIterator();
 					for (int j=0; j < row.length; j++){ 
 						JSONObject field = new JSONObject();
-						ISelectField f = (ISelectField)fieldsIterator.next();
-						if(!f.isVisible()) continue;
-						String header = f.getFieldAlias();
-						if( header != null) field.put("header", header);
-						else field.put("header", "Column-" + (j+1));
-						
-						field.put("name", "column-" + (j+1));						
+						field.put("name", "column-" + (j+1));
+						if(fieldsIterator.hasNext()) {
+							ISelectField f = (ISelectField)fieldsIterator.next();
+							String header = f.getFieldAlias();
+							field.put("header", header);
+						} else {
+							field.put("header", "Column-" + (j+1));
+						}
 						
 						field.put("dataIndex", "column-" + (j+1));
 						fields.put(field);

@@ -80,8 +80,10 @@ var getQueryBuilderPanel = function() {
               });
               
               
-              it.eng.spagobi.engines.qbe.querybuilder.filterGrid.init();
+              it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.init();
+             
               it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.init();
+             
                                
               var queryBuilderCENTERPanel = new Ext.Panel({
                   id:'CENTERPanel',
@@ -125,7 +127,7 @@ var getQueryBuilderPanel = function() {
                       // refresh logic
                     }
                   }],
-                  items: [it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.grid, it.eng.spagobi.engines.qbe.querybuilder.filterGrid.grid]
+                  items: [it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.grid, it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.grid]
               });
         
         
@@ -140,7 +142,7 @@ var getQueryBuilderPanel = function() {
               	items: [queryBuilderWESTPanel, queryBuilderCENTERPanel]
               });
               
-
+			
             return queryBuilderPagePanel;                   
         };
         
@@ -152,7 +154,9 @@ var getQueryBuilderPanel = function() {
         var getParams = function() {
         	var params = {
         		records : it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams(),
-	        	filters : it.eng.spagobi.engines.qbe.querybuilder.filterGrid.getRowsAsJSONParams()
+	        	filters : it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams()
         	};
         	return params;
         };
+        
+        

@@ -54,7 +54,6 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
         	// column headers
         	visible: 'Visible',
         	group: 'Group',
-        	del: 'Delete',
         	filter: 'Filter',
         	entity: 'Entity',
         	alias: 'Alias',
@@ -70,23 +69,25 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
         	groupTT: 'Group fileds by parent entity',
         	addBT: 'Add calculated',
         	addTT: 'Add an ad-hoc calculated field (i.e. valid only for this query)',
+        	deleteBT: 'Delete',
+        	deleteTT: 'Delete selected filed',
         	clearBT: 'Clear All',
         	clearTT: 'Clear all selected fields',
         	
         	// Aggregation functions
         	agrFuncNames: [
-        		'Nessuna',
-        		'Somma',
-        		'Media',
-        		'Massimo',
-        		'Minimo'        		
+        		'none',
+        		'sum',
+        		'average',
+        		'maximum',
+        		'minimum'        		
         	],
         	agrFuncDescriptions: [
-        		'Non Applica nessuna funzione di aggregazione',
-        		'Somma dei valori degli elementi all interno del gruppo',
-        		'Media dei valori degli elementi all interno del gruppo',
-        		'Massimo dei valori degli elementi all interno del gruppo',
-        		'Minimo dei valori degli elementi all interno del gruppo'
+        		'No aggregation function applied',
+        		'Return the sum of all values in group',
+        		'Return the average of all values in group',
+        		'Return the max of all values in group',
+        		'Return the min of all values in group'
         	]
         },
         
@@ -125,11 +126,11 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		]),   
 		
 		aggregationFunctions : [
-			'NULL',
-			'SUM',
-		    'AVG',
-		    'MAX',
-		    'MIN'
+			'NONE',
+        	'SUM',
+        	'AVG',
+        	'MAX',
+        	'MIN'  
 		],
 		    
         grid : null,	
@@ -158,7 +159,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		    });
 		    
 		     var delButtonColumn = new Ext.grid.ButtonColumn({
-		       header:  this.labels.del,
+		       header:  this.labels.deleteBT,
 		       dataIndex: 'delete',
 		       imgSrc: '../img/querybuilder/delete.gif',
 		       clickHandler:function(e, t){
@@ -178,7 +179,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		       clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
-		          it.eng.spagobi.engines.qbe.querybuilder.filterGrid.addRow(record);
+		          it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record);
 		       },
 		       
 		       width: 55
@@ -200,9 +201,9 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		    });
 		    
 		     var orderingTypesData = [
-		        ['NULL','Nessuno', 'Non applica nessuna ordinamento sulla colonna'],
-		        ['ASC', 'Crescente', 'Ordina le righe del risultato in modo crescente rispetto al valore di questa colonna'],
-		        ['DESC', 'Decrescente', 'Ordina le righe del risultato in modo decrescente rispetto al valore di questa colonna']
+		        ['NONE','none', 'No ordering applied to the given colunm'],
+		        ['ASC', 'ascending', 'Order values of the given column in asecnding way'],
+		        ['DESC', 'descending', 'Order values of the given column in descending way']
 		    ];
 		    
 		    
@@ -236,10 +237,12 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		           dataIndex: 'funct',
 		           width: 75,
 		           editor: new Ext.form.ComboBox({
+		              tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
 		              allowBlank: true,
 		              editable:false,
 		              store: aggregationFunctionsStore,
-		              displayField:'nome',
+		              displayField:'funzione',
+		              valueField:'funzione',
 		              typeAhead: true,
 		              mode: 'local',
 		              triggerAction: 'all',
@@ -251,10 +254,12 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		           dataIndex: 'order',
 		           width: 75,
 		           editor: new Ext.form.ComboBox({
+		           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{type}</div></tpl>',	
 		              allowBlank: true,
 		              editable:false,
 		              store: orderingTypesStore,
-		              displayField:'nome',
+		              displayField:'type',
+		              valueField:'type',
 		              typeAhead: true,
 		              mode: 'local',
 		              triggerAction: 'all',

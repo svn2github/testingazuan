@@ -7,10 +7,10 @@ it.eng.spagobi.engines.qbe.locale.module = function(){
     // private variables
     var selectGridModuleLabels = {
     	// column headers
-        visible: 'XVisibleX',
-        group: 'XGroupX',
-        del: 'XDeleteX',
-        filter: 'XFilterX' 
+        visible: 'Visible',
+        group: 'Group',
+        del: 'Delete',
+        filter: 'Filter' 
         	
         // tooltips   
         //...

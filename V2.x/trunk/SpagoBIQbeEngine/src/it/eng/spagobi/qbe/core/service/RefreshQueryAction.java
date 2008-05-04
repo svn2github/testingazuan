@@ -63,6 +63,7 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 				String group = recordJSON.getString("group");
 				String order = recordJSON.getString("order");
 				String funct = recordJSON.getString("funct");
+				boolean visible = "si".equalsIgnoreCase( recordJSON.getString("visible") );
 								
 				if(fieldUniqueName != null) {
 					// add field
@@ -81,6 +82,7 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 						selectField.setFieldAlias(alias);
 					}
 					
+					selectField.setVisible(visible);
 					
 					// add group by clause
 					if(group.equalsIgnoreCase("true")) {
@@ -89,22 +91,22 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 					
 					// add function
 					String fieldCompleteName = selectField.getFieldName();
-					if(funct.equalsIgnoreCase("somma")) {
+					if(funct.equalsIgnoreCase("SUM")) {
 						fieldCompleteName = "SUM(" + selectField.getFieldName() + ")";
 						
-					} else if(funct.equalsIgnoreCase("media")) {
+					} else if(funct.equalsIgnoreCase("AVG")) {
 						fieldCompleteName = "AVG(" + selectField.getFieldName() + ")";
-					} else if(funct.equalsIgnoreCase("massimo")) {
+					} else if(funct.equalsIgnoreCase("MAX")) {
 						fieldCompleteName = "MAX(" + selectField.getFieldName() + ")";
-					}  else if(funct.equalsIgnoreCase("minimo")) {
+					}  else if(funct.equalsIgnoreCase("MIN")) {
 						fieldCompleteName = "MIN(" + selectField.getFieldName() + ")";
 					}
 					selectField.setFieldName( fieldCompleteName );
 					
 					// add order by clause
-					if(order.equalsIgnoreCase("crescente") || order.equalsIgnoreCase("decrescente")) {
+					if(order.equalsIgnoreCase("ASC") || order.equalsIgnoreCase("DESC")) {
 						IOrderByField orderByField = getQuery().addOrderByField( fieldCompleteName );
-						orderByField.setAscendingOrder( order.equalsIgnoreCase("crescente") );
+						orderByField.setAscendingOrder( order.equalsIgnoreCase("ASC") );
 					}					
 				}	
 			}
@@ -117,6 +119,8 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 				String operator = filterJSON.getString("operator");
 				String value = filterJSON.getString("value");
 				String type = filterJSON.getString("type");
+				
+				if(operator == null || operator.trim().equalsIgnoreCase("") || operator.equalsIgnoreCase("NONE")) continue;
 				
 				DataMartField field = getDatamartModel().getDataMartModelStructure().getField(fieldUniqueName);
 				String className = field.getParent().getRoot().getType();
@@ -145,7 +149,7 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 
 				IWhereField whereField = getQuery().addWhereField(aliasedFieldName, hibFieldType);
 				whereField.setFieldEntityClassForLeftCondition(ec);
-				
+				whereField.setFieldOperator(operator);				
 				whereField.setFieldValue( value );
 			}
 			

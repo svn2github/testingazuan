@@ -30,6 +30,7 @@ public class SelectField extends Field implements ISelectField {
 	private String originalFieldName = null;
 	private EntityClass entityClass = null;
 	private String fieldCompleteName = null;
+	private boolean visible = true;
 
 	private static long idcounter = 0;
 	private static String createNewId() {
@@ -95,6 +96,14 @@ public class SelectField extends Field implements ISelectField {
 	}
 	public void setFieldCompleteName(String fieldCompleteName) {
 		this.fieldCompleteName = fieldCompleteName;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 	
 	

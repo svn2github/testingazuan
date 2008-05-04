@@ -7,13 +7,10 @@ import it.eng.qbe.bo.Formula;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
 import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.security.IEngUserProfile;
 
 import java.beans.XMLDecoder;
 import java.io.BufferedInputStream;
@@ -29,12 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import org.dom4j.Document;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
-
-import sun.security.x509.Extension;
 
 /**
  * @author Andrea Gioia

@@ -25,11 +25,7 @@ import it.eng.qbe.log.Logger;
 import it.eng.qbe.utility.CalculatedField;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.tools.ant.taskdefs.Sleep;
 
 public class SelectClause implements ISelectClause {
 

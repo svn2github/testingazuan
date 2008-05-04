@@ -23,7 +23,6 @@ package it.eng.qbe.export;
 
 import it.eng.qbe.bo.Formula;
 
-import java.io.File;
 import java.sql.Connection;
 import java.util.Map;
 

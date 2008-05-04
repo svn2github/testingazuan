@@ -25,8 +25,6 @@ import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 
 import java.util.HashMap;
 import java.util.Iterator;

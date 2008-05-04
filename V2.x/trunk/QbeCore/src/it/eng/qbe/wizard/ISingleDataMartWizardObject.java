@@ -28,7 +28,6 @@ import it.eng.spago.base.SourceBean;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 public interface ISingleDataMartWizardObject extends Serializable {
 	

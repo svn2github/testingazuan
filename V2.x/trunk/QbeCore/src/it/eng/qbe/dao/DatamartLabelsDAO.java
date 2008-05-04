@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.dao;
 
-import java.util.Locale;
-
 import it.eng.qbe.bo.DatamartLabels;
+
+import java.util.Locale;
 
 /**
  * @author Andrea Gioia

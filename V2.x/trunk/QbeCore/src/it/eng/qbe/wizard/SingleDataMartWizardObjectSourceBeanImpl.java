@@ -23,16 +23,12 @@ package it.eng.qbe.wizard;
 
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
-import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.utility.Utils;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 
 import java.sql.Connection;
@@ -40,12 +36,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 
 public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject {

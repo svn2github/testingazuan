@@ -21,43 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.conf.QbeConf;
 import it.eng.qbe.dao.DAOFactory;
-import it.eng.qbe.locale.LocaleUtils;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.model.io.IDataMartModelRetriever;
-import it.eng.qbe.model.io.IQueryPersister;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.utility.JarUtils;
-import it.eng.qbe.utility.Utils;
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.utilities.DynamicClassLoader;
-
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.mapping.PersistentClass;
-import org.hibernate.mapping.Table;
 
 /**
  * @author Andrea Gioia

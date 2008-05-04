@@ -53,13 +53,13 @@
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.0-JSR-06.jar"/>
 	<classpathentry kind="lib" path="lib/jug-asl-2.0.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="var" path="PORTLET_API_HOME/portlet-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/spago-core-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-2.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/spago-core-2.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/spagoportlet-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/spago-profile-2.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/spago-web-2.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoCore"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoPortlet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoProfile"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoWeb"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -28,7 +28,6 @@ import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.wizard.EntityClass;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;

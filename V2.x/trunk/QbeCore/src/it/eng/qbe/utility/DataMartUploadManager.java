@@ -21,13 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.utility;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.httpchannel.upload.IUploadHandler;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.init.InitializerIFace;
-import it.eng.spago.tracing.TracerSingleton;
 
 import java.io.File;
 

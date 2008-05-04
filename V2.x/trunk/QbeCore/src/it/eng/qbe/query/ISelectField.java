@@ -23,9 +23,6 @@ package it.eng.qbe.query;
 
 import it.eng.qbe.wizard.EntityClass;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 public interface ISelectField extends IField {	
 		
 	String getFieldNameWithoutOperators();
@@ -40,4 +37,7 @@ public interface ISelectField extends IField {
 	String getFieldCompleteName();
 	
 	ISelectField getCopy();
+
+	void setVisible(boolean visible);
+	boolean isVisible();
 }

@@ -25,11 +25,8 @@ import it.eng.qbe.bo.Formula;
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public interface IQuery {
 	

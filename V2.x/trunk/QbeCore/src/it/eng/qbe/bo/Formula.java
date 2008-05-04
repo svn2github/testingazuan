@@ -23,10 +23,7 @@ package it.eng.qbe.bo;
 
 import it.eng.qbe.utility.CalculatedField;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.configuration.ConfigSingleton;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;

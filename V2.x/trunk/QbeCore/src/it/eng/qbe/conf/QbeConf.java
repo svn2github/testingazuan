@@ -21,15 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.conf;
 
-import java.io.File;
-import java.util.Locale;
-
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.utilities.file.FileUtils;
+
+import java.io.File;
 
 /**
  * @author Andrea Gioia

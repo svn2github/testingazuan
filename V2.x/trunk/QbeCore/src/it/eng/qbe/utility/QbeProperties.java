@@ -21,17 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.utility;
 
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.spago.base.ApplicationContainer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 /**
  * @author Andrea Gioia

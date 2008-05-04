@@ -25,7 +25,6 @@ import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
 
 import java.util.Locale;
-import java.util.Properties;
 
 /**
  * @author Andrea Gioia

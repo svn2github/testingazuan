@@ -21,6 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query;
 
+import it.eng.qbe.bo.Formula;
+import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.utility.CalculatedField;
+import it.eng.qbe.wizard.EntityClass;
+import it.eng.spago.base.SourceBean;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,14 +36,6 @@ import java.util.Map;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
-
-import it.eng.qbe.bo.Formula;
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.spago.base.SourceBean;
 
 
 public class Query implements IQuery {

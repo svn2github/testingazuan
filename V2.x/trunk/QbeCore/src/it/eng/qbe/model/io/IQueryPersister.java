@@ -23,7 +23,6 @@ package it.eng.qbe.model.io;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 
 import java.util.List;
 

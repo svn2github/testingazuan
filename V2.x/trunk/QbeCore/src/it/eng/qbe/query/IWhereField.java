@@ -23,8 +23,6 @@ package it.eng.qbe.query;
 
 import it.eng.qbe.wizard.EntityClass;
 
-import java.io.Serializable;
-
 
 public interface IWhereField extends IField{
 

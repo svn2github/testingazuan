@@ -22,23 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.qbe.model;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.query.IGroupByClause;
 import it.eng.qbe.query.IGroupByField;
-import it.eng.qbe.query.IOrderByClause;
-import it.eng.qbe.query.IOrderByField;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.query.ISelectClause;
 import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.IWhereClause;
 import it.eng.qbe.query.IWhereField;
 import it.eng.qbe.query.OrderByField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.SourceBean;
 
 import java.io.IOException;
@@ -47,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -118,47 +108,105 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString();
 	}
 	
+	
+	
+	public static final String EQUALS_TO = "EQUALS TO";
+	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
+	public static final String GREATER_THAN = "GREATER THAN";
+	public static final String EQUALS_OR_GREATER_THAN = "EQUALS OR GREATER THAN";
+	public static final String LESS_THAN = "LESS THAN";
+	public static final String EQUALS_OR_LESS_THAN = "EQUALS OR LESS THAN";
+	public static final String STARTS_WITH = "STARTS WITH";
+	public static final String NOT_STARTS_WITH = "NOT STARTS WITH";
+	public static final String ENDS_WITH = "ENDS WITH";
+	public static final String NOT_ENDS_WITH = "NOT ENDS WITH";
+	public static final String NOT_NULL = "NOT NULL";
+	public static final String IS_NULL = "IS NULL";
+	public static final String CONTAINS = "CONTAINS";
+	public static final String NOT_CONTAINS = "NOT CONTAINS";
+	
+	
 	public String buildWhereClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
+		Iterator fieldIterator = null;
+		IWhereField whereField = null;
+		String fieldName = null;
+		String fieldOperator = null;
+		String fieldValue = null;
+		boolean isBinaryOperator = true;
 		boolean afterFirst;
 		
 		
 		afterFirst = false;
 		
-		Iterator it = query.getWhereFieldsIterator();
-		if(it.hasNext()) buffer.append("where \n");
-		 	
-		IWhereField aWhereField = null;
-		String newFieldValue = null;
-		String fieldName = null;
-		while (it.hasNext()) {
-		 		aWhereField =(IWhereField)it.next();
-		 		fieldName = aWhereField.getFieldName();
+		fieldIterator = query.getWhereFieldsIterator();
+		
+		if(fieldIterator.hasNext()) {
+			buffer.append("where \n");
+		}
+		
+		while ( fieldIterator.hasNext() ) {
+		 		whereField =(IWhereField)fieldIterator.next();
 		 		
-		 		for(int i = 0; i < aWhereField.getLeftBracketsNum(); i++) buffer.append("(");
+		 		fieldName = whereField.getFieldName();
+		 		fieldValue = whereField.getFieldValue();
+		 		
+		 		for(int i = 0; i < whereField.getLeftBracketsNum(); i++) buffer.append("(");
 		 		
 		 		buffer.append(fieldName);  
 		 		buffer.append(" ");
 		 		
-		 		if (aWhereField.getFieldOperator().equalsIgnoreCase("start with")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = aWhereField.getFieldValue()+"%";
-		 			aWhereField.setFieldValue(newFieldValue);
-		 		}else if (aWhereField.getFieldOperator().equalsIgnoreCase("end with")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = "%"+ aWhereField.getFieldValue();
-		 			aWhereField.setFieldValue(newFieldValue);
-		 		}else if (aWhereField.getFieldOperator().equalsIgnoreCase("contains")){
-		 			aWhereField.setFieldOperator("like");
-		 			newFieldValue = "";
-		 			newFieldValue = "%"+ aWhereField.getFieldValue()+"%";
-		 			aWhereField.setFieldValue(newFieldValue);
+		 		
+		 		if (EQUALS_TO.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = "=";
+		 		} else if (NOT_EQUALS_TO.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = "!=";
+		 		} else if (GREATER_THAN.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = ">";
+		 		} else if (EQUALS_OR_GREATER_THAN.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = ">=";
+		 		} else if (LESS_THAN.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = "<";
+		 		} else if (EQUALS_OR_LESS_THAN.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator = "<=";
+		 		} else if (STARTS_WITH.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "LIKE";
+		 			fieldValue = fieldValue + "%";
+		 		} else if (NOT_STARTS_WITH.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "NOT LIKE";
+		 			fieldValue = fieldValue + "%";
+		 		} else if (ENDS_WITH.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "LIKE";
+		 			fieldValue = "%" + fieldValue;
+		 		}else if (NOT_ENDS_WITH.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "NOT LIKE";
+		 			fieldValue = "%" + fieldValue;
+		 		} else if (CONTAINS.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "LIKE";
+		 			fieldValue = "%" + fieldValue + "%";
+		 		} else if (NOT_CONTAINS.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "NOT LIKE";
+		 			fieldValue = "%" + fieldValue + "%";
+		 		} else if (IS_NULL.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			fieldOperator =  "IS NULL";
+		 			isBinaryOperator = false;
+		 		} else if (NOT_NULL.equalsIgnoreCase( whereField.getFieldOperator() )) {
+		 			isBinaryOperator = false;
+		 			fieldOperator =  "IS NOT NULL";
+		 		} else {
+		 			
 		 		}
-		 		buffer.append(aWhereField.getFieldOperator());
+		 		
+		 	
+		 		
+		 		buffer.append( fieldOperator );
 		 		buffer.append(" ");
-		 		String fValue = aWhereField.getFieldValue();
+		 		
+		 		
+		 		
+		 		
+		 		
+		 		String fValue = whereField.getFieldValue();		 		
 		 		if (fValue.startsWith("$subquery_") && fValue.endsWith("$")){
 		 			int idx1 = fValue.indexOf("$subquery_");
 		 			int idx2 = fValue.lastIndexOf("$");
@@ -179,22 +227,23 @@ public class HQLStatement extends BasicStatement {
 		 			buffer.append(" ( ");
 		 			buffer.append(statement.getQueryString());
 		 			buffer.append(" ) ");
-		 			 */
-		 			
-		 			
+		 			 */		 			
 		 		}else{
-		 			if (aWhereField.getFieldEntityClassForRightCondition() == null
-		 					&& (aWhereField.getType().endsWith("StringType") 
-		 							|| aWhereField.getType().equalsIgnoreCase("string")) )
-		 				buffer.append("'"+ fValue + "'");
-		 			else
-		 				buffer.append( fValue );
+		 			if(isBinaryOperator) {			
+			 			if (whereField.getFieldEntityClassForRightCondition() == null
+			 					&& (whereField.getType().endsWith("StringType") 
+			 							|| whereField.getType().equalsIgnoreCase("string")) ) {
+			 				buffer.append("'"+ fieldValue + "'");
+			 			}else {
+			 				buffer.append( fieldValue );
+			 			}
+		 			}
 		 		}
 		 		
-		 		for(int i = 0; i < aWhereField.getRightBracketsNum(); i++) buffer.append(")");
+		 		for(int i = 0; i < whereField.getRightBracketsNum(); i++) buffer.append(")");
 		 		
-		 		if (it.hasNext())
-		 			buffer.append(" "+aWhereField.getNextBooleanOperator()+" ");
+		 		if (fieldIterator.hasNext())
+		 			buffer.append(" "+whereField.getNextBooleanOperator()+" ");
 		 		afterFirst = true;
 		 }
 		

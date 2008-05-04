@@ -21,13 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.dao;
 
+import it.eng.qbe.bo.Formula;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.dom4j.DocumentException;
-
-import it.eng.qbe.bo.Formula;
 
 /**
  * @author Andrea Gioia

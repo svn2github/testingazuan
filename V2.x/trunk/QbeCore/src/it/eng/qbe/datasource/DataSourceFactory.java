@@ -23,7 +23,6 @@ package it.eng.qbe.datasource;
 
 import it.eng.qbe.dao.DAOFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

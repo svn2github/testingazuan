@@ -21,10 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.dao;
 
-import java.io.File;
-
 import it.eng.qbe.bo.DatamartJarFile;
-import it.eng.qbe.bo.JarFile;
+
+import java.io.File;
 
 /**
  * @author Andrea Gioia

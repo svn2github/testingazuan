@@ -21,21 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.dao;
 
-import java.io.File;
+import it.eng.qbe.bo.DatamartJarFile;
+import it.eng.qbe.bo.DatamartLabels;
+import it.eng.qbe.bo.ViewJarFile;
+
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-
-import it.eng.qbe.bo.DatamartJarFile;
-import it.eng.qbe.bo.DatamartLabels;
-import it.eng.qbe.bo.DatamartProperties;
-import it.eng.qbe.bo.ViewJarFile;
-import it.eng.qbe.locale.LocaleUtils;
 
 /**
  * @author Andrea Gioia

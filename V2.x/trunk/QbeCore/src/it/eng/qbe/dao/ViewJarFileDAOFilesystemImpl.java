@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.dao;
 
+import it.eng.qbe.bo.ViewJarFile;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
-
-import it.eng.qbe.bo.ViewJarFile;
 
 /**
  * @author Andrea Gioia

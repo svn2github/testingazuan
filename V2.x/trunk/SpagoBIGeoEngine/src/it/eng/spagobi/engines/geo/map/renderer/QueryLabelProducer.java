@@ -20,6 +20,9 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.geo.datasource.DataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,13 +30,6 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.engines.geo.Constants;
-import it.eng.spagobi.engines.geo.datasource.DataSource;
 
 // TODO: Auto-generated Javadoc
 /**

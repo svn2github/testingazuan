@@ -22,8 +22,6 @@ package it.eng.spagobi.engines.geo.service.initializer;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.GeoEngine;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
@@ -36,8 +34,6 @@ import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.EngineException;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

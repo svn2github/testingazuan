@@ -20,16 +20,10 @@
  **/
 package it.eng.spagobi.engines.geo.map.utils;
 
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.engines.geo.Constants;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;

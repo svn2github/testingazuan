@@ -21,10 +21,10 @@
 
 package it.eng.spagobi.engines.geo.commons.excpetion;
 
+import it.eng.spagobi.utilities.engines.EngineException;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import it.eng.spagobi.utilities.engines.EngineException;
 
 // TODO: Auto-generated Javadoc
 /**

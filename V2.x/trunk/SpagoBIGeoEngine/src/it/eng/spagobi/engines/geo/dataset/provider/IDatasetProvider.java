@@ -20,16 +20,12 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider;
 
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.Set;
-
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.geo.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+
+import java.util.Set;
 
 // TODO: Auto-generated Javadoc
 /**

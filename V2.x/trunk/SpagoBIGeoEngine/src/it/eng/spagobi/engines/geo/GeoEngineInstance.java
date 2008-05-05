@@ -20,14 +20,6 @@
  **/
 package it.eng.spagobi.engines.geo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
@@ -36,6 +28,14 @@ import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**

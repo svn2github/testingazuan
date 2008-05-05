@@ -20,20 +20,9 @@
  **/
 package it.eng.spagobi.engines.geo.commons.service;
 
-import java.io.IOException;
-import java.util.List;
-
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.service.initializer.GeoEngineStartAction;
-import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
-import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
-import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
-import it.eng.spagobi.utilities.engines.EngineAnalysisState;
-import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 

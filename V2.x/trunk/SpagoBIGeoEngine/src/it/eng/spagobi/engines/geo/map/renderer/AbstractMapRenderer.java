@@ -20,23 +20,18 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
+import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
+import it.eng.spagobi.engines.geo.map.renderer.configurator.AbstractMapRendererConfigurator;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
-import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
-import it.eng.spagobi.engines.geo.map.provider.configurator.AbstractMapProviderConfigurator;
-import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
-import it.eng.spagobi.engines.geo.map.renderer.configurator.AbstractMapRendererConfigurator;
 
 // TODO: Auto-generated Javadoc
 /**

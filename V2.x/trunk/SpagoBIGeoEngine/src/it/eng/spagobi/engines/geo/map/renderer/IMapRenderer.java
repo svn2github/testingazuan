@@ -26,7 +26,6 @@ import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 
 import java.io.File;
-import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**

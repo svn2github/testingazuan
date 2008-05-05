@@ -20,10 +20,10 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import it.eng.spago.base.SourceBean;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import it.eng.spago.base.SourceBean;
 
 // TODO: Auto-generated Javadoc
 /**

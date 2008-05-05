@@ -20,22 +20,21 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider.configurator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
 import it.eng.spagobi.engines.geo.dataset.provider.AbstractDatasetProvider;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
 import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**

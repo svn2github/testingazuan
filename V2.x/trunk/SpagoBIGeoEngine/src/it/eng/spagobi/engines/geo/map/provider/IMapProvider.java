@@ -20,12 +20,10 @@
  **/
 package it.eng.spagobi.engines.geo.map.provider;
 
-import java.util.List;
-
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.geo.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
+
+import java.util.List;
 
 import javax.xml.stream.XMLStreamReader;
 

@@ -20,20 +20,11 @@
  **/
 package it.eng.spagobi.engines.geo.map.provider;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
-import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
-import it.eng.spagobi.engines.geo.map.provider.configurator.AbstractMapProviderConfigurator;
 import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;

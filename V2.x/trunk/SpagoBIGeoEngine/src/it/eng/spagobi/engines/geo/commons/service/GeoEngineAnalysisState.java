@@ -20,11 +20,11 @@
  **/
 package it.eng.spagobi.engines.geo.commons.service;
 
+import it.eng.spagobi.utilities.engines.EngineAnalysisState;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 
 // TODO: Auto-generated Javadoc
 /**

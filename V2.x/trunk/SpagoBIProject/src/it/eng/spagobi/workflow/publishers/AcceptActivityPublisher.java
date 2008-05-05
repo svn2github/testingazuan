@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,9 @@ import org.jbpm.taskmgmt.exe.TaskInstance;
 
 public class AcceptActivityPublisher implements PublisherDispatcherIFace {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.presentation.PublisherDispatcherIFace#getPublisherName(it.eng.spago.base.RequestContainer, it.eng.spago.base.ResponseContainer)
+	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 		JbpmContext jbpmContext = null;
 		try {

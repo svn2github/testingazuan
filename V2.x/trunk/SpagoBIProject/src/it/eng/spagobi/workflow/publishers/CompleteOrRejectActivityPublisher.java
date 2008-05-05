@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,9 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
 public class CompleteOrRejectActivityPublisher implements
 		PublisherDispatcherIFace {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.presentation.PublisherDispatcherIFace#getPublisherName(it.eng.spago.base.RequestContainer, it.eng.spago.base.ResponseContainer)
+	 */
 	public String getPublisherName(RequestContainer arg0, ResponseContainer arg1) {
 		// TODO Auto-generated method stub
 		return null;

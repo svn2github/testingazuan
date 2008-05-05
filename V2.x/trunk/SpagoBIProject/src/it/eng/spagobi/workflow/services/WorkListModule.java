@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -181,7 +181,14 @@ public class WorkListModule extends AbstractBasicListModule {
 	}
 	
 	/**
-	 * Ovverided to code the logic to get the worklist from workflow engine 
+	 * Ovverided to code the logic to get the worklist from workflow engine.
+	 * 
+	 * @param arg0 the arg0
+	 * @param arg1 the arg1
+	 * 
+	 * @return the list
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ListIFace getList(SourceBean arg0, SourceBean arg1) throws Exception {
 		PaginatorIFace paginator = new GenericPaginator();

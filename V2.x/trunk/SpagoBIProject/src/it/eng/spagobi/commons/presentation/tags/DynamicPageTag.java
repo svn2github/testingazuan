@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -104,6 +104,9 @@ public class DynamicPageTag extends TagSupport {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
@@ -181,6 +184,9 @@ public class DynamicPageTag extends TagSupport {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+	 */
 	public int doEndTag() throws JspException {
 		logger.debug("TitleTag::doEndTag:: invocato");
 		return super.doEndTag();
@@ -193,6 +199,13 @@ public class DynamicPageTag extends TagSupport {
 	//	'CREATE HTML' METHODS
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Checks if is single value.
+	 * 
+	 * @param biparam the biparam
+	 * 
+	 * @return true, if is single value
+	 */
 	public boolean isSingleValue(BIObjectParameter biparam) {
 		boolean isSingleValue = false;
     	try {
@@ -730,6 +743,13 @@ public class DynamicPageTag extends TagSupport {
 	
 
 	
+	/**
+	 * Gets the parameter description.
+	 * 
+	 * @param biparam the biparam
+	 * 
+	 * @return the parameter description
+	 */
 	public String getParameterDescription(BIObjectParameter biparam) {
 		String description = null;
 		
@@ -740,31 +760,55 @@ public class DynamicPageTag extends TagSupport {
 	}
 	
 	/**
+	 * Gets the modality.
 	 * 
 	 * @return modality The modality String to return.
 	 */
 	public String getModality() {
 		return modality;
 	}
+	
 	/**
+	 * Sets the modality.
+	 * 
 	 * @param modality The modality to set.
 	 */
 	public void setModality(String modality) {
 		this.modality = modality;
 	}
 	
+	/**
+	 * Gets the module name.
+	 * 
+	 * @return the module name
+	 */
 	public String getModuleName() {
 		return moduleName;
 	}
 
+	/**
+	 * Sets the module name.
+	 * 
+	 * @param moduleName the new module name
+	 */
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
 
+	/**
+	 * Gets the request identity.
+	 * 
+	 * @return the request identity
+	 */
 	public String getRequestIdentity() {
 		return requestIdentity;
 	}
 
+	/**
+	 * Sets the request identity.
+	 * 
+	 * @param requestIdentity the new request identity
+	 */
 	public void setRequestIdentity(String requestIdentity) {
 		this.requestIdentity = requestIdentity;
 	}

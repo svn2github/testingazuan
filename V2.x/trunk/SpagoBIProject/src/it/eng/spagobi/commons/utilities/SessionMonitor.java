@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,12 @@ import java.util.List;
  *	provides mothods for a quick and dirty session monitoring and debugging
  */
 public class SessionMonitor {
+	
+	/**
+	 * Prints the session.
+	 * 
+	 * @param session the session
+	 */
 	public static void printSession(SessionContainer session) {
 		List list = session.getAttributeNames();
 		for(int i = 0; i < list.size(); i++) {

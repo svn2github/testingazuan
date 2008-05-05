@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -64,6 +64,12 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	
 
 	/**
+	 * Load all checks.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#loadAllChecks()
 	 */
 	public List loadAllChecks() throws EMFUserError {
@@ -103,6 +109,14 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	}
 
 	/**
+	 * Load check by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the check
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#loadCheckByID(java.lang.Integer)
 	 */
 	public Check loadCheckByID(Integer id) throws EMFUserError {
@@ -137,6 +151,12 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	}
 
 	/**
+	 * Erase check.
+	 * 
+	 * @param check the check
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#eraseCheck(it.eng.spagobi.behaviouralmodel.check.bo.Check)
 	 */
 	public void eraseCheck(Check check) throws EMFUserError {
@@ -169,6 +189,12 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	}
 
 	/**
+	 * Insert check.
+	 * 
+	 * @param check the check
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#insertCheck(it.eng.spagobi.behaviouralmodel.check.bo.Check)
 	 */
 	public void insertCheck(Check check) throws EMFUserError {
@@ -225,6 +251,12 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	}
 
 	/**
+	 * Modify check.
+	 * 
+	 * @param check the check
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#modifyCheck(it.eng.spagobi.behaviouralmodel.check.bo.Check)
 	 */
 	public void modifyCheck(Check check) throws EMFUserError {
@@ -288,6 +320,7 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	 * the corrispondent <code>Check</code> object.
 	 * 
 	 * @param hibCheck The hybernate value constraint at input
+	 * 
 	 * @return The corrispondent <code>Check</code> object
 	 */
 	public Check toCheck(SbiChecks hibCheck){
@@ -305,6 +338,14 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 	
 
 	/**
+	 * Checks if is referenced.
+	 * 
+	 * @param checkId the check id
+	 * 
+	 * @return true, if checks if is referenced
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.check.dao.ICheckDAO#isReferenced(java.lang.String)
 	 */
 	public boolean isReferenced (String checkId) throws EMFUserError{

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,7 +53,15 @@ import org.hibernate.criterion.Expression;
 public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 		IDomainDAO {
 
-	/** 
+	/**
+	 * Load list domains by type.
+	 * 
+	 * @param domainType the domain type
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadListDomainsByType(java.lang.String)
 	 */
 	public List loadListDomainsByType(String domainType) throws EMFUserError {
@@ -103,8 +111,17 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Load domain by code and value.
+	 * 
+	 * @param codeDomain the code domain
+	 * @param codeValue the code value
+	 * 
+	 * @return the domain
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadDomainByCodeAndValue(java.lang.String,
-	 *      java.lang.String)
+	 * java.lang.String)
 	 */
 	public Domain loadDomainByCodeAndValue(String codeDomain, String codeValue) throws EMFUserError {
 		/*
@@ -151,7 +168,8 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 	 * From the hibernate domain object at input, gives
 	 * the corrispondent <code>Domain</code> object.
 	 * 
-	 * @param hibDomain The hybernate Domain object 
+	 * @param hibDomain The hybernate Domain object
+	 * 
 	 * @return The corrispondent <code>Domain</code>
 	 */
 	public Domain toDomain(SbiDomains hibDomain){
@@ -166,6 +184,14 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Load domain by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the domain
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadDomainById(java.lang.Integer)
 	 */
 	public Domain loadDomainById(Integer id) throws EMFUserError {
@@ -201,6 +227,9 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 
+/* (non-Javadoc)
+ * @see it.eng.spagobi.commons.dao.IDomainDAO#loadListDomains()
+ */
 public List loadListDomains() throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;

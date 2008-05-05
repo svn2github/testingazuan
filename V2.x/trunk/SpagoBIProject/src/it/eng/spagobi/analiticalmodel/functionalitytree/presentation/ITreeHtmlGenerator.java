@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -33,18 +33,40 @@ public interface ITreeHtmlGenerator {
 	
 	/**
 	 * Make tree method.
+	 * 
+	 * @param objectsList the objects list
+	 * @param httpRequest the http request
+	 * @param initialPath the initial path
+	 * @param treename the treename
+	 * 
+	 * @return the string buffer
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename);
 	
 	/**
 	 * Make tree method.
+	 * 
+	 * @param objectsList the objects list
+	 * @param httpRequest the http request
+	 * @param initialPath the initial path
+	 * 
+	 * @return the string buffer
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath);
 
 	/**
 	 * Make tree method for accessible trees.
+	 * 
+	 * @param objectsList the objects list
+	 * @param httpRequest the http request
+	 * @param initialPath the initial path
+	 * 
+	 * @return the string buffer
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeTree(it.eng.spago.base.SourceBean,javax.servlet.http.HttpServletRequest)
 	 */
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath);

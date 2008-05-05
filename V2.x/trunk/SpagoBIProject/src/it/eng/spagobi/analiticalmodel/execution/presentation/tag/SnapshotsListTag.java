@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.analiticalmodel.execution.presentation.tag;
 
 import it.eng.spago.base.RequestContainer;
@@ -71,6 +71,9 @@ public class SnapshotsListTag extends TagSupport {
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+     */
     public int doStartTag() throws JspException {
     	logger.debug("IN");
     	httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -211,10 +214,20 @@ public class SnapshotsListTag extends TagSupport {
     	return profile;
     }
     
+    /**
+     * Gets the biobject id.
+     * 
+     * @return the biobject id
+     */
     public Integer getBiobjectId() {
     	return biobjectId;
     }
 
+	/**
+	 * Sets the biobject id.
+	 * 
+	 * @param biobjectId the new biobject id
+	 */
 	public void setBiobjectId(Integer biobjectId) {
 		this.biobjectId = biobjectId;
 	}

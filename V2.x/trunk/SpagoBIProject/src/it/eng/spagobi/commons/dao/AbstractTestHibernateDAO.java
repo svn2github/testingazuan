@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -50,6 +50,7 @@ public class AbstractTestHibernateDAO {
 	
 	/**
 	 * Gets tre current session.
+	 * 
 	 * @return The current session object.
 	 */
 	public Session getSession(){
@@ -57,7 +58,8 @@ public class AbstractTestHibernateDAO {
 	}
 	
 	/**
-	 * Traces the exception information of a throwable input object
+	 * Traces the exception information of a throwable input object.
+	 * 
 	 * @param t The input throwable object
 	 */
 	public void logException(Throwable t){

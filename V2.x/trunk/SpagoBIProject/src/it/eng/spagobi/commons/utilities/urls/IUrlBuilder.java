@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -33,16 +33,22 @@ import javax.servlet.http.HttpServletRequest;
 public interface IUrlBuilder {
 
 	/**
+	 * Gets the url.
+	 * 
 	 * @param aHttpServletRequest the http servlet request
 	 * @param parameters an HashMap of parameters
+	 * 
 	 * @return a URL given the Map parameters
 	 */
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters);
 	
 	/**
+	 * Gets the resource link.
+	 * 
 	 * @param aHttpServletRequest the http servlet request
 	 * @param originalUrl a String representic a link to static resource img, css, js and so on
-	 * @return
+	 * 
+	 * @return the resource link
 	 */
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl);
 }

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -58,6 +58,12 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	
 
 	/**
+	 * Load all viewpoints.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadAllViewpoints()
 	 */
 	public List loadAllViewpoints() throws EMFUserError {
@@ -97,6 +103,14 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * Load all viewpoints by obj id.
+	 * 
+	 * @param objId the obj id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadAllViewpoints()
 	 */
 	public List loadAllViewpointsByObjID(Integer objId) throws EMFUserError {
@@ -136,6 +150,14 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * Load viewpoint by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the viewpoint
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadViewpointByID(java.lang.Integer)
 	 */
 	public Viewpoint loadViewpointByID(Integer id) throws EMFUserError {
@@ -170,6 +192,14 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * Load viewpoint by name.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the viewpoint
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadViewpointByName(java.lang.String)
 	 */
 	public Viewpoint loadViewpointByName(String name) throws EMFUserError {
@@ -209,6 +239,12 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * Erase viewpoint.
+	 * 
+	 * @param id the id
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#eraseViewpoint(it.eng.spagobi.analiticalmodel.document.bo.Viewpoint)
 	 */
 	public void eraseViewpoint(Integer id) throws EMFUserError {
@@ -240,6 +276,12 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * Insert viewpoint.
+	 * 
+	 * @param viewpoint the viewpoint
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#insertViewpoint(it.eng.spagobi.analiticalmodel.document.bo.Viewpoint)
 	 */
 	public void insertViewpoint(Viewpoint viewpoint) throws EMFUserError {
@@ -281,6 +323,12 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
+	 * To viewpoint.
+	 * 
+	 * @param hibViewpoint the hib viewpoint
+	 * 
+	 * @return the viewpoint
+	 * 
 	 * @see it.eng.spagobi.bo.dao.IViewpointDAO#modifyViewpoint(it.eng.spagobi.bo.Viewpoint)
 	 */
 	/*
@@ -343,6 +391,9 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 		return  aViewpoint;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadAccessibleViewpointsByObjId(java.lang.Integer, it.eng.spago.security.IEngUserProfile)
+	 */
 	public List loadAccessibleViewpointsByObjId(Integer objId,
 			IEngUserProfile userProfile) throws EMFUserError {
 		Session aSession = null;

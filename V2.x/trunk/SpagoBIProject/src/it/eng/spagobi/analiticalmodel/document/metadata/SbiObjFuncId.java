@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,9 @@ public class SbiObjFuncId  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiObjFuncId() {
     }
     
@@ -52,27 +54,44 @@ public class SbiObjFuncId  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the sbi functions.
      * 
+     * @return the sbi functions
      */
     public SbiFunctions getSbiFunctions() {
         return this.sbiFunctions;
     }
     
+    /**
+     * Sets the sbi functions.
+     * 
+     * @param sbiFunctions the new sbi functions
+     */
     public void setSbiFunctions(SbiFunctions sbiFunctions) {
         this.sbiFunctions = sbiFunctions;
     }
 
     /**
+     * Gets the sbi objects.
      * 
+     * @return the sbi objects
      */
     public SbiObjects getSbiObjects() {
         return this.sbiObjects;
     }
     
+    /**
+     * Sets the sbi objects.
+     * 
+     * @param sbiObjects the new sbi objects
+     */
     public void setSbiObjects(SbiObjects sbiObjects) {
         this.sbiObjects = sbiObjects;
     }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
@@ -83,6 +102,9 @@ public class SbiObjFuncId  implements java.io.Serializable {
  && (this.getSbiObjects()==castOther.getSbiObjects()) || ( this.getSbiObjects()!=null && castOther.getSbiObjects()!=null && this.getSbiObjects().equals(castOther.getSbiObjects()) );
    }
    
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    public int hashCode() {
          int result = 17;
          

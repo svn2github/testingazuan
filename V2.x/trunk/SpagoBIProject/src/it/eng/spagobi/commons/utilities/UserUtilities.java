@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.base.RequestContainer;
@@ -29,6 +50,13 @@ public class UserUtilities {
 
     static Logger logger = Logger.getLogger(UserUtilities.class);
 
+    /**
+     * Gets the user profile.
+     * 
+     * @return the user profile
+     * 
+     * @throws Exception the exception
+     */
     public static IEngUserProfile getUserProfile() throws Exception {
 	RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
 	SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
@@ -70,6 +98,15 @@ public class UserUtilities {
 	return userProfile;
     }
 
+    /**
+     * User functionality root exists.
+     * 
+     * @param username the username
+     * 
+     * @return true, if successful
+     * 
+     * @throws Exception the exception
+     */
     public static boolean userFunctionalityRootExists(String username) throws Exception {
 	boolean exists = false;
 	try {
@@ -83,6 +120,13 @@ public class UserUtilities {
 	return exists;
     }
 
+    /**
+     * Creates the user functionality root.
+     * 
+     * @param userProfile the user profile
+     * 
+     * @throws Exception the exception
+     */
     public static void createUserFunctionalityRoot(IEngUserProfile userProfile) throws Exception {
 	try {
 	    String username = (String) userProfile.getUserUniqueIdentifier();

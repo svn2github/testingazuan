@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -95,12 +95,15 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
     private static final String RETURN_FIELD_NAME = "parameterFieldName";
     
     /**
-     * Class Constructor
+     * Class Constructor.
      */
     public SelectParametersLookupModule() {
 	super();
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+     */
     public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
 	ListIFace list = null;
@@ -699,17 +702,14 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
     /**
      * Executes a select statement.
      * 
-     * @param requestContainer
-     *                The request container object
-     * @param responseContainer
-     *                The response container object
-     * @param pool
-     *                The pool definition string
-     * @param statement
-     *                The statement definition string
+     * @param requestContainer The request container object
+     * @param responseContainer The response container object
+     * @param statement The statement definition string
+     * @param datasource the datasource
+     * 
      * @return A generic object containing the Execution results
-     * @throws EMFInternalError
-
+     * 
+     * @throws EMFInternalError the EMF internal error
      */
     public static Object executeSelect(RequestContainer requestContainer, ResponseContainer responseContainer,
 	    String datasource, String statement) throws EMFInternalError {

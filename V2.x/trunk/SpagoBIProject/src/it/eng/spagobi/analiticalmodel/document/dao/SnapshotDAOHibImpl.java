@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -20,6 +41,9 @@ import org.hibernate.Transaction;
 
 public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapshotDAO {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO#deleteSnapshot(java.lang.Integer)
+	 */
 	public void deleteSnapshot(Integer idSnap) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -46,6 +70,9 @@ public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapsho
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO#getSnapshots(java.lang.Integer)
+	 */
 	public List getSnapshots(Integer idBIObj)  throws EMFUserError {
 		List snaps = new ArrayList();
 		Session aSession = null;
@@ -78,6 +105,9 @@ public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapsho
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO#saveSnapshot(byte[], java.lang.Integer, java.lang.String, java.lang.String)
+	 */
 	public void saveSnapshot(byte[] content, Integer idBIObj, String name, String description) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -127,6 +157,9 @@ public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapsho
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO#loadSnapshot(java.lang.Integer)
+	 */
 	public Snapshot loadSnapshot(Integer idSnap) throws EMFUserError {
 		Snapshot snap = null;
 		Session aSession = null;

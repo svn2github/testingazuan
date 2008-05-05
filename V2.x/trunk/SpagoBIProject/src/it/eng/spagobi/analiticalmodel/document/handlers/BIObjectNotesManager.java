@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -41,8 +41,10 @@ public class BIObjectNotesManager {
 	/**
 	 * Return an identifier for a specific execution. The identifier is composed using the
 	 * parameters url names and values.
-	 * @param biobj The biobject executed. The biobject must be filled with the parameter value 
+	 * 
+	 * @param biobj The biobject executed. The biobject must be filled with the parameter value
 	 * selected by the user
+	 * 
 	 * @return String of the biobject execution identifier
 	 */
 	public String getExecutionIdentifier(BIObject biobj ) {

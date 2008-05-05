@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -43,12 +43,12 @@ public class ObjectsAccessVerifier {
 	
 
 	/**
-	 * 
-	 * Controls if the  current user can develop the object relative to the input folder id
+	 * Controls if the  current user can develop the object relative to the input folder id.
 	 * 
 	 * @param state state of the object
 	 * @param folderId The id of the folder containing te object
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canDev(String state, Integer folderId, IEngUserProfile profile) {
@@ -64,12 +64,12 @@ public class ObjectsAccessVerifier {
 	
 	
 	/**
-	 * 
-	 * Controls if current user can exec the object relative to the input folder id
+	 * Controls if current user can exec the object relative to the input folder id.
 	 * 
 	 * @param state state of the object
 	 * @param folderId The id of the folder containing te object
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canExec(String state, Integer folderId, IEngUserProfile profile) {
@@ -88,12 +88,12 @@ public class ObjectsAccessVerifier {
 	
 	
 	/**
-	 * 
-	 * Control if current user can test the object relative to the folder id
+	 * Control if current user can test the object relative to the folder id.
 	 * 
 	 * @param state state of the object
 	 * @param folderId The id of the folder containing the object
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canTest(String state, Integer folderId, IEngUserProfile profile) {
@@ -109,10 +109,11 @@ public class ObjectsAccessVerifier {
 	
 	
 	/**
-	 * Control if the current user can develop new object into the functionality identified by its id
+	 * Control if the current user can develop new object into the functionality identified by its id.
 	 * 
 	 * @param folderId The id of the lowFunctionality
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canDev(Integer folderId, IEngUserProfile profile) {
@@ -121,10 +122,11 @@ public class ObjectsAccessVerifier {
 	}
 	
 	/**
-	 * Control if the current user can test new object into the functionality identified by its id
+	 * Control if the current user can test new object into the functionality identified by its id.
 	 * 
 	 * @param folderId The id of the lowFunctionality
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canTest(Integer folderId, IEngUserProfile profile) {
@@ -134,10 +136,11 @@ public class ObjectsAccessVerifier {
 	}
 
 	/**
-	 * Control if the current user can execute objects into the input functionality
+	 * Control if the current user can execute objects into the input functionality.
 	 * 
 	 * @param folder The lowFunctionality
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canExec(LowFunctionality folder, IEngUserProfile profile) {
@@ -146,10 +149,11 @@ public class ObjectsAccessVerifier {
 	}
 	
 	/**
-	 * Control if the current user can execute new object into the functionality identified by its id
+	 * Control if the current user can execute new object into the functionality identified by its id.
 	 * 
 	 * @param folderId The id of the lowFunctionality
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
 	 */
 	public static boolean canExec(Integer folderId, IEngUserProfile profile) {
@@ -276,15 +280,17 @@ public class ObjectsAccessVerifier {
 	}
 	
 	/**
-	 * Controls if the current user can see the document: 
+	 * Controls if the current user can see the document:
 	 * - if the document is in DEV state the user must have the development permission in a folder containing it;
 	 * - if the document is in TEST state the user must have the test permission in a folder containing it;
 	 * - if the document is in REL state the user must have the execution permission in a folder containing it.
 	 * 
 	 * @param obj The BIObject
 	 * @param profile user profile
+	 * 
 	 * @return A boolean control value
-	 * @throws EMFInternalError 
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public static boolean canSee (BIObject obj, IEngUserProfile profile) throws EMFInternalError {
 		boolean canSee = false;

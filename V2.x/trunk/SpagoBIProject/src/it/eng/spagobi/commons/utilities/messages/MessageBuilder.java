@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,9 @@ public class MessageBuilder implements IMessageBuilder {
 
     static private Logger logger = Logger.getLogger(MessageBuilder.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessageTextFromResource(java.lang.String, java.util.Locale)
+	 */
 	public String getMessageTextFromResource(String resourceName, Locale locale) {
 	    logger.debug("IN-resourceName:"+resourceName);
 	    logger.debug("IN-locale:"+ (locale != null ? locale.toString() : "null" ));
@@ -74,10 +77,17 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String)
+	 */
 	public String getMessage(String code) {
 		Locale locale = getLocale(null);
 		return getMessageInternal(code, "messages", locale);
 	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.util.Locale)
+	 */
 	public String getMessage(String code, Locale locale) {
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
@@ -87,11 +97,17 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String)
+	 */
 	public String getMessage(String code, String bundle) {
 		Locale locale = getLocale(null);
 		return getMessageInternal(code, bundle, locale);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, java.util.Locale)
+	 */
 	public String getMessage(String code, String bundle, Locale locale) {
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
@@ -100,11 +116,17 @@ public class MessageBuilder implements IMessageBuilder {
 		return getMessageInternal(code, bundle, locale);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
 	public String getMessage(String code, HttpServletRequest request) {
 		Locale locale = getLocale(request);
 		return getMessageInternal(code, "messages", locale);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, javax.servlet.http.HttpServletRequest, java.util.Locale)
+	 */
 	public String getMessage(String code, HttpServletRequest request, Locale locale) {
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
@@ -114,11 +136,17 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
 	public String getMessage(String code, String bundle, HttpServletRequest request) {
 		Locale locale = getLocale(request);
 		return getMessageInternal(code, bundle, locale);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest, java.util.Locale)
+	 */
 	public String getMessage(String code, String bundle, HttpServletRequest request, Locale locale) {
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
@@ -219,6 +247,13 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	
+	/**
+	 * Gets the locale.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the locale
+	 */
 	public Locale getLocale(HttpServletRequest request) {
 		logger.debug("IN");
 		String sbiMode = getSpagoBIMode(request);
@@ -276,8 +311,10 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 	
 	/**
-	 * Returns 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request
+	 * Returns 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request.
+	 * 
 	 * @param request The HttpServletRequest to be examined
+	 * 
 	 * @return 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request
 	 */
 	public String getSpagoBIMode(HttpServletRequest request) {
@@ -304,13 +341,15 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 
 	 /**
-	 * Gets a localized information text given the resource name which contains the text 
-	 * information. 
-	 * The resource will be searched into the classpath of the application
-	 * @param resourceName	The complete name of the resource. 
-	 * @param request The http request for locale retrieving 
-	 * @return	A string containing the text
-	 */
+ 	 * Gets a localized information text given the resource name which contains the text
+ 	 * information.
+ 	 * The resource will be searched into the classpath of the application
+ 	 * 
+ 	 * @param resourceName The complete name of the resource.
+ 	 * @param request The http request for locale retrieving
+ 	 * 
+ 	 * @return A string containing the text
+ 	 */
 	public String getMessageTextFromResource(String resourceName,
 			HttpServletRequest request) {
 		logger.debug("IN");

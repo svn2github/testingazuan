@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,13 @@ import it.eng.spagobi.engines.config.bo.Engine;
 
 public class EngineUtilities {
 
+	/**
+	 * Checks if is internal.
+	 * 
+	 * @param engine the engine
+	 * 
+	 * @return true, if is internal
+	 */
 	public static boolean isInternal(Engine engine) {
 		boolean response = false;
 		Domain engineType = getEngTypeDom(engine);
@@ -37,6 +44,13 @@ public class EngineUtilities {
 		return response;
 	}
 	
+	/**
+	 * Checks if is external.
+	 * 
+	 * @param engine the engine
+	 * 
+	 * @return true, if is external
+	 */
 	public static boolean isExternal(Engine engine) {
 		boolean response = false;
 		Domain engineType = getEngTypeDom(engine);

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -31,33 +31,74 @@ public class SbiObjNotes  implements java.io.Serializable {
      private SbiBinContents sbiBinContents;
      private String execReq;
      
+	/**
+	 * Gets the obj note id.
+	 * 
+	 * @return the obj note id
+	 */
 	public Integer getObjNoteId() {
 		return objNoteId;
 	}
 	
+	/**
+	 * Sets the obj note id.
+	 * 
+	 * @param objNoteId the new obj note id
+	 */
 	public void setObjNoteId(Integer objNoteId) {
 		this.objNoteId = objNoteId;
 	}
 	
+	/**
+	 * Gets the sbi object.
+	 * 
+	 * @return the sbi object
+	 */
 	public SbiObjects getSbiObject() {
 		return sbiObject;
 	}
 	
+	/**
+	 * Sets the sbi object.
+	 * 
+	 * @param sbiObject the new sbi object
+	 */
 	public void setSbiObject(SbiObjects sbiObject) {
 		this.sbiObject = sbiObject;
 	}
+	
+	/**
+	 * Gets the sbi bin contents.
+	 * 
+	 * @return the sbi bin contents
+	 */
 	public SbiBinContents getSbiBinContents() {
 		return sbiBinContents;
 	}
 	
+	/**
+	 * Sets the sbi bin contents.
+	 * 
+	 * @param sbiBinContents the new sbi bin contents
+	 */
 	public void setSbiBinContents(SbiBinContents sbiBinContents) {
 		this.sbiBinContents = sbiBinContents;
 	}
 
+	/**
+	 * Gets the exec req.
+	 * 
+	 * @return the exec req
+	 */
 	public String getExecReq() {
 		return execReq;
 	}
 
+	/**
+	 * Sets the exec req.
+	 * 
+	 * @param execReq the new exec req
+	 */
 	public void setExecReq(String execReq) {
 		this.execReq = execReq;
 	}

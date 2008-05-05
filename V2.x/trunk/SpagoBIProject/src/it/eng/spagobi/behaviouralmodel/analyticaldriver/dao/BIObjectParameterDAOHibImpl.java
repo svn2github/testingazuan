@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -56,7 +56,15 @@ import org.hibernate.Transaction;
 public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements IBIObjectParameterDAO{
 
 	
-	/** 
+	/**
+	 * Load by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the sbi obj par
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#loadById(java.lang.Integer)
 	 */
 	public SbiObjPar loadById(Integer id) throws EMFUserError {
@@ -80,7 +88,15 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 		return hibObjPar;
 	}
 	
-	/** 
+	/**
+	 * Load for detail by obj par id.
+	 * 
+	 * @param objParId the obj par id
+	 * 
+	 * @return the BI object parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#loadForDetailByObjParId(java.lang.Integer)
 	 */
 	public BIObjectParameter loadForDetailByObjParId(Integer objParId) throws EMFUserError {
@@ -110,6 +126,12 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	
 
 	/**
+	 * Modify bi object parameter.
+	 * 
+	 * @param aBIObjectParameter the a bi object parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#modifyBIObjectParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter)
 	 */
 	public void modifyBIObjectParameter(BIObjectParameter aBIObjectParameter) throws EMFUserError {
@@ -174,6 +196,12 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 
 
 	/**
+	 * Insert bi object parameter.
+	 * 
+	 * @param aBIObjectParameter the a bi object parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#insertBIObjectParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter)
 	 */
 	public void insertBIObjectParameter(BIObjectParameter aBIObjectParameter) throws EMFUserError {
@@ -227,6 +255,12 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Erase bi object parameter.
+	 * 
+	 * @param aBIObjectParameter the a bi object parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#eraseBIObjectParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter)
 	 */
 	public void eraseBIObjectParameter(BIObjectParameter aBIObjectParameter) throws EMFUserError {
@@ -270,6 +304,14 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Gets the document labels list using parameter.
+	 * 
+	 * @param parId the par id
+	 * 
+	 * @return the document labels list using parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#getDocumentLabelsListUsingParameter(java.lang.Integer)
 	 */
 	public List getDocumentLabelsListUsingParameter(Integer parId) throws EMFUserError {
@@ -309,6 +351,14 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 	
 	/**
+	 * Load bi object parameters by id.
+	 * 
+	 * @param biObjectID the bi object id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO#loadBIObjectParametersById(java.lang.Integer)
 	 */
 	public List loadBIObjectParametersById(Integer biObjectID) throws EMFUserError {
@@ -366,7 +416,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	
 	/**
 	 * Recalculates the priority of all the BiParameters of the document, identified by its biObjectID,
-	 * in the Hibernate session passed at input
+	 * in the Hibernate session passed at input.
 	 * 
 	 * @param biObjectID The id of the document
 	 * @param aSession The Hibernate session
@@ -391,6 +441,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 	 * the corrispondent <code>BIObjectParameter</code> object.
 	 * 
 	 * @param hiObjPar The hybernate BI object parameter
+	 * 
 	 * @return The corrispondent <code>BIObjectParameter</code>
 	 */
 	public BIObjectParameter toBIObjectParameter(SbiObjPar hiObjPar){

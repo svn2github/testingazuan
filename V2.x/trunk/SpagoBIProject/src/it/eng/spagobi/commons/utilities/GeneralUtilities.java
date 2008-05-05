@@ -1,7 +1,8 @@
 /**
+
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 /*
  * Created on 7-lug-2005
  *
@@ -79,14 +80,18 @@ public class GeneralUtilities {
     private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
 
     /**
-     * The Main method
+     * The Main method.
      * 
-     * @param args
-     *                String for command line arguments
+     * @param args String for command line arguments
      */
     public static void main(String[] args) {
     }
 
+    /**
+     * Gets the spago adapter http url.
+     * 
+     * @return the spago adapter http url
+     */
     public static String getSpagoAdapterHttpUrl() {
 	logger.debug("IN");
 	ConfigSingleton config = ConfigSingleton.getInstance();
@@ -98,6 +103,11 @@ public class GeneralUtilities {
 	return adapUrlStr;
     }
 
+    /**
+     * Gets the default locale.
+     * 
+     * @return the default locale
+     */
     public static Locale getDefaultLocale() {
 	logger.debug("IN");
 	String country = null;
@@ -125,8 +135,8 @@ public class GeneralUtilities {
     /**
      * Cleans a string from spaces and tabulation characters.
      * 
-     * @param original
-     *                The input string
+     * @param original The input string
+     * 
      * @return The cleaned string
      */
     public static String cleanString(String original) {
@@ -145,12 +155,12 @@ public class GeneralUtilities {
     }
 
     /**
-     * Checks if the Spago errorHandler contains only validation errors
+     * Checks if the Spago errorHandler contains only validation errors.
      * 
-     * @param errorHandler
-     *                The error handler to check
+     * @param errorHandler The error handler to check
+     * 
      * @return true if the errorHandler contains only validation error, false if
-     *         erroHandler is empty or contains not only validation error.
+     * erroHandler is empty or contains not only validation error.
      */
     public static boolean isErrorHandlerContainingOnlyValidationError(EMFErrorHandler errorHandler) {
 	logger.debug("IN");
@@ -170,8 +180,8 @@ public class GeneralUtilities {
      * Given an <code>InputStream</code> as input, gets the correspondent
      * bytes array.
      * 
-     * @param is
-     *                The input straeam
+     * @param is The input straeam
+     * 
      * @return An array of bytes obtained from the input stream.
      */
     public static byte[] getByteArrayFromInputStream(InputStream is) {
@@ -205,12 +215,9 @@ public class GeneralUtilities {
      * Given an <code>InputStream</code> as input flushs the content into an
      * OutputStream and then close the input and output stream.
      * 
-     * @param is
-     *                The input stream
-     * @param os
-     *                The output stream
-     * @param closeStreams,
-     *                if true close both stream
+     * @param is The input stream
+     * @param os The output stream
+     * @param closeStreams the close streams
      */
     public static void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, boolean closeStreams) {
 	logger.debug("IN");
@@ -247,8 +254,8 @@ public class GeneralUtilities {
      * file names, which are substrings of the starting String, according to the
      * java separator "/".
      * 
-     * @param completeFileName
-     *                The string representing the file name
+     * @param completeFileName The string representing the file name
+     * 
      * @return relative names substring
      */
     public static String getRelativeFileNames(String completeFileName) {
@@ -318,7 +325,9 @@ public class GeneralUtilities {
 
     /**
      * Returns the complete HTTP URL and puts it into a
-     * string. 
+     * string.
+     * 
+     * @param userId the user id
      * 
      * @return A String with complete HTTP Url
      */ 
@@ -375,14 +384,14 @@ public class GeneralUtilities {
 
     
     /**
-     * Substitutes parameters with sintax "$P{parameter_name}" whose value is set in the map
-
-     * @param statement
-     *                The string to be modified (tipically a query)
-     * @param valuesMap
-     *                Map name-value
+     * Substitutes parameters with sintax "$P{parameter_name}" whose value is set in the map.
+     * 
+     * @param statement The string to be modified (tipically a query)
+     * @param valuesMap Map name-value
+     * 
      * @return The statement with profile attributes replaced by their values.
-     * @throws Exception
+     * 
+     * @throws Exception the exception
      */
     public static String substituteParametersInString(String statement, Map valuesMap)
 	    throws Exception {
@@ -536,12 +545,12 @@ public class GeneralUtilities {
      * Substitutes the profile attributes with sintax "${attribute_name}" with
      * the correspondent value in the string passed at input.
      * 
-     * @param statement
-     *                The string to be modified (tipically a query)
-     * @param profile
-     *                The IEngUserProfile object
+     * @param statement The string to be modified (tipically a query)
+     * @param profile The IEngUserProfile object
+     * 
      * @return The statement with profile attributes replaced by their values.
-     * @throws Exception
+     * 
+     * @throws Exception the exception
      */
     public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile)
 	    throws Exception {
@@ -674,6 +683,13 @@ public class GeneralUtilities {
     /*
      * This method exists since jdk 1.5 (java.util.regexp.Patter.quote())
      */
+    /**
+     * Quote.
+     * 
+     * @param s the s
+     * 
+     * @return the string
+     */
     public static String quote(String s) {
 	logger.debug("IN");
 	int slashEIndex = s.indexOf("\\E");
@@ -722,6 +738,15 @@ public class GeneralUtilities {
 	return values;
     }
 
+    /**
+     * Gets the all profile attributes.
+     * 
+     * @param profile the profile
+     * 
+     * @return the all profile attributes
+     * 
+     * @throws EMFInternalError the EMF internal error
+     */
     public static HashMap getAllProfileAttributes(IEngUserProfile profile) throws EMFInternalError {
 	logger.debug("IN");
 	if (profile == null)
@@ -742,10 +767,10 @@ public class GeneralUtilities {
     }
 
     /**
-     * Delete a folder and its contents
+     * Delete a folder and its contents.
      * 
-     * @param dir
-     *                The java file object of the directory
+     * @param dir The java file object of the directory
+     * 
      * @return the result of the operation
      */
     public static boolean deleteDir(File dir) {
@@ -764,10 +789,10 @@ public class GeneralUtilities {
     }
 
     /**
-     * Delete contents of a directory
+     * Delete contents of a directory.
      * 
-     * @param dir
-     *                The java file object of the directory
+     * @param dir The java file object of the directory
+     * 
      * @return the result of the operation
      */
     public static boolean deleteContentDir(File dir) {
@@ -792,8 +817,8 @@ public class GeneralUtilities {
      * with the correspondent internationalized messages in the input String.
      * This method calls <code>PortletUtilities.getMessage(key, bundle)</code>.
      * 
-     * @param message
-     *                The string to be modified
+     * @param message The string to be modified
+     * 
      * @return The message with the internationalized substrings replaced.
      */
     public static String replaceInternationalizedMessages(String message) {
@@ -846,12 +871,11 @@ public class GeneralUtilities {
      * Questo metodo permette di sostituire una parte di una stringa con
      * un'altra.
      * 
-     * @param toParse
-     *                stringa da manipolare.
-     * @param replacing
-     *                parte di stringa da sostituire.
-     * @param replaced
-     *                stringa nuova.
+     * @param toParse stringa da manipolare.
+     * @param replacing parte di stringa da sostituire.
+     * @param replaced stringa nuova.
+     * 
+     * @return the string
      */
     public static String replace(String toParse, String replacing, String replaced) {
 	logger.debug("IN");
@@ -877,12 +901,13 @@ public class GeneralUtilities {
 	// replaced)
 
     /**
-     * Questo metodo implementa la stessa logica della funzione javascript
-     * <em>escape</em>.
-     * 
-     * @param input
-     *                stringa da manipolare.
-     */
+	 * Questo metodo implementa la stessa logica della funzione javascript
+	 * <em>escape</em>.
+	 * 
+	 * @param input stringa da manipolare.
+	 * 
+	 * @return the string
+	 */
     public static String encode(String input) {
 	/*
 	 * input = replace(input, "%", "%25"); input = replace(input, " ",
@@ -900,8 +925,9 @@ public class GeneralUtilities {
      * Questo metodo implementa la stessa logica della funzione javascript
      * <em>escape</em>.
      * 
-     * @param input
-     *                stringa da manipolare.
+     * @param input stringa da manipolare.
+     * 
+     * @return the string
      */
     public static String decode(String input) {
 	/*
@@ -916,6 +942,15 @@ public class GeneralUtilities {
 	return input;
     }
 
+    /**
+     * Subsitute bi object parameters lov profile attributes.
+     * 
+     * @param obj the obj
+     * @param session the session
+     * 
+     * @throws Exception the exception
+     * @throws EMFInternalError the EMF internal error
+     */
     public static void subsituteBIObjectParametersLovProfileAttributes(BIObject obj, SessionContainer session)
 	    throws Exception, EMFInternalError {
 	logger.debug("IN");
@@ -942,6 +977,13 @@ public class GeneralUtilities {
 	logger.debug("OUT");
     }
 
+    /**
+     * Substitute quotes into string.
+     * 
+     * @param value the value
+     * 
+     * @return the string
+     */
     public static String substituteQuotesIntoString(String value) {
 	logger.debug("IN");
 	if (value == null) value = "";
@@ -958,6 +1000,13 @@ public class GeneralUtilities {
 
     }
 
+    /**
+     * Gets the lov map result.
+     * 
+     * @param lovs the lovs
+     * 
+     * @return the lov map result
+     */
     public static String getLovMapResult(Map lovs) {
 	logger.debug("IN");
 	String toReturn = "<DATA>";
@@ -983,6 +1032,15 @@ public class GeneralUtilities {
 	return toReturn;
     }
 
+    /**
+     * Gets the lov result.
+     * 
+     * @param lovLabel the lov label
+     * 
+     * @return the lov result
+     * 
+     * @throws Exception the exception
+     */
     public static String getLovResult(String lovLabel) throws Exception {
 	logger.debug("IN");
 	IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
@@ -992,6 +1050,16 @@ public class GeneralUtilities {
 	return toReturn;
     }
 
+    /**
+     * Gets the lov result.
+     * 
+     * @param lovLabel the lov label
+     * @param profile the profile
+     * 
+     * @return the lov result
+     * 
+     * @throws Exception the exception
+     */
     public static String getLovResult(String lovLabel, IEngUserProfile profile) throws Exception {
 	logger.debug("IN");
 	IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
@@ -1012,6 +1080,14 @@ public class GeneralUtilities {
 	return lovDetail.getLovResult(profile);
     }
 
+    /**
+     * From list to string.
+     * 
+     * @param values the values
+     * @param separator the separator
+     * 
+     * @return the string
+     */
     public static String fromListToString(List values, String separator) {
 	logger.debug("IN");
 	String valStr = "";
@@ -1031,10 +1107,13 @@ public class GeneralUtilities {
     }
     
     /**
-     * Creates a new user profile, given his identifier
+     * Creates a new user profile, given his identifier.
+     * 
      * @param userId The user identifier
+     * 
      * @return The newly created user profile
-     * @throws Exception
+     * 
+     * @throws Exception the exception
      */
     public static IEngUserProfile createNewUserProfile(String userId) throws Exception {
     	logger.debug("IN");
@@ -1053,14 +1132,16 @@ public class GeneralUtilities {
     }
     
     /**
-     * Finds the user identifier from service request or from SSO system (by the http request in input). 
+     * Finds the user identifier from service request or from SSO system (by the http request in input).
      * If SSO is enabled, the identifier specified on service request must be equal to the user identifier detected by the SSO system.
      * In case the service request does not contain the user identifier and SSO in disabled, null is returned.
      * 
-     * @param request The service SourceBean request
      * @param httpRequest The http request
+     * @param serviceRequest the service request
+     * 
      * @return the current user unique identified
-     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one. 
+     * 
+     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one.
      */
     public static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
     	logger.debug("IN");

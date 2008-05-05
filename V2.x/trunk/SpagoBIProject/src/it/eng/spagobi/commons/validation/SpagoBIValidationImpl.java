@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -87,23 +87,24 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	
 	/**
 	 * Thise methodis called everyTime a service with label <code>serviceName</code>
-	 * is called, if the service validator is configured correctly into the <code>validator.xml</code> 
+	 * is called, if the service validator is configured correctly into the <code>validator.xml</code>
 	 * configuration file. It starts the validation procedure.
-	 * 
-	 * @param serviceName	The name of the service 
-	 * @param serviceType	The type of the service (PAGE; ACTION)
 	 */
 	public SpagoBIValidationImpl() {
 		
 	}
+	
 	/**
 	 * From the request and response container this method controls if validation conditions
 	 * declarated into the <code>validator.xml>/code> file are verifyed, and, if yes, acknowledge
 	 * to start validation control.
 	 * 
-	 * @param requestContainer The input request container
-	 * @param responseContainer The input response container
-	 * @return	a boolean value which says if conditions are verified.
+	 * @param serviceType the service type
+	 * @param serviceName the service name
+	 * @param context the context
+	 * 
+	 * @return a boolean value which says if conditions are verified.
+	 * 
 	 * @throws Exception if an exception occurs.
 	 */
 	public boolean validate(String serviceType, String serviceName, RequestContextIFace context)  {
@@ -241,7 +242,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	
 	
 	/**
-	 * A method which says if a validator has blocking properties. If a validator is blocking 
+	 * A method which says if a validator has blocking properties. If a validator is blocking
 	 * and his validation is not passed, all execution will be interrupted.
 	 * 
 	 * @return A boolean value saying if validator is blocking or not.

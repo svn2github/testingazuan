@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,9 @@ import org.apache.commons.fileupload.FileItem;
 
 public class UploadManager extends DefaultRequestContext implements IUploadHandler {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.httpchannel.upload.IUploadHandler#upload(org.apache.commons.fileupload.FileItem)
+	 */
 	public void upload(FileItem item) throws Exception {
 		long size = item.getSize();
 		

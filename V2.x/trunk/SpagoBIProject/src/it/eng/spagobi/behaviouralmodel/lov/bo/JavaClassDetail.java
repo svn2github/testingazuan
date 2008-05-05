@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -52,23 +52,27 @@ public class JavaClassDetail implements ILovDetail {
 	
 	
 	/**
-	 * constructor
+	 * constructor.
 	 */
 	public JavaClassDetail() {}
 	
 	/**
-	 * constructor
-	 * @param dataDefinition
-	 * @throws SourceBeanException
+	 * constructor.
+	 * 
+	 * @param dataDefinition the data definition
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public JavaClassDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML(dataDefinition);
 	}
 	
-	/** 
-	 * loads the lov from an xml string 
+	/**
+	 * loads the lov from an xml string.
+	 * 
 	 * @param dataDefinition the xml definition of the lov
-	 * @throws SourceBeanException 
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public void loadFromXML(String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
@@ -115,7 +119,8 @@ public class JavaClassDetail implements ILovDetail {
 	}
 	
 	/**
-	 * serialize the lov to an xml string
+	 * serialize the lov to an xml string.
+	 * 
 	 * @return the serialized xml string
 	 */
 	public String toXML () { 
@@ -130,10 +135,13 @@ public class JavaClassDetail implements ILovDetail {
 	}
 	
 	/**
-	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * Returns the result of the lov using a user profile to fill the lov profile attribute.
+	 * 
 	 * @param profile the profile of the user
+	 * 
 	 * @return the string result of the lov
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		IJavaClassLov javaClassLov = createClassInstance();
@@ -174,9 +182,11 @@ public class JavaClassDetail implements ILovDetail {
 	}
 	
 	/**
-	 * Gets the list of names of the profile attributes required
+	 * Gets the list of names of the profile attributes required.
+	 * 
 	 * @return list of profile attribute names
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
 		IJavaClassLov javaClassLov = createClassInstance();
@@ -185,9 +195,11 @@ public class JavaClassDetail implements ILovDetail {
 	}
 
 	/**
-	 * Checks if the lov requires one or more profile attributes
+	 * Checks if the lov requires one or more profile attributes.
+	 * 
 	 * @return true if the lov require one or more profile attributes, false otherwise
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public boolean requireProfileAttributes() throws Exception {
 		boolean requires = false;
@@ -249,7 +261,8 @@ public class JavaClassDetail implements ILovDetail {
 	}
 	
 	/**
-	 * Gets the class name
+	 * Gets the class name.
+	 * 
 	 * @return the complete name of the class
 	 */
 	public String getJavaClassName() {
@@ -257,8 +270,9 @@ public class JavaClassDetail implements ILovDetail {
 	}
 	
 	/**
-	 * Sets the class name
-	 * @param javaClassName the complete name of the class 
+	 * Sets the class name.
+	 * 
+	 * @param javaClassName the complete name of the class
 	 */
 	public void setJavaClassName(String javaClassName) {
 		this.javaClassName = javaClassName;
@@ -266,10 +280,13 @@ public class JavaClassDetail implements ILovDetail {
 	
 	
 	/**
-	 * Builds a JavaClassDetail starting from ax xml representation
-	 * @param dataDefinition1 xml representation of the JavaClassDetail
+	 * Builds a JavaClassDetail starting from ax xml representation.
+	 * 
+	 * @param dataDefinition the data definition
+	 * 
 	 * @return The JavaClassDetail object
-	 * @throws SourceBeanException
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public static JavaClassDetail fromXML(String dataDefinition) throws SourceBeanException {
 		JavaClassDetail jcd = new JavaClassDetail();
@@ -278,34 +295,58 @@ public class JavaClassDetail implements ILovDetail {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getDescriptionColumnName()
+	 */
 	public String getDescriptionColumnName() {
 		return descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setDescriptionColumnName(java.lang.String)
+	 */
 	public void setDescriptionColumnName(String descriptionColumnName) {
 		this.descriptionColumnName = descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getInvisibleColumnNames()
+	 */
 	public List getInvisibleColumnNames() {
 		return invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setInvisibleColumnNames(java.util.List)
+	 */
 	public void setInvisibleColumnNames(List invisibleColumnNames) {
 		this.invisibleColumnNames = invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getValueColumnName()
+	 */
 	public String getValueColumnName() {
 		return valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setValueColumnName(java.lang.String)
+	 */
 	public void setValueColumnName(String valueColumnName) {
 		this.valueColumnName = valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getVisibleColumnNames()
+	 */
 	public List getVisibleColumnNames() {
 		return visibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setVisibleColumnNames(java.util.List)
+	 */
 	public void setVisibleColumnNames(List visibleColumnNames) {
 		this.visibleColumnNames = visibleColumnNames;
 	}

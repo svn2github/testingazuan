@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.error.EMFUserError;
@@ -51,10 +51,20 @@ public class ParameterValuesEncoder {
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////
 
+    /**
+     * Instantiates a new parameter values encoder.
+     */
     public ParameterValuesEncoder() {
 	this(DEFAULT_SEPARATOR, DEFAULT_OPEN_BLOCK_MARKER, DEFAULT_CLOSE_BLOCK_MARKER);
     }
 
+    /**
+     * Instantiates a new parameter values encoder.
+     * 
+     * @param separator the separator
+     * @param openBlockMarker the open block marker
+     * @param closeBlockMarker the close block marker
+     */
     public ParameterValuesEncoder(String separator, String openBlockMarker, String closeBlockMarker) {
 	this.separator = separator;
 	this.openBlockMarker = openBlockMarker;
@@ -65,26 +75,56 @@ public class ParameterValuesEncoder {
     // ACCESS METHODS
     // ///////////////////////////////////////////////////////////
 
+    /**
+     * Gets the close block marker.
+     * 
+     * @return the close block marker
+     */
     public String getCloseBlockMarker() {
 	return closeBlockMarker;
     }
 
+    /**
+     * Sets the close block marker.
+     * 
+     * @param closeBlockMarker the new close block marker
+     */
     public void setCloseBlockMarker(String closeBlockMarker) {
 	this.closeBlockMarker = closeBlockMarker;
     }
 
+    /**
+     * Gets the open block marker.
+     * 
+     * @return the open block marker
+     */
     public String getOpenBlockMarker() {
 	return openBlockMarker;
     }
 
+    /**
+     * Sets the open block marker.
+     * 
+     * @param openBlockMarker the new open block marker
+     */
     public void setOpenBlockMarker(String openBlockMarker) {
 	this.openBlockMarker = openBlockMarker;
     }
 
+    /**
+     * Gets the separator.
+     * 
+     * @return the separator
+     */
     public String getSeparator() {
 	return separator;
     }
 
+    /**
+     * Sets the separator.
+     * 
+     * @param separator the new separator
+     */
     public void setSeparator(String separator) {
 	this.separator = separator;
     }
@@ -93,6 +133,13 @@ public class ParameterValuesEncoder {
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////
 
+    /**
+     * Encode.
+     * 
+     * @param biobjPar the biobj par
+     * 
+     * @return the string
+     */
     public String encode(BIObjectParameter biobjPar) {
 	logger.debug("IN");
 	if (biobjPar.getParameterValues() == null) {

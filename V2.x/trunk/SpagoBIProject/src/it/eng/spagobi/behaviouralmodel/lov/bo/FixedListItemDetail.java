@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -34,28 +34,35 @@ public class FixedListItemDetail  implements Serializable  {
 	
 	/**
 	 * Returns the description.
+	 * 
 	 * @return the description.
 	 */
 	public String getDescription() {
 		return description;
 	}
+	
 	/**
-	 * Sets the description
+	 * Sets the description.
+	 * 
 	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	/**
 	 * Returns the value.
+	 * 
 	 * @return the value.
 	 */
 	public String getValue() {
 		return value;
 	}
+	
 	/**
-	 * Sets the name
-	 * @param name The name to set.
+	 * Sets the name.
+	 * 
+	 * @param value the value
 	 */
 	public void setValue(String value) {
 		this.value = value;

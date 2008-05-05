@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,11 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 
 public class MessageBuilderFactory {
 	
+	/**
+	 * Gets the message builder.
+	 * 
+	 * @return the message builder
+	 */
 	public static IMessageBuilder getMessageBuilder() {
 		ApplicationContainer spagoContext = ApplicationContainer.getInstance();
 		IMessageBuilder msgBuilder = (IMessageBuilder)spagoContext.getAttribute(SpagoBIConstants.MESSAGE_BUILDER);

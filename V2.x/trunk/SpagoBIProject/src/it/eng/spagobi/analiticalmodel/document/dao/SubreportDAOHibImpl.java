@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,9 @@ public class SubreportDAOHibImpl
 extends AbstractHibernateDAO 
 implements ISubreportDAO {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO#loadSubreportsByMasterRptId(java.lang.Integer)
+	 */
 	public List loadSubreportsByMasterRptId(Integer master_rpt_id) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -85,6 +88,9 @@ implements ISubreportDAO {
 		return realResult;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO#loadSubreportsBySubRptId(java.lang.Integer)
+	 */
 	public List loadSubreportsBySubRptId(Integer sub_rpt_id) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -124,6 +130,9 @@ implements ISubreportDAO {
 		return realResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO#insertSubreport(it.eng.spagobi.commons.bo.Subreport)
+	 */
 	public void insertSubreport(Subreport aSubreport) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -139,6 +148,9 @@ implements ISubreportDAO {
 		tx.commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO#eraseSubreportByMasterRptId(java.lang.Integer)
+	 */
 	public void eraseSubreportByMasterRptId(Integer master_rpt_id) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -177,6 +189,9 @@ implements ISubreportDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO#eraseSubreportBySubRptId(java.lang.Integer)
+	 */
 	public void eraseSubreportBySubRptId(Integer sub_rpt_id) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -219,7 +234,8 @@ implements ISubreportDAO {
 	 * From the hibernate subreports at input, gives
 	 * the corrispondent <code>Subreports</code> object.
 	 * 
-	 * @param hibParameters The hybernate parameter
+	 * @param hibSubreport the hib subreport
+	 * 
 	 * @return The corrispondent <code>Parameter</code> object
 	 */
 	public Subreport toSubreport(SbiSubreports hibSubreport){

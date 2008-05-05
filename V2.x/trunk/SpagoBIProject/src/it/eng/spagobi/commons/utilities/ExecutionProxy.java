@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.base.SourceBean;
@@ -51,10 +51,20 @@ public class ExecutionProxy {
 
     private String returnedContentType = null;
 
+    /**
+     * Gets the bi object.
+     * 
+     * @return the bi object
+     */
     public BIObject getBiObject() {
 	return biObject;
     }
 
+    /**
+     * Sets the bi object.
+     * 
+     * @param biObject the new bi object
+     */
     public void setBiObject(BIObject biObject) {
 	this.biObject = biObject;
     }
@@ -65,7 +75,8 @@ public class ExecutionProxy {
      * @param profile The user profile
      * @param modality The execution modality (for auditing)
      * @param defaultOutputFormat The default output format (optional), considered if the document has no output format parameter set
-     * @return
+     * 
+     * @return the byte[]
      */
     public byte[] exec(IEngUserProfile profile, String modality, String defaultOutputFormat) {
 	logger.debug("IN");
@@ -185,14 +196,31 @@ public class ExecutionProxy {
 	return response;
     }
 
+    /**
+     * Gets the returned content type.
+     * 
+     * @return the returned content type
+     */
     public String getReturnedContentType() {
 	return returnedContentType;
     }
 
+    /**
+     * Sets the returned content type.
+     * 
+     * @param returnedContentType the new returned content type
+     */
     public void setReturnedContentType(String returnedContentType) {
 	this.returnedContentType = returnedContentType;
     }
 
+    /**
+     * Gets the file extension from cont type.
+     * 
+     * @param contentType the content type
+     * 
+     * @return the file extension from cont type
+     */
     public String getFileExtensionFromContType(String contentType) {
 	logger.debug("IN");
 	String extension = "";

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,23 +53,28 @@ public class ScriptDetail  implements ILovDetail  {
 	private List invisibleColumnNames = null;
 
 	/**
-	 * constructor
+	 * constructor.
 	 */
 	public ScriptDetail() {}
 	
 	/**
-	 * constructor
+	 * constructor.
+	 * 
 	 * @param dataDefinition xml representation of the script lov
-	 * @throws SourceBeanException
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public ScriptDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML (dataDefinition);
 	}
 	
 	
-	/** loads the lov from an xml string 
+	/**
+	 * loads the lov from an xml string.
+	 * 
 	 * @param dataDefinition the xml definition of the lov
-	 * @throws SourceBeanException 
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public void loadFromXML (String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
@@ -128,7 +133,8 @@ public class ScriptDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * serialize the lov to an xml string
+	 * serialize the lov to an xml string.
+	 * 
 	 * @return the serialized xml string
 	 */
 	public String toXML () { 
@@ -144,10 +150,13 @@ public class ScriptDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * Returns the result of the lov using a user profile to fill the lov profile attribute.
+	 * 
 	 * @param profile the profile of the user
+	 * 
 	 * @return the string result of the lov
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String result = null;
@@ -231,9 +240,11 @@ public class ScriptDetail  implements ILovDetail  {
 	}
 	
 	/**
-	 * Gets the list of names of the profile attributes required
+	 * Gets the list of names of the profile attributes required.
+	 * 
 	 * @return list of profile attribute names
-	 * @throws Exception 
+	 * 
+	 * @throws Exception the exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
 		List names = new ArrayList();
@@ -258,9 +269,11 @@ public class ScriptDetail  implements ILovDetail  {
 	}
 	
 	/**
-	 * Checks if the lov requires one or more profile attributes
+	 * Checks if the lov requires one or more profile attributes.
+	 * 
 	 * @return true if the lov require one or more profile attributes, false otherwise
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public boolean requireProfileAttributes() throws Exception {
 		boolean contains = false;
@@ -295,15 +308,17 @@ public class ScriptDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * Get the string of the script
-	 * @return The string of the script 
+	 * Get the string of the script.
+	 * 
+	 * @return The string of the script
 	 */
 	public String getScript() {
 		return script;
 	}
 	
 	/**
-	 * Set the string of the script
+	 * Set the string of the script.
+	 * 
 	 * @param script the string of the script
 	 */
 	public void setScript(String script) {
@@ -312,11 +327,13 @@ public class ScriptDetail  implements ILovDetail  {
 	
 	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
-	 * in order to obtain the source <code>ScriptDetail</code> objects whom XML has been 
-	 * built. 
+	 * in order to obtain the source <code>ScriptDetail</code> objects whom XML has been
+	 * built.
 	 * 
-	 * @param dataDefinition	The XML input String
+	 * @param dataDefinition The XML input String
+	 * 
 	 * @return The corrispondent <code>ScriptDetail</code> object
+	 * 
 	 * @throws SourceBeanException If a SourceBean Exception occurred
 	 */
 	public static ScriptDetail fromXML (String dataDefinition) throws SourceBeanException {
@@ -326,34 +343,58 @@ public class ScriptDetail  implements ILovDetail  {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getDescriptionColumnName()
+	 */
 	public String getDescriptionColumnName() {
 		return descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setDescriptionColumnName(java.lang.String)
+	 */
 	public void setDescriptionColumnName(String descriptionColumnName) {
 		this.descriptionColumnName = descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getInvisibleColumnNames()
+	 */
 	public List getInvisibleColumnNames() {
 		return invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setInvisibleColumnNames(java.util.List)
+	 */
 	public void setInvisibleColumnNames(List invisibleColumnNames) {
 		this.invisibleColumnNames = invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getValueColumnName()
+	 */
 	public String getValueColumnName() {
 		return valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setValueColumnName(java.lang.String)
+	 */
 	public void setValueColumnName(String valueColumnName) {
 		this.valueColumnName = valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getVisibleColumnNames()
+	 */
 	public List getVisibleColumnNames() {
 		return visibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setVisibleColumnNames(java.util.List)
+	 */
 	public void setVisibleColumnNames(List visibleColumnNames) {
 		this.visibleColumnNames = visibleColumnNames;
 	}

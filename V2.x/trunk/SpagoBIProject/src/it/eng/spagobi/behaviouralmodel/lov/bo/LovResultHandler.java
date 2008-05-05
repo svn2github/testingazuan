@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,9 +42,11 @@ public class LovResultHandler {
 	private SourceBean lovResultSB = null;
 	
 	/**
-	 * constructor
+	 * constructor.
+	 * 
 	 * @param lovResult the xml string representation of the lov result
-	 * @throws SourceBeanException
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public LovResultHandler(String lovResult) throws SourceBeanException {
 		lovResultSB= SourceBean.fromXMLString(lovResult);
@@ -52,7 +54,8 @@ public class LovResultHandler {
 	
 	
 	/**
-	 * Gets the list of result rows
+	 * Gets the list of result rows.
+	 * 
 	 * @return list of rows
 	 */
 	public List getRows() {
@@ -60,9 +63,11 @@ public class LovResultHandler {
 	}
 	
 	/**
-	 * Gets the SourceBean of the row which value column contains the input value
+	 * Gets the SourceBean of the row which value column contains the input value.
+	 * 
 	 * @param value input value which identifies the row
 	 * @param valueColumnName name of the column that holds the values
+	 * 
 	 * @return the SourceBean of the row
 	 */
 	public SourceBean getRow(String value, String valueColumnName) {
@@ -82,9 +87,11 @@ public class LovResultHandler {
 	
 
 	/**
-	 * Gets the list of values contained into the lov result 
+	 * Gets the list of values contained into the lov result.
+	 * 
 	 * @param valueColumnName name of the column that holds the values
-	 * @return list of values 
+	 * 
+	 * @return list of values
 	 */
 	public List getValues(String valueColumnName) {
 		List values = new ArrayList();
@@ -97,9 +104,11 @@ public class LovResultHandler {
 	}
 	
 	/**
-	 * Checks if a lov result contains a specific result
+	 * Checks if a lov result contains a specific result.
+	 * 
 	 * @param value the value to search
 	 * @param valueColumnName name of the column that holds the values
+	 * 
 	 * @return true if the value is contained, false otherwise
 	 */
 	public boolean containsValue(String value, String valueColumnName) {
@@ -112,10 +121,12 @@ public class LovResultHandler {
 	}
 	
 	/**
-	 * Gets the description specified on descriptionColumnName relevant to the row that has valueColumnName equal to value
+	 * Gets the description specified on descriptionColumnName relevant to the row that has valueColumnName equal to value.
+	 * 
 	 * @param value The value to search
 	 * @param valueColumnName The value column
 	 * @param descriptionColumnName The description column
+	 * 
 	 * @return the description specified on descriptionColumnName relevant to the row that has valueColumnName equal to value
 	 */
 	public String getValueDescription(String value, String valueColumnName, String descriptionColumnName) {
@@ -130,7 +141,8 @@ public class LovResultHandler {
 	}
 	
 	/**
-	 * Gets the sourcebean of the lov result
+	 * Gets the sourcebean of the lov result.
+	 * 
 	 * @return the sourcebean of the lov result
 	 */
 	public SourceBean getLovResultSB() {
@@ -138,7 +150,8 @@ public class LovResultHandler {
 	}
 	
 	/**
-	 * Checks if the lov result as only one value
+	 * Checks if the lov result as only one value.
+	 * 
 	 * @return true if the result contains only one value, false otherwise
 	 */
 	public boolean isSingleValue() {

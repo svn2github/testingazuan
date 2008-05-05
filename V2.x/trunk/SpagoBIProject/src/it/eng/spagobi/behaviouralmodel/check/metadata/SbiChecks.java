@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -48,11 +48,17 @@ public class SbiChecks  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiChecks() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param checkId the check id
+     */
     public SbiChecks(Integer checkId) {
         this.checkId = checkId;
     }
@@ -63,78 +69,127 @@ public class SbiChecks  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the check id.
      * 
+     * @return the check id
      */
     public Integer getCheckId() {
         return this.checkId;
     }
     
+    /**
+     * Sets the check id.
+     * 
+     * @param checkId the new check id
+     */
     public void setCheckId(Integer checkId) {
         this.checkId = checkId;
     }
 
     /**
+     * Gets the check type.
      * 
+     * @return the check type
      */
     public SbiDomains getCheckType() {
         return this.checkType;
     }
     
+    /**
+     * Sets the check type.
+     * 
+     * @param sbiDomains the new check type
+     */
     public void setCheckType(SbiDomains sbiDomains) {
         this.checkType = sbiDomains;
     }
 
     /**
+     * Gets the value type cd.
      * 
+     * @return the value type cd
      */
     public String getValueTypeCd() {
         return this.valueTypeCd;
     }
     
+    /**
+     * Sets the value type cd.
+     * 
+     * @param valueTypeCd the new value type cd
+     */
     public void setValueTypeCd(String valueTypeCd) {
         this.valueTypeCd = valueTypeCd;
     }
 
     /**
+     * Gets the value1.
      * 
+     * @return the value1
      */
     public String getValue1() {
         return this.value1;
     }
     
+    /**
+     * Sets the value1.
+     * 
+     * @param value1 the new value1
+     */
     public void setValue1(String value1) {
         this.value1 = value1;
     }
 
     /**
+     * Gets the value2.
      * 
+     * @return the value2
      */
     public String getValue2() {
         return this.value2;
     }
     
+    /**
+     * Sets the value2.
+     * 
+     * @param value2 the new value2
+     */
     public void setValue2(String value2) {
         this.value2 = value2;
     }
 
     /**
+     * Gets the label.
      * 
+     * @return the label
      */
     public String getLabel() {
         return this.label;
     }
     
+    /**
+     * Sets the label.
+     * 
+     * @param label the new label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
     /**
+     * Gets the descr.
      * 
+     * @return the descr
      */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
@@ -143,9 +198,20 @@ public class SbiChecks  implements java.io.Serializable {
 
 
 
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}

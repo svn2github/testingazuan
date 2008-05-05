@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,14 @@ import javax.servlet.jsp.tagext.TagSupport;
  * It handles errors throwing exceptions.
  */
 public class ErrorTag extends TagSupport  {
+	
 	/**
+	 * Do start tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
+	 * 
 	 * @see it.eng.spagobi.commons.presentation.tags.ListTag#doStartTag()
 	 */
 	public int doStartTag() throws JspException {
@@ -111,6 +118,12 @@ public class ErrorTag extends TagSupport  {
     } // public int doStartTag() throws JspException
 
     /**
+     * Do end tag.
+     * 
+     * @return the int
+     * 
+     * @throws JspException the jsp exception
+     * 
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
     public int doEndTag() throws JspException {

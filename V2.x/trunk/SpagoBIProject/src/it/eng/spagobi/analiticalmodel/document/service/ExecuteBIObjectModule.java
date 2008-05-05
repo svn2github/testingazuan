@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.analiticalmodel.document.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -104,19 +104,20 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	public static final String MESSAGE_EXECUTION = "MESSAGEEXEC";
 	public static final String SUBMESSAGEDET = "SUBMESSAGEDET";
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 
 	/**
 	 * Manage all the request in order to exec all the different BIObject
-	 * execution phases
+	 * execution phases.
 	 * 
-	 * @param request
-	 *            The request source bean
-	 * @param response
-	 *            The response Source bean
-	 * @throws Exception
-	 *             If an Exception occurred
+	 * @param request The request source bean
+	 * @param response The response Source bean
+	 * 
+	 * @throws Exception If an Exception occurred
 	 */
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
@@ -593,6 +594,13 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		logger.debug("OUT");
 	}
 
+	/**
+	 * Find bi obj par id.
+	 * 
+	 * @param parIdObj the par id obj
+	 * 
+	 * @return the int
+	 */
 	public int findBIObjParId(Object parIdObj) {
 		logger.debug("IN");
 		String parIdStr = "";
@@ -627,6 +635,13 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		return attribute;
 	}
 
+	/**
+	 * Gets the as list.
+	 * 
+	 * @param o the o
+	 * 
+	 * @return the as list
+	 */
 	public List getAsList(Object o) {
 		logger.debug("IN");
 		ArrayList list = new ArrayList();
@@ -1372,6 +1387,13 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		return (new Integer(findBIObjParId(getLookedUpObjId(request))));
 	}
 
+	/**
+	 * Gets the looked up parameter.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the looked up parameter
+	 */
 	public BIObjectParameter getLookedUpParameter(SourceBean request) {
 		logger.debug("IN");
 		BIObjectParameter lookedupBIParameter = null;
@@ -1390,6 +1412,13 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		return lookedupBIParameter;
 	}
 
+	/**
+	 * Checks if is single value.
+	 * 
+	 * @param biparam the biparam
+	 * 
+	 * @return true, if is single value
+	 */
 	public boolean isSingleValue(BIObjectParameter biparam) {
 		logger.debug("IN");
 		boolean isSingleValue = false;
@@ -1630,10 +1659,10 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	/**
 	 * Save a viewpoint.
 	 * 
-	 * @param request
-	 *            The request SourceBean
-	 * @param response
-	 *            The response SourceBean
+	 * @param request The request SourceBean
+	 * @param response The response SourceBean
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void saveViewPoint(SourceBean request, SourceBean response)
 			throws Exception {

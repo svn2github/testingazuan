@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,15 @@ import it.eng.spago.error.EMFInternalError;
 
 public interface IBinContentDAO {
 	
+	/**
+	 * Gets the bin content.
+	 * 
+	 * @param binId the bin id
+	 * 
+	 * @return the bin content
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public byte[] getBinContent(Integer binId) throws EMFInternalError;
 	
 }

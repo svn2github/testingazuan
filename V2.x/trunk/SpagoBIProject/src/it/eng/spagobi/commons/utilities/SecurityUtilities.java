@@ -1,7 +1,8 @@
 /**
+
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -52,7 +53,8 @@ import sun.misc.BASE64Encoder;
 public class SecurityUtilities {
 	
 	/**
-	 * Get the SpagoBI Provate Key for a DSA alghoritm
+	 * Get the SpagoBI Provate Key for a DSA alghoritm.
+	 * 
 	 * @return PrivateKey DSA alghoritm for SpagoBI
 	 */
 	public PrivateKey getPrivateKeyDSA() {
@@ -101,7 +103,8 @@ public class SecurityUtilities {
 	
 	
 	/**
-	 * Generate a random array of bytes (1024 bits) using the SHA1PRNG alghoritm
+	 * Generate a random array of bytes (1024 bits) using the SHA1PRNG alghoritm.
+	 * 
 	 * @return Byte array filled with random byte
 	 */ 
 	public byte[] generateRandomChallenge() {
@@ -123,8 +126,10 @@ public class SecurityUtilities {
 	
 	
 	/**
-	 * Encode a byte array using Base64 alghoritm
+	 * Encode a byte array using Base64 alghoritm.
+	 * 
 	 * @param bytes bytes to encode
+	 * 
 	 * @return String Base64 string of the bytes
 	 */
 	public String encodeBase64(byte[] bytes) {
@@ -135,6 +140,13 @@ public class SecurityUtilities {
 	
 	
 	
+	/**
+	 * Sign dsa.
+	 * 
+	 * @param data the data
+	 * 
+	 * @return the byte[]
+	 */
 	public byte[] signDSA(byte[] data) {
 		byte[] signed = null;
 		try {

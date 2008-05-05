@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -49,11 +49,17 @@ public class SbiParameters  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiParameters() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param parId the par id
+     */
     public SbiParameters(Integer parId) {
         this.parId = parId;
     }
@@ -64,117 +70,201 @@ public class SbiParameters  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the par id.
      * 
+     * @return the par id
      */
     public Integer getParId() {
         return this.parId;
     }
     
+    /**
+     * Sets the par id.
+     * 
+     * @param parId the new par id
+     */
     public void setParId(Integer parId) {
         this.parId = parId;
     }
 
     /**
+     * Gets the parameter type.
      * 
+     * @return the parameter type
      */
     public SbiDomains getParameterType() {
         return this.parameterType;
     }
     
+    /**
+     * Sets the parameter type.
+     * 
+     * @param sbiDomains the new parameter type
+     */
     public void setParameterType(SbiDomains sbiDomains) {
         this.parameterType = sbiDomains;
     }
 
     /**
+     * Gets the length.
      * 
+     * @return the length
      */
     public Short getLength() {
         return this.length;
     }
     
+    /**
+     * Sets the length.
+     * 
+     * @param length the new length
+     */
     public void setLength(Short length) {
         this.length = length;
     }
 
     /**
+     * Gets the parameter type code.
      * 
+     * @return the parameter type code
      */
     public String getParameterTypeCode() {
         return this.parameterTypeCode;
     }
     
+    /**
+     * Sets the parameter type code.
+     * 
+     * @param parTypeCd the new parameter type code
+     */
     public void setParameterTypeCode(String parTypeCd) {
         this.parameterTypeCode = parTypeCd;
     }
 
     /**
+     * Gets the label.
      * 
+     * @return the label
      */
     public String getLabel() {
         return this.label;
     }
     
+    /**
+     * Sets the label.
+     * 
+     * @param label the new label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
     /**
+     * Gets the mask.
      * 
+     * @return the mask
      */
     public String getMask() {
         return this.mask;
     }
     
+    /**
+     * Sets the mask.
+     * 
+     * @param mask the new mask
+     */
     public void setMask(String mask) {
         this.mask = mask;
     }
 
     /**
+     * Gets the descr.
      * 
+     * @return the descr
      */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
 
     /**
+     * Gets the sbi paruses.
      * 
+     * @return the sbi paruses
      */
     public Set getSbiParuses() {
         return this.sbiParuses;
     }
     
+    /**
+     * Sets the sbi paruses.
+     * 
+     * @param sbiParuses the new sbi paruses
+     */
     public void setSbiParuses(Set sbiParuses) {
         this.sbiParuses = sbiParuses;
     }
 
     /**
+     * Gets the sbi obj pars.
      * 
+     * @return the sbi obj pars
      */
     public Set getSbiObjPars() {
         return this.sbiObjPars;
     }
     
+    /**
+     * Sets the sbi obj pars.
+     * 
+     * @param sbiObjPars the new sbi obj pars
+     */
     public void setSbiObjPars(Set sbiObjPars) {
         this.sbiObjPars = sbiObjPars;
     }
 
 
 
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the functional flag.
+	 * 
+	 * @return the functional flag
+	 */
 	public Short getFunctionalFlag() {
 		return functionalFlag;
 	}
 
+	/**
+	 * Sets the functional flag.
+	 * 
+	 * @param functionalFlag the new functional flag
+	 */
 	public void setFunctionalFlag(Short functionalFlag) {
 		this.functionalFlag = functionalFlag;
 	}

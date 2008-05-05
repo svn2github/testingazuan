@@ -1,7 +1,8 @@
 /**
+
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -16,7 +17,8 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+
+**/
 
 
 package it.eng.spagobi.commons.presentation.tags;
@@ -65,6 +67,9 @@ public class DatasetWizardTag  extends TagSupport {
 		  String disabled = "disabled" ;
 
 		
+		/* (non-Javadoc)
+		 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+		 */
 		public int doStartTag() throws JspException {
 			httpRequest = (HttpServletRequest) pageContext.getRequest();
 			requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
@@ -353,14 +358,27 @@ public class DatasetWizardTag  extends TagSupport {
 			return SKIP_BODY;
 		}
 		
-	    public int doEndTag() throws JspException {
+	    /* (non-Javadoc)
+    	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+    	 */
+    	public int doEndTag() throws JspException {
 	        return super.doEndTag();
 	    }
 
+		/**
+		 * Gets the parameters xml.
+		 * 
+		 * @return the parameters xml
+		 */
 		public String getParametersXML() {
 			return parametersXML;
 		}
 
+		/**
+		 * Sets the parameters xml.
+		 * 
+		 * @param parametersXML the new parameters xml
+		 */
 		public void setParametersXML(String parametersXML) {
 			this.parametersXML = parametersXML;
 		}

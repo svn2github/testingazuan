@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -30,37 +30,55 @@ import java.util.List;
 public interface ISubObjectDAO {
 
 	/**
-	 * Save a subObject of the object
+	 * Save a subObject of the object.
+	 * 
 	 * @param idBIObj the id of the biobject parent
-	 * @param SubObject subObj the new subobject to save
+	 * @param subObj the sub obj
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
 	
 	/**
-	 * Gets the detail of all the subobjects accessible to the user
+	 * Gets the detail of all the subobjects accessible to the user.
+	 * 
 	 * @param idBIObj the id of the biobject parent
 	 * @param profile Profile of the user
-	 * @return List of BIObject.SubObjectDetail objects 
+	 * 
+	 * @return List of BIObject.SubObjectDetail objects
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) throws EMFUserError;
 		
 	/**
-	 * Gets the InputStream of the subobjects content
-	 * @param idSubObj the id of the subobject 
+	 * Gets the InputStream of the subobjects content.
+	 * 
+	 * @param idSubObj the id of the subobject
+	 * 
 	 * @return SubObject the subobject loaded
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public SubObject getSubObject(Integer idSubObj) throws EMFUserError;
 		
 	/**
-	 * Delete a subObject
-	 * @param id the id of the subobject
+	 * Delete a subObject.
+	 * 
+	 * @param idSub the id sub
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void deleteSubObject(Integer idSub) throws EMFUserError;
 	
 	/**
-	 * Gets the detail of all the biobject subobjects 
+	 * Gets the detail of all the biobject subobjects.
+	 * 
 	 * @param idBIObj the id of the biobject parent
-	 * @return List of BIObject.SubObjectDetail objects 
+	 * 
+	 * @return List of BIObject.SubObjectDetail objects
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public List getSubObjects(Integer idBIObj) throws EMFUserError;
 	

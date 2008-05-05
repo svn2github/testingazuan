@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -55,13 +55,18 @@ public class DocumentTemplateBuildModule extends AbstractModule {
 	protected SessionContainer permanentSession = null;
 	private IEngUserProfile profile;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {}
 	
 	
 	/**
-	 * Manage all the request in order to exec all the different BIObject template creation phases 
-	 * @param request	The request source bean
+	 * Manage all the request in order to exec all the different BIObject template creation phases.
+	 * 
+	 * @param request The request source bean
 	 * @param response 	The response Source bean
+	 * 
 	 * @throws Exception If an Exception occurred
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {

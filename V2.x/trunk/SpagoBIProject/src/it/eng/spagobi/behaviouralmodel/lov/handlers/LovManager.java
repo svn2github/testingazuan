@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -38,8 +38,10 @@ import java.util.List;
 public class LovManager {
     
 	/**
-	 * Returns all the names of the columns returned by the lov
+	 * Returns all the names of the columns returned by the lov.
+	 * 
 	 * @param lov the lov to analize
+	 * 
 	 * @return List of the columns name (the element of the list are Strings)
 	 */
 	public List getAllColumnsNames(ModalitiesValue lov) {
@@ -59,6 +61,13 @@ public class LovManager {
 		return names;
 	}
 	
+	/**
+	 * Gets the labels of documents which use lov.
+	 * 
+	 * @param lov the lov
+	 * 
+	 * @return the labels of documents which use lov
+	 */
 	public static List getLabelsOfDocumentsWhichUseLov(ModalitiesValue lov) {
 		List docLabels = new ArrayList();
 		try{

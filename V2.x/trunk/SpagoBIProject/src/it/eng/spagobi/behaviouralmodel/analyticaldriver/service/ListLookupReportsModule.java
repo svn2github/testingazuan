@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,14 +42,17 @@ import java.util.List;
 public class ListLookupReportsModule extends AbstractBasicListModule {
 	
 	public static final String MODULE_PAGE = "ReportsLookupPage";
+	
 	/**
-	 * Class Constructor
-	 *
+	 * Class Constructor.
 	 */
 	public ListLookupReportsModule() {
 		super();
 	} 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		SessionContainer session = this.getRequestContainer().getSessionContainer();
 		
@@ -69,10 +72,14 @@ public class ListLookupReportsModule extends AbstractBasicListModule {
 	  
 	
 	/**
-	 * Gets the list
+	 * Gets the list.
+	 * 
 	 * @param request The request SourceBean
 	 * @param response The response SourceBean
-	 * @return ListIFace 
+	 * 
+	 * @return ListIFace
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		

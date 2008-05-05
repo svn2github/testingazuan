@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -30,16 +30,19 @@ import it.eng.spago.security.IEngUserProfile;
 public interface IJavaClassLov {
 
 	/**
-	 * Gets the values formatted into an xml structure 
+	 * Gets the values formatted into an xml structure.
+	 * 
 	 * @param profile a user profile used to fill attributes required by the query
-	 * @return the xml string of the values 
+	 * 
+	 * @return the xml string of the values
 	 */
 	public String getValues(IEngUserProfile profile);
 	
 	
 	/**
-	 * Gets the list of profile attribute names required by the class
-	 * @return the list of profile attribute names 
+	 * Gets the list of profile attribute names required by the class.
+	 * 
+	 * @return the list of profile attribute names
 	 */
 	public List getNamesOfProfileAttributeRequired();
 }

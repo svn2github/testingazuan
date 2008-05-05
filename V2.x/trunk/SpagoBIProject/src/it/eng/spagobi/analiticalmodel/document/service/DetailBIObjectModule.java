@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -97,15 +97,21 @@ public class DetailBIObjectModule extends AbstractModule {
 	SessionContainer session = null;
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 	
 	/**
-	 * Reads the operation asked by the user and calls the insertion, modify, detail and 
+	 * Reads the operation asked by the user and calls the insertion, modify, detail and
 	 * deletion methods.
+	 * 
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
+	 * 
 	 * @throws exception If an exception occurs
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		// RECOVER REQUEST CONTAINER, SESSION CONTAINER, USER PROFILE AND ERROR HANDLER
@@ -735,6 +741,14 @@ public class DetailBIObjectModule extends AbstractModule {
 		}
 	}
 	
+	/**
+	 * Erase version.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public void eraseVersion(SourceBean request, SourceBean response) throws EMFUserError {
 		// get object' id and name version
 		String tempIdStr = (String)request.getAttribute(SpagoBIConstants.TEMPLATE_ID);

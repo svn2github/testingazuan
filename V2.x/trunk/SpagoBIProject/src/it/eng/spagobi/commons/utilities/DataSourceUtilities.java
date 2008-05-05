@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,9 +42,13 @@ import org.apache.log4j.Logger;
 
 public class DataSourceUtilities {
 	private static transient Logger logger = Logger.getLogger(DataSourceUtilities.class);
+	
 	/**
-	 * This method, based on the data sources table, gets a 
-	 * database connection and return it  
+	 * This method, based on the data sources table, gets a
+	 * database connection and return it.
+	 * 
+	 * @param dsLabel the ds label
+	 * 
 	 * @return the database connection
 	 */
 	public Connection getConnection(String dsLabel) {
@@ -66,10 +70,13 @@ public class DataSourceUtilities {
 	}
 	
 	/**
-	 * Creates a ago DataConnection object starting from a sql connection 
+	 * Creates a ago DataConnection object starting from a sql connection.
+	 * 
 	 * @param con Connection to the export database
+	 * 
 	 * @return The Spago DataConnection Object
-	 * @throws EMFInternalError
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public DataConnection getDataConnection(Connection con) throws EMFInternalError {
 		DataConnection dataCon = null;

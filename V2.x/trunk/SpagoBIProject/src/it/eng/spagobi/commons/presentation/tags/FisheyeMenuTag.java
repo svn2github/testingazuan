@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public class FisheyeMenuTag extends TagSupport {
 	protected IMessageBuilder msgBuilder = null;
 	private RequestContainer requestContainer = null;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 				           "doStartTag", " method invoked");
@@ -156,6 +159,13 @@ public class FisheyeMenuTag extends TagSupport {
 	}
 	
 	
+	/**
+	 * Creates the link menu item.
+	 * 
+	 * @param htmlStream the html stream
+	 * @param jsStream the js stream
+	 * @param appSB the app sb
+	 */
 	public void createLinkMenuItem(StringBuffer htmlStream, StringBuffer jsStream, SourceBean appSB) {
 		String width = (String)appSB.getAttribute("width");
 		String height = (String)appSB.getAttribute("height");
@@ -312,6 +322,9 @@ public class FisheyeMenuTag extends TagSupport {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+	 */
 	public int doEndTag() throws JspException {
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.INFORMATION, 
 				            "FisheyeMenuTag::doEndTag:: invoked");

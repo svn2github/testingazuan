@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -50,12 +50,18 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	private int dTreeObjects = -1000;
 	protected String requestIdentity = null;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeAccessibleTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+	 */
 	public StringBuffer makeTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath, String treename) {
 		return makeTree(objectsList, httpRequest, initialPath);
@@ -102,6 +108,9 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("</SCRIPT>\n");
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
 		// identity string for object of the page

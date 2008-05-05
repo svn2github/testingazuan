@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.behaviouralmodel.check.service;
 
 import it.eng.spago.base.SessionContainer;
@@ -64,12 +64,15 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
     private ILovDetail lovProvDetail = null;
 
     /**
-     * Class Constructor
+     * Class Constructor.
      */
     public ChecklistLookupModalityValuesModule() {
 	super();
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+     */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
 	initSession(request);
@@ -139,6 +142,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	logger.debug("OUT");
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#createCheckedObjectMap(it.eng.spago.base.SourceBean)
+     */
     public void createCheckedObjectMap(SourceBean request) throws Exception {
 	logger.debug("IN");
 	checkedObjectsMap = new HashMap();
@@ -172,6 +178,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	logger.debug("OUT");
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#updateCheckedObjectMap(it.eng.spago.base.SourceBean)
+     */
     public void updateCheckedObjectMap(SourceBean request) throws Exception {
 	logger.debug("IN");
 	checkedObjectsMap = new HashMap();
@@ -221,6 +230,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	logger.debug("OUT");
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#exitFromModule(it.eng.spago.base.SourceBean, boolean)
+     */
     public void exitFromModule(SourceBean response, boolean abort) throws Exception {
 	logger.debug("IN");
 	SessionContainer session = this.getRequestContainer().getSessionContainer();
@@ -256,6 +268,9 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	logger.debug("OUT");
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#navigationHandler(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean, boolean)
+     */
     public void navigationHandler(SourceBean request, SourceBean response, boolean moveNext) throws Exception {
 	super.navigationHandler(request, response, moveNext);
 	response.delAttribute("PUBLISHER_NAME");
@@ -523,13 +538,14 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
     }
 
     /**
-     * Gets the list
+     * Gets the list.
      * 
-     * @param request
-     *                The request SourceBean
-     * @param response
-     *                The response SourceBean
+     * @param request The request SourceBean
+     * @param response The response SourceBean
+     * 
      * @return ListIFace
+     * 
+     * @throws Exception the exception
      */
     public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,6 +44,9 @@ import org.hibernate.Transaction;
 public class AbstractHibernateConnectionCheckListModule extends
 		AbstractBasicCheckListModule {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#createCheckedObjectMap(it.eng.spago.base.SourceBean)
+	 */
 	public void createCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
 
@@ -97,6 +100,9 @@ public class AbstractHibernateConnectionCheckListModule extends
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		return DelegatedHibernateConnectionListService.getList(this, request, response);
 	} 

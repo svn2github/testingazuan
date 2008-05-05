@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,9 @@ public class SbiParuseCkId  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiParuseCkId() {
     }
     
@@ -52,27 +54,44 @@ public class SbiParuseCkId  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the sbi paruse.
      * 
+     * @return the sbi paruse
      */
     public SbiParuse getSbiParuse() {
         return this.sbiParuse;
     }
     
+    /**
+     * Sets the sbi paruse.
+     * 
+     * @param sbiParuse the new sbi paruse
+     */
     public void setSbiParuse(SbiParuse sbiParuse) {
         this.sbiParuse = sbiParuse;
     }
 
     /**
+     * Gets the sbi checks.
      * 
+     * @return the sbi checks
      */
     public SbiChecks getSbiChecks() {
         return this.sbiChecks;
     }
     
+    /**
+     * Sets the sbi checks.
+     * 
+     * @param sbiChecks the new sbi checks
+     */
     public void setSbiChecks(SbiChecks sbiChecks) {
         this.sbiChecks = sbiChecks;
     }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
@@ -83,6 +102,9 @@ public class SbiParuseCkId  implements java.io.Serializable {
  && (this.getSbiChecks()==castOther.getSbiChecks()) || ( this.getSbiChecks()!=null && castOther.getSbiChecks()!=null && this.getSbiChecks().equals(castOther.getSbiChecks()) );
    }
    
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    public int hashCode() {
          int result = 17;
          

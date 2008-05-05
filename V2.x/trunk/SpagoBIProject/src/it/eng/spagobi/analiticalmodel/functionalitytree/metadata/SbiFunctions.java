@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -50,11 +50,17 @@ public class SbiFunctions  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiFunctions() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param functId the funct id
+     */
     public SbiFunctions(Integer functId) {
         this.functId = functId;
     }
@@ -65,113 +71,202 @@ public class SbiFunctions  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the funct id.
      * 
+     * @return the funct id
      */
     public Integer getFunctId() {
         return this.functId;
     }
     
+    /**
+     * Sets the funct id.
+     * 
+     * @param functId the new funct id
+     */
     public void setFunctId(Integer functId) {
         this.functId = functId;
     }
 
 
     /**
+     * Gets the funct type cd.
      * 
+     * @return the funct type cd
      */
     public String getFunctTypeCd() {
         return this.functTypeCd;
     }
     
+    /**
+     * Sets the funct type cd.
+     * 
+     * @param functTypeCd the new funct type cd
+     */
     public void setFunctTypeCd(String functTypeCd) {
         this.functTypeCd = functTypeCd;
     }
 
     /**
+     * Gets the code.
      * 
+     * @return the code
      */
     public String getCode() {
         return this.code;
     }
     
+    /**
+     * Sets the code.
+     * 
+     * @param code the new code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
     /**
+     * Gets the name.
      * 
+     * @return the name
      */
     public String getName() {
         return this.name;
     }
     
+    /**
+     * Sets the name.
+     * 
+     * @param name the new name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
+     * Gets the descr.
      * 
+     * @return the descr
      */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
 
     /**
+     * Gets the path.
      * 
+     * @return the path
      */
     public String getPath() {
         return this.path;
     }
     
+    /**
+     * Sets the path.
+     * 
+     * @param path the new path
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
     /**
+     * Gets the sbi obj funcs.
      * 
+     * @return the sbi obj funcs
      */
     public Set getSbiObjFuncs() {
         return this.sbiObjFuncs;
     }
     
+    /**
+     * Sets the sbi obj funcs.
+     * 
+     * @param sbiObjFuncs the new sbi obj funcs
+     */
     public void setSbiObjFuncs(Set sbiObjFuncs) {
         this.sbiObjFuncs = sbiObjFuncs;
     }
 
     /**
+     * Gets the sbi func roles.
      * 
+     * @return the sbi func roles
      */
     public Set getSbiFuncRoles() {
         return this.sbiFuncRoles;
     }
     
+    /**
+     * Sets the sbi func roles.
+     * 
+     * @param sbiFuncRoles the new sbi func roles
+     */
     public void setSbiFuncRoles(Set sbiFuncRoles) {
         this.sbiFuncRoles = sbiFuncRoles;
     }
 
 
 
+	/**
+	 * Gets the funct type.
+	 * 
+	 * @return the funct type
+	 */
 	public SbiDomains getFunctType() {
 		return functType;
 	}
+	
+	/**
+	 * Sets the funct type.
+	 * 
+	 * @param functType the new funct type
+	 */
 	public void setFunctType(SbiDomains functType) {
 		this.functType = functType;
 	}
+	
+	/**
+	 * Gets the parent funct.
+	 * 
+	 * @return the parent funct
+	 */
 	public SbiFunctions getParentFunct() {
 		return parentFunct;
 	}
+	
+	/**
+	 * Sets the parent funct.
+	 * 
+	 * @param parentFunct the new parent funct
+	 */
 	public void setParentFunct(SbiFunctions parentFunct) {
 		this.parentFunct = parentFunct;
 	}
 
+	/**
+	 * Gets the prog.
+	 * 
+	 * @return the prog
+	 */
 	public Integer getProg() {
 		return prog;
 	}
 
+	/**
+	 * Sets the prog.
+	 * 
+	 * @param prog the new prog
+	 */
 	public void setProg(Integer prog) {
 		this.prog = prog;
 	}

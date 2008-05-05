@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,8 +46,10 @@ public class LovToListService extends AbstractListLookupModule  {
 	private ILovDetail lovDetail = null;
 	
 	/**
-	 * constructor
-	 * @param lovResult the lov result string
+	 * constructor.
+	 * 
+	 * @param lovDet the lov det
+	 * @param profile the profile
 	 */
 	public LovToListService(ILovDetail lovDet, IEngUserProfile profile) {
 		this.lovDetail = lovDet;
@@ -62,8 +64,9 @@ public class LovToListService extends AbstractListLookupModule  {
 	
 	
 	/**
-	 * constructor
-	 * @param lovResult the lov result string
+	 * constructor.
+	 * 
+	 * @param lovRes the lov res
 	 */
 	public LovToListService(String lovRes) {
 		this.lovResult = lovRes;
@@ -71,9 +74,11 @@ public class LovToListService extends AbstractListLookupModule  {
 	
 		
 	/**
-	 * Gets the Spago List interface of the lov result
+	 * Gets the Spago List interface of the lov result.
+	 * 
 	 * @return the Spago List interface of the lov result
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ListIFace getLovAsListService() throws Exception {
 		ListIFace list = null;	
@@ -110,10 +115,13 @@ public class LovToListService extends AbstractListLookupModule  {
 
 	
 	/**
-	 * Create the configuration for the lov list
+	 * Create the configuration for the lov list.
+	 * 
 	 * @param title the title of the lov list
+	 * 
 	 * @return the sourcebean which contains the configuration for the lov list
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public SourceBean getListServiceBaseConfig(String title) throws Exception {
 		SourceBean config = null;
@@ -150,7 +158,8 @@ public class LovToListService extends AbstractListLookupModule  {
 	}
 	
 	/**
-	 * Gets the lov result string
+	 * Gets the lov result string.
+	 * 
 	 * @return lov result string
 	 */
 	public String getLovResult() {
@@ -158,22 +167,36 @@ public class LovToListService extends AbstractListLookupModule  {
 	}
 
 	/**
-	 * Sets the lov result string
+	 * Sets the lov result string.
+	 * 
 	 * @param lovResult the lov result string to set
 	 */
 	public void setLovResult(String lovResult) {
 		this.lovResult = lovResult;
 	}
 
+	/**
+	 * Gets the lov detail.
+	 * 
+	 * @return the lov detail
+	 */
 	public ILovDetail getLovDetail() {
 		return lovDetail;
 	}
 
+	/**
+	 * Sets the lov detail.
+	 * 
+	 * @param lovDetail the new lov detail
+	 */
 	public void setLovDetail(ILovDetail lovDetail) {
 		this.lovDetail = lovDetail;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean arg0, SourceBean arg1) throws Exception {
 		return getLovAsListService();
 	}

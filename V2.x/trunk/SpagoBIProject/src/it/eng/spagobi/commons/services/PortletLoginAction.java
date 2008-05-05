@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 /*
  * Created on 21-apr-2005
  *
@@ -65,8 +65,15 @@ public class PortletLoginAction extends AbstractHttpAction {
     static Logger logger = Logger.getLogger(PortletLoginAction.class);
 
     /**
+     * Service.
+     * 
+     * @param request the request
+     * @param response the response
+     * 
+     * @throws Exception the exception
+     * 
      * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
-     *      it.eng.spago.base.SourceBean)
+     * it.eng.spago.base.SourceBean)
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");

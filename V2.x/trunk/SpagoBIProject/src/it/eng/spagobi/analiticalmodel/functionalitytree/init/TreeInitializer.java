@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -51,10 +51,10 @@ public class TreeInitializer implements InitializerIFace {
 	/**
 	 * Create and initialize all the repositories defined
 	 * in the configuration SourceBean, the method is called automatically
-	 * from Spago Framework at application start up 
-	 * if the Spago initializers.xml file is configured 
-	 * @param config, SourceBean containing parameters configuration
-	 * for each repository to create
+	 * from Spago Framework at application start up
+	 * if the Spago initializers.xml file is configured
+	 * 
+	 * @param config the config
 	 */
 	public void init(SourceBean config) {
 		
@@ -71,6 +71,9 @@ public class TreeInitializer implements InitializerIFace {
 			    "end initialization");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.init.InitializerIFace#getConfig()
+	 */
 	public SourceBean getConfig() {
 		return _config;
 	}

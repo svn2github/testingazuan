@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -48,11 +48,22 @@ public class SbiViewpoints  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiViewpoints() {
     }
 
-	/** minimal constructor */
+	/**
+	 * minimal constructor.
+	 * 
+	 * @param vpId the vp id
+	 * @param biobjId the biobj id
+	 * @param vpOwner the vp owner
+	 * @param vpName the vp name
+	 * @param vpScope the vp scope
+	 * @param vpCreationDate the vp creation date
+	 */
     public SbiViewpoints(Integer vpId, Integer biobjId, String vpOwner, String vpName, String vpScope, Date vpCreationDate) {
         this.vpId = vpId;
         //this.biobjId = biobjId;
@@ -62,7 +73,18 @@ public class SbiViewpoints  implements java.io.Serializable {
         this.vpCreationDate = vpCreationDate;
     }
     
-    /** full constructor */
+    /**
+     * full constructor.
+     * 
+     * @param vpId the vp id
+     * @param biobjId the biobj id
+     * @param vpOwner the vp owner
+     * @param vpName the vp name
+     * @param vpDesc the vp desc
+     * @param vpScope the vp scope
+     * @param vpValueParams the vp value params
+     * @param vpCreationDate the vp creation date
+     */
     public SbiViewpoints(Integer vpId, Integer biobjId, String vpOwner, String vpName, String vpDesc, String vpScope, String vpValueParams, Date vpCreationDate) {
         this.vpId = vpId;
         //this.biobjId = biobjId;
@@ -78,10 +100,20 @@ public class SbiViewpoints  implements java.io.Serializable {
    
     // Property accessors
 
+    /**
+     * Gets the vp id.
+     * 
+     * @return the vp id
+     */
     public Integer getVpId() {
         return this.vpId;
     }
     
+    /**
+     * Sets the vp id.
+     * 
+     * @param vpId the new vp id
+     */
     public void setVpId(Integer vpId) {
         this.vpId = vpId;
     }
@@ -94,46 +126,99 @@ public class SbiViewpoints  implements java.io.Serializable {
         this.biobjId = biobjId;
     }
 */
-    public String getVpName() {
+    /**
+ * Gets the vp name.
+ * 
+ * @return the vp name
+ */
+public String getVpName() {
         return this.vpName;
     }
     
+    /**
+     * Sets the vp name.
+     * 
+     * @param vpName the new vp name
+     */
     public void setVpName(String vpName) {
         this.vpName = vpName;
     }
 
+    /**
+     * Gets the vp desc.
+     * 
+     * @return the vp desc
+     */
     public String getVpDesc() {
         return this.vpDesc;
     }
     
+    /**
+     * Sets the vp desc.
+     * 
+     * @param vpDesc the new vp desc
+     */
     public void setVpDesc(String vpDesc) {
         this.vpDesc = vpDesc;
     }
 
+    /**
+     * Gets the vp scope.
+     * 
+     * @return the vp scope
+     */
     public String getVpScope() {
         return this.vpScope;
     }
     
+    /**
+     * Sets the vp scope.
+     * 
+     * @param vpScope the new vp scope
+     */
     public void setVpScope(String vpScope) {
         this.vpScope = vpScope;
     }
 
+    /**
+     * Gets the vp value params.
+     * 
+     * @return the vp value params
+     */
     public String getVpValueParams() {
         return this.vpValueParams;
     }
     
+    /**
+     * Sets the vp value params.
+     * 
+     * @param vpValueParams the new vp value params
+     */
     public void setVpValueParams(String vpValueParams) {
         this.vpValueParams = vpValueParams;
     }
+	
+	/**
+	 * Gets the vp creation date.
+	 * 
+	 * @return the vp creation date
+	 */
 	public Date getVpCreationDate() {
 		return this.vpCreationDate;
 	}
 
+	/**
+	 * Sets the vp creation date.
+	 * 
+	 * @param date the new vp creation date
+	 */
 	public void setVpCreationDate(Date date) {
 		this.vpCreationDate = date;
 	}
 
 	/**
+	 * Gets the vp owner.
+	 * 
 	 * @return the vpOwner
 	 */
 	public String getVpOwner() {
@@ -141,16 +226,28 @@ public class SbiViewpoints  implements java.io.Serializable {
 	}
 
 	/**
+	 * Sets the vp owner.
+	 * 
 	 * @param vpOwner the vpOwner to set
 	 */
 	public void setVpOwner(String vpOwner) {
 		this.vpOwner = vpOwner;
 	}
 
+	/**
+	 * Gets the sbi object.
+	 * 
+	 * @return the sbi object
+	 */
 	public SbiObjects getSbiObject() {
 		return sbiObject;
 	}
 
+	/**
+	 * Sets the sbi object.
+	 * 
+	 * @param sbiObject the new sbi object
+	 */
 	public void setSbiObject(SbiObjects sbiObject) {
 		this.sbiObject = sbiObject;
 	}

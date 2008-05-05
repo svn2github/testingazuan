@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -49,10 +49,25 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 	public static final String DETAIL_MODALITIES_VALUE_MODULE = "DetailModalitiesValueModule";
 	public static final String LIST_TEST_LOV_MODULE = "ListTestLovModule";
 
+	/**
+	 * Gets the module response.
+	 * 
+	 * @param responseContainer the response container
+	 * @param moduleName the module name
+	 * 
+	 * @return the module response
+	 */
 	public SourceBean getModuleResponse(ResponseContainer responseContainer, String moduleName) {
 		return (SourceBean) responseContainer.getServiceResponse().getAttribute(moduleName);
 	}
 	
+	/**
+	 * Gets the module responses.
+	 * 
+	 * @param responseContainer the response container
+	 * 
+	 * @return the module responses
+	 */
 	public void getModuleResponses(ResponseContainer responseContainer) {
 		detailMR = getModuleResponse(responseContainer, DETAIL_MODALITIES_VALUE_MODULE);
 		listTestLovMR = getModuleResponse(responseContainer, LIST_TEST_LOV_MODULE);
@@ -107,19 +122,27 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 		errorHandler.addError(error);
 	}
 	
+	/**
+	 * Checks if is test executed succesfully.
+	 * 
+	 * @param testModuleResponse the test module response
+	 * 
+	 * @return true, if is test executed succesfully
+	 */
 	public boolean isTestExecutedSuccesfully(SourceBean testModuleResponse) {		
 		return (isAttrbuteDefinedInModuleResponse(testModuleResponse, "testExecuted"));
 	}
 	
 	
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
 	 * @param requestContainer The object containing all request information
 	 * @param responseContainer The object containing all response information
+	 * 
 	 * @return A string representing the name of the correct publisher, which will
-	 * 		   call the correct jsp reference.
+	 * call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,9 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 	protected IEngUserProfile profile = null;
 	protected String initialPath = null;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#save()
+	 */
 	public void save() throws Exception {
 		logger.debug( "IN" );
 		super.save();
@@ -82,6 +85,9 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		logger.debug( "OUT" );
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.AbstractHibernateConnectionCheckListModule#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		logger.debug( "IN" );
 		RequestContainer requestContainer = this.getRequestContainer();	
@@ -242,6 +248,16 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
 		return rowSB;
 	}
+	
+	/**
+	 * Checks if is checked object.
+	 * 
+	 * @param objectID the object id
+	 * 
+	 * @return true, if is checked object
+	 * 
+	 * @throws Exception the exception
+	 */
 	public boolean isCheckedObject(String objectID) throws Exception{
 		boolean isChecked = false;
 		SourceBean checkedObjects = getCheckedObjects();

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,9 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#getExecutionNotes(java.lang.Integer, java.lang.String)
+	 */
 	public ObjNote getExecutionNotes(Integer biobjId, String execIdentif) throws Exception {
 		ObjNote objNote = null;
 		Session aSession = null;
@@ -76,6 +79,9 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#saveExecutionNotes(java.lang.Integer, it.eng.spagobi.analiticalmodel.document.bo.ObjNote)
+	 */
 	public void saveExecutionNotes(Integer biobjId, ObjNote objNote) throws Exception {
 		Session aSession = null;
 		Transaction tx = null;
@@ -110,6 +116,9 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#modifyExecutionNotes(it.eng.spagobi.analiticalmodel.document.bo.ObjNote)
+	 */
 	public void modifyExecutionNotes(ObjNote objNote) throws Exception {
 		Session aSession = null;
 		Transaction tx = null;
@@ -147,6 +156,9 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#eraseNotes(java.lang.Integer)
+	 */
 	public void eraseNotes(Integer biobjId) throws Exception {
 		Session aSession = null;
 		Transaction tx = null;

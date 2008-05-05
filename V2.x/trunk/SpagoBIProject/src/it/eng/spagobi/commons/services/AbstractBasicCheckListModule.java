@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -62,6 +62,12 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	
 	
 	
+	/**
+	 * Clear session.
+	 * 
+	 * @param session the session
+	 * @param moduleName the module name
+	 */
 	public static void clearSession(SessionContainer session, String moduleName){
 		
 		// clear all input parameters
@@ -97,14 +103,30 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		session.delAttribute("RETURN_STATUS");
 	}
 	
+	/**
+	 * Instantiates a new abstract basic check list module.
+	 */
 	public AbstractBasicCheckListModule(){
 		super();
 	}
 			
+	/**
+	 * Save.
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void save() throws Exception {
 		SourceBean chekhedObjects = getCheckedObjects();
 	}
 	
+	/**
+	 * Exit from module.
+	 * 
+	 * @param response the response
+	 * @param abort the abort
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void exitFromModule(SourceBean response, boolean abort) throws Exception{
 		SessionContainer session = this.getRequestContainer().getSessionContainer();
 		
@@ -122,6 +144,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		response.setAttribute("PUBLISHER_NAME", "ReturnBackPublisher");
 	}
 	
+	/**
+	 * Gets the object key.
+	 * 
+	 * @param object the object
+	 * 
+	 * @return the object key
+	 */
 	public String getObjectKey(SourceBean object) {
 		String objectIdName = (String)((SourceBean) config.getAttribute("KEYS.OBJECT")).getAttribute("key");				
 		String objectIdValue = object.getAttribute(objectIdName).toString();
@@ -129,6 +158,15 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		return objectIdValue;
 	}
 	
+	/**
+	 * Gets the object.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the object
+	 * 
+	 * @throws Exception the exception
+	 */
 	public SourceBean getObject(String key) throws Exception {
 		String objectIdName = (String)((SourceBean) config.getAttribute("KEYS.OBJECT")).getAttribute("key");
 		SourceBean object = new SourceBean(OBJECT);
@@ -138,6 +176,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	
 	
 	
+	/**
+	 * Gets the checked objects.
+	 * 
+	 * @return the checked objects
+	 * 
+	 * @throws Exception the exception
+	 */
 	public SourceBean getCheckedObjects() throws Exception{
 		SourceBean chekhedObjects = new SourceBean(CHECKED_OBJECTS);
 		Iterator it = checkedObjectsMap.keySet().iterator();
@@ -152,6 +197,14 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	
 	
 		
+	/**
+	 * Gets the query parameters.
+	 * 
+	 * @param queryName the query name
+	 * @param request the request
+	 * 
+	 * @return the query parameters
+	 */
 	public String[] getQueryParameters(String queryName, SourceBean request) {
 		String[] parameters = null;
 		
@@ -174,6 +227,14 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		return parameters;
 	}	
 	
+	/**
+	 * Gets the query statement.
+	 * 
+	 * @param queryName the query name
+	 * @param parameters the parameters
+	 * 
+	 * @return the query statement
+	 */
 	public String getQueryStatement(String queryName, String[] parameters) {
 		String statementStr = null;
 						
@@ -198,6 +259,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		return results;
 	}
 	
+	/**
+	 * Creates the checked object map.
+	 * 
+	 * @param request the request
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void createCheckedObjectMap(SourceBean request) throws Exception {
 		checkedObjectsMap = new HashMap();
 
@@ -242,6 +310,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		}
 	}
 	
+	/**
+	 * Update checked object map.
+	 * 
+	 * @param request the request
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void updateCheckedObjectMap(SourceBean request) throws Exception {
 		if (checkedObjectsMap == null)
 			checkedObjectsMap = new HashMap();
@@ -257,6 +332,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		}
 	}
 	
+	/**
+	 * Preprocess.
+	 * 
+	 * @param request the request
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void preprocess(SourceBean request) throws Exception {		
 		
 		if(getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS) != null) {
@@ -275,10 +357,24 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	}
 	
 	
+	/**
+	 * Checks if is checked.
+	 * 
+	 * @param object the object
+	 * 
+	 * @return true, if is checked
+	 */
 	public boolean isChecked(SourceBean object) {
 		return (checkedObjectsMap.get(getObjectKey(object)) != null);
 	}
 		
+	/**
+	 * Postprocess.
+	 * 
+	 * @param response the response
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void postprocess(SourceBean response) throws Exception {	
 		List objectsList = response.getAttributeAsList("PAGED_LIST.ROWS.ROW");
 		SourceBean pagedList = (SourceBean)response.getAttribute("PAGED_LIST");
@@ -323,6 +419,9 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	public SourceBean _request = null;
 	public SourceBean _response = null;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {		
 		config = getConfig();
 		if(config == null) config = (SourceBean) response.getAttribute("CONFIG");
@@ -387,6 +486,15 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		}			
 	}
 	
+	/**
+	 * Navigation handler.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * @param moveNext the move next
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void navigationHandler(SourceBean request, SourceBean response, boolean moveNext) throws Exception{
 		preprocess(request);
 		int destPageNumber = (moveNext)? pageNumber+1: pageNumber-1;		
@@ -399,6 +507,15 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 	}
 	
+	/**
+	 * Navigation handler.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * @param pageNumber the page number
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void navigationHandler(SourceBean request, SourceBean response, Integer pageNumber) throws Exception{
 		preprocess(request);
 		request.updAttribute("MESSAGE", "LIST_PAGE");
@@ -424,10 +541,16 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		return attrValue;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		return DelegatedBasicListService.getList(this, request, response);
 	} 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule#delete(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public boolean delete(SourceBean request, SourceBean response) {
 		return DelegatedBasicListService.delete(this, request, response);
 	} 

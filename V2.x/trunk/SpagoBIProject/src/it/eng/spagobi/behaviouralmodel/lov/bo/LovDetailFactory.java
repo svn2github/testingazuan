@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,10 +39,13 @@ public class LovDetailFactory {
 	
 	/**
 	 * Creates an instace of a lov class (which implements ILovDetail interface)
-	 * starting from the xml definition of the lov
+	 * starting from the xml definition of the lov.
+	 * 
 	 * @param dataDefinition the xml definition of the lov
+	 * 
 	 * @return The instance of the class which implements the ILovDetail interface
-	 * @throws SourceBeanException
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public static ILovDetail getLovFromXML(String dataDefinition) throws SourceBeanException {
 		dataDefinition = resolveRetroCompatibility(dataDefinition);
@@ -107,10 +110,13 @@ public class LovDetailFactory {
 	}
 	
 	/**
-	 * Gets the code of the lov type based on the input lovprovider string 
+	 * Gets the code of the lov type based on the input lovprovider string.
+	 * 
 	 * @param lovprovider the lovprovider string of the lov
+	 * 
 	 * @return the string code of the love type
-	 * @throws SourceBeanException
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public static String getLovTypeCode(String lovprovider) throws SourceBeanException {
 		String type = "";

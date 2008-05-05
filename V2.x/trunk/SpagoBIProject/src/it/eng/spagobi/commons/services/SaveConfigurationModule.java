@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,10 +42,20 @@ import javax.portlet.PortletRequest;
  */
 public class SaveConfigurationModule extends AbstractModule {
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 	
 	/**
+	 * Service.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 

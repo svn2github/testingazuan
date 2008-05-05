@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,9 +42,10 @@ public interface IDomainDAO {
 	 * of them into a <code>Domain</objects> and after putting all objects into
 	 * a list, which is returned.
 	 * 
+	 * @param domainType The String identifying the domain type
 	 * 
-	 * @param domainType	The String identifying the domain type
-	 * @return	The list of all domains
+	 * @return The list of all domains
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
@@ -54,9 +55,11 @@ public interface IDomainDAO {
 	 * Returns the domain identified by the input parameter <code>id</code>,
 	 * storing it in a <code>Domain</code> object.
 	 * 
-	 * @param id	The identifier domain id
-	 * @return	The <code>Domain</code> object storing the domain
-	 * @throws EMFUserError	if an Exception occurs
+	 * @param id The identifier domain id
+	 * 
+	 * @return The <code>Domain</code> object storing the domain
+	 * 
+	 * @throws EMFUserError if an Exception occurs
 	 */
 	public  Domain loadDomainById(Integer id)
 			throws EMFUserError;
@@ -65,10 +68,12 @@ public interface IDomainDAO {
 	 * Returns the domain identified by the two input parameters <code>codeDomain</code>
 	 * and <code>codeValue</code>, storing it in a <code>Domain</code> object.
 	 * 
-	 * @param codeDomain	The identifier domain code
-	 * @param codeValue	The identifier domain value code
-	 * @return	The <code>Domain</code> object storing the domain
-	 * @throws EMFUserError	if an Exception occurs
+	 * @param codeDomain The identifier domain code
+	 * @param codeValue The identifier domain value code
+	 * 
+	 * @return The <code>Domain</code> object storing the domain
+	 * 
+	 * @throws EMFUserError if an Exception occurs
 	 */
 	public  Domain loadDomainByCodeAndValue(String codeDomain, String codeValue)
 			throws EMFUserError;
@@ -78,7 +83,9 @@ public interface IDomainDAO {
 	 * Loads all possible domain, storing each
 	 * of them into a <code>Domain</objects> and after putting all objects into
 	 * a list, which is returned.
-	 * @return	The list of all domains
+	 * 
+	 * @return The list of all domains
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ public class FixedListDetail  implements ILovDetail  {
 	private List invisibleColumnNames = null;
 	
 	/**
-	 * constructor
+	 * constructor.
 	 */
 	public FixedListDetail() {
 		visibleColumnNames = new ArrayList();
@@ -58,15 +58,22 @@ public class FixedListDetail  implements ILovDetail  {
 	} 
 	
 	/**
-	 * constructor 
+	 * constructor.
+	 * 
+	 * @param dataDefinition the data definition
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public FixedListDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML(dataDefinition);
 	}
 	
-	/** loads the lov from an xml string 
+	/**
+	 * loads the lov from an xml string.
+	 * 
 	 * @param dataDefinition the xml definition of the lov
-	 * @throws SourceBeanException 
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public void  loadFromXML (String dataDefinition) throws SourceBeanException {
 		dataDefinition.trim();
@@ -140,7 +147,8 @@ public class FixedListDetail  implements ILovDetail  {
 	}	
 	
 	/**
-	 * serialize the lov to an xml string
+	 * serialize the lov to an xml string.
+	 * 
 	 * @return the serialized xml string
 	 */
 	public String toXML() {
@@ -168,10 +176,13 @@ public class FixedListDetail  implements ILovDetail  {
 	}
 	
 	/**
-	 * Returns the result of the lov using a user profile to fill the lov profile attribute
+	 * Returns the result of the lov using a user profile to fill the lov profile attribute.
+	 * 
 	 * @param profile the profile of the user
+	 * 
 	 * @return the string result of the lov
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String lovResult = "<ROWS>";
@@ -193,9 +204,11 @@ public class FixedListDetail  implements ILovDetail  {
 		
 
 	/**
-	 * Gets the list of names of the profile attributes required
+	 * Gets the list of names of the profile attributes required.
+	 * 
 	 * @return list of profile attribute names
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
 		List names = new ArrayList();
@@ -217,9 +230,11 @@ public class FixedListDetail  implements ILovDetail  {
 	}
 
 	/**
-	 * Checks if the lov requires one or more profile attributes
+	 * Checks if the lov requires one or more profile attributes.
+	 * 
 	 * @return true if the lov require one or more profile attributes, false otherwise
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public boolean requireProfileAttributes() throws Exception {
 		boolean contains = false;
@@ -232,9 +247,10 @@ public class FixedListDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * Adds a lov to the lov Detail List
-	 * @param name The added lov name
+	 * Adds a lov to the lov Detail List.
+	 * 
 	 * @param description The added lov description
+	 * @param value the value
 	 */
 	public void add(String value, String description) {
 		// if name or description are empty don't add
@@ -259,7 +275,8 @@ public class FixedListDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * Deletes a lov from the lov Detail List
+	 * Deletes a lov from the lov Detail List.
+	 * 
 	 * @param value The deleted lov name
 	 * @param description The deleted lov description
 	 */
@@ -277,10 +294,13 @@ public class FixedListDetail  implements ILovDetail  {
 	
 	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
-	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been 
-	 * built. 
-	 * @param dataDefinition	The XML input String
+	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been
+	 * built.
+	 * 
+	 * @param dataDefinition The XML input String
+	 * 
 	 * @return The corrispondent <code>LovDetailList</code> object
+	 * 
 	 * @throws SourceBeanException If a SourceBean Exception occurred
 	 */
 	public static FixedListDetail  fromXML (String dataDefinition) throws SourceBeanException {
@@ -289,48 +309,75 @@ public class FixedListDetail  implements ILovDetail  {
 	
 	
 	/**
-	 * Gets item of the fixed list
+	 * Gets item of the fixed list.
+	 * 
 	 * @return items of the fixed list
 	 */
 	public List getItems() {
 		return items;
 	}
+	
 	/**
-	 * Sets items of the fixed list
+	 * Sets items of the fixed list.
+	 * 
 	 * @param items the items to set
 	 */
 	public void setLovs(List items) {
 		this.items = items;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getDescriptionColumnName()
+	 */
 	public String getDescriptionColumnName() {
 		return descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setDescriptionColumnName(java.lang.String)
+	 */
 	public void setDescriptionColumnName(String descriptionColumnName) {
 		this.descriptionColumnName = descriptionColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getInvisibleColumnNames()
+	 */
 	public List getInvisibleColumnNames() {
 		return invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setInvisibleColumnNames(java.util.List)
+	 */
 	public void setInvisibleColumnNames(List invisibleColumnNames) {
 		this.invisibleColumnNames = invisibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getValueColumnName()
+	 */
 	public String getValueColumnName() {
 		return valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setValueColumnName(java.lang.String)
+	 */
 	public void setValueColumnName(String valueColumnName) {
 		this.valueColumnName = valueColumnName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getVisibleColumnNames()
+	 */
 	public List getVisibleColumnNames() {
 		return visibleColumnNames;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#setVisibleColumnNames(java.util.List)
+	 */
 	public void setVisibleColumnNames(List visibleColumnNames) {
 		this.visibleColumnNames = visibleColumnNames;
 	}

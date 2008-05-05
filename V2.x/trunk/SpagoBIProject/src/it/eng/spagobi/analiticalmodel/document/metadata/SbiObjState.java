@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,11 +40,17 @@ public class SbiObjState  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiObjState() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param id the id
+     */
     public SbiObjState(SbiObjStateId id) {
         this.id = id;
     }
@@ -55,34 +61,55 @@ public class SbiObjState  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the id.
      * 
+     * @return the id
      */
     public SbiObjStateId getId() {
         return this.id;
     }
     
+    /**
+     * Sets the id.
+     * 
+     * @param id the new id
+     */
     public void setId(SbiObjStateId id) {
         this.id = id;
     }
 
     /**
+     * Gets the end dt.
      * 
+     * @return the end dt
      */
     public Date getEndDt() {
         return this.endDt;
     }
     
+    /**
+     * Sets the end dt.
+     * 
+     * @param endDt the new end dt
+     */
     public void setEndDt(Date endDt) {
         this.endDt = endDt;
     }
 
     /**
+     * Gets the note.
      * 
+     * @return the note
      */
     public String getNote() {
         return this.note;
     }
     
+    /**
+     * Sets the note.
+     * 
+     * @param note the new note
+     */
     public void setNote(String note) {
         this.note = note;
     }

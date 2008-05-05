@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -116,7 +116,7 @@ public class ListTag extends TagSupport
     private String rowColor="#F5F6BE";
     
     /**
-     *Constructor
+     * Constructor.
      */
     public ListTag()
     {
@@ -124,6 +124,9 @@ public class ListTag extends TagSupport
     }
 
        
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		logger.info(" method invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -1328,7 +1331,7 @@ public class ListTag extends TagSupport
 	/**
 	 * Traces the setting of an action name.
 	 * 
-	 * @param actionName The action name string at input. 
+	 * @param actionName The action name string at input.
 	 */
 	public void setActionName(String actionName) {
 		TracerSingleton.log(
@@ -1341,7 +1344,7 @@ public class ListTag extends TagSupport
 	/**
 	 * Traces the setting of a module name.
 	 * 
-	 * @param moduleName The module name string at input. 
+	 * @param moduleName The module name string at input.
 	 */
 	
 	public void setModuleName(String moduleName) {
@@ -1353,6 +1356,12 @@ public class ListTag extends TagSupport
 	} // public void setModuleName(String moduleName)
 
 	/**
+	 * Do end tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
+	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
 	
@@ -1375,6 +1384,11 @@ public class ListTag extends TagSupport
 
 
 
+	/**
+	 * Sets the filter.
+	 * 
+	 * @param filter the new filter
+	 */
 	public void setFilter(String filter) {
 		TracerSingleton.log(
 				Constants.NOME_MODULO,

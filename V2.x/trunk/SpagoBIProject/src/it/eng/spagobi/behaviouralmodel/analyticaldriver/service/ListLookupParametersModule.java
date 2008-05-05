@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -54,14 +54,17 @@ public class ListLookupParametersModule extends AbstractBasicListModule {
 	static private Logger logger = Logger.getLogger(ListLookupParametersModule.class);
 	public static final String MODULE_PAGE = "ParametersLookupPage";
 	EMFErrorHandler errorHandler = null;
+	
 	/**
-	 * Class Constructor
-	 *
+	 * Class Constructor.
 	 */
 	public ListLookupParametersModule() {
 		super();
 	} 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");	
 		errorHandler  = getErrorHandler();
@@ -89,10 +92,14 @@ public class ListLookupParametersModule extends AbstractBasicListModule {
 	}
 	
 	/**
-	 * Gets the list
+	 * Gets the list.
+	 * 
 	 * @param request The request SourceBean
 	 * @param response The response SourceBean
-	 * @return ListIFace 
+	 * 
+	 * @return ListIFace
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		return DelegatedHibernateConnectionListService.getList(this, request, response);

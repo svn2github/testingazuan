@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -56,17 +56,21 @@ public class DetailChecksModule extends AbstractModule {
 	private String modalita = "";
 	private Boolean back = new Boolean(false);
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 
 	/**
-	 * Reads the operation asked by the user and calls the insertion, modify, detail and 
-	 * deletion methods
+	 * Reads the operation asked by the user and calls the insertion, modify, detail and
+	 * deletion methods.
 	 * 
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
-	 * @throws exception If an exception occurs
 	 * 
+	 * @throws exception If an exception occurs
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
@@ -272,11 +276,12 @@ public class DetailChecksModule extends AbstractModule {
 	}
 	
 	/**
-	 * During a value constraint insertion/modify, controls if the label given to the value constraint 
+	 * During a value constraint insertion/modify, controls if the label given to the value constraint
 	 * is yet in use.
 	 * 
-	 * @param label	The label of the check to insert/modify
+	 * @param label The label of the check to insert/modify
 	 * @param checkId The id of the check to insert/modify
+	 * 
 	 * @throws EMFUserError If any Exception occurred
 	 */
 	public void labelControl (String label, Integer checkId) throws EMFUserError {

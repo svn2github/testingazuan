@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,15 @@ import org.hibernate.criterion.Expression;
 public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 		IParameterDAO {
 
-	/** 
+	/**
+	 * Load for detail by parameter id.
+	 * 
+	 * @param parameterID the parameter id
+	 * 
+	 * @return the parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#loadForDetailByParameterID(java.lang.Integer)
 	 */
 	public Parameter loadForDetailByParameterID(Integer parameterID)throws EMFUserError{
@@ -100,7 +108,16 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	
-	/** 
+	/**
+	 * Load for execution by parameter i dand role name.
+	 * 
+	 * @param parameterID the parameter id
+	 * @param roleName the role name
+	 * 
+	 * @return the parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#loadForExecutionByParameterIDandRoleName(java.lang.Integer, java.lang.String)
 	 */
 	public Parameter loadForExecutionByParameterIDandRoleName(
@@ -211,6 +228,12 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
+	 * Load all parameters.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#loadAllParameters()
 	 */
 	public List loadAllParameters() throws EMFUserError {
@@ -247,6 +270,12 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Modify parameter.
+	 * 
+	 * @param aParameter the a parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#modifyParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter)
 	 */
 	public void modifyParameter(Parameter aParameter) throws EMFUserError {
@@ -298,6 +327,12 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 		
 	/**
+	 * Insert parameter.
+	 * 
+	 * @param aParameter the a parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#insertParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter)
 	 */
 	public void insertParameter(Parameter aParameter) throws EMFUserError {
@@ -347,6 +382,12 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Erase parameter.
+	 * 
+	 * @param aParameter the a parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO#eraseParameter(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter)
 	 */
 	public void eraseParameter(Parameter aParameter) throws EMFUserError {
@@ -384,6 +425,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 	 * the corrispondent <code>Parameter</code> object.
 	 * 
 	 * @param hibParameters The hybernate parameter
+	 * 
 	 * @return The corrispondent <code>Parameter</code> object
 	 */
 	public Parameter toParameter(SbiParameters hibParameters){

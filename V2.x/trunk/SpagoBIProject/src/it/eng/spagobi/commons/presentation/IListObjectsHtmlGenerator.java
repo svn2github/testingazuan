@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,8 @@ public interface IListObjectsHtmlGenerator {
 	 * @param list the interface object list at input
 	 * @param httpRequest The request http
 	 * @param listPage String for paging navigation
-	 * @return	the string buffer with HTML code
+	 * 
+	 * @return the string buffer with HTML code
 	 */
 	public StringBuffer makeList(ListIFace list, HttpServletRequest httpRequest, String listPage);
 	

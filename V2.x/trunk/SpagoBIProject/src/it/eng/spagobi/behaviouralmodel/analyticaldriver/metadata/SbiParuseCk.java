@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,11 +39,17 @@ public class SbiParuseCk  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiParuseCk() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param id the id
+     */
     public SbiParuseCk(SbiParuseCkId id) {
         this.id = id;
     }
@@ -54,23 +60,37 @@ public class SbiParuseCk  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the id.
      * 
+     * @return the id
      */
     public SbiParuseCkId getId() {
         return this.id;
     }
     
+    /**
+     * Sets the id.
+     * 
+     * @param id the new id
+     */
     public void setId(SbiParuseCkId id) {
         this.id = id;
     }
 
     /**
+     * Gets the prog.
      * 
+     * @return the prog
      */
     public Integer getProg() {
         return this.prog;
     }
     
+    /**
+     * Sets the prog.
+     * 
+     * @param prog the new prog
+     */
     public void setProg(Integer prog) {
         this.prog = prog;
     }

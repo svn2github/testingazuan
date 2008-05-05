@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -102,6 +102,9 @@ public class CheckBoxTag extends TagSupport {
     
     final static int END_RANGE_PAGES = 6;  
     
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		
 		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
@@ -901,10 +904,11 @@ public class CheckBoxTag extends TagSupport {
 		String url = urlBuilder.getUrl(httpRequest, paramsMap);
 		return url;
 	}
+	
 	/**
 	 * Traces the setting of an action name.
 	 * 
-	 * @param actionName The action name string at input. 
+	 * @param actionName The action name string at input.
 	 */
 	public void setActionName(String actionName) {
 		TracerSingleton.log(
@@ -917,7 +921,7 @@ public class CheckBoxTag extends TagSupport {
 	/**
 	 * Traces the setting of a module name.
 	 * 
-	 * @param moduleName The module name string at input. 
+	 * @param moduleName The module name string at input.
 	 */
 	
 	public void setModuleName(String moduleName) {
@@ -929,6 +933,12 @@ public class CheckBoxTag extends TagSupport {
 	} // public void setModuleName(String moduleName)
 
 	/**
+	 * Do end tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
+	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
 	
@@ -951,6 +961,11 @@ public class CheckBoxTag extends TagSupport {
 
 
 
+	/**
+	 * Sets the filter.
+	 * 
+	 * @param filter the new filter
+	 */
 	public void setFilter(String filter) {
 		TracerSingleton.log(
 				Constants.NOME_MODULO,

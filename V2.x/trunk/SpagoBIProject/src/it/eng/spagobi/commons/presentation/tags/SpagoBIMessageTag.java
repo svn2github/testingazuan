@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -57,42 +57,54 @@ public class SpagoBIMessageTag extends TagSupport {
     protected String bundle = null;
         
     /**
+     * Gets the args.
+     * 
      * @return The arguments
      */
     public String getArgs() {
         return (this.args);
     }
+    
     /**
+     * Sets the args.
      * 
-     * @param args	The arguments to set
+     * @param args The arguments to set
      */
     public void setArgs(String args) {
     	this.args = args;
     }
+    
     /**
+     * Gets the bundle.
      * 
      * @return The servlet context attribute key
      */
     public String getBundle() {
         return (this.bundle);
     }
+    
     /**
+     * Sets the bundle.
      * 
-     * @param bundle	The servlet context attribute key to set
+     * @param bundle The servlet context attribute key to set
      */
     public void setBundle(String bundle) {
         this.bundle = bundle;
     }
+    
     /**
+     * Gets the key.
      * 
      * @return The reference key
      */
     public String getKey() {
         return (this.key);
     }
+    
     /**
+     * Sets the key.
      * 
-     * @param key	The key to set
+     * @param key The key to set
      */
     public void setKey(String key) {
         this.key = key;
@@ -100,7 +112,11 @@ public class SpagoBIMessageTag extends TagSupport {
     
     /**
      * Process the start tag.
-     *
+     * 
+     * @return the int
+     * 
+     * @throws JspException the jsp exception
+     * 
      * @exception JspException if a JSP exception has occurred
      */
     public int doStartTag() throws JspException {

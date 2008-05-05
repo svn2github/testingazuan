@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -68,17 +68,21 @@ public class DetailFunctionalityModule extends AbstractModule {
 	
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 
 	/**
-	 * Reads the operation asked by the user and calls the insertion, modify, detail and 
-	 * deletion methods
+	 * Reads the operation asked by the user and calls the insertion, modify, detail and
+	 * deletion methods.
 	 * 
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
-	 * @throws exception If an exception occurs
 	 * 
+	 * @throws exception If an exception occurs
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute(AdmintoolsConstants.MESSAGE_DETAIL);
@@ -379,14 +383,16 @@ public class DetailFunctionalityModule extends AbstractModule {
 		
 		return lowFunct;
 	}
+	
 	/**
 	 * Controls if a particular role belongs to the parent functionality. It is
-	 * called inside functionalities Jsp in ordet to identify those roles that a child 
+	 * called inside functionalities Jsp in ordet to identify those roles that a child
 	 * functionality is able to select.
 	 * 
 	 * @param rule    The role id string identifying the role
 	 * @param parentLowFunct the parent low functionality object
 	 * @param roleType The role's type
+	 * 
 	 * @return True if the role belongs to the parent funct, else false
 	 */
 	public boolean isParentRule(String rule, LowFunctionality parentLowFunct,String roleType){
@@ -423,20 +429,22 @@ public class DetailFunctionalityModule extends AbstractModule {
 		}
 		return isParent;
 		}
+	
 	/**
 	 * Defines all roles that have to be erased in order to keep functionalities
 	 * tree consistence. When we leave some permissions to a functionality, those
-	 * permissions will not be assignable to all the children functionality. If any child 
-	 * has a permission that his parent anymore has, this permission mus be deleted for all 
-	 * father's children and descendants. 
-	 * This metod recusively scans all father's descendants and saves inside a Set all roles 
+	 * permissions will not be assignable to all the children functionality. If any child
+	 * has a permission that his parent anymore has, this permission mus be deleted for all
+	 * father's children and descendants.
+	 * This metod recusively scans all father's descendants and saves inside a Set all roles
 	 * that must be erased from the Database.
 	 * 
 	 * @param lowFuncParent the parent Functionality
 	 * @param rolesToErase the set containing all roles to erase
-	 * @throws EMFUserError if any EMFUserError exception occurs 
-	 * @throws BuildOperationException if any BuildOperationException exception occurs 
-	 * @throws OperationExecutionException if any OperationExecutionException exception occurs 
+	 * 
+	 * @throws EMFUserError if any EMFUserError exception occurs
+	 * @throws BuildOperationException if any BuildOperationException exception occurs
+	 * @throws OperationExecutionException if any OperationExecutionException exception occurs
 	 */
 	public void loadRolesToErase(LowFunctionality lowFuncParent, Set rolesToErase) throws EMFUserError{
 		String parentPath = lowFuncParent.getPath();
@@ -514,6 +522,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 		
 		
 	}
+	
 	/**
 	 * Erases the defined input role from a functionality object, if this one
 	 * has the role.The updated functionality object is returned.
@@ -521,6 +530,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 	 * @param func the input functionality object
 	 * @param roleId the role id for the role to erase
 	 * @param roleType the type of the role to erase
+	 * 
 	 * @return the updated functionality
 	 */
 	public LowFunctionality eraseRolesFromFunctionality (LowFunctionality func, String roleId, String roleType){

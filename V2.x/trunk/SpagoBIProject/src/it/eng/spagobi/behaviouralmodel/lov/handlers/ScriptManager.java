@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,11 +39,14 @@ import groovy.lang.GroovyShell;
 public class ScriptManager {
 
 	/**
-	 * Run a script 
-	 * @param script the script to run 
+	 * Run a script.
+	 * 
+	 * @param script the script to run
 	 * @param bind the bindings for script variables
+	 * 
 	 * @return the result of the script
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public static String runScript(String script, Binding bind) throws Exception {
 		String result = run(script, bind);
@@ -51,10 +54,13 @@ public class ScriptManager {
     }
 	
 	/**
-	 * Run a script
-	 * @param script the script to run 
+	 * Run a script.
+	 * 
+	 * @param script the script to run
+	 * 
 	 * @return the result of the script
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public static String runScript(String script) throws Exception {
 		String result = run(script, null);
@@ -128,8 +134,10 @@ public class ScriptManager {
 	
 	
 	/**
-	 * Fill a groovy binding with attributes of an hashmap
+	 * Fill a groovy binding with attributes of an hashmap.
+	 * 
 	 * @param attrs Map of attibutes to load into binding
+	 * 
 	 * @return the groovy binding object
 	 */
 	public static Binding fillBinding(HashMap attrs) {
@@ -147,9 +155,13 @@ public class ScriptManager {
 	}
 	
 	/**
-	 * Fill a groovy binding with attributes of a user profile
-	 * @param attrs User Profile which contains attributes to load into a binding
+	 * Fill a groovy binding with attributes of a user profile.
+	 * 
+	 * @param profile the profile
+	 * 
 	 * @return the groovy binding object
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public static Binding fillBinding(IEngUserProfile profile) throws EMFInternalError {
 		HashMap allAttrs = GeneralUtilities.getAllProfileAttributes(profile);

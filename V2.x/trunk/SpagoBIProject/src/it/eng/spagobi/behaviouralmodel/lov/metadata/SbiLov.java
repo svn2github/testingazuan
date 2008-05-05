@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -47,11 +47,17 @@ public class SbiLov  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiLov() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param lovId the lov id
+     */
     public SbiLov(Integer lovId) {
         this.lovId = lovId;
     }
@@ -62,93 +68,165 @@ public class SbiLov  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the lov id.
      * 
+     * @return the lov id
      */
     public Integer getLovId() {
         return this.lovId;
     }
     
+    /**
+     * Sets the lov id.
+     * 
+     * @param lovId the new lov id
+     */
     public void setLovId(Integer lovId) {
         this.lovId = lovId;
     }
 
 
     /**
+     * Gets the input type cd.
      * 
+     * @return the input type cd
      */
     public String getInputTypeCd() {
         return this.inputTypeCd;
     }
     
+    /**
+     * Sets the input type cd.
+     * 
+     * @param inputTypeCd the new input type cd
+     */
     public void setInputTypeCd(String inputTypeCd) {
         this.inputTypeCd = inputTypeCd;
     }
 
     /**
+     * Gets the default val.
      * 
+     * @return the default val
      */
     public String getDefaultVal() {
         return this.defaultVal;
     }
     
+    /**
+     * Sets the default val.
+     * 
+     * @param defaultVal the new default val
+     */
     public void setDefaultVal(String defaultVal) {
         this.defaultVal = defaultVal;
     }
 
     /**
+     * Gets the label.
      * 
+     * @return the label
      */
     public String getLabel() {
         return this.label;
     }
     
+    /**
+     * Sets the label.
+     * 
+     * @param label the new label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
     /**
+     * Gets the descr.
      * 
+     * @return the descr
      */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
 
     /**
+     * Gets the profile attr.
      * 
+     * @return the profile attr
      */
     public String getProfileAttr() {
         return this.profileAttr;
     }
     
+    /**
+     * Sets the profile attr.
+     * 
+     * @param profileAttr the new profile attr
+     */
     public void setProfileAttr(String profileAttr) {
         this.profileAttr = profileAttr;
     }
 
     /**
+     * Gets the lov provider.
      * 
+     * @return the lov provider
      */
     public String getLovProvider() {
         return this.lovProvider;
     }
     
+    /**
+     * Sets the lov provider.
+     * 
+     * @param lovProvider the new lov provider
+     */
     public void setLovProvider(String lovProvider) {
         this.lovProvider = lovProvider;
     }
 
 
+	/**
+	 * Gets the input type.
+	 * 
+	 * @return the input type
+	 */
 	public SbiDomains getInputType() {
 		return inputType;
 	}
+	
+	/**
+	 * Sets the input type.
+	 * 
+	 * @param inputType the new input type
+	 */
 	public void setInputType(SbiDomains inputType) {
 		this.inputType = inputType;
 	}
+	
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}

@@ -1,35 +1,24 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
-All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+SpagoBI - The Business Intelligence Free Platform
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
-      conditions and the following disclaimer.
-      
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
-      conditions and the following disclaimer in the documentation and/or other materials 
-      provided with the distribution.
-      
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
-      be used to endorse or promote products derived from this software without specific
-      prior written permission.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
- */
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.commons.utilities;
 
 import java.util.ArrayList;
@@ -52,10 +41,19 @@ public class ParameterValuesDecoder {
 	//	CONSTRUCTORS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Instantiates a new parameter values decoder.
+	 */
 	public ParameterValuesDecoder() {
 		this(DEFAULT_OPEN_BLOCK_MARKER, DEFAULT_CLOSE_BLOCK_MARKER);
 	}
 	
+	/**
+	 * Instantiates a new parameter values decoder.
+	 * 
+	 * @param openBlockMarker the open block marker
+	 * @param closeBlockMarker the close block marker
+	 */
 	public ParameterValuesDecoder(String openBlockMarker, String closeBlockMarker) {
 		this.openBlockMarker = openBlockMarker;
 		this.closeBlockMarker = closeBlockMarker;
@@ -66,18 +64,38 @@ public class ParameterValuesDecoder {
 	//	ACCESS METHODS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Gets the close block marker.
+	 * 
+	 * @return the close block marker
+	 */
 	public String getCloseBlockMarker() {
 		return closeBlockMarker;
 	}
 
+	/**
+	 * Sets the close block marker.
+	 * 
+	 * @param closeBlockMarker the new close block marker
+	 */
 	public void setCloseBlockMarker(String closeBlockMarker) {
 		this.closeBlockMarker = closeBlockMarker;
 	}
 
+	/**
+	 * Gets the open block marker.
+	 * 
+	 * @return the open block marker
+	 */
 	public String getOpenBlockMarker() {
 		return openBlockMarker;
 	}
 
+	/**
+	 * Sets the open block marker.
+	 * 
+	 * @param openBlockMarker the new open block marker
+	 */
 	public void setOpenBlockMarker(String openBlockMarker) {
 		this.openBlockMarker = openBlockMarker;
 	}
@@ -87,10 +105,24 @@ public class ParameterValuesDecoder {
 	//	PUBLIC METHODS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Checks if is multi values.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return true, if is multi values
+	 */
 	public boolean isMultiValues(String value) {
 		return (value.trim().startsWith(openBlockMarker));
 	}
 	
+	/**
+	 * Decode.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the list
+	 */
 	public List decode(String value) {
 		List values = null;
 		
@@ -143,9 +175,9 @@ public class ParameterValuesDecoder {
 	/////////////////////////////////////////////////////////////
 	
 	/**
-	 * Just for test purpose ;-)
+	 * Just for test purpose ;-).
 	 * 
-	 * @param args
+	 * @param args the args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

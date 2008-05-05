@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,11 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 
 public class UrlBuilderFactory {
 
+	/**
+	 * Gets the url builder.
+	 * 
+	 * @return the url builder
+	 */
 	public static IUrlBuilder getUrlBuilder() {
 		ApplicationContainer spagoContext = ApplicationContainer.getInstance();
 		IUrlBuilder urlBuilder = (IUrlBuilder)spagoContext.getAttribute(SpagoBIConstants.URL_BUILDER);
@@ -45,6 +50,13 @@ public class UrlBuilderFactory {
 		return urlBuilder;
 	}
 	
+	/**
+	 * Gets the url builder.
+	 * 
+	 * @param channelType the channel type
+	 * 
+	 * @return the url builder
+	 */
 	public static IUrlBuilder getUrlBuilder(String channelType) {
 		IUrlBuilder urlBuilder = null;
 		// based on mode get spago object and url builder

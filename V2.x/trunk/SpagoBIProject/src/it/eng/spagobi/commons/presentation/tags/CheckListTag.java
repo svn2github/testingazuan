@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -87,8 +87,9 @@ public class CheckListTag extends TagSupport
     private HashMap _providerUrlMap = new HashMap();
     PortletRequest portReq = null;
     SessionContainer _session = null;
+    
     /**
-     *Consructor
+     * Consructor.
      */
     public CheckListTag()
     {
@@ -98,9 +99,14 @@ public class CheckListTag extends TagSupport
     
     
     /**
-	 * @see it.eng.spagobi.commons.presentation.tags.CheckListTag#doStartTag()
-	 * 
-	 */
+     * Do start tag.
+     * 
+     * @return the int
+     * 
+     * @throws JspException the jsp exception
+     * 
+     * @see it.eng.spagobi.commons.presentation.tags.CheckListTag#doStartTag()
+     */
     
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info("Admintools", "ListTag", "doStartTag", " method invoked");
@@ -701,7 +707,7 @@ public class CheckListTag extends TagSupport
 	/**
 	 * Traces the setting of an action name.
 	 * 
-	 * @param actionName The action name string at input. 
+	 * @param actionName The action name string at input.
 	 */
 	public void setActionName(String actionName) {
 		TracerSingleton.log(
@@ -714,7 +720,7 @@ public class CheckListTag extends TagSupport
 	/**
 	 * Traces the setting of a module name.
 	 * 
-	 * @param moduleName The module name string at input. 
+	 * @param moduleName The module name string at input.
 	 */
 	
 	public void setModuleName(String moduleName) {
@@ -726,6 +732,12 @@ public class CheckListTag extends TagSupport
 	} // public void setModuleName(String moduleName)
 
 	/**
+	 * Do end tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
+	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
 	
@@ -748,6 +760,11 @@ public class CheckListTag extends TagSupport
 
 
 
+	/**
+	 * Sets the filter.
+	 * 
+	 * @param filter the new filter
+	 */
 	public void setFilter(String filter) {
 		TracerSingleton.log(
 				Constants.NOME_MODULO,

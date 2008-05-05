@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -63,12 +63,13 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
 public class PortletUtilities {
 
 	/**
-	 * Starting from the original URL and the request, creates a string representing the 
+	 * Starting from the original URL and the request, creates a string representing the
 	 * Portlet URL.
 	 * 
-	 * @param aHttpServletRequest	The request object at input
-	 * @param originalURL	The starting original URL
-	 * @return	A String representing the Portlet URL
+	 * @param aHttpServletRequest The request object at input
+	 * @param originalURL The starting original URL
+	 * 
+	 * @return A String representing the Portlet URL
 	 */
 	public static String createPortletURL(HttpServletRequest aHttpServletRequest, String originalURL){
 
@@ -113,9 +114,10 @@ public class PortletUtilities {
 	/**
 	 * Creates the particular portlet URL for a resource, given its path.
 	 * 
-	 * @param aHttpServletRequest	The request object at input
-	 * @param resourceAbsolutePath	The resource Absolute path
-	 * @return	The resource Portlet URL String
+	 * @param aHttpServletRequest The request object at input
+	 * @param resourceAbsolutePath The resource Absolute path
+	 * 
+	 * @return The resource Portlet URL String
 	 */
 	public static String  createPortletURLForResource(HttpServletRequest aHttpServletRequest, String resourceAbsolutePath){
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
@@ -126,26 +128,31 @@ public class PortletUtilities {
 	
 	/**
 	 * Gets the <code>PortletRequest</code> object.
+	 * 
 	 * @return The portlet request object
 	 */
 	public static PortletRequest getPortletRequest(){
 		return PortletAccess.getPortletRequest();
 	}
+	
 	/**
 	 * Gets the <code>PortletResponse</code> object.
+	 * 
 	 * @return The portlet response object
 	 */
 	public static PortletResponse getPortletResponse(){
 		return PortletAccess.getPortletResponse();
 	}
+	
 	/**
-	 * Gets the service request from a Multipart Portlet Request. This method creates a 
+	 * Gets the service request from a Multipart Portlet Request. This method creates a
 	 * new file upload handler, then parses the request and processes the new uploaded items.
 	 * In this way a new uploaded file is obtained, which is put into the <code>serviceRequest</code>
 	 * object.
 	 * 
-	 * @param portletRequest	The input portlet request
-	 * @return	The <code>serviceRequest</code> SourceBean containing the uploaded file.
+	 * @param portletRequest The input portlet request
+	 * 
+	 * @return The <code>serviceRequest</code> SourceBean containing the uploaded file.
 	 */
 //	public static SourceBean getServiceRequestFromMultipartPortletRequest(PortletRequest portletRequest){
 //		SourceBean serviceRequest = null;
@@ -226,18 +233,24 @@ public class PortletUtilities {
 		
 	}
 	
+	/**
+	 * Gets the portal locale.
+	 * 
+	 * @return the portal locale
+	 */
 	public static Locale getPortalLocale() {
 		return PortletAccess.getPortalLocale();
 	}
 	
 	/**
-	 * Gets a localized message given its code and bundle 
+	 * Gets a localized message given its code and bundle
 	 * information. If there isn't any message matching to these infromation, a
 	 * warning is traced.
 	 * 
-	 * @param code	The message's code string
+	 * @param code The message's code string
 	 * @param bundle The message's bundel string
-	 * @return	A string containing the message
+	 * 
+	 * @return A string containing the message
 	 */
 	 public static String getMessage(String code, String bundle) {
 
@@ -309,10 +322,11 @@ public class PortletUtilities {
 		 
 	 
 	 /**
-		 * Gets the language code of the user portal language. If it's not possible to gather 
-		 * the locale of the portal it returns the default language code   
-		 * @return	A string containing the language code
-		 */
+ 	 * Gets the language code of the user portal language. If it's not possible to gather
+ 	 * the locale of the portal it returns the default language code
+ 	 * 
+ 	 * @return A string containing the language code
+ 	 */
 		 public static String getPortalLanguageCode() {
 			 try {
 			 	Locale portalLocale =  PortletAccess.getPortalLocale();

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -36,12 +36,17 @@ public class SbiEventRoleId  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiEventRoleId() {
     }
 
     // Property accessors
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
@@ -54,6 +59,9 @@ public class SbiEventRoleId  implements java.io.Serializable {
 		 	(this.getEvent()==castOther.getEvent()) || (this.getEvent()!=null && castOther.getEvent()!=null && this.getEvent().equals(castOther.getEvent()));
    }
    
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    public int hashCode() {
          int result = 17;
          result = 37 * result + this.getRole().hashCode();
@@ -62,15 +70,38 @@ public class SbiEventRoleId  implements java.io.Serializable {
    }   
 
 
+	/**
+	 * Gets the event.
+	 * 
+	 * @return the event
+	 */
 	public SbiEventsLog getEvent() {
 		return event;
 	}
+	
+	/**
+	 * Sets the event.
+	 * 
+	 * @param event the new event
+	 */
 	public void setEvent(SbiEventsLog event) {
 		this.event = event;
 	}
+	
+	/**
+	 * Gets the role.
+	 * 
+	 * @return the role
+	 */
 	public SbiExtRoles getRole() {
 		return role;
 	}
+	
+	/**
+	 * Sets the role.
+	 * 
+	 * @param role the new role
+	 */
 	public void setRole(SbiExtRoles role) {
 		this.role = role;
 	}

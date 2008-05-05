@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,18 +29,34 @@ public class SbiSubreports implements java.io.Serializable {
 
 	private SbiSubreportsId id;
 	
-	/** default constructor */
+	/**
+	 * default constructor.
+	 */
     public SbiSubreports() {}
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param id the id
+     */
     public SbiSubreports(SbiSubreportsId id) {
         this.id = id;
     }
     
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
 	public SbiSubreportsId getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the id.
+	 * 
+	 * @param id the new id
+	 */
 	public void setId(SbiSubreportsId id) {
 		this.id = id;
 	}

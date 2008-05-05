@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -159,13 +159,22 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	}
 		
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
 		this.treeName = treename;
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 	
 	/**
-	 * Function that builds the tree: It should build more common folders and one personal folder (user's one)
+	 * Function that builds the tree: It should build more common folders and one personal folder (user's one).
+	 * 
+	 * @param objectsList the objects list
+	 * @param httpReq the http req
+	 * @param initialPath the initial path
+	 * 
+	 * @return the string buffer
 	 */
 	
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
@@ -412,6 +421,9 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		logger.debug("OUT");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO Auto-generated method stub
 		return null;

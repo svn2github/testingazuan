@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.behaviouralmodel.lov.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -50,6 +50,14 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     private static transient Logger logger = Logger.getLogger(LovDAOHibImpl.class);
 
     /**
+     * Load modalities value by id.
+     * 
+     * @param modalitiesValueID the modalities value id
+     * 
+     * @return the modalities value
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#loadModalitiesValueByID(Integer)
      */
     public ModalitiesValue loadModalitiesValueByID(Integer modalitiesValueID) throws EMFUserError {
@@ -85,6 +93,14 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Load modalities value by label.
+     * 
+     * @param label the label
+     * 
+     * @return the modalities value
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#loadModalitiesValueByID(Integer)
      */
     public ModalitiesValue loadModalitiesValueByLabel(String label) throws EMFUserError {
@@ -113,6 +129,12 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Modify modalities value.
+     * 
+     * @param aModalitiesValue the a modalities value
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#modifyModalitiesValue(it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue)
      */
     public void modifyModalitiesValue(ModalitiesValue aModalitiesValue) throws EMFUserError {
@@ -150,6 +172,12 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Insert modalities value.
+     * 
+     * @param aModalitiesValue the a modalities value
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#insertModalitiesValue(it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue)
      */
     public void insertModalitiesValue(ModalitiesValue aModalitiesValue) throws EMFUserError {
@@ -188,6 +216,12 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Erase modalities value.
+     * 
+     * @param aModalitiesValue the a modalities value
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#eraseModalitiesValue(it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue)
      */
     public void eraseModalitiesValue(ModalitiesValue aModalitiesValue) throws EMFUserError {
@@ -218,6 +252,12 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Load all modalities value.
+     * 
+     * @return the list
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#loadAllModalitiesValue()
      */
 
@@ -256,6 +296,12 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Load all modalities value order by code.
+     * 
+     * @return the list
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#loadAllModalitiesValueOrderByCode()
      */
     public List loadAllModalitiesValueOrderByCode() throws EMFUserError {
@@ -294,6 +340,14 @@ public class LovDAOHibImpl extends AbstractHibernateDAO implements IModalitiesVa
     }
 
     /**
+     * Checks for parameters.
+     * 
+     * @param lovId the lov id
+     * 
+     * @return true, if checks for parameters
+     * 
+     * @throws EMFUserError the EMF user error
+     * 
      * @see it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO#hasParameters(java.lang.String)
      */
     public boolean hasParameters(String lovId) throws EMFUserError {

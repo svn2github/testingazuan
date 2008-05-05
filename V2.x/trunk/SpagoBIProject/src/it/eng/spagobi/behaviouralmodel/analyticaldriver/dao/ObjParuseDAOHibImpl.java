@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,12 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 
 
 	/**
+	 * Modify obj paruse.
+	 * 
+	 * @param aObjParuse the a obj paruse
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#modifyObjParuse(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse)
 	 */
 	public void modifyObjParuse(ObjParuse aObjParuse) throws EMFUserError {
@@ -125,6 +131,12 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 
 
 	/**
+	 * Insert obj paruse.
+	 * 
+	 * @param aObjParuse the a obj paruse
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#insertObjParuse(it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse)
 	 */
 	public void insertObjParuse(ObjParuse aObjParuse) throws EMFUserError {
@@ -169,7 +181,13 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	}
 
 
-	/** 
+	/**
+	 * Erase obj paruse.
+	 * 
+	 * @param aObjParuse the a obj paruse
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#eraseObjParuse(ObjParuse)
 	 */
 	public void eraseObjParuse(ObjParuse aObjParuse) throws EMFUserError {
@@ -215,7 +233,15 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	}
 
 
-	/** 
+	/**
+	 * Load obj paruses.
+	 * 
+	 * @param objParId the obj par id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#loadObjParuses(Integer)
 	 */
 	public List loadObjParuses(Integer objParId) throws EMFUserError {
@@ -251,6 +277,7 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	 * the corrispondent <code>ObjParuse</code> object.
 	 * 
 	 * @param aSbiObjParuse The hybernate SbiObjParuse
+	 * 
 	 * @return The corrispondent <code>ObjParuse</code>
 	 */
 	public ObjParuse toObjParuse (SbiObjParuse aSbiObjParuse) {
@@ -269,7 +296,15 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	}
 
 	
-	/** 
+	/**
+	 * Gets the dependencies.
+	 * 
+	 * @param objParFatherId the obj par father id
+	 * 
+	 * @return the dependencies
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#getDependencies(Integer)
 	 */
 	public List getDependencies(Integer objParFatherId) throws EMFUserError {
@@ -312,6 +347,14 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	
 	
 	/**
+	 * Gets the all dependencies for parameter use.
+	 * 
+	 * @param useId the use id
+	 * 
+	 * @return the all dependencies for parameter use
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#getAllDependenciesForParameterUse(java.lang.Integer)
 	 */
 	public List getAllDependenciesForParameterUse(Integer useId) throws EMFUserError {
@@ -343,6 +386,14 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	
 	
 	/**
+	 * Gets the document labels list with associated dependencies.
+	 * 
+	 * @param useId the use id
+	 * 
+	 * @return the document labels list with associated dependencies
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#getDocumentLabelsListWithAssociatedDependencies(java.lang.Integer)
 	 */
 	public List getDocumentLabelsListWithAssociatedDependencies(Integer useId) throws EMFUserError {
@@ -377,7 +428,16 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 	}
 	
 	
-	/** 
+	/**
+	 * Load obj paruse.
+	 * 
+	 * @param objParId the obj par id
+	 * @param paruseId the paruse id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO#loadObjParuse(java.lang.Integer, java.lang.Integer)
 	 */
 	public List loadObjParuse(Integer objParId, Integer paruseId) throws EMFUserError {

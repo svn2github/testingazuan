@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -62,27 +62,53 @@ public class QueryWizardTag extends CommonWizardLovTag {
 	  String disabled = "disabled" ;
 	 
 	
+	/**
+	 * Gets the data source label.
+	 * 
+	 * @return the data source label
+	 */
 	public String getDataSourceLabel() {
 		return dataSourceLabel;
 	}
 	
+	/**
+	 * Sets the data source label.
+	 * 
+	 * @param dataSourceLabel the new data source label
+	 */
 	public void setDataSourceLabel(String dataSourceLabel) {
 		this.dataSourceLabel = dataSourceLabel;
 	}
 	
+	/**
+	 * Gets the query def.
+	 * 
+	 * @return the query def
+	 */
 	public String getQueryDef() {
 		return queryDef;
 	}
 	
+	/**
+	 * Sets the query def.
+	 * 
+	 * @param queryDef the new query def
+	 */
 	public void setQueryDef(String queryDef) {
 		this.queryDef = queryDef;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+	 */
 	public int doEndTag() throws JspException {
         logger.debug("");
         return super.doEndTag();
     }
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException{
 		logger.debug("QueryWizardTag::doStartTag:: invoked");
 		httpRequest = (HttpServletRequest) pageContext.getRequest();

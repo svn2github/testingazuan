@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,9 @@ import javax.servlet.http.HttpServletRequest;
 public class PortletUrlBuilder implements IUrlBuilder{
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getUrl(javax.servlet.http.HttpServletRequest, java.util.Map)
+	 */
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
@@ -58,6 +61,9 @@ public class PortletUrlBuilder implements IUrlBuilder{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getResourceLink(javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
 		RenderRequest renderRequest =(RenderRequest)aHttpServletRequest.getAttribute("javax.portlet.request");
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,9 @@ public class SbiObjStateId  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiObjStateId() {
     }
     
@@ -53,38 +55,62 @@ public class SbiObjStateId  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the sbi domains.
      * 
+     * @return the sbi domains
      */
     public SbiDomains getSbiDomains() {
         return this.sbiDomains;
     }
     
+    /**
+     * Sets the sbi domains.
+     * 
+     * @param sbiDomains the new sbi domains
+     */
     public void setSbiDomains(SbiDomains sbiDomains) {
         this.sbiDomains = sbiDomains;
     }
 
     /**
+     * Gets the sbi objects.
      * 
+     * @return the sbi objects
      */
     public SbiObjects getSbiObjects() {
         return this.sbiObjects;
     }
     
+    /**
+     * Sets the sbi objects.
+     * 
+     * @param sbiObjects the new sbi objects
+     */
     public void setSbiObjects(SbiObjects sbiObjects) {
         this.sbiObjects = sbiObjects;
     }
 
     /**
+     * Gets the start dt.
      * 
+     * @return the start dt
      */
     public Date getStartDt() {
         return this.startDt;
     }
     
+    /**
+     * Sets the start dt.
+     * 
+     * @param startDt the new start dt
+     */
     public void setStartDt(Date startDt) {
         this.startDt = startDt;
     }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
@@ -96,6 +122,9 @@ public class SbiObjStateId  implements java.io.Serializable {
  && (this.getStartDt()==castOther.getStartDt()) || ( this.getStartDt()!=null && castOther.getStartDt()!=null && this.getStartDt().equals(castOther.getStartDt()) );
    }
    
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    public int hashCode() {
          int result = 17;
          

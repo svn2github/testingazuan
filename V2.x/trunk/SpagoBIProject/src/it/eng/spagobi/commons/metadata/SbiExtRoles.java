@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -54,11 +54,17 @@ public class SbiExtRoles  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiExtRoles() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param extRoleId the ext role id
+     */
     public SbiExtRoles(Integer extRoleId) {
         this.extRoleId = extRoleId;
     }
@@ -69,154 +75,290 @@ public class SbiExtRoles  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the ext role id.
      * 
+     * @return the ext role id
      */
     public Integer getExtRoleId() {
         return this.extRoleId;
     }
     
+    /**
+     * Sets the ext role id.
+     * 
+     * @param extRoleId the new ext role id
+     */
     public void setExtRoleId(Integer extRoleId) {
         this.extRoleId = extRoleId;
     }
 
     /**
+     * Gets the role type.
      * 
+     * @return the role type
      */
     public SbiDomains getRoleType() {
         return this.roleType;
     }
     
+    /**
+     * Sets the role type.
+     * 
+     * @param sbiDomains the new role type
+     */
     public void setRoleType(SbiDomains sbiDomains) {
         this.roleType = sbiDomains;
     }
 
     /**
+     * Gets the role type code.
      * 
+     * @return the role type code
      */
     public String getRoleTypeCode() {
         return this.roleTypeCode;
     }
     
+    /**
+     * Sets the role type code.
+     * 
+     * @param roleTypeCd the new role type code
+     */
     public void setRoleTypeCode(String roleTypeCd) {
         this.roleTypeCode = roleTypeCd;
     }
 
     /**
+     * Gets the code.
      * 
+     * @return the code
      */
     public String getCode() {
         return this.code;
     }
     
+    /**
+     * Sets the code.
+     * 
+     * @param code the new code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
     /**
+     * Gets the name.
      * 
+     * @return the name
      */
     public String getName() {
         return this.name;
     }
     
+    /**
+     * Sets the name.
+     * 
+     * @param name the new name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
+     * Gets the descr.
      * 
+     * @return the descr
      */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
 
     /**
+     * Gets the sbi func roles.
      * 
+     * @return the sbi func roles
      */
     public Set getSbiFuncRoles() {
         return this.sbiFuncRoles;
     }
     
+    /**
+     * Sets the sbi func roles.
+     * 
+     * @param sbiFuncRoles the new sbi func roles
+     */
     public void setSbiFuncRoles(Set sbiFuncRoles) {
         this.sbiFuncRoles = sbiFuncRoles;
     }
 
     /**
+     * Gets the sbi paruse dets.
      * 
+     * @return the sbi paruse dets
      */
     public Set getSbiParuseDets() {
         return this.sbiParuseDets;
     }
     
+    /**
+     * Sets the sbi paruse dets.
+     * 
+     * @param sbiParuseDets the new sbi paruse dets
+     */
     public void setSbiParuseDets(Set sbiParuseDets) {
         this.sbiParuseDets = sbiParuseDets;
     }
 
+	/**
+	 * Gets the checks if is able to see subobjects.
+	 * 
+	 * @return the checks if is able to see subobjects
+	 */
 	public Boolean getIsAbleToSeeSubobjects() {
 		return isAbleToSeeSubobjects;
 	}
 
+	/**
+	 * Sets the checks if is able to see subobjects.
+	 * 
+	 * @param isAbleToSeeSubobjects the new checks if is able to see subobjects
+	 */
 	public void setIsAbleToSeeSubobjects(Boolean isAbleToSeeSubobjects) {
 		this.isAbleToSeeSubobjects = isAbleToSeeSubobjects;
 	}
 
+	/**
+	 * Gets the checks if is able to see viewpoints.
+	 * 
+	 * @return the checks if is able to see viewpoints
+	 */
 	public Boolean getIsAbleToSeeViewpoints() {
 		return isAbleToSeeViewpoints;
 	}
 
+	/**
+	 * Sets the checks if is able to see viewpoints.
+	 * 
+	 * @param isAbleToSeeViewpoints the new checks if is able to see viewpoints
+	 */
 	public void setIsAbleToSeeViewpoints(Boolean isAbleToSeeViewpoints) {
 		this.isAbleToSeeViewpoints = isAbleToSeeViewpoints;
 	}
 
+	/**
+	 * Gets the checks if is able to see snapshots.
+	 * 
+	 * @return the checks if is able to see snapshots
+	 */
 	public Boolean getIsAbleToSeeSnapshots() {
 		return isAbleToSeeSnapshots;
 	}
 
+	/**
+	 * Sets the checks if is able to see snapshots.
+	 * 
+	 * @param isAbleToSeeSnapshots the new checks if is able to see snapshots
+	 */
 	public void setIsAbleToSeeSnapshots(Boolean isAbleToSeeSnapshots) {
 		this.isAbleToSeeSnapshots = isAbleToSeeSnapshots;
 	}
 
+	/**
+	 * Gets the checks if is able to see notes.
+	 * 
+	 * @return the checks if is able to see notes
+	 */
 	public Boolean getIsAbleToSeeNotes() {
 		return isAbleToSeeNotes;
 	}
 
+	/**
+	 * Sets the checks if is able to see notes.
+	 * 
+	 * @param isAbleToSeeNotes the new checks if is able to see notes
+	 */
 	public void setIsAbleToSeeNotes(Boolean isAbleToSeeNotes) {
 		this.isAbleToSeeNotes = isAbleToSeeNotes;
 	}
 
+	/**
+	 * Gets the checks if is able to send mail.
+	 * 
+	 * @return the checks if is able to send mail
+	 */
 	public Boolean getIsAbleToSendMail() {
 		return isAbleToSendMail;
 	}
 
+	/**
+	 * Sets the checks if is able to send mail.
+	 * 
+	 * @param isAbleToSendMail the new checks if is able to send mail
+	 */
 	public void setIsAbleToSendMail(Boolean isAbleToSendMail) {
 		this.isAbleToSendMail = isAbleToSendMail;
 	}
 
+	/**
+	 * Gets the checks if is able to save into personal folder.
+	 * 
+	 * @return the checks if is able to save into personal folder
+	 */
 	public Boolean getIsAbleToSaveIntoPersonalFolder() {
 		return isAbleToSaveIntoPersonalFolder;
 	}
 
+	/**
+	 * Sets the checks if is able to save into personal folder.
+	 * 
+	 * @param isAbleToSaveIntoPersonalFolder the new checks if is able to save into personal folder
+	 */
 	public void setIsAbleToSaveIntoPersonalFolder(
 			Boolean isAbleToSaveIntoPersonalFolder) {
 		this.isAbleToSaveIntoPersonalFolder = isAbleToSaveIntoPersonalFolder;
 	}
 
+	/**
+	 * Gets the checks if is able to save remember me.
+	 * 
+	 * @return the checks if is able to save remember me
+	 */
 	public Boolean getIsAbleToSaveRememberMe() {
 		return isAbleToSaveRememberMe;
 	}
 
+	/**
+	 * Sets the checks if is able to save remember me.
+	 * 
+	 * @param isAbleToSaveRememberMe the new checks if is able to save remember me
+	 */
 	public void setIsAbleToSaveRememberMe(Boolean isAbleToSaveRememberMe) {
 		this.isAbleToSaveRememberMe = isAbleToSaveRememberMe;
 	}
 
+	/**
+	 * Gets the checks if is able to see metadata.
+	 * 
+	 * @return the checks if is able to see metadata
+	 */
 	public Boolean getIsAbleToSeeMetadata() {
 		return isAbleToSeeMetadata;
 	}
 
+	/**
+	 * Sets the checks if is able to see metadata.
+	 * 
+	 * @param isAbleToSeeMetadata the new checks if is able to see metadata
+	 */
 	public void setIsAbleToSeeMetadata(Boolean isAbleToSeeMetadata) {
 		this.isAbleToSeeMetadata = isAbleToSeeMetadata;
 	}

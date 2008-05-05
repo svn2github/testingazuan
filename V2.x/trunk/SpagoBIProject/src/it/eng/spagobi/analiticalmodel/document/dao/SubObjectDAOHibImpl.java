@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -25,6 +46,9 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 
 	static private Logger logger = Logger.getLogger(SubObjectDAOHibImpl.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#getAccessibleSubObjects(java.lang.Integer, it.eng.spago.security.IEngUserProfile)
+	 */
 	public List getAccessibleSubObjects(Integer idBIObj, IEngUserProfile profile) throws EMFUserError {
 		List subs = new ArrayList();
 		Session aSession = null;
@@ -54,6 +78,9 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#getSubObjects(java.lang.Integer)
+	 */
 	public List getSubObjects(Integer idBIObj) throws EMFUserError {
 		List subs = new ArrayList();
 		Session aSession = null;
@@ -83,6 +110,9 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#deleteSubObject(java.lang.Integer)
+	 */
 	public void deleteSubObject(Integer idSub) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -106,6 +136,9 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		}		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#getSubObject(java.lang.Integer)
+	 */
 	public SubObject getSubObject(Integer idSubObj) throws EMFUserError {
 		SubObject sub = null;
 		Session aSession = null;
@@ -130,6 +163,9 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#saveSubObject(java.lang.Integer, it.eng.spagobi.analiticalmodel.document.bo.SubObject)
+	 */
 	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;

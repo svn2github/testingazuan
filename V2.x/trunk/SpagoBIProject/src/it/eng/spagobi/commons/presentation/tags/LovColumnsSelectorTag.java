@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -73,6 +73,9 @@ public class LovColumnsSelectorTag extends TagSupport {
 	String columnsField = "";
     
     
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		SpagoBITracer.info(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 				           "doStartTag", " method invoked");
@@ -205,60 +208,110 @@ public class LovColumnsSelectorTag extends TagSupport {
 
 
 
+	/**
+	 * Gets the description column.
+	 * 
+	 * @return the description column
+	 */
 	public String getDescriptionColumn() {
 		return descriptionColumn;
 	}
 
 
 
+	/**
+	 * Sets the description column.
+	 * 
+	 * @param descriptionColumn the new description column
+	 */
 	public void setDescriptionColumn(String descriptionColumn) {
 		this.descriptionColumn = descriptionColumn;
 	}
 
 
 
+	/**
+	 * Gets the invisible columns.
+	 * 
+	 * @return the invisible columns
+	 */
 	public String getInvisibleColumns() {
 		return invisibleColumns;
 	}
 
 
 
+	/**
+	 * Sets the invisible columns.
+	 * 
+	 * @param invisibleColumns the new invisible columns
+	 */
 	public void setInvisibleColumns(String invisibleColumns) {
 		this.invisibleColumns = invisibleColumns;
 	}
 
 
 
+	/**
+	 * Gets the module name.
+	 * 
+	 * @return the module name
+	 */
 	public String getModuleName() {
 		return moduleName;
 	}
 
 
 
+	/**
+	 * Sets the module name.
+	 * 
+	 * @param moduleName the new module name
+	 */
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
 
 
 
+	/**
+	 * Gets the value column.
+	 * 
+	 * @return the value column
+	 */
 	public String getValueColumn() {
 		return valueColumn;
 	}
 
 
 
+	/**
+	 * Sets the value column.
+	 * 
+	 * @param valueColumn the new value column
+	 */
 	public void setValueColumn(String valueColumn) {
 		this.valueColumn = valueColumn;
 	}
 
 
 
+	/**
+	 * Gets the visible columns.
+	 * 
+	 * @return the visible columns
+	 */
 	public String getVisibleColumns() {
 		return visibleColumns;
 	}
 
 
 
+	/**
+	 * Sets the visible columns.
+	 * 
+	 * @param visibleColumns the new visible columns
+	 */
 	public void setVisibleColumns(String visibleColumns) {
 		this.visibleColumns = visibleColumns;
 	}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -35,11 +35,17 @@ public class SbiEventRole  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiEventRole() {
     }
     
-    /** constructor with id */
+    /**
+     * constructor with id.
+     * 
+     * @param id the id
+     */
     public SbiEventRole(SbiEventRoleId id) {
         this.id = id;
     }
@@ -50,12 +56,19 @@ public class SbiEventRole  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the id.
      * 
+     * @return the id
      */
     public SbiEventRoleId getId() {
         return this.id;
     }
     
+    /**
+     * Sets the id.
+     * 
+     * @param id the new id
+     */
     public void setId(SbiEventRoleId id) {
         this.id = id;
     }

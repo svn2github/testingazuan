@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.analiticalmodel.execution.presentation.tag;
 
 import it.eng.spago.base.RequestContainer;
@@ -112,6 +112,9 @@ public class ParametersGeneratorTag extends TagSupport {
 	return profile;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+     */
     public int doStartTag() throws JspException {
 	logger.debug("IN");
 	
@@ -206,6 +209,9 @@ public class ParametersGeneratorTag extends TagSupport {
 	return SKIP_BODY;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
     public int doEndTag() throws JspException {
 	logger.debug("TitleTag::doEndTag:: invocato");
 	return super.doEndTag();
@@ -215,6 +221,13 @@ public class ParametersGeneratorTag extends TagSupport {
     // 'CREATE HTML' METHODS
     // //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Checks if is single value.
+     * 
+     * @param biparam the biparam
+     * 
+     * @return true, if is single value
+     */
     public boolean isSingleValue(BIObjectParameter biparam) {
 	boolean isSingleValue = false;
 	try {
@@ -1115,6 +1128,7 @@ public class ParametersGeneratorTag extends TagSupport {
     }
 
     /**
+     * Gets the modality.
      * 
      * @return modality The modality String to return.
      */
@@ -1123,25 +1137,46 @@ public class ParametersGeneratorTag extends TagSupport {
     }
 
     /**
-     * @param modality
-     *                The modality to set.
+     * Sets the modality.
+     * 
+     * @param modality The modality to set.
      */
     public void setModality(String modality) {
 	this.modality = modality;
     }
 
+    /**
+     * Gets the module name.
+     * 
+     * @return the module name
+     */
     public String getModuleName() {
 	return moduleName;
     }
 
+    /**
+     * Sets the module name.
+     * 
+     * @param moduleName the new module name
+     */
     public void setModuleName(String moduleName) {
 	this.moduleName = moduleName;
     }
 
+    /**
+     * Gets the request identity.
+     * 
+     * @return the request identity
+     */
     public String getRequestIdentity() {
 	return requestIdentity;
     }
 
+    /**
+     * Sets the request identity.
+     * 
+     * @param requestIdentity the new request identity
+     */
     public void setRequestIdentity(String requestIdentity) {
 	this.requestIdentity = requestIdentity;
     }

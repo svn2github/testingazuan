@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -62,21 +62,24 @@ import it.eng.spago.presentation.PublisherDispatcherIFace;
  * 
  */
 public class DynamicForwardPublisher implements PublisherDispatcherIFace {
+	
 	/**
-	 * Class constructor
+	 * Class constructor.
 	 */
 	public DynamicForwardPublisher() {
 		super();
 
 	}
+	
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
 	 * @param request The request container object containing all request information
 	 * @param response The response container object containing all response information
+	 * 
 	 * @return A string representing the name of the correct publisher, which will
-	 * 		   call the correct jsp reference.
+	 * call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer request,
 			ResponseContainer response) {

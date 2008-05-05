@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,33 +29,45 @@ import java.util.List;
 public interface ISnapshotDAO {
 
 	/**
-	 * Save a snapshot of the object
+	 * Save a snapshot of the object.
 	 * 
 	 * @param content byte array containing the content of the snapshot
 	 * @param idBIObj the id of the biobject parent
 	 * @param name the name of the new subobject
 	 * @param description the description of the new subobject
-	*/
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public void saveSnapshot(byte[] content, Integer idBIObj, String name, String description) throws EMFUserError;
 	
 	/**
-	 * Gets the list of the snapshot details that are children of a biobject  
+	 * Gets the list of the snapshot details that are children of a biobject.
+	 * 
 	 * @param idBIObj the id of the biobject parent
-	 * @return List of BIObject.BIObjectSnapshot objects 
+	 * 
+	 * @return List of BIObject.BIObjectSnapshot objects
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public List getSnapshots(Integer idBIObj)  throws EMFUserError;
 	
 	/**
-	 * Delete a snapshot
+	 * Delete a snapshot.
+	 * 
 	 * @param idSnap the id of the snapshot
-	 * @param name name of the snapshot
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void deleteSnapshot(Integer idSnap) throws EMFUserError;
 	
 	/**
-	 * Load a snapshot
+	 * Load a snapshot.
+	 * 
 	 * @param idSnap the id of the snapshot
+	 * 
 	 * @return Snapshot the snapshot loaded
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public Snapshot loadSnapshot(Integer idSnap) throws EMFUserError;
 	

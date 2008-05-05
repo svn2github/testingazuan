@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -37,62 +37,109 @@ public class Domain  implements Serializable  {
 	private String domainName = "";
 	
 	/**
+	 * Gets the value cd.
+	 * 
 	 * @return Returns the valueCd.
 	 */
 	public String getValueCd() {
 		return valueCd;
 	}
+	
 	/**
+	 * Sets the value cd.
+	 * 
 	 * @param valueCd The valueCd to set.
 	 */
 	public void setValueCd(String valueCd) {
 		this.valueCd = valueCd;
 	}
+	
 	/**
+	 * Gets the value id.
+	 * 
 	 * @return Returns the valueId.
 	 */
 	public Integer  getValueId() {
 		return valueId;
 	}
+	
 	/**
+	 * Sets the value id.
+	 * 
 	 * @param valueId The valueId to set.
 	 */
 	public void setValueId(Integer  valueId) {
 		this.valueId = valueId;
 	}
+	
 	/**
+	 * Gets the value name.
+	 * 
 	 * @return Returns the valueName.
 	 */
 	public String getValueName() {
 		return valueName;
 	}
+	
 	/**
+	 * Sets the value name.
+	 * 
 	 * @param valueName The valueName to set.
 	 */
 	public void setValueName(String valueName) {
 		this.valueName = valueName;
 	}
 	
+	/**
+	 * Gets the domain code.
+	 * 
+	 * @return the domain code
+	 */
 	public String getDomainCode() {
 		return domainCode;
 	}
 	
+	/**
+	 * Sets the domain code.
+	 * 
+	 * @param domainCode the new domain code
+	 */
 	public void setDomainCode(String domainCode) {
 		this.domainCode = domainCode;
 	}
 	
+	/**
+	 * Gets the domain name.
+	 * 
+	 * @return the domain name
+	 */
 	public String getDomainName() {
 		return domainName;
 	}
 	
+	/**
+	 * Sets the domain name.
+	 * 
+	 * @param domainName the new domain name
+	 */
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
 	}
 	
+	/**
+	 * Gets the value description.
+	 * 
+	 * @return the value description
+	 */
 	public String getValueDescription() {
 		return valueDescription;
 	}
 	
+	/**
+	 * Sets the value description.
+	 * 
+	 * @param valueDescription the new value description
+	 */
 	public void setValueDescription(String valueDescription) {
 		this.valueDescription = valueDescription;
 	}

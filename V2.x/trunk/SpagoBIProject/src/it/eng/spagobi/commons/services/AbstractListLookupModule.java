@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -66,6 +66,16 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 	}
 	
 	
+	/**
+	 * Filter list for correlated param.
+	 * 
+	 * @param request the request
+	 * @param list the list
+	 * 
+	 * @return the list i face
+	 * 
+	 * @throws Exception the exception
+	 */
 	public ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list) throws Exception {
 		// get error handler
 		getErroHandler();
@@ -109,6 +119,17 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 		return list;
 	}
 	
+	/**
+	 * Filter list for correlated param.
+	 * 
+	 * @param request the request
+	 * @param list the list
+	 * @param httpRequest the http request
+	 * 
+	 * @return the list i face
+	 * 
+	 * @throws Exception the exception
+	 */
 	public ListIFace filterListForCorrelatedParam(SourceBean request, ListIFace list, HttpServletRequest httpRequest) throws Exception {
 		RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		ResponseContainer respCont = ChannelUtilities.getResponseContainer(httpRequest);

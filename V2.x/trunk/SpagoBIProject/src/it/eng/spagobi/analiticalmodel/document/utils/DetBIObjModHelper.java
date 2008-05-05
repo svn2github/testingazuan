@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.analiticalmodel.document.utils;
 
 import it.eng.spago.base.RequestContainer;
@@ -48,6 +69,13 @@ public class DetBIObjModHelper {
 	SourceBean response = null;
 	RequestContainer reqCont = null;
 	
+	/**
+	 * Instantiates a new det bi obj mod helper.
+	 * 
+	 * @param reqCont the req cont
+	 * @param request the request
+	 * @param response the response
+	 */
 	public DetBIObjModHelper(RequestContainer reqCont, SourceBean request, SourceBean response) {
 		this.request = request;
 		this.response = response;
@@ -55,6 +83,15 @@ public class DetBIObjModHelper {
 	}
 	
 	
+	/**
+	 * Recover bi object details.
+	 * 
+	 * @param mod the mod
+	 * 
+	 * @return the bI object
+	 * 
+	 * @throws Exception the exception
+	 */
 	public BIObject recoverBIObjectDetails(String mod) throws Exception {
 		// GET THE USER PROFILE
 		SessionContainer session = reqCont.getSessionContainer();
@@ -209,6 +246,13 @@ public class DetBIObjModHelper {
 	
 	
 	
+	/**
+	 * Recover bi obj template details.
+	 * 
+	 * @return the obj template
+	 * 
+	 * @throws Exception the exception
+	 */
 	public ObjTemplate recoverBIObjTemplateDetails() throws Exception {
 		// GET THE USER PROFILE
 		SessionContainer session = reqCont.getSessionContainer();
@@ -235,6 +279,13 @@ public class DetBIObjModHelper {
 	
 	
 	
+	/**
+	 * Recover bi object parameter details.
+	 * 
+	 * @param biobjIdInt the biobj id int
+	 * 
+	 * @return the bI object parameter
+	 */
 	public BIObjectParameter recoverBIObjectParameterDetails(Integer biobjIdInt) {
 		String idStr = (String) request.getAttribute("objParId");
 		Integer idInt = null;
@@ -278,6 +329,8 @@ public class DetBIObjModHelper {
 	
 	/**
 	 * Fills the response SourceBean with some needed BI Objects information.
+	 * 
+	 * @param initialPath the initial path
 	 */
 	public void fillResponse(String initialPath) {
 		try {
@@ -317,6 +370,13 @@ public class DetBIObjModHelper {
 	
 	
 	
+	/**
+	 * Clone.
+	 * 
+	 * @param biObjPar the bi obj par
+	 * 
+	 * @return the bI object parameter
+	 */
 	public static BIObjectParameter clone (BIObjectParameter biObjPar) {
 		if (biObjPar == null) return null;
 		BIObjectParameter objParClone = new BIObjectParameter();
@@ -336,6 +396,13 @@ public class DetBIObjModHelper {
 	}
 
 
+	/**
+	 * Clone.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @return the bI object
+	 */
 	public static BIObject clone (BIObject obj) {
 		if (obj == null) return null;
 		BIObject objClone = new BIObject();
@@ -363,6 +430,15 @@ public class DetBIObjModHelper {
 
 
 
+	/**
+	 * Creates the new bi object parameter.
+	 * 
+	 * @param objId the obj id
+	 * 
+	 * @return the bI object parameter
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static BIObjectParameter createNewBIObjectParameter(Integer objId) throws EMFUserError {
 		BIObjectParameter biObjPar = new BIObjectParameter();
 		biObjPar.setId(new Integer(-1));
@@ -385,6 +461,13 @@ public class DetBIObjModHelper {
 	}
 
 	
+	/**
+	 * Find bi obj par id.
+	 * 
+	 * @param objParIdObj the obj par id obj
+	 * 
+	 * @return the int
+	 */
 	public static int findBIObjParId (Object objParIdObj) {
 		String objParIdStr = "";
 		if (objParIdObj instanceof String) {

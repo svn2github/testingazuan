@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -150,7 +150,9 @@ public class SpagoURLValidator extends UrlValidator {
    
     /**
      * Controls if a String at imput is a valid URL.
+     * 
      * @param value The input string
+     * 
      * @return True if the string is a valid URL, else false.
      */
 	public boolean isValid(String value) {

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,9 @@ import org.hibernate.Transaction;
 public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjTemplateDAO {
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#loadBIObjectTemplate(java.lang.Integer)
+	 */
 	public ObjTemplate loadBIObjectTemplate(Integer tempId) throws EMFInternalError {
 		ObjTemplate objTemp = new ObjTemplate();
 		Session aSession = null;
@@ -69,6 +72,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getBIObjectActiveTemplate(java.lang.Integer)
+	 */
 	public ObjTemplate getBIObjectActiveTemplate(Integer biobjId) throws EMFInternalError {
 		ObjTemplate objTemp = new ObjTemplate();
 		Session aSession = null;
@@ -99,6 +105,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getBIObjectTemplateList(java.lang.Integer)
+	 */
 	public List getBIObjectTemplateList(Integer biobjId) throws EMFInternalError {
 		List templates = new ArrayList();
 		Session aSession = null;
@@ -128,6 +137,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getNextProgForTemplate(java.lang.Integer)
+	 */
 	public Integer getNextProgForTemplate(Integer biobjId) throws EMFInternalError {
 		Integer maxProg = null;
 		Session aSession = null;
@@ -162,6 +174,13 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 	
 	
 	
+	/**
+	 * To obj template.
+	 * 
+	 * @param hibObjTemp the hib obj temp
+	 * 
+	 * @return the obj template
+	 */
 	public ObjTemplate toObjTemplate(SbiObjTemplates hibObjTemp){
 		ObjTemplate objTemp = new ObjTemplate();
 		objTemp.setActive(hibObjTemp.getActive());
@@ -178,6 +197,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#deleteBIObjectTemplate(java.lang.Integer)
+	 */
 	public void deleteBIObjectTemplate(Integer tempId) throws EMFInternalError {
 		Session aSession = null;
 		Transaction tx = null;		

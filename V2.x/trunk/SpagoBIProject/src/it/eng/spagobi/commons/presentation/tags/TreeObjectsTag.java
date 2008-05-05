@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,7 +53,11 @@ public class TreeObjectsTag extends TagSupport {
 	private String attributeToRender = null;
 	
 	/**
-	 * Starting tag
+	 * Starting tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
 	 */
 	public int doStartTag() throws JspException {
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -94,7 +98,11 @@ public class TreeObjectsTag extends TagSupport {
 	
 
 	/**
-	 * ending tag
+	 * ending tag.
+	 * 
+	 * @return the int
+	 * 
+	 * @throws JspException the jsp exception
 	 */
 	public int doEndTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.INFORMATION, "TitleTag::doEndTag:: invocato");
@@ -102,24 +110,35 @@ public class TreeObjectsTag extends TagSupport {
 	}
 
 	/**
+	 * Gets the module name.
+	 * 
 	 * @return the module name
 	 */
 	public String getModuleName() {
 		return moduleName;
 	}
+	
 	/**
+	 * Sets the module name.
+	 * 
 	 * @param moduleName the module name to set
 	 */
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
+	
 	/**
+	 * Gets the html generator class.
+	 * 
 	 * @return the html generator class
 	 */
 	public String getHtmlGeneratorClass() {
 		return htmlGeneratorClass;
 	}
+	
 	/**
+	 * Sets the html generator class.
+	 * 
 	 * @param htmlGeneratorClass the html generator class to set
 	 */
 	public void setHtmlGeneratorClass(String htmlGeneratorClass) {
@@ -127,21 +146,41 @@ public class TreeObjectsTag extends TagSupport {
 	}
 
 
+	/**
+	 * Gets the tree name.
+	 * 
+	 * @return the tree name
+	 */
 	public String getTreeName() {
 		return treeName;
 	}
 
 
+	/**
+	 * Sets the tree name.
+	 * 
+	 * @param treeName the new tree name
+	 */
 	public void setTreeName(String treeName) {
 		this.treeName = treeName;
 	}
 
 
+	/**
+	 * Gets the attribute to render.
+	 * 
+	 * @return the attribute to render
+	 */
 	public String getAttributeToRender() {
 		return attributeToRender;
 	}
 
 
+	/**
+	 * Sets the attribute to render.
+	 * 
+	 * @param attributeToRender the new attribute to render
+	 */
 	public void setAttributeToRender(String attributeToRender) {
 		this.attributeToRender = attributeToRender;
 	}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,26 +28,43 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 public interface IObjNoteDAO {
 
 	/**
-	 * Save Notes for a specific execution of the biobject
+	 * Save Notes for a specific execution of the biobject.
+	 * 
 	 * @param biobjId id of the biobject executed
-	 * @param execReq execution string
 	 * @param objNote notes to save
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void saveExecutionNotes(Integer biobjId, ObjNote objNote) throws Exception;
 	
 	/**
-	 * Get Notes for a specific execution of the biobject
+	 * Get Notes for a specific execution of the biobject.
+	 * 
 	 * @param biobjId id of the biobject executed
-	 * @param execReq execution request string
+	 * @param execIdentif the exec identif
+	 * 
 	 * @return ObjNote notes saved
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ObjNote getExecutionNotes(Integer biobjId, String execIdentif) throws Exception;
 	
 	
+	/**
+	 * Modify execution notes.
+	 * 
+	 * @param objNote the obj note
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void modifyExecutionNotes(ObjNote objNote) throws Exception;
 	
 	/**
-	 * Deletes all notes associated to the BIObject with the id specified in input
+	 * Deletes all notes associated to the BIObject with the id specified in input.
+	 * 
+	 * @param biobjId the biobj id
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void eraseNotes(Integer biobjId) throws Exception;
 	

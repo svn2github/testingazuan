@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -96,7 +96,16 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
     
     static private Logger logger = Logger.getLogger(BIObjectDAOHibImpl.class);
 
-	/** 
+	/**
+	 * Load bi object for execution by id and role.
+	 * 
+	 * @param id the id
+	 * @param role the role
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForExecutionByIdAndRole(java.lang.Integer, java.lang.String)
 	 */
 	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role) throws EMFUserError {
@@ -162,6 +171,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
+	 * Load bi object by id.
+	 * 
+	 * @param biObjectID the bi object id
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectById(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectById(Integer biObjectID) throws EMFUserError {
@@ -190,7 +207,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	
-	/** 
+	/**
+	 * Load bi object for detail.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForDetail(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectForDetail(Integer id) throws EMFUserError {
@@ -220,7 +245,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		return biObject;
 	}
 	
-	/** 
+	/**
+	 * Load bi object by label.
+	 * 
+	 * @param label the label
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectByLabel(java.lang.String)
 	 */
 	public BIObject loadBIObjectByLabel(String label) throws EMFUserError {
@@ -262,6 +295,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
+	 * Load bi object for tree.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForTree(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectForTree(Integer id) throws EMFUserError {
@@ -306,6 +347,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
+	 * Modify bi object.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObject(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
 	 */
 	public void modifyBIObject(BIObject obj) throws EMFUserError {
@@ -313,6 +360,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Modify bi object.
+	 * 
+	 * @param obj the obj
+	 * @param objTemp the obj temp
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObjectWithoutVersioning(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
 	 */
 	public void modifyBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
@@ -479,10 +533,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
-	 * Implements the query to insert a BIObject and its template. All information needed is stored 
+	 * Implements the query to insert a BIObject and its template. All information needed is stored
 	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
+	 * 
 	 * @param obj The object containing all insert information
 	 * @param objTemp The template of the biobject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
@@ -490,9 +546,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 	
 	/**
-	 * Implements the query to insert a BIObject. All information needed is stored 
+	 * Implements the query to insert a BIObject. All information needed is stored
 	 * into the input <code>BIObject</code> object.
+	 * 
 	 * @param obj The object containing all insert information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertBIObject(BIObject obj) throws EMFUserError {
@@ -600,6 +658,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 	/**
+	 * Erase bi object.
+	 * 
+	 * @param obj the obj
+	 * @param idFunct the id funct
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#eraseBIObject(it.eng.spagobi.analiticalmodel.document.bo.BIObject, java.lang.Integer)
 	 */
 	public void eraseBIObject(BIObject obj, Integer idFunct) throws EMFUserError {
@@ -726,7 +791,16 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	
-	/** 
+	/**
+	 * Gets the correct roles for execution.
+	 * 
+	 * @param id the id
+	 * @param profile the profile
+	 * 
+	 * @return the correct roles for execution
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.Integer, it.eng.spago.security.IEngUserProfile)
 	 */
 	public List getCorrectRolesForExecution(Integer id, IEngUserProfile profile) throws EMFUserError {
@@ -741,7 +815,15 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	
-	/** 
+	/**
+	 * Gets the correct roles for execution.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the correct roles for execution
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.Integer)
 	 */
 	public List getCorrectRolesForExecution(Integer id) throws EMFUserError {
@@ -880,9 +962,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	/**
 	 * From the Hibernate BI object at input, gives the corrispondent BI
-	 * object 
+	 * object.
 	 * 
-	 * @param hibBIObject	The Hibernate BI object
+	 * @param hibBIObject The Hibernate BI object
+	 * 
 	 * @return the corrispondent output <code>BIObject</code>
 	 */
 	public BIObject toBIObject(SbiObjects hibBIObject){
@@ -941,6 +1024,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjects()
+	 */
 	public List loadAllBIObjects() throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -968,6 +1054,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjects(java.lang.String)
+	 */
 	public List loadAllBIObjects(String filterOrder) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -998,10 +1087,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 
 
 	/**
-	 * Gets the biparameters associated with to a biobject 
+	 * Gets the biparameters associated with to a biobject.
+	 * 
 	 * @param aBIObject BIObject the biobject to analize
+	 * 
 	 * @return List, list of the biparameters associated with the biobject
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public List getBIObjectParameters(BIObject aBIObject) throws EMFUserError {
 		IBIObjectParameterDAO biobjDAO = DAOFactory.getBIObjectParameterDAO();
@@ -1011,6 +1103,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjectsFromInitialPath(java.lang.String)
+	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -1053,6 +1148,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjectsFromInitialPath(java.lang.String, java.lang.String)
+	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath, String filterOrder) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -1098,6 +1196,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForDetail(java.lang.String)
+	 */
 	public BIObject loadBIObjectForDetail(String path) throws EMFUserError {
 		BIObject biObject = null;
 		Session aSession = null;

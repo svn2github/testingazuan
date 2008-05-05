@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -59,6 +59,11 @@ public class ExecutionController {
 	
 	
 	
+	/**
+	 * Direct execution.
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean directExecution() {
 		
 		if(biObject == null) return false;
@@ -115,6 +120,12 @@ public class ExecutionController {
 	}
 	
 		
+	/**
+	 * Refresh parameters.
+	 * 
+	 * @param obj the obj
+	 * @param userProvidedParametersStr the user provided parameters str
+	 */
 	public void refreshParameters(BIObject obj, String userProvidedParametersStr){
 		if(userProvidedParametersStr != null) {
 			List biparameters = obj.getBiObjectParameters();
@@ -176,10 +187,16 @@ public class ExecutionController {
 	
 	
 	/**
-	 * @param aSessionContainer
-	 * @param aPath
-	 * @param aRoleName
-	 * @throws EMFUserError
+	 * Prepare bi object in session.
+	 * 
+	 * @param aSessionContainer the a session container
+	 * @param aRoleName the a role name
+	 * @param id the id
+	 * @param userProvidedParametersStr the user provided parameters str
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public BIObject prepareBIObjectInSession(SessionContainer aSessionContainer, Integer id, 
 					String aRoleName, String userProvidedParametersStr) throws EMFUserError {
@@ -265,11 +282,12 @@ public class ExecutionController {
 	
 	
 	/**
-	 * Creates the XML dinamic validator, according to checks
-	 * 
+	 * Creates the XML dinamic validator, according to checks.
 	 * 
 	 * @param aBIObjectParameter The input BI object parameter
+	 * 
 	 * @return The output Source Bean Containing XML
+	 * 
 	 * @throws SourceBeanException If any Exception occurred
 	 */
 	public SourceBean createValidableFieldSourceBean(BIObjectParameter aBIObjectParameter) throws SourceBeanException {
@@ -353,16 +371,34 @@ public class ExecutionController {
 	
 	
 	
+	/**
+	 * Gets the bi object.
+	 * 
+	 * @return the bi object
+	 */
 	public BIObject getBiObject() {
 		return biObject;
 	}
 
 	
+	/**
+	 * Sets the bi object.
+	 * 
+	 * @param biObject the new bi object
+	 */
 	public void setBiObject(BIObject biObject) {
 		this.biObject = biObject;
 	}
 
 
+	/**
+	 * Refresh parameters.
+	 * 
+	 * @param biobj the biobj
+	 * @param confPars the conf pars
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void refreshParameters(BIObject biobj, Map confPars) throws Exception {
 		logger.debug("IN");
 		try {

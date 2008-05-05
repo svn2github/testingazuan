@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,9 @@ public class SbiParuseDetId  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiParuseDetId() {
     }
     
@@ -52,27 +54,44 @@ public class SbiParuseDetId  implements java.io.Serializable {
     // Property accessors
 
     /**
+     * Gets the sbi paruse.
      * 
+     * @return the sbi paruse
      */
     public SbiParuse getSbiParuse() {
         return this.sbiParuse;
     }
     
+    /**
+     * Sets the sbi paruse.
+     * 
+     * @param sbiParuse the new sbi paruse
+     */
     public void setSbiParuse(SbiParuse sbiParuse) {
         this.sbiParuse = sbiParuse;
     }
 
     /**
+     * Gets the sbi ext roles.
      * 
+     * @return the sbi ext roles
      */
     public SbiExtRoles getSbiExtRoles() {
         return this.sbiExtRoles;
     }
     
+    /**
+     * Sets the sbi ext roles.
+     * 
+     * @param sbiExtRoles the new sbi ext roles
+     */
     public void setSbiExtRoles(SbiExtRoles sbiExtRoles) {
         this.sbiExtRoles = sbiExtRoles;
     }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    public boolean equals(Object other) {
          if ( (this == other ) ) return true;
 		 if ( (other == null ) ) return false;
@@ -83,6 +102,9 @@ public class SbiParuseDetId  implements java.io.Serializable {
  && (this.getSbiExtRoles()==castOther.getSbiExtRoles()) || ( this.getSbiExtRoles()!=null && castOther.getSbiExtRoles()!=null && this.getSbiExtRoles().equals(castOther.getSbiExtRoles()) );
    }
    
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    public int hashCode() {
          int result = 17;
          

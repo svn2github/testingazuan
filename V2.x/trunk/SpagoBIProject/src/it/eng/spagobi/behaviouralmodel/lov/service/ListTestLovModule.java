@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -65,12 +65,15 @@ import java.util.List;
 public class ListTestLovModule extends AbstractBasicListModule {
 	
 	/**
-	 * Class Constructor
+	 * Class Constructor.
 	 */
 	public ListTestLovModule() {
 		super();
 	} 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 			
 		// define the spago paginator and list object
@@ -249,11 +252,13 @@ public class ListTestLovModule extends AbstractBasicListModule {
 	 * 
 	 * @param requestContainer The request container object
 	 * @param responseContainer The response container object
-	 * @param pool The pool definition string
-	 * @param statement	The statement definition string
-	 * @param columNames 
+	 * @param statement The statement definition string
+	 * @param datasource the datasource
+	 * @param columnsNames the columns names
+	 * 
 	 * @return A generic object containing the Execution results
-	 * @throws EMFInternalError 
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	 public static Object executeSelect(RequestContainer requestContainer,
 			 ResponseContainer responseContainer, String datasource, String statement, List columnsNames) throws EMFInternalError {

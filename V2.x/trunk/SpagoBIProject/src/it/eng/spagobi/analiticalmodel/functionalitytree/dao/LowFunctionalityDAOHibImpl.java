@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -72,6 +72,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	/* ********* start luca changes ************************************************** */
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#checkUserRootExists(java.lang.String)
+	 */
 	public boolean checkUserRootExists(String username) throws EMFUserError {
 		logger.debug( "IN" );
 		boolean exists = false;
@@ -106,6 +109,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#insertUserFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality)
+	 */
 	public void insertUserFunctionality(UserFunctionality userfunct) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;
@@ -206,6 +212,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	
 	/**
+	 * Load low functionality by id.
+	 * 
+	 * @param functionalityID the functionality id
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the low functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
 	 */
 	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError {
@@ -234,6 +249,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
+	 * Load root low functionality.
+	 * 
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the low functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadRootLowFunctionality(boolean)
 	 */
 	public LowFunctionality loadRootLowFunctionality(boolean recoverBIObjects)	throws EMFUserError {
@@ -272,6 +295,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
+	 * Load low functionality by path.
+	 * 
+	 * @param functionalityPath the functionality path
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the low functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByPath(java.lang.String)
 	 */
 	public LowFunctionality loadLowFunctionalityByPath(String functionalityPath, boolean recoverBIObjects) throws EMFUserError {	
@@ -305,8 +337,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#modifyLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality)
+	 * Modify low functionality.
 	 * 
+	 * @param aLowFunctionality the a low functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#modifyLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality)
 	 */
 	public void modifyLowFunctionality(LowFunctionality aLowFunctionality)
 			throws EMFUserError {
@@ -465,8 +502,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#insertLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality, it.eng.spago.security.IEngUserProfile)
+	 * Insert low functionality.
 	 * 
+	 * @param aLowFunctionality the a low functionality
+	 * @param profile the profile
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#insertLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality, it.eng.spago.security.IEngUserProfile)
 	 */
 	public void insertLowFunctionality(LowFunctionality aLowFunctionality,
 			IEngUserProfile profile) throws EMFUserError {
@@ -550,8 +593,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#eraseLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality, it.eng.spago.security.IEngUserProfile)
+	 * Erase low functionality.
 	 * 
+	 * @param aLowFunctionality the a low functionality
+	 * @param profile the profile
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#eraseLowFunctionality(it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality, it.eng.spago.security.IEngUserProfile)
 	 */
 	public void eraseLowFunctionality(LowFunctionality aLowFunctionality, IEngUserProfile profile) throws EMFUserError {
 		logger.debug( "IN" );
@@ -612,12 +661,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
-	 * From the Hibernate Low Functionality object at input, gives the corrispondent 
+	 * From the Hibernate Low Functionality object at input, gives the corrispondent
 	 * <code>LowFunctionality</code> object.
 	 * 
-	 * @param hibFunct	The Hibernate Low Functionality object
-	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the 
+	 * @param hibFunct The Hibernate Low Functionality object
+	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the
 	 * list of contained <code>BIObject</code> objects
+	 * 
 	 * @return the corrispondent output <code>LowFunctionality</code>
 	 */
 	public LowFunctionality toLowFunctionality(SbiFunctions hibFunct, boolean recoverBIObjects){
@@ -695,8 +745,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 
 	
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#existByCode(java.lang.String)
+	 * Exist by code.
 	 * 
+	 * @param code the code
+	 * 
+	 * @return the integer
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#existByCode(java.lang.String)
 	 */
 	public Integer existByCode(String code) throws EMFUserError {
 		Integer id = null;
@@ -730,8 +787,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
+	 * Load all low functionalities.
 	 * 
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
 	 */
 	public List loadAllLowFunctionalities(boolean recoverBIObjects) throws EMFUserError {
 		logger.debug( "IN" );
@@ -802,8 +866,16 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadSubLowFunctionalities(java.lang.String, boolean)
+	 * Load sub low functionalities.
 	 * 
+	 * @param initialPath the initial path
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadSubLowFunctionalities(java.lang.String, boolean)
 	 */
 	public List loadSubLowFunctionalities(String initialPath, boolean recoverBIObjects) throws EMFUserError {
 		logger.debug( "IN" );
@@ -853,9 +925,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
-	 *
-	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#hasChild(java.lang.String)
+	 * Checks for child.
 	 * 
+	 * @param id the id
+	 * 
+	 * @return true, if checks for child
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#hasChild(java.lang.String)
 	 */
 	public boolean hasChild(Integer id) throws EMFUserError {
 		logger.debug( "IN" );
@@ -903,10 +981,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
-	 * Deletes a set of inconsistent roles reference from the database, 
+	 * Deletes a set of inconsistent roles reference from the database,
 	 * in order to keep functionalities tree permissions consistence.
 	 * 
 	 * @param rolesSet the set containing the roles to erase
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void deleteInconsistentRoles (Set rolesSet) throws EMFUserError{
 		logger.debug( "IN" );
@@ -961,6 +1041,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadChildFunctionalities(java.lang.Integer, boolean)
+	 */
 	public List loadChildFunctionalities(Integer parentId, boolean recoverBIObjects) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;
@@ -995,6 +1078,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		return realResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#moveDownLowFunctionality(java.lang.Integer)
+	 */
 	public void moveDownLowFunctionality(Integer functionalityID) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;
@@ -1035,6 +1121,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#moveUpLowFunctionality(java.lang.Integer)
+	 */
 	public void moveUpLowFunctionality(Integer functionalityID) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;

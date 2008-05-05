@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -33,18 +33,23 @@ import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
  */
 public class ListBIObjectParametersModule extends AbstractBasicListModule {
 	public static final String MODULE_PAGE = "ListBIObjectParametersPage";
+	
 	/**
-	 * Class Constructor
-	 *
+	 * Class Constructor.
 	 */
 	public ListBIObjectParametersModule() {
 		super();
 	} 
+	
 	/**
-	 * Gets the list
+	 * Gets the list.
+	 * 
 	 * @param request The request SourceBean
 	 * @param response The response SourceBean
-	 * @return ListIFace 
+	 * 
+	 * @return ListIFace
+	 * 
+	 * @throws Exception the exception
 	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		return DelegatedHibernateConnectionListService.getList(this, request, response);

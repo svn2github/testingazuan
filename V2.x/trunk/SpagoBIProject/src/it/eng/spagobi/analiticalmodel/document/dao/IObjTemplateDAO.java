@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,14 +29,57 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 
 public interface IObjTemplateDAO {
 
+	/**
+	 * Gets the bI object active template.
+	 * 
+	 * @param biobjId the biobj id
+	 * 
+	 * @return the bI object active template
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public ObjTemplate getBIObjectActiveTemplate(Integer biobjId) throws EMFInternalError; 
 	
+	/**
+	 * Gets the bI object template list.
+	 * 
+	 * @param biobjId the biobj id
+	 * 
+	 * @return the bI object template list
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public List getBIObjectTemplateList(Integer biobjId) throws EMFInternalError; 
 	
+	/**
+	 * Load bi object template.
+	 * 
+	 * @param tempId the temp id
+	 * 
+	 * @return the obj template
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public ObjTemplate loadBIObjectTemplate(Integer tempId) throws EMFInternalError;
 	
+	/**
+	 * Gets the next prog for template.
+	 * 
+	 * @param biobjId the biobj id
+	 * 
+	 * @return the next prog for template
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public Integer getNextProgForTemplate(Integer biobjId) throws EMFInternalError;
 	
+	/**
+	 * Delete bi object template.
+	 * 
+	 * @param tempId the temp id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void deleteBIObjectTemplate(Integer tempId) throws EMFInternalError;
 	
 }

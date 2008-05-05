@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,52 +42,69 @@ import java.util.List;
 public interface ICheckDAO {
 	
 	/**
-	 * Loads all detail information for all value constraints. For each of them, detail 
-	 * information is stored into a <code>Check</code> object. After that, 
+	 * Loads all detail information for all value constraints. For each of them, detail
+	 * information is stored into a <code>Check</code> object. After that,
 	 * all value constraints are stored into a <code>List</code>, which is returned.
 	 * 
 	 * @return A list containing all value constraints objects
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List loadAllChecks() throws EMFUserError;
 	
 	/**
-	 * Loads all detail information for a value constraint identified by its 
+	 * Loads all detail information for a value constraint identified by its
 	 * <code>id</code>. All these information are stored into a
 	 * <code>Check</code> object, which is
 	 * returned.
 	 * 
 	 * @param id The id for the value constraint to load
-	 * @return	A <code>Check</code> object containing all loaded information
+	 * 
+	 * @return A <code>Check</code> object containing all loaded information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public Check loadCheckByID(Integer id) throws EMFUserError;
 	
 	/**
-	 * Implements the query to erase a value constraint. All information needed is stored 
+	 * Implements the query to erase a value constraint. All information needed is stored
 	 * into the input <code>Check</code> object.
 	 * 
 	 * @param check The object containing all delete information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseCheck(Check check) throws EMFUserError;
+	
 	/**
-	 * Implements the query to insert a value constraint. All information needed is stored 
+	 * Implements the query to insert a value constraint. All information needed is stored
 	 * into the input <code>Check</code> object.
 	 * 
-	 * @param check	The object containing all insert information
-	 * @throws EMFUserError	If an Exception occurred
+	 * @param check The object containing all insert information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertCheck(Check check) throws EMFUserError;
+	
 	/**
-	 * Implements the query to modify a value constraint. All information needed is stored 
+	 * Implements the query to modify a value constraint. All information needed is stored
 	 * into the input <code>Check</code> object.
 	 * 
 	 * @param check The object containing all modify information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void modifyCheck(Check check) throws EMFUserError;
 
+	/**
+	 * Checks if is referenced.
+	 * 
+	 * @param checkId the check id
+	 * 
+	 * @return true, if is referenced
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public boolean isReferenced (String checkId) throws EMFUserError;
 
 }

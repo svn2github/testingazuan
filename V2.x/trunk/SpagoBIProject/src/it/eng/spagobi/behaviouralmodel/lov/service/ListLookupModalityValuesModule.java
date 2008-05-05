@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.behaviouralmodel.lov.service;
 
 import it.eng.spago.base.SessionContainer;
@@ -56,26 +56,29 @@ public class ListLookupModalityValuesModule extends AbstractListLookupModule {
     static private Logger logger = Logger.getLogger(ListLookupModalityValuesModule.class);
 
     /**
-     * Class Constructor
-     * 
+     * Class Constructor.
      */
     public ListLookupModalityValuesModule() {
 	super();
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+     */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
 	DelegatedBasicListService.service(this, request, response);
     }
 
     /**
-     * Gets the list
+     * Gets the list.
      * 
-     * @param request
-     *                The request SourceBean
-     * @param response
-     *                The response SourceBean
+     * @param request The request SourceBean
+     * @param response The response SourceBean
+     * 
      * @return ListIFace
+     * 
+     * @throws Exception the exception
      */
     public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,13 +53,13 @@ public class SpagoBITracer {
 	
     /**
      * Adds a tracing information into the SpagoBI log file, with DEBUG importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void debug(String moduleName, String className, String methodName, String message){
@@ -68,13 +68,13 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with INFORMATION importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void info(String moduleName, String className, String methodName, String message){
@@ -83,13 +83,13 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with WARNING importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void warning(String moduleName, String className, String methodName, String message){
@@ -98,13 +98,13 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with MINOR importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void minor(String moduleName, String className, String methodName, String message){
@@ -113,13 +113,13 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with MAJOR importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void major(String moduleName, String className, String methodName, String message){
@@ -128,13 +128,13 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with CRITICAL importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
      */
     public static void critical(String moduleName, String className, String methodName, String message){
@@ -146,17 +146,17 @@ public class SpagoBITracer {
    
     /**
      * Adds a tracing information into the SpagoBI log file, with DEBUG importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void debug(String moduleName, String className, String methodName, String message, Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.DEBUG, getPrefix(moduleName, className, methodName) + message, e);
@@ -165,17 +165,17 @@ public class SpagoBITracer {
    
     /**
      * Adds a tracing information into the SpagoBI log file, with INFORMATION importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void info(String moduleName, String className, String methodName, String message, Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.INFORMATION, getPrefix(moduleName, className, methodName) + message, e);
@@ -184,17 +184,17 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with WARNING importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void warning(String moduleName, String className, String methodName, String message, Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.WARNING, getPrefix(moduleName, className, methodName) + message, e);
@@ -203,17 +203,17 @@ public class SpagoBITracer {
    
     /**
      * Adds a tracing information into the SpagoBI log file, with MINOR importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void minor(String moduleName, String className, String methodName, String message,  Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.MINOR, getPrefix(moduleName, className, methodName) + message, e);
@@ -222,17 +222,17 @@ public class SpagoBITracer {
     
     /**
      * Adds a tracing information into the SpagoBI log file, with MAJOR importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void major(String moduleName, String className, String methodName, String message, Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.MAJOR, getPrefix(moduleName, className, methodName) + message, e);
@@ -241,17 +241,17 @@ public class SpagoBITracer {
    
     /**
      * Adds a tracing information into the SpagoBI log file, with CRITICAL importance (see
-     * Spago Tracing docuentation for more details). it has as input all information needed 
+     * Spago Tracing docuentation for more details). it has as input all information needed
      * for tracing: the module into whom tracing has been call, those of the relative class
      * and method, the tracing message String.
      * It is a second implementation giving the possibility to take as input also an exception:
-     * it is useful because many times tracing is called after having caught an exception. 
+     * it is useful because many times tracing is called after having caught an exception.
      * 
-     * @param moduleName The Module name String 
-     * @param className The Class name String 
-     * @param methodName The Method name String 
+     * @param moduleName The Module name String
+     * @param className The Class name String
+     * @param methodName The Method name String
      * @param message The Tracing message
-     * @param e The occurred Exception 
+     * @param e The occurred Exception
      */
     public static void critical(String moduleName, String className, String methodName, String message, Exception e){
     	TracerSingleton.log(SPAGO_BI, TracerSingleton.CRITICAL, getPrefix(moduleName, className, methodName) + message, e);

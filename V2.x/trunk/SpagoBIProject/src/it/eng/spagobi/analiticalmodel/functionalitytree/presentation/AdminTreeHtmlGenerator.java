@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.analiticalmodel.functionalitytree.presentation;
 
 import it.eng.spago.base.RequestContainer;
@@ -192,15 +192,24 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("}\n");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
 		this.treeName = treename;
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
 
 	
-	/** The function makeTree builds the tree. 
-	 *  It makes a separate root for user personal folders (the reason is that admin can view all personal folders).
+	/**
+	 * The function makeTree builds the tree.
+	 * It makes a separate root for user personal folders (the reason is that admin can view all personal folders).
 	 * 
+	 * @param objectsList the objects list
+	 * @param httpReq the http req
+	 * @param initialPath the initial path
+	 * 
+	 * @return the string buffer
 	 */
 
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
@@ -364,6 +373,9 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO code for tree with no javascript
 		return null;

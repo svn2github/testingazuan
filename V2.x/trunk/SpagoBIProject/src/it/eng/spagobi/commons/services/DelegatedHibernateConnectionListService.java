@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,17 @@ import org.hibernate.Transaction;
 
 public class DelegatedHibernateConnectionListService extends DelegatedBasicListService {
 	
+	/**
+	 * Gets the list.
+	 * 
+	 * @param service the service
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @return the list
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static ListIFace getList(ServiceIFace service, SourceBean request, SourceBean response) throws Exception {
 
 		Session aSession = null;
@@ -132,6 +143,15 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 		return list;
 	}
 	
+   /**
+    * Gets the data connection.
+    * 
+    * @param con the con
+    * 
+    * @return the data connection
+    * 
+    * @throws EMFInternalError the EMF internal error
+    */
    public static DataConnection getDataConnection(Connection con) throws EMFInternalError {
        DataConnection dataCon = null;
        try {
@@ -147,7 +167,8 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
    }
    
 	/**
-	 * Traces the exception information of a throwable input object
+	 * Traces the exception information of a throwable input object.
+	 * 
 	 * @param t The input throwable object
 	 */
 	public static void logException(Throwable t){

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,13 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
 
 public class ChannelUtilities {
 
+	/**
+	 * Gets the request container.
+	 * 
+	 * @param httpRequest the http request
+	 * 
+	 * @return the request container
+	 */
 	public static RequestContainer getRequestContainer(HttpServletRequest httpRequest) {
 		RequestContainer reqCont = null;
 		// try to find the RequestContainer
@@ -48,6 +55,13 @@ public class ChannelUtilities {
 		return reqCont;
 	}
 	
+	/**
+	 * Gets the response container.
+	 * 
+	 * @param httpRequest the http request
+	 * 
+	 * @return the response container
+	 */
 	public static ResponseContainer getResponseContainer(HttpServletRequest httpRequest) {
 		ResponseContainer respCont = null;
 		// try to find the ResponseContainer
@@ -57,6 +71,15 @@ public class ChannelUtilities {
 	}
 	
 	
+	/**
+	 * Gets the preference value.
+	 * 
+	 * @param requestContainer the request container
+	 * @param preferenceName the preference name
+	 * @param defaultValue the default value
+	 * 
+	 * @return the preference value
+	 */
 	public static String getPreferenceValue(RequestContainer requestContainer, String preferenceName, String defaultValue) {
 		String prefValue = defaultValue;
 		try{
@@ -84,6 +107,13 @@ public class ChannelUtilities {
 	}
 	
 	
+	/**
+	 * Gets the spago bi context name.
+	 * 
+	 * @param httpRequest the http request
+	 * 
+	 * @return the spago bi context name
+	 */
 	public static String getSpagoBIContextName(HttpServletRequest httpRequest) {
 		String contextName = "Spagobi";
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
@@ -100,6 +130,13 @@ public class ChannelUtilities {
 	}
 	
 	
+	/**
+	 * Gets the spago bi content repository servlet.
+	 * 
+	 * @param httpRequest the http request
+	 * 
+	 * @return the spago bi content repository servlet
+	 */
 	public static String getSpagoBiContentRepositoryServlet(HttpServletRequest httpRequest){
 	    return getSpagoBIContextName(httpRequest) + "/ContentRepositoryServlet";
 	}
@@ -124,7 +161,12 @@ public class ChannelUtilities {
 //	}
 	
 	
-	public static boolean isWebRunning() {
+	/**
+ * Checks if is web running.
+ * 
+ * @return true, if is web running
+ */
+public static boolean isWebRunning() {
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
@@ -136,6 +178,11 @@ public class ChannelUtilities {
 	}
 	
 	
+	/**
+	 * Checks if is portlet running.
+	 * 
+	 * @return true, if is portlet running
+	 */
 	public static boolean isPortletRunning() {
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution

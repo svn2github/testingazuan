@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,60 +44,89 @@ public class Check  implements Serializable   {
 	
 	
 	/**
+	 * Gets the description.
+	 * 
 	 * @return Returns the description.
 	 */
 	public String getDescription() {
 		return Description;
 	}
+	
 	/**
+	 * Sets the description.
+	 * 
 	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
 		Description = description;
 	}
+	
 	/**
+	 * Gets the first value.
+	 * 
 	 * @return Returns the firstValue.
 	 */
 	public String getFirstValue() {
 		return firstValue;
 	}
+	
 	/**
+	 * Sets the first value.
+	 * 
 	 * @param firstValue The firstValue to set.
 	 */
 	public void setFirstValue(String firstValue) {
 		this.firstValue = firstValue;
 	}
+	
 	/**
+	 * Gets the name.
+	 * 
 	 * @return Returns the name.
 	 */
 	public String getName() {
 		return Name;
 	}
+	
 	/**
+	 * Sets the name.
+	 * 
 	 * @param name The name to set.
 	 */
 	public void setName(String name) {
 		Name = name;
 	}
+	
 	/**
+	 * Gets the second value.
+	 * 
 	 * @return Returns the secondValue.
 	 */
 	public String getSecondValue() {
 		return secondValue;
 	}
+	
 	/**
+	 * Sets the second value.
+	 * 
 	 * @param secondValue The secondValue to set.
 	 */
 	public void setSecondValue(String secondValue) {
 		this.secondValue = secondValue;
 	}
+	
 	/**
+	 * Gets the value type cd.
+	 * 
 	 * @return Returns the valueTypeCd.
 	 */
 	public String getValueTypeCd() {
 		return valueTypeCd;
 	}
+	
 	/**
+	 * Sets the value type cd.
+	 * 
 	 * @param valueTypeCd The valueTypeCd to set.
 	 */
 	public void setValueTypeCd(String valueTypeCd) {
@@ -127,32 +156,55 @@ public class Check  implements Serializable   {
 	}
 	*/
 	/**
+	 * Gets the check id.
+	 * 
 	 * @return Returns the CheckId.
 	 */
 	public Integer getCheckId() {
 		return checkId;
 	}
+	
 	/**
+	 * Sets the check id.
+	 * 
 	 * @param checkId The checkId to set.
 	 */
 	public void setCheckId(Integer checkId) {
 		this.checkId = checkId;
 	}
+	
 	/**
+	 * Gets the value type id.
+	 * 
 	 * @return Returns the ValueTypeId.
 	 */
 	public Integer getValueTypeId() {
 		return valueTypeId;
 	}
+	
 	/**
+	 * Sets the value type id.
+	 * 
 	 * @param valueTypeId The valueTypeId to set.
 	 */
 	public void setValueTypeId(Integer valueTypeId) {
 		this.valueTypeId = valueTypeId;
 	}
+	
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
+	
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label the new label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}

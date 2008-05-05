@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -96,10 +96,12 @@ public class DAOFactory {
 		return daoObject;
 		
 	}
+	
 	/**
-	 * Creates a DAO instance for a BI object
+	 * Creates a DAO instance for a BI object.
 	 * 
 	 * @return a DAO instance for the BIObject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IBIObjectDAO getBIObjectDAO() throws EMFUserError {
@@ -108,9 +110,10 @@ public class DAOFactory {
 	
 	
 	/**
-	 * Creates a DAO instance for a Subreport
+	 * Creates a DAO instance for a Subreport.
 	 * 
 	 * @return a DAO instance for the Subreport
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ISubreportDAO getSubreportDAO() throws EMFUserError {
@@ -119,81 +122,98 @@ public class DAOFactory {
 	
 	
 	/**
-	 * Creates a DAO instance for a BI object parameter
+	 * Creates a DAO instance for a BI object parameter.
 	 * 
 	 * @return a DAO instance for the BIObject parameter
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IBIObjectParameterDAO getBIObjectParameterDAO() throws EMFUserError{
 		return (IBIObjectParameterDAO)createDAOInstance("BIObjectParameterDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a value constraint
+	 * Creates a DAO instance for a value constraint.
 	 * 
 	 * @return a DAO instance for the value constraint
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ICheckDAO getChecksDAO() throws EMFUserError{
 		return (ICheckDAO)createDAOInstance("ChecksDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a domain
+	 * Creates a DAO instance for a domain.
 	 * 
 	 * @return a DAO instance for the  domain
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IDomainDAO getDomainDAO() throws EMFUserError{
 		return (IDomainDAO)createDAOInstance("DomainDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for an engine
+	 * Creates a DAO instance for an engine.
 	 * 
 	 * @return a DAO instance for the engine
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IEngineDAO getEngineDAO() throws EMFUserError{
 		return (IEngineDAO)createDAOInstance("EngineDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a low functionality
+	 * Creates a DAO instance for a low functionality.
 	 * 
 	 * @return a DAO instance for the  low functionality
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ILowFunctionalityDAO getLowFunctionalityDAO() throws EMFUserError{
 		return (ILowFunctionalityDAO)createDAOInstance("LowFunctionalityDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a predefined LOV
+	 * Creates a DAO instance for a predefined LOV.
 	 * 
 	 * @return a DAO instance for the  predefined LOV
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IModalitiesValueDAO getModalitiesValueDAO() throws EMFUserError{
 		return (IModalitiesValueDAO)createDAOInstance("ModalitiesValueDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a parameter
+	 * Creates a DAO instance for a parameter.
 	 * 
 	 * @return a DAO instance for the  parameter
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IParameterDAO getParameterDAO() throws EMFUserError{
 		return (IParameterDAO)createDAOInstance("ParameterDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a parameter use mode
+	 * Creates a DAO instance for a parameter use mode.
 	 * 
 	 * @return a DAO instance for the  parameter use mode
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IParameterUseDAO getParameterUseDAO() throws EMFUserError{
 		return (IParameterUseDAO)createDAOInstance("ParameterUseDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a role
+	 * Creates a DAO instance for a role.
 	 * 
 	 * @return a DAO instance for the role
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IRoleDAO getRoleDAO() throws EMFUserError{
@@ -201,52 +221,110 @@ public class DAOFactory {
 	}
 
 	
+	/**
+	 * Gets the obj paruse dao.
+	 * 
+	 * @return the obj paruse dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IObjParuseDAO getObjParuseDAO() throws EMFUserError{
 		return (IObjParuseDAO)createDAOInstance("ObjParuseDAO");
 	}
 	
 	/**
-	 * Creates a DAO instance for a viewpoint
+	 * Creates a DAO instance for a viewpoint.
 	 * 
 	 * @return a DAO instance for the viewpoint
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IViewpointDAO getViewpointDAO() throws EMFUserError{
 		return (IViewpointDAO)createDAOInstance("ViewpointDAO");
 	}	
 	 
+	/**
+	 * Gets the data source dao.
+	 * 
+	 * @return the data source dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDataSourceDAO getDataSourceDAO() throws EMFUserError{
 		return (IDataSourceDAO)createDAOInstance("DataSourceDAO");
 	}
 	
+	/**
+	 * Gets the data set dao.
+	 * 
+	 * @return the data set dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDataSetDAO getDataSetDAO() throws EMFUserError{
 		return (IDataSetDAO)createDAOInstance("DataSetDAO");
 	}
 	
+	/**
+	 * Gets the bin content dao.
+	 * 
+	 * @return the bin content dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IBinContentDAO getBinContentDAO() throws EMFUserError{
 		return (IBinContentDAO)createDAOInstance("BinContentDAO");
 	}	
 	
+	/**
+	 * Gets the obj template dao.
+	 * 
+	 * @return the obj template dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IObjTemplateDAO getObjTemplateDAO() throws EMFUserError{
 		return (IObjTemplateDAO)createDAOInstance("ObjTemplateDAO");
 	}	
 	
+	/**
+	 * Gets the obj note dao.
+	 * 
+	 * @return the obj note dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IObjNoteDAO getObjNoteDAO() throws EMFUserError{
 		return (IObjNoteDAO)createDAOInstance("ObjNoteDAO");
 	}	
 	
+	/**
+	 * Gets the sub object dao.
+	 * 
+	 * @return the sub object dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static ISubObjectDAO getSubObjectDAO() throws EMFUserError{
 		return (ISubObjectDAO)createDAOInstance("SubObjectDAO");
 	}	
 	
+	/**
+	 * Gets the snapshot dao.
+	 * 
+	 * @return the snapshot dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static ISnapshotDAO getSnapshotDAO() throws EMFUserError{
 		return (ISnapshotDAO)createDAOInstance("SnapshotDAO");
 	}	
 	
 	/**
-	 * Creates a DAO instance for a BI object
+	 * Creates a DAO instance for a BI object.
 	 * 
 	 * @return a DAO instance for the BIObject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ISbiGeoMapsDAO getSbiGeoMapsDAO() throws EMFUserError {
@@ -254,62 +332,123 @@ public class DAOFactory {
 	}
 	
 	/**
-	 * Creates a DAO instance for a BI object
+	 * Creates a DAO instance for a BI object.
 	 * 
 	 * @return a DAO instance for the BIObject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ISbiGeoFeaturesDAO getSbiGeoFeaturesDAO() throws EMFUserError {
 		return (ISbiGeoFeaturesDAO)createDAOInstance("GeoFeatureDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a BI object
+	 * Creates a DAO instance for a BI object.
 	 * 
 	 * @return a DAO instance for the BIObject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static ISbiGeoMapFeaturesDAO getSbiGeoMapFeaturesDAO() throws EMFUserError {
 		return (ISbiGeoMapFeaturesDAO)createDAOInstance("GeoMapFeatureDAO");
 	}
+	
 	/**
-	 * Creates a DAO instance for a BI object
+	 * Creates a DAO instance for a BI object.
 	 * 
 	 * @return a DAO instance for the BIObject
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public static IUserFunctionalityDAO getUserFunctionalityDAO() throws EMFUserError {
 		return (IUserFunctionalityDAO)createDAOInstance("UserFunctionalityDAO");
 	}	
 	
+	/**
+	 * Gets the distribution list dao.
+	 * 
+	 * @return the distribution list dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDistributionListDAO getDistributionListDAO() throws EMFUserError {
 		return (IDistributionListDAO)createDAOInstance("DistributionListDAO");
 	}
 	
 
+	/**
+	 * Gets the dossier dao.
+	 * 
+	 * @return the dossier dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDossierDAO getDossierDAO() throws EMFUserError{
 		return (IDossierDAO)createDAOInstance("DossierDAO");
 	}
 	
+	/**
+	 * Gets the dossier presentation dao.
+	 * 
+	 * @return the dossier presentation dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDossierPresentationsDAO getDossierPresentationDAO() throws EMFUserError{
 		return (IDossierPresentationsDAO)createDAOInstance("DossierPresentationDAO");
 	}
 
+	/**
+	 * Gets the dossier parts temp dao.
+	 * 
+	 * @return the dossier parts temp dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IDossierPartsTempDAO getDossierPartsTempDAO() throws EMFUserError{
 		return (IDossierPartsTempDAO)createDAOInstance("DossierPartsTempDAO");
 	}
 	
+	/**
+	 * Gets the remember me dao.
+	 * 
+	 * @return the remember me dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IRememberMeDAO getRememberMeDAO() throws EMFUserError{
 		return (IRememberMeDAO)createDAOInstance("RememberMeDAO");
 	}
 	
+	/**
+	 * Gets the menu dao.
+	 * 
+	 * @return the menu dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IMenuDAO getMenuDAO() throws EMFUserError{
 		return (IMenuDAO)createDAOInstance("MenuDAO");
 	}
 	
+	/**
+	 * Gets the menu roles dao.
+	 * 
+	 * @return the menu roles dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IMenuRolesDAO getMenuRolesDAO() throws EMFUserError{
 		return (IMenuRolesDAO)createDAOInstance("MenuRolesDAO");
 	}
 	
+	/**
+	 * Gets the bI object rating dao.
+	 * 
+	 * @return the bI object rating dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public static IBIObjectRating getBIObjectRatingDAO() throws EMFUserError{
 		return (IBIObjectRating)createDAOInstance("BIObjectRatingDAO");
 	}

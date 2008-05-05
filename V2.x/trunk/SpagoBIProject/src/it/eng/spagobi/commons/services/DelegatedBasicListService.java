@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -75,16 +75,21 @@ public class DelegatedBasicListService {
 	public static final String LIST_NOCACHE = "LIST_NOCACHE";
 	public static final String LIST_DELETE = "LIST_DELETE";
 
+	/**
+	 * Instantiates a new delegated basic list service.
+	 */
 	public DelegatedBasicListService() {
 		super();
 	} // private KFDelegatedBasicListService()
+	
 	/**
 	 * The service method for this class.
 	 * 
-	 * @param service	The service interface object
-	 * @param request	The request Source Bean
-	 * @param response	The response Source Bean
-	 * @throws Exception	If any Exception occurred
+	 * @param service The service interface object
+	 * @param request The request Source Bean
+	 * @param response The response Source Bean
+	 * 
+	 * @throws Exception If any Exception occurred
 	 */
 	public static void service(ServiceIFace service, SourceBean request, SourceBean response) throws Exception {
 		if ((service == null) || (request == null) || (response == null)) {
@@ -183,11 +188,13 @@ public class DelegatedBasicListService {
 	/**
 	 * Gets the list for a particular SpagoBI object.
 	 * 
-	 * @param service	The service interface object
-	 * @param request	The request Source Bean
-	 * @param response	The response Source Bean
-	 * @throws Exception	If any exception occurred
+	 * @param service The service interface object
+	 * @param request The request Source Bean
+	 * @param response The response Source Bean
 	 * 
+	 * @return the list
+	 * 
+	 * @throws Exception If any exception occurred
 	 */
 	public static ListIFace getList(ServiceIFace service, SourceBean request, SourceBean response) throws Exception {
 		PaginatorIFace paginator = new GenericPaginator();
@@ -263,7 +270,7 @@ public class DelegatedBasicListService {
 
 	
 	/**
-	 * Filters the list with a list of filtering values
+	 * Filters the list with a list of filtering values.
 	 * 
 	 * @param list The list to be filtered
 	 * @param valuesfilter The list of filtering values
@@ -271,6 +278,7 @@ public class DelegatedBasicListService {
 	 * @param columnfilter The column to be filtered
 	 * @param typeFilter The type of the filter
 	 * @param errorHandler The EMFErrorHandler object, in which errors are stored if they occurs
+	 * 
 	 * @return the filtered list
 	 */
 	public static ListIFace filterList(ListIFace list, List valuesfilter, String valuetypefilter, String columnfilter, 
@@ -348,7 +356,7 @@ public class DelegatedBasicListService {
 	}
 	
 	/**
-	 * Filters the list with a unique value filter
+	 * Filters the list with a unique value filter.
 	 * 
 	 * @param list The list to be filtered
 	 * @param valuefilter The value of the filter
@@ -356,6 +364,7 @@ public class DelegatedBasicListService {
 	 * @param columnfilter The column to be filtered
 	 * @param typeFilter The type of the filter
 	 * @param errorHandler The EMFErrorHandler object, in which errors are stored if they occurs
+	 * 
 	 * @return the filtered list
 	 */
 	public static ListIFace filterList(ListIFace list, String valuefilter, String valuetypefilter, String columnfilter, 
@@ -670,7 +679,9 @@ public class DelegatedBasicListService {
 	 * 
 	 * @param dateStr The String representing the date
 	 * @param format The date format
+	 * 
 	 * @return the relevant Date object
+	 * 
 	 * @throws Exception if any parsing exception occurs
 	 */
 	public static Date toDate(String dateStr, String format) throws Exception {
@@ -692,9 +703,11 @@ public class DelegatedBasicListService {
 	 * @param requestContainer The request container object
 	 * @param responseContainer The response container object
 	 * @param pool The pool definition string
-	 * @param statement	The statement definition string
+	 * @param statement The statement definition string
+	 * 
 	 * @return A generic object containing the Execution results
-	 * @throws EMFInternalError 
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	 public static Object executeSelect(RequestContainer requestContainer,
 			ResponseContainer responseContainer, String pool, String statement) throws EMFInternalError {
@@ -723,11 +736,11 @@ public class DelegatedBasicListService {
 	/**
 	 * Function that controls if the deletion of a row in a DB table has success or not.
 	 * 
-	 *  @param service The service interface object
-	 *  @param request The request Source Bean
-	 *  @param response The response SourceBean
-	 *  @return Boolean true (succeeded) or false (not succeeded) 
+	 * @param service The service interface object
+	 * @param request The request Source Bean
+	 * @param response The response SourceBean
 	 * 
+	 * @return Boolean true (succeeded) or false (not succeeded)
 	 */
 	public static boolean delete(ServiceIFace service, SourceBean request, SourceBean response) {
 		InitializerIFace serviceInitializer = (InitializerIFace) service;
@@ -756,10 +769,12 @@ public class DelegatedBasicListService {
 
 	// SourceBean response)
 	/**
-	 * Gets the information contained in a Source Bean attribute 
-	 * identified by the key "MESSAGE". 
+	 * Gets the information contained in a Source Bean attribute
+	 * identified by the key "MESSAGE".
 	 * 
 	 * @param request The input Source Bean
+	 * 
+	 * @return the message
 	 */
 	public static String getMessage(SourceBean request) {
 		return (String) request.getAttribute("MESSAGE");

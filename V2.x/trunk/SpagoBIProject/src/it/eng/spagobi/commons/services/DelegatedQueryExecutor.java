@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package it.eng.spagobi.commons.services;
 
@@ -35,12 +56,13 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     public static final String DELETE = "DELETE";
 
     /**
-     * Creates the command to execute dependent on request type     
+     * Creates the command to execute dependent on request type.
      * 
-     * @param dataConnection
-     * @param query
+     * @param dataConnection the data connection
      * @param type type of query to execute: CREATE, READ, UPDATE, DELETE
-     * @return
+     * @param statement the statement
+     * 
+     * @return the SQL command
      */
     public static SQLCommand createStatementSql(final DataConnection dataConnection,
             final String statement, final String type) {
@@ -58,27 +80,29 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     }
 
     /**
-     * Opens the pool connection
+     * Opens the pool connection.
      * 
-     * @param pool
-     * @return
-     * @throws EMFInternalError
+     * @param pool the pool
+     * 
+     * @return the data connection
+     * 
+     * @throws EMFInternalError the EMF internal error
      */
     public static DataConnection openConnection(final String pool) throws EMFInternalError {
         return DataConnectionManager.getInstance().getConnection(pool);
     }
 
     /**
-     * Execs the commands: SQL SELECT, INSERT, DELETE, UPDATE. 
+     * Execs the commands: SQL SELECT, INSERT, DELETE, UPDATE.
      * The connection is gone by the connection pool.
      * 
-     * 
-     * @param requestContainer
-     * @param responseContainer
+     * @param requestContainer the request container
+     * @param responseContainer the response container
      * @param pool pool's name
      * @param query the SourceBean that contains the configuration of the query
      * @param type type of query: CREATE, READ, UPDATE, DELETE
-     * @return
+     * 
+     * @return the object
      */
     public static Object executeQuery(final RequestContainer requestContainer,
             final ResponseContainer responseContainer, final String pool, final SourceBean query,
@@ -107,14 +131,15 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     /**
      * Execs the commands: SQL SELECT, INSERT, DELETE, UPDATE.
      * 
-     * The connection is taken by parameter (for manually transactions) 
+     * The connection is taken by parameter (for manually transactions)
      * 
-     * @param requestContainer
-     * @param responseContainer
+     * @param requestContainer the request container
+     * @param responseContainer the response container
      * @param dataConnection connection on db
      * @param query the SourceBean that contains the configuration
      * @param type type of query: CREATE, READ, UPDATE, DELETE
-     * @return
+     * 
+     * @return the object
      */
     public static Object executeQuery(final RequestContainer requestContainer,
             final ResponseContainer responseContainer, DataConnection dataConnection,
@@ -192,14 +217,16 @@ public class DelegatedQueryExecutor extends QueryExecutor {
     } // public static Object executeQuery(RequestContainer
 
     /**
-     * Execs statement SQL with explicit parameters 
+     * Execs statement SQL with explicit parameters.
      * 
-     * @param dataConnection connection on database: 
+     * @param dataConnection connection on database:
      * @param type type of query: CREATE, READ, UPDATE, DELETE
      * @param query the SourceBean that contains the configuration of the query
      * @param parameters The parameters to add into statement
-     * @return
-     * @throws Exception
+     * 
+     * @return the object
+     * 
+     * @throws Exception the exception
      */
     public static Object executeQuery(DataConnection dataConnection, String type, SourceBean query,
             ArrayList parameters) throws Exception {

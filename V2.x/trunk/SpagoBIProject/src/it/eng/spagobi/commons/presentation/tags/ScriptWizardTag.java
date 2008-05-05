@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 	  boolean isreadonly = true ;
 	  String disabled = "disabled" ;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
@@ -158,15 +161,29 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		return SKIP_BODY;
 	}
 		
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
     public int doEndTag() throws JspException {
         TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doEndTag:: invocato");
         return super.doEndTag();
     }
 	
 	
+	/**
+	 * Gets the script.
+	 * 
+	 * @return the script
+	 */
 	public String getScript() {
 		return script;
 	}
+	
+	/**
+	 * Sets the script.
+	 * 
+	 * @param script the new script
+	 */
 	public void setScript(String script) {
 		this.script = script;
 	}

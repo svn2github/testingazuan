@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -101,6 +101,8 @@ public class BIObject implements Serializable {
 
 
 	/**
+	 * Gets the id.
+	 * 
 	 * @return Returns the id.
 	 */
 	public Integer getId() {
@@ -108,14 +110,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param businessObjectID
-	 *            The id to set.
+	 * Sets the id.
+	 * 
+	 * @param businessObjectID The id to set.
 	 */
 	public void setId(Integer businessObjectID) {
 		this.id = businessObjectID;
 	}
 
 	/**
+	 * Gets the bi object parameters.
+	 * 
 	 * @return Returns the biObjectParameters.
 	 */
 	public List getBiObjectParameters() {
@@ -123,14 +128,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param businessObjectParameters
-	 *            The biObjectParameters to set.
+	 * Sets the bi object parameters.
+	 * 
+	 * @param businessObjectParameters The biObjectParameters to set.
 	 */
 	public void setBiObjectParameters(List businessObjectParameters) {
 		this.biObjectParameters = businessObjectParameters;
 	}
 
 	/**
+	 * Gets the description.
+	 * 
 	 * @return Returns the description.
 	 */
 	public String getDescription() {
@@ -138,14 +146,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param description
-	 *            The description to set.
+	 * Sets the description.
+	 * 
+	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
+	 * Gets the encrypt.
+	 * 
 	 * @return Returns the encrypt.
 	 */
 	public Integer getEncrypt() {
@@ -153,22 +164,35 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param encrypt
-	 *            The encrypt to set.
+	 * Sets the encrypt.
+	 * 
+	 * @param encrypt The encrypt to set.
 	 */
 	public void setEncrypt(Integer encrypt) {
 		this.encrypt = encrypt;
 	}
 
+	/**
+	 * Gets the visible.
+	 * 
+	 * @return the visible
+	 */
 	public Integer getVisible() {
 		return visible;
 	}
 
+	/**
+	 * Sets the visible.
+	 * 
+	 * @param visible the new visible
+	 */
 	public void setVisible(Integer visible) {
 		this.visible = visible;
 	}
 	
 	/**
+	 * Gets the engine.
+	 * 
 	 * @return Returns the engine.
 	 */
 	public Engine getEngine() {
@@ -176,14 +200,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param engine
-	 *            The engine to set.
+	 * Sets the engine.
+	 * 
+	 * @param engine The engine to set.
 	 */
 	public void setEngine(Engine engine) {
 		this.engine = engine;
 	}
 	
 	/**
+	 * Gets the data source id.
+	 * 
 	 * @return Returns the datasource.
 	 */
 	public Integer getDataSourceId() {
@@ -191,7 +218,9 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param datasource  The data source to set.
+	 * Sets the data source id.
+	 * 
+	 * @param dataSourceId the data source id
 	 */
 	public void setDataSourceId(Integer dataSourceId) {
 		this.dataSourceId = dataSourceId;
@@ -199,6 +228,8 @@ public class BIObject implements Serializable {
 
 	
 	/**
+	 * Gets the label.
+	 * 
 	 * @return Returns the label.
 	 */
 	public String getLabel() {
@@ -206,14 +237,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param label
-	 *            The label to set.
+	 * Sets the label.
+	 * 
+	 * @param label The label to set.
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
 	/**
+	 * Gets the rel name.
+	 * 
 	 * @return Returns the relName.
 	 */
 	public String getRelName() {
@@ -221,14 +255,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param relName
-	 *            The relName to set.
+	 * Sets the rel name.
+	 * 
+	 * @param relName The relName to set.
 	 */
 	public void setRelName(String relName) {
 		this.relName = relName;
 	}
 
 	/**
+	 * Gets the bi object type code.
+	 * 
 	 * @return Returns the biObjectTypeCode.
 	 */
 	public String getBiObjectTypeCode() {
@@ -236,14 +273,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param businessObjectTypeCD
-	 *            The biObjectTypeCode to set.
+	 * Sets the bi object type code.
+	 * 
+	 * @param businessObjectTypeCD The biObjectTypeCode to set.
 	 */
 	public void setBiObjectTypeCode(String businessObjectTypeCD) {
 		this.biObjectTypeCode = businessObjectTypeCD;
 	}
 
 	/**
+	 * Gets the bi object type id.
+	 * 
 	 * @return Returns the biObjectTypeID.
 	 */
 	public Integer getBiObjectTypeID() {
@@ -251,14 +291,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param biObjectTypeID
-	 *            The biObjectTypeID to set.
+	 * Sets the bi object type id.
+	 * 
+	 * @param biObjectTypeID The biObjectTypeID to set.
 	 */
 	public void setBiObjectTypeID(Integer biObjectTypeID) {
 		this.biObjectTypeID = biObjectTypeID;
 	}
 
 	/**
+	 * Gets the state code.
+	 * 
 	 * @return Returns the stateCode.
 	 */
 	public String getStateCode() {
@@ -266,14 +309,17 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param stateCD
-	 *            The stateCode to set.
+	 * Sets the state code.
+	 * 
+	 * @param stateCD The stateCode to set.
 	 */
 	public void setStateCode(String stateCD) {
 		this.stateCode = stateCD;
 	}
 
 	/**
+	 * Gets the state id.
+	 * 
 	 * @return Returns the stateID.
 	 */
 	public Integer getStateID() {
@@ -281,49 +327,92 @@ public class BIObject implements Serializable {
 	}
 
 	/**
-	 * @param stateID
-	 *            The stateID to set.
+	 * Sets the state id.
+	 * 
+	 * @param stateID The stateID to set.
 	 */
 	public void setStateID(Integer stateID) {
 		this.stateID = stateID;
 	}
+	
 	/**
+	 * Gets the path.
+	 * 
 	 * @return Returns the path.
 	 */
 	public String getPath() {
 		return path;
 	}
+	
 	/**
+	 * Sets the path.
+	 * 
 	 * @param path The path to set.
 	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
 	
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the uuid.
+	 * 
+	 * @return the uuid
+	 */
 	public String getUuid() {
 		return uuid;
 	}
 
+	/**
+	 * Sets the uuid.
+	 * 
+	 * @param uuid the new uuid
+	 */
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 
+	/**
+	 * Gets the functionalities.
+	 * 
+	 * @return the functionalities
+	 */
 	public List getFunctionalities() {
 		return functionalities;
 	}
 
+	/**
+	 * Sets the functionalities.
+	 * 
+	 * @param functionalities the new functionalities
+	 */
 	public void setFunctionalities(List functionalities) {
 		this.functionalities = functionalities;
 	}
 
 	
+	/**
+	 * Gets the active template.
+	 * 
+	 * @return the active template
+	 */
 	public ObjTemplate getActiveTemplate() {
 		ObjTemplate template = null;
 		try{
@@ -337,6 +426,11 @@ public class BIObject implements Serializable {
 	}
 	
 	
+	/**
+	 * Gets the template list.
+	 * 
+	 * @return the template list
+	 */
 	public List getTemplateList() {
 		List templates = new ArrayList();
 		try{
@@ -349,58 +443,128 @@ public class BIObject implements Serializable {
 		return templates;
 	}
 
+	/**
+	 * Gets the extended description.
+	 * 
+	 * @return the extended description
+	 */
 	public String getExtendedDescription() {
 	    return extendedDescription;
 	}
 
+	/**
+	 * Sets the extended description.
+	 * 
+	 * @param extendedDescription the new extended description
+	 */
 	public void setExtendedDescription(String extendedDescription) {
 	    this.extendedDescription = extendedDescription;
 	}
 
+	/**
+	 * Gets the objectve.
+	 * 
+	 * @return the objectve
+	 */
 	public String getObjectve() {
 	    return objectve;
 	}
 
+	/**
+	 * Sets the objectve.
+	 * 
+	 * @param objectve the new objectve
+	 */
 	public void setObjectve(String objectve) {
 	    this.objectve = objectve;
 	}
 
+	/**
+	 * Gets the language.
+	 * 
+	 * @return the language
+	 */
 	public String getLanguage() {
 	    return language;
 	}
 
+	/**
+	 * Sets the language.
+	 * 
+	 * @param language the new language
+	 */
 	public void setLanguage(String language) {
 	    this.language = language;
 	}
 	
+    /**
+     * Gets the keywords.
+     * 
+     * @return the keywords
+     */
     public String getKeywords() {
 	    return keywords;
     }
 
+	/**
+	 * Sets the keywords.
+	 * 
+	 * @param keywords the new keywords
+	 */
 	public void setKeywords(String keywords) {
 	    this.keywords = keywords;
 	}
 
+	/**
+	 * Gets the creation date.
+	 * 
+	 * @return the creation date
+	 */
 	public Date getCreationDate() {
 	    return creationDate;
 	}
 
+	/**
+	 * Sets the creation date.
+	 * 
+	 * @param creationDate the new creation date
+	 */
 	public void setCreationDate(Date creationDate) {
 	    this.creationDate = creationDate;
 	}
 
+	/**
+	 * Gets the creation user.
+	 * 
+	 * @return the creation user
+	 */
 	public String getCreationUser() {
 	    return creationUser;
 	}
 
+	/**
+	 * Sets the creation user.
+	 * 
+	 * @param creationUser the new creation user
+	 */
 	public void setCreationUser(String creationUser) {
 	    this.creationUser = creationUser;
 	}
 
+	/**
+	 * Gets the data set id.
+	 * 
+	 * @return the data set id
+	 */
 	public Integer getDataSetId() {
 		return dataSetId;
 	}
 
+	/**
+	 * Sets the data set id.
+	 * 
+	 * @param dataSetId the new data set id
+	 */
 	public void setDataSetId(Integer dataSetId) {
 		this.dataSetId = dataSetId;
 	}

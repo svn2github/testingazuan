@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -62,6 +62,9 @@ public class LovWizardTag extends CommonWizardLovTag {
 	  String disabled = "disabled" ;
 
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE , TracerSingleton.DEBUG, 
 				            "LovWizardTag::doStartTag:: invocato");
@@ -337,15 +340,28 @@ public class LovWizardTag extends CommonWizardLovTag {
 		return SKIP_BODY;
 	}
 	
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
     public int doEndTag() throws JspException {
         TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "LovWizardTag::doEndTag:: invocato");
         return super.doEndTag();
     }
 	
+	/**
+	 * Gets the lov provider.
+	 * 
+	 * @return the lov provider
+	 */
 	public String getLovProvider() {
 		return lovProvider;
 	}
 
+	/**
+	 * Sets the lov provider.
+	 * 
+	 * @param lovProvider the new lov provider
+	 */
 	public void setLovProvider(String lovProvider) {
 		this.lovProvider = lovProvider;
 	}

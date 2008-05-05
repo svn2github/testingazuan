@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,9 @@ public class ExecutionManager {
 	//private static int hoursAgo = 2;
 	private Map _flows = null;
 	
+	/**
+	 * Instantiates a new execution manager.
+	 */
 	public ExecutionManager() {
 		_flows = new HashMap(); 
 	}
@@ -71,7 +74,15 @@ public class ExecutionManager {
     }
     */
     
-    public void registerExecution(String flowId, String executionId, BIObject obj, String executionRole) {
+    /**
+	 * Register execution.
+	 * 
+	 * @param flowId the flow id
+	 * @param executionId the execution id
+	 * @param obj the obj
+	 * @param executionRole the execution role
+	 */
+	public void registerExecution(String flowId, String executionId, BIObject obj, String executionRole) {
     	ExecutionInstance newInstance = new ExecutionInstance(flowId, executionId, obj, executionRole);
     	if (_flows.containsKey(flowId)) {
     		List instances = (List) _flows.get(flowId);
@@ -84,6 +95,13 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Gets the execution.
+     * 
+     * @param executionId the execution id
+     * 
+     * @return the execution
+     */
     public ExecutionInstance getExecution(String executionId) {
     	Set keys = _flows.keySet();
     	Iterator it = keys.iterator();
@@ -106,6 +124,14 @@ public class ExecutionManager {
     	return null;
     }
     
+    /**
+     * Recover execution.
+     * 
+     * @param flowId the flow id
+     * @param executionId the execution id
+     * 
+     * @return the execution instance
+     */
     public ExecutionInstance recoverExecution(String flowId, String executionId) {
     	if (_flows.containsKey(flowId)) {
     		ExecutionInstance toReturn = null;
@@ -129,6 +155,14 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Checks if is being reexecuteing.
+     * 
+     * @param flowId the flow id
+     * @param obj the obj
+     * 
+     * @return true, if is being reexecuteing
+     */
     public boolean isBeingReexecuteing (String flowId, BIObject obj) {
     	if (!_flows.containsKey(flowId)) return false;
     	else {
@@ -138,6 +172,13 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Gets the last execution object.
+     * 
+     * @param flowId the flow id
+     * 
+     * @return the last execution object
+     */
     public BIObject getLastExecutionObject(String flowId) {
     	ExecutionInstance executionInstance = getLastExecutionInstance(flowId);
     	if (executionInstance != null) {
@@ -147,6 +188,13 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Gets the last execution id.
+     * 
+     * @param flowId the flow id
+     * 
+     * @return the last execution id
+     */
     public String getLastExecutionId(String flowId) {
     	ExecutionInstance executionInstance = getLastExecutionInstance(flowId);
     	if (executionInstance != null) {
@@ -156,6 +204,13 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Gets the last execution instance.
+     * 
+     * @param flowId the flow id
+     * 
+     * @return the last execution instance
+     */
     public ExecutionInstance getLastExecutionInstance(String flowId) {
     	if (_flows.containsKey(flowId)) {
     		List instances = (List) _flows.get(flowId);
@@ -166,6 +221,13 @@ public class ExecutionManager {
     	}
     }
     
+    /**
+     * Gets the bI objects execution flow.
+     * 
+     * @param flowId the flow id
+     * 
+     * @return the bI objects execution flow
+     */
     public List getBIObjectsExecutionFlow(String flowId) {
     	List instances = new ArrayList();
     	if (_flows.containsKey(flowId)) {
@@ -188,7 +250,15 @@ public class ExecutionManager {
     	private String executionRole = null;
     	private Calendar calendar = null; 
     	
-    	public ExecutionInstance (String flowId, String executionId, BIObject obj, String executionRole) {
+    	/**
+	     * Instantiates a new execution instance.
+	     * 
+	     * @param flowId the flow id
+	     * @param executionId the execution id
+	     * @param obj the obj
+	     * @param executionRole the execution role
+	     */
+	    public ExecutionInstance (String flowId, String executionId, BIObject obj, String executionRole) {
     		this.flowId = flowId;
     		this.executionId = executionId;
     		this.object = obj;
@@ -252,35 +322,73 @@ public class ExecutionManager {
     	}
     	*/
 
-		public String getExecutionId() {
+		/**
+	     * Gets the execution id.
+	     * 
+	     * @return the execution id
+	     */
+	    public String getExecutionId() {
 			return executionId;
 		}
 
+		/**
+		 * Sets the execution id.
+		 * 
+		 * @param executionId the new execution id
+		 */
 		public void setExecutionId(String executionId) {
 			this.executionId = executionId;
 		}
 
+		/**
+		 * Gets the flow id.
+		 * 
+		 * @return the flow id
+		 */
 		public String getFlowId() {
 			return flowId;
 		}
 		
+		/**
+		 * Gets the bI object.
+		 * 
+		 * @return the bI object
+		 */
 		public BIObject getBIObject() {
 			return object;
 		}
 
+		/**
+		 * Sets the bI object.
+		 * 
+		 * @param object the new bI object
+		 */
 		public void setBIObject(BIObject object) {
 			this.object = object;
 		}
     	
+		/**
+		 * Gets the calendar.
+		 * 
+		 * @return the calendar
+		 */
 		public Calendar getCalendar() {
 			return calendar;
 		}
 		
 
+		/**
+		 * Gets the execution role.
+		 * 
+		 * @return the execution role
+		 */
 		public String getExecutionRole() {
 			return executionRole;
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
 		public boolean equals(Object another) {
 			if (another instanceof ExecutionInstance) {;
 				ExecutionInstance anInstance = (ExecutionInstance) another;

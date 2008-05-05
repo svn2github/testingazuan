@@ -1,7 +1,7 @@
 <%--
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -551,14 +551,26 @@ if(sbi.isChangeableView() && !docComposition){
 		)
 	
 		currentName="View <%=catTitle%>:";
-						
+	
+					
 		$('slider_1_1_value').innerHTML = currentName;
 	
 	});
 	
 </script>
 
+<script type="text/javascript">
 
+  
+  function doRefresh() {
+    var iframe = document.getElementById("iframeexec<%= uuid %>");
+    iframe.src = iframe.src;
+    setTimeout("doRefresh()",5000);
+  }
+  
+  setTimeout('window.location.reload()', 5000);
+   
+</script>
 
 
 

@@ -1,7 +1,7 @@
 <%--
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -83,6 +83,20 @@ if (heightArea == null || heightArea.trim().equals("")) {
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= uuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">
+
+<script type="text/javascript">
+
+  
+  function doRefresh() {
+    var iframe = document.getElementById("iframeexec<%= uuid %>");
+    iframe.src = iframe.src;
+    setTimeout("doRefresh()",5000);
+  }
+  
+  setTimeout('doRefresh()',5000);
+   
+</script>
+
 	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= getUrl(obj.getEngine().getUrl(), executionParameters) %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>

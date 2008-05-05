@@ -1,22 +1,22 @@
 /**
 
-Copyright 2005 Engineering Ingegneria Informatica S.p.A.
+SpagoBI - The Business Intelligence Free Platform
 
-This file is part of SpagoBI.
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
 
-SpagoBI is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-SpagoBI is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Spago; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 package it.eng.spagobi.security;
@@ -34,15 +34,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-/**
- * Implementation of the ISecurityServiceSupplier interface Factory. Defines methods 
- * to get a SpagoBIUserProfile starting from the xml user information 
- */
+
 public class XmlUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	
 	static private Logger logger = Logger.getLogger(XmlUserProfileFactoryImpl.class);
 	
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.services.security.service.ISecurityServiceSupplier#checkAuthorization(java.lang.String, java.lang.String)
+     */
     public boolean checkAuthorization(String userId,String function){
         logger.warn("checkAuthorization NOT implemented");
         return true;
@@ -50,7 +50,9 @@ public class XmlUserProfileFactoryImpl implements ISecurityServiceSupplier {
     
 	/**
 	 * Return an SpagoBIUserProfile implementation starting from the id of the user.
-	 * @param String  the current user id
+	 * 
+	 * @param userId the user id
+	 * 
 	 * @return The User Profile Interface implementation object
 	 */
 	

@@ -1,22 +1,22 @@
 /**
 
-Copyright 2005 Engineering Ingegneria Informatica S.p.A.
+SpagoBI - The Business Intelligence Free Platform
 
-This file is part of SpagoBI.
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
 
-SpagoBI is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-SpagoBI is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Spago; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 package it.eng.spagobi.security;
@@ -29,15 +29,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Implements the IPortalSecurityProvider interface defining method to get the 
- * system and user roles.
- */
-//public class XmlSecurityProviderImpl implements IPortalSecurityProvider {
+
 public class XmlSecurityProviderImpl implements ISecurityInfoProvider {
 	
-	/** 
-	 * Get all the roles 
+	/**
+	 * Get all the roles.
+	 * 
 	 * @return List of the roles (list of it it.eng.spagobi.bo.Role)
 	 */
 	public List getRoles() {
@@ -57,8 +54,10 @@ public class XmlSecurityProviderImpl implements ISecurityInfoProvider {
 	
 	/**
 	 * Get the list of the user roles. If the user doesn't exist the roles list is empty
+	 * 
 	 * @param user Username
 	 * @param config The SourceBean configuration
+	 * 
 	 * @return List of user roles (list of it.eng.spagobi.bo.Role)
 	 */
 	public List getUserRoles(String user, SourceBean config) {
@@ -81,8 +80,8 @@ public class XmlSecurityProviderImpl implements ISecurityInfoProvider {
 
 	/**
 	 * Gets the list of names of all attributes of all profiles .
-	 *  
-	 * @return the list of names of all attributes of all profiles defined 
+	 * 
+	 * @return the list of names of all attributes of all profiles defined
 	 */
 	public List getAllProfileAttributesNames() {
 		List toReturn = new ArrayList();
@@ -91,9 +90,11 @@ public class XmlSecurityProviderImpl implements ISecurityInfoProvider {
 
 	
 	/**
-	 * Authenticate a user
+	 * Authenticate a user.
+	 * 
 	 * @param userName the username
-	 * @param password bytes of the password, certificate, ... 
+	 * @param password bytes of the password, certificate, ...
+	 * 
 	 * @return true if the user is autheticated false otherwise
 	 */
 	public boolean authenticateUser(String userName, byte[] password) {

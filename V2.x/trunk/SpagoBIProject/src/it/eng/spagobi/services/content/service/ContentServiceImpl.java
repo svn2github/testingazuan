@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.content.service;
 
 
@@ -27,10 +48,22 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     static private Logger logger = Logger.getLogger(ContentServiceImpl.class);
     
 
+    /**
+     * Instantiates a new content service impl.
+     */
     public ContentServiceImpl(){
 	super();
     }
     
+    /**
+     * Read template.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param document the document
+     * 
+     * @return the content
+     */
     public Content readTemplate(String token, String user, String document) {
 
 	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
@@ -48,6 +81,15 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}        
     }
 
+    /**
+     * Read sub object content.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param subObjectId the sub object id
+     * 
+     * @return the content
+     */
     public Content readSubObjectContent(String token,String user,String subObjectId){
         logger.debug("IN");
         Monitor monitor =MonitorFactory.start("spagobi.service.content.readSubObjectContent");
@@ -64,6 +106,19 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 
     }
     
+    /**
+     * Save sub object.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param documentiId the documenti id
+     * @param analysisName the analysis name
+     * @param analysisDescription the analysis description
+     * @param visibilityBoolean the visibility boolean
+     * @param content the content
+     * 
+     * @return the string
+     */
     public String saveSubObject(String token,String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
         logger.debug("IN");
         Monitor monitor =MonitorFactory.start("spagobi.service.content.saveSubObject");
@@ -80,6 +135,17 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 
     }
     
+    /**
+     * Save object template.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param documentiId the documenti id
+     * @param templateName the template name
+     * @param content the content
+     * 
+     * @return the string
+     */
     public String saveObjectTemplate(String token,String user,String documentiId,String templateName,String content){
         logger.debug("IN");
         Monitor monitor =MonitorFactory.start("spagobi.service.content.saveObjectTemplate");
@@ -96,6 +162,16 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 
     }
     
+    /**
+     * Download all.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param biobjectId the biobject id
+     * @param fileName the file name
+     * 
+     * @return the content
+     */
     public Content downloadAll(String token,String user,String biobjectId,String fileName){
 	return null;
     }

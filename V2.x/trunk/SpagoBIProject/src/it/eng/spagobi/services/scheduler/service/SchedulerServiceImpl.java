@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.scheduler.service;
 
 import it.eng.spago.base.SourceBean;
@@ -36,6 +57,14 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     static private Logger logger = Logger.getLogger(SchedulerServiceImpl.class);
     private SchedulerServiceSupplier supplier=new SchedulerServiceSupplier();
     
+	/**
+	 * Gets the job list.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * 
+	 * @return the job list
+	 */
 	public String getJobList(String token,String user){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobList");
@@ -52,6 +81,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	}
 	
+	/**
+	 * Gets the job schedulation list.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the job schedulation list
+	 */
 	public String getJobSchedulationList(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobSchedulationList");
@@ -68,6 +107,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	    
 	}
 	
+	/**
+	 * Delete schedulation.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param triggerName the trigger name
+	 * @param triggerGroup the trigger group
+	 * 
+	 * @return the string
+	 */
 	public String deleteSchedulation(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.deleteSchedulation");
@@ -84,6 +133,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	}
 	
+	/**
+	 * Delete job.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param jobName the job name
+	 * @param jobGroupName the job group name
+	 * 
+	 * @return the string
+	 */
 	public String deleteJob(String token,String user,String jobName, String jobGroupName){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.deleteJob");
@@ -100,6 +159,15 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	}
 	
+	/**
+	 * Define job.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param xmlRequest the xml request
+	 * 
+	 * @return the string
+	 */
 	public String defineJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.defineJob");
@@ -116,6 +184,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	}
 	
+	/**
+	 * Gets the job definition.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the job definition
+	 */
 	public String getJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobDefinition");
@@ -132,6 +210,15 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
     
 	}
 	
+	/**
+	 * Schedule job.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param xmlRequest the xml request
+	 * 
+	 * @return the string
+	 */
 	public String scheduleJob(String token,String user,String xmlRequest){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.scheduleJob");
@@ -148,6 +235,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	    
 	}
 	
+	/**
+	 * Gets the job schedulation definition.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param triggerName the trigger name
+	 * @param triggerGroup the trigger group
+	 * 
+	 * @return the job schedulation definition
+	 */
 	public String getJobSchedulationDefinition(String token,String user,String triggerName, String triggerGroup){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.getJobSchedulationDefinition");
@@ -164,6 +261,16 @@ public class SchedulerServiceImpl extends AbstractServiceImpl{
 	    
 	}
 	
+	/**
+	 * Exist job definition.
+	 * 
+	 * @param token the token
+	 * @param user the user
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the string
+	 */
 	public String existJobDefinition(String token,String user,String jobName, String jobGroup){
 		logger.debug("IN");
 		Monitor monitor =MonitorFactory.start("spagobi.service.scheduler.existJobDefinition");

@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.proxy;
 
 import it.eng.spagobi.services.scheduler.stub.SchedulerService;
@@ -20,6 +41,7 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
 
     /**
      * Use this in engine context only.
+     * 
      * @param user user id
      * @param session HttpSession
      */
@@ -47,8 +69,10 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }   
+    
     /**
-     * Return all jobs
+     * Return all jobs.
+     * 
      * @return String
      */
     public String getJobList() {
@@ -64,9 +88,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Gets the job schedulation list.
      * 
      * @param jobName job name
      * @param jobGroup job group
+     * 
      * @return String
      */
     public String getJobSchedulationList(String jobName, String jobGroup) {
@@ -82,9 +108,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Delete schedulation.
      * 
      * @param triggerName String
      * @param triggerGroup String
+     * 
      * @return String
      */
     public String deleteSchedulation(String triggerName, String triggerGroup) {
@@ -100,9 +128,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Delete job.
      * 
      * @param jobName String
      * @param jobGroupName String
+     * 
      * @return String
      */
     public String deleteJob(String jobName, String jobGroupName) {
@@ -118,8 +148,10 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Define job.
      * 
      * @param xmlRequest  String
+     * 
      * @return String
      */
     public String defineJob(String xmlRequest) {
@@ -135,9 +167,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Gets the job definition.
      * 
      * @param jobName String
      * @param jobGroup String
+     * 
      * @return String
      */
     public String getJobDefinition(String jobName, String jobGroup) {
@@ -153,8 +187,10 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Schedule job.
      * 
      * @param xmlRequest String
+     * 
      * @return String
      */
     public String scheduleJob(String xmlRequest) {
@@ -170,9 +206,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Gets the job schedulation definition.
      * 
      * @param triggerName String
      * @param triggerGroup String
+     * 
      * @return String
      */
     public String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
@@ -188,9 +226,11 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
     }
     
     /**
+     * Exist job definition.
      * 
      * @param jobName String
      * @param jobGroup String
+     * 
      * @return String
      */
     public String existJobDefinition(String jobName, String jobGroup) {

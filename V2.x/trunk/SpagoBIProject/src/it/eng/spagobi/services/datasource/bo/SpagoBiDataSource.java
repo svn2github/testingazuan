@@ -1,9 +1,24 @@
 /**
- * SpagoBiDataSource.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package it.eng.spagobi.services.datasource.bo;
 
@@ -33,9 +48,24 @@ public class SpagoBiDataSource  implements java.io.Serializable {
 
     private java.lang.String hibDialectName;
 
+    /**
+     * Instantiates a new spago bi data source.
+     */
     public SpagoBiDataSource() {
     }
 
+    /**
+     * Instantiates a new spago bi data source.
+     * 
+     * @param driver the driver
+     * @param jndiName the jndi name
+     * @param password the password
+     * @param url the url
+     * @param user the user
+     * @param label the label
+     * @param hibDialectClass the hib dialect class
+     * @param hibDialectName the hib dialect name
+     */
     public SpagoBiDataSource(
            java.lang.String driver,
            java.lang.String jndiName,
@@ -56,11 +86,25 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
 
+    /**
+     * Check is jndi.
+     * 
+     * @return true, if successful
+     */
     public boolean checkIsJndi() {
     	return getJndiName() != null 
     			&& getJndiName().equals("") == false;
     }
     
+    /**
+     * Read connection.
+     * 
+     * @return the connection
+     * 
+     * @throws NamingException the naming exception
+     * @throws SQLException the SQL exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public Connection readConnection() throws NamingException, SQLException, ClassNotFoundException {
     	Connection connection = null;
     	 
@@ -128,7 +172,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the driver value for this SpagoBiDataSource.
      * 
-     * @param driver
+     * @param driver the driver
      */
     public void setDriver(java.lang.String driver) {
         this.driver = driver;
@@ -148,7 +192,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the jndiName value for this SpagoBiDataSource.
      * 
-     * @param jndiName
+     * @param jndiName the jndi name
      */
     public void setJndiName(java.lang.String jndiName) {
         this.jndiName = jndiName;
@@ -168,7 +212,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the password value for this SpagoBiDataSource.
      * 
-     * @param password
+     * @param password the password
      */
     public void setPassword(java.lang.String password) {
         this.password = password;
@@ -188,7 +232,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the url value for this SpagoBiDataSource.
      * 
-     * @param url
+     * @param url the url
      */
     public void setUrl(java.lang.String url) {
         this.url = url;
@@ -208,7 +252,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the user value for this SpagoBiDataSource.
      * 
-     * @param user
+     * @param user the user
      */
     public void setUser(java.lang.String user) {
         this.user = user;
@@ -228,7 +272,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the label value for this SpagoBiDataSource.
      * 
-     * @param label
+     * @param label the label
      */
     public void setLabel(java.lang.String label) {
         this.label = label;
@@ -248,7 +292,7 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the hibDialectClass value for this SpagoBiDataSource.
      * 
-     * @param hibDialectClass
+     * @param hibDialectClass the hib dialect class
      */
     public void setHibDialectClass(java.lang.String hibDialectClass) {
         this.hibDialectClass = hibDialectClass;
@@ -268,13 +312,17 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     /**
      * Sets the hibDialectName value for this SpagoBiDataSource.
      * 
-     * @param hibDialectName
+     * @param hibDialectName the hib dialect name
      */
     public void setHibDialectName(java.lang.String hibDialectName) {
         this.hibDialectName = hibDialectName;
     }
 
     private java.lang.Object __equalsCalc = null;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSource)) return false;
         SpagoBiDataSource other = (SpagoBiDataSource) obj;
@@ -315,6 +363,10 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -406,14 +458,22 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
     /**
-     * Return type metadata object
+     * Return type metadata object.
+     * 
+     * @return the type desc
      */
     public static org.apache.axis.description.TypeDesc getTypeDesc() {
         return typeDesc;
     }
 
     /**
-     * Get Custom Serializer
+     * Get Custom Serializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
            java.lang.String mechType, 
@@ -425,7 +485,13 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     }
 
     /**
-     * Get Custom Deserializer
+     * Get Custom Deserializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
            java.lang.String mechType, 

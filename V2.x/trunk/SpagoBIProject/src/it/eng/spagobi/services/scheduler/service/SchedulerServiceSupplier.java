@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.scheduler.service;
 
 import it.eng.spago.base.SourceBean;
@@ -34,6 +55,11 @@ public class SchedulerServiceSupplier {
     
 	
 	
+	/**
+	 * Gets the job list.
+	 * 
+	 * @return the job list
+	 */
 	public String getJobList() {
 		String xml = "";
 		try {
@@ -69,6 +95,15 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Builds the job list xml string.
+	 * 
+	 * @param toReturn the to return
+	 * 
+	 * @return the string
+	 * 
+	 * @throws SourceBeanException the source bean exception
+	 */
 	public  String buildJobListXmlString(List toReturn) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<ROWS>");
 		Iterator it = toReturn.iterator();
@@ -96,6 +131,14 @@ public class SchedulerServiceSupplier {
 	}
 	
 	
+	/**
+	 * Gets the job schedulation list.
+	 * 
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the job schedulation list
+	 */
 	public   String getJobSchedulationList(String jobName, String jobGroup) {
 		String xml = "";
 		try {
@@ -121,6 +164,15 @@ public class SchedulerServiceSupplier {
 	}
 	
 	
+	/**
+	 * Builds the triggers list xml string.
+	 * 
+	 * @param triggers the triggers
+	 * 
+	 * @return the string
+	 * 
+	 * @throws SourceBeanException the source bean exception
+	 */
 	public  String buildTriggersListXmlString(Trigger[] triggers) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<ROWS>");
 		if (triggers != null && triggers.length > 0) {
@@ -152,6 +204,14 @@ public class SchedulerServiceSupplier {
 	}
 	
 	
+	/**
+	 * Delete schedulation.
+	 * 
+	 * @param triggerName the trigger name
+	 * @param triggerGroup the trigger group
+	 * 
+	 * @return the string
+	 */
 	public   String deleteSchedulation(String triggerName, String triggerGroup) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
@@ -173,6 +233,14 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Delete job.
+	 * 
+	 * @param jobName the job name
+	 * @param jobGroupName the job group name
+	 * 
+	 * @return the string
+	 */
 	public   String deleteJob(String jobName, String jobGroupName) {
 		StringBuffer servreponse = new StringBuffer();
 		try {
@@ -190,6 +258,13 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Define job.
+	 * 
+	 * @param xmlRequest the xml request
+	 * 
+	 * @return the string
+	 */
 	public   String defineJob(String xmlRequest) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
@@ -247,6 +322,13 @@ public class SchedulerServiceSupplier {
 	}
 	
 	
+	/**
+	 * Gets the job data map.
+	 * 
+	 * @param jobParameters the job parameters
+	 * 
+	 * @return the job data map
+	 */
 	public  JobDataMap getJobDataMap(SourceBean jobParameters) {
 		JobDataMap jdm = new JobDataMap();
 		jdm.put("empty", "empty");
@@ -269,6 +351,14 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Gets the job definition.
+	 * 
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the job definition
+	 */
 	public   String getJobDefinition(String jobName, String jobGroup) {
 		String jobStr = "";
 		try{
@@ -298,6 +388,15 @@ public class SchedulerServiceSupplier {
 	}
 	
 	
+	/**
+	 * Serialize job detail.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the string
+	 * 
+	 * @throws SourceBeanException the source bean exception
+	 */
 	public  String serializeJobDetail(JobDetail job) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<JOB_DETAIL ");
 		String jobName = job.getName();
@@ -341,6 +440,13 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Schedule job.
+	 * 
+	 * @param xmlRequest the xml request
+	 * 
+	 * @return the string
+	 */
 	public String scheduleJob(String xmlRequest) {
 		StringBuffer servreponse = new StringBuffer();
 		try{
@@ -472,6 +578,15 @@ public class SchedulerServiceSupplier {
 
 	
 	
+	/**
+	 * Gets the chron expression.
+	 * 
+	 * @param chronStr the chron str
+	 * @param sc the sc
+	 * @param sd the sd
+	 * 
+	 * @return the chron expression
+	 */
 	public  String getChronExpression(String chronStr, Calendar sc, Date sd) {
 		String chronExp = null;
 		try{
@@ -581,6 +696,14 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Gets the job schedulation definition.
+	 * 
+	 * @param triggerName the trigger name
+	 * @param triggerGroup the trigger group
+	 * 
+	 * @return the job schedulation definition
+	 */
 	public   String getJobSchedulationDefinition(String triggerName, String triggerGroup) {
 		String schedDef = "";
 		try {
@@ -612,6 +735,15 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Serialize trigger.
+	 * 
+	 * @param trigger the trigger
+	 * 
+	 * @return the string
+	 * 
+	 * @throws SourceBeanException the source bean exception
+	 */
 	public  String serializeTrigger(Trigger trigger) throws SourceBeanException {
 		StringBuffer buffer = new StringBuffer("<TRIGGER_DETAILS ");
 		buffer.append(" ");
@@ -703,6 +835,14 @@ public class SchedulerServiceSupplier {
 	
 	
 	
+	/**
+	 * Exist job definition.
+	 * 
+	 * @param jobName the job name
+	 * @param jobGroup the job group
+	 * 
+	 * @return the string
+	 */
 	public   String existJobDefinition(String jobName, String jobGroup) {
 		StringBuffer buffer = new StringBuffer("<JOB_EXISTANCE  ");
 		try{

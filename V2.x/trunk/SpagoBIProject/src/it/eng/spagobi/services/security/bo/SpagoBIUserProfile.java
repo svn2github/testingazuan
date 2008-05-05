@@ -1,9 +1,24 @@
 /**
- * SpagoBIUserProfile.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package it.eng.spagobi.services.security.bo;
 
@@ -21,9 +36,20 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
 
     private java.lang.String userId;
 
+    /**
+     * Instantiates a new spago bi user profile.
+     */
     public SpagoBIUserProfile() {
     }
 
+    /**
+     * Instantiates a new spago bi user profile.
+     * 
+     * @param attributes the attributes
+     * @param functions the functions
+     * @param roles the roles
+     * @param userId the user id
+     */
     public SpagoBIUserProfile(
            java.util.HashMap attributes,
            java.lang.String[] functions,
@@ -35,12 +61,24 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
            this.userId = userId;
     }
 
+    /**
+     * Read user attribute.
+     * 
+     * @param key the key
+     * 
+     * @return the object
+     */
     public Object readUserAttribute(String key){
 	return attributes.get(key);
 	
     }
     
     
+    /**
+     * Creates the role iterator.
+     * 
+     * @return the iterator
+     */
     public Iterator createRoleIterator() {
 	List rolesList=new ArrayList();
 	if (roles==null) return null;
@@ -50,6 +88,12 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
 	}
         return rolesList.iterator();
     }
+    
+    /**
+     * Creates the functions iterator.
+     * 
+     * @return the iterator
+     */
     public Iterator createFunctionsIterator() {
 	List functionsList=new ArrayList();
 	if (functions==null) return null;
@@ -60,6 +104,11 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
         return functionsList.iterator();
     }    
 
+    /**
+     * Read attributes names.
+     * 
+     * @return the collection
+     */
     public Collection readAttributesNames(){
 	return attributes.values();
     }
@@ -77,7 +126,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the attributes value for this SpagoBIUserProfile.
      * 
-     * @param attributes
+     * @param attributes the attributes
      */
     public void setAttributes(java.util.HashMap attributes) {
         this.attributes = attributes;
@@ -97,7 +146,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the functions value for this SpagoBIUserProfile.
      * 
-     * @param functions
+     * @param functions the functions
      */
     public void setFunctions(java.lang.String[] functions) {
         this.functions = functions;
@@ -117,7 +166,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the roles value for this SpagoBIUserProfile.
      * 
-     * @param roles
+     * @param roles the roles
      */
     public void setRoles(java.lang.String[] roles) {
         this.roles = roles;
@@ -137,7 +186,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the userId value for this SpagoBIUserProfile.
      * 
-     * @param userId
+     * @param userId the user id
      */
     public void setUserId(java.lang.String userId) {
         this.userId = userId;
@@ -146,6 +195,10 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     
 
     private java.lang.Object __equalsCalc = null;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBIUserProfile)) return false;
         SpagoBIUserProfile other = (SpagoBIUserProfile) obj;
@@ -174,6 +227,10 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -245,14 +302,22 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     }
 
     /**
-     * Return type metadata object
+     * Return type metadata object.
+     * 
+     * @return the type desc
      */
     public static org.apache.axis.description.TypeDesc getTypeDesc() {
         return typeDesc;
     }
 
     /**
-     * Get Custom Serializer
+     * Get Custom Serializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
            java.lang.String mechType, 
@@ -264,7 +329,13 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     }
 
     /**
-     * Get Custom Deserializer
+     * Get Custom Deserializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
            java.lang.String mechType, 

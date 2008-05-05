@@ -1,9 +1,24 @@
 /**
- * Content.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package it.eng.spagobi.services.content.bo;
 
@@ -12,9 +27,18 @@ public class Content  implements java.io.Serializable {
 
     private java.lang.String fileName;
 
+    /**
+     * Instantiates a new content.
+     */
     public Content() {
     }
 
+    /**
+     * Instantiates a new content.
+     * 
+     * @param content the content
+     * @param fileName the file name
+     */
     public Content(
            java.lang.String content,
            java.lang.String fileName) {
@@ -36,7 +60,7 @@ public class Content  implements java.io.Serializable {
     /**
      * Sets the content value for this Content.
      * 
-     * @param content
+     * @param content the content
      */
     public void setContent(java.lang.String content) {
         this.content = content;
@@ -56,13 +80,17 @@ public class Content  implements java.io.Serializable {
     /**
      * Sets the fileName value for this Content.
      * 
-     * @param fileName
+     * @param fileName the file name
      */
     public void setFileName(java.lang.String fileName) {
         this.fileName = fileName;
     }
 
     private java.lang.Object __equalsCalc = null;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Content)) return false;
         Content other = (Content) obj;
@@ -85,6 +113,10 @@ public class Content  implements java.io.Serializable {
     }
 
     private boolean __hashCodeCalc = false;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -122,14 +154,22 @@ public class Content  implements java.io.Serializable {
     }
 
     /**
-     * Return type metadata object
+     * Return type metadata object.
+     * 
+     * @return the type desc
      */
     public static org.apache.axis.description.TypeDesc getTypeDesc() {
         return typeDesc;
     }
 
     /**
-     * Get Custom Serializer
+     * Get Custom Serializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
            java.lang.String mechType, 
@@ -141,7 +181,13 @@ public class Content  implements java.io.Serializable {
     }
 
     /**
-     * Get Custom Deserializer
+     * Get Custom Deserializer.
+     * 
+     * @param mechType the mech type
+     * @param _javaType the _java type
+     * @param _xmlType the _xml type
+     * 
+     * @return the deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
            java.lang.String mechType, 

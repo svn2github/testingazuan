@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.proxy;
 
 import java.util.HashMap;
@@ -22,7 +43,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(ContentServiceProxy.class);
 
     /**
-     * use this i engine context only
+     * use this i engine context only.
+     * 
      * @param user user ID
      * @param session http session
      */
@@ -51,9 +73,12 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
+    
     /**
+     * Read template.
      * 
      * @param document String
+     * 
      * @return Content
      */
     public Content readTemplate(String document) {
@@ -72,9 +97,12 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
+    
     /**
+     * Publish template.
      * 
-     * @param attributes HashMap 
+     * @param attributes HashMap
+     * 
      * @return String
      */
     public String publishTemplate( HashMap attributes) {
@@ -93,12 +121,15 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
+    
     /**
+     * Map catalogue.
      * 
      * @param operation String
      * @param path String
      * @param featureName String
      * @param mapName String
+     * 
      * @return String
      */
     public String mapCatalogue( String operation,String path,String featureName,String mapName){
@@ -117,9 +148,12 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;	
     }
+    
     /**
+     * Read sub object content.
      * 
      * @param nameSubObject String
+     * 
      * @return Content
      */
     public Content readSubObjectContent(String nameSubObject){
@@ -138,13 +172,16 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
+    
     /**
+     * Save sub object.
      * 
      * @param documentiId String
      * @param analysisName String
      * @param analysisDescription String
      * @param visibilityBoolean String
      * @param content  String
+     * 
      * @return  String
      */
     public String saveSubObject(String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
@@ -163,11 +200,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
+    
     /**
+     * Save object template.
      * 
      * @param documentiId  String
      * @param templateName String
      * @param content String
+     * 
      * @return String
      */
     public String saveObjectTemplate(String documentiId,String templateName,String content){
@@ -195,11 +235,12 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
     }
 
     /**
+     * Download all.
      * 
      * @param biobjectId String
      * @param fileName String
-     * @return  String
      * 
+     * @return  String
      */
     public Content downloadAll(String biobjectId,String fileName){
 	logger.debug("IN");

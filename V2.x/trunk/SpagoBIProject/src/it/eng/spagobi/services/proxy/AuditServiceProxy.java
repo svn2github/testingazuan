@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.proxy;
 
 import it.eng.spagobi.services.audit.stub.AuditServiceServiceLocator;
@@ -19,8 +40,9 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
     static private Logger logger = Logger.getLogger(AuditServiceProxy.class);
 
     /**
+     * The Constructor.
      * 
-     * @param user userId	
+     * @param user userId
      * @param session Http Session
      */
     public AuditServiceProxy(String user,HttpSession session) {
@@ -46,14 +68,17 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
+    
     /**
+     * Log.
      * 
      * @param id id
      * @param start start time
      * @param end end time
      * @param state state
-     * @param message message 
+     * @param message message
      * @param errorCode error code
+     * 
      * @return String
      */
     public String log(String id,String start,String end,String state,String message,String errorCode){

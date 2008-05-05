@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.proxy;
 
 import it.eng.spago.security.IEngUserProfile;
@@ -25,6 +46,7 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
     
 /**
  * Use this constructor.
+ * 
  * @param user user ID
  * @param session HttpSession
  */
@@ -58,9 +80,12 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
+    
     /**
+     * Gets the user profile.
      * 
      * @return IEngUserProfile with user profile
+     * 
      * @throws SecurityException if the process has generated an error
      */
     public IEngUserProfile getUserProfile() throws SecurityException{
@@ -78,8 +103,10 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
 
     /**
      * Check if the user is authorized to access the folder.
+     * 
      * @param folderId folder id
      * @param mode mode
+     * 
      * @return true/false
      */    
     public boolean isAuthorized(String folderId,String mode) {
@@ -97,7 +124,9 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
 
     /**
      * Check if the user can execute the function ( user function ).
+     * 
      * @param function function id
+     * 
      * @return true/false
      */
     public boolean checkAuthorization(String function){
@@ -107,8 +136,10 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
     
     /**
      * Check if the user can execute the function ( user function ).
+     * 
      * @param function function
      * @param principal user principal
+     * 
      * @return true / false
      */    
     public boolean checkAuthorization(Principal principal,String function){

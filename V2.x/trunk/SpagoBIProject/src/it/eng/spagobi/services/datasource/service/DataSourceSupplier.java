@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.services.datasource.service;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -17,6 +38,13 @@ import org.apache.log4j.Logger;
 public class DataSourceSupplier {
     static private Logger logger = Logger.getLogger(DataSourceSupplier.class);
 
+    /**
+     * Gets the data source.
+     * 
+     * @param documentId the document id
+     * 
+     * @return the data source
+     */
     public SpagoBiDataSource getDataSource(String documentId) {
 	logger.debug("IN.documentId:" + documentId);
 
@@ -82,6 +110,13 @@ public class DataSourceSupplier {
 	return sbds;
     }
 
+    /**
+     * Gets the data source by label.
+     * 
+     * @param dsLabel the ds label
+     * 
+     * @return the data source by label
+     */
     public SpagoBiDataSource getDataSourceByLabel(String dsLabel) {
 	logger.debug("IN");
 	SpagoBiDataSource sbds = new SpagoBiDataSource();
@@ -113,6 +148,11 @@ public class DataSourceSupplier {
 	return sbds;
     }
 
+    /**
+     * Gets the all data source.
+     * 
+     * @return the all data source
+     */
     public SpagoBiDataSource[] getAllDataSource() {
 	logger.debug("IN");
 	ArrayList tmpList = new ArrayList();

@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
 import it.businesslogic.ireport.chart.Plot;
@@ -59,6 +80,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#configureChart(it.eng.spago.base.SourceBean)
+	 */
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
@@ -115,6 +139,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
+	 */
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		super.createChart(chartTitle, dataset);
 
@@ -230,6 +257,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isChangeableView()
+	 */
 	public boolean isChangeableView() {
 		return true;	
 	}
@@ -238,6 +268,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)
+	 */
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
 			threeD=how;
@@ -249,6 +282,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameter(java.lang.String)
+	 */
 	public boolean getChangeViewParameter(String changePar) {
 		boolean ret=false;
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
@@ -260,6 +296,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameterLabel(java.lang.String, int)
+	 */
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
@@ -277,6 +316,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
+	 */
 	public List getPossibleChangePars() {
 		List l=new Vector();
 		if(!isThreedViewConfigured)	{l.add(CHANGE_VIEW_3D); }
@@ -285,139 +327,255 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	}
 
 
+	/**
+	 * Checks if is three d.
+	 * 
+	 * @return true, if is three d
+	 */
 	public boolean isThreeD() {
 		return threeD;
 	}
 
 
+	/**
+	 * Sets the three d.
+	 * 
+	 * @param threeD the new three d
+	 */
 	public void setThreeD(boolean threeD) {
 		this.threeD = threeD;
 	}
 
 
+	/**
+	 * Checks if is threed view configured.
+	 * 
+	 * @return true, if is threed view configured
+	 */
 	public boolean isThreedViewConfigured() {
 		return isThreedViewConfigured;
 	}
 
 
+	/**
+	 * Sets the threed view configured.
+	 * 
+	 * @param isThreedViewConfigured the new threed view configured
+	 */
 	public void setThreedViewConfigured(boolean isThreedViewConfigured) {
 		this.isThreedViewConfigured = isThreedViewConfigured;
 	}
 
 
+	/**
+	 * Checks if is percentage.
+	 * 
+	 * @return true, if is percentage
+	 */
 	public boolean isPercentage() {
 		return percentage;
 	}
 
 
+	/**
+	 * Sets the percentage.
+	 * 
+	 * @param percentage the new percentage
+	 */
 	public void setPercentage(boolean percentage) {
 		this.percentage = percentage;
 	}
 
 
+	/**
+	 * Checks if is percentage configured.
+	 * 
+	 * @return true, if is percentage configured
+	 */
 	public boolean isPercentageConfigured() {
 		return isPercentageConfigured;
 	}
 
 
+	/**
+	 * Sets the percentage configured.
+	 * 
+	 * @param isPercentageConfigured the new percentage configured
+	 */
 	public void setPercentageConfigured(boolean isPercentageConfigured) {
 		this.isPercentageConfigured = isPercentageConfigured;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getRootUrl()
+	 */
 	public String getRootUrl() {
 		return rootUrl;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setRootUrl(java.lang.String)
+	 */
 	public void setRootUrl(String rootUrl) {
 		this.rootUrl = rootUrl;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getMode()
+	 */
 	public String getMode() {
 		return mode;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setMode(java.lang.String)
+	 */
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillLabel()
+	 */
 	public String getDrillLabel() {
 		return drillLabel;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillLabel(java.lang.String)
+	 */
 	public void setDrillLabel(String drillLabel) {
 		this.drillLabel = drillLabel;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
+	 */
 	public HashMap getDrillParameter() {
 		return drillParameter;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
+	 */
 	public void setDrillParameter(HashMap drillParameter) {
 		this.drillParameter = drillParameter;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_3 d_ label.
+	 * 
+	 * @return the cHANG e_ vie w_3 d_ label
+	 */
 	public static String getCHANGE_VIEW_3D_LABEL() {
 		return CHANGE_VIEW_3D_LABEL;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_3 d_ labe l1.
+	 * 
+	 * @return the cHANG e_ vie w_3 d_ labe l1
+	 */
 	public static String getCHANGE_VIEW_3D_LABEL1() {
 		return CHANGE_VIEW_3D_LABEL1;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_3 d_ labe l2.
+	 * 
+	 * @return the cHANG e_ vie w_3 d_ labe l2
+	 */
 	public static String getCHANGE_VIEW_3D_LABEL2() {
 		return CHANGE_VIEW_3D_LABEL2;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_3 d.
+	 * 
+	 * @return the cHANG e_ vie w_3 d
+	 */
 	public static String getCHANGE_VIEW_3D() {
 		return CHANGE_VIEW_3D;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_ percentag e_ label.
+	 * 
+	 * @return the cHANG e_ vie w_ percentag e_ label
+	 */
 	public static String getCHANGE_VIEW_PERCENTAGE_LABEL() {
 		return CHANGE_VIEW_PERCENTAGE_LABEL;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_ percentag e_ labe l1.
+	 * 
+	 * @return the cHANG e_ vie w_ percentag e_ labe l1
+	 */
 	public static String getCHANGE_VIEW_PERCENTAGE_LABEL1() {
 		return CHANGE_VIEW_PERCENTAGE_LABEL1;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_ percentag e_ labe l2.
+	 * 
+	 * @return the cHANG e_ vie w_ percentag e_ labe l2
+	 */
 	public static String getCHANGE_VIEW_PERCENTAGE_LABEL2() {
 		return CHANGE_VIEW_PERCENTAGE_LABEL2;
 	}
 
 
+	/**
+	 * Gets the cHANG e_ vie w_ percentage.
+	 * 
+	 * @return the cHANG e_ vie w_ percentage
+	 */
 	public static String getCHANGE_VIEW_PERCENTAGE() {
 		return CHANGE_VIEW_PERCENTAGE;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isLinkable()
+	 */
 	public boolean isLinkable(){
 		return true;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getCategoryUrlName()
+	 */
 	public String getCategoryUrlName() {
 		return categoryUrlName;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setCategoryUrlName(java.lang.String)
+	 */
 	public void setCategoryUrlName(String categoryUrlName) {
 		this.categoryUrlName = categoryUrlName;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDocument_Parameters(java.util.HashMap)
+	 */
 	public String getDocument_Parameters(HashMap drillParameters) {
 		String document_parameter="";
 		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
@@ -433,12 +591,18 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getSerieUrlname()
+	 */
 	public String getSerieUrlname() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setSerieUrlname(java.lang.String)
+	 */
 	public void setSerieUrlname(String serieUrlname) {
 		// TODO Auto-generated method stub
 		

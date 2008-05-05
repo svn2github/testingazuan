@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -82,80 +82,217 @@ public class DocumentCompositionConfiguration {
 		String defaultValue;
 		Properties params;
 		
+		/**
+		 * Gets the label.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel() {
 			return label;
 		}
+		
+		/**
+		 * Sets the label.
+		 * 
+		 * @param label the new label
+		 */
 		public void setLabel(String label) {
 			this.label = label;
 		}
+		
+		/**
+		 * Gets the sbi obj label.
+		 * 
+		 * @return the sbi obj label
+		 */
 		public String getSbiObjLabel() {
 			return sbiObjLabel;
 		}
+		
+		/**
+		 * Sets the sbi obj label.
+		 * 
+		 * @param sbiObjLabel the new sbi obj label
+		 */
 		public void setSbiObjLabel(String sbiObjLabel) {
 			this.sbiObjLabel = sbiObjLabel;
 		}
 
+		/**
+		 * Gets the name par.
+		 * 
+		 * @return the name par
+		 */
 		public String getNamePar() {
 			return namePar;
 		}
+		
+		/**
+		 * Sets the name par.
+		 * 
+		 * @param namePar the new name par
+		 */
 		public void setNamePar(String namePar) {
 			this.namePar = namePar;
 		}
+		
+		/**
+		 * Gets the sbi par name.
+		 * 
+		 * @return the sbi par name
+		 */
 		public String getSbiParName() {
 			return sbiParName;
 		}
+		
+		/**
+		 * Sets the sbi par name.
+		 * 
+		 * @param sbiParName the new sbi par name
+		 */
 		public void setSbiParName(String sbiParName) {
 			this.sbiParName = sbiParName;
 		}
+		
+		/**
+		 * Gets the type.
+		 * 
+		 * @return the type
+		 */
 		public String getType() {
 			return type;
 		}
+		
+		/**
+		 * Sets the type.
+		 * 
+		 * @param type the new type
+		 */
 		public void setType(String type) {
 			this.type = type;
 		}
+		
+		/**
+		 * Gets the default value.
+		 * 
+		 * @return the default value
+		 */
 		public String getDefaultValue() {
 			return defaultValue;
 		}
+		
+		/**
+		 * Sets the default value.
+		 * 
+		 * @param defaultValue the new default value
+		 */
 		public void setDefaultValue(String defaultValue) {
 			this.defaultValue = defaultValue;
 		}
 
+		/**
+		 * Gets the params.
+		 * 
+		 * @return the params
+		 */
 		public Properties getParams() {
 			return params;
 		}
+		
+		/**
+		 * Sets the params.
+		 * 
+		 * @param params the new params
+		 */
 		public void setParams(Properties params) {
 			this.params = params;
 		}
+		
+		/**
+		 * Gets the style.
+		 * 
+		 * @return the style
+		 */
 		public String getStyle() {
 			return style;
 		}
+		
+		/**
+		 * Sets the style.
+		 * 
+		 * @param style the new style
+		 */
 		public void setStyle(String style) {
 			this.style = style;
 		}
+		
+		/**
+		 * Gets the num order.
+		 * 
+		 * @return the num order
+		 */
 		public int getNumOrder() {
 			return numOrder;
 		}
+		
+		/**
+		 * Sets the num order.
+		 * 
+		 * @param numOrder the new num order
+		 */
 		public void setNumOrder(int numOrder) {
 			this.numOrder = numOrder;
 		}
+		
+		/**
+		 * Gets the video width.
+		 * 
+		 * @return the video width
+		 */
 		public Integer[] getVideoWidth() {
 			return videoWidth;
 		}
+		
+		/**
+		 * Sets the video width.
+		 * 
+		 * @param videoWidth the new video width
+		 */
 		public void setVideoWidth(Integer[] videoWidth) {
 			this.videoWidth = videoWidth;
 		}
+		
+		/**
+		 * Gets the video height.
+		 * 
+		 * @return the video height
+		 */
 		public Integer[] getVideoHeight() {
 			return videoHeight;
 		}
+		
+		/**
+		 * Sets the video height.
+		 * 
+		 * @param videoHeight the new video height
+		 */
 		public void setVideoHeight(Integer[] videoHeight) {
 			this.videoHeight = videoHeight;
 		}
 	}
 	
+	/**
+	 * Instantiates a new document composition configuration.
+	 */
 	public DocumentCompositionConfiguration () {
 		init();
 	}
 
+	/**
+	 * Instantiates a new document composition configuration.
+	 * 
+	 * @param DocumentCompositionConfigurationSB the document composition configuration sb
+	 */
 	public DocumentCompositionConfiguration (SourceBean DocumentCompositionConfigurationSB){
 		init();
 		SourceBean documentsConfigurationSB;
@@ -183,11 +320,19 @@ public class DocumentCompositionConfiguration {
 		lstDimensions.put("heightPxValues1050", heightPxValues1050);
 	}
 	
+	/**
+	 * Adds the document.
+	 * 
+	 * @param document the document
+	 */
 	public void addDocument(Document document) {
 		if(documentsMap == null) documentsMap = new HashMap();
 		documentsMap.put(document.getLabel(), document);
 	}
 	
+	/**
+	 * Reset documents.
+	 */
 	public void resetDocuments() {		
 		documentsMap = new HashMap();
 	}
@@ -273,11 +418,25 @@ public class DocumentCompositionConfiguration {
 	}
 
 	
+	/**
+	 * Gets the document.
+	 * 
+	 * @param documentName the document name
+	 * 
+	 * @return the document
+	 */
 	public Document getDocument(String documentName) {
 		return (Document)documentsMap.get(documentName);
 	}
 	
 	
+	/**
+	 * Gets the label.
+	 * 
+	 * @param documentLabel the document label
+	 * 
+	 * @return the label
+	 */
 	public String getLabel(String documentLabel) {
 		Document document = getDocument(documentLabel);
 		if(document != null) return document.getLabel();
@@ -286,6 +445,11 @@ public class DocumentCompositionConfiguration {
 	}
 	
 	
+	/**
+	 * Gets the labels array.
+	 * 
+	 * @return the labels array
+	 */
 	public List getLabelsArray() {
 		Collection collLabels = documentsMap.values();
 		List retLabels = new ArrayList();
@@ -308,6 +472,11 @@ public class DocumentCompositionConfiguration {
 
 	}
 	
+	/**
+	 * Gets the sbi obj labels array.
+	 * 
+	 * @return the sbi obj labels array
+	 */
 	public List getSbiObjLabelsArray() {
 		Collection collLabels = documentsMap.values();
 		List retLabels = new ArrayList();
@@ -324,14 +493,29 @@ public class DocumentCompositionConfiguration {
 
 	}
 	
+	/**
+	 * Gets the template file.
+	 * 
+	 * @return the template file
+	 */
 	public String getTemplateFile() {
 		return templateFile;
 	}
 
+	/**
+	 * Sets the template file.
+	 * 
+	 * @param templateFile the new template file
+	 */
 	public void setTemplateFile(String templateFile) {
 		this.templateFile = templateFile;
 	}
 	
+	/**
+	 * Gets the parameters array.
+	 * 
+	 * @return the parameters array
+	 */
 	public List getParametersArray() {
 		Collection collDocs = documentsMap.values();
 		List retParams = new ArrayList();
@@ -366,6 +550,13 @@ public class DocumentCompositionConfiguration {
 	}
 	*/
 	
+	/**
+	 * Gets the parameters for document.
+	 * 
+	 * @param docLabel the doc label
+	 * 
+	 * @return the parameters for document
+	 */
 	public HashMap getParametersForDocument(String docLabel) {
 		Collection collDocs = documentsMap.values();
 		HashMap retParams = new HashMap();
@@ -403,7 +594,8 @@ public class DocumentCompositionConfiguration {
 	}
 	
 	/**
-	 * Reads and defines all maps with all information about configuration for refresh
+	 * Reads and defines all maps with all information about configuration for refresh.
+	 * 
 	 * @param docLabel the logical label of document presents into document composition
 	 */
 	public void getInfoDocumentLinked(String docLabel) {
@@ -517,6 +709,11 @@ public class DocumentCompositionConfiguration {
 		}
 	}
 
+	/**
+	 * Gets the documents array.
+	 * 
+	 * @return the documents array
+	 */
 	public List getDocumentsArray() {
 		Collection collDocs = documentsMap.values();
 		List retDocs = new ArrayList();
@@ -589,50 +786,110 @@ public class DocumentCompositionConfiguration {
 		return realDimensions;
 	}
 	
+	/**
+	 * Gets the lst url.
+	 * 
+	 * @return the lst url
+	 */
 	public Map getLstUrl() {
 		return lstUrl;
 	}
 
+	/**
+	 * Sets the lst url.
+	 * 
+	 * @param lstUrl the new lst url
+	 */
 	public void setLstUrl(Map lstUrl) {
 		this.lstUrl = lstUrl;
 	}
 
+	/**
+	 * Gets the lst div style.
+	 * 
+	 * @return the lst div style
+	 */
 	public Map getLstDivStyle() {
 		return lstDivStyle;
 	}
 
+	/**
+	 * Sets the lst style.
+	 * 
+	 * @param lstDivStyle the new lst style
+	 */
 	public void setLstStyle(Map lstDivStyle) {
 		this.lstDivStyle = lstDivStyle;
 	}
 
+	/**
+	 * Gets the lst url params.
+	 * 
+	 * @return the lst url params
+	 */
 	public Map getLstUrlParams() {
 		return lstUrlParams;
 	}
 
+	/**
+	 * Sets the lst url params.
+	 * 
+	 * @param lstUrlParams the new lst url params
+	 */
 	public void setLstUrlParams(Map lstUrlParams) {
 		this.lstUrlParams = lstUrlParams;
 	}
 
+	/**
+	 * Gets the lst doc linked.
+	 * 
+	 * @return the lst doc linked
+	 */
 	public Map getLstDocLinked() {
 		return lstDocLinked;
 	}
 
+	/**
+	 * Sets the lst doc linked.
+	 * 
+	 * @param lstDocLinked the new lst doc linked
+	 */
 	public void setLstDocLinked(Map lstDocLinked) {
 		this.lstDocLinked = lstDocLinked;
 	}
 
+	/**
+	 * Gets the lst field linked.
+	 * 
+	 * @return the lst field linked
+	 */
 	public Map getLstFieldLinked() {
 		return lstFieldLinked;
 	}
 
+	/**
+	 * Sets the lst field linked.
+	 * 
+	 * @param lstFieldLinked the new lst field linked
+	 */
 	public void setLstFieldLinked(Map lstFieldLinked) {
 		this.lstFieldLinked = lstFieldLinked;
 	}
 
+	/**
+	 * Gets the lst panel style.
+	 * 
+	 * @return the lst panel style
+	 */
 	public Map getLstPanelStyle() {
 		return lstPanelStyle;
 	}
 
+	/**
+	 * Sets the lst panel style.
+	 * 
+	 * @param lstPanelStyle the new lst panel style
+	 */
 	public void setLstPanelStyle(Map lstPanelStyle) {
 		this.lstPanelStyle = lstPanelStyle;
 	}

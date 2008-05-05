@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,26 +32,73 @@ import java.util.Map;
  */
 public interface IDossierPartsTempDAO {
 	
+	/**
+	 * Store image.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param image the image
+	 * @param docLogicalName the doc logical name
+	 * @param pageNum the page num
+	 * @param workflowProcessId the workflow process id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void storeImage(Integer dossierId, byte[] image, String docLogicalName, int pageNum, Long workflowProcessId) throws EMFInternalError;
 	
+	/**
+	 * Gets the images of dossier part.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param pageNum the page num
+	 * @param workflowProcessId the workflow process id
+	 * 
+	 * @return the images of dossier part
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public Map getImagesOfDossierPart(Integer dossierId, int pageNum, Long workflowProcessId) throws EMFInternalError;
 	
+	/**
+	 * Gets the notes of dossier part.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param pageNum the page num
+	 * @param workflowProcessId the workflow process id
+	 * 
+	 * @return the notes of dossier part
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public byte[] getNotesOfDossierPart(Integer dossierId, int pageNum, Long workflowProcessId) throws EMFInternalError;
 	
+	/**
+	 * Store note.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param pageNum the page num
+	 * @param noteContent the note content
+	 * @param workflowProcessId the workflow process id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void storeNote(Integer dossierId, int pageNum, byte[] noteContent, Long workflowProcessId) throws EMFInternalError;
 	
 	/**
-	 * Erases the dossier temporary parts for the process specified at input
+	 * Erases the dossier temporary parts for the process specified at input.
+	 * 
 	 * @param dossierId The id of the dossier
 	 * @param workflowProcessId The id of the process
-	 * @throws EMFInternalError
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public void cleanDossierParts(Integer dossierId, Long workflowProcessId) throws EMFInternalError;
 	
 	/**
-	 * Erases the dossier temporary parts for all the processes that involve the dossier specified at input
+	 * Erases the dossier temporary parts for all the processes that involve the dossier specified at input.
+	 * 
 	 * @param dossierId The dossier id
-	 * @throws EMFInternalError
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public void eraseDossierParts(Integer dossierId) throws EMFInternalError;
 

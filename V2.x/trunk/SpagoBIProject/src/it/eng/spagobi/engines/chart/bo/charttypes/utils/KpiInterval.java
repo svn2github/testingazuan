@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
@@ -37,10 +37,20 @@ public class KpiInterval {
 	private Color color;
 	
 	
+	/**
+	 * Instantiates a new kpi interval.
+	 */
 	public KpiInterval() {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kpi interval.
+	 * 
+	 * @param min the min
+	 * @param max the max
+	 * @param color the color
+	 */
 	public KpiInterval(double min, double max, Color color) {
 		super();
 		this.min = min;
@@ -48,29 +58,74 @@ public class KpiInterval {
 		this.color = color;
 	}
 	
+	/**
+	 * Gets the min.
+	 * 
+	 * @return the min
+	 */
 	public double getMin() {
 		return min;
 	}
+	
+	/**
+	 * Sets the min.
+	 * 
+	 * @param min the new min
+	 */
 	public void setMin(double min) {
 		this.min = min;
 	}
+	
+	/**
+	 * Gets the max.
+	 * 
+	 * @return the max
+	 */
 	public double getMax() {
 		return max;
 	}
+	
+	/**
+	 * Sets the max.
+	 * 
+	 * @param max the new max
+	 */
 	public void setMax(double max) {
 		this.max = max;
 	}
+	
+	/**
+	 * Gets the color.
+	 * 
+	 * @return the color
+	 */
 	public Color getColor() {
 		return color;
 	}
+	
+	/**
+	 * Sets the color.
+	 * 
+	 * @param color the new color
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
 
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label the new label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}

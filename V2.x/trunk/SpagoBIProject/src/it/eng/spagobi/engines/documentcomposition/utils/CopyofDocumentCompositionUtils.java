@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -74,10 +74,13 @@ public class CopyofDocumentCompositionUtils {
 	
 	/**
 	 * Returns an url for execute the document with the engine associated.
+	 * 
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param sessionContainer session object
 	 * @param requestSB request object
-	 * @return String the complete url 
+	 * 
+	 * @return String the complete url
+	 * 
 	 * @deprecated
 	 */
 	
@@ -126,10 +129,13 @@ public class CopyofDocumentCompositionUtils {
 	
 	/**
 	 * Returns an url for execute the document with the engine associated.
+	 * 
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param docConfig configuration object
 	 * @param requestSB request object
-	 * @return String the complete url 
+	 * 
+	 * @return String the complete url
+	 * 
 	 * @deprecated
 	 */
 	public static String getUrl(String objLabel, DocumentCompositionConfiguration docConfig, SourceBean requestSB) {
@@ -169,10 +175,13 @@ public class CopyofDocumentCompositionUtils {
 	
 	/**
 	 * Returns an EngineUrl object with informations for execute the document with the engine associated.
+	 * 
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param docConfig configuration object
 	 * @param requestSB request object
-	 * @return String the complete url 
+	 * 
+	 * @return String the complete url
+	 * 
 	 * @deprecated
 	 */
 	public static EngineURL getEngineUrl(String objLabel, DocumentCompositionConfiguration docConfig, SourceBean requestSB) {
@@ -272,10 +281,12 @@ public class CopyofDocumentCompositionUtils {
 	/**
 	 * Returns an url for execute the document (through driver if needed) with the engine associated.
 	 * It calls relative driver
+	 * 
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param sessionContainer session object
 	 * @param requestSB request object
-	 * @return String the complete url 
+	 * 
+	 * @return String the complete url
 	 */
 	public static String getEngineUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		String urlReturn = "";

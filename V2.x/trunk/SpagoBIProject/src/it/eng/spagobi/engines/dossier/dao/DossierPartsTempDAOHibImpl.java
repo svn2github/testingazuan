@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 	
 	static private Logger logger = Logger.getLogger(DossierPartsTempDAOHibImpl.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#getImagesOfDossierPart(java.lang.Integer, int, java.lang.Long)
+	 */
 	public Map getImagesOfDossierPart(Integer dossierId, int pageNum, Long workflowProcessId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -86,6 +89,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#storeNote(java.lang.Integer, int, byte[], java.lang.Long)
+	 */
 	public void storeNote(Integer dossierId, int pageNum, byte[] noteContent, Long workflowProcessId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -140,6 +146,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#storeImage(java.lang.Integer, byte[], java.lang.String, int, java.lang.Long)
+	 */
 	public void storeImage(Integer dossierId, byte[] image,
 			String docLogicalName, int pageNum, Long workflowProcessId) throws EMFInternalError {
 		logger.debug("IN");
@@ -182,6 +191,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#getNotesOfDossierPart(java.lang.Integer, int, java.lang.Long)
+	 */
 	public byte[] getNotesOfDossierPart(Integer dossierId, int pageNum, Long workflowProcessId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -211,6 +223,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#cleanDossierParts(java.lang.Integer, java.lang.Long)
+	 */
 	public void cleanDossierParts(Integer dossierId, Long workflowProcessId)
 			throws EMFInternalError {
 		logger.debug("IN");
@@ -243,6 +258,9 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO#eraseDossierParts(java.lang.Integer)
+	 */
 	public void eraseDossierParts(Integer dossierId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;

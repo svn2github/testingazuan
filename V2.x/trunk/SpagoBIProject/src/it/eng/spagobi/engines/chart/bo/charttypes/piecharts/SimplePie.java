@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
@@ -67,6 +67,9 @@ public class SimplePie extends PieCharts{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#configureChart(it.eng.spago.base.SourceBean)
+	 */
 	public void configureChart(SourceBean content) {
 		// TODO Auto-generated method stub
 		super.configureChart(content);
@@ -97,6 +100,9 @@ public class SimplePie extends PieCharts{
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
+	 */
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		super.createChart(chartTitle, dataset);
 
@@ -184,6 +190,9 @@ public class SimplePie extends PieCharts{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isChangeableView()
+	 */
 	public boolean isChangeableView() {
 		return true;	
 	}
@@ -192,6 +201,9 @@ public class SimplePie extends PieCharts{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)
+	 */
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
 			threeD=how;
@@ -203,6 +215,9 @@ public class SimplePie extends PieCharts{
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameter(java.lang.String)
+	 */
 	public boolean getChangeViewParameter(String changePar) {
 		boolean ret=false;
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
@@ -214,6 +229,9 @@ public class SimplePie extends PieCharts{
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameterLabel(java.lang.String, int)
+	 */
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_3D)){
@@ -231,6 +249,9 @@ public class SimplePie extends PieCharts{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
+	 */
 	public List getPossibleChangePars() {
 		List l=new Vector();
 		if(!isThreedViewConfigured)	{l.add(CHANGE_VIEW_3D); }

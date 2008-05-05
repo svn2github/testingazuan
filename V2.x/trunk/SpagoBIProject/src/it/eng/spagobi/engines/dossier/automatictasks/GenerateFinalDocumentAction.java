@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.engines.dossier.automatictasks;
 
 import it.eng.spago.base.SourceBean;
@@ -81,6 +81,9 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 
 	static private Logger logger = Logger.getLogger(GenerateFinalDocumentAction.class);
 	
+    /* (non-Javadoc)
+     * @see org.jbpm.graph.def.ActionHandler#execute(org.jbpm.graph.exe.ExecutionContext)
+     */
     public void execute(ExecutionContext context) throws Exception {
 	XComponent xComponent = null;
 	XDesktop xdesktop = null;

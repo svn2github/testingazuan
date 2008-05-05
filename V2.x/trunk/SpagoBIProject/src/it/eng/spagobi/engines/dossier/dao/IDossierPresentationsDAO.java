@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -34,20 +34,88 @@ import java.util.List;
  */
 public interface IDossierPresentationsDAO {
 	
+	/**
+	 * Gets the presentation version content.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param versionId the version id
+	 * 
+	 * @return the presentation version content
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public byte[] getPresentationVersionContent(Integer dossierId, Integer versionId) throws EMFInternalError;
 	
+	/**
+	 * Gets the presentation versions.
+	 * 
+	 * @param dossierId the dossier id
+	 * 
+	 * @return the presentation versions
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public List getPresentationVersions(Integer dossierId) throws EMFInternalError;
 	
+	/**
+	 * Delete presentation version.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param versionId the version id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void deletePresentationVersion(Integer dossierId, Integer versionId) throws EMFInternalError;
 	
+	/**
+	 * Delete presentations.
+	 * 
+	 * @param dossierId the dossier id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void deletePresentations(Integer dossierId) throws EMFInternalError;
 	
+	/**
+	 * Insert presentation.
+	 * 
+	 * @param dossierPresentation the dossier presentation
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void insertPresentation(DossierPresentation dossierPresentation) throws EMFUserError, EMFInternalError;
 	
+	/**
+	 * Update presentation.
+	 * 
+	 * @param dossierPresentation the dossier presentation
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void updatePresentation(DossierPresentation dossierPresentation) throws EMFInternalError;
 	
+	/**
+	 * Gets the current presentation.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param workflowProcessId the workflow process id
+	 * 
+	 * @return the current presentation
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public DossierPresentation getCurrentPresentation(Integer dossierId, Long workflowProcessId) throws EMFInternalError;
 	
+	/**
+	 * Gets the next prog.
+	 * 
+	 * @param dossierId the dossier id
+	 * 
+	 * @return the next prog
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public Integer getNextProg(Integer dossierId) throws EMFInternalError;
 	
 }

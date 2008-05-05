@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,11 +42,13 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	private static transient Logger logger=Logger.getLogger(SpagoBIOfficeDocumentInternalEngine.class);
 	
 	/**
-	 * Executes the document and populates the response 
+	 * Executes the document and populates the response.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void execute(RequestContainer requestContainer, BIObject obj,
 			SourceBean response) throws EMFUserError {
@@ -92,12 +94,14 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	}
 
 	/**
-	 * The <code>SpagoBIOfficeDocumentInternalEngine</code> cannot manage subobjects so this method must not be invoked
+	 * The <code>SpagoBIOfficeDocumentInternalEngine</code> cannot manage subobjects so this method must not be invoked.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * @param subObjectInfo An object describing the subobject to be executed
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void executeSubObject(RequestContainer requestContainer,
 			BIObject obj, SourceBean response, Object subObjectInfo)
@@ -112,9 +116,11 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	 * Function not implemented. Thid method should not be called
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param biobject The BIOBject to edit
 	 * @param response The response <code>SourceBean</code> to be populated
-	 * @throws InvalidOperationRequest
+	 * @param obj the obj
+	 * 
+	 * @throws InvalidOperationRequest the invalid operation request
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
@@ -127,9 +133,11 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 	 * Function not implemented. Thid method should not be called
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param biobject The BIOBject to edit
 	 * @param response The response <code>SourceBean</code> to be populated
-	 * @throws InvalidOperationRequest
+	 * @param obj the obj
+	 * 
+	 * @throws InvalidOperationRequest the invalid operation request
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, 
 			BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {

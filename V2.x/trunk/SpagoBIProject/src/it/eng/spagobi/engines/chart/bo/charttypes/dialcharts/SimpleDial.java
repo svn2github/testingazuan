@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 /** Configure and draw a dialChart
  *  * @author Giulio Gavardi
@@ -82,16 +82,19 @@ public class SimpleDial extends DialCharts{
 
 
 
+	/**
+	 * Instantiates a new simple dial.
+	 */
 	public SimpleDial() {
 		super();
 		intervals=new Vector();
 	}
 
 	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * set parameters for the creation of the chart getting them from template or from LOV.
 	 * 
 	 * @param content the content of the template.
-
+	 * 
 	 * @return A chart that displays a value as a dial.
 	 */
 
@@ -229,7 +232,7 @@ public class SimpleDial extends DialCharts{
 	 * 
 	 * @param chartTitle  the chart title.
 	 * @param dataset  the dataset.
-
+	 * 
 	 * @return A chart .
 	 */
 
@@ -308,32 +311,62 @@ public class SimpleDial extends DialCharts{
 
 
 
+	/**
+	 * Gets the increment.
+	 * 
+	 * @return the increment
+	 */
 	public double getIncrement() {
 		return increment;
 	}
 
 
 
+	/**
+	 * Sets the increment.
+	 * 
+	 * @param increment the new increment
+	 */
 	public void setIncrement(double increment) {
 		this.increment = increment;
 	}
 
 
 
+	/**
+	 * Gets the minor tick count.
+	 * 
+	 * @return the minor tick count
+	 */
 	public int getMinorTickCount() {
 		return minorTickCount;
 	}
 
 
 
+	/**
+	 * Sets the minor tick count.
+	 * 
+	 * @param minorTickCount the new minor tick count
+	 */
 	public void setMinorTickCount(int minorTickCount) {
 		this.minorTickCount = minorTickCount;
 	}
 
+	/**
+	 * Gets the intervals.
+	 * 
+	 * @return the intervals
+	 */
 	public Vector getIntervals() {
 		return intervals;
 	}
 
+	/**
+	 * Adds the interval.
+	 * 
+	 * @param interval the interval
+	 */
 	public void addInterval(KpiInterval interval) {
 		this.intervals.add(interval);
 	}
@@ -341,12 +374,18 @@ public class SimpleDial extends DialCharts{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isChangeableView()
+	 */
 	public boolean isChangeableView() {
 		return true;
 	}
 
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
+	 */
 	public List getPossibleChangePars() {
 		List l=new Vector();
 		if(!horizontalViewConfigured){
@@ -356,6 +395,9 @@ public class SimpleDial extends DialCharts{
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)
+	 */
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
 			horizontalView=how;
@@ -363,6 +405,9 @@ public class SimpleDial extends DialCharts{
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameter(java.lang.String)
+	 */
 	public boolean getChangeViewParameter(String changePar) {
 		boolean ret=false;
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
@@ -371,6 +416,9 @@ public class SimpleDial extends DialCharts{
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameterLabel(java.lang.String, int)
+	 */
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){

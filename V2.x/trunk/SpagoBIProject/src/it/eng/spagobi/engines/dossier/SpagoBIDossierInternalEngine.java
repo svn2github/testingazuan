@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,10 +44,13 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 	static private Logger logger = Logger.getLogger(SpagoBIDossierInternalEngine.class);
 	
 	/**
-	 * Executes the document and populates the response 
+	 * Executes the document and populates the response.
+	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
-	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
+	 * @param biobj the biobj
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void execute(RequestContainer requestContainer, BIObject biobj, SourceBean response) throws EMFUserError {
 		logger.debug("IN");
@@ -66,16 +69,22 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 	}
 	
 	/**
-	 * Executes the subobject of the document and populates the response  
+	 * Executes the subobject of the document and populates the response.
+	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * @param subObjectInfo An object describing the subobject to be executed
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError {
 		logger.error("Method not implemented");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.InternalEngineIFace#handleDocumentTemplateEdit(it.eng.spago.base.RequestContainer, it.eng.spagobi.analiticalmodel.document.bo.BIObject, it.eng.spago.base.SourceBean)
+	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
 		try {
 			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierManagementLoopCall");
@@ -87,6 +96,9 @@ public class SpagoBIDossierInternalEngine implements InternalEngineIFace {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.InternalEngineIFace#handleNewDocumentTemplateCreation(it.eng.spago.base.RequestContainer, it.eng.spagobi.analiticalmodel.document.bo.BIObject, it.eng.spago.base.SourceBean)
+	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest {
 		try {
 			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierManagementLoopCall");

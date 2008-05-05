@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 
 
@@ -66,16 +66,19 @@ public class SBISpeedometer extends DialCharts{
 	int minorTickCount=0;
 
 
+	/**
+	 * Instantiates a new sBI speedometer.
+	 */
 	public SBISpeedometer() {
 		super();
 		intervals=new Vector();	
 	}
 
 	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * set parameters for the creation of the chart getting them from template or from LOV.
 	 * 
 	 * @param content the content of the template.
-
+	 * 
 	 * @return A chart that displays a value as a dial.
 	 */
 
@@ -188,7 +191,7 @@ public class SBISpeedometer extends DialCharts{
 	 * 
 	 * @param chartTitle  the chart title.
 	 * @param dataset  the dataset.
-
+	 * 
 	 * @return A chart speedometer.
 	 */
 
@@ -254,6 +257,11 @@ public class SBISpeedometer extends DialCharts{
 
 
 
+	/**
+	 * Gets the intervals.
+	 * 
+	 * @return the intervals
+	 */
 	public Vector getIntervals() {
 		return intervals;
 	}
@@ -262,29 +270,54 @@ public class SBISpeedometer extends DialCharts{
 
 
 
+	/**
+	 * Adds the interval.
+	 * 
+	 * @param interval the interval
+	 */
 	public void addInterval(KpiInterval interval) {
 		this.intervals.add(interval);
 	}
 
 
+	/**
+	 * Gets the increment.
+	 * 
+	 * @return the increment
+	 */
 	public double getIncrement() {
 		return increment;
 	}
 
 
 
+	/**
+	 * Sets the increment.
+	 * 
+	 * @param increment the new increment
+	 */
 	public void setIncrement(double increment) {
 		this.increment = increment;
 	}
 
 
 
+	/**
+	 * Gets the minor tick count.
+	 * 
+	 * @return the minor tick count
+	 */
 	public int getMinorTickCount() {
 		return minorTickCount;
 	}
 
 
 
+	/**
+	 * Sets the minor tick count.
+	 * 
+	 * @param minorTickCount the new minor tick count
+	 */
 	public void setMinorTickCount(int minorTickCount) {
 		this.minorTickCount = minorTickCount;
 	}

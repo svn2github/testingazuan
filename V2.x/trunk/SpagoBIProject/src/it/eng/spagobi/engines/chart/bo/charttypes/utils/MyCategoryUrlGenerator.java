@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
@@ -46,6 +46,9 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 	private static transient Logger logger=Logger.getLogger(MyCategoryUrlGenerator.class);
 
 
+	/* (non-Javadoc)
+	 * @see org.jfree.chart.urls.StandardCategoryURLGenerator#generateURL(org.jfree.data.category.CategoryDataset, int, int)
+	 */
 	public String generateURL(CategoryDataset dataset, int series, int category) {
 logger.debug("IN");
 		String URL=super.generateURL(dataset, series, category);
@@ -82,42 +85,87 @@ logger.debug("IN");
 		return URL;
 	}
 
+	/**
+	 * Instantiates a new my category url generator.
+	 */
 	public MyCategoryUrlGenerator() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Instantiates a new my category url generator.
+	 * 
+	 * @param prefix the prefix
+	 * @param seriesParameterName the series parameter name
+	 * @param categoryParameterName the category parameter name
+	 */
 	public MyCategoryUrlGenerator(String prefix, String seriesParameterName,
 			String categoryParameterName) {
 		super(prefix, seriesParameterName, categoryParameterName);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Instantiates a new my category url generator.
+	 * 
+	 * @param prefix the prefix
+	 */
 	public MyCategoryUrlGenerator(String prefix) {
 		super(prefix);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Gets the serie url label.
+	 * 
+	 * @return the serie url label
+	 */
 	public String getSerieUrlLabel() {
 		return serieUrlLabel;
 	}
 
+	/**
+	 * Sets the serie url label.
+	 * 
+	 * @param serieUrlLabel the new serie url label
+	 */
 	public void setSerieUrlLabel(String serieUrlLabel) {
 		this.serieUrlLabel = serieUrlLabel;
 	}
 
+	/**
+	 * Gets the category url label.
+	 * 
+	 * @return the category url label
+	 */
 	public String getCategoryUrlLabel() {
 		return categoryUrlLabel;
 	}
 
+	/**
+	 * Sets the category url label.
+	 * 
+	 * @param categoryUrlLabel the new category url label
+	 */
 	public void setCategoryUrlLabel(String categoryUrlLabel) {
 		this.categoryUrlLabel = categoryUrlLabel;
 	}
 
+	/**
+	 * Checks if is document_composition.
+	 * 
+	 * @return true, if is document_composition
+	 */
 	public boolean isDocument_composition() {
 		return document_composition;
 	}
 
+	/**
+	 * Sets the document_composition.
+	 * 
+	 * @param document_composition the new document_composition
+	 */
 	public void setDocument_composition(boolean document_composition) {
 		this.document_composition = document_composition;
 	}

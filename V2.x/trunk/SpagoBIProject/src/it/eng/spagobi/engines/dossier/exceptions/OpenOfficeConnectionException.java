@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -23,18 +23,37 @@ package it.eng.spagobi.engines.dossier.exceptions;
 
 public class OpenOfficeConnectionException extends Exception {
 
+	/**
+	 * Instantiates a new open office connection exception.
+	 */
 	public OpenOfficeConnectionException() {
 		super();
 	}
 	
+	/**
+	 * Instantiates a new open office connection exception.
+	 * 
+	 * @param message the message
+	 */
 	public OpenOfficeConnectionException(String message) {
 	 	super(message);
 	}
 	 
+	/**
+	 * Instantiates a new open office connection exception.
+	 * 
+	 * @param message the message
+	 * @param cause the cause
+	 */
 	public OpenOfficeConnectionException(String message, Throwable cause) {
 	    super(message, cause);
 	} 
 	
+	/**
+	 * Instantiates a new open office connection exception.
+	 * 
+	 * @param cause the cause
+	 */
 	public OpenOfficeConnectionException(Throwable cause) {
 	    super(cause);
 	}

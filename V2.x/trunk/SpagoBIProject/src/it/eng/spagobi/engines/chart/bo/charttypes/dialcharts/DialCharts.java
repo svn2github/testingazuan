@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 
@@ -53,11 +53,17 @@ public class DialCharts extends ChartImpl {
 	SourceBean sbRow;
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
+	 */
 	public JFreeChart createChart(String chartTitle, org.jfree.data.general.Dataset dataset){
 		return null;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#configureChart(it.eng.spago.base.SourceBean)
+	 */
 	public void configureChart(SourceBean content){
 		logger.debug("IN");
 
@@ -138,6 +144,9 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#calculateValue()
+	 */
 	public Dataset calculateValue() throws Exception{
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
@@ -164,23 +173,46 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/**
+	 * Gets the lower.
+	 * 
+	 * @return the lower
+	 */
 	public double getLower() {
 		return lower;
 	}
 
+	/**
+	 * Sets the lower.
+	 * 
+	 * @param lower the new lower
+	 */
 	public void setLower(double lower) {
 		this.lower = lower;
 	}
 
+	/**
+	 * Gets the upper.
+	 * 
+	 * @return the upper
+	 */
 	public double getUpper() {
 		return upper;
 	}
 
+	/**
+	 * Sets the upper.
+	 * 
+	 * @param upper the new upper
+	 */
 	public void setUpper(double upper) {
 		this.upper = upper;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isLovConfDefined()
+	 */
 	public boolean isLovConfDefined() {
 		return isLovConfDefined;
 	}
@@ -188,6 +220,9 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setLovConfDefined(boolean)
+	 */
 	public void setLovConfDefined(boolean isLovConfDefined) {
 		this.isLovConfDefined = isLovConfDefined;
 	}
@@ -195,6 +230,11 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/**
+	 * Gets the conf parameters.
+	 * 
+	 * @return the conf parameters
+	 */
 	public Map getConfParameters() {
 		return confParameters;
 	}
@@ -202,6 +242,11 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/**
+	 * Sets the conf parameters.
+	 * 
+	 * @param confParameters the new conf parameters
+	 */
 	public void setConfParameters(Map confParameters) {
 		this.confParameters = confParameters;
 	}
@@ -209,6 +254,11 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/**
+	 * Gets the sb row.
+	 * 
+	 * @return the sb row
+	 */
 	public SourceBean getSbRow() {
 		return sbRow;
 	}
@@ -216,6 +266,11 @@ public class DialCharts extends ChartImpl {
 
 
 
+	/**
+	 * Sets the sb row.
+	 * 
+	 * @param sbRow the new sb row
+	 */
 	public void setSbRow(SourceBean sbRow) {
 		this.sbRow = sbRow;
 	}

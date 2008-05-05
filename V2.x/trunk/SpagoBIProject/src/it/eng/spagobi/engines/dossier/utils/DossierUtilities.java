@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,11 @@ public class DossierUtilities {
 
 	static private Logger logger = Logger.getLogger(DossierUtilities.class);
 	
+	/**
+	 * Gets the dossier service url.
+	 * 
+	 * @return the dossier service url
+	 */
 	public static String getDossierServiceUrl() {
 		logger.debug("IN");
 		String sbiContAdd = GeneralUtilities.getSpagoBiContextAddress();
@@ -42,6 +47,13 @@ public class DossierUtilities {
 		return toReturn;
 	}
 	
+	/**
+	 * Gets the dossier service url.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the dossier service url
+	 */
 	public static String getDossierServiceUrl(HttpServletRequest request) {
 		logger.debug("IN");
 		String sbiContAdd = ChannelUtilities.getSpagoBIContextName(request);

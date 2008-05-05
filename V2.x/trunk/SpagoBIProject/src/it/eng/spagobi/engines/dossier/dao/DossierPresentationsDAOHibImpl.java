@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.engines.dossier.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -50,6 +50,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 
 	static private Logger logger = Logger.getLogger(DossierPresentationsDAOHibImpl.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#getPresentationVersionContent(java.lang.Integer, java.lang.Integer)
+	 */
 	public byte[] getPresentationVersionContent(Integer dossierId,
 			Integer versionId) throws EMFInternalError {
 		logger.debug("IN");
@@ -80,6 +83,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#getPresentationVersions(java.lang.Integer)
+	 */
 	public List getPresentationVersions(Integer dossierId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -113,6 +119,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#deletePresentationVersion(java.lang.Integer, java.lang.Integer)
+	 */
 	public void deletePresentationVersion(Integer dossierId, Integer versionId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -145,6 +154,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#insertPresentation(it.eng.spagobi.engines.dossier.bo.DossierPresentation)
+	 */
 	public void insertPresentation(DossierPresentation dossierPresentation) throws EMFUserError, EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -190,6 +202,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#updatePresentation(it.eng.spagobi.engines.dossier.bo.DossierPresentation)
+	 */
 	public void updatePresentation(DossierPresentation dossierPresentation) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -216,6 +231,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#getNextProg(java.lang.Integer)
+	 */
 	public Integer getNextProg(Integer dossierId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -246,6 +264,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#getCurrentPresentation(java.lang.Integer, java.lang.Long)
+	 */
 	public DossierPresentation getCurrentPresentation(Integer dossierId, Long workflowProcessId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -296,6 +317,9 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO#deletePresentations(java.lang.Integer)
+	 */
 	public void deletePresentations(Integer dossierId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;

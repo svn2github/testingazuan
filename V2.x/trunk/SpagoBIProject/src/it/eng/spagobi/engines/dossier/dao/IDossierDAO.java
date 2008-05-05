@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -45,32 +45,126 @@ import java.util.List;
  */
 public interface IDossierDAO {
 
+	/**
+	 * Inits the.
+	 * 
+	 * @param dossier the dossier
+	 * 
+	 * @return the string
+	 */
 	public String init(BIObject dossier);
 	
+	/**
+	 * Clean.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void clean(String pathTempFolder);
 	
+	/**
+	 * Store template.
+	 * 
+	 * @param dossierId the dossier id
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void storeTemplate(Integer dossierId, String pathTempFolder);
 	
+	/**
+	 * Gets the dossier id.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the dossier id
+	 */
 	public Integer getDossierId(String pathTempFolder);
 	
+	/**
+	 * Gets the configured document list.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the configured document list
+	 */
 	public List getConfiguredDocumentList(String pathTempFolder);
 	
+	/**
+	 * Adds the configured document.
+	 * 
+	 * @param doc the doc
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void addConfiguredDocument(ConfiguredBIDocument doc, String pathTempFolder);
 	
+	/**
+	 * Delete configured document.
+	 * 
+	 * @param docLogicalName the doc logical name
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void deleteConfiguredDocument(String docLogicalName, String pathTempFolder);
 	
+	/**
+	 * Gets the configured document.
+	 * 
+	 * @param docLogicalName the doc logical name
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the configured document
+	 */
 	public ConfiguredBIDocument getConfiguredDocument(String docLogicalName, String pathTempFolder);
 	
+	/**
+	 * Store presentation template file.
+	 * 
+	 * @param templateFileName the template file name
+	 * @param templateContent the template content
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void storePresentationTemplateFile(String templateFileName, byte[] templateContent, String pathTempFolder);
 	
+	/**
+	 * Gets the presentation template file name.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the presentation template file name
+	 */
 	public String getPresentationTemplateFileName(String pathTempFolder);
 	
+	/**
+	 * Gets the presentation template content.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the presentation template content
+	 */
 	public InputStream getPresentationTemplateContent(String pathTempFolder);
 	
+	/**
+	 * Store process definition file.
+	 * 
+	 * @param pdFileName the pd file name
+	 * @param pdFileContent the pd file content
+	 * @param pathTempFolder the path temp folder
+	 */
 	public void storeProcessDefinitionFile(String pdFileName, byte[] pdFileContent, String pathTempFolder);
 	
+	/**
+	 * Gets the process definition file name.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the process definition file name
+	 */
 	public String getProcessDefinitionFileName(String pathTempFolder); 
 	
+	/**
+	 * Gets the process definition content.
+	 * 
+	 * @param pathTempFolder the path temp folder
+	 * 
+	 * @return the process definition content
+	 */
 	public InputStream getProcessDefinitionContent(String pathTempFolder);
 
 }

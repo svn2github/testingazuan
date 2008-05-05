@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 /** Configure and draw a thermomether chart
  *  * @author Giulio Gavardi
@@ -62,6 +62,9 @@ public class Thermometer extends DialCharts{
 
 
 
+	/**
+	 * Instantiates a new thermometer.
+	 */
 	public Thermometer() {
 		super();
 		intervals=new Vector();
@@ -73,7 +76,7 @@ public class Thermometer extends DialCharts{
 	 * 
 	 * @param chartTitle  the chart title.
 	 * @param dataset  the dataset.
-
+	 * 
 	 * @return A chart thermometer.
 	 */
 
@@ -123,10 +126,10 @@ public class Thermometer extends DialCharts{
 
 
 	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV
+	 * set parameters for the creation of the chart getting them from template or from LOV.
 	 * 
 	 * @param content the content of the template.
-
+	 * 
 	 * @return A chart that displays a value as a dial.
 	 */
 
@@ -217,6 +220,11 @@ public class Thermometer extends DialCharts{
 
 
 
+	/**
+	 * Gets the intervals.
+	 * 
+	 * @return the intervals
+	 */
 	public Vector getIntervals() {
 		return intervals;
 	}
@@ -224,6 +232,11 @@ public class Thermometer extends DialCharts{
 
 
 
+	/**
+	 * Adds the intervals.
+	 * 
+	 * @param subrange the subrange
+	 */
 	public void addIntervals(KpiInterval subrange) {
 		this.intervals.add(subrange);
 	}
@@ -231,6 +244,11 @@ public class Thermometer extends DialCharts{
 
 
 
+	/**
+	 * Gets the units.
+	 * 
+	 * @return the units
+	 */
 	public String getUnits() {
 		return units;
 	}
@@ -238,6 +256,11 @@ public class Thermometer extends DialCharts{
 
 
 
+	/**
+	 * Sets the units.
+	 * 
+	 * @param units the new units
+	 */
 	public void setUnits(String units) {
 		this.units = units;
 	}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,17 +46,20 @@ public interface IEngineDAO {
 	 * returned.
 	 * 
 	 * @param engineID The id for the engine to load
-	 * @return	An <code>engine</code> object containing all loaded information
+	 * 
+	 * @return An <code>engine</code> object containing all loaded information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public Engine loadEngineByID(Integer engineID) throws EMFUserError;
 	
 	/**
-	 * Loads all detail information for all engines. For each of them, detail 
-	 * information is stored into an <code>engine</code> object. After that, all engines 
+	 * Loads all detail information for all engines. For each of them, detail
+	 * information is stored into an <code>engine</code> object. After that, all engines
 	 * are stored into a <code>List</code>, which is returned.
 	 * 
 	 * @return A list containing all engine objects
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
@@ -64,39 +67,45 @@ public interface IEngineDAO {
 
 	/**
 	 * Loads all detail information for all engines compatible to the BIObject type specified
-	 * at input. For each of them, detail information is stored into an <code>engine</code> object. 
+	 * at input. For each of them, detail information is stored into an <code>engine</code> object.
 	 * After that, all engines are stored into a <code>List</code>, which is returned.
 	 * 
+	 * @param biobjectType the biobject type
+	 * 
 	 * @return A list containing all engine objects compatible with the BIObject type passed at input
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
 	public List loadAllEnginesForBIObjectType(String biobjectType) throws EMFUserError;
 	
 	/**
-	 * Implements the query to modify an engine. All information needed is stored 
+	 * Implements the query to modify an engine. All information needed is stored
 	 * into the input <code>engine</code> object.
 	 * 
 	 * @param aEngine The object containing all modify information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
 	public void modifyEngine(Engine aEngine) throws EMFUserError;
 	
 	/**
-	 * Implements the query to insert an engine. All information needed is stored 
+	 * Implements the query to insert an engine. All information needed is stored
 	 * into the input <code>engine</code> object.
 	 * 
 	 * @param aEngine The object containing all insert information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertEngine(Engine aEngine) throws EMFUserError;
 	
 	/**
-	 * Implements the query to erase an engine. All information needed is stored 
+	 * Implements the query to erase an engine. All information needed is stored
 	 * into the input <code>engine</code> object.
 	 * 
 	 * @param aEngine The object containing all delete information
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
@@ -106,11 +115,13 @@ public interface IEngineDAO {
 	 * Tells if an engine is associated to any
 	 * BI Object. It is useful because an engine cannot be deleted
 	 * if it is used by one or more BI Objects.
-	 *
+	 * 
 	 * @param engineId The engine identifier
-	 * @return True if the engine is used by one or more 
-	 * 		    objects, else false 
-	 * @throws EMFUserError If any exception occurred 
+	 * 
+	 * @return True if the engine is used by one or more
+	 * objects, else false
+	 * 
+	 * @throws EMFUserError If any exception occurred
 	 */
 	public boolean hasBIObjAssociated (String engineId) throws EMFUserError;
 

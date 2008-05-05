@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -63,7 +63,15 @@ import org.safehaus.uuid.UUIDGenerator;
 
 public class DocumentCompositionExecutionModule extends AbstractModule {
 	static private Logger logger = Logger.getLogger(DocumentCompositionExecutionModule.class);
+	
 	/**
+	 * Service.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {

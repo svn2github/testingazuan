@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.engines.dossier.dao;
 
 import it.eng.spago.base.SourceBean;
@@ -107,6 +107,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    return toReturn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#init(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
+	 */
 	public String init(BIObject dossier) {
 		logger.debug("IN");
 		try {
@@ -144,6 +147,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#storeTemplate(java.lang.Integer, java.lang.String)
+	 */
 	public void storeTemplate(Integer dossierId, String pathTempFolder) {
 		logger.debug("IN");
 		File template = null;
@@ -247,6 +253,14 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 	
+	/**
+	 * Copy input stream.
+	 * 
+	 * @param in the in
+	 * @param out the out
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
 	    byte[] buffer = new byte[1024];
 	    int len;
@@ -256,6 +270,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    out.close();
 	  }
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#addConfiguredDocument(it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument, java.lang.String)
+	 */
 	public void addConfiguredDocument(ConfiguredBIDocument doc, String pathTempFolder) {
 		logger.debug("IN");
 		try {
@@ -375,6 +392,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#deleteConfiguredDocument(java.lang.String, java.lang.String)
+	 */
 	public void deleteConfiguredDocument(String docLogicalName, String pathTempFolder) {
 		logger.debug("IN");
 		try {
@@ -401,6 +421,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getProcessDefinitionContent(java.lang.String)
+	 */
 	public InputStream getProcessDefinitionContent(String pathTempFolder) {
 		logger.debug("IN");
 		InputStream is = null;
@@ -415,6 +438,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return is;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getProcessDefinitionFileName(java.lang.String)
+	 */
 	public String getProcessDefinitionFileName(String pathTempFolder) {
 		logger.debug("IN");
 		String toReturn = null;
@@ -435,6 +461,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getPresentationTemplateContent(java.lang.String)
+	 */
 	public InputStream getPresentationTemplateContent(String pathTempFolder) {
 		logger.debug("IN");
 		InputStream is = null;
@@ -449,6 +478,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return is;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getPresentationTemplateFileName(java.lang.String)
+	 */
 	public String getPresentationTemplateFileName(String pathTempFolder) {
 		logger.debug("IN");
 		String toReturn = null;
@@ -469,6 +501,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getConfiguredDocument(java.lang.String, java.lang.String)
+	 */
 	public ConfiguredBIDocument getConfiguredDocument(String docLogicalName, String pathTempFolder) {
 		logger.debug("IN");
 		ConfiguredBIDocument toReturn = null;
@@ -486,6 +521,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getConfiguredDocumentList(java.lang.String)
+	 */
 	public List getConfiguredDocumentList(String pathTempFolder) {
 		logger.debug("IN");
 		List toReturn = new ArrayList();
@@ -513,6 +551,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		return toReturn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#storeProcessDefinitionFile(java.lang.String, byte[], java.lang.String)
+	 */
 	public void storeProcessDefinitionFile(String pdFileName, byte[] pdFileContent, String pathTempFolder) {
 		logger.debug("IN");
 		try {
@@ -531,6 +572,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#storePresentationTemplateFile(java.lang.String, byte[], java.lang.String)
+	 */
 	public void storePresentationTemplateFile(String templateFileName, byte[] templateContent, String pathTempFolder) {
 		logger.debug("IN");
 		try {
@@ -568,6 +612,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#getDossierId(java.lang.String)
+	 */
 	public Integer getDossierId(String pathTempFolder) {
 		logger.debug("IN");
 		try {
@@ -587,6 +634,9 @@ public class DossierDAOHibImpl implements IDossierDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.dossier.dao.IDossierDAO#clean(java.lang.String)
+	 */
 	public void clean(String pathTempFolder) {
 		logger.debug("IN");
 		try {

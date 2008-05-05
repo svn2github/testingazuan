@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,15 +27,38 @@ public class WorkflowConfiguration {
 	private String nameWorkflowProcess = "";
 	
 	
+	/**
+	 * Gets the name workflow package.
+	 * 
+	 * @return the name workflow package
+	 */
 	public String getNameWorkflowPackage() {
 		return nameWorkflowPackage;
 	}
+	
+	/**
+	 * Sets the name workflow package.
+	 * 
+	 * @param nameWorkflowPackage the new name workflow package
+	 */
 	public void setNameWorkflowPackage(String nameWorkflowPackage) {
 		this.nameWorkflowPackage = nameWorkflowPackage;
 	}
+	
+	/**
+	 * Gets the name workflow process.
+	 * 
+	 * @return the name workflow process
+	 */
 	public String getNameWorkflowProcess() {
 		return nameWorkflowProcess;
 	}
+	
+	/**
+	 * Sets the name workflow process.
+	 * 
+	 * @param nameWorkflowProcess the new name workflow process
+	 */
 	public void setNameWorkflowProcess(String nameWorkflowProcess) {
 		this.nameWorkflowProcess = nameWorkflowProcess;
 	}

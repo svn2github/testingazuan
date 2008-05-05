@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.bo;
 
@@ -68,8 +68,10 @@ public class ChartImpl implements IChart {
 	protected Map parametersObject;
 
 	
-/**  configureChart reads the content of the template and sets the chart parameters
+/**
+ * configureChart reads the content of the template and sets the chart parameters.
  * 
+ * @param content the content
  */
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
@@ -145,7 +147,12 @@ public class ChartImpl implements IChart {
 	}
 	
 	/**
-	 * This function creates the chart object
+	 * This function creates the chart object.
+	 * 
+	 * @param chartTitle the chart title
+	 * @param dataset the dataset
+	 * 
+	 * @return the j free chart
 	 */
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
@@ -154,7 +161,12 @@ public class ChartImpl implements IChart {
 
 	
 	/**
-	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template
+	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template.
+	 * 
+	 * @param type the type
+	 * @param subtype the subtype
+	 * 
+	 * @return the chart impl
 	 */
 	
 	public static ChartImpl createChart(String type,String subtype){
@@ -197,139 +209,271 @@ public class ChartImpl implements IChart {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getData()
+	 */
 	public String getData() {
 		return data;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getHeight()
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getName()
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getWidth()
+	 */
 	public int getWidth() {
 		return width;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setData(java.lang.String)
+	 */
 	public void setData(String _data) {
 		data=_data;		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setHeight(int)
+	 */
 	public void setHeight(int _height) {
 		height=_height;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setName(java.lang.String)
+	 */
 	public void setName(String _name) {
 		name=_name;		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setWidth(int)
+	 */
 	public void setWidth(int _width) {
 		width=_width;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#calculateValue()
+	 */
 	public Dataset calculateValue() throws Exception {
 		return null;
 	}
 
+	/**
+	 * Gets the conf dataset.
+	 * 
+	 * @return the conf dataset
+	 */
 	public String getConfDataset() {
 		return confDataset;
 	}
 
+	/**
+	 * Sets the conf dataset.
+	 * 
+	 * @param confDataset the new conf dataset
+	 */
 	public void setConfDataset(String confDataset) {
 		this.confDataset = confDataset; 
 	}
 
+	/**
+	 * Gets the profile.
+	 * 
+	 * @return the profile
+	 */
 	public IEngUserProfile getProfile() {
 		return profile;
 	}
 
+	/**
+	 * Sets the profile.
+	 * 
+	 * @param profile the new profile
+	 */
 	public void setProfile(IEngUserProfile profile) {
 		this.profile = profile;
 	}
 
+	/**
+	 * Checks if is lov conf defined.
+	 * 
+	 * @return true, if is lov conf defined
+	 */
 	public boolean isLovConfDefined() {
 		return isLovConfDefined;
 	}
 
+	/**
+	 * Sets the lov conf defined.
+	 * 
+	 * @param isLovConfDefined the new lov conf defined
+	 */
 	public void setLovConfDefined(boolean isLovConfDefined) {
 		this.isLovConfDefined = isLovConfDefined;
 	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#isLinkable()
+	 */
 	public boolean isLinkable() {
 		return false;
 	}
 
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type the new type
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	/**
+	 * Gets the subtype.
+	 * 
+	 * @return the subtype
+	 */
 	public String getSubtype() {
 		return subtype;
 	}
 
+	/**
+	 * Sets the subtype.
+	 * 
+	 * @param subtype the new subtype
+	 */
 	public void setSubtype(String subtype) {
 		this.subtype = subtype;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#isChangeableView()
+	 */
 	public boolean isChangeableView() {
 		return false;
 	}
 
+	/**
+	 * Gets the change view label.
+	 * 
+	 * @param theme the theme
+	 * @param i the i
+	 * 
+	 * @return the change view label
+	 */
 	public String getChangeViewLabel(String theme, int i) {
 		return "";
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setChangeViewChecked(boolean)
+	 */
 	public void setChangeViewChecked(boolean b) {
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getPossibleChangePars()
+	 */
 	public List getPossibleChangePars() {
 		return new Vector();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setChangeViewsParameter(java.lang.String, boolean)
+	 */
 	public void setChangeViewsParameter(String changePar, boolean how) {
 
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getChangeViewParameter(java.lang.String)
+	 */
 	public boolean getChangeViewParameter(String changePar) {
 		return false;		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getChangeViewParameterLabel(java.lang.String, int)
+	 */
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		return null;
 	}
 
+	/**
+	 * Gets the color.
+	 * 
+	 * @return the color
+	 */
 	public Color getColor() {
 		return color;
 	}
 
+	/**
+	 * Sets the color.
+	 * 
+	 * @param color the new color
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#filterDataset(org.jfree.data.general.Dataset, java.util.HashMap, int, int)
+	 */
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#isLegend()
+	 */
 	public boolean isLegend() {
 		return legend;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setLegend(boolean)
+	 */
 	public void setLegend(boolean legend) {
 		this.legend = legend;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#getParametersObject()
+	 */
 	public Map getParametersObject() {
 		return parametersObject;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setParametersObject(java.util.Map)
+	 */
 	public void setParametersObject(Map parametersObject) {
 		this.parametersObject = parametersObject;
 	}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 
 
@@ -63,7 +63,11 @@ public class BarCharts extends ChartImpl {
 	
 	
 	/**
-	 * Inherited by IChart: calculates chart value 
+	 * Inherited by IChart: calculates chart value.
+	 * 
+	 * @return the dataset
+	 * 
+	 * @throws Exception the exception
 	 */
 	
 	public Dataset calculateValue() throws Exception {
@@ -121,52 +125,54 @@ public class BarCharts extends ChartImpl {
 
 	
 	/**
-	 * Calculates chart value; 
-	 
-	
-	public Dataset calculateValue(String cat, Map parameters) throws Exception {
-		logger.debug("IN");
-		String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
-
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-		SourceBean sbRows=SourceBean.fromXMLString(res);
-		List listAtts=sbRows.getAttributeAsList("ROW");
-
-
-		// run all categories (one for each row)
-		categoriesNumber=0;
-		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
-			SourceBean category = (SourceBean) iterator.next();
-			List atts=category.getContainedAttributes();
-
-			HashMap series=new HashMap();
-			String catValue="";
-
-			String name="";
-			String value="";
-
-			//run all the attributes, to define series!
-			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
-				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-
-				name=new String(object.getKey());
-				value=new String((String)object.getValue());
-				if(name.equalsIgnoreCase("x"))catValue=value;
-				else series.put(name, value);
-			}
-			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
-				String nameS = (String) iterator3.next();
-				String valueS=(String)series.get(nameS);
-				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-				categoriesNumber=categoriesNumber+1;
-			}
-
-		}
-		logger.debug("OUT");
-		return dataset;
-	}
-*/
+	 * Calculates chart value;
+	 * 
+	 * 
+	 * public Dataset calculateValue(String cat, Map parameters) throws Exception {
+	 * logger.debug("IN");
+	 * String res=DataSetAccessFunctions.getDataSetResult(profile, getData(),parameters);
+	 * 
+	 * DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+	 * 
+	 * SourceBean sbRows=SourceBean.fromXMLString(res);
+	 * List listAtts=sbRows.getAttributeAsList("ROW");
+	 * 
+	 * 
+	 * // run all categories (one for each row)
+	 * categoriesNumber=0;
+	 * for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
+	 * SourceBean category = (SourceBean) iterator.next();
+	 * List atts=category.getContainedAttributes();
+	 * 
+	 * HashMap series=new HashMap();
+	 * String catValue="";
+	 * 
+	 * String name="";
+	 * String value="";
+	 * 
+	 * //run all the attributes, to define series!
+	 * for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+	 * SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+	 * 
+	 * name=new String(object.getKey());
+	 * value=new String((String)object.getValue());
+	 * if(name.equalsIgnoreCase("x"))catValue=value;
+	 * else series.put(name, value);
+	 * }
+	 * for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
+	 * String nameS = (String) iterator3.next();
+	 * String valueS=(String)series.get(nameS);
+	 * dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+	 * categoriesNumber=categoriesNumber+1;
+	 * }
+	 * 
+	 * }
+	 * logger.debug("OUT");
+	 * return dataset;
+	 * }
+	 * 
+	 * @param content the content
+	 */
 
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
@@ -236,11 +242,14 @@ public class BarCharts extends ChartImpl {
 
 	
 	/**
-	 * Use for slider: limits the categories visualization from cat selected to cat selected+numberscatsVisualization
-	 * @param: dataset: the dataset to filter
-	 * @param: categories:
-	 *  @param: caSelected: position of the slider
-	 *  @param: numbersCatVisualization: parameter set in template
+	 * Use for slider: limits the categories visualization from cat selected to cat selected+numberscatsVisualization.
+	 * 
+	 * @param dataset the dataset
+	 * @param categories the categories
+	 * @param catSelected the cat selected
+	 * @param numberCatsVisualization the number cats visualization
+	 * 
+	 * @return the dataset
 	 */
 	
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
@@ -279,11 +288,12 @@ public class BarCharts extends ChartImpl {
 	}
 	
 	/**
-	 * Limits the dataset to a particular serie
-	 * @param: dataset: the dataset to filter
-	 * @param: categories:
-	 *  @param: caSelected: position of the slider
-	 *  @param: numbersCatVisualization: parameter set in template
+	 * Limits the dataset to a particular serie.
+	 * 
+	 * @param dataset the dataset
+	 * @param serie the serie
+	 * 
+	 * @return the dataset
 	 */
 	
 	public Dataset filterDatasetSeries(Dataset dataset, String serie) {
@@ -309,61 +319,129 @@ public class BarCharts extends ChartImpl {
 	
 
 	
+	/**
+	 * Gets the conf parameters.
+	 * 
+	 * @return the conf parameters
+	 */
 	public Map getConfParameters() {
 		return confParameters;
 	}
 
+	/**
+	 * Sets the conf parameters.
+	 * 
+	 * @param confParameters the new conf parameters
+	 */
 	public void setConfParameters(Map confParameters) {
 		this.confParameters = confParameters;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
+	 */
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		// TODO Auto-generated method stub
 		return super.createChart(chartTitle, dataset);
 	}
 
+	/**
+	 * Gets the category label.
+	 * 
+	 * @return the category label
+	 */
 	public String getCategoryLabel() {
 		return categoryLabel;
 	}
 
+	/**
+	 * Sets the category label.
+	 * 
+	 * @param categoryLabel the new category label
+	 */
 	public void setCategoryLabel(String categoryLabel) {
 		this.categoryLabel = categoryLabel;
 	}
 
+	/**
+	 * Gets the value label.
+	 * 
+	 * @return the value label
+	 */
 	public String getValueLabel() {
 		return valueLabel;
 	}
 
+	/**
+	 * Sets the value label.
+	 * 
+	 * @param valueLabel the new value label
+	 */
 	public void setValueLabel(String valueLabel) {
 		this.valueLabel = valueLabel;
 	}
 
+	/**
+	 * Gets the categories number.
+	 * 
+	 * @return the categories number
+	 */
 	public int getCategoriesNumber() {
 		return categoriesNumber;
 	}
 
+	/**
+	 * Sets the categories number.
+	 * 
+	 * @param categoriesNumber the new categories number
+	 */
 	public void setCategoriesNumber(int categoriesNumber) {
 		this.categoriesNumber = categoriesNumber;
 	}
 
+	/**
+	 * Gets the categories.
+	 * 
+	 * @return the categories
+	 */
 	public Map getCategories() {
 		return categories;
 	}
 
 
 
+	/**
+	 * Gets the number cat visualization.
+	 * 
+	 * @return the number cat visualization
+	 */
 	public Integer getNumberCatVisualization() {
 		return numberCatVisualization;
 	}
 
+	/**
+	 * Sets the number cat visualization.
+	 * 
+	 * @param numberCatVisualization the new number cat visualization
+	 */
 	public void setNumberCatVisualization(Integer numberCatVisualization) {
 		this.numberCatVisualization = numberCatVisualization;
 	}
 
+	/**
+	 * Gets the current serie.
+	 * 
+	 * @return the current serie
+	 */
 	public int getCurrentSerie() {
 		return currentSerie;
 	}
 
+	/**
+	 * Sets the current serie.
+	 * 
+	 * @param currentSerie the new current serie
+	 */
 	public void setCurrentSerie(int currentSerie) {
 		this.currentSerie = currentSerie;
 	}

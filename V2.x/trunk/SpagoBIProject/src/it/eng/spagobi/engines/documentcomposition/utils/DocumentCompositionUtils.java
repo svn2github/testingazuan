@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -69,9 +69,11 @@ public class DocumentCompositionUtils {
 	/**
 	 * Returns an url for execute the document with the engine associated.
 	 * It calls relative driver.
+	 * 
 	 * @param objLabel the logical label of the document (gets from the template file)
 	 * @param sessionContainer session object
 	 * @param requestSB request object
+	 * 
 	 * @return String the complete url. It use this format: <code_error>|<url>. If there is an error during the execution <code_error> is valorized and url is null, else it is null and the url is complete.
 	 */
 	public static String getEngineUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {

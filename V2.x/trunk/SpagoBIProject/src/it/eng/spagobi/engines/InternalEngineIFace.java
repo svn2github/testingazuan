@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -37,39 +37,49 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 public interface InternalEngineIFace {
 	
 	/**
-	 * Executes the document and populates the response 
+	 * Executes the document and populates the response.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError;
 
 	/**
-	 * Executes the subobject of the document and populates the response 
+	 * Executes the subobject of the document and populates the response.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * @param subObjectInfo An object describing the subobject to be executed
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void executeSubObject(RequestContainer requestContainer, BIObject obj, SourceBean response, Object subObjectInfo) throws EMFUserError;
 	
 	/**
-	 * Handles the request for the creation of a new document template
+	 * Handles the request for the creation of a new document template.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * @throws InvalidOperationRequest the invalid operation request
 	 */
 	public void handleNewDocumentTemplateCreation(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest;
 	
 	/**
-	 * Handles the request for the modification of the current document template
+	 * Handles the request for the modification of the current document template.
 	 * 
 	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document
 	 * @param response The response <code>SourceBean</code> to be populated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * @throws InvalidOperationRequest the invalid operation request
 	 */
 	public void handleDocumentTemplateEdit(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError, InvalidOperationRequest;
 	

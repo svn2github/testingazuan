@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -54,6 +54,14 @@ import org.hibernate.stat.Statistics;
 public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO{
 
 	/**
+	 * Load engine by id.
+	 * 
+	 * @param engineID the engine id
+	 * 
+	 * @return the engine
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#loadEngineByID(java.lang.Integer)
 	 */
 	public Engine loadEngineByID(Integer engineID) throws EMFUserError {
@@ -86,6 +94,12 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	}
 
 	/**
+	 * Load all engines.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#loadAllEngines()
 	 */
 	public List loadAllEngines() throws EMFUserError {
@@ -122,6 +136,14 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	}
 
 	/**
+	 * Load all engines for bi object type.
+	 * 
+	 * @param biobjectType the biobject type
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#loadAllEnginesForBIObjectType(java.lang.String)
 	 */
 	public List loadAllEnginesForBIObjectType(String biobjectType) throws EMFUserError {
@@ -158,6 +180,12 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	}
 	
 	/**
+	 * Modify engine.
+	 * 
+	 * @param aEngine the a engine
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#modifyEngine(it.eng.spagobi.engines.config.bo.Engine)
 	 */
 	public void modifyEngine(Engine aEngine) throws EMFUserError {
@@ -211,6 +239,12 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	}
 
 	/**
+	 * Insert engine.
+	 * 
+	 * @param aEngine the a engine
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#insertEngine(it.eng.spagobi.engines.config.bo.Engine)
 	 */
 	public void insertEngine(Engine aEngine) throws EMFUserError {
@@ -263,6 +297,12 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	}
 
 	/**
+	 * Erase engine.
+	 * 
+	 * @param aEngine the a engine
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#eraseEngine(it.eng.spagobi.engines.config.bo.Engine)
 	 */
 	public void eraseEngine(Engine aEngine) throws EMFUserError {
@@ -297,6 +337,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	 * the corrispondent <code>Engine</code> object.
 	 * 
 	 * @param hibEngine The hybernate engine
+	 * 
 	 * @return The corrispondent <code>Engine</code> object
 	 */
 	public Engine toEngine(SbiEngines hibEngine){
@@ -320,7 +361,16 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setDataSourceId(new Integer((hibEngine.getDataSource()==null)?-1:hibEngine.getDataSource().getDsId()));
 		return eng;
 	}
+	
 	/**
+	 * Checks for bi obj associated.
+	 * 
+	 * @param engineId the engine id
+	 * 
+	 * @return true, if checks for bi obj associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#hasBIObjAssociated(java.lang.String)
 	 */
 	public boolean hasBIObjAssociated (String engineId) throws EMFUserError{

@@ -1,8 +1,24 @@
 /**
- * 
- * LICENSE: see 'LICENSE.sbi.drivers.qbe.txt' file
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.engines.drivers.geo;
 
 import it.eng.spago.base.SourceBean;
@@ -47,11 +63,13 @@ public class GeoDriver implements IEngineDriver {
 	public static final String LANGUAGE = "language";
 	
 	/**
-	 * Returns a map of parameters which will be send in the request to the 
+	 * Returns a map of parameters which will be send in the request to the
 	 * engine application.
-	 * @param biObject Object to execute
-	 * @param profile Profile of the user 
+	 * 
+	 * @param profile Profile of the user
 	 * @param roleName the name of the execution role
+	 * @param biobject the biobject
+	 * 
 	 * @return Map The map of the execution call parameters
 	 */
 	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
@@ -78,14 +96,16 @@ public class GeoDriver implements IEngineDriver {
 	}
 	
 	/**
-	 * Returns a map of parameters which will be send in the request to the 
+	 * Returns a map of parameters which will be send in the request to the
 	 * engine application.
-	 * @param biObject Object container of the subObject
+	 * 
 	 * @param subObject SubObject to execute
-	 * @param profile Profile of the user 
+	 * @param profile Profile of the user
 	 * @param roleName the name of the execution role
+	 * @param object the object
+	 * 
 	 * @return Map The map of the execution call parameters
-  	 */
+	 */
 	public Map getParameterMap   (Object object, Object subObject, IEngUserProfile profile, String roleName) {
 		logger.debug("IN");
 		
@@ -121,12 +141,18 @@ public class GeoDriver implements IEngineDriver {
 		return map;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.drivers.IEngineDriver#getEditDocumentTemplateBuildUrl(java.lang.Object, it.eng.spago.security.IEngUserProfile)
+	 */
 	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject,
 			IEngUserProfile profile) throws InvalidOperationRequest {
 		logger.warn("Function not implemented");
     	throw new InvalidOperationRequest();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.drivers.IEngineDriver#getNewDocumentTemplateBuildUrl(java.lang.Object, it.eng.spago.security.IEngUserProfile)
+	 */
 	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject,
 			IEngUserProfile profile) throws InvalidOperationRequest {
 		logger.warn("Function not implemented");

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -45,33 +45,92 @@ public class ConfiguredBIDocument {
 	// the placeholder 
 	private String logicalName= "";
 	
+	/**
+	 * Gets the description.
+	 * 
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
+	
+	/**
+	 * Sets the description.
+	 * 
+	 * @param description the new description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
+	
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label the new label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Gets the roles.
+	 * 
+	 * @return the roles
+	 */
 	public List getRoles() {
 		return roles;
 	}
+	
+	/**
+	 * Sets the roles.
+	 * 
+	 * @param roles the new roles
+	 */
 	public void setRoles(List roles) {
 		this.roles = roles;
 	}
+	
+	/**
+	 * Gets the parameters.
+	 * 
+	 * @return the parameters
+	 */
 	public Map getParameters() {
 		return parameters;
 	}
+	
+	/**
+	 * Sets the parameters.
+	 * 
+	 * @param parameters the new parameters
+	 */
 	public void setParameters(Map parameters) {
 		this.parameters = parameters;
 	}
@@ -81,12 +140,29 @@ public class ConfiguredBIDocument {
 //	public void setId(Integer id) {
 //		this.id = id;
 //	}
-	public String getLogicalName() {
+	/**
+ * Gets the logical name.
+ * 
+ * @return the logical name
+ */
+public String getLogicalName() {
 		return logicalName;
 	}
+	
+	/**
+	 * Sets the logical name.
+	 * 
+	 * @param logicalName the new logical name
+	 */
 	public void setLogicalName(String logicalName) {
 		this.logicalName = logicalName;
 	}
+	
+	/**
+	 * To xml.
+	 * 
+	 * @return the string
+	 */
 	public String toXml() {
 		String toReturn = 	"<" + logicalName + " label='" + label + "' name='" + name + "' description='" + description + "' >\n";
 		toReturn +=			"  <PARAMETERS>\n";
@@ -101,6 +177,14 @@ public class ConfiguredBIDocument {
 		toReturn += 		"</" + logicalName + ">\n";
 		return toReturn;
 	}
+	
+	/**
+	 * From xml.
+	 * 
+	 * @param input the input
+	 * 
+	 * @return the configured bi document
+	 */
 	public static ConfiguredBIDocument fromXml(SourceBean input) {
 		ConfiguredBIDocument toReturn = new ConfiguredBIDocument();
 		toReturn.setLogicalName(input.getName());

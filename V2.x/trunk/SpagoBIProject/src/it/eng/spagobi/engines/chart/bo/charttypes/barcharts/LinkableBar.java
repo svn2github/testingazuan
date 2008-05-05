@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
@@ -63,7 +63,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
 
 /**
- * Inherited by IChart
+ * Inherited by IChart.
+ * 
+ * @param content the content
  */
 	
 	public void configureChart(SourceBean content) {
@@ -104,7 +106,12 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 
 	/**
-	 * Inherited by IChart
+	 * Inherited by IChart.
+	 * 
+	 * @param chartTitle the chart title
+	 * @param dataset the dataset
+	 * 
+	 * @return the j free chart
 	 */
 		
 
@@ -198,7 +205,11 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 
 	/**
-	 * Gets document parameters and return a string in the form &param1=value1&param2=value2 ... 
+	 * Gets document parameters and return a string in the form &param1=value1&param2=value2 ...
+	 * 
+	 * @param drillParameters the drill parameters
+	 * 
+	 * @return the document_ parameters
 	 */
 			
 	public String getDocument_Parameters(HashMap drillParameters) {
@@ -217,64 +228,103 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getRootUrl()
+	 */
 	public String getRootUrl() {
 		return rootUrl;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setRootUrl(java.lang.String)
+	 */
 	public void setRootUrl(String rootUrl) {
 		this.rootUrl = rootUrl;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isLinkable()
+	 */
 	public boolean isLinkable(){
 		return true;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getMode()
+	 */
 	public String getMode() {
 		return mode;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setMode(java.lang.String)
+	 */
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillLabel()
+	 */
 	public String getDrillLabel() {
 		return drillLabel;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillLabel(java.lang.String)
+	 */
 	public void setDrillLabel(String drillLabel) {
 		this.drillLabel = drillLabel;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
+	 */
 	public HashMap getDrillParameter() {
 		return drillParameter;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
+	 */
 	public void setDrillParameter(HashMap drillParameter) {
 		this.drillParameter = drillParameter;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getCategoryUrlName()
+	 */
 	public String getCategoryUrlName() {
 		return categoryUrlName;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setCategoryUrlName(java.lang.String)
+	 */
 	public void setCategoryUrlName(String categoryUrlName) {
 		this.categoryUrlName = categoryUrlName;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getSerieUrlname()
+	 */
 	public String getSerieUrlname() {
 		return serieUrlname;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setSerieUrlname(java.lang.String)
+	 */
 	public void setSerieUrlname(String serieUrlname) {
 		this.serieUrlname = serieUrlname;
 	}

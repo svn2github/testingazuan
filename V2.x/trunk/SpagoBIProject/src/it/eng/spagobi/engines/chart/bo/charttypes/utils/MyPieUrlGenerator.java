@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
 import org.apache.log4j.Logger;
@@ -12,6 +33,9 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 	private static transient Logger logger=Logger.getLogger(MyPieUrlGenerator.class);
 
 
+	/* (non-Javadoc)
+	 * @see org.jfree.chart.urls.StandardPieURLGenerator#generateURL(org.jfree.data.general.PieDataset, java.lang.Comparable, int)
+	 */
 	public String generateURL(PieDataset dataset, Comparable key, int pieIndex) {
 		logger.debug("IN");
 
@@ -36,6 +60,9 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		return URL;
 	}
 
+	/**
+	 * Instantiates a new my pie url generator.
+	 */
 	public MyPieUrlGenerator() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -45,35 +72,73 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 	
 	
 	
+	/**
+	 * Instantiates a new my pie url generator.
+	 * 
+	 * @param prefix the prefix
+	 * @param categoryParameterName the category parameter name
+	 * @param indexParameterName the index parameter name
+	 */
 	public MyPieUrlGenerator(String prefix, String categoryParameterName,
 			String indexParameterName) {
 		super(prefix, categoryParameterName, indexParameterName);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Instantiates a new my pie url generator.
+	 * 
+	 * @param prefix the prefix
+	 * @param categoryParameterName the category parameter name
+	 */
 	public MyPieUrlGenerator(String prefix, String categoryParameterName) {
 		super(prefix, categoryParameterName);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Instantiates a new my pie url generator.
+	 * 
+	 * @param prefix the prefix
+	 */
 	public MyPieUrlGenerator(String prefix) {
 		super(prefix);
 		// TODO Auto-generated constructor stub
 	}
 
 
+	/**
+	 * Gets the category url label.
+	 * 
+	 * @return the category url label
+	 */
 	public String getCategoryUrlLabel() {
 		return categoryUrlLabel;
 	}
 
+	/**
+	 * Sets the category url label.
+	 * 
+	 * @param categoryUrlLabel the new category url label
+	 */
 	public void setCategoryUrlLabel(String categoryUrlLabel) {
 		this.categoryUrlLabel = categoryUrlLabel;
 	}
 
+	/**
+	 * Checks if is document_composition.
+	 * 
+	 * @return true, if is document_composition
+	 */
 	public boolean isDocument_composition() {
 		return document_composition;
 	}
 
+	/**
+	 * Sets the document_composition.
+	 * 
+	 * @param document_composition the new document_composition
+	 */
 	public void setDocument_composition(boolean document_composition) {
 		this.document_composition = document_composition;
 	}

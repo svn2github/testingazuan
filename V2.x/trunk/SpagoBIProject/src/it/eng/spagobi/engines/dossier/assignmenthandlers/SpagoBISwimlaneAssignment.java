@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,9 @@ import org.jbpm.taskmgmt.exe.SwimlaneInstance;
 public class SpagoBISwimlaneAssignment implements AssignmentHandler {
 
 
+	/* (non-Javadoc)
+	 * @see org.jbpm.taskmgmt.def.AssignmentHandler#assign(org.jbpm.taskmgmt.exe.Assignable, org.jbpm.graph.exe.ExecutionContext)
+	 */
 	public void assign(Assignable ass, ExecutionContext arg1) throws Exception {
 		SwimlaneInstance swimlaneInstance = (SwimlaneInstance)ass;
 		String name = swimlaneInstance.getName();

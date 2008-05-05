@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
@@ -47,6 +47,9 @@ public class PieCharts extends ChartImpl {
 	Map confParameters;
 	private static transient Logger logger=Logger.getLogger(PieCharts.class);
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#configureChart(it.eng.spago.base.SourceBean)
+	 */
 	public void configureChart(SourceBean content) {
 logger.debug("IN");
 		super.configureChart(content);
@@ -67,6 +70,9 @@ logger.debug("IN");
 		logger.debug("OUT");
 	}
 
+		/* (non-Javadoc)
+		 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
+		 */
 		public JFreeChart createChart(String chartTitle, Dataset dataset) {
 			// TODO Auto-generated method stub
 			return super.createChart(chartTitle, dataset);
@@ -75,6 +81,9 @@ logger.debug("IN");
 
 		}
 
+		/* (non-Javadoc)
+		 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#calculateValue()
+		 */
 		public Dataset calculateValue() throws Exception {
 			logger.debug("IN");
 			String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
@@ -115,10 +124,20 @@ logger.debug("IN");
 
 
 
+		/**
+		 * Gets the conf parameters.
+		 * 
+		 * @return the conf parameters
+		 */
 		public Map getConfParameters() {
 			return confParameters;
 		}
 
+		/**
+		 * Sets the conf parameters.
+		 * 
+		 * @param confParameters the new conf parameters
+		 */
 		public void setConfParameters(Map confParameters) {
 			this.confParameters = confParameters;
 		}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.engines.chart.utils;
 
@@ -59,13 +59,17 @@ public class DataSetAccessFunctions {
 
 
 	/**
-	 * returns the result of a LOV 
+	 * returns the result of a LOV
 	 * <p>
-	 *	it is used both to get the value of the chart and to get its configuration parameters if there defined	  
+	 * it is used both to get the value of the chart and to get its configuration parameters if there defined.
+	 * 
 	 * @param profile IEngUserProfile of the user
-	 * @param lovLabel Label of the love to retrieve
-	 * @throws EMFUserError 
-	 * @throws NumberFormatException 
+	 * @param dsId the ds id
+	 * @param parameters the parameters
+	 * 
+	 * @return the data set result from id
+	 * 
+	 * @throws EMFUserError 	 * @throws NumberFormatException 	 * @throws Exception the exception
 	 */
 
 
@@ -81,6 +85,17 @@ public class DataSetAccessFunctions {
 
 	
 
+	/**
+	 * Gets the data set result from label.
+	 * 
+	 * @param profile the profile
+	 * @param label the label
+	 * @param parameters the parameters
+	 * 
+	 * @return the data set result from label
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static String getDataSetResultFromLabel(IEngUserProfile profile,String label, Map parameters) throws Exception {
 		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
@@ -93,6 +108,17 @@ public class DataSetAccessFunctions {
 	
 	
 	
+	/**
+	 * Gets the data set result.
+	 * 
+	 * @param profile the profile
+	 * @param ds the ds
+	 * @param parameters the parameters
+	 * 
+	 * @return the data set result
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static String getDataSetResult(IEngUserProfile profile,DataSet ds, Map parameters) throws Exception {
 		logger.debug("IN");
 

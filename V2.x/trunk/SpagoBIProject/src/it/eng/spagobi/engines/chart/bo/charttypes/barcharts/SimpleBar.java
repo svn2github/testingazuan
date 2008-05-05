@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 
 
@@ -61,6 +61,9 @@ public class SimpleBar extends BarCharts{
 	private static transient Logger logger=Logger.getLogger(SimpleBar.class);
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#configureChart(it.eng.spago.base.SourceBean)
+	 */
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
@@ -80,6 +83,9 @@ public class SimpleBar extends BarCharts{
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
+	 */
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
 		logger.debug("IN");
 		super.createChart(chartTitle, dataset);
@@ -153,14 +159,27 @@ public class SimpleBar extends BarCharts{
 
 
 
+	/**
+	 * Checks if is horizontal view.
+	 * 
+	 * @return true, if is horizontal view
+	 */
 	public boolean isHorizontalView() {
 		return horizontalView;
 	}
 
+	/**
+	 * Sets the horizontal view.
+	 * 
+	 * @param changeViewChecked the new horizontal view
+	 */
 	public void setHorizontalView(boolean changeViewChecked) {
 		this.horizontalView = changeViewChecked;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isChangeableView()
+	 */
 	public boolean isChangeableView() {
 		return true;
 	}
@@ -168,6 +187,9 @@ public class SimpleBar extends BarCharts{
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
+	 */
 	public List getPossibleChangePars() {
 		List l=new Vector();
 		if(!horizontalViewConfigured){
@@ -176,6 +198,9 @@ public class SimpleBar extends BarCharts{
 		return l;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)
+	 */
 	public void setChangeViewsParameter(String changePar, boolean how) {
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
 			horizontalView=how;
@@ -183,6 +208,9 @@ public class SimpleBar extends BarCharts{
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameter(java.lang.String)
+	 */
 	public boolean getChangeViewParameter(String changePar) {
 		boolean ret=false;
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
@@ -191,6 +219,9 @@ public class SimpleBar extends BarCharts{
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameterLabel(java.lang.String, int)
+	 */
 	public String getChangeViewParameterLabel(String changePar, int i) {
 		String ret="";
 		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){

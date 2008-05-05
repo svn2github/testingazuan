@@ -117,7 +117,7 @@ public class AbstractDatasetProviderConfigurator {
 			String levelName = (String)linkSB.getAttribute("LEVEL");
 			Hierarchy.Level level = (Hierarchy.Level)hierarchy.getLevel(levelName);
 			if(level == null) continue;
-			Link link = new Link("../SpagoBIGeoEngine/SpagoBIDrillServlet");
+			Link link = new Link();
 			List parameters = linkSB.getAttributeAsList("PARAM");
 			for(int j = 0; j < parameters.size(); j++) {
 				SourceBean parameterSB = (SourceBean)parameters.get(j);

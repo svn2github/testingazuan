@@ -127,6 +127,9 @@ public class Constants {
 	
 	// ENV PROPERTIES
 	
+	/** The execution id. */
+	public static final String EXECUTION_ID = "EXECUTION_ID";
+	
 	/** The Constant ENV_DATASOURCE. */
 	public static final String ENV_DATASOURCE = "DATASOURCE";
 	

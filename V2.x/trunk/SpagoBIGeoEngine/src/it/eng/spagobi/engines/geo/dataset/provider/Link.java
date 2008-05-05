@@ -20,12 +20,11 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider;
 
-import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.geo.Constants;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 // TODO: Auto-generated Javadoc
@@ -35,9 +34,6 @@ import java.util.Map;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class Link {
-	
-	/** The base url. */
-	private String baseUrl;
 	
 	/** The parameters. */
 	private Map parameters;
@@ -49,16 +45,6 @@ public class Link {
 	 * Instantiates a new link.
 	 */
 	public Link() {
-		this(null);
-	}
-	
-	/**
-	 * Instantiates a new link.
-	 * 
-	 * @param baseUrl the base url
-	 */
-	public Link(String baseUrl) {
-		this.baseUrl = baseUrl;
 		parameters = new HashMap();
 	}
 	
@@ -163,7 +149,7 @@ public class Link {
 	 * 
 	 * @return the string
 	 */
-	public String toString(ResultSet resultSet) {
+	public String toString(ResultSet resultSet, Map env) {
 		
 		/*String link = null;
 			
@@ -171,25 +157,39 @@ public class Link {
 		
 		link = baseUrl + "?";
 		*/
-    	String link = DEFAULT_BASE_URL;
+		String link = null;
+		String executionId = (String) env.get(Constants.EXECUTION_ID);
+		String targetDocLabel = "";
+		String parametersStr = "";
 		
     	try{
-    		String docLabel = ((Parameter)parameters.get("DOCUMENT_LABEL")).value;
-    		link = "javascript:parent.execCrossNavigation(this.name, '" + docLabel + "', '";
     		Iterator it = parameters.keySet().iterator();
     		while(it.hasNext()) {
     			String key = (String)it.next();
     			Parameter param = (Parameter)parameters.get(key);
-    			if(param.getType().equalsIgnoreCase("absolute") && !key.equalsIgnoreCase("DOCUMENT_LABEL")) {
-    				link += param.getName() + "=" + param.getValue() + "&";
-    			} else if(param.getType().equalsIgnoreCase("relative")) {
-    				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));
-	    			link += param.getName() + "=" + realValue + "&";
+    			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {
+        			if(param.getType().equalsIgnoreCase("absolute")) {
+        				targetDocLabel += param.getValue();
+        			} else if(param.getType().equalsIgnoreCase("relative")) {
+        				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));
+        				targetDocLabel += realValue;
+        			}
+    			} else {
+        			if(param.getType().equalsIgnoreCase("absolute")) {
+        				parametersStr += param.getName() + "=" + param.getValue() + "&";
+        			} else if(param.getType().equalsIgnoreCase("relative")) {
+        				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));
+        				parametersStr += param.getName() + "=" + realValue + "&";
+        			}
     			}
     		}
-    		link = link.substring(0, link.length()-1);
+    		if (parametersStr.endsWith("&")) {
+    			parametersStr = parametersStr.substring(0, parametersStr.length()-1);
+    		}
     		
-	    	link += "')";
+    		link = "javascript:parent.execCrossNavigation('iframeexec" + executionId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
+    		
+	    	//link += "')";
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     	}

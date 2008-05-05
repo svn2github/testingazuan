@@ -150,7 +150,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
             	
             	values.put(id, attributes);           	
             	
-                String link = getSelectedLevel().getLink().toString(resultSet);
+                String link = getSelectedLevel().getLink().toString(resultSet, this.getEnv());
                 links.put(id, link);
             	
             }

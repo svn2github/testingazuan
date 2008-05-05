@@ -1,17 +1,17 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
- * Redistributions of source code must retain the above copyright notice, this list of 
+    * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
- * Redistributions in binary form must reproduce the above copyright notice, this list of 
+    * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
- * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -29,7 +29,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
- */
+**/
 package it.eng.spagobi.utilities.callbacks.audit;
 
 import it.eng.spagobi.services.proxy.AuditServiceProxy;
@@ -48,15 +48,30 @@ public class AuditAccessUtils {
 
     // private boolean _isNewExecution = true;
 
+    /**
+     * Instantiates a new audit access utils.
+     * 
+     * @param auditId the audit id
+     */
     public AuditAccessUtils(String auditId) {
 	_auditIds = new ArrayList();
 	_auditIds.add(auditId);
     }
 
+    /**
+     * Gets the audit ids.
+     * 
+     * @return the audit ids
+     */
     public List getAuditIds() {
 	return _auditIds;
     }
 
+    /**
+     * Adds the audit id.
+     * 
+     * @param auditId the audit id
+     */
     public void addAuditId(String auditId) {
 	_auditIds.add(auditId);
     }
@@ -68,18 +83,14 @@ public class AuditAccessUtils {
      * execution is not a new one (examples: page refresh, portlet rendering)
      * nothing is updated.
      * 
-     * @param auditId
-     *                The id of the audit record to be modified
-     * @param startTime
-     *                The start time
-     * @param endTime
-     *                The end time
-     * @param executionState
-     *                The execution state
-     * @param errorMessage
-     *                The error message
-     * @param errorCode
-     *                The error code
+     * @param auditId The id of the audit record to be modified
+     * @param startTime The start time
+     * @param endTime The end time
+     * @param executionState The execution state
+     * @param errorMessage The error message
+     * @param errorCode The error code
+     * @param session the session
+     * @param userId the user id
      */
     public void updateAudit(HttpSession session, String userId,String auditId, Long startTime, Long endTime,
 	    String executionState, String errorMessage, String errorCode) {
@@ -101,7 +112,7 @@ public class AuditAccessUtils {
 		    errorCode != null ? errorCode : "");
 
 	    if (ris != null && ris.equals("KO")) {
-		logger.warn("Audit service don't work correctly!!!");
+		logger.warn("Audit service doesn't work correctly!!!");
 	    }
 	} catch (Exception e) {
 	    logger.error("Audit service don't work!!!",e);

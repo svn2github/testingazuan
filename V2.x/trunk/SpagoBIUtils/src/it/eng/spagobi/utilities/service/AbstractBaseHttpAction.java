@@ -1,22 +1,33 @@
 /**
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
+All rights reserved.
 
-SpagoBI - The Business Intelligence Free Platform
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+    * Redistributions of source code must retain the above copyright notice, this list of 
+      conditions and the following disclaimer.
+      
+    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+      conditions and the following disclaimer in the documentation and/or other materials 
+      provided with the distribution.
+      
+    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+      be used to endorse or promote products derived from this software without specific
+      prior written permission.
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 **/
 package it.eng.spagobi.utilities.service;
@@ -48,6 +59,9 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
     private static transient Logger logger = Logger.getLogger(AbstractBaseHttpAction.class);
     
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
         super.init(config);
     } 
@@ -71,10 +85,24 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		this.response = response;
 	}
 	
+	/**
+	 * Gets the attribute.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute
+	 */
 	public Object getAttribute(String attrName) {
 		return request.getAttribute(attrName);
 	}
 	
+	/**
+	 * Gets the attribute as string.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute as string
+	 */
 	public String getAttributeAsString(String attrName) {
 		if ( requestContainsAttribute(attrName) ) {
 			return getAttribute(attrName).toString();
@@ -83,15 +111,37 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return null;
 	}
 	
+	/**
+	 * Gets the attribute as boolean.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute as boolean
+	 */
 	public boolean getAttributeAsBoolean(String attrName) {
 		return getAttributeAsBoolean(attrName, false);
 	}
 
+	/**
+	 * Gets the attribute as boolean.
+	 * 
+	 * @param attrName the attr name
+	 * @param defaultValue the default value
+	 * 
+	 * @return the attribute as boolean
+	 */
 	public boolean getAttributeAsBoolean(String attrName, boolean defaultValue) {
 		if( getAttribute(attrName) == null ) return defaultValue;
 		return getAttributeAsString(attrName).equalsIgnoreCase(TRUE);
 	}
 	
+	/**
+	 * Gets the attribute as integer.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute as integer
+	 */
 	public Integer getAttributeAsInteger(String attrName) {
 		Integer attrValue;
 		
@@ -109,6 +159,11 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return attrValue;
 	}
 	
+	/**
+	 * Del attribute.
+	 * 
+	 * @param attrName the attr name
+	 */
 	public void delAttribute(String attrName) {
 		if( requestContainsAttribute(attrName) ) {
 			try {
@@ -119,14 +174,35 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		}
 	}
 	
+	/**
+	 * Request contains attribute.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean requestContainsAttribute(String attrName) {
 		return (getAttribute(attrName) != null);
 	}
 	
+	/**
+	 * Request contains attribute.
+	 * 
+	 * @param attrName the attr name
+	 * @param attrValue the attr value
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean requestContainsAttribute(String attrName, String attrValue) {
 		return ( requestContainsAttribute(attrName) && getAttribute(attrName).toString().equalsIgnoreCase(attrValue) );
 	}
 	
+	/**
+	 * Sets the attribute.
+	 * 
+	 * @param key the key
+	 * @param value the value
+	 */
 	public void setAttribute(String key, Object value) {
 		try {
 			response.setAttribute(key, value);
@@ -138,14 +214,33 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	
 	// SESSION utility methods	
 	
+	/**
+	 * Gets the session.
+	 * 
+	 * @return the session
+	 */
 	public SessionContainer getSession() {
 		return getRequestContainer().getSessionContainer();
 	}
 	
+	/**
+	 * Gets the attribute from session.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute from session
+	 */
 	public Object getAttributeFromSession(String attrName) {
 		return getSession().getAttribute(attrName);
 	}
 	
+	/**
+	 * Gets the attribute from session as string.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute from session as string
+	 */
 	public String getAttributeFromSessionAsString(String attrName) {
 		if(sessionContainsAttribute(attrName)) {
 			return getAttributeFromSession(attrName).toString();
@@ -154,26 +249,59 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return null;
 	}
 	
+	/**
+	 * Gets the attribute from session as boolean.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the attribute from session as boolean
+	 */
 	public boolean getAttributeFromSessionAsBoolean(String key) {
 		return getAttributeFromSessionAsBoolean(key, false);
 	}
 
+	/**
+	 * Gets the attribute from session as boolean.
+	 * 
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * 
+	 * @return the attribute from session as boolean
+	 */
 	public boolean getAttributeFromSessionAsBoolean(String key, boolean defaultValue) {
 		if( getAttributeFromSession(key) == null ) return defaultValue;
 		return getAttributeFromSessionAsString(key).equalsIgnoreCase(TRUE);
 	}
 	
+	/**
+	 * Del attribute from session.
+	 * 
+	 * @param attrName the attr name
+	 */
 	public void delAttributeFromSession(String attrName) {
 		if(getAttributeFromSession(attrName) != null) {
 			getSession().delAttribute(attrName);
 		}
 	}
 		
+	/**
+	 * Sets the attribute in session.
+	 * 
+	 * @param attrName the attr name
+	 * @param attrValue the attr value
+	 */
 	public void setAttributeInSession(String attrName, Object attrValue) {
 		delAttributeFromSession(attrName);
 		getSession().setAttribute(attrName, attrValue);
 	}	
 	
+	/**
+	 * Session contains attribute.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean sessionContainsAttribute(String attrName) {
 		return getAttributeFromSession(attrName) != null;
 	}
@@ -184,33 +312,78 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	
 	// HTTP-SESSION utility methods	
 	
+	/**
+	 * Gets the http session.
+	 * 
+	 * @return the http session
+	 */
 	public HttpSession getHttpSession() {
 		return getHttpRequest().getSession();
 	}
 	
+	/**
+	 * Gets the attribute from http session.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute from http session
+	 */
 	public Object getAttributeFromHttpSession(String attrName) {
 		return getHttpSession().getAttribute(attrName);
 	}
 	
+	/**
+	 * Gets the attribute from http session as string.
+	 * 
+	 * @param attrName the attr name
+	 * 
+	 * @return the attribute from http session as string
+	 */
 	public String getAttributeFromHttpSessionAsString(String attrName) {
 		return (String)getAttributeFromHttpSession(attrName);
 	}
 	
+	/**
+	 * Gets the attribute from http session as boolean.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the attribute from http session as boolean
+	 */
 	public boolean getAttributeFromHttpSessionAsBoolean(String key) {
 		return getAttributeFromHttpSessionAsBoolean(key, false);
 	}
 
+	/**
+	 * Gets the attribute from http session as boolean.
+	 * 
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * 
+	 * @return the attribute from http session as boolean
+	 */
 	public boolean getAttributeFromHttpSessionAsBoolean(String key, boolean defaultValue) {
 		if( getAttributeFromSession(key) == null ) return defaultValue;
 		return getAttributeFromSessionAsString(key).equalsIgnoreCase(TRUE);
 	}
 	
+	/**
+	 * Del attribute from http session.
+	 * 
+	 * @param attrName the attr name
+	 */
 	public void delAttributeFromHttpSession(String attrName) {
 		if(getAttributeFromHttpSession(attrName) != null) {
 			getHttpSession().removeAttribute(attrName);
 		}
 	}
 		
+	/**
+	 * Sets the attribute in http session.
+	 * 
+	 * @param attrName the attr name
+	 * @param attrValue the attr value
+	 */
 	public void setAttributeInHttpSession(String attrName, Object attrValue) {
 		delAttributeFromHttpSession(attrName);
 		getHttpSession().setAttribute(attrName, attrValue);

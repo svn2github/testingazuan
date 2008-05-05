@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,26 +29,42 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
- */
+**/
 package it.eng.spagobi.utilities;
 
 public class GenericSavingException extends Exception {
 	
 	private String description;
 	
+	/**
+	 * Instantiates a new generic saving exception.
+	 */
 	public GenericSavingException() {
 		super();
 	}
 	
+	/**
+	 * Instantiates a new generic saving exception.
+	 * 
+	 * @param msg the msg
+	 */
 	public GenericSavingException(String msg) {
 		super();
 		this.setLocalizedMessage(msg);
 	}
 	
+    /* (non-Javadoc)
+     * @see java.lang.Throwable#getLocalizedMessage()
+     */
     public String getLocalizedMessage() {
         return description;
     }
     
+    /**
+     * Sets the localized message.
+     * 
+     * @param msg the new localized message
+     */
     public void setLocalizedMessage(String msg) {
         this.description = msg;
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
- */
+**/
 
 package it.eng.spagobi.utilities;
 
@@ -58,6 +58,15 @@ public class SpagoBIAccessUtils {
 	
 	
 	
+	/**
+	 * Unzip.
+	 * 
+	 * @param repository_zip the repository_zip
+	 * @param newDirectory the new directory
+	 * 
+	 * @throws ZipException the zip exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void unzip(File repository_zip, File newDirectory) throws ZipException, IOException {
 		ZipFile zipFile = new ZipFile(repository_zip);
 	    Enumeration entries = zipFile.entries();
@@ -103,11 +112,25 @@ public class SpagoBIAccessUtils {
 		}
 	}
 	
+	/**
+	 * Delete directory.
+	 * 
+	 * @param pathdest the pathdest
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean deleteDirectory(String pathdest) {
 		File directory = new File(pathdest);
 		return deleteDirectory(directory);
 	}
 	
+	/**
+	 * Delete directory.
+	 * 
+	 * @param directory the directory
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean deleteDirectory(File directory) {
 		try {
 			if (directory.isDirectory()) {
@@ -129,6 +152,14 @@ public class SpagoBIAccessUtils {
 		return true;
 	}
 	
+	/**
+	 * Delete file.
+	 * 
+	 * @param fileName the file name
+	 * @param path the path
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean deleteFile(String fileName, String path) {
 		try {
 			File toDelete = new File(path + File.separatorChar + fileName);
@@ -141,7 +172,9 @@ public class SpagoBIAccessUtils {
 	
 	/**
 	 * Given an <code>InputStream</code> as input, gets the correspondent bytes array.
-	 * @param is The input straeam 
+	 * 
+	 * @param is The input straeam
+	 * 
 	 * @return An array of bytes obtained from the input stream.
 	 */
 	public byte[] getByteArrayFromInputStream(InputStream is) {
@@ -172,11 +205,12 @@ public class SpagoBIAccessUtils {
 	}
 	
 	/**
-	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream 
+	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream
 	 * and then close the input and output stream.
-	 * @param is The input stream 
+	 * 
+	 * @param is The input stream
 	 * @param os The output stream
-	 * @param closeStreams, if true close both stream 
+	 * @param closeStreams the close streams
 	 */
 	public void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, boolean closeStreams) {
 		try{	

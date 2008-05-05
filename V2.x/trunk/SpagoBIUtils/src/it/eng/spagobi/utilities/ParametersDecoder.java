@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
- */
+**/
 package it.eng.spagobi.utilities;
 
 import java.util.ArrayList;
@@ -52,10 +52,19 @@ public class ParametersDecoder {
 	//	CONSTRUCTORS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Instantiates a new parameters decoder.
+	 */
 	public ParametersDecoder() {
 		this(DEFAULT_OPEN_BLOCK_MARKER, DEFAULT_CLOSE_BLOCK_MARKER);
 	}
 	
+	/**
+	 * Instantiates a new parameters decoder.
+	 * 
+	 * @param openBlockMarker the open block marker
+	 * @param closeBlockMarker the close block marker
+	 */
 	public ParametersDecoder(String openBlockMarker, String closeBlockMarker) {
 		this.openBlockMarker = openBlockMarker;
 		this.closeBlockMarker = closeBlockMarker;
@@ -66,18 +75,38 @@ public class ParametersDecoder {
 	//	ACCESS METHODS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Gets the close block marker.
+	 * 
+	 * @return the close block marker
+	 */
 	public String getCloseBlockMarker() {
 		return closeBlockMarker;
 	}
 
+	/**
+	 * Sets the close block marker.
+	 * 
+	 * @param closeBlockMarker the new close block marker
+	 */
 	public void setCloseBlockMarker(String closeBlockMarker) {
 		this.closeBlockMarker = closeBlockMarker;
 	}
 
+	/**
+	 * Gets the open block marker.
+	 * 
+	 * @return the open block marker
+	 */
 	public String getOpenBlockMarker() {
 		return openBlockMarker;
 	}
 
+	/**
+	 * Sets the open block marker.
+	 * 
+	 * @param openBlockMarker the new open block marker
+	 */
 	public void setOpenBlockMarker(String openBlockMarker) {
 		this.openBlockMarker = openBlockMarker;
 	}
@@ -87,10 +116,24 @@ public class ParametersDecoder {
 	//	PUBLIC METHODS
 	/////////////////////////////////////////////////////////////
 	
+	/**
+	 * Checks if is multi values.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return true, if is multi values
+	 */
 	public boolean isMultiValues(String value) {
 		return (value.trim().startsWith(openBlockMarker));
 	}
 	
+	/**
+	 * Decode.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the list
+	 */
 	public List decode(String value) {
 		List values = null;
 		
@@ -143,9 +186,9 @@ public class ParametersDecoder {
 	/////////////////////////////////////////////////////////////
 	
 	/**
-	 * Just for test purpose ;-)
+	 * Just for test purpose ;-).
 	 * 
-	 * @param args
+	 * @param args the args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

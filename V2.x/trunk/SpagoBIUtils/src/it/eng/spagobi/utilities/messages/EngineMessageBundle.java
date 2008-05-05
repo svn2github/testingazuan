@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
- */
+**/
 package it.eng.spagobi.utilities.messages;
 
 import java.util.HashMap;
@@ -46,10 +46,12 @@ public class EngineMessageBundle {
     }
 	
     /**
-     * Returns an internazionalized message
+     * Returns an internazionalized message.
      * 
      * @param code the code of the message.
      * @param bundle the message bundle.
+     * @param userLocale the user locale
+     * 
      * @return the internazionalized message.
      */
     public static String getMessage(String code, String bundle, Locale userLocale) {
@@ -96,10 +98,28 @@ public class EngineMessageBundle {
         else return message;
     }
 	
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param userLocale the user locale
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, Locale userLocale) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale);
     }
     
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param bundle the bundle
+     * @param userLocale the user locale
+     * @param arguments the arguments
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, String bundle, Locale userLocale, String[] arguments) {
     	String message = getMessage(code, DEFAULT_BUNDLE, userLocale);
         for (int i = 0; i < arguments.length; i++){
@@ -108,6 +128,15 @@ public class EngineMessageBundle {
     	return message;
     }
     
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param userLocale the user locale
+     * @param arguments the arguments
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, Locale userLocale, String[] arguments) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale, arguments);
     }

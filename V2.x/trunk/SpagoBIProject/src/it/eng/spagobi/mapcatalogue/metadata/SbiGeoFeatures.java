@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.metadata;
 
 
@@ -25,16 +46,30 @@ public class SbiGeoFeatures implements java.io.Serializable {
 
 	// Constructors
 
-	/** default constructor */
+	/**
+	 * default constructor.
+	 */
 	public SbiGeoFeatures() {
 	}
 
-	/** minimal constructor */
+	/**
+	 * minimal constructor.
+	 * 
+	 * @param featureId the feature id
+	 */
 	public SbiGeoFeatures(int featureId) {
 		this.featureId = featureId;
 	}
 
-	/** full constructor */
+	/**
+	 * full constructor.
+	 * 
+	 * @param featureId the feature id
+	 * @param name the name
+	 * @param descr the descr
+	 * @param type the type
+	 * @param sbiGeoMapFeatureses the sbi geo map featureses
+	 */
 	public SbiGeoFeatures(int featureId, String name, String descr,
 			String type, Set sbiGeoMapFeatureses) {
 		this.featureId = featureId;
@@ -45,34 +80,74 @@ public class SbiGeoFeatures implements java.io.Serializable {
 	}
 
 	// Property accessors
+	/**
+	 * Gets the feature id.
+	 * 
+	 * @return the feature id
+	 */
 	public int getFeatureId() {
 		return this.featureId;
 	}
 
+	/**
+	 * Sets the feature id.
+	 * 
+	 * @param featureId the new feature id
+	 */
 	public void setFeatureId(int featureId) {
 		this.featureId = featureId;
 	}
 
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the descr.
+	 * 
+	 * @return the descr
+	 */
 	public String getDescr() {
 		return this.descr;
 	}
 
+	/**
+	 * Sets the descr.
+	 * 
+	 * @param descr the new descr
+	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
 
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
 	public String getType() {
 		return this.type;
 	}
 
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type the new type
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}

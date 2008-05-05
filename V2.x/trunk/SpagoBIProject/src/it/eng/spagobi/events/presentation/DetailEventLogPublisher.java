@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,19 +40,21 @@ public class DetailEventLogPublisher implements PublisherDispatcherIFace {
 	public static final String DEFAULT_EVENTLOG_DETAIL_PUBLISHER = "defaultEventLogDetailPublisher";
 	
 	/**
-	 * Class constructor
+	 * Class constructor.
 	 */
 	public DetailEventLogPublisher() {
 		super();
 	}
+	
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
-	 * @param request The request container object containing all request information
-	 * @param response The response container object containing all response information
+	 * @param requestContainer the request container
+	 * @param responseContainer the response container
+	 * 
 	 * @return A string representing the name of the correct publisher, which will
-	 * 		   call the correct jsp reference.
+	 * call the correct jsp reference.
 	 */
 	public String getPublisherName(RequestContainer requestContainer,
 			ResponseContainer responseContainer) {

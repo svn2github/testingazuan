@@ -1,6 +1,24 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -26,7 +44,16 @@ import org.hibernate.criterion.Expression;
  *
  */
 public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements ISbiGeoFeaturesDAO{
+	
 	/**
+	 * Load feature by id.
+	 * 
+	 * @param featureID the feature id
+	 * 
+	 * @return the geo feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoFeaturesDAO#loadFeatureByID(integer)
 	 */
 	public GeoFeature loadFeatureByID(Integer featureID) throws EMFUserError {
@@ -62,6 +89,14 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 	}
 	
 	/**
+	 * Load feature by name.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the geo feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoFeaturesDAO#loadFeatureByName(string)
 	 */
 	public GeoFeature loadFeatureByName(String name) throws EMFUserError {
@@ -100,6 +135,12 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 
 	
 	/**
+	 * Modify feature.
+	 * 
+	 * @param aFeature the a feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#modifyEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void modifyFeature(GeoFeature aFeature) throws EMFUserError {
@@ -134,6 +175,12 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 	}
 
 	/**
+	 * Insert feature.
+	 * 
+	 * @param aFeature the a feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#insertEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void insertFeature(GeoFeature aFeature) throws EMFUserError {		
@@ -167,6 +214,12 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 	}
 
 	/**
+	 * Erase feature.
+	 * 
+	 * @param aFeature the a feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#eraseEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void eraseFeature(GeoFeature aFeature) throws EMFUserError {
@@ -199,6 +252,12 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 	}
 	
 	/**
+	 * Load all features.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#loadAllEngines()
 	 */
 	public List loadAllFeatures() throws EMFUserError {
@@ -239,7 +298,16 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 		}
 		return realResult;
 	}
+	
 	/**
+	 * Checks for maps associated.
+	 * 
+	 * @param featureId the feature id
+	 * 
+	 * @return true, if checks for maps associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#hasFeaturesAssociated(java.lang.String)
 	 */
 	public boolean hasMapsAssociated (String featureId) throws EMFUserError{
@@ -280,10 +348,11 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 	}
 
 	/**
-	 * From the Hibernate Feature object at input, gives the corrispondent 
+	 * From the Hibernate Feature object at input, gives the corrispondent
 	 * <code>GeoFeature</code> object.
 	 * 
-	 * @param hibFeature	The Hibernate Feature object  
+	 * @param hibFeature The Hibernate Feature object
+	 * 
 	 * @return the corrispondent output <code>GeoFeature</code>
 	 */
 	public GeoFeature toGeoFeature(SbiGeoFeatures hibFeature){

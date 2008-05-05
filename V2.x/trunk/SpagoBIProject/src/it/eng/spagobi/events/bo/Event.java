@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -35,15 +35,38 @@ public class Event implements Serializable {
 	private String user;
 	
 	
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
 	public Integer getId() {
 		return id;
 	}
+	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param id the new id
+	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}	
+	
+	/**
+	 * Gets the user.
+	 * 
+	 * @return the user
+	 */
 	public String getUser() {
 		return user;
 	}
+	
+	/**
+	 * Sets the user.
+	 * 
+	 * @param user the new user
+	 */
 	public void setUser(String user) {
 		this.user = user;
 	}	 

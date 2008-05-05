@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -48,8 +48,13 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 	private static transient Logger logger = Logger.getLogger(DbAuditImpl.class);
 	
 	/**
-	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#insertAudit(it.eng.spagobi.bo.SbiAudit)
+	 * Insert audit.
 	 * 
+	 * @param aSbiAudit the a sbi audit
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#insertAudit(it.eng.spagobi.bo.SbiAudit)
 	 */
 	public void insertAudit(SbiAudit aSbiAudit) throws EMFUserError {
 		logger.debug("IN");
@@ -91,6 +96,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#loadAllAudits()
+	 */
 	public List loadAllAudits() throws EMFUserError {
 		logger.debug("IN");
 		logger.error("this method is not implemented!!");
@@ -99,6 +107,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#loadAuditByID(java.lang.Integer)
+	 */
 	public SbiAudit loadAuditByID(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -156,6 +167,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#modifyAudit(it.eng.spagobi.monitoring.metadata.SbiAudit)
+	 */
 	public void modifyAudit(SbiAudit aSbiAudit) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -180,6 +194,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#loadAuditsByDocumentLabel(java.lang.String)
+	 */
 	public List loadAuditsByDocumentLabel(String documentLabel) throws EMFUserError {
 		logger.debug("IN");
 		logger.error("this method is not implemented!!");
@@ -187,6 +204,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#loadAuditsByEngineLabel(java.lang.String)
+	 */
 	public List loadAuditsByEngineLabel(String engineLabel) throws EMFUserError {
 		logger.debug("IN");
 		logger.error("this method is not implemented!!");
@@ -194,6 +214,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#loadAuditsByUserName(java.lang.String)
+	 */
 	public List loadAuditsByUserName(String userName) throws EMFUserError {
 		logger.debug("IN");
 		logger.error("this method is not implemented!!");
@@ -201,6 +224,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#eraseAudit(java.lang.Integer)
+	 */
 	public void eraseAudit(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -230,6 +256,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#getMostPopular(java.util.Collection, int)
+	 */
 	public List getMostPopular(Collection roles, int limit) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -297,6 +326,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#getMyRecentlyUsed(java.lang.String, int)
+	 */
 	public List getMyRecentlyUsed(String userId, int limit) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -375,6 +407,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return toReturn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#getLastExecution(java.lang.Integer)
+	 */
 	public SbiAudit getLastExecution(Integer objId) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -438,6 +473,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		return toReturn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.monitoring.dao.IAuditDAO#getMediumExecTime(java.lang.Integer)
+	 */
 	public Double getMediumExecTime(Integer objId) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;

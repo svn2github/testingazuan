@@ -1,6 +1,24 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -30,7 +48,15 @@ import org.hibernate.Transaction;
  */
 public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements ISbiGeoMapFeaturesDAO {
 	
-	/** 
+	/**
+	 * Load feature names by map id.
+	 * 
+	 * @param mapId the map id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#loadFeatureNamesByMapId(java.lang.Integer)
 	 */
 	public List loadFeatureNamesByMapId(Integer mapId) throws EMFUserError {
@@ -79,7 +105,15 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
-	/** 
+	/**
+	 * Load features by map id.
+	 * 
+	 * @param mapId the map id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#loadFeaturesByMapId(java.lang.Integer)
 	 */
 	public List loadFeaturesByMapId(Integer mapId) throws EMFUserError {
@@ -128,7 +162,15 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
-	/** 
+	/**
+	 * Load map names by feature id.
+	 * 
+	 * @param featureId the feature id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#loadMapNamesByFeatureId(java.lang.Integer)
 	 */	
 	public List loadMapNamesByFeatureId(Integer featureId) throws EMFUserError {
@@ -176,7 +218,15 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
-	/** 
+	/**
+	 * Load maps by feature id.
+	 * 
+	 * @param featureId the feature id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#loadMapsByFeatureId(java.lang.Integer)
 	 */	
 	public List loadMapsByFeatureId(Integer featureId) throws EMFUserError {
@@ -224,7 +274,16 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 		return realResult;
 	}
 
-	/** 
+	/**
+	 * Load map features.
+	 * 
+	 * @param mapId the map id
+	 * @param featureId the feature id
+	 * 
+	 * @return the geo map feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#loadMapFeatures(java.lang.Integer, java.lang.Integer)
 	 */
 	public GeoMapFeature loadMapFeatures(Integer mapId, Integer featureId) throws EMFUserError {
@@ -258,6 +317,12 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Modify map features.
+	 * 
+	 * @param aMapFeature the a map feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.geo.bo.dao.ISbiGeoMapFeaturesDAO#modifySbiGeoMapFeatures(it.eng.spagobi.geo.bo.SbiGeoMapFeatures)
 	 */
 	public void modifyMapFeatures(GeoMapFeature aMapFeature) throws EMFUserError {
@@ -291,6 +356,12 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 	/**
+	 * Insert map features.
+	 * 
+	 * @param aMapFeature the a map feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapFeaturesDAO#insertMapFeatures(it.eng.spagobi.geo.bo.SbiGeoMapFeatures)
 	 */
 	public void insertMapFeatures(GeoMapFeature aMapFeature) throws EMFUserError {
@@ -326,7 +397,13 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 	}
 
 
-	/** 
+	/**
+	 * Erase map features.
+	 * 
+	 * @param aMapFeature the a map feature
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.bo.dao.ISbiGeoMapFeaturesDAO#eraseObjParuse(it.eng.spagobi.geo.bo.SbiGeoMapFeatures)
 	 */
 	public void eraseMapFeatures(GeoMapFeature aMapFeature) throws EMFUserError {
@@ -358,11 +435,13 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			}			
 		}
 	}
+	
 	/**
-	 * From the Hibernate MapFeature relation at input, gives the corrispondent 
+	 * From the Hibernate MapFeature relation at input, gives the corrispondent
 	 * <code>GeoMapFeature</code> object.
 	 * 
-	 * @param hibMapFeature	The Hibernate Map object 
+	 * @param hibMapFeature The Hibernate Map object
+	 * 
 	 * @return the corrispondent output <code>GeoMap</code>
 	 */
 	public GeoMapFeature toGeoMapFeature(SbiGeoMapFeatures hibMapFeature){

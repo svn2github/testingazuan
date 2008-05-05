@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -58,8 +58,15 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	 static private Logger logger = Logger.getLogger(AbstractHibernateDAO.class);
 	
 	/**
-	 * @see it.eng.spagobi.events.dao.IEventLogDAO#loadEventLogById(Integer)
+	 * Load event log by id.
 	 * 
+	 * @param id the id
+	 * 
+	 * @return the event log
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.events.dao.IEventLogDAO#loadEventLogById(Integer)
 	 */
 	public EventLog loadEventLogById(Integer id) throws EMFUserError {
 		logger.debug("IN");
@@ -109,8 +116,15 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 
 	
 	/**
-	 * @see it.eng.spagobi.events.dao.IEventLogDAO#loadEventsLogByUser(it.eng.spago.security.IEngUserProfile)
+	 * Load events log by user.
 	 * 
+	 * @param profile the profile
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.events.dao.IEventLogDAO#loadEventsLogByUser(it.eng.spago.security.IEngUserProfile)
 	 */
 	public List loadEventsLogByUser(IEngUserProfile profile) throws EMFUserError {
 		logger.debug("IN");
@@ -185,8 +199,15 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	}
 
 	/**
-	 * @see it.eng.spagobi.events.dao.IEventLogDAO#insertEventLog(it.eng.spagobi.events.bo.EventLog)
+	 * Insert event log.
 	 * 
+	 * @param eventLog the event log
+	 * 
+	 * @return the integer
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.events.dao.IEventLogDAO#insertEventLog(it.eng.spagobi.events.bo.EventLog)
 	 */
 	public Integer insertEventLog(EventLog eventLog) throws EMFUserError {
 		logger.debug("IN");
@@ -235,8 +256,13 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	}
 
 	/**
-	 * @see it.eng.spagobi.events.dao.IEventLogDAO#eraseEventLog(it.eng.spagobi.events.bo.EventLog)
+	 * Erase event log.
 	 * 
+	 * @param eventLog the event log
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.events.dao.IEventLogDAO#eraseEventLog(it.eng.spagobi.events.bo.EventLog)
 	 */
 	public void eraseEventLog(EventLog eventLog) throws EMFUserError {
 		logger.debug("IN");
@@ -273,8 +299,13 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	}
 
 	/**
-	 * @see it.eng.spagobi.events.dao.IEventLogDAO#eraseEventsLogByUser(String)
+	 * Erase events log by user.
 	 * 
+	 * @param user the user
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.events.dao.IEventLogDAO#eraseEventsLogByUser(String)
 	 */
 	public void eraseEventsLogByUser(String user) throws EMFUserError {
 		logger.debug("IN");

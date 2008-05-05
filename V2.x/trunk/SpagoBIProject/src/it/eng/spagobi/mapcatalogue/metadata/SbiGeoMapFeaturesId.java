@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.metadata;
 
 
@@ -16,33 +37,63 @@ public class SbiGeoMapFeaturesId implements java.io.Serializable {
 
 	// Constructors
 
-	/** default constructor */
+	/**
+	 * default constructor.
+	 */
 	public SbiGeoMapFeaturesId() {
 	}
 
-	/** full constructor */
+	/**
+	 * full constructor.
+	 * 
+	 * @param mapId the map id
+	 * @param featureId the feature id
+	 */
 	public SbiGeoMapFeaturesId(int mapId, int featureId) {
 		this.mapId = mapId;
 		this.featureId = featureId;
 	}
 
 	// Property accessors
+	/**
+	 * Gets the map id.
+	 * 
+	 * @return the map id
+	 */
 	public int getMapId() {
 		return this.mapId;
 	}
 
+	/**
+	 * Sets the map id.
+	 * 
+	 * @param mapId the new map id
+	 */
 	public void setMapId(int mapId) {
 		this.mapId = mapId;
 	}
 
+	/**
+	 * Gets the feature id.
+	 * 
+	 * @return the feature id
+	 */
 	public int getFeatureId() {
 		return this.featureId;
 	}
 
+	/**
+	 * Sets the feature id.
+	 * 
+	 * @param featureId the new feature id
+	 */
 	public void setFeatureId(int featureId) {
 		this.featureId = featureId;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object other) {
 		if ((this == other))
 			return true;
@@ -56,6 +107,9 @@ public class SbiGeoMapFeaturesId implements java.io.Serializable {
 				&& (this.getFeatureId() == castOther.getFeatureId());
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	public int hashCode() {
 		int result = 17;
 

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.monitoring.dao;
 
 import it.eng.spago.base.SourceBean;
@@ -119,6 +119,11 @@ public class AuditManager {
 	logger.debug("AuditManager instatiation end");
     }
 
+    /**
+     * Gets the single instance of AuditManager.
+     * 
+     * @return single instance of AuditManager
+     */
     public static AuditManager getInstance() {
 	if (_instance == null) {
 	    _instance = new AuditManager();
@@ -126,16 +131,39 @@ public class AuditManager {
 	return _instance;
     }
 
+    /**
+     * Load audit.
+     * 
+     * @param id the id
+     * 
+     * @return the sbi audit
+     * 
+     * @throws EMFUserError the EMF user error
+     */
     public SbiAudit loadAudit(Integer id) throws EMFUserError {
 	SbiAudit aSbiAudit = _auditDAO.loadAuditByID(id);
 	return aSbiAudit;
     }
 
+    /**
+     * Insert audit.
+     * 
+     * @param aSbiAudit the a sbi audit
+     * 
+     * @throws EMFUserError the EMF user error
+     */
     public void insertAudit(SbiAudit aSbiAudit) throws EMFUserError {
 	if (canBeRegistered(aSbiAudit))
 	    _auditDAO.insertAudit(aSbiAudit);
     }
 
+    /**
+     * Modify audit.
+     * 
+     * @param aSbiAudit the a sbi audit
+     * 
+     * @throws EMFUserError the EMF user error
+     */
     public void modifyAudit(SbiAudit aSbiAudit) throws EMFUserError {
 	if (canBeRegistered(aSbiAudit))
 	    _auditDAO.modifyAudit(aSbiAudit);
@@ -156,16 +184,14 @@ public class AuditManager {
     }
 
     /**
-     * Inserts a record on the audit log
+     * Inserts a record on the audit log.
      * 
-     * @param obj
-     *                The BIObject being executed
-     * @param profile
-     *                The user profile
-     * @param role
-     *                The execution role
-     * @param modality
-     *                The execution modality
+     * @param obj The BIObject being executed
+     * @param profile The user profile
+     * @param role The execution role
+     * @param modality The execution modality
+     * @param subObj the sub obj
+     * 
      * @return The Integer representing the execution id
      */
     public Integer insertAudit(BIObject obj, SubObject subObj, IEngUserProfile profile, String role, String modality) {
@@ -236,6 +262,16 @@ public class AuditManager {
 	return audit.getId();
     }
 
+    /**
+     * Update audit.
+     * 
+     * @param auditId the audit id
+     * @param startTime the start time
+     * @param endTime the end time
+     * @param executionState the execution state
+     * @param errorMessage the error message
+     * @param errorCode the error code
+     */
     public void updateAudit(Integer auditId, Long startTime, Long endTime, String executionState, String errorMessage,
 	    String errorCode) {
 	logger.debug("IN");
@@ -304,6 +340,14 @@ public class AuditManager {
 	logger.debug("OUT");
     }
 
+    /**
+     * Gets the most popular.
+     * 
+     * @param profile the profile
+     * @param limit the limit
+     * 
+     * @return the most popular
+     */
     public List getMostPopular(IEngUserProfile profile, int limit) {
 	logger.debug("IN");
 	List toReturn = new ArrayList();
@@ -320,6 +364,14 @@ public class AuditManager {
 	return toReturn;
     }
 
+    /**
+     * Gets the my recently used.
+     * 
+     * @param profile the profile
+     * @param limit the limit
+     * 
+     * @return the my recently used
+     */
     public List getMyRecentlyUsed(IEngUserProfile profile, int limit) {
 	logger.debug("IN");
 	List toReturn = new ArrayList();
@@ -334,6 +386,13 @@ public class AuditManager {
 	return toReturn;
     }
 
+    /**
+     * Gets the last execution.
+     * 
+     * @param objId the obj id
+     * 
+     * @return the last execution
+     */
     public SbiAudit getLastExecution(Integer objId) {
 	logger.debug("IN");
 	SbiAudit toReturn = new SbiAudit();
@@ -347,6 +406,13 @@ public class AuditManager {
 	return toReturn;
     }
 
+    /**
+     * Gets the medium exec time.
+     * 
+     * @param objId the obj id
+     * 
+     * @return the medium exec time
+     */
     public Double getMediumExecTime(Integer objId) {
 	logger.debug("IN");
 	Double toReturn = new Double(0);

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,9 +32,39 @@ import java.util.List;
  */
 public interface IRememberMeDAO {
 	
+	/**
+	 * Save remember me.
+	 * 
+	 * @param name the name
+	 * @param description the description
+	 * @param docId the doc id
+	 * @param subObjId the sub obj id
+	 * @param userId the user id
+	 * @param parameters the parameters
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public boolean saveRememberMe(String name, String description, Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError;
 	
+	/**
+	 * Gets the my remember me.
+	 * 
+	 * @param userId the user id
+	 * 
+	 * @return the my remember me
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public List getMyRememberMe(String userId) throws EMFInternalError;
 	
+	/**
+	 * Delete.
+	 * 
+	 * @param rememberMeId the remember me id
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public void delete(Integer rememberMeId) throws EMFInternalError;
 }

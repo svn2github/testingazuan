@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,6 +44,9 @@ public class HotLinkModule extends AbstractModule {
 	private static transient Logger logger = Logger.getLogger(HotLinkModule.class);
 	public static final String MODULE_NAME = "HotLinkModule"; 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");

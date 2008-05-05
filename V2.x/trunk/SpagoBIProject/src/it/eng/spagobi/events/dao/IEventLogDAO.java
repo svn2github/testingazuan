@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -37,45 +37,53 @@ import java.util.List;
 public interface IEventLogDAO {
 		
 	/**
-	 * Loads an event log given its id
+	 * Loads an event log given its id.
 	 * 
 	 * @param id The Integer representing the event id
-	 * @return	A <code>EventLog</code> with the id passed at input
-	 * @throws	EMFUserError If an Exception occurred
+	 * 
+	 * @return A <code>EventLog</code> with the id passed at input
+	 * 
+	 * @throws EMFUserError If an Exception occurred
 	 */
 	public EventLog loadEventLogById(Integer id) throws EMFUserError;
 		
 	
 	/**
-	 * Loads the list of all events logs associated to the user profile at input
+	 * Loads the list of all events logs associated to the user profile at input.
 	 * 
 	 * @param profile The user profile
-	 * @return	A <code>List</code> of <code>EventLog</code> containing all loaded information
-	 * @throws	EMFUserError If an Exception occurred
+	 * 
+	 * @return A <code>List</code> of <code>EventLog</code> containing all loaded information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List loadEventsLogByUser(IEngUserProfile profile) throws EMFUserError;
 	
 	/**
 	 * Register a new EventLog.
 	 * 
-	 * @param user The user who wants to register a new event
+	 * @param eventLog the event log
+	 * 
 	 * @return the newly created event unique identifier
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public Integer insertEventLog(EventLog eventLog) throws EMFUserError;
 	
 	/**
-	 * Erase an event log. 
-	 *  
-	 * @param the EventLog to erase
+	 * Erase an event log.
+	 * 
+	 * @param eventLog the event log
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseEventLog(EventLog eventLog) throws EMFUserError;
 	
 	/**
-	 * Erase all event logs registered by the specificated user. 
+	 * Erase all event logs registered by the specificated user.
 	 * 
 	 * @param user The user who registered the events
+	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseEventsLogByUser(String user) throws EMFUserError;

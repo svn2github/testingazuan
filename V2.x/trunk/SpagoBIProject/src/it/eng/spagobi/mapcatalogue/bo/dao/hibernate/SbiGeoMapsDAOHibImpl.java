@@ -1,6 +1,24 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 
 import it.eng.spago.configuration.ConfigSingleton;
@@ -39,7 +57,16 @@ import org.hibernate.criterion.Expression;
  *
  */
 public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGeoMapsDAO{
+	
 	/**
+	 * Load map by id.
+	 * 
+	 * @param mapID the map id
+	 * 
+	 * @return the geo map
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#loadMapByID(integer)
 	 */
 	public GeoMap loadMapByID(Integer mapID) throws EMFUserError {
@@ -74,6 +101,14 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	
 
 	/**
+	 * Load map by name.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the geo map
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#loadMapByName(string)
 	 */	
 	public GeoMap loadMapByName(String name) throws EMFUserError {
@@ -110,6 +145,12 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	}
 
 	/**
+	 * Modify map.
+	 * 
+	 * @param aMap the a map
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#modifyEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void modifyMap(GeoMap aMap) throws EMFUserError {
@@ -144,6 +185,12 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	}
 
 	/**
+	 * Insert map.
+	 * 
+	 * @param aMap the a map
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#insertEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void insertMap(GeoMap aMap) throws EMFUserError {		
@@ -178,6 +225,12 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	}
 	
 	/**
+	 * Erase map.
+	 * 
+	 * @param aMap the a map
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#eraseEngine(it.eng.spagobi.bo.Engine)
 	 */
 	public void eraseMap(GeoMap aMap) throws EMFUserError {
@@ -211,6 +264,12 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	}
 	
 	/**
+	 * Load all maps.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.IEngineDAO#loadAllEngines()
 	 */
 	public List loadAllMaps() throws EMFUserError {
@@ -250,7 +309,16 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		}
 		return realResult;
 	}
+	
 	/**
+	 * Checks for features associated.
+	 * 
+	 * @param mapId the map id
+	 * 
+	 * @return true, if checks for features associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.geo.bo.dao.ISbiGeoMapsDAO#hasFeaturesAssociated(java.lang.String)
 	 */
 	public boolean hasFeaturesAssociated (String mapId) throws EMFUserError{
@@ -292,7 +360,11 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	
 	/**
 	 * Gets the features (tag <g>) from the SVG File.
+	 * 
 	 * @param url The relative url about svg file
+	 * 
+	 * @return the features from svg
+	 * 
 	 * @throws Exception raised If there are some problems
 	 */ 
 	public List getFeaturesFromSVG(String url) throws Exception {
@@ -378,13 +450,13 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		
 		return lstFeatures;
 	}
+	
 	/**
-	 * From the Hibernate Map object at input, gives the corrispondent 
+	 * From the Hibernate Map object at input, gives the corrispondent
 	 * <code>GeoMap</code> object.
 	 * 
-	 * @param hibMap	The Hibernate Map object
-	 * @param recoverFeatures If true the <code>GeoMap</code> at output will have the 
-	 * list of contained <code>GeoFeatures</code> objects
+	 * @param hibMap The Hibernate Map object
+	 * 
 	 * @return the corrispondent output <code>GeoMap</code>
 	 */
 	public GeoMap toGeoMap(SbiGeoMaps hibMap){

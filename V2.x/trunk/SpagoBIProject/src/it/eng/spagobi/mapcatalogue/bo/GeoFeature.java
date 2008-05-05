@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,27 +40,74 @@ public class GeoFeature  implements Serializable   {
 	private String type;	
 	//private List biMaps = null;
 	
+	/**
+	 * Gets the descr.
+	 * 
+	 * @return the descr
+	 */
 	public String getDescr() {
 		return descr;
 	}
+	
+	/**
+	 * Sets the descr.
+	 * 
+	 * @param descr the new descr
+	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
+	
+	/**
+	 * Gets the feature id.
+	 * 
+	 * @return the feature id
+	 */
 	public int getFeatureId() {
 		return featureId;
 	}
+	
+	/**
+	 * Sets the feature id.
+	 * 
+	 * @param featureId the new feature id
+	 */
 	public void setFeatureId(int featureId) {
 		this.featureId = featureId;
 	}
+	
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
+	
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type the new type
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}

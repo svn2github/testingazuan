@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.mapcatalogue.metadata;
 
 
@@ -27,16 +48,30 @@ public class SbiGeoMaps implements java.io.Serializable {
 
 	// Constructors
 
-	/** default constructor */
+	/**
+	 * default constructor.
+	 */
 	public SbiGeoMaps() {
 	}
 
-	/** minimal constructor */
+	/**
+	 * minimal constructor.
+	 * 
+	 * @param mapId the map id
+	 */
 	public SbiGeoMaps(int mapId) {
 		this.mapId = mapId;
 	}
 
-	/** full constructor */
+	/**
+	 * full constructor.
+	 * 
+	 * @param mapId the map id
+	 * @param name the name
+	 * @param descr the descr
+	 * @param url the url
+	 * @param format the format
+	 */
 	public SbiGeoMaps(int mapId, String name, String descr, String url, String format) {
 		this.mapId = mapId;
 		this.name = name;
@@ -47,42 +82,92 @@ public class SbiGeoMaps implements java.io.Serializable {
 	}
 
 	// Property accessors
+	/**
+	 * Gets the map id.
+	 * 
+	 * @return the map id
+	 */
 	public int getMapId() {
 		return this.mapId;
 	}
 
+	/**
+	 * Sets the map id.
+	 * 
+	 * @param mapId the new map id
+	 */
 	public void setMapId(int mapId) {
 		this.mapId = mapId;
 	}
 
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the descr.
+	 * 
+	 * @return the descr
+	 */
 	public String getDescr() {
 		return this.descr;
 	}
 
+	/**
+	 * Sets the descr.
+	 * 
+	 * @param descr the new descr
+	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
 
+	/**
+	 * Gets the url.
+	 * 
+	 * @return the url
+	 */
 	public String getUrl() {
 		return this.url;
 	}
 
+	/**
+	 * Sets the url.
+	 * 
+	 * @param url the new url
+	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
+	/**
+	 * Gets the format.
+	 * 
+	 * @return the format
+	 */
 	public String getFormat() {
 		return format;
 	}
 
+	/**
+	 * Sets the format.
+	 * 
+	 * @param format the new format
+	 */
 	public void setFormat(String format) {
 		this.format = format;
 	}

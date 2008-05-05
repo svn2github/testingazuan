@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 
 	private static transient Logger logger = Logger.getLogger(RememberMeDAOHibImpl.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO#delete(java.lang.Integer)
+	 */
 	public void delete(Integer rememberMeId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -81,6 +84,9 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO#getMyRememberMe(java.lang.String)
+	 */
 	public List getMyRememberMe(String userId) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -136,6 +142,9 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		return toReturn;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO#saveRememberMe(java.lang.String, java.lang.String, java.lang.Integer, java.lang.Integer, java.lang.String, java.lang.String)
+	 */
 	public boolean saveRememberMe(String name, String description, Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,9 @@ import org.hibernate.cfg.Configuration;
  */
 public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#loadEvent(java.lang.Integer, java.lang.String)
+	 */
 	public Event loadEvent(Integer eventId, String user) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -80,6 +83,9 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 		return realResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#loadEvents(java.lang.String)
+	 */
 	public List loadEvents(String user) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -119,6 +125,9 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 		return realResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#registerEvent(java.lang.String)
+	 */
 	public Integer registerEvent(String user) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -132,6 +141,9 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 		return hibEvent.getId();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#unregisterEvent(java.lang.Integer, java.lang.String)
+	 */
 	public void unregisterEvent(Integer id, String user) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
@@ -161,10 +173,16 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#unregisterEvent(it.eng.spagobi.events.bo.Event)
+	 */
 	public void unregisterEvent(Event event) throws EMFUserError {
 		unregisterEvent(event.getId(), event.getUser());		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.events.dao.IEventDAO#unregisterEvents(java.lang.String)
+	 */
 	public void unregisterEvents(String user) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;

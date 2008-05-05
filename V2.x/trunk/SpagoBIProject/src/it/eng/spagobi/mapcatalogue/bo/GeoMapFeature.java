@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -69,27 +69,74 @@ public class GeoMapFeature  implements Serializable   {
 		this.sbiGeoMaps = sbiGeoMaps;
 	}*/
 	
+	/**
+	 * Gets the svg group.
+	 * 
+	 * @return the svg group
+	 */
 	public String getSvgGroup() {
 		return svgGroup;
 	}
+	
+	/**
+	 * Sets the svg group.
+	 * 
+	 * @param svgGroup the new svg group
+	 */
 	public void setSvgGroup(String svgGroup) {
 		this.svgGroup = svgGroup;
 	}
+	
+	/**
+	 * Gets the visible flag.
+	 * 
+	 * @return the visible flag
+	 */
 	public String getVisibleFlag() {
 		return visibleFlag;
 	}
+	
+	/**
+	 * Sets the visible flag.
+	 * 
+	 * @param visibleFlag the new visible flag
+	 */
 	public void setVisibleFlag(String visibleFlag) {
 		this.visibleFlag = visibleFlag;
 	}
+	
+	/**
+	 * Gets the feature id.
+	 * 
+	 * @return the feature id
+	 */
 	public int getFeatureId() {
 		return featureId;
 	}
+	
+	/**
+	 * Sets the feature id.
+	 * 
+	 * @param featureId the new feature id
+	 */
 	public void setFeatureId(int featureId) {
 		this.featureId = featureId;
 	}
+	
+	/**
+	 * Gets the map id.
+	 * 
+	 * @return the map id
+	 */
 	public int getMapId() {
 		return mapId;
 	}
+	
+	/**
+	 * Sets the map id.
+	 * 
+	 * @param mapId the new map id
+	 */
 	public void setMapId(int mapId) {
 		this.mapId = mapId;
 	}

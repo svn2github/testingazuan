@@ -56,6 +56,9 @@ public class BirtReportServlet extends HttpServlet {
     protected static Logger logger = Logger.getLogger(BirtReportServlet.class);
     private static String CONNECTION_NAME = "connectionName";
 
+    /* (non-Javadoc)
+     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+     */
     public void init(ServletConfig servletConfig) throws ServletException {
 	super.init(servletConfig);
 	logger.debug("Initializing SpagoBI BirtReport Engine...");
@@ -63,11 +66,17 @@ public class BirtReportServlet extends HttpServlet {
 	logger.debug(":init:Inizialization of SpagoBI BirtReport Engine ended succesfully");
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.GenericServlet#destroy()
+     */
     public void destroy() {
 	super.destroy();
 	BirtEngine.destroyBirtEngine();
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
 	logger.debug("Start processing a new request...");

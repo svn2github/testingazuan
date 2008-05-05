@@ -16,6 +16,15 @@ public class ParameterConverter {
 
     protected static Logger logger = Logger.getLogger(ParameterConverter.class);
 
+    /**
+     * Convert parameter.
+     * 
+     * @param paramType the param type
+     * @param paramValueString the param value string
+     * @param dateformat the dateformat
+     * 
+     * @return the object
+     */
     public static Object convertParameter(int paramType, String paramValueString, String dateformat) {
 	logger.debug("IN.paramValueString=" + paramValueString + " /dateformat=" + dateformat + " /paramType="
 		+ paramType);

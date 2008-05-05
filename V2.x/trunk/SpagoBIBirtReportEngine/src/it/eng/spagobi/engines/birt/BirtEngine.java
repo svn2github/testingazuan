@@ -38,10 +38,21 @@ public class BirtEngine {
 
     protected static Logger logger = Logger.getLogger(BirtEngine.class);
 
+    /**
+     * Inits the birt config.
+     */
     public static synchronized void initBirtConfig() {
 	loadEngineProps();
     }
 
+    /**
+     * Gets the birt engine.
+     * 
+     * @param request the request
+     * @param sc the sc
+     * 
+     * @return the birt engine
+     */
     public static synchronized IReportEngine getBirtEngine(HttpServletRequest request, ServletContext sc) {
 	logger.debug("IN");
 	if (birtEngine == null) {
@@ -111,6 +122,9 @@ public class BirtEngine {
 	return birtEngine;
     }
 
+    /**
+     * Destroy birt engine.
+     */
     public static synchronized void destroyBirtEngine() {
 	if (birtEngine == null) {
 	    return;
@@ -120,6 +134,9 @@ public class BirtEngine {
 	birtEngine = null;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     public Object clone() throws CloneNotSupportedException {
 	throw new CloneNotSupportedException();
     }

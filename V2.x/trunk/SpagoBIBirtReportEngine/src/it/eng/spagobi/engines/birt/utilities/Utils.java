@@ -7,6 +7,13 @@ package it.eng.spagobi.engines.birt.utilities;
 
 public class Utils {
 
+	/**
+	 * Resolve system properties.
+	 * 
+	 * @param logDir the log dir
+	 * 
+	 * @return the string
+	 */
 	public static String resolveSystemProperties(String logDir) {
 		if (logDir == null) return null;
 		int startIndex = logDir.indexOf("${");
@@ -14,6 +21,14 @@ public class Utils {
 		else return resolveSystemProperties(logDir, startIndex);
 	}
 	
+	/**
+	 * Resolve system properties.
+	 * 
+	 * @param logDir the log dir
+	 * @param startIndex the start index
+	 * 
+	 * @return the string
+	 */
 	public static String resolveSystemProperties(String logDir, int startIndex) {
 		if (logDir == null) return logDir;
 		int endIndex = -1;

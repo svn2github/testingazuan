@@ -21,6 +21,9 @@ public class BirtImageServlet extends HttpServlet {
 
 	private transient Logger logger = Logger.getLogger(this.getClass());
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) {
 		String imagePath = request.getParameter("imagePath");
 		String imageDirectory = getServletContext().getRealPath(imagePath);

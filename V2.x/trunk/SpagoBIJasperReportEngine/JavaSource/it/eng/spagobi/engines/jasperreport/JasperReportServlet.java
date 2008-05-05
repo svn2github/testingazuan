@@ -93,9 +93,10 @@ public class JasperReportServlet extends HttpServlet {
 	logger.debug("documentId:"+documentId);
 	
 	String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
-	logger.debug("requestConnectionName:"+requestConnectionName);
+	if (requestConnectionName==null) logger.debug("requestConnectionName is NULL");
+	else logger.debug("requestConnectionName:"+requestConnectionName);
 	
-	//  operazioni fatte dal filtro ...OUT
+	//  operazioni fatte dal filtro OUT
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 	Map params = new HashMap();

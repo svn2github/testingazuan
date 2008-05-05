@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  *    Utils.java
@@ -59,16 +49,20 @@ public final class Utils {
    * defined in the users home directory (optional) override default
    * settings. Properties defined in the current directory (optional)
    * override all these settings.
-   *
+   * 
    * @param resourceName the location of the resource that should be
    * loaded.  e.g.: "weka/core/Utils.props". (The use of hardcoded
    * forward slashes here is OK - see
    * jdk1.1/docs/guide/misc/resources.html) This routine will also
    * look for the file (in this case) "Utils.props" in the users home
    * directory and the current directory.
+   * 
    * @return the Properties
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if no default properties are defined, or if
-   * an error occurs reading the properties files.  
+   * an error occurs reading the properties files.
    */
   public static Properties readProperties(String resourceName)
     throws Exception {
@@ -120,10 +114,11 @@ public final class Utils {
 
   /**
    * Returns the correlation coefficient of two double vectors.
-   *
+   * 
    * @param y1 double vector 1
    * @param y2 double vector 2
    * @param n the length of two double vectors
+   * 
    * @return the correlation coefficient
    */
   public static final double correlation(double y1[],double y2[],int n) {
@@ -156,9 +151,10 @@ public final class Utils {
 
   /**
    * Removes all occurrences of a string from another string.
-   *
+   * 
    * @param inString the string to remove substrings from.
    * @param substring the substring to remove.
+   * 
    * @return the input string with occurrences of substring removed.
    */
   public static String removeSubstring(String inString, String substring) {
@@ -174,12 +170,13 @@ public final class Utils {
   }
 
   /**
-   * Replaces with a new string, all occurrences of a string from 
+   * Replaces with a new string, all occurrences of a string from
    * another string.
-   *
+   * 
    * @param inString the string to replace substrings in.
-   * @param substring the substring to replace.
    * @param replaceString the replacement substring
+   * @param subString the sub string
+   * 
    * @return the input string with occurrences of substring replaced.
    */
   public static String replaceSubstring(String inString, String subString,
@@ -201,9 +198,10 @@ public final class Utils {
    * Pads a string to a specified length, inserting spaces on the left
    * as required. If the string is too long, characters are removed (from
    * the right).
-   *
+   * 
    * @param inString the input string
    * @param length the desired length of the output string
+   * 
    * @return the output string
    */
   public static String padLeft(String inString, int length) {
@@ -215,9 +213,10 @@ public final class Utils {
    * Pads a string to a specified length, inserting spaces on the right
    * as required. If the string is too long, characters are removed (from
    * the right).
-   *
+   * 
    * @param inString the input string
    * @param length the desired length of the output string
+   * 
    * @return the output string
    */
   public static String padRight(String inString, int length) {
@@ -250,10 +249,11 @@ public final class Utils {
  
   /**
    * Rounds a double and converts it into String.
-   *
+   * 
    * @param value the double value
    * @param afterDecimalPoint the (maximum) number of digits permitted
    * after the decimal point
+   * 
    * @return the double as a formatted string
    */
   public static /*@pure@*/ String doubleToString(double value, int afterDecimalPoint) {
@@ -308,10 +308,11 @@ public final class Utils {
   /**
    * Rounds a double and converts it into a formatted decimal-justified String.
    * Trailing 0's are replaced with spaces.
-   *
+   * 
    * @param value the double value
    * @param width the width of the string
    * @param afterDecimalPoint the number of digits after the decimal point
+   * 
    * @return the double as a formatted string
    */
   public static /*@pure@*/ String doubleToString(double value, int width,
@@ -371,7 +372,9 @@ public final class Utils {
   /**
    * Returns the basic class of an array class (handles multi-dimensional
    * arrays).
-   * @param o        the array to inspect
+   * 
+   * @param c the c
+   * 
    * @return         the class of the innermost elements
    */
   public static Class getArrayClass(Class c) {
@@ -385,8 +388,9 @@ public final class Utils {
    * Returns the dimensions of the given array. Even though the
    * parameter is of type "Object" one can hand over primitve arrays, e.g.
    * int[3] or double[2][4].
-   *
+   * 
    * @param array       the array to determine the dimensions for
+   * 
    * @return            the dimensions of the array
    */
   public static int getArrayDimensions(Class array) {
@@ -400,8 +404,9 @@ public final class Utils {
    * Returns the dimensions of the given array. Even though the
    * parameter is of type "Object" one can hand over primitve arrays, e.g.
    * int[3] or double[2][4].
-   *
+   * 
    * @param array       the array to determine the dimensions for
+   * 
    * @return            the dimensions of the array
    */
   public static int getArrayDimensions(Object array) {
@@ -414,6 +419,7 @@ public final class Utils {
    * int[3] or double[2][4].
    * 
    * @param array       the array to return in a string representation
+   * 
    * @return            the array as string
    */
   public static String arrayToString(Object array) {
@@ -450,9 +456,11 @@ public final class Utils {
 
   /**
    * Tests if a is equal to b.
-   *
+   * 
    * @param a a double
    * @param b a double
+   * 
+   * @return true, if eq
    */
   public static /*@pure@*/ boolean eq(double a, double b){
     
@@ -461,8 +469,11 @@ public final class Utils {
 
   /**
    * Checks if the given array contains any non-empty options.
-   *
-   * @param strings an array of strings
+   * 
+   * @param options the options
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if there are any non-empty options
    */
   public static void checkForRemainingOptions(String [] options) 
@@ -489,10 +500,14 @@ public final class Utils {
    * Checks if the given array contains the flag "-Char". Stops
    * searching at the first marker "--". If the flag is found,
    * it is replaced with the empty string.
-   *
+   * 
    * @param flag the character indicating the flag.
-   * @param strings the array of strings containing all the options.
+   * @param options the options
+   * 
    * @return true if the flag was found
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if an illegal option was found
    */
   public static boolean getFlag(char flag, String [] options) 
@@ -504,10 +519,14 @@ public final class Utils {
    * Checks if the given array contains the flag "-String". Stops
    * searching at the first marker "--". If the flag is found,
    * it is replaced with the empty string.
-   *
+   * 
    * @param flag the String indicating the flag.
-   * @param strings the array of strings containing all the options.
+   * @param options the options
+   * 
    * @return true if the flag was found
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if an illegal option was found
    */
   public static boolean getFlag(String flag, String [] options) 
@@ -536,12 +555,16 @@ public final class Utils {
 
   /**
    * Gets an option indicated by a flag "-Char" from the given array
-   * of strings. Stops searching at the first marker "--". Replaces 
+   * of strings. Stops searching at the first marker "--". Replaces
    * flag and option with empty strings.
-   *
+   * 
    * @param flag the character indicating the option.
    * @param options the array of strings containing all the options.
+   * 
    * @return the indicated option or an empty string
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if the option indicated by the flag can't be found
    */
   public static /*@non_null@*/ String getOption(char flag, String [] options) 
@@ -551,12 +574,16 @@ public final class Utils {
 
   /**
    * Gets an option indicated by a flag "-String" from the given array
-   * of strings. Stops searching at the first marker "--". Replaces 
+   * of strings. Stops searching at the first marker "--". Replaces
    * flag and option with empty strings.
-   *
+   * 
    * @param flag the String indicating the option.
    * @param options the array of strings containing all the options.
+   * 
    * @return the indicated option or an empty string
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if the option indicated by the flag can't be found
    */
   public static /*@non_null@*/ String getOption(String flag, String [] options) 
@@ -595,19 +622,20 @@ public final class Utils {
    * Quotes a string if it contains special characters.
    * 
    * The following rules are applied:
-   *
-   * A character is backquoted version of it is one 
+   * 
+   * A character is backquoted version of it is one
    * of <tt>" ' % \ \n \r \t</tt>.
-   *
+   * 
    * A string is enclosed within single quotes if a character has been
-   * backquoted using the previous rule above or contains 
-   * <tt>{ }</tt> or is exactly equal to the strings 
+   * backquoted using the previous rule above or contains
+   * <tt>{ }</tt> or is exactly equal to the strings
    * <tt>, ? space or ""</tt> (empty string).
-   *
+   * 
    * A quoted question mark distinguishes it from the missing value which
    * is represented as an unquoted question mark in arff files.
-   *
+   * 
    * @param string the string to be quoted
+   * 
    * @return the string (possibly quoted)
    */
   public static /*@pure@*/ String quote(String string) {
@@ -637,7 +665,9 @@ public final class Utils {
   /**
    * Converts carriage returns and new lines in a string into \r and \n.
    * Backquotes the following characters: ` " \ \t and %
+   * 
    * @param string the string
+   * 
    * @return the converted string
    */
   public static /*@pure@*/ String backQuoteChars(String string) {
@@ -672,7 +702,9 @@ public final class Utils {
 
   /**
    * Converts carriage returns and new lines in a string into \r and \n.
+   * 
    * @param string the string
+   * 
    * @return the converted string
    */
   public static /*@pure@*/ String convertNewLines(String string) {
@@ -720,8 +752,9 @@ public final class Utils {
    * the supplied options array. The secondary set is defined to
    * be any options after the first "--". These options are removed from
    * the original options array.
-   *
+   * 
    * @param options the input array of options
+   * 
    * @return the array of secondary options
    */
   public static String [] partitionOptions(String [] options) {
@@ -742,10 +775,12 @@ public final class Utils {
     
   /**
    * The inverse operation of backQuoteChars().
-   * Converts back-quoted carriage returns and new lines in a string 
+   * Converts back-quoted carriage returns and new lines in a string
    * to the corresponding character ('\r' and '\n').
    * Also "un"-back-quotes the following characters: ` " \ \t and %
+   * 
    * @param string the string
+   * 
    * @return the converted string
    */
   public static String unbackQuoteChars(String string) {
@@ -781,9 +816,12 @@ public final class Utils {
   /**
    * Split up a string containing options into an array of strings,
    * one for each option.
-   *
-   * @param optionString the string containing the options
+   * 
+   * @param quotedOptionString the quoted option string
+   * 
    * @return the array of options
+   * 
+   * @throws Exception the exception
    */
   public static String [] splitOptions(String quotedOptionString) throws Exception{
 
@@ -847,8 +885,9 @@ public final class Utils {
   /**
    * Joins all the options in an option array into a single string,
    * as might be used on the command line.
-   *
+   * 
    * @param optionArray the array of options
+   * 
    * @return the string containing all options.
    */
   public static String joinOptions(String [] optionArray) {
@@ -873,22 +912,26 @@ public final class Utils {
    * (optional) arguments to pass to it's setOptions method. If the
    * object implements OptionHandler and the options parameter is
    * non-null, the object will have it's options set. Example use:<p>
-   *
+   * 
    * <code> <pre>
    * String classifierName = Utils.getOption('W', options);
    * Classifier c = (Classifier)Utils.forName(Classifier.class,
-   *                                          classifierName,
-   *                                          options);
+   * classifierName,
+   * options);
    * setClassifier(c);
    * </pre></code>
-   *
+   * 
    * @param classType the class that the instantiated object should
    * be assignable to -- an exception is thrown if this is not the case
    * @param className the fully qualified class name of the object
    * @param options an array of options suitable for passing to setOptions. May
    * be null. Any options accepted by the object will be removed from the
    * array.
+   * 
    * @return the newly created object, ready for use.
+   * 
+   * @throws Exception the exception
+   * 
    * @exception Exception if the class name is invalid, or if the
    * class is not assignable to the desired class type, or the options
    * supplied are not acceptable to the object
@@ -918,8 +961,9 @@ public final class Utils {
 
   /**
    * Computes entropy for an array of integers.
-   *
+   * 
    * @param counts array of counts
+   * 
    * @return - a log2 a - b log2 b - c log2 c + (a+b+c) log2 (a+b+c)
    * when given array [a b c]
    */
@@ -936,9 +980,11 @@ public final class Utils {
 
   /**
    * Tests if a is smaller or equal to b.
-   *
+   * 
    * @param a a double
    * @param b a double
+   * 
+   * @return true, if sm or eq
    */
   public static /*@pure@*/ boolean smOrEq(double a,double b) {
     
@@ -947,9 +993,11 @@ public final class Utils {
 
   /**
    * Tests if a is greater or equal to b.
-   *
+   * 
    * @param a a double
    * @param b a double
+   * 
+   * @return true, if gr or eq
    */
   public static /*@pure@*/ boolean grOrEq(double a,double b) {
     
@@ -958,9 +1006,11 @@ public final class Utils {
   
   /**
    * Tests if a is smaller than b.
-   *
+   * 
    * @param a a double
    * @param b a double
+   * 
+   * @return true, if sm
    */
   public static /*@pure@*/ boolean sm(double a,double b) {
     
@@ -969,9 +1019,11 @@ public final class Utils {
 
   /**
    * Tests if a is greater than b.
-   *
+   * 
    * @param a a double
-   * @param b a double 
+   * @param b a double
+   * 
+   * @return true, if gr
    */
   public static /*@pure@*/ boolean gr(double a,double b) {
     
@@ -980,9 +1032,10 @@ public final class Utils {
 
   /**
    * Returns the kth-smallest value in the array.
-   *
+   * 
    * @param array the array of integers
    * @param k the value of k
+   * 
    * @return the kth-smallest value
    */
   public static double kthSmallestValue(int[] array, int k) {
@@ -997,10 +1050,11 @@ public final class Utils {
   }
 
   /**
-   * Returns the kth-smallest value in the array
-   *
+   * Returns the kth-smallest value in the array.
+   * 
    * @param array the array of double
    * @param k the value of k
+   * 
    * @return the kth-smallest value
    */
   public static double kthSmallestValue(double[] array, int k) {
@@ -1016,8 +1070,10 @@ public final class Utils {
 
   /**
    * Returns the logarithm of a for base 2.
-   *
+   * 
    * @param a a double
+   * 
+   * @return the double
    */
   public static /*@pure@*/ double log2(double a) {
     
@@ -1027,8 +1083,9 @@ public final class Utils {
   /**
    * Returns index of maximum element in a given
    * array of doubles. First maximum is returned.
-   *
+   * 
    * @param doubles the array of doubles
+   * 
    * @return the index of the maximum element
    */
   public static /*@pure@*/ int maxIndex(double [] doubles) {
@@ -1049,8 +1106,9 @@ public final class Utils {
   /**
    * Returns index of maximum element in a given
    * array of integers. First maximum is returned.
-   *
+   * 
    * @param ints the array of integers
+   * 
    * @return the index of the maximum element
    */
   public static /*@pure@*/ int maxIndex(int [] ints) {
@@ -1070,8 +1128,9 @@ public final class Utils {
 
   /**
    * Computes the mean for an array of doubles.
-   *
+   * 
    * @param vector the array
+   * 
    * @return the mean
    */
   public static /*@pure@*/ double mean(double[] vector) {
@@ -1090,8 +1149,9 @@ public final class Utils {
   /**
    * Returns index of minimum element in a given
    * array of integers. First minimum is returned.
-   *
+   * 
    * @param ints the array of integers
+   * 
    * @return the index of the minimum element
    */
   public static /*@pure@*/ int minIndex(int [] ints) {
@@ -1112,8 +1172,9 @@ public final class Utils {
   /**
    * Returns index of minimum element in a given
    * array of doubles. First minimum is returned.
-   *
+   * 
    * @param doubles the array of doubles
+   * 
    * @return the index of the minimum element
    */
   public static /*@pure@*/ int minIndex(double [] doubles) {
@@ -1133,8 +1194,9 @@ public final class Utils {
 
   /**
    * Normalizes the doubles in the array by their sum.
-   *
+   * 
    * @param doubles the array of double
+   * 
    * @exception IllegalArgumentException if sum is Zero or NaN
    */
   public static void normalize(double[] doubles) {
@@ -1148,9 +1210,10 @@ public final class Utils {
 
   /**
    * Normalizes the doubles in the array using the given value.
-   *
+   * 
    * @param doubles the array of double
    * @param sum the value by which the doubles are to be normalized
+   * 
    * @exception IllegalArgumentException if sum is zero or NaN
    */
   public static void normalize(double[] doubles, double sum) {
@@ -1171,9 +1234,10 @@ public final class Utils {
    * Converts an array containing the natural logarithms of
    * probabilities stored in a vector back into probabilities.
    * The probabilities are assumed to sum to one.
-   *
+   * 
    * @param a an array holding the natural logarithms of the probabilities
-   * @return the converted array 
+   * 
+   * @return the converted array
    */
   public static double[] logs2probs(double[] a) {
 
@@ -1194,8 +1258,9 @@ public final class Utils {
   /**
    * Rounds a double to the next nearest integer value. The JDK version
    * of it doesn't work properly.
-   *
+   * 
    * @param value the double value
+   * 
    * @return the resulting integer value
    */
   public static /*@pure@*/ int round(double value) {
@@ -1213,8 +1278,10 @@ public final class Utils {
    * 80% chance of being rounded up to 1). In the limit, the average of
    * the rounded numbers generated by this procedure should converge to
    * the original double.
-   *
+   * 
    * @param value the double value
+   * @param rand the rand
+   * 
    * @return the resulting integer value
    */
   public static int probRound(double value, Random rand) {
@@ -1240,9 +1307,10 @@ public final class Utils {
 
   /**
    * Rounds a double to the given number of decimal places.
-   *
+   * 
    * @param value the double value
    * @param afterDecimalPoint the number of digits after the decimal point
+   * 
    * @return the double rounded to the given precision
    */
   public static /*@pure@*/ double roundDouble(double value,int afterDecimalPoint) {
@@ -1253,12 +1321,13 @@ public final class Utils {
   }
 
   /**
-   * Sorts a given array of integers in ascending order and returns an 
-   * array of integers with the positions of the elements of the original 
+   * Sorts a given array of integers in ascending order and returns an
+   * array of integers with the positions of the elements of the original
    * array in the sorted array. The sort is stable. (Equal elements remain
    * in their original order.)
-   *
+   * 
    * @param array this array is not changed by the method!
+   * 
    * @return an array of integers with the positions in the sorted
    * array.
    */
@@ -1306,12 +1375,13 @@ public final class Utils {
    * array of integers with the positions of the elements of the
    * original array in the sorted array. NOTE THESE CHANGES: the sort
    * is no longer stable and it doesn't use safe floating-point
-   * comparisons anymore. Occurrences of Double.NaN are treated as 
+   * comparisons anymore. Occurrences of Double.NaN are treated as
    * Double.MAX_VALUE
-   *
+   * 
    * @param array this array is not changed by the method!
+   * 
    * @return an array of integers with the positions in the sorted
-   * array.  
+   * array.
    */
   public static /*@pure@*/ int[] sort(/*@non_null@*/ double [] array) {
 
@@ -1328,13 +1398,14 @@ public final class Utils {
   }
 
   /**
-   * Sorts a given array of doubles in ascending order and returns an 
-   * array of integers with the positions of the elements of the original 
+   * Sorts a given array of doubles in ascending order and returns an
+   * array of integers with the positions of the elements of the original
    * array in the sorted array. The sort is stable (Equal elements remain
-   * in their original order.) Occurrences of Double.NaN are treated as 
+   * in their original order.) Occurrences of Double.NaN are treated as
    * Double.MAX_VALUE
-   *
+   * 
    * @param array this array is not changed by the method!
+   * 
    * @return an array of integers with the positions in the sorted
    * array.
    */
@@ -1381,8 +1452,9 @@ public final class Utils {
 
   /**
    * Computes the variance for an array of doubles.
-   *
+   * 
    * @param vector the array
+   * 
    * @return the variance
    */
   public static /*@pure@*/ double variance(double[] vector) {
@@ -1409,8 +1481,9 @@ public final class Utils {
 
   /**
    * Computes the sum of the elements of an array of doubles.
-   *
+   * 
    * @param doubles the array of double
+   * 
    * @return the sum of the elements
    */
   public static /*@pure@*/ double sum(double[] doubles) {
@@ -1425,8 +1498,9 @@ public final class Utils {
 
   /**
    * Computes the sum of the elements of an array of integers.
-   *
+   * 
    * @param ints the array of integers
+   * 
    * @return the sum of the elements
    */
   public static /*@pure@*/ int sum(int[] ints) {
@@ -1441,8 +1515,9 @@ public final class Utils {
 
   /**
    * Returns c*log2(c) for a given integer value c.
-   *
+   * 
    * @param c an integer value
+   * 
    * @return c*log2(c) (but is careful to return 0 if c is 0)
    */
   public static /*@pure@*/ double xlogx(int c) {
@@ -1633,7 +1708,7 @@ public final class Utils {
 
   /**
    * Main method for testing this class.
-   *
+   * 
    * @param ops some dummy options
    */
   public static void main(String[] ops) {

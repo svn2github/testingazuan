@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  * Version.java
@@ -120,10 +110,12 @@ public class Version implements Comparable {
   }
 
   /**
-   * checks the version of this class against the given version-string
+   * checks the version of this class against the given version-string.
+   * 
    * @param o     the version-string to compare with
+   * 
    * @return      -1 if this version is less, 0 if equal and +1 if greater
-   *              than the provided version 
+   * than the provided version
    */
   public int compareTo(Object o) {
     int       result;
@@ -179,8 +171,10 @@ public class Version implements Comparable {
   }
   
   /**
-   * whether the given version string is equal to this version
+   * whether the given version string is equal to this version.
+   * 
    * @param o       the version-string to compare to
+   * 
    * @return        TRUE if the version-string is equals to its own
    */
   public boolean equals(Object o) {
@@ -188,9 +182,11 @@ public class Version implements Comparable {
   }
   
   /**
-   * checks whether this version is older than the one from the given 
-   * version string
+   * checks whether this version is older than the one from the given
+   * version string.
+   * 
    * @param o       the version-string to compare with
+   * 
    * @return        TRUE if this version is older than the given one
    */
   public boolean isOlder(Object o) {
@@ -198,9 +194,11 @@ public class Version implements Comparable {
   }
   
   /**
-   * checks whether this version is newer than the one from the given 
-   * version string
+   * checks whether this version is newer than the one from the given
+   * version string.
+   * 
    * @param o       the version-string to compare with
+   * 
    * @return        TRUE if this version is newer than the given one
    */
   public boolean isNewer(Object o) {
@@ -208,7 +206,9 @@ public class Version implements Comparable {
   }
   
   /**
-   * only for testing
+   * only for testing.
+   * 
+   * @param args the args
    */
   public static void main(String[] args) {
     Version       v;

@@ -24,6 +24,13 @@ public class FilterConfigurator extends AbstractWekaBeanConfigurator{
 		logger.debug("FilterConfigurator:" + msg);
 	}
 	
+	/**
+	 * Sets the up.
+	 * 
+	 * @param bean the new up
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void setup(Filter bean)  throws Exception {
 		weka.filters.Filter filter =  bean.getFilter();
 		String className = filter.getClass().getName();
@@ -42,6 +49,9 @@ public class FilterConfigurator extends AbstractWekaBeanConfigurator{
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.weka.configurators.WekaBeanConfigurator#setup(java.lang.Object)
+	 */
 	public void setup(Object bean)  throws Exception {
 		if(!bean.getClass().getName().equalsIgnoreCase(Filter.class.getName()))
 			throw new Exception();

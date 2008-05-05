@@ -15,6 +15,11 @@ public class WekaBeanConfiguratorFactory {
 	
 	private static WekaBeanConfigurator filterConfigurator = new FilterConfigurator();
 	
+	/**
+	 * Sets the up.
+	 * 
+	 * @param bean the new up
+	 */
 	public static void setup(Object bean) {
 		try{
 			if(bean.getClass().getName().equalsIgnoreCase(Filter.class.getName()))

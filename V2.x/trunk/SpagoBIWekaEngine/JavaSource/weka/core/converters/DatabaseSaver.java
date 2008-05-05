@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  *    DatabaseSaver.java
@@ -129,6 +119,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	public static final int INSERT = 2;
 	public static final int UPDATE_INSERT = 3;
 	
+	/**
+	 * Sets the db write mode.
+	 * 
+	 * @param dbWriteMode the new db write mode
+	 */
 	public void setDbWriteMode(String dbWriteMode) {
 		if(dbWriteMode == null) {
 			//	leave default values
@@ -165,10 +160,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
-	 * @throws Exception
-	 *             throws Exception if property file cannot be read
+	 * @throws Exception throws Exception if property file cannot be read
 	 */
 	public DatabaseSaver() throws Exception {
 
@@ -180,7 +174,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Resets the Saver ready to save a new data set
+	 * Resets the Saver ready to save a new data set.
 	 */
 	public void resetOptions() {
 
@@ -219,20 +213,19 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Returns a string describing this Saver
+	 * Returns a string describing this Saver.
 	 * 
 	 * @return a description of the Saver suitable for displaying in the
-	 *         explorer/experimenter gui
+	 * explorer/experimenter gui
 	 */
 	public String globalInfo() {
 		return "Writes to a database";
 	}
 
 	/**
-	 * Sets the table's name
+	 * Sets the table's name.
 	 * 
-	 * @param tn
-	 *            the name of the table
+	 * @param tn the name of the table
 	 */
 	public void setTableName(String tn) {
 
@@ -240,7 +233,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets the table's name
+	 * Gets the table's name.
 	 * 
 	 * @return the table's name
 	 */
@@ -249,17 +242,20 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		return m_tableName;
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String tableNameTipText() {
 
 		return "Sets the name of the table.";
 	}
 
 	/**
-	 * En/Dis-ables the automatic generation of a primary key
+	 * En/Dis-ables the automatic generation of a primary key.
 	 * 
-	 * @param boolean
-	 *            flag
+	 * @param flag the flag
 	 */
 	public void setAutoKeyGeneration(boolean flag) {
 
@@ -267,7 +263,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets whether or not a primary key will be generated automatically
+	 * Gets whether or not a primary key will be generated automatically.
 	 * 
 	 * @return true if a primary key column will be generated, false otherwise
 	 */
@@ -276,7 +272,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		return m_id;
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String autoKeyGenerationTipText() {
 
 		return "If set to true, a primary key column is generated automatically (containing the row number as INTEGER). The name of the key is read from DatabaseUtils (idColumn)"
@@ -287,8 +287,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	 * En/Dis-ables that the relation name is used for the name of the table
 	 * (default enabled).
 	 * 
-	 * @param boolean
-	 *            flag
+	 * @param flag the flag
 	 */
 	public void setRelationForTableName(boolean flag) {
 
@@ -296,27 +295,30 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets whether or not the relation name is used as name of the table
+	 * Gets whether or not the relation name is used as name of the table.
 	 * 
 	 * @return true if the relation name is used as the name of the table, false
-	 *         otherwise
+	 * otherwise
 	 */
 	public boolean getRelationForTableName() {
 
 		return m_tabName;
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String relationForTableNameTipText() {
 
 		return "If set to true, the relation name will be used as name for the database table. Otherwise the user has to provide a table name.";
 	}
 
 	/**
-	 * Sets the database URL
+	 * Sets the database URL.
 	 * 
-	 * @param the
-	 *            URL
+	 * @param url the url
 	 */
 	public void setUrl(String url) {
 
@@ -325,7 +327,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets the database URL
+	 * Gets the database URL.
 	 * 
 	 * @return the URL
 	 */
@@ -334,17 +336,20 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		return databaseConnection.getDatabaseURL();
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String urlTipText() {
 
 		return "The URL of the database";
 	}
 
 	/**
-	 * Sets the database user
+	 * Sets the database user.
 	 * 
-	 * @param the
-	 *            user name
+	 * @param user the user
 	 */
 	public void setUser(String user) {
 
@@ -352,7 +357,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets the database user
+	 * Gets the database user.
 	 * 
 	 * @return the user name
 	 */
@@ -361,38 +366,42 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		return databaseConnection.getUsername();
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String userTipText() {
 
 		return "The user name for the database";
 	}
 
 	/**
-	 * Sets the database password
+	 * Sets the database password.
 	 * 
-	 * @param the
-	 *            password
+	 * @param password the password
 	 */
 	public void setPassword(String password) {
 
 		databaseConnection.setPassword(password);
 	}
 
-	/** Returns the tip text fo this property */
+	/**
+	 * Returns the tip text fo this property.
+	 * 
+	 * @return the string
+	 */
 	public String passwordTipText() {
 
 		return "The database password";
 	}
 
 	/**
-	 * Sets the database url
+	 * Sets the database url.
 	 * 
-	 * @param url
-	 *            the database url
-	 * @param userName
-	 *            the user name
-	 * @param password
-	 *            the password
+	 * @param url the database url
+	 * @param userName the user name
+	 * @param password the password
 	 */
 	public void setDestination(String url, String userName, String password) {
 
@@ -407,10 +416,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Sets the database url
+	 * Sets the database url.
 	 * 
-	 * @param url
-	 *            the database url
+	 * @param url the database url
 	 */
 	public void setDestination(String url) {
 
@@ -422,7 +430,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		}
 	}
 
-	/** Sets the database url using the DatabaseUtils file */
+	/**
+	 * Sets the database url using the DatabaseUtils file.
+	 */
 	public void setDestination() {
 
 		try {
@@ -432,7 +442,11 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		}
 	}
 	
-	/** Sets the database url using the given connection */
+	/**
+	 * Sets the database url using the given connection.
+	 * 
+	 * @param connection the connection
+	 */
 	public void setDestination(Connection connection) {
 
 		try {
@@ -444,8 +458,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Opens a connection to the database
-	 * 
+	 * Opens a connection to the database.
 	 */
 	public void connectToDatabase() {
 
@@ -700,10 +713,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	 * setStructure() method or setInstances() method. When a structure is set,
 	 * a table is created.
 	 * 
-	 * @param inst
-	 *            the instance to save
-	 * @throws IOException
-	 *             throws IOEXception.
+	 * @param inst the instance to save
+	 * 
+	 * @throws IOException throws IOEXception.
 	 */
 	public void writeIncremental(Instance inst) throws IOException {
 
@@ -757,10 +769,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Writes a Batch of instances
+	 * Writes a Batch of instances.
 	 * 
-	 * @throws IOException
-	 *             throws IOException
+	 * @throws IOException throws IOException
 	 */
 	public void writeBatch() throws IOException {
 
@@ -821,7 +832,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Gets the setting
+	 * Gets the setting.
 	 * 
 	 * @return the current setting
 	 */
@@ -845,7 +856,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	}
 
 	/**
-	 * Lists the available options
+	 * Lists the available options.
 	 * 
 	 * @return an enumeration of the available options
 	 */
@@ -884,10 +895,9 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	 * Specifies an ARFF file as input (for command line use)
 	 * <p>
 	 * 
-	 * @param options
-	 *            the options
-	 * @throws Exception
-	 *             if options cannot be set
+	 * @param options the options
+	 * 
+	 * @throws Exception if options cannot be set
 	 */
 	public void setOptions(String[] options) throws Exception {
 
@@ -919,8 +929,7 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 	/**
 	 * Main method.
 	 * 
-	 * @param options
-	 *            should contain the options of a Saver.
+	 * @param options should contain the options of a Saver.
 	 */
 	public static void main(String[] options) {
 
@@ -959,46 +968,103 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 
 	}
 
+	/**
+	 * Gets the db write mode.
+	 * 
+	 * @return the db write mode
+	 */
 	public int getDbWriteMode() {
 		return dbWriteMode;
 	}
 
+	/**
+	 * Sets the db write mode.
+	 * 
+	 * @param dbWriteMode the new db write mode
+	 */
 	public void setDbWriteMode(int dbWriteMode) {
 		this.dbWriteMode = dbWriteMode;
 	}
 
+	/**
+	 * Gets the version.
+	 * 
+	 * @return the version
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * Sets the version.
+	 * 
+	 * @param version the new version
+	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
+	/**
+	 * Gets the version column name.
+	 * 
+	 * @return the version column name
+	 */
 	public String getVersionColumnName() {
 		return versionColumnName;
 	}
 
+	/**
+	 * Sets the version column name.
+	 * 
+	 * @param versionColumnName the new version column name
+	 */
 	public void setVersionColumnName(String versionColumnName) {
 		this.versionColumnName = versionColumnName;
 	}
 
+	/**
+	 * Checks if is versioning.
+	 * 
+	 * @return true, if is versioning
+	 */
 	public boolean isVersioning() {
 		return versioning;
 	}
 
+	/**
+	 * Sets the versioning.
+	 * 
+	 * @param versioning the new versioning
+	 */
 	public void setVersioning(boolean versioning) {
 		this.versioning = versioning;
 	}
 
+	/**
+	 * Gets the key column names.
+	 * 
+	 * @return the key column names
+	 */
 	public String[] getKeyColumnNames() {
 		return keyColumnNames;
 	}
 
+	/**
+	 * Sets the key column names.
+	 * 
+	 * @param keyColumnNames the new key column names
+	 */
 	public void setKeyColumnNames(String[] keyColumnNames) {
 		this.keyColumnNames = keyColumnNames;
 	}
 	
+	/**
+	 * Checks if is key column name.
+	 * 
+	 * @param columnName the column name
+	 * 
+	 * @return true, if is key column name
+	 */
 	public boolean isKeyColumnName(String columnName) {
 		for(int i = 0; i < keyColumnNames.length; i++) {
 			if(columnName.equalsIgnoreCase(keyColumnNames[i])) return true;

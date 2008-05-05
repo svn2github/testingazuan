@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  *    DatabaseConnection.java
@@ -145,10 +135,12 @@ public class DatabaseConnection implements Serializable {
 	}
 
 	/**
-	 * Sets up the database drivers
+	 * Sets up the database drivers.
+	 * 
+	 * @throws Exception the exception
 	 * 
 	 * @exception Exception
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public DatabaseConnection() throws Exception {
 
@@ -177,17 +169,16 @@ public class DatabaseConnection implements Serializable {
 	}
 
 	/**
-	 * Set the database username
+	 * Set the database username.
 	 * 
-	 * @param username
-	 *            Username for Database.
+	 * @param username Username for Database.
 	 */
 	public void setUsername(String username) {
 		m_userName = username;
 	}
 
 	/**
-	 * Get the database username
+	 * Get the database username.
 	 * 
 	 * @return Database username
 	 */
@@ -196,17 +187,16 @@ public class DatabaseConnection implements Serializable {
 	}
 
 	/**
-	 * Set the database password
+	 * Set the database password.
 	 * 
-	 * @param password
-	 *            Password for Database.
+	 * @param password Password for Database.
 	 */
 	public void setPassword(String password) {
 		m_password = password;
 	}
 
 	/**
-	 * Get the database password
+	 * Get the database password.
 	 * 
 	 * @return Password for Database.
 	 */
@@ -215,10 +205,10 @@ public class DatabaseConnection implements Serializable {
 	}
 
 	/**
-	 * Returns the tip text for this property
+	 * Returns the tip text for this property.
 	 * 
 	 * @return tip text for this property suitable for displaying in the
-	 *         explorer/experimenter gui
+	 * explorer/experimenter gui
 	 */
 	public String databaseURLTipText() {
 		return "Set the URL to the database.";
@@ -237,8 +227,7 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Set the value of DatabaseURL.
 	 * 
-	 * @param newDatabaseURL
-	 *            Value to assign to DatabaseURL.
+	 * @param newDatabaseURL Value to assign to DatabaseURL.
 	 */
 	public void setDatabaseURL(String newDatabaseURL) {
 
@@ -250,7 +239,7 @@ public class DatabaseConnection implements Serializable {
 	 * set to true or false.
 	 * 
 	 * @return true if the property checkUpperCaseNames in the DatabaseUtils
-	 *         file is set to true, false otherwise.
+	 * file is set to true, false otherwise.
 	 */
 	public boolean getUpperCase() {
 		return m_checkForUpperCaseNames;
@@ -275,8 +264,8 @@ public class DatabaseConnection implements Serializable {
 	 * Converts an array of objects to a string by inserting a space between
 	 * each element. Null elements are printed as ?
 	 * 
-	 * @param array
-	 *            the array of objects
+	 * @param array the array of objects
+	 * 
 	 * @return a value of type 'String'
 	 */
 	public static String arrayToString(Object[] array) {
@@ -299,8 +288,8 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Returns the name associated with a SQL type.
 	 * 
-	 * @param type
-	 *            the SQL type
+	 * @param type the SQL type
+	 * 
 	 * @return the name of the type
 	 */
 	public static String typeName(int type) {
@@ -354,10 +343,12 @@ public class DatabaseConnection implements Serializable {
 	}
 
 	/**
-	 * Opens a connection to the database
+	 * Opens a connection to the database.
+	 * 
+	 * @throws Exception the exception
 	 * 
 	 * @exception Exception
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public void connectToDatabase() throws Exception {
 
@@ -385,8 +376,10 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Closes the connection to the database.
 	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @exception Exception
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public void disconnectFromDatabase() throws Exception {
 
@@ -405,8 +398,11 @@ public class DatabaseConnection implements Serializable {
 	 * Gets meta data for the database connection object.
 	 * 
 	 * @return the meta data.
+	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @exception SQLException
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public DatabaseMetaData getMetaData() throws Exception {
 
@@ -426,11 +422,14 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Executes a SQL query.
 	 * 
-	 * @param query
-	 *            the SQL query
+	 * @param query the SQL query
+	 * 
 	 * @return true if the query generated results
+	 * 
+	 * @throws SQLException the SQL exception
+	 * 
 	 * @exception SQLException
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public boolean execute(String query) throws SQLException {
 		m_PreparedStatement = connection.prepareStatement(query,
@@ -442,6 +441,15 @@ public class DatabaseConnection implements Serializable {
 	
 	private Statement stmt = null;
 	
+	/**
+	 * Fast execute.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	public boolean fastExecute(String query) throws SQLException {
 		//Statement stmt = connection.createStatement();	
 		if(stmt == null) stmt = connection.createStatement();
@@ -452,8 +460,11 @@ public class DatabaseConnection implements Serializable {
 	 * Gets the results generated by a previous query.
 	 * 
 	 * @return the result set.
+	 * 
+	 * @throws SQLException the SQL exception
+	 * 
 	 * @exception SQLException
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public ResultSet getResultSet() throws SQLException {
 
@@ -462,11 +473,14 @@ public class DatabaseConnection implements Serializable {
 
 	/**
 	 * Dewtermines if the current query retrieves a result set or updates a
-	 * table
+	 * table.
 	 * 
 	 * @return the update count (-1 if the query retrieves a result set).
+	 * 
+	 * @throws SQLException the SQL exception
+	 * 
 	 * @exception SQLException
-	 *                if an error occurs
+	 * if an error occurs
 	 */
 	public int getUpdateCount() throws SQLException {
 
@@ -476,11 +490,14 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Checks that a given table exists.
 	 * 
-	 * @param tableName
-	 *            the name of the table to look for.
+	 * @param tableName the name of the table to look for.
+	 * 
 	 * @return true if the table exists.
+	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @exception Exception
-	 *                if an error occurs.
+	 * if an error occurs.
 	 */
 	public boolean tableExists(String tableName) throws Exception {
 
@@ -512,11 +529,14 @@ public class DatabaseConnection implements Serializable {
 	/**
 	 * Checks that a given table is empty.
 	 * 
-	 * @param tableName
-	 *            the name of the table to look for.
+	 * @param tableName the name of the table to look for.
+	 * 
 	 * @return true if the table is empty.
+	 * 
+	 * @throws Exception the exception
+	 * 
 	 * @exception Exception
-	 *                if an error occurs.
+	 * if an error occurs.
 	 */
 	public boolean isTableEmpty(String tableName) throws Exception {
 
@@ -540,15 +560,30 @@ public class DatabaseConnection implements Serializable {
 
 	
 	
+	/**
+	 * Checks if is connection menaged by external pool.
+	 * 
+	 * @return true, if is connection menaged by external pool
+	 */
 	public boolean isConnectionMenagedByExternalPool() {
 		return connectionMenagedByExternalPool;
 	}
 
+	/**
+	 * Sets the connection menaged by external pool.
+	 * 
+	 * @param connectionMenagedByExternalPool the new connection menaged by external pool
+	 */
 	public void setConnectionMenagedByExternalPool(
 			boolean connectionMenagedByExternalPool) {
 		this.connectionMenagedByExternalPool = connectionMenagedByExternalPool;
 	}
 
+	/**
+	 * Sets the connection.
+	 * 
+	 * @param connection the new connection
+	 */
 	public void setConnection(Connection connection) {
 		this.connection = connection;
 		setConnectionMenagedByExternalPool(true);

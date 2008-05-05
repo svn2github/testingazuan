@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  *    DatabaseLoader.java
@@ -154,7 +144,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Constructor
+   * Constructor.
+   * 
+   * @throws Exception the exception
    */
   public DatabaseLoader() throws Exception{
   
@@ -166,7 +158,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
 
   /**
-   * Returns a string describing this Loader
+   * Returns a string describing this Loader.
+   * 
    * @return a description of the Loader suitable for
    * displaying in the explorer/experimenter gui
    */
@@ -176,7 +169,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 
   
 
-  /** Resets the Loader ready to read a new data set
+  /**
+   * Resets the Loader ready to read a new data set.
+   * 
    * @throws Exception if an error occurs while disconnecting from the database
    */
   public void reset() throws Exception{
@@ -192,7 +187,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   
-  /** Resets the structure of instances*/
+  /**
+   * Resets the structure of instances.
+   */
   public void resetStructure(){
   
       m_structure = null;
@@ -207,7 +204,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   
   
   /**
-   * Sets the query to execute against the database
+   * Sets the query to execute against the database.
+   * 
    * @param q the query to execute
    */
   public void setQuery(String q) {
@@ -217,7 +215,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
 
   /**
-   * Gets the query to execute against the database
+   * Gets the query to execute against the database.
+   * 
    * @return the query
    */
   public String getQuery() {
@@ -225,7 +224,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * the tip text for this property
+   * the tip text for this property.
+   * 
    * @return the tip text
    */
   public String queryTipText(){
@@ -235,7 +235,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Sets the key columns of a database table
+   * Sets the key columns of a database table.
+   * 
    * @param keys a String containing the key columns in a comma separated list.
    */
   public void setKeys(String keys){
@@ -250,9 +251,10 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
    /**
-   * Gets the key columns' name
-   * @return name of the key columns'
-   */
+    * Gets the key columns' name.
+    * 
+    * @return name of the key columns'
+    */
   public String getKeys(){
   
       StringBuffer key = new StringBuffer();
@@ -265,7 +267,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * the tip text for this property
+   * the tip text for this property.
+   * 
    * @return the tip text
    */
   public String keysTipText(){
@@ -277,8 +280,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Sets the database URL
-   * @param string with the database URL
+   * Sets the database URL.
+   * 
+   * @param url the url
    */
   public void setUrl(String url){
       
@@ -287,7 +291,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Gets the URL
+   * Gets the URL.
+   * 
    * @return the URL
    */
   public String getUrl(){
@@ -296,7 +301,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * the tip text for this property
+   * the tip text for this property.
+   * 
    * @return the tip text
    */
   public String urlTipText(){
@@ -305,8 +311,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Sets the database user
-   * @param the database user name
+   * Sets the database user.
+   * 
+   * @param user the user
    */
   public void setUser(String user){
    
@@ -314,7 +321,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Gets the user name
+   * Gets the user name.
+   * 
    * @return name of database user
    */
   public String getUser(){
@@ -323,7 +331,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * the tip text for this property
+   * the tip text for this property.
+   * 
    * @return the tip text
    */
   public String userTipText(){
@@ -332,8 +341,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * Sets user password for the database
-   * @param the password
+   * Sets user password for the database.
+   * 
+   * @param password the password
    */
   public void setPassword(String password){
    
@@ -341,7 +351,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   /**
-   * the tip text for this property
+   * the tip text for this property.
+   * 
    * @return the tip text
    */
   public String passwordTipText(){
@@ -350,7 +361,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
   
   
-  /** Sets the database url
+  /**
+   * Sets the database url.
+   * 
    * @param url the database url
    * @param userName the user name
    * @param password the password
@@ -367,7 +380,11 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       }    
   }
   
-  /** Sets the database url using the given connection */
+  /**
+   * Sets the database url using the given connection.
+   * 
+   * @param connection the connection
+   */
 	public void setSource(Connection connection) {
 
 		try {
@@ -378,7 +395,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 		}
 	}
   
-  /** Sets the database url
+  /**
+   * Sets the database url.
+   * 
    * @param url the database url
    */  
   public void setSource(String url){
@@ -391,15 +410,18 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
        }    
   }
   
-  /** Sets the database url using the DatabaseUtils file */  
+  /**
+   * Sets the database url using the DatabaseUtils file.
+   * 
+   * @throws Exception the exception
+   */  
   public void setSource() throws Exception{
   
         m_DataBaseConnection = new DatabaseConnection();
   }
   
   /**
-   * Opens a connection to the database
-   *
+   * Opens a connection to the database.
    */
   public void connectToDatabase() {
    
@@ -563,10 +585,13 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 
 
   /**
-   * Determines and returns (if possible) the structure (internally the 
+   * Determines and returns (if possible) the structure (internally the
    * header) of the data set as an empty set of instances.
-   *
+   * 
    * @return the structure of the data set as an empty set of Instances
+   * 
+   * @throws IOException Signals that an I/O exception has occurred.
+   * 
    * @exception IOException if an error occurs
    */
   public Instances getStructure() throws IOException {
@@ -731,8 +756,11 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 
   /**
    * Return the full data set in batch mode (header and all intances at once).
-   *
+   * 
    * @return the structure of the data set as an empty set of Instances
+   * 
+   * @throws IOException Signals that an I/O exception has occurred.
+   * 
    * @exception IOException if there is no source or parsing fails
    */
   public Instances getDataSet() throws IOException {
@@ -1078,14 +1106,17 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
 
   /**
-   * Read the data set incrementally---get the next instance in the data 
+   * Read the data set incrementally---get the next instance in the data
    * set or returns null if there are no
-   * more instances to get. If the structure hasn't yet been 
+   * more instances to get. If the structure hasn't yet been
    * determined by a call to getStructure then method does so before
    * returning the next instance in the data set.
-   *
+   * 
    * @return the next instance in the data set as an Instance object or null
    * if there are no more instances to be read
+   * 
+   * @throws IOException Signals that an I/O exception has occurred.
+   * 
    * @exception IOException if there is an error during parsing
    */
   public Instance getNextInstance() throws IOException {
@@ -1155,7 +1186,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   
   
   
-  /** Gets the setting
+  /**
+   * Gets the setting.
+   * 
    * @return the current setting
    */  
   public String[] getOptions() {
@@ -1180,7 +1213,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     return (String[]) options.toArray(new String[options.size()]);
   }
   
-  /** Lists the available options
+  /**
+   * Lists the available options.
+   * 
    * @return an enumeration of the available options
    */  
   public java.util.Enumeration listOptions() {
@@ -1198,21 +1233,23 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
      return  newVector.elements();
   }
   
-  /** Sets the options.
-   *
+  /**
+   * Sets the options.
+   * 
    * Available options are:
    * -Q the query to specify which tuples to load<br>
    * The query must have the form:
    * SELECT *|<column-list> FROM <table> [WHERE}
    * (default: SELECT * FROM Results0).<p>
-   *
+   * 
    * -P comma separted list of columns that are a unqiue key <br>
    * Only needed for incremental loading, if it cannot be detected automatically<p>
-   *
+   * 
    * -I <br>
    * Sets incremental loading
-   *
+   * 
    * @param options the options
+   * 
    * @throws Exception if options cannot be set
    */  
   public void setOptions(String[] options) throws Exception {
@@ -1251,7 +1288,9 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       
   }
 
-  /** Main method.
+  /**
+   * Main method.
+   * 
    * @param options the options
    */
   public static void main(String [] options) {

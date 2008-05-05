@@ -10,5 +10,13 @@ package it.eng.spagobi.engines.weka.configurators;
  *
  */
 public interface WekaBeanConfigurator {
+	
+	/**
+	 * Sets the up.
+	 * 
+	 * @param bean the new up
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void setup(Object bean) throws Exception;
 }

@@ -1,18 +1,8 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+/**
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *	LICENSE: see COPYING file
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+**/
 
 /*
  *    Saver.java
@@ -136,6 +126,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
     }
   }
   
+  /**
+   * Wait until finish.
+   */
   public void waitUntilFinish() {
 	  while(status != TERMINATED) {
 		  try {
@@ -148,15 +141,17 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   
 
   /**
-   * Global info (if it exists) for the wrapped loader
-   *
+   * Global info (if it exists) for the wrapped loader.
+   * 
    * @return the global info
    */
   public String globalInfo() {
     return m_globalInfo;
   }
 
-  /** Contsructor */  
+  /**
+   * Contsructor.
+   */  
   public Saver() {
     super();
     setSaver(m_Saver);
@@ -168,7 +163,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
 
   
 
-  /** Set the loader to use
+  /**
+   * Set the loader to use.
+   * 
    * @param saver a Saver
    */
   public void setSaver(weka.core.converters.Saver saver) {
@@ -202,7 +199,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   
   
   
-  /** Method reacts to a dataset event and starts the writing process in batch mode
+  /**
+   * Method reacts to a dataset event and starts the writing process in batch mode.
+   * 
    * @param e a dataset event
    */  
   public synchronized void acceptDataSet(DataSetEvent e) {
@@ -224,7 +223,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
       }
   }
   
-  /** Method reacts to a test set event and starts the writing process in batch mode
+  /**
+   * Method reacts to a test set event and starts the writing process in batch mode.
+   * 
    * @param e test set event
    */  
   public synchronized void acceptTestSet(TestSetEvent e) {
@@ -251,8 +252,10 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
       }
   }
   
-  /** Method reacts to a training set event and starts the writing process in batch
-   * mode
+  /**
+   * Method reacts to a training set event and starts the writing process in batch
+   * mode.
+   * 
    * @param e a training set event
    */  
   public synchronized void acceptTrainingSet(TrainingSetEvent e) {
@@ -279,7 +282,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
       }
   }
   
-  /** Saves instances in batch mode */  
+  /**
+   * Saves instances in batch mode.
+   */  
   public synchronized void saveBatch(){
   
       m_Saver.setRetrieval(m_Saver.BATCH);
@@ -290,9 +295,11 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
       block(true);
   }
   
-  /** Methods reacts to instance events and saves instances incrementally.
+  /**
+   * Methods reacts to instance events and saves instances incrementally.
    * If the instance to save is null, the file is closed and the saving process is
    * ended.
+   * 
    * @param e instance event
    */  
   public synchronized void acceptInstance(InstanceEvent e) {
@@ -345,8 +352,8 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   
 
   /**
-   * Get the saver
-   *
+   * Get the saver.
+   * 
    * @return a <code>weka.core.converters.Saver</code> value
    */
   public weka.core.converters.Saver getSaver() {
@@ -354,8 +361,8 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   }
 
   /**
-   * Set the saver
-   *
+   * Set the saver.
+   * 
    * @param algorithm a Saver
    */
   public void setWrappedAlgorithm(Object algorithm) 
@@ -369,21 +376,25 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   }
 
   /**
-   * Get the saver
-   *
+   * Get the saver.
+   * 
    * @return a Saver
    */
   public Object getWrappedAlgorithm() {
     return getSaver();
   }
 
-  /** Stops the bean */  
+  /**
+   * Stops the bean.
+   */  
   public void stop() {
   }
   
   
-  /** The main method for testing
-   * @param args
+  /**
+   * The main method for testing.
+   * 
+   * @param args the args
    */  
   public static void main(String [] args) {
     try {

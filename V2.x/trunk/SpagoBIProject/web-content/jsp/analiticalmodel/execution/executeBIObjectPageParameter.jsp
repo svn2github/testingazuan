@@ -144,24 +144,4 @@ createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshots
 <% } %>
 <%-- End Snapshots --%>
 
-<%-- If all sliders are initially closed, open the parameters slider --%>
-<script>
-Ext.onReady(function() {
-	var isParametersSliderOpen = <%= pageContext.getAttribute("parametersBoxOpen") %>;
-	var isViewpointsSliderOpen = <%= pageContext.getAttribute("viewpointsBoxOpen") != null ? pageContext.getAttribute("viewpointsBoxOpen") : "false" %>;
-	var isSubObjectsSliderOpen = <%= pageContext.getAttribute("subobjectsBoxOpen") != null ? pageContext.getAttribute("subobjectsBoxOpen") : "false" %>;
-	var isSnapshotsSliderOpen = <%= pageContext.getAttribute("snapshotsBoxOpen") != null ? pageContext.getAttribute("snapshotsBoxOpen") : "false" %>;
-	if (!isParametersSliderOpen && !isViewpointsSliderOpen && !isSubObjectsSliderOpen && !isSnapshotsSliderOpen) {
-		if (isMoz()) {
-			var evt = document.createEvent("MouseEvents");
-			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-			document.getElementById('toggle_Parameters<%= uuid %>').dispatchEvent(evt);
-		} else {
-			document.getElementById('toggle_Parameters<%= uuid %>').click();
-		}
-	}
-});
-</script>
-<%-- End: If all sliders are initially closed, open the parameters slider --%>
-
 <%@ include file="/jsp/commons/footer.jsp"%>

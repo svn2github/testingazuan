@@ -180,13 +180,13 @@ CREATE TABLE SBI_OBJECTS (
        VISIBLE              SMALLINT NOT NULL,
        UUID                 VARCHAR(40) NOT NULL,
 	     DATA_SOURCE_ID 		  INTEGER,
-	     DATA_SET_ID 		  INTEGER,
+	     DATA_SET_ID 		      INTEGER,
 	     DESCR_EXT            TEXT,
 	     OBJECTIVE            TEXT,
 	     LANGUAGE             VARCHAR(45),
 	     CREATION_DATE        TIMESTAMP NOT NULL,
 	     CREATION_USER        VARCHAR(45) NOT NULL,
-		 KEYWORDS			  TEXT,
+		   KEYWORDS			        TEXT,
               PRIMARY KEY (BIOBJ_ID)
 )TYPE=INNODB;
 

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,10 +32,16 @@ public class SecurityInitializer implements InitializerIFace {
 
 	private SourceBean _config = null;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.init.InitializerIFace#getConfig()
+	 */
 	public SourceBean getConfig() {
 		return _config;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.init.InitializerIFace#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
 		        "SecurityInitializer::init: start method", config);

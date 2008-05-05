@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -60,10 +60,10 @@ public class RoleSynchronizer {
 	static private Logger logger = Logger.getLogger(RoleSynchronizer.class);
 	
 	/**
-	 * Syncronize the portal roles with SpagoBI roles importing roles missing in SpagoBI. 
-	 * if a role yet exist into SpagoBI table list, 
-	 * a tracing message is added and the list iteration goes on; if there is a new role, 
-	 * it is inserted into role database and another tracing message is added. 
+	 * Syncronize the portal roles with SpagoBI roles importing roles missing in SpagoBI.
+	 * if a role yet exist into SpagoBI table list,
+	 * a tracing message is added and the list iteration goes on; if there is a new role,
+	 * it is inserted into role database and another tracing message is added.
 	 */
 	public void synchronize() {
 		logger.debug("IN");

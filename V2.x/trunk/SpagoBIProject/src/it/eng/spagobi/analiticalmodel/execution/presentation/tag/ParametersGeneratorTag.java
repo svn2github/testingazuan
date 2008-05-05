@@ -155,8 +155,25 @@ public class ParametersGeneratorTag extends TagSupport {
 	    Iterator iter = parameters.iterator();
 	    while (iter.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iter.next();
-			createParamValueHiddenInput(htmlStream, biparam);
-			createParamChangedHiddenInput(htmlStream, biparam);
+			
+			String typeCode = getModalityValue(biparam).getITypeCd();
+			Parameter par = biparam.getParameter();
+			String parType = "";
+			if (par != null){
+				parType = par.getType();
+			}
+			if (!typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {			
+					createParamValueHiddenInput(htmlStream, biparam);	
+					createParamChangedHiddenInput(htmlStream, biparam);
+			}
+			else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {
+				if (!parType.equals("DATE")){
+					createParamValueHiddenInput(htmlStream, biparam);
+					createParamChangedHiddenInput(htmlStream, biparam);
+				}			    
+			}
+			// createParamValueHiddenInput(htmlStream, biparam);
+			// createParamChangedHiddenInput(htmlStream, biparam);
 			// the biparameter is not showed if the biparameter is single value and has valid value
 			if (!isSingleValue(biparam) || !biparam.hasValidValues()) {
 			    // opens the div tag for the parameters form only the first
@@ -713,11 +730,11 @@ public class ParametersGeneratorTag extends TagSupport {
     		+ " dojo.require('dojo.widget.DropdownDatePicker');"
     		+ " </script>"
     		+ " <input style='width:230px;' type='text' "
-    		+ "	   name='" + biparam.getParameterUrlName()+ "Desc' id='"+ biparam.getParameterUrlName()+requestIdentity+ "Desc'" 
+    		+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
     		+ "	   dojoType='dropdowndatepicker' widgetId='startDateWidget' "
-    		+ "    class='portlet-form-input-field' " + "value='" + getParameterValuesAsString(biparam) + "' "
+    		+ "    class='portlet-form-input-field' value='" + getParameterValuesAsString(biparam) + "' "
     		+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
-    		+ requestIdentity + "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');");
+    		+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
     	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
     	    htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
     	    htmlStream.append("this.form.submit();");

@@ -121,9 +121,10 @@ public class AbstractDatasetProviderConfigurator {
 			for(int j = 0; j < parameters.size(); j++) {
 				SourceBean parameterSB = (SourceBean)parameters.get(j);
 				String type = (String)parameterSB.getAttribute("TYPE");
+				String scope = (String)parameterSB.getAttribute("SCOPE");
 				String name = (String)parameterSB.getAttribute("NAME");
 				String value = (String)parameterSB.getAttribute("VALUE");
-				link.addParameter(type, name, value);
+				link.addParameter(type, scope, name, value);
 			}
 			
 			level.setLink(link);

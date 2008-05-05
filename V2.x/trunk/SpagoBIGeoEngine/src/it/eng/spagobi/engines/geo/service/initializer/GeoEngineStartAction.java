@@ -53,6 +53,8 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	// request
 	/** The Constant EXECUTION_CONTEXT. */
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
+	public static final String EXECUTION_ID = "EXECUTION_ID";
+	public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
 	
 	//response 
 	/** The Constant IS_DOC_COMPOSITION_MODE_ACTIVE. */
@@ -92,6 +94,8 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			GeoEngineAnalysisState analysisState = null;
 			String contextUrl;
 			String executionContext;
+			String executionId;
+			String documentLabel;
 			
 			
 			if(false) {
@@ -130,13 +134,15 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			
 			
 			executionContext = getAttributeAsString( EXECUTION_CONTEXT ); 
-			//executionContext = "DOCUMENT_COMPOSITION";
+			executionId = getAttributeAsString( EXECUTION_ID );
+			documentLabel = getAttributeAsString( DOCUMENT_LABEL );
+			
 			logger.debug("Execution context: " + executionContext);
 			String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
 			logger.debug("Document composition mode active: " + isDocumentCompositionModeActive);
 			
 			
-			contextUrl = "http://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();	
+			contextUrl = getHttpRequest().getProtocol().substring(0, getHttpRequest().getProtocol().indexOf('/'))+ "://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();	
 			logger.debug("Context path: " + contextUrl);
 	
 			Map env = new HashMap();
@@ -147,9 +153,11 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			if("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive)) {
 				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
 				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
+				env.put(Constants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
 			} else {
 				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "TRUE");
 				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
+				env.put(Constants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
 			}
 			
 			if(standardHierarchy != null) {

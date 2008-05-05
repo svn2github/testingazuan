@@ -127,9 +127,6 @@ public class Constants {
 	
 	// ENV PROPERTIES
 	
-	/** The execution id. */
-	public static final String EXECUTION_ID = "EXECUTION_ID";
-	
 	/** The Constant ENV_DATASOURCE. */
 	public static final String ENV_DATASOURCE = "DATASOURCE";
 	
@@ -147,6 +144,9 @@ public class Constants {
 	
 	/** The Constant ENV_IS_WINDOWS_ACTIVE. */
 	public static final String ENV_IS_WINDOWS_ACTIVE = "ENV_IS_WINDOWS_ACTIVE";
+	
+	/** The Constant ENV_EXEC_IFRAME_ID. */
+	public static final String ENV_EXEC_IFRAME_ID = "ENV_EXEC_IFRAME_ID";
 	
 	// OUTPUT FORMAT TYPES AND MIME TYPES
 	
@@ -212,6 +212,8 @@ public class Constants {
 	
 	/** The Constant TEXT_MIME_TYPE. */
 	public static final String TEXT_MIME_TYPE = "text/plan";
+
+	;
 	
 	
 		

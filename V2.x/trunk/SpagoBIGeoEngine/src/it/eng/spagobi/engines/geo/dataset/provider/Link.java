@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.geo.dataset.provider;
 import it.eng.spagobi.engines.geo.Constants;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,8 +56,8 @@ public class Link {
 	 * @param name the name
 	 * @param value the value
 	 */
-	public void addParameter(String type, String name, String value){
-		Parameter parameter = new Parameter(type, name, value);
+	public void addParameter(String type, String scope, String name, String value){
+		Parameter parameter = new Parameter(type, scope, name, value);
 		parameters.put(parameter.getName(), parameter);
 	}
 	
@@ -64,6 +65,15 @@ public class Link {
 	 * The Class Parameter.
 	 */
 	public static class Parameter {
+		
+		// types
+		public static final String RELATIVE = "relative";
+		public static final String ABSOLUTE = "absolute";
+		
+		// scopes
+		public static final String DATASET = "dataset";
+		public static final String ENVIRONMENT = "environment";
+		
 		
 		/** The type. */
 		String type;
@@ -74,6 +84,9 @@ public class Link {
 		/** The value. */
 		String value;
 		
+		/** The value. */
+		String scope;
+		
 		/**
 		 * Instantiates a new parameter.
 		 * 
@@ -81,8 +94,9 @@ public class Link {
 		 * @param name the name
 		 * @param value the value
 		 */
-		public Parameter(String type, String name, String value) {
+		public Parameter(String type, String scope, String name, String value) {
 			 setType(type);
+			 setScope(scope);
 			 setName(name);
 			 setValue(value);
 		}
@@ -140,6 +154,40 @@ public class Link {
 		public void setValue(String value) {
 			this.value = value;
 		}
+
+		public String getScope() {
+			return scope;
+		}
+
+		public void setScope(String scope) {
+			this.scope = scope;
+		}
+		
+		public boolean isRelative() {
+			return RELATIVE.equalsIgnoreCase( getType() );
+		}
+		
+		public boolean isRealtiveToEnvironment() {
+			return isRelative() && ENVIRONMENT.equalsIgnoreCase( getScope() );
+		}
+		
+		public boolean isRealtiveToDataset() {
+			return isRelative() && DATASET.equalsIgnoreCase( getScope() );
+		}
+		
+		public String getActualValue(ResultSet resultSet, Map env) throws SQLException {
+			String actualValue = null;
+			if( isRelative() ) {
+				if( isRealtiveToDataset() ) {
+					actualValue = resultSet.getString(resultSet.findColumn(getValue()));
+				} else if ( isRealtiveToEnvironment()) {
+					actualValue = "" + env.get( getValue() );
+				}
+			} else {
+				actualValue = getValue();
+			}    	
+			return actualValue;
+		}
 	}
 
 	/**
@@ -151,45 +199,31 @@ public class Link {
 	 */
 	public String toString(ResultSet resultSet, Map env) {
 		
-		/*String link = null;
-			
-		if(baseUrl == null) return DEFAULT_BASE_URL;
-		
-		link = baseUrl + "?";
-		*/
 		String link = null;
-		String executionId = (String) env.get(Constants.EXECUTION_ID);
+		String execIframeId = null;
 		String targetDocLabel = "";
 		String parametersStr = "";
+		
+		
+		execIframeId = (String) env.get(Constants.ENV_EXEC_IFRAME_ID);
 		
     	try{
     		Iterator it = parameters.keySet().iterator();
     		while(it.hasNext()) {
     			String key = (String)it.next();
     			Parameter param = (Parameter)parameters.get(key);
-    			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {
-        			if(param.getType().equalsIgnoreCase("absolute")) {
-        				targetDocLabel += param.getValue();
-        			} else if(param.getType().equalsIgnoreCase("relative")) {
-        				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));
-        				targetDocLabel += realValue;
-        			}
+    			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {        			
+    				targetDocLabel = param.getActualValue(resultSet, env);	
     			} else {
-        			if(param.getType().equalsIgnoreCase("absolute")) {
-        				parametersStr += param.getName() + "=" + param.getValue() + "&";
-        			} else if(param.getType().equalsIgnoreCase("relative")) {
-        				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));
-        				parametersStr += param.getName() + "=" + realValue + "&";
-        			}
+    				parametersStr += param.getName() + "=" + param.getActualValue(resultSet, env) + "&"; 
     			}
     		}
     		if (parametersStr.endsWith("&")) {
     			parametersStr = parametersStr.substring(0, parametersStr.length()-1);
     		}
     		
-    		link = "javascript:parent.execCrossNavigation('iframeexec" + executionId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
+    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
     		
-	    	//link += "')";
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     	}

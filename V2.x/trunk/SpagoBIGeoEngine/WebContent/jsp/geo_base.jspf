@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	serviceRequest = requestContainer.getServiceRequest();
 	serviceResponse = responseContainer.getServiceResponse();
 	
-	baseUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();	
+	baseUrl = request.getProtocol().substring(0, request.getProtocol().indexOf('/')) + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();	
 	
 	analysisMetadata = (EngineAnalysisMetadata)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_METADATA);
 	analysisState = (GeoEngineAnalysisState)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_STATE);

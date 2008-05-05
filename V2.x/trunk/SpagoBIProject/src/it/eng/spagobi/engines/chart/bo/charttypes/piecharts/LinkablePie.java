@@ -125,13 +125,16 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
 					SourceBean att = (SourceBean) iterator.next();
 					String name=(String)att.getAttribute("name");
+					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
-					if(name.equalsIgnoreCase("categoryurlname")){
-						categoryUrlName=value;
+					
+					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+						if(value.equalsIgnoreCase("category"))categoryUrlName=value;
 					}
-					else{
+					else{												// Case absolute
 						drillParameter.put(name, value);
 					}
+					
 				}
 			}
 		}
@@ -582,8 +585,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 			String name = (String) iterator.next();
 			String value=(String)drillParameters.get(name);
 			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				//document_parameter+="%26"+name+"%3D"+value;
-				document_parameter+="&"+name+"="+value;
+				document_parameter+="%26"+name+"%3D"+value;
+				//document_parameter+="&"+name+"="+value;
 			}
 
 		}

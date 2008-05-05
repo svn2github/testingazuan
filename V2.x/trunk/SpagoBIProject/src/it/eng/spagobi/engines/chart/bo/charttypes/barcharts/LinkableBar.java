@@ -62,12 +62,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
 
-/**
- * Inherited by IChart.
- * 
- * @param content the content
- */
-	
+
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
@@ -86,14 +81,14 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
 					SourceBean att = (SourceBean) iterator.next();
 					String name=(String)att.getAttribute("name");
+					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
-					if(name.equalsIgnoreCase("categoryurlname")){
-						categoryUrlName=value;
+
+					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+						if(value.equalsIgnoreCase("serie"))serieUrlname=value;
+						if(value.equalsIgnoreCase("category"))categoryUrlName=value;
 					}
-					else if(name.equalsIgnoreCase("seriesurlname")){
-						serieUrlname=value;
-					}
-					else{
+					else{												// Case absolute
 						drillParameter.put(name, value);
 					}
 				}
@@ -113,7 +108,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	 * 
 	 * @return the j free chart
 	 */
-		
+
 
 
 	public JFreeChart createChart(String chartTitle, Dataset dataset) {
@@ -211,23 +206,23 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	 * 
 	 * @return the document_ parameters
 	 */
-			
+
 	public String getDocument_Parameters(HashMap drillParameters) {
 		String document_parameter="";
 		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
 			String name = (String) iterator.next();
 			String value=(String)drillParameters.get(name);
 			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				//document_parameter+="%26"+name+"%3D"+value;
-				document_parameter+="&"+name+"="+value;
+				document_parameter+="%26"+name+"%3D"+value;
+				//document_parameter+="&"+name+"="+value;
 			}
 
 		}
 		return document_parameter;
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getRootUrl()
 	 */

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
+
 import org.apache.log4j.Logger;
 import org.jfree.chart.urls.StandardPieURLGenerator;
 import org.jfree.data.category.CategoryDataset;
@@ -31,26 +33,26 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 	private String categoryUrlLabel="catergory";
 	private boolean document_composition=false;
 	private static transient Logger logger=Logger.getLogger(MyPieUrlGenerator.class);
-
+	private String URL=null;
 
 	/* (non-Javadoc)
 	 * @see org.jfree.chart.urls.StandardPieURLGenerator#generateURL(org.jfree.data.general.PieDataset, java.lang.Comparable, int)
 	 */
 	public String generateURL(PieDataset dataset, Comparable key, int pieIndex) {
 		logger.debug("IN");
+		URL=new String();
+		URL=super.generateURL(dataset, key, 0);
 
-		String URL=super.generateURL(dataset, key, 0);
-
+		// take the categoryUrlLabel, default is "category"
 		if(categoryUrlLabel==null){categoryUrlLabel="category";}
-		else{
-			String replace=categoryUrlLabel+"=";
-			URL=replaceParameter(URL, replace);
+		String categoryToMove=replaceAndGetParameter("category=", categoryUrlLabel);
 
-		}
-		String categoryRep=categoryUrlLabel+"=";
-		if(URL.contains("category=")){
-			URL=URL.replace("category=", (categoryRep));
-		}
+		// this is the string to move inside PARAMETERS=
+		String toMove=categoryToMove;
+
+		// insert into PARAMETERS=
+		String parameters=ObjectsTreeConstants.PARAMETERS;
+		URL=URL.replaceAll(parameters+"=", parameters+"="+toMove);
 
 		if(document_composition){
 			URL=URL+"');";
@@ -143,53 +145,38 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		this.document_composition = document_composition;
 	}
 
+	
+	
 
+	private String replaceAndGetParameter(String toReplace, String replacer){
+		// toReplace, series= or category=
 
-	private String replaceParameter(String URL, String replace){
-		logger.debug("IN");
-		// if there is already a parameter named like serieUrlLabel delete it
-
-		if(URL.contains(replace)){
-			int startIndex=URL.indexOf(replace);
-			int otherStart=URL.lastIndexOf(replace);
-			if(startIndex!=otherStart){ //menas that there are more occurrence of the same parameter... ERROR
-				logger.error("Too many occurrence of the same parameter defined in template");
-				return null;
-			}
-			else{
-
-				int endIndex=URL.indexOf('&', startIndex);
-
-				String delete="";
-				if(!(endIndex==-1)){
-					delete=URL.substring(startIndex, endIndex);
-				}
-				else{
-					delete=URL.substring(startIndex, URL.length());
-				}
-
-				char before=URL.charAt(startIndex-1);
-
-
-				if(URL.contains("?"+delete+"&")){ // in this case delete the & after
-					URL=URL.replaceAll((delete+"&"), "");
-				}
-				else if(URL.contains("&"+delete)) 
-				{
-					URL=URL.replaceAll(("&"+delete), "");
-				}
-				else{
-					URL=URL.replaceAll(delete, "");
-				}
-			}
+		// Start index to substitute, check there is only one
+		int startIndex=URL.indexOf(toReplace);
+		int otherStart=URL.lastIndexOf(toReplace);
+		if(startIndex!=otherStart){ //menas that there are more occurrence of the same parameter... ERROR
+			logger.error("Too many occurrence of the same parameter defined in template");
+			return null;
 		}
-		logger.debug("OUT");
-		return URL;
+		//end index of thing to substitute
+		int endIndex=URL.indexOf('&', startIndex);
+
+		// if there is no end index that is the end of the string
+		if(endIndex==-1)endIndex=URL.length();
+		String toMove=URL.substring(startIndex, endIndex);
+
+		URL=URL.replaceAll("&amp;"+toMove, "");
+
+			toMove=toMove.replaceAll("category", replacer);	
+
+
+		toMove=toMove.replaceAll("=", "%253");
+		toMove="%2526"+toMove;
+
+
+		return toMove;
+
+
 	}
-
-
-
-
-
-
+	
 }

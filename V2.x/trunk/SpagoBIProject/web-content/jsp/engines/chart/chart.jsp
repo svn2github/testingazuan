@@ -49,6 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	BIObject objO=null;
 	String uuidO="";
 	boolean docComposition=false;
+	String executionFlowIdO="";
 
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
    	String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
@@ -59,6 +60,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%	
 					objO=obj;
 					uuidO=uuid;
+					executionFlowIdO=executionFlowId;
 			   }
    		else // in document composition case doesn't call header so set Object and uuid
 			   {
@@ -68,6 +70,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   uuidO = uuidObjO.toString();
 				   uuidO = uuidO.replaceAll("-", "");
 	   			   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+	   			ExecutionManager executionManager = (ExecutionManager) aSessionContainer.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+	   			executionFlowIdO = (String) aSessionContainer.getAttribute("EXECUTION_FLOW_ID");
+	   			if (executionFlowIdO != null) aSessionContainer.delAttribute("EXECUTION_FLOW_ID");
 			   }
    		%>
 
@@ -210,28 +215,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String rootDocParameter="";
 		rootDocParameter=((ILinkableChart)sbi).getDocument_Parameters(((ILinkableChart)sbi).getDrillParameter());
 
-		
-		if(!rootDocParameter.equals("")){
-		//rootPar.put("DOCUMENT_PARAMETERS",rootDocParameter);}
-		//rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
-		}
+		rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
 	
 		String drillLabel="";
 			drillLabel=((ILinkableChart)sbi).getDrillLabel();
 
 		
 		if(drillLabel!=null && drillLabel!=""){
-			rootPar.put("DOCUMENT_LABEL",drillLabel);
+			rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,drillLabel);
 		}
-		rootPar.put("PAGE","ExecuteBIObjectPage");
-		rootPar.put("MESSAGEDET", "EXEC_PHASE_CREATE_PAGE");
-		rootPar.put("LIGHT_NAVIGATOR_DISABLED","TRUE");
-		//anto rootPar.put("PAGE","DirectExecutionPage");
-		//rootPar.put("MODULE","DirectExecutionModule");
-		//anto rootPar.put("OPERATION","Execute");
-		//rootPar.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
-		//anto rootPar.put("USERNAME",userId);
+		rootPar.put("PAGE",ExecuteBIObjectModule.MODULE_PAGE);
+		rootPar.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
+		rootPar.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
+		rootPar.put("EXECUTION_FLOW_ID", executionFlowIdO);
+		rootPar.put("SOURCE_EXECUTION_ID", uuidO);
 
+		
+		
+		
 		//get from the linkableBar the label and eventually the parameters to pass
 		if(((ILinkableChart)sbi).getDrillLabel()!=null)
 					rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,((ILinkableChart)sbi).getDrillLabel());
@@ -239,7 +240,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		// Old way portlet		
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
-		rootUrl=rootUrl+rootDocParameter;
+		//rootUrl=rootUrl+rootDocParameter;
 	
 		String completeUrl=rootUrl;
 	

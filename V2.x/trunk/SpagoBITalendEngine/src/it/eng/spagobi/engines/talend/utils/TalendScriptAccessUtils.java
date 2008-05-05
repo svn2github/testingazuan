@@ -1,23 +1,7 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend.utils;
 
@@ -37,6 +21,13 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 public class TalendScriptAccessUtils {
 	
 	
+	/**
+	 * Gets the executable class.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the executable class
+	 */
 	public static String getExecutableClass(Job job) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -57,6 +48,13 @@ public class TalendScriptAccessUtils {
 	}
 	
 
+	/**
+	 * Gets the executable file name.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the executable file name
+	 */
 	public static String getExecutableFileName(Job job) {
 		StringBuffer buffer = new StringBuffer();
 		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
@@ -77,6 +75,14 @@ public class TalendScriptAccessUtils {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the included libs.
+	 * 
+	 * @param job the job
+	 * @param runtimeRepository the runtime repository
+	 * 
+	 * @return the included libs
+	 */
 	public static List getIncludedLibs(Job job, RuntimeRepository runtimeRepository) {
 		List libs = new ArrayList();
 		if(job.isPerlJob()) {
@@ -102,6 +108,13 @@ public class TalendScriptAccessUtils {
 	// CONTEXT HANDLING METHODS
 	///////////////////////////////////////////////////////////////
 	
+	/**
+	 * Gets the context file name.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the context file name
+	 */
 	public static String getContextFileName(Job job) {		
 		StringBuffer buffer = new StringBuffer();
 		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
@@ -122,6 +135,14 @@ public class TalendScriptAccessUtils {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the context file.
+	 * 
+	 * @param job the job
+	 * @param runtimeRepository the runtime repository
+	 * 
+	 * @return the context file
+	 */
 	public static File getContextFile(Job job, RuntimeRepository runtimeRepository) {		
 		File contextFile = null;
 		StringBuffer buffer = new StringBuffer();

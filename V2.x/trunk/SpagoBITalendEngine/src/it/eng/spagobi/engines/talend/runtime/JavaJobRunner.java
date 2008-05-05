@@ -1,23 +1,7 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
@@ -70,11 +54,17 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 		this.runtimeRepository = runtimeRepository;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#setSession(javax.servlet.http.HttpSession)
+	 */
 	public void setSession(HttpSession _session){
 		session=_session;
 	}
 	
 		
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#run(it.eng.spagobi.engines.talend.runtime.Job, java.util.Map, it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils, java.lang.String)
+     */
     public void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
     	File contextFile = null;
     	String tmpDirName = null;
@@ -199,6 +189,13 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
     }
     
     
+    /**
+     * Gets the context.
+     * 
+     * @param job the job
+     * 
+     * @return the context
+     */
     public Properties getContext(Job job){
     	Properties context = null;
     	StringBuffer buffer = null;
@@ -237,6 +234,13 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
     	return context;    		
     }
 
+	/**
+	 * Gets the class path.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the class path
+	 */
 	public String getClassPath(Job job) {
     	StringBuffer classpath = new StringBuffer();
     	

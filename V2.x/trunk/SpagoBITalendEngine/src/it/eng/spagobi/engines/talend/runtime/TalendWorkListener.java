@@ -1,6 +1,8 @@
 /**
- * 
- */
+
+ LICENSE: see COPYING file
+  
+**/
 package it.eng.spagobi.engines.talend.runtime;
 
 import org.apache.log4j.Logger;
@@ -18,11 +20,17 @@ public class TalendWorkListener implements WorkListener {
     private static transient Logger logger = Logger.getLogger(TalendWorkListener.class);
 	
 	
+    /* (non-Javadoc)
+     * @see commonj.work.WorkListener#workAccepted(commonj.work.WorkEvent)
+     */
     public void workAccepted(WorkEvent event) {
 	logger.info("IN");
 
     }
 
+    /* (non-Javadoc)
+     * @see commonj.work.WorkListener#workCompleted(commonj.work.WorkEvent)
+     */
     public void workCompleted(WorkEvent event) {
 	logger.info("IN");
 	WorkException e= event.getException();
@@ -37,12 +45,18 @@ public class TalendWorkListener implements WorkListener {
 
     }
 
+    /* (non-Javadoc)
+     * @see commonj.work.WorkListener#workRejected(commonj.work.WorkEvent)
+     */
     public void workRejected(WorkEvent event) {
 	logger.info("IN");
 
     }
 
 
+    /* (non-Javadoc)
+     * @see commonj.work.WorkListener#workStarted(commonj.work.WorkEvent)
+     */
     public void workStarted(WorkEvent event) {
 	logger.info("IN");
 

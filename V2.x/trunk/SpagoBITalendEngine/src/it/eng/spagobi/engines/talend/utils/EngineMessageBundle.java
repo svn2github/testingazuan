@@ -1,23 +1,7 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend.utils;
 
@@ -35,10 +19,12 @@ public class EngineMessageBundle {
     }
 	
     /**
-     * Returns an internazionalized message
+     * Returns an internazionalized message.
      * 
      * @param code the code of the message.
      * @param bundle the message bundle.
+     * @param userLocale the user locale
+     * 
      * @return the internazionalized message.
      */
     public static String getMessage(String code, String bundle, Locale userLocale) {
@@ -85,10 +71,28 @@ public class EngineMessageBundle {
         else return message;
     }
 	
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param userLocale the user locale
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, Locale userLocale) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale);
     }
     
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param bundle the bundle
+     * @param userLocale the user locale
+     * @param arguments the arguments
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, String bundle, Locale userLocale, String[] arguments) {
     	String message = getMessage(code, DEFAULT_BUNDLE, userLocale);
         for (int i = 0; i < arguments.length; i++){
@@ -97,6 +101,15 @@ public class EngineMessageBundle {
     	return message;
     }
     
+    /**
+     * Gets the message.
+     * 
+     * @param code the code
+     * @param userLocale the user locale
+     * @param arguments the arguments
+     * 
+     * @return the message
+     */
     public static String getMessage(String code, Locale userLocale, String[] arguments) {
     	return getMessage(code, DEFAULT_BUNDLE, userLocale, arguments);
     }

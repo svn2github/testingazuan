@@ -1,29 +1,12 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend.client;
 
 import it.eng.spagobi.engines.talend.exception.AuthenticationFailedException;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
-import it.eng.spagobi.engines.talend.services.JobUploadService;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,10 +16,8 @@ import java.util.zip.ZipException;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -63,6 +44,17 @@ public class SpagoBITalendEngineClient {
 	}
 	
 	
+	/**
+	 * Instantiates a new spago bi talend engine client.
+	 * 
+	 * @param usr the usr
+	 * @param pwd the pwd
+	 * @param host the host
+	 * @param port the port
+	 * @param appContext the app context
+	 * 
+	 * @throws AuthenticationFailedException the authentication failed exception
+	 */
 	public SpagoBITalendEngineClient(String usr, String pwd, String host,String port, String appContext)  
 	throws AuthenticationFailedException { 
 		this.host = host;
@@ -70,14 +62,29 @@ public class SpagoBITalendEngineClient {
 		this.appContext = appContext;
 	} 
 
+	/**
+	 * Gets the engine version.
+	 * 
+	 * @return the engine version
+	 */
 	public String getEngineVersion() {
 		return getEngineInfo("version");
 	}
 	
+	/**
+	 * Gets the engine name.
+	 * 
+	 * @return the engine name
+	 */
 	public String getEngineName() {
 		return getEngineInfo("name");
 	}
 	
+	/**
+	 * Checks if is engine availible.
+	 * 
+	 * @return true, if is engine availible
+	 */
 	public boolean isEngineAvailible() {
 		return (getEngineInfo("version") != null);
 	}
@@ -127,6 +134,14 @@ public class SpagoBITalendEngineClient {
 		return version;
 	}
 		
+	/**
+	 * Deploy job.
+	 * 
+	 * @param jobDeploymentDescriptor the job deployment descriptor
+	 * @param executableJobFiles the executable job files
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean deployJob(JobDeploymentDescriptor jobDeploymentDescriptor, File executableJobFiles)  {
 		
 		HttpClient client;
@@ -177,6 +192,14 @@ public class SpagoBITalendEngineClient {
         return result;
 	}
 	
+	/**
+	 * The main method.
+	 * 
+	 * @param args the arguments
+	 * 
+	 * @throws ZipException the zip exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void main(String[] args) throws ZipException, IOException {
 		
 		

@@ -1,23 +1,7 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend;
 
@@ -38,6 +22,11 @@ public class SpagoBITalendEngine implements Version {
 	
 	static private SpagoBITalendEngine instance;
 	
+	/**
+	 * Gets the single instance of SpagoBITalendEngine.
+	 * 
+	 * @return single instance of SpagoBITalendEngine
+	 */
 	static public SpagoBITalendEngine getInstance() {
 		if(instance == null) instance = new SpagoBITalendEngine();
 		return instance;
@@ -47,18 +36,38 @@ public class SpagoBITalendEngine implements Version {
 		config = new SpagoBITalendEngineConfig();
 	}
 	
+	/**
+	 * Gets the version.
+	 * 
+	 * @return the version
+	 */
 	public static String getVersion() {
 		return MAJOR + "." + MINOR + "." + REVISION;
 	}
 	    
+	/**
+	 * Gets the full name.
+	 * 
+	 * @return the full name
+	 */
 	public static String getFullName() {
 		return ENGINE_NAME + "-" + getVersion();
 	}
 	    
+	/**
+	 * Gets the info.
+	 * 
+	 * @return the info
+	 */
 	public static String getInfo() {
 		return getFullName() + " [ " + WEB +" ]";
 	}
 
+	/**
+	 * Gets the runtime repository.
+	 * 
+	 * @return the runtime repository
+	 */
 	public RuntimeRepository getRuntimeRepository() {
 		if(runtimeRepository == null) {
 			File rrRootDir = config.getRuntimeRepositoryRootDir();
@@ -67,10 +76,20 @@ public class SpagoBITalendEngine implements Version {
 		return runtimeRepository;
 	}
 
+	/**
+	 * Gets the config.
+	 * 
+	 * @return the config
+	 */
 	public SpagoBITalendEngineConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * Gets the compliance version.
+	 * 
+	 * @return the compliance version
+	 */
 	public static String getComplianceVersion() {
 		return CLIENT_COMPLIANCE_VERSION;
 	}

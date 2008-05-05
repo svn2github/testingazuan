@@ -1,24 +1,8 @@
 /**
 
- SpagoBI - The Business Intelligence Free Platform
-
- Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
+ LICENSE: see COPYING file
+  
+**/
 package it.eng.spagobi.engines.talend.utils;
 
 import java.io.BufferedOutputStream;
@@ -41,6 +25,14 @@ import java.util.zip.ZipFile;
  */
 public class ZipUtils {
 
+	/**
+	 * Copy input stream.
+	 * 
+	 * @param in the in
+	 * @param out the out
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static final void copyInputStream(InputStream in, OutputStream out)
 			throws IOException {
 		byte[] buffer = new byte[1024];
@@ -54,6 +46,12 @@ public class ZipUtils {
 	}
 
 	
+	/**
+	 * Unzip.
+	 * 
+	 * @param zipFile the zip file
+	 * @param destDir the dest dir
+	 */
 	public static void unzip(ZipFile zipFile, File destDir) {
 		
 		Enumeration entries;
@@ -88,6 +86,12 @@ public class ZipUtils {
 		}
 	}
 	
+	/**
+	 * Unzip skip first level.
+	 * 
+	 * @param zipFile the zip file
+	 * @param destDir the dest dir
+	 */
 	public static void unzipSkipFirstLevel(ZipFile zipFile, File destDir) {
 		
 		Enumeration entries = null;;
@@ -133,6 +137,14 @@ public class ZipUtils {
 		}
 	}
 	
+	/**
+	 * Gets the directory name by level.
+	 * 
+	 * @param zipFile the zip file
+	 * @param levelNo the level no
+	 * 
+	 * @return the directory name by level
+	 */
 	public static String[] getDirectoryNameByLevel(ZipFile zipFile, int levelNo) {
 		
 		Set names = new HashSet();

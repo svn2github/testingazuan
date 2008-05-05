@@ -1,3 +1,8 @@
+/**
+
+ LICENSE: see COPYING file
+  
+**/
 package it.eng.spagobi.engines.talend.runtime;
 
 import it.eng.spagobi.engines.talend.utils.FileUtils;
@@ -34,6 +39,18 @@ public class JobRunnerFacilities {
 
 
 
+	/**
+	 * Instantiates a new job runner facilities.
+	 * 
+	 * @param command the command
+	 * @param envr the envr
+	 * @param executableJobDir the executable job dir
+	 * @param filesToBeDeletedAfterJobExecution the files to be deleted after job execution
+	 * @param auditAccessUtils the audit access utils
+	 * @param auditId the audit id
+	 * @param parameters the parameters
+	 * @param session the session
+	 */
 	public JobRunnerFacilities(String command, String[] envr, File executableJobDir, 
 			List filesToBeDeletedAfterJobExecution, AuditAccessUtils auditAccessUtils, String auditId,
 			Map parameters,HttpSession session) {
@@ -45,6 +62,9 @@ public class JobRunnerFacilities {
 		this._session = session;
 	}
 
+	/**
+	 * Execute job.
+	 */
 	public void executeJob() {
 
 		logger.debug("IN");

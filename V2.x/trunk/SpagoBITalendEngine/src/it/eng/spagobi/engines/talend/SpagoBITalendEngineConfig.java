@@ -1,23 +1,7 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ LICENSE: see COPYING file
+  
 **/
 package it.eng.spagobi.engines.talend;
 
@@ -46,12 +30,24 @@ public class SpagoBITalendEngineConfig {
 	}
 
 		
+	/**
+	 * Checks if is absolute path.
+	 * 
+	 * @param path the path
+	 * 
+	 * @return true, if is absolute path
+	 */
 	public static boolean isAbsolutePath(String path) {
 		if(path == null) return false;
 		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
 	}
 	
 	
+	/**
+	 * Gets the runtime repository root dir.
+	 * 
+	 * @return the runtime repository root dir
+	 */
 	public File getRuntimeRepositoryRootDir() {
 	    
 	        SourceBean config = EnginConf.getInstance().getConfig();
@@ -65,6 +61,11 @@ public class SpagoBITalendEngineConfig {
 		return dir;
 	}
 	
+	/**
+	 * Gets the spagobi target functionality label.
+	 * 
+	 * @return the spagobi target functionality label
+	 */
 	public String getSpagobiTargetFunctionalityLabel() {
 		String label = null;
         SourceBean config = EnginConf.getInstance().getConfig();
@@ -72,6 +73,11 @@ public class SpagoBITalendEngineConfig {
 		return label;
 	}
 	
+	/**
+	 * Gets the spagobi url.
+	 * 
+	 * @return the spagobi url
+	 */
 	public String getSpagobiUrl() {
 		String url = null;
         SourceBean config = EnginConf.getInstance().getConfig();
@@ -79,6 +85,11 @@ public class SpagoBITalendEngineConfig {
 		return url;
 	}
 	
+	/**
+	 * Checks if is auto publish active.
+	 * 
+	 * @return true, if is auto publish active
+	 */
 	public boolean isAutoPublishActive() {
 		String autoPublishProp = null;
         SourceBean config = EnginConf.getInstance().getConfig();
@@ -89,24 +100,46 @@ public class SpagoBITalendEngineConfig {
 	
 	
 	// java properties
+	/**
+	 * Gets the java install dir.
+	 * 
+	 * @return the java install dir
+	 */
 	public String getJavaInstallDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String installDir= (String)config.getCharacters("java_install_dir");
 		return installDir;
 	}
 	
+	/**
+	 * Gets the java bin dir.
+	 * 
+	 * @return the java bin dir
+	 */
 	public String getJavaBinDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String binDir= (String)config.getCharacters("java_bin_dir");
 		return binDir;
 	}
 	
+	/**
+	 * Gets the java command.
+	 * 
+	 * @return the java command
+	 */
 	public String getJavaCommand() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String command= (String)config.getCharacters("java_command");	
 		return command;
 	}
 	
+	/**
+	 * Gets the java command option.
+	 * 
+	 * @param optionName the option name
+	 * 
+	 * @return the java command option
+	 */
 	public String getJavaCommandOption(String optionName) {
         SourceBean config = EnginConf.getInstance().getConfig();
         String commandOption= (String)config.getCharacters("java_command_option_"+optionName);	
@@ -114,46 +147,86 @@ public class SpagoBITalendEngineConfig {
 	}
 	
 	// perl properties
+	/**
+	 * Gets the job separator.
+	 * 
+	 * @return the job separator
+	 */
 	public String getJobSeparator() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String jobSeparator= (String)config.getCharacters("jobSeparator");
 		return jobSeparator;
 	}
 
+	/**
+	 * Gets the perl bin dir.
+	 * 
+	 * @return the perl bin dir
+	 */
 	public String getPerlBinDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String binDir= (String)config.getCharacters("perl_bin_dir");
 		return binDir;
 	}
 
+	/**
+	 * Gets the perl command.
+	 * 
+	 * @return the perl command
+	 */
 	public String getPerlCommand() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String command= (String)config.getCharacters("perl_command");
 		return command;
 	}
 
+	/**
+	 * Gets the perl ext.
+	 * 
+	 * @return the perl ext
+	 */
 	public String getPerlExt() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String ext= (String)config.getCharacters("perlExt");
 		return ext;
 	}
 
+	/**
+	 * Gets the perl install dir.
+	 * 
+	 * @return the perl install dir
+	 */
 	public String getPerlInstallDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String install= (String)config.getCharacters("perl_install_dir");	
 		return install;
 	}
 
+	/**
+	 * Gets the word separator.
+	 * 
+	 * @return the word separator
+	 */
 	public String getWordSeparator() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String wordS= (String)config.getCharacters("wordSeparator");			
 		return wordS;
 	}
 
+	/**
+	 * Gets the engine root dir.
+	 * 
+	 * @return the engine root dir
+	 */
 	public File getEngineRootDir() {
 		return engineRootDir;
 	}
 
+	/**
+	 * Sets the engine root dir.
+	 * 
+	 * @param engineRootDir the new engine root dir
+	 */
 	public void setEngineRootDir(File engineRootDir) {
 		this.engineRootDir = engineRootDir;
 	}

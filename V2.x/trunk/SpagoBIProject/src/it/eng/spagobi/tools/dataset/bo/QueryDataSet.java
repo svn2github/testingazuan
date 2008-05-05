@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 
 package it.eng.spagobi.tools.dataset.bo;
@@ -51,19 +51,40 @@ public class QueryDataSet extends DataSet {
     private String query=null;
     private static transient Logger logger=Logger.getLogger(QueryDataSet.class);
     private DataSource dataSource=null;
+    
+    /**
+     * Gets the query.
+     * 
+     * @return the query
+     */
     public String getQuery() {
         return query;
     }
+    
+    /**
+     * Sets the query.
+     * 
+     * @param query the new query
+     */
     public void setQuery(String query) {
         this.query = query;
     }
     
     
     
+    /**
+     * Instantiates a new query data set.
+     */
     public QueryDataSet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * Instantiates a new query data set.
+	 * 
+	 * @param a the a
+	 */
 	public QueryDataSet(DataSet a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
@@ -71,18 +92,31 @@ public class QueryDataSet extends DataSet {
     	setDescription(a.getDescription());
 	}
     
+	/**
+	 * Gets the data source.
+	 * 
+	 * @return the data source
+	 */
 	public DataSource getDataSource() {
         return dataSource;
     }
+    
+    /**
+     * Sets the data source.
+     * 
+     * @param dataSource the new data source
+     */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
     
     
 	/**
-	 * Gets the list of names of the profile attributes required
+	 * Gets the list of names of the profile attributes required.
+	 * 
 	 * @return list of profile attribute names
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
 		List names = new ArrayList();
@@ -104,6 +138,9 @@ public class QueryDataSet extends DataSet {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.dataset.bo.DataSet#getDataSetResult(it.eng.spago.security.IEngUserProfile)
+	 */
 	public String getDataSetResult(IEngUserProfile profile) throws Exception {
 		logger.debug("IN");
 		String statement=getQuery();
@@ -120,6 +157,16 @@ public class QueryDataSet extends DataSet {
 		return resStr;
 	}
 	
+	/**
+	 * Execute select.
+	 * 
+	 * @param datasource the datasource
+	 * @param statement the statement
+	 * 
+	 * @return the object
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public static Object executeSelect(String datasource, String statement) throws EMFInternalError {
 		logger.debug("IN");
 		Object result = null;

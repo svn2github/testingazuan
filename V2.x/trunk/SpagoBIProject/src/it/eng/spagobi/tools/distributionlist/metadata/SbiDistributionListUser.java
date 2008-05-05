@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,11 +39,21 @@ public class SbiDistributionListUser  implements java.io.Serializable {
      private String EMail;
 
 
+     /**
+      * Instantiates a new sbi distribution list user.
+      */
      public SbiDistributionListUser() {
      }
 
      
-     /** full constructor */
+     /**
+      * full constructor.
+      * 
+      * @param dluId the dlu id
+      * @param sbiDistributionList the sbi distribution list
+      * @param userId the user id
+      * @param EMail the e mail
+      */
      public SbiDistributionListUser(Integer dluId, SbiDistributionList sbiDistributionList, String userId, String EMail) {
          this.dluId = dluId;
          this.sbiDistributionList = sbiDistributionList;
@@ -55,34 +65,74 @@ public class SbiDistributionListUser  implements java.io.Serializable {
     
      // Property accessors
 
+     /**
+      * Gets the dlu id.
+      * 
+      * @return the dlu id
+      */
      public Integer getDluId() {
          return this.dluId;
      }
      
+     /**
+      * Sets the dlu id.
+      * 
+      * @param dluId the new dlu id
+      */
      public void setDluId(Integer dluId) {
          this.dluId = dluId;
      }
 
+     /**
+      * Gets the sbi distribution list.
+      * 
+      * @return the sbi distribution list
+      */
      public SbiDistributionList getSbiDistributionList() {
          return this.sbiDistributionList;
      }
      
+     /**
+      * Sets the sbi distribution list.
+      * 
+      * @param sbiDistributionList the new sbi distribution list
+      */
      public void setSbiDistributionList(SbiDistributionList sbiDistributionList) {
          this.sbiDistributionList = sbiDistributionList;
      }
 
+     /**
+      * Gets the user id.
+      * 
+      * @return the user id
+      */
      public String getUserId() {
          return this.userId;
      }
      
+     /**
+      * Sets the user id.
+      * 
+      * @param userId the new user id
+      */
      public void setUserId(String userId) {
          this.userId = userId;
      }
 
+     /**
+      * Gets the e mail.
+      * 
+      * @return the e mail
+      */
      public String getEMail() {
          return this.EMail;
      }
      
+     /**
+      * Sets the e mail.
+      * 
+      * @param EMail the new e mail
+      */
      public void setEMail(String EMail) {
          this.EMail = EMail;
      }

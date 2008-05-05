@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.tools.importexport.services;
 
@@ -69,24 +69,22 @@ public class ImportExportModule extends AbstractModule {
     static private Logger logger = Logger.getLogger(ImportExportModule.class);
 
     /**
-     * Initialize the module
+     * Initialize the module.
      * 
-     * @param config
-     *                Configuration sourcebean of the module
+     * @param config Configuration sourcebean of the module
      */
     public void init(SourceBean config) {
     }
 
     /**
      * Reads the operation asked by the user and calls the export or import
-     * methods
+     * methods.
      * 
-     * @param request
-     *                The Source Bean containing all request parameters
-     * @param response
-     *                The Source Bean containing all response parameters
-     * @throws exception
-     *                 If an exception occurs
+     * @param request The Source Bean containing all request parameters
+     * @param response The Source Bean containing all response parameters
+     * 
+     * @throws exception If an exception occurs
+     * @throws Exception the exception
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");

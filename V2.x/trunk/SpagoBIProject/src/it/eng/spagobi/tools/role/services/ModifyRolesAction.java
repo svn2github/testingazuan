@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -47,9 +47,13 @@ public class ModifyRolesAction extends BaseProfileAction {
 	 * This action is invoked to save modifications on one or more than one roles.
 	 * Required request attributes:
 	 * FIELDS_ORDER : a string with the fields order declaration (ex.: 'Type,Snapshost,Subobjects,....')
-	 * MODIFIED_ROLES : a string with all roles modifications with the syntax: {role id}:{comma separated values for the fields 
+	 * MODIFIED_ROLES : a string with all roles modifications with the syntax: {role id}:{comma separated values for the fields
 	 * in the same order declared by FIELDS_ORDER}(ex: '4:ADMIN,false,true....')
 	 * 
+	 * @param serviceRequest the service request
+	 * @param serviceResponse the service response
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		

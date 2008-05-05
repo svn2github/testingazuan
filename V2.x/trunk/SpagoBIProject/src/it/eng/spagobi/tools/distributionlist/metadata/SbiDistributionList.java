@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,17 +44,32 @@ public class SbiDistributionList  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+    /**
+     * default constructor.
+     */
     public SbiDistributionList() {
     }
 
-	/** minimal constructor */
+	/**
+	 * minimal constructor.
+	 * 
+	 * @param dlId the dl id
+	 * @param name the name
+	 */
     public SbiDistributionList(Integer dlId, String name) {
         this.dlId = dlId;
         this.name = name;
     }
     
-    /** full constructor */
+    /**
+     * full constructor.
+     * 
+     * @param dlId the dl id
+     * @param name the name
+     * @param descr the descr
+     * @param sbiDistributionListUsers the sbi distribution list users
+     * @param sbiDistributionListsObjectses the sbi distribution lists objectses
+     */
     public SbiDistributionList(Integer dlId, String name, String descr, Set sbiDistributionListUsers, Set sbiDistributionListsObjectses) {
         this.dlId = dlId;
         this.name = name;
@@ -67,42 +82,92 @@ public class SbiDistributionList  implements java.io.Serializable {
    
     // Property accessors
 
+    /**
+     * Gets the dl id.
+     * 
+     * @return the dl id
+     */
     public Integer getDlId() {
         return this.dlId;
     }
     
+    /**
+     * Sets the dl id.
+     * 
+     * @param dlId the new dl id
+     */
     public void setDlId(Integer dlId) {
         this.dlId = dlId;
     }
 
+    /**
+     * Gets the name.
+     * 
+     * @return the name
+     */
     public String getName() {
         return this.name;
     }
     
+    /**
+     * Sets the name.
+     * 
+     * @param name the new name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the descr.
+     * 
+     * @return the descr
+     */
     public String getDescr() {
         return this.descr;
     }
     
+    /**
+     * Sets the descr.
+     * 
+     * @param descr the new descr
+     */
     public void setDescr(String descr) {
         this.descr = descr;
     }
 
+    /**
+     * Gets the sbi distribution list users.
+     * 
+     * @return the sbi distribution list users
+     */
     public Set getSbiDistributionListUsers() {
         return this.sbiDistributionListUsers;
     }
     
+    /**
+     * Sets the sbi distribution list users.
+     * 
+     * @param sbiDistributionListUsers the new sbi distribution list users
+     */
     public void setSbiDistributionListUsers(Set sbiDistributionListUsers) {
         this.sbiDistributionListUsers = sbiDistributionListUsers;
     }
 
+    /**
+     * Gets the sbi distribution lists objectses.
+     * 
+     * @return the sbi distribution lists objectses
+     */
     public Set getSbiDistributionListsObjectses() {
         return this.sbiDistributionListsObjectses;
     }
     
+    /**
+     * Sets the sbi distribution lists objectses.
+     * 
+     * @param sbiDistributionListsObjectses the new sbi distribution lists objectses
+     */
     public void setSbiDistributionListsObjectses(Set sbiDistributionListsObjectses) {
         this.sbiDistributionListsObjectses = sbiDistributionListsObjectses;
     }

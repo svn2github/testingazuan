@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,71 +46,200 @@ public class DataSource implements Serializable {
 	private Set engines = null;
 	private Set objects = null;
 	
+	/**
+	 * Gets the ds id.
+	 * 
+	 * @return the ds id
+	 */
 	public int getDsId() {
 		return dsId;
 	}
+	
+	/**
+	 * Sets the ds id.
+	 * 
+	 * @param dsId the new ds id
+	 */
 	public void setDsId(int dsId) {
 		this.dsId = dsId;
 	}
+	
+	/**
+	 * Gets the descr.
+	 * 
+	 * @return the descr
+	 */
 	public String getDescr() {
 		return descr;
 	}
+	
+	/**
+	 * Sets the descr.
+	 * 
+	 * @param descr the new descr
+	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
+	
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
+	
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label the new label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+	/**
+	 * Gets the jndi.
+	 * 
+	 * @return the jndi
+	 */
 	public String getJndi() {
 		return jndi;
 	}
+	
+	/**
+	 * Sets the jndi.
+	 * 
+	 * @param jndi the new jndi
+	 */
 	public void setJndi(String jndi) {
 		this.jndi = jndi;
 	}
+	
+	/**
+	 * Gets the url connection.
+	 * 
+	 * @return the url connection
+	 */
 	public String getUrlConnection() {
 		return urlConnection;
 	}
+	
+	/**
+	 * Sets the url connection.
+	 * 
+	 * @param url_connection the new url connection
+	 */
 	public void setUrlConnection(String url_connection) {
 		this.urlConnection = url_connection;
 	}
+	
+	/**
+	 * Gets the user.
+	 * 
+	 * @return the user
+	 */
 	public String getUser() {
 		return user;
 	}
+	
+	/**
+	 * Sets the user.
+	 * 
+	 * @param user the new user
+	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
+	
+	/**
+	 * Gets the pwd.
+	 * 
+	 * @return the pwd
+	 */
 	public String getPwd() {
 		return pwd;
 	}
+	
+	/**
+	 * Sets the pwd.
+	 * 
+	 * @param pwd the new pwd
+	 */
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
+	
+	/**
+	 * Gets the driver.
+	 * 
+	 * @return the driver
+	 */
 	public String getDriver() {
 		return driver;
 	}
+	
+	/**
+	 * Sets the driver.
+	 * 
+	 * @param driver the new driver
+	 */
 	public void setDriver(String driver) {
 		this.driver = driver;
 	}
+	
+	/**
+	 * Gets the dialect id.
+	 * 
+	 * @return the dialect id
+	 */
 	public Integer getDialectId() {
 		return dialectId;
 	}
+	
+	/**
+	 * Sets the dialect id.
+	 * 
+	 * @param dialectId the new dialect id
+	 */
 	public void setDialectId(Integer dialectId) {
 		this.dialectId = dialectId;
 	}
+	
+	/**
+	 * Gets the engines.
+	 * 
+	 * @return the engines
+	 */
 	public Set getEngines() {
 		return engines;
 	}
 
+	/**
+	 * Sets the engines.
+	 * 
+	 * @param engines the new engines
+	 */
 	public void setEngines(Set engines) {
 		this.engines = engines;
 	}
+	
+	/**
+	 * Gets the objects.
+	 * 
+	 * @return the objects
+	 */
 	public Set getObjects() {
 		return objects;
 	}
 
+	/**
+	 * Sets the objects.
+	 * 
+	 * @param objects the new objects
+	 */
 	public void setObjects(Set objects) {
 		this.objects = objects;
 	}

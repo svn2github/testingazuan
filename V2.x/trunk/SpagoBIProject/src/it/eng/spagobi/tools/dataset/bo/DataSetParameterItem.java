@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.tools.dataset.bo;
 
@@ -34,28 +34,35 @@ public class DataSetParameterItem {
 	
 	/**
 	 * Returns the name.
+	 * 
 	 * @return the name.
 	 */
 	public String getName() {
 		return name;
 	}
+	
 	/**
-	 * Sets the name
-	 * @param The name to set.
+	 * Sets the name.
+	 * 
+	 * @param name the name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	/**
 	 * Returns the type.
+	 * 
 	 * @return the type.
 	 */
 	public String getType() {
 		return type;
 	}
+	
 	/**
-	 * Sets the type
-	 * @param name The type to set.
+	 * Sets the type.
+	 * 
+	 * @param type the type
 	 */
 	public void setType(String type) {
 		this.type = type;

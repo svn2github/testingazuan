@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.dataset.presentation;
 
 import java.util.List;
@@ -53,13 +53,14 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 	public static final String LIST_TEST_DATA_SET_MODULE = "ListTestDataSetModule";
 
 	/**
-	 *Given the request at input, gets the name of the reference publisher,driving
+	 * Given the request at input, gets the name of the reference publisher,driving
 	 * the execution into the correct jsp page, or jsp error page, if any error occurred.
 	 * 
-	 * @param requestContainer The object containing all request information
 	 * @param responseContainer The object containing all response information
+	 * @param moduleName the module name
+	 * 
 	 * @return A string representing the name of the correct publisher, which will
-	 * 		   call the correct jsp reference.
+	 * call the correct jsp reference.
 	 */
 
 
@@ -67,6 +68,13 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		return (SourceBean) responseContainer.getServiceResponse().getAttribute(moduleName);
 	}
 
+	/**
+	 * Gets the module responses.
+	 * 
+	 * @param responseContainer the response container
+	 * 
+	 * @return the module responses
+	 */
 	public void getModuleResponses(ResponseContainer responseContainer) {
 		detailMR = getModuleResponse(responseContainer, DETAIL_DATA_SET_MODULE);
 		listTestLovMR = getModuleResponse(responseContainer, LIST_TEST_DATA_SET_MODULE);
@@ -74,6 +82,9 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spago.presentation.PublisherDispatcherIFace#getPublisherName(it.eng.spago.base.RequestContainer, it.eng.spago.base.ResponseContainer)
+	 */
 	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
 		logger.debug("IN");
 

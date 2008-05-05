@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.dataset.bo;
 
 import java.io.FileInputStream;
@@ -45,10 +45,18 @@ public class FileDataSet extends DataSet {
     private String fileName=null;
 	private static transient Logger logger=Logger.getLogger(FileDataSet.class);
     
+    /**
+     * Instantiates a new file data set.
+     */
     public FileDataSet(){
     	super();
     }
     
+    /**
+     * Instantiates a new file data set.
+     * 
+     * @param a the a
+     */
     public FileDataSet(DataSet a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
@@ -56,14 +64,27 @@ public class FileDataSet extends DataSet {
     	setDescription(a.getDescription());
 	}
 
+	/**
+	 * Gets the file name.
+	 * 
+	 * @return the file name
+	 */
 	public String getFileName() {
         return fileName;
     }
 
+    /**
+     * Sets the file name.
+     * 
+     * @param fileName the new file name
+     */
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.dataset.bo.DataSet#getDataSetResult(it.eng.spago.security.IEngUserProfile)
+	 */
 	public String getDataSetResult(IEngUserProfile profile) throws Exception {
 		String pathFile=getFileName();
 		String result="";

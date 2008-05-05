@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -33,7 +54,16 @@ import org.hibernate.criterion.Expression;
 
 public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetDAO{
 	static private Logger logger = Logger.getLogger(DataSetDAOHibImpl.class);
+	
 	/**
+	 * Load data set by id.
+	 * 
+	 * @param dsID the ds id
+	 * 
+	 * @return the data set
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByID(java.lang.Integer)
 	 */
 	public DataSet loadDataSetByID(Integer dsID) throws EMFUserError {
@@ -68,6 +98,14 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	}
 
 	/**
+	 * Load data set by label.
+	 * 
+	 * @param label the label
+	 * 
+	 * @return the data set
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByLabel(string)
 	 */	
 	public DataSet loadDataSetByLabel(String label) throws EMFUserError {
@@ -101,6 +139,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	}
 
 	/**
+	 * Load all data sets.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadAllDataSets()
 	 */
 	public List loadAllDataSets() throws EMFUserError {
@@ -139,6 +183,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	}
 
 	/**
+	 * Modify data set.
+	 * 
+	 * @param aDataSet the a data set
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#modifyDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
 	 */
 	public void modifyDataSet(DataSet aDataSet) throws EMFUserError {
@@ -208,6 +258,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	}
 
 	/**
+	 * Insert data set.
+	 * 
+	 * @param aDataSet the a data set
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#insertDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
 	 */
 	public void insertDataSet(DataSet aDataSet) throws EMFUserError {
@@ -274,6 +330,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	}
 
 	/**
+	 * Erase data set.
+	 * 
+	 * @param aDataSet the a data set
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#eraseDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
 	 */
 	public void eraseDataSet(DataSet aDataSet) throws EMFUserError {
@@ -310,6 +372,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * the corrispondent <code>DataSet</code> object.
 	 * 
 	 * @param hibDataSet The hybernate data set
+	 * 
 	 * @return The corrispondent <code>DataSet</code> object
 	 */
 	public DataSet toDataSet(SbiDataSet hibDataSet){
@@ -345,7 +408,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		
 		return ds;
 	}
+	
 	/**
+	 * Checks for bi obj associated.
+	 * 
+	 * @param dsId the ds id
+	 * 
+	 * @return true, if checks for bi obj associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.dataSet.dao.IDataSetDAO#hasBIObjAssociated(java.lang.String)
 	 */
 	public boolean hasBIObjAssociated (String dsId) throws EMFUserError{

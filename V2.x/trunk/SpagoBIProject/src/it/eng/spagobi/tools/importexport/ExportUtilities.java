@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,9 +44,11 @@ public class ExportUtilities {
     static private Logger logger = Logger.getLogger(ExportUtilities.class);
     
 	/**
-	 * Copy the metadata script of the exported database into the export folder 
+	 * Copy the metadata script of the exported database into the export folder.
+	 * 
 	 * @param pathDBFolder Path of the export database folder
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void copyMetadataScript(String pathDBFolder) throws EMFUserError {
 	    logger.debug("IN");
@@ -85,9 +87,11 @@ public class ExportUtilities {
 	
 	
 	/**
-	 * Copy the properties file of the exported database into the export folder 
+	 * Copy the properties file of the exported database into the export folder.
+	 * 
 	 * @param pathDBFolder Path of the export database folder
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void copyMetadataScriptProperties(String pathDBFolder) throws EMFUserError {
 	    logger.debug("IN");
@@ -126,10 +130,13 @@ public class ExportUtilities {
 	
 	
 	/**
-	 * Creates an Hibernate session factory for the export database
+	 * Creates an Hibernate session factory for the export database.
+	 * 
 	 * @param pathDBFolder Path of the export database folder
+	 * 
 	 * @return The Hibernate Session Factory
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
 	    logger.debug("IN");
@@ -145,10 +152,13 @@ public class ExportUtilities {
 	
 	
 	/**
-	 * Creates a sql connection for the exported database
+	 * Creates a sql connection for the exported database.
+	 * 
 	 * @param pathDBFolder  Path of the export database folder
+	 * 
 	 * @return Connection to the export database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static Connection getConnectionExportDB(String pathDBFolder) throws EMFUserError {
 	    logger.debug("IN");

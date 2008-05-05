@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,9 @@ public class TestConnectionAction extends BaseProfileAction {
 
 	static private Logger logger = Logger.getLogger(TestConnectionAction.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 			throws Exception {
 		

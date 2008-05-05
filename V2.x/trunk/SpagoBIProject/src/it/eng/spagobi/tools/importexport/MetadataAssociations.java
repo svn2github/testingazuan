@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,8 @@ public class MetadataAssociations {
 	private Map datasourcesAssociation = new HashMap();
 	
 	/**
-	 * Checks if the metadata association is empty
+	 * Checks if the metadata association is empty.
+	 * 
 	 * @return boolean, true is associations are empty false otherwise
 	 */
 	public boolean isEmpty() {
@@ -84,7 +85,7 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Clears all the inforamtion about associations
+	 * Clears all the inforamtion about associations.
 	 */
 	public void clear() {
 		parameterIDAssociation = new HashMap();
@@ -107,7 +108,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isParameterAssEmpty(){
@@ -115,7 +117,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isRoleAssEmpty(){
@@ -123,7 +126,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isBIObjAssEmpty(){
@@ -131,7 +135,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isLovAssEmpty(){
@@ -139,7 +144,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isFunctAssEmpty(){
@@ -147,7 +153,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isEngineAssEmpty(){
@@ -155,7 +162,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isCheckAssEmpty(){
@@ -163,7 +171,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Checks if Associations for the specific object are empty
+	 * Checks if Associations for the specific object are empty.
+	 * 
 	 * @return boolean, true if associations are empty, false otherwise
 	 */
 	public boolean isParuseAssEmpty(){
@@ -172,7 +181,8 @@ public class MetadataAssociations {
 	
 	
 	/**
-	 * Gets the Map of associations between current and exported parameter ids
+	 * Gets the Map of associations between current and exported parameter ids.
+	 * 
 	 * @return Map of assocaitions
 	 */
 	public Map getParameterIDAssociation() {
@@ -180,7 +190,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported parameters
+	 * Gets the Map of associations between current and exported parameters.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getParameterAssociation() {
@@ -188,7 +199,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of parameters into the associations
+	 * Inserts a couple of parameters into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleParameter(SbiParameters exp, SbiParameters curr) {
 		//parameterIDAssociation.put(exp.getParId().toString(), curr.getParId().toString());
@@ -196,14 +210,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of parameter ids into the associations 
+	 * Inserts a couple of parameter ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleParameter(Integer exp, Integer curr) {
 		parameterIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported role ids
+	 * Gets the Map of associations between current and exported role ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getRoleIDAssociation() {
@@ -211,7 +229,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported roles
+	 * Gets the Map of associations between current and exported roles.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getRoleAssociation() {
@@ -219,7 +238,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of roles into the associations 
+	 * Inserts a couple of roles into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleRole(SbiExtRoles exp, SbiExtRoles curr) {
 		//roleIDAssociation.put(exp.getExtRoleId().toString(), curr.getExtRoleId().toString());
@@ -227,14 +249,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of role ids into the associations 
+	 * Inserts a couple of role ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleRole(Integer exp, Integer curr) {
 		roleIDAssociation.put(exp, curr);
 	}
 
 	/**
-	 * Gets the Map of associations between current and exported biobject ids
+	 * Gets the Map of associations between current and exported biobject ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getBIobjIDAssociation() {
@@ -242,7 +268,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported biobjects
+	 * Gets the Map of associations between current and exported biobjects.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getBIObjAssociation() {
@@ -250,7 +277,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of biobjects into the associations 
+	 * Inserts a couple of biobjects into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleBIObj(SbiObjects exp, SbiObjects curr) {
 		//biobjIDAssociation.put(exp.getBiobjId().toString(), curr.getBiobjId().toString());
@@ -258,14 +288,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of biobject ids into the associations 
+	 * Inserts a couple of biobject ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleBIObj(Integer exp, Integer curr) {
 		biobjIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported lovs ids
+	 * Gets the Map of associations between current and exported lovs ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getLovIDAssociation() {
@@ -273,7 +307,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported lovs
+	 * Gets the Map of associations between current and exported lovs.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getLovAssociation() {
@@ -281,7 +316,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of lovs into the associations 
+	 * Inserts a couple of lovs into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleLov(SbiLov exp, SbiLov curr) {
 		//lovIDAssociation.put(exp.getLovId().toString(), curr.getLovId().toString());
@@ -289,14 +327,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of lov ids into the associations 
+	 * Inserts a couple of lov ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleLov(Integer exp, Integer curr) {
 		lovIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported functionality ids
+	 * Gets the Map of associations between current and exported functionality ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getFunctIDAssociation() {
@@ -304,7 +346,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported functionalities
+	 * Gets the Map of associations between current and exported functionalities.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getFunctAssociation() {
@@ -312,21 +355,28 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of functionalities into the associations 
+	 * Inserts a couple of functionalities into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleFunct(SbiFunctions exp, SbiFunctions curr) {
 		functAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Inserts a couple of functionality ids into the associations 
+	 * Inserts a couple of functionality ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleFunct(Integer exp, Integer curr) {
 		functIDAssociation.put(exp, curr);
 	}
 
 	/**
-	 * Gets the Map of associations between current and exported engine ids
+	 * Gets the Map of associations between current and exported engine ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getEngineIDAssociation() {
@@ -334,7 +384,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported engines
+	 * Gets the Map of associations between current and exported engines.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getEngineAssociation() {
@@ -342,7 +393,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of engines into the associations 
+	 * Inserts a couple of engines into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleEngine(SbiEngines exp, SbiEngines curr) {
 		//engineIDAssociation.put(exp.getEngineId().toString(), curr.getEngineId().toString());
@@ -350,14 +404,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of engine ids into the associations 
+	 * Inserts a couple of engine ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleEngine(Integer exp, Integer curr) {
 		engineIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported check ids
+	 * Gets the Map of associations between current and exported check ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getCheckIDAssociation() {
@@ -365,7 +423,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported checks
+	 * Gets the Map of associations between current and exported checks.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getCheckAssociation() {
@@ -373,7 +432,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of checks into the associations 
+	 * Inserts a couple of checks into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleCheck(SbiChecks exp, SbiChecks curr) {
 		//checkIDAssociation.put(exp.getCheckId().toString(), curr.getCheckId().toString());
@@ -381,14 +443,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of check ids into the associations 
+	 * Inserts a couple of check ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleCheck(Integer exp, Integer curr) {
 		checkIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported parameter use ids
+	 * Gets the Map of associations between current and exported parameter use ids.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getParuseIDAssociation() {
@@ -396,7 +462,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported parameter uses 
+	 * Gets the Map of associations between current and exported parameter uses.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getParuseAssociation() {
@@ -404,7 +471,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of parameter uses into the associations 
+	 * Inserts a couple of parameter uses into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleParuse(SbiParuse exp, SbiParuse curr) {
 		//paruseIDAssociation.put(exp.getUseId().toString(), curr.getUseId().toString());
@@ -412,14 +482,18 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of parameter use ids into the associations 
+	 * Inserts a couple of parameter use ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleParuse(Integer exp, Integer curr) {
 		paruseIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported domain id
+	 * Gets the Map of associations between current and exported domain id.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getDomainIDAssociation() {
@@ -427,7 +501,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported domains
+	 * Gets the Map of associations between current and exported domains.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getDomainAssociation() {
@@ -435,14 +510,20 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of domains into the associations 
+	 * Inserts a couple of domains into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleDomain(SbiDomains exp, SbiDomains curr) {
 		domainAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Inserts a couple of domain id into the associations 
+	 * Inserts a couple of domain id into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleDomain(Integer exp, Integer curr) {
 		domainIDAssociation.put(exp, curr);
@@ -450,7 +531,8 @@ public class MetadataAssociations {
 
 	
 	/**
-	 * Gets the Map of associations between current and exported objpar id
+	 * Gets the Map of associations between current and exported objpar id.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getObjparIDAssociation() {
@@ -458,7 +540,8 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported objpars
+	 * Gets the Map of associations between current and exported objpars.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getObjparAssociation() {
@@ -466,21 +549,28 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of objpar into the associations 
+	 * Inserts a couple of objpar into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleObjpar(SbiObjPar exp, SbiObjPar curr) {
 		objparAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Inserts a couple of objpar id into the associations 
+	 * Inserts a couple of objpar id into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleObjpar(Integer exp, Integer curr) {
 		objparIDAssociation.put(exp, curr);
 	}
 	
 	/**
-	 * Gets the Map of associations between current and exported datasources
+	 * Gets the Map of associations between current and exported datasources.
+	 * 
 	 * @return Map of associations
 	 */
 	public Map getDataSourceAssociation() {
@@ -488,7 +578,10 @@ public class MetadataAssociations {
 	}
 	
 	/**
-	 * Inserts a couple of datasource names into the associations 
+	 * Inserts a couple of datasource names into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
 	 */
 	public void insertCoupleDataSources(String exp, String curr) {
 		datasourcesAssociation.put(exp, curr);

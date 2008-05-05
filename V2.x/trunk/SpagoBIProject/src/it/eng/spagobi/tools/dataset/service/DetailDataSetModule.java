@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.dataset.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -78,14 +78,20 @@ public class DetailDataSetModule extends AbstractModule {
 	
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 	
 	/**
-	 * Reads the operation asked by the user and calls the insertion, updation or deletion methods
+	 * Reads the operation asked by the user and calls the insertion, updation or deletion methods.
+	 * 
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
+	 * 
 	 * @throws exception If an exception occurs
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
@@ -356,9 +362,13 @@ public class DetailDataSetModule extends AbstractModule {
 
 
 	/**
-	 * Before going into test mode checks if there are parameters to fill and in case puts them in List
-	 * @throws SourceBeanException 
+	 * Before going into test mode checks if there are parameters to fill and in case puts them in List.
 	 * 
+	 * @param ds the ds
+	 * 
+	 * @return the parameters to fill
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public List getParametersToFill(DataSet ds) throws SourceBeanException{
 		String parametersXML=ds.getParameters();

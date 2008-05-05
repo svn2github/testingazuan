@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,7 @@ public class MetadataLogger {
 	private StringBuffer logBuf =  null;
 	
 	/**
-	 * Constructor, initialize the buffer with date and time
+	 * Constructor, initialize the buffer with date and time.
 	 */
 	public MetadataLogger() {
 		logBuf = new StringBuffer();
@@ -46,7 +46,8 @@ public class MetadataLogger {
 	}
 	
 	/**
-	 * Logs a message into the buffer
+	 * Logs a message into the buffer.
+	 * 
 	 * @param msg The message to log
 	 */
 	public void log(String msg) {
@@ -55,7 +56,8 @@ public class MetadataLogger {
 	
 	
 	/**
-	 * Gets the array of bytes of all the logs
+	 * Gets the array of bytes of all the logs.
+	 * 
 	 * @return The logs bytes
 	 */
 	public byte[] getLogBytes(){

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -35,24 +35,65 @@ public class JobInfo {
 	private String jobDescription = "";
 	private List biobjects = new ArrayList();
 	
+	/**
+	 * Gets the job description.
+	 * 
+	 * @return the job description
+	 */
 	public String getJobDescription() {
 		return jobDescription;
 	}
+	
+	/**
+	 * Sets the job description.
+	 * 
+	 * @param jobDescription the new job description
+	 */
 	public void setJobDescription(String jobDescription) {
 		this.jobDescription = jobDescription;
 	}
+	
+	/**
+	 * Gets the job name.
+	 * 
+	 * @return the job name
+	 */
 	public String getJobName() {
 		return jobName;
 	}
+	
+	/**
+	 * Sets the job name.
+	 * 
+	 * @param jobName the new job name
+	 */
 	public void setJobName(String jobName) {
 		this.jobName = jobName;
 	}
+	
+	/**
+	 * Gets the biobjects.
+	 * 
+	 * @return the biobjects
+	 */
 	public List getBiobjects() {
 		return biobjects;
 	}
+	
+	/**
+	 * Sets the biobjects.
+	 * 
+	 * @param biobjects the new biobjects
+	 */
 	public void setBiobjects(List biobjects) {
 		this.biobjects = biobjects;
 	}
+	
+	/**
+	 * Gets the biobject ids.
+	 * 
+	 * @return the biobject ids
+	 */
 	public List getBiobjectIds() {
 		List biobjIds = new ArrayList();
 		Iterator iterBiobjects = biobjects.iterator();
@@ -63,9 +104,21 @@ public class JobInfo {
 		}
 		return biobjIds;
 	}
+	
+	/**
+	 * Gets the job group name.
+	 * 
+	 * @return the job group name
+	 */
 	public String getJobGroupName() {
 		return jobGroupName;
 	}
+	
+	/**
+	 * Sets the job group name.
+	 * 
+	 * @param jobGroupName the new job group name
+	 */
 	public void setJobGroupName(String jobGroupName) {
 		this.jobGroupName = jobGroupName;
 	}

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -65,11 +65,14 @@ import org.hibernate.criterion.Expression;
 public class ImportUtilities {
 
     static private Logger logger = Logger.getLogger(ImportUtilities.class);
+	
 	/**
-	 * Decompress the export compress file
-	 * @param pathImpTmpFolder The path of the import directory 
+	 * Decompress the export compress file.
+	 * 
+	 * @param pathImpTmpFolder The path of the import directory
 	 * @param pathArchiveFile The path of the exported archive
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void decompressArchive(String pathImpTmpFolder, String pathArchiveFile) throws EMFUserError {
 	    logger.debug("IN");
@@ -115,10 +118,13 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates an Hibernate session factory for the exported database
+	 * Creates an Hibernate session factory for the exported database.
+	 * 
 	 * @param pathDBFolder The path of the folder which contains the exported database
+	 * 
 	 * @return The Hibernate session factory
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static SessionFactory getHibSessionExportDB(String pathDBFolder) throws EMFUserError {
 	    logger.debug("IN");
@@ -134,8 +140,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate role object
+	 * Creates a new hibernate role object.
+	 * 
 	 * @param role old hibernate role object
+	 * 
 	 * @return the new hibernate role object
 	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role){
@@ -153,9 +161,11 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate role object
+	 * Creates a new hibernate role object.
+	 * 
 	 * @param role old hibernate role object
-	 * @param the id to assign to the new created role
+	 * @param id the id
+	 * 
 	 * @return the new hibernate role object
 	 */
 	public static SbiExtRoles makeNewSbiExtRole(SbiExtRoles role, Integer id){
@@ -168,8 +178,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate engine object
+	 * Creates a new hibernate engine object.
+	 * 
 	 * @param engine old hibernate engine object
+	 * 
 	 * @return the new hibernate engine object
 	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine){
@@ -191,6 +203,13 @@ public class ImportUtilities {
 		return newEng;
 	}
 	
+	/**
+	 * Make new data source.
+	 * 
+	 * @param ds the ds
+	 * 
+	 * @return the sbi data source
+	 */
 	public static SbiDataSource makeNewDataSource(SbiDataSource ds){
 	    	logger.debug("IN");
 	    	SbiDataSource newDS = new SbiDataSource();
@@ -206,9 +225,11 @@ public class ImportUtilities {
 	}	
 	
 	/**
-	 * Creates a new hibernate engine object
+	 * Creates a new hibernate engine object.
+	 * 
 	 * @param engine old hibernate engine object
-	 * @param the id to assign to the new created engine
+	 * @param id the id
+	 * 
 	 * @return the new hibernate engine object
 	 */
 	public static SbiEngines makeNewSbiEngine(SbiEngines engine, Integer id){
@@ -221,8 +242,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate functionality object
-	 * @param functionality old hibernate functionality object
+	 * Creates a new hibernate functionality object.
+	 * 
+	 * @param funct the funct
+	 * 
 	 * @return the new hibernate functionality object
 	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct){
@@ -240,9 +263,11 @@ public class ImportUtilities {
 	}
 
 	/**
-	 * Creates a new hibernate functionality object
-	 * @param functionality old hibernate functionality object
-	 * @param the id to assign to the new created functionality
+	 * Creates a new hibernate functionality object.
+	 * 
+	 * @param funct the funct
+	 * @param id the id
+	 * 
 	 * @return the new hibernate functionality object
 	 */
 	public static SbiFunctions makeNewSbiFunction(SbiFunctions funct, Integer id){
@@ -255,8 +280,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate lov object
+	 * Creates a new hibernate lov object.
+	 * 
 	 * @param lov old hibernate lov object
+	 * 
 	 * @return the new hibernate lov object
 	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov){
@@ -275,9 +302,11 @@ public class ImportUtilities {
 	}
 
 	/**
-	 * Creates a new hibernate lov object
+	 * Creates a new hibernate lov object.
+	 * 
 	 * @param lov old hibernate lov object
-	 * @param the id to assign to the new created lov
+	 * @param id the id
+	 * 
 	 * @return the new hibernate lov object
 	 */
 	public static SbiLov makeNewSbiLov(SbiLov lov, Integer id){
@@ -290,8 +319,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate check object
+	 * Creates a new hibernate check object.
+	 * 
 	 * @param check old hibernate check object
+	 * 
 	 * @return the new hibernate check object
 	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check){
@@ -309,9 +340,11 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate check object
+	 * Creates a new hibernate check object.
+	 * 
 	 * @param check old hibernate check object
-	 * @param the id to assign to the new created check
+	 * @param id the id
+	 * 
 	 * @return the new hibernate check object
 	 */
 	public static SbiChecks makeNewSbiCheck(SbiChecks check, Integer id){
@@ -324,8 +357,10 @@ public class ImportUtilities {
 	
 	
 	/**
-	 * Creates a new hibernate parameter object
-	 * @param parameter old hibernate parameter object
+	 * Creates a new hibernate parameter object.
+	 * 
+	 * @param param the param
+	 * 
 	 * @return the new hibernate parameter object
 	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param){
@@ -346,9 +381,11 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate parameter object
-	 * @param parameter old hibernate parameter object
-	 * @param the id to assign to the new created parameter
+	 * Creates a new hibernate parameter object.
+	 * 
+	 * @param param the param
+	 * @param id the id
+	 * 
 	 * @return the new hibernate parameter object
 	 */
 	public static SbiParameters makeNewSbiParameter(SbiParameters param, Integer id){
@@ -360,8 +397,10 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate parameter use object
-	 * @param parameter use old hibernate parameter use object
+	 * Creates a new hibernate parameter use object.
+	 * 
+	 * @param paruse the paruse
+	 * 
 	 * @return the new hibernate parameter use object
 	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse){
@@ -383,9 +422,11 @@ public class ImportUtilities {
 	
 
 	/**
-	 * Creates a new hibernate parameter use object
-	 * @param parameter use old hibernate parameter use object
-	 * @param the id to assign to the new created parameter use
+	 * Creates a new hibernate parameter use object.
+	 * 
+	 * @param paruse the paruse
+	 * @param id the id
+	 * 
 	 * @return the new hibernate parameter use object
 	 */
 	public static SbiParuse makeNewSbiParuse(SbiParuse paruse, Integer id){
@@ -397,8 +438,10 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate biobject
+	 * Creates a new hibernate biobject.
+	 * 
 	 * @param obj old hibernate biobject
+	 * 
 	 * @return the new hibernate biobject
 	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj){
@@ -430,6 +473,13 @@ public class ImportUtilities {
 		return newObj;
 	}
 	
+	/**
+	 * Make new sbi snapshots.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @return the sbi snapshots
+	 */
 	public static SbiSnapshots makeNewSbiSnapshots(SbiSnapshots obj){
 	    	logger.debug("IN");
 	    	SbiSnapshots newObj = new SbiSnapshots();
@@ -440,6 +490,13 @@ public class ImportUtilities {
 		return newObj;
 	}
 	
+	/**
+	 * Make new sbi sub objects.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @return the sbi sub objects
+	 */
 	public static SbiSubObjects makeNewSbiSubObjects(SbiSubObjects obj){
 	    	logger.debug("IN");
 	    	SbiSubObjects newObj = new SbiSubObjects();
@@ -452,6 +509,14 @@ public class ImportUtilities {
 		logger.debug("OUT");
 		return newObj;
 	}	
+	
+	/**
+	 * Make new sbi obj templates.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @return the sbi obj templates
+	 */
 	public static SbiObjTemplates makeNewSbiObjTemplates(SbiObjTemplates obj){
 	    	logger.debug("IN");
 	    	SbiObjTemplates newObj = new SbiObjTemplates();
@@ -463,6 +528,13 @@ public class ImportUtilities {
 		return newObj;
 	}
 	
+	/**
+	 * Make new sbi bin contents.
+	 * 
+	 * @param obj the obj
+	 * 
+	 * @return the sbi bin contents
+	 */
 	public static SbiBinContents makeNewSbiBinContents(SbiBinContents obj){
 	    	logger.debug("IN");
 	    	SbiBinContents newObj = new SbiBinContents();
@@ -472,9 +544,11 @@ public class ImportUtilities {
 	}	
 
 	/**
-	 * Creates a new hibernate biobject
+	 * Creates a new hibernate biobject.
+	 * 
 	 * @param obj old hibernate biobject
-	 * @param the id to assign to the new created biobject
+	 * @param id the id
+	 * 
 	 * @return the new hibernate biobject
 	 */
 	public static SbiObjects makeNewSbiObject(SbiObjects obj, Integer id){
@@ -487,13 +561,16 @@ public class ImportUtilities {
 	
 	/**
 	 * Load an existing biobject and make modifications as per the exported biobject in input
-	 * (existing associations with functionalities are maintained, while existing associations 
-	 * with parameters are deleted)
-	 * @param exportedObj: the exported biobject
-	 * @param sessionCurrDB: hibernate session on current database
-	 * @param existingId: the id of the existing biobject to be modified 
+	 * (existing associations with functionalities are maintained, while existing associations
+	 * with parameters are deleted).
+	 * 
+	 * @param exportedObj the exported obj
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
 	 * @return the existing biobject modified as per the exported biobject in input
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static SbiObjects modifyExistingSbiObject(SbiObjects exportedObj, Session sessionCurrDB, 
 			Integer existingId) throws EMFUserError {
@@ -531,12 +608,15 @@ public class ImportUtilities {
 
 	/**
 	 * Load an existing parameter and make modifications as per the exported parameter in input
-	 * (existing associations with biobjects are maintained, while parameter uses are deleted)
-	 * @param exportedParameter: the exported parameter
-	 * @param sessionCurrDB: hibernate session on current database
-	 * @param existingId: the id of the existing parameter to be modified 
+	 * (existing associations with biobjects are maintained, while parameter uses are deleted).
+	 * 
+	 * @param exportedParameter the exported parameter
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
 	 * @return the existing parameter modified as per the exported parameter in input
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static SbiParameters modifyExistingSbiParameter(SbiParameters exportedParameter, Session sessionCurrDB, 
 			Integer existingId) throws EMFUserError {
@@ -566,7 +646,11 @@ public class ImportUtilities {
 	}
 
 	/**
-	 * Creates a new hibernate biobject parameter object
+	 * Creates a new hibernate biobject parameter object.
+	 * 
+	 * @param objpar the objpar
+	 * 
+	 * @return the sbi obj par
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar){
 	    logger.debug("IN");
@@ -586,7 +670,12 @@ public class ImportUtilities {
 	}
 	
 	/**
-	 * Creates a new hibernate biobject parameter object
+	 * Creates a new hibernate biobject parameter object.
+	 * 
+	 * @param objpar the objpar
+	 * @param id the id
+	 * 
+	 * @return the sbi obj par
 	 */
 	public static SbiObjPar makeNewSbiObjpar(SbiObjPar objpar, Integer id){
 	    logger.debug("IN");
@@ -599,8 +688,15 @@ public class ImportUtilities {
 
 	/**
 	 * Set into the biobject to the engine/object type/object state/datasource
-	 * the entities associated with the exported biobject
-	 * @throws EMFUserError
+	 * the entities associated with the exported biobject.
+	 * 
+	 * @param obj the obj
+	 * @param exportedObj the exported obj
+	 * @param sessionCurrDB the session curr db
+	 * @param importer the importer
+	 * @param metaAss the meta ass
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void associateWithExistingEntities(SbiObjects obj,
 			SbiObjects exportedObj, Session sessionCurrDB,
@@ -696,8 +792,15 @@ public class ImportUtilities {
 
 	/**
 	 * Set into the parameter to the parameter type
-	 * domain associated with the exported parameter
-	 * @throws EMFUserError
+	 * domain associated with the exported parameter.
+	 * 
+	 * @param parameter the parameter
+	 * @param exportedParameter the exported parameter
+	 * @param sessionCurrDB the session curr db
+	 * @param importer the importer
+	 * @param metaAss the meta ass
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void associateWithExistingEntities(
 			SbiParameters parameter, SbiParameters exportedParameter,
@@ -720,13 +823,15 @@ public class ImportUtilities {
 
 	/**
 	 * Load an existing lov and make modifications as per the exported lov in input
-	 * (existing associations with parameters are maintained)
-	 * @param exportedLov: the exported lov
-	 * @param sessionCurrDB: hibernate session on current database
-	 * @param existingId: the id of the lov to be modified
+	 * (existing associations with parameters are maintained).
+	 * 
+	 * @param exportedLov the exported lov
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
 	 * @return the existing lov modified as per the exported lov in input
-	 * @throws EMFUserError
-	 */
+	 * 
+	 * @throws EMFUserError 	 */
 	public static SbiLov modifyExistingSbiLov(SbiLov exportedLov,
 			Session sessionCurrDB, Integer existingId) {
     	logger.debug("IN");
@@ -748,9 +853,15 @@ public class ImportUtilities {
 
 	/**
 	 * Set into the lov the lov type domain
-	 * associated with the exported lov
-	 * @throws EMFUserError 
+	 * associated with the exported lov.
 	 * 
+	 * @param lov the lov
+	 * @param exportedLov the exported lov
+	 * @param sessionCurrDB the session curr db
+	 * @param importer the importer
+	 * @param metaAss the meta ass
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void associateWithExistingEntities(SbiLov lov,
 			SbiLov exportedLov, Session sessionCurrDB,

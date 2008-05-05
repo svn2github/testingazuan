@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.tools.importexport;
 
 import org.apache.log4j.Logger;
@@ -20,7 +41,7 @@ public class UserAssociationsKeeper {
 	private SourceBean datasourceAssSB = null;
 	
 	/**
-	 * Defines the internal structure for recording associations
+	 * Defines the internal structure for recording associations.
 	 */
 	public UserAssociationsKeeper() {
 	    logger.debug("IN");
@@ -41,7 +62,8 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Records an association between an exported role and an existing one
+	 * Records an association between an exported role and an existing one.
+	 * 
 	 * @param exportedRoleName the name of the exported role
 	 * @param existingRolename the name of the existing role
 	 */
@@ -75,7 +97,8 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Records an association between an exported engine and an existing one
+	 * Records an association between an exported engine and an existing one.
+	 * 
 	 * @param exportedEngineLabel the label of the exported engine
 	 * @param existingEngineLabel the label of the existing engine
 	 */
@@ -109,7 +132,8 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Records an association between an exported data source and an existing one
+	 * Records an association between an exported data source and an existing one.
+	 * 
 	 * @param exportedDataSourceName the name of the exported data source
 	 * @param existingDataSourceName the name of the existing data source
 	 */
@@ -144,7 +168,8 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Exports the associations as xml
+	 * Exports the associations as xml.
+	 * 
 	 * @return the xml representation of the associations
 	 */
 	public String toXml() {
@@ -161,8 +186,9 @@ public class UserAssociationsKeeper {
 	
 	
 	/**
-	 * Fill the associations reading an xml string
-	 * @param xmlStr the xml string which defines the associations 
+	 * Fill the associations reading an xml string.
+	 * 
+	 * @param xmlStr the xml string which defines the associations
 	 */
 	public void fillFromXml(String xmlStr) {
 	    logger.debug("IN");
@@ -185,6 +211,13 @@ public class UserAssociationsKeeper {
 		}
 	}
 	
+	/**
+	 * Gets the associated role.
+	 * 
+	 * @param expRoleName the exp role name
+	 * 
+	 * @return the associated role
+	 */
 	public String getAssociatedRole(String expRoleName) {
 	    logger.debug("IN");
 		String assRole = null;
@@ -199,6 +232,13 @@ public class UserAssociationsKeeper {
 		return assRole;
 	}
 	
+	/**
+	 * Gets the associated engine.
+	 * 
+	 * @param expEngineLabel the exp engine label
+	 * 
+	 * @return the associated engine
+	 */
 	public String getAssociatedEngine(String expEngineLabel) {
 		logger.debug("IN");
 		String assEngine = null;
@@ -213,6 +253,13 @@ public class UserAssociationsKeeper {
 		return assEngine;
 	}	
 
+	/**
+	 * Gets the associated data source.
+	 * 
+	 * @param expDataSourceName the exp data source name
+	 * 
+	 * @return the associated data source
+	 */
 	public String getAssociatedDataSource(String expDataSourceName) {
 		logger.debug("IN");
 		String assDataSource = null;

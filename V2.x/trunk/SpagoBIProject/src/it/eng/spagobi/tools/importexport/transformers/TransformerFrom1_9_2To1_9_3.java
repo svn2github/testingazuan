@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,9 @@ import sun.misc.BASE64Encoder;
 
 public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.ITransformer#transform(byte[], java.lang.String, java.lang.String)
+	 */
 	public byte[] transform(byte[] content, String pathImpTmpFolder, String archiveName) {
 		try {
 			TransformersUtilities.decompressArchive(pathImpTmpFolder, archiveName, content);

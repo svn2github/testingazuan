@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -45,6 +45,17 @@ import java.util.Map;
 
 public class SchedulerUtilities {
 
+	/**
+	 * Gets the named history snapshot.
+	 * 
+	 * @param allsnapshots the allsnapshots
+	 * @param namesnap the namesnap
+	 * @param hist the hist
+	 * 
+	 * @return the named history snapshot
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static Snapshot getNamedHistorySnapshot(List allsnapshots, String namesnap, int hist) throws Exception {
 		Map snapshots = new HashMap();
 		List snapDates = new ArrayList();
@@ -74,6 +85,16 @@ public class SchedulerUtilities {
 	
 
 	
+	/**
+	 * Gets the snapshots by name.
+	 * 
+	 * @param allsnapshots the allsnapshots
+	 * @param namesnap the namesnap
+	 * 
+	 * @return the snapshots by name
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static List getSnapshotsByName(List allsnapshots, String namesnap) throws Exception {
 		List snaps = new ArrayList();
 		Iterator iterAllSnap = allsnapshots.iterator();
@@ -87,6 +108,13 @@ public class SchedulerUtilities {
 	}	
 
 	
+	/**
+	 * Gets the sB from web service response.
+	 * 
+	 * @param response the response
+	 * 
+	 * @return the sB from web service response
+	 */
 	public static SourceBean getSBFromWebServiceResponse(String response)  {
 		/*
 		SourceBean schedModRespSB = null;
@@ -115,6 +143,13 @@ public class SchedulerUtilities {
 	}
 	
 	
+	/**
+	 * Check result of ws call.
+	 * 
+	 * @param resultSB the result sb
+	 * 
+	 * @return true, if successful
+	 */
 	public static boolean checkResultOfWSCall(SourceBean resultSB)  {
 		boolean result = true;
 		SourceBean execOutSB = null;
@@ -133,6 +168,13 @@ public class SchedulerUtilities {
 	}
 	
 	
+	/**
+	 * Gets the job info from job source bean.
+	 * 
+	 * @param jobDetSB the job det sb
+	 * 
+	 * @return the job info from job source bean
+	 */
 	public static JobInfo getJobInfoFromJobSourceBean(SourceBean jobDetSB) {
 		JobInfo jobInfo = new JobInfo();
 		try{
@@ -187,6 +229,14 @@ public class SchedulerUtilities {
 	
 	
 	
+	/**
+	 * Gets the trigger info from trigger source bean.
+	 * 
+	 * @param triggerDetSB the trigger det sb
+	 * @param jobDetSB the job det sb
+	 * 
+	 * @return the trigger info from trigger source bean
+	 */
 	public static TriggerInfo getTriggerInfoFromTriggerSourceBean(SourceBean triggerDetSB, SourceBean jobDetSB) {
 	
 		TriggerInfo tInfo = new TriggerInfo();
@@ -234,6 +284,13 @@ public class SchedulerUtilities {
 	
 	
 	
+	/**
+	 * From save info string.
+	 * 
+	 * @param saveinfostr the saveinfostr
+	 * 
+	 * @return the save info
+	 */
 	public static SaveInfo fromSaveInfoString(String saveinfostr) {
 		SaveInfo sInfo = new SaveInfo();
 		String[] couples = saveinfostr.split("%26");

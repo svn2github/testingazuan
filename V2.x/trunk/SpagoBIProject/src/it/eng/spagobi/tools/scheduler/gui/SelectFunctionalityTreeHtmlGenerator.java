@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -67,7 +67,12 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	 * Creates the Dtree configuration, in oder to inser into jsp pages cookies,
 	 * images, etc.
 	 * 
-	 * @param htmlStream	The input String Buffer
+	 * @param objectsList the objects list
+	 * @param httpReq the http req
+	 * @param initialPath the initial path
+	 * @param treename the treename
+	 * 
+	 * @return the string buffer
 	 */
     /*
 	protected void makeConfigurationDtree(StringBuffer htmlStream) {
@@ -181,6 +186,9 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		return makeTree(objectsList, httpRequest, initialPath, "Tree");
 	}
@@ -215,6 +223,9 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		// TODO code for tree with no javascript
 		return null;

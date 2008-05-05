@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -58,14 +58,20 @@ public class DetailDistributionListUserModule extends BaseProfileModule {
 
 	private String modalita = "";
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.module.AbstractHttpModule#init(it.eng.spago.base.SourceBean)
+	 */
 	public void init(SourceBean config) {
 	}
 
 	/**
-	 * Reads the operation asked by the user and calls the insert, update or delete methods
+	 * Reads the operation asked by the user and calls the insert, update or delete methods.
+	 * 
 	 * @param request The Source Bean containing all request parameters
 	 * @param response The Source Bean containing all response parameters
+	 * 
 	 * @throws exception If an exception occurs
+	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		super.service(request, response);

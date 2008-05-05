@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,14 @@ import java.util.zip.ZipOutputStream;
 
 public class TransformersUtilities {
 
+	/**
+	 * Gets the connection to database.
+	 * 
+	 * @param pathImpTmpFolder the path imp tmp folder
+	 * @param archiveName the archive name
+	 * 
+	 * @return the connection to database
+	 */
 	public static Connection getConnectionToDatabase(String pathImpTmpFolder, String archiveName) {
 		Connection connection = null;
 		try{
@@ -56,10 +64,13 @@ public class TransformersUtilities {
 	}
 	
 	/**
-	 * Compress contents of a folder into an output stream
+	 * Compress contents of a folder into an output stream.
+	 * 
 	 * @param pathFolder The path of the folder to compress
 	 * @param out The Compress output stream
-	 * @throws EMFUserError
+	 * @param pathExportFolder the path export folder
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static void compressFolder(String pathExportFolder, String pathFolder, ZipOutputStream out) throws EMFUserError {
 		File folder = new File(pathFolder);
@@ -94,6 +105,15 @@ public class TransformersUtilities {
 	    }
 	}
 	
+	/**
+	 * Decompress archive.
+	 * 
+	 * @param pathImpTmpFold the path imp tmp fold
+	 * @param archiveName the archive name
+	 * @param archiveCont the archive cont
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static void decompressArchive(String pathImpTmpFold, String archiveName, byte[] archiveCont) throws Exception {
 		// create directories of the tmp import folder
 		File impTmpFold = new File(pathImpTmpFold);
@@ -112,9 +132,14 @@ public class TransformersUtilities {
 	}
 	
 	/**
-	 * Creates the compress export file
+	 * Creates the compress export file.
+	 * 
+	 * @param pathExportFolder the path export folder
+	 * @param nameExportFile the name export file
+	 * 
 	 * @return The path of the exported compress file
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public static byte[] createExportArchive(String pathExportFolder, String nameExportFile) throws EMFUserError {
 		byte[] content = null;

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,16 @@ import org.hibernate.criterion.Expression;
  */
 public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataSourceDAO{
 	static private Logger logger = Logger.getLogger(DataSourceDAOHibImpl.class);
+	
 	/**
+	 * Load data source by id.
+	 * 
+	 * @param dsID the ds id
+	 * 
+	 * @return the data source
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByID(java.lang.Integer)
 	 */
 	public DataSource loadDataSourceByID(Integer dsID) throws EMFUserError {
@@ -95,6 +104,14 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 
 	/**
+	 * Load data source by label.
+	 * 
+	 * @param label the label
+	 * 
+	 * @return the data source
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByLabel(string)
 	 */	
 	public DataSource loadDataSourceByLabel(String label) throws EMFUserError {
@@ -128,6 +145,12 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 
 	/**
+	 * Load all data sources.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadAllDataSources()
 	 */
 	public List loadAllDataSources() throws EMFUserError {
@@ -166,6 +189,12 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 	
 	/**
+	 * Modify data source.
+	 * 
+	 * @param aDataSource the a data source
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#modifyDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void modifyDataSource(DataSource aDataSource) throws EMFUserError {
@@ -247,6 +276,12 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 
 	/**
+	 * Insert data source.
+	 * 
+	 * @param aDataSource the a data source
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#insertDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void insertDataSource(DataSource aDataSource) throws EMFUserError {
@@ -296,6 +331,12 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 
 	/**
+	 * Erase data source.
+	 * 
+	 * @param aDataSource the a data source
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#eraseDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
 	public void eraseDataSource(DataSource aDataSource) throws EMFUserError {
@@ -332,6 +373,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * the corrispondent <code>DataSource</code> object.
 	 * 
 	 * @param hibDataSource The hybernate data source
+	 * 
 	 * @return The corrispondent <code>DataSource</code> object
 	 */
 	public DataSource toDataSource(SbiDataSource hibDataSource){
@@ -351,7 +393,16 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		
 		return ds;
 	}
+	
 	/**
+	 * Checks for bi obj associated.
+	 * 
+	 * @param dsId the ds id
+	 * 
+	 * @return true, if checks for bi obj associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#hasBIObjAssociated(java.lang.String)
 	 */
 	public boolean hasBIObjAssociated (String dsId) throws EMFUserError{
@@ -394,6 +445,14 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	}
 	
 	/**
+	 * Checks for bi engine associated.
+	 * 
+	 * @param dsId the ds id
+	 * 
+	 * @return true, if checks for bi engine associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#hasEngineAssociated(java.lang.String)
 	 */
 	public boolean hasBIEngineAssociated (String dsId) throws EMFUserError{

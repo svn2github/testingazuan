@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,9 @@ import org.quartz.impl.StdSchedulerFactory;
 
 public class SchedulerContextListener implements ServletContextListener {
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
 		SpagoBITracer.debug("SPAGOBI", this.getClass().getName(), "contextDestroyed", 
 				"Entering method ...");
@@ -53,6 +56,9 @@ public class SchedulerContextListener implements ServletContextListener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+	 */
 	public void contextInitialized(ServletContextEvent arg0) {
 		// does nothing
 	}

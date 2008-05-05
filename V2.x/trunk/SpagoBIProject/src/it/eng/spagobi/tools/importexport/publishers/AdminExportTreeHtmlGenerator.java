@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -49,12 +49,16 @@ import org.safehaus.uuid.UUIDGenerator;
 public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 
     static private Logger logger = Logger.getLogger(AdminExportTreeHtmlGenerator.class);
+	
 	/**
-	 * Builds the JavaScript object to make the tree. All code is appended into a 
-	 * String Buffer, which is then returned. 
+	 * Builds the JavaScript object to make the tree. All code is appended into a
+	 * String Buffer, which is then returned.
+	 * 
 	 * @param objectsList The list of objects and functionalities
-	 * @param httpReq The http Servlet Request 
+	 * @param httpReq The http Servlet Request
 	 * @param initialPath The tree initial path
+	 * 
+	 * @return the string buffer
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 	    logger.debug("IN");

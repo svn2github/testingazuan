@@ -1,7 +1,8 @@
 /**
+
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.base.SourceBean;
@@ -83,12 +84,14 @@ public class ExportManager implements IExportManager {
     private boolean exportSnapshots = false;
 
     /**
-     * Prepare the environment for export
+     * Prepare the environment for export.
      * 
      * @param pathExpFold Path of the export folder
      * @param nameExpFile the name to give to the exported file
      * @param expSubObj   Flag which tells if it's necessary to export subobjects
      * @param expSnaps    Flag which tells if it's necessary to export snapshots
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public void prepareExport(String pathExpFold, String nameExpFile, boolean expSubObj, boolean expSnaps)
 	    throws EMFUserError {
@@ -130,9 +133,13 @@ public class ExportManager implements IExportManager {
     }
 
     /**
-     * Exports objects and creates the archive export file
+     * Exports objects and creates the archive export file.
      * 
-     * @param objPaths  List of path of the objects to export
+     * @param objIds the obj ids
+     * 
+     * @return the string
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public String exportObjects(List objIds) throws EMFUserError {
 	logger.debug("IN");
@@ -546,7 +553,7 @@ public class ExportManager implements IExportManager {
     }
 
     /**
-     * Clean the export environment (close sessions and delete temporary files)
+     * Clean the export environment (close sessions and delete temporary files).
      */
     public void cleanExportEnvironment() {
 	logger.debug("IN");

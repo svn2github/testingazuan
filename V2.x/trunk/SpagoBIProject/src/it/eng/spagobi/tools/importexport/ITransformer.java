@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,15 @@ package it.eng.spagobi.tools.importexport;
 
 public interface ITransformer {
 
+	/**
+	 * Transform.
+	 * 
+	 * @param content the content
+	 * @param tmpFolder the tmp folder
+	 * @param archiveName the archive name
+	 * 
+	 * @return the byte[]
+	 */
 	public byte[] transform(byte[] content, String tmpFolder, String archiveName);
 	
 }

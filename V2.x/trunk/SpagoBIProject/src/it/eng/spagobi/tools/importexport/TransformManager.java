@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.base.SourceBean;
@@ -40,6 +40,17 @@ public class TransformManager {
 
     static private Logger logger = Logger.getLogger(TransformManager.class);
 
+    /**
+     * Apply transformations.
+     * 
+     * @param impArchive the imp archive
+     * @param archiveName the archive name
+     * @param pathImpTmpFolder the path imp tmp folder
+     * 
+     * @return the byte[]
+     * 
+     * @throws EMFUserError the EMF user error
+     */
     public byte[] applyTransformations(byte[] impArchive, String archiveName, String pathImpTmpFolder)
 	    throws EMFUserError {
 	logger.debug("IN");
@@ -102,7 +113,7 @@ public class TransformManager {
     }
 
     /**
-     * Gets the current SpagobI version
+     * Gets the current SpagobI version.
      * 
      * @return The current SpagoBI version
      */
@@ -116,9 +127,14 @@ public class TransformManager {
     }
 
     /**
-     * Gets the SpagoBI version of the exported file
+     * Gets the SpagoBI version of the exported file.
+     * 
+     * @param pathImpTmpFold the path imp tmp fold
+     * @param archiveName the archive name
      * 
      * @return The SpagoBI version of the exported file
+     * 
+     * @throws Exception the exception
      */
     public String getExportVersion(String pathImpTmpFold, String archiveName) throws Exception {
 	logger.debug("IN");

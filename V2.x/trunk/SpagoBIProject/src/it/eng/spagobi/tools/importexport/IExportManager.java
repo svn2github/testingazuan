@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,23 +28,31 @@ import java.util.List;
 public interface IExportManager {
 
 	/**
-	 * Prepare the environment for export
+	 * Prepare the environment for export.
+	 * 
 	 * @param pathExpFold Path of the export folder
 	 * @param nameExpFile the name to give to the exported file
 	 * @param expSubObj Flag which tells if it's necessary to export subobjects
-	 * @param expSnapObj Flag which tells if it's necessary to export snapshots
+	 * @param expSnaps the exp snaps
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void prepareExport(String pathExpFold, String nameExpFile, 
 			boolean expSubObj, boolean expSnaps) throws EMFUserError;
 	
 	/**
-	 * Exports objects and creates the archive export file
+	 * Exports objects and creates the archive export file.
+	 * 
 	 * @param objPaths List of path of the objects to export
+	 * 
+	 * @return the string
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public String exportObjects(List objPaths) throws EMFUserError;
 	
 	/**
-	 * Clean the export environment (close sessions and delete temporary files)
+	 * Clean the export environment (close sessions and delete temporary files).
 	 */
 	public void cleanExportEnvironment();
 }

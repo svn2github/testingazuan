@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.base.SourceBeanException;
@@ -64,11 +64,13 @@ public class ImporterMetadata {
     static private Logger logger = Logger.getLogger(ImporterMetadata.class);
 
     /**
-     * Get the list of exported hibernate role objects
+     * Get the list of exported hibernate role objects.
      * 
      * @param session  Hiberante session for the exported database
+     * 
      * @return         The list of exported hibernate roles
-     * @throws EMFUserError
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getAllExportedRoles(Session session) throws EMFUserError {
 	logger.debug("IN");
@@ -98,11 +100,13 @@ public class ImporterMetadata {
     }
 
     /**
-     * Get the list of exported hibernate engine objects
+     * Get the list of exported hibernate engine objects.
      * 
      * @param session  Hibernate session for the exported database
+     * 
      * @return         The list of exported hibernate engines
-     * @throws EMFUserError
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getAllExportedEngines(Session session) throws EMFUserError {
 	logger.debug("IN");
@@ -138,13 +142,15 @@ public class ImporterMetadata {
     }
 
     /**
-     * Get the list of exported hibernate objects
+     * Get the list of exported hibernate objects.
      * 
      * @param session  Hibernate session for the exported database
      * @param table    The name of the table corresponding to the hibernate
-     *                 objects to gather
+     * objects to gather
+     * 
      * @return The list of exported hibernate objects
-     * @throws EMFUserError
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getAllExportedSbiObjects(Session session, String table) throws EMFUserError {
 	logger.debug("IN");
@@ -162,11 +168,13 @@ public class ImporterMetadata {
     }
 
     /**
-     * Get an existing object identified by the id and the class
+     * Get an existing object identified by the id and the class.
      * 
      * @param id        The Object id
      * @param objClass  The class of the object
      * @param session   Hibernate session for a database
+     * @param tx the tx
+     * 
      * @return          The existing hibernate object
      */
     public Object getObject(Integer id, Class objClass, Transaction tx, Session session) {
@@ -186,12 +194,15 @@ public class ImporterMetadata {
     /**
      * Upadates the data source name into the query lov objects based on the
      * association defined by the user between exported and current SpagoBI
-     * data source
+     * data source.
      * 
      * @param associations    Map of associations between exported data sources and
-     *                        data sources of the current SpagoBI platform
+     * data sources of the current SpagoBI platform
      * @param session         Hibernate session for the exported database
+     * @param log the log
+     * 
      * @throws                EMFUserError
+     * @throws EMFUserError the EMF user error
      */
     public void updateDSRefs(Map associations,  Session session, MetadataLogger log)
 	    throws EMFUserError {
@@ -231,15 +242,18 @@ public class ImporterMetadata {
 
     /**
      * Check the existance of an object, based on his unique constraints, into
-     * the current SpagoBI database
+     * the current SpagoBI database.
      * 
      * @param unique          The object which contains the unique constraints for the
-     *                        object
+     * object
      * @param sessionCurrDB   Hibernate session for the current SpagoBI database
      * @param hibObj          An empty object usefull to identify the kind of object to
-     *                        analize
+     * analize
+     * 
      * @return                The existing Object or null if it doesn't exist
+     * 
      * @throws                EMFUserError
+     * @throws EMFUserError the EMF user error
      */
     public Object checkExistence(Object unique, Session sessionCurrDB, Object hibObj) throws EMFUserError {
 	logger.debug("IN");

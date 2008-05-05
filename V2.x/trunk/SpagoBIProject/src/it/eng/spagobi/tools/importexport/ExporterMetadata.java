@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -87,10 +87,12 @@ public class ExporterMetadata {
     static private Logger logger = Logger.getLogger(ExporterMetadata.class);
     
 	/**
-	 * Insert a domain into the exported database
+	 * Insert a domain into the exported database.
+	 * 
 	 * @param domain Domain object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertDomain(Domain domain, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -117,6 +119,14 @@ public class ExporterMetadata {
 		}
 	}
 	
+	/**
+	 * Insert data source.
+	 * 
+	 * @param ds the ds
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
 	public void insertDataSource(DataSource ds, Session session) throws EMFUserError {
 	    logger.debug("IN");
 		try {
@@ -151,10 +161,12 @@ public class ExporterMetadata {
 	}
 	
 	/**
-	 * Insert an engine into the exported database
+	 * Insert an engine into the exported database.
+	 * 
 	 * @param engine Engine Object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertEngine(Engine engine, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -193,11 +205,13 @@ public class ExporterMetadata {
 	}
 
 	/**
-	 * Insert all Snapshot and their binary content
-	 * @param biobj
-	 * @param snapshotLis
-	 * @param session
-	 * @throws EMFUserError
+	 * Insert all Snapshot and their binary content.
+	 * 
+	 * @param biobj the biobj
+	 * @param snapshotLis the snapshot lis
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertAllSnapshot(BIObject biobj, List snapshotLis, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -256,11 +270,13 @@ public class ExporterMetadata {
 	}	
 	
 	/**
-	 * Insert all SubObject and their binary content
-	 * @param biobj
-	 * @param subObjectLis
-	 * @param session
-	 * @throws EMFUserError
+	 * Insert all SubObject and their binary content.
+	 * 
+	 * @param biobj the biobj
+	 * @param subObjectLis the sub object lis
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertAllSubObject(BIObject biobj, List subObjectLis, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -316,11 +332,14 @@ public class ExporterMetadata {
 		    logger.debug("OUT");
 		}
 	}	
+	
 	/**
-	 * Insert a biobject into the exported database
+	 * Insert a biobject into the exported database.
+	 * 
 	 * @param biobj BIObject to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBIObject(BIObject biobj, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -412,10 +431,12 @@ public class ExporterMetadata {
 	}	
 	
 	/**
-	 * Insert a BIObject Parameter into the exported database
+	 * Insert a BIObject Parameter into the exported database.
+	 * 
 	 * @param biobjpar BIObject parameter to insert
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBIObjectParameter(BIObjectParameter biobjpar,  Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -478,10 +499,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a parameter into the exported database
+	 * Insert a parameter into the exported database.
+	 * 
 	 * @param param The param object to insert
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParameter(Parameter param, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -515,10 +538,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a parameter use into the exported database
+	 * Insert a parameter use into the exported database.
+	 * 
 	 * @param parUse The Parameter use object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParUse(ParameterUse parUse, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -560,10 +585,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert Dependencies between parameters
-	 * @param parameters list
-	 * @param hibernate session
-	 * @throws EMFUserError
+	 * Insert Dependencies between parameters.
+	 * 
+	 * @param biparams the biparams
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBiParamDepend(List biparams, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -618,10 +645,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a list of value into the exported database
+	 * Insert a list of value into the exported database.
+	 * 
 	 * @param lov The list of values object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertLov(ModalitiesValue lov, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -653,10 +682,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a check into the exported database
+	 * Insert a check into the exported database.
+	 * 
 	 * @param check The check object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertCheck(Check check, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -688,11 +719,13 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert an association between a parameter use and a check into the exported database
+	 * Insert an association between a parameter use and a check into the exported database.
+	 * 
 	 * @param parUse The paruse object which is an element of the association
 	 * @param check The check object which is an element of the association
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -728,11 +761,13 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert an association between a parameter use and a role into the exported database
+	 * Insert an association between a parameter use and a role into the exported database.
+	 * 
 	 * @param parUse The paruse object which is an element of the association
 	 * @param role The role object which is an element of the association
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -767,10 +802,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert an association between a master report and a subreport
+	 * Insert an association between a master report and a subreport.
+	 * 
 	 * @param sub The subreport
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertSubReportAssociation(Subreport sub, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -808,10 +845,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a functionality into the exported database
+	 * Insert a functionality into the exported database.
+	 * 
 	 * @param funct Functionality Object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -879,10 +918,12 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert a role into the exported database
+	 * Insert a role into the exported database.
+	 * 
 	 * @param role The role object to export
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertRole(Role role, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -913,13 +954,15 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert an association between a functionality and a role into the exported database
+	 * Insert an association between a functionality and a role into the exported database.
+	 * 
 	 * @param role The role object which is an element of the association
 	 * @param funct The functionality object which is an element of the association
 	 * @param stateId The id of the State associated to the couple role / functionality
 	 * @param stateCD The code of the State associated to the couple role / functionality
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFUserError {
 	    logger.debug("IN");
@@ -957,11 +1000,13 @@ public class ExporterMetadata {
 	
 	
 	/**
-	 * Insert an association between a functionality and a biobject into the exported database
+	 * Insert an association between a functionality and a biobject into the exported database.
+	 * 
 	 * @param biobj The BIObject which is an element of the association
 	 * @param funct The functionality object which is an element of the association
 	 * @param session Hibernate session for the exported database
-	 * @throws EMFUserError
+	 * 
+	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertObjFunct(BIObject biobj, LowFunctionality funct, Session session) throws EMFUserError {
 	    logger.debug("IN");

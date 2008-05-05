@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -57,6 +57,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 	static private Logger logger = Logger.getLogger(DistributionListDaoImpl.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#eraseDistributionList(it.eng.spagobi.tools.distributionlist.bo.DistributionList)
+	 */
 	public void eraseDistributionList(DistributionList aDistributionList)
 			throws EMFUserError {
 
@@ -90,6 +93,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#eraseDistributionListObjects(it.eng.spagobi.tools.distributionlist.bo.DistributionList, int, java.lang.String)
+	 */
 	public void eraseDistributionListObjects(DistributionList dl, int biobId, String triggername)
 	throws EMFUserError {
 		
@@ -138,6 +144,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#eraseAllRelatedDistributionListObjects(java.lang.String)
+	 */
 	public void eraseAllRelatedDistributionListObjects(String triggername)
 	throws EMFUserError {
 		
@@ -186,6 +195,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#insertDistributionList(it.eng.spagobi.tools.distributionlist.bo.DistributionList)
+	 */
 	public void insertDistributionList(DistributionList aDistributionList)
 			throws EMFUserError {
 		
@@ -220,6 +232,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#loadAllDistributionLists()
+	 */
 	public List loadAllDistributionLists() throws EMFUserError {
 		
 		logger.debug("IN");
@@ -257,6 +272,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#loadDistributionListById(java.lang.Integer)
+	 */
 	public DistributionList loadDistributionListById(Integer Id)
 			throws EMFUserError {
 
@@ -290,6 +308,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		return toReturn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#loadDistributionListByName(java.lang.String)
+	 */
 	public DistributionList loadDistributionListByName(String name) throws EMFUserError {
 		logger.debug("IN");
 		DistributionList biDL = null;
@@ -321,6 +342,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#modifyDistributionList(it.eng.spagobi.tools.distributionlist.bo.DistributionList)
+	 */
 	public void modifyDistributionList(DistributionList aDistributionList)
 			throws EMFUserError {
 		
@@ -353,6 +377,13 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 
 	}
 	
+	/**
+	 * To distribution list.
+	 * 
+	 * @param hibDistributionList the hib distribution list
+	 * 
+	 * @return the distribution list
+	 */
 	public DistributionList toDistributionList(SbiDistributionList hibDistributionList){
 		DistributionList dl = new DistributionList();
 		
@@ -393,6 +424,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		return dl;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#hasBIObjAssociated(java.lang.String)
+	 */
 	public boolean hasBIObjAssociated (String dlId) throws EMFUserError{
 		logger.debug("IN");		
 		boolean bool = false; 
@@ -432,6 +466,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#subscribeToDistributionList(it.eng.spagobi.tools.distributionlist.bo.DistributionList, it.eng.spagobi.tools.distributionlist.bo.Email)
+	 */
 	public void subscribeToDistributionList(DistributionList aDistributionList, Email user) throws EMFUserError{
 		
 		logger.debug("IN");		
@@ -469,6 +506,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#unsubscribeFromDistributionList(it.eng.spagobi.tools.distributionlist.bo.DistributionList, java.lang.String)
+	 */
 	public void unsubscribeFromDistributionList(DistributionList aDistributionList,String user) throws EMFUserError{
 		
 		logger.debug("IN");		
@@ -509,6 +549,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#insertDLforDocument(it.eng.spagobi.tools.distributionlist.bo.DistributionList, int, java.lang.String)
+	 */
 	public void insertDLforDocument(DistributionList dl, int objId, String xml) throws EMFUserError {
 		logger.debug("IN");
 		boolean otherSchedule = false;
@@ -574,6 +617,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#isDocScheduleAlreadyLinkedToDL(it.eng.spagobi.tools.distributionlist.bo.DistributionList, int, java.lang.String)
+	 */
 	public boolean isDocScheduleAlreadyLinkedToDL(DistributionList dl, int objId, String xml) throws EMFUserError {
 		logger.debug("IN");
 
@@ -602,6 +648,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		return true;		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#isDocScheduledInOtherTime(it.eng.spagobi.tools.distributionlist.bo.DistributionList, int, java.lang.String)
+	 */
 	public boolean isDocScheduledInOtherTime(DistributionList dl, int objId, String xml) throws EMFUserError {
 		logger.debug("IN");
 		   	
@@ -647,6 +696,9 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO#getXmlRelated(it.eng.spagobi.tools.distributionlist.bo.DistributionList, int)
+	 */
 	public List getXmlRelated(DistributionList dl, int objId) throws EMFUserError {
 		logger.debug("IN");
 		List xmls = new ArrayList();   	

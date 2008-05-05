@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 
 package it.eng.spagobi.tools.dataset.service;
 
@@ -75,6 +75,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 	 private EMFErrorHandler errorHandler;
 		public static final String messageBundle = "messages";
 	 
+	/**
+	 * Instantiates a new list test data set module.
+	 */
 	public ListTestDataSetModule() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -83,6 +86,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
 		errorHandler=getResponseContainer().getErrorHandler();
@@ -110,6 +116,16 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 	
 	
 
+	/**
+	 * Gets the test result list.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @return the test result list
+	 * 
+	 * @throws Exception the exception
+	 */
 	public ListIFace getTestResultList(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
 		// define the spago paginator and list object
@@ -333,11 +349,13 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 	 * 
 	 * @param requestContainer The request container object
 	 * @param responseContainer The response container object
-	 * @param pool The pool definition string
-	 * @param statement	The statement definition string
-	 * @param columNames 
+	 * @param statement The statement definition string
+	 * @param datasource the datasource
+	 * @param columnsNames the columns names
+	 * 
 	 * @return A generic object containing the Execution results
-	 * @throws EMFInternalError 
+	 * 
+	 * @throws EMFInternalError the EMF internal error
 	 */
 	public static Object executeSelect(RequestContainer requestContainer,
 			ResponseContainer responseContainer, String datasource, String statement, List columnsNames) throws EMFInternalError {

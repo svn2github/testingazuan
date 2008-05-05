@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.base.SourceBean;
@@ -115,14 +115,13 @@ public class ImportManager implements IImportManager, Serializable {
     private String impAssMode = IMPORT_ASS_DEFAULT_MODE;
 
     /**
-     * Prepare the environment for the import procedure
+     * Prepare the environment for the import procedure.
      * 
-     * @param pathImpTmpFold
-     *                The path of the temporary import folder
-     * @param archiveName
-     *                the name of the compress exported file
-     * @param archiveContent
-     *                the bytes of the compress exported file
+     * @param pathImpTmpFold The path of the temporary import folder
+     * @param archiveName the name of the compress exported file
+     * @param archiveContent the bytes of the compress exported file
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public void prepareImport(String pathImpTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError {
 	logger.debug("IN");
@@ -176,7 +175,11 @@ public class ImportManager implements IImportManager, Serializable {
 
 
     /**
-     * Imports the exported objects
+     * Imports the exported objects.
+     * 
+     * @param overwrite the overwrite
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public void importObjects(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
@@ -199,8 +202,9 @@ public class ImportManager implements IImportManager, Serializable {
 	importObjParUse();
 	logger.debug("OUT");
     }
+    
     /**
-     * Gets the SpagoBI version of the exported file
+     * Gets the SpagoBI version of the exported file.
      * 
      * @return The SpagoBI version of the exported file
      */
@@ -209,7 +213,7 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Gets the current SpagobI version
+     * Gets the current SpagobI version.
      * 
      * @return The current SpagoBI version
      */
@@ -223,9 +227,11 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Gets the list of all exported roles
+     * Gets the list of all exported roles.
      * 
      * @return The list of exported roles
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getExportedRoles() throws EMFUserError {
 	List exportedRoles = null;
@@ -234,9 +240,11 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Gets the list of all exported engines
+     * Gets the list of all exported engines.
      * 
      * @return The list of exported engines
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getExportedEngines() throws EMFUserError {
 	List exportedEngines = null;
@@ -246,14 +254,13 @@ public class ImportManager implements IImportManager, Serializable {
 
     /**
      * checks if two or more exported roles are associate to the same current
-     * role
+     * role.
      * 
-     * @param roleAssociations
-     *                Map of assocaition between exported roles and roles of the
-     *                portal in use
-     * @throws EMFUserError
-     *                 if two ore more exported roles are associate to the same
-     *                 current role
+     * @param roleAssociations Map of assocaition between exported roles and roles of the
+     * portal in use
+     * 
+     * @throws EMFUserError if two ore more exported roles are associate to the same
+     * current role
      */
     public void checkRoleReferences(Map roleAssociations) throws EMFUserError {
 	logger.debug("IN");
@@ -280,12 +287,12 @@ public class ImportManager implements IImportManager, Serializable {
 
     /**
      * Update the data source name for each list of values of type query based on
-     * association between exported data sources and current system data sources
+     * association between exported data sources and current system data sources.
      * 
-     * @param mapDataSources
-     *                Map of the associations between exported data sources and
-     *                current system data sources
-     * @throws EMFUserError
+     * @param mapDataSources Map of the associations between exported data sources and
+     * current system data sources
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public void updateDataSourceReferences(Map mapDataSources) throws EMFUserError {
 	/*
@@ -333,7 +340,11 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Commits all changes made on exported and current databases
+     * Commits all changes made on exported and current databases.
+     * 
+     * @return the import result info
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public ImportResultInfo commitAllChanges() throws EMFUserError {
 	logger.debug("IN");
@@ -1683,7 +1694,7 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Ends the import procedure
+     * Ends the import procedure.
      */
     public void stopImport() {
 	logger.debug("IN");
@@ -1694,9 +1705,11 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
-     * Gets the list of exported data sources
+     * Gets the list of exported data sources.
      * 
      * @return List of the exported data sources
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public List getExportedDataSources() throws EMFUserError {
 	logger.debug("IN");
@@ -1725,7 +1738,9 @@ public class ImportManager implements IImportManager, Serializable {
     /**
      * Check the existance of the exported metadata into the current system
      * metadata and insert their associations into the association object
-     * MeatadataAssociation
+     * MeatadataAssociation.
+     * 
+     * @throws EMFUserError the EMF user error
      */
     public void checkExistingMetadata() throws EMFUserError {
 	logger.debug("IN");
@@ -1900,43 +1915,67 @@ public class ImportManager implements IImportManager, Serializable {
 
     /**
      * Gets the object which contains the association between exported metadata
-     * and the current system metadata
+     * and the current system metadata.
      * 
      * @return MetadataAssociation the object which contains the association
-     *         between exported metadata and the current system metadata
+     * between exported metadata and the current system metadata
      */
     public MetadataAssociations getMetadataAssociation() {
 	return metaAss;
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.tools.importexport.IImportManager#getExistingObject(java.lang.Integer, java.lang.Class)
+     */
     public Object getExistingObject(Integer id, Class objClass) {
 	return importer.getObject(id, objClass, txCurrDB, sessionCurrDB);
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.tools.importexport.IImportManager#getExportedObject(java.lang.Integer, java.lang.Class)
+     */
     public Object getExportedObject(Integer id, Class objClass) {
 	return importer.getObject(id, objClass, txExpDB, sessionExpDB);
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.tools.importexport.IImportManager#getUserAssociation()
+     */
     public UserAssociationsKeeper getUserAssociation() {
 	return usrAss;
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.tools.importexport.IImportManager#getImpAssMode()
+     */
     public String getImpAssMode() {
 	return impAssMode;
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.tools.importexport.IImportManager#setImpAssMode(java.lang.String)
+     */
     public void setImpAssMode(String impAssMode) {
 	this.impAssMode = impAssMode;
     }
     
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.IImportManager#getAssociationFile()
+	 */
 	public AssociationFile getAssociationFile() {
 		return associationFile;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.IImportManager#setAssociationFile(it.eng.spagobi.tools.importexport.bo.AssociationFile)
+	 */
 	public void setAssociationFile(AssociationFile associationFile) {
 		this.associationFile = associationFile;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.IImportManager#associateAllExportedRolesByUserAssociation()
+	 */
 	public boolean associateAllExportedRolesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {
@@ -1966,6 +2005,9 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.IImportManager#associateAllExportedEnginesByUserAssociation()
+	 */
 	public boolean associateAllExportedEnginesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {
@@ -1995,6 +2037,9 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.importexport.IImportManager#associateAllExportedDataSourcesByUserAssociation()
+	 */
 	public boolean associateAllExportedDataSourcesByUserAssociation() throws EMFUserError {
 		logger.debug("IN");
 		try {

@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.tools.dataset.bo;
 
 /**
@@ -50,21 +71,28 @@ public class DataSetParametersList {
 	private static transient Logger logger=Logger.getLogger(DataSetParametersList.class);	
 	
 	/**
-	 * constructor
+	 * constructor.
 	 */
 	public DataSetParametersList() {
 	} 
 	
 	/**
-	 * constructor 
+	 * constructor.
+	 * 
+	 * @param dataDefinition the data definition
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public DataSetParametersList(String dataDefinition) throws SourceBeanException {
 		loadFromXML(dataDefinition);
 	}
 	
-	/** loads the lov from an xml string 
+	/**
+	 * loads the lov from an xml string.
+	 * 
 	 * @param dataDefinition the xml definition of the lov
-	 * @throws SourceBeanException 
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public void  loadFromXML (String dataDefinition) throws SourceBeanException {
 		logger.debug("IN");
@@ -93,7 +121,8 @@ public class DataSetParametersList {
 	}	
 	
 	/**
-	 * serialize the lov to an xml string
+	 * serialize the lov to an xml string.
+	 * 
 	 * @return the serialized xml string
 	 */
 	public String toXML() {
@@ -118,10 +147,13 @@ public class DataSetParametersList {
 	}
 	
 	/**
-	 * Returns the result of the Dataset using a user profile to fill the Datase profile attribute
+	 * Returns the result of the Dataset using a user profile to fill the Datase profile attribute.
+	 * 
 	 * @param profile the profile of the user
+	 * 
 	 * @return the string result of the lov
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public String getDataSetResult(IEngUserProfile profile) throws Exception {
 		logger.debug("IN");
@@ -145,9 +177,11 @@ public class DataSetParametersList {
 		
 
 	/**
-	 * Gets the list of names of the profile attributes required
+	 * Gets the list of names of the profile attributes required.
+	 * 
 	 * @return list of profile attribute names
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public List getProfileAttributeNames() throws Exception {
 		logger.debug("IN");
@@ -171,9 +205,11 @@ public class DataSetParametersList {
 	}
 
 	/**
-	 * Checks if the dataset requires one or more profile attributes
+	 * Checks if the dataset requires one or more profile attributes.
+	 * 
 	 * @return true if the dataset require one or more profile attributes, false otherwise
-	 * @throws Exception
+	 * 
+	 * @throws Exception the exception
 	 */
 	public boolean requireProfileAttributes() throws Exception {
 		boolean contains = false;
@@ -186,9 +222,10 @@ public class DataSetParametersList {
 	
 	
 	/**
-	 * Adds a dataset to the dataset Detail List
+	 * Adds a dataset to the dataset Detail List.
+	 * 
 	 * @param name The dataset lov name
-	 * @param description The added dataset description
+	 * @param type the type
 	 */
 	public void add(String name, String type) {
 		// if name or description are empty don't add
@@ -213,9 +250,10 @@ public class DataSetParametersList {
 	
 	
 	/**
-	 * Deletes a dataset from the dataset Detail List
-	 * @param value The deleted dataset name
-	 * @param description The deleted dataset description
+	 * Deletes a dataset from the dataset Detail List.
+	 * 
+	 * @param name the name
+	 * @param type the type
 	 */
 	public void remove(String name, String type) {
 		Iterator iter = items.iterator();
@@ -231,10 +269,13 @@ public class DataSetParametersList {
 	
 	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
-	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been 
-	 * built. 
-	 * @param dataDefinition	The XML input String
+	 * in order to obtain the source <code>LovDetail</code> objects whom XML has been
+	 * built.
+	 * 
+	 * @param dataDefinition The XML input String
+	 * 
 	 * @return The corrispondent <code>DatasetParameterList</code> object
+	 * 
 	 * @throws SourceBeanException If a SourceBean Exception occurred
 	 */
 	public static DataSetParametersList  fromXML (String dataDefinition) throws SourceBeanException {
@@ -243,14 +284,17 @@ public class DataSetParametersList {
 	
 	
 	/**
-	 * Gets item of the fixed list
+	 * Gets item of the fixed list.
+	 * 
 	 * @return items of the fixed list
 	 */
 	public List getItems() {
 		return items;
 	}
+	
 	/**
-	 * Sets items of the fixed list
+	 * Sets items of the fixed list.
+	 * 
 	 * @param items the items to set
 	 */
 	public void setPars(List items) {

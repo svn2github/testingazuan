@@ -1,6 +1,24 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -28,7 +46,16 @@ import org.hibernate.criterion.Expression;
  *
  */
 public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
+	
 	/**
+	 * Load menu by id.
+	 * 
+	 * @param menuID the menu id
+	 * 
+	 * @return the menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#loadMenuByID(integer)
 	 */
 	public Menu loadMenuByID(Integer menuID) throws EMFUserError {
@@ -61,6 +88,14 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	
 
 	/**
+	 * Load menu by name.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#loadMenuByName(string)
 	 */	
 	public Menu loadMenuByName(String name) throws EMFUserError {
@@ -93,6 +128,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 
 	/**
+	 * Modify menu.
+	 * 
+	 * @param aMenu the a menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#modifyMenu(it.eng.spagobi.wapp.bo.Menu)
 	 */
 	public void modifyMenu(Menu aMenu) throws EMFUserError {
@@ -128,6 +169,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 
 	/**
+	 * Insert menu.
+	 * 
+	 * @param aMenu the a menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#insertMenu(it.eng.spagobi.wapp.bo.Menu)
 	 */
 	public void insertMenu(Menu aMenu) throws EMFUserError{		
@@ -162,6 +209,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 	
 	/**
+	 * Erase menu.
+	 * 
+	 * @param aMenu the a menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#eraseMenu(it.eng.spagobi.wapp.bo.Menu)
 	 */
 	public void eraseMenu(Menu aMenu) throws EMFUserError {
@@ -194,6 +247,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 	
 	/**
+	 * Load all menues.
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#loadAllMenues()
 	 */
 	public List loadAllMenues() throws EMFUserError {
@@ -233,7 +292,16 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		}
 		return realResult;
 	}
+	
 	/**
+	 * Checks for roles associated.
+	 * 
+	 * @param menuId the menu id
+	 * 
+	 * @return true, if checks for roles associated
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#hasRolesAssociated(java.lang.Integer)
 	 */
 	public boolean hasRolesAssociated (Integer menuId) throws EMFUserError{
@@ -273,6 +341,14 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 	
 	/**
+	 * Gets the children menu.
+	 * 
+	 * @param menuId the menu id
+	 * 
+	 * @return the children menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#getChildrenMenu(java.lang.Integer)
 	 */
 	public List getChildrenMenu (Integer menuId) throws EMFUserError{

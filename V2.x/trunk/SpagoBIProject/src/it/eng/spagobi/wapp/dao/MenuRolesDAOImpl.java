@@ -1,6 +1,24 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -27,7 +45,15 @@ import org.hibernate.Transaction;
  */
 public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRolesDAO {
 	
-	/** 
+	/**
+	 * Load menu by role id.
+	 * 
+	 * @param roleId the role id
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#loadMenuByRoleId(java.lang.Integer)
 	 */
 	public List loadMenuByRoleId(Integer roleId) throws EMFUserError {
@@ -78,7 +104,16 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	}
 
 
-	/** 
+	/**
+	 * Load menu roles.
+	 * 
+	 * @param menuId the menu id
+	 * @param roleId the role id
+	 * 
+	 * @return the menu roles
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#loadMenuRoles(java.lang.Integer, java.lang.Integer)
 	 */
 	public MenuRoles loadMenuRoles(Integer menuId, Integer roleId) throws EMFUserError{
@@ -112,6 +147,12 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	}
 
 	/**
+	 * Modify menu role.
+	 * 
+	 * @param aMenuRole the a menu role
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAOO#modifyMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void modifyMenuRole(MenuRoles aMenuRole) throws EMFUserError {
@@ -143,6 +184,12 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	}
 
 	/**
+	 * Insert menu role.
+	 * 
+	 * @param aMenuRole the a menu role
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#insertMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void insertMenuRole(MenuRoles aMenuRole) throws EMFUserError {
@@ -175,7 +222,13 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	}
 
 
-	/** 
+	/**
+	 * Erase menu role.
+	 * 
+	 * @param aMenuRole the a menu role
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#eraseMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void eraseMenuRole(MenuRoles aMenuRole) throws EMFUserError{
@@ -207,11 +260,13 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			}			
 		}
 	}
+	
 	/**
-	 * From the Hibernate menuRoles relation at input, gives the corrispondent 
+	 * From the Hibernate menuRoles relation at input, gives the corrispondent
 	 * <code>MenuRoles</code> object.
 	 * 
-	 * @param hibMenuRole	The Hibernate MenuRole object 
+	 * @param hibMenuRole The Hibernate MenuRole object
+	 * 
 	 * @return the corrispondent output <code>MenuRoles</code>
 	 */
 	public MenuRoles toMenuRoles(SbiMenuRole hibMenuRole){

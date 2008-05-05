@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -36,15 +36,38 @@ public class MenuRoles  implements Serializable   {
 	private Integer menuId;
 	private Integer extRoleId;
 	
+	/**
+	 * Gets the menu id.
+	 * 
+	 * @return the menu id
+	 */
 	public Integer getMenuId() {
 		return menuId;
 	}
+	
+	/**
+	 * Sets the menu id.
+	 * 
+	 * @param menuId the new menu id
+	 */
 	public void setMenuId(Integer menuId) {
 		this.menuId = menuId;
 	}
+	
+	/**
+	 * Gets the ext role id.
+	 * 
+	 * @return the ext role id
+	 */
 	public Integer getExtRoleId() {
 		return extRoleId;
 	}
+	
+	/**
+	 * Sets the ext role id.
+	 * 
+	 * @param extRoleId the new ext role id
+	 */
 	public void setExtRoleId(Integer extRoleId) {
 		this.extRoleId = extRoleId;
 	}

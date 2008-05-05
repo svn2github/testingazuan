@@ -21,11 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
-import it.businesslogic.ireport.chart.Plot;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyPieUrlGenerator;
 
 import java.awt.Font;
@@ -37,13 +35,10 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.urls.PieURLGenerator;
-import org.jfree.chart.urls.StandardPieURLGenerator;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;

@@ -88,8 +88,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   
   <% 
   	String titleChart="";
-	String maxSlider="";
-	String minSlider="";
+	String maxSlider="0";
+	String minSlider="0";
 	String valueSlider="1";
 	String refreshUrl = "";
 	HashMap categories=null;
@@ -376,6 +376,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
 
 	</div>
+
 	<%}
 	else{
 	// Slider needed
@@ -408,6 +409,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<script type="text/javascript" language="JAVASCRIPT">
 			<!--
 				arrayCats[<%=key%>]='<%=name%>';
+		     arrayCats[1]=0;
 			//-->
 		</script>
 	<%} %>
@@ -502,10 +504,8 @@ if(sbi.isChangeableView() && !docComposition){
 	
 	
 	
-	} // End no error case%>
 
-
-
+ if(makeSlider==true){ %>
 
  <script type="text/javascript" language="JavaScript">
  
@@ -539,8 +539,13 @@ if(sbi.isChangeableView() && !docComposition){
 		Test = {};
 
 		Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
-			type: 'horizontal',size:500, sliderWidth: 18,sliderHeight: 21,maxValue: <%=maxSlider%>,minValue: <%=minSlider%>,sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'
-					}]
+			type: 'horizontal',
+			size:500,
+			sliderWidth: 18,
+			sliderHeight: 21,
+			maxValue: <%=maxSlider%>,
+			minValue: <%=minSlider%>,
+			sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'}]
 			 });
 	
 		Test.slideZone1.getSlider('start1_1').on('drag',
@@ -560,16 +565,23 @@ if(sbi.isChangeableView() && !docComposition){
 	
 </script>
 
+<%} 
+
+	} // End no error case
+	
+	%>
+
+
 <script type="text/javascript">
 
   
   function doRefresh() {
-    var iframe = document.getElementById("iframeexec<%= uuid %>");
+    var iframe = document.getElementById("iframeexec<%=uuidO%>");
     iframe.src = iframe.src;
-    setTimeout("doRefresh()",5000);
+    setTimeout("doRefresh()",500000);
   }
   
-  setTimeout('window.location.reload()', 5000);
+  setTimeout('window.location.reload()', 500000);
    
 </script>
 

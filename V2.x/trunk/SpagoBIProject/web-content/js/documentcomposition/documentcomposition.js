@@ -51,12 +51,15 @@ function setStylePanels(pStylePanels){
 }
 
 
+function execDrill(name, url) {
+	alert("The 'execDrill' function is deprecated. For the refresh of the document call execCrossNavigation(windowName, labelDoc, parameters).");
+}
+
 /* Update the input url with value for refresh linked documents and execute themes */
-function execDrill(name, urlDrill){
+function execCrossNavigation(windowName, label, parameters) {
 	var baseName = "iframe_";
-	var labelDocClicked = name.substring(baseName.length);
+	var labelDocClicked = windowName.substring(baseName.length);
 	var tmpUrl = "";
-	urlDrill = urlDrill.substring(urlDrill.indexOf("?")+1);
 	
 	for(var docMaster in asUrls){
 		var labelMasterDoc = docMaster.substring(docMaster.indexOf('|')+1);
@@ -94,8 +97,7 @@ function execDrill(name, urlDrill){
 							 	finalUrl = newUrl[0];
 								tmpOldSbiSubDoc = sbiSubDoc;
 							}
-							
-							var paramsNewValues = urlDrill.split("&");
+							var paramsNewValues = parameters.split("&");;
 							var tmpNewValue = "";
 							var tmpOldValue = "";	
 							if (paramsNewValues != null && paramsNewValues.length > 0) {
@@ -155,7 +157,6 @@ function execDrill(name, urlDrill){
 					RE = new RegExp("&amp;", "ig");
 					var lastUrl = newUrl[0];
 					lastUrl = lastUrl.replace(RE, "&");
-					//newUrl[0] = newUrl[0].replace(RE, "&");
 					sendUrl(nameIframe,lastUrl);
 				}//if (docLabel.indexOf(labelMasterDoc) >= 0){
 			}//for (var docLabel in asLinkedDocs){ 

@@ -167,6 +167,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                maxlength="160" />
 	</div>
     <% String curr_value = parameter.getTypeId().toString();%>  
+ 
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBIDev.param.modalityField"/>
@@ -178,8 +179,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	       domain = (Domain)list.get(i);
 		%>
       	<input type="radio" id="modality" name="modality" <%=disabled%>
-			   onclick="radioButtonClicked(this.value)" 
-	           value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <% if(curr_value.equals(domain.getValueId().toString())) { out.println(" checked='checked' "); } %>>
+      	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
+				onclick="radioButtonClicked(this.value)" 
+			<% } %>			   
+	           value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <% if(curr_value.equals(domain.getValueId().toString())) { out.println(" checked='checked' "); } %> >
 				<%= domain.getValueName()%>
 		</input>
    	    <% } %>
@@ -634,14 +637,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </table>   	
 
 <script>
+ <%
+	Parameter initialParameter = (Parameter) aSessionContainer.getAttribute("initial_Parameter");
+	if (initialParameter == null) initialParameter = parameter;
+	ParameterUse initialParuse = (ParameterUse) aSessionContainer.getAttribute("initial_ParameterUse");
+	if (initialParuse == null) initialParuse = paruse;
+	%>
+    var modality = '<%=initialParameter.getType() + "," + initialParameter.getTypeId()%>';
 
-<%
-Parameter initialParameter = (Parameter) aSessionContainer.getAttribute("initial_Parameter");
-if (initialParameter == null) initialParameter = parameter;
-ParameterUse initialParuse = (ParameterUse) aSessionContainer.getAttribute("initial_ParameterUse");
-if (initialParuse == null) initialParuse = paruse;
-%>
-
+	function radioButtonClicked(mod) {
+		modality = mod;
+	}
+	
 var manualInputSelection = '<%=isLov ? "lov" : "man_in"%>';
 
 function isParuseformModified () {
@@ -749,11 +756,7 @@ function changeParameterUse (paruseId, message) {
 	document.getElementById('parametersForm').submit();
 }
 
-var modality = '<%=initialParameter.getType() + "," + initialParameter.getTypeId()%>';
 
-function radioButtonClicked(mod) {
-	modality = mod;
-}
 
 function saveAndGoBackConfirm(message, url){
 		

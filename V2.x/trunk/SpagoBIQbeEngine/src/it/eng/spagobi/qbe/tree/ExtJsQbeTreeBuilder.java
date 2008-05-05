@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.tree;
 
 import it.eng.qbe.model.IDataMartModel;
@@ -39,36 +38,69 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSObject;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ExtJsQbeTreeBuilder.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class ExtJsQbeTreeBuilder  {
 	
+	/** The qbe tree class. */
 	private Class qbeTreeClass;
+	
+	/** The url generator. */
 	private IQbeTreeUrlGenerator urlGenerator;	
+	
+	/** The qbe tree filter. */
 	private QbeTreeFilter qbeTreeFilter;
 	
+	/** The datamart model. */
 	private IDataMartModel datamartModel;	
 	
+	/** The modality. */
 	String modality = DEFAULT_MODALITY;	
+	
+	/** The Constant FULL_MODALITY. */
 	public static final String FULL_MODALITY = "FULL";
+	
+	/** The Constant LIGHT_MODALITY. */
 	public static final String LIGHT_MODALITY = "LIGHT";
+	
+	/** The Constant DEFAULT_MODALITY. */
 	public static final String DEFAULT_MODALITY = FULL_MODALITY;
 	
+	/** The class prefix. */
 	private String classPrefix = null;	
 	
 	
+	/**
+	 * Instantiates a new ext js qbe tree builder.
+	 * 
+	 * @param qbeTreeFilter the qbe tree filter
+	 */
 	public ExtJsQbeTreeBuilder(QbeTreeFilter qbeTreeFilter)  {		
 		setQbeTreeFilter( qbeTreeFilter );
 	}	
 	
 		
+	/**
+	 * Gets the qbe trees.
+	 * 
+	 * @param datamartModel the datamart model
+	 * 
+	 * @return the qbe trees
+	 */
 	public List getQbeTrees(IDataMartModel datamartModel)  {			
 		setDatamartModel(datamartModel);			
 		return buildQbeTreeList();
 	}
 
+	/**
+	 * Builds the qbe tree list.
+	 * 
+	 * @return the list
+	 */
 	private List buildQbeTreeList()  {	
 		List list = new ArrayList();
 		
@@ -95,6 +127,13 @@ public class ExtJsQbeTreeBuilder  {
 	
 	
 	
+	/**
+	 * Builds the qbe tree.
+	 * 
+	 * @param datamartName the datamart name
+	 * 
+	 * @return the jSON array
+	 */
 	private JSONArray buildQbeTree(String datamartName)  {			
 		JSONArray nodes = new JSONArray();	
 		addEntityNodes(nodes, datamartName);	
@@ -102,6 +141,12 @@ public class ExtJsQbeTreeBuilder  {
 	}
 	
 	
+	/**
+	 * Adds the entity nodes.
+	 * 
+	 * @param nodes the nodes
+	 * @param datamartName the datamart name
+	 */
 	public void addEntityNodes(JSONArray nodes, String datamartName) {
 		int nodeCounter = 0;
 		
@@ -116,6 +161,13 @@ public class ExtJsQbeTreeBuilder  {
 	}
 	
 	
+	/**
+	 * Adds the entity node.
+	 * 
+	 * @param nodes the nodes
+	 * @param entity the entity
+	 * @param recursionLevel the recursion level
+	 */
 	public void addEntityNode(JSONArray nodes, 
 							 DataMartEntity entity,
 							 int recursionLevel) {
@@ -133,6 +185,13 @@ public class ExtJsQbeTreeBuilder  {
 	}
 		
 	
+	/**
+	 * Adds the entity root node.
+	 * 
+	 * @param nodes the nodes
+	 * @param entity the entity
+	 * @param recursionLevel the recursion level
+	 */
 	public void addEntityRootNode(JSONArray nodes,
 								  DataMartEntity entity,
 								  int recursionLevel) {		
@@ -170,6 +229,14 @@ public class ExtJsQbeTreeBuilder  {
 		nodes.put(entityNode);		
 	}
 	
+	/**
+	 * Gets the field nodes.
+	 * 
+	 * @param entity the entity
+	 * @param recursionLevel the recursion level
+	 * 
+	 * @return the field nodes
+	 */
 	public JSONArray getFieldNodes(DataMartEntity entity,int recursionLevel) {		
 		
 		JSONArray children = new JSONArray();
@@ -200,6 +267,14 @@ public class ExtJsQbeTreeBuilder  {
 		return children;		
 	}
 	
+	/**
+	 * Gets the field node.
+	 * 
+	 * @param parentEntity the parent entity
+	 * @param field the field
+	 * 
+	 * @return the field node
+	 */
 	public  JSObject getFieldNode(DataMartEntity parentEntity,
 							 DataMartField field) {
 		
@@ -232,14 +307,14 @@ public class ExtJsQbeTreeBuilder  {
 	
 	/**
 	 * Add Calculate Fields on the entity
- 	 * Control recursion level because calculate field are applied only at entity level not in dimension level
- 	 * 
-	 * @param tree
-	 * @param prefix
-	 * @param className
-	 * @param parentEntityNodeId
-	 * @param nodeCounter
-	 * @return
+	 * Control recursion level because calculate field are applied only at entity level not in dimension level.
+	 * 
+	 * @param tree the tree
+	 * @param parentEntityNodeId the parent entity node id
+	 * @param nodeCounter the node counter
+	 * @param entity the entity
+	 * 
+	 * @return the int
 	 */
 	public int addCalculatedFieldNodes(IQbeTree tree, 
 			   						   DataMartEntity entity,
@@ -280,6 +355,15 @@ public class ExtJsQbeTreeBuilder  {
 	}
 	
 	
+	/**
+	 * Gets the sub entities nodes.
+	 * 
+	 * @param entity the entity
+	 * @param nodes the nodes
+	 * @param recursionLevel the recursion level
+	 * 
+	 * @return the sub entities nodes
+	 */
 	public JSONArray getSubEntitiesNodes(DataMartEntity entity,
 									JSONArray nodes,
 								   int recursionLevel ) {
@@ -308,48 +392,98 @@ public class ExtJsQbeTreeBuilder  {
 	
 	
 
+	/**
+	 * Gets the modality.
+	 * 
+	 * @return the modality
+	 */
 	public String getModality() {
 		return modality;
 	}
 
+	/**
+	 * Sets the modality.
+	 * 
+	 * @param modality the new modality
+	 */
 	public void setModality(String modality) {
 		this.modality = modality;
 	}
 
+	/**
+	 * Gets the datamart model.
+	 * 
+	 * @return the datamart model
+	 */
 	protected IDataMartModel getDatamartModel() {
 		return datamartModel;
 	}
 
+	/**
+	 * Sets the datamart model.
+	 * 
+	 * @param datamartModel the new datamart model
+	 */
 	protected void setDatamartModel(IDataMartModel datamartModel) {
 		this.datamartModel = datamartModel;
 	}
 
 
+	/**
+	 * Gets the url generator.
+	 * 
+	 * @return the url generator
+	 */
 	public IQbeTreeUrlGenerator getUrlGenerator() {
 		return urlGenerator;
 	}
 
 
+	/**
+	 * Sets the url generator.
+	 * 
+	 * @param urlGenerator the new url generator
+	 */
 	public void setUrlGenerator(IQbeTreeUrlGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
 
+	/**
+	 * Gets the qbe tree class.
+	 * 
+	 * @return the qbe tree class
+	 */
 	protected Class getQbeTreeClass() {
 		return qbeTreeClass;
 	}
 
 
+	/**
+	 * Sets the qbe tree class.
+	 * 
+	 * @param qbeTreeClass the new qbe tree class
+	 */
 	protected void setQbeTreeClass(Class qbeTreeClass) {
 		this.qbeTreeClass = qbeTreeClass;
 	}
 
 
+	/**
+	 * Gets the qbe tree filter.
+	 * 
+	 * @return the qbe tree filter
+	 */
 	private QbeTreeFilter getQbeTreeFilter() {
 		return qbeTreeFilter;
 	}
 
 
+	/**
+	 * Sets the qbe tree filter.
+	 * 
+	 * @param qbeTreeFilter the new qbe tree filter
+	 */
 	private void setQbeTreeFilter(QbeTreeFilter qbeTreeFilter) {
 		this.qbeTreeFilter = qbeTreeFilter;
 	}

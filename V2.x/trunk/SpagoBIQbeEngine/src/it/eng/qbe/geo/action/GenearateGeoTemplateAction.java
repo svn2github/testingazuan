@@ -1,23 +1,22 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
- SpagoBI - The Business Intelligence Free Platform
-
- Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
  **/
 package it.eng.qbe.geo.action;
 
@@ -26,13 +25,18 @@ import it.eng.spago.base.SourceBean;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author Andrea Gioia
+ * The Class GenearateGeoTemplateAction.
  * 
+ * @author Andrea Gioia
  */
 public class GenearateGeoTemplateAction extends GeoAbstractAction { 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.geo.action.GeoAbstractAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		super.service(request, response);
 
@@ -57,6 +61,13 @@ public class GenearateGeoTemplateAction extends GeoAbstractAction {
 		response.setAttribute("EXPERT_QUERY_COLUMNS", expertQueryColumns);
 	}
 	
+	/**
+	 * Gets the select fields.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the select fields
+	 */
 	private List getSelectFields(String query) {
 		List fields = new ArrayList();
 		if(!query.trim().toLowerCase().startsWith("select")) return fields;

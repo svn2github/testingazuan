@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.geo.configuration;
 
 import it.eng.spago.base.SourceBean;
@@ -32,38 +31,72 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DatamartProviderConfiguration.
+ * 
  * @author Andrea Gioia
- *
  */
 public class DatamartProviderConfiguration {
 	
+	/** The parent configuration. */
 	private MapConfiguration parentConfiguration;
 	
+	/** The class name. */
 	private String className;
 	
+	/** The connection name. */
 	private String connectionName;
+	
+	/** The query. */
 	private String query;
+	
+	/** The column id. */
 	private String columnId;
+	
+	/** The hierarchy name. */
 	private String hierarchyName;
+	
+	/** The hierarchy base level. */
 	private String hierarchyBaseLevel;
+	
+	/** The hierarchy level. */
 	private String hierarchyLevel;
 	
+	/** The kpi column names. */
 	private String[] kpiColumnNames;
+	
+	/** The kpi agregation functins. */
 	private String[] kpiAgregationFunctins;
 		
+	/** The parameters. */
 	private Properties parameters;
 	
+	/** The hierarchy map. */
 	private Map hierarchyMap;
 	
 	
+	/** The Constant DEFAULT_CALSS_NAME. */
 	public static final String DEFAULT_CALSS_NAME = "it.eng.spagobi.geo.datamart.DefaultDatamartProvider";
 	
+	/**
+	 * Instantiates a new datamart provider configuration.
+	 * 
+	 * @param parentConfiguration the parent configuration
+	 */
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
 		this.hierarchyMap = new HashMap();
 	}
 	
+	/**
+	 * Instantiates a new datamart provider configuration.
+	 * 
+	 * @param parentConfiguration the parent configuration
+	 * @param datamartProviderConfigurationSB the datamart provider configuration sb
+	 * 
+	 * @throws ConfigurationException the configuration exception
+	 */
 	public DatamartProviderConfiguration (MapConfiguration parentConfiguration, SourceBean datamartProviderConfigurationSB) throws ConfigurationException {
 
 		setParentConfiguration(parentConfiguration);
@@ -230,33 +263,92 @@ public class DatamartProviderConfiguration {
 	}
 	
 		
+	/**
+	 * Gets the class name.
+	 * 
+	 * @return the class name
+	 */
 	public String getClassName() {
 		return className;
 	}
+	
+	/**
+	 * Sets the class name.
+	 * 
+	 * @param className the new class name
+	 */
 	public void setClassName(String className) {
 		this.className = className;
 	}
+	
+	/**
+	 * Gets the column id.
+	 * 
+	 * @return the column id
+	 */
 	public String getColumnId() {
 		return columnId;
 	}
+	
+	/**
+	 * Sets the column id.
+	 * 
+	 * @param columnId the new column id
+	 */
 	public void setColumnId(String columnId) {
 		this.columnId = columnId;
 	}
+	
+	/**
+	 * Gets the connection name.
+	 * 
+	 * @return the connection name
+	 */
 	public String getConnectionName() {
 		return connectionName;
 	}
+	
+	/**
+	 * Sets the connection name.
+	 * 
+	 * @param connectionName the new connection name
+	 */
 	public void setConnectionName(String connectionName) {
 		this.connectionName = connectionName;
 	}
+	
+	/**
+	 * Gets the kpi column names.
+	 * 
+	 * @return the kpi column names
+	 */
 	public String[] getKpiColumnNames() {
 		return kpiColumnNames;
 	}
+	
+	/**
+	 * Sets the kpi column names.
+	 * 
+	 * @param kpiColumnNames the new kpi column names
+	 */
 	public void setKpiColumnNames(String[] kpiColumnNames) {
 		this.kpiColumnNames = kpiColumnNames;
 	}
+	
+	/**
+	 * Gets the query.
+	 * 
+	 * @return the query
+	 */
 	public String getQuery() {
 		return query;
 	}
+	
+	/**
+	 * Gets the executable query.
+	 * 
+	 * @return the executable query
+	 */
 	public String getExecutableQuery() {
 		String executableQuery;
 		
@@ -279,56 +371,124 @@ public class DatamartProviderConfiguration {
 		}
 		return executableQuery;
 	}
+	
+	/**
+	 * Sets the query.
+	 * 
+	 * @param query the new query
+	 */
 	public void setQuery(String query) {
 		this.query = query;
 	}
 	
 	
+	/**
+	 * Gets the parameters.
+	 * 
+	 * @return the parameters
+	 */
 	public Properties getParameters() {
 		return parameters;
 	}
 
+	/**
+	 * Sets the parameters.
+	 * 
+	 * @param parameters the new parameters
+	 */
 	public void setParameters(Properties parameters) {
 		this.parameters = parameters;
 	}
 
 	
+	/**
+	 * Gets the hierarchy level.
+	 * 
+	 * @return the hierarchy level
+	 */
 	public String getHierarchyLevel() {
 		return hierarchyLevel;
 	}
 
+	/**
+	 * Sets the hierarchy level.
+	 * 
+	 * @param hierarchyLevel the new hierarchy level
+	 */
 	public void setHierarchyLevel(String hierarchyLevel) {
 		this.hierarchyLevel = hierarchyLevel;
 	}
 
+	/**
+	 * Gets the hierarchy name.
+	 * 
+	 * @return the hierarchy name
+	 */
 	public String getHierarchyName() {
 		return hierarchyName;
 	}
 
+	/**
+	 * Sets the hierarchy name.
+	 * 
+	 * @param hierarchyName the new hierarchy name
+	 */
 	public void setHierarchyName(String hierarchyName) {
 		this.hierarchyName = hierarchyName;
 	}
 
+	/**
+	 * Gets the kpi agregation functins.
+	 * 
+	 * @return the kpi agregation functins
+	 */
 	public String[] getKpiAgregationFunctins() {
 		return kpiAgregationFunctins;
 	}
 
+	/**
+	 * Sets the kpi agregation functins.
+	 * 
+	 * @param kpiAgregationFunctins the new kpi agregation functins
+	 */
 	public void setKpiAgregationFunctins(String[] kpiAgregationFunctins) {
 		this.kpiAgregationFunctins = kpiAgregationFunctins;
 	}
 	
+	/**
+	 * Adds the hieararchy.
+	 * 
+	 * @param hierarchy the hierarchy
+	 */
 	public void addHieararchy(Hierarchy hierarchy) {
 		hierarchyMap.put(hierarchy.getName(), hierarchy);
 	}
 	
+	/**
+	 * Delete hieararchy.
+	 * 
+	 * @param hierarchyName the hierarchy name
+	 */
 	public void deleteHieararchy(String hierarchyName) {
 		hierarchyMap.remove(hierarchyName);
 	}
 	
+	/**
+	 * Gets the hierarchy.
+	 * 
+	 * @param hierarchyName the hierarchy name
+	 * 
+	 * @return the hierarchy
+	 */
 	public Hierarchy getHierarchy(String hierarchyName) {
 		return (Hierarchy)hierarchyMap.get(hierarchyName);
 	}
 	
+	/**
+	 * Gets the hierarchies.
+	 * 
+	 * @return the hierarchies
+	 */
 	public List getHierarchies() {
 		List hierarchies = new ArrayList();
 		Iterator it = hierarchyMap.keySet().iterator();
@@ -336,14 +496,29 @@ public class DatamartProviderConfiguration {
 		return hierarchies;
 	}
 	
+	/**
+	 * Gets the selected hierarchy.
+	 * 
+	 * @return the selected hierarchy
+	 */
 	public Hierarchy getSelectedHierarchy() {
 		return getHierarchy(getHierarchyName());
 	}
 	
+	/**
+	 * Gets the selected level.
+	 * 
+	 * @return the selected level
+	 */
 	public Hierarchy.Level getSelectedLevel() {
 		return getSelectedHierarchy().getLevel(getHierarchyLevel());
 	}
 	
+	/**
+	 * Gets the base level.
+	 * 
+	 * @return the base level
+	 */
 	public Hierarchy.Level getBaseLevel() {
 		return getSelectedHierarchy().getLevel(getHierarchyBaseLevel());
 	}
@@ -351,13 +526,31 @@ public class DatamartProviderConfiguration {
 	
 	
 	
+	/**
+	 * The Class Hierarchy.
+	 */
 	public static class Hierarchy {
+		
+		/** The name. */
 		private String name;
+		
+		/** The type. */
 		private String type;
+		
+		/** The table. */
 		private String table;
+		
+		/** The level list. */
 		private List levelList;
+		
+		/** The level map. */
 		private Map levelMap;
 		
+		/**
+		 * Instantiates a new hierarchy.
+		 * 
+		 * @param name the name
+		 */
 		public Hierarchy(String name) {
 			this.name = name;
 			this.type = "custom";
@@ -366,6 +559,12 @@ public class DatamartProviderConfiguration {
 			this.levelMap = new HashMap();
 		}
 		
+		/**
+		 * Instantiates a new hierarchy.
+		 * 
+		 * @param name the name
+		 * @param table the table
+		 */
 		public Hierarchy(String name , String table) {
 			this.name = name;
 			this.type = "default";
@@ -374,34 +573,82 @@ public class DatamartProviderConfiguration {
 			this.levelMap = new HashMap();
 		}
 		
+		/**
+		 * Gets the name.
+		 * 
+		 * @return the name
+		 */
 		public String getName() {
 			return name;
 		}
+		
+		/**
+		 * Sets the name.
+		 * 
+		 * @param name the new name
+		 */
 		public void setName(String name) {
 			this.name = name;
 		}
+		
+		/**
+		 * Gets the table.
+		 * 
+		 * @return the table
+		 */
 		public String getTable() {
 			return table;
 		}
+		
+		/**
+		 * Sets the table.
+		 * 
+		 * @param table the new table
+		 */
 		public void setTable(String table) {
 			this.table = table;
 		}
+		
+		/**
+		 * Gets the type.
+		 * 
+		 * @return the type
+		 */
 		public String getType() {
 			return type;
 		}
+		
+		/**
+		 * Sets the type.
+		 * 
+		 * @param type the new type
+		 */
 		public void setType(String type) {
 			this.type = type;
 		}
 		
+		/**
+		 * Checks if is default hierarchy.
+		 * 
+		 * @return true, if is default hierarchy
+		 */
 		public boolean isDefaultHierarchy() {
 			return getType().equalsIgnoreCase("default");
 		}
 		
+		/**
+		 * Clear levels.
+		 */
 		public void clearLevels() {
 			levelList = new ArrayList();
 			levelMap = new HashMap();
 		}
 		
+		/**
+		 * Adds the level.
+		 * 
+		 * @param level the level
+		 */
 		public void addLevel(Level level) {
 			if(getLevel(level.getName()) == null) {
 				levelList.add(level);
@@ -409,14 +656,33 @@ public class DatamartProviderConfiguration {
 			levelMap.put(level.getName(), level);
 		}
 		
+		/**
+		 * Gets the level.
+		 * 
+		 * @param levelName the level name
+		 * 
+		 * @return the level
+		 */
 		public Level getLevel(String levelName) {
 			return (Level)levelMap.get(levelName);
 		}
 		
+		/**
+		 * Gets the levels.
+		 * 
+		 * @return the levels
+		 */
 		public List getLevels() {
 			return levelList;
 		}
 		
+		/**
+		 * Gets the sublevels.
+		 * 
+		 * @param levelName the level name
+		 * 
+		 * @return the sublevels
+		 */
 		public List getSublevels(String levelName) {
 			List levels = new ArrayList();
 			boolean isSubLevel = false;
@@ -432,6 +698,11 @@ public class DatamartProviderConfiguration {
 			return levels;
 		}
 
+		/**
+		 * To xml.
+		 * 
+		 * @return the string
+		 */
 		public String toXml() {
 			StringBuffer buffer = new StringBuffer();
 			
@@ -459,36 +730,100 @@ public class DatamartProviderConfiguration {
 			return buffer.toString();
 		}
 		
+		/**
+		 * The Class Level.
+		 */
 		public static class Level {
+			
+			/** The name. */
 			private String name;
+			
+			/** The column id. */
 			private String columnId;
+			
+			/** The column desc. */
 			private String columnDesc;
+			
+			/** The feature name. */
 			private String featureName;
+			
+			/**
+			 * Gets the column desc.
+			 * 
+			 * @return the column desc
+			 */
 			public String getColumnDesc() {
 				return columnDesc;
 			}
+			
+			/**
+			 * Sets the column desc.
+			 * 
+			 * @param columnDesc the new column desc
+			 */
 			public void setColumnDesc(String columnDesc) {
 				this.columnDesc = columnDesc;
 			}
+			
+			/**
+			 * Gets the column id.
+			 * 
+			 * @return the column id
+			 */
 			public String getColumnId() {
 				return columnId;
 			}
+			
+			/**
+			 * Sets the column id.
+			 * 
+			 * @param columnId the new column id
+			 */
 			public void setColumnId(String columnId) {
 				this.columnId = columnId;
 			}
+			
+			/**
+			 * Gets the feature name.
+			 * 
+			 * @return the feature name
+			 */
 			public String getFeatureName() {
 				return featureName;
 			}
+			
+			/**
+			 * Sets the feature name.
+			 * 
+			 * @param featureName the new feature name
+			 */
 			public void setFeatureName(String featureName) {
 				this.featureName = featureName;
 			}
+			
+			/**
+			 * Gets the name.
+			 * 
+			 * @return the name
+			 */
 			public String getName() {
 				return name;
 			}
+			
+			/**
+			 * Sets the name.
+			 * 
+			 * @param name the new name
+			 */
 			public void setName(String name) {
 				this.name = name;
 			}
 			
+			/**
+			 * To xml.
+			 * 
+			 * @return the string
+			 */
 			public String toXml() {
 				StringBuffer buffer = new StringBuffer();
 				
@@ -505,25 +840,50 @@ public class DatamartProviderConfiguration {
 	}
 
 
+	/**
+	 * Gets the hierarchy base level.
+	 * 
+	 * @return the hierarchy base level
+	 */
 	public String getHierarchyBaseLevel() {
 		return hierarchyBaseLevel;
 	}
 
 
+	/**
+	 * Sets the hierarchy base level.
+	 * 
+	 * @param hierarchyBaseLevel the new hierarchy base level
+	 */
 	public void setHierarchyBaseLevel(String hierarchyBaseLevel) {
 		this.hierarchyBaseLevel = hierarchyBaseLevel;
 	}
 
 
+	/**
+	 * Gets the parent configuration.
+	 * 
+	 * @return the parent configuration
+	 */
 	public MapConfiguration getParentConfiguration() {
 		return parentConfiguration;
 	}
 
 
+	/**
+	 * Sets the parent configuration.
+	 * 
+	 * @param parentConfiguration the new parent configuration
+	 */
 	public void setParentConfiguration(MapConfiguration parentConfiguration) {
 		this.parentConfiguration = parentConfiguration;
 	}
 
+	/**
+	 * To xml.
+	 * 
+	 * @return the string
+	 */
 	public String toXml() {
 		StringBuffer buffer = new StringBuffer();
 		

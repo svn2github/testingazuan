@@ -1,3 +1,23 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
 /*
@@ -26,8 +46,10 @@ SOFTWARE.
 
 import java.util.Iterator;
 
+// TODO: Auto-generated Javadoc
 /**
  * Convert an HTTP header to a JSONObject and back.
+ * 
  * @author JSON.org
  * @version 2
  */
@@ -40,33 +62,36 @@ public class HTTP {
      * Convert an HTTP header string into a JSONObject. It can be a request
      * header or a response header. A request header will contain
      * <pre>{
-     *    Method: "POST" (for example),
-     *    "Request-URI": "/" (for example),
-     *    "HTTP-Version": "HTTP/1.1" (for example)
+     * Method: "POST" (for example),
+     * "Request-URI": "/" (for example),
+     * "HTTP-Version": "HTTP/1.1" (for example)
      * }</pre>
      * A response header will contain
      * <pre>{
-     *    "HTTP-Version": "HTTP/1.1" (for example),
-     *    "Status-Code": "200" (for example),
-     *    "Reason-Phrase": "OK" (for example)
+     * "HTTP-Version": "HTTP/1.1" (for example),
+     * "Status-Code": "200" (for example),
+     * "Reason-Phrase": "OK" (for example)
      * }</pre>
      * In addition, the other parameters in the header will be captured, using
      * the HTTP field names as JSON names, so that <pre>
-     *    Date: Sun, 26 May 2002 18:06:04 GMT
-     *    Cookie: Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s
-     *    Cache-Control: no-cache</pre>
+     * Date: Sun, 26 May 2002 18:06:04 GMT
+     * Cookie: Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s
+     * Cache-Control: no-cache</pre>
      * become
      * <pre>{...
-     *    Date: "Sun, 26 May 2002 18:06:04 GMT",
-     *    Cookie: "Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s",
-     *    "Cache-Control": "no-cache",
+     * Date: "Sun, 26 May 2002 18:06:04 GMT",
+     * Cookie: "Q=q2=PPEAsg--; B=677gi6ouf29bn&b=2&f=s",
+     * "Cache-Control": "no-cache",
      * ...}</pre>
      * It does no further checking or conversion. It does not parse dates.
      * It does not do '%' transforms on URLs.
+     * 
      * @param string An HTTP header string.
+     * 
      * @return A JSONObject containing the elements and attributes
      * of the XML string.
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
         JSONObject     o = new JSONObject();
@@ -107,22 +132,25 @@ public class HTTP {
     /**
      * Convert a JSONObject into an HTTP header. A request header must contain
      * <pre>{
-     *    Method: "POST" (for example),
-     *    "Request-URI": "/" (for example),
-     *    "HTTP-Version": "HTTP/1.1" (for example)
+     * Method: "POST" (for example),
+     * "Request-URI": "/" (for example),
+     * "HTTP-Version": "HTTP/1.1" (for example)
      * }</pre>
      * A response header must contain
      * <pre>{
-     *    "HTTP-Version": "HTTP/1.1" (for example),
-     *    "Status-Code": "200" (for example),
-     *    "Reason-Phrase": "OK" (for example)
+     * "HTTP-Version": "HTTP/1.1" (for example),
+     * "Status-Code": "200" (for example),
+     * "Reason-Phrase": "OK" (for example)
      * }</pre>
      * Any other members of the JSONObject will be output as HTTP fields.
      * The result will end with two CRLF pairs.
+     * 
      * @param o A JSONObject
+     * 
      * @return An HTTP header string.
+     * 
      * @throws JSONException if the object does not contain enough
-     *  information.
+     * information.
      */
     public static String toString(JSONObject o) throws JSONException {
         Iterator     keys = o.keys();

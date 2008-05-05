@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.security;
 
 import java.awt.Dimension;
@@ -48,20 +47,42 @@ import sun.misc.BASE64Encoder;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PasswordGenerator.
+ */
 public class PasswordGenerator extends JDialog implements ActionListener, KeyListener {
 
+	/** The main pane. */
 	private JPanel mainPane = null;	
+	
+	/** The generate pwd btn. */
 	private JButton generatePwdBtn = null;
+	
+	/** The abort button. */
 	private JButton abortButton = null;
+	
+	/** The clear btn. */
 	private JButton clearBtn = null;
+	
+	/** The clear pwd text field. */
 	private JTextField clearPwdTextField = null;
+	
+	/** The clear pwd label. */
 	private JLabel clearPwdLabel = null;
+	
+	/** The enc pwd text field. */
 	private JTextField encPwdTextField = null;
+	
+	/** The enc pwd label. */
 	private JLabel encPwdLabel = null;
+	
+	/** The button dimension. */
 	private Dimension buttonDimension = new Dimension(100,40);
 	
 	/**
-	 * Start point
+	 * Start point.
+	 * 
 	 * @param args Eventual execution arguments
 	 */
 	public static void main (String[] args) {
@@ -71,14 +92,14 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public PasswordGenerator() {
 		createAndShowGUI();
 	}
 	
 	/**
-	 * Initializes and shows the Graphical Interface
+	 * Initializes and shows the Graphical Interface.
 	 */
 	private void createAndShowGUI(){
 		setSize(640, 210);
@@ -90,7 +111,7 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	}
 	
 	/**
-	 * Set the look and feel of the Graphical Inteface
+	 * Set the look and feel of the Graphical Inteface.
 	 */
 	static private void setLookAndFeel(){
     	LookAndFeelInfo[] lafi = UIManager.getInstalledLookAndFeels();
@@ -111,7 +132,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
     
 	
 	/**
-	 * Creates the text field for the clear password
+	 * Creates the text field for the clear password.
+	 * 
 	 * @return JTextField, the text field for the clear password
 	 */
 	private JTextField getClearPwdTextField(){
@@ -129,7 +151,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Creates the text filed for the encrypt password
+	 * Creates the text filed for the encrypt password.
+	 * 
 	 * @return JTextField, the text filed for the encrypt password
 	 */
 	private JTextField getEncPwdTextField(){
@@ -148,7 +171,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Creates the label for the clear password
+	 * Creates the label for the clear password.
+	 * 
 	 * @return JLabel, the label for the clear password
 	 */
 	private JLabel getClearPwdLabel() {
@@ -163,7 +187,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 
 	
 	/**
-	 * Creates the label for the path parent field
+	 * Creates the label for the path parent field.
+	 * 
 	 * @return JLabel, the label for the path parent field
 	 */
 	private JLabel getEncPwdLabel() {
@@ -179,8 +204,9 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Creates the button for the generation of the encrypted password 
-	 * @return JButton, the button for the generation of the encrypted password 
+	 * Creates the button for the generation of the encrypted password.
+	 * 
+	 * @return JButton, the button for the generation of the encrypted password
 	 */
 	private JButton getGeneratePwdButton() {
 		if (generatePwdBtn == null) {
@@ -199,7 +225,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 
 	
 	/**
-	 * Creates the button for the clear fields task
+	 * Creates the button for the clear fields task.
+	 * 
 	 * @return JButton, the button that clears the fields
 	 */
 	private JButton getClearButton() {
@@ -220,8 +247,9 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Creates the button for abort operation
-	 * @return JButton, the button for abort operation 
+	 * Creates the button for abort operation.
+	 * 
+	 * @return JButton, the button for abort operation
 	 */
 	private JButton getAbortButton() {
 		if (abortButton == null) {
@@ -245,7 +273,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 
 	
 	/**
-	 * Creates the main Panel of the Interface
+	 * Creates the main Panel of the Interface.
+	 * 
 	 * @return JPanel, the main Panel of the Interface
 	 */
 	private JPanel getMainPane() {
@@ -265,7 +294,9 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 	
 	/**
-	 * Manages the action performed by interface components
+	 * Manages the action performed by interface components.
+	 * 
+	 * @param e the e
 	 */
 	public void actionPerformed(ActionEvent e) {	
 		if (e.getActionCommand().equals("Abort")) {
@@ -280,7 +311,8 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	
 
 	/**
-	 * Generate the encrypted password
+	 * Generate the encrypted password.
+	 * 
 	 * @return boolean, operation executed or not
 	 */
 	private void generateKey(){
@@ -307,18 +339,27 @@ public class PasswordGenerator extends JDialog implements ActionListener, KeyLis
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		

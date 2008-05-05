@@ -1,5 +1,26 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
+// TODO: Auto-generated Javadoc
 /*
 Copyright (c) 2002 JSON.org
 
@@ -27,15 +48,14 @@ SOFTWARE.
 /**
  * The XMLTokener extends the JSONTokener to provide additional methods
  * for the parsing of XML texts.
+ * 
  * @author JSON.org
  * @version 2
  */
 public class XMLTokener extends JSONTokener {
 
 
-   /** The table of entity values. It initially contains Character values for
-    * amp, apos, gt, lt, quot.
-    */
+   /** The table of entity values. It initially contains Character values for amp, apos, gt, lt, quot. */
    public static final java.util.HashMap entity;
 
    static {
@@ -49,6 +69,7 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Construct an XMLTokener from a string.
+     * 
      * @param s A source string.
      */
     public XMLTokener(String s) {
@@ -57,7 +78,9 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Get the text in the CDATA block.
+     * 
      * @return The string up to the <code>]]&gt;</code>.
+     * 
      * @throws JSONException If the <code>]]&gt;</code> is not found.
      */
     public String nextCDATA() throws JSONException {
@@ -84,10 +107,11 @@ public class XMLTokener extends JSONTokener {
      * Get the next XML outer token, trimming whitespace. There are two kinds
      * of tokens: the '<' character which begins a markup tag, and the content
      * text between markup tags.
-     *
+     * 
      * @return  A string, or a '<' Character, or null if there is no more
      * source text.
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public Object nextContent() throws JSONException {
         char         c;
@@ -119,9 +143,12 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Return the next entity. These entities are translated to Characters:
-     *     <code>&amp;  &apos;  &gt;  &lt;  &quot;</code>.
+     * <code>&amp;  &apos;  &gt;  &lt;  &quot;</code>.
+     * 
      * @param a An ampersand character.
+     * 
      * @return  A Character or an entity String if the entity is not recognized.
+     * 
      * @throws JSONException If missing ';' in XML entity.
      */
     public Object nextEntity(char a) throws JSONException {
@@ -145,11 +172,13 @@ public class XMLTokener extends JSONTokener {
     /**
      * Returns the next XML meta token. This is used for skipping over <!...>
      * and <?...?> structures.
+     * 
      * @return Syntax characters (<code>< > / = ! ?</code>) are returned as
-     *  Character, and strings and names are returned as Boolean. We don't care
-     *  what the values actually are.
+     * Character, and strings and names are returned as Boolean. We don't care
+     * what the values actually are.
+     * 
      * @throws JSONException If a string is not properly closed or if the XML
-     *  is badly structured.
+     * is badly structured.
      */
     public Object nextMeta() throws JSONException {
         char c;
@@ -213,7 +242,9 @@ public class XMLTokener extends JSONTokener {
      * brackets. It may be one of these characters: <code>/ > = ! ?</code> or it
      * may be a string wrapped in single quotes or double quotes, or it may be a
      * name.
+     * 
      * @return a String or a Character.
+     * 
      * @throws JSONException If the XML is not well formed.
      */
     public Object nextToken() throws JSONException {

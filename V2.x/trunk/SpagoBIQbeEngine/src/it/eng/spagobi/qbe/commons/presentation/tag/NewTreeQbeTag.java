@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
@@ -40,16 +39,26 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class NewTreeQbeTag.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class NewTreeQbeTag extends QbeTagSupport {
 	
+	/** The action name. */
 	private String actionName;
+	
+	/** The action type. */
 	private String actionType; // action | page | url | javascript
+	
+	/** The modality. */
 	private String modality;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
+	 */
 	public int doStartTag() throws JspException {
 		
 		try {
@@ -95,30 +104,63 @@ public class NewTreeQbeTag extends QbeTagSupport {
 	      return SKIP_BODY;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+	 */
 	public int doEndTag() {
 		return EVAL_PAGE;
 	}
 
+	/**
+	 * Gets the action name.
+	 * 
+	 * @return the action name
+	 */
 	public String getActionName() {
 		return actionName;
 	}
 
+	/**
+	 * Sets the action name.
+	 * 
+	 * @param actionName the new action name
+	 */
 	public void setActionName(String actionName) {
 		this.actionName = actionName;
 	}
 
+	/**
+	 * Gets the modality.
+	 * 
+	 * @return the modality
+	 */
 	public String getModality() {
 		return modality;
 	}
 
+	/**
+	 * Sets the modality.
+	 * 
+	 * @param modality the new modality
+	 */
 	public void setModality(String modality) {
 		this.modality = modality;
 	}
 
+	/**
+	 * Gets the action type.
+	 * 
+	 * @return the action type
+	 */
 	public String getActionType() {
 		return actionType;
 	}
 
+	/**
+	 * Sets the action type.
+	 * 
+	 * @param actionType the new action type
+	 */
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
 	}

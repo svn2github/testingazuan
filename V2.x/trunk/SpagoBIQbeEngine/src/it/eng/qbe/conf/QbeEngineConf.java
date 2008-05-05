@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.conf;
 
 import it.eng.qbe.datasource.DataSourceCache;
@@ -40,39 +39,68 @@ import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author Andrea Gioia
+ * The Class QbeEngineConf.
  * 
+ * @author Andrea Gioia
  */
 public class QbeEngineConf {
 	
+	/** The locale. */
 	private Locale locale = null;
 	
+	/** The config. */
 	private SourceBean config = null;
 	
+	/** The logger. */
 	private static transient Logger logger = Logger.getLogger(QbeEngineConf.class);
 
+	/** The instance. */
 	private static QbeEngineConf instance = null;
 	
+	/**
+	 * Gets the single instance of QbeEngineConf.
+	 * 
+	 * @return single instance of QbeEngineConf
+	 */
 	public static QbeEngineConf getInstance(){
 		if(instance==null) instance = new QbeEngineConf();
 		return instance;
 	}
 	
+	/**
+	 * Instantiates a new qbe engine conf.
+	 */
 	private QbeEngineConf() {
 		config = ConfigSingleton.getInstance();	
 	}
 	
+	/**
+	 * Gets the config.
+	 * 
+	 * @return the config
+	 */
 	public SourceBean getConfig() {
 		return config;
 	}
 	
 	
+	/**
+	 * Checks if is web modality active.
+	 * 
+	 * @return true, if is web modality active
+	 */
 	public boolean isWebModalityActive() {
 		String qbeMode = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode"); 
 		return qbeMode.equalsIgnoreCase("WEB");		
 	}
 	
+	/**
+	 * Gets the url generator.
+	 * 
+	 * @return the url generator
+	 */
 	public IQbeUrlGenerator getUrlGenerator() {
 		IQbeUrlGenerator urlGenerator = null;
 		if( isWebModalityActive() ) {
@@ -84,6 +112,11 @@ public class QbeEngineConf {
 	}
 	
 	
+	/**
+	 * Gets the qbe message helper.
+	 * 
+	 * @return the qbe message helper
+	 */
 	public IQbeMessageHelper getQbeMessageHelper(){
 		String qbeMsgHelperClass = (String)config.getAttribute("QBE.QBE-MSG-HELPER.className");
 		
@@ -96,10 +129,20 @@ public class QbeEngineConf {
 		return msgHelper;
 	}
 	
+	/**
+	 * Gets the bundle.
+	 * 
+	 * @return the bundle
+	 */
 	public String getBundle() {
 		return "component_spagobiqbeIE_messages";
 	}
 	
+	/**
+	 * Gets the connection names.
+	 * 
+	 * @return the connection names
+	 */
 	public List getConnectionNames() {
 		List connectionNames = new ArrayList();;
 		List connections = config.getAttributeAsList("DATA-ACCESS.CONNECTION");
@@ -113,6 +156,13 @@ public class QbeEngineConf {
 		return connectionNames;		
 	}
 	
+	/**
+	 * Gets the jndi connection name.
+	 * 
+	 * @param connectionName the connection name
+	 * 
+	 * @return the jndi connection name
+	 */
 	public String getJndiConnectionName(String connectionName) {
 		String jndiConnectionName = null;
 		String jndiContext = null;
@@ -129,12 +179,26 @@ public class QbeEngineConf {
 		return jndiConnectionName;
 	}
 	
+	/**
+	 * Gets the data mart model retriever.
+	 * 
+	 * @return the data mart model retriever
+	 * 
+	 * @throws Exception the exception
+	 */
 	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
 		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
 		IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
 		return dataMartModelRetriever;
 	}
 	
+	/**
+	 * Gets the query persister.
+	 * 
+	 * @return the query persister
+	 * 
+	 * @throws Exception the exception
+	 */
 	public IQueryPersister getQueryPersister() throws Exception{
 		String queryPersisterClass = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-PERSISTER.className");
 		IQueryPersister queryPersister = (IQueryPersister)Class.forName(queryPersisterClass).newInstance();
@@ -174,6 +238,11 @@ public class QbeEngineConf {
 	}
 	*/
 	
+	/**
+	 * Gets the locale.
+	 * 
+	 * @return the locale
+	 */
 	public Locale getLocale() {
 		if(locale == null) {
 			locale = new Locale("it", "ITALY");
@@ -181,14 +250,29 @@ public class QbeEngineConf {
 		return locale;
 	}
 
+	/**
+	 * Sets the locale.
+	 * 
+	 * @param locale the new locale
+	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}
 	
+	/**
+	 * Gets the naming strategy.
+	 * 
+	 * @return the naming strategy
+	 */
 	public NamingStrategy getNamingStrategy() {
 		return new QbeNamingStrategy();
 	}
 	
+	/**
+	 * Gets the data source cache.
+	 * 
+	 * @return the data source cache
+	 */
 	public DataSourceCache getDataSourceCache() {
 		return QbeDataSourceCache.getInstance();
 	}

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.utility;
 
 import it.eng.qbe.bo.DatamartLabels;
@@ -33,11 +32,22 @@ import java.util.Iterator;
 import java.util.Locale;
 
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class JsTreeUtils.
+ * 
  * @author Andrea Gioia
- *
  */
 public class JsTreeUtils {
+	
+	/**
+	 * Gets the label for class.
+	 * 
+	 * @param dmModel the dm model
+	 * @param className the class name
+	 * 
+	 * @return the label for class
+	 */
 	public static String getLabelForClass(IDataMartModel dmModel,  String className){
 		
 		Locale locale = QbeEngineConf.getInstance().getLocale();		
@@ -53,6 +63,14 @@ public class JsTreeUtils {
 		}
 	}
 	
+	/**
+	 * Gets the label for foreign key.
+	 * 
+	 * @param dmModel the dm model
+	 * @param classForeignKeyID the class foreign key id
+	 * 
+	 * @return the label for foreign key
+	 */
 	public static String getLabelForForeignKey(IDataMartModel dmModel,  String classForeignKeyID){
 		Locale locale = QbeEngineConf.getInstance().getLocale();	
 		DatamartLabels prop = dmModel.getDataSource().getLabels(locale);
@@ -67,10 +85,11 @@ public class JsTreeUtils {
 	}
 	
 	/**
-	 * Get the label for given fieldName
-	 * @param requestContainer: Spago Request Container
-	 * @param dmModel: The datamart Model
-	 * @param completeFieldName: The field Name
+	 * Get the label for given fieldName.
+	 * 
+	 * @param dmModel the dm model
+	 * @param completeFieldName the complete field name
+	 * 
 	 * @return the label associated with the field name
 	 */
 	public static String getLabelForField(IDataMartModel dmModel,  String completeFieldName){
@@ -87,11 +106,14 @@ public class JsTreeUtils {
 	}
 	
 	/**
-	 * @param requestContainer
-	 * @param dmModel
-	 * @param wizObj
-	 * @param completeFieldName
-	 * @return
+	 * Gets the label for query field.
+	 * 
+	 * @param requestContainer the request container
+	 * @param dmModel the dm model
+	 * @param wizObj the wiz obj
+	 * @param completeFieldName the complete field name
+	 * 
+	 * @return the label for query field
 	 */
 	public static String getLabelForQueryField(RequestContainer requestContainer, 
 			IDataMartModel dmModel, ISingleDataMartWizardObject wizObj,  String completeFieldName){

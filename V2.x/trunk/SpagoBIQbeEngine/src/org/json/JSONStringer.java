@@ -1,3 +1,23 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
 /*
@@ -26,6 +46,7 @@ SOFTWARE.
 
 import java.io.StringWriter;
 
+// TODO: Auto-generated Javadoc
 /**
  * JSONStringer provides a quick and convenient way of producing JSON text.
  * The texts produced strictly conform to JSON syntax rules. No whitespace is
@@ -41,11 +62,11 @@ import java.io.StringWriter;
  * object values. All of these methods return the JSONWriter instance,
  * permitting cascade style. For example, <pre>
  * myString = new JSONStringer()
- *     .object()
- *         .key("JSON")
- *         .value("Hello, World!")
- *     .endObject()
- *     .toString();</pre> which produces the string <pre>
+ * .object()
+ * .key("JSON")
+ * .value("Hello, World!")
+ * .endObject()
+ * .toString();</pre> which produces the string <pre>
  * {"JSON":"Hello, World!"}</pre>
  * <p>
  * The first method called must be <code>array</code> or <code>object</code>.
@@ -53,10 +74,12 @@ import java.io.StringWriter;
  * you. Objects and arrays can be nested up to 20 levels deep.
  * <p>
  * This can sometimes be easier than using a JSONObject to build a string.
+ * 
  * @author JSON.org
  * @version 2
  */
 public class JSONStringer extends JSONWriter {
+    
     /**
      * Make a fresh JSONStringer. It can be used to build one JSON text.
      */
@@ -70,6 +93,7 @@ public class JSONStringer extends JSONWriter {
      * problem in the construction of the JSON text (such as the calls to
      * <code>array</code> were not properly balanced with calls to
      * <code>endArray</code>).
+     * 
      * @return The JSON text.
      */
     public String toString() {

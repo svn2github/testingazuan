@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.initializer.engine.service;
 
 import it.eng.qbe.conf.QbeTemplate;
@@ -52,34 +51,51 @@ import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QbeEngineStartAction.
+ * 
  * @author Andrea Gioia
  */
 public class QbeEngineStartAction extends AbstractHttpAction {	
 	
 	// INPUT PARAMETERS
+	/** The Constant IP_AUDIT_ID. */
 	public static final String IP_AUDIT_ID = "SPAGOBI_AUDIT_ID";
+	
+	/** The Constant IP_DOCUMENT_ID. */
 	public static final String IP_DOCUMENT_ID = "document";
+	
+	/** The Constant IP_QUERY_ID. */
 	public static final String IP_QUERY_ID = "query";
+	
+	/** The Constant IP_COUNTRY. */
 	public static final String IP_COUNTRY = "country";
+	
+	/** The Constant IP_LANGUAGE. */
 	public static final String IP_LANGUAGE = "language";
 	
 	
 	// OUTPUT PARAMETERS
+	/** The Constant OP_SPAGOBI_REQUEST. */
 	public static final String OP_SPAGOBI_REQUEST = "SPAGOBI_REQUEST";
+	
+	/** The Constant OP_DATAMART_PROPERTIES. */
 	public static final String OP_DATAMART_PROPERTIES = "DATAMART_PROPERTIES";
 	
 	// SESSION PARAMETRES	
+	/** The Constant IP_USER_PROFILE. */
 	public static final String IP_USER_PROFILE = IEngUserProfile.ENG_USER_PROFILE;
 	
 	
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
 	
 	
+    /* (non-Javadoc)
+     * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+     */
     public void service(SourceBean request, SourceBean response) throws QbeEngineException {
     	logger.debug("IN");
        
@@ -162,6 +178,11 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 	}
 	
     
+    /**
+     * Gets the audit id.
+     * 
+     * @return the audit id
+     */
     private String getAuditId() {
     	String auditId = null;
     	auditId = getHttpRequest().getParameter(IP_AUDIT_ID);
@@ -169,6 +190,12 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 		
     }
     
+    /**
+     * Update audit.
+     * 
+     * @param auditId the audit id
+     * @param userId the user id
+     */
     private void updateAudit(String auditId, String userId) {
     	//HttpServletRequest httpRequest = (HttpServletRequest) this.getRequestContainer().getInternalRequest();
 		HttpSession session = getHttpRequest().getSession();
@@ -178,6 +205,14 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 				    .currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
 		}
     }
+    
+    /**
+     * Gets the document id.
+     * 
+     * @param parameters the parameters
+     * 
+     * @return the document id
+     */
     private String getDocumentId(Map parameters) {
     	String documentId = null;
     	String documentIdInSection = null;
@@ -196,7 +231,7 @@ public class QbeEngineStartAction extends AbstractHttpAction {
     }
     
 	/**
-	 * User profile is loaded by the SpagoBiAccessFilter
+	 * User profile is loaded by the SpagoBiAccessFilter.
 	 * 
 	 * @return the unique id of the given user
 	 */
@@ -211,10 +246,11 @@ public class QbeEngineStartAction extends AbstractHttpAction {
     }
 	
 	/**
-	 * Read all parameters available in the request into e map object
+	 * Read all parameters available in the request into e map object.
 	 * 
-	 * @param request
-	 * @return
+	 * @param request the request
+	 * 
+	 * @return the parameters
 	 */
 	private Map getParameters(SourceBean request) {
 		logger.debug("IN");
@@ -243,11 +279,11 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 	}
 	
 	/**
-	 * Convert multi-value parameters in a comma separated list of values
+	 * Convert multi-value parameters in a comma separated list of values.
 	 * 
-	 * @param params
-	 * @param parName
-	 * @param parValue
+	 * @param params the params
+	 * @param parName the par name
+	 * @param parValue the par value
 	 */
 	private void addParToParMap(Map params, String parName, String parValue) {
 		String newParValue;
@@ -268,6 +304,14 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 		params.put(parName, newParValue);
 	}
 	
+	/**
+	 * Gets the template.
+	 * 
+	 * @param userId the user id
+	 * @param documentId the document id
+	 * 
+	 * @return the template
+	 */
 	private SourceBean getTemplate(String userId, String documentId) {
 		SourceBean templateSB = null;
 		ContentServiceProxy contentProxy = null;
@@ -297,6 +341,14 @@ public class QbeEngineStartAction extends AbstractHttpAction {
 		return templateSB;
 	}
 	
+	/**
+	 * Gets the data source.
+	 * 
+	 * @param userId the user id
+	 * @param documentId the document id
+	 * 
+	 * @return the data source
+	 */
 	private SpagoBiDataSource getDataSource(String userId, String documentId) {
 		DataSourceServiceProxy proxyDS = null;
 		SpagoBiDataSource dataSource = null;
@@ -307,6 +359,13 @@ public class QbeEngineStartAction extends AbstractHttpAction {
     	return dataSource;
 	}
 	
+	/**
+	 * Gets the locale.
+	 * 
+	 * @param parameters the parameters
+	 * 
+	 * @return the locale
+	 */
 	private Locale getLocale(Map parameters) {
 		Locale locale = null;
 		String country = null;

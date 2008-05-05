@@ -1,3 +1,23 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
 /*
@@ -27,9 +47,11 @@ SOFTWARE.
 import java.util.Iterator;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This provides static methods to convert an XML text into a JSONObject,
  * and to covert a JSONObject into an XML text.
+ * 
  * @author JSON.org
  * @version 2
  */
@@ -69,8 +91,10 @@ public class XML {
      * &lt; <small>(less than)</small> is replaced by &amp;lt;
      * &gt; <small>(greater than)</small> is replaced by &amp;gt;
      * &quot; <small>(double quote)</small> is replaced by &amp;quot;
-     * </pre>
+     * </pre>.
+     * 
      * @param string The string to be escaped.
+     * 
      * @return The escaped string.
      */
     public static String escape(String string) {
@@ -99,11 +123,14 @@ public class XML {
 
     /**
      * Scan the content following the named tag, attaching it to the context.
+     * 
      * @param x       The XMLTokener containing the source string.
      * @param context The JSONObject that will include the new material.
      * @param name    The tag name.
+     * 
      * @return true if the close tag is processed.
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     private static boolean parse(XMLTokener x, JSONObject context,
                                  String name) throws JSONException {
@@ -272,9 +299,12 @@ public class XML {
      * Sequences of similar elements are represented as JSONArrays. Content
      * text may be placed in a "content" member. Comments, prologs, DTDs, and
      * <code>&lt;[ [ ]]></code> are ignored.
+     * 
      * @param string The source string.
+     * 
      * @return A JSONObject containing the structured data from the XML string.
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
         JSONObject o = new JSONObject();
@@ -288,9 +318,13 @@ public class XML {
 
     /**
      * Convert a JSONObject into a well-formed, element-normal XML string.
+     * 
      * @param o A JSONObject.
+     * 
      * @return  A string.
+     * 
      * @throws  JSONException
+     * @throws JSONException the JSON exception
      */
     public static String toString(Object o) throws JSONException {
         return toString(o, null);
@@ -299,10 +333,13 @@ public class XML {
 
     /**
      * Convert a JSONObject into a well-formed, element-normal XML string.
+     * 
      * @param o A JSONObject.
      * @param tagName The optional name of the enclosing tag.
+     * 
      * @return A string.
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static String toString(Object o, String tagName)
             throws JSONException {

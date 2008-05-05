@@ -1,5 +1,26 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
+// TODO: Auto-generated Javadoc
 /*
 Copyright (c) 2002 JSON.org
 
@@ -27,6 +48,7 @@ SOFTWARE.
 /**
  * Convert a web browser cookie specification to a JSONObject and back.
  * JSON and Cookies are both notations for name/value pairs.
+ * 
  * @author JSON.org
  * @version 2
  */
@@ -41,7 +63,9 @@ public class Cookie {
      * only a convention, not a standard. Often, cookies are expected to have
      * encoded values. We encode '=' and ';' because we must. We encode '%' and
      * '+' because they are meta characters in URL encoding.
+     * 
      * @param string The source string.
+     * 
      * @return       The escaped result.
      */
     public static String escape(String string) {
@@ -73,10 +97,13 @@ public class Cookie {
      * stored under the key "value". This method does not do checking or
      * validation of the parameters. It only converts the cookie string into
      * a JSONObject.
+     * 
      * @param string The cookie specification string.
+     * 
      * @return A JSONObject containing "name", "value", and possibly other
-     *  members.
-     * @throws JSONException
+     * members.
+     * 
+     * @throws JSONException the JSON exception
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
         String         n;
@@ -111,9 +138,12 @@ public class Cookie {
      * If the JSONObject contains "expires", "domain", "path", or "secure"
      * members, they will be appended to the cookie specification string.
      * All other members are ignored.
+     * 
      * @param o A JSONObject
+     * 
      * @return A cookie specification string
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static String toString(JSONObject o) throws JSONException {
         StringBuffer sb = new StringBuffer();
@@ -142,9 +172,11 @@ public class Cookie {
     /**
      * Convert <code>%</code><i>hh</i> sequences to single characters, and
      * convert plus to space.
+     * 
      * @param s A string that may contain
-     *      <code>+</code>&nbsp;<small>(plus)</small> and
-     *      <code>%</code><i>hh</i> sequences.
+     * <code>+</code>&nbsp;<small>(plus)</small> and
+     * <code>%</code><i>hh</i> sequences.
+     * 
      * @return The unescaped string.
      */
     public static String unescape(String s) {

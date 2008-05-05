@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.tree.presentation.tag;
 
 import it.eng.qbe.model.IDataMartModel;
@@ -26,13 +25,23 @@ import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.utility.QbeProperties;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DatamartImageFactory.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class DatamartImageFactory {
 	
 	
+	/**
+	 * Gets the field image.
+	 * 
+	 * @param datamart the datamart
+	 * @param field the field
+	 * 
+	 * @return the field image
+	 */
 	public static String getFieldImage(IDataMartModel datamart, DataMartField field) {
 		String fieldImage;
 		QbeProperties qbeProperties = new QbeProperties(datamart);
@@ -61,6 +70,14 @@ public class DatamartImageFactory {
 		return fieldImage;
 	}
 	
+	/**
+	 * Gets the entity image.
+	 * 
+	 * @param datamart the datamart
+	 * @param entity the entity
+	 * 
+	 * @return the entity image
+	 */
 	public static String getEntityImage(IDataMartModel datamart, DataMartEntity entity) {
 		String entityImage;
 		int entityType;

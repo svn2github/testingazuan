@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.tree.filter;
 
 import it.eng.qbe.model.IDataMartModel;
@@ -28,20 +27,33 @@ import it.eng.qbe.utility.QbeProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QbeTreeAccessModalityEntityFilter.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class QbeTreeAccessModalityEntityFilter extends ComposableQbeTreeEntityFilter{
 
+	/**
+	 * Instantiates a new qbe tree access modality entity filter.
+	 */
 	public QbeTreeAccessModalityEntityFilter() {
 		super();
 	}
 	
+	/**
+	 * Instantiates a new qbe tree access modality entity filter.
+	 * 
+	 * @param parentFilter the parent filter
+	 */
 	public QbeTreeAccessModalityEntityFilter(IQbeTreeEntityFilter parentFilter) {
 		super(parentFilter);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.qbe.tree.filter.ComposableQbeTreeEntityFilter#filter(it.eng.qbe.model.IDataMartModel, java.util.List)
+	 */
 	public List filter(IDataMartModel datamartModel, List entities) {
 		List list = null;
 		DataMartEntity entity;
@@ -58,6 +70,14 @@ public class QbeTreeAccessModalityEntityFilter extends ComposableQbeTreeEntityFi
 		return list;
 	}
 	
+	/**
+	 * Checks if is entity visible.
+	 * 
+	 * @param datamartModel the datamart model
+	 * @param entity the entity
+	 * 
+	 * @return true, if is entity visible
+	 */
 	private boolean isEntityVisible(IDataMartModel datamartModel, DataMartEntity entity) {
 		QbeProperties qbeProperties = new QbeProperties(datamartModel);
 		

@@ -1,8 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
  *
- *	LICENSE: see COPYING file
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
  *
-**/
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.geo.configuration;
 
 import it.eng.spago.base.SourceBean;
@@ -14,22 +29,37 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MapConfiguration.
+ */
 public class MapConfiguration {
 
+	/** The map name. */
 	private String mapName = null;
 	
+	/** The map renderer configuration. */
 	private MapRendererConfiguration mapRendererConfiguration = null;
 
+	/** The map provider configuration. */
 	private MapProviderConfiguration mapProviderConfiguration = null;
 
+	/** The datamart provider configuration. */
 	private DatamartProviderConfiguration datamartProviderConfiguration = null;
 
 	
+	/** The map catalogue access utils. */
 	private static MapCatalogueAccessUtils mapCatalogueAccessUtils;
 	
+	/** The legenda. */
 	private SourceBean legenda = null;
 	
 	
+	/**
+	 * To xml.
+	 * 
+	 * @return the string
+	 */
 	public String toXml() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -43,6 +73,9 @@ public class MapConfiguration {
 	}
 	
 	
+	/**
+	 * Instantiates a new map configuration.
+	 */
 	public MapConfiguration() {
 		mapRendererConfiguration = new MapRendererConfiguration(this);
 		mapProviderConfiguration = new MapProviderConfiguration(this);
@@ -51,8 +84,12 @@ public class MapConfiguration {
 	
 
 	/**
-	 * Builds the MapConfiguration object loading configuration from xml template into SourceBeans
+	 * Builds the MapConfiguration object loading configuration from xml template into SourceBeans.
+	 * 
 	 * @param template The byte array of the xml template
+	 * @param contextPath the context path
+	 * @param servReq the serv req
+	 * 
 	 * @throws ConfigurationException raised If some configurations is missing or wrong
 	 */ 
 	public MapConfiguration(String contextPath, byte[] template, SourceBean servReq) throws ConfigurationException {
@@ -125,6 +162,13 @@ public class MapConfiguration {
 	}
 
 	
+	/**
+	 * Gets the parameters from request.
+	 * 
+	 * @param servReq the serv req
+	 * 
+	 * @return the parameters from request
+	 */
 	public Properties getParametersFromRequest(SourceBean servReq) {
 		Properties parameters = new Properties();
 		List list = servReq.getContainedAttributes();
@@ -145,8 +189,10 @@ public class MapConfiguration {
 		
 	
 	/**
-	 * Recovers the svg style associated to the level of the legend which contains the value
+	 * Recovers the svg style associated to the level of the legend which contains the value.
+	 * 
 	 * @param value The value associated to an svg element of the map
+	 * 
 	 * @return the svg style associated to the level of the legend which contains the value
 	 */
 	public String getStyle(int value) {
@@ -181,7 +227,8 @@ public class MapConfiguration {
 	
 	
 	/**
-	 * Builds the svg code used for the legend rendering
+	 * Builds the svg code used for the legend rendering.
+	 * 
 	 * @return the svg code of the legend
 	 */
 	public String getLegend() {
@@ -234,7 +281,8 @@ public class MapConfiguration {
 	
 	
 	/**
-	 * Gets the map name
+	 * Gets the map name.
+	 * 
 	 * @return the map name
 	 */
 	public String getMapName() {
@@ -242,7 +290,8 @@ public class MapConfiguration {
 	}
 
 	/**
-	 * Sets the map name
+	 * Sets the map name.
+	 * 
 	 * @param mapName the map name
 	 */
 	public void setMapName(String mapName) {
@@ -250,7 +299,8 @@ public class MapConfiguration {
 	}
 
 	/**
-	 * Gets the DatamartProvider Configuration 
+	 * Gets the DatamartProvider Configuration.
+	 * 
 	 * @return SourceBean that contains the configuration
 	 */
 	public DatamartProviderConfiguration getDatamartProviderConfiguration() {
@@ -258,7 +308,8 @@ public class MapConfiguration {
 	}
 
 	/**
-	 * Sets the DatamartProvider Configuration 
+	 * Sets the DatamartProvider Configuration.
+	 * 
 	 * @param datamartProviderConfiguration SourceBean that contains the configuration
 	 */
 	public void setDatamartProviderConfiguration(DatamartProviderConfiguration datamartProviderConfiguration) {
@@ -266,7 +317,8 @@ public class MapConfiguration {
 	}
 
 	/**
-	 * Gets the MapProvider Configuration 
+	 * Gets the MapProvider Configuration.
+	 * 
 	 * @return SourceBean that contains the configuration
 	 */
 	public MapProviderConfiguration getMapProviderConfiguration() {
@@ -274,36 +326,67 @@ public class MapConfiguration {
 	}
     
 	/**
-	 * Sets the MapProvider Configuration 
+	 * Sets the MapProvider Configuration.
+	 * 
 	 * @param mapProviderConfiguration SourceBean that contains the configuration
 	 */
 	public void setMapProviderConfiguration(MapProviderConfiguration mapProviderConfiguration) {
 		this.mapProviderConfiguration = mapProviderConfiguration;
 	}
 
+	/**
+	 * Gets the legenda.
+	 * 
+	 * @return the legenda
+	 */
 	public SourceBean getLegenda() {
 		return legenda;
 	}
 
+	/**
+	 * Sets the legenda.
+	 * 
+	 * @param legenda the new legenda
+	 */
 	public void setLegenda(SourceBean legenda) {
 		this.legenda = legenda;
 	}
 
+	/**
+	 * Gets the map renderer configuration.
+	 * 
+	 * @return the map renderer configuration
+	 */
 	public MapRendererConfiguration getMapRendererConfiguration() {
 		return mapRendererConfiguration;
 	}
 
+	/**
+	 * Sets the map renderer configuration.
+	 * 
+	 * @param mapRendererConfiguration the new map renderer configuration
+	 */
 	public void setMapRendererConfiguration(
 			MapRendererConfiguration mapRendererConfiguration) {
 		this.mapRendererConfiguration = mapRendererConfiguration;
 	}
 
 
+	/**
+	 * Gets the map catalogue access utils.
+	 * 
+	 * @return the map catalogue access utils
+	 */
 	public static MapCatalogueAccessUtils getMapCatalogueAccessUtils() {
 		return mapCatalogueAccessUtils;
 	}
 
 
+	/**
+	 * Sets the map catalogue access utils.
+	 * 
+	 * @param mapCatalogueAccessUtils the new map catalogue access utils
+	 */
 	public static void setMapCatalogueAccessUtils(
 			MapCatalogueAccessUtils mapCatalogueAccessUtils) {
 		MapConfiguration.mapCatalogueAccessUtils = mapCatalogueAccessUtils;

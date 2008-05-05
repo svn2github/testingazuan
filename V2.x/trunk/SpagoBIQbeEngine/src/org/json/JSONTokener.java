@@ -1,5 +1,26 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
+// TODO: Auto-generated Javadoc
 /*
 Copyright (c) 2002 JSON.org
 
@@ -28,26 +49,23 @@ SOFTWARE.
  * A JSONTokener takes a source string and extracts characters and tokens from
  * it. It is used by the JSONObject and JSONArray constructors to parse
  * JSON source strings.
+ * 
  * @author JSON.org
  * @version 2
  */
 public class JSONTokener {
 
-    /**
-     * The index of the next character.
-     */
+    /** The index of the next character. */
     private int myIndex;
 
 
-    /**
-     * The source string being tokenized.
-     */
+    /** The source string being tokenized. */
     private String mySource;
 
 
     /**
      * Construct a JSONTokener from a string.
-     *
+     * 
      * @param s     A source string.
      */
     public JSONTokener(String s) {
@@ -71,8 +89,10 @@ public class JSONTokener {
 
     /**
      * Get the hex value of a character (base16).
+     * 
      * @param c A character between '0' and '9' or between 'A' and 'F' or
      * between 'a' and 'f'.
+     * 
      * @return  An int between 0 and 15, or -1 if c was not a hex digit.
      */
     public static int dehexchar(char c) {
@@ -92,6 +112,7 @@ public class JSONTokener {
     /**
      * Determine if the source string still contains characters that next()
      * can consume.
+     * 
      * @return true if not yet at the end of the source.
      */
     public boolean more() {
@@ -101,7 +122,7 @@ public class JSONTokener {
 
     /**
      * Get the next character in the source string.
-     *
+     * 
      * @return The next character, or 0 if past the end of the source string.
      */
     public char next() {
@@ -117,8 +138,11 @@ public class JSONTokener {
     /**
      * Consume the next character, and check that it matches a specified
      * character.
+     * 
      * @param c The character to match.
+     * 
      * @return The character.
+     * 
      * @throws JSONException if the character does not match.
      */
     public char next(char c) throws JSONException {
@@ -133,12 +157,13 @@ public class JSONTokener {
 
     /**
      * Get the next n characters.
-     *
+     * 
      * @param n     The number of characters to take.
+     * 
      * @return      A string of n characters.
-     * @throws JSONException
-     *   Substring bounds error if there are not
-     *   n characters remaining in the source string.
+     * 
+     * @throws JSONException Substring bounds error if there are not
+     * n characters remaining in the source string.
      */
      public String next(int n) throws JSONException {
          int i = this.myIndex;
@@ -154,8 +179,10 @@ public class JSONTokener {
     /**
      * Get the next char in the string, skipping whitespace
      * and comments (slashslash, slashstar, and hash).
-     * @throws JSONException
+     * 
      * @return  A character, or 0 if there are no more characters.
+     * 
+     * @throws JSONException the JSON exception
      */
     public char nextClean() throws JSONException {
         for (;;) {
@@ -201,10 +228,13 @@ public class JSONTokener {
      * Backslash processing is done. The formal JSON format does not
      * allow strings in single quotes, but an implementation is allowed to
      * accept them.
+     * 
      * @param quote The quoting character, either
-     *      <code>"</code>&nbsp;<small>(double quote)</small> or
-     *      <code>'</code>&nbsp;<small>(single quote)</small>.
+     * <code>"</code>&nbsp;<small>(double quote)</small> or
+     * <code>'</code>&nbsp;<small>(single quote)</small>.
+     * 
      * @return      A String.
+     * 
      * @throws JSONException Unterminated string.
      */
     public String nextString(char quote) throws JSONException {
@@ -258,7 +288,9 @@ public class JSONTokener {
     /**
      * Get the text up but not including the specified character or the
      * end of line, whichever comes first.
-     * @param  d A delimiter character.
+     * 
+     * @param d the d
+     * 
      * @return   A string.
      */
     public String nextTo(char d) {
@@ -279,7 +311,9 @@ public class JSONTokener {
     /**
      * Get the text up but not including one of the specified delimeter
      * characters or the end of line, whichever comes first.
+     * 
      * @param delimiters A set of delimiter characters.
+     * 
      * @return A string, trimmed.
      */
     public String nextTo(String delimiters) {
@@ -302,9 +336,10 @@ public class JSONTokener {
     /**
      * Get the next value. The value can be a Boolean, Double, Integer,
      * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
-     * @throws JSONException If syntax error.
-     *
+     * 
      * @return An object.
+     * 
+     * @throws JSONException If syntax error.
      */
     public Object nextValue() throws JSONException {
         char c = nextClean();
@@ -405,7 +440,9 @@ public class JSONTokener {
     /**
      * Skip characters until the next character is the requested character.
      * If the requested character is not found, no characters are skipped.
+     * 
      * @param to A character to skip to.
+     * 
      * @return The requested character, or zero if the requested character
      * is not found.
      */
@@ -427,7 +464,10 @@ public class JSONTokener {
     /**
      * Skip characters until past the requested string.
      * If it is not found, we are left at the end of the source.
+     * 
      * @param to A string to skip past.
+     * 
+     * @return true, if skip past
      */
     public boolean skipPast(String to) {
         this.myIndex = this.mySource.indexOf(to, this.myIndex);
@@ -443,8 +483,9 @@ public class JSONTokener {
 
     /**
      * Make a JSONException to signal a syntax error.
-     *
+     * 
      * @param message The error message.
+     * 
      * @return  A JSONException object, suitable for throwing
      */
     public JSONException syntaxError(String message) {
@@ -454,7 +495,7 @@ public class JSONTokener {
 
     /**
      * Make a printable string of this JSONTokener.
-     *
+     * 
      * @return " at character [this.myIndex] of [this.mySource]"
      */
     public String toString() {

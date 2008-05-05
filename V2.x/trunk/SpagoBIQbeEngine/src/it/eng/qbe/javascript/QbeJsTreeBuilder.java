@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.javascript;
 
 import it.eng.qbe.datasource.BasicHibernateDataSource;
@@ -60,36 +59,64 @@ import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QbeJsTreeBuilder.
+ * 
  * @author Andrea Gioia
- *
  */
 public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 
+	/** The data mart model. */
 	DataMartModel dataMartModel = null;
+	
+	/** The data mart wizard. */
 	ISingleDataMartWizardObject dataMartWizard = null;
+	
+	/** The target datamart name. */
 	String targetDatamartName = null;
+	
+	/** The selected nodes. */
 	Map selectedNodes = null;
 	
+	/** The http request. */
 	HttpServletRequest httpRequest = null; 
+	
+	/** The qbe url generator. */
 	IQbeUrlGenerator qbeUrlGenerator = null;
+	
+	/** The qbe properties. */
 	QbeProperties qbeProperties;
 	
+	/** The action name. */
 	String actionName = null;
 	
+	/** The modality. */
 	String modality = DEFAULT_MODALITY;
+	
+	/** The checkable. */
 	boolean checkable = false;
 	
 	//QbeAccessModality qbeAccessModality;
 	
+	/** The Constant FULL_MODALITY. */
 	public static final String FULL_MODALITY = "FULL";
+	
+	/** The Constant LIGHT_MODALITY. */
 	public static final String LIGHT_MODALITY = "LIGHT";
+	
+	/** The Constant DEFAULT_MODALITY. */
 	public static final String DEFAULT_MODALITY = FULL_MODALITY;
 	
+	/** The class prefix. */
 	private String classPrefix = null;
+	
 	/**
+	 * The Constructor.
+	 * 
 	 * @param dataMartModel : The DatamartModel object reperesenting the datamart we're working on
 	 * @param httpRequest : the httpRequest Object
+	 * @param dataMartWizard the data mart wizard
 	 */
 	public QbeJsTreeBuilder(DataMartModel dataMartModel, ISingleDataMartWizardObject dataMartWizard, HttpServletRequest httpRequest){
 		this.dataMartModel = dataMartModel;
@@ -109,11 +136,19 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		}		
 	}
 	
+	/**
+	 * Gets the selectd nodes.
+	 * 
+	 * @return the selectd nodes
+	 */
 	public abstract Map getSelectdNodes();
 	
 	
 
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.javascript.IJsTreeBuilder#build()
+	 */
 	public String build() {	
 		StringBuffer treeScriptBuffer = new StringBuffer();
 		
@@ -128,6 +163,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return treeScriptBuffer.toString();
 	}
 	
+	/**
+	 * Gets the js tree list.
+	 * 
+	 * @return the js tree list
+	 */
 	public List getJsTreeList() {
 		List jsTreeList = null;
 		
@@ -145,6 +185,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return jsTreeList;
 	}
 	
+	/**
+	 * Gets the js tree map.
+	 * 
+	 * @return the js tree map
+	 */
 	public Map getJsTreeMap() {
 		Map jsTreeMap = null;
 		
@@ -167,6 +212,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return jsTreeMap;
 	}
 	
+	/**
+	 * Builds the single tree.
+	 * 
+	 * @return the string
+	 */
 	private String buildSingleTree() {	
 		
 		buffer = new StringBuffer();
@@ -179,6 +229,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return buffer.toString();
 	}
 
+	/**
+	 * Builds the composite tree.
+	 * 
+	 * @return the map
+	 */
 	private Map buildCompositeTree() {	
 		Map treeScripts = new HashMap();
 		CompositeHibernateDataSource dataSource = (CompositeHibernateDataSource)dataMartModel.getDataSource();
@@ -208,6 +263,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	
 	
 	
+	/**
+	 * Adds the root node.
+	 */
 	public void addRootNode() {
 		String rootNodeName = targetDatamartName;
 		if(rootNodeName == null) rootNodeName = dataMartModel.getName();
@@ -219,9 +277,17 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	}
 	
 	
+	/**
+	 * Adds the nodes.
+	 */
 	public abstract void addNodes();
 	
 		
+	/**
+	 * Gets the hibernate session.
+	 * 
+	 * @return the hibernate session
+	 */
 	private SessionFactory getHibernateSession() {
 		SessionFactory sf = null;
 		if(dataMartModel.getDataSource() instanceof CompositeHibernateDataSource && targetDatamartName != null) {
@@ -237,6 +303,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return sf;
 	}
 	
+	/**
+	 * Gets the class names.
+	 * 
+	 * @return the class names
+	 */
 	protected Collection getClassNames() {
 		if(getHibernateSession().getAllClassMetadata() == null){
 			Logger.critical(this.getClass(), "writeSelectionTree: map metadata classes NULL");
@@ -250,6 +321,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return namesList;
 	}
 	
+	/**
+	 * Gets the selected class names.
+	 * 
+	 * @return the selected class names
+	 */
 	protected Collection getSelectedClassNames() {
 		Set selectedClassNames = null;
 				
@@ -268,15 +344,17 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 	
 	/**
-	 * Recursive Function To write the tree of model navigable  starting by className
-	 * @param buffer
-	 * @param name
-	 * @param className
-	 * @param rootNode
-	 * @param nodeCounter
-	 * @param prefix
-	 * @param fieldUrlGenerator
-	 * @return
+	 * Recursive Function To write the tree of model navigable  starting by className.
+	 * 
+	 * @param className the class name
+	 * @param rootNode the root node
+	 * @param nodeCounter the node counter
+	 * @param prefix the prefix
+	 * @param fieldUrlGenerator the field url generator
+	 * @param relationOnColumnName the relation on column name
+	 * @param recursionLevel the recursion level
+	 * 
+	 * @return the int
 	 */
 	public final int addFieldNodes (String className, String relationOnColumnName, 
 			int rootNode, int nodeCounter, String prefix, 
@@ -744,7 +822,20 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 //		ordered.add(aRelationField);
 //	}
 	
-	public final int addFieldNodesNoRecursion (String className, String relationFieldName, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator, int recursionLevel){
+	/**
+ * Adds the field nodes no recursion.
+ * 
+ * @param className the class name
+ * @param relationFieldName the relation field name
+ * @param rootNode the root node
+ * @param nodeCounter the node counter
+ * @param prefix the prefix
+ * @param fieldUrlGenerator the field url generator
+ * @param recursionLevel the recursion level
+ * 
+ * @return the int
+ */
+public final int addFieldNodesNoRecursion (String className, String relationFieldName, int rootNode, int nodeCounter, String prefix, IURLGenerator fieldUrlGenerator, int recursionLevel){
 		
 		
 		nodeCounter++;
@@ -975,6 +1066,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		return nodeCounter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.javascript.BaseJsTreeBuilder#addHeader()
+	 */
 	public void addHeader() {
 		Map params = new HashMap();		
 		params.put("ACTION_NAME", actionName);
@@ -985,6 +1079,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		super.addHeader();
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.javascript.BaseJsTreeBuilder#addFooter()
+	 */
 	public void addFooter() {
 		super.addFooter();
 		if(checkable) {
@@ -993,30 +1090,62 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		}
 	}
 
+	/**
+	 * Gets the modality.
+	 * 
+	 * @return the modality
+	 */
 	public String getModality() {
 		return modality;
 	}
 
+	/**
+	 * Sets the modality.
+	 * 
+	 * @param modality the new modality
+	 */
 	public void setModality(String modality) {
 		this.modality = modality;
 	}
 
+	/**
+	 * Checks if is checkable.
+	 * 
+	 * @return true, if is checkable
+	 */
 	public boolean isCheckable() {
 		return checkable;
 	}
 
+	/**
+	 * Sets the checkable.
+	 * 
+	 * @param checkable the new checkable
+	 */
 	public void setCheckable(boolean checkable) {
 		this.checkable = checkable;
 	}
 	
+	/**
+	 * The Class QbeTreeFields.
+	 */
 	private class QbeTreeFields {
 
+		/** The list. */
 		private List list;
 		
+		/**
+		 * Instantiates a new qbe tree fields.
+		 */
 		QbeTreeFields() {
 			list = new ArrayList();
 		}
 		
+		/**
+		 * Adds the field.
+		 * 
+		 * @param hibernateClassName the hibernate class name
+		 */
 		void addField(String hibernateClassName) {
 			String label = 
 				JsTreeUtils.getLabelForClass(dataMartModel, hibernateClassName);
@@ -1024,6 +1153,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			list.add(field);
 		}
 		
+		/**
+		 * Adds the all fields.
+		 * 
+		 * @param hibernateClassNames the hibernate class names
+		 */
 		void addAllFields(Set hibernateClassNames) {
 			if (hibernateClassNames != null && hibernateClassNames.size() > 0) {
 				Iterator it = hibernateClassNames.iterator();
@@ -1034,6 +1168,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			}
 		}
 		
+		/**
+		 * Adds the all fields.
+		 * 
+		 * @param hibernateClassNames the hibernate class names
+		 */
 		void addAllFields(List hibernateClassNames) {
 			if (hibernateClassNames != null && hibernateClassNames.size() > 0) {
 				Iterator it = hibernateClassNames.iterator();
@@ -1044,6 +1183,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			}
 		}
 		
+		/**
+		 * Gets the fields ordered by label.
+		 * 
+		 * @return the fields ordered by label
+		 */
 		List getFieldsOrderedByLabel () {
 			Collections.sort(list);
 			List toReturn = new ArrayList();
@@ -1057,16 +1201,31 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		
 	}
 	
+	/**
+	 * The Class QbeTreeField.
+	 */
 	private class QbeTreeField implements Comparable {
 		
+		/** The hibernate class name. */
 		private String hibernateClassName;
+		
+		/** The label. */
 		private String label;
 		
+		/**
+		 * Instantiates a new qbe tree field.
+		 * 
+		 * @param label the label
+		 * @param hibernateClassName the hibernate class name
+		 */
 		QbeTreeField (String label, String hibernateClassName) {
 			this.hibernateClassName = hibernateClassName;
 			this.label = label;
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
 		public int compareTo(Object o) {
 			if (o == null) throw new NullPointerException();
 			if (!(o instanceof QbeTreeField)) throw new ClassCastException();
@@ -1074,29 +1233,64 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			return this.getLabel().compareTo(anotherField.getLabel());
 		}
 		
+		/**
+		 * Gets the hibernate class name.
+		 * 
+		 * @return the hibernate class name
+		 */
 		public String getHibernateClassName() {
 			return hibernateClassName;
 		}
+		
+		/**
+		 * Sets the hibernate class name.
+		 * 
+		 * @param hibernateClassName the new hibernate class name
+		 */
 		public void setHibernateClassName(String hibernateClassName) {
 			this.hibernateClassName = hibernateClassName;
 		}
+		
+		/**
+		 * Gets the label.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel() {
 			return label;
 		}
+		
+		/**
+		 * Sets the label.
+		 * 
+		 * @param label the new label
+		 */
 		public void setLabel(String label) {
 			this.label = label;
 		}
 		
 	}
 	
+	/**
+	 * The Class QbeTreeRelations.
+	 */
 	private class QbeTreeRelations {
 
+		/** The list. */
 		private List list;
 		
+		/**
+		 * Instantiates a new qbe tree relations.
+		 */
 		QbeTreeRelations() {
 			list = new ArrayList();
 		}
 		
+		/**
+		 * Adds the relation.
+		 * 
+		 * @param relationField the relation field
+		 */
 		void addRelation(RelationField relationField) {
 			String label = null;
 			String classLabel = JsTreeUtils.getLabelForClass(dataMartModel, relationField.getClassName());
@@ -1111,6 +1305,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			list.add(field);
 		}
 		
+		/**
+		 * Adds the all relations.
+		 * 
+		 * @param relations the relations
+		 */
 		void addAllRelations(Set relations) {
 			if (relations != null && relations.size() > 0) {
 				Iterator it = relations.iterator();
@@ -1121,6 +1320,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			}
 		}
 		
+		/**
+		 * Adds the all relations.
+		 * 
+		 * @param relations the relations
+		 */
 		void addAllRelations(List relations) {
 			if (relations != null && relations.size() > 0) {
 				Iterator it = relations.iterator();
@@ -1131,6 +1335,11 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			}
 		}
 		
+		/**
+		 * Gets the fields ordered by label.
+		 * 
+		 * @return the fields ordered by label
+		 */
 		List getFieldsOrderedByLabel () {
 			Collections.sort(list);
 			List toReturn = new ArrayList();
@@ -1145,16 +1354,31 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	}
 	
 	
+	/**
+	 * The Class QbeTreeRelation.
+	 */
 	private class QbeTreeRelation implements Comparable {
 		
+		/** The relation field. */
 		private RelationField relationField;
+		
+		/** The label. */
 		private String label;
 		
+		/**
+		 * Instantiates a new qbe tree relation.
+		 * 
+		 * @param label the label
+		 * @param relationField the relation field
+		 */
 		QbeTreeRelation (String label, RelationField relationField) {
 			this.relationField = relationField;
 			this.label = label;
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
 		public int compareTo(Object o) {
 			if (o == null) throw new NullPointerException();
 			if (!(o instanceof QbeTreeRelation)) throw new ClassCastException();
@@ -1162,15 +1386,38 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 			return this.getLabel().compareTo(anotherField.getLabel());
 		}
 		
+		/**
+		 * Gets the relation field.
+		 * 
+		 * @return the relation field
+		 */
 		public RelationField getRelationField() {
 			return relationField;
 		}
+		
+		/**
+		 * Sets the relation field.
+		 * 
+		 * @param relationField the new relation field
+		 */
 		public void setRelationField(RelationField relationField) {
 			this.relationField = relationField;
 		}
+		
+		/**
+		 * Gets the label.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel() {
 			return label;
 		}
+		
+		/**
+		 * Sets the label.
+		 * 
+		 * @param label the new label
+		 */
 		public void setLabel(String label) {
 			this.label = label;
 		}

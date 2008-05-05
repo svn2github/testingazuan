@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.commons.datasource;
 
 import it.eng.qbe.conf.QbeEngineConf;
@@ -34,17 +33,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QbeDataSourceManager.
+ * 
  * @author Andrea Gioia
- *
  */
 public class QbeDataSourceManager implements DataSourceManager {
 	
+	/** The naming startegy. */
 	private NamingStrategy namingStartegy = null;
+	
+	/** The data source cache. */
 	private DataSourceCache dataSourceCache = null;
 		
+	/** The instance. */
 	private static QbeDataSourceManager instance = null;
 	
+	/**
+	 * Gets the single instance of QbeDataSourceManager.
+	 * 
+	 * @return single instance of QbeDataSourceManager
+	 */
 	public static QbeDataSourceManager getInstance() {
 		if(instance == null) {
 			NamingStrategy namingStartegy = QbeEngineConf.getInstance().getNamingStrategy();
@@ -55,6 +65,12 @@ public class QbeDataSourceManager implements DataSourceManager {
 		return instance;
 	}
 	
+	/**
+	 * Instantiates a new qbe data source manager.
+	 * 
+	 * @param namingStartegy the naming startegy
+	 * @param dataSourceCache the data source cache
+	 */
 	private QbeDataSourceManager(NamingStrategy namingStartegy, DataSourceCache dataSourceCache) {
 		setNamingStartegy(namingStartegy);
 		setDataSourceCache(dataSourceCache);
@@ -62,10 +78,16 @@ public class QbeDataSourceManager implements DataSourceManager {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.DataSourceManager#getDataSource(java.util.List, it.eng.qbe.datasource.DBConnection)
+	 */
 	public IDataSource getDataSource(List dataMartNames, DBConnection connection) {
 		return getDataSource(dataMartNames, new HashMap(), connection);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.DataSourceManager#getDataSource(java.util.List, java.util.Map, it.eng.qbe.datasource.DBConnection)
+	 */
 	public IDataSource getDataSource(List dataMartNames, Map dblinkMap, DBConnection connection) {
 		
 		IDataSource dataSource = null;
@@ -91,18 +113,38 @@ public class QbeDataSourceManager implements DataSourceManager {
 		return dataSource;
 	}
 
+	/**
+	 * Gets the data source cache.
+	 * 
+	 * @return the data source cache
+	 */
 	private DataSourceCache getDataSourceCache() {
 		return dataSourceCache;
 	}
 
+	/**
+	 * Sets the data source cache.
+	 * 
+	 * @param dataSourceCache the new data source cache
+	 */
 	private void setDataSourceCache(DataSourceCache dataSourceCache) {
 		this.dataSourceCache = dataSourceCache;
 	}
 
+	/**
+	 * Gets the naming startegy.
+	 * 
+	 * @return the naming startegy
+	 */
 	private NamingStrategy getNamingStartegy() {
 		return namingStartegy;
 	}
 
+	/**
+	 * Sets the naming startegy.
+	 * 
+	 * @param namingStartegy the new naming startegy
+	 */
 	private void setNamingStartegy(NamingStrategy namingStartegy) {
 		this.namingStartegy = namingStartegy;
 	}

@@ -1,3 +1,23 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
 import java.io.StringWriter;
@@ -5,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Test class. This file is not formally a member of the org.json library.
  * It is just a casual test tool.
@@ -13,7 +34,8 @@ public class Test {
 
     /**
      * Entry point.
-     * @param args
+     * 
+     * @param args the args
      */
     public static void main(String args[]) {
         Iterator it;

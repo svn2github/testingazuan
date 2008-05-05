@@ -1,23 +1,22 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
- SpagoBI - The Business Intelligence Free Platform
-
- Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
  **/
 package it.eng.qbe.geo.action;
 
@@ -38,14 +37,19 @@ import java.util.Properties;
 import sun.misc.BASE64Encoder;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * @author Andrea Gioia
+ * The Class ViewOnMapAction.
  * 
+ * @author Andrea Gioia
  */
 public class ViewOnMapAction extends GeoAbstractAction {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.geo.action.GeoAbstractAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		super.service(request, response);
 		
@@ -201,12 +205,23 @@ public class ViewOnMapAction extends GeoAbstractAction {
 	
 	
 	
+	/**
+	 * Log.
+	 * 
+	 * @param logLevel the log level
+	 * @param msg the msg
+	 */
 	private void log(int logLevel, String msg) {
 		TracerSingleton.log("GeoViewer", logLevel, 
 				"ViewOnMapAction :: service : " +
 				msg);
 	}
 	
+	/**
+	 * Gets the sql query.
+	 * 
+	 * @return the sql query
+	 */
 	private String getSqlQuery() {
 		String query = null;
 		
@@ -216,6 +231,13 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return query;
 	}
 	
+	/**
+	 * Gets the column aliases filtered by type.
+	 * 
+	 * @param targetType the target type
+	 * 
+	 * @return the column aliases filtered by type
+	 */
 	private List getColumnAliasesFilteredByType(int targetType) {
 		List columnAliases = new ArrayList();
 		List fields;
@@ -253,6 +275,11 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return columnAliases;
 	}
 	
+	/**
+	 * Gets the measure column aliases.
+	 * 
+	 * @return the measure column aliases
+	 */
 	private String[] getMeasureColumnAliases() {
 		String[] measureColumnAliases;
 		List measureColumnAliasesList;		
@@ -267,6 +294,13 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return measureColumnAliases;
 	}
 	
+	/**
+	 * Gets the measure aggregation functions.
+	 * 
+	 * @param measureColumnAliases the measure column aliases
+	 * 
+	 * @return the measure aggregation functions
+	 */
 	private String[] getMeasureAggregationFunctions(String[] measureColumnAliases) {
 		String [] measureAgregationFunctins = new String[measureColumnAliases.length];
 		for(int i = 0; i < measureColumnAliases.length; i++) {
@@ -276,6 +310,11 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return measureAgregationFunctins;
 	}
 	
+	/**
+	 * Gets the geo column aliases.
+	 * 
+	 * @return the geo column aliases
+	 */
 	private String[] getGeoColumnAliases() {
 		String[] geoColumnAliases;
 		List geoColumnAliasesList;		
@@ -291,6 +330,14 @@ public class ViewOnMapAction extends GeoAbstractAction {
 	}
 	
 	
+	/**
+	 * Gets the geo column name from query.
+	 * 
+	 * @param query the query
+	 * @param geoColumnAlias the geo column alias
+	 * 
+	 * @return the geo column name from query
+	 */
 	private String getGeoColumnNameFromQuery(String query, String geoColumnAlias) {		
 		String geoColumnName = null;
 		
@@ -319,6 +366,11 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return geoColumnName;
 	}
 	
+	/**
+	 * Gets the default hierachy.
+	 * 
+	 * @return the default hierachy
+	 */
 	private DatamartProviderConfiguration.Hierarchy getDefaultHierachy() {
 		DatamartProviderConfiguration.Hierarchy defaultHierarchy = null;
 		
@@ -336,10 +388,23 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return defaultHierarchy;
 	}
 	
+	/**
+	 * Gets the selected hierarchy.
+	 * 
+	 * @return the selected hierarchy
+	 */
 	private DatamartProviderConfiguration.Hierarchy getSelectedHierarchy() {
 		return getDefaultHierachy();
 	}
 	
+	/**
+	 * Gets the selected level.
+	 * 
+	 * @param selectedHierarchy the selected hierarchy
+	 * @param targetGeoColumnName the target geo column name
+	 * 
+	 * @return the selected level
+	 */
 	private DatamartProviderConfiguration.Hierarchy.Level getSelectedLevel(DatamartProviderConfiguration.Hierarchy selectedHierarchy, String targetGeoColumnName) {
 		DatamartProviderConfiguration.Hierarchy.Level selectedLevel = null;
 		
@@ -357,12 +422,27 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return selectedLevel;
 	}
 	
+	/**
+	 * Gets the map catalogue client.
+	 * 
+	 * @return the map catalogue client
+	 */
 	private MapCatalogueAccessUtils getMapCatalogueClient() {
 		MapCatalogueAccessUtils mapCatalogueClient = null;
 		mapCatalogueClient = (MapCatalogueAccessUtils)getRequestContainer().getSessionContainer().getAttribute("MAP_CATALOGUE_CLIENT");
 		return mapCatalogueClient;
 	}
 	
+	/**
+	 * Gets the map names.
+	 * 
+	 * @param mapCatalogueClient the map catalogue client
+	 * @param selectedLevel the selected level
+	 * 
+	 * @return the map names
+	 * 
+	 * @throws Exception the exception
+	 */
 	private String[] getMapNames(MapCatalogueAccessUtils mapCatalogueClient, DatamartProviderConfiguration.Hierarchy.Level selectedLevel) throws Exception {
 		String[] mapNames = null;
 		List maps;
@@ -377,6 +457,16 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return mapNames;
 	}
 	
+	/**
+	 * Gets the layer names.
+	 * 
+	 * @param mapCatalogueClient the map catalogue client
+	 * @param selectedMap the selected map
+	 * 
+	 * @return the layer names
+	 * 
+	 * @throws Exception the exception
+	 */
 	private String[] getLayerNames(MapCatalogueAccessUtils mapCatalogueClient, String selectedMap) throws Exception {
 		String[] layerNames = null;
 		List layers;
@@ -391,6 +481,13 @@ public class ViewOnMapAction extends GeoAbstractAction {
 		return layerNames;
 	}
 	
+	/**
+	 * Creates the layer.
+	 * 
+	 * @param layerName the layer name
+	 * 
+	 * @return the map renderer configuration. layer
+	 */
 	private MapRendererConfiguration.Layer createLayer(String layerName) {
 		MapRendererConfiguration.Layer layer = new MapRendererConfiguration.Layer();
 		layer.setName(layerName);
@@ -402,14 +499,23 @@ public class ViewOnMapAction extends GeoAbstractAction {
 	}
 	
 	
+	/** The Constant measureBaseColours. */
 	private static final String[] measureBaseColours = new String[]{
 		"#FF0000", "#FFFF00", "#FF00FF", "#00FFFF", 
 		"#FF6600", "#FF0066", "#00FF66", "#0066FF", "#6600FF", "#66FF00",
 		"#9900CC"
 	};
 	
+	/** The counter. */
 	private static int counter = 0;
 	
+	/**
+	 * Creates the measure.
+	 * 
+	 * @param measureName the measure name
+	 * 
+	 * @return the map renderer configuration. measure
+	 */
 	private MapRendererConfiguration.Measure createMeasure(String measureName) {
 		MapRendererConfiguration.Measure measure = new MapRendererConfiguration.Measure();
 		

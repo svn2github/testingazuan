@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.services;
 
 import it.eng.qbe.bo.Formula;
@@ -61,14 +60,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ReportServlet.
+ * 
  * @author Gioia
- *
  */
 public class ReportServlet extends HttpServlet{
 	
 
 	
+	/** The extensions. */
 	static Map extensions;
 	static {
 		extensions = new HashMap();
@@ -82,12 +84,23 @@ public class ReportServlet extends HttpServlet{
 		extensions.put("application/vnd.ms-excel", "xls");
 	}
 	
+	/** The Constant ACTION_PARAMETER. */
 	public static final String ACTION_PARAMETER = "action";
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+	 */
 	public void init(ServletConfig config) throws ServletException {
         super.init(config);
      } 
 	
+	/**
+	 * Gets the action parameter.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the action parameter
+	 */
 	public String getActionParameter(HttpServletRequest request) {
 		return (String)request.getParameter(ACTION_PARAMETER);
 	}
@@ -96,6 +109,12 @@ public class ReportServlet extends HttpServlet{
 	 * Handle an export request of a QBE query resultset. First generates a jasper report template. Than compile &
 	 * fill it. In the end exports the filled report to the target export format. If the parameter <i>action</i> is equal
 	 * to <i>buildTemplate</i> it just return the report template
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ServletException the servlet exception
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Logger.debug(this.getClass(), "service: start method service");		
@@ -201,6 +220,22 @@ public class ReportServlet extends HttpServlet{
 		}
 		
 	}
+	
+	/**
+	 * Builds the template from hql query.
+	 * 
+	 * @param templateFile the template file
+	 * @param query the query
+	 * @param pagination the pagination
+	 * @param session the session
+	 * @param connection the connection
+	 * @param orderedFieldList the ordered field list
+	 * @param extractedEntitiesList the extracted entities list
+	 * @param formulaFile the formula file
+	 * @param savedQueryObjectID the saved query object id
+	 * 
+	 * @throws Exception the exception
+	 */
 	private void buildTemplateFromHQLQuery(File templateFile, String query, boolean pagination, Session session, Connection connection, String orderedFieldList,  String extractedEntitiesList, Formula formulaFile, String savedQueryObjectID) throws Exception {
 		Map params = getParams();
 		params.put("pagination", pagination?"true":"false");
@@ -214,6 +249,11 @@ public class ReportServlet extends HttpServlet{
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
+	/**
+	 * Gets the params.
+	 * 
+	 * @return the params
+	 */
 	public Map getParams() {
 		Map map = new HashMap();
 		SourceBean config = (SourceBean)ConfigSingleton.getInstance();
@@ -227,6 +267,12 @@ public class ReportServlet extends HttpServlet{
 		return map;
 	}
 	
+	/**
+	 * Copy message to response.
+	 * 
+	 * @param response the response
+	 * @param msg the msg
+	 */
 	private void copyMessageToResponse(HttpServletResponse response, String msg) {
 		response.setContentType("text/plain");
 		response.setContentLength((int)msg.length());
@@ -237,11 +283,28 @@ public class ReportServlet extends HttpServlet{
 		}
 	}
 	
+	/**
+	 * Copy error message to response.
+	 * 
+	 * @param response the response
+	 * @param exception the exception
+	 */
 	private void copyErrorMessageToResponse(HttpServletResponse response, Exception exception) {
 		copyMessageToResponse(response, exception.getMessage());
 		Logger.error(ExecuteQueryAction.class, exception);
 	}
 	
+	/**
+	 * Copy file to response.
+	 * 
+	 * @param response the response
+	 * @param inline the inline
+	 * @param file the file
+	 * @param fileName the file name
+	 * @param fileFormat the file format
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void copyFileToResponse(HttpServletResponse response, boolean inline, File file, String fileName, String fileFormat) throws IOException {
 		response.setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "." + extensions.get(fileFormat) + "\";");
 		response.setContentType(fileFormat);
@@ -259,6 +322,20 @@ public class ReportServlet extends HttpServlet{
 	
 	
 	
+	/**
+	 * Builds the template from sql query.
+	 * 
+	 * @param templateFile the template file
+	 * @param sqlQuery the sql query
+	 * @param pagination the pagination
+	 * @param connection the connection
+	 * @param orderedFieldList the ordered field list
+	 * @param extractedEntitiesList the extracted entities list
+	 * @param formulaFile the formula file
+	 * @param savedQueryObjectID the saved query object id
+	 * 
+	 * @throws Exception the exception
+	 */
 	private void buildTemplateFromSQLQuery(File templateFile, String sqlQuery, boolean pagination, Connection connection, 
 			String orderedFieldList, String extractedEntitiesList, Formula formulaFile, String savedQueryObjectID) throws Exception {
 		
@@ -273,6 +350,15 @@ public class ReportServlet extends HttpServlet{
 		templateBuilder.buildTemplateToFile(templateFile);
 	}
 	
+	/**
+	 * Gets the session.
+	 * 
+	 * @param jarFile the jar file
+	 * @param jndiDataSourceName the jndi data source name
+	 * @param dialect the dialect
+	 * 
+	 * @return the session
+	 */
 	public Session getSession(File jarFile, String jndiDataSourceName, String dialect){
 		
 		Configuration cfg = initHibernateConfiguration(jarFile, jndiDataSourceName, dialect);
@@ -280,6 +366,15 @@ public class ReportServlet extends HttpServlet{
 
 	}
 	
+	/**
+	 * Inits the hibernate configuration.
+	 * 
+	 * @param jarFile the jar file
+	 * @param jndiDataSourceName the jndi data source name
+	 * @param dialect the dialect
+	 * 
+	 * @return the configuration
+	 */
 	public Configuration initHibernateConfiguration(File jarFile, String jndiDataSourceName, String dialect){
 		Configuration cfg = null;
 	
@@ -357,6 +452,9 @@ public class ReportServlet extends HttpServlet{
 	}
 	
 	
+	/**
+	 * Sets the jasper classpath.
+	 */
 	private void setJasperClasspath(){
 		// get the classpath used by JasperReprorts Engine (by default equals to WEB-INF/lib)
 		String webinflibPath = this.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "lib";
@@ -399,8 +497,9 @@ public class ReportServlet extends HttpServlet{
 	
 	
 	/**
-	 * This method update the Thread Context ClassLoader adding to the class loader the jarFile
-	 * @param jarFile
+	 * This method update the Thread Context ClassLoader adding to the class loader the jarFile.
+	 * 
+	 * @param jarFile the jar file
 	 */
 	public static void updateCurrentClassLoader(File jarFile){
 		try{
@@ -412,6 +511,13 @@ public class ReportServlet extends HttpServlet{
 		}
 	}
 	
+	/**
+	 * Gets the view jar files in directory.
+	 * 
+	 * @param directory the directory
+	 * 
+	 * @return the view jar files in directory
+	 */
 	public List getViewJarFilesInDirectory(String directory){
 		List files = new ArrayList();
 //		String qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.qbe.queryresultshandler.service;
 
 import it.eng.qbe.conf.QbeEngineConf;
@@ -34,18 +33,29 @@ import it.eng.spagobi.utilities.engines.EngineException;
 import org.hibernate.HibernateException;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This action do the execution of the query represented by ISingleDataMartWizardObject in session
  * 
- * If ISingleDataMartWizardObject is configured to run the query composed automatically this action 
+ * If ISingleDataMartWizardObject is configured to run the query composed automatically this action
  * do some control on join conditions.
- *  
  */
 public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
+	/** The QUER y_ respons e_ sourc e_ bean. */
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 		
 	
+	/**
+	 * Check joins.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws SourceBeanException the source bean exception
+	 */
 	public boolean checkJoins(SourceBean request, SourceBean response) throws SourceBeanException {
 		if (isCheckJoinsEnabled(request)){
 			if (!getDatamartWizard().isUseExpertedVersion()){
@@ -58,11 +68,14 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	}
 	
 	/**
+	 * Do check joins.
 	 * 
-	 * @param query
-	 * @param serviceResponse
-	 * @return
-	 * @throws SourceBeanException
+	 * @param query the query
+	 * @param serviceResponse the service response
+	 * 
+	 * @return true, if do check joins
+	 * 
+	 * @throws SourceBeanException the source bean exception
 	 */
 	public boolean doCheckJoins(IQuery query, SourceBean serviceResponse) throws SourceBeanException{
 		String bundle = "component_spagobiqbeIE_messages";
@@ -83,6 +96,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		
 	}
 	
+	/**
+	 * Gets the session container.
+	 * 
+	 * @return the session container
+	 */
 	private SessionContainer getSessionContainer() {
 		return getRequestContainer().getSessionContainer();
 	}
@@ -91,23 +109,58 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	
 		
+	/**
+	 * Gets the execution mode.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the execution mode
+	 */
 	private String getExecutionMode(SourceBean request) {
 		return (String)request.getAttribute("previewModeFromQueryResult"); 
 	}
 	
+	/**
+	 * Checks if is expert execution mode enabled.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return true, if is expert execution mode enabled
+	 */
 	private boolean isExpertExecutionModeEnabled(SourceBean request) {
 		return ("ExpertMode".equalsIgnoreCase(getExecutionMode(request)));
 	}
 	
+	/**
+	 * Checks if is check joins enabled.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return true, if is check joins enabled
+	 */
 	private boolean isCheckJoinsEnabled(SourceBean request) {
 		String ignoreJoins = (String) request.getAttribute("ignoreJoins");
 		return (ignoreJoins == null) || (!(ignoreJoins.equalsIgnoreCase("true")));
 	}
 	
+	/**
+	 * Gets the source.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the source
+	 */
 	private String getSource(SourceBean request) {
 		return (String)request.getAttribute("SOURCE_FROM_QUERY_RESULT");
 	}
 	
+	/**
+	 * Gets the page number.
+	 * 
+	 * @param request the request
+	 * 
+	 * @return the page number
+	 */
 	private int getPageNumber(SourceBean request) {
 		String pageNumberString = (String) request.getAttribute("pageNumber");
         int pageNumber = 0;
@@ -124,6 +177,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
         return pageNumber;
 	}
 	
+	/**
+	 * Gets the page size.
+	 * 
+	 * @return the page size
+	 */
 	private int getPageSize() {
 		String pageSizeStr = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.page-size");
 		int pageSize = 30;
@@ -131,6 +189,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		return pageSize;
 	}
 	
+	/**
+	 * Return error.
+	 * 
+	 * @param response the response
+	 * @param errorMsg the error msg
+	 */
 	private void returnError(SourceBean response, String errorMsg) {
 		if (getSessionContainer().getAttribute(QUERY_RESPONSE_SOURCE_BEAN) != null){
 			getSessionContainer().delAttribute(QUERY_RESPONSE_SOURCE_BEAN);
@@ -142,6 +206,9 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		super.service(request, response);	
 		

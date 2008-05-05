@@ -1,3 +1,23 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package org.json;
 
 /*
@@ -26,8 +46,10 @@ SOFTWARE.
 
 import java.util.Iterator;
 
+// TODO: Auto-generated Javadoc
 /**
  * Convert a web browser cookie list string to a JSONObject and back.
+ * 
  * @author JSON.org
  * @version 2
  */
@@ -38,13 +60,16 @@ public class CookieList {
      * of name/value pairs. The names are separated from the values by '='.
      * The pairs are separated by ';'. The names and the values
      * will be unescaped, possibly converting '+' and '%' sequences.
-     *
+     * 
      * To add a cookie to a cooklist,
      * cookielistJSONObject.put(cookieJSONObject.getString("name"),
-     *     cookieJSONObject.getString("value"));
+     * cookieJSONObject.getString("value"));
+     * 
      * @param string  A cookie list string
+     * 
      * @return A JSONObject
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
         JSONObject o = new JSONObject();
@@ -64,9 +89,12 @@ public class CookieList {
      * of name/value pairs. The names are separated from the values by '='.
      * The pairs are separated by ';'. The characters '%', '+', '=', and ';'
      * in the names and values are replaced by "%hh".
+     * 
      * @param o A JSONObject
+     * 
      * @return A cookie list string
-     * @throws JSONException
+     * 
+     * @throws JSONException the JSON exception
      */
     public static String toString(JSONObject o) throws JSONException {
         boolean      b = false;

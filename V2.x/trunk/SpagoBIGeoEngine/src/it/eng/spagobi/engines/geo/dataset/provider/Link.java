@@ -171,14 +171,16 @@ public class Link {
 		
 		link = baseUrl + "?";
 		*/
-    	String link = "javascript:parent.execDrill(this.name,'/SpagoBIGeoEngine/SpagoBIDrillServlet?";
+    	String link = DEFAULT_BASE_URL;
 		
     	try{
+    		String docLabel = ((Parameter)parameters.get("DOCUMENT_LABEL")).value;
+    		link = "javascript:parent.execCrossNavigation(this.name, '" + docLabel + "', '";
     		Iterator it = parameters.keySet().iterator();
     		while(it.hasNext()) {
     			String key = (String)it.next();
     			Parameter param = (Parameter)parameters.get(key);
-    			if(param.getType().equalsIgnoreCase("absolute")) {
+    			if(param.getType().equalsIgnoreCase("absolute") && !key.equalsIgnoreCase("DOCUMENT_LABEL")) {
     				link += param.getName() + "=" + param.getValue() + "&";
     			} else if(param.getType().equalsIgnoreCase("relative")) {
     				String realValue = resultSet.getString(resultSet.findColumn(param.getValue()));

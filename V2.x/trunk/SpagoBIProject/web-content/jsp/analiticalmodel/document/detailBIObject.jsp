@@ -523,6 +523,26 @@ function checkFormVisibility(docType) {
 			      		  </select>  
 					</div>  
 		    <% } %>
+                   
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="SBIDev.docConf.docDet.refreshField" />
+					</span>
+				</div>
+				<div class='div_detail_form'>
+					<% 
+		      		Integer refresh = obj.getRefreshSeconds();
+		      		if(refresh==null) {
+		      			refresh = new Integer(0);
+		      		}
+		      		%>
+					<input class='portlet-form-input-field' style='width:230px;' type="text" 
+ 							name="refreshseconds" id="doc_refresh" value="<%=refresh%>" maxlength="160" >
+				</div>                   
+                   
+                   
+                   
+                   
                         
             <!-- DISPLAY RADIO BUTTON FOR CRYPT SELECTION -->
 			<!-- FOR THE CURRENT RELEASE THIS RADIO IS HIDDEN -->

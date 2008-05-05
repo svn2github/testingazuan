@@ -68,7 +68,7 @@ public class SbiObjects  implements java.io.Serializable {
      private String keywords=null;
      private Date creationDate=null;
      private String creationUser=null;
-     
+     private Integer refreshSeconds=null;     
      private SbiDataSet dataSet=null;
      
     // Constructors
@@ -633,4 +633,26 @@ public class SbiObjects  implements java.io.Serializable {
 	public void setDataSet(SbiDataSet dataSet) {
 	    this.dataSet = dataSet;
 	}
+
+	/**
+	 * Gets the refresh Seconds.
+	 * 
+	 * @return the refresh Seconds
+	 */
+	
+	public Integer getRefreshSeconds() {
+		return refreshSeconds;
+	}
+	
+	/**
+	 * Sets the refresh Seconds.
+	 * 
+	 * @param Integer the refreshSeconds
+	 */
+
+	public void setRefreshSeconds(Integer refreshSeconds) {
+		this.refreshSeconds = refreshSeconds;
+	}
+	
+	
 }

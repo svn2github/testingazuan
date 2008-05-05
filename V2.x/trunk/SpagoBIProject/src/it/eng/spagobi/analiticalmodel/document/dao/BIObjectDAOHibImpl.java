@@ -416,6 +416,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setObjectType(hibObjectType);
 			hibBIObject.setObjectTypeCode(biObject.getBiObjectTypeCode());
 			
+			hibBIObject.setRefreshSeconds(biObject.getRefreshSeconds());
+			
 			// metadata ... to uncomment when the user interface managed that fields
 			hibBIObject.setExtendedDescription(biObject.getExtendedDescription());
 			hibBIObject.setLanguage(biObject.getLanguage());
@@ -593,6 +595,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				dSet = (SbiDataSet) aSession.load(SbiDataSet.class, obj.getDataSetId());
 			}
 			hibBIObject.setDataSet(dSet);
+			
+			Integer refreshSeconds=obj.getRefreshSeconds();
+			if(refreshSeconds==null)refreshSeconds=new Integer(0);
+			hibBIObject.setRefreshSeconds(refreshSeconds);
 			
 			// uuid generation
 			UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
@@ -1019,6 +1025,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setLanguage(hibBIObject.getLanguage());
 			aBIObject.setObjectve(hibBIObject.getObjectve());
 			aBIObject.setKeywords(hibBIObject.getKeywords());
+			
+			aBIObject.setRefreshSeconds(hibBIObject.getRefreshSeconds());
 			return aBIObject;
 	}
 	

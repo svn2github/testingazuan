@@ -99,7 +99,9 @@ public class BIObject implements Serializable {
 	private Date creationDate=null;
 	private String creationUser=null;	
 
+	private Integer refreshSeconds=null;	
 
+	
 	/**
 	 * Gets the id.
 	 * 
@@ -568,6 +570,27 @@ public class BIObject implements Serializable {
 	public void setDataSetId(Integer dataSetId) {
 		this.dataSetId = dataSetId;
 	}
+
+	/**
+	 * Gets refresh Seconds.
+	 * 
+	 * @return refresh Seconds
+	 */
+	
+	public Integer getRefreshSeconds() {
+		return refreshSeconds;
+	}
+
+	/**
+	 * Sets refresh Seconds.
+	 * 
+	 * @param refreshSeconds
+	 */
+	
+	public void setRefreshSeconds(Integer refreshSeconds) {
+		this.refreshSeconds = refreshSeconds;
+	}
+	
 	
 	
 

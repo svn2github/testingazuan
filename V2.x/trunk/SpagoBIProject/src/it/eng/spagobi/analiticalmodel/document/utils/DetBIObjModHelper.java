@@ -114,7 +114,9 @@ public class DetBIObjModHelper {
 		String typeAttr = (String) request.getAttribute("type");
 		String engineIdStr = (String) request.getAttribute("engine");
 		String stateAttr = (String) request.getAttribute("state");
-		
+		String refreshSecondsString = (String) request.getAttribute("refreshseconds");
+		if(refreshSecondsString==null || refreshSecondsString.equalsIgnoreCase(""))refreshSecondsString="0";
+		Integer refreshSeconds=Integer.valueOf(refreshSecondsString);
 		String longDescription = (String) request.getAttribute("longDescription");
 		String objective = (String) request.getAttribute("objective");
 		String language = (String) request.getAttribute("language");
@@ -239,6 +241,7 @@ public class DetBIObjModHelper {
 		obj.setLanguage(language);
 		//obj.setRating(Rating == null ? null : new Short(Rating));
 		obj.setKeywords(Keywords);
+		obj.setRefreshSeconds(refreshSeconds);
 		// RETURN OBJECT
 		return obj;
 	}
@@ -425,6 +428,7 @@ public class DetBIObjModHelper {
 		objClone.setObjectve(obj.getObjectve());
 		objClone.setLanguage(obj.getLanguage());
 		objClone.setKeywords(obj.getKeywords());
+		objClone.setRefreshSeconds(obj.getRefreshSeconds());
 		return objClone;
 	}
 

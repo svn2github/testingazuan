@@ -128,4 +128,29 @@ function execCrossNavigation(windowName, label, parameters) {
 </script>
 <%-- end cross navigation scripts --%>
 
+
+<%-- refresh Scripts --%>
+<%
+Integer refreshSeconds=obj.getRefreshSeconds();
+if(refreshSeconds!=null && refreshSeconds.intValue()>0){
+Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
+%>
+
+<script type="text/javascript">
+
+  
+  function doRefresh() {
+    var iframe = document.getElementById("iframeexec<%=uuid%>");
+    iframe.src = iframe.src;
+    setTimeout("doRefresh()",<%=refreshConvert%>);
+  }
+  
+  setTimeout('window.location.reload()', <%=refreshConvert%>);
+   
+</script>
+<%} %>
+
+
+
+
 <%@ include file="/jsp/commons/footer.jsp"%>

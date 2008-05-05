@@ -731,6 +731,7 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setStateCode("");
             obj.setBiObjectTypeID(null);
             obj.setBiObjectTypeCode("");
+            obj.setRefreshSeconds(new Integer(0));
             List functionalitites = new ArrayList();
             obj.setFunctionalities(functionalitites);
             response.setAttribute(NAME_ATTR_OBJECT, obj);

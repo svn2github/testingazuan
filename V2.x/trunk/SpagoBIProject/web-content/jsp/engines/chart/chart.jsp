@@ -572,20 +572,6 @@ if(sbi.isChangeableView() && !docComposition){
 	%>
 
 
-<script type="text/javascript">
-
-  
-  function doRefresh() {
-    var iframe = document.getElementById("iframeexec<%=uuidO%>");
-    iframe.src = iframe.src;
-    setTimeout("doRefresh()",500000);
-  }
-  
-  setTimeout('window.location.reload()', 500000);
-   
-</script>
-
-
 
 
 

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
@@ -42,16 +41,38 @@ import java.util.Properties;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HQLStatement.
+ */
 public class HQLStatement extends BasicStatement {
 	
+	/**
+	 * Instantiates a new hQL statement.
+	 * 
+	 * @param dataMartModel the data mart model
+	 */
 	protected HQLStatement(IDataMartModel dataMartModel) {
 		super(dataMartModel);
 	}
 	
+	/**
+	 * Instantiates a new hQL statement.
+	 * 
+	 * @param dataMartModel the data mart model
+	 * @param query the query
+	 */
 	protected HQLStatement(IDataMartModel dataMartModel, IQuery query) {
 		super(dataMartModel, query);
 	}
 	
+	/**
+	 * Builds the select clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the string
+	 */
 	private String buildSelectClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -88,6 +109,13 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Builds the from clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the string
+	 */
 	public String buildFromClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
 		boolean afterFirst;
@@ -110,22 +138,56 @@ public class HQLStatement extends BasicStatement {
 	
 	
 	
+	/** The Constant EQUALS_TO. */
 	public static final String EQUALS_TO = "EQUALS TO";
+	
+	/** The Constant NOT_EQUALS_TO. */
 	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
+	
+	/** The Constant GREATER_THAN. */
 	public static final String GREATER_THAN = "GREATER THAN";
+	
+	/** The Constant EQUALS_OR_GREATER_THAN. */
 	public static final String EQUALS_OR_GREATER_THAN = "EQUALS OR GREATER THAN";
+	
+	/** The Constant LESS_THAN. */
 	public static final String LESS_THAN = "LESS THAN";
+	
+	/** The Constant EQUALS_OR_LESS_THAN. */
 	public static final String EQUALS_OR_LESS_THAN = "EQUALS OR LESS THAN";
+	
+	/** The Constant STARTS_WITH. */
 	public static final String STARTS_WITH = "STARTS WITH";
+	
+	/** The Constant NOT_STARTS_WITH. */
 	public static final String NOT_STARTS_WITH = "NOT STARTS WITH";
+	
+	/** The Constant ENDS_WITH. */
 	public static final String ENDS_WITH = "ENDS WITH";
+	
+	/** The Constant NOT_ENDS_WITH. */
 	public static final String NOT_ENDS_WITH = "NOT ENDS WITH";
+	
+	/** The Constant NOT_NULL. */
 	public static final String NOT_NULL = "NOT NULL";
+	
+	/** The Constant IS_NULL. */
 	public static final String IS_NULL = "IS NULL";
+	
+	/** The Constant CONTAINS. */
 	public static final String CONTAINS = "CONTAINS";
+	
+	/** The Constant NOT_CONTAINS. */
 	public static final String NOT_CONTAINS = "NOT CONTAINS";
 	
 	
+	/**
+	 * Builds the where clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the string
+	 */
 	public String buildWhereClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
 		Iterator fieldIterator = null;
@@ -344,6 +406,13 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Builds the group by clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the string
+	 */
 	public String buildGroupByClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer(); 
 		boolean afterFirst = false;
@@ -371,6 +440,13 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Builds the order by clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the string
+	 */
 	public String buildOrderByClause(IQuery query) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -396,6 +472,13 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the query string.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the query string
+	 */
 	public String getQueryString(IQuery query) {		
 		try {
 			return getQueryString(query, parameters);
@@ -405,6 +488,9 @@ public class HQLStatement extends BasicStatement {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#getQueryString(it.eng.qbe.query.IQuery, java.util.Properties)
+	 */
 	public String getQueryString(IQuery query, Properties parameters) throws IOException {		
 		StringBuffer buffer; 
 		
@@ -421,18 +507,30 @@ public class HQLStatement extends BasicStatement {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#execute(int, int)
+	 */
 	public SourceBean execute(int offset, int fetchSize) throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#execute(int)
+	 */
 	public SourceBean execute(int offset) throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#execute()
+	 */
 	public SourceBean execute() throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#execute(it.eng.qbe.query.IQuery, java.util.Properties, int, int, int)
+	 */
 	public SourceBean execute(IQuery query, Properties parameters, int offset, int fetchSize, int maxResults) throws Exception {
 		Session session = null;
 		try{		
@@ -477,14 +575,23 @@ public class HQLStatement extends BasicStatement {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#executeWithPagination(int, int, int)
+	 */
 	public SourceBean executeWithPagination(int offset, int fetchSize, int maxResults) throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#executeWithPagination(int, int)
+	 */
 	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception {
 		return executeWithPagination(query, parameters, pageNumber, pageSize, maxResults);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#executeWithPagination(it.eng.qbe.query.IQuery, java.util.Properties, int, int, int)
+	 */
 	public SourceBean executeWithPagination(IQuery query, Properties parameters, int pageNumber, int pageSize, int maxResults) throws Exception {
 		SourceBean resultSetSB = execute(query, parameters, pageNumber * pageSize, pageSize, maxResults);
 		

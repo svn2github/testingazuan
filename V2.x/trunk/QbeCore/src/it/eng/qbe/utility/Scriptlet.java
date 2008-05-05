@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 
 package it.eng.qbe.utility;
 import groovy.lang.Binding;
@@ -34,7 +33,10 @@ import net.sf.jasperreports.engine.fill.JRFillParameter;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Scriptlet.
+ * 
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id: Scriptlet.java,v 1.11 2006/04/19 10:26:14 teodord Exp $
  */
@@ -42,12 +44,17 @@ public class Scriptlet extends JRDefaultScriptlet
 {
 
 	
+	/** The gs engine. */
 	public GroovyScriptEngine gsEngine = null;
+	
+	/** The binding. */
 	public Binding binding = null;
+	
+	/** The qbe jasper report fld map. */
 	public Map qbeJasperReportFldMap = null;
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#beforeReportInit()
 	 */
 	public void beforeReportInit() throws JRScriptletException
 	{
@@ -79,8 +86,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#afterReportInit()
 	 */
 	public void afterReportInit() throws JRScriptletException
 	{
@@ -88,8 +95,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#beforePageInit()
 	 */
 	public void beforePageInit() throws JRScriptletException
 	{
@@ -97,8 +104,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#afterPageInit()
 	 */
 	public void afterPageInit() throws JRScriptletException
 	{
@@ -106,8 +113,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#beforeColumnInit()
 	 */
 	public void beforeColumnInit() throws JRScriptletException
 	{
@@ -115,8 +122,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#afterColumnInit()
 	 */
 	public void afterColumnInit() throws JRScriptletException
 	{
@@ -124,8 +131,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#beforeGroupInit(java.lang.String)
 	 */
 	public void beforeGroupInit(String groupName) throws JRScriptletException
 	{
@@ -133,8 +140,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#afterGroupInit(java.lang.String)
 	 */
 	public void afterGroupInit(String groupName) throws JRScriptletException
 	{
@@ -142,8 +149,8 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#beforeDetailEval()
 	 */
 	public void beforeDetailEval() throws JRScriptletException
 	{
@@ -151,13 +158,24 @@ public class Scriptlet extends JRDefaultScriptlet
 	}
 
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see net.sf.jasperreports.engine.JRDefaultScriptlet#afterDetailEval()
 	 */
 	public void afterDetailEval() throws JRScriptletException
 	{
 	}
 
+	/**
+	 * Execute groovy script.
+	 * 
+	 * @param groovyScriptName the groovy script name
+	 * @param entityName the entity name
+	 * @param classNameInQuery the class name in query
+	 * @param fldCompleteNameInQuery the fld complete name in query
+	 * @param mappings the mappings
+	 * 
+	 * @return the string
+	 */
 	public String executeGroovyScript(String groovyScriptName,String entityName, String classNameInQuery, String fldCompleteNameInQuery,  String mappings){
 		try{
 			String result = "";

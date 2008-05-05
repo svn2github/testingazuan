@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model.structure.builder;
 
 import it.eng.qbe.datasource.IHibernateDataSource;
@@ -40,22 +39,35 @@ import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DatamartStructureBuilder.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  * 
  * TODO this class will replace others builder classes. Once done, rename it HibernateDatamartStructure
- *
  */
 public class DatamartStructureBuilder {
 	
+	/** The data source. */
 	private IHibernateDataSource dataSource;	
 	
 	
+	/**
+	 * Instantiates a new datamart structure builder.
+	 * 
+	 * @param dataSource the data source
+	 */
 	public DatamartStructureBuilder(IHibernateDataSource dataSource) {
 		setDataSource( dataSource );
 	}
 	
 			
+	/**
+	 * Builds the.
+	 * 
+	 * @return the data mart model structure
+	 */
 	public DataMartModelStructure build() {
 		
 		DataMartModelStructure dataMartStructure;
@@ -79,6 +91,12 @@ public class DatamartStructureBuilder {
 		return dataMartStructure;
 	}
 
+	/**
+	 * Adds the entity.
+	 * 
+	 * @param dataMartStructure the data mart structure
+	 * @param entityType the entity type
+	 */
 	private void addEntity (DataMartModelStructure dataMartStructure, String entityType){
 
 		String entityName = getEntityNameFromEntityType(entityType);		
@@ -89,6 +107,13 @@ public class DatamartStructureBuilder {
 		addSubEntities(dataMartEntity, subEntities, 0);
 	}
 	
+	/**
+	 * Adds the sub entities.
+	 * 
+	 * @param dataMartEntity the data mart entity
+	 * @param subEntities the sub entities
+	 * @param recursionLevel the recursion level
+	 */
 	private void addSubEntities(DataMartEntity dataMartEntity, List subEntities, int recursionLevel) {
 		
 		Iterator it = subEntities.iterator();
@@ -105,6 +130,14 @@ public class DatamartStructureBuilder {
 		}
 	}
 	
+	/**
+	 * Adds the sub entity.
+	 * 
+	 * @param parentEntity the parent entity
+	 * @param entityType the entity type
+	 * @param role the role
+	 * @param recursionLevel the recursion level
+	 */
 	private void addSubEntity (DataMartEntity parentEntity,
 			String entityType, 			
 			String role,
@@ -122,6 +155,11 @@ public class DatamartStructureBuilder {
 		addSubEntities(dataMartEntity, subEntities, recursionLevel);
 	}
 	
+	/**
+	 * Adds the key fields.
+	 * 
+	 * @param dataMartEntity the data mart entity
+	 */
 	private void addKeyFields(DataMartEntity dataMartEntity) {
 		
 		PersistentClass classMapping;
@@ -195,6 +233,13 @@ public class DatamartStructureBuilder {
 	}
 	
 	
+	/**
+	 * Adds the normal fields.
+	 * 
+	 * @param dataMartEntity the data mart entity
+	 * 
+	 * @return the list
+	 */
 	public List addNormalFields(DataMartEntity dataMartEntity) {
 		
 		ClassMetadata classMetadata;
@@ -274,6 +319,13 @@ public class DatamartStructureBuilder {
 	}
 	
 	
+	/**
+	 * Gets the entity name from entity type.
+	 * 
+	 * @param entityType the entity type
+	 * 
+	 * @return the entity name from entity type
+	 */
 	private String getEntityNameFromEntityType(String entityType) {
 		String entityName = entityType;
 		entityName = (entityName.lastIndexOf('.') > 0 ?
@@ -283,11 +335,21 @@ public class DatamartStructureBuilder {
 		return entityName;
 	}
 
+	/**
+	 * Gets the data source.
+	 * 
+	 * @return the data source
+	 */
 	protected IHibernateDataSource getDataSource() {
 		return dataSource;
 	}
 
 
+	/**
+	 * Sets the data source.
+	 * 
+	 * @param dataSource the new data source
+	 */
 	protected void setDataSource(IHibernateDataSource dataSource) {
 		this.dataSource = dataSource;
 	}

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model;
 
 import it.eng.qbe.bo.DatamartLabels;
@@ -68,21 +67,42 @@ import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DataMartModel.
+ */
 public class DataMartModel implements IDataMartModel {
 	
+	/** The name. */
 	private String name = null;	
+	
+	/** The label. */
 	private String label = null;	
+	
+	/** The description. */
 	private String description = null;	
+	
+	/** The data source. */
 	private IHibernateDataSource dataSource = null; 
 	
+	/** The data mart model structure. */
 	private DataMartModelStructure dataMartModelStructure = null;
+	
+	/** The data mart model access modality. */
 	private DataMartModelAccessModality dataMartModelAccessModality = null;
+	
+	/** The data mart properties. */
 	private Properties dataMartProperties = null;
 	
 	
 	
 	
 	
+	/**
+	 * Instantiates a new data mart model.
+	 * 
+	 * @param dataSource the data source
+	 */
 	public DataMartModel(IDataSource dataSource){
 		this.dataSource = (IHibernateDataSource)dataSource;
 		this.name = getDataSource().getDatamartName();
@@ -97,10 +117,22 @@ public class DataMartModel implements IDataMartModel {
 	}
 	
 	
+	/**
+	 * Gets the labels.
+	 * 
+	 * @return the labels
+	 */
 	public DatamartLabels getLabels() {
 		return dataSource.getLabels();
 	}
 	
+	/**
+	 * Gets the labels.
+	 * 
+	 * @param locale the locale
+	 * 
+	 * @return the labels
+	 */
 	public DatamartLabels getLabels(Locale locale) {
 		DatamartLabels labels = (DatamartLabels)dataSource.getLabels(locale);
 		if(labels == null) labels = getLabels();
@@ -108,10 +140,20 @@ public class DataMartModel implements IDataMartModel {
 		return labels;
 	}
 	
+	/**
+	 * Gets the properties.
+	 * 
+	 * @return the properties
+	 */
 	public DatamartProperties getProperties() {
 		return  dataSource.getProperties();
 	}
 	
+	/**
+	 * Gets the formula.
+	 * 
+	 * @return the formula
+	 */
 	public Formula getFormula() {
 		return dataSource.getFormula();
 	}
@@ -120,11 +162,12 @@ public class DataMartModel implements IDataMartModel {
 	
 	
 	/**
-	 * FIXME: It works only on qbe query
+	 * FIXME: It works only on qbe query.
 	 * 
-	 * @param name
-	 * @param query
-	 * @throws Exception
+	 * @param name the name
+	 * @param dmWizard the dm wizard
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void addView(String name, ISingleDataMartWizardObject dmWizard) throws Exception {	
 		
@@ -241,6 +284,11 @@ public class DataMartModel implements IDataMartModel {
 		
 	}
 	
+	/**
+	 * Compile java classes.
+	 * 
+	 * @param srcDir the src dir
+	 */
 	private void compileJavaClasses(File srcDir) {
 		Project project = new Project();
 		Javac javacTask = new Javac();
@@ -254,6 +302,12 @@ public class DataMartModel implements IDataMartModel {
 		javacTask.execute();
 	}
 	
+	/**
+	 * Creates the jar.
+	 * 
+	 * @param sourceDir the source dir
+	 * @param destJarFile the dest jar file
+	 */
 	private void createJar(File sourceDir, File destJarFile) {
 		Project project = new Project();
 		Jar jarTask = new Jar();
@@ -265,6 +319,17 @@ public class DataMartModel implements IDataMartModel {
 		jarTask.execute();
 	}
 	
+	/**
+	 * View reverse engineering.
+	 * 
+	 * @param name the name
+	 * @param packageName the package name
+	 * @param destDir the dest dir
+	 * @param columnNames the column names
+	 * @param columnHibernateTypes the column hibernate types
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void viewReverseEngineering(String name, String packageName, File destDir, List columnNames, List columnHibernateTypes) throws IOException {
 		
 		String directoryOfPackage = Utils.packageAsDir(packageName);
@@ -361,6 +426,13 @@ public class DataMartModel implements IDataMartModel {
 		bwJavaMain.close();
 	}
 	
+	/**
+	 * Gets the java type for hib type.
+	 * 
+	 * @param hibType the hib type
+	 * 
+	 * @return the java type for hib type
+	 */
 	public String getJavaTypeForHibType(String hibType){
 		
 		if (hibType.equalsIgnoreCase("integer")){
@@ -384,6 +456,13 @@ public class DataMartModel implements IDataMartModel {
 		}		
 	}
 	
+	/**
+	 * Check space.
+	 * 
+	 * @param aSqlConnection the a sql connection
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean checkSpace(Connection aSqlConnection){
 		
 		if (QbeConf.getInstance().isSpaceCheckerEnabled()){
@@ -407,8 +486,9 @@ public class DataMartModel implements IDataMartModel {
 	
 	
 	/**
-	 * This method is responsible to persist the Object wizObj using the IQueryPersister 
-	 * @param wizObj
+	 * This method is responsible to persist the Object wizObj using the IQueryPersister.
+	 * 
+	 * @param wizObj the wiz obj
 	 */
 	public void persistQueryAction(ISingleDataMartWizardObject wizObj){
 		try{
@@ -419,7 +499,8 @@ public class DataMartModel implements IDataMartModel {
 	}
 	
 	/**
-	 * This method retrieve all queries for a datamart model
+	 * This method retrieve all queries for a datamart model.
+	 * 
 	 * @return a List of ISingleDataMartWizardObject that are all queries for a given datamart
 	 */
 	public List getQueries(){
@@ -432,6 +513,13 @@ public class DataMartModel implements IDataMartModel {
 		return l;
 	}
 	
+	/**
+	 * Gets the private queries for.
+	 * 
+	 * @param userIdentifier the user identifier
+	 * 
+	 * @return the private queries for
+	 */
 	public List getPrivateQueriesFor(String userIdentifier) {
 		List l = new ArrayList();
 		try{
@@ -447,8 +535,10 @@ public class DataMartModel implements IDataMartModel {
 	}
 	
 	/**
-	 * This method retrieve the query related with the datamart model with given queryId
-	 * @param queryId: The identifier of the query to get
+	 * This method retrieve the query related with the datamart model with given queryId.
+	 * 
+	 * @param queryId the query id
+	 * 
 	 * @return ISingleDataMartWizardObject the object representing the query
 	 */
 	public ISingleDataMartWizardObject getQuery(String queryId){
@@ -469,6 +559,8 @@ public class DataMartModel implements IDataMartModel {
 	
 	
 	/**
+	 * Gets the description.
+	 * 
 	 * @return description
 	 */
 	public String getDescription() {
@@ -476,13 +568,17 @@ public class DataMartModel implements IDataMartModel {
 	}
 
 	/**
-	 * @param description
+	 * Sets the description.
+	 * 
+	 * @param description the description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
+	 * Gets the label.
+	 * 
 	 * @return label
 	 */
 	public String getLabel() {
@@ -490,21 +586,27 @@ public class DataMartModel implements IDataMartModel {
 	}
 
 	/**
-	 * @param label
+	 * Sets the label.
+	 * 
+	 * @param label the label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
 	/**
-	 * @return
+	 * Gets the name.
+	 * 
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name
+	 * Sets the name.
+	 * 
+	 * @param name the name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -525,32 +627,54 @@ public class DataMartModel implements IDataMartModel {
 	
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#getDataMartModelStructure()
+	 */
 	public DataMartModelStructure getDataMartModelStructure() {
 		return dataMartModelStructure;
 	}
 
 
+	/**
+	 * Sets the data mart model structure.
+	 * 
+	 * @param dastaMartModelStructure the new data mart model structure
+	 */
 	public void setDataMartModelStructure(
 			DataMartModelStructure dastaMartModelStructure) {
 		this.dataMartModelStructure = dastaMartModelStructure;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#getDataSource()
+	 */
 	public IHibernateDataSource getDataSource() {
 		return dataSource;
 	}
 
 
+	/**
+	 * Sets the data source.
+	 * 
+	 * @param dataSource the new data source
+	 */
 	public void setDataSource(BasicHibernateDataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#createStatement()
+	 */
 	public IStatement createStatement() {
 		return new HQLStatement(this);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#createStatement(it.eng.qbe.query.IQuery)
+	 */
 	public IStatement createStatement(IQuery query) {
 		return new HQLStatement(this, query);
 	}
@@ -559,6 +683,9 @@ public class DataMartModel implements IDataMartModel {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#getDataMartModelAccessModality()
+	 */
 	public DataMartModelAccessModality getDataMartModelAccessModality() {
 		return dataMartModelAccessModality;
 	}
@@ -567,15 +694,24 @@ public class DataMartModel implements IDataMartModel {
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#setDataMartModelAccessModality(it.eng.qbe.model.accessmodality.DataMartModelAccessModality)
+	 */
 	public void setDataMartModelAccessModality(
 			DataMartModelAccessModality dataMartModelAccessModality) {
 		this.dataMartModelAccessModality = dataMartModelAccessModality;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#getDataMartProperties()
+	 */
 	public Properties getDataMartProperties() {
 		return dataMartProperties;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IDataMartModel#setDataMartProperties(java.util.Properties)
+	 */
 	public void setDataMartProperties(Properties dataMartProperties) {
 		this.dataMartProperties = dataMartProperties;
 	}

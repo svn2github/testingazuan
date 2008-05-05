@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.dao;
 
 import it.eng.qbe.bo.DatamartJarFile;
@@ -33,16 +32,24 @@ import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DatamartLabelsDAOFilesystemImpl.
+ * 
  * @author Andrea Gioia
- *
  */
 public class DatamartLabelsDAOFilesystemImpl implements DatamartLabelsDAO {
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.dao.DatamartLabelsDAO#loadDatamartLabels(java.lang.String)
+	 */
 	public DatamartLabels loadDatamartLabels(String datamartName) {
 		return loadDatamartLabels(datamartName, null);
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.dao.DatamartLabelsDAO#loadDatamartLabels(java.lang.String, java.util.Locale)
+	 */
 	public DatamartLabels loadDatamartLabels(String datamartName, Locale locale) {
 		Properties properties = null;
 		
@@ -74,6 +81,14 @@ public class DatamartLabelsDAOFilesystemImpl implements DatamartLabelsDAO {
 		return new DatamartLabels(properties);
 	}
 	
+	/**
+	 * Gets the label properties.
+	 * 
+	 * @param jf the jf
+	 * @param locale the locale
+	 * 
+	 * @return the label properties
+	 */
 	private Properties getLabelProperties(JarFile jf, Locale locale){
 		Properties prop = new Properties();
 		

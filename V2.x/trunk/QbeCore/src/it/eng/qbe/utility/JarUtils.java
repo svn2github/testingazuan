@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.utility;
 
 
@@ -35,13 +34,22 @@ import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class JarUtils.
+ * 
  * @author Gioia
- *
  */
 public class JarUtils {
 	
 		
+	/**
+	 * Gets the file name.
+	 * 
+	 * @param path the path
+	 * 
+	 * @return the file name
+	 */
 	private static String getFileName(String path) {
 		String fileName = null;
 		
@@ -55,6 +63,14 @@ public class JarUtils {
 		return fileName;
 	}
 	
+	/**
+	 * Gets the resource from jar file.
+	 * 
+	 * @param jar the jar
+	 * @param resourceName the resource name
+	 * 
+	 * @return the resource from jar file
+	 */
 	public static URL getResourceFromJarFile(File jar, String resourceName) {
 		//log.info( "Searching for mapping documents in jar: " + jar.getName() );
 		String path = null;
@@ -112,10 +128,26 @@ public class JarUtils {
 		}
 	}
 	
+	/**
+	 * Gets the url str.
+	 * 
+	 * @param jarFile the jar file
+	 * @param path the path
+	 * 
+	 * @return the url str
+	 */
 	public static String getUrlStr(File jarFile, String path) {
 		return ("jar:file:/" + jarFile.toString() + "!/" + path);
 	}
 	
+	/**
+	 * Gets the url.
+	 * 
+	 * @param jarFile the jar file
+	 * @param path the path
+	 * 
+	 * @return the url
+	 */
 	public static URL getUrl(File jarFile, String path) {
 		try {
 			return new URL( getUrlStr(jarFile, path) );
@@ -125,6 +157,11 @@ public class JarUtils {
 		}
 	}
 	
+	/**
+	 * Prints the file.
+	 * 
+	 * @param url the url
+	 */
 	private static void printFile(URL url) {
 		try {
 			BufferedReader reader = new BufferedReader( new InputStreamReader(url.openStream()) );			
@@ -139,6 +176,13 @@ public class JarUtils {
 		
 	}
 	
+	/**
+	 * The main method.
+	 * 
+	 * @param args the arguments
+	 * 
+	 * @throws MalformedURLException the malformed url exception
+	 */
 	public static void main(String[] args) throws MalformedURLException{
 		File jar = new File("C:\\testqbe.jar");
 		URL url = getResourceFromJarFile(jar, "ProductClass.hbm.xml");

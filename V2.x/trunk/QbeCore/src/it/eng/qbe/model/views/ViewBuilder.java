@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model.views;
 
 import java.io.BufferedReader;
@@ -30,14 +29,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ViewBuilder.
+ * 
  * @author Andrea Gioia
- *
  */
 public class ViewBuilder {
 	
+	/** The Constant CREATE_VIEW_DDL_SCRIPT. */
 	public static final String CREATE_VIEW_DDL_SCRIPT = "CREATE VIEW {0} AS {1}";
 	
+	/**
+	 * Load create view ddl script.
+	 * 
+	 * @param templateScriptFile the template script file
+	 * 
+	 * @return the string
+	 */
 	private String loadCreateViewDDLScript(File templateScriptFile) {		
 		String createViewDDLScript = null;
 		
@@ -60,6 +69,13 @@ public class ViewBuilder {
 	    return createViewDDLScript;
 	}
 	
+	/**
+	 * Gets the creates the view ddl script.
+	 * 
+	 * @param templateScriptFile the template script file
+	 * 
+	 * @return the creates the view ddl script
+	 */
 	private String getCreateViewDDLScript(File templateScriptFile) {
 		String createViewDDLScript = null;
 		
@@ -72,6 +88,16 @@ public class ViewBuilder {
 		return createViewDDLScript;
 	}
 	
+	/**
+	 * Builds the view.
+	 * 
+	 * @param viewName the view name
+	 * @param query the query
+	 * @param connection the connection
+	 * @param templateScriptFile the template script file
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	public void buildView(String viewName, String query, Connection connection, File templateScriptFile) throws SQLException {
 		
 		Statement statement;

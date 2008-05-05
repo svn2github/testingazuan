@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.export;
 
 import it.businesslogic.ireport.export.JRTxtExporter;
@@ -47,17 +46,32 @@ import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 
 import org.apache.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
- * Compile, fill and export a report template to a file or stream
+ * Compile, fill and export a report template to a file or stream.
  * 
  * @author Gioia
  */
 public class ReportRunner {
 	
+	/** The logger. */
 	private static transient Logger logger = Logger.getLogger(ReportRunner.class);
 	
+	/**
+	 * Instantiates a new report runner.
+	 */
 	public ReportRunner() {}
 	
+	/**
+	 * Run.
+	 * 
+	 * @param templateFile the template file
+	 * @param reportFile the report file
+	 * @param outputType the output type
+	 * @param conn the conn
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void run(File templateFile, File reportFile, String outputType, Connection conn) throws Exception {
 		
 		InputStream is = new FileInputStream(templateFile);
@@ -103,6 +117,14 @@ public class ReportRunner {
 	    exporter.exportReport();
 	}
 	
+	/**
+	 * Gets the virtualizer.
+	 * 
+	 * @param maxNumOfPages the max num of pages
+	 * @param tmpDirectory the tmp directory
+	 * 
+	 * @return the virtualizer
+	 */
 	public JRFileVirtualizer getVirtualizer(int maxNumOfPages, String tmpDirectory) {
 		JRFileVirtualizer virtualizer = null; 
 		

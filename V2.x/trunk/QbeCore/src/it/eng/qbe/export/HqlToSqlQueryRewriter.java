@@ -1,23 +1,22 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
- SpagoBI - The Business Intelligence Free Platform
-
- Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
-
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
  **/
 package it.eng.qbe.export;
 
@@ -35,18 +34,29 @@ import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.hql.QueryTranslator;
 import org.hibernate.hql.ast.ASTQueryTranslatorFactory;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author Gioia
+ * The Class HqlToSqlQueryRewriter.
  * 
+ * @author Gioia
  */
 public class HqlToSqlQueryRewriter implements IQueryRewriter {
 	
+	/** The session. */
 	private Session session;
 	
+	/**
+	 * Instantiates a new hql to sql query rewriter.
+	 * 
+	 * @param session the session
+	 */
 	public HqlToSqlQueryRewriter(Session session) {
 		this.session = session;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.export.IQueryRewriter#rewrite(java.lang.String)
+	 */
 	public String rewrite(String query) {
 		String sqlQuery = null;		
 		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
@@ -110,16 +120,38 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		//return sqlQuery;
 	}
 	
+	/**
+	 * Gets the select clause.
+	 * 
+	 * @param query the query
+	 * 
+	 * @return the select clause
+	 */
 	private String getSelectClause(String query) {
 		String selectClause = query.substring(query.indexOf("select") + "select".length(),
 				query.indexOf("from"));
 		return selectClause;
 	}
 	
+	/**
+	 * Gets the select entities.
+	 * 
+	 * @param selectClause the select clause
+	 * 
+	 * @return the select entities
+	 */
 	private String[] getSelectEntities(String selectClause) {
 		return selectClause.split(",");
 	}
 	
+	/**
+	 * Gets the entity name from functional entity.
+	 * 
+	 * @param func the func
+	 * @param funcEntity the func entity
+	 * 
+	 * @return the entity name from functional entity
+	 */
 	private String getEntityNameFromFunctionalEntity(String func, String funcEntity) {
 		String entityName = null;
 		entityName = funcEntity.substring(funcEntity.indexOf('(') + 1, funcEntity.indexOf(')'));
@@ -127,6 +159,13 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		return entityName;
 	}
 	
+	/**
+	 * Gets the entity name.
+	 * 
+	 * @param entity the entity
+	 * 
+	 * @return the entity name
+	 */
 	private String getEntityName(String entity) {
 		String entityName = null;
 				
@@ -148,6 +187,14 @@ public class HqlToSqlQueryRewriter implements IQueryRewriter {
 		return entityName;
 	}
 	
+	/**
+	 * Rewrite with alias.
+	 * 
+	 * @param hqlQuery the hql query
+	 * @param sqlQuery the sql query
+	 * 
+	 * @return the string
+	 */
 	public String rewriteWithAlias(String hqlQuery,String sqlQuery) {
 		String[] selectEntities = getSelectEntities(getSelectClause(hqlQuery));
 		String[] fieldNames = new String[selectEntities.length];

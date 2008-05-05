@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model.accessmodality;
 
 
@@ -40,25 +39,54 @@ import java.util.Properties;
 
 import org.xml.sax.InputSource;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DataMartModelAccessModality.
+ * 
  * @author Andrea Gioia
- *
  */
 public class DataMartModelAccessModality {
+	
+	/** The modality sb. */
 	SourceBean modalitySB = null;
+	
+	/** The entity access modality map. */
 	Map entityAccessModalityMap = null;
 	
+	/** The Constant TAG_MODALITIES. */
 	private static final String TAG_MODALITIES = "MODALITIES";
+	
+	/** The Constant TAG_MODALITY. */
 	private static final String TAG_MODALITY = "MODALITY";
+	
+	/** The Constant TAG_ENTITIES. */
 	private static final String TAG_ENTITIES = "TABLES";
+	
+	/** The Constant TAG_ENTITY. */
 	private static final String TAG_ENTITY = "TABLE";
+	
+	/** The Constant TAG_FIELDS. */
 	private static final String TAG_FIELDS = "FIELDS";
+	
+	/** The Constant TAG_FIELD. */
 	private static final String TAG_FIELD = "FIELD";
+	
+	/** The Constant TAG_FILTERS. */
 	private static final String TAG_FILTERS = "FILTERS";
+	
+	/** The Constant TAG_FILTER. */
 	private static final String TAG_FILTER = "FILTER";
 	
+	/**
+	 * Instantiates a new data mart model access modality.
+	 */
 	public DataMartModelAccessModality() {}
 	
+	/**
+	 * Instantiates a new data mart model access modality.
+	 * 
+	 * @param file the file
+	 */
 	public DataMartModelAccessModality(File file) {
 		try {			
 			modalitySB = SourceBean.fromXMLStream(
@@ -75,6 +103,12 @@ public class DataMartModelAccessModality {
 		}
 	}
 	
+	/**
+	 * Instantiates a new data mart model access modality.
+	 * 
+	 * @param file the file
+	 * @param modalityName the modality name
+	 */
 	public DataMartModelAccessModality(File file, String modalityName) {
 		try {			
 			SourceBean modalitiesSB = SourceBean.fromXMLStream(
@@ -92,16 +126,35 @@ public class DataMartModelAccessModality {
 		}
 	}
 	
+	/**
+	 * Instantiates a new data mart model access modality.
+	 * 
+	 * @param modalitiesSB the modalities sb
+	 * @param modalityName the modality name
+	 */
 	public DataMartModelAccessModality(SourceBean modalitiesSB, String modalityName) {
 		modalitySB = getModalitySBByName(modalitiesSB, modalityName);
 		entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 	}
 	
+	/**
+	 * Instantiates a new data mart model access modality.
+	 * 
+	 * @param modalitySB the modality sb
+	 */
 	public DataMartModelAccessModality(SourceBean modalitySB) {
 		this.modalitySB = modalitySB;
 		entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 	}
 	
+	/**
+	 * Gets the modality sb by name.
+	 * 
+	 * @param modalitiesSB the modalities sb
+	 * @param modalityName the modality name
+	 * 
+	 * @return the modality sb by name
+	 */
 	private SourceBean getModalitySBByName(SourceBean modalitiesSB, String modalityName) {
 		SourceBean modalitySB = null;
 		if(modalityName != null) {
@@ -116,6 +169,13 @@ public class DataMartModelAccessModality {
 		return modalitySB;
 	}
 	
+	/**
+	 * Builds the entity access modality map.
+	 * 
+	 * @param modalitySB the modality sb
+	 * 
+	 * @return the map
+	 */
 	private Map buildEntityAccessModalityMap(SourceBean modalitySB) {
 		Map map = new HashMap();
 		
@@ -155,6 +215,13 @@ public class DataMartModelAccessModality {
 		return map;
 	}
 
+	/**
+	 * Checks if is entity accessible.
+	 * 
+	 * @param entityName the entity name
+	 * 
+	 * @return true, if is entity accessible
+	 */
 	public boolean isEntityAccessible(String entityName) {
 		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey(entityName)) {
 			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get(entityName);
@@ -163,6 +230,14 @@ public class DataMartModelAccessModality {
 		return true;
 	}
 	
+	/**
+	 * Checks if is field accessible.
+	 * 
+	 * @param tableName the table name
+	 * @param fieldName the field name
+	 * 
+	 * @return true, if is field accessible
+	 */
 	public boolean isFieldAccessible(String tableName, String fieldName) {
 		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey(tableName)) {
 			EntityAccessModalitty tableAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get(tableName);
@@ -171,6 +246,13 @@ public class DataMartModelAccessModality {
 		return true;
 	}
 	
+	/**
+	 * Gets the entity filter conditions.
+	 * 
+	 * @param entityName the entity name
+	 * 
+	 * @return the entity filter conditions
+	 */
 	public List getEntityFilterConditions(String entityName) {
 		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey(entityName)) {
 			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get(entityName);
@@ -179,6 +261,16 @@ public class DataMartModelAccessModality {
 		return new ArrayList();
 	}
 	
+	/**
+	 * Gets the entity filter conditions.
+	 * 
+	 * @param entityName the entity name
+	 * @param parameters the parameters
+	 * 
+	 * @return the entity filter conditions
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public List getEntityFilterConditions(String entityName, Properties parameters) throws IOException {
 		List newFilterConditions = new ArrayList();
 		List filterConditions = getEntityFilterConditions(entityName);
@@ -192,12 +284,29 @@ public class DataMartModelAccessModality {
 	
 	
 		
+	/**
+	 * The Class EntityAccessModalitty.
+	 */
 	public static class EntityAccessModalitty {
+		
+		/** The name. */
 		String name;
+		
+		/** The accessible. */
 		boolean accessible;
+		
+		/** The fileds access modality map. */
 		Map filedsAccessModalityMap;
+		
+		/** The filter conditions. */
 		List filterConditions;
 		
+		/**
+		 * Instantiates a new entity access modalitty.
+		 * 
+		 * @param tableName the table name
+		 * @param accessible the accessible
+		 */
 		public EntityAccessModalitty(String tableName, boolean accessible) {
 			this.name = tableName;
 			this.accessible = accessible;
@@ -205,28 +314,60 @@ public class DataMartModelAccessModality {
 			filterConditions = new ArrayList();
 		}
 		
+		/**
+		 * Sets the field unaccessible.
+		 * 
+		 * @param fieldName the new field unaccessible
+		 */
 		public void setFieldUnaccessible(String fieldName) {
 			filedsAccessModalityMap.put(fieldName, "UNACCESSIBLE");
 		}
 		
+		/**
+		 * Checks if is field accessible.
+		 * 
+		 * @param fieldName the field name
+		 * 
+		 * @return true, if is field accessible
+		 */
 		public boolean isFieldAccessible(String fieldName) {
 			boolean accessible = !filedsAccessModalityMap.containsKey(fieldName);
 			return accessible;
 		}
 
+		/**
+		 * Gets the name.
+		 * 
+		 * @return the name
+		 */
 		public String getName() {
 			return name;
 		}
 
+		/**
+		 * Checks if is accessible.
+		 * 
+		 * @return true, if is accessible
+		 */
 		public boolean isAccessible() {
 			return accessible;
 		}
 		
+		/**
+		 * Adds the filter conditions.
+		 * 
+		 * @param condition the condition
+		 */
 		public void addFilterConditions(String condition) {
 			Filter filter = new Filter(name, condition);
 			filterConditions.add(filter);
 		}
 
+		/**
+		 * Gets the filter conditions.
+		 * 
+		 * @return the filter conditions
+		 */
 		public List getFilterConditions() {
 			return filterConditions;
 		}

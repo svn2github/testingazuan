@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model.io;
 
 import it.eng.qbe.conf.QbeConf;
@@ -40,18 +39,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class LocalFileSystemQueryPersister.
+ * 
  * @author Andrea Zoppello
  * 
- * An implementation of IQueryPersister that retrieve and persist 
+ * An implementation of IQueryPersister that retrieve and persist
  * queries using the File System
- *
  */
 public class LocalFileSystemQueryPersister implements IQueryPersister {
 
 	
 
 	
+	/**
+	 * Persist to file.
+	 * 
+	 * @param dm the dm
+	 * @param wizObject the wiz object
+	 * @param fileName the file name
+	 */
 	protected void persistToFile(DataMartModel dm, ISingleDataMartWizardObject wizObject, String fileName) {
 
 		try {
@@ -69,10 +77,20 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IQueryPersister#persist(it.eng.qbe.model.DataMartModel, it.eng.qbe.wizard.ISingleDataMartWizardObject)
+	 */
 	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject) {		
 		persist((File)null, dm, wizObject);
 	}
 	
+	/**
+	 * Persist.
+	 * 
+	 * @param baseDir the base dir
+	 * @param dm the dm
+	 * @param wizObject the wiz object
+	 */
 	public void persist(File baseDir, DataMartModel dm, ISingleDataMartWizardObject wizObject) {
 		
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
@@ -101,6 +119,9 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	}
 	
 	// Just to implement the parent interface and avoid comipaltion errorss
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IQueryPersister#load(it.eng.qbe.model.DataMartModel, java.lang.String)
+	 */
 	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
 		// TODO Auto-generated method stub
 		return null;
@@ -136,7 +157,14 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	}
 	*/
     
-    protected ISingleDataMartWizardObject loadFromFile(File f) {
+    /**
+	 * Load from file.
+	 * 
+	 * @param f the f
+	 * 
+	 * @return the i single data mart wizard object
+	 */
+	protected ISingleDataMartWizardObject loadFromFile(File f) {
         try {
             XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
                 new FileInputStream(f)));
@@ -151,6 +179,13 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
         }
     }
     
+    /**
+     * Load first level query.
+     * 
+     * @param directory the directory
+     * 
+     * @return the list
+     */
     private List loadFirstLevelQuery(String directory){
     	
     	File dir = new File(directory);
@@ -188,6 +223,10 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
        
        return queries;
     }
+    
+    /* (non-Javadoc)
+     * @see it.eng.qbe.model.io.IQueryPersister#loadAllQueries(it.eng.qbe.model.DataMartModel)
+     */
     public List loadAllQueries(DataMartModel dm) {
     	String dmName = dm.getName();
     	File qbeDataMartDir = QbeConf.getInstance().getQbeDataMartDir();
@@ -195,6 +234,14 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
     	return loadFirstLevelQuery(publicTargetDir.getAbsolutePath());
     }
     
+    /**
+     * Gets the private queries for.
+     * 
+     * @param dm the dm
+     * @param userID the user id
+     * 
+     * @return the private queries for
+     */
     public List getPrivateQueriesFor(DataMartModel dm, String userID) {
     	String dmName = dm.getName();
     	File qbeDataMartDir = QbeConf.getInstance().getQbeDataMartDir();

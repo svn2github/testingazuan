@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.wizard;
 
 
@@ -40,25 +39,40 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SingleDataMartWizardObjectSourceBeanImpl.
+ */
 public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMartWizardObject {
 
 	
+	/** The sub query counter. */
 	private int subQueryCounter = 0;
 
+	/** The final query. */
 	private String finalQuery = null;
 	//private List entityClasses = null;
 	
+	/** The expert query displayed. */
 	private String expertQueryDisplayed = null;
+	
+	/** The expert query saved. */
 	private String expertQuerySaved = null;
 	
+	/** The owner. */
 	private String owner = null;
+	
+	/** The visibility. */
 	private boolean visibility;
 	
+	/** The use experted version. */
 	private boolean useExpertedVersion = false;
 	
 	//private String queryId = null;
+	/** The description. */
 	private String description = null;
 	
+	/** The Constant DEFAULT_MAX_ROWS_NUM. */
 	public static final int DEFAULT_MAX_ROWS_NUM = 5000;
 	
 	//private Map subqueryMap = null;
@@ -67,8 +81,12 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	//private String subqueryErrMsg = "";
 	
 	
+	/** The query. */
 	private it.eng.qbe.query.Query query = null;
 	
+	/**
+	 * Instantiates a new single data mart wizard object source bean impl.
+	 */
 	public SingleDataMartWizardObjectSourceBeanImpl() {
 		super();
 		//this.entityClasses = new ArrayList();
@@ -78,6 +96,11 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	}
 	
+	/**
+	 * Gets the copy.
+	 * 
+	 * @return the copy
+	 */
 	public ISingleDataMartWizardObject getCopy() {
 		SingleDataMartWizardObjectSourceBeanImpl wizardObject = new SingleDataMartWizardObjectSourceBeanImpl();
 		
@@ -109,10 +132,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getFinalQuery()
+	 */
 	public String getFinalQuery() {
 		return this.finalQuery;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getFinalSqlQuery(it.eng.qbe.model.DataMartModel)
+	 */
 	public String getFinalSqlQuery(DataMartModel dm) {
 		
 		String finalSqlQuery = null;
@@ -132,6 +161,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setFinalQuery(java.lang.String)
+	 */
 	public void setFinalQuery(String query) {
 		this.finalQuery = query;
 		
@@ -141,6 +173,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#composeQuery(it.eng.qbe.model.IDataMartModel)
+	 */
 	public void composeQuery(IDataMartModel dataMartModel){
 		finalQuery = null;
 		IStatement statement = dataMartModel.createStatement(query);
@@ -151,6 +186,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getDescription()
+	 */
 	public String getDescription() {
 		return description;
 	}
@@ -158,6 +196,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setDescription(java.lang.String)
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -172,10 +213,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	
 
-	public boolean isUseExpertedVersion() {
+	/* (non-Javadoc)
+ * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#isUseExpertedVersion()
+ */
+public boolean isUseExpertedVersion() {
 		return useExpertedVersion;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setUseExpertedVersion(boolean)
+	 */
 	public void setUseExpertedVersion(boolean useExpertedVersion) {
 		this.useExpertedVersion = useExpertedVersion;
 	}
@@ -183,6 +230,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getExpertQueryDisplayed()
+	 */
 	public String getExpertQueryDisplayed() {
 		return expertQueryDisplayed;
 	}
@@ -190,6 +240,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setExpertQueryDisplayed(java.lang.String)
+	 */
 	public void setExpertQueryDisplayed(String expertQueryDisplayed) {
 		this.expertQueryDisplayed = expertQueryDisplayed;
 	}
@@ -197,6 +250,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getVisibility()
+	 */
 	public boolean getVisibility() {
 		return this.visibility;
 	}
@@ -204,6 +260,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setVisibility(boolean)
+	 */
 	public void setVisibility(boolean visibility) {
 		this.visibility = visibility;
 	}
@@ -211,6 +270,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getOwner()
+	 */
 	public String getOwner() {
 		return this.owner;
 	}
@@ -218,6 +280,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setOwner(java.lang.String)
+	 */
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
@@ -228,6 +293,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getExpertQuerySaved()
+	 */
 	public String getExpertQuerySaved() {
 		return expertQuerySaved;
 	}
@@ -235,18 +303,19 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 
 
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#setExpertQuerySaved(java.lang.String)
+	 */
 	public void setExpertQuerySaved(String expertQuerySaved) {
 		this.expertQuerySaved = expertQuerySaved;
 	}
 
 
 	/**
-	 * This method extracts the name of select fields (or the alias name if present), from the expert query 
+	 * This method extracts the name of select fields (or the alias name if present), from the expert query.
 	 * 
-	 * @param expertSelectFieldsList
-	 * 
-	 *  @return the list of the name of select fields (or the alias name if present), from the expert query, 
-	 *  		null if the query is null or doesn't contain select fields 
+	 * @return the list of the name of select fields (or the alias name if present), from the expert query,
+	 * null if the query is null or doesn't contain select fields
 	 */
 	public List extractExpertSelectFieldsList() {
 		
@@ -318,9 +387,13 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		
 	}
 	
+	/** The QUER y_ respons e_ sourc e_ bean. */
 	public static String QUERY_RESPONSE_SOURCE_BEAN = "QUERY_RESPONSE_SOURCE_BEAN"; 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#executeQbeQuery(it.eng.qbe.model.DataMartModel, int, int)
+	 */
 	public SourceBean executeQbeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		
 		IStatement statement = dataMartModel.createStatement(query);
@@ -336,10 +409,16 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#executeExpertQuery(it.eng.qbe.model.DataMartModel, int, int)
+	 */
 	public SourceBean executeExpertQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		return executeSqlQuery(dataMartModel, getExpertQueryDisplayed(), pageNumber, pageSize);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#executeSqlQuery(it.eng.qbe.model.DataMartModel, java.lang.String, int, int)
+	 */
 	public SourceBean executeSqlQuery(DataMartModel dataMartModel, String query, int pageNumber, int pageSize) throws Exception {
 		
 		
@@ -487,6 +566,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	}
 	*/
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#executeQuery(it.eng.qbe.model.DataMartModel, int, int)
+	 */
 	public SourceBean executeQuery(DataMartModel dataMartModel, int pageNumber, int pageSize) throws Exception {
 		if(isUseExpertedVersion()) return executeExpertQuery(dataMartModel, pageNumber, pageSize);
 		return executeQbeQuery(dataMartModel, pageNumber, pageSize);			
@@ -603,6 +685,9 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getQuery()
+	 */
 	public IQuery getQuery() {
 		return query;
 	}

@@ -1,52 +1,78 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.utility;
 
 import it.eng.qbe.model.IDataMartModel;
 
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QbeProperties.
+ * 
  * @author Andrea Gioia
- *
  */
 public class QbeProperties {
 	
+	/** The Constant CLASS_TYPE_TABLE. */
 	public static final int CLASS_TYPE_TABLE = 1;
+	
+	/** The Constant CLASS_TYPE_RELATION. */
 	public static final int CLASS_TYPE_RELATION = 2;
+	
+	/** The Constant CLASS_TYPE_VIEW. */
 	public static final int CLASS_TYPE_VIEW = 3;
 	
+	/** The Constant FIELD_TYPE_UNDEFINED. */
 	public static final int FIELD_TYPE_UNDEFINED = 0;
+	
+	/** The Constant FIELD_TYPE_MEASURE. */
 	public static final int FIELD_TYPE_MEASURE = 1;
+	
+	/** The Constant FIELD_TYPE_DIMENSION. */
 	public static final int FIELD_TYPE_DIMENSION = 2;
+	
+	/** The Constant FIELD_TYPE_GEOREF. */
 	public static final int FIELD_TYPE_GEOREF = 3;
 	
+	/** The qbe properties. */
 	private Properties qbeProperties = null;
 	
 	
+	/**
+	 * Instantiates a new qbe properties.
+	 * 
+	 * @param dm the dm
+	 */
 	public QbeProperties(IDataMartModel dm) {
 		qbeProperties = dm.getDataMartProperties();
 	}
 	
+	/**
+	 * Checks if is table visible.
+	 * 
+	 * @param className the class name
+	 * 
+	 * @return true, if is table visible
+	 */
 	public boolean isTableVisible(String className) {
 		if(qbeProperties == null) return true;
 		
@@ -58,6 +84,13 @@ public class QbeProperties {
 		}
 	}
 	
+	/**
+	 * Checks if is field visible.
+	 * 
+	 * @param fieldName the field name
+	 * 
+	 * @return true, if is field visible
+	 */
 	public boolean isFieldVisible(String fieldName) {
 		if(qbeProperties == null) return true;
 		
@@ -69,6 +102,13 @@ public class QbeProperties {
 		}
 	}
 	
+	/**
+	 * Gets the table type.
+	 * 
+	 * @param fieldName the field name
+	 * 
+	 * @return the table type
+	 */
 	public int getTableType(String fieldName) {
 		if(qbeProperties == null) return CLASS_TYPE_TABLE;
 		String type = qbeProperties.getProperty(fieldName + ".type");
@@ -83,6 +123,13 @@ public class QbeProperties {
 	
 	
 	
+	/**
+	 * Gets the field type.
+	 * 
+	 * @param className the class name
+	 * 
+	 * @return the field type
+	 */
 	public int getFieldType(String className) {
 		if(qbeProperties == null) return -1;
 		String type = qbeProperties.getProperty(className + ".type");
@@ -97,6 +144,12 @@ public class QbeProperties {
 		}
 	}
 	
+	/**
+	 * Sets the field type.
+	 * 
+	 * @param className the class name
+	 * @param type the type
+	 */
 	public void setFieldType(String className, int type) {		
 		if(type == FIELD_TYPE_DIMENSION) {
 			qbeProperties.setProperty(className + ".type", "dimension");

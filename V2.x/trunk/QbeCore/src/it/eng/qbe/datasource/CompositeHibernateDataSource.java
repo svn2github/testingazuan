@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.datasource;
 
 import it.eng.qbe.dao.DAOFactory;
@@ -34,9 +33,11 @@ import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class CompositeHibernateDataSource.
+ * 
  * @author Andrea Gioia
- *
  */
 public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
@@ -44,20 +45,46 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 		
+	/** The class loader extended. */
 	private boolean classLoaderExtended = false;	
+	
+	/** The already added view. */
 	private List alreadyAddedView = null;
 		
+	/** The configuration map. */
 	private Map configurationMap = new HashMap();	
+	
+	/** The session factory map. */
 	private Map sessionFactoryMap = new HashMap();	
 	
+	/** The composite configuration. */
 	private Configuration compositeConfiguration = null;
+	
+	/** The composite session factory. */
 	private SessionFactory compositeSessionFactory = null;
 	
 	
+	/**
+	 * Instantiates a new composite hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 * @param datamartName the datamart name
+	 * @param datamartNames the datamart names
+	 * @param connection the connection
+	 */
 	public CompositeHibernateDataSource(String dataSourceName, String datamartName, List datamartNames, DBConnection connection) {
 		this(dataSourceName, datamartName, datamartNames, new HashMap(), connection);
 	}
 		
+	/**
+	 * Instantiates a new composite hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 * @param datamartName the datamart name
+	 * @param datamartNames the datamart names
+	 * @param dblinkMap the dblink map
+	 * @param connection the connection
+	 */
 	private CompositeHibernateDataSource(String dataSourceName, String datamartName, List datamartNames, Map dblinkMap, DBConnection connection) {
 		
 		setName( dataSourceName );
@@ -77,6 +104,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		this.alreadyAddedView = new ArrayList();		
 	}
 	
+	/**
+	 * Instantiates a new composite hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 */
 	protected CompositeHibernateDataSource(String dataSourceName) {
 		setName( dataSourceName );
 		setType( COMPOSITE_HIBERNATE_DS_TYPE );
@@ -84,6 +116,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/**
+	 * Load qbe properties.
+	 * 
+	 * @return the properties
+	 */
 	private Properties loadQbeProperties() {
 		Properties properties = new Properties();
 		for(int i = 0; i < getDatamartNames().size(); i++) {
@@ -93,6 +130,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		return properties;
 	}
 	
+	/**
+	 * Load label properties.
+	 * 
+	 * @return the properties
+	 */
 	private Properties loadLabelProperties() {
 		Properties properties = new Properties();
 		for(int i = 0; i < getDatamartNames().size(); i++) {
@@ -102,7 +144,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		return properties;
 	}
 
-	/** TODO marge all the formula files in one file **/
+	/**
+	 * TODO marge all the formula files in one file *.
+	 * 
+	 * @return the file
+	 */
 	private File loadFormulaFile() {		
 		return loadFormulaFile( (String)getDatamartNames().get(0) );
 	}
@@ -110,22 +156,38 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getConfiguration()
+	 */
 	public Configuration getConfiguration() {
 		if(compositeConfiguration == null) initHibernate();
 		return compositeConfiguration;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getSessionFactory()
+	 */
 	public SessionFactory getSessionFactory() {
 		if(compositeSessionFactory == null) initHibernate();
 		return compositeSessionFactory;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getSessionFactory(java.lang.String)
+	 */
 	public SessionFactory getSessionFactory(String dmName) {
 		if(compositeSessionFactory == null) initHibernate();
 		return (SessionFactory)sessionFactoryMap.get(dmName);
 	}	
 	
+	/**
+	 * Gets the configuration.
+	 * 
+	 * @param dmName the dm name
+	 * 
+	 * @return the configuration
+	 */
 	public Configuration getConfiguration(String dmName) {
 		if(compositeConfiguration == null) initHibernate();
 		return (Configuration)configurationMap.get(dmName);
@@ -133,6 +195,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 		
 	
+	/**
+	 * Inits the hibernate.
+	 */
 	private void initHibernate(){
 		Logger.debug(this.getClass(), "initSessionFactories: start method initSessionFactories");
 				
@@ -147,6 +212,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 	
+	/**
+	 * Adds the datamarts.
+	 */
 	private void addDatamarts() {
 		
 		for(int i = 0; i < getDatamartNames().size(); i++) {
@@ -156,6 +224,12 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		classLoaderExtended = true;
 	}
 	
+	/**
+	 * Adds the datamart.
+	 * 
+	 * @param dmName the dm name
+	 * @param extendClassLoader the extend class loader
+	 */
 	private void addDatamart(String dmName, boolean extendClassLoader) {
 		Configuration cfg = null;	
 		SessionFactory sf = null;
@@ -185,10 +259,25 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		sessionFactoryMap.put(dmName, sf);		
 	}
 	
+	/**
+	 * Adds the views.
+	 * 
+	 * @param datamartName the datamart name
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addViews(String datamartName) {
 		return addViews(datamartName, datamartName);
 	}
 	
+	/**
+	 * Adds the views.
+	 * 
+	 * @param datamartName the datamart name
+	 * @param configurationName the configuration name
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addViews(String datamartName, String configurationName) {		
 		boolean result = false;
 		
@@ -203,6 +292,15 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		return result;
 	}	
 	
+	/**
+	 * Adds the view.
+	 * 
+	 * @param datamartName the datamart name
+	 * @param viewName the view name
+	 * @param configurationName the configuration name
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addView(String datamartName, String viewName, String configurationName) {
 		
 		boolean result = false;
@@ -231,6 +329,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/**
+	 * Adds the shared views.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addSharedViews() {
 		String sharedViewsName = "Views";
 		
@@ -250,6 +353,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/**
+	 * Adds the db links.
+	 */
 	private void addDbLinks() {
 		Configuration cfg = null;
 		
@@ -288,6 +394,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshDatamartViews()
+	 */
 	public void refreshDatamartViews() {
 		if(compositeConfiguration == null) {
 			initHibernate();
@@ -317,6 +426,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshSharedViews()
+	 */
 	public void refreshSharedViews() {
 		boolean configurationHasChanged = false;
 		String sharedViewsConfiguration = "Views";
@@ -339,6 +451,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		}		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshSharedView(java.lang.String)
+	 */
 	public void refreshSharedView(String sharedViewName) {
 		boolean configurationHasChanged = false;
 		String sharedViewsConfiguration = "Views";
@@ -362,6 +477,9 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refresh()
+	 */
 	public void refresh() {
 		compositeConfiguration = null;
 		compositeSessionFactory = null;

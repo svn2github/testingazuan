@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.export;
 
 import java.io.BufferedReader;
@@ -29,20 +28,34 @@ import java.util.Vector;
 
 import org.hibernate.SessionFactory;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class HibernateTemplateBuilder.
+ * 
  * @author Gioia
- *
  */
 public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 	
+	/** The query. */
 	private String query;
+	
+	/** The session factory. */
 	private SessionFactory sessionFactory;
 
+	/**
+	 * Instantiates a new hibernate template builder.
+	 * 
+	 * @param query the query
+	 * @param sessionFactory the session factory
+	 */
 	public HibernateTemplateBuilder(String query, SessionFactory sessionFactory) {
 		this.query = query;
 		this.sessionFactory = sessionFactory;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.export.ITemplateBuilder#buildTemplate()
+	 */
 	public String buildTemplate() {
 		String templateStr = getTemplateTemplate();
 		templateStr = replaceParam(templateStr, "query", query);
@@ -51,6 +64,11 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return templateStr;
 	}
 	
+	/**
+	 * Gets the fields block.
+	 * 
+	 * @return the fields block
+	 */
 	public String getFieldsBlock() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -69,9 +87,17 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/** The Constant DETAIL_HEIGHT. */
 	public static final int DETAIL_HEIGHT = 20;
+	
+	/** The Constant DETAIL_WIDTH. */
 	public static final int DETAIL_WIDTH = 530;
 	
+	/**
+	 * Gets the details block.
+	 * 
+	 * @return the details block
+	 */
 	public String getDetailsBlock() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -139,6 +165,11 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the column header block.
+	 * 
+	 * @return the column header block
+	 */
 	public String getColumnHeaderBlock(){
 		StringBuffer buffer = new StringBuffer();
 		
@@ -183,6 +214,11 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the template template.
+	 * 
+	 * @return the template template
+	 */
 	private String getTemplateTemplate() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -200,6 +236,15 @@ public class HibernateTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Replace param.
+	 * 
+	 * @param template the template
+	 * @param pname the pname
+	 * @param pvalue the pvalue
+	 * 
+	 * @return the string
+	 */
 	private String replaceParam(String template, String pname, String pvalue) {
 		int index = -1;
 		while( (index = template.indexOf("${" + pname + "}")) != -1) {

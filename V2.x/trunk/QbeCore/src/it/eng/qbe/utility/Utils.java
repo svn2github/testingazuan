@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.utility;
 
 import it.eng.qbe.datasource.IHibernateDataSource;
@@ -50,16 +49,34 @@ import org.dom4j.io.SAXReader;
 import sun.misc.BASE64Encoder;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Utils.
+ */
 public class Utils {
 
 	
 	
+	/**
+	 * Gets the data mart model retriever.
+	 * 
+	 * @return the data mart model retriever
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
 		String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
 		IDataMartModelRetriever dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
 		return dataMartModelRetriever;
 	}
 	
+	/**
+	 * Gets the view jar files.
+	 * 
+	 * @param dataSource the data source
+	 * 
+	 * @return the view jar files
+	 */
 	public static List getViewJarFiles(IHibernateDataSource dataSource){
 		try{
 			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
@@ -82,8 +99,9 @@ public class Utils {
 	
 
 	/**
-	 * Update the QBE_LAST_UPDATE_TIMESTAMP in session container
-	 * @param reqContainer
+	 * Update the QBE_LAST_UPDATE_TIMESTAMP in session container.
+	 * 
+	 * @param reqContainer the req container
 	 */
 	public static void updateLastUpdateTimeStamp(RequestContainer reqContainer){
 			String str = String.valueOf(System.currentTimeMillis());
@@ -155,6 +173,15 @@ public class Utils {
 	*/
 
 	
+	/**
+	 * Hash m d5.
+	 * 
+	 * @param original the original
+	 * 
+	 * @return the string
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
 	public static String hashMD5(String original) throws EMFInternalError {
 		 byte[] stringByteArray = new byte[original.length()];
 		 try {
@@ -177,6 +204,14 @@ public class Utils {
 	}
         
    
+	/**
+	 * Checks if is user able.
+	 * 
+	 * @param userProfile the user profile
+	 * @param func the func
+	 * 
+	 * @return true, if is user able
+	 */
 	public static boolean isUserAble(IEngUserProfile userProfile, String func){
 		try{
 			Collection userFuncs = userProfile.getFunctionalities();
@@ -222,10 +257,15 @@ public class Utils {
 	*/
 	
 	/**
-	 * Estrae dal file formula.xml solo i campi calcolati relativi alle entita' che 
+	 * Estrae dal file formula.xml solo i campi calcolati relativi alle entita' che
 	 * ho estratto nella query
-	 * @param aWizardObject
-	 * @return
+	 * 
+	 * @param cFieldId the c field id
+	 * @param formulaFile the formula file
+	 * 
+	 * @return the calculated field
+	 * 
+	 * @throws Exception the exception
 	 */
 	/*
 	public static List getCalculatedFields(ISingleDataMartWizardObject aWizardObject, DataMartModel dmModel) throws Exception{
@@ -456,6 +496,13 @@ public class Utils {
 	*/
 	
 	
+	/**
+	 * Gets the ordered field list.
+	 * 
+	 * @param wizObject the wiz object
+	 * 
+	 * @return the ordered field list
+	 */
 	public static String getOrderedFieldList(ISingleDataMartWizardObject wizObject){
 		StringBuffer sb = new StringBuffer();
 		if (!wizObject.getQuery().isEmpty()){
@@ -471,6 +518,15 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	/**
+	 * Gets the selected entities as string.
+	 * 
+	 * @param aWizardObject the a wizard object
+	 * 
+	 * @return the selected entities as string
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static String getSelectedEntitiesAsString(ISingleDataMartWizardObject aWizardObject) throws Exception{
 		Iterator it = aWizardObject.getQuery().getEntityClassesIterator();
 		EntityClass ec = null;
@@ -485,12 +541,35 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	/**
+	 * As java class identifier.
+	 * 
+	 * @param identifier the identifier
+	 * 
+	 * @return the string
+	 */
 	public static String asJavaClassIdentifier(String identifier){
 		return capitalize(asJavaIdentifier(identifier));
 	}
+	
+	/**
+	 * As java property identifier.
+	 * 
+	 * @param identifier the identifier
+	 * 
+	 * @return the string
+	 */
 	public static String asJavaPropertyIdentifier(String identifier){
 		return unCapitalize(asJavaIdentifier(identifier));
 	}
+	
+	/**
+	 * As java identifier.
+	 * 
+	 * @param identifier the identifier
+	 * 
+	 * @return the string
+	 */
 	public static String asJavaIdentifier(String identifier) {
 		
 		StringBuffer sb = new StringBuffer();
@@ -514,6 +593,13 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	/**
+	 * Capitalize.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the string
+	 */
 	public static String capitalize(String value) {
         if (value == null) {
             return null;
@@ -538,6 +624,13 @@ public class Utils {
         return result.toString();
     }
 	
+	/**
+	 * Un capitalize.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the string
+	 */
 	public static String unCapitalize(String value) {
         if (value == null) {
             return null;
@@ -561,6 +654,14 @@ public class Utils {
 
         return result.toString();
     }
+	
+	/**
+	 * Package as dir.
+	 * 
+	 * @param packageName the package name
+	 * 
+	 * @return the string
+	 */
 	public static String packageAsDir(String packageName){
 		String dir = packageName.replace('.', File.separatorChar);
 		return dir;
@@ -569,7 +670,14 @@ public class Utils {
 	//	 Deletes all files and subdirectories under dir.
     // Returns true if all deletions were successful.
     // If a deletion fails, the method stops attempting to delete and returns false.
-    public static boolean deleteDir(File dir) {
+    /**
+	 * Delete dir.
+	 * 
+	 * @param dir the dir
+	 * 
+	 * @return true, if successful
+	 */
+	public static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i=0; i<children.length; i++) {

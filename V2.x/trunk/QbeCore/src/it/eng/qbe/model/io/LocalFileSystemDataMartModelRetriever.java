@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.model.io;
 
 import it.eng.qbe.utility.FileUtils;
@@ -29,23 +28,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LocalFileSystemDataMartModelRetriever.
+ */
 public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetriever {
 
 	
+	/** The datamarts dir. */
 	private File datamartsDir = null;
 	
+	/**
+	 * Instantiates a new local file system data mart model retriever.
+	 */
 	public LocalFileSystemDataMartModelRetriever() {
 
 	}
 	
+	/**
+	 * Instantiates a new local file system data mart model retriever.
+	 * 
+	 * @param contextDir the context dir
+	 */
 	public LocalFileSystemDataMartModelRetriever(File contextDir) {
 		setContextDir(contextDir);
 	}
 	
+	/**
+	 * Gets the context dir.
+	 * 
+	 * @return the context dir
+	 */
 	public File getContextDir() {
 		return datamartsDir;
 	}
 
+	/**
+	 * Sets the context dir.
+	 * 
+	 * @param contextDir the new context dir
+	 */
 	public void setContextDir(File contextDir) {
 		this.datamartsDir = contextDir;
 	}
@@ -54,6 +76,9 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 	
 		
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getDatamartJarFile(java.lang.String)
+	 */
 	public File getDatamartJarFile(String datamartName) {
 		
 		File targetDatamartDir = null;
@@ -68,6 +93,9 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 	}
 		
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewJarFiles(java.lang.String)
+	 */
 	public List getViewJarFiles(String datamartName) {
 		List viewJarFiles = new ArrayList();
 		List viewNames = getViewNames(datamartName);
@@ -88,6 +116,9 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewJarFile(java.lang.String, java.lang.String)
+	 */
 	public File getViewJarFile(String datamartName, String viewName) {
 
 		File targetDatamartDir = null;
@@ -104,6 +135,9 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 
 	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewNames(java.lang.String)
+	 */
 	public List getViewNames(String datamartName) {
 		List viewNames = new ArrayList();
 
@@ -133,6 +167,13 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 	
 	
 	
+	/**
+	 * Gets the all data mart path.
+	 * 
+	 * @param contextDir the context dir
+	 * 
+	 * @return the all data mart path
+	 */
 	public static List getAllDataMartPath(File contextDir) {
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
 		

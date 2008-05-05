@@ -1,6 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  * 
- */
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.export;
 
 import it.eng.qbe.bo.Formula;
@@ -27,66 +44,158 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BasicTemplateBuilder.
+ * 
  * @author Andrea Gioia
- *
  */
 public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
+	/** The query. */
 	String query;
+	
+	/** The query language. */
 	String queryLanguage;
+	
+	/** The query fields. */
 	Vector queryFields;
+	
+	/** The params. */
 	Map params;
 	
+	/** The ordered field list. */
 	String orderedFieldList;
+	
+	/** The extracted entities list. */
 	String extractedEntitiesList;
+	
+	/** The formula. */
 	Formula formula;
+	
+	/** The manual calculated fields. */
 	String manualCalculatedFields;
 		
+	/** The calculated fields. */
 	private List calculatedFields = null;
 	
+	/** The Constant SQL_LANGUAGE. */
 	public static final String SQL_LANGUAGE = "sql";
+	
+	/** The Constant HQL_LANGUAGE. */
 	public static final String HQL_LANGUAGE = "hql";
 	
+	/** The Constant PN_BAND_WIDTH. */
 	public static final String PN_BAND_WIDTH = "bandWidth";	
+	
+	/** The Constant PN_HEADER_HEIGHT. */
 	public static final String PN_HEADER_HEIGHT = "columnHeaderHeight";	
+	
+	/** The Constant PN_PIXEL_PER_CHAR. */
 	public static final String PN_PIXEL_PER_CHAR = "pixelPerChar";
+	
+	/** The Constant PN_PIXEL_PER_ROW. */
 	public static final String PN_PIXEL_PER_ROW = "pixelPerRow";
+	
+	/** The Constant PN_MAXLINE_PER_ROW. */
 	public static final String PN_MAXLINE_PER_ROW = "maxLinesPerRow";	
 	
+	/** The Constant PN_HEADER_FONT. */
 	public static final String PN_HEADER_FONT = "columnHeaderFont";	
+	
+	/** The Constant PN_HEADER_FONT_SIZE. */
 	public static final String PN_HEADER_FONT_SIZE = "columnHeaderFontSize";
+	
+	/** The Constant PN_HEADER_FONT_BOLD. */
 	public static final String PN_HEADER_FONT_BOLD = "columnHeaderFontBold";
+	
+	/** The Constant PN_HEADER_FONT_ITALIC. */
 	public static final String PN_HEADER_FONT_ITALIC = "columnHeaderFontItalic";
+	
+	/** The Constant PN_HEADER_FORECOLOR. */
 	public static final String PN_HEADER_FORECOLOR = "columnHeaderForegroundColor";
+	
+	/** The Constant PN_HEADER_BACKCOLOR. */
 	public static final String PN_HEADER_BACKCOLOR = "columnHeaderBackgroundColor";
+	
+	/** The Constant PN_ROW_FONT. */
 	public static final String PN_ROW_FONT = "rowFont";	
+	
+	/** The Constant PN_ROW_FONT_SIZE. */
 	public static final String PN_ROW_FONT_SIZE = "rowFontSize";
+	
+	/** The Constant PN_DETAIL_EVEN_ROW_FORECOLOR. */
 	public static final String PN_DETAIL_EVEN_ROW_FORECOLOR = "evenRowsForegroundColor";
+	
+	/** The Constant PN_DETAIL_EVEN_ROW_BACKCOLOR. */
 	public static final String PN_DETAIL_EVEN_ROW_BACKCOLOR = "evenRowsBackgroundColor";
+	
+	/** The Constant PN_DETAIL_ODD_ROW_FORECOLOR. */
 	public static final String PN_DETAIL_ODD_ROW_FORECOLOR = "oddRowsForegroundColor";
+	
+	/** The Constant PN_DETAIL_ODD_ROW_BACKCOLOR. */
 	public static final String PN_DETAIL_ODD_ROW_BACKCOLOR = "oddRowsBackgroundColor";
 	
 	
+	/** The Constant DEFAULT_BAND_WIDTH. */
 	public static final String DEFAULT_BAND_WIDTH = "530";	
+	
+	/** The Constant DEFAULT_HEADER_HEIGHT. */
 	public static final String DEFAULT_HEADER_HEIGHT = "40";
+	
+	/** The Constant DEFAULT_PIXEL_PER_CHAR. */
 	public static final String DEFAULT_PIXEL_PER_CHAR = "9";
+	
+	/** The Constant DEFAULT_PIXEL_PER_ROW. */
 	public static final String DEFAULT_PIXEL_PER_ROW = "16";
+	
+	/** The Constant DEFAULT_MAXLINE_PER_ROW. */
 	public static final String DEFAULT_MAXLINE_PER_ROW = "4";
 	
+	/** The Constant DEFAULT_HEADER_FONT. */
 	public static final String DEFAULT_HEADER_FONT = "Helvetica-Bold";
+	
+	/** The Constant DEFAULT_HEADER_FONT_SIZE. */
 	public static final String DEFAULT_HEADER_FONT_SIZE = "12";
+	
+	/** The Constant DEFAULT_HEADER_FONT_BOLD. */
 	public static final String DEFAULT_HEADER_FONT_BOLD = "true";
+	
+	/** The Constant DEFAULT_HEADER_FONT_ITALIC. */
 	public static final String DEFAULT_HEADER_FONT_ITALIC = "false";
+	
+	/** The Constant DEFAULT_HEADER_FORECOLOR. */
 	public static final String DEFAULT_HEADER_FORECOLOR = "FFFFFF";
+	
+	/** The Constant DEFAULT_HEADER_BACKCOLOR. */
 	public static final String DEFAULT_HEADER_BACKCOLOR = "#006666";
+	
+	/** The Constant DEFAULT_ROW_FONT. */
 	public static final String DEFAULT_ROW_FONT = "Times-Roman";	
+	
+	/** The Constant DEFAULT_ROW_FONT_SIZE. */
 	public static final String DEFAULT_ROW_FONT_SIZE = "10";
+	
+	/** The Constant DEFAULT_DETAIL_EVEN_ROW_FORECOLOR. */
 	public static final String DEFAULT_DETAIL_EVEN_ROW_FORECOLOR = "#000000";
+	
+	/** The Constant DEFAULT_DETAIL_EVEN_ROW_BACKCOLOR. */
 	public static final String DEFAULT_DETAIL_EVEN_ROW_BACKCOLOR = "#EEEEEE";
+	
+	/** The Constant DEFAULT_DETAIL_ODD_ROW_FORECOLOR. */
 	public static final String DEFAULT_DETAIL_ODD_ROW_FORECOLOR = "#000000";
+	
+	/** The Constant DEFAULT_DETAIL_ODD_ROW_BACKCOLOR. */
 	public static final String DEFAULT_DETAIL_ODD_ROW_BACKCOLOR = "#FFFFFF";	
 	
+	/**
+	 * Gets the param value.
+	 * 
+	 * @param paramName the param name
+	 * @param paramDefaultValue the param default value
+	 * 
+	 * @return the param value
+	 */
 	private String getParamValue(String paramName, String paramDefaultValue) {
 		String paramValue = null;
 		
@@ -96,6 +205,17 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return paramValue;
 	}
 	
+	/**
+	 * Instantiates a new basic template builder.
+	 * 
+	 * @param query the query
+	 * @param queryLanguage the query language
+	 * @param queryFields the query fields
+	 * @param params the params
+	 * @param orderedFieldList the ordered field list
+	 * @param extractedEntitiesList the extracted entities list
+	 * @param formula the formula
+	 */
 	public BasicTemplateBuilder(String query, 
 								String queryLanguage, 
 								Vector queryFields, 
@@ -114,6 +234,9 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		this.formula = formula;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.export.ITemplateBuilder#buildTemplate()
+	 */
 	public String buildTemplate() {
 		String templateStr = getTemplateTemplate();
 		if(getParamValue("pagination", "false").equalsIgnoreCase("true")) {
@@ -131,6 +254,11 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return templateStr;
 	}
 		
+	/**
+	 * Gets the param block.
+	 * 
+	 * @return the param block
+	 */
 	public String getParamBlock() {
 		StringBuffer buffer = new StringBuffer();
 		String qbeJRMappingString = calculateQbeJRMappingString();
@@ -138,6 +266,11 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Calculate qbe jr mapping string.
+	 * 
+	 * @return the string
+	 */
 	public String calculateQbeJRMappingString(){
 		StringBuffer sb = new StringBuffer();
 		String[] orderedField = orderedFieldList.split(";");
@@ -153,6 +286,12 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		
 		return sb.toString();
 	}
+	
+	/**
+	 * Gets the fields block.
+	 * 
+	 * @return the fields block
+	 */
 	public String getFieldsBlock() {
 		StringBuffer buffer = new StringBuffer();
 				
@@ -166,9 +305,17 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/** The Constant DETAIL_HEIGHT. */
 	public static final int DETAIL_HEIGHT = 20;
+	
+	/** The Constant DETAIL_WIDTH. */
 	public static final int DETAIL_WIDTH = 530;
 	
+	/**
+	 * Gets the details block.
+	 * 
+	 * @return the details block
+	 */
 	public String getDetailsBlock() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -325,6 +472,11 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Gets the column header block.
+	 * 
+	 * @return the column header block
+	 */
 	public String getColumnHeaderBlock(){
 		StringBuffer buffer = new StringBuffer();		
 		
@@ -409,6 +561,13 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}	
 	
+	/**
+	 * Gets the column width.
+	 * 
+	 * @param totalWidth the total width
+	 * 
+	 * @return the column width
+	 */
 	public int[] getColumnWidth(int totalWidth) {
 		int[] columnWidthInPixel = new int[queryFields.size()];
 		
@@ -450,6 +609,13 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return columnWidthInPixel;
 	}
 	
+	/**
+	 * Gets the row height.
+	 * 
+	 * @param totalWidth the total width
+	 * 
+	 * @return the row height
+	 */
 	public int getRowHeight(int totalWidth) {
 		
 		int pixelPerChar = Integer.parseInt(getParamValue(PN_PIXEL_PER_CHAR, DEFAULT_PIXEL_PER_CHAR ));
@@ -508,6 +674,11 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 	
 	
 	
+	/**
+	 * Gets the template template.
+	 * 
+	 * @return the template template
+	 */
 	private String getTemplateTemplate() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -541,6 +712,15 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Replace param.
+	 * 
+	 * @param template the template
+	 * @param pname the pname
+	 * @param pvalue the pvalue
+	 * 
+	 * @return the string
+	 */
 	private String replaceParam(String template, String pname, String pvalue) {
 		int index = -1;
 		while( (index = template.indexOf("${" + pname + "}")) != -1) {
@@ -550,6 +730,11 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		return template;
 	}
 	
+	/**
+	 * Fill calculated fields.
+	 * 
+	 * @param savedQueryObjectID the saved query object id
+	 */
 	public void fillCalculatedFields(String savedQueryObjectID) {
 		try{
 			
@@ -579,6 +764,13 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
 		}
 	}
 	
+	/**
+	 * Deserialize query object.
+	 * 
+	 * @param savedQueryObjectID the saved query object id
+	 * 
+	 * @return the i single data mart wizard object
+	 */
 	private ISingleDataMartWizardObject deserializeQueryObject(String savedQueryObjectID){        
         String fileName = null; //formulaFile.getParent() + System.getProperty("file.separator") + savedQueryObjectID+ ".qbe";
         File f = null;
@@ -608,10 +800,20 @@ public class BasicTemplateBuilder extends AbstractTemplateBuilder {
        
 	}
 
+	/**
+	 * Gets the formula.
+	 * 
+	 * @return the formula
+	 */
 	public Formula getFormula() {
 		return formula;
 	}
 
+	/**
+	 * Sets the formula.
+	 * 
+	 * @param formula the new formula
+	 */
 	public void setFormula(Formula formula) {
 		this.formula = formula;
 	}

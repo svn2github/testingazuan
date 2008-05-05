@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.qbe.datasource;
 
 import it.eng.qbe.dao.DAOFactory;
@@ -32,28 +31,53 @@ import java.util.Map;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BasicHibernateDataSource.
+ * 
  * @author Andrea Gioia
  * 
- * TODO BasicHibernateDataSource is just a particular type of composite-data source (datamartNum = 1). 
+ * TODO BasicHibernateDataSource is just a particular type of composite-data source (datamartNum = 1).
  * Use only CompositeDatasource for handle both cases. Problems: the persistance of object related to datamart like
  * views that is different in the two cases.
- *
  */
 public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
+	/** The configuration. */
 	private Configuration configuration = null;
+	
+	/** The session factory. */
 	private SessionFactory sessionFactory = null;
 	
+	/** The class loader extended. */
 	private boolean classLoaderExtended = false;	
+	
+	/** The already added view. */
 	private List alreadyAddedView = null;
 	
 	
+	/**
+	 * Instantiates a new basic hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 * @param datamartName the datamart name
+	 * @param datamartNames the datamart names
+	 * @param connection the connection
+	 */
 	private BasicHibernateDataSource(String dataSourceName, String datamartName, List datamartNames, DBConnection connection) {
 		this(dataSourceName, datamartName, datamartNames, new HashMap(), connection);
 	}
 	
+	/**
+	 * Instantiates a new basic hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 * @param datamartName the datamart name
+	 * @param datamartNames the datamart names
+	 * @param dblinkMap the dblink map
+	 * @param connection the connection
+	 */
 	private BasicHibernateDataSource(String dataSourceName, 
 									String datamartName, 
 									List datamartNames, 
@@ -75,12 +99,20 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		this.alreadyAddedView = new ArrayList();		
 	}
 	
+	/**
+	 * Instantiates a new basic hibernate data source.
+	 * 
+	 * @param dataSourceName the data source name
+	 */
 	protected BasicHibernateDataSource(String dataSourceName) {
 		setName( dataSourceName );
 		setType( HIBERNATE_DS_TYPE );
 		alreadyAddedView = new ArrayList();
 	}	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getConfiguration()
+	 */
 	public Configuration getConfiguration() {
 		if(configuration == null) {
 			initHibernate();
@@ -88,6 +120,9 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		return configuration;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getSessionFactory()
+	 */
 	public SessionFactory getSessionFactory() {
 		if(sessionFactory == null) {
 			initHibernate();
@@ -95,10 +130,16 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		return sessionFactory;
 	}	
 	
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#getSessionFactory(java.lang.String)
+	 */
 	public SessionFactory getSessionFactory(String dmName) {
 		return getSessionFactory();
 	}	
 	
+	/**
+	 * Inits the hibernate.
+	 */
 	private void initHibernate() {
 		File jarFile = null;
 		
@@ -122,6 +163,11 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		sessionFactory = configuration.buildSessionFactory();	
 	}
 	
+	/**
+	 * Adds the views.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addViews() {		
 		boolean result = false;
 		
@@ -136,6 +182,13 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		return result;
 	}	
 	
+	/**
+	 * Adds the view.
+	 * 
+	 * @param viewName the view name
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean addView(String viewName) {
 		
 		boolean result = false;
@@ -162,6 +215,9 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
+	/**
+	 * Adds the db links.
+	 */
 	private void addDbLinks() {
 		addDbLink(getDatamartName(), getConfiguration(), getConfiguration());
 	}	
@@ -169,6 +225,9 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refresh()
+	 */
 	public void refresh() {
 		configuration = null;
 		sessionFactory = null;
@@ -177,22 +236,41 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	}	
 	
 
+	/**
+	 * Gets the composite datamart name.
+	 * 
+	 * @return the composite datamart name
+	 */
 	public String getCompositeDatamartName() {
 		return getDatamartName();
 	}
 	
+	/**
+	 * Gets the composite datamart description.
+	 * 
+	 * @return the composite datamart description
+	 */
 	public String getCompositeDatamartDescription() {
 		return getDatamartName();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshDatamartViews()
+	 */
 	public void refreshDatamartViews() {
 		refresh();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshSharedView(java.lang.String)
+	 */
 	public void refreshSharedView(String sharedViewName) {
 		refreshDatamartViews();
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.datasource.IHibernateDataSource#refreshSharedViews()
+	 */
 	public void refreshSharedViews() {
 		refreshDatamartViews();
 	}

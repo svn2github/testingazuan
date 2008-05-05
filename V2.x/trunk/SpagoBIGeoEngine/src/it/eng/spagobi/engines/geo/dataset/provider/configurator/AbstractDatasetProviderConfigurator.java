@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.dataset.provider.configurator;
 
 import java.util.HashMap;
@@ -38,18 +37,26 @@ import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
 import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class AbstractDatasetProviderConfigurator.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class AbstractDatasetProviderConfigurator {
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(SQLDatasetProvider.class);
 	
 	
+	/**
+	 * Configure.
+	 * 
+	 * @param abstractDatasetProvider the abstract dataset provider
+	 * @param conf the conf
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	public static void configure(AbstractDatasetProvider abstractDatasetProvider, Object conf) throws GeoEngineException {
 		SourceBean confSB = null;
 		
@@ -91,6 +98,12 @@ public class AbstractDatasetProviderConfigurator {
 		}
 	}
 	
+	/**
+	 * Sets the link.
+	 * 
+	 * @param confSB the conf sb
+	 * @param hierarchies the hierarchies
+	 */
 	private static void setLink(SourceBean confSB, Map hierarchies) {
 		SourceBean corssNavConfSB = (SourceBean)confSB.getAttribute("CROSS_NAVIGATION");
 		if( corssNavConfSB == null ) return;
@@ -118,14 +131,35 @@ public class AbstractDatasetProviderConfigurator {
 		}
 	}
 
+	/**
+	 * Gets the selected level name.
+	 * 
+	 * @param confSB the conf sb
+	 * 
+	 * @return the selected level name
+	 */
 	private static String getSelectedLevelName(SourceBean confSB) {
 		return (String)confSB.getAttribute("LEVEL");
 	}
 
+	/**
+	 * Gets the selected hierarchy name.
+	 * 
+	 * @param confSB the conf sb
+	 * 
+	 * @return the selected hierarchy name
+	 */
 	private static String getSelectedHierarchyName(SourceBean confSB) {
 		return (String)confSB.getAttribute("HIERARCHY");
 	}
 
+	/**
+	 * Gets the meta data.
+	 * 
+	 * @param confSB the conf sb
+	 * 
+	 * @return the meta data
+	 */
 	public static DataSetMetaData getMetaData(SourceBean confSB) {
 		DataSetMetaData metaData = null;
 		
@@ -162,6 +196,14 @@ public class AbstractDatasetProviderConfigurator {
 		return metaData;
 	}
 	
+	/**
+	 * Gets the hierarchies.
+	 * 
+	 * @param confSB the conf sb
+	 * @param sdtHierarchySB the sdt hierarchy sb
+	 * 
+	 * @return the hierarchies
+	 */
 	public static Map getHierarchies(SourceBean confSB, SourceBean sdtHierarchySB) {
 		Map hierarchies = null;
 		

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.commons.service;
 
 import java.util.Iterator;
@@ -27,18 +26,30 @@ import java.util.Properties;
 
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class GeoEngineAnalysisState.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class GeoEngineAnalysisState extends EngineAnalysisState {
+	
+	/** The properties. */
 	private Properties properties;
 	
+	/**
+	 * Instantiates a new geo engine analysis state.
+	 * 
+	 * @param rowData the row data
+	 */
 	public GeoEngineAnalysisState( byte[] rowData ) {
 		super( rowData );
 		parseRowData();
 	}
 	
+	/**
+	 * Parses the row data.
+	 */
 	private void  parseRowData() {
 		properties = new Properties();
 		
@@ -57,11 +68,17 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.EngineAnalysisState#setRowData(byte[])
+	 */
 	public void setRowData( byte[] rowData ) {
 		super.setRowData(rowData);
 		parseRowData();
 	}
 	
+	/**
+	 * Refresh row data.
+	 */
 	public void refreshRowData( ) {
 		StringBuffer buffer = new StringBuffer();
 		Iterator it = properties.keySet().iterator();
@@ -74,38 +91,83 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 		super.setRowData(buffer.toString().getBytes());
 	}
 	
+	/**
+	 * Gets the selected hierarchy.
+	 * 
+	 * @return the selected hierarchy
+	 */
 	public String getSelectedHierarchy() {
 		return properties.getProperty("selected_hierachy");
 	}
 	
+	/**
+	 * Sets the selected hierarchy name.
+	 * 
+	 * @param hierarchyName the new selected hierarchy name
+	 */
 	public void setSelectedHierarchyName(String hierarchyName) {
 		properties.setProperty("selected_hierachy", hierarchyName);
 	}
 
+	/**
+	 * Gets the selected hierarchy level.
+	 * 
+	 * @return the selected hierarchy level
+	 */
 	public String getSelectedHierarchyLevel() {
 		return properties.getProperty("selected_hierarchy_level");		
 	}
 	
+	/**
+	 * Sets the selected level name.
+	 * 
+	 * @param levelName the new selected level name
+	 */
 	public void setSelectedLevelName(String levelName) {
 		properties.setProperty("selected_hierarchy_level", levelName);		
 	}
 
+	/**
+	 * Gets the selected map name.
+	 * 
+	 * @return the selected map name
+	 */
 	public String getSelectedMapName() {
 		return properties.getProperty("selected_map");
 	}
 	
+	/**
+	 * Sets the selected map name.
+	 * 
+	 * @param mapName the new selected map name
+	 */
 	public void setSelectedMapName(String mapName) {
 		properties.setProperty("selected_map", mapName);
 	}
 
+	/**
+	 * Gets the selected layers.
+	 * 
+	 * @return the selected layers
+	 */
 	public String getSelectedLayers() {
 		return properties.getProperty("selected_layers");
 	}
 	
+	/**
+	 * Sets the selected layers.
+	 * 
+	 * @param layers the new selected layers
+	 */
 	public void setSelectedLayers(String layers) {
 		properties.setProperty("selected_layers", layers);
 	}
 	
+	/**
+	 * Sets the selected layers.
+	 * 
+	 * @param layers the new selected layers
+	 */
 	public void setSelectedLayers(List layers) {
 		String layersStr = null;
 		
@@ -119,6 +181,9 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
     	String str = "";
     	

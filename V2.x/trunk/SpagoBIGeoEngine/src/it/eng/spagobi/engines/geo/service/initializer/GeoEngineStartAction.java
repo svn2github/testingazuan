@@ -1,8 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
  *
- *	LICENSE: see COPYING file
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
  *
-**/
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.service.initializer;
 
 import it.eng.spago.base.SourceBean;
@@ -33,29 +48,38 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
- * Geo entry point action
+ * Geo entry point action.
  */
 public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	// request
+	/** The Constant EXECUTION_CONTEXT. */
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	
 	//response 
+	/** The Constant IS_DOC_COMPOSITION_MODE_ACTIVE. */
 	public static final String IS_DOC_COMPOSITION_MODE_ACTIVE =  "isDocumentCompositionModeActive";
 	
 	// session
+	/** The Constant GEO_ENGINE_INSTANCE. */
 	public static final String GEO_ENGINE_INSTANCE = GeoEngineConstants.GEO_ENGINE_INSTANCE;
+	
+	/** The Constant ANALYSIS_METADATA. */
 	public static final String ANALYSIS_METADATA = GeoEngineConstants.ANALYSIS_METADATA;
+	
+	/** The Constant ANALYSIS_STATE. */
 	public static final String ANALYSIS_STATE = GeoEngineConstants.ANALYSIS_STATE;
 
 	
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GeoEngineStartAction.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.AbstractEngineStartAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException {
 		
 		logger.debug("IN");		
@@ -170,6 +194,12 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 		
 	
+	/**
+	 * Copy request parameters into env.
+	 * 
+	 * @param env the env
+	 * @param serviceRequest the service request
+	 */
 	public void copyRequestParametersIntoEnv(Map env, SourceBean serviceRequest) {
 		Set parameterStopList = null;
 		List requestParameters = null;
@@ -208,6 +238,13 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	
 	
+	/**
+	 * Decode parameter value.
+	 * 
+	 * @param parValue the par value
+	 * 
+	 * @return the string
+	 */
 	private String decodeParameterValue(String parValue) {
 		String newParValue;
 			

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo;
 
 import java.io.File;
@@ -38,23 +37,37 @@ import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class GeoEngineInstance.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class GeoEngineInstance {
 	
+	/** The env. */
 	Map env;
+	
+	/** The map provider. */
 	IMapProvider mapProvider;
+	
+	/** The dataset provider. */
 	IDatasetProvider datasetProvider;
+	
+	/** The map renderer. */
 	IMapRenderer mapRenderer;
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GeoEngineInstance.class);
 	
     
+	/**
+	 * Instantiates a new geo engine instance.
+	 * 
+	 * @param mapProvider the map provider
+	 * @param datasetProvider the dataset provider
+	 * @param mapRenderer the map renderer
+	 */
 	protected GeoEngineInstance(IMapProvider mapProvider, IDatasetProvider datasetProvider, IMapRenderer mapRenderer) {
 		logger.debug("IN");
 		setMapProvider( mapProvider );
@@ -66,6 +79,14 @@ public class GeoEngineInstance {
 		logger.debug("OUT");
 	}
 	
+	/**
+	 * Instantiates a new geo engine instance.
+	 * 
+	 * @param template the template
+	 * @param env the env
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	protected GeoEngineInstance(SourceBean template, Map env) throws GeoEngineException {
 		logger.debug("IN");
 		setEnv( env );		
@@ -82,6 +103,11 @@ public class GeoEngineInstance {
 		logger.debug("OUT");
 	}
 
+	/**
+	 * Validate.
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	public void validate() throws GeoEngineException {
 		String selectedHierarchyName = getDatasetProvider().getSelectedHierarchyName();
 		if(selectedHierarchyName == null) {
@@ -123,6 +149,11 @@ public class GeoEngineInstance {
 	}
 	
 	
+	/**
+	 * Gets the analysis state.
+	 * 
+	 * @return the analysis state
+	 */
 	public GeoEngineAnalysisState getAnalysisState() {
 		GeoEngineAnalysisState analysisState = null;
 		
@@ -141,6 +172,11 @@ public class GeoEngineInstance {
 		return analysisState;
 	}
 	
+	/**
+	 * Sets the analysis state.
+	 * 
+	 * @param analysisState the new analysis state
+	 */
 	public void setAnalysisState(GeoEngineAnalysisState analysisState) {	
 		String selectedHiearchyName = null;
 		String selectedLevelName = null;
@@ -191,38 +227,87 @@ public class GeoEngineInstance {
 		logger.debug("OUT");
 	}
 	
+	/**
+	 * Render map.
+	 * 
+	 * @param format the format
+	 * 
+	 * @return the file
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	public File renderMap(String format) throws GeoEngineException {
 		return getMapRenderer().renderMap( getMapProvider(), getDatasetProvider(), format);
 	}
 	
+	/**
+	 * Gets the map provider.
+	 * 
+	 * @return the map provider
+	 */
 	public IMapProvider getMapProvider() {
 		return mapProvider;
 	}
 
+	/**
+	 * Sets the map provider.
+	 * 
+	 * @param mapProvider the new map provider
+	 */
 	protected void setMapProvider(IMapProvider mapProvider) {
 		this.mapProvider = mapProvider;
 	}
 
+	/**
+	 * Gets the dataset provider.
+	 * 
+	 * @return the dataset provider
+	 */
 	public IDatasetProvider getDatasetProvider() {
 		return datasetProvider;
 	}
 
+	/**
+	 * Sets the dataset provider.
+	 * 
+	 * @param datasetProvider the new dataset provider
+	 */
 	protected void setDatasetProvider(IDatasetProvider datasetProvider) {
 		this.datasetProvider = datasetProvider;
 	}
 
+	/**
+	 * Gets the map renderer.
+	 * 
+	 * @return the map renderer
+	 */
 	public IMapRenderer getMapRenderer() {
 		return mapRenderer;
 	}
 
+	/**
+	 * Sets the map renderer.
+	 * 
+	 * @param mapRenderer the new map renderer
+	 */
 	protected void setMapRenderer(IMapRenderer mapRenderer) {
 		this.mapRenderer = mapRenderer;
 	}
 
+	/**
+	 * Gets the env.
+	 * 
+	 * @return the env
+	 */
 	public Map getEnv() {
 		return env;
 	}
 
+	/**
+	 * Sets the env.
+	 * 
+	 * @param env the new env
+	 */
 	public void setEnv(Map env) {
 		this.env = env;
 	}

@@ -1,8 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
  *
- *	LICENSE: see COPYING file
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
  *
-**/
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
@@ -27,24 +42,34 @@ import javax.servlet.ServletOutputStream;
 import org.apache.log4j.Logger;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MapDrawAction.
+ */
 public class MapDrawAction extends AbstractGeoEngineAction {
 	
-	/**
-     * Request parameters
-     */
+	/** Request parameters. */
 	public static final String HIERARCHY_NAME = "hierarchyName";
+	
+	/** The Constant HIERARCHY_LEVEL. */
 	public static final String HIERARCHY_LEVEL = "level";
+	
+	/** The Constant MAP. */
 	public static final String MAP = "map";
+	
+	/** The Constant LAYERS. */
 	public static final String LAYERS = "layer";	
 	
+	/** The Constant MAP_CATALOGUE_MANAGER_URL. */
 	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(MapDrawAction.class);
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
 		
 		String selectedHierarchyName = null;
@@ -172,6 +197,13 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	}
 	
 	
+	/**
+	 * Parses the layers.
+	 * 
+	 * @param layers the layers
+	 * 
+	 * @return the list
+	 */
 	private List parseLayers(Object layers) {
 		List selectedLayers = null;
 		if(layers != null) {
@@ -188,6 +220,11 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		return selectedLayers;
 	}
 	
+	/**
+	 * Gets the output stream.
+	 * 
+	 * @return the output stream
+	 */
 	private ServletOutputStream getOutputStream() {
 		ServletOutputStream outputStream = null;
 		try{
@@ -199,8 +236,10 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	}
 	
 	/**
-	 * Returns the right content type for the output format
-	 * @param outputFormat The code string of the output format
+	 * Returns the right content type for the output format.
+	 * 
+	 * @param outFormat the out format
+	 * 
 	 * @return the string code of the content type for the output format
 	 */
 	private String getContentType(String outFormat) {
@@ -228,8 +267,10 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	
 	
 	/**
-	 * Checks if the output format requested is allowed
+	 * Checks if the output format requested is allowed.
+	 * 
 	 * @param outputFormat The code string of the output format
+	 * 
 	 * @return true if the output format is allowed, false otherwise
 	 */
 	private boolean checkOutputFormat(String outputFormat) {
@@ -252,6 +293,11 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	
 	
 	
+	/**
+	 * Audit execution failure.
+	 * 
+	 * @param msg the msg
+	 */
 	private void auditExecutionFailure(String msg) {
 		String auditId = getHttpRequest().getParameter("SPAGOBI_AUDIT_ID");
 		AuditAccessUtils auditAccessUtils = 
@@ -261,7 +307,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	}
 	
 	/**
-	 * sends an error message to the client
+	 * sends an error message to the client.
+	 * 
 	 * @param out The servlet output stream
 	 */
 	private void sendError(ServletOutputStream out)  {
@@ -278,11 +325,12 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	
 	
 	/**
-	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream 
+	 * Given an <code>InputStream</code> as input flushs the content into an OutputStream
 	 * and then close the input and output stream.
-	 * @param is The input stream 
+	 * 
+	 * @param is The input stream
 	 * @param os The output stream
-	 * @param closeStreams, if true close both stream 
+	 * @param closeStreams the close streams
 	 */
 	public static void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, boolean closeStreams) {
 		try{	

@@ -1,24 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.datasource;
 
 import it.eng.spago.base.SourceBean;
@@ -33,20 +32,38 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DataSource.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class DataSource {
 	
+	/** The jndi name. */
 	private String jndiName;	 
+	
+	/** The driver. */
 	private String driver;  
+    
+    /** The password. */
     private String password;
+    
+    /** The url. */
     private String url;
+    
+    /** The user. */
     private String user;
+    
+    /** The label. */
     private String label;
 
 
+    /**
+     * Instantiates a new data source.
+     * 
+     * @param spagoBIDataSource the spago bi data source
+     */
     public DataSource(SpagoBiDataSource spagoBIDataSource) {
     	this.driver = spagoBIDataSource.getDriver();
         this.jndiName = spagoBIDataSource.getJndiName();
@@ -56,6 +73,16 @@ public class DataSource {
         this.label = spagoBIDataSource.getLabel();
     }
     
+    /**
+     * Instantiates a new data source.
+     * 
+     * @param driver the driver
+     * @param jndiName the jndi name
+     * @param password the password
+     * @param url the url
+     * @param user the user
+     * @param label the label
+     */
     public DataSource(
     	   String driver,
     	   String jndiName,
@@ -73,6 +100,11 @@ public class DataSource {
     }
 
 
+    /**
+     * Instantiates a new data source.
+     * 
+     * @param dataSourceSB the data source sb
+     */
     public DataSource(SourceBean dataSourceSB) {
     	
 		String type = (String)dataSourceSB.getAttribute(Constants.DATASET_TYPE_ATTRIBUTE);				
@@ -85,11 +117,25 @@ public class DataSource {
 		}
 	}
 
+	/**
+	 * Check is jndi.
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean checkIsJndi() {
     	return getJndiName() != null 
     			&& getJndiName().equals("") == false;
     }
     
+    /**
+     * Gets the connection.
+     * 
+     * @return the connection
+     * 
+     * @throws NamingException the naming exception
+     * @throws SQLException the SQL exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
     	Connection connection = null;
     	 
@@ -104,13 +150,12 @@ public class DataSource {
     
     
     /**
-     * Get the connection from JNDI
+     * Get the connection from JNDI.
      * 
-     * @param connectionConfig
-     *                SourceBean describing data connection
      * @return Connection to database
-     * @throws NamingException 
-     * @throws SQLException 
+     * 
+     * @throws NamingException the naming exception
+     * @throws SQLException the SQL exception
      */
     private Connection getJndiConnection() throws NamingException, SQLException {
 		Connection connection = null;
@@ -124,13 +169,12 @@ public class DataSource {
     }
 
     /**
-     * Get the connection using jdbc
+     * Get the connection using jdbc.
      * 
-     * @param connectionConfig
-     *                SpagoBiDataSource describing data connection
      * @return Connection to database
-     * @throws ClassNotFoundException 
-     * @throws SQLException 
+     * 
+     * @throws ClassNotFoundException the class not found exception
+     * @throws SQLException the SQL exception
      */
     private Connection getDirectConnection() throws ClassNotFoundException, SQLException {
 		Connection connection = null;
@@ -157,7 +201,7 @@ public class DataSource {
     /**
      * Sets the driver value for this SpagoBiDataSource.
      * 
-     * @param driver
+     * @param driver the driver
      */
     public void setDriver(java.lang.String driver) {
         this.driver = driver;
@@ -177,7 +221,7 @@ public class DataSource {
     /**
      * Sets the jndiName value for this SpagoBiDataSource.
      * 
-     * @param jndiName
+     * @param jndiName the jndi name
      */
     public void setJndiName(java.lang.String jndiName) {
         this.jndiName = jndiName;
@@ -197,7 +241,7 @@ public class DataSource {
     /**
      * Sets the password value for this SpagoBiDataSource.
      * 
-     * @param password
+     * @param password the password
      */
     public void setPassword(java.lang.String password) {
         this.password = password;
@@ -217,7 +261,7 @@ public class DataSource {
     /**
      * Sets the url value for this SpagoBiDataSource.
      * 
-     * @param url
+     * @param url the url
      */
     public void setUrl(java.lang.String url) {
         this.url = url;
@@ -237,7 +281,7 @@ public class DataSource {
     /**
      * Sets the user value for this SpagoBiDataSource.
      * 
-     * @param user
+     * @param user the user
      */
     public void setUser(java.lang.String user) {
         this.user = user;
@@ -257,12 +301,15 @@ public class DataSource {
     /**
      * Sets the label value for this SpagoBiDataSource.
      * 
-     * @param label
+     * @param label the label
      */
     public void setLabel(java.lang.String label) {
         this.label = label;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
     	String str = "";
     	

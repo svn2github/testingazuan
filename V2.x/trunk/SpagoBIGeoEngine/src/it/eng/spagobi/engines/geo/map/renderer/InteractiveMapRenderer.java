@@ -1,6 +1,23 @@
 /**
- *	LICENSE: see COPYING file
-**/
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
@@ -41,21 +58,27 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 
-/** 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InteractiveMapRenderer.
+ * 
  * @author Andrea Gioia
  */
 public class InteractiveMapRenderer extends AbstractMapRenderer {
 
+	/** The close link. */
 	private boolean closeLink = false;
 	
+	/** The label producers. */
 	private Map labelProducers;
 	
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(InteractiveMapRenderer.class);
 	
 	
+	/**
+	 * Instantiates a new interactive map renderer.
+	 */
 	public InteractiveMapRenderer() {
 		super();
 		labelProducers = new HashMap();
@@ -67,16 +90,25 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		labelProducers.put("footer-right", new DefaultLabelProducer() );
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#init(java.lang.Object)
+	 */
 	public void init(Object conf) throws GeoEngineException {
 		super.init(conf);
 		InteractiveMapRendererConfigurator.configure( this, getConf() );
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider)
+	 */
 	public File renderMap(IMapProvider mapProvider, 
 			  IDatasetProvider datamartProvider) throws GeoEngineException {
 		return renderMap(mapProvider, datamartProvider, Constants.DSVG);
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider, java.lang.String)
+	 */
 	public File renderMap(IMapProvider mapProvider, 
 						  IDatasetProvider datamartProvider,
 						  String outputFormat) throws GeoEngineException {
@@ -95,6 +127,17 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return renderDSVGMap(mapProvider, datamartProvider, true);
 	}
 	
+	/**
+	 * Render dsvg map.
+	 * 
+	 * @param mapProvider the map provider
+	 * @param datamartProvider the datamart provider
+	 * @param includeScript the include script
+	 * 
+	 * @return the file
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	private File renderDSVGMap(IMapProvider mapProvider, 
 	  						   IDatasetProvider datamartProvider, boolean includeScript) throws GeoEngineException {
 		SVGDocument targetMap;
@@ -164,6 +207,16 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return tmpMap;
 	}
 	
+	/**
+	 * Render svg map.
+	 * 
+	 * @param mapProvider the map provider
+	 * @param datamartProvider the datamart provider
+	 * 
+	 * @return the file
+	 * 
+	 * @throws GeoEngineException the geo engine exception
+	 */
 	private File renderSVGMap(IMapProvider mapProvider, 
 			   IDatasetProvider datamartProvider) throws GeoEngineException {
 		
@@ -216,6 +269,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return tmpMap;
 	}
 	
+	/**
+	 * Decorate map.
+	 * 
+	 * @param masterMap the master map
+	 * @param targetMap the target map
+	 * @param datamart the datamart
+	 */
 	private void decorateMap(SVGDocument masterMap, SVGDocument targetMap, DataSet datamart) {
 		
 		String[] kpiNames = datamart.getKpiNames();
@@ -606,10 +666,26 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 
 
 
+	/** The Constant R. */
 	private static final int R = 0;
+	
+	/** The Constant G. */
 	private static final int G = 1;
+	
+	/** The Constant B. */
 	private static final int B = 2;
+	
+	/** The Constant BASE_COLOR. */
 	private static final String BASE_COLOR = "#";
+	
+	/**
+	 * Gets the gradient colour range.
+	 * 
+	 * @param base_color the base_color
+	 * @param num_group the num_group
+	 * 
+	 * @return the gradient colour range
+	 */
 	public String[] getGradientColourRange(String base_color, int num_group) { 
 		int[] A = new int[3];
 		int[] RGB = new int[3];
@@ -665,6 +741,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	}
 	
 	
+	/**
+	 * Adds the data.
+	 * 
+	 * @param map the map
+	 * @param datamart the datamart
+	 */
 	private void addData(SVGDocument map, DataSet datamart) {
 		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
@@ -686,6 +768,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	}
 
 	
+	/**
+	 * Adds the link.
+	 * 
+	 * @param map the map
+	 * @param datamart the datamart
+	 */
 	private void addLink(SVGDocument map, DataSet datamart) {	
 		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
@@ -761,6 +849,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    
 	}
 	
+	/**
+	 * Include scripts.
+	 * 
+	 * @param doc the doc
+	 */
 	private void includeScripts(SVGDocument doc) {
 		Element scriptInit = doc.getElementById("included_scripts");	    
 	    Node scriptText = scriptInit.getFirstChild();
@@ -781,6 +874,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    scriptText.setNodeValue(buffer.toString());
 	}
 	
+	/**
+	 * Import scripts.
+	 * 
+	 * @param doc the doc
+	 */
 	private void importScripts(SVGDocument doc) {
 		importScipt(doc, "helper_functions.js");
 	    importScipt(doc, "timer.js");
@@ -796,6 +894,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    importScipt(doc, "colourPicker.js");
 	}
 	
+	/**
+	 * Include script.
+	 * 
+	 * @param buffer the buffer
+	 * @param scriptName the script name
+	 */
 	private void includeScript(StringBuffer buffer, String scriptName) {
 		//File file = new File("D:/Documenti/Prototipi/Test/exo-portal-1.1.4-SpagoBI-2.0/webapps/SpagoBIGeoEngine/js/lib/svg-widgets/" + scriptName);
 		
@@ -816,6 +920,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		}
 	}
 	
+	/**
+	 * Import scipt.
+	 * 
+	 * @param map the map
+	 * @param scriptName the script name
+	 */
 	private void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
@@ -826,12 +936,24 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    importsBlock.appendChild(lf);
 	}
 	
+	/**
+	 * Sets the main map dimension.
+	 * 
+	 * @param masterMap the master map
+	 * @param targetMap the target map
+	 */
 	public void setMainMapDimension(SVGDocument masterMap, SVGDocument targetMap) {
 		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
 		Element mainMapBlock = masterMap.getElementById("mainMap");
 		mainMapBlock.setAttribute("viewBox", viewBox);
 	}
 	
+	/**
+	 * Sets the main map bkg rect dimension.
+	 * 
+	 * @param masterMap the master map
+	 * @param targetMap the target map
+	 */
 	public void setMainMapBkgRectDimension(SVGDocument masterMap, SVGDocument targetMap) {
 		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
 		String[] chunks = viewBox.split(" ");
@@ -846,6 +968,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		mapBackgroundRect.setAttribute("height", height);
 	}
 	
+	/**
+	 * Gets the measures configuration script.
+	 * 
+	 * @param datamart the datamart
+	 * 
+	 * @return the measures configuration script
+	 */
 	public String getMeasuresConfigurationScript(DataSet datamart) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("\n\n// MEASURES\n");
@@ -998,6 +1127,14 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    return buffer.toString();
 	}
 	
+	/**
+	 * Gets the layers configuration script.
+	 * 
+	 * @param doc the doc
+	 * @param targetLayer the target layer
+	 * 
+	 * @return the layers configuration script
+	 */
 	public String getLayersConfigurationScript(SVGDocument doc, String targetLayer) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -1052,6 +1189,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	}
 	
 	
+	/**
+	 * Gets the master map file.
+	 * 
+	 * @param interactiveMasterMap the interactive master map
+	 * 
+	 * @return the master map file
+	 */
 	private File getMasterMapFile(boolean interactiveMasterMap) {
 		File file = null;
 		if(interactiveMasterMap) {
@@ -1062,6 +1206,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return file;
 	}
 	
+	/**
+	 * Gets the temporary file.
+	 * 
+	 * @return the temporary file
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public File getTempFile() throws IOException {
 		String tempDirName = null;
 		File tempDir = null;
@@ -1101,6 +1252,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return result;
 	}
 	
+	/**
+	 * Gets the gUI configuration script.
+	 * 
+	 * @return the gUI configuration script
+	 */
 	public String getGUIConfigurationScript() {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -1118,14 +1274,31 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		return buffer.toString();		
 	}
 	
+	/**
+	 * Gets the label producer.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the label producer
+	 */
 	public LabelProducer getLabelProducer(String key) {
 		return (LabelProducer)labelProducers.get(key);
 	}
 
+	/**
+	 * Gets the label producers.
+	 * 
+	 * @return the label producers
+	 */
 	public Map getLabelProducers() {
 		return labelProducers;
 	}
 
+	/**
+	 * Sets the label producers.
+	 * 
+	 * @param labelProducers the new label producers
+	 */
 	public void setLabelProducers(Map labelProducers) {
 		this.labelProducers = labelProducers;
 	}

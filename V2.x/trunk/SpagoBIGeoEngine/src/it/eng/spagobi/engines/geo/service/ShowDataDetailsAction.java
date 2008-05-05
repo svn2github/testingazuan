@@ -1,8 +1,23 @@
 /**
+ * SpagoBI - The Business Intelligence Free Platform
  *
- *	LICENSE: see COPYING file
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
  *
-**/
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
 package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
@@ -11,34 +26,33 @@ import it.eng.spagobi.utilities.engines.EngineException;
 
 import org.apache.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ShowDataDetailsAction.
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class ShowDataDetailsAction extends AbstractGeoEngineAction {
 	
-	/**
-     * Request parameters
-     */
+	/** Request parameters. */
 	public static final String SELECTED_FEATURE_ID = "featureValue";
 	
-	/**
-     * Session parameters
-     */
+	/** Session parameters. */
 	public static final String RESULT_SET = "RESULT_SET";
+	
+	/** The Constant SELECTED_FEATURE_DESC. */
 	public static final String SELECTED_FEATURE_DESC = "FEATURE_DESC";
 	
-	/**
-     * Default serial version number (just to keep eclipse happy)
-     */
+	/** Default serial version number (just to keep eclipse happy). */
 	private static final long serialVersionUID = 1L;
 
-	/**
-     * Logger component
-     */
+	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ShowDataDetailsAction.class);
 	
     
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
 		
 		String featureValue = null;

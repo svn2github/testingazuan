@@ -1,22 +1,34 @@
 /**
 
-Copyright 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (c) 2005-2008, Engineering Ingegneria Informatica s.p.a.
+All rights reserved.
 
-This file is part of SpagoBI.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-SpagoBI is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-any later version.
+    * Redistributions of source code must retain the above copyright notice, this list of 
+      conditions and the following disclaimer.
+      
+    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+      conditions and the following disclaimer in the documentation and/or other materials 
+      provided with the distribution.
+      
+    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+      be used to endorse or promote products derived from this software without specific
+      prior written permission.
 
-SpagoBI is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Spago; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 **/
 package it.eng.spagobi.security;
@@ -84,6 +96,11 @@ public class LDAPConnector {
 	private String objectClassGroup = null;
 	private String userDn=null;
 
+	/**
+	 * Instantiates a new lDAP connector.
+	 * 
+	 * @param prop the prop
+	 */
 	public LDAPConnector(Map prop) {
 		this.host = (String) prop.get(HOST);
 		this.port = Integer.parseInt((String) prop.get(PORT));
@@ -135,12 +152,15 @@ public class LDAPConnector {
 	}
 
 	/**
+	 * Autenticate user.
 	 * 
-	 * @param userId
-	 * @param psw
-	 * @return
-	 * @throws LDAPException
-	 * @throws UnsupportedEncodingException
+	 * @param userId the user id
+	 * @param psw the psw
+	 * 
+	 * @return true, if autenticate user
+	 * 
+	 * @throws LDAPException the LDAP exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public boolean autenticateUser(String userId, String psw) throws LDAPException,UnsupportedEncodingException {
 		LDAPConnection connection = null;
@@ -171,11 +191,14 @@ public class LDAPConnector {
 	}
 
 	/**
+	 * Gets the user attributes.
 	 * 
-	 * @param userId
-	 * @return
-	 * @throws LDAPException
-	 * @throws UnsupportedEncodingException
+	 * @param userId the user id
+	 * 
+	 * @return the user attributes
+	 * 
+	 * @throws LDAPException the LDAP exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public HashMap getUserAttributes(String userId) throws LDAPException,UnsupportedEncodingException {
 		HashMap userAttributes = new HashMap();
@@ -220,11 +243,14 @@ public class LDAPConnector {
 	}
 
 	/**
+	 * Gets the user group.
 	 * 
-	 * @param userId
-	 * @return
-	 * @throws LDAPException
-	 * @throws UnsupportedEncodingException
+	 * @param userId the user id
+	 * 
+	 * @return the user group
+	 * 
+	 * @throws LDAPException the LDAP exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public List getUserGroup(String userId) throws LDAPException,UnsupportedEncodingException {
 		List userAttributes = new ArrayList();
@@ -281,10 +307,12 @@ public class LDAPConnector {
 	}
 
 	/**
+	 * Gets the all groups.
 	 * 
-	 * @return
-	 * @throws LDAPException
-	 * @throws UnsupportedEncodingException
+	 * @return the all groups
+	 * 
+	 * @throws LDAPException the LDAP exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public List getAllGroups() throws LDAPException,UnsupportedEncodingException {
 		List groups = new ArrayList();

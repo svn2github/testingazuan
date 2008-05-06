@@ -245,7 +245,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			drillLabel=((ILinkableChart)sbi).getDrillLabel();
 
 		
-		if(drillLabel!=null && drillLabel!=""){
+		if(drillLabel!=null && drillLabel!="" && !docComposition){
 			rootPar.put(ObjectsTreeConstants.OBJECT_LABEL,drillLabel);
 		}
 		rootPar.put("PAGE",ExecuteBIObjectModule.MODULE_PAGE);
@@ -269,10 +269,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String completeUrl=rootUrl;
 	
 		
-		if(docComposition){
-			
+		if(docComposition){			
 			((ILinkableChart)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
-			completeUrl="javascript:parent.execDrill(this.name, '"+rootUrl;
+		
+			completeUrl="javascript:parent.execCrossNavigation(this.name, '"+drillLabel+","+rootDocParameter;
 				}
 			else
 			{
@@ -319,7 +319,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			String urlPng=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
 			
 			//add the serie parameter
-		if(((BarCharts)sbi).isCurrentAll()){
+		if(selectedSeries.contains("allseries")){
 			refreshUrlCategory=refreshUrl+"&serie=allseries";
 				}
 		else{

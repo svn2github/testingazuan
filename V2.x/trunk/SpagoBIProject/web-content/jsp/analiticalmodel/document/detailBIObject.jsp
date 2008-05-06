@@ -779,7 +779,7 @@ function checkFormVisibility(docType) {
 		      		        if (!isCurrentVer || subReports == null || subReports.size() == 0) {
 		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages", request) + "</a></td>");
 		      		        } else {
-		      		        	String downloadAlsoLinkedTemplateUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+ "&operation=downloadAll&biobjectId=" + 
+		      		        	String downloadAlsoLinkedTemplateUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+ "&ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&operation=downloadAll&biobjectId=" + 
 		      		        			obj.getId().toString() + "&fileName=template.zip";
 		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages", request);
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 

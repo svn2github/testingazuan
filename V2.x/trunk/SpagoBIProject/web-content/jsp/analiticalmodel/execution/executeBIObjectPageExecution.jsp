@@ -31,6 +31,7 @@ String heightStr = "";
 if (heightArea == null || heightArea.trim().equals("")) {
 %>
 <%-- Script for iframe automatic resize (by mitico Fisca (Luca Fiscato)) --%>
+<%--
 <script>
 		
 	function adaptSize<%= uuid %>Funct() {
@@ -75,6 +76,70 @@ if (heightArea == null || heightArea.trim().equals("")) {
 		alert('Cannot execute javascript initialize functions');
 	}
 	</script>
+	--%>
+	<script>
+		
+		pos<%=uuid%> = null; 
+	
+		function adaptSize<%=uuid%>Funct() {
+				
+			// calculate height of the visible area
+			heightVisArea = 0;
+
+			if(isIE5()) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE6()) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE7()) { heightVisArea = top.document.documentElement.clientHeight }
+			if(isMoz()) { heightVisArea = top.innerHeight; }
+	
+			// get the frame div object
+			diviframeobj = document.getElementById('divIframe<%=uuid%>');
+			// find the frame div position
+			pos<%=uuid%> = findPos(diviframeobj);	
+						
+			// calculate space below position frame div
+			spaceBelowPos = heightVisArea - pos<%=uuid%>[1];
+			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=uuid%>');
+			iframeEl.style.height = spaceBelowPos + 'px';
+	
+	    	// to give time to the browser to update the dom (dimension of the iframe)
+		  	setTimeout("adaptSize<%=uuid%>_2Part()", 250);
+		}
+	
+	  	function adaptSize<%=uuid%>_2Part() {
+        
+        	// calculate height of the win area and height footer
+			heightWinArea = 0;
+  			heightFooter = 0;
+  			if(isIE5()) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE6()) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE7()) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isMoz()) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = (heightWinArea - heightVisArea);
+  			}	 
+  	
+  			// calculate height of the frame
+  			heightFrame = heightVisArea - pos<%=uuid%>[1] - heightFooter;
+  			iframeEl = document.getElementById('iframeexec<%=uuid%>');
+  			iframeEl.style.height = heightFrame + 'px';
+		}
+	
+		try {
+			SbiJsInitializer.adaptSize<%=uuid%> = adaptSize<%=uuid%>Funct;
+	    } catch (err) {
+			alert('Cannot resize the document view area');
+		}
+	</script>
 <%
 } else {
 	heightStr = "height:"+heightArea+"px;";
@@ -83,8 +148,6 @@ if (heightArea == null || heightArea.trim().equals("")) {
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= uuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">
-
-
 	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= getUrl(obj.getEngine().getUrl(), executionParameters) %>&EXECUTION_ID=<%= uuid %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>

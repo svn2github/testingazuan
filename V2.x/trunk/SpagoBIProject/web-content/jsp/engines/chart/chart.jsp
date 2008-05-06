@@ -70,9 +70,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   uuidO = uuidObjO.toString();
 				   uuidO = uuidO.replaceAll("-", "");
 	   			   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-	   			ExecutionManager executionManager = (ExecutionManager) aSessionContainer.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
 	   			executionFlowIdO = (String) aSessionContainer.getAttribute("EXECUTION_FLOW_ID");
 	   			if (executionFlowIdO != null) aSessionContainer.delAttribute("EXECUTION_FLOW_ID");
+	   			else executionFlowIdO = uuidO;
 			   }
    		%>
 
@@ -94,6 +94,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String refreshUrl = "";
 	HashMap categories=null;
 	String serie="allseries";
+	Map selectedSeries=null;
 	List series=null;
 	int numberCatVisualization=1;
 	int catsnum=0;
@@ -183,6 +184,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				else{
 					categoryCurrentName="All";
 				}
+				
+				// Check if particular series has been chosen
 				
 				// choose a serie
 			if(request.getParameter("serie")!=null)

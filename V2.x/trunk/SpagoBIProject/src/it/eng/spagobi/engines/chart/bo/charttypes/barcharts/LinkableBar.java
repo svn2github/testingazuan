@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
@@ -164,15 +164,22 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		renderer.setDrawBarOutline(false);
 
 
-		if(currentSerie!=-1 && colorMap!=null){
-			Integer c=new Integer(currentSerie);
-			if(colorMap.get("color"+c.toString())!=null){
-				Color col= (Color)colorMap.get("color"+c);
-				renderer.setSeriesPaint(0, col);
-			}
-		}
+		if(currentSeries!=null && colorMap!=null){
+			//for each serie selected
+			int j=0;	
+			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
+				String s = (String) iterator.next();
+				Integer position=(Integer)seriesNumber.get(s);
+				// check if for that position a value is defined
+				if(colorMap.get("color"+position.toString())!=null){
+					Color col= (Color)colorMap.get("color"+position);
+					renderer.setSeriesPaint(j, col);
+				}
+				j++;
+			}  // close for on series
+		} // close case series selcted and color defined
 		else{
-			if(colorMap!=null){
+			if(colorMap!=null){ // if series not selected check color each one
 
 				for (Iterator iterator = colorMap.keySet().iterator(); iterator.hasNext();) {
 					String key = (String) iterator.next();
@@ -184,7 +191,6 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				}
 			}
 		}
-
 
 
 		CategoryAxis domainAxis = plot.getDomainAxis();

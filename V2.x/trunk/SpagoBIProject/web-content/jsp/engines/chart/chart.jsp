@@ -93,9 +93,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String valueSlider="1";
 	String refreshUrl = "";
 	HashMap categories=null;
-	String serie="allseries";
-	Map selectedSeries=null;
-	List series=null;
+	Vector selectedSeries=null;  // series currently selected
+	List series=null;  // the series in the complete dataset
 	int numberCatVisualization=1;
 	int catsnum=0;
 	int ticks=1;
@@ -141,7 +140,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 	// in the case of document composition check if serie or category have been previously defined
-
+	selectedSeries=new Vector();
 	if(docComposition){
 		if(sbModuleResponse.getAttribute("category")!=null){
 		String catS=(String)sbModuleResponse.getAttribute("category");
@@ -149,13 +148,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		categoryCurrent=catD.intValue();
 		}
 		if(sbModuleResponse.getAttribute("serie")!=null){
-		serie=(String)sbModuleResponse.getAttribute("serie");
+		List selectedSeriesTemp=(List)sbModuleResponse.getAttributeAsList("serie");
+		selectedSeries=new Vector(selectedSeriesTemp);
+		}
+		else{
+		selectedSeries.add("allseries");   
 		}
 	}
 
 /////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
-		if(sbi.getType().equalsIgnoreCase("BARCHART")){
+	if(sbi.getType().equalsIgnoreCase("BARCHART")){
+			// series are all series present in dataset
 			series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
+			
+			//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
+			for(int i=0;i<series.size();i++){
+				String s=(String)series.get(i);
+				((BarCharts)sbi).putSeriesNumber(s,(i+1));
+			}
+			
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=((BarCharts)sbi).getCategoriesNumber();
 			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
@@ -185,21 +196,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					categoryCurrentName="All";
 				}
 				
-				// Check if particular series has been chosen
-				
-				// choose a serie
-			if(request.getParameter("serie")!=null)
-				{serie=(String)request.getParameter("serie");}
-			if(!serie.equalsIgnoreCase("allseries")){
-				copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,serie);	
-				int wichSerie=series.indexOf(serie)+1;
-				((BarCharts)sbi).setCurrentSerie(wichSerie);
-				
+			// Check if particular series has been chosen
+			if(request.getParameter("serie")!=null){
+					String[] cio=request.getParameterValues("serie");
+					//Convert array in vector
+					for(int i=0;i<cio.length;i++){
+					selectedSeries.add(cio[i]);
+				}
 			}
 			else{
-				((BarCharts)sbi).setCurrentSerie(-1);
-			}
-		}
+				if(!docComposition)
+				selectedSeries.add("allseries");
+				}
+	
+				
+			// if selectedSerie contains allseries 
+			if(selectedSeries.contains("allseries")){
+					((BarCharts)sbi).setCurrentSeries(null);
+					}
+					else{	
+						copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,selectedSeries);	
+				
+				}
+			} 
+			
+	
 	if(copyDataset==null){copyDataset=dataset;}
 
 ///////////////////////////////////////////////////// End category case//////////////////////////////////////////
@@ -296,8 +317,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 			String urlPng=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
-			refreshUrlCategory=refreshUrl+"&serie="+serie;
-		   	
+			
+			//add the serie parameter
+		if(((BarCharts)sbi).isCurrentAll()){
+			refreshUrlCategory=refreshUrl+"&serie=allseries";
+				}
+		else{
+			refreshUrlCategory=refreshUrl;
+			for(Iterator iterator = selectedSeries.iterator(); iterator.hasNext();){
+				String serieS=(String)iterator.next();
+				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
+				}	
+		}  	
 		   	
 		   	// form to limit the series if it is a barchart
 	if(sbi.getType().equalsIgnoreCase("BARCHART")){
@@ -333,8 +364,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<%
 	}%>
-	<select name="serie" onchange="this.form.submit();">
-	<%if(serie.equalsIgnoreCase("allseries")){ %>
+	<select name="serie" multiple="multiple">
+	<%if(selectedSeries.contains("allseries")){ %>
 		<option value="allseries" selected="selected">View all</option>
 	<%} else {%>
 		<option value="allseries">View all <%=serTitle%></option>
@@ -344,17 +375,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    // for each possible serie 
 	    	for (Iterator iterator = series.iterator(); iterator.hasNext();) {
 	    		String ser = (String) iterator.next(); 
-	    		if(ser.equals(serie)){
+	    		if(selectedSeries.contains(ser)){
 	    		%>
-		<option value="<%=ser%>" selected="selected"><%=ser%></option>
-	<%}else{ %>
-		<option value="<%=ser%>"><%=ser%></option>
+				<option value="<%=ser%>" selected="selected"><%=ser%></option>
+					<%}else{ %>
+				<option value="<%=ser%>"><%=ser%></option>
 	<%} 
 	} %>
-	
-	
-	
 	</select>
+	<input type="submit" value="Select">
 	</form>
 <% 
 }
@@ -403,6 +432,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		arrayCats=new Array(<%=catsnum%>);
 		-->
 	</script>
+	
 		<%
 		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
 			Integer key=(Integer)iterator.next();

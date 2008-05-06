@@ -55,10 +55,12 @@ public class BarCharts extends ChartImpl {
 	String categoryLabel="";
 	String valueLabel="";
 	Integer numberCatVisualization=null;
-	HashMap colorMap=null;  // keeps user selected colors
+	HashMap colorMap=null;  // keeps user selected colors// serie position - color
+	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	int categoriesNumber=0;
 	HashMap categories;
-	int currentSerie=-1;
+	//int currentSerie=-1;
+	Vector currentSeries=null;
 	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	
 	
@@ -237,6 +239,9 @@ public class BarCharts extends ChartImpl {
 			}		
 
 		}
+		
+		seriesNumber=new HashMap();
+		
 		logger.debug("OUT");
 	}
 
@@ -296,9 +301,12 @@ public class BarCharts extends ChartImpl {
 	 * @return the dataset
 	 */
 	
-	public Dataset filterDatasetSeries(Dataset dataset, String serie) {
+	public Dataset filterDatasetSeries(Dataset dataset, Vector series) {
 		logger.debug("IN");
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
+		
+		//keeps track of wich series has to be shown
+		currentSeries=series;
 		
 			//List rowKeys=new Vector();
 		
@@ -306,7 +314,7 @@ public class BarCharts extends ChartImpl {
 				
 			for (Iterator iterator = rowKeys.iterator(); iterator.hasNext();) {
 			String row = (String) iterator.next();
-			if(!(row.equals(serie))){
+			if(!(series.contains(row))){
 				catDataset.removeRow(row);			
 				}			
 			}
@@ -428,23 +436,29 @@ public class BarCharts extends ChartImpl {
 		this.numberCatVisualization = numberCatVisualization;
 	}
 
-	/**
-	 * Gets the current serie.
-	 * 
-	 * @return the current serie
-	 */
-	public int getCurrentSerie() {
-		return currentSerie;
+
+
+
+	public Vector getCurrentSeries() {
+		return currentSeries;
 	}
 
-	/**
-	 * Sets the current serie.
-	 * 
-	 * @param currentSerie the new current serie
-	 */
-	public void setCurrentSerie(int currentSerie) {
-		this.currentSerie = currentSerie;
+
+	public void setCurrentSeries(Vector currentSeries) {
+		this.currentSeries = currentSeries;
 	}
+
+
+	public HashMap getSeriesNumber() {
+		return seriesNumber;
+	}
+
+
+	public void putSeriesNumber(String name, int index) {
+		this.seriesNumber.put(name, new Integer(index));
+	}
+
+
 
 	
 	

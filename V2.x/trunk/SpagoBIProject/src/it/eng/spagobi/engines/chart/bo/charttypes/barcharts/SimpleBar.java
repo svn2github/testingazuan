@@ -127,15 +127,23 @@ public class SimpleBar extends BarCharts{
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 
-		if(currentSerie!=-1 && colorMap!=null){
-			Integer c=new Integer(currentSerie);
-			if(colorMap.get("color"+c.toString())!=null){
-				Color col= (Color)colorMap.get("color"+c);
-				renderer.setSeriesPaint(0, col);
-			}
-		}
+		// if some series has been selected and colors has been defined
+		if(currentSeries!=null && colorMap!=null){
+							//for each serie selected
+			int j=0;	
+			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
+						String s = (String) iterator.next();
+						Integer position=(Integer)seriesNumber.get(s);
+						// check if for that position a value is defined
+						if(colorMap.get("color"+position.toString())!=null){
+							Color col= (Color)colorMap.get("color"+position);
+							renderer.setSeriesPaint(j, col);
+							}
+						j++;
+					}  // close for on series
+		} // close case series selcted and color defined
 		else{
-			if(colorMap!=null){
+			if(colorMap!=null){ // if series not selected check color each one
 
 				for (Iterator iterator = colorMap.keySet().iterator(); iterator.hasNext();) {
 					String key = (String) iterator.next();

@@ -226,6 +226,7 @@ public class DocumentCompositionUtils {
 				}
 		     	
 		     	urlReturn += getParametersUrl(obj, document, requestSB, false);
+		     	urlReturn += "&amp;DOCUMENT_LABEL="+document.getLabel();
 				
 			} catch (Exception e) {
 				 logger.error("Error During object execution", e);
@@ -255,11 +256,8 @@ public class DocumentCompositionUtils {
 			logger.debug("Class " + className + " instantiated successfully. Now engine's execution starts.");
 			
 			
-			//urlReturn = GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
-			//			"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
-			
 			urlReturn = GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
-			"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_PARAMETERS=";
+						"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
 			
 			urlReturn += getParametersUrl(obj, document, requestSB, true);
 			
@@ -274,7 +272,7 @@ public class DocumentCompositionUtils {
 				urlReturn += "&amp;document=" + obj.getId();
 		}
 		//set EXECUTION_CONTEXT (only for documentcomposition docs)
-		urlReturn += "&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;" + SpagoBIConstants.EXECUTION_CONTEXT + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION +"&amp;";
+		urlReturn += "&amp;" + SpagoBIConstants.EXECUTION_CONTEXT + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION +"&amp;";
 	
 		//prepares and sets parameters value into session
 		HashMap parValueDoc = getAllParamsValue(urlReturn);

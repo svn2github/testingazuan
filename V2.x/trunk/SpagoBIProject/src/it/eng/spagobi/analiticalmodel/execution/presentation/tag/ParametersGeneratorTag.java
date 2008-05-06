@@ -172,8 +172,7 @@ public class ParametersGeneratorTag extends TagSupport {
 					createParamChangedHiddenInput(htmlStream, biparam);
 				}			    
 			}
-			// createParamValueHiddenInput(htmlStream, biparam);
-			// createParamChangedHiddenInput(htmlStream, biparam);
+			
 			// the biparameter is not showed if the biparameter is single value and has valid value
 			if (!isSingleValue(biparam) || !biparam.hasValidValues()) {
 			    // opens the div tag for the parameters form only the first
@@ -722,8 +721,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	logger.debug("OUT");
 	return objParFathLbl;
     }
-    
-    /*PROVA CHIARA PER CALENDARIO*/
+
     private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
     	htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
     		+ "<script type='text/javascript'>"
@@ -741,7 +739,7 @@ public class ParametersGeneratorTag extends TagSupport {
     	}
     	htmlStream.append("\" />\n");
         }
-    /*PROVA CHIARA PER CALENDARIO*/
+ 
 
     private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
 	htmlStream.append("<input style='width:230px;' type='text' " + "name='" + biparam.getParameterUrlName()

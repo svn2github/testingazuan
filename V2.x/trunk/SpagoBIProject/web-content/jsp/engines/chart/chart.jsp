@@ -565,8 +565,25 @@ if(sbi.isChangeableView() && !docComposition){
 	
 </script>
 
-<%} 
+<%} %>
 
+<%
+Integer refreshSeconds=objO.getRefreshSeconds();
+if(refreshSeconds!=null && refreshSeconds.intValue()>0){
+Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
+%>
+
+ <script type="text/javascript">
+
+    setTimeout('window.location.reload()', <%=refreshConvert%>);
+   
+</script>
+ <%} %>
+ 
+ 
+ 
+ 
+ <% 
 	} // End no error case
 	
 	%>

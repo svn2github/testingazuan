@@ -272,8 +272,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	   			<% if(type.equalsIgnoreCase("query")) { out.println(" checked='checked' "); } %> onClick="DisableFields('query')">
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.queryType" /></span>
 			</input>
-			<input type="radio" name="typeDataSet" value="2" <% if(type.equalsIgnoreCase("ws")) { out.println(" checked='checked' "); } %> onClick="DisableFields('ws')">
-					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.wsType" /></span> 
+		<!--	<input type="radio" name="typeDataSet" value="2" <% if(type.equalsIgnoreCase("ws")) { out.println(" checked='checked' "); } %> onClick="DisableFields('ws')">
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.wsType" /></span> -->
 			</input>
 		</div>
 		<%} %>

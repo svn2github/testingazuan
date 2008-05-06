@@ -177,6 +177,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% for (int i=0	; i<list.size(); i++){
       	       Domain domain = new Domain();
       	       domain = (Domain)list.get(i);
+		if(!(domain.getValueName().equalsIgnoreCase("number"))){
 		%>
       	<input type="radio" id="modality" name="modality" <%=disabled%>
       	<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
@@ -185,6 +186,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	           value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <% if(curr_value.equals(domain.getValueId().toString())) { out.println(" checked='checked' "); } %> >
 				<%= domain.getValueName()%>
 		</input>
+   	    <% } %>
    	    <% } %>
 	</div>
 	<div class='div_detail_label'>

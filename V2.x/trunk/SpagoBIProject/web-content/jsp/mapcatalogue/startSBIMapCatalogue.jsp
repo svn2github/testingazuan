@@ -45,25 +45,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	listFeatUrlPars.put("PAGE", "ListFeaturesPage");
 	String listFeatUrl = urlBuilder.getUrl(request, listFeatUrlPars);
 %>
-<table class='header-table-portlet-section'>
-	<tr class='header-row-portlet-section'>
-		<td class='header-title-column-portlet-section' 
-		    style='vertical-align:middle;padding-left:5px;'>			
-			<spagobi:message key="SBIMapCatalogue.titleMenu" bundle="component_mapcatalogue_messages" />
-		</td>
-		<%if(ChannelUtilities.isPortletRunning()) { %>
-		<td class='header-empty-column-portlet-section'>&nbsp;</td>
-		<td class='header-button-column-portlet-section'>
-			<a href='<%=backUrl%>'> 
-      			<img class='header-button-image-portlet-section' 
-      				 title='<spagobi:message key = "SBIMapCatalogue.backButton" bundle="component_mapcatalogue_messages" />' 
-      				 src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/back.png")%>' 
-      				 alt='<spagobi:message key = "SBIMapCatalogue.backButton"  bundle="component_mapcatalogue_messages"/>' />
-			</a>
-		</td>
-		<% } %>
-	</tr>
-</table>
+<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MAPCATALOGUE_MANAGEMENT)) {%>
+
+<portlet:defineObjects/>
 
 	
 <div class="div_background">
@@ -71,7 +55,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<table>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/mapManagement.png")%>' />
+				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/maps.png")%>' />
 			</td>
 			<td width="20">
 				&nbsp;
@@ -98,5 +82,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 		</tr>				
 	</table>
+	<%} %>
 	<br/>
 </div>
+<%@ include file="/jsp/commons/footer.jsp"%>

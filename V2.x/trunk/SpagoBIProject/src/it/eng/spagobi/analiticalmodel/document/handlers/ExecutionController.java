@@ -250,8 +250,10 @@ public class ExecutionController {
 				    			aBIObjectParameter.setLovResult(lovResult);
 				    			// if the lov is single value and the parameter value is not set, the parameter value 
 				    			// is the lov result
-				    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null)
+				    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null) {
 				    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
+				    				aBIObjectParameter.setHasValidValues(true);
+				    			}
 				        	}        	       
 			        	} catch (Exception e1) {
 			        		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 

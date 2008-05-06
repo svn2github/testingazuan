@@ -136,7 +136,7 @@
   	<PUBLISHER name="LoginSBICataloguePublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/commons/startSBICatalogue.jsp"/>
+        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/startSBIMapCatalogue.jsp"/>
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>

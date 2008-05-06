@@ -207,19 +207,50 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		throws Exception {
 		logger.debug("IN");
 		try {
+			// recovers required execution details
 			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
 			String executionId = (String) request.getAttribute("EXECUTION_ID");
+			session.setAttribute("EXECUTION_FLOW_ID", executionFlowId);
 			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
 			if (executionManager == null) {
 				throw new Exception("Execution Manager not found. Cannot recover execution details.");
 			}
 			ExecutionInstance instance = executionManager.recoverExecution(executionFlowId, executionId);
 			BIObject obj = instance.getBIObject();
+			// set biobject in session
 			setBIObject(obj);
 	    	String executionRole = instance.getExecutionRole();
+	    	// sets role for new execution on request
 	    	request.setAttribute("spagobi_execution_role", executionRole);
+	    	// sets the flag in order to skip snapshots/viewpoints/parameters/subobjects page
 	    	request.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
+	    	// deletes parameters of previous execution
 	    	session.delAttribute(ObjectsTreeConstants.PARAMETERS);
+	    	// creates parameters string for new execution
+	    	String documentParameters = "";
+			List parameters = obj.getBiObjectParameters();
+			Iterator parametersIt = parameters.iterator();
+			while (parametersIt.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) parametersIt.next();
+				String parurlname = parameter.getParameterUrlName();
+				List parValues = parameter.getParameterValues();
+				if (parValues == null || parValues.size() == 0) continue;
+				if (parValues.size() == 1) {
+					documentParameters += "&" + parurlname + "=" + parValues.get(0).toString();
+				} else {
+					documentParameters += "&" + parurlname + "=";
+					for (int i = 0; i < parValues.size(); i++) {
+						String aParValue = parValues.get(i).toString();
+						documentParameters += aParValue;
+						if (i < parValues.size() - 1) documentParameters += ";";
+					}
+				}
+			}
+	    	if (documentParameters.startsWith("&")) {
+	    		documentParameters = documentParameters.substring(1);
+	    	}
+	    	session.setAttribute(ObjectsTreeConstants.PARAMETERS, documentParameters);
+	    	// starts new execution
 	    	pageCreationHandler(request, response);
 		} finally {
 			logger.debug("OUT");
@@ -230,10 +261,10 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		throws Exception {
 		logger.debug("IN");
 		try {
-			// registers the current execution
+			// registers the current execution in the ExecutionManager
 			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
 			String sourceExecutionId = (String) request.getAttribute("SOURCE_EXECUTION_ID");
-			session.setAttribute("EXECUTION_FLOW_ID", sourceExecutionId);
+			session.setAttribute("EXECUTION_FLOW_ID", executionFlowId);
 			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
 			if (executionManager == null) {
 				executionManager = new ExecutionManager();

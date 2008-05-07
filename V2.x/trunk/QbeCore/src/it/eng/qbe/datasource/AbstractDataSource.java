@@ -110,6 +110,7 @@ public class AbstractDataSource implements IDataSource {
 	 */
 	public DatamartLabels getLabels(Locale locale) {
 		DatamartLabels props = (DatamartLabels)localizedLabelMap.get(locale.getLanguage());
+		if(props == null) props = getLabels();
 		return props;
 	}
 	

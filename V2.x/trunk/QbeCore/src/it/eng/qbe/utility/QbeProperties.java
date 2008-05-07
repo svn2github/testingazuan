@@ -31,138 +31,70 @@ import java.util.Properties;
  * @author Andrea Gioia
  */
 public class QbeProperties {
+	/** The properties. */
+	private Properties  properties;
 	
-	/** The Constant CLASS_TYPE_TABLE. */
-	public static final int CLASS_TYPE_TABLE = 1;
+	/** The Constant VISIBLE. */
+	public static final String VISIBLE = "visible";
 	
-	/** The Constant CLASS_TYPE_RELATION. */
-	public static final int CLASS_TYPE_RELATION = 2;
+	/**
+	 * Instantiates a new datamart properties.
+	 */
+	public QbeProperties() {
+		this(new Properties());
+	}	
 	
-	/** The Constant CLASS_TYPE_VIEW. */
-	public static final int CLASS_TYPE_VIEW = 3;
-	
-	/** The Constant FIELD_TYPE_UNDEFINED. */
-	public static final int FIELD_TYPE_UNDEFINED = 0;
-	
-	/** The Constant FIELD_TYPE_MEASURE. */
-	public static final int FIELD_TYPE_MEASURE = 1;
-	
-	/** The Constant FIELD_TYPE_DIMENSION. */
-	public static final int FIELD_TYPE_DIMENSION = 2;
-	
-	/** The Constant FIELD_TYPE_GEOREF. */
-	public static final int FIELD_TYPE_GEOREF = 3;
-	
-	/** The qbe properties. */
-	private Properties qbeProperties = null;
+	/**
+	 * Instantiates a new datamart properties.
+	 * 
+	 * @param properties the properties
+	 */
+	public QbeProperties(Properties  properties) {
+		setProperties(properties);
+	}	
 	
 	
 	/**
-	 * Instantiates a new qbe properties.
+	 * Gets the boolean properties.
 	 * 
-	 * @param dm the dm
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * 
+	 * @return the boolean properties
 	 */
-	public QbeProperties(IDataMartModel dm) {
-		qbeProperties = dm.getDataMartProperties();
-	}
-	
-	/**
-	 * Checks if is table visible.
-	 * 
-	 * @param className the class name
-	 * 
-	 * @return true, if is table visible
-	 */
-	public boolean isTableVisible(String className) {
-		if(qbeProperties == null) return true;
-		
-		String visiblePropertyValue = qbeProperties.getProperty(className + ".visible");
-		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Checks if is field visible.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return true, if is field visible
-	 */
-	public boolean isFieldVisible(String fieldName) {
-		if(qbeProperties == null) return true;
-		
-		String visiblePropertyValue = qbeProperties.getProperty(fieldName + ".visible");
-		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Gets the table type.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return the table type
-	 */
-	public int getTableType(String fieldName) {
-		if(qbeProperties == null) return CLASS_TYPE_TABLE;
-		String type = qbeProperties.getProperty(fieldName + ".type");
-		if(type == null || type.trim().equalsIgnoreCase("table")) {
-			return CLASS_TYPE_TABLE;
-		} else if(type.trim().equalsIgnoreCase("view")) {
-			return CLASS_TYPE_VIEW;
-		} else {
-			return CLASS_TYPE_RELATION;
-		}
-	}
-	
-	
-	
-	/**
-	 * Gets the field type.
-	 * 
-	 * @param className the class name
-	 * 
-	 * @return the field type
-	 */
-	public int getFieldType(String className) {
-		if(qbeProperties == null) return -1;
-		String type = qbeProperties.getProperty(className + ".type");
-		if(type != null && type.trim().equalsIgnoreCase("dimension")) {
-			return FIELD_TYPE_DIMENSION;
-		} else if (type != null && type.trim().equalsIgnoreCase("measure")) {
-			return FIELD_TYPE_MEASURE;
-		} else if (type != null && type.trim().equalsIgnoreCase("georef")) {
-			return FIELD_TYPE_GEOREF;
-		} else {
-			return FIELD_TYPE_UNDEFINED;
-		}
-	}
-	
-	/**
-	 * Sets the field type.
-	 * 
-	 * @param className the class name
-	 * @param type the type
-	 */
-	public void setFieldType(String className, int type) {		
-		if(type == FIELD_TYPE_DIMENSION) {
-			qbeProperties.setProperty(className + ".type", "dimension");
-		} else if(type == FIELD_TYPE_MEASURE) {
-			qbeProperties.setProperty(className + ".type", "measure");
-		} else if(type == FIELD_TYPE_GEOREF) {
-			qbeProperties.setProperty(className + ".type", "georef");
-		} else {
-	
-		}
+	private boolean getBooleanProperties(String key, boolean defaultValue) {
+		String value = properties.getProperty(key);
+		if(value == null) return defaultValue;
+		return value.equalsIgnoreCase("TRUE");
 	}
 
 	
+	/**
+	 * Gets the property.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the property
+	 */
+	private String getProperty(String key) {
+		return properties.getProperty(key);
+	}
 	
-	
+	/**
+	 * Gets the properties.
+	 * 
+	 * @return the properties
+	 */
+	private Properties getProperties() {
+		return properties;
+	}
+
+	/**
+	 * Sets the properties.
+	 * 
+	 * @param properties the new properties
+	 */
+	private void setProperties(Properties properties) {
+		this.properties = properties;
+	}	
 }

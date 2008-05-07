@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.utilities.urls;
 
 import it.eng.spago.base.RequestContainer;
@@ -43,9 +43,15 @@ public class PortletUrlBuilder implements IUrlBuilder{
 	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getUrl(javax.servlet.http.HttpServletRequest, java.util.Map)
 	 */
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		return getActionUrl(aHttpServletRequest, parameters);
+	}
+
+
+
+	public String getActionUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
 		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
-		PortletURL aPortletURL = renderResponse.createActionURL();
+		PortletURL aPortletURL = renderResponse.createActionURL(); 
 		if (parameters != null){
 			Iterator keysIt = parameters.keySet().iterator();
 			boolean isFirst = true;
@@ -59,8 +65,31 @@ public class PortletUrlBuilder implements IUrlBuilder{
 		}
 		return aPortletURL.toString();
 	}
-	
-	
+
+	public String getRenderUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
+		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
+		PortletURL aPortletURL = renderResponse.createRenderURL(); 
+		if (parameters != null){
+			Iterator keysIt = parameters.keySet().iterator();
+			boolean isFirst = true;
+			String paramName = null;
+			Object paramValue = null;
+			while (keysIt.hasNext()){
+				paramName = (String)keysIt.next();
+				paramValue = parameters.get(paramName); 
+				aPortletURL.setParameter(paramName, paramValue.toString());
+			}
+		}
+		return aPortletURL.toString();
+	}
+
+
+
+
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getResourceLink(javax.servlet.http.HttpServletRequest, java.lang.String)
 	 */

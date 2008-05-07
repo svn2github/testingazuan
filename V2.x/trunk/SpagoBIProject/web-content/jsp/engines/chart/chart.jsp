@@ -307,12 +307,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		// Set the Url for refreshing the chart: in case of document composition specify also the execution page and document_id
 		Map refreshUrlPars = new HashMap();
-			refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-			if(docComposition==true){
+		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+			
+		if(docComposition==true){
 		   	refreshUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+documentid;
 			}
 			else{
-		   	refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+				if(urlBuilder instanceof PortletUrlBuilder){
+				   	refreshUrl = ((PortletUrlBuilder)urlBuilder).getRenderUrl(request, refreshUrlPars);
+				}
+				else{
+				  	refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+				}
 			}
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
@@ -506,12 +512,14 @@ if(sbi.isChangeableView() && !docComposition){
 	    // for each possible parameter to change creates a checkbox
 	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 	    		String par = (String) iterator.next(); %>
+
 	  
-	<td align="right">
-			<div class='div_detail_form'>
+		<td align="right">
+			<div class='div_detail_form'>	
 					<span class='portlet-form-field-label'>
 						<%=sbi.getChangeViewParameterLabel(par,0)%> 
 					</span>
+				   </div>
 				</td>
 				<td align="left">
 	    		<form  name="<%=par%>" action="<%=refreshUrl%>" method="GET" >
@@ -524,8 +532,9 @@ if(sbi.isChangeableView() && !docComposition){
 				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
  	    		  <%} %>
  	    		</form>
- 	     </div>
-	   </td>
+ 	   </td>
+	  
+
 	     	    	<% 
 	    	}
 	%>  </tr></table>
@@ -569,7 +578,7 @@ if(sbi.isChangeableView() && !docComposition){
 		var url="<%=refreshUrlCategory%>";
 		var finalUrl=url+second;
 		return finalUrl;
-		}
+	}
 		
 
 	
@@ -613,9 +622,23 @@ if(refreshSeconds!=null && refreshSeconds.intValue()>0){
 Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
 %>
 
+<script  type="text/javascript">
+
+function refreshpage(){
+  if (isMoz()) {
+  var evt = document.createEvent("MouseEvents");
+   evt.initMouseEvent("click", 1, 1, window, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+   document.getElementById('refresh<%= uuidO %>').dispatchEvent(evt);
+  } else {
+   document.getElementById('refresh<%= uuidO %>').click();
+  }
+}
+</script>
+
  <script type="text/javascript">
 
-    setTimeout('window.location.reload()', <%=refreshConvert%>);
+    //setTimeout('window.location.reload()', <%=refreshConvert%>);
+   setTimeout('javascript:refreshpage()', <%=refreshConvert%>);
    
 </script>
  <%} %>

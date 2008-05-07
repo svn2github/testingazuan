@@ -233,7 +233,7 @@ if (toolbarIsVisible) {
 			    <% } %>
 			    <% if (!isExecutingSnapshot) { %>
 			    <li>		    
-					<a style="text-decoration:none;" href='<%= getUrl(execUrl, documentParametersMap)  %>'>
+					<a id="refresh<%=uuid%>" style="text-decoration:none;" href='<%= getUrl(execUrl, documentParametersMap)  %>'>
 						<img width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
 							alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>' />

@@ -190,6 +190,11 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		if(URL.contains("&amp;"+toMove)){
 		URL=URL.replaceAll("&amp;"+toMove, "");
 		}
+		else{
+			if(URL.contains("&"+toMove)){
+				URL=URL.replaceAll("&"+toMove, "");
+				}
+		}
 		if(URL.contains(toMove)){
 			URL=URL.replaceAll(toMove, "");
 		}

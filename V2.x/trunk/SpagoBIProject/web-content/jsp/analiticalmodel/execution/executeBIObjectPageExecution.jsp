@@ -208,7 +208,7 @@ Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
     setTimeout("doRefresh()",<%=refreshConvert%>);
   }
   
-  setTimeout('window.location.reload()', <%=refreshConvert%>);
+  setTimeout('doRefresh()', <%=refreshConvert%>);
    
 </script>
 <%} %>

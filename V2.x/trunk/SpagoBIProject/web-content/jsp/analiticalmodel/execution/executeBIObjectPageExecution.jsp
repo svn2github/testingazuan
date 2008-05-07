@@ -153,18 +153,6 @@ if (heightArea == null || heightArea.trim().equals("")) {
 </div>
 <%-- End execution iframe --%>
 
-<%-- start drill script --%>
-<script>
-function execDrill(name, url){
-	if (name == null || name == "")
-		name = "iframeexec<%= uuid %>";
-	var element = document.getElementById(name);
-	element.src = url;
-	return;
-}
-</script>
-<%-- end drill script --%>
-
 <%-- start cross navigation scripts --%>
 <%
 Map crossNavigationParameters = new HashMap();
@@ -192,7 +180,7 @@ function execCrossNavigation(windowName, label, parameters) {
 <%-- end cross navigation scripts --%>
 
 
-<%-- refresh Scripts --%>
+<%-- start refresh Scripts --%>
 <%
 Integer refreshSeconds=obj.getRefreshSeconds();
 if(refreshSeconds!=null && refreshSeconds.intValue()>0){
@@ -212,8 +200,7 @@ Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
    
 </script>
 <%} %>
-
-
+<%-- end refresh Scripts --%>
 
 
 <%@ include file="/jsp/commons/footer.jsp"%>

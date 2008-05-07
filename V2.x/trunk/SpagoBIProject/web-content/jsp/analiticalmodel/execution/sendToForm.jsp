@@ -246,7 +246,7 @@ function sendTo() {
 	while(parKeys.hasMoreElements()) {
 		String parkey = parKeys.nextElement().toString();
 		if (parkey.equals("ACTION_NAME")) continue;
-		if (parkey.equals("userId")) continue;
+		if (parkey.equalsIgnoreCase("userid")) continue;
 		String parvalue = request.getParameter(parkey);
 		%>
 		pars += "&<%=parkey%>=<%=parvalue%>";
@@ -263,17 +263,16 @@ function sendTo() {
 	pars += "&replyto=" + document.getElementById('replyto').value;
 	mstd = document.getElementById('messageSendToDiv');
 	mstd.innerHTML = "<spagobi:message key="sbi.execution.waiting" />";
-	new Ajax.Request(url,
-		{
-			method: 'post',
-			parameters: pars,
-			onSuccess: function(transport){
-				response = transport.responseText || "";
-				showSendToResult(response);
-			},
-			onFailure: somethingWentWrongSendTo
-		}
-	);
+	Ext.Ajax.request({
+		url: url,
+		method: 'post',
+		success: function (result, request) {
+			response = result.responseText || "";
+			showSendToResult(response);
+		},
+		params: pars,
+		failure: somethingWentWrongSendTo
+	});
 }
  
 function somethingWentWrongSendTo() {

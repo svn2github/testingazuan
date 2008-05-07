@@ -85,8 +85,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 					String value=(String)att.getAttribute("value");
 
 					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
-						if(value.equalsIgnoreCase("serie"))serieUrlname=value;
-						if(value.equalsIgnoreCase("category"))categoryUrlName=value;
+						if(value.equalsIgnoreCase("serie"))serieUrlname=name;
+						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
 					}
 					else{												// Case absolute
 						drillParameter.put(name, value);

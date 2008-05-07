@@ -272,7 +272,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		if(docComposition){			
 			((ILinkableChart)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
 		
-			completeUrl="javascript:parent.execCrossNavigation(this.name, '"+drillLabel+","+rootDocParameter;
+			completeUrl="javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','"+rootDocParameter;
 				}
 			else
 			{
@@ -329,7 +329,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
 				}	
 		}  	
-		   	
+	%>
+	
+	
+	<% 	   	
 		   	// form to limit the series if it is a barchart
 	if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		//sets the URL
@@ -351,7 +354,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			Select from <%=serTitle%>
 		</span>
 	</div>
-		
+	<div>	
 	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
 <% 	
 	refreshUrlPars.put("category",new Integer(categoryCurrent));
@@ -364,7 +367,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<%
 	}%>
-	<select name="serie" multiple="multiple">
+	<select name="serie" multiple="multiple" SIZE="5">
 	<%if(selectedSeries.contains("allseries")){ %>
 		<option value="allseries" selected="selected">View all</option>
 	<%} else {%>
@@ -383,10 +386,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%} 
 	} %>
 	</select>
-	<input type="submit" value="Select">
+	<input type="submit" value="Select"/>
 	</form>
+</div>
 <% 
 }
+%>
+
+<% 
 
 	/// If it is a linkable graph
 	    if(sbi.isLinkable()){

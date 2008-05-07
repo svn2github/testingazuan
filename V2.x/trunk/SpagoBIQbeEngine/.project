@@ -4,8 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>SpagoBIUtils</project>
-		<project>SpagoWeb</project>
 		<project>QbeCore</project>
+		<project>SpagoWeb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

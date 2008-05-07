@@ -202,7 +202,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		           width: 75
 		        },{
 		           id:'field',
-		           header: this.labels.filed,
+		           header: this.labels.field,
 		           dataIndex: 'field',
 		           width: 75
 		        },{

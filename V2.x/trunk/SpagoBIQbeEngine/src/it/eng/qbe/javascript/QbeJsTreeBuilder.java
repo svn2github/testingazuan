@@ -20,6 +20,7 @@
  **/
 package it.eng.qbe.javascript;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.datasource.BasicHibernateDataSource;
 import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.log.Logger;
@@ -86,7 +87,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 	IQbeUrlGenerator qbeUrlGenerator = null;
 	
 	/** The qbe properties. */
-	QbeProperties qbeProperties;
+	DatamartProperties qbeProperties;
 	
 	/** The action name. */
 	String actionName = null;
@@ -122,7 +123,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		this.dataMartModel = dataMartModel;
 		this.dataMartWizard = dataMartWizard;
 		this.httpRequest = httpRequest;
-		this.qbeProperties = new QbeProperties(dataMartModel);
+		this.qbeProperties = dataMartModel.getDataSource().getProperties();
 		//this.qbeAccessModality = QbeAccessModalityFactory.getAccessModality("", "");
 		
 		selectedNodes = getSelectdNodes();
@@ -384,9 +385,9 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		}
 		
 		String classImage;
-		if(qbeProperties.getTableType(newClassName) == QbeProperties.CLASS_TYPE_TABLE) {
+		if(qbeProperties.getTableType(newClassName) == DatamartProperties.CLASS_TYPE_CUBE) {
 			classImage = "../img/Class.gif";
-		} else if(qbeProperties.getTableType(newClassName) == QbeProperties.CLASS_TYPE_VIEW) {
+		} else if(qbeProperties.getTableType(newClassName) == DatamartProperties.CLASS_TYPE_VIEW) {
 			classImage = "../img/view.gif";
 		} else {
 			classImage = "../img/relationship.gif";
@@ -530,20 +531,20 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 				
 				String fieldImage;
 				int type = qbeProperties.getFieldType(completeFieldRef);
-				if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+				if(type == DatamartProperties.FIELD_TYPE_UNDEFINED) {
 					type = qbeProperties.getFieldType((String)keyProperties.get(j));
-					if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
-						type = QbeProperties.FIELD_TYPE_DIMENSION;
+					if(type == DatamartProperties.FIELD_TYPE_UNDEFINED) {
+						type = DatamartProperties.FIELD_TYPE_ATTRIBUTE;
 					} else {
 						qbeProperties.setFieldType(completeFieldRef, type);
 					}
 				}
 				
-				if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
+				if(type == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
 					fieldImage = "../img/key.gif";
-				} else if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
+				} else if(type == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
 					fieldImage = "../img/key.gif";
-				} else if(type == QbeProperties.FIELD_TYPE_GEOREF) {
+				} else if(type == DatamartProperties.FIELD_TYPE_GEOREF) {
 					fieldImage = "../img/world.gif";
 				} else {
 					fieldImage = "../img/key.gif";
@@ -666,20 +667,20 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 						
 						String fieldImage;
 						int type = qbeProperties.getFieldType(completeFieldRef);
-						if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
+						if(type == DatamartProperties.FIELD_TYPE_UNDEFINED) {
 							type = qbeProperties.getFieldType(metaPropertyNames[i]);
-							if(type == QbeProperties.FIELD_TYPE_UNDEFINED) {
-								type = QbeProperties.FIELD_TYPE_DIMENSION;
+							if(type == DatamartProperties.FIELD_TYPE_UNDEFINED) {
+								type = DatamartProperties.FIELD_TYPE_ATTRIBUTE;
 							} else {
 								qbeProperties.setFieldType(completeFieldRef, type);
 							}
 						}
 						
-						if(type == QbeProperties.FIELD_TYPE_DIMENSION) {
+						if(type == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
 							fieldImage = "../img/redbox.gif"; //"../img/Method.gif";
-						} else if(type == QbeProperties.FIELD_TYPE_MEASURE) {
+						} else if(type == DatamartProperties.FIELD_TYPE_MEASURE) {
 							fieldImage = "../img/Method.gif"; //"../img/dot.png";
-						} else if(type == QbeProperties.FIELD_TYPE_GEOREF) {
+						} else if(type == DatamartProperties.FIELD_TYPE_GEOREF) {
 							fieldImage = "../img/world.gif"; //"../img/dot.png";
 						} else {
 							fieldImage = "../img/undef.gif"; //"../img/Method.gif";

@@ -66,6 +66,7 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 				JSONObject recordJSON = recordsJOSN.getJSONObject(i);
 				String fieldUniqueName = recordJSON.getString("id");
 				String alias = recordJSON.getString("alias");
+				String fieldA = recordJSON.getString("field");
 				String group = recordJSON.getString("group");
 				String order = recordJSON.getString("order");
 				String funct = recordJSON.getString("funct");
@@ -86,6 +87,8 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 							fieldHibType, fieldHibScale, fieldHibPrec);
 					if(alias != null && !alias.trim().equalsIgnoreCase("") && !alias.trim().equalsIgnoreCase("undefined")) {
 						selectField.setFieldAlias(alias);
+					} else if(fieldA != null && !fieldA.trim().equalsIgnoreCase("") && !fieldA.trim().equalsIgnoreCase("undefined")) {
+						selectField.setFieldAlias(fieldA);
 					}
 					
 					selectField.setVisible(visible);

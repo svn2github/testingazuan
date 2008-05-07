@@ -49,9 +49,10 @@ public class DatamartLabelFactory {
 		Locale locale = QbeEngineConf.getInstance().getLocale();	
 		DatamartLabels datamartModelLabels = datamartModel.getDataSource().getLabels(locale);
 		
+		
 		if(datamartModelLabels == null) return field.getName();
 		
-		String label =(String)datamartModelLabels.getLabel( field.getUniqueName() ); 
+		String label =(String)datamartModelLabels.getLabel( field.getUniqueName().replaceAll(":", "/") ); 
 		if ((label != null) && (label.trim().length() > 0))
 			return label;
 		else
@@ -72,7 +73,7 @@ public class DatamartLabelFactory {
 		
 		if(prop == null) return entity.getName();
 		
-		String label =(String)prop.getLabel( entity.getUniqueName() );
+		String label =(String)prop.getLabel( entity.getUniqueName().replaceAll(":", "/") );
 		if ((label != null) && (label.trim().length() > 0)) {
 			return label;
 		} else {

@@ -20,6 +20,7 @@
  **/
 package it.eng.spagobi.qbe.tree.presentation.tag;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -44,23 +45,24 @@ public class DatamartImageFactory {
 	 */
 	public static String getFieldImage(IDataMartModel datamart, DataMartField field) {
 		String fieldImage;
-		QbeProperties qbeProperties = new QbeProperties(datamart);
+		DatamartProperties qbeProperties = datamart.getDataSource().getProperties();
+		
 		
 		int fieldType = qbeProperties.getFieldType( field.getName() );
 		
 		
 		if(field.isKey()) {
-			if(fieldType == QbeProperties.FIELD_TYPE_GEOREF) {
+			if(fieldType == DatamartProperties.FIELD_TYPE_GEOREF) {
 				fieldImage = "../img/world.gif";
 			} else {
 				fieldImage = "../img/key.gif";
 			}
 		} else  {
-			if(fieldType == QbeProperties.FIELD_TYPE_DIMENSION) {
+			if(fieldType == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
 				fieldImage = "../img/redbox.gif"; 
-			} else if(fieldType == QbeProperties.FIELD_TYPE_MEASURE) {
+			} else if(fieldType == DatamartProperties.FIELD_TYPE_MEASURE) {
 				fieldImage = "../img/Method.gif"; 
-			} else if(fieldType == QbeProperties.FIELD_TYPE_GEOREF) {
+			} else if(fieldType == DatamartProperties.FIELD_TYPE_GEOREF) {
 				fieldImage = "../img/world.gif";
 			} else {
 				fieldImage = "../img/redbox.gif"; 
@@ -81,14 +83,14 @@ public class DatamartImageFactory {
 	public static String getEntityImage(IDataMartModel datamart, DataMartEntity entity) {
 		String entityImage;
 		int entityType;
-		QbeProperties qbeProperties; 
+		DatamartProperties qbeProperties; 
 		
-		qbeProperties = new QbeProperties(datamart);		
+		qbeProperties = datamart.getDataSource().getProperties();		
 		entityType = qbeProperties.getTableType( entity.getType() );
 		
-		if(entityType == QbeProperties.CLASS_TYPE_TABLE) {
+		if(entityType == DatamartProperties.CLASS_TYPE_CUBE) {
 			entityImage = "../img/Class.gif";
-		} else if(entityType == QbeProperties.CLASS_TYPE_VIEW) {
+		} else if(entityType == DatamartProperties.CLASS_TYPE_VIEW) {
 			entityImage = "../img/view.gif";
 		} else {
 			entityImage = "../img/relationship.gif";

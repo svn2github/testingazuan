@@ -127,7 +127,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				
 			    if (!(o instanceof Object[])){
 			    	row = new Object[1];
-			    	row[0] = o.toString();
+			    	row[0] = o == null? "": o.toString();
 			    }else{
 			    	row = (Object[])o;
 			    }

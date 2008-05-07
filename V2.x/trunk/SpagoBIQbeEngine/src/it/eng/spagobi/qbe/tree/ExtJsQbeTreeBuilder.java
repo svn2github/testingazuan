@@ -20,6 +20,8 @@
  **/
 package it.eng.spagobi.qbe.tree;
 
+import it.eng.qbe.bo.DatamartLabels;
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -196,29 +198,29 @@ public class ExtJsQbeTreeBuilder  {
 								  DataMartEntity entity,
 								  int recursionLevel) {		
 		
+		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();	
+		if(!datamartProperties.isTableVisible( entity.getUniqueName().replaceAll(":", "/") )) return;
+		int entityType = datamartProperties.getTableType( entity.getUniqueName().replaceAll(":", "/") );
+		
 		String label = DatamartLabelFactory.getEntityLabel(datamartModel, entity);	
-		String image = DatamartImageFactory.getEntityImage(datamartModel, entity);			
-		String iconCls = null;
+			
 		
-		QbeProperties qbeProperties; 
+		System.out.println( "\n\n"+ entity.getUniqueName().replaceAll(":", "/") + "=" );
 		
-		qbeProperties = new QbeProperties(datamartModel);		
-		int entityType = qbeProperties.getTableType( entity.getType() );
 		
-		if(entityType == QbeProperties.CLASS_TYPE_TABLE) {
+		String iconCls = "dimension";		
+		if(entityType == DatamartProperties.CLASS_TYPE_CUBE) {
 			iconCls = "cube";
-		} else if(entityType == QbeProperties.CLASS_TYPE_VIEW) {
+		} else if(entityType == DatamartProperties.CLASS_TYPE_VIEW) {
 			iconCls = "view";
-		} else {
-			iconCls = "dimension";
-		}				
+		} 			
 		
 		JSONArray childrenNodes = getFieldNodes(entity, recursionLevel);
 		
 		JSObject entityNode = new JSObject();
 		try {
 			entityNode.put("id", entity.getUniqueName());
-			entityNode.put("text", entity.getName());
+			entityNode.put("text", label );
 			entityNode.put("iconCls", iconCls);
 			entityNode.put("children", childrenNodes);
 		} catch (JSONException e) {
@@ -248,7 +250,11 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator keyFieldIterator = keyFields.iterator();
 		while (keyFieldIterator.hasNext() ) {
 			DataMartField field = (DataMartField)keyFieldIterator.next();
-			children.put( getFieldNode(entity, field) );
+			JSObject jsObject = getFieldNode(entity, field);
+			if(jsObject != null) {
+				children.put( jsObject );
+			}
+			
 		}
 		
 		// add normal fields
@@ -258,7 +264,10 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator normalFieldIterator = normalFields.iterator();
 		while (normalFieldIterator.hasNext() ) {
 			DataMartField field = (DataMartField)normalFieldIterator.next();
-			children.put( getFieldNode(entity, field) );
+			JSObject jsObject = getFieldNode(entity, field);
+			if(jsObject != null) {
+				children.put( jsObject );
+			}
 		}
 		
 		// add subentities
@@ -278,22 +287,34 @@ public class ExtJsQbeTreeBuilder  {
 	public  JSObject getFieldNode(DataMartEntity parentEntity,
 							 DataMartField field) {
 		
+		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
+		if( !datamartProperties.isFieldVisible( field.getUniqueName().replaceAll(":", "/") ) ) return null;
+		int fieldType = datamartProperties.getFieldType( field.getUniqueName().replaceAll(":", "/") );
 		
 		
-		String label = DatamartLabelFactory.getFieldLabel(getDatamartModel(), field);			
-		String image = DatamartImageFactory.getFieldImage(getDatamartModel(), field);				
-		//String action = getUrlGenerator().getActionUrl(field);
-					
+		String fieldLabel = DatamartLabelFactory.getFieldLabel(getDatamartModel(), field);	
+		String entityLabel = DatamartLabelFactory.getEntityLabel(datamartModel, parentEntity);	
+				
+		System.out.println( field.getUniqueName().replaceAll(":", "/") + "=" );
+		
+		
+		String iconCls = "attribute";
+		if(fieldType == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
+			iconCls = "attribute";
+		} else if(fieldType == DatamartProperties.FIELD_TYPE_MEASURE) {
+			iconCls = "measure";
+		} 	
+		
 		JSObject fieldNode = new JSObject();
 		try {
 			fieldNode.put("id", field.getUniqueName());
-			fieldNode.put("text", field.getName());
+			fieldNode.put("text", fieldLabel);
 			fieldNode.put("leaf", true);
 			JSObject nodeAttributes = new JSObject();
-			//"{iconCls:'measure', entity:'sales', field:'unit_sales', type:'field'}"
-			nodeAttributes.put("entity", parentEntity.getName());
-			nodeAttributes.put("field", field.getName());
-			nodeAttributes.put("iconCls", "attribute");
+
+			nodeAttributes.put("entity", entityLabel);
+			nodeAttributes.put("field", fieldLabel);
+			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "field");
 			fieldNode.put("attributes", nodeAttributes);
 		} catch (JSONException e) {

@@ -104,6 +104,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String serTitle="serie";
 	String refreshUrlCategory="";
 	String refreshUrlSerie="";
+	boolean makeSlider=false;
 
  	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
@@ -218,7 +219,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,selectedSeries);	
 				
 				}
-			} 
+			// consider if drawing the slider
+		    if((catsnum)>numberCatVisualization){
+			makeSlider=true;	    	
+		    }
+	} 
 			
 	
 	if(copyDataset==null){copyDataset=dataset;}
@@ -338,7 +343,103 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	
 	
-	<% 	   	
+	
+	
+	
+	
+	
+	
+<% 
+
+	/// If it is a linkable graph  write the MAP
+	    if(sbi.isLinkable()){
+		PrintWriter pw = new PrintWriter(out);
+		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
+	    }
+	
+
+
+	    // No slider needed
+	if(makeSlider==false){
+	    %>
+  	 	<div align="center">
+			<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
+		</div>
+		<%}
+	else{   /////////////////////// Beginslider creation //////////////////////////
+		maxSlider=new Integer(catsnum).toString();
+		minSlider="1";
+	%>
+
+		<script type="text/javascript" language="JAVASCRIPT">
+			<!--
+				arrayCats=new Array(<%=catsnum%>);
+				-->
+		</script>
+	
+		<%
+		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
+			Integer key=(Integer)iterator.next();
+			String name=(String)categories.get(key);
+		%>
+
+		<script type="text/javascript" language="JAVASCRIPT">
+			<!--
+				arrayCats[<%=key%>]='<%=name%>';
+		     arrayCats[1]=0;
+			//-->
+		</script>
+		<%} %>
+	<BR>
+		<table  align="center" >
+		 <form id="sliderform">
+		<!--  	 <table align="left" > -->
+				<tr>
+					<td width="75%" align="center">
+						<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
+							<div id="slider1"></div> 
+						</a>
+						<div id="output1"> 
+							<table align="center">
+								<tr>
+									<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
+									</td>
+									<td width="15%" align="center" class="sliderstatusclass">
+										<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+		</form> 
+		</table>
+
+ 	<div align="center">
+ 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
+	</div>
+
+	<% 
+	}
+	/////////////////////// End slider creation ////////////////////////// 
+	%>
+    
+    
+    
+    
+        
+<%
+	////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
+
+	//if(sbi.isChangeableView() && !docComposition){
+		if(true){
+		%>
+		<div>
+			<table id="changepars" align="center">
+			 <tr>
+			 
+		
+			 <% 	   	
 		   	// form to limit the series if it is a barchart
 	if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		//sets the URL
@@ -354,7 +455,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		refreshUrlSerie=refreshUrl;
 		}
 	%>
-	
+		<td> 
+	<div align="left">
 	<div class='div_detail_form'>
 		<span class='portlet-form-field-label'>
 			Select from <%=serTitle%>
@@ -395,164 +497,51 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<input type="submit" value="Select"/>
 	</form>
 </div>
+</div>
+</td>
 <% 
 }
 %>
-
-<% 
-
-	/// If it is a linkable graph
-	    if(sbi.isLinkable()){
-		PrintWriter pw = new PrintWriter(out);
-		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
-	    }
-	
-
-	    boolean makeSlider=false;
-	    if((sbi.getType().equalsIgnoreCase("BARCHART")) && (catsnum)>numberCatVisualization){
-		makeSlider=true;	    	
-	    }
-
-	    // No slider needed
-	    if(makeSlider==false){
-	    %>
-  	 <div align="center">
-	
-   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
-
+			 		 			 
+		<%   if(sbi.isChangeableView() && !docComposition){
+	    		// for each possible parameter to change creates a checkbox
+	    		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+	    			String par = (String) iterator.next(); %>
+					<td align="right">
+						<div class='div_detail_form'>	
+							<span class='portlet-form-field-label'>
+								<%=sbi.getChangeViewParameterLabel(par,0)%> 
+							</span>
+				  		 </div>
+					</td>
+					<td align="left">
+	    				<form  name="<%=par%>" action="<%=refreshUrl%>" method="GET" >
+	    		  		<%if(sbi.getChangeViewParameter(par)){ %>
+	    		  			<input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
+ 				  			<input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
+ 			  			<%}
+	    		  		else {%>
+	    		 			<input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
+							<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
+ 	    		  		<%} %>
+ 	    				</form>
+ 	   				</td>
+	  				<%} // close for on cheangeable pars
+	  				}%>  
+			  </tr>
+			 </table>
 	</div>
-
-	<%}
-	else{
-	// Slider needed
-	%>
-	
-		<div align="center">
-		
-    	    	<% /////////////////////// Beginslider creation //////////////////////////
-	//if it's a barchart creates the slider! Only if categories number more than how many you have to show
-    	
-	//calculate the number of ticks
-		
-		maxSlider=new Integer(catsnum).toString();
-		minSlider="1";
-	%>
-	
-
-
-	<script type="text/javascript" language="JAVASCRIPT">
-		<!--
-		arrayCats=new Array(<%=catsnum%>);
-		-->
-	</script>
-	
-		<%
-		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
-			Integer key=(Integer)iterator.next();
-			String name=(String)categories.get(key);
-	%>
-
-		<script type="text/javascript" language="JAVASCRIPT">
-			<!--
-				arrayCats[<%=key%>]='<%=name%>';
-		     arrayCats[1]=0;
-			//-->
-		</script>
-	<%} %>
+	<%}%>
 	
 	
 	
-
-	<form id="sliderform">
-		<table class="slidertableclass" align="center" >
-			<tr>
-				<td width="75%" align="center">
-					<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
-							<div id="slider1"></div> 
-					</a>
-					<div id="output1"> 
-						<table align="center">
-							<tr>
-								<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass"></td>
-								<!--  <td width="10%" align="left"><a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">Select Category</a></td> --> 
-								<td width="15%" align="center" class="sliderstatusclass"><a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a></td>
-							</tr>
-						</table>
-					</div>
-</td>
-			</tr>
-		</table>
 	
-	<BR>
-</form> 
- <img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
-
-</div>
-
+	
+	
+	
+	
+	
 	<% 
-	}
-	/////////////////////// End slider creation ////////////////////////// 
-	%>
-    
-    
-    
-    
-    
-    
-    
-<%
-
-	
-////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
-
-if(sbi.isChangeableView() && !docComposition){
-	%>
-	<table id="changepars" align="center"><tr>
-	<%     	
-	    // for each possible parameter to change creates a checkbox
-	    	for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
-	    		String par = (String) iterator.next(); %>
-
-	  
-		<td align="right">
-			<div class='div_detail_form'>	
-					<span class='portlet-form-field-label'>
-						<%=sbi.getChangeViewParameterLabel(par,0)%> 
-					</span>
-				   </div>
-				</td>
-				<td align="left">
-	    		<form  name="<%=par%>" action="<%=refreshUrl%>" method="GET" >
-	    		  <%if(sbi.getChangeViewParameter(par)){ %>
-	    		  <input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
- 				  <input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
- 			  <%}
-	    		  else {%>
-	    		 <input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
-				<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
- 	    		  <%} %>
- 	    		</form>
- 	   </td>
-	  
-
-	     	    	<% 
-	    	}
-	%>  </tr></table>
-		<BR>
-		<BR>
-	</div>
-	<% 
-		    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
  if(makeSlider==true){ %>
 
@@ -578,7 +567,8 @@ if(sbi.isChangeableView() && !docComposition){
 		var url="<%=refreshUrlCategory%>";
 		var finalUrl=url+second;
 		return finalUrl;
-	}
+	
+}
 		
 
 	

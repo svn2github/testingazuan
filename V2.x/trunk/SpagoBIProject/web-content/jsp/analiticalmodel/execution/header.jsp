@@ -233,12 +233,12 @@ if (toolbarIsVisible) {
 			    <% } %>
 			    <% if (!isExecutingSnapshot) { %>
 			    <li>		    
-					<a id="refresh<%=uuid%>" style="text-decoration:none;" href='<%= getUrl(execUrl, documentParametersMap)  %>'>
-						<img width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
+					<form id="refresh<%=uuid%>" action="<%= getUrl(execUrl, documentParametersMap)  %>" method="get">
+					<input id='refreshimage<%= uuid %>' type="image" width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
 							alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
-							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>' />
-					</a>
-				</li>
+							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'/>
+					</form>
+					</li>
 				<% } %>
 				<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot) { %>
 			    <li>		    

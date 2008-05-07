@@ -402,7 +402,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div id="output1"> 
 							<table align="center">
 								<tr>
-									<td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
+									 <td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
 									</td>
 									<td width="15%" align="center" class="sliderstatusclass">
 										<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a>
@@ -591,14 +591,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		function() {
 		value= arrayCats[parseInt(this.value)];
 		value="View <%=catTitle%>: "+value;		
-		$('slider_1_1_value').innerHTML =value;
+		document.getElementById('slider_1_1_value').innerHTML=value;
+		//$('slider_1_1_value').innerHTML =value;
 				}
 		)
 	
-		currentName="View <%=catTitle%>:";
-	
-					
-		$('slider_1_1_value').innerHTML = currentName;
+			//document.getElementById('slider_1_1_value').innerHTML = currentName;		
+		//$('slider_1_1_value').innerHTML = currentName;
 	
 	});
 	
@@ -615,13 +614,9 @@ Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
 <script  type="text/javascript">
 
 function refreshpage(){
-  if (isMoz()) {
-  var evt = document.createEvent("MouseEvents");
-   evt.initMouseEvent("click", 1, 1, window, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
-   document.getElementById('refresh<%= uuidO %>').dispatchEvent(evt);
-  } else {
-   document.getElementById('refresh<%= uuidO %>').click();
-  }
+if(document.getElementById('refreshimage<%= uuidO %>')){
+	document.getElementById('refreshimage<%= uuidO %>').click();
+	}
 }
 </script>
 

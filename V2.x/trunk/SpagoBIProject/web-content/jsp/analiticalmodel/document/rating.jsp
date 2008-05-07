@@ -39,6 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  <%
 	    String objid = (String)aServiceResponse.getAttribute("OBJECT_ID");
 	    String mess = (String)aServiceResponse.getAttribute("MESSAGEDET");	
+	    String userid = (String)aServiceResponse.getAttribute("userid");
 	    boolean alreadyVoted = false ;
 	    if (mess.equals("DOCUMENT_RATE")) alreadyVoted = true ;
 	    String msg = "DOCUMENT_RATE";
@@ -129,6 +130,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div  style='text-align:center;'>
 	<a><img  src='<%= smileUrl%>' /></a>
 	</div>
+	<a href='<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userid)%>&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=<%=objid%>'><spagobi:message key = "metadata.changeVote" /></a>
 <% } %>
 
 <script>

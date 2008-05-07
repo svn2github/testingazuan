@@ -643,8 +643,9 @@ if (toolbarIsVisible) {
 	<% if (virtualRole.isAbleToSeeMetadata()) { %>
 	<script>
 	var win_rating_<%= uuid %>;
+
 	Ext.get('rating_button<%= uuid %>').on('click', function(){
-		if(!win_rating_<%= uuid %>) {
+		if(!win_rating_<%= uuid %>){
 			win_rating_<%= uuid %> = new Ext.Window({
 				id:'win_rating_<%= uuid %>',
 				bodyCfg: {
@@ -662,8 +663,8 @@ if (toolbarIsVisible) {
 	 						}]
 				},
 				layout:'fit',
-				width:220,
-				height:340,
+				width:230,
+				height:360,
 				closeAction:'hide',
 				scripts: true, 
            		 buttons: [ 
@@ -676,7 +677,9 @@ if (toolbarIsVisible) {
 				title: '<spagobi:message key = "metadata.docRating" />'
 			});
 		};
+		
 		win_rating_<%= uuid %>.show();
+		
 	});
 	</script>
 	<% } %>

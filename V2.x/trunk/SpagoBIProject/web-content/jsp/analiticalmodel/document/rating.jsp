@@ -111,11 +111,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 																	<a><img width="22px" height="22px" src='<%= starUrl%>' /></a>
 	</div>	
 					
-		
+<input  type='hidden' name='voting' value='true'/>		
 <input type='hidden' value='<%=objid%>' name='OBJECT_ID' />
 <input type='hidden' value='<%=msg%>' name='MESSAGEDET' />
 </div>	
 <% } else { %>
+	<input type='hidden' value='<%=objid%>' name='OBJECT_ID' />
+	<input  type='hidden' name='voting' value='false'/>
 	<table width="100%" cellspacing="0" border="0" class='header-table-portlet-section'>		
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section-noimage' 
@@ -130,17 +132,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% } %>
 
 <script>
+// Watch out for the name of this function, if you change it you need to change it in header.jsp also
 	function saveDL() {	
       	var objid = document.ratingForm.OBJECT_ID.value ; 
 		var rating ;
-		if( document.ratingForm.RATING[0].checked ) rating = document.ratingForm.RATING[0].value ; 
-		else if( document.ratingForm.RATING[1].checked ) rating = document.ratingForm.RATING[1].value ;
-		else if( document.ratingForm.RATING[2].checked ) rating = document.ratingForm.RATING[2].value ;
-		else if( document.ratingForm.RATING[3].checked ) rating = document.ratingForm.RATING[3].value ;
-		else if( document.ratingForm.RATING[4].checked ) rating = document.ratingForm.RATING[4].value ;		 	  	  
-  	    if (objid != null && rating != null) {
-  	    	document.getElementById('ratingForm').submit();
-	    } 
+		var voting = document.ratingForm.voting.value ; 
+		if (voting == 'true'){
+			if( document.ratingForm.RATING[0].checked ) rating = document.ratingForm.RATING[0].value ; 
+			else if( document.ratingForm.RATING[1].checked ) rating = document.ratingForm.RATING[1].value ;
+			else if( document.ratingForm.RATING[2].checked ) rating = document.ratingForm.RATING[2].value ;
+			else if( document.ratingForm.RATING[3].checked ) rating = document.ratingForm.RATING[3].value ;
+			else if( document.ratingForm.RATING[4].checked ) rating = document.ratingForm.RATING[4].value ;		 	  	  
+	  	    if (objid != null && rating != null) {
+	  	    	document.getElementById('ratingForm').submit();
+		    } 
+		}    
 	}
 </script>	
 </form>

@@ -190,7 +190,7 @@ function checkFormVisibility(docType) {
 			if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)){
 		%>
 		<td class='header-button-column-portlet-section'>
-			<input type="hidden" name="" value="" id="loadLinksLookup">
+			<input type="hidden" name="" value="" id="loadLinksLookup" />
 			<a href='javascript:checkDocumentType("<spagobi:message key = "SBIDev.docConf.docDet.saveBeforeLinksConfig" />");'> 
 			<img style="margin-top:2px;height:21px;" name='links' id='links' class='header-button-image-portlet-section'
 				   src='<%=urlBuilder.getResourceLink(request, "/img/links.jpg") %>'
@@ -226,8 +226,6 @@ function checkFormVisibility(docType) {
 	</tr>
 </table>
 
-<div  >
-
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
 <input type='hidden' value='' name='' id='saveBIObjectParameter'>
@@ -240,6 +238,7 @@ function checkFormVisibility(docType) {
 	<tr>
 		<td>
 			<div class="div_detail_area_forms">
+			
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
 						<spagobi:message key = "SBIDev.docConf.docDet.labelField" />
@@ -247,7 +246,7 @@ function checkFormVisibility(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="label" id="doc_label" value="<%=obj.getLabel()%>" maxlength="20">
+							name="label" id="doc_label" value="<%=obj.getLabel()%>" maxlength="20" />
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -257,7 +256,7 @@ function checkFormVisibility(docType) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="name" id="doc_name" value="<%=obj.getName()%>" maxlength="40">
+							name="name" id="doc_name" value="<%=obj.getName()%>" maxlength="40" />
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -273,7 +272,7 @@ function checkFormVisibility(docType) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="description" id="doc_description" value="<%=desc%>" maxlength="160" >
+ 							name="description" id="doc_description" value="<%=desc%>" maxlength="160" />
 				</div>
 				<div class='div_detail_label' style='display:none;'>
 					<span class='portlet-form-field-label'>
@@ -288,7 +287,7 @@ function checkFormVisibility(docType) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
-							name="relname" id="doc_relname" value="<%=relName%>" maxlength="400">
+							name="relname" id="doc_relname" value="<%=relName%>" maxlength="400" />
 				</div>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -366,7 +365,7 @@ function checkFormVisibility(docType) {
 		      		</select>
 				</div> 
 				
-				<div id="datasourcecontainer" <%=styleSource%>>	
+			<div id="datasourcecontainer" <%=styleSource%> >	
 				
 				<div class='div_detail_label' id="datasourceLabel" >
 					<span class='portlet-form-field-label'>
@@ -377,7 +376,7 @@ function checkFormVisibility(docType) {
 			
 				<div class='div_detail_form' id="datasourceForm" >
 		      		<select class='portlet-form-input-field' style='width:230px;' 
-							name="datasource" id="doc_datasource" <%=disableSource%>>
+							name="datasource" id="doc_datasource" <%=disableSource%> >
 							<option></option>
 					<%
 						Iterator iterds = listDataSource.iterator();
@@ -396,9 +395,9 @@ function checkFormVisibility(docType) {
 		      		%>
 		      		</select>
 				</div>
-				</div>
+			</div>
 			
-			<div id="datasetcontainer" <%=styleSet%>>	
+			<div id="datasetcontainer" <%=styleSet%> >	
 				
 				<div class='div_detail_label' id="datasetLabel" >
 					<span class='portlet-form-field-label'>
@@ -422,17 +421,18 @@ function checkFormVisibility(docType) {
 				}
 
 			 %>
-		<div class='div_detail_form' id="datasetForm" >
-		  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>" <%=disableSet%>/>	
-										
-			<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
-							name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 
-		
-		<a href='javascript:void(0);' id="datasetLink">
-				<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
-			</a> 	
-		</div>
-	</div>
+				<div class='div_detail_form' id="datasetForm" >
+				  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>" <%=disableSet%> />	
+												
+					<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
+									name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 
+				
+					<a href='javascript:void(0);' id="datasetLink">
+						<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+					</a> 	
+				</div>
+			</div>
+			
 		<script>
 			var win_dataset;
 			Ext.get('datasetLink').on('click', function(){
@@ -503,8 +503,8 @@ function checkFormVisibility(docType) {
 						<span class='portlet-form-field-label'>
 							<spagobi:message key = "SBIDev.docConf.docDet.stateField" />
 						</span>
-					</div>
-					<div class='div_detail_form' style='display:none;'>
+				</div>
+				<div class='div_detail_form' style='display:none;'>
 						<select class='portlet-form-input-field' style='width:230px;' name="state" id="doc_state"> 
 			      			<%     
 			      		    	Iterator iterstates = listStates.iterator();
@@ -521,7 +521,7 @@ function checkFormVisibility(docType) {
 			      					<%  }  
 			      		   		 }%>
 			      		  </select>  
-					</div>  
+				</div>  
 		    <% } %>
                    
 				<div class='div_detail_label'>
@@ -545,7 +545,8 @@ function checkFormVisibility(docType) {
 						<%=refresh%>
 						<input type="hidden" name="refreshseconds" value="<%=refresh%>">
 					<%} %>
-				</div>                   
+				</div>     
+                   
                    
                    
                    
@@ -565,11 +566,11 @@ function checkFormVisibility(docType) {
 		      	      if(cript > 0) { isCrypt = true; }
 		      	     %> 
 		      	   	<input type="radio" name="criptable" value="1" <% if(isCrypt) { out.println(" checked='checked' "); } %> >
-										<span class="portlet-font">True</span>
-								</input>
+							<span class="portlet-font">True</span>
+					</input>
 		      	   	<input type="radio" name="criptable" value="0" <% if(!isCrypt) { out.println(" checked='checked' "); } %> >
-										<span class="portlet-font">False</span>
-								</input>
+							<span class="portlet-font">False</span>
+					</input>
 				</div>
 
 
@@ -587,11 +588,11 @@ function checkFormVisibility(docType) {
 		      	      if(visible > 0) { isVisible = true; }
 		      	     %> 
 				   	<input type="radio" name="visible" value="1" <% if(isVisible) { out.println(" checked='checked' "); } %>>
-								<span class="portlet-font">True</span>
-						</input>
-		      	<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>
-								<span class="portlet-font">False</span>
-						</input>
+							<span class="portlet-font">True</span>
+					</input>
+		      		<input type="radio" name="visible" value="0" <% if(!isVisible) { out.println(" checked='checked' "); } %>>
+							<span class="portlet-font">False</span>
+					</input>
 				</div>
 
 				<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
@@ -603,7 +604,7 @@ function checkFormVisibility(docType) {
 					</div>
 					<div class='div_detail_form'>
 						<input class='portlet-form-input-field' type="file" 
-			      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()'/>
+			      		       name="uploadFile" id="uploadFile" onchange='fileToUploadInserted()' />
 					</div>
 				</div>	
 				
@@ -679,9 +680,7 @@ function checkFormVisibility(docType) {
 	        	checkSourceVisibility(engineValue);	 						
 			</script>
 			
-			
-        </div> 
-
+	</div>
 	<!-- CLOSE COLUMN WITH DATA FORM  -->
 	</td>
 	
@@ -689,14 +688,14 @@ function checkFormVisibility(docType) {
 	
 	<!-- OPEN COLUMN WITH TREE FUNCTIONALITIES (INSERT MODE) OR TEMPLATE VERSION (MODIFY MODE)  -->	     
 	<td align="left">
-	<div style='padding:5px;'>
-		<a class="portlet-form-field-label" style="text-decoration:none;" 
-		   onmouseover="this.style.color='#074BF8';"
-		   onmouseout="this.style.color='#074B88';" 
-		   href='javascript:void(0)' onclick='switchView()' id='switchView'>
-			<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />
-		</a>
-	</div>
+		<div style='padding:5px;'>
+			<a class="portlet-form-field-label" style="text-decoration:none;" 
+			   onmouseover="this.style.color='#074BF8';"
+			   onmouseout="this.style.color='#074B88';" 
+			   href='javascript:void(0)' onclick='switchView()' id='switchView'>
+				<spagobi:message key = "SBIDev.docConf.docDet.showTemplates" />
+			</a>
+		</div>
 
 	<script>
 	function switchView() {
@@ -721,9 +720,9 @@ function checkFormVisibility(docType) {
 	
 	
     	<div style='padding-left:5px;padding-right:5px;padding-bottom:5px;display:none;' id='versionTable'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
-		</span>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBIDev.docConf.docDet.templateVersionField" />
+			</span>
 		<div style='border: 1px solid black;max-height:160px;overflow:auto;'>
 			
 			<table> 
@@ -779,7 +778,7 @@ function checkFormVisibility(docType) {
    									   "&ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&TEMP_ID="+tempVer.getId();
    						
 		      		        if(isCurrentVer) {
-		      		        	out.print("<td class='portlet-font' >&nbsp;</a></td>");
+		      		        	out.print("<td class='portlet-font' >&nbsp;</td>");
 		      		        } else {
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:deleteVersionConfirm(\""+msgBuilder.getMessage("SBIDev.docConf.docDet.deleteVersionConfirm", "messages", request)+"\", \""+eraseVerUrlStr+"\")' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.eraseLink", "messages", request) + "</a></td>");
 		      		        }
@@ -813,138 +812,6 @@ function checkFormVisibility(docType) {
 
 	<spagobi:error/>
 
-<input  style="float:left;clear:left;width:50px;" type="checkbox" id="metadataDiv" name="metadataDiv" /> 
-		<span class='portlet-form-field-label'>
-			<spagobi:message key="metadata.insertMetadata"  />
-		</span>
-<div> &nbsp; </div>	 
-<div id="metadata"  >
-
-<!-- OPEN COLUMN WITH METADATA  -->	    
-<% 
-		      		String longDesc = obj.getExtendedDescription();
-		      		if(longDesc==null) {
-		      			longDesc = "";
-		      		}
-		      		longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
-
-		      		String objective = obj.getObjectve();
-		      		if(objective==null) {
-		      			objective = "";
-		      			
-		      		}
-		      		objective = GeneralUtilities.replace(objective,"'","\\'");
-		      %>
-		      		
-		      		
-
-<table  class='header-sub-table-portlet-section' >		
-	<tr class='header-sub-row-portlet-section'>
-		<td class='header-sub-title-column-portlet-section'>
-			<spagobi:message key = "metadata.docMetadata" />
-		</td>
-	</tr>
-	<tr><td style='background:none;border:none'>&nbsp;</td></tr>
-</table>		
-  <table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
-  <tr>
-  <td>
-  <div style="float:left;clear:left;width:200px;height:25px;" >
-					<span class='portlet-form-field-label' width="230" >
-						<spagobi:message key ="metadata.docLongDescr" />
-					</span>
-				</div>
-	</td></tr>
-	<tr><td>
-				<div id= "containerLongDescr">
-				</div> 
-   </td>
-   
-   <td>		
-						
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docLanguage" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-					<% 
-		      		String language = obj.getLanguage();
-		      		if(language==null) {
-		      			language = "";
-		      		}
-		      		%>
-					<input class='portlet-form-input-field' style='width:230px' type="text" 
- 							name="language" id="language" value="<%=language%>" >
-				</div>	
-		
-			
-				<div class='div_detail_label'>
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docKeyword" />
-					</span>
-				</div>
-				<div class='div_detail_form'>
-					<% 
-		      		String Keywords = obj.getKeywords();
-		      		if(Keywords==null) {
-		      			Keywords = "";
-		      		}
-		      		%>
-					<input class='portlet-form-input-field' style='width:230px' type="text" 
- 							name="Keywords" id="Keywords" value="<%=Keywords%>" >
-				</div>										
-	</td>
-  
-   </tr>
-   <tr><td style='background:none;border:none'>&nbsp;</td></tr>
-	<tr><td>			
-  <div style="float:left;clear:left;width:200px;height:25px;" >
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docObjective" />
-					</span>
-				</div>
-	</td></tr>
-	<tr><td>
-					<div id= "containerObjective">
-				</div> 
-	</td></tr>		
-	<tr><td style='background:none;border:none'>&nbsp;</td></tr>			
-</table>  
-	<script>
-Ext.onReady(function(){
-
-    Ext.QuickTips.init();
-
-	var top = new Ext.form.HtmlEditor({
-        frame: true,
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        value: '<%=longDesc%>',
-        renderTo: 'containerLongDescr',
-            id:'longDescription'            
-    });   
-    
-    var top1 = new Ext.form.HtmlEditor({
-        frame: true,
-        value: '<%=objective%>',
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        renderTo: 'containerObjective',
-            id:'objective'        
-    });   
-     
-	});	  
-	 	
-</script>	
-</div>
-
-</div>
-<script>
-toggle('metadata', 'metadataDiv', false );
-</script> 
 
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>
 </form>
@@ -953,12 +820,14 @@ toggle('metadata', 'metadataDiv', false );
 <% } else if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {
   		BIObjectParameter objPar = (BIObjectParameter) moduleResponse.getAttribute(DetailBIObjectModule.NAME_ATTR_OBJECT_PAR);
 %>
-	<input style="float:left;clear:left;width:50px;" align="middle" type="checkbox" id="parDiv" name="parDiv" /> 
+
+	<!--  <a style="margin: 0px 0px 5px 10px;" id="parDiv_" name="parDiv_" > 
 		<span class='portlet-form-field-label'>
 			<spagobi:message key="SBIDev.docConf.confPar"  />
 		</span>
-<div> &nbsp; </div>	 
-<div id="par"  >
+	</a> -->
+	
+<div id="par_<%=obj.getId().toString()%>"  >
 
 <div style='width:100%;visibility:visible;' class='UITabs' id='tabPanelWithJavascript' name='tabPanelWithJavascript'>
 	<div class="first-tab-level" style="background-color:#f8f8f8">
@@ -1289,7 +1158,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" name="objParLabel" 
-			   id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="20">
+			   id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="20" />
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -1316,7 +1185,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />	 
 		<input class='portlet-form-input-field' type="text" id="parameterName" size="42" 
 	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
-			   	maxlength="100" readonly>
+			   	maxlength="100" readonly />
 
 
   		&nbsp;*&nbsp;
@@ -1428,9 +1297,156 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 
 </div>
 <script>
-toggle('par', 'parDiv', false );
+// toggleWithCookie('par_<%=obj.getId().toString()%>', 'parDiv_<%=obj.getId().toString()%>', true );
 </script> 
-	
+
+</div>	
+
+<a style="margin: 0px 0px 5px 10px;" id="metadataDiv_<%=obj.getId().toString()%>" name="metadataDiv_<%=obj.getId().toString()%>" > 
+		<span class='portlet-form-field-label'>
+			<spagobi:message key="metadata.insertMetadata"  />
+		</span> 
+</a>
+<br>
+<br>
+<!-- OPEN METADATA DIV -->	 
+<div id="metadata_<%=obj.getId().toString()%>"  >
+
+<!-- OPEN COLUMN WITH METADATA  -->	    
+<% 
+		      		String longDesc = obj.getExtendedDescription();
+		      		if(longDesc==null) {
+		      			longDesc = "";
+		      		}
+		      		longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
+
+		      		String objective = obj.getObjectve();
+		      		if(objective==null) {
+		      			objective = "";
+		      			
+		      		}
+		      		objective = GeneralUtilities.replace(objective,"'","\\'");
+		      %>
+		      		
+		      		
+
+<table  class='header-sub-table-portlet-section' >		
+	<tr class='header-sub-row-portlet-section'>
+		<td class='header-sub-title-column-portlet-section'>
+			<spagobi:message key = "metadata.docMetadata" />
+		</td>
+	</tr>
+	<tr>
+		<td style='background:none;border:none'>&nbsp;
+		</td>
+	</tr>
+</table>		
+<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
+  <tr>
+  	<td>
+  		<div style="float:left;clear:left;width:200px;height:25px;" >
+			<span class='portlet-form-field-label' width="230" >
+				<spagobi:message key ="metadata.docLongDescr" />
+			</span>
+		</div>
+	</td>
+  </tr>
+  <tr>
+  	<td>
+	  <div id= "containerLongDescr">
+	  </div> 
+    </td>
+    <td>		
+	  <div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key ="metadata.docLanguage" />
+			</span>
+	  </div>
+	  <div class='div_detail_form'>
+					<% 
+		      		String language = obj.getLanguage();
+		      		if(language==null) {
+		      			language = "";
+		      		}
+		      		%>
+		<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 			name="language" id="language" value="<%=language%>" />
+	  </div>	
+		
+	  <div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key ="metadata.docKeyword" />
+			</span>
+	  </div>
+	  <div class='div_detail_form'>
+					<% 
+		      		String Keywords = obj.getKeywords();
+		      		if(Keywords==null) {
+		      			Keywords = "";
+		      		}
+		      		%>
+			<input class='portlet-form-input-field' style='width:230px' type="text" 
+ 					name="Keywords" id="Keywords" value="<%=Keywords%>" />
+	  </div>										
+	</td>
+  </tr>
+  <tr>
+  	<td style='background:none;border:none'>&nbsp;
+  	</td>
+  </tr>
+  <tr>
+  	<td>			
+  		<div style="float:left;clear:left;width:200px;height:25px;" >
+					<span class='portlet-form-field-label'>
+						<spagobi:message key ="metadata.docObjective" />
+					</span>
+		</div>
+	</td>
+  </tr>
+  <tr>
+  	<td>
+		<div id= "containerObjective">
+		</div> 
+	</td>
+  </tr>		
+  <tr>
+  	<td style='background:none;border:none'>&nbsp;
+  	</td>
+  </tr>			
+</table> 
+</div>
+<!-- CLOSE METADATA DIV -->	 
+<script>
+Ext.onReady(function(){
+
+    Ext.QuickTips.init();
+
+	var top = new Ext.form.HtmlEditor({
+        frame: true,
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 100,
+        value: '<%=longDesc%>',
+        renderTo: 'containerLongDescr',
+            id:'longDescription'            
+    });   
+    
+    var top1 = new Ext.form.HtmlEditor({
+        frame: true,
+        value: '<%=objective%>',
+        bodyStyle:'padding:5px 5px 0',
+        width: 550,
+        height: 100,
+        renderTo: 'containerObjective',
+            id:'objective'        
+    });   
+     
+	});	  
+	 	
+toggleWithCookie('metadata_<%=obj.getId().toString()%>', 'metadataDiv_<%=obj.getId().toString()%>', true );
+</script> 
+
+
 </form>
 
 

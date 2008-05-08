@@ -24,6 +24,9 @@ LICENSE: see LICENSE.txt file
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
+<%!
+	private static String CONNECTION_NAME="connectionName";
+%>
 
 <%
 	Logger logger = Logger.getLogger(this.getClass());
@@ -38,10 +41,19 @@ LICENSE: see LICENSE.txt file
 		String userId = (String)session.getAttribute("userId");
 		String documentId = (String)session.getAttribute("document");		
 		ContentServiceProxy contentProxy = new ContentServiceProxy(userId, session);
-				
+		
+		String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
+		if (requestConnectionName==null) logger.debug("requestConnectionName is NULL");
+		else logger.debug("requestConnectionName:"+requestConnectionName);
+		
 		//calls service for gets data source object		
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-		SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
+		SpagoBiDataSource ds = null;
+		if (requestConnectionName != null) {
+		    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
+		} else {
+		    ds =proxyDS.getDataSource(documentId);
+		}
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {

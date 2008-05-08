@@ -13,9 +13,11 @@ import mondrian.olap.Access;
 import mondrian.olap.Connection;
 import mondrian.olap.Cube;
 import mondrian.olap.Dimension;
+import mondrian.olap.Id;
 import mondrian.olap.Level;
 import mondrian.olap.Query;
 import mondrian.olap.Role;
+import mondrian.olap.RoleImpl;
 import mondrian.olap.SchemaReader;
 import mondrian.olap.Util;
 
@@ -52,14 +54,14 @@ public class DataSecurityManager {
 		ScriptableMondrianDrillThrough smdt = (ScriptableMondrianDrillThrough) olapModel.getExtension("drillThrough");
 		Connection monConnection = smdt.getConnection();
 		// get the connection role, cube and schema reader
-	    Role connRole = monConnection.getRole().makeMutableClone();
+		RoleImpl connRole = (RoleImpl) monConnection.getRole();
+		//connRole.makeMutableClone();
 	    logger.debug("DataSecurityManager::setMondrianRole:connection role retrived: " + connRole);
 	    Query monQuery = monConnection.parseQuery(query);
 	    Cube cube = monQuery.getCube();
 	    logger.debug("DataSecurityManager::setMondrianRole: cube retrived: " + cube);
 	    SchemaReader schemaReader = cube.getSchemaReader(null);
 	    logger.debug("DataSecurityManager::setMondrianRole: schema reader retrived: " + schemaReader);
-		
 		
 	    
 	    // FOR EACH DIMENSION NAME SET THE RIGHT GRANT TO THE DIMENSION OR HIERARCHY
@@ -71,6 +73,7 @@ public class DataSecurityManager {
 	    	String dimAccess = drb.getAccess();
 	    	String bottomLevel = drb.getBottomLevel();
 	    	String topLevel = drb.getTopLevel();
+	    	String rollupPolicy = drb.getRollupPolicy();
 	    	logger.debug("DataSecurityManager::setMondrianRole: processing dimension named: " + dimName);
 	    	//List dimMembs = drb.getMembers();
 	    	logger.debug("DataSecurityManager::setMondrianRole: try to search the dimension into the cube");
@@ -106,8 +109,20 @@ public class DataSecurityManager {
 			 		   					bottomLev = level;
 			 		   				}
 			 		   			}
+			 		   			Role.RollupPolicy rp = null;
+			 		   			if (rollupPolicy == null) {
+			 		   				rp = Role.RollupPolicy.FULL;
+			 		   			} else {
+				 		   			try {
+				 		   				rp = Role.RollupPolicy.valueOf(rollupPolicy);
+				 		   			} catch (Exception e) {
+				 		   				logger.error("Error evaluating rollup policy: " + rollupPolicy, e);
+				 		   				logger.warn("Using default policy Role.RollupPolicy.FULL");
+				 		   				rp = Role.RollupPolicy.FULL;
+				 		   			}
+			 		   			}
 			 		   			logger.debug("DataSecurityManager::setMondrianRole: hierarchy found into the cube");
-			 		   			connRole.grant(aHierarchy, Access.CUSTOM, topLev, bottomLev);
+			 		   			connRole.grant(aHierarchy, Access.CUSTOM, topLev, bottomLev, rp);
 			 		   			logger.debug("DataSecurityManager::setMondrianRole: setted access.custom to the hierarchy");
 			 		   		 }
 			 		   	}
@@ -117,10 +132,6 @@ public class DataSecurityManager {
     	   logger.debug("DataSecurityManager::setMondrianRole: end search dimension into the cube");
 	    }
 	    logger.debug("DataSecurityManager::setMondrianRole: end setting grant for each dimension or hierachy");
-	    
-	    
-	    
-	    
 	    
 	    
 	    // FOR EACH MEMBER SET THE GRANT
@@ -138,8 +149,8 @@ public class DataSecurityManager {
 	        	String dimMemb = mrb.getName();
 	        	String membAccess = mrb.getAccess();
 	        	logger.debug("DataSecurityManager::setMondrianRole: processing member : " + dimMemb);
-	        	String[] membParts = Util.explode(dimMemb);
-	    	    mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
+	        	List<Id.Segment> membParts = Util.parseIdentifier(dimMemb);
+	        	mondrian.olap.Member member = schemaReader.getMemberByUniqueName(membParts,true);
 	    	    logger.debug("DataSecurityManager::setMondrianRole: mondrian member object retrived: " + member);
 	    	    if(membAccess.equalsIgnoreCase("none")) {
 	    	    	connRole.grant(member, Access.NONE);	
@@ -154,7 +165,7 @@ public class DataSecurityManager {
 	        
 	    
 	    // SET THE ROLE INTO CONNECTION
-	    connRole.makeImmutable();
+	    //connRole.makeImmutable();
 	    monConnection.setRole(connRole); 
 	    logger.debug("DataSecurityManager::setMondrianRole: setted role with grants into connection");
 	    logger.debug("DataSecurityManager::setMondrianRole: end setting data access");
@@ -202,6 +213,10 @@ public class DataSecurityManager {
 						String bl = setting.substring(setting.indexOf("=")+1);
 						drb.setBottomLevel(bl);
 					}
+					if(setting.startsWith("rollupPolicy=")) {
+						String rp = setting.substring(setting.indexOf("=")+1);
+						drb.setRollupPolicy(rp);
+					}
 					if(setting.startsWith("member=")) {
 						String memberRules = setting.substring(setting.indexOf("=")+1);
 						if(memberRules.indexOf("=")!=-1) {
@@ -227,6 +242,7 @@ public class DataSecurityManager {
 		private String access = "";
 		private String topLevel = "";
 		private String bottomLevel = "";
+		private String rollupPolicy = "";
 		private List members = new ArrayList();
 		
 		/*
@@ -270,6 +286,12 @@ public class DataSecurityManager {
 		}
 		public void setAccess(String access) {
 			this.access = access;
+		}
+		public String getRollupPolicy() {
+			return rollupPolicy;
+		}
+		public void setRollupPolicy(String rollupPolicy) {
+			this.rollupPolicy = rollupPolicy;
 		}
 	}
 	

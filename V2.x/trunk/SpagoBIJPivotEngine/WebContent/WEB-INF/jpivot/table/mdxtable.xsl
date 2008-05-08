@@ -5,14 +5,14 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- the id of the table for httpUnit -->
-<xsl:output method="html" indent="no" encoding="US-ASCII"/>
+<xsl:output method="html" indent="no" encoding="ISO-8859-1"/>
 <xsl:param name="context"/>
 <xsl:param name="renderId"/>
 <xsl:param name="token"/>
 <xsl:param name="imgpath" select="'jpivot/table'"/>
 
 <!-- Tabelle:  -->
-<xsl:param name="maxHeaderLen" select="20"/>
+<xsl:param name="maxColHdrLen" select="20"/>
 
 <xsl:template match="mdxtable">
   <xsl:if test="@message">
@@ -164,6 +164,7 @@
         <xsl:apply-templates select="property"/>
       </a>
     </xsl:when>
+
     <!-- default -->
     <xsl:otherwise>
       <xsl:value-of select="$label"/>
@@ -171,6 +172,7 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
 
 <xsl:template name="make-href">
   <xsl:param name="href"/>
@@ -189,7 +191,7 @@
 </xsl:template>
 
 <xsl:template name="nowrap">
-  <xsl:if test="string-length(string(caption/@caption))&lt;$maxHeaderLen">
+  <xsl:if test="string-length(string(caption/@caption))&lt;$maxColHdrLen">
     <xsl:attribute name="nowrap">nowrap</xsl:attribute>
   </xsl:if>
 </xsl:template>
@@ -222,7 +224,6 @@
 
 <!-- ignore other properties (e.g. "link") -->
 <xsl:template match="property"/>
-
 
 <!-- begin popup menu  -->
 <xsl:template match="popup-menu">

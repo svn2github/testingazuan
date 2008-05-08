@@ -5,7 +5,7 @@
 
 <!--
      This is the XML model for Mondrian schemas.
-     Revision is $Id: //open/mondrian/src/main/mondrian/olap/Mondrian.xml#57 $
+     Revision is $Id: //open/mondrian/src/main/mondrian/olap/Mondrian.xml#71 $
   -->
 <!--
      A CubeDimension is either a usage of a Dimension ('shared
@@ -16,7 +16,12 @@
 <!--
      A table or a join
   -->
-<!ENTITY % Relation "View|Join|Table|InlineTable">
+<!ENTITY % RelationOrJoin "View|Join|Table|InlineTable">
+
+<!--
+     A table, inline table or view
+  -->
+<!ENTITY % Relation "View|Table|InlineTable">
 
 <!--
      A definition of an aggregate table for a base fact table.
@@ -56,6 +61,7 @@ defaultRole CDATA #IMPLIED
 <!ATTLIST Cube
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
+defaultMeasure CDATA #IMPLIED
 cache (true|false) "true"
 enabled (true|false) "true"
 >
@@ -64,11 +70,23 @@ enabled (true|false) "true"
      A VirtualCube is a set of dimensions and
      measures gleaned from other cubes.
   -->
-<!ELEMENT VirtualCube ((VirtualCubeDimension)*,(VirtualCubeMeasure)*,(CalculatedMember)*)>
+<!ELEMENT VirtualCube (CubeUsages?,(VirtualCubeDimension)*,(VirtualCubeMeasure)*,(CalculatedMember)*,(NamedSet)*)>
 <!ATTLIST VirtualCube
 enabled (true|false) "true"
 name CDATA #IMPLIED
+defaultMeasure CDATA #IMPLIED
 caption CDATA #IMPLIED
+>
+
+<!--
+     List of base cubes used by the virtual cube.
+  -->
+<!ELEMENT CubeUsages ((CubeUsage)+)>
+
+<!ELEMENT CubeUsage EMPTY>
+<!ATTLIST CubeUsage
+cubeName CDATA #REQUIRED
+ignoreUnrelatedDimensions (true|false) "false"
 >
 
 <!--
@@ -130,7 +148,7 @@ caption CDATA #IMPLIED
      hierarchy is assumed to come from the same fact table of the
      current cube.
   -->
-<!ELEMENT Hierarchy ((%Relation;)?,(Level)*,(MemberReaderParameter)*)>
+<!ELEMENT Hierarchy ((%RelationOrJoin;)?,(Level)*,(MemberReaderParameter)*)>
 <!ATTLIST Hierarchy
 name CDATA #IMPLIED
 hasAll (true|false) #REQUIRED
@@ -265,7 +283,7 @@ alias CDATA #REQUIRED
 dialect (generic|access|db2|derby|firebird|hsqldb|mssql|mysql|oracle|postgres|sybase|teradata|ingres|luciddb) "generic"
 >
 
-<!ELEMENT Join ((%Relation;),(%Relation;))>
+<!ELEMENT Join ((%RelationOrJoin;),(%RelationOrJoin;))>
 <!ATTLIST Join
 leftAlias CDATA #IMPLIED
 leftKey CDATA #REQUIRED
@@ -392,7 +410,7 @@ name CDATA #REQUIRED
      A role defines an access-control profile. It has a series of grants
      (or denials) for schema elements.
   -->
-<!ELEMENT Role ((SchemaGrant)*)>
+<!ELEMENT Role ((SchemaGrant)*,Union?)>
 <!ATTLIST Role
 name CDATA #REQUIRED
 >
@@ -447,6 +465,7 @@ access (all|custom|none|all_dimensions) #REQUIRED
 hierarchy CDATA #REQUIRED
 topLevel CDATA #IMPLIED
 bottomLevel CDATA #IMPLIED
+rollupPolicy CDATA #IMPLIED
 access (all|custom|none|all_dimensions) #REQUIRED
 >
 
@@ -460,6 +479,21 @@ access (all|custom|none|all_dimensions) #REQUIRED
 <!ATTLIST MemberGrant
 member CDATA #REQUIRED
 access (all|none) #REQUIRED
+>
+
+<!--
+     Body of a Role definition which defines a Role to be the union
+     of several Roles. The RoleUsage elements must refer to Roles that
+     have been declared earlier in this schema file.
+  -->
+<!ELEMENT Union ((RoleUsage)*)>
+
+<!--
+     Usage of a Role in a union Role.
+  -->
+<!ELEMENT RoleUsage EMPTY>
+<!ATTLIST RoleUsage
+roleName CDATA #REQUIRED
 >
 
 <!--

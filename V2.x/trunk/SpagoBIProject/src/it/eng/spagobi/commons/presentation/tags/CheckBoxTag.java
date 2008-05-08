@@ -551,8 +551,8 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("	else if (type == 'lastPage'){\n");
 		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = '" +  String.valueOf(pagesNumber)+"';\n");
 		_htmlStream.append("	}\n");
-		_htmlStream.append("	else if (type.startsWith('goTo_')){\n");
-		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = type.substring(6);\n");
+		_htmlStream.append("	else if (type.match('goTo_')){\n");
+		_htmlStream.append("		document.getElementById('form').LIST_PAGE.value = type.substring(5);\n");
 		_htmlStream.append("	}\n");
 		_htmlStream.append("} \n");
 		
@@ -754,26 +754,27 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
 		_htmlStream.append(dotsStart+"\n");
 		for (int i=startRangePages; i <= endRangePages; i++){
-			// create link for last page
-			HashMap tmpParamsMap = new HashMap();
-			tmpParamsMap.putAll(_providerUrlMap);
-			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
-			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
-			tmpParamsMap.put("checkedElements",_lstElements);
-			String tmpUrl = createUrl(tmpParamsMap);
+//			// create link for last page
+//			HashMap tmpParamsMap = new HashMap();
+//			tmpParamsMap.putAll(_providerUrlMap);
+//			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
+//			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
+//			tmpParamsMap.put("checkedElements",_lstElements);
+//			String tmpUrl = createUrl(tmpParamsMap);
+//			
+//			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
+//			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
+//			String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
+//			String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
+//			if (valueFilter != null && columnFilter != null && typeFilter != null) {
+//				tmpParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
+//				tmpParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
+//				tmpParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
+//				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
+//				tmpUrl = createUrl(tmpParamsMap);
+//			}		
 			
-			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
-			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
-			String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
-			String typeFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_FILTER);
-			if (valueFilter != null && columnFilter != null && typeFilter != null) {
-				tmpParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
-				tmpParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
-				tmpParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
-				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
-				tmpUrl = createUrl(tmpParamsMap);
-			}				 				
-			_htmlStream.append("	<A href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
+			_htmlStream.append("	<A href=\"javascript:changePage('goTo_"+String.valueOf(i)+"');document.getElementById('form').submit();\">"+String.valueOf(i)+ "</a>\n");
 			_htmlStream.append("&nbsp;&nbsp;\n");			
 		}
 		_htmlStream.append(dotsEnd+"\n");
@@ -900,7 +901,7 @@ public class CheckBoxTag extends TagSupport {
 	 * @return A <code>portletURL</code> object representing the navigation URL
 	 */
 	protected String createUrl(HashMap paramsMap) {
-		paramsMap.put("TYPE_LIST", "TYPE_LIST");
+		paramsMap.put("TYPE_LIST", "CHECK_LIST");
 		String url = urlBuilder.getUrl(httpRequest, paramsMap);
 		return url;
 	}

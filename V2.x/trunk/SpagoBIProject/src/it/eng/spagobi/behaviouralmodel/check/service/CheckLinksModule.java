@@ -137,6 +137,7 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
 		}
 		request.delAttribute("optChecked");
 		request.setAttribute("optChecked", checked);
+		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 		if(checked.equals("true")){
 		//if the request is to show only checked objects (it is settled by default when page is loaded at the first time
 			for (Iterator it = objectsList.iterator(); it.hasNext(); ) {

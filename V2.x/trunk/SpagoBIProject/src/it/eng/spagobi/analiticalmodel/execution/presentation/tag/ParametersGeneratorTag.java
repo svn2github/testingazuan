@@ -144,7 +144,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		createParametersFormButtons(htmlStream);
 		openParametersForm(htmlStream);
 		createFieldForViewPoints(htmlStream);
-	    //createSetLookupFieldJSFunction(htmlStream);
+	    createSetLookupFieldJSFunction(htmlStream);
 	    createSetDeleteFlagJSFunction(htmlStream);
 	    createClearFieldsJSFunction(htmlStream);
 	    createRefreshJSFunction(htmlStream);

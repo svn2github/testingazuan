@@ -461,8 +461,8 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 				request.updAttribute("LIST_PAGE", new Integer(pageNumber).toString());	
 				super.service(request, response); 
 				postprocess(response); 
-				response.delAttribute("optChecked");
-				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+//				response.delAttribute("optChecked");
+//				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
 				return;			
 			}
@@ -476,8 +476,8 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 				preprocess(request);	
 				super.service(request, response); 
 				postprocess(response);
-				response.delAttribute("optChecked");
-				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+//				response.delAttribute("optChecked");
+//				response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 				response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
 			}
 		}
@@ -499,11 +499,31 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		preprocess(request);
 		int destPageNumber = (moveNext)? pageNumber+1: pageNumber-1;		
 		request.updAttribute("MESSAGE", "LIST_PAGE");	
-		request.setAttribute("LIST_PAGE", "" + destPageNumber);			
+		request.updAttribute("LIST_PAGE", "" + destPageNumber);			
 		super.service(request, response); 				
 		postprocess(response); 
-		response.delAttribute("optChecked");
-		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+//		response.delAttribute("optChecked");
+//		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
+	}
+
+	/**
+	 * Navigation handler.
+	 * 
+	 * @param request the request
+	 * @param response the response
+	 * @param moveNext the move next
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void navigationHandler(SourceBean request, SourceBean response, int destPage) throws Exception{
+		preprocess(request);
+		request.updAttribute("MESSAGE", "LIST_PAGE");	
+		request.updAttribute("LIST_PAGE", "" + destPage);			
+		super.service(request, response); 				
+		postprocess(response); 
+//		response.delAttribute("optChecked");
+//		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 	}
 	
@@ -523,8 +543,8 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		request.setAttribute("LIST_PAGE", "" + pageNumber);			
 		super.service(request, response); 				
 		postprocess(response); 
-		response.delAttribute("optChecked");
-		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
+//		response.delAttribute("optChecked");
+//		response.setAttribute("optChecked", (String)request.getAttribute("optChecked"));
 		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");	
 	}
 	

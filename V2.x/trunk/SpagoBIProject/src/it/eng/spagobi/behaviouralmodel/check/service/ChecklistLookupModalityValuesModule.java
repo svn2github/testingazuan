@@ -106,11 +106,22 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		logger.debug("OUT");
 		return;
 	    }
+	    if (request.getAttribute("firstPage") != null) {
+			navigationHandler(request, response, 1);
+			logger.debug("OUT");
+			return;
+		}
 	    if (request.getAttribute("nextPage") != null) {
 		navigationHandler(request, response, true);
 		logger.debug("OUT");
 		return;
 	    }
+	    if (request.getAttribute("lastPage") != null) {
+	    	int lastPage = Integer.valueOf(request.getAttribute("LIST_PAGE").toString()).intValue();
+			navigationHandler(request, response, lastPage);
+			logger.debug("OUT");
+			return;
+		}
 	    // events rised by action buttons defined in module.xml file (module
 	    // name="ListLookupReportsModule")
 	    if (request.getAttribute("saveback") != null) {
@@ -124,7 +135,7 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		preprocess(request);
 		save();
 		request.updAttribute("MESSAGE", "LIST_PAGE");
-		request.setAttribute("LIST_PAGE", new Integer(pageNumber).toString());
+		request.updAttribute("LIST_PAGE", new Integer(pageNumber).toString());
 		DelegatedBasicListService.service(this, request, response);
 		postprocess(response);
 		response.setAttribute("PUBLISHER_NAME", "CheckLinksDefaultPublischer");
@@ -136,6 +147,13 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 		logger.debug("OUT");
 		return;
 	    }
+	    
+	    // default
+    	int destPage = Integer.valueOf(request.getAttribute("LIST_PAGE").toString()).intValue();
+		navigationHandler(request, response, destPage);
+		logger.debug("OUT");
+		return;
+	    
 	} else {
 	    logger.error("The message parameter value " + message + "is not allowed");
 	}
@@ -277,6 +295,16 @@ public class ChecklistLookupModalityValuesModule extends AbstractBasicCheckListM
 	response.setAttribute("PUBLISHER_NAME", "ChecklistLookupPublisher");
     }
 
+    
+    /* (non-Javadoc)
+     * @see it.eng.spagobi.commons.services.AbstractBasicCheckListModule#navigationHandler(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean, int)
+     */
+    public void navigationHandler(SourceBean request, SourceBean response, int destPage) throws Exception {
+	super.navigationHandler(request, response, destPage);
+	response.delAttribute("PUBLISHER_NAME");
+	response.setAttribute("PUBLISHER_NAME", "ChecklistLookupPublisher");
+    }
+    
     private BIObjectParameter getBIParameter(SourceBean request) {
 	logger.debug("IN");
 	BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);

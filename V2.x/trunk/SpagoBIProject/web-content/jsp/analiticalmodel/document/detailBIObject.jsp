@@ -529,15 +529,22 @@ function checkFormVisibility(docType) {
 						<spagobi:message key ="SBIDev.docConf.docDet.refreshField" />
 					</span>
 				</div>
+				
 				<div class='div_detail_form'>
-					<% 
-		      		Integer refresh = obj.getRefreshSeconds();
+				<%	
+					Integer refresh = obj.getRefreshSeconds();
 		      		if(refresh==null) {
-		      			refresh = new Integer(0);
-		      		}
+		      		refresh = new Integer(0);
+		      			}
+		      		if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MODIFY_REFRESH)){
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
  							name="refreshseconds" id="doc_refresh" value="<%=refresh%>" maxlength="160" >
+						<%}
+					else{%>
+						<%=refresh%>
+						<input type="hidden" name="refreshseconds" value="<%=refresh%>">
+					<%} %>
 				</div>                   
                    
                    

@@ -228,7 +228,7 @@ function checkFormVisibility(docType) {
 
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
-<input type='hidden' value='' name='' id='saveBIObjectParameter'>
+<input type='hidden' value='' name='' id='saveBIObjectParameter'/>
 	
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
 	<input type='hidden' value='<%= obj.getPath() %>' name='<%= ObjectsTreeConstants.PATH %>' />
@@ -539,11 +539,11 @@ function checkFormVisibility(docType) {
 		      		if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MODIFY_REFRESH)){
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="refreshseconds" id="doc_refresh" value="<%=refresh%>" maxlength="160" >
+ 							name="refreshseconds" id="doc_refresh" value="<%=refresh%>" maxlength="160" />
 						<%}
 					else{%>
 						<%=refresh%>
-						<input type="hidden" name="refreshseconds" value="<%=refresh%>">
+						<input type="hidden" name="refreshseconds" value="<%=refresh%>"/>
 					<%} %>
 				</div>     
                    

@@ -386,7 +386,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<script type="text/javascript" language="JAVASCRIPT">
 			<!--
 				arrayCats[<%=key%>]='<%=name%>';
-		     arrayCats[1]=0;
+		     //arrayCats[1]='All';
 			//-->
 		</script>
 		<%} %>

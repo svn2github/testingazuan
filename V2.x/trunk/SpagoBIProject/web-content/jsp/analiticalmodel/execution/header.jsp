@@ -518,8 +518,9 @@ if (toolbarIsVisible) {
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
 		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
-		var pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
-		pars += "&documentId=<%=obj.getId().toString()%>";
+		url+="&ACTION_NAME=SAVE_PERSONAL_FOLDER"+"&documentId=<%=obj.getId().toString()%>";
+		//var pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
+		//pars += "&documentId=<%=obj.getId().toString()%>";
 		Ext.Ajax.request({
 			url: url,
 			method: 'get',
@@ -527,7 +528,7 @@ if (toolbarIsVisible) {
 				response = result.responseText || "";
 				showSaveToPFResult<%= uuid %>(response);
 			},
-			params: pars,
+			//params: pars,
 			failure: somethingWentWrongSavingIntoMyFolder
 		});
 	}

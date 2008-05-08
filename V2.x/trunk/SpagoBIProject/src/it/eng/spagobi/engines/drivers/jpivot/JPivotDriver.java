@@ -304,10 +304,13 @@ public class JPivotDriver implements IEngineDriver {
 		datoken = "access=custom";
 		String topLevel = (String) rulesSB.getAttribute("topLevel");
 		String bottomLevel = (String) rulesSB.getAttribute("bottomLevel");
+		String rollupPolicy = (String) rulesSB.getAttribute("rollupPolicy");
 		if (topLevel != null)
 		    datoken += ",topLevel=" + topLevel;
 		if (bottomLevel != null)
 		    datoken += ",bottomLevel=" + bottomLevel;
+		if (rollupPolicy != null)
+		    datoken += ",rollupPolicy=" + rollupPolicy;
 		List members = rulesSB.getAttributeAsList("MEMBERS.MEMBER");
 		Iterator membersIt = members.iterator();
 		while (membersIt.hasNext()) {

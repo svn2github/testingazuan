@@ -69,12 +69,6 @@ if (heightArea == null || heightArea.trim().equals("")) {
     } catch (err) {
 		alert('Cannot resize the document view area');
 	}
-	
-	try {
-		window.onload = SbiJsInitializer.initialize;
-	} catch (err) {
-		alert('Cannot execute javascript initialize functions');
-	}
 	</script>
 	--%>
 	<script>
@@ -139,6 +133,13 @@ if (heightArea == null || heightArea.trim().equals("")) {
 	    } catch (err) {
 			alert('Cannot resize the document view area');
 		}
+		
+		try {
+			window.onload = SbiJsInitializer.initialize;
+		} catch (err) {
+			alert('Cannot execute javascript initialize functions');
+		}
+		
 	</script>
 <%
 } else {

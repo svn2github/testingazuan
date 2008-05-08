@@ -392,7 +392,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%} %>
 	<BR>
 		<table  align="center" >
-		 <form id="sliderform">
+	<!--	 <form id="sliderform">  -->
 		<!--  	 <table align="left" > -->
 				<tr>
 					<td width="75%" align="center">
@@ -412,7 +412,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</div>
 					</td>
 				</tr>
-		</form> 
+	<!-- 	</form>  -->
 		</table>
 
  	<div align="center">

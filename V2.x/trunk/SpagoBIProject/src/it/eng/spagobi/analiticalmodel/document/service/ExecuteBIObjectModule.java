@@ -484,6 +484,8 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 		// load the object into the Execution controller
 		ExecutionController controller = new ExecutionController();
+		// check parameters values 
+		controlInputParameters(obj.getBiObjectParameters(), profile, role);
 		controller.setBiObject(obj);
 
 		// finds if it is requested to ignore sub-nodes

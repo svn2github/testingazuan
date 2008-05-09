@@ -14,7 +14,7 @@
                   </Dimension>
                     
                   <Dimension name="Region">
-                     <Hierarchy hasAll="true" primaryKey="store_id" primaryKeyTable="store">
+                     <Hierarchy hasAll="true" allMemberName="All Regions" primaryKey="store_id" primaryKeyTable="store">
                           <Join leftKey="region_id" rightKey="region_id">
                             <Table name="store"/>
                             <Table name="region"/>
@@ -38,7 +38,7 @@
                   </Dimension>
  
                   <Dimension name="Product">
-                    <Hierarchy hasAll="true" primaryKey="product_id" primaryKeyTable="product">
+                    <Hierarchy hasAll="true" allMemberName="All Products" primaryKey="product_id" primaryKeyTable="product">
                       <Join leftKey="product_class_id" rightKey="product_class_id">
                         <Table name="product"/>
                         <Table name="product_class"/>

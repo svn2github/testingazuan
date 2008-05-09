@@ -317,14 +317,14 @@ public class DossierManagementModule extends AbstractModule {
 		while(iterParams.hasNext()) {
 			BIObjectParameter par = (BIObjectParameter)iterParams.next();
 			String parUrlName = par.getParameterUrlName();
-			if(parUrlName.equalsIgnoreCase("param_output_format"))
+			if(parUrlName.equalsIgnoreCase("outputType"))
 				findOutFormat = true;
 			String value = (String)request.getAttribute(parUrlName);
 			paramValueMap.put(parUrlName, value);
 			paramNameMap.put(par.getLabel(), par.getParameterUrlName());
 		}
 		if(!findOutFormat){
-			paramValueMap.put("param_output_format", "JPGBASE64");
+			paramValueMap.put("outputType", "JPGBASE64");
 		}
 		// fill a configured document bo with data retrived
 		ConfiguredBIDocument confDoc = new ConfiguredBIDocument();

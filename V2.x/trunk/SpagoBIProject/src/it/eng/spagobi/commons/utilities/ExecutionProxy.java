@@ -113,13 +113,13 @@ public class ExecutionProxy {
 				String parUrlName = par.getParameterUrlName();
 				List values = par.getParameterValues();
 				logger.debug("processing biparameter with url name " + parUrlName);
-				if (parUrlName.equalsIgnoreCase("param_output_format") && values != null && values.size() > 0) {
+				if (parUrlName.equalsIgnoreCase("outputType") && values != null && values.size() > 0) {
 				    findOutPar = true;
 				    break;
 				}
 		    }
 		    if (!findOutPar) {
-		    	mapPars.put("param_output_format", defaultOutputFormat);
+		    	mapPars.put("outputType", defaultOutputFormat);
 		    }
 	    }
 

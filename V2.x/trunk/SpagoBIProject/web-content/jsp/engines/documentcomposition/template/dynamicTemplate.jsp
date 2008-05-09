@@ -39,10 +39,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    
     String urlIframe = (String)aSessionContainer.getAttribute("urlIframe");
 	logger.debug("urlIframe: " + urlIframe);
- 
+	String compositeJSDocumentUrl=urlBuilder.getResourceLink(request, "/js/documentcomposition/documentcomposition.js");
 %> 
 <!-- LIBS AJAX-->
-    <script type="text/javascript" src="/SpagoBI/js/documentcomposition/documentcomposition.js"></script>
+    <script type="text/javascript" src="<%=compositeJSDocumentUrl%>"></script>
 <!-- ENDLIBS -->
  
 
@@ -121,6 +121,35 @@ for (int i=0; i<lstUrl.size(); i++){
 	setLinkedFields(arLinkedFields);
 	setStylePanels(arStylePanels);
 </script> 
+
+
+<%
+Integer refreshSeconds=obj.getRefreshSeconds();
+if(refreshSeconds!=null && refreshSeconds.intValue()>0){
+Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
+%>
+
+<script  type="text/javascript">
+
+function refreshpage(){
+if(document.getElementById('refreshimage<%= uuid %>')){
+	document.getElementById('refreshimage<%= uuid %>').click();
+	}
+}
+</script>
+
+ <script type="text/javascript">
+
+    //setTimeout('window.location.reload()', <%=refreshConvert%>);
+   setTimeout('javascript:refreshpage()', <%=refreshConvert%>);
+   
+</script>
+ <%} %>
+
+
+
+
+
 
 <%	logger.debug("OUT"); %> 
 

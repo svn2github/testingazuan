@@ -447,7 +447,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		{
 		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
 		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
-		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_CREATE_PAGE");
+		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
 		refreshUrlPars.put("OBJECT_ID",documentid);
 		}
 		else

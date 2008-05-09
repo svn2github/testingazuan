@@ -14,6 +14,13 @@ import net.sf.jasperreports.engine.JRExporter;
 
 public class ExporterFactory {	
 	
+	/**
+	 * Gets the exporter.
+	 * 
+	 * @param format the format
+	 * 
+	 * @return the exporter
+	 */
 	static public JRExporter getExporter(String format) {
 		JRExporter exporter = null;
 		
@@ -33,6 +40,13 @@ public class ExporterFactory {
 		return exporter;
 	}
 	
+	/**
+	 * Gets the mIME type.
+	 * 
+	 * @param format the format
+	 * 
+	 * @return the mIME type
+	 */
 	static public String getMIMEType(String format) {
 		String mimeType = null;
 		SourceBean config = EnginConf.getInstance().getConfig();
@@ -42,6 +56,11 @@ public class ExporterFactory {
 		return mimeType;
 	}
 	
+	/**
+	 * Gets the default type.
+	 * 
+	 * @return the default type
+	 */
 	static public String getDefaultType(){
 		String defaultType = null;
 		SourceBean config = EnginConf.getInstance().getConfig();

@@ -66,10 +66,14 @@ public class JasperReportServlet extends HttpServlet {
      */
     private static transient Logger logger = Logger.getLogger(JasperReportServlet.class);
     private static String CONNECTION_NAME="connectionName";
-    private static String PARAM_OUTPUT_FORMAT="param_output_format";
+    private static String PARAM_OUTPUT_FORMAT="outputType";
 
     /**
-     * Initialize the engine
+     * Initialize the engine.
+     * 
+     * @param config the config
+     * 
+     * @throws ServletException the servlet exception
      */
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
@@ -77,7 +81,13 @@ public class JasperReportServlet extends HttpServlet {
     }
 
     /**
-     * process jasper report execution requests
+     * process jasper report execution requests.
+     * 
+     * @param request the request
+     * @param response the response
+     * 
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws ServletException the servlet exception
      */
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 	logger.debug("Start processing a new request...");

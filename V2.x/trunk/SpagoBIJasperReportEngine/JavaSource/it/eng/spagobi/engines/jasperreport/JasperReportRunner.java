@@ -92,23 +92,25 @@ public class JasperReportRunner {
 	private String userId=null;	
 	
 	/**
-	 * Class Constructor
+	 * Class Constructor.
 	 * 
-	 * @param spagobibaseurl The basic url for SpagoBI
-	 * @param templatePath The path for the report template
+	 * @param session the session
 	 */
 	public JasperReportRunner(HttpSession session) {
 		super();
 	}
 	
 	/**
-	 * This method, known all input information, runs a report with JasperReport 
+	 * This method, known all input information, runs a report with JasperReport
 	 * inside SpagoBI. iIt is the Jasper Report Engine's core method.
 	 * 
-	 * @param ds The input Data Source for the Report
 	 * @param parameters The input parameters map
 	 * @param servletContext The java servlet context object
 	 * @param servletResponse The java http servlet response object
+	 * @param conn the conn
+	 * @param out the out
+	 * @param servletRequest the servlet request
+	 * 
 	 * @throws Exception If any Exception occurred
 	 */
 	public void runReport(Connection conn, Map parameters, OutputStream out, ServletContext servletContext, 
@@ -220,7 +222,7 @@ public class JasperReportRunner {
 			logger.debug("Report filled succesfully");
 						
 			logger.debug("Exporting report ...");
-			String outputType = (String) parameters.get("param_output_format");
+			String outputType = (String) parameters.get("outputType");
 			if(outputType == null) {
 				logger.debug("Output type is not specified. Default type will be used");
 				outputType = ExporterFactory.getDefaultType();
@@ -405,6 +407,14 @@ public class JasperReportRunner {
 		return isVirtualizationActive;
 	}
 	
+	/**
+	 * Gets the virtualizer.
+	 * 
+	 * @param tmpDirectory the tmp directory
+	 * @param servletContext the servlet context
+	 * 
+	 * @return the virtualizer
+	 */
 	public JRFileVirtualizer getVirtualizer(String tmpDirectory, ServletContext servletContext) {
 	    	logger.debug("IN");
 		JRFileVirtualizer virtualizer = null; 

@@ -19,6 +19,9 @@ import javax.servlet.http.HttpSession;
 public class JRImageServlet extends HttpServlet {
 
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		HttpSession session = request.getSession(true);
 		String mapName = request.getParameter("mapname");

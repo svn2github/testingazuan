@@ -61,6 +61,14 @@
 				<ATTRIBUTE name="region" value="South West" />
 				<ATTRIBUTE name="city" value="{,{Novato,Renton}}" />
 			</USER>
+			<USER name="sales_manager">
+		  		<ATTRIBUTE name="region" value="*" /> 
+		  		<ATTRIBUTE name="family" value="*" /> 
+		  </USER>
+		  <USER name="product_manager">
+				  <ATTRIBUTE name="region" value="*" /> 
+				  <ATTRIBUTE name="family" value="*" /> 
+		  </USER>
 		</USER-PROFILES>
 				
 	</PROFILE_ATTRIBUTES>

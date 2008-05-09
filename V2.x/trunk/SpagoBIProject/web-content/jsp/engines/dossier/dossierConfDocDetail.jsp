@@ -162,7 +162,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String urlName = (String)parnamemap.get(parName);
 				String value = (String)parvaluemap.get(urlName);
 				String readonly=" ";
-				if(urlName.equalsIgnoreCase("param_output_format")){
+				if(urlName.equalsIgnoreCase("outputType")){
 					value="JPGBASE64";
 					readonly = " readonly ";
 					findOutPar = true;
@@ -179,7 +179,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 			<tr>
 				<td class='portlet-form-field-label' width="160px">Output:</td>
-				<td><input type="text" size="30" name="param_output_format" value="JPGBASE64" readonly /></td>
+				<td><input type="text" size="30" name="outputType" value="JPGBASE64" readonly /></td>
 			</tr>
 
 		<%		

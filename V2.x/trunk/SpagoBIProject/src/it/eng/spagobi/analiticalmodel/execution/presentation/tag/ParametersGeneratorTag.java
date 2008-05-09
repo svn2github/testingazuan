@@ -919,7 +919,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	try {
 
 	    // create initial html
-	    htmlStream.append("<select style='width:230px;' " + "name='" + biparam.getParameterUrlName() + "Desc' "
+	    htmlStream.append("<select style='width:230px;font-size: 8pt;' " + "name='" + biparam.getParameterUrlName() + "Desc' "
 		    + "id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' "
 		    + "class='portlet-form-field' "
 		    +

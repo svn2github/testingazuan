@@ -26,7 +26,14 @@
 	          <PARAMETER name="ActivityKey" scope="LOCAL" type="RELATIVE" value="ActivityKey"/>
 	        </ACCEPT_ACTIVITY_CAPTION>
 	      </CAPTIONS>
-	      <BUTTONS/>
+	      <BUTTONS>
+	     	<BACK_BUTTON confirm="FALSE" name="back" image="/img/back.png" label="SBIDev.ListSubreport.backCaption">
+				<PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
+	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIEventsPublisher"/>
+	          <!-- <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/> -->
+	          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+	          </BACK_BUTTON>
+	      </BUTTONS>
 	    </CONFIG>
 	</MODULE>
 </MODULES>

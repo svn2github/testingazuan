@@ -47,15 +47,18 @@
 		<USER-PROFILES>
 			<USER name="biadmin">
 				<ATTRIBUTE name="product" value="Food" />
+				<ATTRIBUTE name="region" value="South West" />
 				<ATTRIBUTE name="Department" value="HQ Marketing" />
 				<ATTRIBUTE name="city" value="{,{Berkeley,Ballard}}" />
 			</USER>
 			<USER name="bidev">
 				<ATTRIBUTE name="product" value="Drink" />
+				<ATTRIBUTE name="region" value="South West" />
 				<ATTRIBUTE name="city" value="{,{Albany,Altadena,Colma,Arcadia}}" />
 			</USER>
 			<USER name="biuser">
 				<ATTRIBUTE name="product" value="Food" />
+				<ATTRIBUTE name="region" value="South West" />
 				<ATTRIBUTE name="city" value="{,{Novato,Renton}}" />
 			</USER>
 		</USER-PROFILES>

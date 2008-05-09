@@ -102,6 +102,8 @@ public class CheckBoxTag extends TagSupport {
     
     final static int END_RANGE_PAGES = 6;  
     
+    private String rowColor="#F5F6BE";
+    
 	/* (non-Javadoc)
 	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
 	 */
@@ -402,17 +404,11 @@ public class CheckBoxTag extends TagSupport {
 		_htmlStream.append("	}\n");
 		
 		_htmlStream.append(" </script>\n");
-		
-		boolean alternate = false;
-        String rowClass;
        
 		for(int i = 0; i < rows.size(); i++) {
 			SourceBean row = (SourceBean) rows.get(i);
-            
-            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-            alternate = !alternate;    
-            
-            _htmlStream.append(" <tr class='portlet-font'>\n");
+             
+            _htmlStream.append(" <tr onMouseOver=\"this.bgColor='"+rowColor+"';\" onMouseOut=\"this.bgColor='#FFFFFF';\">\n");
 			for (int j = 0; j < _columns.size(); j++) {
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("NAME");
 				Object fieldObject = row.getAttribute(nameColumn);
@@ -424,7 +420,7 @@ public class CheckBoxTag extends TagSupport {
 				// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 				String align = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("horizontal-align");
 				if (align == null || align.trim().equals("")) align = "left";
-				_htmlStream.append(" <td class='" + rowClass + "' align='" + align + "' valign='top' >" + field + "</td>\n");
+				_htmlStream.append(" <td>" + field + "</td>\n");
 			} 
 			
 			
@@ -447,7 +443,7 @@ public class CheckBoxTag extends TagSupport {
 						((String)captionSB.getAttribute("confirm")).equalsIgnoreCase("TRUE")){
 					confirm = true;
 				}
-				_htmlStream.append(" <td width='20' class='" + rowClass + "'>\n");
+				_htmlStream.append(" <td width='20'>\n");
 				if (confirm){
 					_htmlStream.append("     <a href='javascript:actionConfirm(\"" + label + "\", \"" + buttonUrl.toString() + "\");'>\n");	
 				}else{
@@ -457,7 +453,7 @@ public class CheckBoxTag extends TagSupport {
 				_htmlStream.append("     </a>\n");
 				_htmlStream.append(" </td>\n");
 			}
-			_htmlStream.append(" <td class='" + rowClass + "' width='30px'>\n");	
+			_htmlStream.append(" <td width='30px'>\n");	
 			String checked = (String)row.getAttribute("CHECKED");
 			
 			//String objectIdName = (String)((SourceBean) _layout.getAttribute("KEYS.OBJECT")).getAttribute("key");

@@ -315,8 +315,8 @@ public class BirtReportServlet extends HttpServlet {
 	task.setParameterValues(reportParams);
 	task.validateParameters();
 
-	String outputFormat = request.getParameter("param_output_format");
-	logger.debug("param_output_format -- [" + outputFormat + "]");
+	String outputFormat = request.getParameter("outputType");
+	logger.debug("outputType -- [" + outputFormat + "]");
 	
 	String templateFileName = request.getParameter("template_file_name");
 	logger.debug("templateFileName -- [" + templateFileName + "]");

@@ -16,6 +16,7 @@
 	
 	<SCHEMAS>
 		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
+		<SCHEMA catalogUri="/WEB-INF/queries/SbiMonitor.xml" name="SpagoMonitor" />
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

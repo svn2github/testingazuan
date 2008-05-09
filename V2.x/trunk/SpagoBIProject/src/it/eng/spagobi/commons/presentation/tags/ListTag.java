@@ -290,7 +290,7 @@ public class ListTag extends TagSupport
 		List captions = captionSB.getContainedSourceBeanAttributes();
 		int numCaps = captions.size();
 		
-		_htmlStream.append("<TABLE style='width:100%;margin-top:1px'>\n");
+		_htmlStream.append("<TABLE class='list' style='width:100%;margin-top:1px'>\n");
 		_htmlStream.append("	<TR>\n");
 
 		for (int i = 0; i < _columns.size(); i++) {
@@ -1094,8 +1094,8 @@ public class ListTag extends TagSupport
 		int startRangePages = 1;
 		int endRangePages = END_RANGE_PAGES;
 		int deltaPages = pagesNumber - endRangePages;
-		String dotsStart = "";
-		String dotsEnd = "";
+		String dotsStart = null;
+		String dotsEnd = null;
 		if (deltaPages > 0){
 			startRangePages = (pageNumber - 3 > 0)?pageNumber - 3:1;
 			endRangePages = ((pageNumber + 3 <= pagesNumber) && (pageNumber + 3 >  END_RANGE_PAGES))?pageNumber + 3: END_RANGE_PAGES;
@@ -1120,31 +1120,35 @@ public class ListTag extends TagSupport
         // visualize page numbers
 		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
 		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
-		_htmlStream.append("		<TD class='portlet-section-footer' align='left' width='15%'>\n");
+		_htmlStream.append("		<TD class='portlet-section-footer' style='vertical-align:top;horizontal-align:left;width:30%;'>\n");
 		_htmlStream.append("				<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
 		//_htmlStream.append("			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
 		_htmlStream.append("		</TD>\n");
-		_htmlStream.append("		<TD  class='portlet-section-footer' width='23%'>\n");
-		_htmlStream.append("			    &nbsp;\n");
-		_htmlStream.append("		</TD>\n");		
+		//_htmlStream.append("		<TD  class='portlet-section-footer' width='23%'>\n");
+		//_htmlStream.append("			    &nbsp;\n");
+		//_htmlStream.append("		</TD>\n");	
+		_htmlStream.append("		<TD  class='portlet-section-footer' style='vertical-align:top;horizontal-align:center;width:40%;'>\n");
 		// visualize navigation's icons
 		if(pageNumber != 1) {
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
-			_htmlStream.append("	</TD>\n");
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
-			_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' border=0></a>\n");
+			//_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' border=0></a>\n");
+			//_htmlStream.append("	</TD>\n");
 		} else {
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
-			_htmlStream.append("	</TD>\n");
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
-			_htmlStream.append("	</TD>\n");			
-		}		
-		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='20%'>\n");
-		_htmlStream.append(dotsStart+"\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' border=0 />\n");				
+			//_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' border=0 />\n");
+			//_htmlStream.append("	</TD>\n");			
+		}
+		//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='20%'>\n");
+		if (dotsStart != null) {
+			_htmlStream.append("<A style='vertical-align:top;'>"+dotsStart+"</a>\n");
+			_htmlStream.append("&nbsp;&nbsp;\n");
+		}
 		for (int i=startRangePages; i <= endRangePages; i++){
 			// create link for last page
 			HashMap tmpParamsMap = new HashMap();
@@ -1164,27 +1168,30 @@ public class ListTag extends TagSupport
 				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
 				tmpUrl = createUrl(tmpParamsMap);
 			}				 				
-			_htmlStream.append("	<A href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
+			_htmlStream.append("	<A style='vertical-align:top;' href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
 			_htmlStream.append("&nbsp;&nbsp;\n");			
 		}
-		_htmlStream.append(dotsEnd+"\n");
-		_htmlStream.append("	</TD>\n");
+		if (dotsEnd != null) {
+			_htmlStream.append("<A style='vertical-align:top;'>"+dotsEnd+"</a>\n");
+		}
+		//_htmlStream.append("	</TD>\n");
 		if(pageNumber != pagesNumber) {	
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
-			_htmlStream.append("	</TD>\n");
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
-			_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' border=0 /></a>\n");
+			//_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' border=0 /></a>\n");
+			//_htmlStream.append("	</TD>\n");
 		} else {
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
-			_htmlStream.append("	</TD>\n");
-			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
-			_htmlStream.append("	</TD>\n");
-		}		
-		_htmlStream.append("		<TD class='portlet-section-footer' width='38%'>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' border=0>\n");
+			//_htmlStream.append("	</TD>\n");
+			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' border=0>\n");
+			//_htmlStream.append("	</TD>\n");
+		}
+		_htmlStream.append("		</TD>\n");
+		_htmlStream.append("		<TD class='portlet-section-footer' style='width:30%;'>\n");
 		_htmlStream.append("			    &nbsp;\n");
 		_htmlStream.append("		</TD>\n");		
 

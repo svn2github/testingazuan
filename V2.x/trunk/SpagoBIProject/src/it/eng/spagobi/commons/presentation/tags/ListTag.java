@@ -1120,11 +1120,11 @@ public class ListTag extends TagSupport
         // visualize page numbers
 		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
 		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
-		_htmlStream.append("		<TD class='portlet-section-footer' align='left' width='10%'>\n");
+		_htmlStream.append("		<TD class='portlet-section-footer' align='left' width='15%'>\n");
 		_htmlStream.append("				<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
 		//_htmlStream.append("			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
 		_htmlStream.append("		</TD>\n");
-		_htmlStream.append("		<TD  class='portlet-section-footer' width='28%'>\n");
+		_htmlStream.append("		<TD  class='portlet-section-footer' width='23%'>\n");
 		_htmlStream.append("			    &nbsp;\n");
 		_htmlStream.append("		</TD>\n");		
 		// visualize navigation's icons
@@ -1143,7 +1143,7 @@ public class ListTag extends TagSupport
 			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("	</TD>\n");			
 		}		
-		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
+		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='20%'>\n");
 		_htmlStream.append(dotsStart+"\n");
 		for (int i=startRangePages; i <= endRangePages; i++){
 			// create link for last page

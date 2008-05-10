@@ -1566,45 +1566,46 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		}
 
 		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+		controlInputParameters(biparams, profile, role);
+
 		if (isRefreshCorrelationCall(request)) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
-			// get the list of the subObjects
-			List subObjects = getSubObjectsList(obj, profile);
-			// put in response the list of subobject names
-			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-			// get the list of biobject snapshot
-			List snapshots = getSnapshotList(obj);
-			// put in response the list of snapshot
-			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-			// get the list of viewpoint
-			List viewpoints = getViewpointList(obj);
-			// put in response the list of viewpoint
-			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+//			// get the list of the subObjects
+//			List subObjects = getSubObjectsList(obj, profile);
+//			// put in response the list of subobject names
+//			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+//			// get the list of biobject snapshot
+//			List snapshots = getSnapshotList(obj);
+//			// put in response the list of snapshot
+//			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+//			// get the list of viewpoint
+//			List viewpoints = getViewpointList(obj);
+//			// put in response the list of viewpoint
+//			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 
 			return;
 		}
 
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		controlInputParameters(biparams, profile, role);
 		// if there are some errors into the errorHandler does not execute the
 		// BIObject
 		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
-			// get the list of the subObjects
-			List subObjects = getSubObjectsList(obj, profile);
-			// put in response the list of subobject names
-			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-			// get the list of biobject snapshot
-			List snapshots = getSnapshotList(obj);
-			// put in response the list of snapshot
-			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-			// get the list of viewpoint
-			List viewpoints = getViewpointList(obj);
-			// put in response the list of viewpoints
-			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
+//			// get the list of the subObjects
+//			List subObjects = getSubObjectsList(obj, profile);
+//			// put in response the list of subobject names
+//			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
+//			// get the list of biobject snapshot
+//			List snapshots = getSnapshotList(obj);
+//			// put in response the list of snapshot
+//			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
+//			// get the list of viewpoint
+//			List viewpoints = getViewpointList(obj);
+//			// put in response the list of viewpoints
+//			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 
 			return;
 		}

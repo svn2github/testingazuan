@@ -191,7 +191,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				String correlation = msgBuilder.getMessage(
 					"SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages", httpRequest);
 				correlation += " " + objParFatherLabel;
-				htmlStream.append("		<img src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
+				htmlStream.append("		<img style='text-decoration:none' src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
 				htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
 			    }
 			    htmlStream.append("		</div>\n");
@@ -760,7 +760,11 @@ public class ParametersGeneratorTag extends TagSupport {
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
 	String userId = getProfile().getUserUniqueIdentifier().toString();
-	String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  "&parameterId="+biparam.getParID().toString()+"&roleName="+roleName+"&parameterFieldName="+parameterFieldName+"&returnParam="+biparam.getParameterUrlName()+requestIdentity;
+	String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + 
+		"&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  
+		"&parameterId=" + biparam.getParID().toString() + "&roleName=" + roleName +
+		"&parameterFieldName=" + parameterFieldName + "&returnParam=" + biparam.getParameterUrlName() + requestIdentity +
+		"&uuid=" + requestIdentity;
 	
 	// does this parameter depend on other parameters? if it is the case, puts in the url the values of the father parameters
 	Map dependencies = getDependencies(biparam);
@@ -784,7 +788,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		htmlStream.append("this.form.submit();");
 	}
 	htmlStream.append("\" autocomplete='off'/>");
-	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' >\n");
+	htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' style='text-decoration:none' >\n");
 	htmlStream.append("	<img src= '" + encodeURL("/img/detail.gif") + "' title='Lookup' alt='Lookup' />\n");
 	htmlStream.append("</a>\n");
 	

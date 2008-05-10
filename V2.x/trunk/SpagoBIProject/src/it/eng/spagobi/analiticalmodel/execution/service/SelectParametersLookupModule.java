@@ -75,7 +75,8 @@ import org.apache.log4j.Logger;
  * 
  * @author Angelo Bernabei - angelo.bernabei@eng.it
  * 
- * This module read the parameters values 
+ * This module read the parameters values.
+ * It is invoked by a lookup window from execution parameters form; the result is published into the same window.
  * 
  */
 
@@ -137,6 +138,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	parametersMap.put(RETURN_PARAM, returnParam);
 	parametersMap.put("parameterFieldName", request.getAttribute("parameterFieldName"));
 	parametersMap.put("objParId", request.getAttribute("objParId"));
+	parametersMap.put("uuid", request.getAttribute("uuid"));
 	
 	// dependencies filter
 	list = filterListForParametersCorrelation(paruse, request, list, parametersMap);
@@ -534,9 +536,30 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	moduleConfigStr.append("		<SELECT_CAPTION  confirm=\"FALSE\" image=\"/img/button_ok.gif\" label=\"SBIListLookPage.selectButton\">");
 	moduleConfigStr.append("			<ONCLICK>");
 	moduleConfigStr.append("				<![CDATA[");
+	// sets value and its description on parameters form (that is on parent window)
 	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
 	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value='<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
+	// hides this window 
 	moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
+	// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
+	// get current biparameter id
+	String objParIdStr = (String) request.getAttribute("objParId");
+	Integer objParId = new Integer(objParIdStr);
+	// search for biparameters that depend from the current one:
+	List lblBiParamDependent = null;
+	try {
+	    lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(objParId);
+	} catch (Exception e) {
+	    logger.error("Error while recovering dependencies " + " for biparm id " + objParIdStr, e);
+	    lblBiParamDependent = new ArrayList();
+	}
+	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+		// find parameters form uuid:
+		String uuid = (String) request.getAttribute("uuid");
+		 // sets correlation flag and submits parameters form
+		moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
+		moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+	}
 	moduleConfigStr.append("				]]>");
 	moduleConfigStr.append("			</ONCLICK>");
 	moduleConfigStr.append("		</SELECT_CAPTION>");
@@ -569,13 +592,14 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	SourceBean result = null;
 	logger.debug("lovProvider="+lovProvider);
 	QueryDetail qd = QueryDetail.fromXML(lovProvider);
-	
-	/*if (qd.requireProfileAttributes()) {
+	/*
+	if (qd.requireProfileAttributes()) {
 	    String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported",
 		    "component_scheduler_messages");
 	    response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
 	    return result;
-	}*/
+	}
+	*/
 	valColName = qd.getValueColumnName();
 	visibleColNames = qd.getVisibleColumnNames();
 	

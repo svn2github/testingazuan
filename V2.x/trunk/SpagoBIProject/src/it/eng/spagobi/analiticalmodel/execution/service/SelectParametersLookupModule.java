@@ -569,12 +569,13 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	SourceBean result = null;
 	logger.debug("lovProvider="+lovProvider);
 	QueryDetail qd = QueryDetail.fromXML(lovProvider);
-	if (qd.requireProfileAttributes()) {
+	
+	/*if (qd.requireProfileAttributes()) {
 	    String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported",
 		    "component_scheduler_messages");
 	    response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
 	    return result;
-	}
+	}*/
 	valColName = qd.getValueColumnName();
 	visibleColNames = qd.getVisibleColumnNames();
 	

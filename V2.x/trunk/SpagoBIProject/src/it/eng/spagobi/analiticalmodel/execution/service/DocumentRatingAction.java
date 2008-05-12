@@ -96,7 +96,7 @@ public class DocumentRatingAction extends BaseProfileAction{
 			
 			String objId = "";
 			String rating = "";
-			String userId= (String)request.getAttribute("userid");
+			String userId= (String)request.getAttribute("userId");
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -123,6 +123,7 @@ public class DocumentRatingAction extends BaseProfileAction{
 		       }
 		     }
 		   
+		    response.setAttribute("userId", userId);
 		    response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
 			response.setAttribute("OBJECT_ID",objId);

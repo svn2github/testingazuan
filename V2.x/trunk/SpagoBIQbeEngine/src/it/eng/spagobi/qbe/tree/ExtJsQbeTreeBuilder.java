@@ -288,13 +288,15 @@ public class ExtJsQbeTreeBuilder  {
 							 DataMartField field) {
 		
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
-		if( !datamartProperties.isFieldVisible( field.getUniqueName().replaceAll(":", "/") ) ) return null;
+		//if( !datamartProperties.isFieldVisible( field.getUniqueName().replaceAll(":", "/") ) ) return null;
 		int fieldType = datamartProperties.getFieldType( field.getUniqueName().replaceAll(":", "/") );
 		
 		
 		String fieldLabel = DatamartLabelFactory.getFieldLabel(getDatamartModel(), field);	
 		String entityLabel = DatamartLabelFactory.getEntityLabel(datamartModel, parentEntity);	
-				
+		//fieldLabel = field.getName();
+		//entityLabel = parentEntity.getName();
+		
 		System.out.println( field.getUniqueName().replaceAll(":", "/") + "=" );
 		
 		

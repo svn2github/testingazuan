@@ -24,14 +24,14 @@ var getQueryBuilderPanel = function() {
                   id:'block1',
                   autoScroll       : true,
         		  containerScroll  : true,
-                  title:'Foodmart 1',
+                  title:'Datamart 1',
                   items: [menuTree1],
                   border:false
                 },{
                   id:'block2',
                   autoScroll       : true,
         		  containerScroll  : true,
-                  title:'Foodmart 2',
+                  title:'Datamart 2',
                   items: [menuTree2],
                   border:false
                 }]

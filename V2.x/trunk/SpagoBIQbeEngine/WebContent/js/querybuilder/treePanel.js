@@ -6,6 +6,7 @@
   
 Ext.override(Ext.tree.TreeLoader, {
     createNode : function(attr){
+    	//alert("Hello");
         // apply baseAttrs, nice idea Corey!
         if(this.baseAttrs){
             Ext.applyIf(attr, this.baseAttrs);
@@ -73,7 +74,7 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
     
      
     var rootNode = new Ext.tree.AsyncTreeNode({
-        text		: 'Foodmart',
+        text		: 'Datamart',
         iconCls		: 'database',
         expanded	: true,
         draggable	: false

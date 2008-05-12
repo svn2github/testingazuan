@@ -138,7 +138,7 @@ Snapshot snapshot = (Snapshot) moduleResponse.getAttribute(SpagoBIConstants.SNAP
 boolean isExecutingSnapshot = snapshot != null;
 Map documentParametersMap = (Map) moduleResponse.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
 
-String title = obj.getLabel() + ": " + obj.getName();
+String title = obj.getName();
 
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
@@ -194,7 +194,7 @@ boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJ
 			recoverExecutionParams.put("EXECUTION_ID", instance.getExecutionId());
 			recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 			String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
-			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getLabel() + ": " + aBIObject.getName()%></a>&gt;<%
+			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&gt;<%
 		}
 	}
 	%>

@@ -54,7 +54,7 @@ UUID uuidObj = uuidGen.generateTimeBasedUUID();
 String uuid = uuidObj.toString();
 uuid = uuid.replaceAll("-", "");
 
-String title = obj.getLabel() + ": " + obj.getName();
+String title = obj.getName();
 
 //execution role
 String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);

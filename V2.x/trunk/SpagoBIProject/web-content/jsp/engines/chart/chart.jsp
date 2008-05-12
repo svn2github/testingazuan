@@ -294,7 +294,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 		JFreeChart chart=null;
 		// create the chart
-		chart = sbi.createChart(titleChart,copyDataset);
+		chart = sbi.createChart(copyDataset);
 
 		//Create the temporary file
 		String executionId = uuidO;

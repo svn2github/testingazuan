@@ -661,7 +661,7 @@ function checkFormVisibility(docType) {
 							<a href="<%=editUrlStr%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
-	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/createTemplate.jpg")%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
 							</a> 	
 					<%

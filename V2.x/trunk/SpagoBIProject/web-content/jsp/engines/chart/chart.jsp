@@ -87,7 +87,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   
   
   <% 
-  	String titleChart="";
 	String maxSlider="0";
 	String minSlider="0";
 	String valueSlider="1";
@@ -97,7 +96,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List series=null;  // the series in the complete dataset
 	int numberCatVisualization=1;
 	int catsnum=0;
-	int ticks=1;
 	int categoryCurrent=0;
 	String categoryCurrentName="";
 	String catTitle="category";
@@ -115,7 +113,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			userId=(String)userProfile.getUserUniqueIdentifier();
 			}
 
-		if(sbModuleResponse.getAttribute("title")!=null){titleChart=(String)sbModuleResponse.getAttribute("title");}
 			//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
 		String documentid=(objO.getId()).toString();

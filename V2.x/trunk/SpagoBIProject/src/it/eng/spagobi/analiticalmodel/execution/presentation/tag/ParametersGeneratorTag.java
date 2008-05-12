@@ -776,6 +776,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		if (value == null) continue;
 		url += "&" + key + "=" + value;
 	}
+	url = GeneralUtilities.substituteQuotesIntoString(url); // javascript escape
 	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
@@ -904,7 +905,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName()
 		+ requestIdentity + "Desc');\" " + "autocomplete='off'/>\n");
 
-	htmlStream.append("<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId()
+	htmlStream.append("&nbsp;<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId()
 		+ "\", \"CHECK_LIST\")' \n");
 	htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
 	htmlStream.append("		title='Lookup' alt='Lookup' \n");

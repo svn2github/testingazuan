@@ -285,7 +285,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		}
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnLabel\" name=\"LABEL\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnName\" name=\"NAME\" />";
-		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCR\" />";
+		// moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnDescr\" name=\"DESCR\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnEngine\" name=\"ENGINE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.columnState\" name=\"STATE\" />";
 		moduleConfigStr += "		<COLUMN label=\"SBISet.objects.instancesNumber\" name=\"INSTANCES\" horizontal-align=\"center\"/>";

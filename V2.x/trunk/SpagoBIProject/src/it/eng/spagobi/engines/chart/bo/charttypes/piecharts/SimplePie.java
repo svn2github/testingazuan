@@ -103,14 +103,14 @@ public class SimplePie extends PieCharts{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
-		super.createChart(chartTitle, dataset);
+	public JFreeChart createChart(Dataset dataset) {
+		super.createChart(dataset);
 
 		JFreeChart chart=null; 
 
 		if(!threeD){
 			chart = ChartFactory.createPieChart(
-					chartTitle,  
+					name,  
 					(PieDataset)dataset,             // data
 					legend,                // include legend
 					true,
@@ -143,7 +143,7 @@ public class SimplePie extends PieCharts{
 		}
 		else{
 			chart = ChartFactory.createPieChart3D(
-					chartTitle,  
+					name,  
 					(PieDataset)dataset,             // data
 					true,                // include legend
 					true,

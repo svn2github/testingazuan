@@ -111,9 +111,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 
 
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		logger.debug("IN");
-		super.createChart(chartTitle, dataset);
+		super.createChart(dataset);
 
 		CategoryAxis categoryAxis = new CategoryAxis(categoryLabel);
 		ValueAxis valueAxis = new NumberAxis(valueLabel);
@@ -139,7 +139,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 		CategoryPlot plot = new CategoryPlot((CategoryDataset)dataset, categoryAxis, valueAxis, renderer);
 		plot.setOrientation(PlotOrientation.VERTICAL);
-		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
+		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 
 
 

@@ -42,7 +42,7 @@ public interface IChart {
 	 * 
 	 * @return the j free chart
 	 */
-	public JFreeChart createChart(String chartTitle, Dataset dataset);
+	public JFreeChart createChart(Dataset dataset);
 
 	/**
 	 * Configure chart.

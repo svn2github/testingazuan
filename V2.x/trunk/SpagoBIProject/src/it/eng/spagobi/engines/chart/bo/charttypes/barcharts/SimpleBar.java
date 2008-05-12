@@ -86,9 +86,9 @@ public class SimpleBar extends BarCharts{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		logger.debug("IN");
-		super.createChart(chartTitle, dataset);
+		super.createChart(dataset);
 
 		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
 		if(horizontalView)
@@ -98,7 +98,7 @@ public class SimpleBar extends BarCharts{
 
 
 		JFreeChart chart = ChartFactory.createBarChart(
-				chartTitle,       // chart title
+				name,       // chart title
 				categoryLabel,               // domain axis label
 				valueLabel,                  // range axis label
 				(CategoryDataset)dataset,                  // data

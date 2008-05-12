@@ -56,7 +56,7 @@ public class DialCharts extends ChartImpl {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(String chartTitle, org.jfree.data.general.Dataset dataset){
+	public JFreeChart createChart(org.jfree.data.general.Dataset dataset){
 		return null;
 	}
 

@@ -195,7 +195,7 @@ public class SBISpeedometer extends DialCharts{
 	 * @return A chart speedometer.
 	 */
 
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		logger.debug("IN");
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
@@ -250,7 +250,7 @@ public class SBISpeedometer extends DialCharts{
 		plot.addPointer(p);
 
 		logger.debug("OUT");
-		JFreeChart chart=new JFreeChart(chartTitle, plot);
+		JFreeChart chart=new JFreeChart(name, plot);
 		chart.setBackgroundPaint(color);
 		return chart;
 	}

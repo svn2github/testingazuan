@@ -165,9 +165,9 @@ public class Meter extends DialCharts{
 	 * @return A chart .
 	 */
 
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 
-		super.createChart(chartTitle, dataset);
+		super.createChart(dataset);
 
 		MeterPlot plot = new MeterPlot((ValueDataset)dataset);
 		plot.setRange(new Range(lower, upper));

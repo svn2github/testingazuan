@@ -236,7 +236,7 @@ public class SimpleDial extends DialCharts{
 	 * @return A chart .
 	 */
 
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		// get data for diagrams
 		logger.debug("IN");
 		DialPlot plot = new DialPlot();
@@ -303,7 +303,7 @@ public class SimpleDial extends DialCharts{
 		plot.addLayer(needle);
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setBackgroundPaint(color);
-		chart1.setTitle(chartTitle);
+		chart1.setTitle(name);
 		logger.debug("OUT");
 		return chart1;
 	}

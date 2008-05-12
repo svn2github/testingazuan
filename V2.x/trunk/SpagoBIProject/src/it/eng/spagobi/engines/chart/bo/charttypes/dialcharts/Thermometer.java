@@ -81,10 +81,10 @@ public class Thermometer extends DialCharts{
 	 */
 
 
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		logger.debug("IN");
 		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
-		JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
+		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 		chart.setBackgroundPaint(color);
 		plot.setInsets(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setPadding(new RectangleInsets(10.0, 10.0, 10.0, 10.0));

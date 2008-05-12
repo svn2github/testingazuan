@@ -140,8 +140,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
-		super.createChart(chartTitle, dataset);
+	public JFreeChart createChart(Dataset dataset) {
+		super.createChart(dataset);
 
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
@@ -151,7 +151,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 		if(!threeD){
 			chart = ChartFactory.createPieChart(
-					chartTitle,  
+					name,  
 					(PieDataset)dataset,             // data
 					legend,                // include legend
 					true,
@@ -194,7 +194,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 		}
 		else{
 			chart = ChartFactory.createPieChart3D(
-					chartTitle,  
+					name,  
 					(PieDataset)dataset,             // data
 					true,                // include legend
 					true,

@@ -348,9 +348,9 @@ public class BarCharts extends ChartImpl {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(String chartTitle, Dataset dataset) {
+	public JFreeChart createChart(Dataset dataset) {
 		// TODO Auto-generated method stub
-		return super.createChart(chartTitle, dataset);
+		return super.createChart(dataset);
 	}
 
 	/**

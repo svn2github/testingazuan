@@ -3,11 +3,11 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.events.metadata.SbiEventsLog" table="sbi_events_log">
+    <class name="it.eng.spagobi.events.metadata.SbiEventsLog" table="SBI_EVENTS_LOG">
         <id name="id" type="integer">
             <column name="id" />
-            <generator class="sequence">
-            	<param name="sequence">sbi_events_log_seq</param> 
+            <generator class="native">
+           		<param name="sequence">sbi_events_log_seq</param>
             </generator>
         </id>
         <property name="user" type="string">
@@ -30,7 +30,7 @@
                 <column name="event_id" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.commons.metadata.SbiEventRole" />
-        </set>   
+        </set> 
     </class>
     
 </hibernate-mapping>

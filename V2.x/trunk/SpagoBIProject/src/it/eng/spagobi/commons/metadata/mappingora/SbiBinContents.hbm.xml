@@ -2,16 +2,16 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="it.eng.spagobi.events.metadata.SbiEvents" table="SBI_EVENTS">
+
+    <class name="it.eng.spagobi.commons.metadata.SbiBinContents" table="SBI_BINARY_CONTENTS">
         <id name="id" type="integer">
-            <column name="id" />
+            <column name="BIN_ID" />
             <generator class="native">
-           		<param name="sequence">sbi_events_seq</param>
+           		<param name="sequence">sbi_binary_contents_seq</param>
             </generator>
         </id>
-                
-        <property name="user" type="string">
-            <column name="user_event" length="40" not-null="true" />
-        </property>        
+        <property name="content" type="binary">
+            <column name="BIN_CONTENT" />
+        </property>
     </class>
 </hibernate-mapping>

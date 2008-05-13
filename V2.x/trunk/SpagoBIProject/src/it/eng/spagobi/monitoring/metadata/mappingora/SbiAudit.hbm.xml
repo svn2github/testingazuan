@@ -6,12 +6,12 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.monitoring.metadata.SbiAudit" table="sbi_audit">
+    <class name="it.eng.spagobi.monitoring.metadata.SbiAudit" table="SBI_AUDIT">
         <id name="id" type="integer">
             <column name="id" />
-            <generator class="sequence">
-            	<param name="sequence">sbi_audit_seq</param> 
-            </generator>
+            <generator class="native">
+           		<param name="sequence">sbi_audit_seq</param>
+            </generator>  
         </id>
         <property name="userName" type="string">
             <column name="username" length="40" not-null="true" />
@@ -106,5 +106,5 @@
         <property name="executionModality" type="string">
             <column name="execution_modality" length="40" not-null="false" />
         </property>
-    </class>
+     </class>
 </hibernate-mapping>

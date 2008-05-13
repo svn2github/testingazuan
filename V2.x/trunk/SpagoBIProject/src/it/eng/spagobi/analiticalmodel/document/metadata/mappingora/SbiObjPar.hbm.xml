@@ -6,14 +6,13 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar" table="sbi_obj_par" >
+    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar" table="SBI_OBJ_PAR" >
         <id name="objParId" type="integer">
-            <column name="obj_par_Id" />
-            <generator class="sequence">
-            	<param name="sequence">sbi_obj_par_seq</param> 
+            <column name="obj_par_id" />
+            <generator class="native">
+           		<param name="sequence">sbi_obj_par_seq</param>
             </generator>
-        </id>
-        
+        </id>    
 <!--
         <composite-id name="id" class="it.eng.spagobi.metadata.SbiObjParId">
             <key-many-to-one name="sbiParameters" class="it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters">
@@ -26,7 +25,7 @@
                 <column name="prog" />
             </key-property>
         </composite-id>
--->
+-->    
 
         <many-to-one name="sbiParameter" class="it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters">
             <column name="par_id" not-null="true" />
@@ -34,7 +33,7 @@
         <many-to-one name="sbiObject" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
             <column name="biobj_id" not-null="true" />
         </many-to-one>
-
+  
         <property name="reqFl" type="short">
             <column name="req_fl" />
         </property>
@@ -48,7 +47,7 @@
             <column name="mult_fl" />
         </property>
         <property name="label" type="string">
-            <column name="label" length="20" not-null="true" />
+            <column name="label" length="20" not-null="true"/>
         </property>
         <property name="parurlNm" type="string">
             <column name="parurl_nm" length="20" />

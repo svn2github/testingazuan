@@ -1317,9 +1317,10 @@ preserveAspectRatio="xMidYMin meet">
 	        <g text-rendering="optimizeLegibility" font-family="Arial,Helvetica" fill="dimgray" font-size="12px">
 	            <!-- text with this id is required to show help texts -->
 	            <text id="statusText" x="-745" y="-100" startOffset="0">Statusbar: Mode: Infomode</text>
-	            
+	        <!--    
 	        	<text x="10" y="713" startOffset="0">Map Authors: Engineering Ingegneria Informatica S.p.A.</text>
 	        	<text x="1090" y="713" text-anchor="end" startOffset="0">Source: SIT Comune di Genova</text>
+	        -->
 	        </g>
 	    </g>
 	    <!-- small reference map, shares the same coordinate system than the main map -->

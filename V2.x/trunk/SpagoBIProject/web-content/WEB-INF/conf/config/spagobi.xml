@@ -54,7 +54,7 @@
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
-				<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
+				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">

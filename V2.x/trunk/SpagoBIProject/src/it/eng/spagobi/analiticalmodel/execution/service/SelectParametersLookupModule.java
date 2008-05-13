@@ -169,7 +169,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
     	String objParIdStr = (String) request.getAttribute("objParId");
     	Integer objParId = new Integer(objParIdStr);
     	IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
-    	List dependencies = objParuseDAO.loadObjParuse(objParId, paruse.getId());
+    	List dependencies = objParuseDAO.loadObjParuse(objParId, paruse.getUseID());
     	if (dependencies != null && dependencies.size() > 0) {
 			if (dependencies.size() == 1) {
 				ObjParuse objparuse = (ObjParuse) dependencies.get(0);

@@ -48,7 +48,7 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 	if (roles==null) return null;
 	String strRoles="";
 
-	ArrayList toReturn = new ArrayList();;
+	ArrayList toReturn = new ArrayList();
 	Session aSession = null;
 	Transaction tx = null;
 	try{

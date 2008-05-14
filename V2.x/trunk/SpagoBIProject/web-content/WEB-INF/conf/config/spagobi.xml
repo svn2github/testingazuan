@@ -54,7 +54,7 @@
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
-				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
+				<NAME_PORTAL_APPLICATION>@portal.context@</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
@@ -103,9 +103,9 @@
      <LOOKUP numberRows = "20" />
     
     <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
- 	 <SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</SPAGOBI_CONTEXT_PATH>
+ 	 <SPAGOBI_CONTEXT_PATH>@spagobi.context.path@</SPAGOBI_CONTEXT_PATH>
  	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
- 	 <BACKEND_SPAGOBI_CONTEXT_PATH>https://localhost:8443/SpagoBI</BACKEND_SPAGOBI_CONTEXT_PATH>
+ 	 <BACKEND_SPAGOBI_CONTEXT_PATH>@backend.spagobi.context.path@</BACKEND_SPAGOBI_CONTEXT_PATH>
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

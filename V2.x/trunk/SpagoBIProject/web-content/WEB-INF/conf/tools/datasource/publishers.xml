@@ -10,6 +10,12 @@
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDataSourcePage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
 
   	
@@ -19,6 +25,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.datasource.presentation.ListDataSourcePublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.tools.datasource.presentation.ListDataSourcePublisher"/>
+      		</RESOURCES>
+   	 </RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="listDataSource">
@@ -28,12 +39,22 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/datasource/listDataSource.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
   	</PUBLISHER>
   	
   	<PUBLISHER name="DetailDataSourcePubJ">
     	<RENDERING channel="PORTLET" mode="" type="JAVA">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.datasource.presentation.DetailDataSourcePublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.tools.datasource.presentation.DetailDataSourcePublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MENU>
 	
+	<APPLICATION code="DataSourceMan" 
+	             title="#menu.DataSourceMan"  
+	             functionality="DataSourceManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDataSourcePage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/SpagoBI/img/tools/datasource/datasource_2.png">
+	</APPLICATION>
+	<APPLICATION code="DataSetMan" 
+	             title="#menu.DataSetMan"  
+	             functionality="DatasetManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDatasetPage" 
+	             width="800" 
+	             height="350"
+	             iconUrl="/SpagoBI/img/tools/dataset/img_menu.png">
+	</APPLICATION>		
 	<APPLICATION code="EngMan" 
 	             title="#menu.EngMan"  
 	             functionality="EnginesManagement" 
@@ -101,9 +119,18 @@
 	             height="500"
 	             iconUrl="/SpagoBI/img/scheduleIcon64.png">
 	</APPLICATION>
+	<APPLICATION code="RolesSynch" 
+	             title="#menu.RolesSynch"  
+	             functionality="SyncronizeRolesManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=DetailRolesPage&amp;MESSAGEDET=LIST_ROLES" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/rolesynch64.jpg">
+	</APPLICATION>	
 	<APPLICATION code="Events" 
 	             title="#menu.Events"  
-	             functionality="Events" 
+	             functionality="EventsManagement" 
 	             type="link" 
 	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE" 
 	             width="700" 
@@ -112,7 +139,7 @@
 	</APPLICATION>
 	<APPLICATION code="Worklist" 
 	             title="#menu.Worklist"  
-	             functionality="Worklist" 
+	             functionality="WorklistManagement" 
 	             type="link" 
 	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE" 
 	             width="700" 
@@ -121,7 +148,7 @@
 	</APPLICATION>
 	<APPLICATION code="WorkExec" 
 	             title="#menu.WorkExec"  
-	             functionality="WorkspaceExec" 
+	             functionality="WorkspaceManagement" 
 	             type="link" 
 	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&amp;WEBMODE=TRUE" 
 	             modal="true" 
@@ -129,7 +156,9 @@
 	             height="500"
 	             iconUrl="/SpagoBI/img/wapp/workspace64.png">
 	</APPLICATION>
-	<APPLICATION code="MapCat" 
+	
+	
+	<!-- <APPLICATION code="MapCat" 
 	             title="#menu.MapCat"  
 	             functionality="MapCatalogue" 
 	             type="link" 
@@ -138,7 +167,61 @@
 	             width="750" 
 	             height="500"
 	             iconUrl="/SpagoBI/img/wapp/map64.png">
+	</APPLICATION>          -->
+	
+	<APPLICATION code="MapCat" 
+	             title="#menu.MapCat"  
+	             functionality="MapCatalogueManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListMapsPage" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/mapcatalogue/maps.png">
 	</APPLICATION>
+
+	<APPLICATION code="FeatureMapCat" 
+	             title="#menu.FeatureMapCat"  
+	             functionality="MapCatalogueManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListFeaturesPage" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/mapcatalogue/featureManagement.png">
+	</APPLICATION>
+
+	
+	<APPLICATION code="DistributionListUser" 
+	             title="#menu.DistributionListUser"  
+	             functionality="DistributionListUser" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlistuser.png">
+	</APPLICATION>
+	<APPLICATION code="DistributionListList" 
+	             title="#menu.DistributionListList"  
+	             functionality="DistributionListManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDistributionListPage" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlist.gif">
+	</APPLICATION>
+	<APPLICATION code="HotLink" 
+	             title="#menu.HotLink"  
+	             functionality="DocumentExecution" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST" 
+	             modal="true" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/analiticalmodel/icon-setlog.gif">
+	</APPLICATION>	
 	
 	<!-- 
 	<VIEW code="MonitorView" 

@@ -139,7 +139,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	// in the case of document composition check if serie or category have been previously defined
 	selectedSeries=new Vector();
-	if(docComposition){
+	if(sbiMode.equalsIgnoreCase("WEB") || docComposition){
 		if(sbModuleResponse.getAttribute("category")!=null){
 		String catS=(String)sbModuleResponse.getAttribute("category");
 		Double catD=Double.valueOf(catS);
@@ -203,7 +203,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				}
 			}
 			else{
-				if(!docComposition)
+				if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
 				selectedSeries.add("allseries");
 				}
 	
@@ -311,7 +311,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Map refreshUrlPars = new HashMap();
 		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			
-		if(docComposition==true){
+		if(sbiMode.equalsIgnoreCase("WEB") || docComposition==true){
 		   	refreshUrl=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_RUN&OBJECT_ID="+documentid;
 			}
 			else{
@@ -440,7 +440,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   	// form to limit the series if it is a barchart
 	if(sbi.getType().equalsIgnoreCase("BARCHART")){
 		//sets the URL
-		if(docComposition)
+		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
 		{
 		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
 		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");

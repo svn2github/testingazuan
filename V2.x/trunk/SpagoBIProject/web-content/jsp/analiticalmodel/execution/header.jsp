@@ -231,9 +231,13 @@ if (toolbarIsVisible) {
 					</a>
 			    </li>
 			    <% } %>
-			    <% if (!isExecutingSnapshot) { %>
+			    <% if (!isExecutingSnapshot) { 
+			    String refreshMode="GET";
+			    if(sbiMode.equals("WEB")){refreshMode="POST";}
+			    	
+			    %>
 			    <li>		    
-					<form id="refresh<%=uuid%>" action="<%= getUrl(execUrl, documentParametersMap)  %>" method="get">
+					<form id="refresh<%=uuid%>" action="<%= getUrl(execUrl, documentParametersMap)  %>" method="<%=refreshMode%>">
 					<input id='refreshimage<%= uuid %>' type="image" width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
 							alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'/>

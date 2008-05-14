@@ -51,14 +51,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <head>
     <title>SpagoBI Home</title>
     
+
+	   <script type="text/javascript" src="<%=linkSbijs%>"></script>
+	   <script type="text/javascript" src="<%=linkProto%>"></script>
+		<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+		<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+		<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
+		<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+   
+   
+   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
+  <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
+ 
+  <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/> 
+  
+ <!--
     <script type="text/javascript" src="<%=contextName%>/js/spagobi.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/prototype.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/window.js"></script>
     <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/effects.js"></script>
     <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
-  <!--   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>-->  
-    <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/> 
-   
+   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script> 
+    <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/>   -->  
+ 
+
     
     <script type="text/javascript">
 	     var djConfig = {isDebug: false, debugAtAllCosts: false};
@@ -216,7 +232,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	}else{%>
 				    	 	new Ext.menu.CheckItem({
 		                            text: '<%=menuElem.getDescr()%>',
-		                            group: 'group_2', 
+		                            group: 'group_1', 
 		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
 		                        })	     			    						     
 						   <%}%>      	 
@@ -227,7 +243,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							id:'<%=menuElem.getDescr()%>_<%=menuElem.getObjId()%>',
 				            text: '<%=menuElem.getDescr()%>',
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-text-icon bmenu',			           
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',			           
 				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
 				            menu: menu<%=i%>  	  
 				            <%}%>
@@ -235,13 +251,93 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					);				
 				<%}
 			} //for%>			
+			
+			//if is a user add the user menu
+			<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){%>
+		
+		
+			
+		/*	tb.add(
+				
+				new Ext.Toolbar.MenuButton({
+		            text: 'Functionality List',
+		            icon: '<%=contextName%>/img/wapp/exit16.png',
+		            cls: 'x-btn-text-icon bmenu',
+		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
+		            handler: functionality_list	  
+		        })	
+		    );
+			
+			tb.add(
+				
+				new Ext.Toolbar.MenuButton({
+		            text: 'Event List',
+		            icon: '<%=contextName%>/img/wapp/exit16.png',
+		            cls: 'x-btn-text-icon bmenu',
+		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
+		            handler: event_list	  
+		        })	
+		    );*/
+		
+
+			var miomenu = new Ext.menu.Menu({
+			id: 'menumio',
+			items: [			
+			new Ext.menu.Item({
+				text: 'Sbi Functionality',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/wapp/bidocuments64.png', 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage')"                           
+						}),
+			new Ext.menu.Item({
+				text: 'Worklist',
+				group: 'groupmy', 
+				icon: '<%=contextName%>/img/wapp/worklist64.png',
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&WEBMODE=TRUE')"                           
+						}),	
+			new Ext.menu.Item({
+				text: 'Hot Link',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/analiticalmodel/icon-setlog.gif', 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&OPERATION=GET_HOT_LINK_LIST')"                           
+						}),						
+			new Ext.menu.Item({
+				text: 'Distribution List',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser.png', 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage')"                           
+						}),
+			new Ext.menu.Item({
+				text: 'Event List',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/wapp/events64.png', 				 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&WEBMODE=TRUE')"                           
+						})
+								         ]
+					});		 
+			
+			
+			tb.add(
+				
+				new Ext.Toolbar.MenuButton({
+		            id: 'MenuUtente',
+		            text: 'MenuUtente',
+		            cls: 'x-btn-text-icon bmenu',
+					icon: '<%=contextName%>/img/wapp/user.png',
+		            menu: miomenu
+		        })	
+		    );
+
+
+			<%}   // user menu%>
+
 			//adds exit menu		
 			tb.add(
 				
 				new Ext.Toolbar.MenuButton({
 		            text: 'Logout',
 		            icon: '<%=contextName%>/img/wapp/exit16.png',
-		            cls: 'x-btn-text-icon bmenu',
+		            cls: 'x-btn-logout x-btn-text-icon bmenu',
 		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
 		            handler: logout	  
 		        })	
@@ -260,7 +356,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 		return;
 	 }	 
-	 function execDirectUrl(url){ 	
+	 function execDirectUrl(url){
+	 //alert(url); 	
 		document.getElementById('iframeDoc').src = url;
 		return;
 	 }
@@ -422,7 +519,7 @@ var selectNode = function(node, e) {
 						new Ext.Toolbar.MenuButton({
 				            text: 'Logout',
 				            icon: '<%=contextName%>/img/wapp/exit16.png',
-				            cls: 'x-btn-text-icon bmenu',
+				            cls: 'x-btn-text-icon bmenu x-btn-logout',
 				           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
 				            handler: logout	  
 				        })	
@@ -433,6 +530,19 @@ var selectNode = function(node, e) {
     function logout(){
 		 	window.location = "<%=contextName%>/servlet/AdapterHTTP?PAGE=LogoutPage&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
 	}	
+	function distribution_list_user(){
+		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage');
+	}	
+	function functionality_list(){
+		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION');
+	}	
+	function event_list(){
+		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE');
+	}	
+
+
+	
+	
 		 
   </script>
 </html>

@@ -15,6 +15,9 @@
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 		</ROLES>
 		<FUNCTIONALITIES>
+			<FUNCTIONALITY functionalityName="DataSourceManagement" description="DataSourceManagement" />
+			<FUNCTIONALITY functionalityName="DataSetManagement" description="DataSetManagement" />
+			<FUNCTIONALITY functionalityName="EnginesManagement" description="EnginesManagement" />
 			<FUNCTIONALITY functionalityName="EnginesManagement" description="EnginesManagement" />
 			<FUNCTIONALITY functionalityName="FunctionalitiesManagement" description="FunctionalitiesManagement" />
 			<FUNCTIONALITY functionalityName="LovsManagement" description="LovsManagement" />
@@ -27,10 +30,15 @@
 			<FUNCTIONALITY functionalityName="DocumentExecution" description="DocumentExecution" />
 			<FUNCTIONALITY functionalityName="ImportExport" description="ImportExport" />
 			<FUNCTIONALITY functionalityName="Scheduler" description="Scheduler" />
-			<FUNCTIONALITY functionalityName="Events" description="Events" />
-			<FUNCTIONALITY functionalityName="Worklist" description="Worklist" />
-			<FUNCTIONALITY functionalityName="WorkspaceExec" description="WorkspaceExec" />
-			<FUNCTIONALITY functionalityName="MapCatalogue" description="MapCatalogue" />
+			<FUNCTIONALITY functionalityName="EventsManagement" description="EventsManagement" />
+			<FUNCTIONALITY functionalityName="WorklistManagement" description="WorklistManagement" />
+			<FUNCTIONALITY functionalityName="WorkspaceManagement" description="WorkspaceManagement" />
+			<FUNCTIONALITY functionalityName="MapCatalogueManagement" description="MapCatalogueManagement" />
+			<FUNCTIONALITY functionalityName="DistributionListUser" description="DistributionListUser" />
+			<FUNCTIONALITY functionalityName="DistributionListManagement" description="DistributionListManagement" />
+			<FUNCTIONALITY functionalityName="SyncronizeRolesManagement" description="SyncronizeRolesManagement" />						
+			<FUNCTIONALITY functionalityName="DocumentUserManagement" description="DocumentUserManagement" />						
+			<FUNCTIONALITY functionalityName="DocumentMetadataManagement" description="DocumentMetadataManagement" />
 		</FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
@@ -42,6 +50,8 @@
 			<BEHAVIOUR userID="dev" roleName="/spagobi/dev" />
 		</BEHAVIOURS>
 		<PRIVILEDGES>
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DataSourceManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DataSetManagement" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EnginesManagement" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="FunctionalitiesManagement" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="LovsManagement" />
@@ -50,10 +60,20 @@
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentAdminManagement" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ImportExport" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Scheduler" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Events" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Worklist" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorkspaceExec" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MapCatalogue" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EventsManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorklistManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorkspaceManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MapCatalogueManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DistributionListUser" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DistributionListManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentExecution" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="SyncronizeRolesManagement" />
+			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DistributionListUser" />						
+			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentUserManagement" />						
+			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentMetadataManagement" />						
+			<PRIVILEDGE roleName="/spagobi/user" functionalityName="WorklistManagement" />						
+			<PRIVILEDGE roleName="/spagobi/user" functionalityName="EventsManagement" />						
+					
 		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

@@ -7,6 +7,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.hotlink.presentation.HotLinkPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.hotlink.presentation.HotLinkPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
   	</PUBLISHER>
  	
   	<PUBLISHER name="HOT_LINK_HOME">

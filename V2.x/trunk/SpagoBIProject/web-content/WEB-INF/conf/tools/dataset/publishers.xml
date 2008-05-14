@@ -10,6 +10,12 @@
         		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
       		</RESOURCES>
    	 	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListDataSetPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
 
   	
@@ -19,6 +25,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.dataset.presentation.ListDataSetPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.tools.dataset.presentation.ListDataSetPublisher"/>
+      		</RESOURCES>
+   	 </RENDERING>   	 	
   	</PUBLISHER>
   	
   	<PUBLISHER name="listDataSet">
@@ -28,6 +39,11 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/dataset/listDataSet.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>    	
   	</PUBLISHER>
   	
   	<PUBLISHER name="DetailDataSetPubJ">
@@ -36,6 +52,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.dataset.presentation.DetailDataSetPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.tools.dataset.presentation.DetailDataSetPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
   	
   	<PUBLISHER name="detailDataSet">

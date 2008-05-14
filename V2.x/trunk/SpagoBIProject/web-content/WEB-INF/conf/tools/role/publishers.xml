@@ -8,6 +8,12 @@
         		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/tools/roles/listRoles.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>    	
   	</PUBLISHER>
   	
   	<PUBLISHER name="DetailRolesPubJ">
@@ -16,6 +22,11 @@
         		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.role.presentation.DetailRolesPublisher"/>
       		</RESOURCES>
    	 	</RENDERING>
+    	<RENDERING channel="HTTP" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spagobi.tools.role.presentation.DetailRolesPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>   	 	
   	</PUBLISHER>
 
 </PUBLISHERS>

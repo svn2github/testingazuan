@@ -179,6 +179,8 @@ function checkFormVisibility(docType) {
 		<input type='hidden' name='PAGE' value='detailBIObjectPage' />
 		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
 
+
+
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' 
@@ -225,6 +227,8 @@ function checkFormVisibility(docType) {
 		</td>
 	</tr>
 </table>
+
+<spagobi:error/>
 
 <input type='hidden' value='<%= obj.getId() %>' name='id' />
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
@@ -810,7 +814,7 @@ function checkFormVisibility(docType) {
       </tr>
    </table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 
-	<spagobi:error/>
+	
 
 
 <% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_INS)) { %>

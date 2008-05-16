@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page language="java"
          extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
-         contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"
+         contentType="text/html; charset=ISO-8859-1"
+         pageEncoding="ISO-8859-1"
          session="true" 
          import="it.eng.spago.base.*,
                  java.util.List,

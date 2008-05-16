@@ -97,8 +97,9 @@
 
 
      <!-- ********************* START GENERAL CONFIGURATION ************************ -->
-     <DATE-FORMAT format="DD-MM-YYYY"/>
-  	 <TIMESTAMP-FORMAT format="DD-MM-YYYY hh:mm:ss"/>
+     <!-- THIS DATE FORMAT IS USED FOR DISPLAY THE DATA -->
+     <DATE-FORMAT format="dd/MM/yyyy"/>
+  	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />
     

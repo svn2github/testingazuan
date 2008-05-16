@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
@@ -245,18 +246,24 @@ public class ParametersGeneratorTag extends TagSupport {
      * @return true, if is single value
      */
     public boolean isSingleValue(BIObjectParameter biparam) {
+	logger.debug("IN");
 	boolean isSingleValue = false;
 	try {
-	    LovResultHandler lovResultHandler = new LovResultHandler(biparam.getLovResult());
-	    if (lovResultHandler.isSingleValue())
-		isSingleValue = true;
+	    logger.debug("biparam.getLovResult():"+biparam.getLovResult());
+	    if (biparam.getLovResult()!=null){
+		    LovResultHandler lovResultHandler = new LovResultHandler(biparam.getLovResult());
+		    if (lovResultHandler.isSingleValue())
+			isSingleValue = true;		
+	    }
 	} catch (SourceBeanException e) {
-	    // TODO Auto-generated catch block
+	    logger.warn("SourceBeanException",e);
 	}
+	logger.debug("OUT");
 	return isSingleValue;
     }
 
     private void openParametersForm(StringBuffer htmlStream) {
+	logger.debug("IN");
     	Map executeUrlPars = new HashMap();
     	executeUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
     	executeUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
@@ -265,6 +272,7 @@ public class ParametersGeneratorTag extends TagSupport {
     	htmlStream.append("<div class='form'>\n");
     	htmlStream.append("	<form id='parametersForm" + requestIdentity +"' name='parametersForm" + requestIdentity +"' " +
     			"action='" + execUrl + "' method='POST'>\n");
+    	logger.debug("OUT");
     }
     
     private void closeParametersForm(StringBuffer htmlStream) {
@@ -285,6 +293,7 @@ public class ParametersGeneratorTag extends TagSupport {
      * @param htmlStream The modified html stream
      */
     private void createParametersFormButtons(StringBuffer htmlStream) {
+	logger.debug("IN");
     	boolean hasParametersFormToBeShown = hasParametersFormToBeDisplayed();
     	if (hasParametersFormToBeShown) {
 	    	String executeMsg = msgBuilder.getMessage("sbi.execution.parametersForm.execute", httpRequest);
@@ -387,52 +396,12 @@ public class ParametersGeneratorTag extends TagSupport {
 	    	htmlStream.append("	mainForm.submit();\n");
 	    	htmlStream.append("}\n");
 	    	
-	    	/*
-	    	String url= GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=SHOW_SAVE_VIEW_POINT_FORM&NEW_SESSION=TRUE";
-	    	htmlStream.append("var win_saveVP" + requestIdentity + ";\n");
-	    	htmlStream.append("Ext.get('p_save_button" + requestIdentity + "').on('click', function(){\n");
-	    	htmlStream.append("	var urlSaveVP" + requestIdentity + " = '" + url + "';\n");
-	    	BIObject obj = getBIObject();
-	    	List parameters = obj.getBiObjectParameters();
-	    	if (parameters != null && parameters.size() > 0) {
-	    	    Iterator iter = parameters.iterator();
-	    	    while (iter.hasNext()) {
-	    	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
-	    	    	htmlStream.append("	urlSaveVP" + requestIdentity + " += '&' + '" + biparam.getParameterUrlName() + "' + '=' + document.getElementById('" + biparam.getParameterUrlName() + requestIdentity + "').value;\n");
-	    	    }
-	    	}
-	    	htmlStream.append("	if(!win_saveVP" + requestIdentity + ") {\n");
-	    	htmlStream.append("		win_saveVP" + requestIdentity + " = new Ext.Window({\n");
-	    	htmlStream.append("			id:'popup_saveVP" + requestIdentity + "',\n");
-	    	htmlStream.append("			bodyCfg:{\n");
-	    	htmlStream.append("				tag:'div',\n");
-	    	htmlStream.append("    			cls:'x-panel-body',\n");
-	    	htmlStream.append("   			children:[{\n");
-	    	htmlStream.append("        			tag:'iframe',\n");
-	    	htmlStream.append("        			src: urlSaveVP" + requestIdentity + ",\n");
-	    	htmlStream.append("        			frameBorder:0,\n");
-	    	htmlStream.append("        			width:'100%',\n");
-	    	htmlStream.append("        			height:'100%',\n");
-	    	htmlStream.append("        			style: {overflow:'auto'}\n");  
-	    	htmlStream.append("   			}]\n");
-	    	htmlStream.append("			},\n");
-	    	htmlStream.append("			layout:'fit',\n");
-	    	htmlStream.append("			width:500,\n");
-	    	htmlStream.append("			height:150,\n");
-	    	htmlStream.append("			closeAction:'hide',\n");
-	    	htmlStream.append("			plain: true,\n");
-	    	htmlStream.append("			title: '" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.saveButt", httpRequest) + "'\n");
-	    	htmlStream.append("		});\n");
-	    	htmlStream.append("	};\n");
-	    	htmlStream.append("	win_saveVP" + requestIdentity + ".show();\n");
-	    	htmlStream.append("	}\n");
-	    	htmlStream.append(");\n");
-	    	*/
-	    	
 	    	
 	    	htmlStream.append("</script>\n");
 	    	
+	    	
     	}
+    	logger.debug("OUT");
     }
 
     /**
@@ -442,6 +411,7 @@ public class ParametersGeneratorTag extends TagSupport {
      * @return true if the parameters form must be displayed, false otherwise
      */
     private boolean hasParametersFormToBeDisplayed() {
+	logger.debug("IN");
     	BIObject obj = getBIObject();
     	List parameters = obj.getBiObjectParameters();
     	// if the document has no parameters returns false
@@ -471,9 +441,11 @@ public class ParametersGeneratorTag extends TagSupport {
     	    		break;
     	    	}
     	    }
+    	logger.debug("OUT");
     	    return allParametersHaveValidValues;
 	    } else {
 	    	// if modality is not single_object, parameters form must be shown
+		logger.debug("OUT");
 	    	return true;
 	    }
     }
@@ -487,6 +459,7 @@ public class ParametersGeneratorTag extends TagSupport {
      * @param htmlStream
      */
     private void createSetLookupFieldJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<input type='hidden' id='LOOKUP_OBJ_PAR_ID" + requestIdentity + "' name='' value=''/>\n");
 	htmlStream.append("<input type='hidden' id='LOOKUP_TYPE" + requestIdentity + "' name='' value=''/>\n");
 
@@ -499,6 +472,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("		document.getElementById('LOOKUP_TYPE" + requestIdentity + "').name = 'LOOKUP_TYPE';\n");
 	htmlStream.append("	}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     /**
@@ -509,6 +483,7 @@ public class ParametersGeneratorTag extends TagSupport {
      * @param htmlStream
      */
     private void createSetDeleteFlagJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<input type='hidden' id='PENDING_DELETE" + requestIdentity + "' name='' value=''/>\n");
 
 	htmlStream.append("<script type='text/javascript'>\n");
@@ -518,9 +493,11 @@ public class ParametersGeneratorTag extends TagSupport {
 		+ "').name = 'PENDING_DELETE';\n");
 	htmlStream.append("	}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createSetChangedFlagJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("	function setChangedFlag" + requestIdentity + "(paramUrl) {\n");
 	// htmlStream.append(" alert(paramUrl + 'IsChanged');\n");
@@ -528,9 +505,11 @@ public class ParametersGeneratorTag extends TagSupport {
 		+ "').value = 'true';\n");
 	htmlStream.append("	}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createRefreshJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function refresh" + requestIdentity + "(srcId, destId) {\n");
 	htmlStream.append("			var srcValue = document.getElementById(srcId).value;\n");
@@ -538,26 +517,32 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("			destObj.value = srcValue;\n");
 	htmlStream.append("		}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createClearFieldJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function clearField" + requestIdentity + "(targetId) {\n");
 	htmlStream.append("			document.getElementById(targetId).value = '';\n");
 	htmlStream.append("		}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createSelectAllTextJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function selectAllText" + requestIdentity + "(id) {\n");
 	htmlStream.append("			var object = document.getElementById(id);\n");
 	htmlStream.append("			object.select( );\n");
 	htmlStream.append("		}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createClearFieldsJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function clearFields" + requestIdentity + "() {\n");
 
@@ -595,9 +580,11 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append(" document.getElementById('" + anId + requestIdentity + "').form.submit();\n");
 	htmlStream.append("}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createSetRefreshCorrelationJSFunction(StringBuffer htmlStream) {
+	logger.debug("IN");
 	htmlStream.append("<input type='hidden' id='REFRESH_CORRELATION" + requestIdentity + "' name='' value=''/>\n");
 
 	htmlStream.append("<script type='text/javascript'>\n");
@@ -607,6 +594,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		+ "').name = 'REFRESH_CORRELATION';\n");
 	htmlStream.append("	}\n");
 	htmlStream.append("</script>\n");
+	logger.debug("OUT");
     }
 
     private void createHiddenInput(StringBuffer htmlStream, String id, String name, String value) {
@@ -624,19 +612,6 @@ public class ParametersGeneratorTag extends TagSupport {
 		+ "IsChanged", "false");
     }
 
-    /*
-    private void createClearFieldsButton(StringBuffer htmlStream) {
-	String resetFieldsLbl = msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.resetFields", "messages",
-		httpRequest);
-
-	htmlStream.append("		<div class='div_detail_form'>\n");
-	htmlStream.append("				<a href='javascript:void(0)' onclick='clearFields" + requestIdentity
-		+ "()' class='portlet-form-field-label'>\n");
-	htmlStream.append("					" + resetFieldsLbl + "\n");
-	htmlStream.append("				</a>\n");
-	htmlStream.append("		</div>\n");
-    }
-    */
 
     private void createParameterLabelDiv(StringBuffer htmlStream, BIObjectParameter biparam) {
         htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
@@ -723,13 +698,18 @@ public class ParametersGeneratorTag extends TagSupport {
     }
 
     private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
-    	htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
+	logger.debug("IN");
+	SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+	String format = (String) formatSB.getAttribute("format");
+	logger.debug("DTE FORMAT:"+format);
+	htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
     		+ "<script type='text/javascript'>"
     		+ " dojo.require('dojo.widget.DropdownDatePicker');"
+    		+ " "
     		+ " </script>"
     		+ " <input style='width:230px;' type='text' "
     		+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
-    		+ "	   dojoType='dropdowndatepicker' widgetId='startDateWidget' "
+    		+ "	   dojoType='dropdowndatepicker' saveFormat='"+format+"' displayFormat='"+format+"' widgetId='startDateWidget' "
     		+ "    class='portlet-form-input-field' value='" + getParameterValuesAsString(biparam) + "' "
     		+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
     		+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
@@ -738,6 +718,7 @@ public class ParametersGeneratorTag extends TagSupport {
     	    htmlStream.append("this.form.submit();");
     	}
     	htmlStream.append("\" />\n");
+    	logger.debug("OUT");
         }
  
 

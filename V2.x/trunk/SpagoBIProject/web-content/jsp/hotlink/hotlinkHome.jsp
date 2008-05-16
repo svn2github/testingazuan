@@ -97,7 +97,7 @@ Ext.onReady(function(){
 			params.put("PAGE", "HOT_LINK_PAGE");
 			params.put("OPERATION", "EXECUTE");
 			params.put("DOC_ID", rm.getObjId().toString());
-			params.put("PARAMETERS", rm.getParameters());
+			params.put("PARAMETERS", rm.getParameters() != null ? rm.getParameters() : "");
 			String subObjName = rm.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
@@ -112,7 +112,8 @@ Ext.onReady(function(){
 			String deleteUrl = urlBuilder.getUrl(request, params);
 			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
 			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>',
-				'<%= rm.getDocumentDescription() %>','<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>']<%= rememberMeListIt.hasNext() ? "," : "" %><%
+				'<%= rm.getDocumentDescription() != null ? rm.getDocumentDescription() : "" %>',
+				'<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>']<%= rememberMeListIt.hasNext() ? "," : "" %><%
 		}
 		%>
     ];

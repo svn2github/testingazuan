@@ -11,7 +11,7 @@
             </generator>
         </id>
         <property name="content" type="binary">
-            <column name="bin_content" />
+            <column name="bin_content" sql-type="longvarbinary"/>
         </property>
     </class>
 </hibernate-mapping>

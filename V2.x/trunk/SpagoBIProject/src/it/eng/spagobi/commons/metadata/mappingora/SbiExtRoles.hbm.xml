@@ -44,7 +44,7 @@
             <column name="isAbleTo_send_mail" />
         </property>
         <property name="isAbleToSaveIntoPersonalFolder" type="boolean">
-            <column name="isAbleTo_save_into_personal_folder" />
+            <column name="isAbleTo_save_into_personal_fo" />
         </property>
         <property name="isAbleToSaveRememberMe" type="boolean">
             <column name="isAbleTo_save_remember_me" />

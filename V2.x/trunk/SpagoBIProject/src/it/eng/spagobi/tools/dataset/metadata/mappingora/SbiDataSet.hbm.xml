@@ -28,7 +28,7 @@
 	        </property>
 		</subclass>   
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet" discriminator-value="SbiQueryDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
-	        <property name="query" type="string">
+	        <property name="query" type="text">
 	            <column name="QUERY" />
 	        </property>
 	        <many-to-one name="dataSource" class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource">

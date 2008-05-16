@@ -17,7 +17,7 @@
             <column name="NAME" />
         </property>
         <property name="binContent" type="binary">
-            <column name="BIN_CONTENT" />
+            <column name="BIN_CONTENT" sql-type="longvarbinary"/>
         </property>
         <property name="type" type="string">
             <column name="TYPE" />

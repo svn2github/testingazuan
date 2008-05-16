@@ -13,7 +13,7 @@
         <property name="name" type="string">
             <column name="NAME" length="50" not-null="true" />
         </property>
-        <property name="description" type="string">
+        <property name="description" type="text">
             <column name="DESCRIPTION" not-null="false" />
         </property>
         <property name="userName" type="string">

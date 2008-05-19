@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.wapp.bo;
 
+import it.eng.spagobi.commons.bo.Role;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,8 +42,11 @@ public class Menu  implements Serializable  {
     private String descr;
     private Integer parentId;
     private Integer level;
+    private Integer depth;    
     private boolean hasChildren;
     private List	lstChildren;
+    private Role[] roles = null;
+    private boolean homepage=false;
     
 	/**
 	 * Gets the lst children.
@@ -170,6 +175,26 @@ public class Menu  implements Serializable  {
 	}
 	
 	/**
+	 * Gets the depth.
+	 * 
+	 * @return the depth
+	 */
+	
+	public Integer getDepth() {
+		return depth;
+	}
+
+	/**
+	 * Sets the depth.
+	 * 
+	 * @param depth the new depth
+	 */
+	
+	public void setDepth(Integer depth) {
+		this.depth = depth;
+	}
+
+	/**
 	 * Gets the checks for children.
 	 * 
 	 * @return the checks for children
@@ -187,4 +212,22 @@ public class Menu  implements Serializable  {
 		this.hasChildren = hasChildren;
 	}
 
+	public Role[] getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Role[] roles) {
+		this.roles = roles;
+	}
+
+	public boolean isHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(boolean homepage) {
+		this.homepage = homepage;
+	}
+
+	
+	
 }

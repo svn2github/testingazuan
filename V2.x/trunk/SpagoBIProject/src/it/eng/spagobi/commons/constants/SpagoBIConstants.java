@@ -309,5 +309,7 @@ public class SpagoBIConstants {
 	// to modify refresh time
 	public static final String MODIFY_REFRESH = "ModifyRefresh";
 	
+	public static final String MENUES_LIST = "MENUES_LIST";
+	
 	
 }

@@ -20,6 +20,17 @@
         <property name="parentId" type="integer">
             <column name="parent_id" />
         </property>
+		<property name="homepage" type="boolean">
+            <column name="homepage" />
+        </property>
+        <set name="sbiMenuRoles" inverse="true">
+            <key>
+                <column name="menu_id" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.wapp.metadata.SbiMenuRole" />
+        </set>
+       
+       
         <!-- 
         <set name="sbiMenuRoles" inverse="true">
             <key>

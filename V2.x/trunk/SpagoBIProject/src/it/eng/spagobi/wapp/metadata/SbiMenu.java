@@ -43,7 +43,7 @@ public class SbiMenu  implements java.io.Serializable {
      private String descr;
      private Integer parentId;
      private Set sbiMenuRoles = new HashSet(0);
-
+     private Boolean homepage;
 
     // Constructors
 
@@ -192,6 +192,14 @@ public class SbiMenu  implements java.io.Serializable {
     public void setSbiMenuRoles(Set sbiMenuRoles) {
         this.sbiMenuRoles = sbiMenuRoles;
     }
+
+	public Boolean getHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(Boolean homepage) {
+		this.homepage = homepage;
+	}
    
 
 

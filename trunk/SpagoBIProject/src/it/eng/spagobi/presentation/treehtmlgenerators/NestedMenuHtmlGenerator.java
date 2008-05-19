@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.presentation.treehtmlgenerators;
 
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.bo.BIObject;
 import it.eng.spagobi.bo.LowFunctionality;
 import it.eng.spagobi.constants.ObjectsTreeConstants;
@@ -146,7 +148,17 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 				//htmlStream.append("	<div class='menuitem menuitem"+biObjType+"' >\n");
 				htmlStream.append("	<div class='menuitem' >\n");
 				htmlStream.append("		<div class='menuitemleft menuitemleft"+biObjType+"'></div>\n");
-				htmlStream.append("		<div class='menuitemcenter'><a class='menuitemlink' href=\""+execUrl+"\">"+biobj.getName()+"</a></div>\n");
+				String cls = "menuitemlink";
+				ResponseContainer responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
+				SourceBean moduleResponse = (SourceBean) responseContainer.getServiceResponse().getAttribute("ExecutionWorkspaceModule");
+				String currentObjLabel = null;
+				if (moduleResponse != null) {
+					currentObjLabel = (String) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+				}
+				if (currentObjLabel != null && currentObjLabel.equals(biobj.getLabel())) {
+					cls = "menuitemlink-selected";
+				}
+				htmlStream.append("		<div class='menuitemcenter'><a class='" + cls + "' href=\""+execUrl+"\">"+biobj.getName()+"</a></div>\n");
 				htmlStream.append("		<div class='menuitemright'></div>\n");
 				htmlStream.append("	</div>	\n");
 			}	

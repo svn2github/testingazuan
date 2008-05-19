@@ -221,7 +221,17 @@
 	             width="800" 
 	             height="500"
 	             iconUrl="/SpagoBI/img/analiticalmodel/icon-setlog.gif">
-	</APPLICATION>	
+	</APPLICATION>
+	<APPLICATION code="MenuConfiguration" 
+	             title="#menu.menuconfiguration"  
+	             functionality="MenuManagement" 
+	             type="link" 
+	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=MenuConfigurationPage" 
+	             modal="true" 
+	             width="800" 
+	             height="500"
+	             iconUrl="/SpagoBI/img/wapp/musicfolder.gif">
+	</APPLICATION>		
 	
 	<!-- 
 	<VIEW code="MonitorView" 

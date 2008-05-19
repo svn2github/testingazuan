@@ -153,9 +153,9 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/security.xml" />
-	<!-- <CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> -->
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/menu.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
+	<!--  <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />-->
 
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
@@ -188,5 +188,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
 	-->
+
+
   	
 </MASTER>

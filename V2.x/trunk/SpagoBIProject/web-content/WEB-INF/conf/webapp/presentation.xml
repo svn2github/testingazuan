@@ -6,6 +6,8 @@
 	<MAPPING business_name="ViewBuilderPage" business_type="PAGE" publisher_name="ViewBuilderPublisherJava"/> 
 	<MAPPING business_name="DirectExecutionPage" business_type="PAGE" publisher_name="DirectExecutionPublisherJava"/> 
 	<MAPPING business_name="MenuPage" business_type="PAGE" publisher_name="MenuPublisherJava"/>
-	
+	<MAPPING business_name="DetailMenuPage" business_type="PAGE" publisher_name="DetailMenuPubJ"/>
+	<MAPPING business_name="MenuConfigurationPage" business_type="PAGE" publisher_name="MenuConfigurationPublisher"/>
+	<MAPPING business_name="DocumentLookupPage" business_type="PAGE" publisher_name="DocumentLookupPublisher"/>		
 </PRESENTATION>
 

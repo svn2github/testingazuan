@@ -39,6 +39,7 @@
 			<FUNCTIONALITY functionalityName="SyncronizeRolesManagement" description="SyncronizeRolesManagement" />						
 			<FUNCTIONALITY functionalityName="DocumentUserManagement" description="DocumentUserManagement" />						
 			<FUNCTIONALITY functionalityName="DocumentMetadataManagement" description="DocumentMetadataManagement" />
+			<FUNCTIONALITY functionalityName="MenuManagement" description="MenuManagement" />
 		</FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
@@ -68,6 +69,7 @@
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DistributionListManagement" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentExecution" />
 			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="SyncronizeRolesManagement" />
+			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MenuManagement" />
 			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DistributionListUser" />						
 			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentUserManagement" />						
 			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentMetadataManagement" />						

@@ -61,5 +61,40 @@
     	</MODULES>
   	</PAGE>
 
+	<PAGE name="DetailMenuPage" scope="REQUEST" title="Menu Page" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DetailMenuPage" target="DetailMenuModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="DetailMenuModule"/>
+    	</MODULES>
+  	</PAGE>
+
+
+
+	<PAGE name="MenuConfigurationPage" scope="REQUEST" title="Menu Page" >
+    	<DEPENDENCIES>
+    	<DEPENDENCE source="MenuConfigurationPage" target="TreeMenuModule"/>
+    	</DEPENDENCIES>
+    	<MODULES>
+    	<MODULE keep_instance="false" keep_response="false" name="TreeMenuModule"/> 
+    	</MODULES>
+  	</PAGE>
+
+ 	<PAGE name="DocumentLookupPage" scope="REQUEST" title="DocumentLookupPage" >
+    	<DEPENDENCIES>
+      		<DEPENDENCE source="DocumentLookupPage" target="ListLookupDocumentModule">
+        		<CONDITIONS/>
+        		<CONSEQUENCES/>
+      		</DEPENDENCE>
+    	</DEPENDENCIES>
+    	<MODULES>
+      		<MODULE keep_instance="false" keep_response="false" name="ListLookupDocumentModule"/>
+    	</MODULES>
+  	</PAGE> 
+
 </PAGES>
 

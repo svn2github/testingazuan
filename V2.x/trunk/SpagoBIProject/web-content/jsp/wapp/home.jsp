@@ -191,10 +191,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							    			    new Ext.menu.CheckItem({
 						                            text: '<%=childElemLev4.getDescr()%>',
 						                            group: 'group_4', 
+						                            <% if(childElemLev4.getObjId()!=null){%>		
 						                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
-						                            
+						                            <%}
+						                            else{%>
+						                             href: ''
+						                            <%}%>
 						                        })
-						                        <%if(x < lstChildrenLev4.size()-1){%>
+							                        <%if(x < lstChildrenLev4.size()-1){%>
 						                            ,
 						                         <%}%>	                  	                       				                   		
 					            			<%}//for LEVEL 4
@@ -207,7 +211,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					                        new Ext.menu.CheckItem({
 					                            text: '<%=childElemLev3.getDescr()%>',
 					                            group: 'group_3', 
+					                               <% if(childElemLev3.getObjId()!=null){%>
 					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					                        <%}
+					                        else{%>
+						                         href: ''   
+						                            <%}%>
 					                        })
 					                        
 					                   <%}%>					                      
@@ -222,7 +231,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		                        new Ext.menu.CheckItem({
 		                            text: '<%=childElemLev2.getDescr()%>',
 		                            group: 'group_2', 
+		                                <% if(childElemLev2.getObjId()!=null){%>
 		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
+		                        		<%}
+			                            else{%>
+			                            href: ''
+			                            <%}%>
+		                        		
 		                        })	                       
 		                    <%}%>		                      
 		                    <%if(j < lstChildrenLev2.size()-1){%>
@@ -233,7 +248,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	 	new Ext.menu.CheckItem({
 		                            text: '<%=menuElem.getDescr()%>',
 		                            group: 'group_1', 
+							<% if(menuElem.getObjId()!=null){%>
 		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
+		                        <%}	
+								else{%>
+	                            
+	                            <%}%>
+		                            
 		                        })	     			    						     
 						   <%}%>      	 
 				         ]
@@ -541,8 +562,32 @@ var selectNode = function(node, e) {
 	}	
 
 
-	
-	
 		 
   </script>
+  
+  
+  <!-- I want to execute if there is an homepage, only for user!-->
+  <%     
+  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){
+  			boolean found=false;
+  			for (int i=0; i<lstMenu.size() && !found; i++){
+  				Menu menuElem = (Menu)lstMenu.get(i);
+  				boolean isHomepage=menuElem.isHomepage();
+  				Integer objId=menuElem.getObjId();
+  				if(isHomepage && objId!=null){
+  					found=true;
+  				%> 					
+  					<script type="text/javascript">
+  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')  					
+  					</script>  					
+  					<%
+  				}  
+  		}
+  }
+  	%>
+  
+  
+  
+  
+  
 </html>

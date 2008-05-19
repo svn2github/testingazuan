@@ -447,9 +447,11 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	    if (name == null || name.equals("") ||
 	    	fileName == null || fileName.equals("")) return map;
 	    
-		File fileDir = new File(ConfigSingleton.getRootPath()+"//components//mapcatalogue//maps");	
+		//File fileDir = new File(ConfigSingleton.getRootPath()+"//components//mapcatalogue//maps");
+		File fileDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");
 		if(!(fileDir).exists()) fileDir.mkdirs();	   
-		FileOutputStream tmpFile = new FileOutputStream(fileDir + "//"+fileName);		
+		//FileOutputStream tmpFile = new FileOutputStream(fileDir + "//"+fileName);
+		FileOutputStream tmpFile = new FileOutputStream(fileDir + System.getProperty("file.separator")+fileName);	
 	    
 	    try {
 	    	tmpFile.write(uploaded.getFileContent());
@@ -457,7 +459,8 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 			e.printStackTrace();
 		}		
 	
-		url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+"\\"+fileName;
+		//url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+"\\"+fileName;
+		url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+System.getProperty("file.separator")+fileName;
 	}
 	else
 		url = (String)serviceRequest.getAttribute("sourceUrl");

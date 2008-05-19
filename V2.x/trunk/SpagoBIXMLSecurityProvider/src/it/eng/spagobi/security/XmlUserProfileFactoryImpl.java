@@ -40,14 +40,7 @@ public class XmlUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	static private Logger logger = Logger.getLogger(XmlUserProfileFactoryImpl.class);
 	
 
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.services.security.service.ISecurityServiceSupplier#checkAuthorization(java.lang.String, java.lang.String)
-     */
-    public boolean checkAuthorization(String userId,String function){
-        logger.warn("checkAuthorization NOT implemented");
-        return true;
-    }
-    
+   
 	/**
 	 * Return an SpagoBIUserProfile implementation starting from the id of the user.
 	 * 
@@ -117,4 +110,39 @@ public class XmlUserProfileFactoryImpl implements ISecurityServiceSupplier {
 		return profile;
 	}
 	
+	/**
+	 * Return a boolean : true if the user is authorized to continue, false otherwise.
+	 * @param String  the current user id
+	 * @param String the current pwd
+	 * @return The User Profile Interface implementation object
+	 */
+	
+	public boolean checkAuthorization(String userId, String pwd){
+		 logger.debug("IN - userId: " + userId);
+
+		// get request container
+		RequestContainer reqCont = RequestContainer.getRequestContainer();
+		// get user name
+		String userName = userId;
+		// get config
+		SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
+		List userPwdsSB = configSingleton.getFilteredSourceBeanAttributeAsList("AUTHORIZATIONS.ENTITIES.USERS.USER", "userID", userName);
+		if (userPwdsSB == null || userPwdsSB.size()==0){
+			logger.error("UserName/pws not defined into xml file");
+			return false;
+		}
+		Iterator iterPwdSB = userPwdsSB.iterator();
+		while(iterPwdSB.hasNext()) {
+			SourceBean pwdSB = (SourceBean)iterPwdSB.next();
+			String tmpPwd = (String)pwdSB.getAttribute("password");
+			if (!tmpPwd.equals(pwd)){
+				logger.error("UserName/pws not found into xml file");
+				return false;
+			}
+				
+		}
+		
+		logger.debug("OUT");
+		return true;
+	}
 }

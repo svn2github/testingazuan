@@ -30,14 +30,11 @@ package it.eng.spagobi.wapp.presentation;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
-import it.eng.spagobi.analiticalmodel.functionalitytree.service.DetailFunctionalityModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctionality;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -55,8 +52,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
-
-import antlr.collections.impl.Vector;
 
 
 
@@ -102,7 +97,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
-		String nameTree = msgBuilder.getMessage("tree.functtree.name" ,"messages", httpRequest);
+		String nameTree = msgBuilder.getMessage("tree.menutree.name" ,"messages", httpRequest);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
@@ -122,10 +117,10 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		//htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 		htmlStream.append("	treeFunct.add("+dTreeRootId + ",-1,'"+nameTree+"', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(null)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
 
-	
+
 		// Calculate whic are the leaves at the 3rd level
 		List limitLeaves=fillDepths(objectsList);
-		
+
 		Iterator it = objectsList.iterator();
 		while (it.hasNext()) {
 			Menu menu= (Menu) it.next();
@@ -162,23 +157,38 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		Integer level=menu.getLevel();
 		boolean hasChildren=menu.getHasChildren();
 		//if(parentsList.contains(id))hasChildren=true;
-		
+
+		// set image icons
+		//String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+		//String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+
+		String imgFolder=""; 
+		String imgFolderOp="";
+		if(menu.getObjId()!=null){
+			String icon=DetailMenuModule.assignImage(menu);
+			imgFolder=urlBuilder.getResourceLink(httpRequest, icon);
+			imgFolderOp=imgFolder;
+		}
+		else{
+			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+
+		}
+
+
 
 		if (isRoot) {
-			String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-			String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+
 			//htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(nameLabel)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
 			if(hasChildren){
 				htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\', \\'\\')');\n");				
 			}
 			else{
-			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");
 			}
-			
+
 		} else {
-			String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-			String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-			
+
 			if(hasChildren){
 				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\', \\'\\')');\n");
 			}
@@ -187,9 +197,9 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 			}
 			else{
 				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");
-				
+
 			}
-			
+
 		}
 	}
 
@@ -355,7 +365,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 			Integer id=menu.getMenuId();
 			idsMenus.put(id, menu);
 		}
-		
+
 		for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
 			Menu menu= (Menu) iterator.next();
 			Integer id=menu.getMenuId();
@@ -364,22 +374,22 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 				limitLeaves.add(id);
 		}
 		return limitLeaves;
-				
+
 	}
-	
-	
+
+
 	public int calculateDepth(HashMap idsMenues, Menu menu){
 		if(menu.getParentId()==null) {
 			return 0;
-			}
+		}
 		else 
-			{
+		{
 			return 1+calculateDepth(idsMenues, (Menu)idsMenues.get(menu.getParentId()));
-			}
+		}
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
 	 */

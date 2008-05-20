@@ -42,11 +42,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List lstMenu = new ArrayList();
 	if (moduleResponse.getAttribute(LoginModule.LIST_MENU) != null)
 		lstMenu = (List)moduleResponse.getAttribute(LoginModule.LIST_MENU);
+
 	
 	String menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
 	String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
+boolean first=true;
 %>
 
+<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <html>
   <head>
     <title>SpagoBI Home</title>
@@ -128,6 +131,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         </div>
         
         <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
+		    <div id="content" style="float:left;top:90px;left:150px;width:100%;height:100%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
+		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='100%' height='100%' frameborder='0' Style='background-color: transparent'>
+				</iframe>
+	        </div>
 	        <div id="footer" style="width:100%;height:50px;">
 	        	<spagobiwa:FisheyeMenu />
 	        </div>
@@ -149,14 +156,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	//setContextName("<%=contextName%>");
   	
 	<%//loading menu on TOP (max 4 levels)
-	  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
+	  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
 	  	Ext.onReady(function(){  	
 	  	 		Ext.QuickTips.init();
 		 		//MENU MANAGEMENT
 				var tb = new Ext.Toolbar();			
 				tb.render('menubar');
 			
-		    <%  Integer currParentId = new Integer("-1");
+		    <%    if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){
+		    Integer currParentId = new Integer("-1");
 		    	for (int i=0; i<lstMenu.size(); i++){
 			    	Menu menuElem = (Menu)lstMenu.get(i);		    	
 			    	if (menuElem.getParentId() != null && !menuElem.getParentId().equals("") && 
@@ -188,9 +196,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								    		 for (int x=0; x<lstChildrenLev4.size(); x++){ //LEVEL 4
 								    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);	
 					    			    %>
-							    			    new Ext.menu.CheckItem({
+							    			    new Ext.menu.Item({
 						                            text: '<%=childElemLev4.getDescr()%>',
 						                            group: 'group_4', 
+						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
+						                            if(!icon.equalsIgnoreCase("")){%>
+						                            icon: '<%=contextName%><%=icon%>',
+						                            <%}%>						                            
 						                            <% if(childElemLev4.getObjId()!=null){%>		
 						                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
 						                            <%}
@@ -208,10 +220,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					                        ]}}
 					            		<%}
 					    			    else{ %>
-					                        new Ext.menu.CheckItem({
+					                        new Ext.menu.Item({
 					                            text: '<%=childElemLev3.getDescr()%>',
-					                            group: 'group_3', 
-					                               <% if(childElemLev3.getObjId()!=null){%>
+					                            group: 'group_3',
+												<%String icon=DetailMenuModule.assignImage(childElemLev3);
+						                          if(!icon.equalsIgnoreCase("")){%>
+						                          icon: '<%=contextName%><%=icon%>',
+						                          <%}%>					                             
+					                            <% if(childElemLev3.getObjId()!=null){%>
 					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
 					                        <%}
 					                        else{%>
@@ -228,9 +244,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		                        ]}} 
 			    			<%}
 		    			    else{ %>
-		                        new Ext.menu.CheckItem({
+		                        new Ext.menu.Item({
 		                            text: '<%=childElemLev2.getDescr()%>',
-		                            group: 'group_2', 
+		                            group: 'group_2',
+									<%String icon=DetailMenuModule.assignImage(childElemLev2);
+									   if(!icon.equalsIgnoreCase("")){%>
+										icon: '<%=contextName%><%=icon%>',
+											<%}%>		                             
 		                                <% if(childElemLev2.getObjId()!=null){%>
 		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
 		                        		<%}
@@ -245,9 +265,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		                    <%}
 				    	  } //for LEVEL 2			    		  
 				    	}else{%>
-				    	 	new Ext.menu.CheckItem({
+				    	 	new Ext.menu.Item({
 		                            text: '<%=menuElem.getDescr()%>',
-		                            group: 'group_1', 
+		                            group: 'group_1',		                             
 							<% if(menuElem.getObjId()!=null){%>
 		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
 		                        <%}	
@@ -258,58 +278,51 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		                        })	     			    						     
 						   <%}%>      	 
 				         ]
-					});				
+					});		
+						
+				<%
+				if(first==true){
+				first=false;
+				}
+				else{
+				%>
+					tb.addSeparator();
+				<%
+				}
+				
+						%>
+						
 					tb.add(
 						new Ext.Toolbar.MenuButton({
 							id:'<%=menuElem.getDescr()%>_<%=menuElem.getObjId()%>',
 				            text: '<%=menuElem.getDescr()%>',
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',			           
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
+                            <%String icon=DetailMenuModule.assignImage(menuElem);
+						     if(!icon.equalsIgnoreCase("")){%>
+							icon: '<%=contextName%><%=icon%>',
+						    <%}%>				            			           
 				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
 				            menu: menu<%=i%>  	  
 				            <%}%>
 				        })					    				        				
 					);				
 				<%}
-			} //for%>			
+			} //for
+		    } // User menu (not admin)
+			%>			
 			
-			//if is a user add the user menu
-			<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){%>
-		
-		
-			
-		/*	tb.add(
-				
-				new Ext.Toolbar.MenuButton({
-		            text: 'Functionality List',
-		            icon: '<%=contextName%>/img/wapp/exit16.png',
-		            cls: 'x-btn-text-icon bmenu',
-		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
-		            handler: functionality_list	  
-		        })	
-		    );
-			
-			tb.add(
-				
-				new Ext.Toolbar.MenuButton({
-		            text: 'Event List',
-		            icon: '<%=contextName%>/img/wapp/exit16.png',
-		            cls: 'x-btn-text-icon bmenu',
-		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
-		            handler: event_list	  
-		        })	
-		    );*/
-		
-
 			var miomenu = new Ext.menu.Menu({
 			id: 'menumio',
-			items: [			
+			items: [		
+				<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){%>	
 			new Ext.menu.Item({
 				text: 'Sbi Functionality',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/wapp/bidocuments64.png', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage')"                           
 						}),
+				<%}%>		
 			new Ext.menu.Item({
 				text: 'Worklist',
 				group: 'groupmy', 
@@ -338,6 +351,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					});		 
 			
 			
+		
 			tb.add(
 				
 				new Ext.Toolbar.MenuButton({
@@ -345,12 +359,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		            text: 'MenuUtente',
 		            cls: 'x-btn-text-icon bmenu',
 					icon: '<%=contextName%>/img/wapp/user.png',
+					handler: returnHome,
 		            menu: miomenu
 		        })	
 		    );
 
-
-			<%}   // user menu%>
+		
 
 			//adds exit menu		
 			tb.add(
@@ -363,6 +377,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		            handler: logout	  
 		        })	
 		    );
+		    	tb.addFill();
 		});
 	
 	
@@ -382,6 +397,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		document.getElementById('iframeDoc').src = url;
 		return;
 	 }
+	 
+	 function returnHome(){
+	 var urlH="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE')" 
+	 location.href = urlH;
+	 }
+	 
 <%} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
 
     Ext.onReady(function(){

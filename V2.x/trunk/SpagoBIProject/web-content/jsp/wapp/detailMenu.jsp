@@ -151,7 +151,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.Funct.Homepage" />
+			<spagobi:message key = "SBISet.menu.Homepage" />
 		</span>
 		</div>
 		<div class='div_detail_form'> 

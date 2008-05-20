@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	backUrlPars.put("PUBLISHER_NAME", "LoginSBIAnaliticalModelPublisher");
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "true");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
+	
 %>
 
 
@@ -39,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBISet.treeFunct.title" />
+			<spagobi:message key = "SBISet.menuConf.title" />
 		</td>
 		<%
 			if(ChannelUtilities.isPortletRunning()) {

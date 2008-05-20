@@ -37,6 +37,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
@@ -116,7 +117,7 @@ public class DetailMenuModule extends AbstractModule {
 			}
 			if(documentLookup != null){
 				lookupLoadHandler (request, message, response);
-		    } 
+			} 
 			else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_SELECT)) {
 				getDetailMenu(request, response);
 			} else if (message.trim().equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
@@ -190,54 +191,54 @@ public class DetailMenuModule extends AbstractModule {
 	private void modDetailMenu(SourceBean request, String mod, SourceBean response)
 	throws EMFUserError, SourceBeanException {
 
-			//**********************************************************************
-			Menu menu = recoverMenuDetails(request, mod);
-			response.setAttribute(MENU, menu);
-			response.setAttribute(AdmintoolsConstants.MODALITY, mod);
-			
-//			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-//			String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
-//			response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
-//			}
+		//**********************************************************************
+		Menu menu = recoverMenuDetails(request, mod);
+		response.setAttribute(MENU, menu);
+		response.setAttribute(AdmintoolsConstants.MODALITY, mod);
+
+//		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
+//		String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
+//		response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
+//		}
 
 
-			// if there are some validation errors into the errorHandler does not write into DB
-			Collection errors = errorHandler.getErrors();
-			if (errors != null && errors.size() > 0) {
-				Iterator iterator = errors.iterator();
-				while (iterator.hasNext()) {
-					Object error = iterator.next();
-					if (error instanceof EMFValidationError) {
-						Integer parentMenuId = menu.getParentId();
-						Menu parentMenu = null;
-						if (parentMenuId != null) {
-							parentMenu = DAOFactory.getMenuDAO().loadMenuByID(parentMenuId);
-						}
-						if (parentMenu== null) {
-							throw new EMFUserError(EMFErrorSeverity.ERROR, "10001", messageBundle);
-						} else {
-							response.setAttribute(PARENT_ID, parentMenu.getMenuId());
-						}
-						return;
+		// if there are some validation errors into the errorHandler does not write into DB
+		Collection errors = errorHandler.getErrors();
+		if (errors != null && errors.size() > 0) {
+			Iterator iterator = errors.iterator();
+			while (iterator.hasNext()) {
+				Object error = iterator.next();
+				if (error instanceof EMFValidationError) {
+					Integer parentMenuId = menu.getParentId();
+					Menu parentMenu = null;
+					if (parentMenuId != null) {
+						parentMenu = DAOFactory.getMenuDAO().loadMenuByID(parentMenuId);
 					}
+					if (parentMenu== null) {
+						throw new EMFUserError(EMFErrorSeverity.ERROR, "10001", messageBundle);
+					} else {
+						response.setAttribute(PARENT_ID, parentMenu.getMenuId());
+					}
+					return;
 				}
 			}
+		}
 
-			if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {			
-				DAOFactory.getMenuDAO().insertMenu(menu);
-			} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
-				DAOFactory.getMenuDAO().modifyMenu(menu);
-				//at this point erase inconsistent child roles that have been deleted from parents
-				//prova debug
-				//Set set1 = new HashSet();
-				//loadRolesToErase(lowFunct,set1);
-				Set set = new HashSet();
-				//TODO delete roles in childred 
-				/*loadRolesToErase(menu,set);
+		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {			
+			DAOFactory.getMenuDAO().insertMenu(menu);
+		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
+			DAOFactory.getMenuDAO().modifyMenu(menu);
+			//at this point erase inconsistent child roles that have been deleted from parents
+			//prova debug
+			//Set set1 = new HashSet();
+			//loadRolesToErase(lowFunct,set1);
+			Set set = new HashSet();
+			//TODO delete roles in childred 
+			/*loadRolesToErase(menu,set);
 				DAOFactory.getLowFunctionalityDAO().deleteInconsistentRoles(set);*/
-			}
+		}
 
-		
+
 		response.setAttribute(AdmintoolsConstants.LOOPBACK, "true");
 	}
 
@@ -323,7 +324,7 @@ public class DetailMenuModule extends AbstractModule {
 		if(name.equalsIgnoreCase("")){
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "10003", messageBundle);
 		}
-		
+
 		String description = (String)request.getAttribute("description");
 		description = description.trim();
 
@@ -335,7 +336,7 @@ public class DetailMenuModule extends AbstractModule {
 		}
 
 		String homepageB=(String)request.getAttribute("homepage");
-		
+
 		Menu menu = null;
 
 
@@ -376,13 +377,13 @@ public class DetailMenuModule extends AbstractModule {
 
 			String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
 			if(objectId!=null && !objectId.equalsIgnoreCase("")){
-			menu.setObjId(Integer.valueOf(objectId));
+				menu.setObjId(Integer.valueOf(objectId));
 			}
 			else menu.setObjId(null);
-		
+
 			if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
 			else menu.setHomepage(false);
-		
+
 		}
 
 		return menu;
@@ -528,22 +529,38 @@ public class DetailMenuModule extends AbstractModule {
 
 		return menu;
 	}
-	
-	
+
+
 	private void lookupLoadHandler(SourceBean request, String modality, SourceBean response) throws EMFUserError, SourceBeanException{
-		
+
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		session.setAttribute("modality", modality);
 		response.setAttribute(DetailMenuModule.LOOKUP, "true");
-		
+
 	}
 
-	
 
-	
-	
-	
-	
-	
+	public static String assignImage(Menu menu){
+		if(menu.getObjId()!=null){
+			String url="";
+			try {
+				BIObject object=DAOFactory.getBIObjectDAO().loadBIObjectById(menu.getObjId());
+				String biObjType = object.getBiObjectTypeCode();
+				url = "/img/objecticon_"+ biObjType+ ".png";
+				
+			} catch (EMFUserError e) {
+				return url;
+			}
+			return url;
+		}
+		else
+			return "";
+	}
+
+
+
+
+
+
 }

@@ -128,7 +128,7 @@
 	             height="500"
 	             iconUrl="/SpagoBI/img/rolesynch64.jpg">
 	</APPLICATION>	
-	<APPLICATION code="Events" 
+	<!--  <APPLICATION code="Events" 
 	             title="#menu.Events"  
 	             functionality="EventsManagement" 
 	             type="link" 
@@ -136,8 +136,8 @@
 	             width="700" 
 	             height="400"
 	             iconUrl="/SpagoBI/img/wapp/events64.png">
-	</APPLICATION>
-	<APPLICATION code="Worklist" 
+	</APPLICATION>-->
+	<!--  <APPLICATION code="Worklist" 
 	             title="#menu.Worklist"  
 	             functionality="WorklistManagement" 
 	             type="link" 
@@ -145,7 +145,7 @@
 	             width="700" 
 	             height="400"
 	             iconUrl="/SpagoBI/img/wapp/worklist64.png">
-	</APPLICATION>
+	</APPLICATION>-->
 	<APPLICATION code="WorkExec" 
 	             title="#menu.WorkExec"  
 	             functionality="WorkspaceManagement" 
@@ -192,7 +192,7 @@
 	</APPLICATION>
 
 	
-	<APPLICATION code="DistributionListUser" 
+	<!--<APPLICATION code="DistributionListUser" 
 	             title="#menu.DistributionListUser"  
 	             functionality="DistributionListUser" 
 	             type="link" 
@@ -200,8 +200,8 @@
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlistuser.png">
-	</APPLICATION>
+	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlistuser.png">  
+	</APPLICATION>-->
 	<APPLICATION code="DistributionListList" 
 	             title="#menu.DistributionListList"  
 	             functionality="DistributionListManagement" 
@@ -212,7 +212,7 @@
 	             height="500"
 	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlist.gif">
 	</APPLICATION>
-	<APPLICATION code="HotLink" 
+	<!-- <APPLICATION code="HotLink" 
 	             title="#menu.HotLink"  
 	             functionality="DocumentExecution" 
 	             type="link" 
@@ -221,7 +221,7 @@
 	             width="800" 
 	             height="500"
 	             iconUrl="/SpagoBI/img/analiticalmodel/icon-setlog.gif">
-	</APPLICATION>
+	</APPLICATION> -->
 	<APPLICATION code="MenuConfiguration" 
 	             title="#menu.menuconfiguration"  
 	             functionality="MenuManagement" 

@@ -60,8 +60,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//}
 	String formImportUrl = urlBuilder.getUrl(request, formImportUrlPars);
   
-	String downloadUrl = ChannelUtilities.getSpagoBIContextName(request);
-	downloadUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
+	String downloadUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
+	downloadUrl += "&ACTION_NAME=DOWNLOAD_FILE_ACTION";
 	if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
 		downloadUrl += "&OPERATION=download&PATH="+  exportFilePath;
 	}

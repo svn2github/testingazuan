@@ -692,7 +692,8 @@ if (toolbarIsVisible) {
 	
 	<%-- Scripts for print --%>
 	<%
-	if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")) {
+	String engineClassName = obj.getEngine().getClassName();
+	if (engineClassName != null && engineClassName.equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")) {
 		%>
 		<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		<script>
@@ -701,7 +702,7 @@ if (toolbarIsVisible) {
 		}
 		</script>
 		<%
-	} else if (obj.getEngine().getClassName().equals("it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine")) {
+	} else if (engineClassName != null && engineClassName.equals("it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine")) {
 		%>
 		<script>
 		function print<%= uuid %>() {

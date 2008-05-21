@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 import java.io.File;
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-public class DownloadFileAction extends AbstractHttpAction {
+public class DownloadFileAction extends BaseProfileAction {
 
     static private Logger logger = Logger.getLogger(DownloadFileAction.class);
 

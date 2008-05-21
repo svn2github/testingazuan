@@ -5,7 +5,6 @@
     <class name="it.eng.spagobi.tools.datasource.metadata.SbiDataSource" table="SBI_DATA_SOURCE" >
         <id name="dsId" type="int">
             <column name="DS_ID" />     
-             <generator class="identity"/>      
         </id>
         <many-to-one name="dialect" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="DIALECT_ID" not-null="true" />

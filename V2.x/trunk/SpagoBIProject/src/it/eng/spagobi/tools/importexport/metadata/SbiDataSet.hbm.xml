@@ -5,7 +5,6 @@
     <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" table="SBI_DATA_SET" lazy="false">
         <id name="dsId" type="int">
             <column name="DS_ID" />     
-             <generator class="identity"/>      
         </id>
 		<discriminator column="OBJECT_TYPE" type="string"/>        
         <property name="name" type="string">

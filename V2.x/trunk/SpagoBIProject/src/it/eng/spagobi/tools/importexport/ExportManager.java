@@ -49,6 +49,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
+import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 
@@ -335,32 +337,60 @@ public class ExportManager implements IExportManager {
 	    IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 	    BIObject biobj = biobjDAO.loadBIObjectForDetail(new Integer(idObj));
 	    
-	    IDataSourceDAO dsDao = DAOFactory.getDataSourceDAO();
-	    DataSource ds = dsDao.loadDataSourceByID(biobj.getDataSourceId());
-	    exporter.insertDataSource(ds, session);
+	    IDataSourceDAO dataSourceDao = DAOFactory.getDataSourceDAO();
+	    IDataSetDAO dataSetDao = DAOFactory.getDataSetDAO();
+	    
+	    Integer objataSourceId = biobj.getDataSourceId();
+	    if (objataSourceId != null) {
+	    	DataSource ds = dataSourceDao.loadDataSourceByID(objataSourceId);
+	    	exporter.insertDataSource(ds, session);
+	    }
 
+	    Integer objDataSetId = biobj.getDataSetId();
+	    if (objDataSetId != null) {
+	    	DataSet dataset = dataSetDao.loadDataSetByID(objDataSetId);
+	    	exporter.insertDataSet(dataset, session);
+	    }
+	    
 	    Engine engine = biobj.getEngine();
-	    ds = dsDao.loadDataSourceByID(engine.getDataSourceId());
-	    exporter.insertDataSource(ds, session);
+	    if (engine.getUseDataSource()) {
+		    Integer engineDataSourceId = engine.getDataSourceId();
+		    DataSource ds = dataSourceDao.loadDataSourceByID(engineDataSourceId);
+		    exporter.insertDataSource(ds, session);
+	    }
+	    
 	    exporter.insertEngine(engine, session);
 	    exporter.insertBIObject(biobj, session);
 
-	    // if the document is a dashboard, export the relevant lov
-		if (biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+	    // if the document is a chart, export the relevant dataset that is referenced by the template
+	    boolean isChart = false;
+	    if (biobj.getBiObjectTypeCode().equalsIgnoreCase("DASH") 
+	    		&& engine.getClassName() != null && engine.getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")) {
+	    	isChart = true;
+	    }
+	    
+		if (isChart) {
 			ObjTemplate template = biobj.getActiveTemplate();
 			if (template != null) {
 				try {
 					byte[] tempFileCont = template.getContent();
 					String tempFileStr = new String(tempFileCont);
 					SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
-					SourceBean datanameSB = (SourceBean) tempFileSB.getFilteredSourceBeanAttribute("DATA.PARAMETER", "name", "dataname");
-					String lovLabel = (String) datanameSB.getAttribute("value");
-				    IModalitiesValueDAO lovdao = DAOFactory.getModalitiesValueDAO();
-				    ModalitiesValue lov = lovdao.loadModalitiesValueByLabel(lovLabel);
-				    exporter.insertLov(lov, session);
+					SourceBean datasetnameSB = (SourceBean) tempFileSB.getFilteredSourceBeanAttribute("CONF.PARAMETER", "name", "confdataset");
+					if (datasetnameSB != null) {
+						String datasetLabel = (String) datasetnameSB.getAttribute("value");
+					    IDataSetDAO datasetDao = DAOFactory.getDataSetDAO();
+					    DataSet dataset = datasetDao.loadDataSetByLabel(datasetLabel);
+					    if (dataset == null) {
+					    	logger.warn("Error while exporting dashboard with id " + idObj + " and label " + biobj.getLabel() + " : " +
+								"the template refers to a dataset with label " + datasetLabel + " that does not exist!");
+					    } else {
+					    	exporter.insertDataSet(dataset, session);
+					    }
+					}
 				} catch (Exception e) {
 					logger.error("Error while exporting dashboard with id " + idObj + " and label " + biobj.getLabel() + " : " +
-							"could not find lov reference in its template.");
+							"could not find dataset reference in its template.");
 				}
 			}
 		}

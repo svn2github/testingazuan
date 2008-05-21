@@ -68,6 +68,14 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -94,7 +102,7 @@ public class ExporterMetadata {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void insertDomain(Domain domain, Session session) throws EMFUserError {
+    public void insertDomain(Domain domain, Session session) throws EMFUserError {
 	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
@@ -161,6 +169,61 @@ public class ExporterMetadata {
 	}
 	
 	/**
+	 * Insert data set.
+	 * 
+	 * @param dataset the dataset
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertDataSet(DataSet dataset, Session session) throws EMFUserError {
+	    logger.debug("IN");
+		try {
+			// if it is a query data set, insert datasource first, before opening a new transaction
+			if (dataset instanceof QueryDataSet) {
+				DataSource ds = ((QueryDataSet) dataset).getDataSource();
+				if (ds != null) insertDataSource(ds, session);
+			}
+			
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiDataSet where dsId = " + dataset.getDsId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			SbiDataSet hibDataset = null;
+			if (dataset instanceof FileDataSet) {
+				hibDataset = new SbiFileDataSet();
+				((SbiFileDataSet) hibDataset).setFileName(((FileDataSet) dataset).getFileName()); 
+			}
+			if (dataset instanceof QueryDataSet) {
+				hibDataset = new SbiQueryDataSet();
+				((SbiQueryDataSet) hibDataset).setQuery(((QueryDataSet) dataset).getQuery());
+			}
+			if (dataset instanceof WSDataSet) {
+				hibDataset = new SbiWSDataSet();
+				((SbiWSDataSet) hibDataset).setAdress(((WSDataSet) dataset).getAdress());
+				((SbiWSDataSet) hibDataset).setExecutorClass(((WSDataSet) dataset).getExecutorClass());
+				((SbiWSDataSet) hibDataset).setOperation(((WSDataSet) dataset).getOperation());
+			}
+			
+			hibDataset.setDsId(dataset.getDsId());
+			hibDataset.setLabel(dataset.getLabel());
+			hibDataset.setName(dataset.getName());
+			hibDataset.setDescription(dataset.getDescription());
+			hibDataset.setParameters(dataset.getParameters());
+
+			session.save(hibDataset);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting dataSet into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+		    logger.debug("OUT");
+		}
+	}
+	
+	/**
 	 * Insert an engine into the exported database.
 	 * 
 	 * @param engine Engine Object to export
@@ -192,8 +255,12 @@ public class ExporterMetadata {
 			hibEngine.setClassNm(engine.getClassName());
 			SbiDomains engineTypeDom = (SbiDomains)session.load(SbiDomains.class, engine.getEngineTypeId());
 			hibEngine.setEngineType(engineTypeDom);
-			SbiDataSource ds=(SbiDataSource)session.load(SbiDataSource.class, engine.getDataSourceId());
-			hibEngine.setDataSource(ds);
+			hibEngine.setUseDataSource(new Boolean(engine.getUseDataSource()));
+			if (engine.getUseDataSource()) {
+				SbiDataSource ds = (SbiDataSource) session.load(SbiDataSource.class, engine.getDataSourceId());
+				hibEngine.setDataSource(ds);
+			}
+			hibEngine.setUseDataSet(new Boolean(engine.getUseDataSet()));
 			session.save(hibEngine);
 			tx.commit();
 		} catch (Exception e) {
@@ -370,12 +437,34 @@ public class ExporterMetadata {
 			Integer visFlagIn = biobj.getVisible();
 			Short visFlagSh = new Short(visFlagIn.toString());
 			hibBIObj.setVisible(visFlagSh);
-			SbiDataSource ds=(SbiDataSource)session.load(SbiDataSource.class, biobj.getDataSourceId());
-			hibBIObj.setDataSource(ds);			
+			Integer dataSourceId = biobj.getDataSourceId();
+			if (dataSourceId != null) {
+				SbiDataSource ds = (SbiDataSource) session.load(SbiDataSource.class, dataSourceId);
+				hibBIObj.setDataSource(ds);
+			}
+			Integer dataSetId = biobj.getDataSetId();
+			if (dataSetId != null) {
+				SbiDataSet dataset = (SbiDataSet) session.load(SbiDataSet.class, dataSetId);
+				hibBIObj.setDataSet(dataset);
+			}
+			
+			hibBIObj.setCreationDate(biobj.getCreationDate());
+			hibBIObj.setCreationUser(biobj.getCreationUser());
+			hibBIObj.setExtendedDescription(biobj.getExtendedDescription());
+			hibBIObj.setKeywords(biobj.getKeywords());
+			hibBIObj.setLanguage(biobj.getLanguage());
+			hibBIObj.setObjectve(biobj.getObjectve());
+			hibBIObj.setRefreshSeconds(biobj.getRefreshSeconds());
+			
 			session.save(hibBIObj);
 			tx.commit();
-			insertBIObjectTemplate(hibBIObj,biobj.getActiveTemplate(),session);
-			
+			ObjTemplate template = biobj.getActiveTemplate();
+			if (template == null) {
+				logger.warn("Biobject with id = " + biobj.getId() + ", label = " + biobj.getLabel() + " and name = " + biobj.getName() + 
+						" has not active template!!");
+			} else {
+				insertBIObjectTemplate(hibBIObj, template, session);
+			}
 			
 		} catch (Exception e) {
 			logger.error("Error while inserting biobject into export database " , e);

@@ -9,9 +9,6 @@
     <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" table="SBI_OBJECTS">
         <id name="biobjId" type="integer">
             <column name="biobj_id" />
-            <generator class="identity">
-           
-            </generator>
         </id>
         <many-to-one name="sbiEngines" class="it.eng.spagobi.engines.config.metadata.SbiEngines">
             <column name="engine_id" not-null="true" />

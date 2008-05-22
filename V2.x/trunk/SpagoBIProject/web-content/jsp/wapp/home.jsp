@@ -187,6 +187,16 @@ boolean first=true;
 						    	if(canView2){
 				    			if (childElemLev2.getHasChildren()){%>
 				    			     {text: '<%=childElemLev2.getName()%>',
+				    				 <% if(childElemLev2.getObjId()!=null){%>
+					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                   
+					                       		 <%}
+					                        else{%>
+						                         href: ''   
+						                            <%}%>,		// comma
+											<%String icon2=DetailMenuModule.assignImage(childElemLev2);
+						                         if(childElemLev2.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
+						                         	icon: '<%=contextName%><%=icon2%>',
+						                         <%}%>					    			     
 				                	 menu: {        // <-- submenu 
 				                     items: [
 			    			    <%	 List lstChildrenLev3 = childElemLev2.getLstChildren();
@@ -197,6 +207,16 @@ boolean first=true;
 			    			     %>						    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {text: '<%=childElemLev3.getName()%>',
+					    				 <% if(childElemLev3.getObjId()!=null){%>
+					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					                       		 <%}
+					                        else{%>
+						                         href: ''   
+						                            <%}%>,		// comma
+											<%String icon3=DetailMenuModule.assignImage(childElemLev3);
+						                         if(childElemLev3.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
+						                         	icon: '<%=contextName%><%=icon3%>',
+						                         <%}%>							                            
 					                	menu: {        // <-- submenu 
 					                    items: [
 					    			    <%	 List lstChildrenLev4 = childElemLev3.getLstChildren();

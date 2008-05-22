@@ -125,5 +125,14 @@ public interface IMenuDAO {
 	 * @throws EMFUserError If any exception occurred
 	 */
 	public List getChildrenMenu (Integer menuId) throws EMFUserError;
+	
+	
+	/**
+	 * Substitution between the current node and his father
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+	
+	public void moveUpMenu(Integer menuID) throws EMFUserError;
 
 }

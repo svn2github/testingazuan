@@ -44,6 +44,8 @@ public class SbiMenu  implements java.io.Serializable {
      private Integer parentId;
      private Set sbiMenuRoles = new HashSet(0);
      private Boolean homepage;
+     private Boolean viewIcons;
+     
 
     // Constructors
 
@@ -199,6 +201,14 @@ public class SbiMenu  implements java.io.Serializable {
 
 	public void setHomepage(Boolean homepage) {
 		this.homepage = homepage;
+	}
+
+	public Boolean getViewIcons() {
+		return viewIcons;
+	}
+
+	public void setViewIcons(Boolean viewIcons) {
+		this.viewIcons = viewIcons;
 	}
    
 

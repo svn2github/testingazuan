@@ -61,11 +61,13 @@ String synchUrl = urlBuilder.getUrl(request, synchUrlParameters);
       			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.saveButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' alt='<spagobi:message key = "SBISet.ListRoles.saveButton" />' /> 
 			</a>
 		</td>
+		<%if(!sbiMode.equalsIgnoreCase("WEB")){ %>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.backButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBISet.ListRoles.backButton" />' />
 			</a>
 		</td>
+		<%} %>
 	</tr>
 </table>
 

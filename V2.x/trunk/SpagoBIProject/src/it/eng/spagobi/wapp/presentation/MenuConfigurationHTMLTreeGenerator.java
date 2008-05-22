@@ -29,12 +29,16 @@ package it.eng.spagobi.wapp.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctionality;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -42,6 +46,7 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.services.DetailMenuModule;
+import it.eng.spagobi.wapp.services.MoveUpMenuAction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,19 +189,19 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 				htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\', \\'\\')');\n");				
 			}
 			else{
-				htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMoveUpMenuLink(menu)+"\\', \\'\\')');\n");
 			}
 
 		} else {
 
 			if(hasChildren){
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\', \\'\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'"+createMoveUpMenuLink(menu)+"\\', \\'\\')');\n");
 			}
 			else if(leaves.contains(id)){
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");				
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMoveUpMenuLink(menu)+"\\', \\'\\')');\n");				
 			}
 			else{
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'\\', \\'\\')');\n");
+				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMoveUpMenuLink(menu)+"\\', \\'\\')');\n");
 
 			}
 
@@ -258,15 +263,18 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		function menu" + requestIdentity + "(event, urlAdd, urlDetail, urlErase, urlMoveUp, urlMoveDown) {\n");
 		htmlStream.append("			divM = document.getElementById('divmenuFunct" + requestIdentity + "');\n");
 		htmlStream.append("			divM.innerHTML = '';\n");
-		String capInsert = msgBuilder.getMessage("SBISet.TreeFunct.insertCaption", "messages", httpRequest);
+		String capInsert = msgBuilder.getMessage("SBISet.MenuTree.insertCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlAdd!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlAdd+'\">"+capInsert+"</a></div>';\n");
-		String capDetail = msgBuilder.getMessage("SBISet.TreeFunct.detailCaption", "messages", httpRequest);
+		String capDetail = msgBuilder.getMessage("SBISet.MenuTree.detailCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
-		String capErase = msgBuilder.getMessage("SBISet.TreeFunct.eraseCaption", "messages", httpRequest);
+		String capErase = msgBuilder.getMessage("SBISet.MenuTree.eraseCaption", "messages", httpRequest);
 		htmlStream.append("			if(urlErase!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlErase+'\\');\">"+capErase+"</a></div>';\n");
-		String capMoveUp = msgBuilder.getMessage("SBISet.TreeFunct.moveUpCaption", "messages", httpRequest);
-		htmlStream.append("			if(urlMoveUp!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveUp+'\">"+capMoveUp+"</a></div>';\n");
+		String capMoveUp = msgBuilder.getMessage("SBISet.MenuTree.moveUpCaption", "messages", httpRequest);
+		htmlStream.append("			if(urlMoveUp=='disabled') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'white\\'\"><a class=\"dtreemenulinkdisabled\" href=\"\"><strike>"+capMoveUp+"</strike></a></div>';\n");
+		//String capMoveUp2 = msgBuilder.getMessage("SBISet.MenuTree.moveUpCaption", "messages", httpRequest);
+		htmlStream.append("			else if(urlMoveUp!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveUp+'\">"+capMoveUp+"</a></div>';\n");
 		String capMoveDown = msgBuilder.getMessage("SBISet.TreeFunct.moveDownCaption", "messages", httpRequest);
+		
 		htmlStream.append("			if(urlMoveDown!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlMoveDown+'\">"+capMoveDown+"</a></div>';\n");
 		htmlStream.append("				showMenu(event, divM);\n");
 		htmlStream.append("		}\n");
@@ -275,7 +283,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
 
 		// js function for item action confirm
-		String confirmCaption = msgBuilder.getMessage("SBISet.TreeFunct.confirmCaption", "messages", httpRequest);
+		String confirmCaption = msgBuilder.getMessage("SBISet.MenuTree.confirmCaption", "messages", httpRequest);
 		htmlStream.append("		function actionConfirm(message, url){\n");
 		htmlStream.append("			if (confirm('" + confirmCaption + " ' + message + '?')){\n");
 		htmlStream.append("				location.href = url;\n");
@@ -396,6 +404,57 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeAccessibleTree(List objectsList, HttpServletRequest httpRequest, String initialPath) {
 		return null;
 	}
+
+
+	/**
+	 * Create URL to call the move up fuctionality operation.
+	 * @param folder	The folder to be moved up
+	 * @return	The URL to call the move up functionality operation
+	 */
+	private String createMoveUpMenuLink(Menu menu) {
+		if (canBeMovedUp(menu)) {
+			HashMap moveUpUrlParamsMap = new HashMap();
+			moveUpUrlParamsMap.put("ACTION_NAME", MoveUpMenuAction.ACTION_NAME);
+			moveUpUrlParamsMap.put(DetailMenuModule.MENU_ID, menu.getMenuId().toString());
+			String moveUpUrl = urlBuilder.getUrl(httpRequest, moveUpUrlParamsMap);
+			return moveUpUrl;
+		} else {
+			return "disabled";
+		}
+	}
+
+
+	private boolean canBeMovedUp(Menu menu) {
+		Integer parentId = menu.getParentId();
+		if(parentId==null) return false;
+		else{
+			//check the roles.
+			Menu parentMenu;
+			try {
+				parentMenu = DAOFactory.getMenuDAO().loadMenuByID(parentId);
+			} catch (EMFUserError e) {
+				return false;
+			}
+			Role[] parentRoles=parentMenu.getRoles();
+			Role[] currentRoles=menu.getRoles();
+
+			boolean equals=true;
+			boolean found=false;
+			for(int i=0;i<parentRoles.length && equals;i++){			
+				Role role=parentRoles[i];
+				found=false;
+				for(int j=0;j<currentRoles.length && !found;j++){
+					Role roleCurr=currentRoles[j];
+					if(roleCurr.getName().equalsIgnoreCase(role.getName())) found=true;
+				}
+				if(!found)equals=false;
+			}
+
+			return equals;
+		}	
+	}
+
+
 
 }
 

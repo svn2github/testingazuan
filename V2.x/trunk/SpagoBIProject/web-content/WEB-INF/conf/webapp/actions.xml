@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <ACTIONS>
+ <ACTION name="MOVE_UP_MENU" class="it.eng.spagobi.wapp.services.MoveUpMenuAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ </ACTIONS>

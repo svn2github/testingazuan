@@ -61,5 +61,10 @@
 	padding-left:10px;
 }
 
-
-
+.dtreemenulinkdisabled{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-decoration:none;
+	color:#8D8585;
+	padding-left:10px;
+}

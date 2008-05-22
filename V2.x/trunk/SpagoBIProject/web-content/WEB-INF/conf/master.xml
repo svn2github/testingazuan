@@ -155,6 +155,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/security.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/menu.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
 	<!--  <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />-->
 
 	

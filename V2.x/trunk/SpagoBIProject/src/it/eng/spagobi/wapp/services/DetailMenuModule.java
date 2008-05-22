@@ -336,6 +336,7 @@ public class DetailMenuModule extends AbstractModule {
 		}
 
 		String homepageB=(String)request.getAttribute("homepage");
+		String viewIconsB=(String)request.getAttribute("viewicons");
 
 		Menu menu = null;
 
@@ -361,6 +362,10 @@ public class DetailMenuModule extends AbstractModule {
 			if(homepageB!=null)menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());
 			else menu.setHomepage(false);
 
+			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
+			else menu.setViewIcons(false);
+
+			
 			menu.setRoles(roles);
 
 
@@ -383,6 +388,9 @@ public class DetailMenuModule extends AbstractModule {
 
 			if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
 			else menu.setHomepage(false);
+			
+			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
+			else menu.setViewIcons(false);
 
 		}
 

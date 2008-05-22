@@ -34,7 +34,7 @@
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDataSetPage"/>
 	        </INSERT_BUTTON>
-	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListDataSet.backButton">
+	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBISet.ListDataSet.backButton" onlyPortletRunning="true">
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>
 	          <PARAMETER name="PUBLISHER_NAME" scope="" type="ABSOLUTE" value="LoginSBIResourcesPublisher"/>
 	          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true"/>

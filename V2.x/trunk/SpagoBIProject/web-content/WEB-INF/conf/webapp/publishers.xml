@@ -142,6 +142,16 @@
     	</RENDERING>
   	</PUBLISHER>
   	
+  	 <PUBLISHER name="MenuRefresh">
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="MenuConfigurationPage" />
+        		<!--  <PARAMETER name="OPERATION" type="ABSOLUTE" scope="" value="FUNCTIONALITIES_OPERATION" />-->
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER> 
+  	
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>

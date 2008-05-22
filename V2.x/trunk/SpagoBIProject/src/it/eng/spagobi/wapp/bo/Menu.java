@@ -47,6 +47,7 @@ public class Menu  implements Serializable  {
     private List	lstChildren;
     private Role[] roles = null;
     private boolean homepage=false;
+    private boolean viewIcons=false;
     
 	/**
 	 * Gets the lst children.
@@ -226,6 +227,14 @@ public class Menu  implements Serializable  {
 
 	public void setHomepage(boolean homepage) {
 		this.homepage = homepage;
+	}
+
+	public boolean isViewIcons() {
+		return viewIcons;
+	}
+
+	public void setViewIcons(boolean viewIcons) {
+		this.viewIcons = viewIcons;
 	}
 
 	

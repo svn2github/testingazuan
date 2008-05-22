@@ -193,8 +193,9 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 					aMenu));
 			// set new roles into sbiFunctions
 			hibMenu.setSbiMenuRoles(menuRoleToSave);	
-			
+
 			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
+			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 
 
 			tx.commit();
@@ -250,13 +251,14 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			// set new roles into sbiFunctions
 			hibMenu.setSbiMenuRoles(menuRoleToSave);
 
-			
-			// if is set as homepage delete previous homepage
-			
-			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 
-			
-			
+			// if is set as homepage delete previous homepage
+
+			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
+			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
+
+
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -481,12 +483,16 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			menu.setObjId(hibMenu.getSbiObjects().getBiobjId());
 		menu.setLevel(getLevel(menu.getParentId(), menu.getObjId()));
 		if(hibMenu.getHomepage()!=null){
-			//TODO Delete previous homepage
-			
 			menu.setHomepage(hibMenu.getHomepage().booleanValue());
 		}
 		else menu.setHomepage(false);
 
+		if(hibMenu.getViewIcons()!=null){
+			menu.setViewIcons(hibMenu.getViewIcons().booleanValue());
+		}
+		else menu.setViewIcons(false);
+
+		
 		//set the dephts
 		/*if(menu.getParentId()!=null){
 			Menu parent=loadMenuByID(menu.getParentId());
@@ -598,6 +604,77 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	}
 
 
+	/**
+	 * Substitution between the current node and his father
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+
+	public void moveUpMenu(Integer menuID) throws EMFUserError {
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+
+			SbiMenu sbiMenu=(SbiMenu)tmpSession.load(SbiMenu.class, menuID);
+
+			Integer fatherId=sbiMenu.getParentId();
+
+			SbiMenu sbiFatherMenu=(SbiMenu)tmpSession.load(SbiMenu.class, fatherId);
+
+			Integer grandFatherId=sbiFatherMenu.getParentId();
+
+			//Change children: 
+
+			// get the children of old father, they will point to new father
+			Criterion parentCriterrion = Expression.eq("parentId",
+					fatherId);
+			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
+			criteria.add(parentCriterrion);
+
+			// Get the list of children from the old father
+			List oldFatherChildren=criteria.list();
+
+			//I can retrieve all the children now and save all them
+			for (Iterator iterator = oldFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				sbiMenuO.setParentId(menuID);
+			}
+			
+
+
+		
+			Criterion childCriterrion = Expression.eq("parentId",
+					menuID);
+			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
+			childCriteria.add(childCriterrion);
+			
+			// Get the list of children from the new father
+			List newFatherChildren=childCriteria.list();
+
+			for (Iterator iterator = newFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
+			}
+			
+
+			sbiMenu.setParentId(grandFatherId);
+			sbiFatherMenu.setParentId(menuID);
+
+
+			tx.commit();
+		} catch (HibernateException he) {
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+	}
 
 
 

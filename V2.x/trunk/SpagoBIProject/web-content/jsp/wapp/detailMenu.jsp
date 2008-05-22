@@ -22,16 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.commons.constants.AdmintoolsConstants,
-                 it.eng.spagobi.analiticalmodel.functionalitytree.service.DetailFunctionalityModule,
-                 javax.portlet.PortletURL,
+
                  java.util.List,
                  it.eng.spagobi.commons.bo.Role,
-                 it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality,
-                 it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule,
-                 it.eng.spagobi.commons.constants.SpagoBIConstants,
                  it.eng.spagobi.commons.dao.DAOFactory,
-                 it.eng.spago.navigation.LightNavigationManager,
-                 it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule" %>
+                 it.eng.spago.navigation.LightNavigationManager" %>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
 
@@ -92,24 +87,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
 		    style='vertical-align:middle;padding-left:5px;'>
-			<spagobi:message key = "SBISet.Funct.title" />
+			<spagobi:message key = "SBISet.menu.detailtitle" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('formFunct').submit()"> 
       			<img class='header-button-image-portlet-section' 
-      			     title='<spagobi:message key = "SBISet.Funct.saveButt" />' 
+      			     title='<spagobi:message key = "SBISet.detailMenu.saveButt" />' 
       			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
-      			     alt='<spagobi:message key = "SBISet.Funct.saveButt" />' />
+      			     alt='<spagobi:message key = "SBISet.detailMenu.saveButt" />' />
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message 
-      			     key = "SBISet.Funct.backButt" />' 
+      			     key = "SBISet.detailMenu.backButt" />' 
       			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
-      			     alt='<spagobi:message key = "SBISet.Funct.backButt" />'/>
+      			     alt='<spagobi:message key = "SBISet.detailMenu.backButt" />'/>
 			</a>
 		</td>
 	</tr>
@@ -125,7 +120,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.Funct.nameField" />
+			<spagobi:message key = "SBISet.detailMenu.nameField" />
 		</span>
 	</div>
 	<div class='div_detail_form'> 
@@ -136,7 +131,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.Funct.descriptionField" />
+			<spagobi:message key = "SBISet.detailMenu.descriptionField" />
 		</span>
 	</div>
 	<div class='div_detail_form'> 
@@ -158,7 +153,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input class='portlet-form-input-field' type="checkbox" 
 	      	   size="50" name="homepage" id="" 
 	      	   value="true" <%if(menu.isHomepage()){%> checked="checked" <%}%>/>
-	   	&nbsp;*	
+	</div>
+		<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.menu.viewDocumentIcons" />
+		</span>
+		</div>
+		<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="checkbox" 
+	      	   size="50" name="viewicons" id="" 
+	      	   value="true" <%if(menu.isViewIcons()){%> checked="checked" <%}%>/>
 	</div>
 	
 
@@ -178,9 +182,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 	}
 		 }
 			 %>
-		 
-	 <span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.ListDL.relatedDoc" />
+	<div class='div_detail_label'>	 
+		 <span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.detailMenu.relatedDoc" />
 		</span>
 	</div>
 	 <div class='div_detail_form' id="documentForm" >
@@ -195,8 +199,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='javascript:void(0);' id="deleteDocument">
 						<img src="<%=urlBuilder.getResourceLink(request, "/img/erase.png") %>" title="DeleteDocument" alt="DeleteDocument" />
 					</a> 	
-				</div>
-			</div>
+		</div>
+		<!--  </div>-->
 			
 		<script>
 			var win_document;
@@ -267,10 +271,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 		<table>
 	 				<tr>
 	 					<td class='portlet-section-header' align="left">
-							<spagobi:message key = "SBISet.Funct.tabCol1" />
+							<spagobi:message key = "SBISet.detailMenu.tabCol1" />
 						</td>
 	 					<td class='portlet-section-header' align="center" width="90px">
-							<spagobi:message key = "SBISet.Funct.tabCol2" />
+							<spagobi:message key = "SBISet.detailMenu.tabCol2" />
 						</td>
 	                    <td class='portlet-section-header' align="center" width="90px">
                         	&nbsp;
@@ -339,10 +343,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                      <tr class='<%=rowClass%>'>
                         <td align="center">&nbsp;</td>       
                         <td align="center">
-                        <a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
+                        <a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
                         <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
                         </a>
-					    <a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
+					    <a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
 					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
 					    </a>
 					    </td>

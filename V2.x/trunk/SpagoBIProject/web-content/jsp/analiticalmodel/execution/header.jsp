@@ -221,6 +221,7 @@ if (toolbarIsVisible) {
 				<% if (!modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) { %>
 			    <li>
 			    	<%
+			    	 if(!sbiMode.equals("WEB")){
 			    	Map backUrlPars = new HashMap();
 			    	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 			    	%>
@@ -230,7 +231,9 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 					</a>
 			    </li>
-			    <% } %>
+			    <% } 
+				}
+			    %>
 			    <% if (!isExecutingSnapshot) { 
 			    String refreshMode="GET";
 			    if(sbiMode.equals("WEB")){refreshMode="POST";}

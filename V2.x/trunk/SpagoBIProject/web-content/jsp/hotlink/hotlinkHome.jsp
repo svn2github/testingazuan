@@ -245,7 +245,7 @@ Ext.onReady(function(){
 			params.put("PAGE", "HOT_LINK_PAGE");
 			params.put("OPERATION", "EXECUTE");
 			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters());
+			params.put("PARAMETERS", hotlink.getParameters() != null ? hotlink.getParameters() : "");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
@@ -318,7 +318,7 @@ Ext.onReady(function(){
 			params.put("PAGE", "HOT_LINK_PAGE");
 			params.put("OPERATION", "EXECUTE");
 			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters());
+			params.put("PARAMETERS", hotlink.getParameters() != null ? hotlink.getParameters() : "");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);

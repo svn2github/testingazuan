@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.commons.utilities.urls;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
-
 import java.util.Iterator;
 import java.util.Map;
 
@@ -32,56 +29,72 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * The implementation of IUrlBuilder used when SpagoBI is used as a PORTLET
  */
 public class PortletUrlBuilder implements IUrlBuilder{
 
-
+	private static transient Logger logger = Logger.getLogger(PortletUrlBuilder.class);
+	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getUrl(javax.servlet.http.HttpServletRequest, java.util.Map)
 	 */
 	public String getUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
-		return getActionUrl(aHttpServletRequest, parameters);
+		logger.debug("IN");
+		String url = getActionUrl(aHttpServletRequest, parameters);
+		logger.debug("OUT");
+		return url;
 	}
 
 
 
 	public String getActionUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		logger.debug("IN");
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
 		PortletURL aPortletURL = renderResponse.createActionURL(); 
 		if (parameters != null){
 			Iterator keysIt = parameters.keySet().iterator();
-			boolean isFirst = true;
 			String paramName = null;
 			Object paramValue = null;
 			while (keysIt.hasNext()){
 				paramName = (String)keysIt.next();
-				paramValue = parameters.get(paramName); 
+				paramValue = parameters.get(paramName);
+				if (paramValue == null) {
+					logger.warn("Parameter with name " + paramName + " has null value. This parameter will be not considered.");
+					continue;
+				}
 				aPortletURL.setParameter(paramName, paramValue.toString());
 			}
 		}
-		return aPortletURL.toString();
+		String url = aPortletURL.toString();
+		logger.debug("OUT");
+		return url;
 	}
 
 	public String getRenderUrl(HttpServletRequest aHttpServletRequest, Map parameters) {
+		logger.debug("IN");
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
 		PortletURL aPortletURL = renderResponse.createRenderURL(); 
 		if (parameters != null){
 			Iterator keysIt = parameters.keySet().iterator();
-			boolean isFirst = true;
 			String paramName = null;
 			Object paramValue = null;
 			while (keysIt.hasNext()){
 				paramName = (String)keysIt.next();
 				paramValue = parameters.get(paramName); 
+				if (paramValue == null) {
+					logger.warn("Parameter with name " + paramName + " has null value. This parameter will be not considered.");
+					continue;
+				}
 				aPortletURL.setParameter(paramName, paramValue.toString());
 			}
 		}
-		return aPortletURL.toString();
+		String url = aPortletURL.toString();
+		logger.debug("OUT");
+		return url;
 	}
 
 
@@ -94,6 +107,7 @@ public class PortletUrlBuilder implements IUrlBuilder{
 	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getResourceLink(javax.servlet.http.HttpServletRequest, java.lang.String)
 	 */
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
+		logger.debug("IN");
 		RenderRequest renderRequest =(RenderRequest)aHttpServletRequest.getAttribute("javax.portlet.request");
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
 		String urlToConvert = null; 
@@ -104,6 +118,7 @@ public class PortletUrlBuilder implements IUrlBuilder{
 			urlToConvert = originalUrl;
 		}
 		String newUrl = renderResponse.encodeURL(renderRequest.getContextPath() + "/" + urlToConvert).toString();
+		logger.debug("OUT");
 		return newUrl;
 	}
 

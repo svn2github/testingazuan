@@ -25,7 +25,10 @@
         </property>
 		<property name="viewIcons" type="boolean">
             <column name="view_icons" />
-        </property>        
+        </property>
+		<property name="hideExecBar" type="boolean">
+            <column name="hide_exec_bar" />
+        </property>                 
         <set name="sbiMenuRoles" inverse="true">
             <key>
                 <column name="menu_id" not-null="true" />

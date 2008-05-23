@@ -196,6 +196,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 
 			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
+			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
 
 
 			tx.commit();
@@ -256,7 +257,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 
 			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
-
+			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
 
 
 			tx.commit();
@@ -491,6 +492,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			menu.setViewIcons(hibMenu.getViewIcons().booleanValue());
 		}
 		else menu.setViewIcons(false);
+
+		if(hibMenu.getHideExecBar()!=null){
+			menu.setHideExecBar(hibMenu.getHideExecBar().booleanValue());
+		}
+		else menu.setHideExecBar(false);
 
 		
 		//set the dephts

@@ -48,6 +48,7 @@ public class Menu  implements Serializable  {
     private Role[] roles = null;
     private boolean homepage=false;
     private boolean viewIcons=false;
+    private boolean hideExecBar=false;
     
 	/**
 	 * Gets the lst children.
@@ -237,6 +238,15 @@ public class Menu  implements Serializable  {
 		this.viewIcons = viewIcons;
 	}
 
+	public boolean isHideExecBar() {
+		return hideExecBar;
+	}
+
+	public void setHideExecBar(boolean hideExecBar) {
+		this.hideExecBar = hideExecBar;
+	}
+
+	
 	
 	
 }

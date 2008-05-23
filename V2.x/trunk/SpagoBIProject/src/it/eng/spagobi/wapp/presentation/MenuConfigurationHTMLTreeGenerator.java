@@ -171,12 +171,14 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		String imgFolderOp="";
 		if(menu.getObjId()!=null){
 			String icon=DetailMenuModule.assignImage(menu);
-			imgFolder=urlBuilder.getResourceLink(httpRequest, icon);
+			imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_blue.png");
 			imgFolderOp=imgFolder;
+		
+		
 		}
 		else{
-			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_gray.png");
+			imgFolderOp=imgFolder;
 
 		}
 

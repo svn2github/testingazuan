@@ -45,6 +45,8 @@ public class SbiMenu  implements java.io.Serializable {
      private Set sbiMenuRoles = new HashSet(0);
      private Boolean homepage;
      private Boolean viewIcons;
+     private Boolean hideExecBar;
+
      
 
     // Constructors
@@ -209,6 +211,14 @@ public class SbiMenu  implements java.io.Serializable {
 
 	public void setViewIcons(Boolean viewIcons) {
 		this.viewIcons = viewIcons;
+	}
+
+	public Boolean getHideExecBar() {
+		return hideExecBar;
+	}
+
+	public void setHideExecBar(Boolean hideExecBar) {
+		this.hideExecBar = hideExecBar;
 	}
    
 

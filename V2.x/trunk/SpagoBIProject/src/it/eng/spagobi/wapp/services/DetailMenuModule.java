@@ -61,6 +61,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import org.hibernate.Hibernate;
+
 /**
  * Implements a module which  handles all  low functionalities management: has methods 
  * for low functionalities load, detail, modify/insertion and deleting operations. 
@@ -337,6 +339,7 @@ public class DetailMenuModule extends AbstractModule {
 
 		String homepageB=(String)request.getAttribute("homepage");
 		String viewIconsB=(String)request.getAttribute("viewicons");
+		String hideExecBarB=(String)request.getAttribute("hideexecbar");
 
 		Menu menu = null;
 
@@ -365,6 +368,9 @@ public class DetailMenuModule extends AbstractModule {
 			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
 			else menu.setViewIcons(false);
 
+			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
+			else menu.setHideExecBar(false);
+
 			
 			menu.setRoles(roles);
 
@@ -392,6 +398,9 @@ public class DetailMenuModule extends AbstractModule {
 			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
 			else menu.setViewIcons(false);
 
+			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
+			else menu.setHideExecBar(false);			
+			
 		}
 
 		return menu;
@@ -566,7 +575,11 @@ public class DetailMenuModule extends AbstractModule {
 			return "";
 	}
 
-
+	public static String toolbarVisibility(Menu menu){
+		if(!menu.isHideExecBar()) return "";
+		else return "&TOOLBAR_VISIBLE=FALSE";
+		
+	}
 
 
 

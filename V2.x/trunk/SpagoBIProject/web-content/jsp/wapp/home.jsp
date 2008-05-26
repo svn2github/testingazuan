@@ -123,7 +123,7 @@ boolean first=true;
 
   <body>
 
-	 <%@include file="/menu/banner.html" %>
+	 <%@include file="/html/banner.html" %>
 	
 	<!-- <div id="background" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
     	<div id="backgroundlogo" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;">   
@@ -157,7 +157,7 @@ boolean first=true;
 	        </div>
 		 <%}%>
   
-  <%@include file="/menu/footer.html" %>
+  <%@include file="/html/footer.html" %>
   
   </body>
   <script>
@@ -170,6 +170,23 @@ boolean first=true;
 		 		//MENU MANAGEMENT
 				var tb = new Ext.Toolbar();			
 				tb.render('menubar');
+			
+
+			//adds exit menu		
+			tb.add(
+				
+				new Ext.Toolbar.Button({
+		            text: 'Home',
+		            icon: '<%=contextName%>/img/wapp/gohome.png',
+		            cls: 'x-btn-text-icon bmenu',
+		             //cls: 'x-btn-text-icon bmenu',
+		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
+					handler: returnHome,	  
+		        })	
+		    );
+		    
+		    tb.addSeparator();
+			
 			
 		    <%    if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){
 
@@ -198,9 +215,9 @@ boolean first=true;
 
 				    			if (childElemLev2.getHasChildren()){%>
 				    			     {text: '<%=childElemLev2.getName()%>',
-				    				 <% if(childElemLev2.getObjId()!=null){
-				    				 		String toolbar2=DetailMenuModule.toolbarVisibility(childElemLev2);%>
-					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%><%=toolbar2%>')"                   
+				    				 <% if(childElemLev2.getObjId()!=null){%>
+					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
 					                       		 <%}
 					                        else{%>
 						                         href: ''   
@@ -220,9 +237,10 @@ boolean first=true;
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {text: '<%=childElemLev3.getName()%>',
 					    				 <% if(childElemLev3.getObjId()!=null){
-					    					 String toolbar3=DetailMenuModule.toolbarVisibility(childElemLev3);
 					    				 %>
-					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%><%=toolbar3%>')"                   
+					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
+					                       		 
 					                       		 <%}
 					                        else{%>
 						                         href: ''   
@@ -247,10 +265,11 @@ boolean first=true;
 						                            icon: '<%=contextName%><%=icon%>',
 						                            <%}%>						                            
 						                            <% if(childElemLev4.getObjId()!=null){
-						                            	String toolbar4=DetailMenuModule.toolbarVisibility(childElemLev4);
 						                            %>		
-						                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%><%=toolbar4%>')"                           
-						                            <%}
+						                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
+						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   
+						                           
+						                           <%}
 						                            else{%>
 						                             href: ''
 						                            <%}%>
@@ -275,9 +294,11 @@ boolean first=true;
 						                          icon: '<%=contextName%><%=icon%>',
 						                          <%}%>					                             
 					                            <% if(childElemLev3.getObjId()!=null){
-					                            	String toolbar3=DetailMenuModule.toolbarVisibility(childElemLev3);
+		
 					                            %>
-					                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%><%=toolbar3%>')"                   
+					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
+
 					                        <%}
 					                        else{%>
 						                         href: ''   
@@ -302,9 +323,10 @@ boolean first=true;
 										icon: '<%=contextName%><%=icon%>',
 											<%}%>		                             
 		                                <% if(childElemLev2.getObjId()!=null){
-		                                	String toolbar2=DetailMenuModule.toolbarVisibility(childElemLev2);
 		                                %>
-		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%><%=toolbar2%>')"                           
+		                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
+									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
+		                        		
 		                        		<%}
 			                            else{%>
 			                            href: ''
@@ -322,9 +344,10 @@ boolean first=true;
 		                            text: '<%=menuElem.getName()%>',
 		                            group: 'group_1',		                             
 							<% if(menuElem.getObjId()!=null){
-								String toolbar=DetailMenuModule.toolbarVisibility(menuElem);
 							%>
-		                            href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%><%=toolbar%>')"                           
+		                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
+									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
+
 		                        <%}	
 								else{%>
 	                            
@@ -353,14 +376,14 @@ boolean first=true;
 						
 					tb.add(
 						new Ext.Toolbar.MenuButton({
-							id:'<%=menuElem.getName()%>_<%=menuElem.getObjId()%>',
+							id:'<%=menuElem.getMenuId()%>',
 				            text: '<%=menuElem.getName()%>',
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',			            			           
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
 				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
 				            menu: menu<%=i%>  	  
 				            <%}%>
@@ -370,14 +393,14 @@ boolean first=true;
 					else{%>
 			    		tb.add(
 						new Ext.Toolbar.Button({
-							id:'<%=menuElem.getName()%>_<%=menuElem.getObjId()%>',
+							id:'<%=menuElem.getMenuId()%>',
 				            text: '<%=menuElem.getName()%>',
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',			            			           
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
 				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
 				            menu: menu<%=i%>  	  
 				            <%}%>
@@ -440,27 +463,13 @@ boolean first=true;
 		            id: 'MenuUtente',
 		            text: 'MenuUtente',
 		            cls: 'x-btn-text-icon bmenu',
-					icon: '<%=contextName%>/img/wapp/user.png',
 		            menu: miomenu
 		        })	
 		    );
 
 				
 
-	tb.addSeparator();	
 
-			//adds exit menu		
-			tb.add(
-				
-				new Ext.Toolbar.Button({
-		            text: 'Home',
-		            icon: '<%=contextName%>/img/wapp/gohome.png',
-		            cls: 'x-btn-text-icon bmenu',
-		             //cls: 'x-btn-text-icon bmenu',
-		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
-					handler: returnHome,	  
-		        })	
-		    );
 
 	tb.addFill();
 
@@ -482,15 +491,17 @@ boolean first=true;
 	
 	 function execDirectDoc(btn){
 	 	var url = "";
-	 	var idDoc = btn.id;
-	 	idDoc = idDoc.substring(idDoc.indexOf("_")+1);
+	 	var idMenu = btn.id;
+	 	//idMenu = idMenu.substring(idMenu.indexOf("|_|")+1);
 	 	
-	 	if (idDoc != null && idDoc != 'null'){
-	 		url =  "<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID="+idDoc;
+	 	if (idMenu != null && idMenu != 'null'){
+			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
 		}
 		return;
-	 }	 
+	 }
+	 
+	 	 
 	 function execDirectUrl(url){
 	 //alert(url); 	
 		document.getElementById('iframeDoc').src = url;
@@ -698,7 +709,8 @@ var selectNode = function(node, e) {
   					found=true;
   				%> 					
   					<script type="text/javascript">
-  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')  					
+  					//javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')  					
+  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>'); 
   					</script>  					
   					<%
   				}  

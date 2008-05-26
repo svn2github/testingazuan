@@ -198,7 +198,9 @@ boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJ
 		}
 	}
 	%>
+	<%if(toolbarIsVisible){%>
 	<%= title %>
+		<%}%>
 </div>
 
 <%

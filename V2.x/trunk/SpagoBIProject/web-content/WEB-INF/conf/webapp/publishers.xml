@@ -152,6 +152,23 @@
    	 	</RENDERING>
   	</PUBLISHER> 
   	
+  	
+  	
+  	<PUBLISHER name="MenuBeforeExecLoopPublisher">
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+        		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="objectid" />        		
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
+  	
+  	
+  	
+  	
+  	
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
@@ -159,6 +176,8 @@
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
+  	
+  	
   	
   	
 </PUBLISHERS>

@@ -144,12 +144,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input class='portlet-form-input-field' type="text" 
                size="50" name="description" id="" value="<%= desc %>" />
 	</div>
-		<div class='div_detail_label'>
+
+
+	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.menu.Homepage" />
 		</span>
 		</div>
-		<div class='div_detail_form'> 
+			<div class='div_detail_form'> 
 		<input class='portlet-form-input-field' type="checkbox" 
 	      	   size="50" name="homepage" id="" 
 	      	   value="true" <%if(menu.isHomepage()){%> checked="checked" <%}%>/>
@@ -163,7 +165,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input class='portlet-form-input-field' type="checkbox" 
 	      	   size="50" name="viewicons" id="" 
 	      	   value="true" <%if(menu.isViewIcons()){%> checked="checked" <%}%>/>
-	</div>
+</div>
 		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.menu.HideExecBar" />

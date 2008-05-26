@@ -373,7 +373,7 @@ public class DetailMenuModule extends AbstractModule {
 			else menu.setHideExecBar(false);
 
 			menu.setStaticPage(staticPage);
-			
+
 			menu.setRoles(roles);
 
 
@@ -396,15 +396,15 @@ public class DetailMenuModule extends AbstractModule {
 
 			if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
 			else menu.setHomepage(false);
-			
+
 			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
 			else menu.setViewIcons(false);
 
 			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
 			else menu.setHideExecBar(false);	
-			
+
 			menu.setStaticPage(staticPage);
-			
+
 		}
 
 		return menu;
@@ -563,16 +563,20 @@ public class DetailMenuModule extends AbstractModule {
 
 
 	public static String assignImage(Menu menu){
+		String url="";
 		if(menu.getObjId()!=null){
-			String url="";
 			try {
 				BIObject object=DAOFactory.getBIObjectDAO().loadBIObjectById(menu.getObjId());
 				String biObjType = object.getBiObjectTypeCode();
 				url = "/img/objecticon_"+ biObjType+ ".png";
-				
+
 			} catch (EMFUserError e) {
-				return url;
+				return "";
 			}
+			return url;
+		}
+		else if(menu.getStaticPage()!=null){
+			url="/img/wapp/static_page.png";
 			return url;
 		}
 		else
@@ -582,7 +586,7 @@ public class DetailMenuModule extends AbstractModule {
 	public static String toolbarVisibility(Menu menu){
 		if(!menu.isHideExecBar()) return "";
 		else return "&TOOLBAR_VISIBLE=FALSE";
-		
+
 	}
 
 

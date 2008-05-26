@@ -49,6 +49,8 @@ public class Menu  implements Serializable  {
     private boolean homepage=false;
     private boolean viewIcons=false;
     private boolean hideExecBar=false;
+    private String staticPage;
+
     
 	/**
 	 * Gets the lst children.
@@ -244,6 +246,14 @@ public class Menu  implements Serializable  {
 
 	public void setHideExecBar(boolean hideExecBar) {
 		this.hideExecBar = hideExecBar;
+	}
+
+	public String getStaticPage() {
+		return staticPage;
+	}
+
+	public void setStaticPage(String staticPage) {
+		this.staticPage = staticPage;
 	}
 
 	

@@ -28,7 +28,10 @@
         </property>
 		<property name="hideExecBar" type="boolean">
             <column name="hide_exec_bar" />
-        </property>                 
+        </property>
+        <property name="staticPage" type="string">
+            <column name="static_page" />
+        </property>                         
         <set name="sbiMenuRoles" inverse="true">
             <key>
                 <column name="menu_id" not-null="true" />

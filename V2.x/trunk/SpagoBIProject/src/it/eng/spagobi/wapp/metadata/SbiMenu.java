@@ -41,6 +41,7 @@ public class SbiMenu  implements java.io.Serializable {
      private SbiObjects sbiObjects;
      private String name;
      private String descr;
+     private String staticPage;     
      private Integer parentId;
      private Set sbiMenuRoles = new HashSet(0);
      private Boolean homepage;
@@ -220,13 +221,15 @@ public class SbiMenu  implements java.io.Serializable {
 	public void setHideExecBar(Boolean hideExecBar) {
 		this.hideExecBar = hideExecBar;
 	}
+
+	public String getStaticPage() {
+		return staticPage;
+	}
+
+	public void setStaticPage(String staticPage) {
+		this.staticPage = staticPage;
+	}
    
-
-
-
-
-
-
 
 
 }

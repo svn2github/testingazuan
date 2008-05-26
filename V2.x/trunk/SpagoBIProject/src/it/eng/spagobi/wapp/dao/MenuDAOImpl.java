@@ -198,7 +198,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
 
-
+			hibMenu.setStaticPage(aMenu.getStaticPage());
 			tx.commit();
 
 		} catch (HibernateException he) {
@@ -258,7 +258,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
-
+			hibMenu.setStaticPage(aMenu.getStaticPage());
 
 			tx.commit();
 		} catch (HibernateException he) {
@@ -498,6 +498,8 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		}
 		else menu.setHideExecBar(false);
 
+		menu.setStaticPage(hibMenu.getStaticPage());
+		
 		
 		//set the dephts
 		/*if(menu.getParentId()!=null){
@@ -647,15 +649,15 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
 				sbiMenuO.setParentId(menuID);
 			}
-			
 
 
-		
+
+
 			Criterion childCriterrion = Expression.eq("parentId",
 					menuID);
 			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
 			childCriteria.add(childCriterrion);
-			
+
 			// Get the list of children from the new father
 			List newFatherChildren=childCriteria.list();
 
@@ -663,7 +665,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
 				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
 			}
-			
+
 
 			sbiMenu.setParentId(grandFatherId);
 			sbiFatherMenu.setParentId(menuID);

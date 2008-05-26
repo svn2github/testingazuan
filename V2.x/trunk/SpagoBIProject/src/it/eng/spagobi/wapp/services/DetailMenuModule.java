@@ -340,6 +340,7 @@ public class DetailMenuModule extends AbstractModule {
 		String homepageB=(String)request.getAttribute("homepage");
 		String viewIconsB=(String)request.getAttribute("viewicons");
 		String hideExecBarB=(String)request.getAttribute("hideexecbar");
+		String staticPage=(String)request.getAttribute("staticpage");
 
 		Menu menu = null;
 
@@ -371,6 +372,7 @@ public class DetailMenuModule extends AbstractModule {
 			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
 			else menu.setHideExecBar(false);
 
+			menu.setStaticPage(staticPage);
 			
 			menu.setRoles(roles);
 
@@ -399,7 +401,9 @@ public class DetailMenuModule extends AbstractModule {
 			else menu.setViewIcons(false);
 
 			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
-			else menu.setHideExecBar(false);			
+			else menu.setHideExecBar(false);	
+			
+			menu.setStaticPage(staticPage);
 			
 		}
 

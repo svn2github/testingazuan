@@ -270,9 +270,9 @@ boolean first=true;
 						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   
 						                           
 						                           <%}
-						                            else{%>
-						                             href: ''
-						                            <%}%>
+													else if(childElemLev4.getStaticPage()!=null){%>
+													href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   	                            
+					                            <%}%>
 						                        })
 							                        <%if(x < lstChildrenLev4.size()-1){%>
 						                            ,
@@ -300,9 +300,9 @@ boolean first=true;
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
 
 					                        <%}
-					                        else{%>
-						                         href: ''   
-						                            <%}%>
+												else if(childElemLev3.getStaticPage()!=null){%>
+												href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   	                            
+				                            <%}%>
 					                        })
 					                        
 					                   <%}%>					                      
@@ -324,14 +324,12 @@ boolean first=true;
 											<%}%>		                             
 		                                <% if(childElemLev2.getObjId()!=null){
 		                                %>
-		                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                           
-									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
+										href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
 		                        		
 		                        		<%}
-			                            else{%>
-			                            href: ''
-			                            <%}%>
-		                       	 		
+										else if(childElemLev2.getStaticPage()!=null){%>
+										href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   	                            
+		                            <%}%>
 		                        })	                       
 		                    <%}%>		                      
 		                    <%if(j < lstChildrenLev2.size()-1){%>
@@ -349,8 +347,8 @@ boolean first=true;
 									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
 
 		                        <%}	
-								else{%>
-	                            
+								else if(menuElem.getStaticPage()!=null){%>
+									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>')"                   	                            
 	                            <%}%>
 	                            
 		                            
@@ -383,9 +381,18 @@ boolean first=true;
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
-				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
-				            menu: menu<%=i%>  	  
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+				            <%if(menuElem.getObjId()!=null){%>
+				            	,
+				            	handler: execDirectDoc 	            	
+				            	<%}
+				            else if(menuElem.getStaticPage()!=null){%>
+				            	,
+				            	handler: readHtmlFile 
+				            	<%}%>
+				            	<%if (menuElem.getHasChildren()){%>	
+				            	,
+				            	menu: menu<%=i%>  	  
 				            <%}%>
 				        })					    				        				
 					);				
@@ -400,9 +407,18 @@ boolean first=true;
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
-				            handler: execDirectDoc <%if (menuElem.getHasChildren()){%>,		            	
-				            menu: menu<%=i%>  	  
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+				            <%if(menuElem.getObjId()!=null){    // if there is an association to an object choose that, if a one to html page, choose that, else no handler is set%>     
+				            	,
+				            	handler: execDirectDoc 	            	
+				            	<%}
+				            else if(menuElem.getStaticPage()!=null){%>
+				            	,
+				            	handler: readHtmlFile 
+				            	<%}%>
+				            	<%if (menuElem.getHasChildren()){%>	
+				            	,
+				            	menu: menu<%=i%>  	  
 				            <%}%>
 				        })					    				        				
 					);	
@@ -501,6 +517,15 @@ boolean first=true;
 		return;
 	 }
 	 
+	 function readHtmlFile(btn){
+		 var url = "";
+	 	var idMenu = btn.id;
+	 	 if (idMenu != null && idMenu != 'null'){
+			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+idMenu;
+			document.getElementById('iframeDoc').src = url;
+		}
+		return;
+	 }
 	 	 
 	 function execDirectUrl(url){
 	 //alert(url); 	
@@ -709,13 +734,22 @@ var selectNode = function(node, e) {
   					found=true;
   				%> 					
   					<script type="text/javascript">
-  					//javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')  					
   					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>'); 
   					</script>  					
   					<%
-  				}  
+  				}
+  				else if(isHomepage && menuElem.getStaticPage()!=null){
+  					found=true;
+  	  				%> 					
+  	  					<script type="text/javascript">
+  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>'); 
+  	  					</script>  					
+  	  					<%
+  	  				}
+  					
   		}
   }
+  
   	%>
   
   

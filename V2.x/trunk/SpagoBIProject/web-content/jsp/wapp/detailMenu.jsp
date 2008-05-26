@@ -81,6 +81,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.wapp.services.TreeMenuModule"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="java.io.File"%>
 <form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
@@ -256,11 +257,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 		</script>
 	 
+	 <% String currentStaticPage=menu.getStaticPage();
+	 	// Get directory
+	 	String rootPath=ConfigSingleton.getRootPath();
+	 	String dirPath=rootPath+"\\static_content";
+	 	File dir=new File(dirPath);
+	 	if(dir!=null && dir.isDirectory()){
+	 	// get all avalaible files
+	 	String[] files=dir.list();
 	 
+	 %>
+	 <br>
+	 <div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.menu.staticPage" />
+		</span>
+		</div>
+		<div class='div_detail_form'> 
+	<select name="staticpage" size="1" class='portlet-form-input-field'>
+		<option value=""> </option>
+	<%//Insert all options (only HTML files) 
+	String selected="";
+	for(int i=0;i<files.length;i++){
+		String fileName=files[i];
+		String ext=fileName.substring(fileName.indexOf(".")+1);
+		selected="";
+		if(ext.equalsIgnoreCase("html") || ext.equalsIgnoreCase("htm")){
+		if(fileName.equals(currentStaticPage))selected="selected='selected'";
+	
+	%>
+			<option value="<%=fileName%>" <%=selected%>><%=fileName%></option>
+	
+		<%} 
+		}%>
+	</select>	
+</div>	 
 	 
-	 
-	 
-	 
+	 <%} %>
 	 
 
 

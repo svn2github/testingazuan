@@ -28,6 +28,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 
 import java.io.BufferedOutputStream;
@@ -70,7 +71,7 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    ConfigSingleton config = ConfigSingleton.getInstance();
 	    SourceBean pathTmpFoldSB = (SourceBean) config.getAttribute("DOSSIER.PATH_TMP_FOLDER");
 	    String pathTmpFold = (String) pathTmpFoldSB.getAttribute("path");
-	    pathTmpFold = checkForSystemProperty(pathTmpFold);
+	    pathTmpFold = GeneralUtilities.checkForSystemProperty(pathTmpFold);
 	    logger.debug("Base temporary dossier folder =" + pathTmpFold);
 	    if (!pathTmpFold.startsWith("/") && pathTmpFold.charAt(1) != ':') {
 	    	String root = ConfigSingleton.getRootPath();
@@ -78,33 +79,6 @@ public class DossierDAOHibImpl implements IDossierDAO {
 	    }
 	    tempBaseFolder = new File(pathTmpFold);
 	    tempBaseFolder.mkdirs();
-	}
-	
-	/**
-	 * Checks if the String in input contains a reference to System property with the syntax
-	 * ${property_name}, and, in case, substitutes the reference with the actual value.
-	 * @return the string with reference to System property replaced with actual value.
-	 */
-	private static String checkForSystemProperty(String input) {
-		logger.debug("IN");
-		String toReturn = input;
-	    int beginIndex = input.indexOf("${");
-	    if (beginIndex != - 1) {
-	    	int endIndex = input.indexOf("}", beginIndex);
-	    	if (endIndex != -1) {
-	    		String propertyName = toReturn.substring(beginIndex + 2, endIndex);
-	    		logger.debug("Found reference to property " + propertyName);
-	    		String propertyValue = System.getProperty(propertyName);
-	    		logger.debug("Property with name = [" + propertyName + "] has value = [" + propertyValue + "]");
-	    		if (propertyValue != null && !propertyValue.trim().equals("")) {
-	    			toReturn = toReturn.substring(0, beginIndex) + propertyValue + toReturn.substring(endIndex + 1);
-	    		} else {
-	    			logger.warn("Property with name = [" + propertyName + "] has no proper value.");
-	    		}
-	    	}
-	    }
-	    logger.debug("OUT: toReturn = [" + toReturn + "]");
-	    return toReturn;
 	}
 	
 	/* (non-Javadoc)

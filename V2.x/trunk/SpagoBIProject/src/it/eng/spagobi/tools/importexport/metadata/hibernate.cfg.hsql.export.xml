@@ -30,7 +30,6 @@
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiSubreports.hbm.xml"/>
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiFunctions.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiFuncRole.hbm.xml" />
-        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiEngines.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiDataSource.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiBinContents.hbm.xml" />

@@ -35,13 +35,12 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
@@ -54,10 +53,8 @@ import it.eng.spagobi.tools.importexport.dao.AssociationFileDAO;
 import it.eng.spagobi.tools.importexport.dao.IAssociationFileDAO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -169,9 +166,10 @@ public class ImportExportModule extends AbstractModule {
 	    ConfigSingleton conf = ConfigSingleton.getInstance();
 	    SourceBean exporterSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
 	    String pathExportFolder = (String) exporterSB.getAttribute("exportFolder");
-	    if (!pathExportFolder.startsWith("/")) {
-		String pathcont = ConfigSingleton.getRootPath();
-		pathExportFolder = pathcont + "/" + pathExportFolder;
+	    pathExportFolder = GeneralUtilities.checkForSystemProperty(pathExportFolder);
+	    if (!pathExportFolder.startsWith("/") && pathExportFolder.charAt(1) != ':') {
+	    	String root = ConfigSingleton.getRootPath();
+	    	pathExportFolder = root + "/" + pathExportFolder;
 	    }
 	    List id_paths = request.getAttributeAsList(ImportExportConstants.OBJECT_ID_PATHFUNCT);
 	    List ids = extractObjId(id_paths);
@@ -292,10 +290,12 @@ public class ImportExportModule extends AbstractModule {
 	    ConfigSingleton conf = ConfigSingleton.getInstance();
 	    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");
 	    String pathImpTmpFolder = (String) importerSB.getAttribute("tmpFolder");
-	    if (!pathImpTmpFolder.startsWith("/")) {
-		String pathcont = ConfigSingleton.getRootPath();
-		pathImpTmpFolder = pathcont + "/" + pathImpTmpFolder;
+	    pathImpTmpFolder = GeneralUtilities.checkForSystemProperty(pathImpTmpFolder);
+	    if (!pathImpTmpFolder.startsWith("/") && pathImpTmpFolder.charAt(1) != ':') {
+	    	String root = ConfigSingleton.getRootPath();
+	    	pathImpTmpFolder = root + "/" + pathImpTmpFolder;
 	    }
+	   
 	    // apply transformation
 	    TransformManager transManager = new TransformManager();
 	    archiveBytes = transManager.applyTransformations(archiveBytes, archiveName, pathImpTmpFolder);
@@ -506,9 +506,10 @@ public class ImportExportModule extends AbstractModule {
 		} else {
 			// move to jsp
 			List exportedDatasources = impManager.getExportedDataSources();
-			Map currentDatasources = getCurrentDataSourcesInfo();
+			IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
+			List currentDatasources = dsDao.loadAllDataSources();
 			response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDatasources);
-			response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDatasources);
+			response.setAttribute(ImportExportConstants.LIST_CURRENT_DATA_SOURCES, currentDatasources);
 			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
 		}
 
@@ -549,24 +550,31 @@ public class ImportExportModule extends AbstractModule {
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 		MetadataAssociations metaAss = impManager.getMetadataAssociation();
-		List expConnNameList = request.getAttributeAsList("expConn");
-		Iterator iterExpConn = expConnNameList.iterator();
+		List expDsIds = request.getAttributeAsList("expConn");
+		Iterator iterExpConn = expDsIds.iterator();
 		while(iterExpConn.hasNext()){
-			String expConnName= (String)iterExpConn.next();
-			String connNameAss = (String)request.getAttribute("connAssociated"+ expConnName);
-			if(!connNameAss.equals("")) {
-				metaAss.insertCoupleDataSources(expConnName, connNameAss);
-				impManager.getUserAssociation().recordDataSourceAssociation(expConnName, connNameAss);
-			} else {
-				logger.error("Exported data source " +expConnName+" is not associated to a current " +
-                        			"system data source");
-				List exportedDataSources = impManager.getExportedDataSources();
-				Map currentDataSources = getCurrentDataSourcesInfo();
-				response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
-				response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDataSources);
-				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
-				throw new EMFValidationError(EMFErrorSeverity.ERROR, "connAssociated"+ expConnName, "sbi.impexp.datasourceNotAssociated");
-			}
+			String expDsIdStr= (String)iterExpConn.next();
+			String assDsIds = (String)request.getAttribute("connAssociated"+ expDsIdStr);
+			if(!assDsIds.equals("")) {
+				metaAss.insertCoupleDataSources(new Integer(expDsIdStr), new Integer(assDsIds));
+				Object existingDSObj = impManager.getExistingObject(new Integer(assDsIds), SbiDataSource.class); 
+				Object exportedDSObj = impManager.getExportedObject(new Integer(expDsIdStr), SbiDataSource.class);
+				if (existingDSObj != null && exportedDSObj != null) {
+					SbiDataSource existingDataSource = (SbiDataSource)existingDSObj;
+					SbiDataSource exportedDataSource = (SbiDataSource)exportedDSObj;
+					impManager.getUserAssociation().recordDataSourceAssociation(exportedDataSource.getLabel(), existingDataSource.getLabel());
+				}
+			} 
+//			else {
+//				logger.error("Exported data source " +expConnName+" is not associated to a current " +
+//                        			"system data source");
+//				List exportedDataSources = impManager.getExportedDataSources();
+//				Map currentDataSources = getCurrentDataSourcesInfo();
+//				response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
+//				response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDataSources);
+//				response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
+//				throw new EMFValidationError(EMFErrorSeverity.ERROR, "connAssociated"+ expConnName, "sbi.impexp.datasourceNotAssociated");
+//			}
 		}
 		
 	    impManager.checkExistingMetadata();
@@ -744,10 +752,11 @@ public class ImportExportModule extends AbstractModule {
 	SessionContainer session = requestContainer.getSessionContainer();
 	IImportManager impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
 	List exportedDataSources = impManager.getExportedDataSources();
-	Map currentDataSources = getCurrentDataSourcesInfo();
 	try {
+		IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
+		List currentDatasources = dsDao.loadAllDataSources();
 	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
-	    response.setAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES, currentDataSources);
+	    response.setAttribute(ImportExportConstants.LIST_CURRENT_DATA_SOURCES, currentDatasources);
 	    response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportDataSourceAssociation");
 	} catch (SourceBeanException sbe) {
 	    logger.error("Error while populating response source bean ", sbe);
@@ -755,34 +764,6 @@ public class ImportExportModule extends AbstractModule {
 	} finally {
 	    logger.debug("OUT");
 	}
-    }
-
-    /**
-     * Gather information about the data sources defined into the current SpagoBI
-     * platform.
-     * 
-     * @return Map A map containing the name of the data sources as keys and
-     *         their description as value
-     */
-    private Map getCurrentDataSourcesInfo() {
-	logger.debug("IN");
-	Map curConns = new HashMap();
-	
-	try {
-	    	IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
-	    	List dsList=dsDao.loadAllDataSources();
-         	Iterator iterList = dsList.iterator();
-        	while (iterList.hasNext()) {
-        	    DataSource ds = (DataSource) iterList.next();
-        	    String laben = ds.getLabel();
-        	    String desc = ds.getDescr();
-        	    curConns.put(laben,desc);
-        	}
-	} catch (EMFUserError e) {
-	    logger.error("EMFUserError",e);
-	}	
-	logger.debug("OUT");
-	return curConns;
     }
 
 }

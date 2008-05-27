@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 14-feb-2008 10.44.54 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierBinaryContentsTemp" table="SBI_DOSSIER_BINARY_CONTENTS_TEMP">
+    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierBinaryContentsTemp" table="SBI_DOSSIER_BIN_TEMP">
         <id name="binId" type="integer">
             <column name="BIN_ID" />
             <generator class="native" />

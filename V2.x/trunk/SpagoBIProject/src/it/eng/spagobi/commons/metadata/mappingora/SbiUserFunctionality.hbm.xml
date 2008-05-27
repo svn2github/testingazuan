@@ -3,12 +3,12 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.commons.metadata.SbiUserFunctionality" table="SBI_USER_FUNCTIONALITY">
+    <class name="it.eng.spagobi.commons.metadata.SbiUserFunctionality" table="SBI_USER_FUNC">
         
         <id name="id" type="integer">
             <column name="USER_FUNCT_ID" />
             <generator class="native">
-           		<param name="sequence">sbi_user_functionality_seq</param>
+           		<param name="sequence">SBI_USER_FUNC_SEQ</param>
             </generator>
         </id>
         

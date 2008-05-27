@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 14-feb-2008 10.44.54 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierPresentations" table="SBI_DOSSIER_PRESENTATIONS">
+    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierPresentations" table="SBI_DOSSIER_PRES">
         <id name="presentationId" type="integer">
             <column name="PRESENTATION_ID" />
             <generator class="native" />

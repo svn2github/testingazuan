@@ -18,7 +18,7 @@
         </property>
         
         <property name="label" type="string">
-            <column name="label" length="20" unique="true" not-null="true"/>
+            <column name="label" length="40" unique="true" not-null="true"/>
         </property>
         
         <property name="name" type="string">

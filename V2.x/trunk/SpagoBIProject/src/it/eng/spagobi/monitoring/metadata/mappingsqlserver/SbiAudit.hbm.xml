@@ -60,7 +60,7 @@
             <column name="engine_id" not-null="true" />
         </property>
         <property name="engineLabel" type="string">
-            <column name="engine_label" length="20" not-null="true" />
+            <column name="engine_label" length="40" not-null="true" />
         </property>
         <property name="engineName" type="string">
             <column name="engine_name" length="40" not-null="true" />

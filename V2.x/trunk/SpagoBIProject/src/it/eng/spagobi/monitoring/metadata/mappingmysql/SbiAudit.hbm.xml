@@ -9,7 +9,9 @@
     <class name="it.eng.spagobi.monitoring.metadata.SbiAudit" table="SBI_AUDIT">
         <id name="id" type="integer">
             <column name="id" />
-            <generator class="identity" />
+            <generator class="native">
+           		<param name="sequence">sbi_audit_seq</param>
+            </generator>  
         </id>
         <property name="userName" type="string">
             <column name="username" length="40" not-null="true" />
@@ -60,7 +62,7 @@
             <column name="engine_id" not-null="true" />
         </property>
         <property name="engineLabel" type="string">
-            <column name="engine_label" length="20" not-null="true" />
+            <column name="engine_label" length="40" not-null="true" />
         </property>
         <property name="engineName" type="string">
             <column name="engine_name" length="40" not-null="true" />

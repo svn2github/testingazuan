@@ -38,6 +38,10 @@ import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.io.BufferedInputStream;
@@ -55,12 +59,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 
 public class ImportUtilities {
 
@@ -152,10 +153,18 @@ public class ImportUtilities {
 		newRole.setCode(role.getCode());
 		newRole.setDescr(role.getDescr());
 		newRole.setName(role.getName());
-		newRole.setRoleType(role.getRoleType());
-		newRole.setRoleTypeCode(role.getRoleTypeCode());
+		//newRole.setRoleType(role.getRoleType());
+		//newRole.setRoleTypeCode(role.getRoleTypeCode());
 		newRole.setSbiParuseDets(new HashSet());
 		newRole.setSbiFuncRoles(new HashSet());
+		newRole.setIsAbleToSaveIntoPersonalFolder(role.getIsAbleToSaveIntoPersonalFolder());
+		newRole.setIsAbleToSaveRememberMe(role.getIsAbleToSaveRememberMe());
+		newRole.setIsAbleToSeeMetadata(role.getIsAbleToSeeMetadata());
+		newRole.setIsAbleToSeeNotes(role.getIsAbleToSeeNotes());
+		newRole.setIsAbleToSeeSnapshots(role.getIsAbleToSeeSnapshots());
+		newRole.setIsAbleToSeeSubobjects(role.getIsAbleToSeeSubobjects());
+		newRole.setIsAbleToSeeViewpoints(role.getIsAbleToSeeViewpoints());
+		newRole.setIsAbleToSendMail(role.getIsAbleToSendMail());
 		logger.debug("OUT");
 		return newRole;
 	}
@@ -196,9 +205,9 @@ public class ImportUtilities {
 		newEng.setObjUplDir(engine.getObjUplDir());
 		newEng.setObjUseDir(engine.getObjUseDir());
 		newEng.setSecnUrl(engine.getSecnUrl());
-		newEng.setEngineType(engine.getEngineType());
-		newEng.setBiobjType(engine.getBiobjType());
 		newEng.setClassNm(engine.getClassNm());
+		newEng.setUseDataSet(engine.getUseDataSet());
+		newEng.setUseDataSource(engine.getUseDataSource());
 		logger.debug("OUT");
 		return newEng;
 	}
@@ -210,9 +219,9 @@ public class ImportUtilities {
 	 * 
 	 * @return the sbi data source
 	 */
-	public static SbiDataSource makeNewDataSource(SbiDataSource ds){
-	    	logger.debug("IN");
-	    	SbiDataSource newDS = new SbiDataSource();
+	public static SbiDataSource makeNewSbiDataSource(SbiDataSource ds){
+	    logger.debug("IN");
+	    SbiDataSource newDS = new SbiDataSource();
 		newDS.setDescr(ds.getDescr());
 		newDS.setLabel(ds.getLabel());
 		newDS.setJndi(ds.getJndi());
@@ -222,6 +231,61 @@ public class ImportUtilities {
 		newDS.setUser(ds.getUser());
 		logger.debug("OUT");
 		return newDS;
+	}	
+	
+	public static SbiDataSource modifyExistingSbiDataSource(
+			SbiDataSource dataSource, Session sessionCurrDB,
+			Integer existingDatasourceId) {
+    	logger.debug("IN");
+    	SbiDataSource existingDatasource = null;
+    	try {
+    		existingDatasource = (SbiDataSource) sessionCurrDB.load(SbiDataSource.class, existingDatasourceId);
+    		existingDatasource.setDescr(dataSource.getDescr());
+    		existingDatasource.setDialect(dataSource.getDialect());
+    		existingDatasource.setDialectDescr(dataSource.getDialectDescr());
+    		existingDatasource.setDriver(dataSource.getDriver());
+    		existingDatasource.setJndi(dataSource.getJndi());
+    		existingDatasource.setLabel(dataSource.getLabel());
+    		existingDatasource.setPwd(dataSource.getPwd());
+    		existingDatasource.setUrl_connection(dataSource.getUrl_connection());
+    		existingDatasource.setUser(dataSource.getUser());
+		} finally {
+			logger.debug("OUT");
+		}
+		return existingDatasource;
+	}
+	
+	/**
+	 * Make new data set.
+	 * 
+	 * @param ds the ds
+	 * 
+	 * @return the sbi data set
+	 */
+	public static SbiDataSet makeNewSbiDataSet(SbiDataSet dataset){
+	    logger.debug("IN");
+	    SbiDataSet newDataset = null;
+	    
+		if (dataset instanceof SbiFileDataSet) {
+			newDataset = new SbiFileDataSet();
+			((SbiFileDataSet) newDataset).setFileName(((SbiFileDataSet) dataset).getFileName()); 
+		}
+		if (dataset instanceof SbiQueryDataSet) {
+			newDataset = new SbiQueryDataSet();
+			((SbiQueryDataSet) newDataset).setQuery(((SbiQueryDataSet) dataset).getQuery());
+		}
+		if (dataset instanceof SbiWSDataSet) {
+			newDataset = new SbiWSDataSet();
+			((SbiWSDataSet) newDataset).setAdress(((SbiWSDataSet) dataset).getAdress());
+			((SbiWSDataSet) newDataset).setExecutorClass(((SbiWSDataSet) dataset).getExecutorClass());
+			((SbiWSDataSet) newDataset).setOperation(((SbiWSDataSet) dataset).getOperation());
+		}
+		newDataset.setLabel(dataset.getLabel());
+		newDataset.setName(dataset.getName());
+		newDataset.setDescription(dataset.getDescription());
+		newDataset.setParameters(dataset.getParameters());;
+		logger.debug("OUT");
+		return newDataset;
 	}	
 	
 	/**
@@ -454,10 +518,10 @@ public class ImportUtilities {
 		newObj.setLabel(obj.getLabel());
 		newObj.setName(obj.getName());
 		newObj.setObjectType(obj.getObjectType());
-		newObj.setObjectTypeCode(obj.getObjectTypeCode());
+		//newObj.setObjectTypeCode(obj.getObjectTypeCode());
 		newObj.setPath(obj.getPath());
 		newObj.setRelName(obj.getRelName());
-		newObj.setSbiEngines(obj.getSbiEngines());
+		//newObj.setSbiEngines(obj.getSbiEngines());
 		newObj.setSbiObjPars(new HashSet());
 		newObj.setSbiObjFuncs(new HashSet());
 		newObj.setSbiObjStates(new HashSet());
@@ -468,7 +532,14 @@ public class ImportUtilities {
 		newObj.setStateConsiderationCode(obj.getStateConsiderationCode());
 		newObj.setVisible(obj.getVisible());
 		newObj.setUuid(obj.getUuid());
-		newObj.setDataSource(obj.getDataSource());
+		newObj.setCreationDate(obj.getCreationDate());
+		newObj.setCreationUser(obj.getCreationUser());
+		newObj.setExtendedDescription(obj.getExtendedDescription());
+		newObj.setKeywords(obj.getKeywords());
+		newObj.setLanguage(obj.getLanguage());
+		newObj.setObjectve(obj.getObjectve());
+		newObj.setRefreshSeconds(obj.getRefreshSeconds());
+		//newObj.setDataSource(obj.getDataSource());
 		logger.debug("OUT");
 		return newObj;
 	}
@@ -518,12 +589,14 @@ public class ImportUtilities {
 	 * @return the sbi obj templates
 	 */
 	public static SbiObjTemplates makeNewSbiObjTemplates(SbiObjTemplates obj){
-	    	logger.debug("IN");
-	    	SbiObjTemplates newObj = new SbiObjTemplates();
-	    	newObj.setActive(obj.getActive());
-	    	newObj.setCreationDate(obj.getCreationDate());
-	    	newObj.setName(obj.getName());
-	    	newObj.setProg(obj.getProg());
+    	logger.debug("IN");
+    	SbiObjTemplates newObj = new SbiObjTemplates();
+    	newObj.setActive(obj.getActive());
+    	newObj.setCreationDate(obj.getCreationDate());
+    	newObj.setCreationUser(obj.getCreationUser());
+    	newObj.setName(obj.getName());
+    	newObj.setProg(obj.getProg());
+	    newObj.setDimension(obj.getDimension());
 		logger.debug("OUT");
 		return newObj;
 	}
@@ -720,7 +793,10 @@ public class ImportUtilities {
 			}
 			// reading exist datasource
 			SbiDataSource localDS = getAssociatedSbiDataSource(exportedObj, sessionCurrDB, metaAss);
-			obj.setDataSource(localDS);
+			if (localDS != null) obj.setDataSource(localDS);
+			// reading exist datasset
+			SbiDataSet localDataSet = getAssociatedSbiDataSet(exportedObj, sessionCurrDB, metaAss);
+			if (localDataSet != null) obj.setDataSet(localDataSet);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -732,20 +808,43 @@ public class ImportUtilities {
 			MetadataAssociations metaAss) {
 		logger.debug("IN");
 		SbiDataSource expDs = exportedObj.getDataSource();
-		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
-		if (label == null) {
-		    // exist a DataSource Association, read a new DataSource
-		    // from the DB
-		    label = expDs.getLabel();
+		if (expDs != null) {
+			Integer existingDsId = (Integer) metaAss.getDataSourceIDAssociation().get(new Integer(expDs.getDsId()));
+//			if (label == null) {
+//			    // exist a DataSource Association, read a new DataSource
+//			    // from the DB
+//			    label = expDs.getLabel();
+//			}
+//			Criterion labelCriterrion = Expression.eq("label", label);
+//			Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
+//			criteria.add(labelCriterrion);
+//			SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
+			SbiDataSource localDS = (SbiDataSource) sessionCurrDB.load(SbiDataSource.class, existingDsId);
+			logger.debug("OUT");
+			return localDS;
+		} else {
+			logger.debug("OUT");
+			return null;
 		}
-		Criterion labelCriterrion = Expression.eq("label", label);
-		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-		criteria.add(labelCriterrion);
-		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
-		logger.debug("OUT");
-		return localDS;
+
 	}
 
+	private static SbiDataSet getAssociatedSbiDataSet(
+			SbiObjects exportedObj, Session sessionCurrDB,
+			MetadataAssociations metaAss) {
+		logger.debug("IN");
+		SbiDataSet expDataset = exportedObj.getDataSet();
+		if (expDataset != null) {
+			Integer existingDatasetId = (Integer) metaAss.getDataSetIDAssociation().get(new Integer(expDataset.getDsId()));
+			SbiDataSet localDS = (SbiDataSet) sessionCurrDB.load(SbiDataSet.class, existingDatasetId);
+			logger.debug("OUT");
+			return localDS;
+		} else {
+			logger.debug("OUT");
+			return null;
+		}
+
+	}
 
 	private static SbiDomains getAssociatedBIObjectState(
 			SbiObjects exportedObj, Session sessionCurrDB,
@@ -789,7 +888,21 @@ public class ImportUtilities {
 		return existingEngine;
 	}
 
-
+	private static SbiDataSource getAssociatedSbiDataSource(SbiQueryDataSet exportedDataset,
+			Session sessionCurrDB, MetadataAssociations metaAss) {
+		logger.debug("IN");
+		SbiDataSource existingDs = null;
+		SbiDataSource exportedDs = exportedDataset.getDataSource();
+		if (exportedDs != null) {
+			Integer exportedDsId = new Integer(exportedDs.getDsId());
+			Map assDatasources = metaAss.getDataSourceIDAssociation();
+			Integer existingDsID = (Integer) assDatasources.get(exportedDsId);
+			existingDs = (SbiDataSource) sessionCurrDB.load(SbiDataSource.class, existingDsID);
+		}
+		logger.debug("OUT");
+		return existingDs;
+	}
+	
 	/**
 	 * Set into the parameter to the parameter type
 	 * domain associated with the exported parameter.
@@ -820,6 +933,46 @@ public class ImportUtilities {
 		
 	}
 
+	/**
+	 * Load an existing dataset and make modifications as per the exported dataset in input
+	 * 
+	 * @param exportedDataset the exported dataset
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
+	 * @return the existing dataset modified as per the exported dataset in input
+	 * 
+	 * @throws EMFUserError 	 */
+	public static SbiDataSet modifyExistingSbiDataSet(SbiDataSet exportedDataset,
+			Session sessionCurrDB, Integer existingId) {
+    	logger.debug("IN");
+    	SbiDataSet existingDataset = null;
+    	try {
+    		existingDataset = (SbiDataSet) sessionCurrDB.load(SbiDataSet.class, existingId);
+    		// TODO sistemare il cambio di subclass
+    		if ((existingDataset instanceof SbiFileDataSet && !(exportedDataset instanceof SbiFileDataSet))
+    			|| (existingDataset instanceof SbiQueryDataSet && !(exportedDataset instanceof SbiQueryDataSet))
+    			|| (existingDataset instanceof SbiWSDataSet && !(exportedDataset instanceof SbiWSDataSet))) {
+    			logger.warn("Cannot change data set subclass");
+    		}
+			if (existingDataset instanceof SbiFileDataSet)
+				((SbiFileDataSet)existingDataset).setFileName(((SbiFileDataSet)exportedDataset).getFileName());
+			else if(existingDataset instanceof SbiQueryDataSet)
+				((SbiQueryDataSet)existingDataset).setQuery(((SbiQueryDataSet)exportedDataset).getQuery());
+			else if(existingDataset instanceof SbiWSDataSet) {
+				((SbiWSDataSet)existingDataset).setAdress(((SbiWSDataSet)exportedDataset).getAdress());
+				((SbiWSDataSet)existingDataset).setExecutorClass(((SbiWSDataSet)exportedDataset).getExecutorClass());
+				((SbiWSDataSet)existingDataset).setOperation(((SbiWSDataSet)exportedDataset).getOperation());
+			}
+			existingDataset.setLabel(exportedDataset.getLabel());
+			existingDataset.setName(exportedDataset.getName());			
+			existingDataset.setDescription(exportedDataset.getDescription());
+			existingDataset.setParameters(exportedDataset.getParameters());
+		} finally {
+			logger.debug("OUT");
+		}
+		return existingDataset;
+	}
 
 	/**
 	 * Load an existing lov and make modifications as per the exported lov in input
@@ -879,6 +1032,63 @@ public class ImportUtilities {
 		}
 	}
 	
+	/**
+	 * Set into the datasource the dialect type domain
+	 * associated with the exported datasource.
+	 * 
+	 * @param datasource the datasource
+	 * @param exportedDatasource the exported lov
+	 * @param sessionCurrDB the session curr db
+	 * @param importer the importer
+	 * @param metaAss the meta ass
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void associateWithExistingEntities(SbiDataSource datasource,
+			SbiDataSource exportedDatasource, Session sessionCurrDB,
+			ImporterMetadata importer, MetadataAssociations metaAss) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			// reading existing lov type
+			SbiDomains dialect = getAssociatedDialect(exportedDatasource, sessionCurrDB, metaAss, importer);
+			if (dialect != null) {
+				datasource.setDialect(dialect);
+				datasource.setDialectDescr(dialect.getValueDs());
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
+	/**
+	 * Set into the dataset the datasource
+	 * associated with the exported dataset.
+	 * 
+	 * @param dataset the dataset
+	 * @param exportedDataset the exported dataset
+	 * @param sessionCurrDB the session curr db
+	 * @param importer the importer
+	 * @param metaAss the meta ass
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void associateWithExistingEntities(SbiDataSet dataset,
+			SbiDataSet exportedDataset, Session sessionCurrDB,
+			ImporterMetadata importer, MetadataAssociations metaAss) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			// TODO togliere il controllo che sia quello esportato sia quello esistente siano dello stesso tipo
+			if (exportedDataset instanceof SbiQueryDataSet && dataset instanceof SbiQueryDataSet) {
+				SbiQueryDataSet queryDataSet = (SbiQueryDataSet) exportedDataset;
+				SbiDataSource ds = getAssociatedSbiDataSource(queryDataSet, sessionCurrDB, metaAss);
+				if (ds != null) {
+					((SbiQueryDataSet) dataset).setDataSource(ds);
+				}
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+	}
 	
 	private static SbiDomains getAssociatedParameterType(SbiParameters exportedParameter,
 			Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
@@ -887,6 +1097,18 @@ public class ImportUtilities {
 		Map unique = new HashMap();
 		unique.put("valuecd", typeCd);
 		unique.put("domaincd", "PAR_TYPE");
+		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDom;
+	}
+	
+	private static SbiDomains getAssociatedDialect(SbiDataSource exportedDatasource,
+			Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		String valueCd = exportedDatasource.getDialect().getValueCd();
+		Map unique = new HashMap();
+		unique.put("valuecd", valueCd);
+		unique.put("domaincd", "DIALECT_HIB");
 		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
 		logger.debug("OUT");
 		return existDom;
@@ -903,5 +1125,5 @@ public class ImportUtilities {
 		logger.debug("OUT");
 		return existDom;
 	}
-	
+
 }

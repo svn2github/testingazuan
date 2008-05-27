@@ -43,6 +43,11 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -152,11 +157,15 @@ public class ImporterMetadata {
      * 
      * @throws EMFUserError the EMF user error
      */
-    public List getAllExportedSbiObjects(Session session, String table) throws EMFUserError {
+    public List getAllExportedSbiObjects(Session session, String table, String orderByField) throws EMFUserError {
 	logger.debug("IN");
 	List hibList = null;
+	String hql = " from " + table + " t";
+	if (orderByField != null) {
+		hql += " order by t." + orderByField + " asc";
+	}
 	try {
-	    Query hibQuery = session.createQuery(" from " + table);
+	    Query hibQuery = session.createQuery(hql);
 	    hibList = hibQuery.list();
 	} catch (HibernateException he) {
 	    logger.error("Error while getting exported sbi objects ", he);
@@ -167,6 +176,29 @@ public class ImporterMetadata {
 	return hibList;
     }
 
+    public List getFilteredExportedSbiObjects(Session session, String table, String fieldName, Object fieldValue) throws EMFUserError {
+    	logger.debug("IN");
+    	List hibList = null;
+    	String hql = " from " + table + " t";
+    	if (fieldName != null && fieldValue != null) {
+    		if (fieldValue instanceof String) {
+    			hql += " where t." + fieldName + " = '" + fieldValue + "'";
+    		} else {
+    			hql += " where t." + fieldName + " = " + fieldValue.toString();
+    		}
+    	}
+    	try {
+    	    Query hibQuery = session.createQuery(hql);
+    	    hibList = hibQuery.list();
+    	} catch (HibernateException he) {
+    	    logger.error("Error while getting exported sbi objects ", he);
+    	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+    	} finally {
+    	    logger.debug("OUT");
+    	}
+    	return hibList;
+        }
+    
     /**
      * Get an existing object identified by the id and the class.
      * 
@@ -208,7 +240,7 @@ public class ImporterMetadata {
 	    throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List lovs = getAllExportedSbiObjects(session, "SbiLov");
+	    List lovs = getAllExportedSbiObjects(session, "SbiLov", null);
 	    Iterator iterLovs = lovs.iterator();
 	    while (iterLovs.hasNext()) {
 		SbiLov lov = (SbiLov) iterLovs.next();
@@ -386,6 +418,38 @@ public class ImporterMetadata {
 	    hqlQuery = sessionCurrDB.createQuery(hql);
 	    SbiObjParuse hibObjParUse = (SbiObjParuse) hqlQuery.uniqueResult();
 	    return hibObjParUse;
+	} else if (hibObj instanceof SbiDataSet) {
+	    String label = (String) unique;
+	    hql = "from SbiDataSet ds where ds.label = '" + label + "'";
+	    hqlQuery = sessionCurrDB.createQuery(hql);
+	    SbiDataSet hibDs = (SbiDataSet) hqlQuery.uniqueResult();
+	    return hibDs;
+	} else if (hibObj instanceof SbiDataSource) {
+	    String label = (String) unique;
+	    hql = "from SbiDataSource ds where ds.label = '" + label + "'";
+	    hqlQuery = sessionCurrDB.createQuery(hql);
+	    SbiDataSource hibDs = (SbiDataSource) hqlQuery.uniqueResult();
+	    return hibDs;
+	} else if (hibObj instanceof SbiGeoMaps) {
+		String name = (String) unique;
+		hql = "from SbiGeoMaps where name = '" + name + "'";
+		hqlQuery = sessionCurrDB.createQuery(hql);
+		SbiGeoMaps hibMap = (SbiGeoMaps) hqlQuery.uniqueResult();
+	    return hibMap;
+	} else if (hibObj instanceof SbiGeoFeatures) {
+		String name = (String) unique;
+		hql = "from SbiGeoFeatures where name = '" + name + "'";
+		hqlQuery = sessionCurrDB.createQuery(hql);
+		SbiGeoFeatures hibMap = (SbiGeoFeatures) hqlQuery.uniqueResult();
+	    return hibMap;
+	} else if (hibObj instanceof SbiGeoMapFeatures) {
+		Map uniqueMap = (Map) unique;
+	    Integer mapId = (Integer) uniqueMap.get("mapId");
+	    Integer featureId = (Integer) uniqueMap.get("featureId");
+		hql = "from SbiGeoMapFeatures where id.mapId = " + mapId + " and id.featureId = " + featureId;
+		hqlQuery = sessionCurrDB.createQuery(hql);
+		SbiGeoMapFeatures hibMapFeature = (SbiGeoMapFeatures) hqlQuery.uniqueResult();
+	    return hibMapFeature;
 	}
 	logger.debug("OUT");
 	return null;

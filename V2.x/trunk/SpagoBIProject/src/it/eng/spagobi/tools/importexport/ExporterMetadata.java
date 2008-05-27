@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -68,6 +69,16 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
+import it.eng.spagobi.mapcatalogue.bo.GeoMap;
+import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
+import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
+import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
+import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
@@ -79,6 +90,10 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -199,6 +214,12 @@ public class ExporterMetadata {
 			if (dataset instanceof QueryDataSet) {
 				hibDataset = new SbiQueryDataSet();
 				((SbiQueryDataSet) hibDataset).setQuery(((QueryDataSet) dataset).getQuery());
+				// insert the association between the dataset and the datasource
+				DataSource ds = ((QueryDataSet) dataset).getDataSource();
+				if (ds != null) {
+					SbiDataSource dsHib = (SbiDataSource) session.load(SbiDataSource.class, new Integer(ds.getDsId()));
+					((SbiQueryDataSet) hibDataset).setDataSource(dsHib);
+				}
 			}
 			if (dataset instanceof WSDataSet) {
 				hibDataset = new SbiWSDataSet();
@@ -503,6 +524,8 @@ public class ExporterMetadata {
 			
 			hibObjTemplate.setActive(new Boolean(true));
 			hibObjTemplate.setCreationDate(biobjTempl.getCreationDate());
+			hibObjTemplate.setCreationUser(biobjTempl.getCreationUser());
+			hibObjTemplate.setDimension(biobjTempl.getDimension());
 			hibObjTemplate.setName(biobjTempl.getName());
 			hibObjTemplate.setProg(biobjTempl.getProg());
 			hibObjTemplate.setSbiBinContents(hibBinContent);
@@ -1030,6 +1053,14 @@ public class ExporterMetadata {
 			SbiDomains roleType = (SbiDomains)session.load(SbiDomains.class, role.getRoleTypeID());
 			hibRole.setRoleType(roleType);
 			hibRole.setRoleTypeCode(role.getRoleTypeCD());
+			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(role.isAbleToSaveIntoPersonalFolder()));
+			hibRole.setIsAbleToSaveRememberMe(new Boolean(role.isAbleToSaveRememberMe()));
+			hibRole.setIsAbleToSeeMetadata(new Boolean(role.isAbleToSeeMetadata()));
+			hibRole.setIsAbleToSeeNotes(new Boolean(role.isAbleToSeeNotes()));;
+			hibRole.setIsAbleToSeeSnapshots(new Boolean(role.isAbleToSeeSnapshots()));
+			hibRole.setIsAbleToSeeSubobjects(new Boolean(role.isAbleToSeeSubobjects()));
+			hibRole.setIsAbleToSeeViewpoints(new Boolean(role.isAbleToSeeViewpoints()));
+			hibRole.setIsAbleToSendMail(new Boolean(role.isAbleToSendMail()));
 			session.save(hibRole);
 			tx.commit();
 		} catch (Exception e) {
@@ -1127,8 +1158,186 @@ public class ExporterMetadata {
 		    logger.debug("OUT");
 		}
 	}
+
+	/**
+	 * Exports the map catalogue (maps and features)
+	 * 
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	public void insertMapCatalogue(Session session, String pathBaseFolder) throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+	    	// controls if the maps are already inserted into export db
+			Transaction tx = session.beginTransaction();
+			String query = " from SbiGeoMaps";
+			Query hibQuery = session.createQuery(query);
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				// maps are already exported
+				return;
+			}
+			tx.commit();
+			
+			insertMaps(session);
+			insertFeatures(session);
+			insertMapFeaturesAssociations(session);
+			
+			// puts map files into export base folder (in order to put them into export zip archive)
+			copyMapsFiles(pathBaseFolder);
+			
+		} catch (Exception e) {
+			logger.error("Error while inserting map catalogue into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally{
+		    logger.debug("OUT");
+		}
+		
+	}
 	
+	/**
+	 * Insert the maps of the maps catalogue
+	 * 
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	private void insertMaps(Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+			Transaction tx = session.beginTransaction();
+			ISbiGeoMapsDAO mapsDAO = DAOFactory.getSbiGeoMapsDAO();
+			List allMaps = mapsDAO.loadAllMaps();
+			Iterator mapsIt = allMaps.iterator();
+			while (mapsIt.hasNext()) {
+				GeoMap map = (GeoMap) mapsIt.next();
+				SbiGeoMaps hibMap = new SbiGeoMaps(map.getMapId());
+				hibMap.setDescr(map.getDescr());
+				hibMap.setFormat(map.getFormat());
+				hibMap.setName(map.getName());
+				hibMap.setUrl(map.getUrl());
+				session.save(hibMap);
+			}
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting maps into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally{
+		    logger.debug("OUT");
+		}
+	}
 	
+	/**
+	 * Insert the features of the maps catalogue
+	 * 
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	private void insertFeatures(Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+			Transaction tx = session.beginTransaction();
+			ISbiGeoFeaturesDAO featuresDAO = DAOFactory.getSbiGeoFeaturesDAO();
+			List allFeatures = featuresDAO.loadAllFeatures();
+			Iterator featureIt = allFeatures.iterator();
+			while (featureIt.hasNext()) {
+				GeoFeature feature = (GeoFeature) featureIt.next();
+				SbiGeoFeatures hibFeature = new SbiGeoFeatures(feature.getFeatureId());
+				hibFeature.setDescr(feature.getDescr());
+				hibFeature.setName(feature.getName());
+				hibFeature.setType(feature.getType());
+				session.save(hibFeature);
+			}
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting features into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally{
+		    logger.debug("OUT");
+		}
+	}
 	
+	/**
+	 * Insert the association between maps and features of the maps catalogue
+	 * 
+	 * @param session Hibernate session for the exported database
+	 * @throws EMFUserError
+	 */
+	private void insertMapFeaturesAssociations(Session session) throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+			Transaction tx = session.beginTransaction();
+			ISbiGeoMapsDAO mapsDAO = DAOFactory.getSbiGeoMapsDAO();
+			List allMaps = mapsDAO.loadAllMaps();
+			ISbiGeoMapFeaturesDAO mapFeaturesDAO = DAOFactory.getSbiGeoMapFeaturesDAO();
+			Iterator mapsIt = allMaps.iterator();
+			while (mapsIt.hasNext()) {
+				GeoMap map = (GeoMap) mapsIt.next();
+				List mapFeatures = mapFeaturesDAO.loadFeaturesByMapId(new Integer(map.getMapId()));
+				Iterator mapFeaturesIt = mapFeatures.iterator();
+				while (mapFeaturesIt.hasNext()) {
+					GeoFeature feature = (GeoFeature) mapFeaturesIt.next();
+					GeoMapFeature mapFeature = mapFeaturesDAO.loadMapFeatures(new Integer(map.getMapId()), new Integer(feature.getFeatureId()));
+					SbiGeoMapFeatures hibMapFeature = new SbiGeoMapFeatures();	
+					SbiGeoMapFeaturesId hibMapFeatureId = new SbiGeoMapFeaturesId();			
+					hibMapFeatureId.setMapId(mapFeature.getMapId());
+					hibMapFeatureId.setFeatureId(mapFeature.getFeatureId());
+					hibMapFeature.setId(hibMapFeatureId);
+					hibMapFeature.setSvgGroup(mapFeature.getSvgGroup());
+					hibMapFeature.setVisibleFlag(mapFeature.getVisibleFlag());
+					session.save(hibMapFeature);
+				}
+			}
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting association between maps and features into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		} finally{
+		    logger.debug("OUT");
+		}
+	}
 	
+	private void copyMapsFiles(String pathBaseFolder) throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+		    File fileDir = new File(pathBaseFolder + "/components/mapcatalogue/maps");
+			if(!(fileDir).exists()) fileDir.mkdirs();
+			File mapsDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");
+			if (mapsDir.exists() && mapsDir.isDirectory()) {
+				File[] mapsFiles = mapsDir.listFiles();
+				for (int i = 0; i < mapsFiles.length; i++) {
+					File mapFile = mapsFiles[i];
+					if (mapFile.isFile()) {
+						FileOutputStream fos = null;
+						InputStream is = null;
+						try {
+							File copy = new File(fileDir.getAbsolutePath() + "/" + mapFile.getName());
+					        fos = new FileOutputStream(copy);
+					        is = new FileInputStream(mapFile);
+					        int read = 0;
+					        while ((read = is.read()) != -1) {
+					        	fos.write(read);
+					        }
+					        fos.flush();
+						} finally {
+				        	try {
+					        	if (fos != null) {
+					        		fos.close();
+					        	}
+					        	if (is != null) {
+					        		is.close();
+					        	}
+				        	} catch (Exception e) {
+				        	    logger.error("Error while closing streams " , e);
+				        	}
+						}
+					}
+				}
+			}
+	    } catch (Exception e) {
+        	logger.error("Error during the copy of maps files" , e);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
 }

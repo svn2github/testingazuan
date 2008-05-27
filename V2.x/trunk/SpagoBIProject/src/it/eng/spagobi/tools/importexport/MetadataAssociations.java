@@ -57,7 +57,10 @@ public class MetadataAssociations {
 	private Map domainAssociation = new HashMap();
 	private Map objparIDAssociation = new HashMap();
 	private Map objparAssociation = new HashMap();
-	private Map datasourcesAssociation = new HashMap();
+	private Map datasourcesIDAssociation = new HashMap();
+	private Map datasetsIDAssociation = new HashMap();
+	private Map mapsIDAssociation = new HashMap();
+	private Map featuresIDAssociation = new HashMap();
 	
 	/**
 	 * Checks if the metadata association is empty.
@@ -104,7 +107,10 @@ public class MetadataAssociations {
 		checkAssociation = new HashMap();
 		paruseIDAssociation = new HashMap();
 		paruseAssociation = new HashMap();
-		datasourcesAssociation = new HashMap();
+		datasourcesIDAssociation = new HashMap();
+		datasetsIDAssociation = new HashMap();
+		mapsIDAssociation = new HashMap();
+		featuresIDAssociation = new HashMap();
 	}
 	
 	/**
@@ -573,19 +579,76 @@ public class MetadataAssociations {
 	 * 
 	 * @return Map of associations
 	 */
-	public Map getDataSourceAssociation() {
-		return datasourcesAssociation;
+	public Map getDataSourceIDAssociation() {
+		return datasourcesIDAssociation;
 	}
 	
 	/**
-	 * Inserts a couple of datasource names into the associations.
+	 * Inserts a couple of datasource id into the associations.
 	 * 
 	 * @param exp the exp
 	 * @param curr the curr
 	 */
-	public void insertCoupleDataSources(String exp, String curr) {
-		datasourcesAssociation.put(exp, curr);
+	public void insertCoupleDataSources(Integer exp, Integer curr) {
+		datasourcesIDAssociation.put(exp, curr);
 	}
 	
+	
+	/**
+	 * Gets the Map of associations between current and exported datasets.
+	 * 
+	 * @return Map of associations
+	 */
+	public Map getDataSetIDAssociation() {
+		return datasetsIDAssociation;
+	}
+	
+	/**
+	 * Inserts a couple of dataset id into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleDataSets(Integer exp, Integer curr) {
+		datasetsIDAssociation.put(exp, curr);
+	}
+	
+	/**
+	 * Gets the Map of associations between current and exported maps.
+	 * 
+	 * @return Map of associations
+	 */
+	public Map getMapIDAssociation() {
+		return mapsIDAssociation;
+	}
+	
+	/**
+	 * Inserts a couple of maps id into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleMaps(Integer exp, Integer curr) {
+		mapsIDAssociation.put(exp, curr);
+	}
+
+	/**
+	 * Gets the Map of associations between current and exported features.
+	 * 
+	 * @return Map of associations
+	 */
+	public Map getFeaturesIDAssociation() {
+		return featuresIDAssociation;
+	}
+	
+	/**
+	 * Inserts a couple of features id into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleFeatures(Integer exp, Integer curr) {
+		featuresIDAssociation.put(exp, curr);
+	}
 	
 }

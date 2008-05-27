@@ -57,6 +57,11 @@ import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -67,11 +72,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -80,14 +86,11 @@ import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 
 /**
  * Implements the interface which defines methods for managing the import
@@ -183,8 +186,9 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public void importObjects(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
-	updateDataSourceReferences(metaAss.getDataSourceAssociation());
-	importDataSource();
+	updateDataSourceReferences(metaAss.getDataSourceIDAssociation());
+	importDataSource(overwrite);
+	importDataSet(overwrite);
 	importRoles();
 	importEngines();
 	importFunctionalities();
@@ -192,18 +196,17 @@ public class ImportManager implements IImportManager, Serializable {
 	importParameters(overwrite);
 	importLovs(overwrite);
 	importParuse();
-	importBIObjects(overwrite);
-	importBIObjectLinks();
-	importFunctObject();
-	importFunctRoles();
 	importParuseDet();
 	importParuseCheck();
-	importBIObjPar();
-	importObjParUse();
+	importFunctRoles();
+	importBIObjects(overwrite);
+	importBIObjectLinks();
+	importMapCatalogue(overwrite);
 	logger.debug("OUT");
     }
     
-    /**
+
+	/**
      * Gets the SpagoBI version of the exported file.
      * 
      * @return The SpagoBI version of the exported file
@@ -340,6 +343,16 @@ public class ImportManager implements IImportManager, Serializable {
     }
 
     /**
+     * Commits changes done till now and open a new transaction
+     */
+    private void commit() {
+    	if (txCurrDB != null && txCurrDB.isActive()) {
+    		txCurrDB.commit();
+    		txCurrDB = sessionCurrDB.beginTransaction();
+    	}
+    }
+    
+    /**
      * Commits all changes made on exported and current databases.
      * 
      * @return the import result info
@@ -448,7 +461,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importRoles() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles");
+	    List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles", null);
 	    Iterator iterSbiRoles = exportedRoles.iterator();
 	    while (iterSbiRoles.hasNext()) {
 		SbiExtRoles role = (SbiExtRoles) iterSbiRoles.next();
@@ -495,55 +508,49 @@ public class ImportManager implements IImportManager, Serializable {
     private void importEngines() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedEngines = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines");
+	    List exportedEngines = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines", null);
 	    Iterator iterSbiEngines = exportedEngines.iterator();
 	    while (iterSbiEngines.hasNext()) {
-		SbiEngines engine = (SbiEngines) iterSbiEngines.next();
-		Integer oldId = engine.getEngineId();
-		Map engIdAss = metaAss.getEngineIDAssociation();
-		Set engIdAssSet = engIdAss.keySet();
-		if (engIdAssSet.contains(oldId)) {
-		    metaLog.log("Exported engine " + engine.getName() + " not inserted"
-			    + " because it has been associated to an existing engine or it has the same label "
-			    + " of an existing engine");
-		    continue;
-		}
-		SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine);
-		SbiDomains engineTypeDomain = newEng.getEngineType();
-		Map uniqueEngineType = new HashMap();
-		uniqueEngineType.put("valuecd", engineTypeDomain.getValueCd());
-		uniqueEngineType.put("domaincd", "ENGINE_TYPE");
-		SbiDomains existEngineTypeDomain = (SbiDomains) importer.checkExistence(uniqueEngineType,
-			sessionCurrDB, new SbiDomains());
-		if (existEngineTypeDomain != null) {
-		    newEng.setEngineType(existEngineTypeDomain);
-		}
-		SbiDomains biobjectTypeDomain = newEng.getBiobjType();
-		Map uniqueBiobjectType = new HashMap();
-		uniqueBiobjectType.put("valuecd", biobjectTypeDomain.getValueCd());
-		uniqueBiobjectType.put("domaincd", "BIOBJ_TYPE");
-		SbiDomains existBiobjectTypeDomain = (SbiDomains) importer.checkExistence(uniqueBiobjectType,
-			sessionCurrDB, new SbiDomains());
-		if (existBiobjectTypeDomain != null) {
-		    newEng.setBiobjType(existBiobjectTypeDomain);
-		}
-		// check datasource link
-		SbiDataSource expDs = engine.getDataSource();
-		String label = (String) metaAss.getDataSourceAssociation().get(expDs.getLabel());
-		if (label == null) {
-		    // exist a DataSource Association, read a new DataSource
-		    // from the DB
-		    label = expDs.getLabel();
-		}
-		Criterion labelCriterrion = Expression.eq("label", label);
-		Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-		criteria.add(labelCriterrion);
-		SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
-		newEng.setDataSource(localDS);
-		sessionCurrDB.save(newEng);
-		metaLog.log("Inserted new engine " + engine.getName());
-		Integer newId = newEng.getEngineId();
-		metaAss.insertCoupleEngine(oldId, newId);
+			SbiEngines engine = (SbiEngines) iterSbiEngines.next();
+			Integer oldId = engine.getEngineId();
+			Map engIdAss = metaAss.getEngineIDAssociation();
+			Set engIdAssSet = engIdAss.keySet();
+			if (engIdAssSet.contains(oldId)) {
+			    metaLog.log("Exported engine " + engine.getName() + " not inserted"
+				    + " because it has been associated to an existing engine or it has the same label "
+				    + " of an existing engine");
+			    continue;
+			}
+			SbiEngines newEng = ImportUtilities.makeNewSbiEngine(engine);
+			SbiDomains engineTypeDomain = engine.getEngineType();
+			Map uniqueEngineType = new HashMap();
+			uniqueEngineType.put("valuecd", engineTypeDomain.getValueCd());
+			uniqueEngineType.put("domaincd", "ENGINE_TYPE");
+			SbiDomains existEngineTypeDomain = (SbiDomains) importer.checkExistence(uniqueEngineType,
+				sessionCurrDB, new SbiDomains());
+			if (existEngineTypeDomain != null) {
+			    newEng.setEngineType(existEngineTypeDomain);
+			}
+			SbiDomains biobjectTypeDomain = engine.getBiobjType();
+			Map uniqueBiobjectType = new HashMap();
+			uniqueBiobjectType.put("valuecd", biobjectTypeDomain.getValueCd());
+			uniqueBiobjectType.put("domaincd", "BIOBJ_TYPE");
+			SbiDomains existBiobjectTypeDomain = (SbiDomains) importer.checkExistence(uniqueBiobjectType,
+				sessionCurrDB, new SbiDomains());
+			if (existBiobjectTypeDomain != null) {
+			    newEng.setBiobjType(existBiobjectTypeDomain);
+			}
+			// check datasource link
+			SbiDataSource expDs = engine.getDataSource();
+			if (expDs != null) {
+				Integer dsId = (Integer) metaAss.getDataSourceIDAssociation().get(new Integer(expDs.getDsId()));
+				SbiDataSource localDS = (SbiDataSource) sessionCurrDB.load(SbiDataSource.class, dsId);
+				newEng.setDataSource(localDS);
+			}
+			sessionCurrDB.save(newEng);
+			metaLog.log("Inserted new engine " + engine.getName());
+			Integer newId = newEng.getEngineId();
+			metaAss.insertCoupleEngine(oldId, newId);
 	    }
 	} catch (HibernateException he) {
 	    logger.error("Error while inserting object ", he);
@@ -556,29 +563,39 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
-    private void importDataSource() throws EMFUserError {
+    private void importDataSource(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource");
+	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource", null);
 	    Iterator iterSbiDataSource = exportedDS.iterator();
 
 	    while (iterSbiDataSource.hasNext()) {
-		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
-		Integer oldId = new Integer(dataSource.getDsId());
-		String label = dataSource.getLabel();
-		Map engIdAss = metaAss.getDataSourceAssociation();
-		Set engIdAssSet = engIdAss.keySet();
-		if (engIdAssSet.contains(label)) {
-		    metaLog.log("Exported dataSource " + dataSource.getLabel() + " not inserted"
-			    + " because exist dataSource with the same label ");
-		    continue;
-		}
-
-		SbiDataSource newDS = ImportUtilities.makeNewDataSource(dataSource);
-		Integer newId = (Integer) sessionCurrDB.save(newDS);
-
-		metaLog.log("Inserted new engine " + newDS.getLabel());
-		metaAss.insertCoupleDataSources(dataSource.getLabel(), newDS.getLabel());
+			SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
+			Integer oldId = new Integer(dataSource.getDsId());
+			Integer existingDatasourceId = null;
+			Map dsIdAss = metaAss.getDataSourceIDAssociation();
+			Set engIdAssSet = dsIdAss.keySet();
+			if (engIdAssSet.contains(oldId) && !overwrite) {
+			    metaLog.log("Exported dataSource " + dataSource.getLabel() + " not inserted"
+				    + " because exist dataSource with the same label ");
+			    continue;
+			} else {
+				existingDatasourceId = (Integer) dsIdAss.get(oldId);
+			}
+			
+			if (existingDatasourceId != null) {
+				logger.info("The data source with label:[" + dataSource.getLabel() + "] is just present. It will be updated.");
+			    metaLog.log("The data source with label = [" + dataSource.getLabel() + "] will be updated.");
+			    SbiDataSource existingDs = ImportUtilities.modifyExistingSbiDataSource(dataSource, sessionCurrDB, existingDatasourceId);
+			    ImportUtilities.associateWithExistingEntities(existingDs, dataSource, sessionCurrDB, importer, metaAss);
+			    sessionCurrDB.update(existingDs);
+			} else {
+				SbiDataSource newDS = ImportUtilities.makeNewSbiDataSource(dataSource);
+				ImportUtilities.associateWithExistingEntities(newDS, dataSource, sessionCurrDB, importer, metaAss);
+				Integer newId = (Integer) sessionCurrDB.save(newDS);
+				metaLog.log("Inserted new datasource " + newDS.getLabel());
+				metaAss.insertCoupleDataSources(oldId, newId);
+			}
 	    }
 	} catch (HibernateException he) {
 	    logger.error("Error while inserting object ", he);
@@ -591,6 +608,51 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+    private void importDataSet(boolean overwrite) throws EMFUserError {
+    	logger.debug("IN");
+		try {
+		    List exportedDatasets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
+		    Iterator iterSbiDataSet = exportedDatasets.iterator();
+
+		    while (iterSbiDataSet.hasNext()) {
+				SbiDataSet exportedDataSet = (SbiDataSet) iterSbiDataSet.next();
+				Integer oldId = new Integer(exportedDataSet.getDsId());
+				Integer existingDatasetId = null;
+				Map datasetAss = metaAss.getDataSetIDAssociation();
+				Set datasetAssSet = datasetAss.keySet();
+				if (datasetAssSet.contains(oldId) && !overwrite) {
+				    metaLog.log("Exported dataset " + exportedDataSet.getLabel() + " not inserted"
+					    + " because exist dataset with the same label ");
+				    continue;
+				} else {
+					existingDatasetId = (Integer) datasetAss.get(oldId);
+				}
+				if (existingDatasetId != null) {
+					logger.info("The dataset with label:[" + exportedDataSet.getLabel() + "] is just present. It will be updated.");
+				    metaLog.log("The dataset with label = [" + exportedDataSet.getLabel() + "] will be updated.");
+					SbiDataSet existingDataset = ImportUtilities.modifyExistingSbiDataSet(exportedDataSet, sessionCurrDB, existingDatasetId);
+				    ImportUtilities.associateWithExistingEntities(existingDataset, exportedDataSet, sessionCurrDB, importer, metaAss);
+				    sessionCurrDB.update(existingDataset);
+				} else {
+					SbiDataSet newDataset = ImportUtilities.makeNewSbiDataSet(exportedDataSet);
+					ImportUtilities.associateWithExistingEntities(newDataset, exportedDataSet, sessionCurrDB, importer, metaAss);
+					sessionCurrDB.save(newDataset);
+					metaLog.log("Inserted new dataset " + newDataset.getName());
+					Integer newId = new Integer(newDataset.getDsId());
+					metaAss.insertCoupleDataSets(oldId, newId);
+				}
+		    }
+		} catch (HibernateException he) {
+		    logger.error("Error while inserting object ", he);
+		    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} catch (Exception e) {
+		    logger.error("Error while inserting object ", e);
+		    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} finally {
+		    logger.debug("OUT");
+		}
+    }
+    
     /**
      * Imports exported functionalities
      * 
@@ -599,7 +661,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importFunctionalities() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFuncts = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions");
+	    List exportedFuncts = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions", null);
 
 	    while (exportedFuncts.size() != 0) {
 		Iterator iterSbiFuncts = exportedFuncts.iterator();
@@ -706,7 +768,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importLovs(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedLovs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov");
+	    List exportedLovs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov", null);
 	    Iterator iterSbiLovs = exportedLovs.iterator();
 	    while (iterSbiLovs.hasNext()) {
 			SbiLov exportedLov = (SbiLov) iterSbiLovs.next();
@@ -755,7 +817,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importChecks() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks");
+	    List exportedChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks", null);
 	    Iterator iterSbiChecks = exportedChecks.iterator();
 	    while (iterSbiChecks.hasNext()) {
 		SbiChecks check = (SbiChecks) iterSbiChecks.next();
@@ -802,7 +864,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParameters(boolean overwrite) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters");
+	    List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters", null);
 	    Iterator iterSbiParams = exportedParams.iterator();
 	    while (iterSbiParams.hasNext()) {
 			SbiParameters exportedParameter = (SbiParameters) iterSbiParams.next();
@@ -851,7 +913,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importBIObjects(boolean overwrite) throws EMFUserError {
 		logger.debug("IN");
 		try {
-		    List exportedBIObjs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
+		    List exportedBIObjs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects", "label");
 		    Iterator iterSbiObjs = exportedBIObjs.iterator();
 		    while (iterSbiObjs.hasNext()) {
 				SbiObjects exportedObj = (SbiObjects) iterSbiObjs.next();
@@ -888,7 +950,14 @@ public class ImportManager implements IImportManager, Serializable {
 			    insertSubObject(obj, exportedObj);
 			    // manage snapshot here
 			    insertSnapshot(obj, exportedObj);
-			    
+			    // insert object into folders tree
+				importFunctObject(exportedObj.getBiobjId());
+				// puts parameters into object
+				importBIObjPar(exportedObj.getBiobjId());
+				// puts dependencies into object
+				importObjParUse(exportedObj.getBiobjId());
+				
+			    commit();
 			    
 			    // TODO controllare che fa questo e se serve!!!
 			    //updateSubObject(obj, exportedObj.getBiobjId());
@@ -1108,7 +1177,7 @@ public class ImportManager implements IImportManager, Serializable {
 		    + objIdExp);
 	    templateList = hibQuery.list();
 	    if (templateList.isEmpty()) {
-			logger.warn(" Templates is not present");
+			logger.warn(" Template is not present");
 			return;
 	    }
 	    // finds the next prog value
@@ -1192,7 +1261,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuse() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuses = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse");
+	    List exportedParuses = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse", null);
 	    Iterator iterSbiParuses = exportedParuses.iterator();
 	    while (iterSbiParuses.hasNext()) {
 		SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
@@ -1250,7 +1319,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuseDet() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuseDets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet");
+	    List exportedParuseDets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet", null);
 	    Iterator iterSbiParuseDets = exportedParuseDets.iterator();
 	    while (iterSbiParuseDets.hasNext()) {
 		SbiParuseDet parusedet = (SbiParuseDet) iterSbiParuseDets.next();
@@ -1309,7 +1378,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importParuseCheck() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParuseChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseCk");
+	    List exportedParuseChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseCk", null);
 	    Iterator iterSbiParuseChecks = exportedParuseChecks.iterator();
 	    while (iterSbiParuseChecks.hasNext()) {
 		SbiParuseCk paruseck = (SbiParuseCk) iterSbiParuseChecks.next();
@@ -1368,7 +1437,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importBIObjectLinks() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedBIObjectsLinks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiSubreports");
+	    List exportedBIObjectsLinks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiSubreports", null);
 	    Iterator iterSbiObjLinks = exportedBIObjectsLinks.iterator();
 	    while (iterSbiObjLinks.hasNext()) {
 		SbiSubreports objlink = (SbiSubreports) iterSbiObjLinks.next();
@@ -1423,15 +1492,17 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+
     /**
-     * Imports associations between functionalities and objects
+     * Imports associations between functionalities and current object
      * 
+     * @param exportedBIObjectId The id of the current exported object
      * @throws EMFUserError
      */
-    private void importFunctObject() throws EMFUserError {
+    private void importFunctObject(Integer exportedBIObjectId) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFunctObjects = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjFunc");
+	    List exportedFunctObjects = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiObjFunc", "id.sbiObjects.biobjId", exportedBIObjectId);
 	    Iterator iterSbiFunctObjects = exportedFunctObjects.iterator();
 	    while (iterSbiFunctObjects.hasNext()) {
 		SbiObjFunc objfunct = (SbiObjFunc) iterSbiFunctObjects.next();
@@ -1492,7 +1563,7 @@ public class ImportManager implements IImportManager, Serializable {
     private void importFunctRoles() throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedFunctRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFuncRole");
+	    List exportedFunctRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFuncRole", null);
 	    Iterator iterSbiFunctRoles = exportedFunctRoles.iterator();
 	    while (iterSbiFunctRoles.hasNext()) {
 		SbiFuncRole functrole = (SbiFuncRole) iterSbiFunctRoles.next();
@@ -1556,15 +1627,17 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+
     /**
-     * Imports associations between exported biobjects and parameters
+     * Imports associations between parameters and current exported biobject
      * 
+     * @param exportedBIObjectId The id of the current exported object
      * @throws EMFUserError
      */
-    private void importBIObjPar() throws EMFUserError {
+    private void importBIObjPar(Integer exportedBIObjectId) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedObjPars = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar");
+	    List exportedObjPars = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiObjPar", "sbiObject.biobjId", exportedBIObjectId);
 	    Iterator iterSbiObjPar = exportedObjPars.iterator();
 	    while (iterSbiObjPar.hasNext()) {
 		SbiObjPar objpar = (SbiObjPar) iterSbiObjPar.next();
@@ -1619,15 +1692,17 @@ public class ImportManager implements IImportManager, Serializable {
 	}
     }
 
+
     /**
-     * Imports biparameter dependencies
+     * Imports biparameter dependencies for current exported biobject
      * 
+     * @param exportedBIObjectId The id of the current exported biobject
      * @throws EMFUserError
      */
-    private void importObjParUse() throws EMFUserError {
+    private void importObjParUse(Integer exportedBIObjectId) throws EMFUserError {
 	logger.debug("IN");
 	try {
-	    List exportedParDepends = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjParuse");
+	    List exportedParDepends = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiObjParuse", "id.sbiObjPar.sbiObject.biobjId", exportedBIObjectId);
 	    Iterator iterParDep = exportedParDepends.iterator();
 	    while (iterParDep.hasNext()) {
 		SbiObjParuse pardep = (SbiObjParuse) iterParDep.next();
@@ -1715,16 +1790,20 @@ public class ImportManager implements IImportManager, Serializable {
 	logger.debug("IN");
 	List datasources = new ArrayList();
 	try {
-	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource");
+	    List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource", null);
 	    Iterator iterSbiDataSource = exportedDS.iterator();
-
 	    while (iterSbiDataSource.hasNext()) {
 		SbiDataSource dataSource = (SbiDataSource) iterSbiDataSource.next();
 		DataSource ds = new DataSource();
+		ds.setDsId(dataSource.getDsId());
 		ds.setLabel(dataSource.getLabel());
 		ds.setDescr(dataSource.getDescr());
+		ds.setUser(dataSource.getUser());
+		ds.setPwd(dataSource.getPwd());
 		ds.setDriver(dataSource.getDriver());
+		ds.setUrlConnection(dataSource.getUrl_connection());
 		ds.setJndi(dataSource.getJndi());
+		ds.setDialectId(dataSource.getDialect().getValueId());
 		datasources.add(ds);
 	    }
 	} finally {
@@ -1744,7 +1823,7 @@ public class ImportManager implements IImportManager, Serializable {
      */
     public void checkExistingMetadata() throws EMFUserError {
 	logger.debug("IN");
-	List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters");
+	List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters", null);
 	Iterator iterSbiParams = exportedParams.iterator();
 	while (iterSbiParams.hasNext()) {
 	    SbiParameters paramExp = (SbiParameters) iterSbiParams.next();
@@ -1758,7 +1837,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported parameter " + paramExp.getName());
 	    }
 	}
-	List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles");
+	List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles", null);
 	Iterator iterSbiRoles = exportedRoles.iterator();
 	while (iterSbiRoles.hasNext()) {
 	    SbiExtRoles roleExp = (SbiExtRoles) iterSbiRoles.next();
@@ -1777,7 +1856,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same name of the exported role " + roleExp.getName());
 	    }
 	}
-	List exportedParuse = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse");
+	List exportedParuse = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse", null);
 	Iterator iterSbiParuse = exportedParuse.iterator();
 	while (iterSbiParuse.hasNext()) {
 	    SbiParuse paruseExp = (SbiParuse) iterSbiParuse.next();
@@ -1802,7 +1881,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported parameter use " + paruseExp.getName());
 	    }
 	}
-	List exportedBiobj = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects");
+	List exportedBiobj = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects", null);
 	Iterator iterSbiBiobj = exportedBiobj.iterator();
 	while (iterSbiBiobj.hasNext()) {
 	    SbiObjects objExp = (SbiObjects) iterSbiBiobj.next();
@@ -1816,7 +1895,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label and path of the exported BIObject " + objExp.getName());
 	    }
 	}
-	List exportedLov = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov");
+	List exportedLov = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov", null);
 	Iterator iterSbiLov = exportedLov.iterator();
 	while (iterSbiLov.hasNext()) {
 	    SbiLov lovExp = (SbiLov) iterSbiLov.next();
@@ -1830,7 +1909,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported lov " + lovExp.getName());
 	    }
 	}
-	List exportedFunct = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions");
+	List exportedFunct = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions", null);
 	Iterator iterSbiFunct = exportedFunct.iterator();
 	while (iterSbiFunct.hasNext()) {
 	    SbiFunctions functExp = (SbiFunctions) iterSbiFunct.next();
@@ -1844,7 +1923,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same CODE of the exported functionality " + functExp.getName());
 	    }
 	}
-	List exportedEngine = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines");
+	List exportedEngine = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines", null);
 	Iterator iterSbiEng = exportedEngine.iterator();
 	while (iterSbiEng.hasNext()) {
 	    SbiEngines engExp = (SbiEngines) iterSbiEng.next();
@@ -1863,7 +1942,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported engine " + engExp.getName());
 	    }
 	}
-	List exportedCheck = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks");
+	List exportedCheck = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks", null);
 	Iterator iterSbiCheck = exportedCheck.iterator();
 	while (iterSbiCheck.hasNext()) {
 	    SbiChecks checkExp = (SbiChecks) iterSbiCheck.next();
@@ -1877,7 +1956,7 @@ public class ImportManager implements IImportManager, Serializable {
 			+ "the same label of the exported check " + checkExp.getName());
 	    }
 	}
-	List exportedObjPar = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar");
+	List exportedObjPar = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar", null);
 	Iterator iterSbiObjPar = exportedObjPar.iterator();
 	while (iterSbiObjPar.hasNext()) {
 	    SbiObjPar objparExp = (SbiObjPar) iterSbiObjPar.next();
@@ -1908,6 +1987,32 @@ public class ImportManager implements IImportManager, Serializable {
 		metaLog.log("Found an existing association between object " + objparExp.getSbiObject().getName()
 			+ " and parameter " + objparExp.getSbiParameter().getName() + " with " + " the same url "
 			+ objparExp.getParurlNm() + " name of the exported objpar ");
+	    }
+	}
+	List exportedDs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource", null);
+	Iterator iterSbiDs = exportedDs.iterator();
+	while (iterSbiDs.hasNext()) {
+		SbiDataSource dsExp = (SbiDataSource) iterSbiDs.next();
+		String label = dsExp.getLabel();
+	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSource());
+	    if (existObj != null) {
+	    	SbiDataSource dsCurr = (SbiDataSource) existObj;
+	    	metaAss.insertCoupleDataSources(new Integer(dsExp.getDsId()), new Integer(dsCurr.getDsId()));
+			metaLog.log("Found an existing data source " + dsCurr.getLabel() + " with "
+				+ "the same label of one exported data source");
+	    }
+	}
+	List exportedDataset = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
+	Iterator iterSbiDataset = exportedDataset.iterator();
+	while (iterSbiDataset.hasNext()) {
+		SbiDataSet dsExp = (SbiDataSet) iterSbiDataset.next();
+		String label = dsExp.getLabel();
+	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSet());
+	    if (existObj != null) {
+	    	SbiDataSet dsCurr = (SbiDataSet) existObj;
+	    	metaAss.insertCoupleDataSets(new Integer(dsExp.getDsId()), new Integer(dsCurr.getDsId()));
+			metaLog.log("Found an existing dataset " + dsCurr.getLabel() + " with "
+				+ "the same label of one exported dataset");
 	    }
 	}
 	logger.debug("OUT");
@@ -2058,7 +2163,7 @@ public class ImportManager implements IImportManager, Serializable {
 					DataSource currentDataSource = (DataSource) currentDataSourcesIt.next();
 					if (currentDataSource.getLabel().equals(associatedDataSourceLabel)) {
 						associatedDataSourceLabelExists = true;
-						metaAss.insertCoupleDataSources(exportedDataSource.getLabel(), currentDataSource.getLabel());
+						metaAss.insertCoupleDataSources(new Integer(exportedDataSource.getDsId()), new Integer(currentDataSource.getDsId()));
 						break;
 					}
 				}
@@ -2069,4 +2174,170 @@ public class ImportManager implements IImportManager, Serializable {
 			logger.debug("OUT");
 		}
 	}
+	
+    private void importMapCatalogue(boolean overwrite) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			// import maps
+			List exportedMaps = importer.getAllExportedSbiObjects(sessionExpDB, "SbiGeoMaps", null);
+			Iterator iterMaps = exportedMaps.iterator();
+			while (iterMaps.hasNext()) {
+				SbiGeoMaps expMap = (SbiGeoMaps) iterMaps.next();
+				String name = expMap.getName();
+				Object existObj = importer.checkExistence(name, sessionCurrDB, new SbiGeoMaps());
+				SbiGeoMaps newMap = null;
+				if (existObj != null) {
+					if (!overwrite) {
+						metaLog.log("Found an existing map '" + name + "' with "
+							+ "the same name of the exported map. It will be not overwritten.");
+						continue;
+					} else {
+						metaLog.log("Found an existing map '" + name + "' with "
+								+ "the same name of the exported map. It will be overwritten.");
+						newMap = (SbiGeoMaps) existObj;
+					}
+				} else {
+					newMap = new SbiGeoMaps();
+				}
+				newMap.setName(expMap.getName());
+				newMap.setDescr(expMap.getDescr());
+				newMap.setFormat(expMap.getFormat());
+				newMap.setUrl(expMap.getUrl());
+				sessionCurrDB.save(newMap);
+				metaAss.insertCoupleMaps(new Integer(expMap.getMapId()), new Integer(newMap.getMapId()));
+			}
+			
+			// import features
+			List exportedFeatures = importer.getAllExportedSbiObjects(sessionExpDB, "SbiGeoFeatures", null);
+			Iterator iterFeatures = exportedFeatures.iterator();
+			while (iterFeatures.hasNext()) {
+				SbiGeoFeatures expFeature = (SbiGeoFeatures) iterFeatures.next();
+				String name = expFeature.getName();
+				Object existObj = importer.checkExistence(name, sessionCurrDB, new SbiGeoFeatures());
+				SbiGeoFeatures newFeature = null;
+				if (existObj != null) {
+					if (!overwrite) {
+						metaLog.log("Found an existing feature '" + name + "' with "
+							+ "the same name of the exported feature. It will be not overwritten.");
+						continue;
+					} else {
+						metaLog.log("Found an existing feature '" + name + "' with "
+								+ "the same name of the exported feature. It will be overwritten.");
+						newFeature = (SbiGeoFeatures) existObj;
+					}
+				} else {
+					newFeature = new SbiGeoFeatures();
+				}
+				newFeature.setName(expFeature.getName());
+				newFeature.setDescr(expFeature.getDescr());
+				newFeature.setType(expFeature.getType());
+				sessionCurrDB.save(newFeature);
+				metaAss.insertCoupleFeatures(new Integer(expFeature.getFeatureId()), new Integer(newFeature.getFeatureId()));
+			}
+			
+			// import association between maps and features
+			List exportedMapFeatures = importer.getAllExportedSbiObjects(sessionExpDB, "SbiGeoMapFeatures", null);
+			Iterator iterMapFeatures = exportedMapFeatures.iterator();
+			while (iterMapFeatures.hasNext()) {
+				SbiGeoMapFeatures expMapFeature = (SbiGeoMapFeatures) iterMapFeatures.next();
+				Integer expMapId = new Integer(expMapFeature.getId().getMapId());
+				Integer expFeatureId = new Integer(expMapFeature.getId().getFeatureId());
+				Integer existingMapId = null;
+				Integer existingFeatureId = null;
+				// find associated map id
+				Map mapsIDAssociations = metaAss.getMapIDAssociation();
+				Set mapsIDAssociationsKeySet = mapsIDAssociations.keySet();
+				if (!mapsIDAssociationsKeySet.contains(expMapId)) {
+					metaLog.log("Association between exported map with id = " + expMapId + " and exported feature with id = " + expFeatureId + 
+							" will not be imported: the map was not imported.");
+					continue;
+				} else {
+					existingMapId = (Integer) mapsIDAssociations.get(expMapId);
+				}
+				// find associated feature id
+				Map featuresIDAssociations = metaAss.getFeaturesIDAssociation();
+				Set featuresIDAssociationsKeySet = featuresIDAssociations.keySet();
+				if (!featuresIDAssociationsKeySet.contains(expFeatureId)) {
+					metaLog.log("Association between exported map with id = " + expMapId + " and exported feature with id = " + expFeatureId + 
+							" will not be imported: the feature was not imported.");
+					continue;
+				} else {
+					existingFeatureId = (Integer) featuresIDAssociations.get(expFeatureId);
+				}
+				
+				Map unique = new HashMap();
+				unique.put("mapId", existingMapId);
+				unique.put("featureId", existingFeatureId);
+				Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiGeoMapFeatures());
+				SbiGeoMapFeatures newMapFeature = null;
+				if (existObj != null) {
+					if (!overwrite) {
+						metaLog.log("Found an existing association between map " + existingMapId + " and feature " + existingFeatureId + ". " +
+								"It will be not overwritten.");
+						continue;
+					} else {
+						metaLog.log("Found an existing association between map " + existingMapId + " and feature " + existingFeatureId + ". " +
+								"It will be overwritten.");
+						newMapFeature = (SbiGeoMapFeatures) existObj;
+					}
+				} else {
+					newMapFeature = new SbiGeoMapFeatures();
+					SbiGeoMapFeaturesId hibMapFeatureId = new SbiGeoMapFeaturesId();			
+					hibMapFeatureId.setMapId(existingMapId.intValue());
+					hibMapFeatureId.setFeatureId(existingFeatureId.intValue());
+					newMapFeature.setId(hibMapFeatureId);
+				}
+				newMapFeature.setSvgGroup(expMapFeature.getSvgGroup());
+				newMapFeature.setVisibleFlag(expMapFeature.getVisibleFlag());
+				sessionCurrDB.save(newMapFeature);
+			}
+			
+			// copy all exported map files
+			File mapsDir = new File(ConfigSingleton.getRootPath() + "/components/mapcatalogue/maps");
+			if (!mapsDir.exists()) mapsDir.mkdirs();
+			File exportedmapsDir = new File(pathBaseFolder + "/components/mapcatalogue/maps");
+			if (exportedmapsDir.exists() && exportedmapsDir.isDirectory()) {
+				File[] exportedMapsFiles = exportedmapsDir.listFiles();
+				for (int i = 0; i < exportedMapsFiles.length; i++) {
+					File exportedMapFile = exportedMapsFiles[i];
+					if (exportedMapFile.isFile()) {
+						FileOutputStream fos = null;
+						InputStream is = null;
+						try {
+							File copy = new File(mapsDir.getAbsolutePath() + "/" + exportedMapFile.getName());
+							if (copy.exists()) {
+								if (!overwrite) continue;
+								if (!copy.delete()) continue;
+							}
+					        fos = new FileOutputStream(copy);
+					        is = new FileInputStream(exportedMapFile);
+					        int read = 0;
+					        while ((read = is.read()) != -1) {
+					        	fos.write(read);
+					        }
+					        fos.flush();
+						} catch (Exception e) {
+						    logger.error("Error while coping map catalogue files ", e);
+						    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+						} finally {
+				        	try {
+					        	if (fos != null) {
+					        		fos.close();
+					        	}
+					        	if (is != null) {
+					        		is.close();
+					        	}
+				        	} catch (Exception e) {
+				        	    logger.error("Error while closing streams " , e);
+				        	}
+						}
+					}
+				}
+			}
+			
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+    
 }

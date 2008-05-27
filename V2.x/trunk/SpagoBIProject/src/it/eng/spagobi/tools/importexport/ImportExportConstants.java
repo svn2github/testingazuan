@@ -49,7 +49,7 @@ public class ImportExportConstants {
 	public static final String IMPEXP_BACK_DS_ASS = "IMPEXP_BACK_DS_ASS";
 	public static final String IMPEXP_BACK_METADATA_ASS = "IMPEXP_BACK_METADATA_ASS";
 	public static final String LIST_EXPORTED_DATA_SOURCES = "LIST_EXPORTED_DATA_SOURCES"; 
-	public static final String MAP_CURRENT_DATA_SOURCES = "MAP_CURRENT_DATA_SOURCES"; 
+	public static final String LIST_CURRENT_DATA_SOURCES = "LIST_CURRENT_DATA_SOURCES"; 
 	public static final String EXISTING_METADATA = "EXISTING_METADATA"; 
 	public static final String IMPORT_MANAGER = "IMPORT_MANAGER"; 
 	public static final String IMPORT_LOG_FILE_PATH = "IMPORT_LOG_FILE_PATH";

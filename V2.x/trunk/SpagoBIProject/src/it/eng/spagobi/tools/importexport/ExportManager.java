@@ -395,6 +395,13 @@ public class ExportManager implements IExportManager {
 			}
 		}
 	    
+		// maps catalogue export
+		boolean isMap = false;
+		if (biobj.getBiObjectTypeCode().equalsIgnoreCase("MAP")) isMap = true;
+		if (isMap) {
+			exporter.insertMapCatalogue(session, pathBaseFolder);
+		}
+		
 	    if (exportSubObjects) {
 		ISubObjectDAO subDao = DAOFactory.getSubObjectDAO();
 		List subObjectLis = subDao.getSubObjects(biobj.getId());

@@ -9,7 +9,7 @@ CREATE TABLE SBI_ENGINES (
        OBJ_UPL_DIR          VARCHAR(400) NULL,
        OBJ_USE_DIR          VARCHAR(400) NULL,
        DRIVER_NM            VARCHAR(400) NULL,
-       LABEL                VARCHAR(20) NOT NULL,
+       LABEL                VARCHAR(40) NOT NULL,
        ENGINE_TYPE          INTEGER NOT NULL,
        CLASS_NM             VARCHAR(400) NULL,
        BIOBJ_TYPE           INTEGER NOT NULL,

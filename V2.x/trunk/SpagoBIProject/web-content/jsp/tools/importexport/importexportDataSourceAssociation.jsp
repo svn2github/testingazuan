@@ -24,9 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				it.eng.spagobi.tools.importexport.ImportExportConstants,
 				java.util.List,
 				java.util.Map,
-				java.util.Set,
-				java.util.Iterator,
-				it.eng.spagobi.tools.importexport.DBConnection" %>
+				java.util.Iterator" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.tools.importexport.IImportManager"%>
 <%@page import="it.eng.spagobi.tools.importexport.UserAssociationsKeeper"%>
@@ -41,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ImportExportModule"); 
 	List expConns = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES);
-	Map curConns = (Map)moduleResponse.getAttribute(ImportExportConstants.MAP_CURRENT_DATA_SOURCES);
+	List currentDatasources = (List)moduleResponse.getAttribute(ImportExportConstants.LIST_CURRENT_DATA_SOURCES);
     Iterator iterExpConn = expConns.iterator();
 	
     Map backUrlPars = new HashMap();
@@ -175,13 +173,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<%
 			    while(iterExpConn.hasNext()) {
 				    DataSource dataSource = (DataSource)iterExpConn.next();
-			    	String connName = dataSource.getLabel();
+			    	Integer dsId = new Integer(dataSource.getDsId());
 			    	if(dataSource.getJndi()==null) {
 
 			    %>
 				<tr>
 					<td class="portlet-font">
-						<span class='portlet-form-field-label'><%=connName + "  (Jdbc)"%> </span>
+						<span class='portlet-form-field-label'><%=dataSource.getLabel() + "  (Jdbc)"%> </span>
 						<br/>
 						<%=dataSource.getDescr()%><br/>
 						<%=dataSource.getDriver()%><br/>
@@ -191,35 +189,34 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   %>
 			   <tr>
 					<td class="portlet-font">
-						<span class='portlet-form-field-label'><%=connName + "  (Jndi)"%></span>
+						<span class='portlet-form-field-label'><%=dataSource.getLabel() + "  (Jndi)"%></span>
 						<br/>
 						<%=dataSource.getDescr()%> <br/>
 						<%=dataSource.getJndi()%> <br/>
 					</td>
 			   <% } %>
 					<td>
-					    <input type="hidden" name="expConn" value="<%=connName%>" />
-						<select style="width:250px;margin-top:5px;" name="connAssociated<%=connName%>" >
+					    <input type="hidden" name="expConn" value="<%=dsId.toString()%>" />
+						<select style="width:250px;margin-top:5px;" name="connAssociated<%=dsId.toString()%>" >
 							<option value="">
 								<spagobi:message key="Sbi.selectcombo" bundle="component_impexp_messages"/>
 							</option>
 							<% 
-								Set curConnNames = curConns.keySet();	
-								Iterator iterCurConnNames = curConnNames.iterator();
-								String selected = null;
-								String associated = "";
-								boolean isAssociated = false;
-								while(iterCurConnNames.hasNext()) {
-									selected = "";
-									String curConnName = (String)iterCurConnNames.next();
-									String curNameDesc = (String)curConns.get(curConnName);
-									String connectionAss = usrAssKeep.getAssociatedDataSource(connName);
-									if( (connectionAss!=null) &&  curConnName.equals(connectionAss)) {
-										selected=" selected ";
-										isAssociated = true;
-									}
+							Iterator currentDsIterator = currentDatasources.iterator();
+							String selected = null;
+							String associated = "";
+							boolean isAssociated = false;
+							while(currentDsIterator.hasNext()) {
+								selected = "";
+								DataSource curDs = (DataSource)currentDsIterator.next();
+								String currentDsdescription = curDs.getDescr();
+								String dsAssociated = usrAssKeep.getAssociatedDataSource(curDs.getLabel());
+								if( (dsAssociated!=null) &&  curDs.getLabel().equals(dsAssociated)) {
+									selected=" selected ";
+									isAssociated = true;
+								}
 							%>
-							<option value='<%=curConnName%>' <%=selected%>><%=curNameDesc%></option>
+							<option value='<%=new Integer(curDs.getDsId()).toString()%>' <%=selected%>><%=currentDsdescription%></option>
 							<% } %>
 						</select>
 						<%

@@ -9,8 +9,8 @@
     <class name="it.eng.spagobi.commons.metadata.SbiDomains" table="SBI_DOMAINS">
         <id name="valueId" type="integer">
             <column name="VALUE_ID" />
-             <generator class="identity">
-            	
+            <generator class="native">
+           		<param name="sequence">sbi_domains_seq</param>
             </generator>
         </id>
         <property name="domainCd" type="string">

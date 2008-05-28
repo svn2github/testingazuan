@@ -33,7 +33,7 @@ public interface IImportManager {
 	public static final String IMPORT_ASS_DEFAULT_MODE = "IMPORT_ASS_DEFAULT_MODE"; 
 	
 	/**
-	 * Prepare the environment for the import procedure.
+	 * Prepare the environment for the import procedure. This method must be invoked first.
 	 * 
 	 * @param archiveName the name of the compress exported file
 	 * @param archiveContent the bytes of the compress exported file
@@ -41,7 +41,22 @@ public interface IImportManager {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void prepareImport(String pathImportTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError;
+	public void init(String pathImportTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError;
+	
+	/**
+	 * Open session to exported and current databases. This method must be invoked before any operation.
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void openSession() throws EMFUserError;
+	
+	/**
+	 * Close session to exported and current databases. 
+	 * This method must be invoked when all needed operation are performed.
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void closeSession();
 	
 	/**
 	 * Gets the SpagoBI version of the exported file.

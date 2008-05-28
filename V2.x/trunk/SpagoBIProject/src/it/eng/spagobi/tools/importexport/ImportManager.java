@@ -74,7 +74,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,6 +116,7 @@ public class ImportManager implements IImportManager, Serializable {
     private AssociationFile associationFile = null;
     private String impAssMode = IMPORT_ASS_DEFAULT_MODE;
 
+    
     /**
      * Prepare the environment for the import procedure.
      * 
@@ -126,7 +126,7 @@ public class ImportManager implements IImportManager, Serializable {
      * 
      * @throws EMFUserError the EMF user error
      */
-    public void prepareImport(String pathImpTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError {
+    public void init(String pathImpTmpFold, String archiveName, byte[] archiveContent) throws EMFUserError {
 	logger.debug("IN");
 	// create directories of the tmp import folder
 	File impTmpFold = new File(pathImpTmpFold);
@@ -135,14 +135,22 @@ public class ImportManager implements IImportManager, Serializable {
 	String pathArchiveFile = pathImpTmpFold + "/" + archiveName;
 	File archive = new File(pathArchiveFile);
 	exportedFileName = archiveName;
+	FileOutputStream fos = null;
 	try {
-	    FileOutputStream fos = new FileOutputStream(archive);
+		fos = new FileOutputStream(archive);
 	    fos.write(archiveContent);
 	    fos.flush();
-	    fos.close();
-	} catch (IOException ioe) {
+	} catch (Exception ioe) {
 	    logger.error("Error while writing archive content into a tmp file ", ioe);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+		if (fos != null) {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				logger.error("Error while closing stream", e);
+			}
+		}
 	}
 	// decompress archive
 	ImportUtilities.decompressArchive(pathImpTmpFold, pathArchiveFile);
@@ -155,28 +163,65 @@ public class ImportManager implements IImportManager, Serializable {
 	pathBaseFolder = pathImportTmpFolder + "/" + archiveName;
 	pathDBFolder = pathBaseFolder + "/metadata";
 	String propFilePath = pathBaseFolder + "/export.properties";
+	FileInputStream fis = null;
 	try {
-	    FileInputStream fis = new FileInputStream(propFilePath);
+	    fis = new FileInputStream(propFilePath);
 	    props = new Properties();
 	    props.load(fis);
-	    fis.close();
 	} catch (Exception e) {
 	    logger.error("Error while reading properties file ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} finally {
+		if (fis != null)
+			try {
+				fis.close();
+			} catch (IOException e) {
+				logger.error("Error while closing stream", e);
+			}
 	}
 	importer = new ImporterMetadata();
 	sessionFactoryExpDB = ImportUtilities.getHibSessionExportDB(pathDBFolder);
-	sessionExpDB = sessionFactoryExpDB.openSession();
-	txExpDB = sessionExpDB.beginTransaction();
-	sessionCurrDB = HibernateUtil.currentSession();
-	txCurrDB = sessionCurrDB.beginTransaction();
 	metaAss = new MetadataAssociations();
 	metaLog = new MetadataLogger();
 	usrAss = new UserAssociationsKeeper();
 	logger.debug("OUT");
     }
 
+    public void openSession() throws EMFUserError {
+    	logger.debug("IN");
+    	try  {
+	    	sessionExpDB = sessionFactoryExpDB.openSession();
+	    	txExpDB = sessionExpDB.beginTransaction();
+	    	sessionCurrDB = HibernateUtil.currentSession();
+	    	txCurrDB = sessionCurrDB.beginTransaction();
+    	} catch (Exception e) {
+    		logger.error("Error while opening session. May be the import manager was not correctly initialized.", e);
+    		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+    	}
+    	logger.debug("OUT");
+    }
 
+    public void closeSession() {
+    	logger.debug("IN");
+    	if (txExpDB != null && txExpDB.isActive()) {
+    		txExpDB.rollback();
+    	}
+    	if (sessionExpDB != null) {
+    	    if (sessionExpDB.isOpen()) {
+    	    	sessionExpDB.close();
+    	    }
+    	}
+    	if (txCurrDB != null && txCurrDB.isActive()) {
+    		txCurrDB.commit();
+    	}
+    	if (sessionCurrDB != null) {
+    	    if (sessionCurrDB.isOpen()) {
+    	    	sessionCurrDB.close();
+    	    }
+    	}
+    	logger.debug("OUT");
+    }
+    
     /**
      * Imports the exported objects.
      * 
@@ -311,22 +356,6 @@ public class ImportManager implements IImportManager, Serializable {
     private void closeSessionFactory() {
 	if (sessionFactoryExpDB != null) {
 	    sessionFactoryExpDB.close();
-	}
-    }
-
-    /**
-     * Close Hibernate sessions for exported and current database
-     */
-    private void closeSession() {
-	if (sessionExpDB != null) {
-	    if (sessionExpDB.isOpen()) {
-		sessionExpDB.close();
-	    }
-	}
-	if (sessionCurrDB != null) {
-	    if (sessionCurrDB.isOpen()) {
-		sessionCurrDB.close();
-	    }
 	}
     }
 

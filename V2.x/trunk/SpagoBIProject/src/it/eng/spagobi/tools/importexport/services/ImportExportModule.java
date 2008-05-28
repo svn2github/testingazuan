@@ -304,10 +304,11 @@ public class ImportExportModule extends AbstractModule {
 	    String impClassName = (String) importerSB.getAttribute("class");
 	    Class impClass = Class.forName(impClassName);
 	    impManager = (IImportManager) impClass.newInstance();
-	    impManager.setAssociationFile(assFile);
 	    // prepare import environment
-	    impManager.prepareImport(pathImpTmpFolder, archiveName, archiveBytes);
-
+	    impManager.init(pathImpTmpFolder, archiveName, archiveBytes);
+	    impManager.openSession();
+	    impManager.setAssociationFile(assFile);
+	    
 		// if the associations file has been uploaded fill the association keeper
 		if(associationsFile!=null) {
 			byte[] assFilebys = associationsFile.getFileContent();
@@ -365,6 +366,8 @@ public class ImportExportModule extends AbstractModule {
 			impManager.stopImport();
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+	    if (impManager != null)
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -386,6 +389,7 @@ public class ImportExportModule extends AbstractModule {
 	    RequestContainer requestContainer = this.getRequestContainer();
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+	    impManager.openSession();
 	    MetadataAssociations metaAss = impManager.getMetadataAssociation();
 	    if (!request.containsAttribute("ROLES_ASSOCIATIONS_SKIPPED")) {
 			// the roles associations form was submitted
@@ -446,6 +450,8 @@ public class ImportExportModule extends AbstractModule {
 		impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+	    if (impManager != null)
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -467,6 +473,7 @@ public class ImportExportModule extends AbstractModule {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		impManager.openSession();
 		MetadataAssociations metaAss = impManager.getMetadataAssociation();
 		if (!request.containsAttribute("ENGINES_ASSOCIATIONS_SKIPPED")) {
 			List expEngineIds = request.getAttributeAsList("expEngine");
@@ -528,6 +535,8 @@ public class ImportExportModule extends AbstractModule {
 		impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+	    if (impManager != null)
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -549,6 +558,7 @@ public class ImportExportModule extends AbstractModule {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager)session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		impManager.openSession();
 		MetadataAssociations metaAss = impManager.getMetadataAssociation();
 		List expDsIds = request.getAttributeAsList("expConn");
 		Iterator iterExpConn = expDsIds.iterator();
@@ -600,6 +610,8 @@ public class ImportExportModule extends AbstractModule {
 		impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8003", "component_impexp_messages");
 	} finally {
+	    if (impManager != null)
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
 
@@ -627,6 +639,7 @@ public class ImportExportModule extends AbstractModule {
 	    RequestContainer requestContainer = this.getRequestContainer();
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+	    impManager.openSession();
 	    impManager.importObjects(overwrite);
 	    ImportResultInfo iri = impManager.commitAllChanges();
 	    response.setAttribute(ImportExportConstants.IMPORT_RESULT_INFO, iri);
@@ -645,6 +658,8 @@ public class ImportExportModule extends AbstractModule {
 	    logger.error("error after data source association ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+	    if (impManager != null)
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -686,13 +701,15 @@ public class ImportExportModule extends AbstractModule {
      */
     private void backEngineAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
-	RequestContainer requestContainer = this.getRequestContainer();
-	SessionContainer session = requestContainer.getSessionContainer();
-	IImportManager impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	List exportedRoles = impManager.getExportedRoles();
-	IRoleDAO roleDAO = DAOFactory.getRoleDAO();
-	List currentRoles = roleDAO.loadAllRoles();
+	IImportManager impManager = null;
 	try {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		impManager.openSession();
+		List exportedRoles = impManager.getExportedRoles();
+		IRoleDAO roleDAO = DAOFactory.getRoleDAO();
+		List currentRoles = roleDAO.loadAllRoles();
 	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_ROLES, exportedRoles);
 	    response.setAttribute(ImportExportConstants.LIST_CURRENT_ROLES, currentRoles);
 	    response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportRoleAssociation");
@@ -701,6 +718,8 @@ public class ImportExportModule extends AbstractModule {
 	    impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+		if (impManager != null) 
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -717,13 +736,14 @@ public class ImportExportModule extends AbstractModule {
      */
     private void backDataSourceAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
-	RequestContainer requestContainer = this.getRequestContainer();
-	SessionContainer session = requestContainer.getSessionContainer();
-	IImportManager impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	List exportedEngines = impManager.getExportedEngines();
-	IEngineDAO engineDAO = DAOFactory.getEngineDAO();
-	List currentEngines = engineDAO.loadAllEngines();
+	IImportManager impManager = null;
 	try {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		List exportedEngines = impManager.getExportedEngines();
+		IEngineDAO engineDAO = DAOFactory.getEngineDAO();
+		List currentEngines = engineDAO.loadAllEngines();
 	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_ENGINES, exportedEngines);
 	    response.setAttribute(ImportExportConstants.LIST_CURRENT_ENGINES, currentEngines);
 	    response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportEngineAssociation");
@@ -732,6 +752,8 @@ public class ImportExportModule extends AbstractModule {
 	    impManager.stopImport();
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+		if (impManager != null) 
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }
@@ -748,11 +770,12 @@ public class ImportExportModule extends AbstractModule {
      */
     private void backMetadataAssociation(SourceBean request, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
-	RequestContainer requestContainer = this.getRequestContainer();
-	SessionContainer session = requestContainer.getSessionContainer();
-	IImportManager impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
-	List exportedDataSources = impManager.getExportedDataSources();
+	IImportManager impManager = null;
 	try {
+		RequestContainer requestContainer = this.getRequestContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		List exportedDataSources = impManager.getExportedDataSources();
 		IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
 		List currentDatasources = dsDao.loadAllDataSources();
 	    response.setAttribute(ImportExportConstants.LIST_EXPORTED_DATA_SOURCES, exportedDataSources);
@@ -762,6 +785,8 @@ public class ImportExportModule extends AbstractModule {
 	    logger.error("Error while populating response source bean ", sbe);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
+		if (impManager != null) 
+			impManager.closeSession();
 	    logger.debug("OUT");
 	}
     }

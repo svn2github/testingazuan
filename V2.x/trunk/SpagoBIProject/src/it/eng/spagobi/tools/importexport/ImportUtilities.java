@@ -50,6 +50,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,39 +81,53 @@ public class ImportUtilities {
 	    File tmpFolder = new File(pathImpTmpFolder);
 		tmpFolder.mkdirs();
 		int BUFFER = 2048;
+        FileInputStream fis = null;
+        ZipInputStream zis = null;
 		try {
-	         BufferedOutputStream dest = null;
-	         FileInputStream fis = new FileInputStream(pathArchiveFile);
-	         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+	         fis = new FileInputStream(pathArchiveFile);
+	         zis = new ZipInputStream(new BufferedInputStream(fis));
 	         ZipEntry entry;
 	         while((entry = zis.getNextEntry()) != null) {
-	            int count;
-	            byte data[] = new byte[BUFFER];
-	            String entryName = entry.getName();
-	            int indexofdp = entryName.indexOf(":\\");
-	            if(indexofdp!=-1) {
-	            	int indexlastslash = entryName.lastIndexOf("\\");
-	            	entryName = entryName.substring(0, indexofdp - 2) + entryName.substring(indexlastslash);
-	            }
-	            File entryFile = new File(pathImpTmpFolder+ "/" + entryName);
-	            File entryFileFolder = entryFile.getParentFile();
-	            entryFileFolder.mkdirs();
-	            FileOutputStream fos = new FileOutputStream(pathImpTmpFolder+ "/" + entryName);
-	            dest = new BufferedOutputStream(fos, BUFFER);
-	            while ((count = zis.read(data, 0, BUFFER)) != -1) {
-	               dest.write(data, 0, count);
-	            }
-	            dest.flush();
-	            dest.close();
+	        	BufferedOutputStream dest = null;
+	        	FileOutputStream fos = null;
+	        	try {
+		            int count;
+		            byte data[] = new byte[BUFFER];
+		            String entryName = entry.getName();
+		            int indexofdp = entryName.indexOf(":\\");
+		            if(indexofdp!=-1) {
+		            	int indexlastslash = entryName.lastIndexOf("\\");
+		            	entryName = entryName.substring(0, indexofdp - 2) + entryName.substring(indexlastslash);
+		            }
+		            File entryFile = new File(pathImpTmpFolder+ "/" + entryName);
+		            File entryFileFolder = entryFile.getParentFile();
+		            entryFileFolder.mkdirs();
+		            fos = new FileOutputStream(pathImpTmpFolder+ "/" + entryName);
+		            dest = new BufferedOutputStream(fos, BUFFER);
+		            while ((count = zis.read(data, 0, BUFFER)) != -1) {
+		               dest.write(data, 0, count);
+		            }
+		            dest.flush();
+	        	} finally {
+	        		if (dest != null) dest.close();
+	        		if (fos != null) fos.close();
+	        	}
 	         }
-	         zis.close();
 	      } catch (EOFException eofe) {
 	    	  logger.warn("Error during the decompression of the exported file " , eofe);
-	      } catch(Exception e) {
-		  logger.warn("Error during the decompression of the exported file " , e);
-	    	  throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
-	      }finally{
-		  logger.debug("OUT");
+	      } catch (Exception e) {
+	    	  logger.warn("Error during the decompression of the exported file " , e);
+	    	  	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+	      } finally {
+	    	  if (zis != null || fis != null) {
+	    		  try {
+	    			  if (zis != null) zis.close();
+	    			  if (fis != null) fis.close();
+	    		  } catch (IOException e) {
+					logger.error("Error closing stream", e);
+	    		  }
+	    	  }
+	    	  logger.debug("OUT");
 	      }
 	}
 	

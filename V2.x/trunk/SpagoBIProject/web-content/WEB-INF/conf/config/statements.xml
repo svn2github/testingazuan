@@ -122,7 +122,7 @@
  					  
  	<STATEMENT name="SELECT_ALL_DL_USER" 
                query="SELECT s.NAME, s.DESCR,  s.DL_ID as ID, 1 as PRES
-					FROM SBI_DIST_LIST s, SBI_DIST_USER sbu, 
+					FROM SBI_DIST_LIST s, SBI_DIST_LIST_USER sbu, 
 					SBI_DIST_LIST_OBJECTS o, SBI_OBJ_FUNC sof, SBI_FUNC_ROLE fr, SBI_EXT_ROLES e
 					WHERE s.DL_ID = o.DL_ID   AND sbu.LIST_ID=s.DL_ID AND o.DOC_ID = sof.BIOBJ_ID AND sof.FUNCT_ID = fr.FUNCT_ID
 					AND fr.STATE_CD = 'REL' AND fr.ROLE_ID= e.EXT_ROLE_ID  AND e.NAME IN (?,?,?,?,?,?) AND sbu.USER_ID = ?

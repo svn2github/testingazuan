@@ -6,7 +6,9 @@
     <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierBinaryContentsTemp" table="SBI_DOSSIER_BIN_TEMP">
         <id name="binId" type="integer">
             <column name="BIN_ID" />
-            <generator class="identity" />
+            <generator class="native">
+           		<param name="sequence">sbi_dossier_binary_contents_temp_seq</param>
+            </generator>
         </id>
         <many-to-one name="sbiDossierPartsTemp" class="it.eng.spagobi.engines.dossier.metadata.SbiDossierPartsTemp">
             <column name="PART_ID" />
@@ -15,7 +17,7 @@
             <column name="NAME" />
         </property>
         <property name="binContent" type="binary">
-            <column name="BIN_CONTENT" />
+            <column name="BIN_CONTENT" sql-type="longvarbinary"/>
         </property>
         <property name="type" type="string">
             <column name="TYPE" />

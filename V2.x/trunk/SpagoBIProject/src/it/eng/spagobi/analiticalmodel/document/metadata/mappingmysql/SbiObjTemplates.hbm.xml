@@ -5,8 +5,8 @@
     <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates" table="SBI_OBJECT_TEMPLATES" >
         <id name="objTempId" type="integer">
             <column name="obj_temp_id" />
-            <generator class="identity">
-           
+            <generator class="native">
+           		<param name="sequence">sbi_object_templates_seq</param>
             </generator>
         </id>   
         

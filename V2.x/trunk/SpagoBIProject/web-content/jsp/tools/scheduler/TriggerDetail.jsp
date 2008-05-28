@@ -1166,7 +1166,8 @@ toggle('mail_<%=biobj.getId()%>', 'sendmail_<%=biobj.getId()%>', <%= sInfo.isSen
 		} %>
 	<% } %>	
   	</table>
-  </div>						
+  </div>
+   </div>						
 <script>
 toggle('dl_<%=biobj.getId()%>', 'saveasdl_<%=biobj.getId()%>', <%=sInfo.isSendToDl()%> );
 </script> 

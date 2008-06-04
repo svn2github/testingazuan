@@ -1637,10 +1637,10 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			// get lov result handler
 			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
 			List values = biparam.getParameterValues();
-			if (values != null) {
+			if (values != null && values.size()>0) {
 				for (int i = 0; i < values.size(); i++) {
 					String value = values.get(i).toString();
-					if (!lovResultHandler.containsValue(value, lovProvDet
+					if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 							.getValueColumnName())) {
 						biparam.setHasValidValues(false);
 						logger.warn("Parameter '" + biparam.getLabel()

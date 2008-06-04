@@ -24,6 +24,7 @@ package it.eng.spagobi.analiticalmodel.document.service;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -41,6 +42,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,6 +94,23 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		response.setAttribute(moduleConfig);
 		
 		PaginatorIFace paginator = new GenericPaginator();		
+		
+		
+		int numRows = 10;
+		try{
+			ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+			String lookupnumRows = (String)spagoconfig.getAttribute("SPAGOBI.LOOKUP.numberRows");
+			if(lookupnumRows!=null) {
+				numRows = Integer.parseInt(lookupnumRows);
+			}
+		} catch(Exception e) {
+			numRows = 10;
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(),
+					            "getListServiceBaseConfig", "Error while recovering number rows for " +
+					            "lookup from configuration, usign default 10", e);
+		}
+		paginator.setPageSize(numRows);
+		
 		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();
 		List objectsList = null;
 		if (initialPath != null && !initialPath.trim().equals("")) {
@@ -273,7 +292,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 
 	private SourceBean makeListConfiguration(IEngUserProfile profile) throws Exception {
 		String moduleConfigStr = "";
-		moduleConfigStr += "<CONFIG title=\"SBISet.objects.titleList\">";
+		moduleConfigStr += "<CONFIG rows=\"20\" title=\"SBISet.objects.titleList\">";
 		moduleConfigStr += "	<QUERIES/>";
 		moduleConfigStr += "	<COLUMNS>";
 		moduleConfigStr += "		<COLUMN label=\"ID\" name=\"OBJECT_ID\" hidden=\"true\" />";

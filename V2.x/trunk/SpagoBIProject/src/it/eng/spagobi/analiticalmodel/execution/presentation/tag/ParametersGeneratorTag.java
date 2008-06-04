@@ -380,11 +380,11 @@ public class ParametersGeneratorTag extends TagSupport {
 	    	htmlStream.append("	var nameVP = viewpointname" + requestIdentity + ".getValue();\n");
 	    	htmlStream.append("	var descVP = viewpointdescr" + requestIdentity + ".getValue();\n");
 	    	htmlStream.append("	var scopeVP = comboVP" + requestIdentity + ".getValue();\n");
-	    	htmlStream.append("	if (nameVP == null || nameVP.value == ''){\n");
+	    	htmlStream.append("	if (nameVP == null || nameVP.length == 0){\n");
 	    	htmlStream.append("		alert('" + msgBuilder.getMessage("6000", httpRequest) + "');\n");
 	    	htmlStream.append("		return;\n");
 	    	htmlStream.append("	}\n");
-	    	htmlStream.append("	if (scopeVP == null || scopeVP.value == ''){\n");
+	    	htmlStream.append("	if (scopeVP == null || scopeVP.length == 0){\n");
 	    	htmlStream.append("		alert('" + msgBuilder.getMessage("6001", httpRequest) + "');\n");
 	    	htmlStream.append("		return;\n");
 	    	htmlStream.append("	}\n");
@@ -761,7 +761,8 @@ public class ParametersGeneratorTag extends TagSupport {
 	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
-	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(biparam.getParameterValuesDescription()) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
+	String tmpValue = (biparam.getParameterValuesDescription().equals("null"))?"":biparam.getParameterValuesDescription();
+	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
 	   "setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");

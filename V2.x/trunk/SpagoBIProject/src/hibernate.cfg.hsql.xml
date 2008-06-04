@@ -41,11 +41,11 @@
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappinghsqldb/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/config/metadata/mappinghsqldb/SbiEngines.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/datasource/metadata/mappinghsqldb/SbiDataSource.hbm.xml" />
-        <!--
+        
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappinghsqldb/SbiDistributionList.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappinghsqldb/SbiDistributionListsObjects.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappinghsqldb/SbiDistributionListUser.hbm.xml" />
-        -->
+       
         <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiBinContents.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappinghsqldb/SbiObjTemplates.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappinghsqldb/SbiObjNotes.hbm.xml" />

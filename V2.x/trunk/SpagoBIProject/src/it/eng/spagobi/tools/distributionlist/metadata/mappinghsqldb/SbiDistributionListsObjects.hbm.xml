@@ -6,9 +6,7 @@
     <class name="it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListsObjects" table="SBI_DIST_LIST_OBJECTS">
         <id name="relId" type="integer">
             <column name="REL_ID" />
-            <generator class="native">
-            	<param name="sequence">SBI_DIST_LIST_OBJECTS_SEQ</param>
-            </generator>
+ 			<generator class="identity"/>     
         </id>
         <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
             <column name="DOC_ID" not-null="true" />

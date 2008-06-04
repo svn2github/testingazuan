@@ -219,10 +219,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<keywords>Tools</keywords>
         </portlet-info>
 	</portlet>		
-	 <!-- 
+	
 	 <portlet>
         <description>Profile Attributes</description>		
-        <portlet-name>ProfileAttributes</portlet-name>		
+        <portlet-name>SbiProfileAttributes</portlet-name>		
         <display-name>Profile Attributes</display-name>		
         <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
         <init-param>
@@ -250,8 +250,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	<keywords>Profile Attributesr</keywords>
         </portlet-info>
 	</portlet>
-	  -->
-	  <portlet>
+	 
+	<portlet>
         <description>Events</description>		
         <portlet-name>SbiEvents</portlet-name>		
         <display-name>Events</display-name>		

@@ -45,6 +45,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	JobInfo jobInfo = (JobInfo)aSessionContainer.getAttribute(SpagoBIConstants.JOB_INFO);   
 	List jobBiobjects = jobInfo.getBiobjects();
+	Iterator iterJobBiobjs = jobBiobjects.iterator();
+	String allObjIDS = "";
+	while(iterJobBiobjs.hasNext()) {
+		BIObject biobj = (BIObject)iterJobBiobjs.next();
+		allObjIDS += biobj.getId() + ",";
+	}
+	allObjIDS = (allObjIDS != null && !allObjIDS.equals(""))?allObjIDS.substring(0,allObjIDS.length()-1):"";
 	
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("LIGHT_NAVIGATOR_BACK_TO", "1");
@@ -56,6 +63,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 	   
 	String splitter = ";";
+	
 %>
 
 <script type="text/javascript" src="<%=linkProto%>"></script>
@@ -115,6 +123,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- ********************** SCRIPT FOR TABS **************************** -->
 <script>
 	tabOpened = ""; 
+	biobidstr = "<%=allObjIDS%>";
 	
 	function changeTab(biobjid) {
 	  	if(tabOpened==biobjid) {
@@ -127,19 +136,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		tabOpened = biobjid;
 	}
 	
+	function removeTab(message) {
+		if (tabOpened == "") return;
+		
+  		if (confirm(message)){
+	  		var tmpBiobidstr = "";
+	  		var lstIds = biobidstr.split(",");
+			for(i=0; i<lstIds.length; i++) {
+				if(lstIds[i] != tabOpened){
+				   tmpBiobidstr = tmpBiobidstr + lstIds[i] + ',';
+				}
+			}
+			tmpBiobidstr = tmpBiobidstr.substring(0, tmpBiobidstr.length - 1);
+			$('selected_biobject_ids').value = tmpBiobidstr;
+			
+			document.getElementById('formmsg').value='MESSAGE_DOCUMENTS_SELECTED';
+			document.getElementById('jobdetailform').submit();
+			}
+     	return;
+	}
 	function fillParamCall() {
 	
 	    biobidstr = ''; 
 		checkBiObjs = document.getElementsByName('biobject');
 		for(i=0; i<checkBiObjs.length; i++) {
 		    checkBiObj = checkBiObjs[i];
-			if(checkBiObj.checked){
-			    if(biobidstr!='') {
-			    	biobidstr = biobidstr + ',';
-			    }
-				biobidstr = biobidstr + checkBiObj.value;
+			if(checkBiObj.checked && biobidstr.indexOf(checkBiObj.value + ",") == -1){
+				biobidstr = biobidstr + checkBiObj.value + ",";
 			}
 		}
+		biobidstr = (biobidstr == "")?"":biobidstr.substring(0, biobidstr.length -1);
+		
 		$('selected_biobject_ids').value = biobidstr;
 		
 		if(winDS!=null){
@@ -435,13 +462,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<td class='titlebar_level_2_text_section' style='vertical-align:middle;padding-left:5px;'>
 				<spagobi:message key = "scheduler.documentparameters"  bundle="component_scheduler_messages"/>	
 			</td>
-			<td class='titlebar_level_2_empty_section'>&nbsp;</td>
-			<td class='titlebar_level_2_button_section'>
+			<td class='titlebar_level_2_empty_section_bis'>
 				<a href='javascript:opencloseDocumentSelectionWin()'> 
-	      			<img class='header-button-image-portlet-section' 
-	      				 title='<spagobi:message key = "scheduler.addremovedocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/plusminus.gif")%>' 
-	      				 alt='<spagobi:message key = "scheduler.addremovedocument"  bundle="component_scheduler_messages"/>' />
+	      			<img class='header-button-image-portlet-section_bis' 
+	      				 title='<spagobi:message key = "scheduler.addocument" bundle="component_scheduler_messages" />' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/edit_add.png")%>' 
+	      				 alt='<spagobi:message key = "scheduler.addocument"  bundle="component_scheduler_messages"/>' />
+				</a>
+			</td>
+			<td class='titlebar_level_2_empty_section_bis'>&nbsp;</td>
+			<td class='titlebar_level_2_empty_section_bis'>
+				<a href="javascript:removeTab('<spagobi:message key="scheduler.DeleteDocumentConfirm" bundle="component_scheduler_messages"/>')"> 
+	      			<img class='header-button-image-portlet-section_bis' 
+	      				 title='<spagobi:message key = "scheduler.removedocument" bundle="component_scheduler_messages" />' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/edit_remove.png")%>' 
+	      				 alt='<spagobi:message key = "scheduler.removedocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
 		</tr>
@@ -460,11 +495,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<br/>
 	<%			
 		} else {
-			Iterator iterJobBiobjs = jobBiobjects.iterator();
+			Iterator localIterJobBiobjs = jobBiobjects.iterator();
 	   	 	int index = 0;
 	    	String tabClass = "tab selected"; 
-			while(iterJobBiobjs.hasNext()) {
-				BIObject biobj = (BIObject)iterJobBiobjs.next();
+			while(localIterJobBiobjs.hasNext()) {
+				BIObject biobj = (BIObject)localIterJobBiobjs.next();
+				
 				String biobjName = biobj.getName();
 				if(index > 0) {
 					tabClass = "tab"; 
@@ -490,12 +526,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 		IParameterDAO pardao = DAOFactory.getParameterDAO();
-		Iterator iterJobBiobjs = jobBiobjects.iterator();
+		Iterator localIterJobBiobjs = jobBiobjects.iterator();
 	    int index = 0;
 	    String setTabOpened = "";
 	    String displaytab = "inline";
-		while(iterJobBiobjs.hasNext()) {
-			BIObject biobj = (BIObject)iterJobBiobjs.next();
+		while(localIterJobBiobjs.hasNext()) {
+			BIObject biobj = (BIObject)localIterJobBiobjs.next();
 			List pars = biobj.getBiObjectParameters();
 			if(index > 0) {
 				displaytab = "none";

@@ -235,29 +235,33 @@ public class JobManagementModule extends AbstractModule {
 			List biobj_sel_now = new ArrayList();
 		    // get the list of biobject id from the request
 			String sel_biobj_ids_str = (String)request.getAttribute("selected_biobject_ids");
-			String[] sel_biobj_ids_arr = sel_biobj_ids_str.split(",");
-			List biobjIdsFromRequest = Arrays.asList(sel_biobj_ids_arr);
-			//List biobjIdsFromRequest = request.getAttributeAsList("biobject");
-			// update the job information
-			Iterator iterBiobjIdsFromRequest = biobjIdsFromRequest.iterator();
-			while(iterBiobjIdsFromRequest.hasNext()) {
-				String biobjidStr = (String)iterBiobjIdsFromRequest.next();
-				Integer biobjInt = Integer.valueOf(biobjidStr);
-				if(!biobjIds.contains(biobjInt)) {
-					Integer biobjid = new Integer(biobjidStr);
-					IBIObjectDAO biobjectDAO = DAOFactory.getBIObjectDAO();
-					IBIObjectParameterDAO ibiobjpardao = DAOFactory.getBIObjectParameterDAO();
-					BIObject biobj = biobjectDAO.loadBIObjectById(biobjid);
-					List bipars = ibiobjpardao.loadBIObjectParametersById(biobjid);
-					biobj.setBiObjectParameters(bipars);
-					biobj_sel_now.add(biobj);
-				} else {
-					Iterator iter_prev_biobj = biobjects.iterator();
-					while(iter_prev_biobj.hasNext()){
-						BIObject biobj = (BIObject)iter_prev_biobj.next();
-						if(biobj.getId().equals(biobjInt)) {
-							biobj_sel_now.add(biobj);
-							continue;
+			if (sel_biobj_ids_str.equals(""))
+				biobj_sel_now = new ArrayList();
+			else{
+				String[] sel_biobj_ids_arr = sel_biobj_ids_str.split(",");
+				List biobjIdsFromRequest = Arrays.asList(sel_biobj_ids_arr);
+				//List biobjIdsFromRequest = request.getAttributeAsList("biobject");
+				// update the job information
+				Iterator iterBiobjIdsFromRequest = biobjIdsFromRequest.iterator();
+				while(iterBiobjIdsFromRequest.hasNext()) {
+					String biobjidStr = (String)iterBiobjIdsFromRequest.next();
+					Integer biobjInt = Integer.valueOf(biobjidStr);
+					if(!biobjIds.contains(biobjInt)) {
+						Integer biobjid = new Integer(biobjidStr);
+						IBIObjectDAO biobjectDAO = DAOFactory.getBIObjectDAO();
+						IBIObjectParameterDAO ibiobjpardao = DAOFactory.getBIObjectParameterDAO();
+						BIObject biobj = biobjectDAO.loadBIObjectById(biobjid);
+						List bipars = ibiobjpardao.loadBIObjectParametersById(biobjid);
+						biobj.setBiObjectParameters(bipars);
+						biobj_sel_now.add(biobj);
+					} else {
+						Iterator iter_prev_biobj = biobjects.iterator();
+						while(iter_prev_biobj.hasNext()){
+							BIObject biobj = (BIObject)iter_prev_biobj.next();
+							if(biobj.getId().equals(biobjInt)) {
+								biobj_sel_now.add(biobj);
+								continue;
+							}
 						}
 					}
 				}

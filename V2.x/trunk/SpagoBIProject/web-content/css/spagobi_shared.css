@@ -223,6 +223,13 @@ img.header-button-image-portlet-section {
 }
 
 /* Image of a button in the header table for each section of the SpagoBI portlet*/
+img.header-button-image-portlet-section_bis {
+	width:15px;
+	height:15px;
+	border:none;
+}
+
+/* Image of a button in the header table for each section of the SpagoBI portlet*/
 input.header-button-image-portlet-section {
 	width:25px;
 	height:25px;
@@ -486,6 +493,14 @@ IMG {
 
 .titlebar_level_2_empty_section {
 	background-color:white;
+	width:10px;
+	border-bottom: 1px solid #bbb;
+	border-top: 1px solid #bbb;
+}
+
+.titlebar_level_2_empty_section_bis {
+	vertical-align: middle;
+	background-color:#E1E4E9;
 	width:10px;
 	border-bottom: 1px solid #bbb;
 	border-top: 1px solid #bbb;

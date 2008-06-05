@@ -36,12 +36,19 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import com.sun.faces.util.Base64;
+import com.thoughtworks.xstream.core.util.Base64Encoder;
 
 public class InsertNotesAction extends BaseProfileAction{
 	
@@ -131,7 +138,14 @@ public class InsertNotesAction extends BaseProfileAction{
 				execIdentifier = (String)request.getAttribute("execIdentifier");
 			}
 			else if(parName.equals("OLD_NOTES")){
-				oldNotes = (String)request.getAttribute("OLD_NOTES");
+				
+				String oldNotest = (String)request.getAttribute("OLD_NOTES");
+				try {
+					oldNotes =new String(new BASE64Decoder().decodeBuffer(oldNotest));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
 			}
 			else if(parName.equals("notes")){
 				notes = (String)request.getAttribute("notes");
@@ -140,7 +154,15 @@ public class InsertNotesAction extends BaseProfileAction{
 		    
 		    if (objId != null && !objId.equals("")){
 		    	if (userId != null && !userId.equals("")){
-		    		String tempOldNotes = getNotes(execIdentifier, objId );
+		    		String tempOldNotest = getNotes(execIdentifier, objId );
+		    		String tempOldNotes = "" ;
+		    		try {
+		    			tempOldNotes =new String(new BASE64Decoder().decodeBuffer(tempOldNotest));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+		    		
 		    		if (tempOldNotes.equals(oldNotes)){
 		    			saveNotes(execIdentifier, objId, notes);
 		    		} else {
@@ -149,13 +171,14 @@ public class InsertNotesAction extends BaseProfileAction{
 		    		}
 		       }
 		     }
-		   
+		    
+		    String notesEnc = new BASE64Encoder().encode(notes.getBytes());
 		    response.setAttribute("userId", userId);
 			response.setAttribute("OBJECT_ID", objId);
 		    response.setAttribute("NOTES_CONFLICT", conflict);
 		    response.setAttribute("execIdentifier", execIdentifier);
 		    response.setAttribute("MESSAGEDET", mod);
-		    response.setAttribute("notes", notes);
+		    response.setAttribute("notes", notesEnc);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "insertNotesBIObjectPubJ");
 			
 		 }
@@ -164,14 +187,16 @@ public class InsertNotesAction extends BaseProfileAction{
 	 private String getNotes(String execIdentifier, String objectid ) {
 				
 		
-			String notes = "";
+		   String notes = "";
 			try{	
 				
 				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
 				ObjNote objnotes = objNoteDAO.getExecutionNotes(new Integer(objectid), execIdentifier);
 				
 				if(objnotes!=null){
-					notes = new String(objnotes.getContent());
+					byte[] notestemp = objnotes.getContent();
+					notes = new BASE64Encoder().encode(notestemp);
+					//notes = new String(objnotes.getContent());
 				}
 				
 			} catch (Exception e) {

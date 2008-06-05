@@ -29,6 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spago.base.SourceBean,			
 				 java.util.Date"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjNote"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
@@ -36,14 +38,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
+<%@page import="sun.misc.BASE64Decoder"%>
+<%@page import="java.io.IOException"%>
+
 
 
 
  <%
 	    String objid = (String)aServiceResponse.getAttribute("OBJECT_ID");
 	    String mess = (String)aServiceResponse.getAttribute("MESSAGEDET");	
-	    String notes = (String)aServiceResponse.getAttribute("notes");	
+	    String notes = (String)aServiceResponse.getAttribute("notes");
+	    String notesEditor = "";
+	    try {
+	   		 notesEditor = new String(new BASE64Decoder().decodeBuffer(notes));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	    
 	    String execIdentifier = (String)aServiceResponse.getAttribute("execIdentifier");
+
+		
 	    String conflict = (String)aServiceResponse.getAttribute("NOTES_CONFLICT");
 	    String msg = "INSERT_NOTES";
 		String insertNotesForm = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=INSERT_NOTES_ACTION";	
@@ -71,7 +86,7 @@ Ext.onReady(function(){
     
     top1 = new Ext.form.HtmlEditor({
         frame: true,
-        value: '<%=notes%>',
+        value: '<%=notesEditor%>',
         bodyStyle:'padding:5px 5px 0',
         width:'100%',
 	    height: 265,

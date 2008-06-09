@@ -51,6 +51,7 @@ public class BOConstants {
 	public static final String STORAGETOKEN = "STORAGETOKEN";
 	public static final String BOREPORT = "BOREPORT";
 	public static final String BODOCUMENT = "BODOCUMENT";
+	public static final String WIDOCUMENT = "WIDOCUMENT";
 	public static final String DOCUMENTREPORTMAP = "DOCUMENTREPORTMAP";
 	
 	public static final String DIMENSION_ID = "DIMENSION_ID";

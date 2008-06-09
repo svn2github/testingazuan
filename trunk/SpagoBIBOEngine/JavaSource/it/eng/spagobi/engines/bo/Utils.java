@@ -53,6 +53,10 @@ import com.bo.rebean.wi.Prompt;
 import com.bo.rebean.wi.Prompts;
 import com.bo.rebean.wi.Report;
 import com.bo.rebean.wi.ReportEngine;
+import com.bo.wibean.WIDocument;
+import com.bo.wibean.WIOutput;
+import com.bo.wibean.WIPrompt;
+import com.bo.wibean.WIPrompts;
 import com.bo.wibean.WISession;
 
 public class Utils {
@@ -103,10 +107,50 @@ public class Utils {
 			repInstance.setPrompts();
 	    }
 	
+	public static void fillPrompts(WIDocument repDocument, HttpServletRequest request) {
+		//repDocument.getHTMLView(false);
+		WIPrompts prompts = null;
+		try {
+			prompts = repDocument.getPrompts();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int numPrompts = prompts.getCount();
+		for(int i=0; i<numPrompts; i++) {
+			 WIPrompt prompt = prompts.getItem(i + 1);
+			 String namePrompt = prompt.getName();
+			 String valuePrompt = request.getParameter(namePrompt);
+			 logger.info("Engines"+ Utils.class.getName()+ 
+	         			 "fillPrompts() output type not supported");
+			 if (valuePrompt != null) {
+			 	String[] valsPrompt = valuePrompt.split(",");
+				String strValueList = "";
+				if (valsPrompt.length > 1) {
+					for (int j = 0; j < valsPrompt.length; j++) {
+						strValueList += valsPrompt[j];
+						if (j < valsPrompt.length - 1) strValueList += ";";
+					}
+				} else
+					strValueList = valsPrompt[0];
+				prompt.enterValue(strValueList);
+			 }
+		}
+		//repDocument.setPromptsEx();
+    }
+	
 	public static void addHtmlInSession(Report report, HttpSession session) {
 		HTMLView reportHtmlView = (HTMLView) report.getView(OutputFormatType.HTML);
 		String headPart = reportHtmlView.getStringPart("head", false);
 		String bodyPart = reportHtmlView.getStringPart("body", false);
+		session.setAttribute(BOConstants.REPORTHEADPART, headPart);
+		session.setAttribute(BOConstants.REPORTBODYPART, bodyPart);
+	}
+	
+
+	public static void addHtmlInSession(WIOutput wiOutput,
+			HttpSession session) {
+		String headPart = wiOutput.getStringPart("head", false);
+		String bodyPart = wiOutput.getStringPart("body", false);
 		session.setAttribute(BOConstants.REPORTHEADPART, headPart);
 		session.setAttribute(BOConstants.REPORTBODYPART, bodyPart);
 	}
@@ -165,4 +209,5 @@ public class Utils {
     	 }
      return isInDrillBar;
      }
+
 }

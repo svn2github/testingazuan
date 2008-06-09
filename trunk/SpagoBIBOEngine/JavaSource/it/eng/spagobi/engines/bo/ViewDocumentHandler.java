@@ -73,6 +73,11 @@ import com.bo.rebean.wi.Report;
 import com.bo.rebean.wi.ReportEngine;
 import com.bo.rebean.wi.Reports;
 import com.bo.rebean.wi.TreeNode;
+import com.bo.wibean.WIDocument;
+import com.bo.wibean.WIException;
+import com.bo.wibean.WIImageOption;
+import com.bo.wibean.WIOutput;
+import com.bo.wibean.WIPDFView;
 import com.bo.wibean.WIServer;
 import com.bo.wibean.WISession;
 
@@ -90,6 +95,7 @@ public class ViewDocumentHandler {
 		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 				"EXECUTION_STARTED", null, null);
 		
+		/*
 		//get template
 		String template64 = (String)request.getParameter("spagobi_template");
 		if(template64==null) {
@@ -180,6 +186,17 @@ public class ViewDocumentHandler {
 		logger.info("Engines"+ this.getClass().getName()+ 
 					"service() like report type will be used the wid value. " +
 					"For this release the only possible type of reports are the ones with .wid extension"); 
+		*/
+		
+		
+		String reportName = "P2 - Anomalies par salarié";
+		String reportID = "27980";
+		int repCode = 0;
+		String reportType = "rep";
+		String repository = BOConstants.CORPORATE_REPOSITORY;
+		String outputType = "PDF";
+		//String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
+		if (outputType == null || outputType.trim().equals("")) outputType = "HTML";
 		
 		try {
 			// get wiserver form context
@@ -209,111 +226,164 @@ public class ViewDocumentHandler {
 		 	  	       "EXECUTION_FAILED", "BO Session recovered is null", null);
 				return;
 			}
-			// get report server 
-			ReportEngine repEngine = (ReportEngine)httpSession.getAttribute(BOConstants.REPORTENGINE);
-			// open document
-			DocumentInstance document  = null;
-			document = repEngine.openDocument(reportName, reportID, repository, reportType);
-			// fills document parameters values
-			Utils.fillPrompts(document, request);
 			
+			// open the document
+			WIDocument wiDocument = wiSession.openDocument(reportName, new Integer(reportID).intValue(), repCode, reportType);
+			httpSession.setAttribute(BOConstants.WIDOCUMENT, wiDocument);
 			
+			boolean isRep = reportType.equals("rep");
+			boolean isWid = reportType.equals("wid");
 			
-			
-
-			/*
-			// get data provider
-			DataProvider dp = document.getDataProviders().getItem(0);
-			// get data provider name  
-			String dpn = dp.getName();
-			// get data provider data source (Example: universe)
-			DataSource dpds = dp.getDataSource();
-			// get data provider data source name
-			String dpdsn = dpds.getName();
-            
-			// get the classes of the data source (universe)
-			// and then get a particular field of the class
-			DataSourceObjects dsobjs = dpds.getClasses();
-			int dsobjscount = dsobjs.getChildCount();
-			DataSourceObject dsogeoid = null; 
-			for(int i=0; i<dsobjscount; i++) {
-				DataSourceObject dso = dsobjs.getChildAt(i);
-				if(dso.getName().equals("Ambiente")) {
-					int countdsochild = dso.getChildCount();
-					for(int j=0; j<countdsochild; j++) {
-						TreeNode tn = dso.getChildAt(j);
-						if (tn instanceof DataSourceObject) {
-							DataSourceObject tndso = (DataSourceObject)tn;
-							if(tndso.getName().equalsIgnoreCase("Id Ambiente")) {
-								dsogeoid = tndso;
+			if (isWid) {
+				// get report server 
+				ReportEngine repEngine = (ReportEngine)httpSession.getAttribute(BOConstants.REPORTENGINE);
+				// open document
+				DocumentInstance document  = null;
+				document = repEngine.openDocument(reportName, reportID, repository, reportType);
+				// fills document parameters values
+				Utils.fillPrompts(document, request);
+				
+	
+				/*
+				// get data provider
+				DataProvider dp = document.getDataProviders().getItem(0);
+				// get data provider name  
+				String dpn = dp.getName();
+				// get data provider data source (Example: universe)
+				DataSource dpds = dp.getDataSource();
+				// get data provider data source name
+				String dpdsn = dpds.getName();
+	            
+				// get the classes of the data source (universe)
+				// and then get a particular field of the class
+				DataSourceObjects dsobjs = dpds.getClasses();
+				int dsobjscount = dsobjs.getChildCount();
+				DataSourceObject dsogeoid = null; 
+				for(int i=0; i<dsobjscount; i++) {
+					DataSourceObject dso = dsobjs.getChildAt(i);
+					if(dso.getName().equals("Ambiente")) {
+						int countdsochild = dso.getChildCount();
+						for(int j=0; j<countdsochild; j++) {
+							TreeNode tn = dso.getChildAt(j);
+							if (tn instanceof DataSourceObject) {
+								DataSourceObject tndso = (DataSourceObject)tn;
+								if(tndso.getName().equalsIgnoreCase("Id Ambiente")) {
+									dsogeoid = tndso;
+								}
 							}
 						}
 					}
 				}
+				
+				
+				// get the query of the data provider
+				Query dpq = dp.getQuery();
+				// get the sql of the query
+				String dpqsql = dpq.getSQL();
+				System.out.println("***** dp query sql : " + dpqsql);
+				
+				// get the condition container of the query
+				ConditionContainer oldcc = dpq.getCondition();
+				// create a new condition container and replace the old one
+				ConditionContainer newcc = dpq.createCondition(LogicalOperator.AND);
+				try{
+					// add the filed to the condition container
+					ConditionObject newco = newcc.createConditionObject(dsogeoid);
+					// add the operator
+					FilterCondition newfc = newco.createFilterCondition(Operator.EQUAL);
+					// add the value
+					newfc.createFilterConditionConstant("1");
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				
+				// add the old condition container as a child
+				newcc.copyConditionContainer(oldcc);
+				// run the query
+				dp.runQuery();
+				
+				// get the sql now, after changes
+				String dpqsql1 = dpq.getSQL();
+				System.out.println("***** dp query sql1 : " + dpqsql1);
+	
+	            */ 
+				
+				
+				
+				
+				// recover storage token
+				String storageToken = document.getStorageToken();
+				// Set image parameters
+				ImageOption cdzImageOption = document.getImageOption();
+				cdzImageOption.setImageCallback("viewDocumentImages.jsp");
+				cdzImageOption.setImageNameHolder("image");
+				cdzImageOption.setStorageTokenHolder("entry");
+				// set storage token into session
+				httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
+				// retrieve reports collection:all reports contained inside the document
+				Map docReports = new HashMap();
+				Reports reports = document.getReports();
+				int numReports = reports.getCount();
+				for(int i=0; i<numReports; i++) {
+					Report tmpRep = reports.getItem(i);
+					String nameRep = tmpRep.getName();
+					docReports.put(new Integer(i), nameRep);
+					httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
+				}
+				// select first report the first report
+				document.setSelectedReport(0);
+				Report report = reports.getItem(0);
+				// set document in session 
+				httpSession.setAttribute(BOConstants.BODOCUMENT, document);
+				// generate html
+				Utils.addHtmlInSession(report, httpSession);
 			}
 			
-			
-			// get the query of the data provider
-			Query dpq = dp.getQuery();
-			// get the sql of the query
-			String dpqsql = dpq.getSQL();
-			System.out.println("***** dp query sql : " + dpqsql);
-			
-			// get the condition container of the query
-			ConditionContainer oldcc = dpq.getCondition();
-			// create a new condition container and replace the old one
-			ConditionContainer newcc = dpq.createCondition(LogicalOperator.AND);
-			try{
-				// add the filed to the condition container
-				ConditionObject newco = newcc.createConditionObject(dsogeoid);
-				// add the operator
-				FilterCondition newfc = newco.createFilterCondition(Operator.EQUAL);
-				// add the value
-				newfc.createFilterConditionConstant("1");
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-			
-			// add the old condition container as a child
-			newcc.copyConditionContainer(oldcc);
-			// run the query
-			dp.runQuery();
-			
-			// get the sql now, after changes
-			String dpqsql1 = dpq.getSQL();
-			System.out.println("***** dp query sql1 : " + dpqsql1);
+			if (isRep) {
+				// fills document parameters values
+				//Utils.fillPrompts(wiDocument, request);
+				try {
+					wiDocument.getHTMLView(true);
+				} catch (WIException wiException) {
+					int wiExceptionNumber = wiException.getNumber();
+					if (wiExceptionNumber != WIException.WIERR_DOC_NEEDPROMPT_01) {
+						// errore TODO
+					} else {
+						Utils.fillPrompts(wiDocument, request);
+					}
+					wiDocument.getHTMLView(true);
+				}
+				
+				// recover storage token
+				String storageToken = wiDocument.getStorageToken();
+				// Set image parameters
+				WIImageOption wiImageOption = wiDocument.getImageOption();
+				wiImageOption.setImageCallback("viewDocumentImages.jsp");
+				wiImageOption.setImageNameHolder("image");
+				wiImageOption.setStorageTokenHolder("entry");
+				// set storage token into session
+				httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
+				// retrieve reports collection:all reports contained inside the document
+				Map docReports = new HashMap();
+				String[] reports = wiDocument.getReportList();
+				for (int i=0; i<reports.length; i++) {
+					String nameRep = reports[i];
+					docReports.put(new Integer(i), nameRep);
+					httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
+				}
 
-            */ 
-			
-			
-			
-			
-			// recover storage token
-			String storageToken = document.getStorageToken();
-			// Set image parameters
-			ImageOption cdzImageOption = document.getImageOption();
-			cdzImageOption.setImageCallback("viewDocumentImages.jsp");
-			cdzImageOption.setImageNameHolder("image");
-			cdzImageOption.setStorageTokenHolder("entry");
-			// set storage token into session
-			httpSession.setAttribute(BOConstants.STORAGETOKEN, storageToken);
-			// retrieve reports collection:all reports contained inside the document
-			Map docReports = new HashMap();
-			Reports reports = document.getReports();
-			int numReports = reports.getCount();
-			for(int i=0; i<numReports; i++) {
-				Report tmpRep = reports.getItem(i);
-				String nameRep = tmpRep.getName();
-				docReports.put(new Integer(i), nameRep);
-				httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
+				// Needed to retrieve a filled report list
+				//wiDocument.getHTMLView(false);
+				// select first report the first report
+				//wiDocument.setReport(docReports.get(0).toString());
+				// gets report output
+				//WIOutput wiOutput = wiDocument.getHTMLView(false);
+				// set document in session 
+				httpSession.setAttribute(BOConstants.BODOCUMENT, wiDocument);
+				// generate html
+//				Utils.addHtmlInSession(wiOutput, httpSession);
 			}
-			// select first report the first report
-			document.setSelectedReport(0);
-			Report report = reports.getItem(0);
-			// set document in session 
-			httpSession.setAttribute(BOConstants.BODOCUMENT, document);
-			// generate html
-			Utils.addHtmlInSession(report, httpSession);
+			
 			// forward to the execution jsp
 			String jspexecution = "";
 			if(outputType.trim().equalsIgnoreCase(BOConstants.HTML_OUTPUT_TYPE)){

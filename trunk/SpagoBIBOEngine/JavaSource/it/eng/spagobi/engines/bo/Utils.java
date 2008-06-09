@@ -61,7 +61,7 @@ import com.bo.wibean.WISession;
 
 public class Utils {
 
-	private static Logger logger = Logger.getLogger(BOServlet.class);
+	private static Logger logger = Logger.getLogger(Utils.class);
 	
 	public static boolean controlRepository(String repName) {
 		repName = repName.trim();
@@ -107,35 +107,45 @@ public class Utils {
 			repInstance.setPrompts();
 	    }
 	
+	/**
+	 * Fills the report prompts.
+	 * @param repDocument The WIDocument object for a .rep type document; getHTMLView(true) must be invoked on this object before calling this method).
+	 * @param request The HttpServletRequest request
+	 */
 	public static void fillPrompts(WIDocument repDocument, HttpServletRequest request) {
-		//repDocument.getHTMLView(false);
-		WIPrompts prompts = null;
+		logger.debug("IN");
 		try {
-			prompts = repDocument.getPrompts();
+			WIPrompts prompts = repDocument.getPrompts();
+			logger.debug("Report prompts retrieved.");
+			int numPrompts = prompts.getCount();
+			for (int i = 0; i < numPrompts; i++) {
+				 WIPrompt prompt = prompts.getItem(i + 1);
+				 String namePrompt = prompt.getName();
+				 String valuePrompt = request.getParameter(namePrompt);
+				 logger.debug("Find report prompt with name = [" + namePrompt + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
+				 if (valuePrompt != null) {
+				 	String[] valsPrompt = valuePrompt.split(",");
+					String strValueList = "";
+					if (valsPrompt.length > 1) {
+						for (int j = 0; j < valsPrompt.length; j++) {
+							strValueList += valsPrompt[j];
+							if (j < valsPrompt.length - 1) strValueList += ";";
+						}
+					} else
+						strValueList = valsPrompt[0];
+					logger.debug("Entering new value = [" + strValueList + "] into prompt with name = [" + namePrompt + "].");
+					prompt.enterValue(strValueList);
+				 } else {
+					 String previous = prompt.getPreviousValue();
+					 logger.debug("Entering previous value = [" + previous + "] into prompt with name = [" + namePrompt + "].");
+					 prompt.enterValue(previous);
+				 }
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while filling report prompts", e);
+		} finally {
+			logger.debug("OUT");
 		}
-		int numPrompts = prompts.getCount();
-		for(int i=0; i<numPrompts; i++) {
-			 WIPrompt prompt = prompts.getItem(i + 1);
-			 String namePrompt = prompt.getName();
-			 String valuePrompt = request.getParameter(namePrompt);
-			 logger.info("Engines"+ Utils.class.getName()+ 
-	         			 "fillPrompts() output type not supported");
-			 if (valuePrompt != null) {
-			 	String[] valsPrompt = valuePrompt.split(",");
-				String strValueList = "";
-				if (valsPrompt.length > 1) {
-					for (int j = 0; j < valsPrompt.length; j++) {
-						strValueList += valsPrompt[j];
-						if (j < valsPrompt.length - 1) strValueList += ";";
-					}
-				} else
-					strValueList = valsPrompt[0];
-				prompt.enterValue(strValueList);
-			 }
-		}
-		//repDocument.setPromptsEx();
     }
 	
 	public static void addHtmlInSession(Report report, HttpSession session) {

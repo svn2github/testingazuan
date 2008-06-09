@@ -83,10 +83,11 @@ import com.bo.wibean.WISession;
 
 public class ViewDocumentHandler {
 
-	private transient Logger logger = Logger.getLogger(BOServlet.class);
+	private transient Logger logger = Logger.getLogger(ViewDocumentHandler.class);
 	
 	public void handle(HttpServletRequest request, HttpServletResponse response, 
 			           ServletContext servletContext) throws ServletException, IOException{
+		logger.debug("IN");
 		
 		// AUDIT UPDATE
 		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
@@ -97,7 +98,7 @@ public class ViewDocumentHandler {
 		
 		/*
 		//get template
-		String template64 = (String)request.getParameter("spagobi_template");
+		String template64 = (String)request.getParameter("template");
 		if(template64==null) {
  			logger.error("Engines"+ this.getClass().getName()+ 
  			 			 "service() template parameter (spagobi_template) not found");
@@ -153,13 +154,6 @@ public class ViewDocumentHandler {
 	 	  	                                 "EXECUTION_FAILED", "Cannot find template REPORTID parameter", null);			
 			return;
 		}
-		String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
-		if((outputType==null) || (outputType.trim().equals(""))) {
-			logger.info("Engines"+ this.getClass().getName()+ 
-	 					 "service() Cannot find OUTPUTTYPE parameter, use default value HTML");
-			outputType = BOConstants.HTML_OUTPUT_TYPE;
-		}
-		
 		
 		// get repository name and code
 		int repCode = 0;
@@ -188,15 +182,14 @@ public class ViewDocumentHandler {
 					"For this release the only possible type of reports are the ones with .wid extension"); 
 		*/
 		
-		
-		String reportName = "P2 - Anomalies par salarié";
-		String reportID = "27980";
+		String reportName = "P2 - Code horaire journalier par salarié";
+		String reportID = "27981";
 		int repCode = 0;
 		String reportType = "rep";
 		String repository = BOConstants.CORPORATE_REPOSITORY;
-		String outputType = "PDF";
-		//String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
-		if (outputType == null || outputType.trim().equals("")) outputType = "HTML";
+		
+		String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
+		
 		
 		try {
 			// get wiserver form context
@@ -235,6 +228,11 @@ public class ViewDocumentHandler {
 			boolean isWid = reportType.equals("wid");
 			
 			if (isWid) {
+				// for .wid documents the default output format is HTML
+				if (outputType == null || outputType.trim().equals("")) {
+					logger.info("Cannot find OUTPUTTYPE parameter, use default value HTML for .wid documents.");
+					outputType = BOConstants.HTML_OUTPUT_TYPE;
+				}
 				// get report server 
 				ReportEngine repEngine = (ReportEngine)httpSession.getAttribute(BOConstants.REPORTENGINE);
 				// open document
@@ -340,16 +338,20 @@ public class ViewDocumentHandler {
 			}
 			
 			if (isRep) {
-				// fills document parameters values
-				//Utils.fillPrompts(wiDocument, request);
+				// for .rep documents the default output format is PDF
+				if (outputType == null || outputType.trim().equals("")) {
+					logger.info("Cannot find OUTPUTTYPE parameter, use default value PDF for .rep documents.");
+					outputType = BOConstants.PDF_OUTPUT_TYPE;
+				}
 				try {
+					// must call getHTMLView(true) before handling prompts
 					wiDocument.getHTMLView(true);
 				} catch (WIException wiException) {
 					int wiExceptionNumber = wiException.getNumber();
-					if (wiExceptionNumber != WIException.WIERR_DOC_NEEDPROMPT_01) {
-						// errore TODO
-					} else {
+					if (wiExceptionNumber == WIException.WIERR_DOC_NEEDPROMPT_01) {
 						Utils.fillPrompts(wiDocument, request);
+					} else {
+						// TODO manage Contexts and password
 					}
 					wiDocument.getHTMLView(true);
 				}
@@ -369,19 +371,11 @@ public class ViewDocumentHandler {
 				for (int i=0; i<reports.length; i++) {
 					String nameRep = reports[i];
 					docReports.put(new Integer(i), nameRep);
-					httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
 				}
+				httpSession.setAttribute(BOConstants.DOCUMENTREPORTMAP, docReports);
 
-				// Needed to retrieve a filled report list
-				//wiDocument.getHTMLView(false);
-				// select first report the first report
-				//wiDocument.setReport(docReports.get(0).toString());
-				// gets report output
-				//WIOutput wiOutput = wiDocument.getHTMLView(false);
 				// set document in session 
 				httpSession.setAttribute(BOConstants.BODOCUMENT, wiDocument);
-				// generate html
-//				Utils.addHtmlInSession(wiOutput, httpSession);
 			}
 			
 			// forward to the execution jsp
@@ -398,12 +392,13 @@ public class ViewDocumentHandler {
 			disp.forward(request, response);
  	
  	    } catch (Exception e){
- 	    	  logger.error("Engines"+ this.getClass().getName()+ 
-	 		  			   "service() Error while generating report output");
+ 	    	  logger.error("Error while generating report output");
  	    	  // AUDIT UPDATE
 		 	  	if (auditAccessUtils != null) 
 		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 		 	  	       "EXECUTION_FAILED", "Error while generating report output: " + e.getMessage(), null);
+ 	    } finally {
+ 	    	logger.debug("OUT");
  	    }
 	}
 	

@@ -98,51 +98,54 @@ public class BOServlet extends HttpServlet{
 	public void service(HttpServletRequest request,
 	        			HttpServletResponse response)
 	        			throws IOException, ServletException{
-		
-		WISession wiSession = null;
-		HttpSession httpsession = request.getSession();
-		wiSession = (WISession)httpsession.getAttribute(BOConstants.BOSESSION);
-		if(wiSession==null) {
-			wiSession = getWISession(user, password, response);
-			httpsession.setAttribute(BOConstants.BOSESSION, wiSession);
+		logger.debug("IN");
+		try {
+			WISession wiSession = null;
+			HttpSession httpsession = request.getSession();
+			wiSession = (WISession)httpsession.getAttribute(BOConstants.BOSESSION);
+			if(wiSession==null) {
+				wiSession = getWISession(user, password, response);
+				httpsession.setAttribute(BOConstants.BOSESSION, wiSession);
+			}
+			
+			// create and init  reportEngine
+			ReportEngine cdzReportEngine = Utils.createReportEngine(wiSession);
+			// put the report engine into session
+			httpsession.setAttribute(BOConstants.REPORTENGINE, cdzReportEngine);
+			
+			ServletContext servletContext = getServletContext();
+			
+			String operation = (String)request.getParameter(BOConstants.OPERATION);
+			if(operation==null) {   
+				ViewDocumentHandler viewDocHandler = new ViewDocumentHandler();
+				viewDocHandler.handle(request, response, servletContext);		
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEREPORT)){
+				ChangeReportHandler changeReportHand = new ChangeReportHandler();
+				changeReportHand.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEPAGE)){
+				ChangeReportPageHandler changeReportPageHandler = new ChangeReportPageHandler();
+				changeReportPageHandler.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEMODE)) {
+				ChangeReportModeHandler changeReportModeHandler = new ChangeReportModeHandler();
+				changeReportModeHandler.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEPAGEMODE)) {
+				ChangePageModeHandler changePageModeHandler = new ChangePageModeHandler();
+				changePageModeHandler.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_DRILL)) {
+				ReportDrillHandler reportDrillHandler = new ReportDrillHandler();
+				reportDrillHandler.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.RELOADFROMDRILL)) {
+				ReloadFromDrillHandler reloadFromDrillHandler = new ReloadFromDrillHandler();
+				reloadFromDrillHandler.handle(request, response, servletContext);
+			} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_ADD_DIM)) {
+				AddDimensionHandler addDimensionHandler = new AddDimensionHandler();
+				addDimensionHandler.handle(request, response, servletContext);
+			} else {
+				System.out.println("Operatioon =================== " + operation);
+			}
+		} finally {
+			logger.debug("OUT");
 		}
-		
-		// create and init  reportEngine
-		ReportEngine cdzReportEngine = Utils.createReportEngine(wiSession);
-		// put the report engine into session
-		httpsession.setAttribute(BOConstants.REPORTENGINE, cdzReportEngine);
-		
-		ServletContext servletContext = getServletContext();
-		
-		String operation = (String)request.getParameter(BOConstants.OPERATION);
-		if(operation==null) {   
-			ViewDocumentHandler viewDocHandler = new ViewDocumentHandler();
-			viewDocHandler.handle(request, response, servletContext);		
-		} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEREPORT)){
-			ChangeReportHandler changeReportHand = new ChangeReportHandler();
-			changeReportHand.handle(request, response, servletContext);
-		} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEPAGE)){
-			ChangeReportPageHandler changeReportPageHandler = new ChangeReportPageHandler();
-			changeReportPageHandler.handle(request, response, servletContext);
-		} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEMODE)) {
-			ChangeReportModeHandler changeReportModeHandler = new ChangeReportModeHandler();
-			changeReportModeHandler.handle(request, response, servletContext);
-		} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_CHANGEPAGEMODE)) {
-			ChangePageModeHandler changePageModeHandler = new ChangePageModeHandler();
-			changePageModeHandler.handle(request, response, servletContext);
-		}else if(operation.equalsIgnoreCase(BOConstants.OPERATION_DRILL)) {
-			ReportDrillHandler reportDrillHandler = new ReportDrillHandler();
-			reportDrillHandler.handle(request, response, servletContext);
-		} else if(operation.equalsIgnoreCase(BOConstants.RELOADFROMDRILL)) {
-			ReloadFromDrillHandler reloadFromDrillHandler = new ReloadFromDrillHandler();
-			reloadFromDrillHandler.handle(request, response, servletContext);
-		} else if(operation.equalsIgnoreCase(BOConstants.OPERATION_ADD_DIM)) {
-			AddDimensionHandler addDimensionHandler = new AddDimensionHandler();
-			addDimensionHandler.handle(request, response, servletContext);
-		} else {
-			System.out.println("Operatioon =================== " + operation);
-		}
-		
 	 }
 	
 	

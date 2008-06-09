@@ -38,6 +38,8 @@ import it.eng.spagobi.bo.BIObjectParameter;
 import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.utilities.GeneralUtilities;
+import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -54,63 +56,30 @@ import sun.misc.BASE64Encoder;
  */
 public class BODriver implements IEngineDriver {
 
-
-	private static final String REPORTNAME = "REPORTNAME";
-	private static final String REPOSITORY = "REPOSITORY";
-	private static final String REPORTID = "REPORTID";
-	private static final String OUTPUTTYPE = "OUTPUTTYPE";
-	
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object to execute
-	 * @return Map The map of the execution call parameters
-  	*/
-	public Map getParameterMap(Object biobject){
-		Map map = new Hashtable();
-		try{
-			BIObject biobj = (BIObject)biobject;
-			SpagoBITracer.debug("ENGINES",
-								this.getClass().getName(),
-								"getParameterMap(Object)",
-								"Start Extracting parameters from BIObject");	
-			map = getMap(biobj);
-			SpagoBITracer.debug("ENGINES",
-								this.getClass().getName(),
-								"getParameterMap(Object)",
-								"End Extraction parameters from BIObject, the parameters map " +
-								"which is going to be used for execution is \n" + map);
-			traceParametersError(map);
-		} catch (ClassCastException cce) {
-			SpagoBITracer.major("ENGINES",
-					this.getClass().getName(),
-					"getParameterMap(Object)",
-					"The parameter is not a BIObject type",
-					cce);
-		} 
-		return map;
-	}			
 	/**
-	 * Return a map of parameters which will be sended in the request to the 
+	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
 	 * @param biObject Object to execute
 	 * @param profile Profile of the user 
 	 * @param roleName the name of the execution role
 	 * @return Map The map of the execution call parameters
 	 */
-	public Map getParameterMap(Object object, IEngUserProfile profile, String roleName){
-		return getParameterMap(object);
+	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
+		Map map = new Hashtable();
+		try{
+			BIObject biobj = (BIObject)biobject;
+			map = getMap(biobj);
+		} catch (ClassCastException cce) {
+			SpagoBITracer.major("ENGINES",
+					this.getClass().getName(),
+					"getParameterMap(Object)",
+					"The parameter is not a BIObject type",
+					cce);
+		}
+		map = applySecurity(map);
+		return map;
 	}
-	/**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @return Map The map of the execution call parameters
-  	 */
-	public Map getParameterMap(Object object, Object subObject){
-		return getParameterMap(object);
-	}
+	
 	/**
 	 * Returns a map of parameters which will be send in the request to the 
 	 * engine application.
@@ -123,21 +92,17 @@ public class BODriver implements IEngineDriver {
 	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
 		return getParameterMap(object, profile, roleName);
 	}
-    /**
-	 * Return a map of parameters which will be sended in the request to the 
-	 * engine application.
-	 * @param biObject Object container of the subObject
-	 * @param subObject SubObject to execute
-	 * @param profile Profile of the user 
-	 * @return Map The map of the execution call parameters
-  	 */
-    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile){
-		return getParameterMap(object);
+	
+	
+	/**
+	 * Applys changes for security reason if necessary
+	 * @param pars The map of parameters
+	 * @return the map of parameters to send to the engine 
+	 */
+	protected Map applySecurity(Map pars) {
+		return pars;
 	}
-
-    
-        
-        
+	     
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
@@ -147,18 +112,17 @@ public class BODriver implements IEngineDriver {
 	private Map getMap(BIObject biobj) {
 		Map pars = new Hashtable();
 		biobj.loadTemplate();
-		UploadedFile uplFile = biobj.getTemplate();
-		byte[] content = uplFile.getFileContent();
-		BASE64Encoder encoder = new BASE64Encoder();
-		String strContent64 = encoder.encode(content);
-		pars.put("spagobi_template", strContent64);
-		//pars.put("templatePath",biobj.getPath() + "/template");
-        //pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
+		UploadedFile uploadedFile =  biobj.getTemplate();
+		byte[] template = uploadedFile.getFileContent();
+		BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		pars.put("template", bASE64Encoder.encode(template));
+//		pars.put("templatePath",biobj.getPath() + "/template");
+        pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
         pars = addBIParameters(biobj, pars);
         return pars;
 	} 
  
-         
+	
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute
@@ -173,14 +137,21 @@ public class BODriver implements IEngineDriver {
 								  "BIObject parameter null");
 			return pars;
 		}
+		
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
-			for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
+			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
-					biobjPar = (BIObjectParameter) it.next();
+					biobjPar = (BIObjectParameter)it.next();
+					
+					
+					/*
 					String value = "";
 					for(int i = 0; i < biobjPar.getParameterValues().size(); i++)
 						value += (i>0?",":"") + (String)biobjPar.getParameterValues().get(i);
+					 */
+					String value = parValuesEncoder.encode(biobjPar);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",
@@ -194,64 +165,6 @@ public class BODriver implements IEngineDriver {
   		return pars;
 	}
 	
-	
-	/**
-	 * Controls the parameters, looking for missing or wrong values, and logs error/warning
-	 * @param pars Map of the execution parameters
-	 */
-	private void traceParametersError(Map pars) {
-		// control mandatory REPORTNAME parameter
-		/*String repName = (String)pars.get(REPORTNAME);
-	    if((repName==null) || (repName.trim().equals(""))) {
-	    	SpagoBITracer.critical("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "Cannot find REPORTNAME parameter: it's mandatory");
-	    }
-	    // control mandatory REPORTID parameter
-	    String repID = (String)pars.get(REPORTID);
-	    if((repID==null) || (repID.trim().equals(""))) {
-	    	SpagoBITracer.critical("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "Cannot find REPORTID parameter: it's mandatory");
-	    }
-	    // control REPOSITORY parameter
-	    String repository = (String)pars.get(REPOSITORY);
-	    if((repository==null) || (repository.trim().equals(""))) {
-	    	SpagoBITracer.warning("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "Cannot find REPOSITORY parameter: the default value corporate will be used");
-	    } else if (!repository.equals("corporate") || 
-	    		   !repository.equals("personal") ||
-	    		   !repository.equals("inbox")) {
-	    	SpagoBITracer.warning("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "The value of the REPOSITORY parameter is wrong: " +
-					  "the possible values are " +
-					  "corporate|personal|inbox");
-	    }*/
-        // control OUTPUTTYPE  parameter
-	    String out = (String)pars.get(OUTPUTTYPE);
-	    if((out==null) || (out.trim().equals(""))) {
-	    	SpagoBITracer.warning("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "Cannot find OUTPUTTYPE parameter: the default value HTML will be used");
-	    } else if (!out.equals("HTML") || 
-	    		   !out.equals("XSL") ||
-	    		   !out.equals("PDF")) {
-	    	SpagoBITracer.warning("ENGINES",
-					  this.getClass().getName(),
-					  "traceParametersError",
-					  "The value of the OUTPUTTYPE parameter is wrong: " +
-					  "the possible values are " +
-					  "HTML|PDF|XSL");
-	    }
-	}
-
 	/**
 	 * Function not implemented. Thid method should not be called
 	 * 
@@ -279,7 +192,6 @@ public class BODriver implements IEngineDriver {
 				  "Function not implemented");
 		throw new InvalidOperationRequest();
 	}
-	
 	
 }
 

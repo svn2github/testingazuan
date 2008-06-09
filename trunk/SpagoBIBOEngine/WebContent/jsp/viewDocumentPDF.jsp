@@ -1,3 +1,6 @@
+<%@page import="com.bo.infoview.WIRequestWrapper"%>
+<%@page import="java.io.FileOutputStream"%>
+<%@page import="java.io.File"%>
 <%--
 Copyright (c) 2005, Engineering Ingegneria Informatica s.p.a.
 All rights reserved.
@@ -38,39 +41,105 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
                 com.bo.rebean.wi.ReportEngine,
                 com.bo.rebean.wi.DocumentInstance,
                 com.bo.rebean.wi.Reports"%>
+<%@page import="com.bo.wibean.WIPDFView"%>
+<%@page import="com.bo.wibean.WISession"%>
+<%@page import="com.bo.wibean.WIDocument"%>
         
 <%
-	response.setHeader("Content-Type", "application/pdf");
-	response.setDateHeader("expires", 0);
-	response.setHeader("pragma", "public");
-	response.setHeader("Cache-Control", "public");	
+
+	//request = WIRequestWrapper.setCharacterEncoding(request, "UTF-8");
+	//response.setHeader("Content-Type", "application/pdf");
+	response.setContentType("application/pdf");
+	//response.setDateHeader("expires", 0);
+	//response.setHeader("pragma", "no-cache");
+	//response.setHeader("Cache-Control", "no-cache");
 
 	WIServerImpl wiServer =  (WIServerImpl)application.getAttribute(BOConstants.WEBISERVER);
 	wiServer.onStartPage(request, response); 
-	ReportEngine reportEngine = (ReportEngine)session.getAttribute(BOConstants.REPORTENGINE);
-  	String storageToken = (String)session.getAttribute(BOConstants.STORAGETOKEN);
-  	DocumentInstance document = reportEngine.getDocumentFromStorageToken(storageToken);
-  	int selectedReport = document.getSelectedReport();
-  	Reports reports = document.getReports();
-  	Report report = reports.getItem(selectedReport);
 	
-	try{
+	WISession wiSession = (WISession) session.getAttribute(BOConstants.BOSESSION);
+	String storageToken = (String)session.getAttribute(BOConstants.STORAGETOKEN);
+	
+	WIDocument wiDocument = wiSession.getDocumentFromStorageToken(storageToken);
+	String reportType = wiDocument.getDocType();
+	boolean isRep = reportType.equals("rep");
+	boolean isWid = reportType.equals("wid");
+	byte[] binaryContent = null;
+	
+	if (isWid) {
+		ReportEngine reportEngine = (ReportEngine)session.getAttribute(BOConstants.REPORTENGINE);
+	  	DocumentInstance document = reportEngine.getDocumentFromStorageToken(storageToken);
+	  	int selectedReport = document.getSelectedReport();
+	  	Reports reports = document.getReports();
+	  	Report report = reports.getItem(selectedReport);
 	    //transform the repot into bytes
 	    BinaryView reportBinView = (BinaryView) report.getView(OutputFormatType.PDF);
-	    byte[] repBinaryContent = reportBinView.getContent();
+	    binaryContent = reportBinView.getContent();
+	}
+	
+	if (isRep) {
+		WIPDFView pdfView = wiDocument.getPDFView();
+		String pdfIndex = request.getParameter("PDFIndex");
+		if (pdfIndex == null || pdfIndex.trim().equals("")) pdfIndex = "";
+		else {
+			String[] indexes = pdfView.getPDFIndexes();
+			boolean indexFound = false;
+			for (int i = 0; i < indexes.length; i++) {
+				if (indexes[i].equals(pdfIndex)) {
+					indexFound = true;
+					break;
+				}
+			}
+			if (!indexFound) {
+				System.out.println("Index specified in input [" + pdfIndex + "] was not found. Creating PDF for all reports...");
+				pdfIndex = "";
+			}
+		}
+		out.clear();
+		binaryContent = pdfView.getContent(pdfIndex);
+		
+		// oppure:
+		//String strReportIndex = getNonNullValue(request.getParameter("report"), "0");
+		//int iReport = Integer.parseInt(strReportIndex);
+		//WIPDFView wiPdfView = wiDocument.getPDFView();
+		//String[] astrPdfIndexes = wiPdfView.getPDFIndexes();
+		//out.clear();
+		//byte[] abyBinaryContent = wiPdfView.getContent(astrPdfIndexes[iReport]);
+		
+	}
+	
+	try {
+		String repName = wiDocument.getName();
+		//repName = "ccc";
+		if (repName == null) {
+			
+		}
 	    //visualize the PDF report
-	    try{
-	      response.setHeader("Content-disposition", "inline; filename=\"" + java.net.URLEncoder.encode(report.getName(), "UTF-8") + ".pdf\"");
-	    }catch(java.io.UnsupportedEncodingException e){
-	      System.out.println("UnsupportedEncodingException caught");
-	    } 
-	    response.setContentLength(repBinaryContent.length);
+	    //FileOutputStream fos = null;
+	    //try {
+	    //	File f = new File("/ccc.pdf");
+	    //	if (f.exists()) {
+	    //		if (!f.delete()) System.out.println("Could not delete file");
+	    //		return;
+	    //	}
+	    //	fos = new FileOutputStream(f);
+	    //	fos.write(binaryContent, 0, binaryContent.length);
+	    //response.setHeader("Content-disposition", "inline; filename=\"" + java.net.URLEncoder.encode(repName, "UTF-8") + ".pdf\"");
+	    //  response.setHeader("content-disposition", "attachment; filename=" + java.net.URLEncoder.encode(repName, "UTF-8") + ".pdf");
+	    //}catch(java.io.UnsupportedEncodingException e){
+	    //  System.out.println("UnsupportedEncodingException caught");
+	    //} finally {
+	    	//	if (fos != null) fos.close();
+		//}
+	    response.setContentLength(binaryContent.length);
 	    ServletOutputStream objServletOutputStream = response.getOutputStream();
-	    objServletOutputStream.write(repBinaryContent, 0, repBinaryContent.length);
+	    objServletOutputStream.write(binaryContent);
 	    objServletOutputStream.flush();
 	    objServletOutputStream.close();
 	    wiServer.onEndPage();
 	} catch (java.io.IOException IOe){
 		System.out.println("IOException caught");
 	}
+	
+
 %>

@@ -224,11 +224,6 @@ public class ChartImpl implements IChart {
 			}
 		}
 		
-		if(type.equals("OTHERCHART")){
-			if(subtype.equalsIgnoreCase("cumulativecurvechart")){
-				sbi=new CumulativeCurveChart();
-			}
-		}
 
 		
 		return sbi;

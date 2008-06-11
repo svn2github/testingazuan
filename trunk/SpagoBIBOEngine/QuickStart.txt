@@ -8,12 +8,13 @@ In order to integrate a BO wid report into SpagoBI:
   <BO_DOCUMENT>
 	   <REP_PROPS name="name report" 
                 id="id report" 
-                type="wid" 
+                type="type of the document ('wid' or 'rep')" 
                 repository="name of the bo repository (Example:corporate)"/>
   </BO_DOCUMENT>
 
-- The engine support HTML and PDF output format. In order to choose the output format
-  you have to define a parameter with url name 'OUTPUTTYPE' and value HTML or PDF
+- For wid documents, the engine support HTML and PDF output format. In order to choose the output format
+  you have to define a parameter with url name 'OUTPUTTYPE' and value HTML or PDF.
+  For rep document the only supported output format is PDF.
   
 - If your bo report has some parameters you need to define a SpagoBI parameter for each
   one of them. The SpagoBI parameter must have url name  equals to the bo parameter name.

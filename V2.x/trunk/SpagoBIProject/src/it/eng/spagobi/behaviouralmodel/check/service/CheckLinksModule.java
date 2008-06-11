@@ -119,6 +119,7 @@ public class CheckLinksModule extends AbstractHibernateConnectionCheckListModule
         String objIdStr = (String) sessionContainer.getAttribute("SUBJECT_ID");
         Integer objId = null;
         if (objIdStr != null) objId = new Integer (objIdStr);
+        response.setAttribute("SUBJECT_ID",objIdStr);
 		
 		PaginatorIFace paginator = new GenericPaginator();		
 		IBIObjectDAO objDAO = DAOFactory.getBIObjectDAO();

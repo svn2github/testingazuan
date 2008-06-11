@@ -25,6 +25,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -49,6 +50,8 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
+
+import com.fdsapi.DataSetMap;
 
 
 /**
@@ -99,8 +102,8 @@ public class SBISpeedometer extends DialCharts{
 				logger.error("increment not defined");
 				return;
 			}
-			if(confParameters.get("minortickcount")!=null){	
-				String minorTickCount=(String)confParameters.get("minortickcount");
+			if(confParameters.get("minor_tick")!=null){	
+				String minorTickCount=(String)confParameters.get("minor_tick");
 				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 			}
 			else {
@@ -151,12 +154,12 @@ public class SBISpeedometer extends DialCharts{
 		else{
 			logger.debug("configuration defined in LOV"+confDataset);
 			String increment=(String)sbRow.getAttribute("increment");
-			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
+			String minorTickCount=(String)sbRow.getAttribute("minor_tick");
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 
 		
-			String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
+			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				KpiInterval interval=new KpiInterval();
 				interval.setMin(getLower());
@@ -195,8 +198,10 @@ public class SBISpeedometer extends DialCharts{
 	 * @return A chart speedometer.
 	 */
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
+		
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
 		plot.setDialFrame(new StandardDialFrame());

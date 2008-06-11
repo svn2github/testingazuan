@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.util.Iterator;
@@ -38,8 +39,11 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.CategorySeriesLabelGenerator;
+import org.jfree.chart.labels.StandardCategorySeriesLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.AbstractCategoryItemRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.Dataset;
@@ -86,9 +90,9 @@ public class SimpleBar extends BarCharts{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
-		super.createChart(dataset);
+		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
 
 		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
 		if(horizontalView)
@@ -101,7 +105,7 @@ public class SimpleBar extends BarCharts{
 				name,       // chart title
 				categoryLabel,               // domain axis label
 				valueLabel,                  // range axis label
-				(CategoryDataset)dataset,                  // data
+				dataset,                  // data
 				plotOrientation, // orientation
 				legend,                     // include legend
 				true,                     // tooltips?
@@ -119,6 +123,7 @@ public class SimpleBar extends BarCharts{
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
+					
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -126,19 +131,39 @@ public class SimpleBar extends BarCharts{
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
+		
+		// add
+		CategorySeriesLabelGenerator generator = new StandardCategorySeriesLabelGenerator("{0}");
+		renderer.setLegendItemLabelGenerator(generator);
+		renderer.setItemLabelsVisible(true);
+		
+		
+        int seriesN=dataset.getRowCount();
+        if(colorMap!=null){
+         for (int i = 0; i < seriesN; i++) {
+ 			String serieName=(String)dataset.getRowKey(i);
+ 			Color color=(Color)colorMap.get(serieName);
+ 			if(color!=null){
+ 				renderer.setSeriesPaint(i, color);
+ 			}	
+         }
+        }
+		
 
-		// if some series has been selected and colors has been defined
+	/*	// if some series has been selected and colors has been defined
 		if(currentSeries!=null && colorMap!=null){
 							//for each serie selected
 			int j=0;	
+		
 			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
 						String s = (String) iterator.next();
-						Integer position=(Integer)seriesNumber.get(s);
+						//Integer position=(Integer)seriesNumber.get(s);
+						Integer position=new Integer(0);
 						// check if for that position a value is defined
-						if(colorMap.get("color"+position.toString())!=null){
-							Color col= (Color)colorMap.get("color"+position);
-							renderer.setSeriesPaint(j, col);
-							}
+
+						
+						Color col=(Color)colorMap.get(s);
+						renderer.setSeriesPaint(j, col);
 						j++;
 					}  // close for on series
 		} // close case series selcted and color defined
@@ -154,7 +179,11 @@ public class SimpleBar extends BarCharts{
 					renderer.setSeriesPaint(num, col);
 				}
 			}
-		}
+		}*/
+		
+		
+		
+		
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(

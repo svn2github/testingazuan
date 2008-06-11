@@ -27,6 +27,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class DialCharts extends ChartImpl {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(org.jfree.data.general.Dataset dataset){
+	public JFreeChart createChart(DatasetMap dataset){
 		return null;
 	}
 
@@ -147,7 +148,7 @@ public class DialCharts extends ChartImpl {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#calculateValue()
 	 */
-	public Dataset calculateValue() throws Exception{
+	public DatasetMap calculateValue() throws Exception{
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		if (res!=null){
@@ -164,8 +165,9 @@ public class DialCharts extends ChartImpl {
 			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
 			logger.debug("OUT");
 
-			return dataset;			
-		}
+			DatasetMap datasets=new DatasetMap();
+			datasets.addDataset("1",dataset);
+			return datasets;		}
 		logger.error("dataset is null!!!!!!!!!");
 		return null;
 	}

@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.chart.bo;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ public interface IChart {
 	 * 
 	 * @return the j free chart
 	 */
-	public JFreeChart createChart(Dataset dataset);
+	public JFreeChart createChart(DatasetMap dataset);
 
 	/**
 	 * Configure chart.
@@ -54,11 +55,11 @@ public interface IChart {
 	/**
 	 * Calculate value.
 	 * 
-	 * @return the dataset
+	 * @return A map of datasets (usually only one)
 	 * 
 	 * @throws Exception the exception
 	 */
-	public Dataset calculateValue() throws Exception;
+	public DatasetMap calculateValue() throws Exception;
 
 	
 	

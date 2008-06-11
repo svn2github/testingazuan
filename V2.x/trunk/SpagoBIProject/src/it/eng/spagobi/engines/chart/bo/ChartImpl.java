@@ -26,13 +26,18 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.SimpleBox;
+import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.SimpleCluster;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
+import it.eng.spagobi.engines.chart.bo.charttypes.others.CumulativeCurveChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -155,7 +160,7 @@ public class ChartImpl implements IChart {
 	 * @return the j free chart
 	 */
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap dataset) {
 		return null;
 	}
 
@@ -201,8 +206,31 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase("linkablebar")){
 				sbi=new LinkableBar();
 			}
+			else if(subtype.equalsIgnoreCase("overlaid_barline")){
+				sbi=new OverlaidBarLine();
+			}		
+			
+		}
+		
+		if(type.equals("BOXCHART")){
+			if(subtype.equalsIgnoreCase("simplebox")){
+				sbi=new SimpleBox();
+			}
+		}
+		
+		if(type.equals("CLUSTERCHART")){
+			if(subtype.equalsIgnoreCase("simplecluster")){
+				sbi=new SimpleCluster();
+			}
+		}
+		
+		if(type.equals("OTHERCHART")){
+			if(subtype.equalsIgnoreCase("cumulativecurvechart")){
+				sbi=new CumulativeCurveChart();
+			}
 		}
 
+		
 		return sbi;
 	}
 
@@ -269,7 +297,7 @@ public class ChartImpl implements IChart {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.IChart#calculateValue()
 	 */
-	public Dataset calculateValue() throws Exception {
+	public DatasetMap calculateValue() throws Exception {
 		return null;
 	}
 

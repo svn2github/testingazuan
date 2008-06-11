@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -123,7 +124,7 @@ public class Meter extends DialCharts{
 		}
 		else{
 			logger.info("Configuration parameters set in LOV");
-			String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
+			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				logger.warn("intervals not correctly defined, use default settings");
 				KpiInterval interval=new KpiInterval();
@@ -165,9 +166,9 @@ public class Meter extends DialCharts{
 	 * @return A chart .
 	 */
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 
-		super.createChart(dataset);
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
 
 		MeterPlot plot = new MeterPlot((ValueDataset)dataset);
 		plot.setRange(new Range(lower, upper));

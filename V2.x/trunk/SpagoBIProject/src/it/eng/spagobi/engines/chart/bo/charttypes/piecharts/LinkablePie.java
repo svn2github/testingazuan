@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyPieUrlGenerator;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Font;
 import java.util.HashMap;
@@ -140,8 +141,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(Dataset dataset) {
-		super.createChart(dataset);
+	public JFreeChart createChart(DatasetMap datasets) {
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
 
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;

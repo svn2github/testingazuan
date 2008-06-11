@@ -27,6 +27,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -111,10 +112,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
-		super.createChart(dataset);
-
+		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
+		
 		CategoryAxis categoryAxis = new CategoryAxis(categoryLabel);
 		ValueAxis valueAxis = new NumberAxis(valueLabel);
 		org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
@@ -164,7 +165,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		renderer.setDrawBarOutline(false);
 
 
-		if(currentSeries!=null && colorMap!=null){
+	/*	if(currentSeries!=null && colorMap!=null){
 			//for each serie selected
 			int j=0;	
 			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
@@ -190,7 +191,18 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 					renderer.setSeriesPaint(num, col);
 				}
 			}
-		}
+		}*/
+		
+        int seriesN=dataset.getRowCount();
+        if(colorMap!=null){
+         for (int i = 0; i < seriesN; i++) {
+ 			String serieName=(String)dataset.getRowKey(i);
+ 			Color color=(Color)colorMap.get(serieName);
+ 			if(color!=null){
+ 				renderer.setSeriesPaint(i, color);
+ 			}	
+         }
+        }
 
 
 		CategoryAxis domainAxis = plot.getDomainAxis();

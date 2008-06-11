@@ -31,6 +31,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -113,8 +114,8 @@ public class SimpleDial extends DialCharts{
 			else {
 				logger.error("increment not defined");
 			}
-			if(confParameters.get("minortickcount")!=null){	
-				String minorTickCount=(String)confParameters.get("minortickcount");
+			if(confParameters.get("minor_tick")!=null){	
+				String minorTickCount=(String)confParameters.get("minor_tick");
 				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 			}
 			else {
@@ -177,7 +178,7 @@ public class SimpleDial extends DialCharts{
 
 		else{
 			String increment=(String)sbRow.getAttribute("increment");
-			String minorTickCount=(String)sbRow.getAttribute("minorTickCount");
+			String minorTickCount=(String)sbRow.getAttribute("minor_tick");
 
 			String orientation="";
 			if(sbRow.getAttribute("orientation")!=null){
@@ -198,7 +199,7 @@ public class SimpleDial extends DialCharts{
 
 
 
-			String intervalsNumber=(String)sbRow.getAttribute("intervalsnumber");
+			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				/*KpiInterval interval=new KpiInterval();
 			interval.setMin(getLower());
@@ -236,9 +237,12 @@ public class SimpleDial extends DialCharts{
 	 * @return A chart .
 	 */
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 		// get data for diagrams
 		logger.debug("IN");
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
+
+		
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
 

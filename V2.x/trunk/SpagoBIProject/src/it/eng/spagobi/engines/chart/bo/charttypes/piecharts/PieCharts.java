@@ -31,6 +31,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,7 +74,7 @@ logger.debug("IN");
 		/* (non-Javadoc)
 		 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
 		 */
-		public JFreeChart createChart(Dataset dataset) {
+		public JFreeChart createChart(DatasetMap dataset) {
 			// TODO Auto-generated method stub
 			return super.createChart(dataset);
 
@@ -84,7 +85,7 @@ logger.debug("IN");
 		/* (non-Javadoc)
 		 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#calculateValue()
 		 */
-		public Dataset calculateValue() throws Exception {
+		public DatasetMap calculateValue() throws Exception {
 			logger.debug("IN");
 			String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 
@@ -119,7 +120,9 @@ logger.debug("IN");
 
 			}
 			logger.debug("OUT");
-			return dataset;
+			DatasetMap datasets=new DatasetMap();
+			datasets.addDataset("1",dataset);
+			return datasets;
 		}
 
 

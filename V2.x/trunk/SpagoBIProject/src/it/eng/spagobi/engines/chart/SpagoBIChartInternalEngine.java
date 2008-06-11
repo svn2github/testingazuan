@@ -42,6 +42,7 @@ import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.HashMap;
@@ -50,6 +51,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jfree.data.general.Dataset;
+
 
 
 
@@ -81,7 +83,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
 
 
-		Dataset dataset=null;
+		DatasetMap datasets=null;
 		ChartImpl sbi=null;
 
 		//RequestContainer requestContainer=RequestContainer.getRequestContainer();
@@ -266,7 +268,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			// calculate values for the chart
 			try{
 				logger.debug("Retrieve value by executing the dataset");
-				dataset=sbi.calculateValue();
+				datasets=sbi.calculateValue();
 			}	
 			catch (Exception e) {
 				logger.error("Error in retrieving the value");
@@ -300,7 +302,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
 
-				response.setAttribute("dataset",dataset);
+				response.setAttribute("datasets",datasets);
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
 				response.setAttribute("sbi",sbi);

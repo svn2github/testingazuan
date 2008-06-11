@@ -79,6 +79,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
+<%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
 	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
@@ -89,20 +91,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <% 
 	String maxSlider="0";
 	String minSlider="0";
-	String valueSlider="1";
+	
+	//String valueSlider="1";
 	String refreshUrl = "";
-	HashMap categories=null;
-	Vector selectedSeries=null;  // series currently selected
-	List series=null;  // the series in the complete dataset
-	int numberCatVisualization=1;
-	int catsnum=0;
-	int categoryCurrent=0;
-	String categoryCurrentName="";
-	String catTitle="category";
-	String serTitle="serie";
+	
+	//HashMap categories=null;
+	//Vector selectedSeries=null;  // series currently selected
+	//List series=null;  // the series in the complete dataset
+	//int numberCatVisualization=1;
+	//int catsnum=0;
+	//int categoryCurrent=0;
+	//String categoryCurrentName="";
+	//String catTitle="category";
+	//String serTitle="serie";
+	//boolean makeSlider=false;
+
+	
 	String refreshUrlCategory="";
 	String refreshUrlSerie="";
-	boolean makeSlider=false;
 
  	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
@@ -117,8 +123,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
 		String documentid=(objO.getId()).toString();
 		//String documentid=(String)aServiceResponse.getAttribute("documentid");
-		Dataset dataset=(Dataset)sbModuleResponse.getAttribute("dataset");
-		Dataset copyDataset=null;
+		DatasetMap datasetMap=(DatasetMap)sbModuleResponse.getAttribute("datasets");
+		DatasetMap copyDatasets=null;
 
 		// get wich pars can the user set
 		Vector changePars=(Vector)sbi.getPossibleChangePars();
@@ -135,97 +141,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							}
 				}
 		}
+		
+		
+		// in the case of document composition check if serie or category have been previously defined
 
-
-	// in the case of document composition check if serie or category have been previously defined
-	selectedSeries=new Vector();
+	datasetMap.setSelectedSeries(new Vector());
 	if(sbiMode.equalsIgnoreCase("WEB") || docComposition){
 		if(sbModuleResponse.getAttribute("category")!=null){
 		String catS=(String)sbModuleResponse.getAttribute("category");
 		Double catD=Double.valueOf(catS);
-		categoryCurrent=catD.intValue();
+		datasetMap.setCategoryCurrent(catD.intValue());
 		}
 		if(sbModuleResponse.getAttribute("serie")!=null){
 		List selectedSeriesTemp=(List)sbModuleResponse.getAttributeAsList("serie");
-		selectedSeries=new Vector(selectedSeriesTemp);
+		datasetMap.setSelectedSeries(new Vector(selectedSeriesTemp));
 		}
 		else{
-		selectedSeries.add("allseries");   
+			datasetMap.getSelectedSeries().add("allseries");   
 		}
 	}
 
-/////////////////////////////////////////////////////// Case few category has been selected//////////////////////////////////////////
-	if(sbi.getType().equalsIgnoreCase("BARCHART")){
-			// series are all series present in dataset
-			series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
-			
-			//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
-			for(int i=0;i<series.size();i++){
-				String s=(String)series.get(i);
-				((BarCharts)sbi).putSeriesNumber(s,(i+1));
-			}
-			
-			categories=(HashMap)((BarCharts)sbi).getCategories();
-			catsnum=((BarCharts)sbi).getCategoriesNumber();
-			numberCatVisualization=(((BarCharts)sbi).getNumberCatVisualization()).intValue();
-			catTitle=((BarCharts)sbi).getCategoryLabel();
-			serTitle=((BarCharts)sbi).getValueLabel();
-			DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
-			copyDataset=new DefaultCategoryDataset();					
-			copyDataset=(DefaultCategoryDataset)catDataset.clone();
-
-			// if slider specifies a category than set view from that point
-			if(request.getParameter("category")!=null){
-				String catS=(String)request.getParameter("category");
-			Double catD=Double.valueOf(catS);
-				categoryCurrent=catD.intValue();
-			}
-			else{ //else set view from first category
-				categoryCurrent=1;
-			}
-				valueSlider=(new Integer(categoryCurrent)).toString();
-				HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
-				
-				if(categoryCurrent!=0){
-					categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
-				copyDataset=sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization);				
-				}
-				else{
-					categoryCurrentName="All";
-				}
-				
-			// Check if particular series has been chosen
-			if(request.getParameter("serie")!=null){
-					String[] cio=request.getParameterValues("serie");
-					//Convert array in vector
-					for(int i=0;i<cio.length;i++){
-					selectedSeries.add(cio[i]);
-				}
-			}
-			else{
-				if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-				selectedSeries.add("allseries");
-				}
 	
-				
-			// if selectedSerie contains allseries 
-			if(selectedSeries.contains("allseries")){
-					((BarCharts)sbi).setCurrentSeries(null);
-					}
-					else{	
-						copyDataset=((BarCharts)sbi).filterDatasetSeries(copyDataset,selectedSeries);	
-				
-				}
-			// consider if drawing the slider
-		    if((catsnum)>numberCatVisualization){
-			makeSlider=true;	    	
-		    }
-	} 
-			
-	
-	if(copyDataset==null){copyDataset=dataset;}
 
-///////////////////////////////////////////////////// End category case//////////////////////////////////////////
+	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
+		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar")){
+// returns a new datasets map filtered
+			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
+		}
+		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline")){
+			copyDatasets=datasetMap.filteringMultiDatasetBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
+		}
+		else if(sbi.getSubtype().equalsIgnoreCase("simplecluster")){
+			copyDatasets=datasetMap.filteringClusterChart(request,(ClusterCharts)sbi,sbiMode,docComposition);
+		}
+		
+		}
+	else {copyDatasets=datasetMap;}
+	
 
 
 
@@ -291,7 +243,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 		JFreeChart chart=null;
 		// create the chart
-		chart = sbi.createChart(copyDataset);
+		chart = sbi.createChart(copyDatasets);
 
 		//Create the temporary file
 		String executionId = uuidO;
@@ -327,12 +279,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			String urlPng=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
 			
 			//add the serie parameter
-		if(selectedSeries.contains("allseries")){
+		if(datasetMap.getSelectedSeries().contains("allseries")){
 			refreshUrlCategory=refreshUrl+"&serie=allseries";
 				}
 		else{
 			refreshUrlCategory=refreshUrl;
-			for(Iterator iterator = selectedSeries.iterator(); iterator.hasNext();){
+			for(Iterator iterator = datasetMap.getSelectedSeries().iterator(); iterator.hasNext();){
 				String serieS=(String)iterator.next();
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
 				}	
@@ -357,27 +309,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 	    // No slider needed
-	if(makeSlider==false){
+	if(datasetMap.isMakeSlider()==false){
 	    %>
   	 	<div align="center">
 			<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
 		</div>
 		<%}
 	else{   /////////////////////// Beginslider creation //////////////////////////
-		maxSlider=new Integer(catsnum).toString();
+		maxSlider=datasetMap.getCatsnum().toString();
 		minSlider="1";
 	%>
 
 		<script type="text/javascript" language="JAVASCRIPT">
 			<!--
-				arrayCats=new Array(<%=catsnum%>);
+				arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
 				-->
 		</script>
 	
 		<%
-		for (Iterator iterator = categories.keySet().iterator(); iterator.hasNext();){  
+		for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
 			Integer key=(Integer)iterator.next();
-			String name=(String)categories.get(key);
+			String name=(String)datasetMap.getCategories().get(key);
 		%>
 
 		<script type="text/javascript" language="JAVASCRIPT">
@@ -402,7 +354,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									 <td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
 									</td>
 									<td width="15%" align="center" class="sliderstatusclass">
-										<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=catTitle%></a>
+										<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=datasetMap.getCatTitle()%></a>
 									</td>
 								</tr>
 							</table>
@@ -438,7 +390,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 			 <% 	   	
 		   	// form to limit the series if it is a barchart
-	if(sbi.getType().equalsIgnoreCase("BARCHART")){
+	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
 		//sets the URL
 		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
 		{
@@ -456,13 +408,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div align="left">
 	<div class='div_detail_form'>
 		<span class='portlet-form-field-label'>
-			Select from <%=serTitle%>
+			Select from <%=datasetMap.getSerTitle()%>
 		</span>
 	</div>
 	<div>	
 	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
 <% 	
-	refreshUrlPars.put("category",new Integer(categoryCurrent));
+	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 	{
 	String name = (String) iterator.next();
@@ -473,23 +425,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 	}%>
 	<select name="serie" multiple="multiple" SIZE="5">
-	<%if(selectedSeries.contains("allseries")){ %>
+	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
 		<option value="allseries" selected="selected">View all</option>
 	<%} else {%>
-		<option value="allseries">View all <%=serTitle%></option>
+		<option value="allseries">View all <%=datasetMap.getSerTitle()%></option>
 	<%} %>
 		
 	<%     	
 	    // for each possible serie 
-	    	for (Iterator iterator = series.iterator(); iterator.hasNext();) {
+	    if(datasetMap.getSeries()!=null){	
+	    for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
 	    		String ser = (String) iterator.next(); 
-	    		if(selectedSeries.contains(ser)){
+	    		if(datasetMap.getSelectedSeries().contains(ser)){
 	    		%>
 				<option value="<%=ser%>" selected="selected"><%=ser%></option>
 					<%}else{ %>
 				<option value="<%=ser%>"><%=ser%></option>
 	<%} 
-	} %>
+	}
+	    }%>
 	</select>
 	<input type="submit" value="Select"/>
 	</form>
@@ -540,7 +494,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<% 
 
- if(makeSlider==true){ %>
+ if(datasetMap.isMakeSlider()==true){ %>
 
  <script type="text/javascript" language="JavaScript">
  
@@ -581,13 +535,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			sliderHeight: 21,
 			maxValue: <%=maxSlider%>,
 			minValue: <%=minSlider%>,
-			sliderSnap: 1,sliders: [{ value: <%=valueSlider%>,  name: 'start1_1'}]
+			sliderSnap: 1,sliders: [{ value: <%=datasetMap.getValueSlider()%>,  name: 'start1_1'}]
 			 });
 	
 		Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
 		value= arrayCats[parseInt(this.value)];
-		value="View <%=catTitle%>: "+value;		
+		value="View <%=datasetMap.getCatTitle()%>: "+value;		
 		document.getElementById('slider_1_1_value').innerHTML=value;
 		//$('slider_1_1_value').innerHTML =value;
 				}

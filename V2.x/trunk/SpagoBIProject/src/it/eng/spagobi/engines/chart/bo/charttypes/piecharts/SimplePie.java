@@ -28,6 +28,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Font;
 import java.util.List;
@@ -103,9 +104,10 @@ public class SimplePie extends PieCharts{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
-	public JFreeChart createChart(Dataset dataset) {
-		super.createChart(dataset);
+	public JFreeChart createChart(DatasetMap datasets) {
 
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
+		
 		JFreeChart chart=null; 
 
 		if(!threeD){

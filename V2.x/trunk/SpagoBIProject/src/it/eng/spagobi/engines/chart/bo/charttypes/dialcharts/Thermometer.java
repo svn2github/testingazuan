@@ -31,6 +31,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -81,8 +82,10 @@ public class Thermometer extends DialCharts{
 	 */
 
 
-	public JFreeChart createChart(Dataset dataset) {
+	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
+		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
+
 		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 		chart.setBackgroundPaint(color);

@@ -405,10 +405,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% 
 	    // No slider needed
 	if(datasetMap.isMakeSlider()==false){
+
 	    %>
 	    <tr>
 	    <td>
   	 	<div align="center">
+				    <% if(limitSeries){%> <BR><BR> <%}%>
 			<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
 		</div>
 		</td>
@@ -440,22 +442,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%} %>
 	
 	
-					<td width="75%" align="center">
+					<td width="75%" align="left">
+
+										<span class='portlet-form-field-label'>
+											<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>  <%=datasetMap.getCatTitle()%> or select from
+										</span>
+										
+								<span  class='portlet-form-field-label'id="slider_1_1_value" width="10%" align="right" >
+										</span>
+										
+
 						<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
-							<div id="slider1"></div> 
+							<span id="slider1"></span> 
 						</a>
-						<div id="output1"> 
-								<table align="center">
-								  <tr> 
-										 <td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
-										</td>
-										<td width="15%" align="center" class="sliderstatusclass">
-											<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=datasetMap.getCatTitle()%></a>
-										</td>
-									 </tr> 
-								</table>
-						</div>
-					</td>
+
+							</td>		
 				</tr>
 	<!-- 	</form>  -->
 		<!--  </table> -->
@@ -576,7 +577,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Test.slideZone1.getSlider('start1_1').on('drag',
 		function() {
 		value= arrayCats[parseInt(this.value)];
-		value="View <%=datasetMap.getCatTitle()%>: "+value;		
+		value="<%=datasetMap.getCatTitle()%>: "+value;		
 		document.getElementById('slider_1_1_value').innerHTML=value;
 		//$('slider_1_1_value').innerHTML =value;
 				}

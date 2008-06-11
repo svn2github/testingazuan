@@ -295,7 +295,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	
-	
+	<%
+	 boolean limitSeries=false;
+	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
+	limitSeries=true;
+	}
+	%>
 	
 	
 <% 
@@ -307,13 +312,107 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    }
 	
 
+%>
+					<!-- Begin drawing the page -->
+<br>
+		<table align="left">
 
+			<%if (datasetMap.isMakeSlider() || limitSeries){ %>
+				<tr>
+			
+				<%} %>
+				
+								 <% 	 
+				
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				 // form to limit the series if it is a barchart
+
+	if(limitSeries){
+		//sets the URL
+		limitSeries=true;
+		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
+		{
+		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
+		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
+		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
+		refreshUrlPars.put("OBJECT_ID",documentid);
+		}
+		else
+		{
+		refreshUrlSerie=refreshUrl;
+		}
+	%>
+		<td> 
+	<div align="center">
+	<div class='div_detail_form'>
+		<span class='portlet-form-field-label'>
+			Select from <%=datasetMap.getSerTitle()%>
+		</span>
+	</div>
+	<div>	
+	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
+<% 	
+	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+	{
+	String name = (String) iterator.next();
+	String value=(refreshUrlPars.get(name)).toString();
+%>		
+	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+
+	<%
+	}%>
+	<select name="serie" multiple="multiple" SIZE="3" >
+	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
+		<option value="allseries" selected="selected">View all</option>
+	<%} else {%>	
+		<option value="allseries">View all <%=datasetMap.getSerTitle()%></option>
+	<%} %>
+		
+	<%     	
+	    // for each possible serie 
+	    if(datasetMap.getSeries()!=null){	
+	    for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
+	    		String ser = (String) iterator.next(); 
+	    		if(datasetMap.getSelectedSeries().contains(ser)){
+	    		%>
+				<option value="<%=ser%>" selected="selected"><%=ser%></option>
+					<%}else{ %>
+				<option value="<%=ser%>"><%=ser%></option>
+	<%} 
+	}
+	    }%>
+	</select>
+	<input type="submit" value="Select"/>
+	</form>
+</div>
+</div>
+</td>
+
+<%if(!datasetMap.isMakeSlider()){ // if requires serie limit but not slider close the row
+			%>   
+</tr>
+<%} %>
+
+
+<% 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////// end serie limit
+	}
+%>
+
+
+<% 
 	    // No slider needed
 	if(datasetMap.isMakeSlider()==false){
 	    %>
+	    <tr>
+	    <td>
   	 	<div align="center">
 			<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
 		</div>
+		</td>
+		</tr>
 		<%}
 	else{   /////////////////////// Beginslider creation //////////////////////////
 		maxSlider=datasetMap.getCatsnum().toString();
@@ -339,34 +438,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			//-->
 		</script>
 		<%} %>
-	<BR>
-		<table  align="center" >
-	<!--	 <form id="sliderform">  -->
-		<!--  	 <table align="left" > -->
-				<tr>
+	
+	
 					<td width="75%" align="center">
 						<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
 							<div id="slider1"></div> 
 						</a>
 						<div id="output1"> 
-							<table align="center">
-								<tr>
-									 <td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
-									</td>
-									<td width="15%" align="center" class="sliderstatusclass">
-										<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=datasetMap.getCatTitle()%></a>
-									</td>
-								</tr>
-							</table>
+								<table align="center">
+								  <tr> 
+										 <td id="slider_1_1_value" width="10%" align="right"  class="sliderstatusclass">
+										</td>
+										<td width="15%" align="center" class="sliderstatusclass">
+											<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();">View all <%=datasetMap.getCatTitle()%></a>
+										</td>
+									 </tr> 
+								</table>
 						</div>
 					</td>
 				</tr>
 	<!-- 	</form>  -->
-		</table>
-
- 	<div align="center">
+		<!--  </table> -->
+<tr>
+<td> </td>
+<td align="left">
+ 	<div>
  		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
 	</div>
+</td>
+</tr>
 
 	<% 
 	}
@@ -381,78 +481,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
 
 	//if(sbi.isChangeableView() && !docComposition){
-		if(true){
+	
 		%>
 		<div>
 			<table id="changepars" align="center">
 			 <tr>
 			 
 		
-			 <% 	   	
-		   	// form to limit the series if it is a barchart
-	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
-		//sets the URL
-		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
-		{
-		refreshUrlSerie=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl();
-		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
-		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
-		refreshUrlPars.put("OBJECT_ID",documentid);
-		}
-		else
-		{
-		refreshUrlSerie=refreshUrl;
-		}
-	%>
-		<td> 
-	<div align="left">
-	<div class='div_detail_form'>
-		<span class='portlet-form-field-label'>
-			Select from <%=datasetMap.getSerTitle()%>
-		</span>
-	</div>
-	<div>	
-	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
-<% 	
-	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-	{
-	String name = (String) iterator.next();
-	String value=(refreshUrlPars.get(name)).toString();
-%>		
-	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
 
-	<%
-	}%>
-	<select name="serie" multiple="multiple" SIZE="5">
-	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
-		<option value="allseries" selected="selected">View all</option>
-	<%} else {%>
-		<option value="allseries">View all <%=datasetMap.getSerTitle()%></option>
-	<%} %>
-		
-	<%     	
-	    // for each possible serie 
-	    if(datasetMap.getSeries()!=null){	
-	    for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
-	    		String ser = (String) iterator.next(); 
-	    		if(datasetMap.getSelectedSeries().contains(ser)){
-	    		%>
-				<option value="<%=ser%>" selected="selected"><%=ser%></option>
-					<%}else{ %>
-				<option value="<%=ser%>"><%=ser%></option>
-	<%} 
-	}
-	    }%>
-	</select>
-	<input type="submit" value="Select"/>
-	</form>
-</div>
-</div>
-</td>
-<% 
-}
-%>
 			 		 			 
 		<%   if(sbi.isChangeableView() && !docComposition){
 	    		// for each possible parameter to change creates a checkbox
@@ -482,7 +518,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			  </tr>
 			 </table>
 	</div>
-	<%}%>
 	
 	
 	

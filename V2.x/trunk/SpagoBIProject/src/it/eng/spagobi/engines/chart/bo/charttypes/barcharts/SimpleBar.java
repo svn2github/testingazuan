@@ -29,6 +29,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -45,6 +46,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AbstractCategoryItemRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.Dataset;
 
@@ -112,7 +114,9 @@ public class SimpleBar extends BarCharts{
 				false                     // URLs?
 		);
 
-
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);
 

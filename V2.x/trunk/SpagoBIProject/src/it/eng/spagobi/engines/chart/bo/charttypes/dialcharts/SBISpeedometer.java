@@ -46,6 +46,7 @@ import org.jfree.chart.plot.dial.DialValueIndicator;
 import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -256,6 +257,11 @@ public class SBISpeedometer extends DialCharts{
 
 		logger.debug("OUT");
 		JFreeChart chart=new JFreeChart(name, plot);
+		
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
+		
 		chart.setBackgroundPaint(color);
 		return chart;
 	}

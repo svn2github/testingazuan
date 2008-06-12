@@ -32,6 +32,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 import org.jfree.ui.TextAnchor;
@@ -316,7 +317,10 @@ if(useLines){
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
-		chart.setTitle(name);
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
+		
 		return chart;
 
 

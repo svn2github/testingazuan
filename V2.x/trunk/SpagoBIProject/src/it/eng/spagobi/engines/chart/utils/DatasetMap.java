@@ -6,6 +6,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public class DatasetMap {
 
 	HashMap datasets;
 
-	Vector series;
+	TreeSet series;
 	Integer seriesNumber;
 	HashMap categories;
 	Integer catsnum;
@@ -54,13 +55,14 @@ public class DatasetMap {
 			e.printStackTrace();
 		}
 
-		series=new Vector(((DefaultCategoryDataset)dataset).getRowKeys());
+		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
 
 		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
-		for(int i=0;i<series.size();i++){
+	/*	for(int i=0;i<series.size();i++){
 			String s=(String)series.get(i);
 			sbi.putSeriesNumber(s,(i+1));
-		}
+		}*/
+		
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getCategoriesNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
@@ -121,6 +123,8 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
 
+		
+		
 		return newDatasetMap;
 
 	}
@@ -156,7 +160,7 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=new DatasetMap();
 
-		series=new Vector();
+		series=new TreeSet();
 
 
 		for (Iterator iterator = datasets.keySet().iterator(); iterator.hasNext();) {
@@ -281,7 +285,7 @@ public class DatasetMap {
 		int numSeries=dataset.getSeriesCount();
 
 		// fill the vector containing current series
-		series=new Vector();
+		series=new TreeSet();
 		for(int i=0;i<numSeries;i++){
 			String nome=(String)dataset.getSeriesKey(i);
 			series.add(nome);							
@@ -316,19 +320,6 @@ public class DatasetMap {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	public HashMap getDatasets() {
 		return datasets;
 	}
@@ -337,11 +328,12 @@ public class DatasetMap {
 		this.datasets = datasets;
 	}
 
-	public Vector getSeries() {
+
+	public TreeSet getSeries() {
 		return series;
 	}
 
-	public void setSeries(Vector series) {
+	public void setSeries(TreeSet series) {
 		this.series = series;
 	}
 

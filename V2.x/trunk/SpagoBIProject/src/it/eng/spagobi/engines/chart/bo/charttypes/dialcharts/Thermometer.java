@@ -35,6 +35,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -42,6 +43,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.ThermometerPlot;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.RectangleInsets;
@@ -89,6 +91,11 @@ public class Thermometer extends DialCharts{
 		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 		chart.setBackgroundPaint(color);
+	
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
+		
 		plot.setInsets(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setPadding(new RectangleInsets(10.0, 10.0, 10.0, 10.0));
 		plot.setThermometerStroke(new BasicStroke(2.0f));

@@ -216,5 +216,10 @@ public interface IChart {
 	 */
 	public void setParametersObject(Map paramsObject);
 	
-		
+	public void setTitleDimension(int d);
+	
+	public int getTitleDimension();
+	
+	
+	
 }

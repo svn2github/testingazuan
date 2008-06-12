@@ -35,6 +35,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -307,7 +309,11 @@ public class SimpleDial extends DialCharts{
 		plot.addLayer(needle);
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setBackgroundPaint(color);
-		chart1.setTitle(name);
+		
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart1.setTitle(title);
+		
 		logger.debug("OUT");
 		return chart1;
 	}

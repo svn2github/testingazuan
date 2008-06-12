@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 package it.eng.spagobi.engines.chart.bo;
 
@@ -54,11 +54,12 @@ import org.jfree.data.general.Dataset;
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it
  */
- 
+
 
 public class ChartImpl implements IChart {
 
 	protected String name=null;
+	protected int titleDimension;
 	protected int width;
 	protected int height;
 	protected String data;
@@ -72,19 +73,27 @@ public class ChartImpl implements IChart {
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected Map parametersObject;
 
-	
-/**
- * configureChart reads the content of the template and sets the chart parameters.
- * 
- * @param content the content
- */
+
+	/**
+	 * configureChart reads the content of the template and sets the chart parameters.
+	 * 
+	 * @param content the content
+	 */
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		// common part for all charts
 		if(content.getAttribute("name")!=null) 
 			setName((String)content.getAttribute("name"));
 		else setName("");
-		
+
+		if(content.getAttribute("title_dimension")!=null) 
+		{
+			String titleD=((String)content.getAttribute("title_dimension"));
+			titleDimension=Integer.valueOf(titleD).intValue();
+		}
+		else setTitleDimension(18);
+
+
 		String colS = (String)content.getAttribute("COLORS.background");
 		if(colS!=null) 
 		{
@@ -134,15 +143,15 @@ public class ChartImpl implements IChart {
 			else {
 				isLovConfDefined=false;
 			}
-			
+
 			legend=true;
 			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
 				String leg=(String)dataParameters.get("legend");
 				if(leg.equalsIgnoreCase("false"))
 					legend=false;
 			}
-			
-			
+
+
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
@@ -150,7 +159,7 @@ public class ChartImpl implements IChart {
 
 
 	}
-	
+
 	/**
 	 * This function creates the chart object.
 	 * 
@@ -164,7 +173,7 @@ public class ChartImpl implements IChart {
 		return null;
 	}
 
-	
+
 	/**
 	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template.
 	 * 
@@ -173,7 +182,7 @@ public class ChartImpl implements IChart {
 	 * 
 	 * @return the chart impl
 	 */
-	
+
 	public static ChartImpl createChart(String type,String subtype){
 		ChartImpl sbi=null;
 		if(type.equals("DIALCHART")){
@@ -198,7 +207,7 @@ public class ChartImpl implements IChart {
 				sbi=new LinkablePie();
 			}			
 		}
-		
+
 		if(type.equals("BARCHART")){
 			if(subtype.equalsIgnoreCase("simplebar")){
 				sbi=new SimpleBar();
@@ -209,23 +218,23 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase("overlaid_barline")){
 				sbi=new OverlaidBarLine();
 			}		
-			
+
 		}
-		
+
 		if(type.equals("BOXCHART")){
 			if(subtype.equalsIgnoreCase("simplebox")){
 				sbi=new SimpleBox();
 			}
 		}
-		
+
 		if(type.equals("CLUSTERCHART")){
 			if(subtype.equalsIgnoreCase("simplecluster")){
 				sbi=new SimpleCluster();
 			}
 		}
-		
 
-		
+
+
 		return sbi;
 	}
 
@@ -349,7 +358,7 @@ public class ChartImpl implements IChart {
 	public void setLovConfDefined(boolean isLovConfDefined) {
 		this.isLovConfDefined = isLovConfDefined;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.IChart#isLinkable()
 	 */
@@ -499,6 +508,14 @@ public class ChartImpl implements IChart {
 	 */
 	public void setParametersObject(Map parametersObject) {
 		this.parametersObject = parametersObject;
+	}
+
+	public int getTitleDimension() {
+		return titleDimension;
+	}
+
+	public void setTitleDimension(int titleDimension) {
+		this.titleDimension = titleDimension;
 	}
 
 

@@ -38,6 +38,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.DialShape;
 import org.jfree.chart.plot.MeterInterval;
 import org.jfree.chart.plot.MeterPlot;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.Range;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
@@ -199,6 +200,10 @@ public class Meter extends DialCharts{
 		JFreeChart chart = new JFreeChart(name, 
 				JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 		chart.setBackgroundPaint(color);
+		
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
 
 		return chart;
 	}

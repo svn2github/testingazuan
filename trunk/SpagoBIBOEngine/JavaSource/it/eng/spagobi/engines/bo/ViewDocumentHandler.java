@@ -96,7 +96,6 @@ public class ViewDocumentHandler {
 		if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 				"EXECUTION_STARTED", null, null);
 		
-		/*
 		//get template
 		String template64 = (String)request.getParameter("template");
 		if(template64==null) {
@@ -177,16 +176,15 @@ public class ViewDocumentHandler {
 			}
 		}	
 		
-		logger.info("Engines"+ this.getClass().getName()+ 
-					"service() like report type will be used the wid value. " +
-					"For this release the only possible type of reports are the ones with .wid extension"); 
-		*/
+		logger.info("This BO engine supports only .wid and .rep documents."); 
 		
+		/*
 		String reportName = "P2 - Code horaire journalier par salarié";
 		String reportID = "27981";
 		int repCode = 0;
 		String reportType = "rep";
 		String repository = BOConstants.CORPORATE_REPOSITORY;
+		*/
 		
 		String outputType = request.getParameter(BOConstants.OUTPUT_TYPE);
 		

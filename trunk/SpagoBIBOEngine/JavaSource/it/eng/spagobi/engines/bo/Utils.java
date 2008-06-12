@@ -31,8 +31,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 */
 package it.eng.spagobi.engines.bo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -114,15 +117,32 @@ public class Utils {
 	 */
 	public static void fillPrompts(WIDocument repDocument, HttpServletRequest request) {
 		logger.debug("IN");
+		InputStream is = null;
 		try {
+	 		is = Thread.currentThread().getContextClassLoader().getResourceAsStream("prompts.properties");
+		 	Properties props = new Properties();
+		 	if (is != null) props.load(is);
 			WIPrompts prompts = repDocument.getPrompts();
 			logger.debug("Report prompts retrieved.");
 			int numPrompts = prompts.getCount();
 			for (int i = 0; i < numPrompts; i++) {
 				 WIPrompt prompt = prompts.getItem(i + 1);
 				 String namePrompt = prompt.getName();
-				 String valuePrompt = request.getParameter(namePrompt);
-				 logger.debug("Find report prompt with name = [" + namePrompt + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
+				 String associatedSpagoBIParName = null;
+				 if (props.containsKey(namePrompt)) {
+					 associatedSpagoBIParName = props.getProperty(namePrompt);
+					 logger.debug("Found name association between prompt [" + namePrompt + "] and SpagoBI parameter [" + associatedSpagoBIParName + "].");
+				 } else {
+					 logger.debug("No name association found between prompt [" + namePrompt + "] and SpagoBI parameters.");
+				 }
+				 String valuePrompt = null;
+				 if (associatedSpagoBIParName != null) {
+					 valuePrompt = request.getParameter(associatedSpagoBIParName);
+					 logger.debug("Find report prompt with name = [" + namePrompt + "] associated to SpagoBI parameter [" + associatedSpagoBIParName + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
+				 } else {
+					 valuePrompt = request.getParameter(namePrompt);
+					 logger.debug("Find report prompt with name = [" + namePrompt + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
+				 }
 				 if (valuePrompt != null) {
 				 	String[] valsPrompt = valuePrompt.split(",");
 					String strValueList = "";
@@ -144,6 +164,12 @@ public class Utils {
 		} catch (Exception e) {
 			logger.error("Error while filling report prompts", e);
 		} finally {
+			if (is != null)
+				try {
+					is.close();
+				} catch (IOException e) {
+					logger.debug("Error while closing stream on promps.properties file.");
+				}
 			logger.debug("OUT");
 		}
     }

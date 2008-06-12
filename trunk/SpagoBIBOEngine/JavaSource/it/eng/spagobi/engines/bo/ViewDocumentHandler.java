@@ -31,6 +31,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 */
 package it.eng.spagobi.engines.bo;
 
+import it.eng.spagobi.engines.bo.exceptions.SpagoBIBOEngineException;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 import java.io.ByteArrayInputStream;
@@ -346,10 +347,13 @@ public class ViewDocumentHandler {
 					wiDocument.getHTMLView(true);
 				} catch (WIException wiException) {
 					int wiExceptionNumber = wiException.getNumber();
-					if (wiExceptionNumber == WIException.WIERR_DOC_NEEDPROMPT_01) {
-						Utils.fillPrompts(wiDocument, request);
-					} else {
-						// TODO manage Contexts and password
+					switch (wiExceptionNumber) {
+						case WIException.WIERR_DOC_NEEDPROMPT_01: 
+							Utils.fillPrompts(wiDocument, request, servletContext);
+							break;
+						case WIException.WIERR_DOC_NEEDCONTEXT_01: throw new SpagoBIBOEngineException("Document needs context. Not treated.");
+						case WIException.WIERR_DOC_NEEDPASSWORD_01: throw new SpagoBIBOEngineException("Document needs passaword. Not treated.");
+						case WIException.WIERR_DOC_NEEDSECURITYPROMPT_01: throw new SpagoBIBOEngineException("Document needs security prompt. Not treated.");
 					}
 					wiDocument.getHTMLView(true);
 				}
@@ -389,6 +393,8 @@ public class ViewDocumentHandler {
 			RequestDispatcher disp = servletContext.getRequestDispatcher(jspexecution);
 			disp.forward(request, response);
  	
+		} catch (SpagoBIBOEngineException e){
+			showErrorMessage(e.getMessage(), response);
  	    } catch (Exception e){
  	    	  logger.error("Error while generating report output");
  	    	  // AUDIT UPDATE
@@ -402,7 +408,27 @@ public class ViewDocumentHandler {
 	
 	
 	
-	
+	private void showErrorMessage(String message, HttpServletResponse response) {
+		logger.debug("IN");
+		ServletOutputStream objServletOutputStream = null;
+	    try {
+	    	response.setContentType("text/html");
+	    	objServletOutputStream = response.getOutputStream();
+			objServletOutputStream.write(message.getBytes());
+		    objServletOutputStream.flush();
+		} catch (Exception e) {
+			if (objServletOutputStream != null) {
+				try {
+					objServletOutputStream.close();
+				} catch (IOException e1) {
+					logger.error("Error while closing servlet response output stream", e);
+				}
+			}
+			logger.error("Error while sending error message to servlet response output stream", e);
+		} finally {
+			logger.debug("OUT");
+		}
+	}
 	
 	
 	

@@ -31,12 +31,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 */
 package it.eng.spagobi.engines.bo;
 
+import it.eng.spagobi.engines.bo.exceptions.SpagoBIBOEngineException;
+import it.eng.spagobi.utilities.ParametersDecoder;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -64,6 +73,8 @@ import com.bo.wibean.WISession;
 
 public class Utils {
 
+	private static final String PROMPT_ASSOCIATION_FILE = "WEB-INF/classes/prompts.properties";
+	
 	private static Logger logger = Logger.getLogger(Utils.class);
 	
 	public static boolean controlRepository(String repName) {
@@ -114,23 +125,32 @@ public class Utils {
 	 * Fills the report prompts.
 	 * @param repDocument The WIDocument object for a .rep type document; getHTMLView(true) must be invoked on this object before calling this method).
 	 * @param request The HttpServletRequest request
+	 * @param servletContext 
+	 * @throws SpagoBIBOEngineException 
 	 */
-	public static void fillPrompts(WIDocument repDocument, HttpServletRequest request) {
+	public static void fillPrompts(WIDocument repDocument, HttpServletRequest request, ServletContext servletContext) throws SpagoBIBOEngineException {
 		logger.debug("IN");
-		InputStream is = null;
 		try {
-	 		is = Thread.currentThread().getContextClassLoader().getResourceAsStream("prompts.properties");
-		 	Properties props = new Properties();
-		 	if (is != null) props.load(is);
+			Properties props = loadPromptsAssociationFile(servletContext);
 			WIPrompts prompts = repDocument.getPrompts();
 			logger.debug("Report prompts retrieved.");
 			int numPrompts = prompts.getCount();
+			ParametersDecoder decoder = new ParametersDecoder();
+			List parametersNotSet = new ArrayList();
 			for (int i = 0; i < numPrompts; i++) {
 				 WIPrompt prompt = prompts.getItem(i + 1);
 				 String namePrompt = prompt.getName();
+				 logger.debug("Evaluating prompt [" + namePrompt + "]");
 				 String associatedSpagoBIParName = null;
-				 if (props.containsKey(namePrompt)) {
-					 associatedSpagoBIParName = props.getProperty(namePrompt);
+				 if (props.containsValue(namePrompt)) {
+					 Enumeration keys = props.keys();
+					 while (keys.hasMoreElements()) {
+						 String key = (String) keys.nextElement();
+						 if (props.getProperty(key).equals(namePrompt)) {
+							 associatedSpagoBIParName = key;
+							 break;
+						 }
+					 }
 					 logger.debug("Found name association between prompt [" + namePrompt + "] and SpagoBI parameter [" + associatedSpagoBIParName + "].");
 				 } else {
 					 logger.debug("No name association found between prompt [" + namePrompt + "] and SpagoBI parameters.");
@@ -144,35 +164,68 @@ public class Utils {
 					 logger.debug("Find report prompt with name = [" + namePrompt + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
 				 }
 				 if (valuePrompt != null) {
-				 	String[] valsPrompt = valuePrompt.split(",");
 					String strValueList = "";
-					if (valsPrompt.length > 1) {
-						for (int j = 0; j < valsPrompt.length; j++) {
-							strValueList += valsPrompt[j];
-							if (j < valsPrompt.length - 1) strValueList += ";";
+					if (decoder.isMultiValues(valuePrompt)) {			
+						List values = decoder.decode(valuePrompt);
+						for (int j = 0; j < values.size(); j++) {
+							strValueList += (String) values.get(j);
+							if (j < values.size() - 1) strValueList += ";";
 						}
-					} else
-						strValueList = valsPrompt[0];
+					} else {
+						strValueList = valuePrompt;
+					}
 					logger.debug("Entering new value = [" + strValueList + "] into prompt with name = [" + namePrompt + "].");
 					prompt.enterValue(strValueList);
 				 } else {
-					 String previous = prompt.getPreviousValue();
-					 logger.debug("Entering previous value = [" + previous + "] into prompt with name = [" + namePrompt + "].");
-					 prompt.enterValue(previous);
+					 logger.error("Prompt with name = [" + namePrompt + "] has no value set. Cannot refresh document.");
+					 parametersNotSet.add(namePrompt);
 				 }
 			}
+			if (parametersNotSet.size() != 0) {
+				String message = "Prompts with name " + parametersNotSet.toString() + " have no value set. " +
+						"Cannot refresh document. You must configure a parameter for the SpagoBI document for each missing prompt.";
+				throw new SpagoBIBOEngineException(message);
+			}
+		} catch (SpagoBIBOEngineException e) {
+			throw e;
 		} catch (Exception e) {
 			logger.error("Error while filling report prompts", e);
+		} finally {
+			logger.debug("OUT");
+		}
+    }
+	
+	private static Properties loadPromptsAssociationFile(ServletContext servletContext) {
+		logger.debug("IN");
+		InputStream is = null;
+		try {
+			String contextRealPath = servletContext.getRealPath("/");
+			if (!contextRealPath.endsWith("/")) contextRealPath += "/";
+			File promptsAssociationFile = new File(contextRealPath + PROMPT_ASSOCIATION_FILE);
+			if (promptsAssociationFile.exists() && promptsAssociationFile.isFile()) {
+				logger.debug("Loading file " + promptsAssociationFile.getAbsolutePath());
+				is = new FileInputStream(promptsAssociationFile);
+			} else {
+				logger.debug("File " + PROMPT_ASSOCIATION_FILE + " not found");
+			}
+	 		//is = Thread.currentThread().getContextClassLoader().getResourceAsStream("prompts.properties");
+		 	Properties props = new Properties();
+		 	if (is != null) props.load(is);
+		 	return props;
+		} catch (Exception e) {
+			logger.error("Error while loading prompts association file", e);
+			return new Properties();
 		} finally {
 			if (is != null)
 				try {
 					is.close();
 				} catch (IOException e) {
-					logger.debug("Error while closing stream on promps.properties file.");
+					logger.debug("Error while closing stream on " + PROMPT_ASSOCIATION_FILE + " file.");
 				}
 			logger.debug("OUT");
 		}
-    }
+		
+	}
 	
 	public static void addHtmlInSession(Report report, HttpSession session) {
 		HTMLView reportHtmlView = (HTMLView) report.getView(OutputFormatType.HTML);

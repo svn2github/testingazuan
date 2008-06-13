@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 21-apr-2005
  *
@@ -67,56 +67,66 @@ public class PortletLoginAction extends AbstractHttpAction {
     /**
      * Service.
      * 
-     * @param request the request
-     * @param response the response
+     * @param request
+     *                the request
+     * @param response
+     *                the response
      * 
-     * @throws Exception the exception
+     * @throws Exception
+     *                 the exception
      * 
      * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
-     * it.eng.spago.base.SourceBean)
+     *      it.eng.spago.base.SourceBean)
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
 
-	RequestContainer reqCont = getRequestContainer();
-	SessionContainer sessionCont = reqCont.getSessionContainer();
-	SessionContainer permSession = sessionCont.getPermanentContainer();
-	
-	
-	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	try {
 
-	if (profile == null) {
+	    RequestContainer reqCont = getRequestContainer();
+	    SessionContainer sessionCont = reqCont.getSessionContainer();
+	    SessionContainer permSession = sessionCont.getPermanentContainer();
 
-	    String userId = null;
-	    PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-	    Principal principal = portletRequest.getUserPrincipal();
-	    userId = principal.getName();
-	    logger.debug("got userId from Principal=" + userId);
+	    IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
-	    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-	    try {
-		SpagoBIUserProfile user = supplier.createUserProfile(userId);
-		profile = new UserProfile(user);
-	    } catch (Exception e) {
-		logger.error("Reading user information... ERROR", e);
-		throw new SecurityException();
+	    if (profile == null) {
+
+		String userId = null;
+		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
+		Principal principal = portletRequest.getUserPrincipal();
+		userId = principal.getName();
+		logger.debug("got userId from Principal=" + userId);
+
+		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		try {
+		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
+		    profile = new UserProfile(user);
+		} catch (Exception e) {
+		    logger.error("Reading user information... ERROR", e);
+		    throw new SecurityException();
+		}
+
+		logger.debug("userProfile created.UserID= " + (String) profile.getUserUniqueIdentifier());
+		logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());
+		logger.debug("Functionalities of the user profile: " + profile.getFunctionalities());
+		logger.debug("Roles of the user profile: " + profile.getRoles());
+
+		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+
+		String username = (String) profile.getUserUniqueIdentifier();
+		if (!UserUtilities.userFunctionalityRootExists(username)) {
+		    UserUtilities.createUserFunctionalityRoot(profile);
+		}
+
 	    }
 
-	    logger.debug("userProfile created.UserID= " + (String) profile.getUserUniqueIdentifier());
-	    logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());
-	    logger.debug("Functionalities of the user profile: " + profile.getFunctionalities());
-	    logger.debug("Roles of the user profile: " + profile.getRoles());
-
-	    permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-
-	    String username = (String) profile.getUserUniqueIdentifier();
-	    if (!UserUtilities.userFunctionalityRootExists(username)) {
-		UserUtilities.createUserFunctionalityRoot(profile);
-	    }
-
+	} catch (Exception e) {
+	    logger.error("Exception", e);
+	    throw new SecurityException();
+	} finally {
+	    logger.debug("OUT");
 	}
 
-	logger.debug("OUT");
     }
 
 }

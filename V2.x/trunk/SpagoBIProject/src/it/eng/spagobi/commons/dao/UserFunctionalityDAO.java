@@ -47,7 +47,10 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 	logger.debug("IN");
 	if (roles==null) return null;
 	String strRoles="";
-
+	if (roles==null || roles.length==0) {
+	    logger.warn("The array of roles is empty...");
+	    return new String[0];
+	}
 	ArrayList toReturn = new ArrayList();
 	Session aSession = null;
 	Transaction tx = null;
@@ -66,6 +69,7 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		    strRoles=strRoles.substring(0, strRoles.length()-1);
 		}
 		logger.debug("strRoles="+strRoles);
+		if (strRoles.length()==0) logger.warn("No roles found for the user...!!!!!");
 		
 		//String hql = "from SbiRolesUserFunctionality suf where suf.userFunctionality.domainCd = 'USER_FUNCTIONALITY'" + 
 		// " and suf.roleType.valueCd in ("+strRoles+")";

@@ -21,8 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.security.service;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.services.LoginModule;
 
 /**
  * Factory class for the security supplier 
@@ -31,25 +34,31 @@ import it.eng.spago.configuration.ConfigSingleton;
  */
 public class SecurityServiceSupplierFactory {
 
+    static Logger logger = Logger.getLogger(SecurityServiceSupplierFactory.class);
     /**
      * Creates a new SecurityServiceSupplier object.
      * 
      * @return the i security service supplier
      */
     public static ISecurityServiceSupplier createISecurityServiceSupplier(){
-
+	logger.debug("IN");
 	SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 	SourceBean engUserProfileFactorySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS");
+	if (engUserProfileFactorySB==null){
+	    logger.warn("SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS ... NOT FOUND");
+	}
 	String engUserProfileFactoryClass = (String) engUserProfileFactorySB.getAttribute("className");
 	engUserProfileFactoryClass = engUserProfileFactoryClass.trim(); 
 	try {
 	    return  (ISecurityServiceSupplier)Class.forName(engUserProfileFactoryClass).newInstance();
 	} catch (InstantiationException e) {
-	    e.printStackTrace();
+	    logger.warn("InstantiationException",e);
 	} catch (IllegalAccessException e) {
-	    e.printStackTrace();
+	    logger.warn("IllegalAccessException",e);
 	} catch (ClassNotFoundException e) {
-	    e.printStackTrace();
+	    logger.warn("ClassNotFoundException",e);
+	}finally{
+	    logger.debug("OUT");
 	}
 	return null;
     }

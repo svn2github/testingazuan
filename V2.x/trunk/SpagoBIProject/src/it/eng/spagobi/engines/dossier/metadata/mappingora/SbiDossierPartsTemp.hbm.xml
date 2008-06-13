@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 14-feb-2008 10.44.53 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierPartsTemp" table="SBI_DOSSIER_PARTS_TEMP">
+    <class name="it.eng.spagobi.engines.dossier.metadata.SbiDossierPartsTemp" table="SBI_DOSSIER_TEMP">
         <id name="partId" type="integer">
             <column name="PART_ID" />
             <generator class="native">

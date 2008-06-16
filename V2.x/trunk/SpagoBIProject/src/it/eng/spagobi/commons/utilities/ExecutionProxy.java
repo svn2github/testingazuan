@@ -172,7 +172,9 @@ public class ExecutionProxy {
 	    PostMethod httppost = new PostMethod(urlEngine);
 	    while (iterMapPar.hasNext()) {
 		String parurlname = (String) iterMapPar.next();
-		String parvalue = (String) mapPars.get(parurlname);
+		String parvalue = "";
+		if (mapPars.get(parurlname) != null)
+			parvalue = mapPars.get(parurlname).toString();
 		httppost.addParameter(parurlname, parvalue);
 	    }
 	    // sent request to the engine

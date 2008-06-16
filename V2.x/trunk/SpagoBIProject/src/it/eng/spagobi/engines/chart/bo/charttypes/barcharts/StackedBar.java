@@ -69,6 +69,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	String categoryUrlName="";
 	String serieUrlname="";
 	String serieHidden="";
+	boolean cumulative=false;
 
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
@@ -90,6 +91,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		categories=new HashMap();
 
+		double cumulativeValue=0.0;
+		
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -128,9 +131,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					series.put(name, value);
 				}
 			}
+		
+			// if it is cumulative automatically get the vamount value
+			if(cumulative){
+				dataset.addValue(cumulativeValue, "Cumulative", catValue);
+			}
 			
-			// if there is an hidden serie put that one first!!!
-			if(serieHidden!=null && !serieHidden.equalsIgnoreCase("")){
+			
+			// if there is an hidden serie put that one first!!! if it is not cumulative
+			if(serieHidden!=null && !this.cumulative && !serieHidden.equalsIgnoreCase("")){
 				String valueS=(String)series.get(serieHidden);
 				dataset.addValue(Double.valueOf(valueS).doubleValue(), serieHidden, catValue);
 				if(!seriesNames.contains(serieHidden)){
@@ -138,11 +147,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				}				
 			}
 			
+					
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				if(!nameS.equalsIgnoreCase(serieHidden)){
 				String valueS=(String)series.get(nameS);
 				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+				cumulativeValue+=Double.valueOf(valueS).doubleValue();
 				if(!seriesNames.contains(nameS)){
 					seriesNames.add(nameS);
 				}
@@ -166,6 +177,16 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		if(confParameters.get("hidden_serie")!=null){	
 			serieHidden=(String)confParameters.get("hidden_serie");
 
+		}
+		
+		if(confParameters.get("cumulative")!=null){	
+			String orientation=(String)confParameters.get("cumulative");
+			if(orientation.equalsIgnoreCase("true")){
+				cumulative=true;
+			}
+			else {
+				cumulative=false;
+			}
 		}
 
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -296,6 +317,18 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					renderer.setSeriesPaint(row, color.WHITE);
 			}
 		}
+		
+		if(cumulative){
+			int row=dataset.getRowIndex("Cumulative");
+			if(row!=-1){
+				if(color!=null)
+					renderer.setSeriesPaint(row, color);
+				else
+					renderer.setSeriesPaint(row, Color.WHITE);
+			}
+		}
+		
+		
 
 
 

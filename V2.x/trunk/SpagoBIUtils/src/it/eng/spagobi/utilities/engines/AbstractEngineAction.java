@@ -33,8 +33,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities.engines;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -44,116 +47,132 @@ import org.apache.log4j.Logger;
  */
 public class AbstractEngineAction extends AbstractBaseHttpAction {
 	
-	
-	
 	/**
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(AbstractEngineAction.class);
     
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.service.AbstractBaseHttpAction#init(it.eng.spago.base.SourceBean)
-	 */
+    
 	public void init(SourceBean config) {
         super.init(config);
     } 
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
 	public void service(SourceBean request, SourceBean response) throws EngineException {
 		setRequest( request );
 		setResponse( response );
 	}	
 	
+	public IEngineInstance getEngineInstance() {
+    	return (IEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
+    }
+	
+	public Map getEnv() {
+		return getEngineInstance().getEnv();
+	}
+	
+	public boolean saveAnalysisState() throws EngineException {
+		IEngineInstance engineInstance = null;
+		String documentId = null;
+		EngineAnalysisMetadata analysisMetadata = null;
+		IEngineAnalysisState analysisState = null;
+		ContentServiceProxy  contentServiceProxy = null;
+		String serviceResponse= null;
+		
+		
+		
+		engineInstance = getEngineInstance();
+		analysisMetadata = engineInstance.getAnalysisMetadata();
+		analysisState = engineInstance.getAnalysisState();
+
+		if(getEnv() == null) {
+			return false;
+		}
+		
+		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );
+		if(contentServiceProxy == null) {
+			return false;
+		}
+		
+		documentId = (String)getEnv().get( EngineConstants.ENV_DOCUMENT_ID );
+		if(documentId == null) {
+			return false;
+		}
+		
+		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
+				analysisMetadata.getName(),
+				analysisMetadata.getDescription(), 
+				analysisMetadata.getScope(), 
+				new String(analysisState.store()) );
+		
+		if (serviceResponse.toUpperCase().startsWith("KO")) {
+			return false;
+		}		
+		return true;
+	}
+
+	public Locale getLocale() {
+		return  (Locale)getEnv().get(EngineConstants.ENV_LOCALE);
+	}
+
 	/**
-	 * Gets the user id.
+	 * Sets the qbe engine locale.
 	 * 
-	 * @return the user id
+	 * @param locale the new qbe engine locale
 	 */
+	public void setLocale(Locale locale) {
+		getEnv().put(EngineConstants.ENV_LOCALE, locale);
+	}
+	
+	/*
+	
 	public String getUserId() {
 		return getAttributeFromSessionAsString( EngineConstants.USER_ID );
 	}
 	
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId the new user id
-	 */
+	
 	public void setUserId(String userId) {
 		setAttributeInSession(EngineConstants.USER_ID,userId);
 	}	
 	
-	/**
-	 * Gets the document id.
-	 * 
-	 * @return the document id
-	 */
+	
 	public String getDocumentId() {
 		return getAttributeFromSessionAsString( EngineConstants.DOCUMENT_ID );
 	}
 	
-	/**
-	 * Sets the document id.
-	 * 
-	 * @param documentId the new document id
-	 */
+	
 	public void setDocumentId(String documentId) {
 		setAttributeInSession(EngineConstants.DOCUMENT_ID,documentId);
 	}
 	
-	/**
-	 * Gets the audit id.
-	 * 
-	 * @return the audit id
-	 */
+	
 	public String getAuditId() {
 		return getAttributeFromSessionAsString( EngineConstants.AUDIT_ID );
 	}
 	
-	/**
-	 * Sets the audit id.
-	 * 
-	 * @param auditId the new audit id
-	 */
+	
 	public void setAuditId(String auditId) {
 		setAttributeInSession(EngineConstants.AUDIT_ID,auditId);
 	}
 	
-	/**
-	 * Gets the analysis metadata.
-	 * 
-	 * @return the analysis metadata
-	 */
+	
 	public EngineAnalysisMetadata getAnalysisMetadata() {
 		return (EngineAnalysisMetadata)getAttributeFromSession( EngineConstants.ANALYSIS_METADATA );
 	}
 	
-	/**
-	 * Sets the analysis metadata.
-	 * 
-	 * @param analysisMetadata the new analysis metadata
-	 */
+	
 	public void setAnalysisMetadata(EngineAnalysisMetadata analysisMetadata) {
 		setAttributeInSession(EngineConstants.ANALYSIS_METADATA,analysisMetadata);
 	}
 	
-	/**
-	 * Gets the analysis state.
-	 * 
-	 * @return the analysis state
-	 */
-	public EngineAnalysisState getAnalysisState() {
-		return (EngineAnalysisState)getAttributeFromSession( EngineConstants.ANALYSIS_STATE );
+	
+	public IEngineAnalysisState getAnalysisState() {
+		return (IEngineAnalysisState)getAttributeFromSession( EngineConstants.ANALYSIS_STATE );
 	}
 	
-	/**
-	 * Sets the analysis state.
-	 * 
-	 * @param analysisState the new analysis state
-	 */
-	public void setAnalysisState(EngineAnalysisState analysisState) {
+	
+	public void setAnalysisState(IEngineAnalysisState analysisState) {
 		setAttributeInSession(EngineConstants.ANALYSIS_STATE,analysisState);
 	}
+	
+	*/
 }

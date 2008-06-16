@@ -32,11 +32,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.service;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -67,7 +75,7 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
     } 
 	
 
-	// REQUEST & RESPONSE utility methods
+	// REQUEST utility methods
 	
 	protected SourceBean getRequest() {
 		return request;
@@ -197,6 +205,9 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return ( requestContainsAttribute(attrName) && getAttribute(attrName).toString().equalsIgnoreCase(attrValue) );
 	}
 	
+	
+	// RESPONSE utility methods
+	
 	/**
 	 * Sets the attribute.
 	 * 
@@ -209,6 +220,54 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		} catch (SourceBeanException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void writeBackToClient(IServiceResponse response) throws IOException {
+		writeBackToClient(response.getContent(),
+				response.isInline(),
+				response.getName(),
+				response.getType());
+	}
+	
+	public void writeBackToClient(String content, boolean inline, String contentName, String contentType) throws IOException {
+		freezeHttpResponse();
+		
+		// setup response header
+		getHttpResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + contentName + "\";");
+		getHttpResponse().setContentType( contentType );
+		getHttpResponse().setContentLength( content.length() );
+		
+		getHttpResponse().getWriter().print(content);
+	}
+	
+	public void writeBackToClient(File file, boolean inline, String contentName, String contentType) throws IOException {
+		BufferedInputStream bis = null;
+		
+		bis = new BufferedInputStream( new FileInputStream(file) );
+		try {
+			writeBackToClient(bis, inline, contentName, contentType);
+		} finally {
+			bis.close();
+		}		
+	}
+	
+	public void writeBackToClient(InputStream in, boolean inline, String contentName, String contentType) throws IOException {		
+		int contentLength = 0;
+		int b = -1;
+		
+		freezeHttpResponse();
+		
+		// setup response header
+		getHttpResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + contentName + "\";");
+		getHttpResponse().setContentType( contentType );
+		
+		while((b = in.read()) != -1) {
+			getHttpResponse().getOutputStream().write(b);
+			contentLength++;
+		}		
+		getHttpResponse().getOutputStream().flush();
+		
+		getHttpResponse().setContentLength( contentLength );
 	}
 	
 	

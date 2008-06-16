@@ -39,11 +39,19 @@ import it.eng.spago.security.IEngUserProfile;
  *
  */
 public class EngineConstants {
+	
 	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
-	public static final String ANALYSIS_METADATA = "ANALYSIS_METADATA";
-	public static final String ANALYSIS_STATE = "ANALYSIS_STATE";
+
+	public static final String ENGINE_INSTANCE = "ENGINE_INSTANCE";
+	
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
-	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";
+	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";	
+	
+	
+	public static final String ENV_DATASOURCE = "DATASOURCE";
+	public static final String ENV_DOCUMENT_ID = "DOCUMENT_ID";
+	public static final String ENV_CONTENT_SERVICE_PROXY = "CONTENT_SERVICE_PROXY";
+	public static final Object ENV_LOCALE = "LOCALE";
 }

@@ -32,38 +32,70 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.engines;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class EngineAnalysisState {
+public abstract class EngineAnalysisState implements IEngineAnalysisState {
 	
-	private byte[] rowData;
+	Map properties;
 	
 	/**
 	 * Instantiates a new engine analysis state.
 	 * 
 	 * @param rowData the row data
 	 */
-	public EngineAnalysisState(byte[] rowData) {
-		setRowData( rowData );
+	public EngineAnalysisState() {
+		properties = new HashMap();
 	}
 	
-	/**
-	 * Gets the row data.
-	 * 
-	 * @return the row data
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.IEngineAnalysisState#getProperty(java.lang.Object)
 	 */
-	public byte[] getRowData() {
-		return rowData;
+	public Object getProperty(Object pName) {
+		return properties.get( pName ); 
 	}
 	
-	/**
-	 * Sets the row data.
-	 * 
-	 * @param rowData the new row data
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.IEngineAnalysisState#setProperty(java.lang.Object, java.lang.Object)
 	 */
-	public void setRowData(byte[] rowData) {
-		this.rowData = rowData;
+	public void setProperty(Object pName, Object pValue) {
+		properties.put( pName, pValue ); 
 	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.IEngineAnalysisState#containsProperty(java.lang.Object)
+	 */
+	public boolean containsProperty(Object pName) {
+		return properties.containsKey( pName ); 
+	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.utilities.engines.IEngineAnalysisState#propertyNameSet()
+	 */
+	public Set propertyNameSet() {
+		return properties.keySet(); 
+	}
+	
+	public String toString() {
+		StringBuffer buffer = null;
+		Iterator it = null;
+		
+		buffer = new StringBuffer();
+		it = propertyNameSet().iterator();
+		while( it.hasNext() ) {
+			Object pName = it.next();
+			Object pValue = getProperty( pName );
+			buffer.append( pName.toString() + "=" + pValue.toString() + "; ");
+		}
+		
+		return buffer.toString();
+	}
+	
 }

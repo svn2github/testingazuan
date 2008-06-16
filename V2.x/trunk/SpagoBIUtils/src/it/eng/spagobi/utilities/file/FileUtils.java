@@ -32,21 +32,51 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.file;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * @author Andrea Gioia
  *
  */
 public class FileUtils {
 	
-	/**
-	 * Checks if is absolute path.
-	 * 
-	 * @param path the path
-	 * 
-	 * @return true, if is absolute path
-	 */
 	public static boolean isAbsolutePath(String path) {
 		if(path == null) return false;
 		return (path.startsWith("/") || path.startsWith("\\") || path.charAt(1) == ':');
+	}
+	
+	 /**
+	  * Utility method that gets the extension of a file from its name if it has one
+	  */ 
+	public static String getFileExtension(File file) {
+    	try {
+    		return getFileExtension(file.getCanonicalPath());
+    	}catch(IOException e) {
+    		return "";
+    	}
+    }
+	
+	/**
+	  * Utility method that gets the extension of a file from its name if it has one
+	  */ 
+	public static String getFileExtension(String fileName) {
+		if (fileName == null || fileName.lastIndexOf(".") < 0) {
+			return "";
+		}
+		
+		// Could be that the file name actually end with a '.' so lets check
+		if(fileName.lastIndexOf(".") + 1 == fileName.length()) {
+			return "";
+		} 
+		
+		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		
+		// Could be that the path actually had a '.' in it so lets check
+		if(extension.contains(File.separator)) {
+			extension = "";
+		}
+		
+		return extension;
 	}
 }

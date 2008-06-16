@@ -20,7 +20,7 @@
  **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.query.IQuery;
+import it.eng.qbe.newquery.Query;
 import it.eng.spago.base.SourceBean;
 
 import java.io.IOException;
@@ -33,21 +33,21 @@ import java.util.Properties;
  * 
  * @author Andrea Gioia
  */
-public interface IStatement {
+public interface XIStatement {
 	
 	/**
 	 * Sets the query.
 	 * 
 	 * @param query the new query
 	 */
-	public void setQuery(IQuery query);
+	public void setQuery(Query query);
 	
 	/**
 	 * Gets the query.
 	 * 
 	 * @return the query
 	 */
-	public IQuery getQuery();
+	public Query getQuery();
 	
 	/**
 	 * Gets the query string.
@@ -66,7 +66,7 @@ public interface IStatement {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public String getQueryString(IQuery query, Map parameters) throws IOException;
+	public String getQueryString(Query query, Map parameters) throws IOException;
 	
 	/**
 	 * Gets the data mart model.
@@ -169,7 +169,7 @@ public interface IStatement {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public SourceBean execute(IQuery query, Map parameters, int offset, int fetchSize, int maxResults) throws Exception;
+	public SourceBean execute(Query query, Map parameters, int offset, int fetchSize, int maxResults) throws Exception;
 	
 	/**
 	 * Execute with pagination.
@@ -196,7 +196,7 @@ public interface IStatement {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public SourceBean executeWithPagination(IQuery query, Map parameters,  int pageNumber, int pageSize, int maxResults) throws Exception;
+	public SourceBean executeWithPagination(Query query, Map parameters,  int pageNumber, int pageSize, int maxResults) throws Exception;
 	
 	/**
 	 * Execute with pagination.

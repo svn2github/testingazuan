@@ -44,11 +44,6 @@ public class AbstractDataSource implements IDataSource {
 	/** The properties. */
 	private DatamartProperties properties = null;	
 	
-	/** The labels. */
-	private DatamartLabels labels = null;
-	
-	/** The localized label map. */
-	private Map localizedLabelMap = new HashMap();
 	
 	
 	
@@ -86,44 +81,9 @@ public class AbstractDataSource implements IDataSource {
 	
 	
 	// =========================================================================================================
-	// Label & Qbe properties
+	// Qbe properties
 	// =========================================================================================================
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#getLabels()
-	 */
-	public DatamartLabels getLabels() {
-		return labels;
-	}
-
-	/**
-	 * Sets the labels.
-	 * 
-	 * @param labels the new labels
-	 */
-	public void setLabels(DatamartLabels labels) {
-		this.labels = labels;
-	}
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#getLabels(java.util.Locale)
-	 */
-	public DatamartLabels getLabels(Locale locale) {
-		DatamartLabels props = (DatamartLabels)localizedLabelMap.get(locale.getLanguage());
-		if(props == null) props = getLabels();
-		return props;
-	}
-	
-	/**
-	 * Put label properties.
-	 * 
-	 * @param locale the locale
-	 * @param labelProperties the label properties
-	 */
-	public void putLabelProperties(Locale locale, DatamartLabels labelProperties) {
-		localizedLabelMap.put(locale.getLanguage(), labelProperties);
-	}
-
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.datasource.IDataSource#getProperties()
 	 */

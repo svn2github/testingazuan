@@ -45,14 +45,14 @@ import org.hibernate.Session;
 /**
  * The Class HQLStatement.
  */
-public class HQLStatement extends BasicStatement {
+public class CopyOfHQLStatement extends BasicStatement {
 	
 	/**
 	 * Instantiates a new hQL statement.
 	 * 
 	 * @param dataMartModel the data mart model
 	 */
-	protected HQLStatement(IDataMartModel dataMartModel) {
+	protected CopyOfHQLStatement(IDataMartModel dataMartModel) {
 		super(dataMartModel);
 	}
 	
@@ -62,7 +62,7 @@ public class HQLStatement extends BasicStatement {
 	 * @param dataMartModel the data mart model
 	 * @param query the query
 	 */
-	protected HQLStatement(IDataMartModel dataMartModel, IQuery query) {
+	protected CopyOfHQLStatement(IDataMartModel dataMartModel, IQuery query) {
 		super(dataMartModel, query);
 	}
 	
@@ -537,10 +537,9 @@ public class HQLStatement extends BasicStatement {
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
 			String queryString = getQueryString(query, parameters);	
-			System.out.println("OLD: " + queryString);
 			
-			//HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dataMartModel.getDataSource().getSessionFactory().openSession());
-			//String sqlQuery = queryRewriter.rewrite( queryString );
+			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter(dataMartModel.getDataSource().getSessionFactory().openSession());
+			String sqlQuery = queryRewriter.rewrite( queryString );
 						
 			Query hibernateQuery = session.createQuery(queryString);			
 			

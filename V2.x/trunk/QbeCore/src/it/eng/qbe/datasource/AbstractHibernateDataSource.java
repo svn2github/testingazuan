@@ -177,13 +177,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	
 	
 	
-	/**
-	 * Load label properties.
-	 * 
-	 * @param datamartName the datamart name
-	 * 
-	 * @return the properties
-	 */
+	/*
 	protected Properties loadLabelProperties(String datamartName) {
 		Properties labelProperties = new Properties();
 		
@@ -211,14 +205,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		return labelProperties;
 	}
 	
-	/**
-	 * Load label properties.
-	 * 
-	 * @param datamartName the datamart name
-	 * @param locale the locale
-	 * 
-	 * @return the properties
-	 */
+	
 	protected Properties loadLabelProperties(String datamartName, Locale locale) {
 		
 		Properties labelProperties = null;
@@ -255,15 +242,6 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		return labelProperties;	
 	}
 	
-	
-	
-	/**
-	 * Load qbe properties.
-	 * 
-	 * @param datamartName the datamart name
-	 * 
-	 * @return the properties
-	 */
 	protected Properties loadQbeProperties(String datamartName) {
 		
 		Properties qbeProperties = null;
@@ -293,13 +271,6 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		return qbeProperties;	
 	}
 	
-	/**
-	 * Load qbe properties form jar file.
-	 * 
-	 * @param jf the jf
-	 * 
-	 * @return the properties
-	 */
 	private Properties loadQbePropertiesFormJarFile(JarFile jf){
 		Properties prop = null;
 		
@@ -318,7 +289,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		return prop;
 	}
 	
-	
+	*/
 	
 	/**
 	 * Load formula file.

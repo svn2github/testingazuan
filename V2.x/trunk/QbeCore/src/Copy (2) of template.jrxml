@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"  ?>
-<!-- Created with Qbe - Free inquery and adhoc reporting tool of SpagoBI Platform -->
+<!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="report"
+		 name="hib_test"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -16,8 +16,9 @@
 		 bottomMargin="20"
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
-		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="0" />
+		 isSummaryNewPage="false"
+		 ${pagination}>
+	<property name="ireport.scriptlethandling" value="2" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />

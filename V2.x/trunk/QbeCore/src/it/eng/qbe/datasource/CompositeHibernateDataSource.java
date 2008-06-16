@@ -98,8 +98,6 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		
 		setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
 		setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
-		setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
-		
 		
 		this.alreadyAddedView = new ArrayList();		
 	}
@@ -116,11 +114,7 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	}
 	
 	
-	/**
-	 * Load qbe properties.
-	 * 
-	 * @return the properties
-	 */
+	/*
 	private Properties loadQbeProperties() {
 		Properties properties = new Properties();
 		for(int i = 0; i < getDatamartNames().size(); i++) {
@@ -130,11 +124,6 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		return properties;
 	}
 	
-	/**
-	 * Load label properties.
-	 * 
-	 * @return the properties
-	 */
 	private Properties loadLabelProperties() {
 		Properties properties = new Properties();
 		for(int i = 0; i < getDatamartNames().size(); i++) {
@@ -143,7 +132,8 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		}
 		return properties;
 	}
-
+	*/
+	
 	/**
 	 * TODO marge all the formula files in one file *.
 	 * 

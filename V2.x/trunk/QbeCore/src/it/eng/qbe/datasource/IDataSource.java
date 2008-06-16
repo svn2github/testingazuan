@@ -67,22 +67,4 @@ public interface IDataSource {
 	 * @param properties the new properties
 	 */
 	void setProperties(DatamartProperties properties);
-	
-	/**
-	 * Gets the labels.
-	 * 
-	 * @return the labels
-	 */
-	DatamartLabels getLabels();	
-	
-	/**
-	 * Gets the labels.
-	 * 
-	 * @param locale the locale
-	 * 
-	 * @return the labels
-	 */
-	DatamartLabels getLabels(Locale locale);
-	
-	
 }

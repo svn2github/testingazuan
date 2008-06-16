@@ -32,24 +32,26 @@ import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-// TODO: Auto-generated Javadoc
+import org.apache.log4j.Logger;
+
 /**
- * The Class DatamartLabelsDAOFilesystemImpl.
  * 
  * @author Andrea Gioia
  */
 public class DatamartLabelsDAOFilesystemImpl implements DatamartLabelsDAO {
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.dao.DatamartLabelsDAO#loadDatamartLabels(java.lang.String)
-	 */
+
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(DatamartLabelsDAOFilesystemImpl.class);
+    
+	
+    
+    
 	public DatamartLabels loadDatamartLabels(String datamartName) {
 		return loadDatamartLabels(datamartName, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.dao.DatamartLabelsDAO#loadDatamartLabels(java.lang.String, java.util.Locale)
-	 */
+	
 	public DatamartLabels loadDatamartLabels(String datamartName, Locale locale) {
 		Properties properties = null;
 		

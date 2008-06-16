@@ -31,7 +31,7 @@ import java.util.Map;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class BasicHibernateDataSource.
  * 
@@ -94,7 +94,6 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		setFormula( DAOFactory.getFormulaDAO().loadFormula(getDatamartName()) );
 		
 		setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
-		setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );		
 		
 		this.alreadyAddedView = new ArrayList();		
 	}
@@ -175,7 +174,7 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		if(viewNames.size() > 0) {
 			for(int i = 0; i < viewNames.size(); i++) {
 				String viewName = (String)viewNames.get(i);
-				result = result || addView(viewName);
+				result = addView(viewName) && result;
 			}
 		}
 		

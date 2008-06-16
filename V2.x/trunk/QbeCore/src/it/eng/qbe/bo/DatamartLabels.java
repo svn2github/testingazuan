@@ -20,6 +20,10 @@
  **/
 package it.eng.qbe.bo;
 
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.spagobi.utilities.strings.StringUtils;
+
 import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
@@ -49,32 +53,41 @@ public class DatamartLabels {
 		setProperties(properties);
 	}	
 	
-	/**
-	 * Gets the label.
-	 * 
-	 * @param key the key
-	 * 
-	 * @return the label
-	 */
-	public String getLabel(String key) {
-		return properties.getProperty(key);
+	private String getItemUniqueNameInFile( DataMartEntity entity ) {
+		return entity.getUniqueName().replaceAll(":", "/");
 	}
 	
-	/**
-	 * Gets the properties.
-	 * 
-	 * @return the properties
-	 */
+	private String getItemUniqueNameInFile( DataMartField field ) {
+		return field.getUniqueName().replaceAll(":", "/");
+	}
+	
+	public String getLabel(Object datamartItem) {
+		String label;
+		String itemUniqueNameInFile;
+		
+		if(properties == null) {
+			return null;
+		}
+		
+		if( datamartItem instanceof DataMartEntity ) {
+			itemUniqueNameInFile = getItemUniqueNameInFile( (DataMartEntity)datamartItem );
+		} else if( datamartItem instanceof DataMartField ) {
+			itemUniqueNameInFile = getItemUniqueNameInFile( (DataMartField)datamartItem );
+		} else {
+			// fail fast
+			throw new IllegalArgumentException("[datamartItem] is an instance of class " + datamartItem.getClass().getName() + ".[datamartItem] can be only an instance of class DataMartEntity or of class DataMartField");
+		}
+		label = (String)properties.get( itemUniqueNameInFile );		
+		return StringUtils.isNull( label )? null: label.trim();
+	}
+	
+	
+	
 	private Properties getProperties() {
 		return properties;
 	}
 
-	/**
-	 * Sets the properties.
-	 * 
-	 * @param properties the new properties
-	 */
 	private void setProperties(Properties properties) {
 		this.properties = properties;
-	}	
+	}
 }

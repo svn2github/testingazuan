@@ -33,9 +33,13 @@ import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
+import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
 import it.eng.qbe.model.views.ViewBuilder;
+import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
+import it.eng.qbe.newquery.Query;
+import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
@@ -50,9 +54,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -92,7 +98,7 @@ public class DataMartModel implements IDataMartModel {
 	private DataMartModelAccessModality dataMartModelAccessModality = null;
 	
 	/** The data mart properties. */
-	private Properties dataMartProperties = null;
+	private Map dataMartProperties = null;
 	
 	
 	
@@ -113,32 +119,11 @@ public class DataMartModel implements IDataMartModel {
 	
 		this.dataMartModelAccessModality = new DataMartModelAccessModality();
 		
-		this.dataMartProperties = new Properties();		
+		this.dataMartProperties = new HashMap();		
 	}
 	
 	
-	/**
-	 * Gets the labels.
-	 * 
-	 * @return the labels
-	 */
-	public DatamartLabels getLabels() {
-		return dataSource.getLabels();
-	}
 	
-	/**
-	 * Gets the labels.
-	 * 
-	 * @param locale the locale
-	 * 
-	 * @return the labels
-	 */
-	public DatamartLabels getLabels(Locale locale) {
-		DatamartLabels labels = (DatamartLabels)dataSource.getLabels(locale);
-		if(labels == null) labels = getLabels();
-		
-		return labels;
-	}
 	
 	/**
 	 * Gets the properties.
@@ -169,28 +154,29 @@ public class DataMartModel implements IDataMartModel {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void addView(String name, ISingleDataMartWizardObject dmWizard) throws Exception {	
+	public void addView(String name, Query query) throws Exception {	
 		
-		if ( !dmWizard.getQuery().isEmpty() ){
+		if ( !query.isEmpty() ){
 			
-			
-			String sqlQuery = dmWizard.getFinalSqlQuery(this);
+			XIStatement xstatement = createXStatement( query );
+			String hqlQuery = xstatement.getQueryString();
+			Session session = getDataSource().getSessionFactory().openSession();	
+			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter( session );
+			String sqlQuery = queryRewriter.rewrite(hqlQuery);
 			
 					
 			if (!SqlUtils.isSelectStatement(sqlQuery)){  
 				throw new Exception("It's not possible change database status with qbe query");
 			}
 			
-			Session aSession = null;
+			
 			Transaction tx = null;
 			Statement s  = null;
 			File thisTmpDir = null;
 			
 			try{
-				SessionFactory aSessionFactory = getDataSource().getSessionFactory();
-				aSession = aSessionFactory.openSession();
-				tx = aSession.beginTransaction();
-				Connection sqlConnection = aSession.connection();
+				tx = session.beginTransaction();
+				Connection sqlConnection = session.connection();
 				
 				if (!checkSpace(sqlConnection)){
 					throw new Exception("KO - Free Space in Database is not enough");
@@ -215,7 +201,7 @@ public class DataMartModel implements IDataMartModel {
 					ViewBuilder viewBuilder = new ViewBuilder();
 					viewBuilder.buildView(name, sqlQuery, sqlConnection, viewTemplateFile);
 					
-					Iterator it =  aSessionFactory.getAllClassMetadata().keySet().iterator();
+					Iterator it =  getDataSource().getSessionFactory().getAllClassMetadata().keySet().iterator();
 					String className = "";
 					if (it.hasNext()){
 						className = (String)it.next();
@@ -226,16 +212,17 @@ public class DataMartModel implements IDataMartModel {
 					List columnNames = new ArrayList();
 					List columnHibernateTypes = new ArrayList();
 					
-					Iterator queryFileds = dmWizard.getQuery().getSelectFieldsIterator();
+					Iterator queryFileds = query.getSelectFields().iterator();
 					
 					Vector columns = sqlFieldsReader.readFields();
 					int i = 0;
 					while(queryFileds.hasNext()) {
-						ISelectField filed = (ISelectField)queryFileds.next();
+						SelectField field = (SelectField)queryFileds.next();
 						Field column = (Field)columns.get(i++);
 						
-						columnHibernateTypes.add(filed.getType());
-						columnNames.add(column.getName());					
+						DataMartField datamartField = getDataMartModelStructure().getField( field.getUniqueName() );
+						columnHibernateTypes.add( datamartField.getType() );
+						columnNames.add( column.getName() );					
 					}
 					
 					viewReverseEngineering(name, packageName, thisTmpDir, columnNames, columnHibernateTypes);
@@ -260,8 +247,6 @@ public class DataMartModel implements IDataMartModel {
 					
 					
 					tx.commit();
-					
-					getDataSource().refreshSharedView(name);
 							
 				}
 			}catch (Throwable t) {
@@ -273,13 +258,17 @@ public class DataMartModel implements IDataMartModel {
 				if (s != null){
 					s.close();
 				}
-				if (aSession != null && aSession.isOpen())
-					aSession.close();
+				if (session != null && session.isOpen())
+					session.close();
 				if (thisTmpDir != null){
 					Utils.deleteDir(thisTmpDir);
 				}
 				
 			}
+			
+			getDataSource().refreshSharedView(name);
+			getDataSource().getSessionFactory();
+			setDataMartModelStructure( BasicDataMartStructureBuilder.buildDataMartStructure( getDataSource() ) );
 		}	
 		
 	}
@@ -670,6 +659,10 @@ public class DataMartModel implements IDataMartModel {
 	public IStatement createStatement() {
 		return new HQLStatement(this);
 	}
+	
+	public XIStatement createXStatement() {
+		return new XHQLStatement(this);
+	}
 
 
 	/* (non-Javadoc)
@@ -677,6 +670,10 @@ public class DataMartModel implements IDataMartModel {
 	 */
 	public IStatement createStatement(IQuery query) {
 		return new HQLStatement(this, query);
+	}
+	
+	public XIStatement createXStatement(Query query) {
+		return new XHQLStatement(this, query);
 	}
 
 
@@ -705,14 +702,17 @@ public class DataMartModel implements IDataMartModel {
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.model.IDataMartModel#getDataMartProperties()
 	 */
-	public Properties getDataMartProperties() {
+	
+	public Map getDataMartProperties() {
 		return dataMartProperties;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.model.IDataMartModel#setDataMartProperties(java.util.Properties)
 	 */
-	public void setDataMartProperties(Properties dataMartProperties) {
+	
+	public void setDataMartProperties(Map dataMartProperties) {
 		this.dataMartProperties = dataMartProperties;
 	}
+	
 }

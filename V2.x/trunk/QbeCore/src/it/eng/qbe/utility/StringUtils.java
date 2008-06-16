@@ -23,6 +23,7 @@ package it.eng.qbe.utility;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -56,8 +57,33 @@ public class StringUtils {
 			String parameterValue = parameters.getProperty(parameterName);
 			if(parameterValue == null) throw new IOException("No value for the parameter: " + parameterName);
 			result = filterCondition.replaceAll(parameterTypeIdentifier + "\\{" + parameterName + "\\}", parameterValue);
-			//result = result.replaceAll("P\\{" + parameterName + "\\}", "XXXXX");
-			
+		}		
+		
+		return result;
+	}
+	
+	/**
+	 * Replace parameters.
+	 * 
+	 * @param filterCondition the filter condition
+	 * @param parameterTypeIdentifier the parameter type identifier
+	 * @param parameters the parameters
+	 * 
+	 * @return the string
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String replaceParameters(String filterCondition, String parameterTypeIdentifier, Map parameters) throws IOException {
+		String result = filterCondition;
+		Set params;
+		
+		params = getParameters(filterCondition, parameterTypeIdentifier);
+		Iterator it = params.iterator();
+		while(it.hasNext()) {
+			String parameterName = (String)it.next();
+			if(!parameters.containsKey(parameterName)) throw new IOException("No value for the parameter: " + parameterName);
+			String parameterValue = parameters.get(parameterName)== null?null:parameters.get(parameterName).toString();
+			result = filterCondition.replaceAll(parameterTypeIdentifier + "\\{" + parameterName + "\\}", parameterValue);
 		}		
 		
 		return result;

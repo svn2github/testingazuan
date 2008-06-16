@@ -21,7 +21,11 @@
 package it.eng.qbe.bo;
 
 import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.spagobi.utilities.strings.StringUtils;
 
+import java.util.Map;
 import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
@@ -32,6 +36,10 @@ import java.util.Properties;
  */
 public class DatamartProperties {
 
+	/** The qbe properties. */
+	private Map qbeProperties = null;
+	
+	
 	/** The Constant CLASS_TYPE_TABLE. */
 	public static final int CLASS_TYPE_CUBE = 1;
 	
@@ -41,8 +49,7 @@ public class DatamartProperties {
 	/** The Constant CLASS_TYPE_VIEW. */
 	public static final int CLASS_TYPE_VIEW = 3;
 	
-	/** The Constant FIELD_TYPE_UNDEFINED. */
-	public static final int FIELD_TYPE_UNDEFINED = 0;
+	
 	
 	/** The Constant FIELD_TYPE_MEASURE. */
 	public static final int FIELD_TYPE_MEASURE = 1;
@@ -53,9 +60,6 @@ public class DatamartProperties {
 	/** The Constant FIELD_TYPE_GEOREF. */
 	public static final int FIELD_TYPE_GEOREF = 3;
 	
-	/** The qbe properties. */
-	private Properties qbeProperties = null;
-	
 	
 	
 	public DatamartProperties() {
@@ -65,15 +69,62 @@ public class DatamartProperties {
 	public DatamartProperties(Properties properties) {
 		qbeProperties = properties;
 	}
-	
-	/**
-	 * Instantiates a new qbe properties.
-	 * 
-	 * @param dm the dm
-	 */
+
 	public DatamartProperties(IDataMartModel dm) {
 		qbeProperties = dm.getDataMartProperties();
 	}
+	
+	
+	
+	private String getEntityUniqueNameInFile( DataMartEntity entity ) {
+		return entity.getUniqueName().replaceAll(":", "/");
+	}
+	
+	private String getFieldUniqueNameInFile( DataMartField field ) {
+		return field.getUniqueName().replaceAll(":", "/");
+	}
+	
+	private String getPropertyUniqueNameInFile(DataMartEntity entity, String propertyName) {
+		return getEntityUniqueNameInFile( entity ) + "." + propertyName.trim();
+	}
+	
+	private String getPropertyUniqueNameInFile(DataMartField field, String propertyName) {
+		return getFieldUniqueNameInFile( field ) + "." + propertyName.trim();
+	}
+	
+	private String getProperty(Object datamartItem, String propertyName) {
+		String propertyValue;
+		String propertyUniqueNameInFile;
+		
+		if(qbeProperties == null) {
+			return null;
+		}
+		
+		if( datamartItem instanceof DataMartEntity ) {
+			propertyUniqueNameInFile = getPropertyUniqueNameInFile( (DataMartEntity)datamartItem, propertyName );
+		} else if( datamartItem instanceof DataMartField ) {
+			propertyUniqueNameInFile = getPropertyUniqueNameInFile( (DataMartField)datamartItem, propertyName );
+		} else {
+			// fail fast
+			throw new IllegalArgumentException("[datamartItem] is an instance of class " + datamartItem.getClass().getName() + ".[datamartItem] can be only an instance of class DataMartEntity or of class DataMartField");
+		}
+		propertyValue = (String)qbeProperties.get( propertyUniqueNameInFile );		
+		return StringUtils.isNull( propertyValue )? null: propertyValue.trim();
+	}
+	
+	private boolean getPropertyAsBoolean(Object datamartItem, String propertyName, boolean defaultValue) {
+		String propertyValue;		
+		
+		propertyValue = getProperty(datamartItem, propertyName);	
+		if( "TRUE".equalsIgnoreCase( propertyValue ) ) {
+			return true;
+		} else if( "FALSE".equalsIgnoreCase( propertyValue ) ) {
+			return false;
+		} 		
+		
+		return defaultValue;
+	}
+		
 	
 	/**
 	 * Checks if is table visible.
@@ -82,15 +133,8 @@ public class DatamartProperties {
 	 * 
 	 * @return true, if is table visible
 	 */
-	public boolean isTableVisible(String className) {
-		if(qbeProperties == null) return true;
-		
-		String visiblePropertyValue = qbeProperties.getProperty(className + ".visible");
-		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean isEntityVisible( DataMartEntity entity ) {
+		return getPropertyAsBoolean(entity, "visible", true);
 	}
 	
 	/**
@@ -100,41 +144,48 @@ public class DatamartProperties {
 	 * 
 	 * @return true, if is field visible
 	 */
-	public boolean isFieldVisible(String fieldName) {
-		if(qbeProperties == null) return true;
-		
-		String visiblePropertyValue = qbeProperties.getProperty(fieldName + ".visible");
-		if(visiblePropertyValue == null || visiblePropertyValue.trim().equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean isFieldVisible( DataMartField field ) {
+		return getPropertyAsBoolean(field, "visible", true);
 	}
 	
-	/**
-	 * Gets the table type.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return the table type
-	 */
-	public int getTableType(String fieldName) {
-		if(qbeProperties == null) return CLASS_TYPE_DIMENSION;
-		String type = qbeProperties.getProperty(fieldName + ".type");
-		if(type == null) return CLASS_TYPE_DIMENSION;
+	
+	private int getEntityType(DataMartEntity entity, int defaultType) {		
+		String type;
 		
-		if(type.trim().equalsIgnoreCase("cube")) {
+		type = getProperty(entity, "type");		
+		if( "CUBE".equalsIgnoreCase( type ) ) {
 			return CLASS_TYPE_CUBE;
-		} else if(type.trim().equalsIgnoreCase("dimension")) {
+		} else if( "DIMENSION".equalsIgnoreCase( type ) ) { 
 			return CLASS_TYPE_DIMENSION;
-		} else if(type.trim().equalsIgnoreCase("view")) {
+		} else if( "VIEW".equalsIgnoreCase( type ) ) { 
 			return CLASS_TYPE_VIEW;
-		} else {
-			return CLASS_TYPE_DIMENSION;
 		}
+		
+		return defaultType;
 	}
 	
+	public int getEntityType(DataMartEntity entity) {		
+		return getEntityType(entity, CLASS_TYPE_DIMENSION);
+	}
 	
+	public String getEntityIconClass( DataMartEntity entity ) {
+		String iconCls;
+		int entityType;
+		
+		entityType = getEntityType( entity );
+		if(entityType == DatamartProperties.CLASS_TYPE_CUBE) {
+			iconCls = "cube";
+		} else if(entityType == DatamartProperties.CLASS_TYPE_DIMENSION) {
+			iconCls = "dimension";
+		} else if(entityType == DatamartProperties.CLASS_TYPE_VIEW) {
+			iconCls = "view";
+		} else {
+			// fail fast
+			throw new RuntimeException("Internal errror. Function getEntityType return value [" + entityType + "] is not valid.");
+		}
+				
+		return iconCls;
+	}
 	
 	/**
 	 * Gets the field type.
@@ -143,37 +194,41 @@ public class DatamartProperties {
 	 * 
 	 * @return the field type
 	 */
-	public int getFieldType(String className) {
-		if(qbeProperties == null) return FIELD_TYPE_ATTRIBUTE;
-		String type = qbeProperties.getProperty(className + ".type");
-		if(type == null)return FIELD_TYPE_ATTRIBUTE;
+	public int getFieldType(DataMartField filed, int defaultType) {
+		String type;
 		
-		if(type.trim().equalsIgnoreCase("attribute")) {
+		type = getProperty(filed, "type");		
+		if( "ATTRIBUTE".equalsIgnoreCase( type ) ) {
 			return FIELD_TYPE_ATTRIBUTE;
-		} else if (type != null && type.trim().equalsIgnoreCase("measure")) {
+		} else if( "MEASURE".equalsIgnoreCase( type ) ) { 
 			return FIELD_TYPE_MEASURE;
-		} else if (type != null && type.trim().equalsIgnoreCase("georef")) {
+		} else if( "GEOREF".equalsIgnoreCase( type ) ) { 
 			return FIELD_TYPE_GEOREF;
-		} else {
-			return FIELD_TYPE_UNDEFINED;
 		}
+		
+		return defaultType;
 	}
 	
-	/**
-	 * Sets the field type.
-	 * 
-	 * @param className the class name
-	 * @param type the type
-	 */
-	public void setFieldType(String className, int type) {		
-		if(type == FIELD_TYPE_ATTRIBUTE) {
-			qbeProperties.setProperty(className + ".type", "dimension");
-		} else if(type == FIELD_TYPE_MEASURE) {
-			qbeProperties.setProperty(className + ".type", "measure");
-		} else if(type == FIELD_TYPE_GEOREF) {
-			qbeProperties.setProperty(className + ".type", "georef");
-		} else {
+	public int getFieldType(DataMartField filed) {
+		return getFieldType(filed, FIELD_TYPE_ATTRIBUTE);
+	}
 	
+	public String getFieldIconClass( DataMartField field ) {
+		String iconCls;
+		int fieldType;
+		
+		fieldType = getFieldType( field );
+		if(fieldType == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
+			iconCls = "attribute";
+		} else if(fieldType == DatamartProperties.FIELD_TYPE_MEASURE) {
+			iconCls = "measure";
+		} else if(fieldType == DatamartProperties.FIELD_TYPE_GEOREF) {
+			iconCls = "georef";
+		} else {
+			// fail fast
+			throw new RuntimeException("Internal errror. Function getFieldType return value [" + fieldType + "] is not valid.");
 		}
+		
+		return iconCls;
 	}
 }

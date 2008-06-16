@@ -23,6 +23,8 @@ package it.eng.qbe.model.accessmodality;
 
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.Filter;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -215,16 +217,10 @@ public class DataMartModelAccessModality {
 		return map;
 	}
 
-	/**
-	 * Checks if is entity accessible.
-	 * 
-	 * @param entityName the entity name
-	 * 
-	 * @return true, if is entity accessible
-	 */
-	public boolean isEntityAccessible(String entityName) {
-		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey(entityName)) {
-			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get(entityName);
+	
+	public boolean isEntityAccessible(DataMartEntity entity) {		
+		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey( entity.getUniqueType() )) {
+			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get( entity.getUniqueType() );
 			return entityAccessModalitty.isAccessible();
 		}
 		return true;
@@ -238,10 +234,10 @@ public class DataMartModelAccessModality {
 	 * 
 	 * @return true, if is field accessible
 	 */
-	public boolean isFieldAccessible(String tableName, String fieldName) {
-		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey(tableName)) {
-			EntityAccessModalitty tableAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get(tableName);
-			return tableAccessModalitty.isFieldAccessible(fieldName);
+	public boolean isFieldAccessible( DataMartField field ) {		
+		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey( field.getParent().getType() )) {
+			EntityAccessModalitty tableAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get( field.getParent().getType() );
+			return tableAccessModalitty.isFieldAccessible( field.getName() );
 		}
 		return true;
 	}

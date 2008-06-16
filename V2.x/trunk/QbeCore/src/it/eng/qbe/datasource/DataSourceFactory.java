@@ -20,9 +20,11 @@
  **/
 package it.eng.qbe.datasource;
 
+import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.dao.DAOFactory;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 // TODO: Auto-generated Javadoc
@@ -46,7 +48,9 @@ public class DataSourceFactory {
 	 * 
 	 * @return the i data source
 	 */
-	public static IDataSource buildDataSource(String dataSourceName, String datamartName, List datamartNames,  Map dblinkMap, DBConnection connection) {
+	public static IDataSource buildDataSource(String dataSourceName, 
+			String datamartName, List datamartNames,  Map dblinkMap, 
+			DBConnection connection) {
 		AbstractHibernateDataSource dataSource = null;
 		
 		if(datamartNames.size() == 1) {
@@ -84,8 +88,7 @@ public class DataSourceFactory {
 		
 		dataSource.setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
 		dataSource.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
-		dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
-		
+		//dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
 	}
 	
 }

@@ -85,8 +85,7 @@ public class DataMartField {
 	 * 
 	 * @return the query name
 	 * 
-	 * @deprecated just for test purpose
-	 * TODO integrate the new dmStructure with the query object
+	 * 
 	 */
 	public String getQueryName() {
 		String fieldName = "";

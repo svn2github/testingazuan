@@ -23,9 +23,11 @@ package it.eng.qbe.model;
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.newquery.Query;
 import it.eng.qbe.query.IQuery;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -36,6 +38,8 @@ import java.util.Properties;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface IDataMartModel extends Serializable {
+	
+	String getName();
 	
 	/**
 	 * Creates the statement.
@@ -52,6 +56,8 @@ public interface IDataMartModel extends Serializable {
 	 * @return the i statement
 	 */
 	public IStatement createStatement(IQuery query);
+	
+	public XIStatement createXStatement(Query query);
 	
 	/**
 	 * Gets the data mart model structure.
@@ -86,12 +92,12 @@ public interface IDataMartModel extends Serializable {
 	 * 
 	 * @return the data mart properties
 	 */
-	public Properties getDataMartProperties();
+	public Map getDataMartProperties();
 	
 	/**
 	 * Sets the data mart properties.
 	 * 
 	 * @param dataMartProperties the new data mart properties
 	 */
-	public void setDataMartProperties(Properties dataMartProperties);
+	public void setDataMartProperties(Map dataMartProperties);
 }

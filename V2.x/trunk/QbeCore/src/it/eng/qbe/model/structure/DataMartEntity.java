@@ -20,6 +20,8 @@
  **/
 package it.eng.qbe.model.structure;
 
+import it.eng.spagobi.utilities.strings.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -104,6 +106,18 @@ public class DataMartEntity implements IDataMartItem {
 		if(getRole() != null) uniqueName +=  "(" + getRole() + ")";
 		
 		return uniqueName;
+	}
+	
+	/**
+	 * 
+	 * @return the unique type - i.e. type + role (if any). Ex. it.eng.spagobi.Promotion(promotion_id)
+	 */
+	public String getUniqueType() {
+		String entityType = getType();
+		if ( !StringUtils.isEmpty( getRole() ) ) {
+			entityType += "(" + getRole() + ")";
+		}
+		return entityType;
 	}
 	
 	/**

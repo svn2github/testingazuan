@@ -42,14 +42,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
-
+    
 	JobInfo jobInfo = (JobInfo)aSessionContainer.getAttribute(SpagoBIConstants.JOB_INFO);   
 	List jobBiobjects = jobInfo.getBiobjects();
 	Iterator iterJobBiobjs = jobBiobjects.iterator();
 	String allObjIDS = "";
+	int index = 0;
 	while(iterJobBiobjs.hasNext()) {
+		index ++ ;
 		BIObject biobj = (BIObject)iterJobBiobjs.next();
-		allObjIDS += biobj.getId() + ",";
+		allObjIDS += biobj.getId() + "__" + index + ",";
 	}
 	allObjIDS = (allObjIDS != null && !allObjIDS.equals(""))?allObjIDS.substring(0,allObjIDS.length()-1):"";
 	
@@ -123,17 +125,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- ********************** SCRIPT FOR TABS **************************** -->
 <script>
 	tabOpened = ""; 
+	indexTabOpened = 0;
 	biobidstr = "<%=allObjIDS%>";
 	
-	function changeTab(biobjid) {
+	function changeTab(biobjid) {	
 	  	if(tabOpened==biobjid) {
       		return;
     	}
+    	
 		document.getElementById('areabiobj'+biobjid).style.display="inline";
 		document.getElementById('areabiobj'+tabOpened).style.display="none";
 		document.getElementById('tabbiobj'+biobjid).className="tab selected";
 		document.getElementById('tabbiobj'+tabOpened).className="tab";
 		tabOpened = biobjid;
+		indexTabOpened = tabOpened.substring(tabOpened.lastIndexOf("__")+2);
 	}
 	
 	function removeTab(message) {
@@ -155,16 +160,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
      	return;
 	}
+	
+	function copyTab() {
+		if (tabOpened == "") return;
+		
+		var newTabId = tabOpened.substring(0, tabOpened.lastIndexOf("__")) + "__" + (indexTabOpened+1);
+		
+		$('selected_biobject_ids').value = biobidstr + "," + newTabId;
+
+		document.getElementById('formmsg').value='MESSAGE_DOCUMENTS_SELECTED';
+		document.getElementById('jobdetailform').submit();
+		
+     	return;
+	}
+	
 	function fillParamCall() {
 	
-	    biobidstr = ''; 
+	    biobidstr += (biobidstr.length > 0)?",":"";
 		checkBiObjs = document.getElementsByName('biobject');
 		for(i=0; i<checkBiObjs.length; i++) {
 		    checkBiObj = checkBiObjs[i];
-			if(checkBiObj.checked && biobidstr.indexOf(checkBiObj.value + ",") == -1){
-				biobidstr = biobidstr + checkBiObj.value + ",";
+			if(checkBiObj.checked && biobidstr.indexOf(checkBiObj.value + "__") == -1){
+				biobidstr = biobidstr + checkBiObj.value + "__"+(i+1) + ",";
 			}
 		}
+		//deletes last "," from string
 		biobidstr = (biobidstr == "")?"":biobidstr.substring(0, biobidstr.length -1);
 		
 		$('selected_biobject_ids').value = biobidstr;
@@ -184,7 +204,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 </script>
 
-
 <!-- ********************** SCRIPT FOR PARAMETER LOOKUP **************************** -->
 <script>
 
@@ -192,11 +211,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var parfieldName = '';
 
 	function getLovList(idObj, idPar, urlNamePar) {
-
 		$('loadingdiv').style.display='inline';
 		
-		rolefield = $('role_par_'+idObj+'_'+urlNamePar);
-		parfieldName = 'par_'+idObj+'_'+urlNamePar;
+		rolefield = $('role_par_'+idObj+'_'+ indexTabOpened +'_'+urlNamePar);
+		parfieldName = 'par_'+idObj+'_' + indexTabOpened + '_'+urlNamePar;
 		role = rolefield.value;
 		if(role==null) {
 			role = rolefield.options[rolefield.selectedIndex].value;
@@ -479,6 +497,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      				 alt='<spagobi:message key = "scheduler.removedocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
+			<td class='titlebar_level_2_empty_section_bis'>&nbsp;</td>
+			<td class='titlebar_level_2_empty_section_bis'>
+				<a href="javascript:copyTab()"> 
+	      			<img class='header-button-image-portlet-section_bis' 
+	      				 title='<spagobi:message key = "scheduler.copydocument" bundle="component_scheduler_messages" />' 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/copy_schedule.gif")%>' 
+	      				 alt='<spagobi:message key = "scheduler.copydocument"  bundle="component_scheduler_messages"/>' />
+				</a>
+			</td>
+			<td class='titlebar_level_2_empty_section_bis'>&nbsp;</td>
 		</tr>
 	</table>
 	
@@ -495,11 +523,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<br/>
 	<%			
 		} else {
-			Iterator localIterJobBiobjs = jobBiobjects.iterator();
-	   	 	int index = 0;
+			iterJobBiobjs = jobBiobjects.iterator();
+	   	 	index = 0;
 	    	String tabClass = "tab selected"; 
-			while(localIterJobBiobjs.hasNext()) {
-				BIObject biobj = (BIObject)localIterJobBiobjs.next();
+			while(iterJobBiobjs.hasNext()) {
+				BIObject biobj = (BIObject)iterJobBiobjs.next();
 				
 				String biobjName = biobj.getName();
 				if(index > 0) {
@@ -507,8 +535,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				}
 				index ++;
 	%>
-				<div id="tabbiobj<%=biobj.getId()%>"  class='<%= tabClass%>'>
-					<a href="javascript:changeTab('<%=biobj.getId()%>')" style="color:black;"> 
+				<div id="tabbiobj<%=biobj.getId()%>__<%=index%>"  class='<%= tabClass%>'>
+					<a href="javascript:changeTab('<%=biobj.getId()%>__<%=index%>')" style="color:black;"> 
 							<%=biobjName%>
 					</a>
 				</div>
@@ -526,23 +554,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 		IParameterDAO pardao = DAOFactory.getParameterDAO();
-		Iterator localIterJobBiobjs = jobBiobjects.iterator();
-	    int index = 0;
+		iterJobBiobjs = jobBiobjects.iterator();
+	    index = 0;
 	    String setTabOpened = "";
+	    String setIndexTabOpened = "";
 	    String displaytab = "inline";
-		while(localIterJobBiobjs.hasNext()) {
-			BIObject biobj = (BIObject)localIterJobBiobjs.next();
+		while(iterJobBiobjs.hasNext()) {
+			BIObject biobj = (BIObject)iterJobBiobjs.next();
 			List pars = biobj.getBiObjectParameters();
 			if(index > 0) {
 				displaytab = "none";
 			} else {
-				setTabOpened = "<script>tabOpened = '"+biobj.getId()+"';</script>";
+				setTabOpened = "<script>tabOpened = '"+biobj.getId()+"__"+(index+1)+"';</script>";
+				setIndexTabOpened = "<script>indexTabOpened = "+(index+1)+";</script>";
 			}
 			index ++;
 	%>
 	
 	<%=setTabOpened%>
-	<div width="100%" id="areabiobj<%=biobj.getId()%>" style="display:<%=displaytab%>;" >
+	<%=setIndexTabOpened%>
+	<div width="100%" id="areabiobj<%=biobj.getId()%>__<%=index%>" style="display:<%=displaytab%>;" >
 	
 		<%
 			if( (pars==null) || (pars.size()==0) ) {
@@ -583,7 +614,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						}
 						if(concatenatedValue.length()>0) {
 							concatenatedValue = concatenatedValue.substring(0, concatenatedValue.length() - 1);
-						}
+						}						
 					}		
 				%>		
 					<div class='div_form_row' >
@@ -594,9 +625,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	</div>
 				    	
 				    	<div class='div_form_field'>
+				    	
 						  	<input class='portlet-form-input-field' 
-						  	       id="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>"
-						  	       name="<%="par_"+biobj.getId()+"_"+biobjpar.getParameterUrlName()%>" 
+						  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
+						  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
 						  	       type="text" value="<%=concatenatedValue%>" />
 						  	&nbsp;&nbsp;&nbsp;
 						  	<%
@@ -613,8 +645,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							  		if(roles.size()==1) {
 							    %>
 						  		<input type='hidden' 
-						  			   id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' 
-						  			   name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
+						  			   id='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>' 
+						  			   name='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>'
 						  			   value='<%=roles.get(0)%>' />
 							  	<%
 							  		} else {
@@ -623,8 +655,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
 								</span>
 								&nbsp;&nbsp;&nbsp;
-								<select name='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>'
-										id='role_par_<%=biobj.getId()%>_<%=biobjpar.getParameterUrlName()%>' >
+								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>'
+										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>' >
 									<% 
 										Iterator iterRoles = roles.iterator(); 
 										while(iterRoles.hasNext()) {

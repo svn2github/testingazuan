@@ -164,7 +164,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
-		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar")){
+		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar")){
 // returns a new datasets map filtered
 			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
 		}

@@ -153,40 +153,6 @@ public class SimpleBar extends BarCharts{
          }
         }
 		
-
-	/*	// if some series has been selected and colors has been defined
-		if(currentSeries!=null && colorMap!=null){
-							//for each serie selected
-			int j=0;	
-		
-			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
-						String s = (String) iterator.next();
-						//Integer position=(Integer)seriesNumber.get(s);
-						Integer position=new Integer(0);
-						// check if for that position a value is defined
-
-						
-						Color col=(Color)colorMap.get(s);
-						renderer.setSeriesPaint(j, col);
-						j++;
-					}  // close for on series
-		} // close case series selcted and color defined
-		else{
-			if(colorMap!=null){ // if series not selected check color each one
-
-				for (Iterator iterator = colorMap.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Color col= (Color)colorMap.get(key);
-					String keyNum=key.substring(5, key.length());
-					int num=Integer.valueOf(keyNum).intValue();
-					num=num-1;
-					renderer.setSeriesPaint(num, col);
-				}
-			}
-		}*/
-		
-		
-		
 		
 
 		CategoryAxis domainAxis = plot.getDomainAxis();

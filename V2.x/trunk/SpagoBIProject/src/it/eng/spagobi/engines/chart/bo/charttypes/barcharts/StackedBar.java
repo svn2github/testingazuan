@@ -1,0 +1,441 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
+
+
+package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
+import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.log4j.Logger;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Dataset;
+
+/**   @author Giulio Gavardi
+ *     giulio.gavardi@eng.it
+ */
+
+
+public class StackedBar extends BarCharts implements ILinkableChart {
+
+	String rootUrl=null;
+	String mode="";
+	String drillLabel="";
+	HashMap drillParameter=null;
+	String categoryUrlName="";
+	String serieUrlname="";
+	String serieHidden="";
+
+
+	private static transient Logger logger=Logger.getLogger(StackedBar.class);
+
+	
+	
+	
+	
+	/**
+	 * Override this functions from BarCharts beacuse I want the hidden serie to be the first!
+	 * 
+	 * @return the dataset
+	 * 
+	 * @throws Exception the exception
+	 */
+	
+	public DatasetMap calculateValue() throws Exception {
+		logger.debug("IN");
+		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
+		categories=new HashMap();
+
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		SourceBean sbRows=SourceBean.fromXMLString(res);
+		List listAtts=sbRows.getAttributeAsList("ROW");
+
+
+		// run all categories (one for each row)
+		categoriesNumber=0;
+		seriesNames=new Vector();
+		//categories.put(new Integer(0), "All Categories");
+		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
+			SourceBean category = (SourceBean) iterator.next();
+			List atts=category.getContainedAttributes();
+
+			HashMap series=new HashMap();
+			String catValue="";
+
+			String name="";
+			String value="";
+
+			//run all the attributes, to define series!
+			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+
+				name=new String(object.getKey());
+				value=new String((String)object.getValue());
+				if(name.equalsIgnoreCase("x"))
+				{
+					catValue=value;
+					categoriesNumber=categoriesNumber+1;
+					categories.put(new Integer(categoriesNumber),value);
+					
+					
+				}
+				else {
+					series.put(name, value);
+				}
+			}
+			
+			// if there is an hidden serie put that one first!!!
+			if(serieHidden!=null && !serieHidden.equalsIgnoreCase("")){
+				String valueS=(String)series.get(serieHidden);
+				dataset.addValue(Double.valueOf(valueS).doubleValue(), serieHidden, catValue);
+				if(!seriesNames.contains(serieHidden)){
+					seriesNames.add(serieHidden);
+				}				
+			}
+			
+			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
+				String nameS = (String) iterator3.next();
+				if(!nameS.equalsIgnoreCase(serieHidden)){
+				String valueS=(String)series.get(nameS);
+				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+				if(!seriesNames.contains(nameS)){
+					seriesNames.add(nameS);
+				}
+				}
+			}
+
+		}
+		logger.debug("OUT");
+		DatasetMap datasets=new DatasetMap();
+		datasets.addDataset("1",dataset);
+		return datasets;
+	}
+
+	
+	
+
+	public void configureChart(SourceBean content) {
+		logger.debug("IN");
+		super.configureChart(content);
+
+		if(confParameters.get("hidden_serie")!=null){	
+			serieHidden=(String)confParameters.get("hidden_serie");
+
+		}
+
+		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		if(drillSB!=null){
+			String lab=(String)drillSB.getAttribute("document");
+			if(lab!=null) drillLabel=lab;
+			else{
+				logger.error("Drill label not found");
+			}
+
+			List parameters =drillSB.getAttributeAsList("PARAM");
+			if(parameters!=null){
+				drillParameter=new HashMap();	
+
+				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
+					SourceBean att = (SourceBean) iterator.next();
+					String name=(String)att.getAttribute("name");
+					String type=(String)att.getAttribute("type");
+					String value=(String)att.getAttribute("value");
+
+					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+						if(value.equalsIgnoreCase("serie"))serieUrlname=name;
+						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
+					}
+					else{												// Case absolute
+						drillParameter.put(name, value);
+					}
+				}
+			}
+		}
+		logger.debug("OUT");	
+	}
+
+
+
+
+	/**
+	 * Inherited by IChart.
+	 * 
+	 * @param chartTitle the chart title
+	 * @param dataset the dataset
+	 * 
+	 * @return the j free chart
+	 */
+
+
+
+	public JFreeChart createChart(DatasetMap datasets) {
+
+
+
+		logger.debug("IN");
+		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
+
+
+		JFreeChart chart = ChartFactory.createStackedBarChart(
+				"Stacked Bar Chart Demo 1",  // chart title
+				categoryLabel,                  // domain axis label
+				valueLabel,                     // range axis label
+				dataset,                     // data
+				PlotOrientation.VERTICAL,    // the plot orientation
+				true,                        // legend
+				true,                        // tooltips
+				false                        // urls
+		);
+		chart.setBackgroundPaint(Color.white);
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		plot.setBackgroundPaint(color);
+		plot.setRangeGridlinePaint(Color.white);
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setDomainGridlinesVisible(true);
+
+
+
+		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
+		renderer.setDrawBarOutline(false);
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setBaseItemLabelGenerator(
+				new StandardCategoryItemLabelGenerator());
+		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
+
+		boolean document_composition=false;
+		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+
+		MyCategoryUrlGenerator mycatUrl=new MyCategoryUrlGenerator(rootUrl);
+		mycatUrl.setDocument_composition(document_composition);
+		mycatUrl.setCategoryUrlLabel(categoryUrlName);
+		mycatUrl.setSerieUrlLabel(serieUrlname);
+
+		renderer.setItemURLGenerator(mycatUrl);
+
+
+		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);
+
+		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+
+		// set the background color for the chart...
+		chart.setBackgroundPaint(color);
+
+
+		// set the range axis to display integers only...
+		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+		renderer.setDrawBarOutline(false);
+
+
+
+		int seriesN=dataset.getRowCount();
+		if(colorMap!=null){
+			for (int i = 0; i < seriesN; i++) {
+				String serieName=(String)dataset.getRowKey(i);
+				Color color=(Color)colorMap.get(serieName);
+				if(color!=null){
+					renderer.setSeriesPaint(i, color);
+				}	
+			}
+		}
+
+		if(serieHidden!=null && !serieHidden.equalsIgnoreCase("")){
+			int row=dataset.getRowIndex(serieHidden);
+			if(row!=-1){
+				if(color!=null)
+					renderer.setSeriesPaint(row, color);
+				else
+					renderer.setSeriesPaint(row, color.WHITE);
+			}
+		}
+
+
+
+		CategoryAxis domainAxis = plot.getDomainAxis();
+		domainAxis.setCategoryLabelPositions(
+				CategoryLabelPositions.createUpRotationLabelPositions(
+						Math.PI / 6.0));
+
+		logger.debug("OUT");
+		return chart;
+
+	}
+
+
+
+	/**
+	 * Gets document parameters and return a string in the form &param1=value1&param2=value2 ...
+	 * 
+	 * @param drillParameters the drill parameters
+	 * 
+	 * @return the document_ parameters
+	 */
+
+	public String getDocument_Parameters(HashMap drillParameters) {
+		String document_parameter="";
+		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			String value=(String)drillParameters.get(name);
+			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
+				document_parameter+="%26"+name+"%3D"+value;
+				//document_parameter+="&"+name+"="+value;
+			}
+
+		}
+		return document_parameter;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getRootUrl()
+	 */
+	public String getRootUrl() {
+		return rootUrl;
+	}
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setRootUrl(java.lang.String)
+	 */
+	public void setRootUrl(String rootUrl) {
+		this.rootUrl = rootUrl;
+	}
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isLinkable()
+	 */
+	public boolean isLinkable(){
+		return true;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getMode()
+	 */
+	public String getMode() {
+		return mode;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setMode(java.lang.String)
+	 */
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillLabel()
+	 */
+	public String getDrillLabel() {
+		return drillLabel;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillLabel(java.lang.String)
+	 */
+	public void setDrillLabel(String drillLabel) {
+		this.drillLabel = drillLabel;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
+	 */
+	public HashMap getDrillParameter() {
+		return drillParameter;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
+	 */
+	public void setDrillParameter(HashMap drillParameter) {
+		this.drillParameter = drillParameter;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getCategoryUrlName()
+	 */
+	public String getCategoryUrlName() {
+		return categoryUrlName;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setCategoryUrlName(java.lang.String)
+	 */
+	public void setCategoryUrlName(String categoryUrlName) {
+		this.categoryUrlName = categoryUrlName;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getSerieUrlname()
+	 */
+	public String getSerieUrlname() {
+		return serieUrlname;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setSerieUrlname(java.lang.String)
+	 */
+	public void setSerieUrlname(String serieUrlname) {
+		this.serieUrlname = serieUrlname;
+	}
+
+
+
+}

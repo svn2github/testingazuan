@@ -124,6 +124,9 @@ boolean first=true;
   <body>
 
 	 <%@include file="/html/banner.html" %>
+	 
+	 		<div id="menubar" style="border-width:10px;float:left;width:100%;height:18px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(/SpagoBI/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
+           </div>  
 	
 	<!-- <div id="background" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
     	<div id="backgroundlogo" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;">   
@@ -176,6 +179,7 @@ boolean first=true;
 			tb.add(
 				
 				new Ext.Toolbar.Button({
+		            id: 'home',
 		            text: 'Home',
 		            icon: '<%=contextName%>/img/wapp/gohome.png',
 		            cls: 'x-btn-text-icon bmenu',
@@ -214,7 +218,8 @@ boolean first=true;
 						    	if(canView2){
 
 				    			if (childElemLev2.getHasChildren()){%>
-				    			     {text: '<%=childElemLev2.getName()%>',
+				    			     {id: '<%new Double(Math.random()).toString();%>',
+				    			     text: '<%=childElemLev2.getName()%>',
 				    				 <% if(childElemLev2.getObjId()!=null){%>
 					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                   
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
@@ -235,7 +240,8 @@ boolean first=true;
 									    if(canView3){
 			    			     %>						    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
-					    			    {text: '<%=childElemLev3.getName()%>',
+					    			    {id: '<%new Double(Math.random()).toString();%>',
+					    			    text: '<%=childElemLev3.getName()%>',
 					    				 <% if(childElemLev3.getObjId()!=null){
 					    				 %>
 					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
@@ -258,6 +264,7 @@ boolean first=true;
 												    if(canView4){
 					    			    %>
 							    			    new Ext.menu.Item({
+						                            id: '<%new Double(Math.random()).toString();%>',
 						                            text: '<%=childElemLev4.getName()%>',
 						                            group: 'group_4', 
 						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
@@ -287,6 +294,7 @@ boolean first=true;
 					            		<%}
 					    			    else{ %>
 					                        new Ext.menu.Item({
+					                            id: '<%new Double(Math.random()).toString();%>',
 					                            text: '<%=childElemLev3.getName()%>',
 					                            group: 'group_3',
 												<%String icon=DetailMenuModule.assignImage(childElemLev3);
@@ -316,6 +324,7 @@ boolean first=true;
 			    			<%}
 		    			    else{ %>
 		                        new Ext.menu.Item({
+		                            id: '<%new Double(Math.random()).toString();%>',
 		                            text: '<%=childElemLev2.getName()%>',
 		                            group: 'group_2',
 									<%String icon=DetailMenuModule.assignImage(childElemLev2);
@@ -339,6 +348,7 @@ boolean first=true;
 						    	} //for LEVEL 2			    		  
 				    	}else{%>
 				    	 	new Ext.menu.Item({
+		                            id: '<%new Double(Math.random()).toString();%>',
 		                            text: '<%=menuElem.getName()%>',
 		                            group: 'group_1',		                             
 							<% if(menuElem.getObjId()!=null){
@@ -438,6 +448,7 @@ boolean first=true;
 			items: [		
 				<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){%>	
 			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
 				text: 'Sbi Functionality',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/wapp/bidocuments64.png', 
@@ -445,24 +456,28 @@ boolean first=true;
 						}),
 				<%}%>		
 			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
 				text: 'Worklist',
 				group: 'groupmy', 
 				icon: '<%=contextName%>/img/wapp/worklist64.png',
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&WEBMODE=TRUE')"                           
 						}),	
 			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
 				text: 'Hot Link',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/analiticalmodel/icon-setlog.gif', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&OPERATION=GET_HOT_LINK_LIST')"                           
 						}),						
 			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
 				text: 'Distribution List',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser.png', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage')"                           
 						}),
 			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
 				text: 'Event List',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/wapp/events64.png', 				 
@@ -493,6 +508,7 @@ boolean first=true;
 			tb.add(
 				
 				new Ext.Toolbar.Button({
+		            id: '<%new Double(Math.random()).toString();%>',
 		            text: 'Logout',
 		            icon: '<%=contextName%>/img/wapp/exit16.png',
 		            cls: 'x-btn-logout x-btn-text-icon bmenu',
@@ -546,6 +562,7 @@ boolean first=true;
 		tb.render('menubar');
 		tb.add(	
 			new Ext.Toolbar.MenuButton({
+	            id: '<%new Double(Math.random()).toString();%>',
 	            text: 'Logout',
 	            icon: '<%=contextName%>/img/wapp/exit16.png',
 	            cls: 'x-btn-text-icon bmenu',
@@ -694,6 +711,7 @@ var selectNode = function(node, e) {
 					tb.add(
 				
 						new Ext.Toolbar.MenuButton({
+							id: '<%new Double(Math.random()).toString();%>',
 				            text: 'Logout',
 				            icon: '<%=contextName%>/img/wapp/exit16.png',
 				            cls: 'x-btn-text-icon bmenu x-btn-logout',
@@ -757,4 +775,4 @@ var selectNode = function(node, e) {
   
   
 </html>
-// JavaScript Document
+

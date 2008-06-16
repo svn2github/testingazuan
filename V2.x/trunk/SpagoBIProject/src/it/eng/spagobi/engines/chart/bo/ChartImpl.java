@@ -28,6 +28,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.SimpleBox;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.SimpleCluster;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
@@ -218,7 +219,10 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase("overlaid_barline")){
 				sbi=new OverlaidBarLine();
 			}		
-
+			else if(subtype.equalsIgnoreCase("stacked_bar")){
+				sbi=new StackedBar();
+			}		
+			
 		}
 
 		if(type.equals("BOXCHART")){

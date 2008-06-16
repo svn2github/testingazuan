@@ -32,13 +32,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.bo;
 
 import it.eng.spagobi.engines.bo.exceptions.SpagoBIBOEngineException;
-import it.eng.spagobi.utilities.ParametersDecoder;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -66,6 +64,7 @@ import com.bo.rebean.wi.Prompts;
 import com.bo.rebean.wi.Report;
 import com.bo.rebean.wi.ReportEngine;
 import com.bo.wibean.WIDocument;
+import com.bo.wibean.WIException;
 import com.bo.wibean.WIOutput;
 import com.bo.wibean.WIPrompt;
 import com.bo.wibean.WIPrompts;
@@ -114,7 +113,8 @@ public class Utils {
 				 logger.info("Engines"+ Utils.class.getName()+ 
 		         			 "fillPrompts() output type not supported");
 				 if (valuePrompt != null) {
-				 	String[] valsPrompt = valuePrompt.split(",");
+					// if the parameter is multivalue, values are separated by ";" (see BODriver.addBIParameters(BIObject biobj, Map pars))
+				 	String[] valsPrompt = valuePrompt.split(";");
 				 	prompt.enterValues(valsPrompt);
 				 }
 			}
@@ -134,8 +134,22 @@ public class Utils {
 			Properties props = loadPromptsAssociationFile(servletContext);
 			WIPrompts prompts = repDocument.getPrompts();
 			logger.debug("Report prompts retrieved.");
+			if (prompts != null) {
+				fillPrompts(prompts, request, props);
+			}
+		} catch (SpagoBIBOEngineException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.error("Error while filling report prompts", e);
+		} finally {
+			logger.debug("OUT");
+		}
+    }
+	
+	private static void fillPrompts(WIPrompts prompts, HttpServletRequest request, Properties props) throws SpagoBIBOEngineException {
+		logger.debug("IN");
+		try {
 			int numPrompts = prompts.getCount();
-			ParametersDecoder decoder = new ParametersDecoder();
 			List parametersNotSet = new ArrayList();
 			for (int i = 0; i < numPrompts; i++) {
 				 WIPrompt prompt = prompts.getItem(i + 1);
@@ -164,6 +178,12 @@ public class Utils {
 					 logger.debug("Find report prompt with name = [" + namePrompt + "]; relevant httpRequest parameter value is [" + valuePrompt + "].");
 				 }
 				 if (valuePrompt != null) {
+					// if the parameter is multivalue, values are separated by ";" (see BODriver.addBIParameters(BIObject biobj, Map pars))
+					// so there is no need to decode anything (BO wants values to be separated by ";")
+					logger.debug("Entering new value = [" + valuePrompt + "] into prompt with name = [" + namePrompt + "].");
+					prompt.enterValue(valuePrompt);
+					/*
+					OLD CODE
 					String strValueList = "";
 					if (decoder.isMultiValues(valuePrompt)) {			
 						List values = decoder.decode(valuePrompt);
@@ -174,26 +194,34 @@ public class Utils {
 					} else {
 						strValueList = valuePrompt;
 					}
-					logger.debug("Entering new value = [" + strValueList + "] into prompt with name = [" + namePrompt + "].");
-					prompt.enterValue(strValueList);
+					 */
 				 } else {
 					 logger.error("Prompt with name = [" + namePrompt + "] has no value set. Cannot refresh document.");
 					 parametersNotSet.add(namePrompt);
 				 }
+				 
+				 /*
+				try {
+					prompt.getListOfValues(true);
+				} catch (WIException wiException) {
+					int iWiException = wiException.getNumber();
+					if (iWiException != WIException.WIERR_DOC_NEEDPROMPT_01) {
+						WIPrompts nestedPrompts = prompt.getPrompts();
+						fillPrompts(prompts, request, props);
+					}
+				}
+				*/
+				 
 			}
 			if (parametersNotSet.size() != 0) {
 				String message = "Prompts with name " + parametersNotSet.toString() + " have no value set. " +
 						"Cannot refresh document. You must configure a parameter for the SpagoBI document for each missing prompt.";
 				throw new SpagoBIBOEngineException(message);
 			}
-		} catch (SpagoBIBOEngineException e) {
-			throw e;
-		} catch (Exception e) {
-			logger.error("Error while filling report prompts", e);
 		} finally {
 			logger.debug("OUT");
 		}
-    }
+	}
 	
 	private static Properties loadPromptsAssociationFile(ServletContext servletContext) {
 		logger.debug("IN");

@@ -39,7 +39,6 @@ import it.eng.spagobi.drivers.EngineURL;
 import it.eng.spagobi.drivers.IEngineDriver;
 import it.eng.spagobi.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.GeneralUtilities;
-import it.eng.spagobi.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.utilities.SpagoBITracer;
 import it.eng.spagobi.utilities.UploadedFile;
 
@@ -124,7 +123,8 @@ public class BODriver implements IEngineDriver {
  
 	
     /**
-     * Add into the parameters map the BIObject's BIParameter names and values
+     * Add into the parameters map the BIObject's BIParameter names and values. If a parameter is multivalue, values are simply 
+     * separated by ";": the generated string is something like value1;value2;value3....
      * @param biobj BIOBject to execute
      * @param pars Map of the parameters for the execution call  
      * @return Map The map of the execution call parameters
@@ -138,20 +138,14 @@ public class BODriver implements IEngineDriver {
 			return pars;
 		}
 		
-		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		if(biobj.getBiObjectParameters() != null){
 			BIObjectParameter biobjPar = null;
 			for(Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();){
 				try {
 					biobjPar = (BIObjectParameter)it.next();
-					
-					
-					/*
 					String value = "";
 					for(int i = 0; i < biobjPar.getParameterValues().size(); i++)
-						value += (i>0?",":"") + (String)biobjPar.getParameterValues().get(i);
-					 */
-					String value = parValuesEncoder.encode(biobjPar);
+						value += (i>0?";":"") + (String)biobjPar.getParameterValues().get(i);
 					pars.put(biobjPar.getParameterUrlName(), value);
 				} catch (Exception e) {
 					SpagoBITracer.warning("ENGINES",

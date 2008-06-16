@@ -90,7 +90,7 @@ public class JobManagementModule extends AbstractModule {
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_DELETE_JOB)) {
 				deleteJob(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_JOB_DETAIL)) {
-				getJobDetail(request, response);			
+				getJobDetail(request, response);	
 			}			
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
@@ -216,8 +216,6 @@ public class JobManagementModule extends AbstractModule {
 		}
 	}
 	
-	
-	
 	private void documentSelected(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
@@ -240,14 +238,14 @@ public class JobManagementModule extends AbstractModule {
 			else{
 				String[] sel_biobj_ids_arr = sel_biobj_ids_str.split(",");
 				List biobjIdsFromRequest = Arrays.asList(sel_biobj_ids_arr);
-				//List biobjIdsFromRequest = request.getAttributeAsList("biobject");
 				// update the job information
-				Iterator iterBiobjIdsFromRequest = biobjIdsFromRequest.iterator();
-				while(iterBiobjIdsFromRequest.hasNext()) {
+				Iterator iterBiobjIdsFromRequest = biobjIdsFromRequest.iterator();		
+				while(iterBiobjIdsFromRequest.hasNext()) {					
 					String biobjidStr = (String)iterBiobjIdsFromRequest.next();
-					Integer biobjInt = Integer.valueOf(biobjidStr);
+					Integer biobjInt = Integer.valueOf(biobjidStr.substring(0, biobjidStr.lastIndexOf("__")));
+					//adds new documents
 					if(!biobjIds.contains(biobjInt)) {
-						Integer biobjid = new Integer(biobjidStr);
+						Integer biobjid = new Integer(biobjidStr.substring(0, biobjidStr.lastIndexOf("__")));
 						IBIObjectDAO biobjectDAO = DAOFactory.getBIObjectDAO();
 						IBIObjectParameterDAO ibiobjpardao = DAOFactory.getBIObjectParameterDAO();
 						BIObject biobj = biobjectDAO.loadBIObjectById(biobjid);
@@ -256,13 +254,29 @@ public class JobManagementModule extends AbstractModule {
 						biobj_sel_now.add(biobj);
 					} else {
 						Iterator iter_prev_biobj = biobjects.iterator();
+						int index = 0;
+						boolean flgExists = false;
+						//preserves documents already existing
 						while(iter_prev_biobj.hasNext()){
+							index ++;
 							BIObject biobj = (BIObject)iter_prev_biobj.next();
-							if(biobj.getId().equals(biobjInt)) {
+							String tmpID = biobj.getId().toString()+"__"+index;
+							if(tmpID.equals(biobjidStr)) {
 								biobj_sel_now.add(biobj);
+								flgExists = true;
 								continue;
 							}
 						}
+						//adds new copy of document already existing
+						if (!flgExists){
+							Integer biobjid = new Integer(biobjidStr.substring(0, biobjidStr.lastIndexOf("__")));
+							IBIObjectDAO biobjectDAO = DAOFactory.getBIObjectDAO();
+							IBIObjectParameterDAO ibiobjpardao = DAOFactory.getBIObjectParameterDAO();
+							BIObject biobj = biobjectDAO.loadBIObjectById(biobjid);
+							List bipars = ibiobjpardao.loadBIObjectParametersById(biobjid);
+							biobj.setBiObjectParameters(bipars);
+							biobj_sel_now.add(biobj);
+						}							
 					}
 				}
 			}
@@ -281,7 +295,7 @@ public class JobManagementModule extends AbstractModule {
 	
 	private void saveJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			// get job information from session
 			JobInfo jobInfo = (JobInfo)sessCont.getAttribute(SpagoBIConstants.JOB_INFO);
 			// recover generic data
@@ -310,7 +324,9 @@ public class JobManagementModule extends AbstractModule {
 			List biobjs = jobInfo.getBiobjects();
 			Iterator iterbiobj = biobjs.iterator();
 			String doclabels = "";
+			int index = 0;
 			while(iterbiobj.hasNext()) {
+				index ++;
 				BIObject biobj = (BIObject)iterbiobj.next();
 				List pars = biobj.getBiObjectParameters();
 				Iterator iterPars = pars.iterator();
@@ -334,8 +350,8 @@ public class JobManagementModule extends AbstractModule {
 				if(queryString.length()>0) {
 					queryString = queryString.substring(0, queryString.length()-3);
 				}
-				message.append("<PARAMETER name=\""+biobj.getLabel()+"\" value=\""+queryString+"\" />");
-				doclabels += biobj.getLabel() + ",";
+				message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"\" value=\""+queryString+"\" />");
+				doclabels += biobj.getLabel() +"__"+index+ ",";
 			}
 			if(doclabels.length()>0) {
 				doclabels = doclabels.substring(0, doclabels.length()-1);
@@ -408,16 +424,22 @@ public class JobManagementModule extends AbstractModule {
 		String splitter = (String)request.getAttribute("splitter");
 		// get the list of biobject previously setted
 		List biobjects = jobInfo.getBiobjects();
+		List newBiObjects = new ArrayList();
 		// iter over biobjects
 		Iterator iterbiobjs = biobjects.iterator();
+		int index = 0;
 		while(iterbiobjs.hasNext()) {
+			index ++;
 			BIObject biobj = (BIObject)iterbiobjs.next();
+			BIObject newBiObj = new BIObject();
+			newBiObj = biobj;
 			List biobjpars = biobj.getBiObjectParameters();
+			List newBiobjpars = new ArrayList();
 			// iter over parameters
 			Iterator iterbiobjpars = biobjpars.iterator();
 			while(iterbiobjpars.hasNext()) {
 				BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpars.next();
-				String nameParInRequest = "par_" + biobj.getId() + "_" + biobjpar.getParameterUrlName();
+				String nameParInRequest = "par_" + biobj.getId() +"_" + index + "_" + biobjpar.getParameterUrlName();
 				String valueParConcat = (String)request.getAttribute(nameParInRequest);
 				if(valueParConcat!=null){
 					if(valueParConcat.trim().equals("")) {
@@ -428,9 +450,14 @@ public class JobManagementModule extends AbstractModule {
 						List valuePar = Arrays.asList(valueParArr);
 						biobjpar.setParameterValues(valuePar);
 					}
-				}
+					newBiobjpars.add(biobjpar);
+				}				
 			}
+			newBiObj.setBiObjectParameters(null);
+			newBiObj.setBiObjectParameters(newBiobjpars);
+			newBiObjects.add(newBiObj);
 		}
+		jobInfo.setBiobjects(newBiObjects);
 	}
 	
 	

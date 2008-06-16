@@ -111,7 +111,7 @@ public class TriggerManagementModule extends AbstractModule {
 	
 	private void runSchedule(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 			getSchedule(request, response);
@@ -134,9 +134,8 @@ public class TriggerManagementModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
-	
-	
-	
+	 
+	 
 	private void deleteSchedule(SourceBean request, SourceBean response) throws EMFUserError {
 		String jobName = (String)request.getAttribute("jobName");
 		String jobGroupName = (String)request.getAttribute("jobGroupName");
@@ -161,10 +160,10 @@ public class TriggerManagementModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
-	
+
 	private void getSchedule(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-		        SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
+		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			String jobName = (String)request.getAttribute("jobName");
 			String jobGroupName = (String)request.getAttribute("jobGroupName");
 			String triggerName = (String) request.getAttribute("triggerName");
@@ -227,28 +226,31 @@ public class TriggerManagementModule extends AbstractModule {
 			Map saveOptions = new HashMap();
 			List biobjIds = jobInfo.getBiobjectIds();
 			Iterator iterBiobjIds = biobjIds.iterator();
+			int index = 0;
 			while(iterBiobjIds.hasNext()){
+				index ++;
 				SaveInfo sInfo = new SaveInfo();
 				Integer biobId = (Integer)iterBiobjIds.next();
-				String saveassnap = (String)request.getAttribute("saveassnapshot_"+biobId);	
+				String saveassnap = (String)request.getAttribute("saveassnapshot_"+biobId+"__"+index);	
 				if(saveassnap!=null) {
 					sInfo.setSaveAsSnapshot(true);
-					String snapname = (String)request.getAttribute("snapshotname_"+biobId);	
+					String snapname = (String)request.getAttribute("snapshotname_"+biobId+"__"+index);	
 					sInfo.setSnapshotName(snapname);
-					String snapdescr = (String)request.getAttribute("snapshotdescription_"+biobId);
+					String snapdescr = (String)request.getAttribute("snapshotdescription_"+biobId+"__"+index);
 					sInfo.setSnapshotDescription(snapdescr);
-					String snaphistlength = (String)request.getAttribute("snapshothistorylength_"+biobId);
+					String snaphistlength = (String)request.getAttribute("snapshothistorylength_"+biobId+"__"+index);
 					sInfo.setSnapshotHistoryLength(snaphistlength);
-				}
-				String saveasdoc = (String)request.getAttribute("saveasdocument_"+biobId);	
+				}  
+				String saveasdoc = (String)request.getAttribute("saveasdocument_"+biobId+"__"+index);	
 				if(saveasdoc!=null) {
 					sInfo.setSaveAsDocument(true);
-					String docname = (String)request.getAttribute("documentname_"+biobId);	
+					String docname = (String)request.getAttribute("documentname_"+biobId+"__"+index);	
 					sInfo.setDocumentName(docname);
-					String docdescr = (String)request.getAttribute("documentdescription_"+biobId);	
+					String docdescr = (String)request.getAttribute("documentdescription_"+biobId+"__"+index);	
 					sInfo.setDocumentDescription(docdescr);
 					String functIdsConcat = "";
-					List functIds = request.getAttributeAsList("tree_"+biobId+"_funct_id");	
+					String tmpValReq = "tree_"+biobId+"__"+index+"_funct_id";
+					List functIds = request.getAttributeAsList(tmpValReq);	
 					Iterator iterFunctIds = functIds.iterator();
 					while(iterFunctIds.hasNext()) {
 						String idFunct = (String)iterFunctIds.next();
@@ -259,17 +261,17 @@ public class TriggerManagementModule extends AbstractModule {
 					}
 					sInfo.setFunctionalityIds(functIdsConcat);
 				}
-				String sendmail = (String)request.getAttribute("sendmail_"+biobId);	
+				String sendmail = (String)request.getAttribute("sendmail_"+biobId+"__"+index);	
 				if(sendmail!=null) {
 					sInfo.setSendMail(true);
-					String mailtos = (String)request.getAttribute("mailtos_"+biobId);	
+					String mailtos = (String)request.getAttribute("mailtos_"+biobId+"__"+index);	
 					sInfo.setMailTos(mailtos);
-					String mailsubj = (String)request.getAttribute("mailsubj_"+biobId);	
+					String mailsubj = (String)request.getAttribute("mailsubj_"+biobId+"__"+index);	
 					sInfo.setMailSubj(mailsubj);
-					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId);	
+					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId+"__"+index);	
 					sInfo.setMailTxt(mailtxt);
 				}
-				String sendtodl = (String)request.getAttribute("saveasdl_"+biobId);	
+				String sendtodl = (String)request.getAttribute("saveasdl_"+biobId+"__"+index);	
 				if(sendtodl!=null) {
 					sInfo.setSendToDl(true);
 					sInfo.setBiobjId(biobId.intValue());
@@ -278,7 +280,7 @@ public class TriggerManagementModule extends AbstractModule {
 					while(it.hasNext()){
 						DistributionList dl = (DistributionList)it.next();
 						int dlId = dl.getId();
-						String listID = (String)request.getAttribute("sendtodl_"+dlId+"_"+biobId);
+						String listID = (String)request.getAttribute("sendtodl_"+dlId+"_"+biobId+"__"+index);
 						if(listID!=null){
 							sInfo.addDlId(new Integer(listID));
 						}
@@ -291,7 +293,7 @@ public class TriggerManagementModule extends AbstractModule {
 					
 				}
 				
-				saveOptions.put(biobId, sInfo);
+				saveOptions.put(biobId+"__"+index, sInfo);
 			}
 			triggerInfo.setSaveOptions(saveOptions);
 			
@@ -331,9 +333,11 @@ public class TriggerManagementModule extends AbstractModule {
 				Map saveOptions = new HashMap();
 				List biobjids = jobInfo.getBiobjectIds();
 				Iterator iterbiobjids = biobjids.iterator();
+				int index = 0;
 				while(iterbiobjids.hasNext()) {
+					index ++;
 					Integer idobj = (Integer)iterbiobjids.next();
-					saveOptions.put(idobj, new SaveInfo());
+					saveOptions.put(idobj+"__" + index, new SaveInfo());
 				}
 				ti.setSaveOptions(saveOptions);
 			} else {
@@ -434,8 +438,9 @@ public class TriggerManagementModule extends AbstractModule {
 		
 		message.append("   <PARAMETERS>");
 		while(iterbiobjids_s.hasNext()) {
-			Integer biobjid_so =  (Integer)iterbiobjids_s.next();
-			SaveInfo sInfo = (SaveInfo)saveOptions.get(biobjid_so);
+			String biobjidstr_so =  (String)iterbiobjids_s.next();
+		//	Integer biobjid_so = Integer.valueOf(biobjidstr_so.substring(0, biobjidstr_so.lastIndexOf("__")));
+			SaveInfo sInfo = (SaveInfo)saveOptions.get(biobjidstr_so);
 			String saveOptString = "";
 			if(sInfo.isSaveAsSnapshot()) {
 				saveOptString += "saveassnapshot=true%26";
@@ -506,7 +511,7 @@ public class TriggerManagementModule extends AbstractModule {
 				}	
 			}
 			
-			message.append("   	   <PARAMETER name=\"biobject_id_"+biobjid_so+"\" value=\""+saveOptString+"\" />");
+			message.append("   	   <PARAMETER name=\"biobject_id_"+biobjidstr_so+"\" value=\""+saveOptString+"\" />");
 		}
 		
 		message.append("   </PARAMETERS>");

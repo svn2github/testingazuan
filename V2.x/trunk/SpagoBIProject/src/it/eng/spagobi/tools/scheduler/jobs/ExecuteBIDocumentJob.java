@@ -30,6 +30,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -86,26 +87,58 @@ public class ExecuteBIDocumentJob implements Job {
 			JobDataMap jdm = jex.getMergedJobDataMap();
 			String doclabelsConcat = jdm.getString("documentLabels");
 			String[] docLabels = doclabelsConcat.split(",");
+			
+			
+			IEngUserProfile profile = UserProfile.createSchedulerUserProfile();
+			
 			for(int ind=0; ind<docLabels.length; ind++) {
 				String docLabel = docLabels[ind];
 				String docParQueryString = jdm.getString(docLabel);
 				// load bidocument
 			        IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
-				BIObject biobj = biobjdao.loadBIObjectByLabel(docLabel);
+				BIObject biobj = biobjdao.loadBIObjectByLabel(docLabel.substring(0, docLabel.lastIndexOf("__")));
 				// get the save options
-				String saveOptString = jdm.getString("biobject_id_" + biobj.getId());
+				String saveOptString = jdm.getString("biobject_id_" + biobj.getId() + "__"+ (ind+1));
 				SaveInfo sInfo = SchedulerUtilities.fromSaveInfoString(saveOptString);
 				// create the execution controller 
 				ExecutionController execCtrl = new ExecutionController();
 				execCtrl.setBiObject(biobj);
 				// fill parameters 
 				execCtrl.refreshParameters(biobj, docParQueryString);
+				
+			
+				//check parameters value: if a parameter hasn't value but isn't mandatory the process 
+				//must go on and so hasValidValue is set to true
+				List tmpBIObjectParameters = biobj.getBiObjectParameters();
+				Iterator it = tmpBIObjectParameters.iterator();
+				BIObjectParameter aBIObjectParameter = null;
+				while (it.hasNext()){
+					aBIObjectParameter = (BIObjectParameter)it.next();
+					SourceBean sbValidate = execCtrl.createValidableFieldSourceBean(aBIObjectParameter);
+					if (sbValidate != null){
+						List lstValidator = sbValidate.getContainedAttributes("VALIDATOR");
+						for (int i=0; i<lstValidator.size(); i++ ){
+							SourceBean sbVal = (SourceBean)lstValidator.get(i);
+							if (sbVal.getAttribute("MANDATORY") == null && 
+								(aBIObjectParameter.getParameterValues() == null  || 
+								 aBIObjectParameter.getParameterValues().size() == 0)){		
+								aBIObjectParameter.setParameterValues(new ArrayList());
+								aBIObjectParameter.setHasValidValues(true);
+							}
+			        	}   
+					}
+					else {
+						if (aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0){	
+							aBIObjectParameter.setParameterValues(new ArrayList());
+							aBIObjectParameter.setHasValidValues(true);
+						}
+					}
+				}
 				// exec the document only if all its parameter are filled
 				if(execCtrl.directExecution()) {
+					
 					ExecutionProxy proxy = new ExecutionProxy();
 					proxy.setBiObject(biobj);
-					IEngUserProfile profile = UserProfile.createSchedulerUserProfile();
-					
 					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 					//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
 					//String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
@@ -140,7 +173,7 @@ public class ExecuteBIDocumentJob implements Job {
 						if(jex.getNextFireTime()== null){
 							String triggername = jex.getTrigger().getName();
 							List dlIds = sInfo.getDlIds();
-							Iterator it = dlIds.iterator();
+							 it = dlIds.iterator();
 							while(it.hasNext()){
 								Integer dlId = (Integer)it.next();
 								DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
@@ -482,7 +515,7 @@ public class ExecuteBIDocumentJob implements Job {
 	    }
 	}
 	
-	
+		
 	private class SchedulerDataSource implements DataSource {
 
 		byte[] content = null;

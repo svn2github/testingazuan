@@ -141,7 +141,7 @@ public class SchedulerUtilities {
 		}
 		return schedModRespSB;
 	}
-	
+	  
 	
 	/**
 	 * Check result of ws call.
@@ -194,10 +194,11 @@ public class SchedulerUtilities {
 				String docLblStr = (String)docLblSB.getAttribute("value");
 				String[] docLbls = docLblStr.split(",");
 				for(int i=0; i<docLbls.length; i++) {
-					BIObject biobj = biobjdao.loadBIObjectByLabel(docLbls[i]);
+					//BIObject biobj = biobjdao.loadBIObjectByLabel(docLbls[i]);
+					BIObject biobj = biobjdao.loadBIObjectByLabel(docLbls[i].substring(0, docLbls[i].indexOf("__")));
 					List biobjpars = biobjpardao.loadBIObjectParametersById(biobj.getId());
 					biobj.setBiObjectParameters(biobjpars);
-					String biobjlbl = biobj.getLabel();
+					String biobjlbl = biobj.getLabel() + "__" + (i+1);
 					SourceBean queryStringSB = (SourceBean)jobParSB.getFilteredSourceBeanAttribute("JOB_PARAMETER", "name", biobjlbl);
 					String queryString = (String)queryStringSB.getAttribute("value");
 					String[] parCouples = queryString.split("%26");
@@ -266,15 +267,17 @@ public class SchedulerUtilities {
 		Map saveOptions = new HashMap();
 		List biobjIds = jInfo.getBiobjectIds();
 		Iterator iterBiobjIds = biobjIds.iterator();
+		int index = 0;
 		while(iterBiobjIds.hasNext()) {
+			index ++;
 			SaveInfo sInfo = new SaveInfo();
 			Integer biobjid = (Integer)iterBiobjIds.next();
-			SourceBean objParSB = (SourceBean)triggerDetSB.getFilteredSourceBeanAttribute("JOB_PARAMETERS.JOB_PARAMETER", "name", "biobject_id_" + biobjid);
+			SourceBean objParSB = (SourceBean)triggerDetSB.getFilteredSourceBeanAttribute("JOB_PARAMETERS.JOB_PARAMETER", "name", "biobject_id_" + biobjid.toString()+"__"+index);
 			if(objParSB!=null) {
 				String parString = (String)objParSB.getAttribute("value");
 				sInfo = SchedulerUtilities.fromSaveInfoString(parString);
 			}
-			saveOptions.put(biobjid, sInfo);
+			saveOptions.put(biobjid+"__"+index, sInfo);
 		}
 		
 		tInfo.setSaveOptions(saveOptions);

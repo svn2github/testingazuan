@@ -132,9 +132,10 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		TriggerInfo tInfo = (TriggerInfo)sessionContainer.getAttribute(SpagoBIConstants.TRIGGER_INFO);
 		String idObjStr = treename.substring(5);
-		Integer idBiobj = Integer.valueOf(idObjStr);
+		String indexStr = idObjStr.substring(idObjStr.lastIndexOf("__"));
+		Integer idBiobj = Integer.valueOf(idObjStr.substring(0, idObjStr.lastIndexOf("__")));
 		Map saveOpts = tInfo.getSaveOptions();
-		SaveInfo sInfo = (SaveInfo)saveOpts.get(idBiobj);
+		SaveInfo sInfo = (SaveInfo)saveOpts.get(idBiobj+indexStr);
 		String functIdsConcat = sInfo.getFunctionalityIds();
 		String[] functIds =  functIdsConcat.split(",");
 		for(int i=0; i<functIds.length; i++) {

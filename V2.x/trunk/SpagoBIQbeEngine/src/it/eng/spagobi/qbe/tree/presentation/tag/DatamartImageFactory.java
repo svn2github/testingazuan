@@ -86,7 +86,7 @@ public class DatamartImageFactory {
 		DatamartProperties qbeProperties; 
 		
 		qbeProperties = datamart.getDataSource().getProperties();		
-		entityType = qbeProperties.getTableType( entity.getType() );
+		entityType = qbeProperties.getEntityType( entity.getType() );
 		
 		if(entityType == DatamartProperties.CLASS_TYPE_CUBE) {
 			entityImage = "../img/Class.gif";

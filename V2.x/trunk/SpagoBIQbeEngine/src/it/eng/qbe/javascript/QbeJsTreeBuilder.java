@@ -365,7 +365,7 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		if (relationOnColumnName != null){
 			newClassName = className+"("+relationOnColumnName+")";
 		}
-		if(!qbeProperties.isTableVisible(newClassName)) return nodeCounter;
+		if(!qbeProperties.isEntityVisible(newClassName)) return nodeCounter;
 		
 		nodeCounter++;
 		
@@ -385,15 +385,15 @@ public abstract class QbeJsTreeBuilder extends BaseJsTreeBuilder {
 		}
 		
 		String classImage;
-		if(qbeProperties.getTableType(newClassName) == DatamartProperties.CLASS_TYPE_CUBE) {
+		if(qbeProperties.getEntityType(newClassName) == DatamartProperties.CLASS_TYPE_CUBE) {
 			classImage = "../img/Class.gif";
-		} else if(qbeProperties.getTableType(newClassName) == DatamartProperties.CLASS_TYPE_VIEW) {
+		} else if(qbeProperties.getEntityType(newClassName) == DatamartProperties.CLASS_TYPE_VIEW) {
 			classImage = "../img/view.gif";
 		} else {
 			classImage = "../img/relationship.gif";
 		}
 		
-		if(!qbeProperties.isTableVisible(newClassName)) return nodeCounter;
+		if(!qbeProperties.isEntityVisible(newClassName)) return nodeCounter;
 		//if(!qbeAccessModality.isTableAccessible(newClassName)) return nodeCounter;
 		if(!dataMartModel.getDataMartModelAccessModality().isEntityAccessible(newClassName)) return nodeCounter;
 		

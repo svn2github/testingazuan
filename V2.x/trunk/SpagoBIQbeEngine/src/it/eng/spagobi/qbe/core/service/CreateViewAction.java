@@ -20,47 +20,46 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.newquery.Query;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.IWhereField;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spago.base.Constants;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.JSONAcknowledge;
 import it.eng.spagobi.qbe.commons.service.JSONFailure;
-import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
+
+// TODO: Auto-generated Javadoc
 /**
- * The Class RefreshQueryAction.
+ * The Class CreateViewAction.
+ * 
+ * @author Andrea Gioia
  */
-public class RefreshQueryAction extends AbstractQbeEngineAction {
+public class CreateViewAction extends AbstractQbeEngineAction {
 	
 	// INPUT PARAMETERS
+	public static final String VIEW_NAME = "viewName";	
 	public static final String QUERY = "query";
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(RefreshQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(CreateViewAction.class);
     
 	
+    
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
-		
+		String viewName = null;
 		String jsonEncodedQuery = null;
 		Query query = null;
 		
@@ -69,9 +68,11 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 		try {
 		
 			super.service(request, response);		
+		
+			viewName = getAttributeAsString(VIEW_NAME);
 			
-			jsonEncodedQuery = getAttributeAsString( QUERY );
-			
+			/*
+			jsonEncodedQuery = getAttributeAsString( QUERY );			
 			logger.debug(QUERY + " = [" + jsonEncodedQuery + "]");
 			
 			try {
@@ -79,14 +80,16 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 			} catch (JSONException e) {
 				throw new EngineException("Impossible to syncronize the query with the server. Query passed by the client is malformed", e);
 			}
-			getEngineInstance().setQuery( query );
+			*/
+			
+			getEngineInstance().getDatamartModel().addView(viewName, getEngineInstance().getQuery());
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );
 			} catch (IOException e) {
 				throw new EngineException("Impossible to write back the responce to the client", e);
 			}
-		
+			
 		} catch(Exception e) {
 			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
 			
@@ -107,6 +110,23 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 		} finally {
 			logger.debug("OUT");
 		}
+			
+			
+			
+			
+			try {
+			
+			getHttpResponse().getWriter().write("OK");	
+		} catch (Throwable t) {
+			try {
+				getHttpResponse().getWriter().write("KO" + t.getMessage());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			t.printStackTrace();
+		}
+		
+			
 	}
-
 }

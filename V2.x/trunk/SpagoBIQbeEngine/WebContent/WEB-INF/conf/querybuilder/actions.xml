@@ -29,5 +29,26 @@
 			
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="EXPORT_RESULT_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ExportResultAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="CREATE_VIEW_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.CreateViewAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DANIELA_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.DanielaAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
 </ACTIONS>
 

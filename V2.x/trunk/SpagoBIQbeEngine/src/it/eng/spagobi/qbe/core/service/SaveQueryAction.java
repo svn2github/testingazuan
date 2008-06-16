@@ -20,12 +20,13 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.conf.QbeEngineConf;
-import it.eng.spago.base.SessionContainer;
+import org.json.JSONException;
+
+import it.eng.qbe.newquery.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.qbe.commons.service.SpagoBIRequest;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
+import it.eng.spagobi.utilities.engines.EngineException;
 
 
 // TODO: Auto-generated Javadoc
@@ -35,75 +36,47 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
  */
 public class SaveQueryAction extends AbstractQbeEngineAction {
 	
-	// valid input parameter names
-	/** The Constant QUERY_ID. */
-	public static final String QUERY_ID = "queryId";
-	
-	/** The Constant QUERY_DESCRIPTION. */
-	public static final String QUERY_DESCRIPTION = "queryDescritpion";
-	
-	/** The Constant QUERY_VISIBILITY. */
-	public static final String QUERY_VISIBILITY = "visibility";
+	// INPUT PARAMETERS
+	public static final String QUERY_NAME = "queryName";	
+	public static final String QUERY_DESCRIPTION = "queryDescription";
+	public static final String QUERY_SCOPE = "queryScope";
+	public static final String QUERY_RECORDS = "queryRecords";
+	public static final String QUERY_FILTERS = "queryFilters";
 	
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) throws EngineException {
 		
+		super.service(request, response);
+		
+		EngineAnalysisMetadata analysisMetadata = null;
 	
-		String queryId = getAttributeAsString(QUERY_ID);		
+		String queryName = getAttributeAsString(QUERY_NAME);		
 		String  queryDescritpion  = getAttributeAsString(QUERY_DESCRIPTION);		
-		String  visibility  = getAttributeAsString(QUERY_VISIBILITY);
+		String  queryScope  = getAttributeAsString(QUERY_SCOPE);
+		String queryRecords = getAttributeAsString(QUERY_RECORDS);
+		String queryFilters = getAttributeAsString(QUERY_FILTERS);
 		
-		
-		
-		if ((queryId != null) && (queryId.trim().length() > 0)){
-			getQuery().setQueryId(queryId);
+		analysisMetadata = getEngineInstance().getAnalysisMetadata();
+		analysisMetadata.setName( queryName );
+		analysisMetadata.setDescription( queryDescritpion );
+		if( EngineAnalysisMetadata.PUBLIC_SCOPE.equalsIgnoreCase( queryScope ) ) {
+			analysisMetadata.setScope( EngineAnalysisMetadata.PUBLIC_SCOPE );
+		} else if( EngineAnalysisMetadata.PRIVATE_SCOPE.equalsIgnoreCase( queryScope ) ) {
+			analysisMetadata.setScope( EngineAnalysisMetadata.PRIVATE_SCOPE );
+		} else {
+			throw new EngineException("Value [" + queryScope + "] is not valid for the input parameter " + QUERY_SCOPE);
 		}
 		
-		if ((queryDescritpion != null) && (queryDescritpion.trim().length() > 0)){
-			getDatamartWizard().setDescription(queryDescritpion);
+		Query query = null;
+		try {
+			query = QueryEncoder.decode(queryRecords, queryFilters, getDatamartModel());
+		} catch (JSONException e) {
+			throw new EngineException("Impossible to decode query string comming from client", e);
 		}
 		
-		if ((visibility != null) && (visibility.trim().length() > 0)){
-			if (visibility.equalsIgnoreCase("public")){
-				getDatamartWizard().setVisibility(true);
-			}else {
-				getDatamartWizard().setVisibility(false);
-			}
-		}
-		
-		if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
-			SpagoBIRequest spagoBIRequest = getSpagoBIRequest();
-			
-			if (spagoBIRequest != null){
-				getDatamartWizard().setOwner(spagoBIRequest.getUserId());
-			}
-			
-			
-		}
-		
-		getDatamartModel().persistQueryAction( getDatamartWizard() );
-		SessionContainer session = getRequestContainer().getSessionContainer();
-		
-		
-		      
-		if(getSpagoBIRequest() != null) {
-			ContentServiceProxy proxy = new ContentServiceProxy(getUserId(), getHttpSession());
-			 
-			String result=proxy.saveSubObject(getSpagoBIRequest().getDocumentId(), 
-					queryId,queryDescritpion, "" + getDatamartWizard().getVisibility(), queryId);
-			
-			if (result.toUpperCase().startsWith("KO")) {}
-		}
-		
-		
-		String cTM = String.valueOf(System.currentTimeMillis());
-		if (isSubqueryModeActive()){
-			setAttributeInSession("QBE_START_MODIFY_QUERY_TIMESTAMP", cTM);
-			setAttributeInSession("QBE_LAST_UPDATE_TIMESTAMP", cTM);
-		}
-		
+		Query queryBkp = getEngineInstance().getQuery();
+		getEngineInstance().setQuery(query);
+		saveAnalysisState();
+		getEngineInstance().setQuery(queryBkp);
 	}
 }

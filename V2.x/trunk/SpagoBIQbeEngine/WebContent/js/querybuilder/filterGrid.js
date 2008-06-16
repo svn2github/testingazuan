@@ -115,7 +115,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 	           {name: 'id'},
 	           {name: 'entity'},
 	           {name: 'field'},
-	           {name: 'alias'},
+	          // {name: 'alias'},
 	           {name: 'operator'},
 	           {name: 'value'},
 	           {name: 'type'},
@@ -128,7 +128,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 	      {name: 'id', type: 'string'},
 	      {name: 'entity', type: 'string'},
 	      {name: 'field', type: 'string'},
-	      {name: 'alias', type: 'string'},
+	      //{name: 'alias', type: 'string'},
 	      {name: 'operator', type: 'string'},
 	      {name: 'value', type: 'string'},
 	      {name: 'type', type: 'string'},
@@ -161,12 +161,14 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		  * Initialize the filterGrid Component.Do not use public variables of this component before intialization because
 		  * they maybe not valorized.
 		  */
-		init : function() {
+		init : function(query) {
 		         
 		    // initialize data store
 		    this.store.loadData( this.initData );
 		    
-		    
+		    if(query && query.filters && query.filters.length > 0){
+		    	this.loadSavedData(query);
+		    }
 		        
 		    var delButtonColumn = new Ext.grid.ButtonColumn({
 		       header: this.labels.deleteBT,
@@ -205,11 +207,11 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		           header: this.labels.field,
 		           dataIndex: 'field',
 		           width: 75
-		        },{
+		        },/*{
 		           header: this.labels.alias,
 		           dataIndex: 'alias',
 		           width: 75
-		        },{
+		        },*/{
 		           header: this.labels.operator,
 		           dataIndex: 'operator',
 		           editor: new Ext.form.ComboBox({
@@ -274,6 +276,16 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		    });
 		},
 
+
+		loadSavedData : function(query) {
+	  		alert('FILTER\'S GRID - loadSavedData');
+	  		for(var i = 0; i < query.filters.length; i++) {
+	  			var filter = query.filters[i];
+	  			var record = new this.Record(filter);
+	  			this.store.add(record);  
+	  		}
+	  	},
+		
 		/**
 		 * Add a new row to the filter grid. 
 		 *
@@ -285,12 +297,12 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		       type:'Static Value',
 		       operator:'',
 		       value: '',
-		       alias: config.data['alias'],
+		       //alias: config.data['alias'],
 		       entity: config.data['entity']  , 
 		       field: config.data['field']  
 		    });
 		    
-		    this.grid.store.add(record); 
+		   this.grid.store.add(record); 
 		},
 		
 		getRowsAsJSONParams : function() {
@@ -302,7 +314,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 						jsonStr += 	'"id" : "' + tmpRec.data['id'] + '",';	
 						jsonStr += 	'"entity" : "' + tmpRec.data['entity'] + '",';	
 						jsonStr += 	'"field"  : "' + tmpRec.data['field']  + '",';	
-						jsonStr += 	'"alias"  : "' + tmpRec.data['alias']  + '",';	
+						//jsonStr += 	'"alias"  : "' + tmpRec.data['alias']  + '",';	
 						jsonStr += 	'"operator"  : "' + tmpRec.data['operator']  + '",';
 						jsonStr += 	'"value"  : "' + tmpRec.data['value']  + '",';
 						jsonStr += 	'"type"  : "' + tmpRec.data['type']  + '",';

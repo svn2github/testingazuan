@@ -95,7 +95,17 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
         // configuration objects
         
 		initData : [
-		        //['Somma','unit_sales','fact_sales_1997','Unità Vendute','','','si','', '']
+		        	/*[
+		        		'it.eng.spagobi.ProductClass:productFamily',
+		        		'',
+		        		'productClassId',
+  						'ProductClass', 
+  						'',
+  						'',
+  						'',
+  						'si',
+  						''
+  					]*/
 		],
 		
 		store : new Ext.data.SimpleStore({
@@ -138,12 +148,13 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
       
         
         // public methods
-        init: function() {
+        init: function(query) {
         
-        	
-	 		
-		    this.store.loadData(this.initData);
+        	this.store.loadData(this.initData);
 		    
+		    if(query && query.fields && query.fields.length > 0){
+		    	this.loadSavedData(query);
+		    }
 		    
 		    // columns definition
 		    var visibleCheckColumn = new Ext.grid.CheckColumn({
@@ -319,7 +330,45 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		    
 		         
 		},  
-	  
+	  	
+	  	loadInitData : function() {
+	  		/*
+	  		this.initData[0] = [	  		
+		        		'it.eng.spagobi.ProductClass:productFamily',
+		        		'',
+		        		'productClassId',
+  						'ProductClass', 
+  						'',
+  						'',
+  						'',
+  						'si',
+  						''
+  					];
+  			*/
+	  	},
+	  	
+	  	loadSavedData : function(query) {
+	  		//alert('FIELD\'S GRID - loadSavedData');
+	  		for(var i = 0; i < query.fields.length; i++) {
+	  			var field = query.fields[i];
+	  			var record = new this.Record(field);
+	  			this.store.add(record); 
+	  		}
+	  		/*
+	  		 var record = new this.Record({ id : 'it.eng.spagobi.ProductClass:productClassId',
+			  entity : 'ProductClass',
+			  field  : 'productClassId',
+			  alias  : 'pippo',
+			  group  : 'undefined',
+			  order  : '',
+			  funct  : '',
+			  visible : 'si'
+			 });
+			 
+			 this.store.add(record);
+			 */ 
+	  	},
+	  	
 		addRow : function(config) {
 		  var record = new this.Record({
 		       funct: '',
@@ -328,7 +377,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		       id: config.data['id'], 
 		       entity: config.data['entity'], 
 		       field: config.data['field'],
-		       visible: 'si' 
+		       visible: true 
 		    });
 		    
 		    this.store.add(record); 
@@ -347,7 +396,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 				jsonStr += 	'"group"  : "' + tmpRec.data['group']  + '",';
 				jsonStr += 	'"order"  : "' + tmpRec.data['order']  + '",';
 				jsonStr += 	'"funct"  : "' + tmpRec.data['funct']  + '",';
-				jsonStr += 	'"visible" : "' + tmpRec.data['visible'] + '"';	
+				jsonStr += 	'"visible" : ' + tmpRec.data['visible'] + '';	
 				jsonStr += '}';	
 			}
 			jsonStr += ']';

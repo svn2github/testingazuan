@@ -39,6 +39,7 @@ it.eng.spagobi.engines.qbe.app = function() {
     // private variables
     var tabs = [];
     var tabPanel; 
+    var query;
 
  
     // public space
@@ -52,8 +53,9 @@ it.eng.spagobi.engines.qbe.app = function() {
             it.eng.spagobi.engines.qbe.locale.module.init();
             it.eng.spagobi.engines.qbe.locale.module.applyLocale();
            
-            tabs[0] = getQueryBuilderPanel();
-            tabs[1] = getQueryResultsPanel();           
+            tabs[0] = getQueryBuilderPanel(query);
+            tabs[1] = getQueryResultsPanel(); 
+            //tabs[2] = createGridNodi();          
             
             // Main (Tabbed) Panel            
             tabPanel = new Ext.TabPanel({
@@ -70,6 +72,10 @@ it.eng.spagobi.engines.qbe.app = function() {
               layout:'border',
               items:[tabPanel]}); 
                    
+        },
+        
+        setQuery: function(q) {
+        	query = q;
         },
         
         activateTab:function() {

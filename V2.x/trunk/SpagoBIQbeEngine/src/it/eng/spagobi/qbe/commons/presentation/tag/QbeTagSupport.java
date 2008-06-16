@@ -24,10 +24,12 @@ import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +42,24 @@ import java.util.Map;
  */
 public class QbeTagSupport extends BaseTagSupport {
 	
+	
+	/**
+	 * Gets the locale.
+	 * 
+	 * @return the locale
+	 */
+	protected QbeEngineInstance getEngineInstance() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		if(pageContext.getAttribute("engineInstance") == null) {
+			pageContext.setAttribute("engineInstance", getSessionContainer().getAttribute(EngineConstants.ENGINE_INSTANCE) );
+		}
+		return (QbeEngineInstance)pageContext.getAttribute("engineInstance");
+	}
+	
+	
 	/**
 	 * Gets the locale.
 	 * 
@@ -51,7 +71,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		}
 		
 		if(pageContext.getAttribute("locale") == null) {
-			pageContext.setAttribute("locale", getSessionContainer().getAttribute(QbeConstants.LOCALE) );
+			pageContext.setAttribute("locale", getEngineInstance().getEnv().get(EngineConstants.ENV_LOCALE) );
 		}
 		return (Locale)pageContext.getAttribute("locale");
 	}
@@ -69,7 +89,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		}
 		
 		if(pageContext.getAttribute("datamartModel") == null) {
-			pageContext.setAttribute("datamartModel", getSessionContainer().getAttribute(QbeConstants.DATAMART_MODEL) );
+			pageContext.setAttribute("datamartModel", getEngineInstance().getDatamartModel() );
 		}
 		return (DataMartModel)pageContext.getAttribute("datamartModel");   
 	}
@@ -85,7 +105,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		}
 		
 		if(pageContext.getAttribute("datamartWizard") == null) {
-			pageContext.setAttribute("datamartWizard", getSessionContainer().getAttribute(QbeConstants.DATAMART_WIZARD) );
+			pageContext.setAttribute("datamartWizard", getEngineInstance().getDatamartWizard() );
 		}
 		return (ISingleDataMartWizardObject)pageContext.getAttribute("datamartWizard");
 	}
@@ -103,7 +123,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		ISingleDataMartWizardObject datamartWizard = null;
 		
 		if(pageContext.getAttribute("query") == null) {
-			datamartWizard =  (ISingleDataMartWizardObject)getSessionContainer().getAttribute(QbeConstants.DATAMART_WIZARD);
+			datamartWizard =  (ISingleDataMartWizardObject) getEngineInstance().getDatamartWizard();
 			if(datamartWizard !=  null) {
 				pageContext.setAttribute("query", datamartWizard.getQuery() );
 			}

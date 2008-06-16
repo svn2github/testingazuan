@@ -7,6 +7,7 @@ var cm;
 var store;
 var reader = new Ext.data.JsonReader();
 var execServiceUrl = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('EXEC_QUERY_ACTION');
+var exportServiceUrl = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('EXPORT_RESULT_ACTION');
 
 var storeConfig = {
 
@@ -59,16 +60,24 @@ var getQueryResultsPanel = function() {
         // inline toolbars
         tbar:[{
             tooltip:'Export in pdf',
-            iconCls:'pdf'
+            iconCls:'pdf',
+            handler: exportResultToPdf
         },{
             tooltip:'Export in rtf',
-            iconCls:'rtf'
+            iconCls:'rtf',
+            handler: exportResultToRtf
         },{
             tooltip:'Export in xls',
-            iconCls:'xls'
+            iconCls:'xls',
+            handler: exportResultToXls
         },{
             tooltip:'Export in csv',
-            iconCls:'csv'
+            iconCls:'csv',
+            handler: exportResultToCsv
+        },{
+            tooltip:'Export in jrxml',
+            iconCls:'jrxml',
+            handler: exportResultToJrxml
         }],
         bbar: new Ext.PagingToolbar({
         	//width:200,
@@ -86,6 +95,32 @@ var getQueryResultsPanel = function() {
 
 var execQuery = function() {  
   store.load( storeConfig );
+}
+
+var exportResultToCsv = function() {
+	exportResult('text/csv');
+}
+
+var exportResultToRtf = function() {
+	exportResult('application/rtf');
+}
+
+var exportResultToXls = function() {
+	exportResult('application/vnd.ms-excel');
+}
+
+var exportResultToPdf = function() {
+	exportResult('application/pdf');
+}
+
+var exportResultToJrxml = function() {
+	exportResult('text/jrxml');
+}
+
+var exportResult = function(mimeType) {
+	var form = document.getElementById('form');
+	form.action = exportServiceUrl + '&MIME_TYPE=' + mimeType +'&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT';
+	form.submit();
 }
 
 var updateColumnModel = function( store, meta ) {

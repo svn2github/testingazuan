@@ -27,31 +27,13 @@ package it.eng.spagobi.qbe.commons.constants;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QbeConstants {
-	
-	/** The Constant USER_ID. */
-	public static final String USER_ID = "userId";
-	
-	/** The Constant LOCALE. */
-	public static final String LOCALE = "QBE_ENGINE_LOCALE";
-	
-	/** The Constant DATAMART_MODEL. */
-	public static final String DATAMART_MODEL = "dataMartModel";	
-	
-	/** The Constant DATAMART_WIZARD. */
-	public static final String DATAMART_WIZARD = "SINGLE_DATA_MART_WIZARD";
+public class QbeConstants {	
 	
 	/** The Constant LAST_UPDATE_TIMESTAMP. */
 	public static final String LAST_UPDATE_TIMESTAMP =  "QBE_LAST_UPDATE_TIMESTAMP";	
 	
-	/** The Constant STANDALONE_MODE. */
-	public static final String STANDALONE_MODE = "spagobi";	
-	
-	
-	/** SpagoBIRequest se possibile non dovrebbe andare in session. TODO vedere se è possibile fare a mano di tale oggetto per il corretto funzionamento del qbe */
-	public static final String SPAGOBI_REQUEST = "QBE_SPAGOBI_REQUEST";
-	
-	/** La gestione delle subqury deve essere totalmente delegata all'oggetto Query TODO verificare quali di questi parametri è ancora necessario. */
+	/** La gestione delle subqury deve essere totalmente delegata all'oggetto Query 
+	 * TODO verificare quali di questi parametri è ancora necessario. */
 	public static final String QUERY_MODE = "QUERY_MODE";
 	
 	/** The Constant SUBQUERY_MODE. */
@@ -59,4 +41,5 @@ public class QbeConstants {
 	
 	/** The Constant SUBQUERY_FIELD. */
 	public static final String SUBQUERY_FIELD = "SUBQUERY_FIELD";
+	
 }

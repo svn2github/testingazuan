@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=ISO-8859-1"%>
 <%@ page language="java" %>
 
+<%@page import="it.eng.spago.configuration.*"%>
+<%@page import="it.eng.spago.base.*"%>
 
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
@@ -47,11 +49,16 @@
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/treePanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/querybuilder/daniela.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/queryResultsPanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/queryBuilderPanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
+	
+	
 	
 	<!-- A Localization Script File comes here -->
     <qbe:url type="resource" var="src" ref="../js/querybuilder/locale.js"/>
@@ -62,7 +69,12 @@
 	
     
     
-    <script type="text/javascript">    
+    <script type="text/javascript">  
+      <%
+      	String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
+      %>
+      
+      it.eng.spagobi.engines.qbe.app.setQuery( <%=query%> );
       Ext.onReady(it.eng.spagobi.engines.qbe.app.init, it.eng.spagobi.engines.qbe.app);        
     </script>
 	
@@ -73,6 +85,10 @@
 	<div id="tabs"></div>
 	<div id="menuTreePane1"></div>
 	<div id="menuTreePane2"></div>
+	<form id="form" 
+		  method="post"
+		  action=""
+		  target=""></form>
 
 	</qbe:page-content>
 

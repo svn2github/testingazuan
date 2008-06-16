@@ -33,6 +33,7 @@ Ext.override(Ext.tree.TreeLoader, {
   
 Ext.namespace('it.eng.spagobi.engines.qbe.querybuilder.treePanel');
 
+
 // shorthand alias
 var treePanelComponent = it.eng.spagobi.engines.qbe.querybuilder.treePanel;
  
@@ -46,12 +47,20 @@ treePanelComponent.init = function() {
 	
 }
 
+it.eng.spagobi.engines.qbe.querybuilder.treePanel.treePtr;
+it.eng.spagobi.engines.qbe.querybuilder.treePanel.treeLoaderPtr;
+it.eng.spagobi.engines.qbe.querybuilder.treePanel.rootNodePtr;
+
 it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = function() {
 	
 	var treeLoader = new Ext.tree.TreeLoader({
         baseParams:{DATAMART_NAME: 'xxx'},
         dataUrl   :loadTreeDataServiceUrl
     });
+    if(!treePanelComponent.treeLoaderPtr) {
+    	//alert('treeLoaderPtr');
+    	treePanelComponent.treeLoaderPtr = treeLoader;
+    }
     
    
     var tree = new Ext.tree.TreePanel({
@@ -69,6 +78,11 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
         useArrows 		 : true,
         loader           : treeLoader
     });	
+    if(!treePanelComponent.treePtr) {
+    	//alert('treePtr');
+    	treePanelComponent.treePtr = tree;
+    }
+    
     
     // SET the root node.
     
@@ -80,6 +94,10 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
         draggable	: false
         //id		: 'rootNode'
     });
+    if(!treePanelComponent.rootNodePtr) {
+    	//alert('rootNodePtr');
+    	treePanelComponent.rootNodePtr = rootNode;
+    }
     
  	
  	
@@ -103,5 +121,10 @@ treePanelComponent.selectNode = function(node, e) {
       
     it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record); 
   }
+};
+
+treePanelComponent.refresh = function() {
+	alert('refresh + tree');
+	this.treeLoaderPtr.load(this.rootNodePtr, function(){});
 };
 

@@ -21,6 +21,8 @@
 package it.eng.spagobi.qbe.core.service;
 
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.model.XIStatement;
+import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.query.ISelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
@@ -64,10 +66,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	 */
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		
-		IStatement statement = null;
+		//IStatement statement = null;
+		XIStatement xstatement = null;
 		Integer limit = null;
 		Integer start = null;
 		SourceBean queryResponseSourceBean = null;
+		//SourceBean xqueryResponseSourceBean = null;
 		JSONObject gridDataFeed = new JSONObject();
 		
 		
@@ -78,19 +82,23 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);		
 				
-			statement = getDatamartModel().createStatement( getQuery() );			
+			//statement = getDatamartModel().createStatement( getQuery() );
+			xstatement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );
 			
 			limit = getAttributeAsInteger( LIMIT );
 			start = getAttributeAsInteger( START );			
 		
-			statement.setMaxResults( MAX_RESULT );
-			statement.setParameters( getDatamartModel().getDataMartProperties() );
+			//statement.setMaxResults( MAX_RESULT );
+			//statement.setParameters( getDatamartModel().getDataMartProperties() );
+			//statement.setParameters( getEnv() );
+			xstatement.setParameters( getEnv() );
 			
 			try {
 				logger.debug("Execute Query.");
-				queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
+				//queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
+				queryResponseSourceBean = xstatement.executeWithPagination(start, limit, MAX_RESULT);
 			} catch (Exception e) {
-				String query = statement.getQueryString();
+				String query = xstatement.getQueryString();
 				logger.error("An error occurred while executing query: " + query, e);
 				String description = "An error occurred in " + getActionName() + " service while executing query: " + query;
 				String str = e.getMessage()!=null? e.getMessage(): e.getClass().getName();
@@ -136,12 +144,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 					fields = new JSONArray();
 					fields.put("recNo");
 					// Giro le intestazioni di colonne
-					Iterator fieldsIterator = getQuery().getSelectFieldsIterator();
+					Iterator fieldsIterator = getEngineInstance().getQuery().getSelectFields().iterator();
 					for (int j=0; j < row.length; j++){ 
 						JSONObject field = new JSONObject();
-						ISelectField f = (ISelectField)fieldsIterator.next();
+						SelectField f = (SelectField)fieldsIterator.next();
 						if(!f.isVisible()) continue;
-						String header = f.getFieldAlias();
+						String header = f.getAlias();
 						if( header != null) field.put("header", header);
 						else field.put("header", "Column-" + (j+1));
 						
@@ -165,7 +173,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				if(record != null) rows.put(record);
 			}		
 		} catch (Exception e) {
-		  logger.error("Exception in JASON Creation",e);
+			logger.error("Exception in JASON Creation",e);
 			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
 			
 			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";

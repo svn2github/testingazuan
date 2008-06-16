@@ -22,37 +22,27 @@ package it.eng.spagobi.qbe.tree;
 
 import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.utility.QbeProperties;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartImageFactory;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
-import it.eng.spagobi.qbe.tree.urlgenerator.IQbeTreeUrlGenerator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSObject;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ExtJsQbeTreeBuilder.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class ExtJsQbeTreeBuilder  {
-	
-	/** The qbe tree class. */
-	private Class qbeTreeClass;
-	
-	/** The url generator. */
-	private IQbeTreeUrlGenerator urlGenerator;	
+public class ExtJsQbeTreeBuilder  {	
 	
 	/** The qbe tree filter. */
 	private QbeTreeFilter qbeTreeFilter;
@@ -60,22 +50,11 @@ public class ExtJsQbeTreeBuilder  {
 	/** The datamart model. */
 	private IDataMartModel datamartModel;	
 	
-	/** The modality. */
-	String modality = DEFAULT_MODALITY;	
+	private Locale locale;
 	
-	/** The Constant FULL_MODALITY. */
-	public static final String FULL_MODALITY = "FULL";
+	private DatamartLabels datamartLabels;
 	
-	/** The Constant LIGHT_MODALITY. */
-	public static final String LIGHT_MODALITY = "LIGHT";
-	
-	/** The Constant DEFAULT_MODALITY. */
-	public static final String DEFAULT_MODALITY = FULL_MODALITY;
-	
-	/** The class prefix. */
-	private String classPrefix = null;	
-	
-	
+
 	/**
 	 * Instantiates a new ext js qbe tree builder.
 	 * 
@@ -87,15 +66,31 @@ public class ExtJsQbeTreeBuilder  {
 	
 		
 	/**
-	 * Gets the qbe trees.
 	 * 
-	 * @param datamartModel the datamart model
-	 * 
-	 * @return the qbe trees
+	 * @param datamartModel
+	 * @param locale can be null. In that case label.properties will be loaded (if exists)
+	 * @return
 	 */
-	public List getQbeTrees(IDataMartModel datamartModel)  {			
-		setDatamartModel(datamartModel);			
+	public List getQbeTrees(IDataMartModel datamartModel, Locale locale)  {			
+		setDatamartModel(datamartModel);
+		setLocale(locale);
+		setDatamartLabels( QbeCacheManager.getInstance().getLabels( getDatamartModel() , getLocale() ) );
+		if( getDatamartLabels() == null) {
+			setDatamartLabels( new DatamartLabels() );
+		}
 		return buildQbeTreeList();
+	}
+	
+	private String geEntityLabel(DataMartEntity entity) {
+		String label;
+		label = getDatamartLabels().getLabel(entity);
+		return label==null? entity.getName(): label;
+	}
+	
+	private String geFieldLabel(DataMartField field) {
+		String label;
+		label = getDatamartLabels().getLabel(field);
+		return label==null? field.getName(): label;
 	}
 
 	/**
@@ -176,16 +171,10 @@ public class ExtJsQbeTreeBuilder  {
 		
 			
 		addEntityRootNode(nodes, entity, recursionLevel);		
-		
-		/*
-		addFieldNodes(nodes, entity);
-		nodeCounter  = addCalculatedFieldNodes(tree, entity, entityNodeId, nodeCounter);
-		nodeCounter  = addSubEntitiesNodes(tree, entity, entityNodeId, nodeCounter, recursionLevel, entity.getSubEntities());
-				
-		return nodeCounter;	
-		*/
 	}
 		
+	
+	
 	
 	/**
 	 * Adds the entity root node.
@@ -199,22 +188,10 @@ public class ExtJsQbeTreeBuilder  {
 								  int recursionLevel) {		
 		
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();	
-		if(!datamartProperties.isTableVisible( entity.getUniqueName().replaceAll(":", "/") )) return;
-		int entityType = datamartProperties.getTableType( entity.getUniqueName().replaceAll(":", "/") );
+		String iconCls = datamartProperties.getEntityIconClass( entity );			
+		String label = geEntityLabel( entity );
 		
-		String label = DatamartLabelFactory.getEntityLabel(datamartModel, entity);	
 			
-		
-		System.out.println( "\n\n"+ entity.getUniqueName().replaceAll(":", "/") + "=" );
-		
-		
-		String iconCls = "dimension";		
-		if(entityType == DatamartProperties.CLASS_TYPE_CUBE) {
-			iconCls = "cube";
-		} else if(entityType == DatamartProperties.CLASS_TYPE_VIEW) {
-			iconCls = "view";
-		} 			
-		
 		JSONArray childrenNodes = getFieldNodes(entity, recursionLevel);
 		
 		JSObject entityNode = new JSObject();
@@ -288,24 +265,11 @@ public class ExtJsQbeTreeBuilder  {
 							 DataMartField field) {
 		
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
-		//if( !datamartProperties.isFieldVisible( field.getUniqueName().replaceAll(":", "/") ) ) return null;
-		int fieldType = datamartProperties.getFieldType( field.getUniqueName().replaceAll(":", "/") );
-		
-		
-		String fieldLabel = DatamartLabelFactory.getFieldLabel(getDatamartModel(), field);	
-		String entityLabel = DatamartLabelFactory.getEntityLabel(datamartModel, parentEntity);	
-		//fieldLabel = field.getName();
-		//entityLabel = parentEntity.getName();
+		String iconCls = datamartProperties.getFieldIconClass( field );		
+		String fieldLabel = geFieldLabel( field );		
+		String entityLabel = geEntityLabel( parentEntity );
 		
 		System.out.println( field.getUniqueName().replaceAll(":", "/") + "=" );
-		
-		
-		String iconCls = "attribute";
-		if(fieldType == DatamartProperties.FIELD_TYPE_ATTRIBUTE) {
-			iconCls = "attribute";
-		} else if(fieldType == DatamartProperties.FIELD_TYPE_MEASURE) {
-			iconCls = "measure";
-		} 	
 		
 		JSObject fieldNode = new JSObject();
 		try {
@@ -343,6 +307,7 @@ public class ExtJsQbeTreeBuilder  {
 			   						   DataMartEntity entity,
 			   						   int parentEntityNodeId, int nodeCounter) {
 			
+		/*
 		List manualCalcultatedFieldForEntity = 
 			getDatamartModel().getDataSource().getFormula().getManualCalculatedFieldsForEntity( entity.getType() );
 			
@@ -353,13 +318,14 @@ public class ExtJsQbeTreeBuilder  {
 		while (manualCalculatedFieldsIterator.hasNext()){
 			calculatedField = (CalculatedField)manualCalculatedFieldsIterator.next();
 			
-			/*
+			
+
 			if (prefix != null){
 				calculatedField.setFldCompleteNameInQuery(prefix + "." + calculatedField.getId());
 			}else{
 				calculatedField.setFldCompleteNameInQuery(calculatedField.getId());
 			}
-			*/
+			
 			
 			fieldAction = getUrlGenerator().getActionUrlForCalculateField(calculatedField.getId(), entity.getName(), calculatedField.getFldCompleteNameInQuery());
 			
@@ -375,6 +341,8 @@ public class ExtJsQbeTreeBuilder  {
 		}
 			
 		return nodeCounter;
+		*/
+		return -1;
 	}
 	
 	
@@ -415,23 +383,7 @@ public class ExtJsQbeTreeBuilder  {
 	
 	
 
-	/**
-	 * Gets the modality.
-	 * 
-	 * @return the modality
-	 */
-	public String getModality() {
-		return modality;
-	}
-
-	/**
-	 * Sets the modality.
-	 * 
-	 * @param modality the new modality
-	 */
-	public void setModality(String modality) {
-		this.modality = modality;
-	}
+	
 
 	/**
 	 * Gets the datamart model.
@@ -453,46 +405,6 @@ public class ExtJsQbeTreeBuilder  {
 
 
 	/**
-	 * Gets the url generator.
-	 * 
-	 * @return the url generator
-	 */
-	public IQbeTreeUrlGenerator getUrlGenerator() {
-		return urlGenerator;
-	}
-
-
-	/**
-	 * Sets the url generator.
-	 * 
-	 * @param urlGenerator the new url generator
-	 */
-	public void setUrlGenerator(IQbeTreeUrlGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
-
-
-	/**
-	 * Gets the qbe tree class.
-	 * 
-	 * @return the qbe tree class
-	 */
-	protected Class getQbeTreeClass() {
-		return qbeTreeClass;
-	}
-
-
-	/**
-	 * Sets the qbe tree class.
-	 * 
-	 * @param qbeTreeClass the new qbe tree class
-	 */
-	protected void setQbeTreeClass(Class qbeTreeClass) {
-		this.qbeTreeClass = qbeTreeClass;
-	}
-
-
-	/**
 	 * Gets the qbe tree filter.
 	 * 
 	 * @return the qbe tree filter
@@ -509,5 +421,25 @@ public class ExtJsQbeTreeBuilder  {
 	 */
 	private void setQbeTreeFilter(QbeTreeFilter qbeTreeFilter) {
 		this.qbeTreeFilter = qbeTreeFilter;
+	}
+
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+
+	private DatamartLabels getDatamartLabels() {
+		return datamartLabels;
+	}
+
+
+	private void setDatamartLabels(DatamartLabels datamartLabels) {
+		this.datamartLabels = datamartLabels;
 	}
 }

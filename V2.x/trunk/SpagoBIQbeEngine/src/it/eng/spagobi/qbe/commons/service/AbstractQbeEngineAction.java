@@ -23,10 +23,10 @@ package it.eng.spagobi.qbe.commons.service;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
-
-import java.util.Locale;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 
@@ -42,39 +42,11 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     private static transient Logger logger = Logger.getLogger(AbstractQbeEngineAction.class);
     
 	
+    public QbeEngineInstance getEngineInstance() {
+    	return (QbeEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
+    }
+    
 	
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#setUserId(java.lang.String)
-	 */
-	public void setUserId(String userId) {
-		setAttributeInSession(QbeConstants.USER_ID, userId);
-	}
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#getUserId()
-	 */
-	public String getUserId() {
-		return (String)getAttributeFromSession(QbeConstants.USER_ID);
-	}
-	
-	/**
-	 * Gets the qbe engine locale.
-	 * 
-	 * @return the qbe engine locale
-	 */
-	public Locale getQbeEngineLocale() {
-		return  (Locale)getAttributeFromSession(QbeConstants.LOCALE);
-	}
-
-	/**
-	 * Sets the qbe engine locale.
-	 * 
-	 * @param locale the new qbe engine locale
-	 */
-	public void setQbeEngineLocale(Locale locale) {
-		setAttributeInSession(QbeConstants.LOCALE, locale);
-	}
 
 	
 	/**
@@ -83,7 +55,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @return the datamart model
 	 */
 	public DataMartModel getDatamartModel() {
-		return  (DataMartModel)getAttributeFromSession(QbeConstants.DATAMART_MODEL);
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return null;
+    	}
+    	return qbeEngineInstance.getDatamartModel();
 	}
 
 	/**
@@ -92,7 +69,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @param datamartModel the new datamart model
 	 */
 	public void setDatamartModel(DataMartModel datamartModel) {
-		setAttributeInSession(QbeConstants.DATAMART_MODEL, datamartModel);
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return;
+    	}
+    	qbeEngineInstance.setDatamartModel(datamartModel);
 	}
 	
 	/**
@@ -101,7 +83,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @return the datamart wizard
 	 */
 	public ISingleDataMartWizardObject getDatamartWizard() {
-		return  (ISingleDataMartWizardObject)getAttributeFromSession(QbeConstants.DATAMART_WIZARD);
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return null;
+    	}
+    	return qbeEngineInstance.getDatamartWizard();
 	}
 
 	/**
@@ -110,7 +97,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @param datamartWizard the new datamart wizard
 	 */
 	public void setDatamartWizard(ISingleDataMartWizardObject datamartWizard) {
-		setAttributeInSession(QbeConstants.DATAMART_WIZARD, datamartWizard);
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return;
+    	}
+    	qbeEngineInstance.setDatamartWizard(datamartWizard);
 	}	
 	
 	/**
@@ -122,22 +114,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 		return getDatamartWizard().getQuery();
 	}
 	
-	/*
-	public IQuery getActiveQuery() {
-		IQuery activeQuery = null;
-		ISingleDataMartWizardObject mainDataMartWizard = null;		
-		
-		mainDataMartWizard = getDatamartWizard();
-		
-		if (isSubqueryModeActive()){
-			activeQuery =  mainDataMartWizard.getQuery().getSelectedSubquery();
-		} else {
-			activeQuery = mainDataMartWizard.getQuery();
-		}
-		
-		return activeQuery;
-	}
-	*/
 	
 	/**
 	 * Sets the standalone mode active.
@@ -145,12 +121,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @param standaloneMode the new standalone mode active
 	 */
 	public void setStandaloneModeActive(boolean standaloneMode) {
-		if(standaloneMode) {
-			delAttributeFromSession(QbeConstants.STANDALONE_MODE);
-		} else {
-			setAttributeInSession(QbeConstants.STANDALONE_MODE, FALSE);
-			
-		}
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return;
+    	}
+    	qbeEngineInstance.setStandaloneMode(standaloneMode);
 	}
 	
 	/**
@@ -159,8 +135,12 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	 * @return true, if is standalone modality
 	 */
 	public boolean isStandaloneModality() {
-		String standaloneMode = (String)getAttributeFromSession(QbeConstants.STANDALONE_MODE);
-		return (standaloneMode == null || !standaloneMode.equalsIgnoreCase(FALSE));
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return false;
+    	}
+    	return qbeEngineInstance.isStandaloneMode();
 	}
 	
 	
@@ -175,30 +155,7 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 		logger.debug("Last Update Timestamp [" + str + "]");
 		setAttributeInSession(QbeConstants.LAST_UPDATE_TIMESTAMP, str);
 	}
-	
-	
-	
-	
-	
-	
-	/**
-	 * Gets the spago bi request.
-	 * 
-	 * @return the spago bi request
-	 */
-	public SpagoBIRequest getSpagoBIRequest() {
-		return  (SpagoBIRequest)getAttributeFromSession(QbeConstants.SPAGOBI_REQUEST);
-	}
 
-	/**
-	 * Sets the spago bi request.
-	 * 
-	 * @param spagoBIRequest the new spago bi request
-	 */
-	public void setSpagoBIRequest(SpagoBIRequest spagoBIRequest) {
-		setAttributeInSession(QbeConstants.SPAGOBI_REQUEST, spagoBIRequest);	
-	}
-	
 	/**
 	 * Sets the subquery mode active.
 	 * 
@@ -249,4 +206,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	public void delSubqueryField() {
 		delAttributeFromSession(QbeConstants.SUBQUERY_FIELD);
 	}
+	
+	
 }

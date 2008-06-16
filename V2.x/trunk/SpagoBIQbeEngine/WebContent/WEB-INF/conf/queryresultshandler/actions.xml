@@ -9,12 +9,6 @@
 		<CONFIG></CONFIG>
 	</ACTION> 
 
-	<ACTION name="CREATE_VIEW_ACTION" 
-			class="it.eng.spagobi.qbe.queryresultshandler.service.CreateViewAction" 
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
 	
 	
 	<ACTION name="EXPORT_ACTION" 

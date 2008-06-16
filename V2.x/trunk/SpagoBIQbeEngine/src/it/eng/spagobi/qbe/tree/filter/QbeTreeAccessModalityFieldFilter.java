@@ -20,13 +20,13 @@
  **/
 package it.eng.spagobi.qbe.tree.filter;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QbeTreeAccessModalityFieldFilter.
  * 
@@ -54,9 +54,6 @@ public class QbeTreeAccessModalityFieldFilter extends ComposableQbeTreeFieldFilt
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.qbe.tree.filter.ComposableQbeTreeFieldFilter#filter(it.eng.qbe.model.IDataMartModel, java.util.List)
-	 */
 	public List filter(IDataMartModel datamartModel, List fields) {
 		List list;
 		DataMartField field;
@@ -82,6 +79,10 @@ public class QbeTreeAccessModalityFieldFilter extends ComposableQbeTreeFieldFilt
 	 * @return true, if is field visible
 	 */
 	private boolean isFieldVisible(IDataMartModel datamartModel, DataMartField field) {
+		DatamartProperties qbeProperties = datamartModel.getDataSource().getProperties();
+		
+		if( !qbeProperties.isFieldVisible( field ) ) return false;
+		if( !datamartModel.getDataMartModelAccessModality().isFieldAccessible( field ) )return false;
 		return true;
 	}
 }

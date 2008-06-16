@@ -20,6 +20,7 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
+import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.tree.ExtJsQbeTreeBuilder;
@@ -38,11 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
-
-// TODO: Auto-generated Javadoc
 /**
- * *
- * ????.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
@@ -58,18 +55,20 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 	public void service(SourceBean request, SourceBean response) throws EngineException {
 		super.service(request, response);	
 		
+		
 		String datamartName = getAttributeAsString(DATAMART_NAME); 		
 		JSONArray nodes = null;
+		
 		IQbeTreeEntityFilter entityFilter = new QbeTreeOrderEntityFilter(
 					new QbeTreeAccessModalityEntityFilter() );
 		IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
-	   	QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-	   	ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
-	   	List trees = qbeBuilder.getQbeTrees(getDatamartModel());
-		
-	   	nodes = (JSONArray)trees.get(0);
 	   	
+		QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
+	   	
+		ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
+	   	List trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());
 		
+	   	nodes = (JSONArray)trees.get(0);		
 		String treeData = nodes.toString();
 		
 		
@@ -80,7 +79,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 		try {
 			httpResp.getOutputStream().print(treeData);
 			httpResp.getOutputStream().flush();
-		} catch (IOException e) {
+		} catch (IOException e) { 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

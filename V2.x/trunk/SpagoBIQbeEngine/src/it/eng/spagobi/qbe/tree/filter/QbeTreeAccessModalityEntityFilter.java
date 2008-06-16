@@ -28,7 +28,6 @@ import it.eng.qbe.utility.QbeProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QbeTreeAccessModalityEntityFilter.
  * 
@@ -52,9 +51,6 @@ public class QbeTreeAccessModalityEntityFilter extends ComposableQbeTreeEntityFi
 		super(parentFilter);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.qbe.tree.filter.ComposableQbeTreeEntityFilter#filter(it.eng.qbe.model.IDataMartModel, java.util.List)
-	 */
 	public List filter(IDataMartModel datamartModel, List entities) {
 		List list = null;
 		DataMartEntity entity;
@@ -82,13 +78,8 @@ public class QbeTreeAccessModalityEntityFilter extends ComposableQbeTreeEntityFi
 	private boolean isEntityVisible(IDataMartModel datamartModel, DataMartEntity entity) {
 		DatamartProperties qbeProperties = datamartModel.getDataSource().getProperties();
 		
-		String entityName = entity.getName();
-		if (entity.getRole() != null && !entity.getRole().equalsIgnoreCase("")){
-			entityName = entity.getName() + "("+ entity.getRole() + ")";
-		}		
-		
-		if(!qbeProperties.isTableVisible(entityName)) return false;
-		if(!datamartModel.getDataMartModelAccessModality().isEntityAccessible(entityName)) return false;
+		if( !qbeProperties.isEntityVisible( entity ) ) return false;
+		if( !datamartModel.getDataMartModelAccessModality().isEntityAccessible( entity ) ) return false;
 		return true;
 	}	
 }

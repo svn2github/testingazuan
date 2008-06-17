@@ -30,6 +30,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.navigation.LightNavigator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -45,6 +47,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 public class FisheyeMenuTag extends TagSupport {
 
@@ -173,6 +178,13 @@ public class FisheyeMenuTag extends TagSupport {
 		String appCode = (String)appSB.getAttribute("code");
 		String appTitle = (String)appSB.getAttribute("title");
 		String link = (String)appSB.getAttribute("link");
+		UUIDGenerator uuidGenetator = UUIDGenerator.getInstance();
+		UUID uuid = uuidGenetator.generateTimeBasedUUID();
+		if (link.indexOf("?") != -1) {
+			link += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
+		} else {
+			link += "?" + LightNavigationManager.LIGHT_NAVIGATOR_ID+ "=" + uuid.toString();
+		}
 		boolean isresizable = true;
 		boolean ismodal = false;
 		String modalStr = (String)appSB.getAttribute("modal");

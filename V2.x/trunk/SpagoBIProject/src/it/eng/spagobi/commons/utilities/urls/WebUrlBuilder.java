@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities.urls;
 
+import it.eng.spago.navigation.LightNavigationManager;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -78,6 +80,15 @@ public class WebUrlBuilder implements IUrlBuilder{
 					sb.append("&");
 				}
 				sb.append(paramName+"="+paramValue.toString());
+			}
+		}
+		// propagating light navigator id
+		String lightNavigatorId = aHttpServletRequest.getParameter(LightNavigationManager.LIGHT_NAVIGATOR_ID);
+		if (lightNavigatorId != null && !lightNavigatorId.trim().equals("")) {
+			if (sb.indexOf("?") != -1) {
+				sb.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + lightNavigatorId);
+			} else {
+				sb.append("?" + LightNavigationManager.LIGHT_NAVIGATOR_ID+ "=" + lightNavigatorId);
 			}
 		}
 		String url = sb.toString();

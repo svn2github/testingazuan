@@ -32,6 +32,7 @@ import javax.servlet.http.HttpSession;
 
 public class LightNavigationManager {
 
+	public static final String LIGHT_NAVIGATOR_ID = "LIGHT_NAVIGATOR_ID";
     public static final String LIGHT_NAVIGATOR_RESET = "LIGHT_NAVIGATOR_RESET";
     public static final String LIGHT_NAVIGATOR_DISABLED = "LIGHT_NAVIGATOR_DISABLED";
     public static final String LIGHT_NAVIGATOR_BACK_TO = "LIGHT_NAVIGATOR_BACK_TO";
@@ -180,11 +181,20 @@ public class LightNavigationManager {
 					"controlLightNavigation: HttpSession object is null.");
 				throw new Exception ("HttpSession object is null.");
 			}
-			Object lightNavigatorObj = session.getAttribute("LIGHT_NAVIGATOR");
+			String sessionAttributeKey = "LIGHT_NAVIGATOR";
+			String navigatorId = servRequest.getParameter(LIGHT_NAVIGATOR_ID);
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "LightNavigationManager: " +
+				"controlLightNavigation: LIGHT_NAVIGATOR_ID parameter in httprequest is " + navigatorId);
+			if (navigatorId != null && !navigatorId.trim().equals("")) {
+				sessionAttributeKey += "_" + navigatorId;
+			}
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "LightNavigationManager: " +
+					"controlLightNavigation: looking for lightNavigator in session with id = [" + sessionAttributeKey + "]");
+			Object lightNavigatorObj = session.getAttribute(sessionAttributeKey);
 			if (lightNavigatorObj != null) lightNavigator = (LightNavigator) lightNavigatorObj;
 			else {
 				lightNavigator = new LightNavigator();
-				session.setAttribute("LIGHT_NAVIGATOR", lightNavigator);
+				session.setAttribute(sessionAttributeKey, lightNavigator);
 			}
 		} else {
 			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "LightNavigationManager: " +

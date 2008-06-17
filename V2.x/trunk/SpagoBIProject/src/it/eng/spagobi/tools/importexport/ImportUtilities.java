@@ -29,9 +29,15 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
+import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
+import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCk;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCkId;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDetId;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
@@ -1139,6 +1145,77 @@ public class ImportUtilities {
 		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
 		logger.debug("OUT");
 		return existDom;
+	}
+
+	public static SbiParuseDet makeNewSbiParuseDet(SbiParuseDet parusedet, Integer newParuseid, Integer newRoleid) {
+		logger.debug("IN");
+		SbiParuseDetId parusedetid = parusedet.getId();
+		SbiParuseDetId newParusedetid = new SbiParuseDetId();
+		if (newParuseid != null) {
+		    SbiParuse sbiparuse = parusedetid.getSbiParuse();
+		    SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(sbiparuse, newParuseid);
+		    newParusedetid.setSbiParuse(newParuse);
+		}
+		if (newRoleid != null) {
+		    SbiExtRoles sbirole = parusedetid.getSbiExtRoles();
+		    SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(sbirole, newRoleid);
+		    newParusedetid.setSbiExtRoles(newRole);
+		}
+		SbiParuseDet newParuseDet = new SbiParuseDet();
+		newParuseDet.setId(newParusedetid);
+		newParuseDet.setDefaultVal(parusedet.getDefaultVal());
+		newParuseDet.setHiddenFl(parusedet.getHiddenFl());
+		newParuseDet.setProg(parusedet.getProg());
+		logger.debug("OUT");
+		return newParuseDet;
+	}
+
+
+
+	public static SbiParuseCk makeNewSbiParuseCk(SbiParuseCk paruseck,
+			Integer newParuseid, Integer newCheckid) {
+		logger.debug("IN");
+		// build a new id for the SbiParuseCheck
+		SbiParuseCkId parusecheckid = paruseck.getId();
+		SbiParuseCkId newParusecheckid = new SbiParuseCkId();
+		if (newParuseid != null) {
+		    SbiParuse sbiparuse = parusecheckid.getSbiParuse();
+		    SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(sbiparuse, newParuseid);
+		    newParusecheckid.setSbiParuse(newParuse);
+		}
+		if (newCheckid != null) {
+		    SbiChecks sbicheck = parusecheckid.getSbiChecks();
+		    SbiChecks newCheck = ImportUtilities.makeNewSbiCheck(sbicheck, newCheckid);
+		    newParusecheckid.setSbiChecks(newCheck);
+		}
+		SbiParuseCk newParuseck = new SbiParuseCk();
+		newParuseck.setId(newParusecheckid);
+		newParuseck.setProg(paruseck.getProg());
+		logger.debug("OUT");
+		return newParuseck;
+	}
+
+
+
+	public static SbiFuncRole makeNewSbiFunctRole(SbiFuncRole functrole,
+			Integer newFunctid, Integer newRoleid) {
+		logger.debug("IN");
+		SbiFuncRoleId functroleid = functrole.getId();
+		SbiFuncRoleId newFunctroleid = new SbiFuncRoleId();
+		if (newFunctid != null) {
+		    SbiFunctions sbifunct = functroleid.getFunction();
+		    SbiFunctions newFunct = ImportUtilities.makeNewSbiFunction(sbifunct, newFunctid);
+		    newFunctroleid.setFunction(newFunct);
+		}
+		if (newRoleid != null) {
+		    SbiExtRoles sbirole = functroleid.getRole();
+		    SbiExtRoles newRole = ImportUtilities.makeNewSbiExtRole(sbirole, newRoleid);
+		    newFunctroleid.setRole(newRole);
+		}
+		SbiFuncRole newFunctRole = new SbiFuncRole();
+		newFunctRole.setId(newFunctroleid);
+		logger.debug("OUT");
+		return newFunctRole;
 	}
 
 }

@@ -85,11 +85,6 @@ public class ImportExportModule extends AbstractModule {
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
 	logger.debug("IN");
-//	if (ChannelUtilities.isPortletRunning()) {
-//	    if (PortletUtilities.isMultipartRequest()) {
-//		request = ChannelUtilities.getSpagoRequestFromMultipart();
-//	    }
-//	}
 
 	String message = (String) request.getAttribute("MESSAGEDET");
 	logger.debug("begin of import / export service with message =" + message);
@@ -741,6 +736,7 @@ public class ImportExportModule extends AbstractModule {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		impManager.openSession();
 		List exportedEngines = impManager.getExportedEngines();
 		IEngineDAO engineDAO = DAOFactory.getEngineDAO();
 		List currentEngines = engineDAO.loadAllEngines();
@@ -775,6 +771,7 @@ public class ImportExportModule extends AbstractModule {
 		RequestContainer requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
 		impManager = (IImportManager) session.getAttribute(ImportExportConstants.IMPORT_MANAGER);
+		impManager.openSession();
 		List exportedDataSources = impManager.getExportedDataSources();
 		IDataSourceDAO dsDao=DAOFactory.getDataSourceDAO();
 		List currentDatasources = dsDao.loadAllDataSources();

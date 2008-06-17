@@ -239,11 +239,12 @@ public class ImporterMetadata {
     public void updateDSRefs(Map associations,  Session session, MetadataLogger log)
 	    throws EMFUserError {
 	logger.debug("IN");
+	SbiLov lov = null;
 	try {
 	    List lovs = getAllExportedSbiObjects(session, "SbiLov", null);
 	    Iterator iterLovs = lovs.iterator();
 	    while (iterLovs.hasNext()) {
-		SbiLov lov = (SbiLov) iterLovs.next();
+		lov = (SbiLov) iterLovs.next();
 		if (lov.getInputTypeCd().equalsIgnoreCase("QUERY")) {
 		    String lovProv = lov.getLovProvider();
 		    QueryDetail qDet = QueryDetail.fromXML(lovProv);
@@ -263,8 +264,11 @@ public class ImporterMetadata {
 		    }
 		}
 	    }
-	} catch (SourceBeanException sbe) {
-	    logger.error("Error while updating connection references ", sbe);
+	} catch (Exception e) {
+		if (lov != null) {
+			logger.error("Error while updating connection reference for exported lov with label [" + lov.getLabel() + "].", e);
+		}
+	    logger.error("Error while updating connection references ", e);
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} finally {
 	    logger.debug("OUT");

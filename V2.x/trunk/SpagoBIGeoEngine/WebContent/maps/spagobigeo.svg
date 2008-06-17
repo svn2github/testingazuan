@@ -323,7 +323,7 @@ preserveAspectRatio="xMidYMin meet">
 				//alert(layer_names[i] + " element -> " + mapLayer);
 				var displayStatus = mapLayer.getAttributeNS(null,"display");
 				var checked = true;
-				if(displayStatus == "none") checked = fase;
+				if(displayStatus == "none") checked = false;
 				//alert(layer_names[i] + " checked -> " + checked + " - " + displayStatus);
 				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
 			}

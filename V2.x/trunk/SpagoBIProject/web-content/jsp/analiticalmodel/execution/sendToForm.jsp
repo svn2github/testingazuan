@@ -277,7 +277,7 @@ function sendTo() {
  
 function somethingWentWrongSendTo() {
 	mstd = document.getElementById('messageSendToDiv');
-	mess = getMessageFromCode("50");
+	mess = getMessageFromCode(mstd);
 	mstd.innerHTML = mess;
 }
     

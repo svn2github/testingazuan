@@ -249,7 +249,7 @@ if (toolbarIsVisible) {
 					</form>
 					</li>
 				<% } %>
-				<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot) { %>
+				<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT")) { %>
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
@@ -353,7 +353,28 @@ if (toolbarIsVisible) {
 	<% } %>
 	
 	<%-- Scripts for send mail to form --%>
-	<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot) { %>
+	<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT")) { 
+
+		List masterParameters = obj.getBiObjectParameters();
+		String urlMasterPar = "" ;
+		Iterator itMaster = masterParameters.iterator();
+		while(itMaster.hasNext())
+		{
+			BIObjectParameter tempObjPar = (BIObjectParameter)itMaster.next();
+			String UrlPar = tempObjPar.getParameterUrlName();
+			List parValues = tempObjPar.getParameterValues();
+			Iterator itTemp = parValues.iterator();
+			String ValuePar = "";
+			while(itTemp.hasNext()){
+				ValuePar += (String)itTemp.next();
+				if (itTemp.hasNext()) ValuePar += ";";
+			}
+			
+			urlMasterPar += UrlPar+"="+ValuePar;
+			if (itMaster.hasNext()) urlMasterPar += "&";
+		}
+	%>
+	
 	<script type="text/javascript">
 	var win_sendTo_<%= uuid %>;
 	Ext.get('sendTo_button<%= uuid %>').on('click', function(){
@@ -365,7 +386,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: '<%= getUrl(request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=SHOW_SEND_TO_FORM&objlabel=" + obj.getLabel(), documentParametersMap) %>',
+	      					src: "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=SHOW_SEND_TO_FORM&objlabel=" + obj.getLabel()+"&"+ urlMasterPar%>",
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',

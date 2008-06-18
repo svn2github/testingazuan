@@ -142,6 +142,8 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 		} else if (parName.equals("replyto")) {
 			from = (String) request.getAttribute("replyto");
 		    logger.debug("got email to reply to, from Request");    
+		} else if (parName.equals("NEW_SESSION")) {
+			continue;
 		} else {
 		    String value = (String) request.getAttribute(parName);
 		    queryStr += parName + "=" + value + "&";

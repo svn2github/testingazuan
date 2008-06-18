@@ -137,7 +137,7 @@ CREATE TABLE SBI_OBJ_PAR (
        OBJ_PAR_ID           INTEGER NOT NULL AUTO_INCREMENT,
        PAR_ID               INTEGER NOT NULL,
        BIOBJ_ID             INTEGER NOT NULL,
-       LABEL                VARCHAR(20) NOT NULL,
+       LABEL                VARCHAR(40) NOT NULL,
        REQ_FL               SMALLINT NULL,
        MOD_FL               SMALLINT NULL,
        VIEW_FL              SMALLINT NULL,

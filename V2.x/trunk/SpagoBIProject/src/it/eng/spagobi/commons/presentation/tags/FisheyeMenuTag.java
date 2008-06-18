@@ -193,7 +193,7 @@ public class FisheyeMenuTag extends TagSupport {
 				ismodal = true;
 			}
 		}
-		createMenuItem(htmlStream, jsStream, appCode, iconUrl, appTitle, link, width, height, isresizable, ismodal);
+		createMenuItem(htmlStream, jsStream, appCode, iconUrl, appTitle, link, width, height, isresizable, ismodal, uuid);
 	}
 	
 	/*
@@ -210,7 +210,7 @@ public class FisheyeMenuTag extends TagSupport {
 	
 	private void createMenuItem(StringBuffer htmlStream, StringBuffer jsStream, String code, 
 			                    String iconUrl, String title, String link, String width, 
-			                    String height, boolean isresizable, boolean ismodal) {
+			                    String height, boolean isresizable, boolean ismodal, UUID uuid) {
 		
 		title = title.trim();
 		if(title.startsWith("#")){
@@ -316,6 +316,18 @@ public class FisheyeMenuTag extends TagSupport {
 		jsStream.append(" 					win.destroy();\n");
 		jsStream.append(" 					win"+code+"=null;\n");
 		jsStream.append("				}\n");
+		// ajax call to destroy light navigator
+		String destroyLightNavigatorUrl = httpRequest.getContextPath() + "/servlet/AdapterHTTP?ACTION_NAME=EMPTY_ACTION&" 
+				+ LightNavigationManager.LIGHT_NAVIGATOR_DESTROY + "=TRUE&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
+		jsStream.append("				new Ajax.Request('" + destroyLightNavigatorUrl + "',\n");
+		jsStream.append("					{\n");
+		jsStream.append("						method: 'get',\n");
+		jsStream.append("						parameters: '',\n");
+		jsStream.append("						onSuccess: function(){},\n");
+		jsStream.append("						onFailure: function(){},\n");
+		jsStream.append("						asynchronous: true\n");
+		jsStream.append("					}\n");
+		jsStream.append("				);\n");
 		jsStream.append("			}\n");  
 		jsStream.append("		}\n");
 		jsStream.append("		Windows.addObserver(observerResize"+code+");\n");  

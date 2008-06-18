@@ -192,13 +192,14 @@
 				<FIELD name="objParLabel" label="#SBIDev.docConf.docDetParam.labelField">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
 				  	<VALIDATOR validatorName="ALFANUMERIC"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="par_Id" label="#SBIDev.docConf.docDetParam.paramField">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 				<FIELD name="parurl_nm" label="#SBIDev.docConf.docDetParam.parurl_nmField">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
 				</FIELD>	
 			</FIELDS>

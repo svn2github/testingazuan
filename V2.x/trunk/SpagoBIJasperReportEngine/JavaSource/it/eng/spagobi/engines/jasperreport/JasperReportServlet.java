@@ -48,9 +48,9 @@ import com.jamonapi.MonitorFactory;
  */
 public class JasperReportServlet extends HttpServlet {
 
-    static Map extensions;
+    static Map<String, String> extensions;
     static {
-	extensions = new HashMap();
+	extensions = new HashMap<String, String>();
 	extensions.put("jrxml", "text/jrxml");
 	extensions.put("html", "text/html");
 	extensions.put("xml", "text/xml");

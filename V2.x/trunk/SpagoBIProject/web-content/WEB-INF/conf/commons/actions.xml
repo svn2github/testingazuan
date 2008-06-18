@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
+
+  <ACTION class="it.eng.spago.dispatching.action.EmptyAction" name="EMPTY_ACTION" scope="REQUEST">
+    <CONFIG/>
+  </ACTION>
+
   <ACTION class="it.eng.spagobi.commons.services.SessionExpiredAction" name="SESSION_EXPIRED_ACTION" scope="REQUEST">
     <CONFIG/>
   </ACTION>

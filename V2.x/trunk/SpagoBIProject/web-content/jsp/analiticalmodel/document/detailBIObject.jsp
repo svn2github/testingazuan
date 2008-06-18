@@ -1307,7 +1307,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" name="objParLabel" 
-			   id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="20" />
+			   id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="40" />
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>

@@ -46,7 +46,7 @@
             <column name="mult_fl" />
         </property>
         <property name="label" type="string">
-            <column name="label" length="20" not-null="true"/>
+            <column name="label" length="40" not-null="true"/>
         </property>
         <property name="parurlNm" type="string">
             <column name="parurl_nm" length="20" />

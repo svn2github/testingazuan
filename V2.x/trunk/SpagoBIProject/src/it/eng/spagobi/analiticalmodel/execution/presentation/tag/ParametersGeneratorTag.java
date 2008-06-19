@@ -41,6 +41,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
+import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
@@ -618,10 +619,22 @@ public class ParametersGeneratorTag extends TagSupport {
 	
 	htmlStream.append("			<span class='portlet-form-field-label'>\n");
 	htmlStream.append(biparam.getLabel());
+	//Puts an * if the parameter is mandatory
+	List checks = biparam.getParameter().getChecks();
+	if (!checks.isEmpty()){
+		Iterator it = checks.iterator();	
+		Check check = null;
+		while (it.hasNext()){
+		check = (Check)it.next();
+		if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")){
+			htmlStream.append(" * " );
+		}
+		} 
+	  }
 	htmlStream.append("			</span>\n");
 	htmlStream.append("		</div>\n");
 	htmlStream.append("		<div class='div_detail_form'>\n");
-
+	
     }
 
     /**

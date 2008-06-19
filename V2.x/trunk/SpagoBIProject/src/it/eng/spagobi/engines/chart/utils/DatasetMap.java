@@ -101,7 +101,8 @@ public class DatasetMap {
 			}
 		}
 		else{
-			if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
+			//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
+			if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
 				selectedSeries.add("allseries");
 		}
 

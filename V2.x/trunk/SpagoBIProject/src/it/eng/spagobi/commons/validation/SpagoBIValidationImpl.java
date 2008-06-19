@@ -84,6 +84,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	private static final String FISCAL_CODE_REGEXP="^([A-Z]{6}[A-Z\\d]{2}[A-Z][A-Z\\d]{2}[A-Z][A-Z\\d]{3}[A-Z])*$";
 	//private static final String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s])*$";
 	private static final String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s\\-\\_])*$";
+	private static final String ALPHANUMERIC_STRING_REGEXP_NOSPACE="^([a-zA-Z0-9\\-\\_])*$";
 	
 	/**
 	 * Thise methodis called everyTime a service with label <code>serviceName</code>

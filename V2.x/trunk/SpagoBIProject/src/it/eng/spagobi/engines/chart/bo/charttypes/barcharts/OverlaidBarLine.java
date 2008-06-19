@@ -100,7 +100,7 @@ public class OverlaidBarLine extends BarCharts {
 
 				}
 				else {
-					if(name.startsWith("add_")){
+					if(name.startsWith("add_") || name.startsWith("ADD_")){
 						if(additionalLabels){
 							String ind=name.substring(4);							
 							additionalValues.put(ind, value);

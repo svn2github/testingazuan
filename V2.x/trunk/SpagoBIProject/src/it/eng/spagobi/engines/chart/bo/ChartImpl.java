@@ -83,8 +83,23 @@ public class ChartImpl implements IChart {
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		// common part for all charts
-		if(content.getAttribute("name")!=null) 
-			setName((String)content.getAttribute("name"));
+		//setting the title with parameter values if is necessary
+		if(content.getAttribute("name")!=null) {
+			String titleChart = (String)content.getAttribute("name");
+			String tmpTitle = titleChart;
+			while (!tmpTitle.equals("")){
+				if (tmpTitle.indexOf("$P{") >= 0){
+					String parName = tmpTitle.substring(tmpTitle.indexOf("$P{")+3, tmpTitle.indexOf("}"));
+					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+					int pos = tmpTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
+					tmpTitle = tmpTitle.substring(pos);
+				}
+				else
+					tmpTitle = "";
+			}
+			setName(titleChart);
+		}
 		else setName("");
 
 		if(content.getAttribute("title_dimension")!=null) 

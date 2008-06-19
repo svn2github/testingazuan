@@ -28,11 +28,14 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +47,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
@@ -53,7 +57,7 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
+import org.jfree.ui.TextAnchor;
 
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it
@@ -70,7 +74,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	String serieUrlname="";
 	String serieHidden="";
 	boolean cumulative=false;
-
+	HashMap colorMap=null;  // keeps user selected colors
+	boolean additionalLabels=false;
+	boolean percantageValue=false;
+	HashMap catSerLabels=null;
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
 
@@ -108,6 +115,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			List atts=category.getContainedAttributes();
 
 			HashMap series=new HashMap();
+			HashMap additionalValues=new HashMap();
 			String catValue="";
 
 			String name="";
@@ -128,7 +136,17 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					
 				}
 				else {
-					series.put(name, value);
+					if(name.startsWith("add_") || name.startsWith("ADD_")){
+						if(additionalLabels){
+							String ind=name.substring(4);							
+							additionalValues.put(ind, value);
+						}
+					}
+					else{
+						series.put(name, value);
+					}
+
+					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
 		
@@ -151,12 +169,21 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				if(!nameS.equalsIgnoreCase(serieHidden)){
-				String valueS=(String)series.get(nameS);
-				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-				cumulativeValue+=Double.valueOf(valueS).doubleValue();
-				if(!seriesNames.contains(nameS)){
-					seriesNames.add(nameS);
-				}
+					String valueS=(String)series.get(nameS);
+					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+					cumulativeValue+=Double.valueOf(valueS).doubleValue();
+					if(!seriesNames.contains(nameS)){
+						seriesNames.add(nameS);
+					}
+					// if there is an additional label are 
+					if(additionalValues.get(nameS)!=null){
+						String val=(String)additionalValues.get(nameS);
+						String index=catValue+"-"+nameS;						
+						String totalVal = valueS;
+						if (percantageValue) totalVal += "%";
+						totalVal += " / " + val;
+						catSerLabels.put(index, totalVal);
+					}
 				}
 			}
 
@@ -189,6 +216,31 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}
 		}
 
+		if(confParameters.get("add_labels")!=null){	
+			String additional=(String)confParameters.get("add_labels");
+			if(additional.equalsIgnoreCase("true")){
+				additionalLabels=true;
+				catSerLabels=new HashMap();
+			}
+			else additionalLabels=false;
+		}
+		else
+		{
+			additionalLabels=false;
+		}
+		
+		if(confParameters.get("percentage_value")!=null){	
+			String perc=(String)confParameters.get("percentage_value");
+			if(perc.equalsIgnoreCase("true")){
+				percantageValue=true;
+			}
+			else percantageValue=false;
+		}
+		else
+		{
+			percantageValue=false;
+		}
+		
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
 		if(drillSB!=null){
 			String lab=(String)drillSB.getAttribute("document");
@@ -216,6 +268,24 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					}
 				}
 			}
+		}
+		//reading series colors if present
+		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		if(colors!=null){
+			colorMap=new HashMap();
+			List atts=colors.getContainedAttributes();
+			String colorSerie="";
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+				
+				String serieName=new String(object.getKey());
+				colorSerie=new String((String)object.getValue());
+				Color col=new Color(Integer.decode(colorSerie).intValue());
+				if(col!=null){
+					colorMap.put(serieName,col); 
+				}
+			}		
+
 		}
 		logger.debug("OUT");	
 	}
@@ -264,8 +334,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
-		renderer.setBaseItemLabelGenerator(
-				new StandardCategoryItemLabelGenerator());
+		if (percantageValue)
+			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
+		else
+			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
 		boolean document_composition=false;
@@ -329,8 +401,27 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		}
 		
 		
+		MyStandardCategoryItemLabelGenerator generator=null;
+		if(additionalLabels){
+			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
+		
+			renderer.setBaseItemLabelGenerator(generator);
+			renderer.setBaseItemLabelFont(new Font("SansSerif", Font.LAYOUT_LEFT_TO_RIGHT, 12));
+			renderer.setBaseItemLabelsVisible(true);
+			/*
+			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+	                -Math.PI / 2.0));
+			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+	                -Math.PI / 2.0));
+	        */
+			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
+			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
 
-
+		}
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(

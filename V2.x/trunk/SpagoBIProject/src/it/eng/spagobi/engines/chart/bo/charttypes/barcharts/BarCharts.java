@@ -209,7 +209,8 @@ public class BarCharts extends ChartImpl {
 		}
 		else
 		{
-			categoryLabel="category";
+			//categoryLabel="category";
+			categoryLabel="";
 		}
 
 		if(confParameters.get("value_label")!=null){	
@@ -217,7 +218,8 @@ public class BarCharts extends ChartImpl {
 		}
 		else
 		{
-			valueLabel="values";
+			//valueLabel="values";
+			valueLabel="";
 		}
 		
 		if(confParameters.get("n_visualization")!=null){		

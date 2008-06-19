@@ -366,7 +366,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
 		<option value="allseries" selected="selected">View all</option>
 	<%} else {%>	
-		<option value="allseries">View all <%=datasetMap.getSerTitle()%></option>
+	<!-- 	<option value="allseries">View all <%=datasetMap.getSerTitle()%></option> -->
+		<option value="allseries">View all</option>
 	<%} %>
 		
 	<%     	

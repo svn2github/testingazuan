@@ -345,7 +345,7 @@
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailModalitiesValuePage"/>
 	          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
 	          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID"/>
-	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
+	          <!--  <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/> -->
         </SELECT_CAPTION>
         <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="SBIDev.predLovList.deleteCaption" userRoleType="">
         <CONDITIONS>

@@ -66,6 +66,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	Map saveUrlPars = new HashMap();
   	saveUrlPars.put("PAGE", "DetailModalitiesValuePage");
   	saveUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
+  	// saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "2");
   	saveUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
   	saveUrlPars.put("RETURN_FROM_TEST_MSG","SAVE");
     String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
@@ -74,6 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     backUrlPars.put("PAGE", "DetailModalitiesValuePage");
     backUrlPars.put(SpagoBIConstants.MESSAGEDET, messagedet);
     backUrlPars.put("modality", modality);
+    //backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     backUrlPars.put("RETURN_FROM_TEST_MSG", "DO_NOT_SAVE");
     if(!lovProviderModified.trim().equals(""))

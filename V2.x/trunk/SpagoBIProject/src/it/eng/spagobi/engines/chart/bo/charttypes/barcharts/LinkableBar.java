@@ -91,7 +91,13 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 						if(value.equalsIgnoreCase("serie"))serieUrlname=name;
 						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
 					}
-					else{												// Case absolute
+					else{			
+						// Case absolute
+						
+						if(this.getParametersObject().get(name)!=null){
+							value=(String)getParametersObject().get(name);
+						}
+						
 						drillParameter.put(name, value);
 					}
 				}

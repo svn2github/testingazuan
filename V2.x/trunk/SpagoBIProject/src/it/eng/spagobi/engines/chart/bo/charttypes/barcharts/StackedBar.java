@@ -76,8 +76,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	boolean cumulative=false;
 	HashMap colorMap=null;  // keeps user selected colors
 	boolean additionalLabels=false;
-	boolean percantageValue=false;
+	boolean percentageValue=false;
 	HashMap catSerLabels=null;
+
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
 
@@ -155,7 +156,6 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				dataset.addValue(cumulativeValue, "Cumulative", catValue);
 			}
 			
-			
 			// if there is an hidden serie put that one first!!! if it is not cumulative
 			if(serieHidden!=null && !this.cumulative && !serieHidden.equalsIgnoreCase("")){
 				String valueS=(String)series.get(serieHidden);
@@ -180,8 +180,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						String val=(String)additionalValues.get(nameS);
 						String index=catValue+"-"+nameS;						
 						String totalVal = valueS;
-						if (percantageValue) totalVal += "%";
-						totalVal += " / " + val;
+						if (percentageValue) totalVal += "%";
+						//totalVal += " / " + val;
+						totalVal += "\n" + val;
 						catSerLabels.put(index, totalVal);
 					}
 				}
@@ -232,13 +233,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		if(confParameters.get("percentage_value")!=null){	
 			String perc=(String)confParameters.get("percentage_value");
 			if(perc.equalsIgnoreCase("true")){
-				percantageValue=true;
+				percentageValue=true;
 			}
-			else percantageValue=false;
+			else percentageValue=false;
 		}
 		else
 		{
-			percantageValue=false;
+			percentageValue=false;
 		}
 		
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -334,7 +335,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
-		if (percantageValue)
+		if (percentageValue)
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
 		else
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
@@ -408,18 +409,21 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			renderer.setBaseItemLabelGenerator(generator);
 			renderer.setBaseItemLabelFont(new Font("SansSerif", Font.LAYOUT_LEFT_TO_RIGHT, 12));
 			renderer.setBaseItemLabelsVisible(true);
+			//vertical labels 			
+			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+	                -Math.PI / 2.0));
+			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+	                -Math.PI / 2.0));
+	       
+			//horizontal labels
 			/*
 			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
 			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));
+	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
 	        */
-			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
 
 		}
 

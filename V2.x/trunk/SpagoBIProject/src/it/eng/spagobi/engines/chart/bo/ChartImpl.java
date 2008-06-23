@@ -35,7 +35,6 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
-import it.eng.spagobi.engines.chart.bo.charttypes.others.CumulativeCurveChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -73,6 +72,8 @@ public class ChartImpl implements IChart {
 	protected boolean legend=true;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected Map parametersObject;
+	protected boolean filter=true;
+	protected boolean slider=true;
 
 
 	/**
@@ -166,8 +167,21 @@ public class ChartImpl implements IChart {
 				if(leg.equalsIgnoreCase("false"))
 					legend=false;
 			}
-
-
+			
+			filter=true;
+			if(dataParameters.get("view_filter")!=null && !(((String)dataParameters.get("view_filter")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("view_filter");
+				if(fil.equalsIgnoreCase("false"))
+					filter=false;
+			}
+			
+			slider=true;
+			if(dataParameters.get("view_slider")!=null && !(((String)dataParameters.get("view_slider")).equalsIgnoreCase("") )){	
+				String sli=(String)dataParameters.get("view_slider");
+				if(sli.equalsIgnoreCase("false"))
+					slider=false;
+			}
+			
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
@@ -535,6 +549,22 @@ public class ChartImpl implements IChart {
 
 	public void setTitleDimension(int titleDimension) {
 		this.titleDimension = titleDimension;
+	}
+
+	public boolean isFilter() {
+		return filter;
+	}
+
+	public void setFilter(boolean filter) {
+		this.filter = filter;
+	}
+
+	public boolean isSlider() {
+		return slider;
+	}
+
+	public void setSlider(boolean slider) {
+		this.slider = slider;
 	}
 
 

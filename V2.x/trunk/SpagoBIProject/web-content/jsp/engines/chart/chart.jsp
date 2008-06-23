@@ -296,9 +296,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	<%
-	 boolean limitSeries=false;
-	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
-	limitSeries=true;
+    boolean limitSeries=false;
+	if(sbi.isFilter() && (sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART"))){
+		limitSeries=true;
+	}
+	
+	boolean showSlider = false;
+	if(sbi.isSlider() && datasetMap.isMakeSlider()){
+		showSlider=true;
 	}
 	%>
 	
@@ -317,7 +322,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <br>
 		<table align="left">
 
-			<%if (datasetMap.isMakeSlider() || limitSeries){ %>
+			<%if (showSlider || limitSeries){ %>
 				<tr>
 			
 				<%} %>
@@ -350,47 +355,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>
 	<div>	
-	<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
-<% 	
-	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-	{
-	String name = (String) iterator.next();
-	String value=(refreshUrlPars.get(name)).toString();
-%>		
-	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
-
-	<%
-	}%>
-	<select name="serie" multiple="multiple" SIZE="3" >
-	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
-		<option value="allseries" selected="selected">View all</option>
-	<%} else {%>	
-	<!-- 	<option value="allseries">View all <%=datasetMap.getSerTitle()%></option> -->
-		<option value="allseries">View all</option>
-	<%} %>
-		
-	<%     	
-	    // for each possible serie 
-	    if(datasetMap.getSeries()!=null){	
-	    for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
-	    		String ser = (String) iterator.next(); 
-	    		if(datasetMap.getSelectedSeries().contains(ser)){
-	    		%>
-				<option value="<%=ser%>" selected="selected"><%=ser%></option>
-					<%}else{ %>
-				<option value="<%=ser%>"><%=ser%></option>
-	<%} 
-	}
-	    }%>
-	</select>
-	<input type="submit" value="Select"/>
-	</form>
+	
+		<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
+	<% 	
+		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+		{
+		String name = (String) iterator.next();
+		String value=(refreshUrlPars.get(name)).toString();
+	%>		
+		<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+	
+		<%
+		}%>
+		<select name="serie" multiple="multiple" SIZE="3" >
+		<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
+			<option value="allseries" selected="selected">View all</option>
+		<%} else {%>	
+		<!-- 	<option value="allseries">View all <%=datasetMap.getSerTitle()%></option> -->
+			<option value="allseries">View all</option>
+		<%} %>
+			
+		<%     	
+		    // for each possible serie 
+		    if(datasetMap.getSeries()!=null){	
+		    for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
+		    		String ser = (String) iterator.next(); 
+		    		if(datasetMap.getSelectedSeries().contains(ser)){
+		    		%>
+					<option value="<%=ser%>" selected="selected"><%=ser%></option>
+						<%}else{ %>
+					<option value="<%=ser%>"><%=ser%></option>
+		<%} 
+		}
+		    }%>
+		</select>
+		<input type="submit" value="Select"/>
+		</form>
 </div>
 </div>
 </td>
 
-<%if(!datasetMap.isMakeSlider()){ // if requires serie limit but not slider close the row
+<%if(!showSlider){ // if requires serie limit but not slider close the row
 			%>   
 </tr>
 <%} %>
@@ -405,7 +411,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <% 
 	    // No slider needed
-	if(datasetMap.isMakeSlider()==false){
+	if(!showSlider){
 
 	    %>
 	    <tr>
@@ -462,7 +468,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<!-- 	</form>  -->
 		<!--  </table> -->
 <tr>
-<td> </td>
+<%if (showSlider && limitSeries) {%>
+	 <td> </td>
+<%} %>
 <td align="left">
  	<div>
  		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
@@ -531,7 +539,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<% 
 
- if(datasetMap.isMakeSlider()==true){ %>
+ if(showSlider){ %>
 
  <script type="text/javascript" language="JavaScript">
  

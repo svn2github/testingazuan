@@ -68,7 +68,8 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 
-		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DOCUMENT_COMPOSITE")) {
+		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DOCUMENT_COMPOSITE") &&
+			!obj.getBiObjectTypeCode().equalsIgnoreCase("COMPOSITE_DOCUMENT")) {
 			logger.error("The input object is not a composite document");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}

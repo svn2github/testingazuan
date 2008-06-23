@@ -341,6 +341,7 @@ public class DocumentCompositionUtils {
 		    	//if value isn't defined, gets the default value
 			    if(value == null || value.equals("")){
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
+				    if (value.equals("%")) value = "%25";
 		    	}
 			    
 			    if (forInternalEngine && value != null && !value.equals(""))

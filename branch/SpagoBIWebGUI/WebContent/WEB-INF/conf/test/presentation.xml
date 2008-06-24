@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<PRESENTATION>
-	<MAPPING business_type="ACTION" 
-			 business_name="TEST_ACTION" 
-			 publisher_name="TEST_ACTION_PUBLISHER"/>	
-</PRESENTATION>
-

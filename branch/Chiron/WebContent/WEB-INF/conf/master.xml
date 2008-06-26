@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASTER>
+	
+	<!-- start BASE module -->
+	<CONFIGURATOR path="/WEB-INF/conf/base/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/base/events.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/base/dispatchers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/base/initializers.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/base/tracing.xml" />
+  	<CONFIGURATOR path="/WEB-INF/conf/base/renderers.xml" />		
+  	
+  	<!-- start COMMONS module -->
+	<CONFIGURATOR path="/WEB-INF/conf/commons/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/publishers.xml" />
+		
+	<!-- start TEST module -->
+	<CONFIGURATOR path="/WEB-INF/conf/test/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/test/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/test/publishers.xml" />
+	
+	<!-- start XXX module -->
+	<!-- ... -->
+	
+	
+	
+</MASTER>

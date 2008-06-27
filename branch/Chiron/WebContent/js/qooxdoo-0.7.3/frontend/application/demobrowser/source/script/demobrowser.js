@@ -240,4 +240,6 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="./class/demobrowser/Tree.js"></script>\
 <script type="text/javascript" src="../../../../frontend/framework/source/class/qx/dev/Tokenizer.js"></script>\
 <script type="text/javascript" src="../../../../frontend/framework/source/class/qx/util/StringBuilder.js"></script>\
+<script type="text/javascript" src="../../../../frontend/framework/source/class/qx/locale/Locale.js"></script>\
+<script type="text/javascript" src="../../../../frontend/framework/source/class/qx/locale/data/C.js"></script>\
 ');

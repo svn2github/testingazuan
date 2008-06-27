@@ -72,7 +72,7 @@ public class OverlaidBarLine extends BarCharts {
 		datasetMap.getDatasets().put("bar", new DefaultCategoryDataset());
 		datasetMap.getDatasets().put("line", new DefaultCategoryDataset());
 
-boolean first=true;
+		boolean first=true;
 		//categories.put(new Integer(0), "All Categories");
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
@@ -84,7 +84,7 @@ boolean first=true;
 
 			String nameP="";
 			String value="";
-			
+
 			if(first){
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
@@ -127,25 +127,27 @@ boolean first=true;
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				String valueS=(String)series.get(nameS);
+				if(!hiddenSeries.contains(nameS)){
+
+					// if to draw as a line
+					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
+						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+					}
+					else{ // if to draw as a bar
+						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("bar"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+
+					}
+					// if there is an additional label are 
+					if(additionalValues.get(nameS)!=null){
+						String val=(String)additionalValues.get(nameS);
+						String index=catValue+"-"+nameS;
+						catSerLabels.put(index, val);
+					}
 
 
-				// if to draw as a line
-				if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
-					if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-					((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
 				}
-				else{ // if to draw as a bar
-					if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-					((DefaultCategoryDataset)(datasetMap.getDatasets().get("bar"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-
-				}
-				// if there is an additional label are 
-				if(additionalValues.get(nameS)!=null){
-					String val=(String)additionalValues.get(nameS);
-					String index=catValue+"-"+nameS;
-					catSerLabels.put(index, val);
-				}
-
 
 			}
 

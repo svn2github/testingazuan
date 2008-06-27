@@ -65,6 +65,7 @@ public class BarCharts extends ChartImpl {
 	Vector currentSeries=null;
 	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	Vector seriesNames=null;
+	Vector hiddenSeries=null;
 	
 	
 	
@@ -133,11 +134,14 @@ public class BarCharts extends ChartImpl {
 			}
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
+			
+				if(!hiddenSeries.contains(nameS)){
 				String valueS=(String)series.get(nameS);
 				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
 				if(!seriesNames.contains(nameS)){
 					seriesNames.add(nameS);
 				}
+			}
 			}
 
 		}
@@ -272,6 +276,25 @@ public class BarCharts extends ChartImpl {
 			}		
 
 		}
+		
+		
+		// check if there is some serie to be hidden
+		boolean moreHiddenSeries=true;
+		int i=1;
+		hiddenSeries=new Vector();
+		while(moreHiddenSeries){
+			String iS=new Integer(i).toString(); 
+			if(confParameters.get("hidden_serie"+iS)!=null){
+				String hiddenSerName=(String)confParameters.get("hidden_serie"+iS);
+				hiddenSeries.add(hiddenSerName);
+				i++;
+			}
+			else
+				moreHiddenSeries=false;
+		
+		}
+		
+		
 		
 		seriesNumber=new HashMap();
 		

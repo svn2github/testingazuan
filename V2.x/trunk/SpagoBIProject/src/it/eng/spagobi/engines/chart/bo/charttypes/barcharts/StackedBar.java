@@ -72,7 +72,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	HashMap drillParameter=null;
 	String categoryUrlName="";
 	String serieUrlname="";
-	String serieHidden="";
+
 	boolean cumulative=false;
 	HashMap colorMap=null;  // keeps user selected colors
 	boolean additionalLabels=false;
@@ -167,18 +167,18 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}
 			
 			// if there is an hidden serie put that one first!!! if it is not cumulative
-			if(serieHidden!=null && !this.cumulative && !serieHidden.equalsIgnoreCase("")){
+			/*if(serieHidden!=null && !this.cumulative && !serieHidden.equalsIgnoreCase("")){
 				String valueS=(String)series.get(serieHidden);
 				dataset.addValue(Double.valueOf(valueS).doubleValue(), serieHidden, catValue);
 				if(!seriesNames.contains(serieHidden)){
 					seriesNames.add(serieHidden);
 				}				
-			}
+			}*/
 			
 					
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
-				if(!nameS.equalsIgnoreCase(serieHidden)){
+			if(!hiddenSeries.contains(nameS)){
 					String valueS=(String)series.get(nameS);
 					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
 					cumulativeValue+=Double.valueOf(valueS).doubleValue();
@@ -195,9 +195,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						totalVal += "\n" + val;
 						catSerLabels.put(index, totalVal);
 					}
-				}
+				
 			}
 
+			}
 		}
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();
@@ -212,10 +213,6 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		logger.debug("IN");
 		super.configureChart(content);
 
-		if(confParameters.get("hidden_serie")!=null){	
-			serieHidden=(String)confParameters.get("hidden_serie");
-
-		}
 		
 		if(confParameters.get("cumulative")!=null){	
 			String orientation=(String)confParameters.get("cumulative");
@@ -388,16 +385,6 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				if(color!=null){
 					renderer.setSeriesPaint(i, color);
 				}	
-			}
-		}
-
-		if(serieHidden!=null && !serieHidden.equalsIgnoreCase("")){
-			int row=dataset.getRowIndex(serieHidden);
-			if(row!=-1){
-				if(color!=null)
-					renderer.setSeriesPaint(row, color);
-				else
-					renderer.setSeriesPaint(row, color.WHITE);
 			}
 		}
 		

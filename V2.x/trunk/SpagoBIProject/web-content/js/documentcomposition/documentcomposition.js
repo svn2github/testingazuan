@@ -117,6 +117,7 @@ function execCrossNavigation(windowName, label, parameters) {
 														tmpOldValue = paramsOldValues[k] ;
 														tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("%3D")+3);
 														if (tmpOldValue != "" && tmpNewValue != ""){
+														  if (tmpNewValue == "%") tmpNewValue = "%25";
 															finalUrl = finalUrl.replace(sbiLabelPar+"%3D"+tmpOldValue, sbiLabelPar+"%3D"+tmpNewValue);
 															newUrl[0] = finalUrl;
 															tmpOldValue = "";
@@ -167,7 +168,7 @@ function execCrossNavigation(windowName, label, parameters) {
 }
 
 function sendUrl(nameIframe, url){
-//	alert("SendURL - nameIframe: " + nameIframe +  " - url: "+ url);
+	//alert("SendURL - nameIframe: " + nameIframe +  " - url: "+ url);
 	document.getElementById(nameIframe).src = url;
 	return;	
 }

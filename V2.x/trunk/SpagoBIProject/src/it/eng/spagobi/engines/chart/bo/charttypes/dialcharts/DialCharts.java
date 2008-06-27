@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
@@ -152,6 +153,13 @@ public class DialCharts extends ChartImpl {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		if (res!=null){
+			
+			if (name.indexOf("$F{") >= 0){
+				List atts=new Vector();
+				atts.add(res);
+				setTitleParameter(atts);
+				}
+			
 			logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
 			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");

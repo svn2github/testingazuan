@@ -97,7 +97,7 @@ public class ClusterCharts extends ChartImpl {
 		double xTempMin=0.0;
 		double yTempMax=0.0;
 		double yTempMin=0.0;
-
+		boolean first=true;
 
 		// In list atts there are all the series, let's run each
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
@@ -107,7 +107,12 @@ public class ClusterCharts extends ChartImpl {
 			String catValue="";
 			String serValue="";
 
-
+			if(first){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				first=false;
+			}
 
 			double[] x=new double[atts.size()];
 			double[] y=new double[atts.size()];

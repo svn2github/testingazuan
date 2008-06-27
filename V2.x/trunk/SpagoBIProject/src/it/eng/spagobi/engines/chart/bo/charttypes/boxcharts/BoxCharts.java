@@ -90,6 +90,7 @@ public class BoxCharts extends ChartImpl {
 		categoriesNumber=0;
 
 		boolean first=true;
+		boolean first2=true;
 
 		double temp;
 
@@ -99,18 +100,25 @@ public class BoxCharts extends ChartImpl {
 
 			// atts are all the serie, run through them and sets what you need
 			List values=new ArrayList();
-			String name="";
+			String nameP="";
 			String value="";
 			String catValue="";
 
+			if(first2){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				first2=false;
+			}
+			
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
-				name=new String(object.getKey());
+				nameP=new String(object.getKey());
 				value=new String((String)object.getValue());
 
 
-				if(name.equalsIgnoreCase("x"))
+				if(nameP.equalsIgnoreCase("x"))
 				{
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;

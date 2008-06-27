@@ -167,21 +167,21 @@ public class ChartImpl implements IChart {
 				if(leg.equalsIgnoreCase("false"))
 					legend=false;
 			}
-			
+
 			filter=true;
 			if(dataParameters.get("view_filter")!=null && !(((String)dataParameters.get("view_filter")).equalsIgnoreCase("") )){	
 				String fil=(String)dataParameters.get("view_filter");
 				if(fil.equalsIgnoreCase("false"))
 					filter=false;
 			}
-			
+
 			slider=true;
 			if(dataParameters.get("view_slider")!=null && !(((String)dataParameters.get("view_slider")).equalsIgnoreCase("") )){	
 				String sli=(String)dataParameters.get("view_slider");
 				if(sli.equalsIgnoreCase("false"))
 					slider=false;
 			}
-			
+
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
@@ -251,7 +251,7 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase("stacked_bar")){
 				sbi=new StackedBar();
 			}		
-			
+
 		}
 
 		if(type.equals("BOXCHART")){
@@ -568,8 +568,32 @@ public class ChartImpl implements IChart {
 	}
 
 
+	public void setTitleParameter(List atts) {
+		try{
+			String tmpTitle=new String(name);
+			if (tmpTitle.indexOf("$F{") >= 0){
+				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
 
+				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
+					String nameP=new String(object.getKey());
+					String value=new String((String)object.getValue());
+					if(nameP.equalsIgnoreCase(parName))
+					{
+						int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
+						name = name.replace("$F{" + parName + "}", value);
+						tmpTitle = tmpTitle.substring(pos);
+					}
+				}
 
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error in parameters Title");
+		}
 
+	}
+	
+	
 }

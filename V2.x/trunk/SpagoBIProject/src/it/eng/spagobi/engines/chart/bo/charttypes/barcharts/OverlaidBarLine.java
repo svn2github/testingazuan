@@ -72,7 +72,7 @@ public class OverlaidBarLine extends BarCharts {
 		datasetMap.getDatasets().put("bar", new DefaultCategoryDataset());
 		datasetMap.getDatasets().put("line", new DefaultCategoryDataset());
 
-
+boolean first=true;
 		//categories.put(new Integer(0), "All Categories");
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
@@ -82,16 +82,24 @@ public class OverlaidBarLine extends BarCharts {
 			HashMap additionalValues=new HashMap();
 			String catValue="";
 
-			String name="";
+			String nameP="";
 			String value="";
+			
+			if(first){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				first=false;
+			}
+
 
 			//run all the attributes, to define series!
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
-				name=new String(object.getKey());
+				nameP=new String(object.getKey());
 				value=new String((String)object.getValue());
-				if(name.equalsIgnoreCase("x"))
+				if(nameP.equalsIgnoreCase("x"))
 				{
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;
@@ -100,14 +108,14 @@ public class OverlaidBarLine extends BarCharts {
 
 				}
 				else {
-					if(name.startsWith("add_") || name.startsWith("ADD_")){
+					if(nameP.startsWith("add_") || nameP.startsWith("ADD_")){
 						if(additionalLabels){
-							String ind=name.substring(4);							
+							String ind=nameP.substring(4);							
 							additionalValues.put(ind, value);
 						}
 					}
 					else{
-						series.put(name, value);
+						series.put(nameP, value);
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
@@ -172,7 +180,7 @@ public class OverlaidBarLine extends BarCharts {
 		SourceBean draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
 		seriesDraw=new HashMap();
 		if(draws!=null){
-		
+
 			List atts=draws.getContainedAttributes();
 
 			String serieName="";
@@ -184,7 +192,7 @@ public class OverlaidBarLine extends BarCharts {
 
 				if(serieDraw.equalsIgnoreCase("line")){
 					seriesDraw.put(serieName, "line");
-				useLines=true;
+					useLines=true;
 				}
 				else{
 					seriesDraw.put(serieName, "bar");					
@@ -218,9 +226,9 @@ public class OverlaidBarLine extends BarCharts {
 
 		plot.setDomainAxis(new CategoryAxis(getCategoryLabel()));
 		plot.setRangeAxis(new NumberAxis(getValueLabel()));
-		
 
-		
+
+
 
 		plot.setOrientation(PlotOrientation.VERTICAL);
 		plot.setRangeGridlinesVisible(true);
@@ -228,82 +236,82 @@ public class OverlaidBarLine extends BarCharts {
 
 		DefaultCategoryDataset datasetBar=(DefaultCategoryDataset)datasets.getDatasets().get("bar");
 
-		
+
 		//I create one bar renderer and one line
 
 
-		
+
 		MyStandardCategoryItemLabelGenerator generator=null;
 		if(additionalLabels){
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());}
-	
+
 		if(useBars){
-		CategoryItemRenderer barRenderer = new BarRenderer();
+			CategoryItemRenderer barRenderer = new BarRenderer();
 
-		
-		if(additionalLabels){
-			barRenderer.setBaseItemLabelGenerator(generator);
-			barRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
-			barRenderer.setBaseItemLabelsVisible(true);
-	        barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));
-	        barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));	
 
-		}
-		
-	
-		
-		if(colorMap!=null){
-			for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
-				String serName = (String) iterator.next();
-				int index=datasetBar.getRowIndex(serName);
-				Color color=(Color)colorMap.get(serName);
-				if(color!=null){
-					barRenderer.setSeriesPaint(index, color);
-				}	
+			if(additionalLabels){
+				barRenderer.setBaseItemLabelGenerator(generator);
+				barRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
+				barRenderer.setBaseItemLabelsVisible(true);
+				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+						-Math.PI / 2.0));
+				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+						-Math.PI / 2.0));	
+
 			}
-		}
-		
 
 
 
-		plot.setDataset(1,datasetBar);
-		plot.setRenderer(1,barRenderer);
-
-		}
-		
-if(useLines){
-		
-		LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
-		//lineRenderer.setShapesFilled(false);
-		lineRenderer.setShapesFilled(true);
-		if(additionalLabels){lineRenderer.setBaseItemLabelGenerator(generator);
-		 lineRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
-		lineRenderer.setBaseItemLabelsVisible(true);
-		}
-
-		DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
-
-
-
-		if(colorMap!=null){
-			for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
-				String serName = (String) iterator.next();
-
-				int index=datasetLine.getRowIndex(serName);
-				Color color=(Color)colorMap.get(serName);
-				if(color!=null){
-					lineRenderer.setSeriesPaint(index, color);
-				}	
+			if(colorMap!=null){
+				for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
+					String serName = (String) iterator.next();
+					int index=datasetBar.getRowIndex(serName);
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						barRenderer.setSeriesPaint(index, color);
+					}	
+				}
 			}
+
+
+
+
+			plot.setDataset(1,datasetBar);
+			plot.setRenderer(1,barRenderer);
+
 		}
-		plot.setDataset(0,datasetLine);
-		plot.setRenderer(0,lineRenderer);
-}
-		
+
+		if(useLines){
+
+			LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
+			//lineRenderer.setShapesFilled(false);
+			lineRenderer.setShapesFilled(true);
+			if(additionalLabels){lineRenderer.setBaseItemLabelGenerator(generator);
+			lineRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
+			lineRenderer.setBaseItemLabelsVisible(true);
+			}
+
+			DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
+
+
+
+			if(colorMap!=null){
+				for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
+					String serName = (String) iterator.next();
+
+					int index=datasetLine.getRowIndex(serName);
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						lineRenderer.setSeriesPaint(index, color);
+					}	
+				}
+			}
+			plot.setDataset(0,datasetLine);
+			plot.setRenderer(0,lineRenderer);
+		}
+
 
 		if(secondAxis){
 			plot.setRangeAxis(1,new NumberAxis(secondAxisLabel));
@@ -320,7 +328,7 @@ if(useLines){
 		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
 		TextTitle title = new TextTitle(name, font);
 		chart.setTitle(title);
-		
+
 		return chart;
 
 

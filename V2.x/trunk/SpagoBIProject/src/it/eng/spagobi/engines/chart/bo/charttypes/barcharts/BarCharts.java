@@ -92,10 +92,21 @@ public class BarCharts extends ChartImpl {
 		categoriesNumber=0;
 		seriesNames=new Vector();
 		//categories.put(new Integer(0), "All Categories");
+		
+		boolean first=true;
+		
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
 
+			if(first){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				first=false;
+			}
+				
+			
 			HashMap series=new HashMap();
 			String catValue="";
 

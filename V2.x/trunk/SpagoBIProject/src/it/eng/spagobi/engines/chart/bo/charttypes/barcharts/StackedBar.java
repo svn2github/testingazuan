@@ -111,6 +111,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		categoriesNumber=0;
 		seriesNames=new Vector();
 		//categories.put(new Integer(0), "All Categories");
+		boolean first=true;
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -122,6 +123,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			String name="";
 			String value="";
 
+			
+			if(first){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				first=false;
+			}
+
+			
 			//run all the attributes, to define series!
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();

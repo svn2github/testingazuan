@@ -679,7 +679,8 @@ public class DocumentCompositionConfiguration {
 								if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
 									//get document linked 
 									linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
-									lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
+									//lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
+									
 								}
 								else if (labelDocLinked.trim().startsWith("refresh_par_linked")){
 									String tmpLabelLinked = labelDocLinked.substring(labelDocLinked.indexOf("=")+1);
@@ -689,6 +690,7 @@ public class DocumentCompositionConfiguration {
 										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
 										String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
 										if (sbiLabelPar != null && !sbiLabelPar.equals("") &&labelPar.equalsIgnoreCase(tmpLabelLinked)){
+											lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
 											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getLabel()+"__"+sbiLabelPar +"|"+labelPar);
 											numParAdd ++;
 											break;

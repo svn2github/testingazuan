@@ -101,8 +101,9 @@ for (int i=0; i<lstUrl.size(); i++){
 				 				field = field.substring(field.indexOf("__")+2);
 				 				String label = "";
 				 				for(int x=0; x<lstDocLinked.size(); x++){
-				 					label = (String)lstDocLinked.get("DOC_LABEL_LINKED__"+(i)+"__"+x);
-				 					if (label.substring(label.indexOf("|")+1).equalsIgnoreCase(labelDocLinked)) break;
+				 					//label = (String)lstDocLinked.get("DOC_LABEL_LINKED__"+(i)+"__"+x);
+				 					label = (String)lstDocLinked.get("DOC_LABEL_LINKED__"+(i)+"__"+(j)+"__"+k);
+				 					if (label != null && label.substring(label.indexOf("|")+1).equalsIgnoreCase(labelDocLinked)) break;
 				 				}
 				 				if (field != null && !field.equals("") ){	
 					%>

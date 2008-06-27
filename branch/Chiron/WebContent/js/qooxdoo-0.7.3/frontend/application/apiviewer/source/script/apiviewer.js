@@ -231,4 +231,6 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="./class/apiviewer/Controller.js"></script>\
 <script type="text/javascript" src="./class/apiviewer/ClassLoader.js"></script>\
 <script type="text/javascript" src="../../../../frontend/framework/source/class/qx/client/History.js"></script>\
+<script type="text/javascript" src="../../../../frontend/framework/source/class/qx/locale/Locale.js"></script>\
+<script type="text/javascript" src="../../../../frontend/framework/source/class/qx/locale/data/C.js"></script>\
 ');

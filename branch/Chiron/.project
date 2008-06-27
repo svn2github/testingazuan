@@ -3,6 +3,7 @@
 	<name>Chiron</name>
 	<comment></comment>
 	<projects>
+		<project>SpagoBIUtils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

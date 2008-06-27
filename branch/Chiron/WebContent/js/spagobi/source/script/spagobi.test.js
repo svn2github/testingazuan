@@ -1,6 +1,6 @@
 document.write('<script type="text/javascript">if(!window.qxsettings)qxsettings={};\
 if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]="../js/spagobi/build/resource/qx";\
-if(qxsettings["spagobi.test.resourceUri"]==undefined)qxsettings["spagobi.test.resourceUri"]="./resource";\
+if(qxsettings["spagobi.test.resourceUri"]==undefined)qxsettings["spagobi.test.resourceUri"]="../js/spagobi/source/resource";\
 if(qxsettings["qx.theme"]==undefined)qxsettings["qx.theme"]="qx.theme.ClassicRoyale";\
 if(qxsettings["qx.minLogLevel"]==undefined)qxsettings["qx.minLogLevel"]=200;\
 if(qxsettings["qx.logAppender"]==undefined)qxsettings["qx.logAppender"]="qx.log.appender.Native";\

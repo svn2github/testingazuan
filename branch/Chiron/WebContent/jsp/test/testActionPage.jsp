@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    	<title>Custom Application</title>
+    	<title>CHIRON DEMO - v0.0</title>
     	<script type="text/javascript" src='../js/spagobi/source/script/spagobi.test.js'></script>
 	</head>
 	

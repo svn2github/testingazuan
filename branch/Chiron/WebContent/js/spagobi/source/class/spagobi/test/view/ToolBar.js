@@ -49,26 +49,26 @@ qx.Class.define("spagobi.test.view.ToolBar",
     removeFeedCmd.addEventListener("execute", this._controller.showRemoveFeed, this._controller);
 
     // Add buttons
-    var addBtn = new qx.ui.toolbar.Button(this.tr("Add feed"), "icon/16/actions/dialog-ok.png");
+    var addBtn = new qx.ui.toolbar.Button(this.tr("Resources"), "icon/16/actions/dialog-ok.png");
     addBtn.setCommand(addFeedCmd);
     this.add(addBtn);
 
-    var removeBtn = new qx.ui.toolbar.Button(this.tr("Remove feed"), "icon/16/actions/dialog-cancel.png");
+    var removeBtn = new qx.ui.toolbar.Button(this.tr("Catalogues"), "icon/16/actions/dialog-ok.png");
     removeBtn.setCommand(removeFeedCmd);
     this.add(removeBtn);
 
     this.add(new qx.ui.toolbar.Separator());
 
-    var reloadBtn = new qx.ui.toolbar.Button(this.tr("Reload"), "icon/16/actions/view-refresh.png");
+    var reloadBtn = new qx.ui.toolbar.Button(this.tr("Behavioural Model"), "icon/16/actions/dialog-ok.png");
     reloadBtn.setCommand(reloadCmd);
     reloadBtn.setToolTip(new qx.ui.popup.ToolTip(this.tr("(%1) Reload the feeds.", reloadCmd.toString())));
     this.add(reloadBtn);
 
     this.add(new qx.ui.toolbar.Separator());
 
-    var prefBtn = new qx.ui.toolbar.Button(this.tr("Preferences"), "icon/16/apps/preferences.png");
+    var prefBtn = new qx.ui.toolbar.Button(this.tr("Analytical Model"), "icon/16/actions/dialog-ok.png");
     prefBtn.setCommand(prefCmd);
-    prefBtn.setToolTip(new qx.ui.popup.ToolTip(this.tr("Open preferences window.")));
+    prefBtn.setToolTip(new qx.ui.popup.ToolTip(this.tr("Analytical Model")));
     this.add(prefBtn);
 
     this.add(new qx.ui.basic.HorizontalSpacer());

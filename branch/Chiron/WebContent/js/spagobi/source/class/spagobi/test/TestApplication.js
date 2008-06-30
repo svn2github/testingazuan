@@ -45,23 +45,32 @@ qx.Class.define("spagobi.test.TestApplication",
 
   members :
   {
+  	pages: [],
+  	selectPageName: undefined,
+  	
+  	mainPane: {},
+  	
+  	
     main : function()
     {
-		this.base(arguments);  
-		
-		this._dataObjects = [];    
+		this.base(arguments);
       	
       	 // Define alias for custom resource path
       	 qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resource"));
-      	
-      	
-      	
+      	 
+      	 // Include CSS file
+         qx.html.StyleSheet.includeFile(qx.io.Alias.getInstance().resolve("spagobi/css/reader.css"));
+      	 
+      	      	
       	// Create Application Layout
       	this._createLayout();
-      
-      	this._loadDataObject();
-      	this._tableView.getTableModel().setDataAsMapArray(this._dataObjects, true);
-        this._tableView.getSelectionModel().setSelectionInterval(0, 0);
+      	
+      	this._selectPage('engine');
+      	
+      	// React on theme selection changes
+      	//qx.theme.manager.Meta.getInstance().addEventListener("changeTheme", this._applyCssTheme, this);
+      	//this._applyCssTheme();
+      	
     },
      
     _createLayout: function() {
@@ -78,145 +87,51 @@ qx.Class.define("spagobi.test.TestApplication",
       	dockLayout.addTop(this._toolBarView);
       	
       	// Create horizontal split pane
-      	var horSplitPane = new qx.ui.splitpane.HorizontalSplitPane(100, "1*");
-      	dockLayout.add(horSplitPane);
+      	this.mainPane = new qx.ui.splitpane.HorizontalSplitPane(70, "1*");
+      	dockLayout.add(this.mainPane);
 
-		
-      	// Create vertical split pane
-      	var vertSplitPane = new qx.ui.splitpane.VerticalSplitPane("1*", "2*");
-      	vertSplitPane.setEdge(0);
-      	vertSplitPane.setBorder("line-left");
-      	horSplitPane.addRight(vertSplitPane);
-		
-		
-      	// Create table view
-      	this._tableView = new spagobi.test.view.Table(this);
-      	vertSplitPane.addTop(this._tableView);
-      	
-      	// Create detail page
-      	this._buttonView = new qx.ui.pageview.buttonview.ButtonView();
-        this._buttonView.setEdge(0);     
-                
-        var saveButton = new qx.ui.pageview.buttonview.Button("Save", "spagobi/img/spagobi/test/save.png");
-        var deleteButton = new qx.ui.pageview.buttonview.Button("Delete", "spagobi/img/spagobi/test/delete.png");
-        var createButton = new qx.ui.pageview.buttonview.Button("New", "spagobi/img/spagobi/test/create.png");
-                 
-        this._buttonView.getBar().add(createButton, saveButton, deleteButton);   
-      	this._form = new spagobi.ui.custom.EngineDetailsForm();       	      	
-      	this._pageTabButton = new qx.ui.pageview.buttonview.Button("", "");
-        this._pageTabButton.setDisplay(false);        
-        this._pageTabButton.setChecked(true);  		
-  		this._page = new qx.ui.pageview.buttonview.Page( this._pageTabButton );
-        this._page.add( this._form );  		 
-  		this._buttonView.getPane().add( this._page );
-  		vertSplitPane.addBottom(this._buttonView);
+      	//var mainPage = new spagobi.test.view.MasterDetailsPage('datasource');      	
+      	//mainPane.addRight( mainPage );      
   		
   		// create navigation page
   		var verticalLayout = new qx.ui.layout.VerticalBoxLayout();
   		verticalLayout.setSpacing(5);
-  		var btn1 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/save.png");
-  		var btn2 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/delete.png");
-  		var btn3 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/create.png");
+  		var btn1 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/engineAdministrationIcon.png");
+  		btn1.addEventListener("execute", function(){this._selectPage('engine');}, this);
+  		
+  		var btn2 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/datasourceAdministrationIcon.png");
+  		btn2.addEventListener("execute", function(){this._selectPage('datasource');}, this);
+  		
+  		var btn3 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/datasetAdministrationIcon.png");
+  		btn3.addEventListener("execute", function(){this._selectPage('dataset');}, this);
+  		
   		verticalLayout.add(btn1);
   		verticalLayout.add(btn2);
   		verticalLayout.add(btn3);
   		
-  		horSplitPane.addLeft(verticalLayout);      	
+  		this.mainPane.addLeft(verticalLayout);      	
     },
     
-    saveData: function() {
-    	var dataObject = this.form.getData();
-    	var prettyPrint = '';
-    	for(prop in dataObject) {
-    		prettyPrint += prop + ': ' + dataObject[prop] + ";\n";
+    _selectPage: function(pageName) {
+    	if(!this.pages[pageName]) {
+    		this.pages[pageName] = new spagobi.test.view.MasterDetailsPage(pageName);
+    		this.mainPane.addRight( this.pages[pageName] ); 
     	}
-        alert( prettyPrint );
+    	if(this.selectPageName) {
+    		this.pages[this.selectPageName].setVisibility(false);
+    	}
+    	this.selectPageName = pageName;
+    	if(!this.pages[pageName].isVisibility()) {
+    		this.pages[pageName].setVisibility(true);   
+    	} 	  
     },
     
-    createSaveButton : function() {
-  		// Save button  
+    _applyCssTheme : function() {
+    	alert(document.body.className = qx.theme.manager.Meta.getInstance().getTheme());
+       document.body.className = qx.theme.manager.Meta.getInstance().getTheme() == qx.theme.Ext ? "Ext" : "Classic";
+       //document.body.className = "Ext";
+    },
        
-        //saveButton.setLeft(800);
-        
-        //var saveTooltip = new qx.ui.popup.ToolTip("Save","");
-        //saveButton.setToolTip(saveTooltip);
-        //saveTooltip.setShowInterval(10);      
-            
-            
-        saveButton.addEventListener("execute", this.saveData, this);
-        
-        return saveButton;
-  	},
-  	
-  	createDeleteButton : function() {
-  		// Back Button
-       
-        //backButton.setLeft(810);
-        
-        //var backTooltip = new qx.ui.popup.ToolTip("Back","");
-        //backButton.setToolTip(backTooltip);
-        //backTooltip.setShowInterval(10);
-        
-        backButton.addEventListener("execute", function(){alert('go back')});
-        
-        return backButton;
-  	},
-    
-    _loadDataObject: function() {
-    	this._dataObjects = [
-    		{
-	        	id: '135',
-	        	"label": 'JASPER',
-	        	name: 'JasperReport Engine',
-	        	description: 'Compatible with JasperReport engine v3.1',
-	        	documentType: 'Map',
-	        	engineType: 'External',
-	        	useDataSet: false,
-	        	useDataSource: true,
-	        	dataSource: 'geo',
-	        	"class": '',
-	        	url: 'http://localhost:8080/SpagoBIJasperEngine/AdapterHTTP?ACTION_NAME=START_ACTION',
-	        	driver: 'it.eng.spagobi.engines.drivers.QbeDriver'        	        	
-        	}, {
-	        	id: '137',
-	        	"label": 'QBE',
-	        	name: 'Qbe Engine',
-	        	description: 'Query by Example',
-	        	documentType: 'Map',
-	        	engineType: 'External',
-	        	useDataSet: false,
-	        	useDataSource: true,
-	        	dataSource: 'geo',
-	        	"class": '',
-	        	url: 'http://localhost:8080/SpagoBIQbeEngine/AdapterHTTP?ACTION_NAME=START_ACTION',
-	        	driver: 'it.eng.spagobi.engines.drivers.QbeDriver'        	        	
-        	}, {
-	        	id: '138',
-	        	"label": 'DASH',
-	        	name: 'Dashboard Engine',
-	        	description: 'Dashboard Engine',
-	        	documentType: 'Map',
-	        	engineType: 'Internal',
-	        	useDataSet: false,
-	        	useDataSource: true,
-	        	dataSource: 'geo',
-	        	"class": 'it.eng.spagobi.Dashboard',
-	        	url: '',
-	        	driver: ''        	        	
-        	}
-    	];    	
-    },
-    
-    getDataObjects: function() {
-    	return this._dataObjects;
-    },
-    
-    selectDataObject: function(dataObject) {
-    	this._form.setData(dataObject);
-    },
-    
-    
-    
     reload: function() {
     	alert('reload');
     },

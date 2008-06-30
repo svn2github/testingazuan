@@ -2,7 +2,7 @@
 
 <PRESENTATION>
 	<MAPPING business_type="ACTION" 
-			 business_name="TEST_ACTION" 
-			 publisher_name="TEST_ACTION_PUBLISHER"/>	
+			 business_name="CHIRON_START_ACTION" 
+			 publisher_name="CHIRON_START_ACTION_PUBLISHER"/>	
 </PRESENTATION>
 

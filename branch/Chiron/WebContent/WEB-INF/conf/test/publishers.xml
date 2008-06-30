@@ -3,17 +3,17 @@
 <PUBLISHERS>
 
 
-     <PUBLISHER name="TEST_ACTION_PUBLISHER">
+     <PUBLISHER name="CHIRON_START_ACTION_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/test/testActionPage.jsp" />
+				<ITEM prog="0" resource="/jsp/test/chironMainPage.jsp" />
 			</RESOURCES>
 		</RENDERING>
 		
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/test/testActionPage.jsp" />
-        		<ITEM mode="EDIT" resource="/jsp/test/testActionPage.jsp" />
+        		<ITEM mode="VIEW" resource="/jsp/test/chironMainPage.jsp" />
+        		<ITEM mode="EDIT" resource="/jsp/test/chironMainPage.jsp" />
       		</RESOURCES>
     	</RENDERING>
 	</PUBLISHER>

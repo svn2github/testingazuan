@@ -2,8 +2,8 @@
 
 <ACTIONS>
 
-	<ACTION name="TEST_ACTION" 
-			class="it.eng.spagobi.TestAction" 
+	<ACTION name="CHIRON_START_ACTION" 
+			class="it.eng.spagobi.chiron.ChironStartAction" 
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

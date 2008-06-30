@@ -15,6 +15,10 @@ qx.Class.define("spagobi.ui.Form", {
   		for(var i = 0; i < config.length; i++) {
   			this.addInputField( config[i] );
   		}
+  		
+  		var btn2 = new qx.ui.form.Button("save", "spagobi/img/spagobi/test/save.png");
+  		btn2.addEventListener("execute", function(){alert(this.getData().toSource());}, this);
+  		this.add(btn2);
 	},
 	
 	members: {
@@ -58,7 +62,9 @@ qx.Class.define("spagobi.ui.Form", {
 		},
 		
 		setInputFieldValue: function(dataIndex, value) {
-			if(!this.getInputField(dataIndex)) return;
+			if(!this.getInputField(dataIndex)) {
+				return;
+			}
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
 				this.getInputField(dataIndex).getUserData('field').setValue(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {

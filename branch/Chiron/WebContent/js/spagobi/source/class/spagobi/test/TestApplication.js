@@ -61,6 +61,8 @@ qx.Class.define("spagobi.test.TestApplication",
       	 // Include CSS file
          qx.html.StyleSheet.includeFile(qx.io.Alias.getInstance().resolve("spagobi/css/reader.css"));
       	 
+      	 // Increase parallel requests
+      	qx.io.remote.RequestQueue.getInstance().setMaxConcurrentRequests(10);
       	      	
       	// Create Application Layout
       	this._createLayout();
@@ -113,6 +115,7 @@ qx.Class.define("spagobi.test.TestApplication",
     },
     
     _selectPage: function(pageName) {
+    	
     	if(!this.pages[pageName]) {
     		this.pages[pageName] = new spagobi.test.view.MasterDetailsPage(pageName);
     		this.mainPane.addRight( this.pages[pageName] ); 
@@ -121,9 +124,24 @@ qx.Class.define("spagobi.test.TestApplication",
     		this.pages[this.selectPageName].setVisibility(false);
     	}
     	this.selectPageName = pageName;
+    	
+    	this.pages[pageName].show();
+    	/*
     	if(!this.pages[pageName].isVisibility()) {
     		this.pages[pageName].setVisibility(true);   
-    	} 	  
+    	} 
+    	*/
+    	/* 	
+    	if(!this.pages[pageName]) {
+    		this.pages[pageName] = new spagobi.test.view.MasterDetailsPage(pageName);
+    		this.mainPane.addRight( this.pages[pageName] ); 
+    	}
+    	if(this.selectPageName) {
+    		this.pages[pageName].moveSelfBefore( this.pages[this.selectPageName] );
+    	}
+    	this.selectPageName = pageName;
+    	*/
+    	  
     },
     
     _applyCssTheme : function() {

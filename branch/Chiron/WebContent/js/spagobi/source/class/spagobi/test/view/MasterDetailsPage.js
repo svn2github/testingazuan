@@ -9,13 +9,14 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
     var listPage;
     var detailPage;
     var detailHeader;
-    var detailBody;
+    //var detailBody ;
     
     this.setEdge(0);
    	this.setBorder("line-left");
       		
     var records;
-    var form;  		
+    var form;  	
+    this._type = type;	
 	if(type === 'engine') {
 		records = spagobi.test.DataService.loadEngineRecords();
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
@@ -48,9 +49,9 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
    	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
     detailHeader.setDisplay(false);        
     detailHeader.setChecked(true);  		
-	detailBody = new qx.ui.pageview.buttonview.Page( detailHeader );
-    detailBody.add( this._form );  		 
-  	detailPage.getPane().add( detailBody );
+	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader );
+    this.detailBody.add( this._form );  		 
+  	detailPage.getPane().add( this.detailBody );
   		
   	this.addBottom( detailPage );
   },
@@ -58,13 +59,40 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
   members :
   {
     _form : undefined,
+    detailBody : undefined,
     
     getForm: function() {
     	return this._form;
     },
     
     selectDataObject: function(dataObject) {
+    	//alert(this._form + ' - ' + this._type + " ->\n " + this.printObject(dataObject));
     	this._form.setData(dataObject);
+    },
+    
+    show: function() {
+    	//this._form.setVisibility(false);
+    	this.detailBody.remove(this._form)
+    	//this._form.dispose();
+    	if(this._type === 'engine') {
+			this._form = new spagobi.ui.custom.EngineDetailsForm(); 
+		} else if(this._type === 'dataset') {
+			this._form = new spagobi.ui.custom.DatasetDetailsForm(); 
+		} else if(this._type === 'datasource') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		}
+		this.detailBody.add(this._form);
+		if(!this.isVisibility()) {
+			this.setVisibility(true);
+		}
+    },
+    
+    printObject: function(o) {
+    	var str = '';
+    	for(p in o) {
+    		str += p + ': ' + o[p] + ';\n'
+    	}
+    	return str;
     }
   }
 });

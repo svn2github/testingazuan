@@ -1,0 +1,42 @@
+This document explains how to integrate a Business Object 6.5 document (.rep format) into SpagoBI 1.9.4 platform.
+It is assumed to have a SpagoBI 1.9.4 platform containing a properly configured SpagoBIBOEngine instance.
+[In order to compile and build such a SpagoBIBOEngine instance, see "How to compile and  install.txt" 
+of SpagoBIBODriver and SpagoBIBOEngine projects.]
+ 
+
+In order to integrate a BO rep report into SpagoBI:
+
+- create a new SpagoBI object 
+- associated the new object to the bo engine 
+- load a template file with the following structure 
+  
+  <BO_DOCUMENT>
+	   <REP_PROPS name="name report" 
+                id="id report" 
+                type="rep" 
+                repository="name of the bo repository (Example:corporate)"/>
+  </BO_DOCUMENT>
+
+- The engine support only PDF output format for rep documents. Any parameter for output format is not considered.
+  
+- If your bo report has some prompt you need to define a SpagoBI parameter for each
+  one of them.
+  Example: if a BO document has a prompt that ask for matricule number and the prompt name is "Matricule :", 
+  you have to define inside SpagoBI platform a parameter that returns all the admissible matricule numbers 
+  for the user who is going to execute the document (as per the behavioural model). 
+  Then you have to associate that parameter to the SpagoBI document: at this point you have to choose the url name 
+  of the document parameter.
+  Since the name of the prompt "Matricule :" is not an admissible url name for SpagoBI platform (it contains a space (*)), 
+  you have to define a new url name (may be "Matricule_") and to associate it to the existing BO prompt: 
+  in order to do this, edit the file (you don't need to restart tomcat)
+  TOMCAT_HOME/webapps/SpagoBIBOEngine/WEB-INF/classes/prompts.properties
+  and add the following association:
+  Matricule_ = Matricule :
+  If the BO document has no more prompts, you can execute it and see the result in PDF format; 
+  in case instead the document has one more prompt, the document cannot be refreshed (this is a BO specification) 
+  and you will see an error message. You have to build another SpagoBI document parameter for the second BO prompt.
+
+  (*) The SpagoBI parameter url name cannot contain spaces and other special characters, 
+  since it will be used as a xml attribute name the SpagoBI core. 
+  If the BO prompt does not contain such characters (suppose, for example, the prompt name to be simply "Matricule"), 
+  then you can use the same prompt name as SpagoBI parameter url name (without definining the association in prompts.properties).

@@ -120,7 +120,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			HashMap additionalValues=new HashMap();
 			String catValue="";
 
-			String name="";
+			String nameP="";
 			String value="";
 
 			
@@ -136,9 +136,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
-				name=new String(object.getKey());
+				nameP=new String(object.getKey());
 				value=new String((String)object.getValue());
-				if(name.equalsIgnoreCase("x"))
+				if(nameP.equalsIgnoreCase("x"))
 				{
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;
@@ -147,14 +147,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					
 				}
 				else {
-					if(name.startsWith("add_") || name.startsWith("ADD_")){
+					if(nameP.startsWith("add_") || nameP.startsWith("ADD_")){
 						if(additionalLabels){
-							String ind=name.substring(4);							
+							String ind=nameP.substring(4);							
 							additionalValues.put(ind, value);
 						}
 					}
 					else{
-						series.put(name, value);
+						series.put(nameP, value);
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
@@ -321,12 +321,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 
 		JFreeChart chart = ChartFactory.createStackedBarChart(
-				"Stacked Bar Chart Demo 1",  // chart title
+				name,  // chart title
 				categoryLabel,                  // domain axis label
 				valueLabel,                     // range axis label
 				dataset,                     // data
 				PlotOrientation.VERTICAL,    // the plot orientation
-				true,                        // legend
+				legend,                        // legend
 				true,                        // tooltips
 				false                        // urls
 		);

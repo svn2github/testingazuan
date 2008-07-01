@@ -20,14 +20,16 @@
  **/
 package it.eng.spagobi.qbe.tree.filter;
 
+import it.eng.qbe.bo.DatamartLabels;
+import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.spagobi.qbe.tree.presentation.tag.DatamartLabelFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 // TODO: Auto-generated Javadoc
@@ -38,6 +40,8 @@ import java.util.Set;
  */
 public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 
+	private Locale locale;
+	
 	/**
 	 * Instantiates a new qbe tree order entity filter.
 	 */
@@ -45,13 +49,9 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 		super();
 	}
 	
-	/**
-	 * Instantiates a new qbe tree order entity filter.
-	 * 
-	 * @param parentFilter the parent filter
-	 */
-	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter) {
+	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter, Locale locale) {
 		super(parentFilter);
+		this.setLocale( locale );
 	}
 	
 	/* (non-Javadoc)
@@ -60,7 +60,7 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 	public List filter(IDataMartModel datamartModel, List entities) {
 		List list = null;
 		
-		ComparableEntitiesList comparableEntities = new ComparableEntitiesList(datamartModel);
+		ComparableEntitiesList comparableEntities = new ComparableEntitiesList(datamartModel, locale);
 		comparableEntities.addEntities( entities );
 		list = comparableEntities.getEntitiesOrderedByLabel();
 		
@@ -77,15 +77,21 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 		
 		/** The datamart model. */
 		private IDataMartModel datamartModel;
+		private DatamartLabels datamartLabels;
 		
 		/**
 		 * Instantiates a new comparable entities list.
 		 * 
 		 * @param datamartModel the datamart model
 		 */
-		ComparableEntitiesList(IDataMartModel datamartModel) {
+		ComparableEntitiesList(IDataMartModel datamartModel, Locale locale) {
+			
 			list = new ArrayList();
 			this.datamartModel = datamartModel;
+			setDatamartLabels( QbeCacheManager.getInstance().getLabels( datamartModel , locale ) );
+			if( getDatamartLabels() == null) {
+				setDatamartLabels( new DatamartLabels() );
+			}
 		}
 		
 		/**
@@ -94,10 +100,18 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 		 * @param entity the entity
 		 */
 		void addEntity(DataMartEntity entity) {
-			String label = DatamartLabelFactory.getEntityLabel(datamartModel, entity);	
+			String label = geEntityLabel( entity );	
 			EntityWrapper field = new EntityWrapper(label, entity);
 			list.add(field);
 		}
+		
+		private String geEntityLabel(DataMartEntity entity) {
+			String label;
+			label = getDatamartLabels().getLabel(entity);
+			return label==null? entity.getName(): label;
+		}
+		
+		
 		
 		/**
 		 * Adds the entities.
@@ -143,6 +157,14 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 				toReturn.add(field.getEntity());
 			}
 			return toReturn;
+		}
+
+		private DatamartLabels getDatamartLabels() {
+			return datamartLabels;
+		}
+
+		private void setDatamartLabels(DatamartLabels datamartLabels) {
+			this.datamartLabels = datamartLabels;
 		}
 		
 	}
@@ -216,5 +238,14 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
 			this.label = label;
 		}
 		
+	}
+
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 }

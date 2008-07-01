@@ -60,7 +60,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 		JSONArray nodes = null;
 		
 		IQbeTreeEntityFilter entityFilter = new QbeTreeOrderEntityFilter(
-					new QbeTreeAccessModalityEntityFilter() );
+					new QbeTreeAccessModalityEntityFilter(), getLocale() );
 		IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
 	   	
 		QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);

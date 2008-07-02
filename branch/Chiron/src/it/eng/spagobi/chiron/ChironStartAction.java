@@ -47,7 +47,8 @@ public class ChironStartAction extends AbstractBaseHttpAction {
 		setResponse( serviceResponse );
 		
 		String mode = null;
-		
+		 
+		System.out.println("B OOOOOO M");
 		logger.debug("IN");
 		
 		try {
@@ -55,7 +56,7 @@ public class ChironStartAction extends AbstractBaseHttpAction {
 			if( !(DEBUG_MODE.equalsIgnoreCase(mode) 
 					|| BUILD_MODE.equalsIgnoreCase(mode)) ) {
 				logger.debug("Input parameter [" + MODE + "] not defined");
-				mode = BUILD_MODE;
+				mode = DEBUG_MODE;
 			}
 			logger.info("Output parameter [" + MODE + "] is equal to: " + mode);
 			setAttribute(MODE, mode);

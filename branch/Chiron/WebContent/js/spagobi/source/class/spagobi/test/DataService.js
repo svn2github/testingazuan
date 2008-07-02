@@ -149,7 +149,6 @@ qx.Class.define("spagobi.test.DataService", {
   	
   	
   	
-  	
   	loadDatasetRecords: function() {
   		var records = {};
     	
@@ -202,6 +201,151 @@ qx.Class.define("spagobi.test.DataService", {
 	        	fileName: ''       	        	
         	}  			
   		];
+  	},
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	loadMapRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadMapMeta();
+    	records.rows =  this.loadMapData();
+    	
+    	return records;
+  	},
+  	
+  	loadMapMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}, {
+	    		dataIndex: 'template',
+	    		name: 'Template'
+    		}, {
+	    		dataIndex: 'format',
+	    		name: 'Format'
+    		}, {
+	    		dataIndex: 'numfeatures',
+	    		name: 'Num. Features'
+    		}, {
+	    		dataIndex: 'features',
+	    		name: 'Features'
+    		}
+    	];
+  	},
+  	
+  	loadMapData: function() {
+  		return [
+  			{
+	        	id: '1',
+	        	name: 'aaa',
+	        	description: 'aaa',
+	        	template: '/components/mapcatalogue/maps/import.txt',
+	        	format: 'SVG',
+	        	numfeatures: '0',
+	        	features: {
+		        	id: '1',
+		        	name: 'States',
+		        	description: 'States of EU',
+		        	type: 'Territorial',
+		        	nummaps: '1'
+		        }
+	        	 	        	
+        	}, {
+	        	id: '2',
+	        	name: 'USA_States',
+	        	description: 'USA_States',
+	        	template: '/components/mapcatalogue/maps/UsaStates.svg',
+	        	format: 'SVG',
+	        	numfeatures: '1',
+	        	features: {
+		        	id: '2',
+		        	name: 'Frame',
+		        	description: 'Just a frame',
+		        	type: 'Territorial',
+		        	nummaps: '2'
+		        }    	
+        	}, {
+	        	id: '3',
+	        	name: 'Senzioni_Censimento',
+	        	description: 'Sezioni_Censimento',
+	        	template: '/components/mapcatalogue/maps/Sezioni_Censimento.svg',
+	        	format: 'SVG',
+	        	numfeatures: '13',
+	        	features: {
+		        	id: '3',
+		        	name: 'Unita Urbanistiche',
+		        	description: 'Divisione territoriale comune GE',
+		        	type: 'Territorial',
+		        	nummaps: '3'
+		        }  	     	
+        	}  			
+  		];
+  	},
+  	
+  	loadFeatureRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadFeatureMeta();
+    	records.rows =  this.loadFeatureData();
+    	
+    	return records;
+  	},
+  	
+  	loadFeatureMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}, {
+	    		dataIndex: 'type',
+	    		name: 'Type'
+    		}, {
+	    		dataIndex: 'nummaps',
+	    		name: 'Num. Maps'
+    		}
+    	];
+  	},
+  	
+  	loadFeatureData: function() {
+  		return [
+	  			{
+		        	id: '1',
+		        	name: 'States',
+		        	description: '',
+		        	type: '',
+		        	nummaps: '1'
+		        }, {
+		        	id: '2',
+		        	name: 'Frame',
+		        	description: '',
+		        	type: '',
+		        	nummaps: '2'
+		        }, {
+		        	id: '3',
+		        	name: 'Unita Urbanistiche',
+		        	description: '',
+		        	type: '',
+		        	nummaps: '3'
+		        }  			
+  			 ];
   	}
+  	
   }
 });

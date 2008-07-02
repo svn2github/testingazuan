@@ -26,6 +26,12 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
 	} else if(type === 'datasource') {
 		records = spagobi.test.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type == 'mapmgmt') {
+		records = spagobi.test.DataService.loadMapRecords();
+		form = new spagobi.ui.custom.MapDetailsForm(); 
+	} else if(type == 'featuremgmt') {
+		records = spagobi.test.DataService.loadFeatureRecords();
+		form = new spagobi.ui.custom.FeatureDetailsForm(); 
 	}
 		
 		
@@ -80,7 +86,12 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
 			this._form = new spagobi.ui.custom.DatasetDetailsForm(); 
 		} else if(this._type === 'datasource') {
 			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		} else if(this._type === 'mapmgmt') {
+			this._form = new spagobi.ui.custom.MapDetailsForm();
+		} else if(this._type === 'featuremgmt') {
+			this._form = new spagobi.ui.custom.FeatureDetailsForm();
 		}
+		
 		this.detailBody.add(this._form);
 		if(!this.isVisibility()) {
 			this.setVisibility(true);

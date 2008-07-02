@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<project name="SpagoBIGeoEngine" default="buildSource">
+
+	<description>
+		Chiron build file
+	</description>
+	
+	<!-- Load all the default properties, and any the user wants    -->
+	<!-- to contribute (without having to type -D or edit this file -->
+	<property file="${basedir}/build.properties" />
+	
+	<target name="buildSource" depends="replace"></target>
+	<target name="buildBuild" depends="createBuildScriptFiles"></target>
+	<target name="buildApi" depends="makeApi"></target>
+	<target name="buildAll" depends="makeAll"></target>
+		
+	<target name="replace" depends="createSourceScriptFiles">
+		<replace 
+		    file="${js.spagobi.source.dir}/script/chiron.web.js">
+	
+		  <replacefilter 
+		    token="./class/" 
+		    value="../js/spagobi/source/class/"/>
+		  
+		</replace>
+		
+		<replace 
+				    file="${js.spagobi.source.dir}/script/chiron.web.js">
+			
+				  <replacefilter 
+				    token="../js/qooxdoo-0.7.3/frontend/framework/source/resource" 
+				    value="../js/spagobi/build/resource/qx"/>
+				  
+		</replace>
+		
+	</target>
+	
+	<target name="createSourceScriptFiles" depends="makeSource">
+			<copy file="${js.spagobi.source.dir}/script/spagobi.test.js" 
+				  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
+			
+			<copy file="${js.spagobi.source.dir}/script/spagobi.test.js" 
+						  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
+			
+	</target>
+	
+	<target name="createBuildScriptFiles" depends="makeBuild">
+				<copy file="${js.spagobi.build.dir}/script/spagobi.test.js" 
+					  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
+				
+	</target>
+	
+	<target name="makeSource" >
+		  <exec executable="cmd" dir="${basedir}" >
+		    <env key="Path" path="C:/Programmi/cygwin/bin"/>
+		  	<arg value="/c"/>
+		    <arg value="makeSource.bat"/>
+		  </exec>
+		</target>
+	
+	<target name="makeBuild" >
+			  <exec executable="cmd" dir="${basedir}" >
+			    <env key="Path" path="C:/Programmi/cygwin/bin"/>
+			  	<arg value="/c"/>
+			    <arg value="makeBuild.bat"/>
+			  </exec>
+			</target>
+	
+	<target name="makeApi" >
+		  <exec executable="cmd" dir="${basedir}" >
+		    <env key="Path" path="C:/Programmi/cygwin/bin"/>
+		  	<arg value="/c"/>
+		    <arg value="makeApi.bat"/>
+		  </exec>
+		</target>
+	
+	<target name="makeAll" depends="makeSource,makeBuild,makeApi"></target>
+
+
+
+
+	
+	
+</project>
+	

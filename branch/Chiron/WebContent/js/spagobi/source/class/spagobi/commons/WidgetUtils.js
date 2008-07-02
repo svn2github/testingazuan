@@ -208,6 +208,35 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.setUserData('field', checkBox);
         	
         	return atom;
-        } 	
+        },
+        
+        createInputSubForm: function( config ) {
+			var defultConfig = {
+			top: 0,
+			left: 0,
+			items: []
+			};
+			
+			//config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+			
+			var subform;
+			
+			if(typeof(config.form) ==  'object') {
+				subform = new spagobi.ui.Form( config.form );
+			} else {
+				//alert( typeof(config.form) );
+				subform = new config.form();
+			}
+			/*
+			var atom = new qx.ui.basic.Atom();
+			atom.add(subform);
+			atom.setUserData('field', subform);
+			atom.setBorder( new qx.ui.core.Border(2,'solid') );
+			*/
+			subform.setUserData('field', subform);
+			
+			return subform;
+		}
+         	
   }
 });

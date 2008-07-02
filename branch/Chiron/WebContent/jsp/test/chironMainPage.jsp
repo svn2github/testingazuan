@@ -22,12 +22,38 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 contentType="text/html; charset=ISO-8859-1"
     	 pageEncoding="ISO-8859-1"
     	 import="it.eng.spago.base.*,
-    	 		 it.eng.spagobi.chiron.ChironStartAction"%>
+    	 		 it.eng.spagobi.chiron.ChironStartAction,
+    	 		 javax.portlet.*"%>
+    
+    
+    <%!
+    public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
+		RenderRequest renderRequest =(RenderRequest)aHttpServletRequest.getAttribute("javax.portlet.request");
+		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
+		String urlToConvert = null; 
+		originalUrl = originalUrl.trim();
+		if(originalUrl.startsWith("/")) {
+			urlToConvert = originalUrl.substring(1);
+		} else {
+			urlToConvert = originalUrl;
+		}
+		String newUrl = renderResponse.encodeURL(renderRequest.getContextPath() + "/" + urlToConvert).toString();
+		return newUrl;
+	}
+	%>
+    
     
 <%
 	
 	ResponseContainer responseContainer = null;
-	responseContainer = ResponseContainerAccess.getResponseContainer(request);	
+	boolean webMode = false;
+
+	responseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
+	if (responseContainer == null) {
+		// case of web mode
+		responseContainer = ResponseContainerAccess.getResponseContainer(request);
+		webMode = true;
+	}
 	SourceBean serviceResponse = responseContainer.getServiceResponse();
 	String mode = (String)serviceResponse.getAttribute(ChironStartAction.MODE);
 	String rootDir = ChironStartAction.DEBUG_MODE.equalsIgnoreCase(mode)
@@ -36,13 +62,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 <%@page import="it.eng.spagobi.chiron.ChironStartAction;"%>
+
+<%if(webMode){ %>
 <html>
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    	<title>CHIRON DEMO - v0.0</title>    	
-    		<script type="text/javascript" src='../js/spagobi/<%=rootDir%>/script/spagobi.test.js'></script>
+		<link rel="shortcut icon" href="http://imagehosting.com/favicon.ico" />
+  		<link rel="icon" href="http://imagehosting.com/favicon.ico" />
+    	<title>Chiron - Demo</title>    	
     	
+    	<script type="text/javascript" src='../js/spagobi/<%=rootDir%>/script/chiron.web.js'></script>
+<%} else {%>
+		<script type="text/javascript">
+			if(!window.qxsettings)qxsettings={};
+			if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]='<%=getResourceLink(request, "js/spagobi/build/resource/qx")%>';
+			if(qxsettings["spagobi.test.resourceUri"]==undefined)qxsettings["spagobi.test.resourceUri"]='<%=getResourceLink(request, "")%>';
+			qxsettings["qx.enableApplicationLayout"] = false;
+
+		</script>
+		<!--  
+		<script type="text/javascript" src='<%=getResourceLink(request, "js/spagobi/" + rootDir + "/script/spagobi.test.js")%>'></script>
+		-->
+		<div id="myInlineWidget" > </div>
+
+<% } %>
+	
+    	
+
+
+<%if(webMode){ %>    	
 	</head>
 	
 	<body>
@@ -50,4 +99,5 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</body>
 
 </html>
+<%} %>
 

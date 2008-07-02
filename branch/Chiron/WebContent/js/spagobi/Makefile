@@ -77,7 +77,7 @@ APPLICATION_OPTIMIZE_STRINGS = false
 # Add any of those variables for your custom configuration here:
 #-------------------------------------------------------------------------------
 
-APPLICATION_THEME = qx.theme.Ext
+#APPLICATION_THEME = qx.theme.Ext
 
 
 ################################################################################

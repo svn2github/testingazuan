@@ -54,18 +54,38 @@ qx.Class.define("spagobi.test.TestApplication",
     main : function()
     {
 		this.base(arguments);
-      	
+      	      	
       	 // Define alias for custom resource path
       	 qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resource"));
+      	 //qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.test.resourceUri"));
       	 
       	 // Include CSS file
          qx.html.StyleSheet.includeFile(qx.io.Alias.getInstance().resolve("spagobi/css/reader.css"));
       	 
       	 // Increase parallel requests
       	qx.io.remote.RequestQueue.getInstance().setMaxConcurrentRequests(10);
-      	      	
+      	   
+      	//========================================================================================================     
+      	//var d = qx.ui.core.ClientDocument.getInstance(); 
+      	
+      	//d.add( button ); 
+      	
+      	// example with a button to put inline
+      	/*
+   		var someWidget = new qx.ui.form.Button("Click me !!!", "spagobi/img/spagobi/test/datasetAdministrationIcon.png");  
+   		alert('1');
+   		var doc = qx.ui.core.ClientDocument.getInstance();
+   		alert('2');
+   		var inlineWidget = new qx.ui.basic.Inline("myInlineWidget");
+   		alert(inlineWidget.toSource());
+   		inlineWidget.add(someWidget);
+   		doc.add(inlineWidget);
+   		*/
+      	//========================================================================================================     
+      	
       	// Create Application Layout
       	this._createLayout();
+      	
       	
       	this._selectPage('engine');
       	
@@ -107,9 +127,17 @@ qx.Class.define("spagobi.test.TestApplication",
   		var btn3 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/datasetAdministrationIcon.png");
   		btn3.addEventListener("execute", function(){this._selectPage('dataset');}, this);
   		
+  		var btn4 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/webManagementIcon.png");
+  		btn4.addEventListener("execute", function(){this._selectPage('mapmgmt');}, this);
+  		
+  		var btn5 = new qx.ui.form.Button("", "spagobi/img/spagobi/test/featureManagementIcon.png");
+  		btn5.addEventListener("execute", function(){this._selectPage('featuremgmt');}, this);
+  		
   		verticalLayout.add(btn1);
   		verticalLayout.add(btn2);
   		verticalLayout.add(btn3);
+  		verticalLayout.add(btn4);
+  		verticalLayout.add(btn5);
   		
   		this.mainPane.addLeft(verticalLayout);      	
     },

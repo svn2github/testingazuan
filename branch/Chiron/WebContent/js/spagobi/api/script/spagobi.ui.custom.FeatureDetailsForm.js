@@ -1,0 +1,1 @@
+{type:"class",attributes:{"name":"FeatureDetailsForm","packageName":"spagobi.ui.custom","superClass":"spagobi.ui.Form","fullName":"spagobi.ui.custom.FeatureDetailsForm","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

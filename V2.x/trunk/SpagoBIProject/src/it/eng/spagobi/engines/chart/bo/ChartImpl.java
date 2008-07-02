@@ -38,8 +38,10 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +50,12 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
+import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.VerticalAlignment;
 
 
 /**   @author Giulio Gavardi
@@ -58,8 +65,8 @@ import org.jfree.data.general.Dataset;
 
 public class ChartImpl implements IChart {
 
-	protected String name=null;
 	protected int titleDimension;
+	protected String name=null;
 	protected int width;
 	protected int height;
 	protected String data;
@@ -74,7 +81,7 @@ public class ChartImpl implements IChart {
 	protected Map parametersObject;
 	protected boolean filter=true;
 	protected boolean slider=true;
-
+	protected StyleLabel styleTitle;
 
 	/**
 	 * configureChart reads the content of the template and sets the chart parameters.
@@ -102,6 +109,26 @@ public class ChartImpl implements IChart {
 			setName(titleChart);
 		}
 		else setName("");
+
+		SourceBean styleTitleSB = (SourceBean)content.getAttribute("STYLE_TITLE");
+		if(styleTitleSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_TITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_TITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_TITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleTitle=new StyleLabel(fontS,size,color);
+			}
+			catch (Exception e) {
+				logger.error("Wrong style Title settings, use default");
+			}
+
+		}
+
 
 		if(content.getAttribute("title_dimension")!=null) 
 		{
@@ -543,13 +570,7 @@ public class ChartImpl implements IChart {
 		this.parametersObject = parametersObject;
 	}
 
-	public int getTitleDimension() {
-		return titleDimension;
-	}
 
-	public void setTitleDimension(int titleDimension) {
-		this.titleDimension = titleDimension;
-	}
 
 	public boolean isFilter() {
 		return filter;
@@ -594,6 +615,50 @@ public class ChartImpl implements IChart {
 		}
 
 	}
-	
-	
+
+	public TextTitle setStyleTitle(String title,StyleLabel titleLabel){
+		Font font=null;
+		Color color=null;
+
+
+		boolean definedFont=true;
+		boolean definedColor=true;
+
+		if(titleLabel!=null ){
+			if(titleLabel.getFont()!=null){
+				font=titleLabel.getFont();
+			}
+			else{
+				definedFont=false;
+			}
+			if(titleLabel.getColor()!=null){
+				color=titleLabel.getColor();
+			}
+			else{
+				definedColor=false;
+			}
+		}
+		else{
+			definedColor=false;
+			definedFont=false;
+		}
+
+		if(!definedFont)
+			font=new Font("Tahoma", Font.BOLD, 18);
+		if(!definedColor)
+			color=Color.BLACK;
+
+		TextTitle titleText=new TextTitle(title,font,color, RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
+
+		return titleText;
+	}
+
+	public int getTitleDimension() {
+		return titleDimension;
+	}
+
+	public void setTitleDimension(int titleDimension) {
+		this.titleDimension = titleDimension;
+	}
+
 }

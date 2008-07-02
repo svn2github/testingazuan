@@ -114,8 +114,8 @@ public class SimpleBar extends BarCharts{
 				false                     // URLs?
 		);
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
+		chart.setTitle(title);
 		chart.setTitle(title);
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);

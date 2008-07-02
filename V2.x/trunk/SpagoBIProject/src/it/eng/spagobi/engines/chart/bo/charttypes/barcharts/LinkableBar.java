@@ -150,9 +150,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		plot.setOrientation(PlotOrientation.VERTICAL);
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+
 
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 

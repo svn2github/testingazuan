@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 
 
@@ -30,8 +30,10 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,10 +68,11 @@ public class BarCharts extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	Vector seriesNames=null;
 	Vector hiddenSeries=null;
-	
-	
-	
-	
+	StyleLabel addLabelsStyle;
+
+
+
+
 	/**
 	 * Inherited by IChart: calculates chart value.
 	 * 
@@ -77,7 +80,7 @@ public class BarCharts extends ChartImpl {
 	 * 
 	 * @throws Exception the exception
 	 */
-	
+
 	public DatasetMap calculateValue() throws Exception {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
@@ -93,9 +96,9 @@ public class BarCharts extends ChartImpl {
 		categoriesNumber=0;
 		seriesNames=new Vector();
 		//categories.put(new Integer(0), "All Categories");
-		
+
 		boolean first=true;
-		
+
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -106,8 +109,8 @@ public class BarCharts extends ChartImpl {
 				}
 				first=false;
 			}
-				
-			
+
+
 			HashMap series=new HashMap();
 			String catValue="";
 
@@ -125,8 +128,8 @@ public class BarCharts extends ChartImpl {
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;
 					categories.put(new Integer(categoriesNumber),value);
-					
-					
+
+
 				}
 				else {
 					series.put(name, value);
@@ -134,14 +137,14 @@ public class BarCharts extends ChartImpl {
 			}
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
-			
+
 				if(!hiddenSeries.contains(nameS)){
-				String valueS=(String)series.get(nameS);
-				dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-				if(!seriesNames.contains(nameS)){
-					seriesNames.add(nameS);
+					String valueS=(String)series.get(nameS);
+					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+					if(!seriesNames.contains(nameS)){
+						seriesNames.add(nameS);
+					}
 				}
-			}
 			}
 
 		}
@@ -151,7 +154,7 @@ public class BarCharts extends ChartImpl {
 		return datasets;
 	}
 
-	
+
 	/**
 	 * Calculates chart value;
 	 * 
@@ -236,10 +239,10 @@ public class BarCharts extends ChartImpl {
 			//valueLabel="values";
 			valueLabel="";
 		}
-		
+
 		if(confParameters.get("n_visualization")!=null){		
 			String nu=(String)confParameters.get("n_visualization");
-		numberCatVisualization=Integer.valueOf(nu);
+			numberCatVisualization=Integer.valueOf(nu);
 		}
 		else
 		{
@@ -256,14 +259,14 @@ public class BarCharts extends ChartImpl {
 			String num="";
 			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
-				
+
 				String serieName=new String(object.getKey());
 				colorSerie=new String((String)object.getValue());
 				Color col=new Color(Integer.decode(colorSerie).intValue());
 				if(col!=null){
 					colorMap.put(serieName,col); 
 				}
-				
+
 				/*
 				colorNum=new String(object.getKey());
 				num=colorNum.substring(5, colorNum.length()); // gets the number from color1, color2 
@@ -276,8 +279,8 @@ public class BarCharts extends ChartImpl {
 			}		
 
 		}
-		
-		
+
+
 		// check if there is some serie to be hidden
 		boolean moreHiddenSeries=true;
 		int i=1;
@@ -291,17 +294,38 @@ public class BarCharts extends ChartImpl {
 			}
 			else
 				moreHiddenSeries=false;
-		
+
 		}
-		
-		
-		
+
+		// check if there is some info about additional labels style
+
+		SourceBean styleLabelsSB = (SourceBean)content.getAttribute("STYLE_LABELS");
+		if(styleLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_LABELS.font");
+			String sizeS = (String)content.getAttribute("STYLE_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_LABELS.orientation");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				addLabelsStyle=new StyleLabel(fontS,size,color,orientationS);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}
+
 		seriesNumber=new HashMap();
-		
+
 		logger.debug("OUT");
 	}
 
-	
+
 	/**
 	 * Use for slider: limits the categories visualization from cat selected to cat selected+numberscatsVisualization.
 	 * 
@@ -312,11 +336,11 @@ public class BarCharts extends ChartImpl {
 	 * 
 	 * @return the dataset
 	 */
-	
+
 	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
 		logger.debug("IN");
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
-		
+
 		int numCats=categories.size();
 		Vector visCat=new Vector();
 		// from the choice point to min(chose point+interval, end point)
@@ -328,26 +352,26 @@ public class BarCharts extends ChartImpl {
 			endPoint=startPoint+numberCatsVisualization-1;
 		else
 			endPoint=categories.size();
-		
+
 		for(int i=(startPoint);i<=endPoint;i++){
 			String name=(String)categories.get(new Integer(i));
 			visCat.add(name);
 		}
-		
-		
-		List columns=new Vector(catDataset.getColumnKeys());
-			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
-			String col = (String) iterator.next();
-				if(!(visCat.contains(col))){
-					catDataset.removeColumn(col);
-				}			
-			}
-			logger.debug("OUT");
 
-			return catDataset;
-	
+
+		List columns=new Vector(catDataset.getColumnKeys());
+		for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
+			String col = (String) iterator.next();
+			if(!(visCat.contains(col))){
+				catDataset.removeColumn(col);
+			}			
+		}
+		logger.debug("OUT");
+
+		return catDataset;
+
 	}
-	
+
 	/**
 	 * Limits the dataset to a particular serie.
 	 * 
@@ -356,34 +380,34 @@ public class BarCharts extends ChartImpl {
 	 * 
 	 * @return the dataset
 	 */
-	
+
 	public Dataset filterDatasetSeries(Dataset dataset, Vector series) {
 		logger.debug("IN");
 		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
-		
+
 		//keeps track of wich series has to be shown
 		currentSeries=series;
-		
-			//List rowKeys=new Vector();
-		
+
+		//List rowKeys=new Vector();
+
 		List rowKeys=new Vector(catDataset.getRowKeys());
-				
-			for (Iterator iterator = rowKeys.iterator(); iterator.hasNext();) {
+
+		for (Iterator iterator = rowKeys.iterator(); iterator.hasNext();) {
 			String row = (String) iterator.next();
 			if(!(series.contains(row))){
 				catDataset.removeRow(row);	
 				seriesNames.remove(row);
-				}			
-			}
+			}			
+		}
 
-			logger.debug("OUT");
-			return catDataset;
-	
+		logger.debug("OUT");
+		return catDataset;
+
 	}
-	
-	
 
-	
+
+
+
 	/**
 	 * Gets the conf parameters.
 	 * 
@@ -527,6 +551,6 @@ public class BarCharts extends ChartImpl {
 
 
 
-	
-	
+
+
 }

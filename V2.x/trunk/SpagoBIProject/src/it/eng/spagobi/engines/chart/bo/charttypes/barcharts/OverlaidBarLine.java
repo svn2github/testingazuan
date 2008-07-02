@@ -253,14 +253,29 @@ public class OverlaidBarLine extends BarCharts {
 
 			if(additionalLabels){
 				barRenderer.setBaseItemLabelGenerator(generator);
-				barRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
+				double orient=(-Math.PI / 2.0);
+				if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
+					barRenderer.setBaseItemLabelFont(addLabelsStyle.getFont());
+					barRenderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
+					if(addLabelsStyle.getOrientation().equalsIgnoreCase("horizontal")){
+						orient=0.0;
+					}
+
+				}
+				else{
+					barRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
+					if(addLabelsStyle!=null && addLabelsStyle.getColor()!=null)
+						barRenderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
+					else
+						barRenderer.setBaseItemLabelPaint(Color.BLACK);
+				}
 				barRenderer.setBaseItemLabelsVisible(true);
 				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-						-Math.PI / 2.0));
+						orient));
 				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-						-Math.PI / 2.0));	
+						orient));	
 
 			}
 
@@ -327,8 +342,8 @@ public class OverlaidBarLine extends BarCharts {
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
+		chart.setTitle(title);
 		chart.setTitle(title);
 
 		return chart;

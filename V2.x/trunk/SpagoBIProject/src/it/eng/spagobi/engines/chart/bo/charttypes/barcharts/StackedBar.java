@@ -82,10 +82,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
 
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Override this functions from BarCharts beacuse I want the hidden serie to be the first!
 	 * 
@@ -93,14 +93,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	 * 
 	 * @throws Exception the exception
 	 */
-	
+
 	public DatasetMap calculateValue() throws Exception {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		categories=new HashMap();
 
 		double cumulativeValue=0.0;
-		
+
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -123,7 +123,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			String nameP="";
 			String value="";
 
-			
+
 			if(first){
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
@@ -131,7 +131,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				first=false;
 			}
 
-			
+
 			//run all the attributes, to define series!
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
@@ -143,8 +143,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;
 					categories.put(new Integer(categoriesNumber),value);
-					
-					
+
+
 				}
 				else {
 					if(nameP.startsWith("add_") || nameP.startsWith("ADD_")){
@@ -160,12 +160,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
-		
+
 			// if it is cumulative automatically get the vamount value
 			if(cumulative){
 				dataset.addValue(cumulativeValue, "Cumulative", catValue);
 			}
-			
+
 			// if there is an hidden serie put that one first!!! if it is not cumulative
 			/*if(serieHidden!=null && !this.cumulative && !serieHidden.equalsIgnoreCase("")){
 				String valueS=(String)series.get(serieHidden);
@@ -174,11 +174,11 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					seriesNames.add(serieHidden);
 				}				
 			}*/
-			
-					
+
+
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
-			if(!hiddenSeries.contains(nameS)){
+				if(!hiddenSeries.contains(nameS)){
 					String valueS=(String)series.get(nameS);
 					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
 					cumulativeValue+=Double.valueOf(valueS).doubleValue();
@@ -195,10 +195,19 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						totalVal += "\n" + val;
 						catSerLabels.put(index, totalVal);
 					}
-				
-			}
+
+				}
 
 			}
+			// Check additional Values for CUmulative
+			if(additionalValues.get("Cumulative")!=null){
+				String val=(String)additionalValues.get("Cumulative");
+				String index=catValue+"-"+"Cumulative";						
+				catSerLabels.put(index, val);	
+			}
+
+
+
 		}
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();
@@ -206,14 +215,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		return datasets;
 	}
 
-	
-	
+
+
 
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
 
-		
+
 		if(confParameters.get("cumulative")!=null){	
 			String orientation=(String)confParameters.get("cumulative");
 			if(orientation.equalsIgnoreCase("true")){
@@ -236,7 +245,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		{
 			additionalLabels=false;
 		}
-		
+
 		if(confParameters.get("percentage_value")!=null){	
 			String perc=(String)confParameters.get("percentage_value");
 			if(perc.equalsIgnoreCase("true")){
@@ -248,7 +257,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		{
 			percentageValue=false;
 		}
-		
+
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
 		if(drillSB!=null){
 			String lab=(String)drillSB.getAttribute("document");
@@ -285,7 +294,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			String colorSerie="";
 			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
-				
+
 				String serieName=new String(object.getKey());
 				colorSerie=new String((String)object.getValue());
 				Color col=new Color(Integer.decode(colorSerie).intValue());
@@ -359,8 +368,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		renderer.setItemURLGenerator(mycatUrl);
 
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
@@ -387,7 +395,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				}	
 			}
 		}
-		
+
 		if(cumulative){
 			int row=dataset.getRowIndex("Cumulative");
 			if(row!=-1){
@@ -397,30 +405,46 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					renderer.setSeriesPaint(row, Color.WHITE);
 			}
 		}
-		
-		
+
+
 		MyStandardCategoryItemLabelGenerator generator=null;
 		if(additionalLabels){
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
-		
+
+			double orient=(-Math.PI / 2.0);
+
+			if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
+				renderer.setBaseItemLabelFont(addLabelsStyle.getFont());
+				renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
+				if(addLabelsStyle.getOrientation().equalsIgnoreCase("horizontal")){
+					orient=0.0;
+				}
+			}
+			else{
+				renderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 12));
+				if(addLabelsStyle!=null  && addLabelsStyle.getColor()!=null)
+					renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
+				else
+					renderer.setBaseItemLabelPaint(Color.BLACK);
+			}
+
 			renderer.setBaseItemLabelGenerator(generator);
-			renderer.setBaseItemLabelFont(new Font("SansSerif", Font.LAYOUT_LEFT_TO_RIGHT, 12));
 			renderer.setBaseItemLabelsVisible(true);
 			//vertical labels 			
 			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));
+					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+					orient));
 			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-	                -Math.PI / 2.0));
-	       
+					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+					orient));
+
 			//horizontal labels
 			/*
 			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
 			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-	        */
+			 */
 
 		}
 

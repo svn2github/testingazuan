@@ -76,6 +76,7 @@ public class DefaultDatamartProvider extends AbstractDatamartProvider {
             ResultSet resultSet = sdr.getResultSet();
             Map styles = new HashMap();
             Map links = new HashMap();
+            resultSet.beforeFirst();
             while(resultSet.next()) {
             	String id = resultSet.getString(resultSet.findColumn(columnid));
             	if((id==null) || (id.trim().equals(""))) {

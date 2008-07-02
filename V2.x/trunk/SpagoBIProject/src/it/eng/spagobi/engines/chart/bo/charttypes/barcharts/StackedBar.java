@@ -189,10 +189,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					if(additionalValues.get(nameS)!=null){
 						String val=(String)additionalValues.get(nameS);
 						String index=catValue+"-"+nameS;						
-						String totalVal = valueS;
-						if (percentageValue) totalVal += "%";
-						//totalVal += " / " + val;
-						totalVal += "\n" + val;
+						//String totalVal = valueS;
+						String totalVal=val;						
+						//if (percentageValue) totalVal += "%";
+						//totalVal += "\n" + val;
 						catSerLabels.put(index, totalVal);
 					}
 

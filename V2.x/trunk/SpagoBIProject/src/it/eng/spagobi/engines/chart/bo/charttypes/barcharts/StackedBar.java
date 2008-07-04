@@ -371,7 +371,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
-
+		if(subName!= null && !subName.equals("")){
+		TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+		chart.addSubtitle(subTitle);
+		}
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
 		// set the background color for the chart...

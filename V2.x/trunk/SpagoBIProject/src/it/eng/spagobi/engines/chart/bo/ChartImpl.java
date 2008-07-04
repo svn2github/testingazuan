@@ -51,6 +51,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.title.Title;
 import org.jfree.data.general.Dataset;
 import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
@@ -67,6 +68,7 @@ public class ChartImpl implements IChart {
 
 	protected int titleDimension;
 	protected String name=null;
+	protected String subName=null;
 	protected int width;
 	protected int height;
 	protected String data;
@@ -82,6 +84,7 @@ public class ChartImpl implements IChart {
 	protected boolean filter=true;
 	protected boolean slider=true;
 	protected StyleLabel styleTitle;
+	protected StyleLabel styleSubTitle;
 
 	/**
 	 * configureChart reads the content of the template and sets the chart parameters.
@@ -123,9 +126,48 @@ public class ChartImpl implements IChart {
 				Color color=Color.decode(colorS);
 				int size=Integer.valueOf(sizeS).intValue();
 				styleTitle=new StyleLabel(fontS,size,color);
+				
 			}
 			catch (Exception e) {
 				logger.error("Wrong style Title settings, use default");
+			}
+
+		}
+		
+		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute("STYLE_SUBTITLE");
+		if(styleSubTitleSB!=null){
+
+			String subTitle = (String)content.getAttribute("STYLE_SUBTITLE.name");
+			if(subTitle!=null) {
+				String tmpSubTitle = subTitle;
+				while (!tmpSubTitle.equals("")){
+					if (tmpSubTitle.indexOf("$P{") >= 0){
+						String parName = tmpSubTitle.substring(tmpSubTitle.indexOf("$P{")+3, tmpSubTitle.indexOf("}"));
+						String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+						if(parValue.equals("%")) parValue = "";
+						int pos = tmpSubTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+						subTitle = subTitle.replace("$P{" + parName + "}", parValue);
+						tmpSubTitle = tmpSubTitle.substring(pos);
+					}
+					else
+						tmpSubTitle = "";
+				}
+				setSubName(subTitle);
+			}
+			else setSubName("");
+			
+			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_SUBTITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleSubTitle=new StyleLabel(fontS,size,color);				
+			}
+			catch (Exception e) {
+				logger.error("Wrong style SubTitle settings, use default");
 			}
 
 		}
@@ -350,6 +392,10 @@ public class ChartImpl implements IChart {
 	 */
 	public void setName(String _name) {
 		name=_name;		
+	}
+	
+	public void setSubName(String _name) {
+		subName=_name;		
 	}
 
 	/* (non-Javadoc)
@@ -653,6 +699,7 @@ public class ChartImpl implements IChart {
 
 		return titleText;
 	}
+	
 
 	public int getTitleDimension() {
 		return titleDimension;

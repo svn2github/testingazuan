@@ -433,10 +433,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			renderer.setBaseItemLabelsVisible(true);
 			//vertical labels 			
 			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.CENTER, TextAnchor.CENTER, 
 					orient));
 			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.CENTER, TextAnchor.CENTER, 
 					orient));
 
 			//horizontal labels

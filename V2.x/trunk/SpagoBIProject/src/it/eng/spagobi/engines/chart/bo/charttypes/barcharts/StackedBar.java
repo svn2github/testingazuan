@@ -147,7 +147,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 				}
 				else {
-					if(nameP.startsWith("add_") || nameP.startsWith("ADD_")){
+					nameP = nameP.toUpperCase();
+					if(nameP.startsWith("ADD_")){
 						if(additionalLabels){
 							String ind=nameP.substring(4);							
 							additionalValues.put(ind, value);
@@ -163,7 +164,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 			// if it is cumulative automatically get the vamount value
 			if(cumulative){
-				dataset.addValue(cumulativeValue, "Cumulative", catValue);
+				dataset.addValue(cumulativeValue, "CUMULATIVE", catValue);
 			}
 
 			// if there is an hidden serie put that one first!!! if it is not cumulative
@@ -200,9 +201,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 			}
 			// Check additional Values for CUmulative
-			if(additionalValues.get("Cumulative")!=null){
-				String val=(String)additionalValues.get("Cumulative");
-				String index=catValue+"-"+"Cumulative";						
+			if(additionalValues.get("CUMULATIVE")!=null){
+				String val=(String)additionalValues.get("CUMULATIVE");
+				String index=catValue+"-"+"CUMULATIVE";						
 				catSerLabels.put(index, val);	
 			}
 
@@ -397,7 +398,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		}
 
 		if(cumulative){
-			int row=dataset.getRowIndex("Cumulative");
+			int row=dataset.getRowIndex("CUMULATIVE");
 			if(row!=-1){
 				if(color!=null)
 					renderer.setSeriesPaint(row, color);
@@ -470,6 +471,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 	public String getDocument_Parameters(HashMap drillParameters) {
 		String document_parameter="";
+		if (drillParameters != null){
 		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
 			String name = (String) iterator.next();
 			String value=(String)drillParameters.get(name);
@@ -478,6 +480,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				//document_parameter+="&"+name+"="+value;
 			}
 
+		}
 		}
 		return document_parameter;
 	}

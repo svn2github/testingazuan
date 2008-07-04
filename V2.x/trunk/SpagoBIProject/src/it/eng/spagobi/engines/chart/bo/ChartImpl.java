@@ -99,6 +99,7 @@ public class ChartImpl implements IChart {
 				if (tmpTitle.indexOf("$P{") >= 0){
 					String parName = tmpTitle.substring(tmpTitle.indexOf("$P{")+3, tmpTitle.indexOf("}"));
 					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+					if(parValue.equals("%")) parValue = "";
 					int pos = tmpTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
 					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
 					tmpTitle = tmpTitle.substring(pos);

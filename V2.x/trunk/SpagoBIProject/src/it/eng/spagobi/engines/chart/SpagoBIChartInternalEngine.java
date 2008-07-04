@@ -236,6 +236,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					//check if there are other parameters from the drill parameters whose value is in the request; elsewhere take them from template
 					logger.debug("Linkable chart: search in the request for other parameters");
 					HashMap drillParameters=new HashMap();
+					if(((ILinkableChart)sbi).getDrillParameter()!= null){
 					
 					drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
 					
@@ -248,6 +249,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 						}
 
+					}
 					}
 
 				}

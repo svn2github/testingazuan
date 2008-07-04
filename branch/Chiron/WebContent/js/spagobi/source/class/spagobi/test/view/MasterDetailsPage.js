@@ -32,6 +32,7 @@ qx.Class.define("spagobi.test.view.MasterDetailsPage",
 	} else if(type == 'featuremgmt') {
 		records = spagobi.test.DataService.loadFeatureRecords();
 		form = new spagobi.ui.custom.FeatureDetailsForm(); 
+		var test1 = new spagobi.test.view.NavigationBar();
 	}
 		
 		

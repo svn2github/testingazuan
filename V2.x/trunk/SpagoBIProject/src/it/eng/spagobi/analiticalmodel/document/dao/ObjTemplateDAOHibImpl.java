@@ -115,11 +115,11 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjTemplates sot where sot.sbiObject.biobjId="+biobjId;
+			String hql = "from SbiObjTemplates sot where sot.sbiObject.biobjId="+biobjId+" order by sot.prog desc";
 			Query query = aSession.createQuery(hql);
 			List result = query.list();
 			Iterator it = result.iterator();
-			while (it.hasNext()){
+ 			while (it.hasNext()){
 				templates.add(toObjTemplate((SbiObjTemplates)it.next()));
 			}
 			tx.commit();

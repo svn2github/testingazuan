@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -375,6 +376,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
 		chart.addSubtitle(subTitle);
 		}
+		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
+		StyleLabel styleSubSubTitle=new StyleLabel("Arial",12,colorSubInvisibleTitle);
+		TextTitle subsubTitle =setStyleTitle("c", styleSubSubTitle);
+		chart.addSubtitle(subsubTitle);
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
 		// set the background color for the chart...

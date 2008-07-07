@@ -617,7 +617,7 @@ public class ParametersGeneratorTag extends TagSupport {
     private void createParameterLabelDiv(StringBuffer htmlStream, BIObjectParameter biparam) {
         htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
 	
-	htmlStream.append("			<span class='portlet-form-field-label'>\n");
+	htmlStream.append("			<span class='portlet-form-field-label'>");
 	htmlStream.append(biparam.getLabel());
 	//Puts an * if the parameter is mandatory
 	List checks = biparam.getParameter().getChecks();
@@ -627,11 +627,11 @@ public class ParametersGeneratorTag extends TagSupport {
 		while (it.hasNext()){
 		check = (Check)it.next();
 		if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")){
-			htmlStream.append(" * " );
+			htmlStream.append("*" );
 		}
 		} 
 	  }
-	htmlStream.append("			</span>\n");
+	htmlStream.append("</span>\n");
 	htmlStream.append("		</div>\n");
 	htmlStream.append("		<div class='div_detail_form'>\n");
 	

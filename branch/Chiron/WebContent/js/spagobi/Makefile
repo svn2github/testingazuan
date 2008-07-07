@@ -48,12 +48,12 @@ QOOXDOO_URI = ../js/qooxdoo-0.7.3
 # Namespace of your application e.g. custom
 # Even complexer stuff is possible like: net.sf.custom
 #
-APPLICATION_NAMESPACE = spagobi.test
+APPLICATION_NAMESPACE = spagobi.app
 
 #
 # Full application classname
 #
-APPLICATION_CLASSNAME = TestApplication
+APPLICATION_CLASSNAME = Chiron
 
 
 #

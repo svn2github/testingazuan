@@ -53,9 +53,10 @@ qx.Class.define("spagobi.ui.custom.MapDetailsForm", {
         		text: 'Format',
         		items: ["","SVG"]		
         	}, {
-        		type: 'subform',
+        		//type: 'form',
+        		type: 'formList',
         		dataIndex: 'features',
-        		form: spagobi.ui.custom.FeatureDetailsForm
+        		formList: spagobi.ui.custom.FeatureDetailsForm
         		
         		/*[
         			{

@@ -77,8 +77,9 @@ qx.Class.define("spagobi.app.Chiron",
       	// Create Application Layout
       	this._createLayout();
       	
+  
       	this._selectToolbar('resources');
-      	this._selectPage('engine');
+      	//this._selectPage('engine');
       	
       	// React on theme selection changes
       	//qx.theme.manager.Meta.getInstance().addEventListener("changeTheme", this._applyCssTheme, this);
@@ -134,6 +135,62 @@ qx.Class.define("spagobi.app.Chiron",
       	dockLayout.addTop(this._toolBarView);
       	
       	// Create horizontal split pane
+      	
+      	this.toolbars['resources'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			defaultBackgroudColor: 'white',
+      			focusedBackgroudColor: '#DEFF83',
+      			buttons: [
+      				{
+      					name: 'engine',
+						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
+						page: 'engine'
+      				}, {
+      					name: 'datasource',
+						image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',
+						page: 'datasource'
+      				}, {
+      					name: 'dataset',
+						image:'spagobi/img/spagobi/test/datasetAdministrationIcon.png',
+						page: 'dataset'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'engine'
+      	});
+      	//this.toolbars['resources'].selectPage('engine');
+      	dockLayout.add( this.toolbars['resources'] );
+      	this.toolbars['resources'].setLiveResize(true);
+      	
+      	this.toolbars['resources'].setVisibility(false);
+      	
+      	
+      	this.toolbars['catalogues'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			defaultBackgroudColor: 'white',
+      			focusedBackgroudColor: '#DEFF83',
+      			buttons: [
+      				{
+      					name: 'mapmgmt',
+						image:'spagobi/img/spagobi/test/mapManagementIcon.png',
+						page: 'mapmgmt'
+      				}, {
+      					name: 'featuremgmt',
+						image:'spagobi/img/spagobi/test/featureManagementIcon.png',
+						page: 'featuremgmt'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'mapmgmt'
+      	});
+      	//this.toolbars['catalogues'].selectPage('mapmgmt');
+      	dockLayout.add( this.toolbars['catalogues'] );
+      	this.toolbars['catalogues'].setLiveResize(true);
+      	
+      	this.toolbars['catalogues'].setVisibility(false);
+      	
+      	
+      	/*
       	this.mainPane = new qx.ui.splitpane.HorizontalSplitPane(70, "1*");
       	dockLayout.add(this.mainPane);
 
@@ -155,16 +212,19 @@ qx.Class.define("spagobi.app.Chiron",
   		this.mainPane.addLeft(cataloguesIconBar);
   		cataloguesIconBar.setVisibility(false);
   		this.toolbars['catalogues'] = cataloguesIconBar;
+  		*/
   		
     },
     
     _selectToolbar: function(toolbarName) {
     	if(this.toolbars[toolbarName]) {
     		if(this.selectToolbarName) {
-    			alert(this.selectToolbarName + ' - ' + toolbarName);
     			this.toolbars[this.selectToolbarName].setVisibility(false);
     		}
     		this.toolbars[toolbarName].setVisibility(true);
+    		if(!this.toolbars[toolbarName].getSelectedPageName()) {
+    			this.toolbars[toolbarName].selectDefaultPage();
+    		}
     		this.selectToolbarName = toolbarName;
     	} else {
     		alert(toolbarName + ' is not yet implemented !');

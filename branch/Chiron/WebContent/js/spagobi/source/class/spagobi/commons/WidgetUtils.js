@@ -210,14 +210,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	return atom;
         },
         
-        createInputSubForm: function( config ) {
-			var defultConfig = {
-			top: 0,
-			left: 0,
-			items: []
-			};
-			
-			//config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        createInputForm: function( config ) {
 			
 			var subform;
 			
@@ -233,6 +226,17 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			atom.setUserData('field', subform);
 			atom.setBorder( new qx.ui.core.Border(2,'solid') );
 			*/
+			subform.setUserData('field', subform);
+			
+			return subform;
+		},
+		
+		createInputFormList: function( config ) {
+			
+			var subform;
+			
+			subform = new spagobi.ui.FormList( config.formList );
+			
 			subform.setUserData('field', subform);
 			
 			return subform;

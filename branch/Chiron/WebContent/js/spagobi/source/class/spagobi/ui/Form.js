@@ -1,9 +1,29 @@
+/*
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+*/
+
+
 /**
- *
- 
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-
-
 qx.Class.define("spagobi.ui.Form", {
 	extend: qx.ui.layout.VerticalBoxLayout,
 	
@@ -14,16 +34,11 @@ qx.Class.define("spagobi.ui.Form", {
   		
   		this.dataMappings = [];
   		
-  		for(var i = 0; i < config.length; i++) {
-  			this.addInputField( config[i] );
+  		if(config) {
+	  		for(var i = 0; i < config.length; i++) {
+	  			this.addInputField( config[i] );
+	  		}
   		}
-  		
-  		
-  		/*
-  		var btn2 = new qx.ui.form.Button("save", "spagobi/img/spagobi/test/save.png");
-  		btn2.addEventListener("execute", function(){alert(this.getData().toSource());}, this);
-  		this.add(btn2);
-  		*/
 	},
 	
 	members: {
@@ -62,10 +77,11 @@ qx.Class.define("spagobi.ui.Form", {
 				value = this.getInputField(dataIndex).getUserData('field').getValue();
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
 				value = this.getInputField(dataIndex).getUserData('field').isChecked();
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'subform') {	
-				alert(dataIndex + '\n' + this.getInputField(dataIndex).toSource());	
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {	
 				value = this.getInputField(dataIndex).getUserData('field').getData();
-			}				
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {	
+				value = this.getInputField(dataIndex).getUserData('field').getData();
+			}			
 			
 			return value;			
 		},
@@ -80,7 +96,9 @@ qx.Class.define("spagobi.ui.Form", {
 				this.getInputField(dataIndex).getUserData('field').setValue(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
 				this.getInputField(dataIndex).getUserData('field').setChecked(value);
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'subform') {		
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {		
+				this.getInputField(dataIndex).getUserData('field').setData(value);
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {		
 				this.getInputField(dataIndex).getUserData('field').setData(value);
 			}
 			
@@ -96,9 +114,12 @@ qx.Class.define("spagobi.ui.Form", {
   			} else if(config.type === 'check') {
   				inputField = spagobi.commons.WidgetUtils.createInputCheckBox(config);    
   				inputField.setUserData('type', 'check');    
-  			} else if(config.type === 'subform') {
-  				inputField = spagobi.commons.WidgetUtils.createInputSubForm(config);    
-  				inputField.setUserData('type', 'subform');    
+  			} else if(config.type === 'form') {
+  				inputField = spagobi.commons.WidgetUtils.createInputForm(config);    
+  				inputField.setUserData('type', 'form');    
+  			} else if(config.type === 'formList') {
+  				inputField = spagobi.commons.WidgetUtils.createInputFormList(config);    
+  				inputField.setUserData('type', 'formList');    
   			}
   			
   			this.dataMappings[config.dataIndex] = inputField;

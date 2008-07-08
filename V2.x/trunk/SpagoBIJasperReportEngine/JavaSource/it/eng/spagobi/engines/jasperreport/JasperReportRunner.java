@@ -125,6 +125,10 @@ public class JasperReportRunner {
 		
 		logger.debug("Read user data from the request. userId="+userId+". DocumentId="+documentId);
 		
+		parameters.put("SBI_USERID", userId);
+		parameters.put("SBI_HTTP_SESSION", session);
+		
+		
 		
 		/* TODO Since this is the back-end (logic) part of the JasperEngine the direct use of  HttpServletResponse, 
 		 * HttpServletRequest and ServletContext objects shuold be pushed back to JasperReportServlet that is 

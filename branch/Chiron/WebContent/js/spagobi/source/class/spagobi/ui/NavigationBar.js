@@ -1,3 +1,34 @@
+/* *
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+* */
+
+/**
+ * Created by SpagoBI team
+ * Andrea Gioia (andrea.gioia@eng.it), 
+ * Amit Rana (amit.rana@eng.it), 
+ * Gaurav Jauhri (gaurav.jauhri@eng.it)
+ 
+ */
+
+
 qx.Class.define("spagobi.ui.NavigationBar", {
 	
 	extend : qx.ui.toolbar.ToolBar,
@@ -11,23 +42,26 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 	members : {
 		
 		createNavBar : function(){
-			//var addBtn = new qx.ui.toolbar.Button("", "icon/16/actions/dialog-ok.png");
 			
-			//this._toolBarView = new spagobi.test.view.ToolBar(this);
+			var horizontalbarLayout = new qx.ui.layout.HorizontalBoxLayout();
+  			horizontalbarLayout.setSpacing(15);
 			
 			var firstPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");
-			this.add(firstPageButton);
+			horizontalbarLayout.add(firstPageButton);
 			
 			var prevPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/previousPage.png");
-			this.add(prevPageButton);
+			horizontalbarLayout.add(prevPageButton);
 			
-			this.add(new qx.ui.basic.HorizontalSpacer());
+			horizontalbarLayout.add(new qx.ui.basic.HorizontalSpacer());
 			
 			var nextPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");
-			this.add(nextPageButton);
+			horizontalbarLayout.add(nextPageButton);
 			
 			var lastPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/lastPage.png");
-			this.add(lastPageButton);
+			horizontalbarLayout.add(lastPageButton);
+			
+			horizontalbarLayout.setAlign("center",null);
+			this.add(horizontalbarLayout);
 		}	
 	}
 });

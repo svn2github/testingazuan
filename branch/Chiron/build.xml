@@ -37,16 +37,16 @@
 	</target>
 	
 	<target name="createSourceScriptFiles" depends="makeSource">
-			<copy file="${js.spagobi.source.dir}/script/spagobi.test.js" 
+			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 
 				  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
 			
-			<copy file="${js.spagobi.source.dir}/script/spagobi.test.js" 
+			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 
 						  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
 			
 	</target>
 	
 	<target name="createBuildScriptFiles" depends="makeBuild">
-				<copy file="${js.spagobi.build.dir}/script/spagobi.test.js" 
+				<copy file="${js.spagobi.build.dir}/script/spagobi.app.js" 
 					  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
 				
 	</target>

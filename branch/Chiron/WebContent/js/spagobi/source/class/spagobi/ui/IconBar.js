@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
  */
 
 
@@ -56,12 +58,15 @@ qx.Class.define("spagobi.ui.IconBar", {
 		
 	    
 	    addButton: function(buttonConfig) {
-	    	//this._addButton(name,image,callback, context);
-	    	this._addAtom(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context);
+	    	this._addButton(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context);
+	    	//this._addAtom(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context);
 	 	},
 	 	
-	 	_addButton: function(name,image,callback, context) {	    
+	 	_addButton: function(name,image,callback, context) {
+	 		var border = new qx.ui.core.Border(0);   
 			var btn = new qx.ui.form.Button('',image);
+			btn.setBorder(border);	
+			btn.setUserData('name', name); 
 			btn.addEventListener("execute", callback, context);
 			this.add(btn);
 			return btn;

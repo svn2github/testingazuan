@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
 
 	<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 
@@ -164,18 +164,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
+		//if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
 		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar")){
 // returns a new datasets map filtered
 			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
 		}
-		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline")){
+		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
 			copyDatasets=datasetMap.filteringMultiDatasetBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("simplecluster")){
 			copyDatasets=datasetMap.filteringClusterChart(request,(ClusterCharts)sbi,sbiMode,docComposition);
 		}
-		
+		else if(sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
+			//copyDatasets=datasetMap;
+			copyDatasets=datasetMap.filteringGroupedBarChart(request,(StackedBarGroup)sbi,sbiMode,docComposition);
 		}
+	}
 	else {copyDatasets=datasetMap;}
 	
 

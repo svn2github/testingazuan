@@ -2,6 +2,7 @@ package it.eng.spagobi.engines.chart.utils;
 
 
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
 
 import java.util.HashMap;
@@ -22,9 +23,12 @@ public class DatasetMap {
 	TreeSet series;
 	Integer seriesNumber;
 	HashMap categories;
+	HashMap subCategories;
 	Integer catsnum;
+	Integer subcatsnum;
 	Integer numberCatVisualization;
 	String catTitle="category";
+	String subcatTitle="subcategory";
 	String serTitle="serie";
 	int categoryCurrent=0;
 	String valueSlider="1";
@@ -316,7 +320,95 @@ public class DatasetMap {
 	}
 
 
+	public DatasetMap filteringGroupedBarChart(HttpServletRequest request, StackedBarGroup sbi, String sbiMode, boolean docComposition){
 
+		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
+		Dataset copyDataset=null;
+		try {
+			copyDataset = (DefaultCategoryDataset)dataset.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
+
+		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
+	/*	for(int i=0;i<series.size();i++){
+			String s=(String)series.get(i);
+			sbi.putSeriesNumber(s,(i+1));
+		}*/
+		
+		categories=(HashMap)((BarCharts)sbi).getCategories();
+		catsnum=new Integer(sbi.getRealCatNumber());
+		numberCatVisualization=sbi.getNumberCatVisualization();
+		
+		subCategories=(HashMap)((StackedBarGroup)sbi).getSubCategories();
+		
+
+		catTitle=sbi.getCategoryLabel();
+		subcatTitle = sbi.getSubCategoryLabel();
+		serTitle=sbi.getValueLabel();
+
+		// if slider specifies a category than set view from that point
+		if(request.getParameter("category")!=null){
+			String catS=(String)request.getParameter("category");
+			Double catD=Double.valueOf(catS);
+			categoryCurrent=catD.intValue();
+		}
+		else{ //else set view from first category
+			categoryCurrent=1;
+		}
+		valueSlider=(new Integer(categoryCurrent)).toString();
+		HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
+
+
+		if(categoryCurrent!=0){
+			categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
+			copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
+		}
+		else{
+			categoryCurrentName="All";
+		}
+
+		// Check if particular series has been chosen
+		selectedSeries=new Vector();
+		if(request.getParameter("serie")!=null){
+			String[] cio=request.getParameterValues("serie");
+			//Convert array in vector
+			for(int i=0;i<cio.length;i++){
+				selectedSeries.add(cio[i]);
+			}
+		}
+		else{
+			//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
+			if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
+				selectedSeries.add("allseries");
+		}
+
+
+		// if selectedSerie contains allseries 
+		if(selectedSeries.contains("allseries")){
+			((BarCharts)sbi).setCurrentSeries(null);
+		}
+		else{	
+			copyDataset=sbi.filterDatasetSeries(copyDataset,selectedSeries);	
+
+		}
+		// consider if drawing the slider
+		if((catsnum.intValue())>numberCatVisualization.intValue()){
+			makeSlider=true;	    	
+		}
+
+		if(copyDataset==null){copyDataset=dataset;}
+
+		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
+
+		
+		
+		return newDatasetMap;
+
+	}
 
 
 	public HashMap getDatasets() {

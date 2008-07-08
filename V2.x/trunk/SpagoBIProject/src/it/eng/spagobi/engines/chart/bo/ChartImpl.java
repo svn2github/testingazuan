@@ -27,8 +27,10 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidStackedBarLine;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.SimpleBox;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.SimpleCluster;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
@@ -51,7 +53,6 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.title.Title;
 import org.jfree.data.general.Dataset;
 import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
@@ -321,7 +322,12 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase("stacked_bar")){
 				sbi=new StackedBar();
 			}		
-
+			else if(subtype.equalsIgnoreCase("stacked_bar_group")){
+				sbi=new StackedBarGroup();
+			}	
+			else if(subtype.equalsIgnoreCase("overlaid_stackedbarline")){
+				sbi=new OverlaidStackedBarLine();
+			}	
 		}
 
 		if(type.equals("BOXCHART")){

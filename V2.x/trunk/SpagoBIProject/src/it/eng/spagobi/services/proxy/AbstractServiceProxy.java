@@ -97,9 +97,9 @@ public abstract class AbstractServiceProxy {
 	String className = this.getClass().getSimpleName();
 	logger.debug("Read className=" + className);
 	SourceBean engineConfig = EnginConf.getInstance().getConfig();
-	String spagoContext = (String) session.getAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL);
-	logger.debug("Read spagoContext=" + spagoContext);
-	if (spagoContext == null)
+	String spagoContextBackEnd = (String) session.getAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL);
+	logger.debug("Read spagoContextBackEnd=" + spagoContextBackEnd);
+	if (spagoContextBackEnd == null)
 	    logger.warn("BACK END SPAGO CONTEXT IS NULL!!!!");
 	if (engineConfig != null) {
 	    // sono sui motori...
@@ -108,12 +108,12 @@ public abstract class AbstractServiceProxy {
 	    SourceBean validateSB = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
 	    filterReceipt = (String) validateSB.getCharacters();
 	    logger.debug("Read filterReceipt=" + filterReceipt);
-	    filterReceipt = spagoContext + filterReceipt;
+	    filterReceipt = spagoContextBackEnd + filterReceipt;
 	    validateSB = (SourceBean) engineConfig.getAttribute(className + "_URL");
 	    String serviceUrlStr = (String) validateSB.getCharacters();
 	    logger.debug("Read sericeUrl=" + serviceUrlStr);
 	    try {
-		serviceUrl = new URL(spagoContext + serviceUrlStr);
+		serviceUrl = new URL(spagoContextBackEnd + serviceUrlStr);
 	    } catch (MalformedURLException e) {
 		logger.error("MalformedURLException:" + serviceUrlStr, e);
 	    }

@@ -71,6 +71,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		
    	// Create list view
    	listPage = new spagobi.ui.Table(this, records );
+   	//listPage = new spagobi.ui.PagedTable(this, records );
    	this.addTop( listPage );
       	
    	// Create detail view

@@ -303,7 +303,10 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/DatasourceDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/MapDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/FeatureDetailsForm.js"></script>\
+<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/PagedTable.js"></script>\
+<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/FilterBar.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/Table.js"></script>\
+<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/NavigationBar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/ButtonView.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Bar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Pane.js"></script>\
@@ -364,7 +367,6 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/html/Textile.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/xml/String.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/xml/Entity.js"></script>\
-<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/NavigationBar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/util/range/IntegerRange.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/resizer/Resizer.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/basic/Inline.js"></script>\

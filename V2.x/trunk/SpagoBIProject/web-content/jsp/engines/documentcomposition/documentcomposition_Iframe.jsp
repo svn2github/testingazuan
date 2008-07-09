@@ -26,6 +26,6 @@ String nameDoc = (request.getParameter("nameDoc")==null)?"":(String)request.getP
 %>
 
 
-<iFrame id='iframe_<%=nameDoc%>' name='iframe_<%=nameDoc%>' src='<%=urlDoc%> %>' frameborder='0'  height='100%' width='100%' scrolling="No">
+<iFrame id='iframe_<%=nameDoc%>' name='iframe_<%=nameDoc%>' src='<%=urlDoc%> %>' frameborder='0'  height='100%' width='100%' scrolling="auto">
 </iFrame>
 

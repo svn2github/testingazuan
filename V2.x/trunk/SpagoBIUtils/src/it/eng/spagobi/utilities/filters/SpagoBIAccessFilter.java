@@ -111,18 +111,24 @@ public class SpagoBIAccessFilter implements Filter {
 	    if (userId != null && !isBackend)
 		checkUserWithSSO(userId, session);
 
-	    String spagobiContextUrl = request.getParameter(SpagoBIConstants.SBICONTEXTURL);
-	    String backEndSpagobiContextUrl = request.getParameter(SpagoBIConstants.BACK_END_SBICONTEXTURL);
-	    if (spagobiContextUrl != null) {
-		logger.debug("spagobiContextUrl:" + spagobiContextUrl);
-		session.setAttribute(SpagoBIConstants.SBICONTEXTURL, spagobiContextUrl);
+	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
+	    String spagoBackEndUrl = request.getParameter(SpagoBIConstants.SBI_BACK_END_HOST);
+	    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);
+	    if (spagobiContext != null) {
+		logger.debug("spagobiContext:" + spagobiContext);
+		session.setAttribute(SpagoBIConstants.SBI_CONTEXT, spagobiContext);
 	    } else
-		logger.warn("spagobiContextUrl is null!!!!!!");
-	    if (backEndSpagobiContextUrl != null) {
-		logger.debug("backEndSpagobiContextUrl:" + backEndSpagobiContextUrl);
-		session.setAttribute(SpagoBIConstants.BACK_END_SBICONTEXTURL, backEndSpagobiContextUrl);
+		logger.warn("spagobiContext is null!!!!!!");
+	    if (spagoBackEndUrl != null) {
+		logger.debug("spagoBackEndUrl:" + spagoBackEndUrl);
+		session.setAttribute(SpagoBIConstants.SBI_BACK_END_HOST, spagoBackEndUrl);
 	    } else
-		logger.warn("backEndSpagobiContextUrl is null!!!!!!");
+		logger.warn("spagoBackEndUrl is null!!!!!!");
+	    if (spagoUrl != null) {
+		logger.debug("spagoUrl:" + spagoUrl);
+		session.setAttribute(SpagoBIConstants.SBI_HOST, spagoUrl);
+	    } else
+		logger.warn("spagoUrl is null!!!!!!");	    
 
 	    IEngUserProfile profile = null;
 	    if (userId != null && !userId.equals("scheduler")) {

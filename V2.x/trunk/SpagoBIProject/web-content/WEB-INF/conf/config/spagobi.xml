@@ -30,10 +30,10 @@
      <!--
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
-		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityProviderImpl">
+		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
 			<CONFIG />
 		</PORTAL-SECURITY-CLASS>
-		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlUserProfileFactoryImpl" />
+		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlSecurityServiceSupplierImpl" />
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 	 </SECURITY>
 	 -->
@@ -103,10 +103,14 @@
      
      <LOOKUP numberRows = "20" />
     
-    <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
- 	 <SPAGOBI_CONTEXT_PATH>@spagobi.context.path@</SPAGOBI_CONTEXT_PATH>
- 	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
- 	 <BACKEND_SPAGOBI_CONTEXT_PATH>@backend.spagobi.context.path@</BACKEND_SPAGOBI_CONTEXT_PATH>
+
+     <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
+    
+     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
+ 	
+ 	   <BACKEND_SPAGOBI_HOST>@spagobi.backend.host@</BACKEND_SPAGOBI_HOST>
+ 	  
+
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

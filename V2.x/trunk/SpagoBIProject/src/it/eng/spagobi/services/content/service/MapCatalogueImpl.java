@@ -189,7 +189,8 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	} catch (IOException e) {
 	    logger.error("IOException",e);
 	}
-	logger.debug("IN");
+	logger.debug("getStandardHierarchy():"+buffer.toString());
+	logger.debug("OUT");
 	return buffer.toString();
 
     }
@@ -210,6 +211,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 			    + ((i == lstMaps.size() - 1) ? "" : ",");
 		}
 	    }
+	    logger.debug("getMapsByFeature():"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {
 	    logger.error("Error",e);
@@ -236,9 +238,10 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 			    + ((i == lstFeatures.size() - 1) ? "" : ",");
 		}
 	    }
+	    logger.debug("getFeaturesInMap():"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {
-	    logger.debug("Error",e);
+	    logger.error("Error",e);
 	    return null;
 	}finally{
 	    logger.debug("OUT");
@@ -246,7 +249,13 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	// return mapName + ",centroidi_" + mapName;
     }
 
+    /**
+     * return the URL for get MAP, the URL point to the Back end Server. 
+     * @param mapName
+     * @return
+     */
     private String getMapUrl(String mapName) {
+	 logger.debug("IN");
 	String toReturn = null;
 	try {
 	    ISbiGeoMapsDAO mapDAO = DAOFactory.getSbiGeoMapsDAO();
@@ -254,8 +263,8 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	    if (tmpMap == null)
 		return null;
 	    toReturn = tmpMap.getUrl();
-	    //toReturn = ConfigSingleton.getInstance().getCharacters("SPAGOBI.SPAGOBI_CONTEXT_PATH") + toReturn;
-	    toReturn = GeneralUtilities.getSpagoBiContextAddress() + toReturn;
+	    toReturn = GeneralUtilities.getSpagoBiHostBackEnd()+ GeneralUtilities.getSpagoBiContext()+ toReturn;
+	    logger.debug("MapUrl:"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {
 	    logger.error("Error",e);
@@ -279,7 +288,6 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
     private byte[] readFile(String path) throws Exception {
 	logger.debug("IN");
 	String filePathName = ConfigSingleton.getRootPath() + path;
-	File fileMap = new File(filePathName);
 	byte[] fileContent = "".getBytes();
 	FileInputStream fis = null;
 	try {
@@ -306,6 +314,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 			    + ((i == lstMaps.size() - 1) ? "" : ",");
 		}
 	    }
+	    logger.debug("getAllMapNames():"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {
 	    logger.error("error",e);
@@ -329,6 +338,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 			    + ((i == lstFeatures.size() - 1) ? "" : ",");
 		}
 	    }
+	    logger.debug("getAllFeatureNames():"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {
 	    logger.error("Error",e);

@@ -251,8 +251,9 @@ public class SpagoBIConstants {
 	
 	public static final String WEBMODE = "WEBMODE";
 	
-	public static final String SBICONTEXTURL = "spagobicontext";
-	public static final String BACK_END_SBICONTEXTURL = "BACK_END_SPAGOBI_CONTEXT";
+	public static final String SBI_CONTEXT = "SBICONTEXT";
+	public static final String SBI_HOST = "SBI_HOST";
+	public static final String SBI_BACK_END_HOST = "BACK_END_HOST";
 	
 	public static final String COUNTRY = "country";
 	

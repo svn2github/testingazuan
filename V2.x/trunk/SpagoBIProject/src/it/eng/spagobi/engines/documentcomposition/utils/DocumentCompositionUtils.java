@@ -112,7 +112,7 @@ public class DocumentCompositionUtils {
 			engine = obj.getEngine();
 		
 			// get the initial url of the engine
-		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress()+"&amp;"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+GeneralUtilities.getBackEndSpagoBiContextAddress();
+		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBI_CONTEXT+"="+GeneralUtilities.getSpagoBiContext()+"&amp;"+SpagoBIConstants.SBI_BACK_END_HOST+"="+GeneralUtilities.getSpagoBiHostBackEnd()+"&amp;"+SpagoBIConstants.SBI_HOST+"="+GeneralUtilities.getSpagoBiHost();
 		}
 		catch (Exception ex) {		
 			logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database." , ex);		
@@ -212,7 +212,7 @@ public class DocumentCompositionUtils {
 				}
 
 				// complete the url of the external engine
-			    urlReturn = engine.getUrl()+"?"+SpagoBIConstants.SBICONTEXTURL+"="+GeneralUtilities.getSpagoBiContextAddress()+"&amp;"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+GeneralUtilities.getBackEndSpagoBiContextAddress();
+				urlReturn = engine.getUrl()+"?"+SpagoBIConstants.SBI_CONTEXT+"="+GeneralUtilities.getSpagoBiContext()+"&amp;"+SpagoBIConstants.SBI_BACK_END_HOST+"="+GeneralUtilities.getSpagoBiHostBackEnd()+"&amp;"+SpagoBIConstants.SBI_HOST+"="+GeneralUtilities.getSpagoBiHost();
 				
 			    Set parKeys = mapPars.keySet();
 				Iterator parKeysIter = parKeys.iterator();
@@ -256,7 +256,7 @@ public class DocumentCompositionUtils {
 			logger.debug("Class " + className + " instantiated successfully. Now engine's execution starts.");
 			
 			
-			urlReturn = GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
+			urlReturn = GeneralUtilities.getSpagoBiHost() + GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
 						"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
 			
 			urlReturn += getParametersUrl(obj, document, requestSB, true);

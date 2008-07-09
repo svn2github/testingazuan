@@ -129,21 +129,29 @@ public class ExecutionProxy {
 	    String pass = (String) passSB.getCharacters();
 	    if (pass==null) logger.warn("Pass Ticket is null");
 	    mapPars.put(SpagoBIConstants.PASS_TICKET,pass);
-	    
-	    // set spagobi context url
-	    if (!mapPars.containsKey(SpagoBIConstants.BACK_END_SBICONTEXTURL)) {
-		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
-		String sbiconturl = GeneralUtilities.getBackEndSpagoBiContextAddress();
-		if (sbiconturl != null) {
-		    mapPars.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, sbiconturl);
+
+	    // set spagobi context
+	    if (!mapPars.containsKey(SpagoBIConstants.SBI_CONTEXT)) {
+		String sbicontext = GeneralUtilities.getSpagoBiContext();
+		if (sbicontext != null) {
+		    mapPars.put(SpagoBIConstants.SBI_CONTEXT, sbicontext);
 		}
 	    }
-	 // set spagobi context url for backend invocation
-	    if (!mapPars.containsKey(SpagoBIConstants.SBICONTEXTURL)) {
+	    
+	    // set spagobi  url
+	    if (!mapPars.containsKey(SpagoBIConstants.SBI_BACK_END_HOST)) {
 		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
-		String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		String sbiconturl = GeneralUtilities.getSpagoBiHostBackEnd();
 		if (sbiconturl != null) {
-		    mapPars.put(SpagoBIConstants.SBICONTEXTURL, sbiconturl);
+		    mapPars.put(SpagoBIConstants.SBI_BACK_END_HOST, sbiconturl);
+		}
+	    }
+	 // set spagobi  url for backend invocation
+	    if (!mapPars.containsKey(SpagoBIConstants.SBI_HOST)) {
+		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+		String sbiconturl = GeneralUtilities.getSpagoBiHost();
+		if (sbiconturl != null) {
+		    mapPars.put(SpagoBIConstants.SBI_HOST, sbiconturl);
 		}
 	    }	    
 

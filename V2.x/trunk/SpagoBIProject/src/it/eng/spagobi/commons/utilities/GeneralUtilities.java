@@ -300,29 +300,85 @@ public class GeneralUtilities {
 	return ipAddrStr;
     }
 
+    
     /**
-     * Returns the context address for SpagoBI as an URL and puts it into a
-     * string. The information contained are the Srever name and port. Before
-     * saving, both them are written into the output console.
+     * Returns the context  for SpagoBI 
      * 
-     * @return A String with SpagoBI's context adderss
+     * @return A String with SpagoBI's context 
      */
-    public static String getSpagoBiContextAddress() {
+    public static String getSpagoBiContext() {
 	logger.debug("IN");
 	String path = "";
 	try {
-	    logger.debug("Trying to recover spagobi context path from ConfigSingleton");
+	    logger.debug("Trying to recover spagobi context from ConfigSingleton");
 	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-	    SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT_PATH");
-	    path = spagobiContextPathSB.getCharacters();
-	    logger.debug("using context path: " + path);
+	    SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT");
+	    if (sbTmp!=null){
+		path = sbTmp.getCharacters();
+	    }else {
+		logger.debug("SPAGOBI_CONTEXT not set, using the default value ");
+		path="/SpagoBI";
+	    }
+	    logger.debug("SPAGOBI_CONTEXT: " + path);
 	} catch (Exception e) {
 	    logger.error("Error while recovering SpagoBI context address", e);
 	}
 	logger.debug("OUT:" + path);
 	return path;
-    }    
+    }      
 
+    /**
+     * Returns the address for SpagoBI as an URL and puts it into a
+     * string. The information contained are the Server name and port. Before
+     * saving, both them are written into the output console.
+     * 
+     * @return A String with SpagoBI's adderss
+     */
+    public static String getSpagoBiHost() {
+	logger.debug("IN");
+	String path = "";
+	try {
+	    logger.debug("Trying to recover SpagoBiHost from ConfigSingleton");
+	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+	    SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_HOST");
+	    if (sbTmp!=null){
+		path = sbTmp.getCharacters();
+	    }else {
+		logger.debug("SPAGOBI_HOST not set, using the default value ");
+		path ="http://localhost:8080";
+	    }
+	    logger.debug("SPAGOBI_HOST: " + path);
+	} catch (Exception e) {
+	    logger.error("Error while recovering getSpagoBiHost", e);
+	}
+	logger.debug("OUT:" + path);
+	return path;
+    }  
+    /**
+     * This URL is used for the back end call.
+     * @return A String with SpagoBI's adderss
+     */
+    public static String getSpagoBiHostBackEnd() {
+	logger.debug("IN");
+	String path = "";
+	try {
+	    logger.debug("Trying to recover SpagoBiHostBackEnd from ConfigSingleton");
+	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+	    SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.BACKEND_SPAGOBI_HOST");
+	    if (sbTmp!=null){
+		path = sbTmp.getCharacters();
+	    }else {
+		logger.debug("BACKEND_SPAGOBI_HOST not set, using the default value ");
+		path = "http://localhost:8080";
+	    }
+	    logger.debug("BACKEND_SPAGOBI_HOST: " + path);
+	} catch (Exception e) {
+	    logger.error("Error while recovering getSpagoBiHostBackEnd", e);
+	}
+	logger.debug("OUT:" + path);
+	return path;
+    }      
+    
     /**
      * Returns the complete HTTP URL and puts it into a
      * string.
@@ -332,15 +388,14 @@ public class GeneralUtilities {
      * @return A String with complete HTTP Url
      */ 
     public static String getSpagoBIProfileBaseUrl(String userId) {
-    	logger.debug("IN");
+    	logger.debug("IN.Trying to recover spago Adapter HTTP Url. userId="+userId);
     	String url = "";
     	String path = "";
     	String adapUrlStr = "";
     	try {
-    		logger.debug("Trying to recover spago Adapter HTTP Url");
+    	    logger.debug("");
     	    adapUrlStr = getSpagoAdapterHttpUrl();
-    	    logger.debug("Trying to recover spagobi context path from ConfigSingleton");
-    	    path= getSpagoBiContextAddress();
+    	    path= getSpagoBiHost()+getSpagoBiContext();
     	    url = path + adapUrlStr + "?NEW_SESSION=TRUE&userid="+userId;
     	    logger.debug("using URL: " + url);
     	} catch (Exception e) {
@@ -349,29 +404,7 @@ public class GeneralUtilities {
     	logger.debug("OUT");
     	return url;
         }
-    
-    /**
-     * Returns the context address for SpagoBI as an URL and puts it into a
-     * string. The information contained are the Server name and port. Before
-     * saving, both them are written into the output console.
-     * 
-     * @return A String with SpagoBI's context adderss
-     */
-    public static String getBackEndSpagoBiContextAddress() {
-	logger.debug("IN");
-	String path = "";
-	try {
-	    logger.debug("Trying to recover spagobi context path from ConfigSingleton");
-	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-	    SourceBean spagobiContextPathSB = (SourceBean) spagoConfig.getAttribute("SPAGOBI.BACKEND_SPAGOBI_CONTEXT_PATH");
-	    path = spagobiContextPathSB.getCharacters();
-	    logger.debug("using context path: " + path);
-	} catch (Exception e) {
-	    logger.error("Error while recovering SpagoBI context address", e);
-	}
-	logger.debug("OUT:" + path);
-	return path;
-    }    
+      
 
     /**
      * Gets the spagoBI's dashboards servlet information as a string.
@@ -379,7 +412,7 @@ public class GeneralUtilities {
      * @return A string containing spagoBI's dashboards servlet information
      */
     public static String getSpagoBiDashboardServlet() {
-	return getSpagoBiContextAddress() + "/DashboardService";
+	return getSpagoBiHost()+getSpagoBiContext() + "/DashboardService";
     }
 
     

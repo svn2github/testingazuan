@@ -49,7 +49,7 @@ public class WebUrlBuilder implements IUrlBuilder{
 		logger.debug("IN");
 		baseResourceURL = aHttpServletRequest.getContextPath() + "/";
 		baseURL = aHttpServletRequest.getContextPath()+ "/servlet/AdapterHTTP";
-		logger.debug("OUT");
+		logger.debug("OUT.baseURL="+baseURL);
 	}
 
 	/* (non-Javadoc)
@@ -92,7 +92,7 @@ public class WebUrlBuilder implements IUrlBuilder{
 			}
 		}
 		String url = sb.toString();
-		logger.debug("OUT");
+		logger.debug("OUT.url="+url);
 		return url;
 	}
 	
@@ -100,14 +100,14 @@ public class WebUrlBuilder implements IUrlBuilder{
 	 * @see it.eng.spagobi.commons.utilities.urls.IUrlBuilder#getResourceLink(javax.servlet.http.HttpServletRequest, java.lang.String)
 	 */
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl){
-		logger.debug("IN");
+		logger.debug("IN.originalUrl="+originalUrl);
 		init(aHttpServletRequest);
 		originalUrl = originalUrl.trim();
 		if(originalUrl.startsWith("/")) {
 			originalUrl = originalUrl.substring(1);
 		}
 		originalUrl = baseResourceURL + originalUrl;
-		logger.debug("OUT");
+		logger.debug("OUT.originalUrl="+originalUrl);
 		return originalUrl;
 	}
 

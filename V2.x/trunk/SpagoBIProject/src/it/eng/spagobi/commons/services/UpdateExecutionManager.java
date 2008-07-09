@@ -81,7 +81,7 @@ public class UpdateExecutionManager extends AbstractHttpAction {
 		List list = executionManager.getBIObjectsExecutionFlow(flowId);
 		String html = "";
 		// get spagobi url
-		String spagobiurl = GeneralUtilities.getSpagoBiContextAddress();
+		String spagobiurl = GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext();
 		if (!spagobiurl.endsWith("/")) spagobiurl += "/";
 		spagobiurl += "servlet/AdapterHTTP";
 		for (int i = 0; i < list.size(); i++) {

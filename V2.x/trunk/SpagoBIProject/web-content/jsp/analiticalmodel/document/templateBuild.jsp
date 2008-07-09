@@ -65,14 +65,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	}
    	
     
-	String backEndContext=GeneralUtilities.getBackEndSpagoBiContextAddress();
-	String param1="?"+SpagoBIConstants.BACK_END_SBICONTEXTURL+"="+backEndContext;
-String context=GeneralUtilities.getSpagoBiContextAddress();
-String param2="&"+SpagoBIConstants.SBICONTEXTURL+"="+context;
-	
+	String backEndContext=GeneralUtilities.getSpagoBiHostBackEnd();
+	String param1="?"+SpagoBIConstants.SBI_BACK_END_HOST+"="+backEndContext;
+String context=GeneralUtilities.getSpagoBiContext();
+String param2="&"+SpagoBIConstants.SBI_CONTEXT+"="+context;
+String host=GeneralUtilities.getSpagoBiHost();
+String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
+
 	String urlToCall=engineurl.getMainURL();
 	urlToCall+=param1;
 	urlToCall+=param2;
+	urlToCall+=param3;	
 	
    	
    	// build the back link

@@ -91,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	        lstFieldLinked = docConfig.getLstFieldLinked(); 
     	}
     }
-    aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
+    aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
     aSessionContainer.setAttribute("docUrls", lstUrl);
     aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
     aSessionContainer.setAttribute("docLinked", lstDocLinked);

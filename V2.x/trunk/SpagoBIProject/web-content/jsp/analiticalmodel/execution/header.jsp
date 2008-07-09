@@ -65,6 +65,7 @@ String getUrl(String baseUrl, Map mapPars) {
 		  	}
 		}
 	}
+	System.out.println("buffer.toString()."+buffer.toString());
 	return buffer.toString();
 }
 
@@ -142,8 +143,9 @@ String title = obj.getName();
 
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
-executionParameters.put(SpagoBIConstants.SBICONTEXTURL, GeneralUtilities.getSpagoBiContextAddress());
-executionParameters.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, GeneralUtilities.getBackEndSpagoBiContextAddress());
+executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
+executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 // Auditing
 AuditManager auditManager = AuditManager.getInstance();
 String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);

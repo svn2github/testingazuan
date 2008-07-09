@@ -410,7 +410,7 @@ function checkFormVisibility(docType) {
 				</div>
 				
 			<%	
-			String url=GeneralUtilities.getSpagoBiContextAddress() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?" + "PAGE=SelectDatasetLookupPage&NEW_SESSION=TRUE";
+			String url=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?" + "PAGE=SelectDatasetLookupPage&NEW_SESSION=TRUE";
 			 
 			String currDataSetLabel="";
 			Integer currDataSetId=null;

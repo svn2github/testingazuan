@@ -1,81 +1,30 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <AUTHORIZATIONS default="FALSE">
 	<ENTITIES>
+		<ATTRIBUTES>
+			<ATTRIBUTE name="month" />
+			<ATTRIBUTE name="email"  />
+			<ATTRIBUTE name="name"  />
+		</ATTRIBUTES>	
 		<USERS>
-		    <!-- 
-			<USER userID="admin" password="0DPiKuNIrrVmD8IUCuw1hQxNqZc=" />
-			-->
-			<USER userID="admin" password="admin" />
-			<USER userID="user" password="user" />
-			<USER userID="dev" password="dev" />
+			<USER userID="biadmin" password="biadmin" month="03" name="SpagoAdmin" email="bernabei@eng.it"/>
+			<USER userID="biuser" password="biuser" month="04" name="SpagoUser" email="bernabei@eng.it"/>
+			<USER userID="bidev" password="bidev" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
 			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 		</ROLES>
-		<FUNCTIONALITIES>
-			<FUNCTIONALITY functionalityName="DataSourceManagement" description="DataSourceManagement" />
-			<FUNCTIONALITY functionalityName="DataSetManagement" description="DataSetManagement" />
-			<FUNCTIONALITY functionalityName="EnginesManagement" description="EnginesManagement" />
-			<FUNCTIONALITY functionalityName="EnginesManagement" description="EnginesManagement" />
-			<FUNCTIONALITY functionalityName="FunctionalitiesManagement" description="FunctionalitiesManagement" />
-			<FUNCTIONALITY functionalityName="LovsManagement" description="LovsManagement" />
-			<FUNCTIONALITY functionalityName="ConstraintManagement" description="ConstraintManagement" />
-			<FUNCTIONALITY functionalityName="ParameterManagement" description="ParameterManagement" />
-			<FUNCTIONALITY functionalityName="DocumentAdministration" description="DocumentDevManagement" />
-			<FUNCTIONALITY functionalityName="DocumentAdministration" description="DocumentAdminManagement" />
-			<FUNCTIONALITY functionalityName="DocumentDevelopment" description="DocumentDevelopment" />
-			<FUNCTIONALITY functionalityName="DocumentTest" description="DocumentTest" />
-			<FUNCTIONALITY functionalityName="DocumentExecution" description="DocumentExecution" />
-			<FUNCTIONALITY functionalityName="ImportExport" description="ImportExport" />
-			<FUNCTIONALITY functionalityName="Scheduler" description="Scheduler" />
-			<FUNCTIONALITY functionalityName="EventsManagement" description="EventsManagement" />
-			<FUNCTIONALITY functionalityName="WorklistManagement" description="WorklistManagement" />
-			<FUNCTIONALITY functionalityName="WorkspaceManagement" description="WorkspaceManagement" />
-			<FUNCTIONALITY functionalityName="MapCatalogueManagement" description="MapCatalogueManagement" />
-			<FUNCTIONALITY functionalityName="DistributionListUser" description="DistributionListUser" />
-			<FUNCTIONALITY functionalityName="DistributionListManagement" description="DistributionListManagement" />
-			<FUNCTIONALITY functionalityName="SyncronizeRolesManagement" description="SyncronizeRolesManagement" />						
-			<FUNCTIONALITY functionalityName="DocumentUserManagement" description="DocumentUserManagement" />						
-			<FUNCTIONALITY functionalityName="DocumentMetadataManagement" description="DocumentMetadataManagement" />
-			<FUNCTIONALITY functionalityName="MenuManagement" description="MenuManagement" />
-		</FUNCTIONALITIES>
+		<FUNCTIONALITIES></FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
 		<APPLICATIONS></APPLICATIONS>
 	</ENTITIES>
 	<RELATIONS>
 		<BEHAVIOURS>
-			<BEHAVIOUR userID="user" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="admin" roleName="/spagobi/admin" />
-			<BEHAVIOUR userID="dev" roleName="/spagobi/dev" />
+			<BEHAVIOUR userID="biuser" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="biadmin" roleName="/spagobi/admin" />
+			<BEHAVIOUR userID="bidev" roleName="/spagobi/dev" />
 		</BEHAVIOURS>
-		<PRIVILEDGES>
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DataSourceManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DataSetManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EnginesManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="FunctionalitiesManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="LovsManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ConstraintManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ParameterManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentAdminManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="ImportExport" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="Scheduler" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="EventsManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorklistManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="WorkspaceManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MapCatalogueManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DistributionListUser" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DistributionListManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="DocumentExecution" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="SyncronizeRolesManagement" />
-			<PRIVILEDGE roleName="/spagobi/admin" functionalityName="MenuManagement" />
-			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DistributionListUser" />						
-			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentUserManagement" />						
-			<PRIVILEDGE roleName="/spagobi/user" functionalityName="DocumentMetadataManagement" />						
-			<PRIVILEDGE roleName="/spagobi/user" functionalityName="WorklistManagement" />						
-			<PRIVILEDGE roleName="/spagobi/user" functionalityName="EventsManagement" />						
-					
-		</PRIVILEDGES>
 	</RELATIONS>
 </AUTHORIZATIONS>

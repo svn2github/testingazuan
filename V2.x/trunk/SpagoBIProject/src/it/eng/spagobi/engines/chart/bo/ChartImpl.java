@@ -611,7 +611,7 @@ public class ChartImpl implements IChart {
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.IChart#getParametersObject()
-	 */
+	 */	
 	public Map getParametersObject() {
 		return parametersObject;
 	}

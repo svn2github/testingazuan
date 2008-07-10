@@ -75,8 +75,15 @@
 			    	it/eng/spagobi/services/proxy/SecurityServiceProxy.class,
 				    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
 		    	    it/eng/spagobi/services/proxy/DataSetWsServiceProxy.class,
-			    	
-		    	    it/eng/spagobi/services/common/EnginConf.class,
+		    	    it/eng/spagobi/services/proxy/DocumentExecuteServiceProxy.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceServiceLocator.class,
+					it/eng/spagobi/services/execute/stub/DocumentExecuteServiceService.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteService.class,
+			    	it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingStub.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingSkeleton.class,			    	
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingImpl.class,			    	
+		    	    
+		    		it/eng/spagobi/services/common/EnginConf.class,
 		    	    it/eng/spagobi/services/common/SsoServiceInterface.class,
 		    	    it/eng/spagobi/services/common/SsoServiceFactory.class,
 		    	    it/eng/spagobi/services/cas/CasSsoService.class,

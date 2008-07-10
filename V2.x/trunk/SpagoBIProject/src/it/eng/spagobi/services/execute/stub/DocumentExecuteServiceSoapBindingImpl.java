@@ -7,11 +7,12 @@
 
 package it.eng.spagobi.services.execute.stub;
 
-import it.eng.spagobi.services.execute.service.ChartImpl;
+import it.eng.spagobi.services.execute.service.ServiceChartImpl;
+
 
 public class DocumentExecuteServiceSoapBindingImpl implements it.eng.spagobi.services.execute.stub.DocumentExecuteService{
     public byte[] executeChart(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.util.HashMap in3) throws java.rmi.RemoteException {
-	ChartImpl impl=new ChartImpl();
+	ServiceChartImpl impl=new ServiceChartImpl();
 	return impl.executeChart(in0,in1,in2,in3);
     }
 

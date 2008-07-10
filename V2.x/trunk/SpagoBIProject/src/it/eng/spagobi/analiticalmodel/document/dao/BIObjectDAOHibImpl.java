@@ -109,6 +109,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForExecutionByIdAndRole(java.lang.Integer, java.lang.String)
 	 */
 	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		BIObject biObject = null;
@@ -163,6 +164,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return biObject;
 	}
 
@@ -182,6 +184,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectById(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectById(Integer biObjectID) throws EMFUserError {
+		logger.debug("IN");
 		BIObject toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -201,6 +204,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -219,7 +223,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForDetail(java.lang.Integer)
 	 */
 	public BIObject loadBIObjectForDetail(Integer id) throws EMFUserError {
-
+		logger.debug("IN");
 		BIObject biObject = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -242,6 +246,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return biObject;
 	}
 	
@@ -257,7 +262,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectByLabel(java.lang.String)
 	 */
 	public BIObject loadBIObjectByLabel(String label) throws EMFUserError {
-
+		logger.debug("IN");
 		BIObject biObject = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -282,6 +287,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return biObject;
 	}
 	
@@ -381,6 +387,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @throws EMFUserError If any exception occurred
 	 */
 	private void internalModify(BIObject biObject, ObjTemplate objTemp) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -463,7 +470,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			
 			
-			tx.commit();		
+			tx.commit();	
+			logger.debug("OUT");
 		}  catch (HibernateException he) {
 			logger.error(he);
 			if (tx != null)
@@ -479,6 +487,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	
 	private void insertObjTemplate(Session aSession, ObjTemplate objTemp, SbiObjects hibBIObject) throws EMFUserError {
 		// store the binary content
+		logger.debug("IN");
 		SbiBinContents hibBinContent = new SbiBinContents();
 		byte[] bytes = null;
 		try {
@@ -530,6 +539,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
      		
      		aSession.save(hibObjTemplate);
          }
+         logger.debug("OUT");
 		
 	}
 	
@@ -674,6 +684,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#eraseBIObject(it.eng.spagobi.analiticalmodel.document.bo.BIObject, java.lang.Integer)
 	 */
 	public void eraseBIObject(BIObject obj, Integer idFunct) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -775,6 +786,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				
 				// delete object
 				aSession.delete(hibBIObject);
+				logger.debug("OUT");
 
 			}
 			// commit all changes
@@ -810,6 +822,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.Integer, it.eng.spago.security.IEngUserProfile)
 	 */
 	public List getCorrectRolesForExecution(Integer id, IEngUserProfile profile) throws EMFUserError {
+		logger.debug("IN");
 		List correctRoles = null;
 		try  {
 			correctRoles = getCorrectRoles(id, profile.getRoles());
@@ -817,6 +830,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		    logger.error("error getting role from the user profile",emfie);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
+		logger.debug("OUT");
 		return correctRoles;
 	}
 
@@ -833,6 +847,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#getCorrectRolesForExecution(java.lang.Integer)
 	 */
 	public List getCorrectRolesForExecution(Integer id) throws EMFUserError {
+		logger.debug("IN");
 		List roles = DAOFactory.getRoleDAO().loadAllRoles();
 		List nameRoles = new ArrayList();
 		Iterator iterRoles = roles.iterator();
@@ -841,6 +856,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			role = (Role)iterRoles.next();
 			nameRoles.add(role.getName());
 		}
+		logger.debug("OUT");
 		return getCorrectRoles(id, nameRoles);
 	}
 	
@@ -854,6 +870,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @throws EMFUserError if any exception occurred
 	 */
 	private List getCorrectRoles(Integer id, Collection roles) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		Query hqlQuery = null;
@@ -912,6 +929,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					correctRoles.add(role);
 				}
 				*/
+				
 				return correctRoles;
 
 			}
@@ -961,6 +979,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return correctRoles;
 	}
 	
@@ -975,6 +994,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @return the corrispondent output <code>BIObject</code>
 	 */
 	public BIObject toBIObject(SbiObjects hibBIObject){
+		logger.debug("IN");
 		    // create empty biobject
 			BIObject aBIObject = new BIObject();
 			// set type (type code and id)
@@ -1027,6 +1047,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setKeywords(hibBIObject.getKeywords());
 			
 			aBIObject.setRefreshSeconds(hibBIObject.getRefreshSeconds());
+			logger.debug("OUT");
 			return aBIObject;
 	}
 	
@@ -1036,6 +1057,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjects()
 	 */
 	public List loadAllBIObjects() throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -1059,6 +1081,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 	
@@ -1066,6 +1089,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjects(java.lang.String)
 	 */
 	public List loadAllBIObjects(String filterOrder) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -1089,6 +1113,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 
@@ -1115,6 +1140,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjectsFromInitialPath(java.lang.String)
 	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -1153,6 +1179,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 
@@ -1160,6 +1187,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjectsFromInitialPath(java.lang.String, java.lang.String)
 	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath, String filterOrder) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -1198,6 +1226,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 
@@ -1208,6 +1237,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadBIObjectForDetail(java.lang.String)
 	 */
 	public BIObject loadBIObjectForDetail(String path) throws EMFUserError {
+		logger.debug("IN");
 		BIObject biObject = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -1230,6 +1260,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		logger.debug("OUT");
 		return biObject;
 	}
 
@@ -1243,6 +1274,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @throws EMFUserError
 	 */
 	private void insertParametersDocComposition(Session aSession, BIObject biObject, ObjTemplate template, boolean flgDelete) throws EMFUserError {
+		logger.debug("IN");
 		//get informations about documents child
 		try{
 			//gets document composition configuration
@@ -1312,6 +1344,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	        	}
 	        	
 	        }
+	        logger.debug("OUT");
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
 		}
@@ -1325,6 +1358,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @throws EMFUserError
 	 */
 	private void insertParametersDocComposition(Session aSession, SbiObjects sbiObject) throws EMFUserError {
+		logger.debug("IN");
 		//get informations about documents child
 		try{
 			//gets document composition configuration
@@ -1372,6 +1406,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	        	}
 	        	
 	        }
+	        logger.debug("OUT");
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
 		}

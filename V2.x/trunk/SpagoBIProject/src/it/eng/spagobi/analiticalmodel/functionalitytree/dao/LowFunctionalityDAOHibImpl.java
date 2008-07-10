@@ -805,9 +805,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-            
-			/* ********* start luca changes *************** */
-			//Query hibQuery = aSession.createQuery(" from SbiFunctions s order by s.parentFunct.functId, s.prog");
 			String username = null;
 			IEngUserProfile profile=null;
 			try {
@@ -835,7 +832,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"' order by s.parentFunct.functId, s.prog");
 				}
 			} catch (EMFInternalError e) {
-				e.printStackTrace();
+			    logger.error("EMFInternalError while access to DBMS", e);
 			}
 			
 			/* ********* end luca changes ***************** */

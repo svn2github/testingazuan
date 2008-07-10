@@ -63,14 +63,11 @@ import it.eng.spagobi.engines.documentcomposition.configuration.DocumentComposit
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;

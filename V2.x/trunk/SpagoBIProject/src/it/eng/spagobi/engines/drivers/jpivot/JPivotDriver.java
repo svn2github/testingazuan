@@ -365,6 +365,7 @@ public class JPivotDriver implements IEngineDriver {
 		String valueProfAttr = null;
 		try {
 		    valueProfAttr = (String) profile.getUserAttribute(nameProfAttr);
+		    valueProfAttr = valueProfAttr.replaceAll("'","");
 		} catch (Exception e) {
 		    logger.error("Error while recovering profile attribute " + nameProfAttr + " of the user "
 			    + profile.getUserUniqueIdentifier(), e);

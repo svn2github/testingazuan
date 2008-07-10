@@ -81,7 +81,11 @@ public class ScriptletChart extends JRDefaultScriptlet {
 
 			HashMap parametersMap=(HashMap)this.getParameterValue("REPORT_PARAMETERS_MAP");
 
+						
 			String userId=(String)parametersMap.get("SBI_USERID");
+
+			logger.debug("user id is "+userId);
+
 			HttpSession session=(HttpSession)parametersMap.get("SBI_HTTP_SESSION");
 
 			HashMap chartParameters=new HashMap();
@@ -105,22 +109,15 @@ public class ScriptletChart extends JRDefaultScriptlet {
 				else{
 					if(!exclude.contains(name)){
 						Object value=parametersMap.get(name);
-						chartParameters.put(name, value);
+						if(value!=null){
+							logger.debug("parameters to service: "+name);
+							chartParameters.put(name, value);
+						}				
 					}
 				}
 
+				logger.debug("chart label: "+label);
 
-				/*if(name.startsWith("chart_")){
-						if(name.equalsIgnoreCase("chart_label")){
-							Object value=parametersMap.get(name);
-							label=value.toString();
-						}
-						else{
-							String pName=name.substring(6);
-							Object value=parametersMap.get(name);
-							chartParameters.put(pName, value);
-						}
-					}*/
 
 			}
 
@@ -131,13 +128,13 @@ public class ScriptletChart extends JRDefaultScriptlet {
 
 			InputStream is=new ByteArrayInputStream(image);
 
-
+			logger.debug("Input Stream filled, Setting variable");
 			this.setVariableValue("chart_image", is);
 
 			logger.debug("OUT");
 		} 
 		catch (Exception e) {
-			logger.error("Error in scriptlet");
+			logger.error("Error in scriptlet",e);
 			throw new JRScriptletException(e);
 		}
 

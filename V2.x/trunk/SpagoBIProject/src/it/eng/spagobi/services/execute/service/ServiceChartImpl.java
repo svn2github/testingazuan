@@ -68,7 +68,7 @@ public class ServiceChartImpl {
 		try {
 			userProfile=it.eng.spagobi.commons.utilities.GeneralUtilities.createNewUserProfile(userId);
 		} catch (Exception e2) {
-			logger.error("Error recovering profile");
+			logger.error("Error recovering profile",e2);
 			return null;
 		}
 
@@ -82,7 +82,7 @@ public class ServiceChartImpl {
 			if(label!=null)
 				obj=dao.loadBIObjectByLabel(label); 
 		} catch (EMFUserError e) {
-			logger.error("Error in recovering object");
+			logger.error("Error in recovering object",e);
 			return null;
 		}
 
@@ -106,7 +106,7 @@ public class ServiceChartImpl {
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
-				logger.error("Error in reading template");
+				logger.error("Error in reading template",e);
 				return null;
 			}
 
@@ -121,7 +121,7 @@ public class ServiceChartImpl {
 					throw new Exception("Data Set not defined");				    
 				}
 			}catch (Exception e) {
-				logger.error("Error in reading dataset");
+				logger.error("Error in reading dataset",e);
 				return null;
 			}
 
@@ -140,7 +140,7 @@ public class ServiceChartImpl {
 			try {
 				parametersList=DAOFactory.getBIObjectDAO().getBIObjectParameters(obj);
 			} catch (EMFUserError e1) {
-				logger.error("Error in retrieving parameters");
+				logger.error("Error in retrieving parameters", e1);
 				return null;			}
 
 			if(parametersList!=null && !parametersList.isEmpty()){
@@ -179,7 +179,7 @@ public class ServiceChartImpl {
 				datasets=sbi.calculateValue();
 			}	
 			catch (Exception e) {
-				logger.error("Error in reading the value, check the dataset");
+				logger.error("Error in reading the value, check the dataset",e);
 				return null;
 			}
 
@@ -198,7 +198,7 @@ public class ServiceChartImpl {
 
 			}
 			catch (Exception e) {
-				logger.error("Error while creating the image");
+				logger.error("Error while creating the image",e);
 				return null;
 			}
 			finally{

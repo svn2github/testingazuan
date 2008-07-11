@@ -32,6 +32,7 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
@@ -59,7 +60,11 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -715,6 +720,18 @@ public class ParametersGeneratorTag extends TagSupport {
 	SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
 	String format = (String) formatSB.getAttribute("format");
 	logger.debug("DTE FORMAT:"+format);
+	
+	Date d = new Date();
+	SimpleDateFormat f =  new SimpleDateFormat();
+	f.applyPattern(format);
+	try {
+		d = f.parse(getParameterValuesAsString(biparam));
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	String datePickerFormat = "MM/dd/yyyy";
+	String dateValue = StringUtils.dateToString(d, datePickerFormat);
 	htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
     		+ "<script type='text/javascript'>"
     		+ " dojo.require('dojo.widget.DropdownDatePicker');"
@@ -722,8 +739,10 @@ public class ParametersGeneratorTag extends TagSupport {
     		+ " </script>"
     		+ " <input style='width:230px;' type='text' "
     		+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
-    		+ "	   dojoType='dropdowndatepicker' saveFormat='"+format+"' displayFormat='"+format+"' widgetId='startDateWidget' "
-    		+ "    class='portlet-form-input-field' value='" + getParameterValuesAsString(biparam) + "' "
+    		+ "	   dojoType='dropdowndatepicker' "
+    		+ " saveFormat='"+format+"' displayFormat='"+format
+    		+ "' widgetId='startDateWidget' "
+    		+ "    class='portlet-form-input-field' value='" + dateValue + "' "
     		+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
     		+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
     	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {

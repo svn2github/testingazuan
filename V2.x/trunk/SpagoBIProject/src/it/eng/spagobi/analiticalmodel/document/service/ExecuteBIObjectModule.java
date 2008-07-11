@@ -59,8 +59,10 @@ import it.eng.spagobi.engines.documentcomposition.configuration.DocumentComposit
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1723,6 +1725,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		Iterator iterParams = parameters.iterator();
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			
 			String labelUrl = biparam.getParameterUrlName();
 			String value = (request.getAttribute(labelUrl) == null) ? ""
 					: (String) request.getAttribute(labelUrl);

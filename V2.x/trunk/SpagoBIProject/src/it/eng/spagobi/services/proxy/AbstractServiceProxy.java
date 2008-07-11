@@ -117,7 +117,7 @@ public abstract class AbstractServiceProxy {
 	    try {
 		serviceUrl = new URL(backEndUrl + serviceUrlStr);
 	    } catch (MalformedURLException e) {
-		logger.error("MalformedURLException:" + serviceUrlStr, e);
+		logger.error("MalformedURLException:" + backEndUrl + serviceUrlStr, e);
 	    }
 	    pass=EnginConf.getInstance().getPass();
 	    if (pass==null) logger.warn("PassTicked don't set");

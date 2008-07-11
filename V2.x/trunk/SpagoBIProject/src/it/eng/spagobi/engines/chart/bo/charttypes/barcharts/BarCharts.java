@@ -112,6 +112,7 @@ public class BarCharts extends ChartImpl {
 
 
 			HashMap series=new HashMap();
+
 			String catValue="";
 
 			String name="";

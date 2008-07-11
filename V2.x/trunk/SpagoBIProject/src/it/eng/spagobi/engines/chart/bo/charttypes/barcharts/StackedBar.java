@@ -37,6 +37,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -124,6 +125,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			String nameP="";
 			String value="";
 
+			ArrayList orderSeries=new ArrayList();
 
 			if(first){
 				if (name.indexOf("$F{") >= 0){
@@ -157,6 +159,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					}
 					else{
 						series.put(nameP, value);
+						orderSeries.add(nameP);
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
@@ -178,7 +181,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}*/
 
 
-			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
+			for (Iterator iterator3 = orderSeries.iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				if(!hiddenSeries.contains(nameS)){
 					String valueS=(String)series.get(nameS);

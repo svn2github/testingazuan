@@ -23,6 +23,7 @@ public String returnValue(String valuein) {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append('<ROWS>');
 		strBuf.append('<ROW ');
+		valuein = valuein.replaceAll("'","");
 		strBuf.append('value=\''+valuein+'\' >');
 		strBuf.append('</ROW>');
 		strBuf.append('</ROWS>');
@@ -37,7 +38,7 @@ public String getListFromMultiValueProfileAttribute(String attrName) {
 	StringBuffer strBuf = new StringBuffer();
 	strBuf.append("<ROWS>");
 	for (i in 0..<values.length) {
-		strBuf.append("<ROW VALUE=\"" + values[i] +  "\" />");
+		strBuf.append("<ROW VALUE=\"" + values[i].replaceAll("'","") +  "\" />");
 	};
 	strBuf.append("</ROWS>");
 	return strBuf.toString();

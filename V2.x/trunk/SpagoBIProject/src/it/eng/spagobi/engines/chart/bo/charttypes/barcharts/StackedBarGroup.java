@@ -73,10 +73,13 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	List categoryNames;
 	int subCategoriesNumber=0;
 	int realCatNumber = 0;
+	int realSubCatNumber = 0;
 	HashMap subCategories;
 	List subCategoryNames;
 	String subCategoryLabel = "";
 	String serieUrlname="";
+	Integer numSerieForGroup;
+	Integer numGroups;
 
 	HashMap colorMap=null;  // keeps user selected colors
 	HashMap subCatLabelsMap=null;  // keeps user selected labels fot subcategories
@@ -160,7 +163,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 					subCategories.put(new Integer(subCategoriesNumber),value);
 					if (!subCategoryNames.contains(value)){
 						subCategoryNames.add(value);
-						
+						realSubCatNumber++;
 					}
 				}
 				else {
@@ -245,6 +248,23 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		{
 			percentageValue=false;
 		}
+		
+		if(confParameters.get("n_serie_for_group")!=null){	
+			numSerieForGroup=Integer.valueOf((String)confParameters.get("n_serie_for_group"));
+		}
+		else
+		{
+			numSerieForGroup=new Integer("1");
+		}
+		
+		if(confParameters.get("n_groups")!=null){	
+			numGroups=Integer.valueOf((String)confParameters.get("n_groups"));
+		}
+		else
+		{
+			numGroups=new Integer("1");
+		}
+		
 
 		/*
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -357,17 +377,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
 		KeyToGroupMap map = new KeyToGroupMap("G1");
 		int numElForGroup = 0;
-		
-		for (int idx=0; idx < categoryNames.size(); idx++){
-			for (int j=0+(idx*categoryNames.size()); j < subCategoryNames.size(); j++ ){
-					String tmpSubCat = (String)subCategoryNames.get(j);
+		for (int idx=0; idx < numGroups.intValue(); idx++){
+			for (int j=0; j < numSerieForGroup.intValue(); j++ ){
+					String tmpSubCat = (String)subCategoryNames.get(j+idx*numSerieForGroup.intValue());
 					map.mapKeyToGroup(tmpSubCat, "G"+(idx+1));
-					//System.out.println("map.mapKeyToGroup('" + tmpSubCat + "', 'G" + (idx+1) + "')");
-					numElForGroup ++;
-					if (numElForGroup == realCatNumber){
-						numElForGroup = 0;
-						break;
-					}
 			}
 		}
 		
@@ -467,14 +480,14 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		
 		SubCategoryAxis domainAxis = new SubCategoryAxis(categoryLabel + " / " + subCategoryLabel);    
 		String subCatLabel = "";
-		for (int j=1; j <= realCatNumber; j++ ){
+		for (int j=1; j <= numGroups.intValue(); j++ ){
 	       // domainAxis.setSubLabelPaint(paint)(0.05);
 			if(subCatLabelsMap!=null)
 				subCatLabel=(String)subCatLabelsMap.get("CAT"+j);
 			else
 				subCatLabel = subCategoryLabel;
 			
-	        domainAxis.addSubCategory(subCatLabel + " " + j);
+	        domainAxis.addSubCategory(subCatLabel);
 		}
 		plot.setDomainAxis(domainAxis);
 		plot.setRenderer(renderer);

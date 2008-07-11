@@ -330,7 +330,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		logger.debug("IN");
 		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
 
+		logger.debug("Taken Dataset");
 
+		logger.debug("Call Chart Creation");
 		JFreeChart chart = ChartFactory.createStackedBarChart(
 				name,  // chart title
 				categoryLabel,                  // domain axis label
@@ -341,6 +343,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				true,                        // tooltips
 				false                        // urls
 		);
+		logger.debug("Chart Created");
+
 		chart.setBackgroundPaint(Color.white);
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		plot.setBackgroundPaint(color);
@@ -349,7 +353,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		plot.setDomainGridlinesVisible(true);
 
 
-
+		logger.debug("set renderer");
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
@@ -362,20 +366,31 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
-		MyCategoryUrlGenerator mycatUrl=new MyCategoryUrlGenerator(rootUrl);
-		mycatUrl.setDocument_composition(document_composition);
+		logger.debug("Calling Url Generation");
+
+		MyCategoryUrlGenerator mycatUrl=null;
+		if(rootUrl!=null){
+			logger.debug("Set MycatUrl");
+			mycatUrl=new MyCategoryUrlGenerator(rootUrl);
+		}
+			mycatUrl.setDocument_composition(document_composition);
 		mycatUrl.setCategoryUrlLabel(categoryUrlName);
 		mycatUrl.setSerieUrlLabel(serieUrlname);
 
+		if(mycatUrl!=null)
 		renderer.setItemURLGenerator(mycatUrl);
 
+		logger.debug("Text Title");
 
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
-		TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
-		chart.addSubtitle(subTitle);
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
 		}
+		
+		logger.debug("Style Labels");
+
 		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
 		StyleLabel styleSubSubTitle=new StyleLabel("Arial",12,colorSubInvisibleTitle);
 		TextTitle subsubTitle =setStyleTitle("c", styleSubSubTitle);
@@ -386,13 +401,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		chart.setBackgroundPaint(color);
 
 
+		logger.debug("Axis creation");
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 		renderer.setDrawBarOutline(false);
 
-
+		logger.debug("Set series color");
 
 		int seriesN=dataset.getRowCount();
 		if(colorMap!=null){
@@ -404,6 +420,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				}	
 			}
 		}
+
+		logger.debug("If cumulative set series paint "+cumulative);
 
 		if(cumulative){
 			int row=dataset.getRowIndex("CUMULATIVE");
@@ -417,11 +435,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 
 		MyStandardCategoryItemLabelGenerator generator=null;
+		logger.debug("Are there addition labels "+additionalLabels);
 		if(additionalLabels){
+			
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
+			logger.debug("generator set");
 
 			double orient=(-Math.PI / 2.0);
-
+			logger.debug("add labels style");
 			if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
 				renderer.setBaseItemLabelFont(addLabelsStyle.getFont());
 				renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
@@ -436,7 +457,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				else
 					renderer.setBaseItemLabelPaint(Color.BLACK);
 			}
-
+			logger.debug("add labels style set");
+			
 			renderer.setBaseItemLabelGenerator(generator);
 			renderer.setBaseItemLabelsVisible(true);
 			//vertical labels 			
@@ -447,15 +469,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.CENTER, TextAnchor.CENTER, 
 					orient));
 
-			//horizontal labels
-			/*
-			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-	                ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-			 */
+			logger.debug("end of add labels ");
+
 
 		}
+
+		logger.debug("domain axis");
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(
@@ -480,15 +499,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	public String getDocument_Parameters(HashMap drillParameters) {
 		String document_parameter="";
 		if (drillParameters != null){
-		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
-			String value=(String)drillParameters.get(name);
-			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				document_parameter+="%26"+name+"%3D"+value;
-				//document_parameter+="&"+name+"="+value;
-			}
+			for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+				String name = (String) iterator.next();
+				String value=(String)drillParameters.get(name);
+				if(name!=null && !name.equals("") && value!=null && !value.equals("")){
+					document_parameter+="%26"+name+"%3D"+value;
+					//document_parameter+="&"+name+"="+value;
+				}
 
-		}
+			}
 		}
 		return document_parameter;
 	}

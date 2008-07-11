@@ -69,7 +69,7 @@ public class ServiceChartImpl {
 			userProfile=it.eng.spagobi.commons.utilities.GeneralUtilities.createNewUserProfile(userId);
 		} catch (Exception e2) {
 			logger.error("Error recovering profile",e2);
-			return null;
+			return "".getBytes();
 		}
 
 
@@ -83,7 +83,7 @@ public class ServiceChartImpl {
 				obj=dao.loadBIObjectByLabel(label); 
 		} catch (EMFUserError e) {
 			logger.error("Error in recovering object",e);
-			return null;
+			return "".getBytes();
 		}
 
 
@@ -107,7 +107,7 @@ public class ServiceChartImpl {
 				content = SourceBean.fromXMLString(contentStr);
 			} catch (Exception e) {
 				logger.error("Error in reading template",e);
-				return null;
+				return "".getBytes();
 			}
 
 			String type=content.getName();
@@ -122,7 +122,7 @@ public class ServiceChartImpl {
 				}
 			}catch (Exception e) {
 				logger.error("Error in reading dataset",e);
-				return null;
+				return "".getBytes();
 			}
 
 
@@ -141,7 +141,7 @@ public class ServiceChartImpl {
 				parametersList=DAOFactory.getBIObjectDAO().getBIObjectParameters(obj);
 			} catch (EMFUserError e1) {
 				logger.error("Error in retrieving parameters", e1);
-				return null;			}
+				return "".getBytes();			}
 
 			if(parametersList!=null && !parametersList.isEmpty()){
 				parametersMap=new HashMap();
@@ -180,7 +180,7 @@ public class ServiceChartImpl {
 			}	
 			catch (Exception e) {
 				logger.error("Error in reading the value, check the dataset",e);
-				return null;
+				return "".getBytes();
 			}
 
 			JFreeChart chart=null;
@@ -199,12 +199,13 @@ public class ServiceChartImpl {
 			}
 			catch (Exception e) {
 				logger.error("Error while creating the image",e);
-				return null;
+				return "".getBytes();
 			}
 			finally{
 				try {
 					out.close();
 				} catch (IOException e) {
+					logger.error("Error while closing stream",e);
 				}
 			}
 			//out.flush();

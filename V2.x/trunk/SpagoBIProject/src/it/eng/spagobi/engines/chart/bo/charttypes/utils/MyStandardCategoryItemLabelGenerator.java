@@ -1,9 +1,12 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.data.category.CategoryDataset;
 
@@ -11,12 +14,11 @@ import org.jfree.data.category.CategoryDataset;
 public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLabelGenerator {
 
 	HashMap catSerLabel=null;
-
+	private static transient Logger logger=Logger.getLogger(MyStandardCategoryItemLabelGenerator.class);
 
 
 	public MyStandardCategoryItemLabelGenerator() {
 		super();
-
 		catSerLabel=new HashMap();
 	}
 
@@ -46,7 +48,7 @@ public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLa
 		catSerLabel=catSerMap;	}
 
 	public String generateLabel(CategoryDataset dataset, int row, int column) {
-
+logger.debug("IN");
 		String category=(String)dataset.getColumnKey(column);
 		String serie=(String)dataset.getRowKey(row);
 
@@ -55,9 +57,11 @@ public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLa
 		String value="";
 		if(catSerLabel.get(index)!=null && !catSerLabel.get(index).equals("")) 
 		{
+			logger.debug("set label");
 			value=(String)catSerLabel.get(index);
 		}
 
+		logger.debug("OUT");
 
 		return value;
 	}

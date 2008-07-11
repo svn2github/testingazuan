@@ -372,13 +372,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		if(rootUrl!=null){
 			logger.debug("Set MycatUrl");
 			mycatUrl=new MyCategoryUrlGenerator(rootUrl);
-		}
-			mycatUrl.setDocument_composition(document_composition);
-		mycatUrl.setCategoryUrlLabel(categoryUrlName);
-		mycatUrl.setSerieUrlLabel(serieUrlname);
 
+			mycatUrl.setDocument_composition(document_composition);
+			mycatUrl.setCategoryUrlLabel(categoryUrlName);
+			mycatUrl.setSerieUrlLabel(serieUrlname);
+		}
 		if(mycatUrl!=null)
-		renderer.setItemURLGenerator(mycatUrl);
+			renderer.setItemURLGenerator(mycatUrl);
 
 		logger.debug("Text Title");
 
@@ -388,7 +388,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
 			chart.addSubtitle(subTitle);
 		}
-		
+
 		logger.debug("Style Labels");
 
 		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
@@ -437,7 +437,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		MyStandardCategoryItemLabelGenerator generator=null;
 		logger.debug("Are there addition labels "+additionalLabels);
 		if(additionalLabels){
-			
+
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
 			logger.debug("generator set");
 
@@ -458,7 +458,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					renderer.setBaseItemLabelPaint(Color.BLACK);
 			}
 			logger.debug("add labels style set");
-			
+
 			renderer.setBaseItemLabelGenerator(generator);
 			renderer.setBaseItemLabelsVisible(true);
 			//vertical labels 			

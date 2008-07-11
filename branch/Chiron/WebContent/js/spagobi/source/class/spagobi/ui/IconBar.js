@@ -21,11 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-/**
- * @author Andrea Gioia (andrea.gioia@eng.it)
- * @author Amit Rana (amit.rana@eng.it)
- * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
- */
 
 
 qx.Class.define("spagobi.ui.IconBar", {
@@ -33,6 +28,7 @@ qx.Class.define("spagobi.ui.IconBar", {
   	
     construct : function( config ) {   
 	    this.base(arguments);
+	    this.setSpacing(0);
 	    if(config) {
 	    	if(config.defaultBackgroudColor) {
 		    	this._defaultBackgroudColor = config.defaultBackgroudColor;
@@ -55,47 +51,132 @@ qx.Class.define("spagobi.ui.IconBar", {
 		
 		_defaultBackgroudColor: 'white',
 		_focusedBackgroudColor: '#DEFF83',
-		
+		_checkedButton: undefined,
 	    
 	    addButton: function(buttonConfig) {
-	    	this._addButton(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context);
-	    	//this._addAtom(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context);
+	    	//this._addButton(name,image,callback, context,tooltip);
+	    	//this._addButton(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context,buttonConfig.tooltip);
+	    	this._addAtom(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context,buttonConfig.tooltip);
 	 	},
-	 	
-	 	_addButton: function(name,image,callback, context) {
-	 		var border = new qx.ui.core.Border(0);   
+	 	/*
+	 	_addButton: function(name,image,callback, context,tooltip) {	    
 			var btn = new qx.ui.form.Button('',image);
-			btn.setBorder(border);	
-			btn.setUserData('name', name); 
+			btn.setUserData('name', name);
+			btn.setUserData('checked', false);
+			var tt = new qx.ui.popup.ToolTip(tooltip);
+			btn.setToolTip(tt);
+			tt.setShowInterval(20);
+			var border = new qx.ui.core.Border(0);
+			btn.setBorder(border);
 			btn.addEventListener("execute", callback, context);
+			btn.addEventListener("execute", this.attack, this);//callback, context);
+			btn.addEventListener("mouseover",this._onmouseover);
+			btn.addEventListener("mouseout", this._onmouseout);
+			
 			this.add(btn);
 			return btn;
 	 	},
 	 	
-	 	_addAtom: function(name,image,callback, context) {	    
+	 	check : function(e){
+	 	
+	 	    e.getTarget().checked = true;
+	 		e.getTarget().setBackgroundColor('#DEFF83');
+	 		this._checkedButton = e.getTarget();
+	 	},
+	 	
+	 	uncheck : function(){ 
+	 	
+	 	  this._checkedButton.setBackgroundColor(null);
+	 	  this._checkedButton.checked = false;
+	 	  
+	 	
+	 	},
+	 	
+	 	attack: function(e){
+	 	
+	 	if (!this._checkedButton) {
+	 		this.check(e);
+	 		
+	 	} else {
+	 	
+	 	  this.uncheck();
+	 	  this.check(e);
+ 	   }
+	    
+       },
+       
+       _onmouseover: function(e) {	 		
+	 		if (e.getTarget().checked == false) {
+	 			e.getTarget().setBackgroundColor('white');
+	 		}
+	 	},
+	 	
+	   _onmouseout: function(e) {
+	        if (e.getTarget().checked == false) {
+	 		e.getTarget().setBackgroundColor(null);
+	 		}
+	 	},
+	 	*/
+	 	_addAtom: function(name,image,callback, context,tooltip) {	    
 			var atom = new qx.ui.basic.Atom('', image);
 			atom.setUserData('name', name);
-			atom.setBackgroundColor('white');
-			atom.addEventListener("mouseover", this._onmouseover);
+			atom.setUserData('checked', false);
+			var tt = new qx.ui.popup.ToolTip(tooltip);
+			atom.setToolTip(tt);
+			tt.setShowInterval(20);
+			//atom.setBackgroundColor('white');
+			atom.addEventListener("mouseover",this._onmouseover);
     		atom.addEventListener("mouseout", this._onmouseout);
     		atom.addEventListener("mousedown", callback, context);
-    		atom.addEventListener("keydown", this._onkeydown);
+    		atom.addEventListener("mousedown",this.attack, this);///*{if ("mousedown"){ this.atom.setChecked(true);*/callback/*}}*/, context);
+    		atom.addEventListener("keydown",  this._onkeydown);
     		atom.addEventListener("keypress", this._onkeypress);
 			
 			this.add(atom);
 	 	},
 	 	
-	 	_onmouseover: function(e) {
-	 		
+	 	
+	 check : function(e){
+	 	 
+	 	    e.getTarget().setUserData('checked', true);
 	 		e.getTarget().setBackgroundColor('#DEFF83');
+	 		this._checkedButton = e.getTarget();
 	 	},
 	 	
-	 	_onmouseout: function(e) {
-	 		e.getTarget().setBackgroundColor('white');
+	 	uncheck : function(){ 
+	 	
+	 	  this._checkedButton.setBackgroundColor(null);
+	 	  this._checkedButton.setUserData('checked', false);
+	 	  
+	 	
 	 	},
 	 	
-	 	_onmousedown: function(e) {
-	 		alert('_onmousedown');
+	 	attack: function(e){
+	 	
+	 	if (!this._checkedButton) {
+	 		this.check(e);
+	 		
+	 	} else {
+	 	
+	 	  this.uncheck();
+	 	  this.check(e);
+	 	  
+	 	  
+	 	}
+	 	
+	 },
+	 	
+	 	
+	 	 _onmouseover: function(e) {	 		
+	 		if (e.getTarget().getUserData('checked') == false) {
+	 			e.getTarget().setBackgroundColor('gray');
+	 		}
+	 	},
+	 	
+	   _onmouseout: function(e) {
+	        if (e.getTarget().getUserData('checked') == false) {
+	 		e.getTarget().setBackgroundColor(null);
+	 		}
 	 	},
 	 	
 	 	_onkeydown: function(e) {},
@@ -125,7 +206,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 		    // focus next/previous button
 		    vChild.setFocused(true);
 			vChild.setBackgroundColor('#DEFF83');
-			e.getTarget().setBackgroundColor('white');
+			e.getTarget().setBackgroundColor('gray');
 	 	}
 	 	
 	}

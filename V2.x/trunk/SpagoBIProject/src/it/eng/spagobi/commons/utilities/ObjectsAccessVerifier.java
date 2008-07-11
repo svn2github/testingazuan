@@ -95,6 +95,18 @@ public class ObjectsAccessVerifier {
 	}
 	return canExecInternal(folder, profile);
     }
+    
+    /**
+     * Metodo che verifica se nell'elenco delle funzionalità ne esiste almeno una con diritto di 
+     * esecuzione
+     * @param state
+     * @param folderId
+     * @param profile
+     * @return
+     */
+    public static boolean canExec(String state, List folderId, IEngUserProfile profile) {
+			return false;
+    }
 
     /**
      * Control if current user can test the object relative to the folder id.

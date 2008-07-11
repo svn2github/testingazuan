@@ -159,7 +159,6 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	String rowSBStr = "<ROW ";
 
 	Integer visible = obj.getVisible();
-	String state = obj.getStateCode();
 
 	List functionalities = obj.getFunctionalities();
 	int visibleInstances = 0;
@@ -167,28 +166,44 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	boolean stateUp = false;
 	boolean stateDown = false;
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) IS TRUE");
+	    logger.debug("initialPath="+initialPath);
 	    if (initialPath != null && !initialPath.trim().equals("")) {
 		// in case of local administrator, he can admin only a part of
 		// the instances of the document
+		logger.debug("Local Admin Case.");
+		
+		// NOTA .. QUESTO è UN CONTEGGIO CHE PUò ESSERE FATTO CON UNA QUERY SECCA PIUTTOSTO CHE CONTARE
+		// IL NUMERO DI RIGHE
+		// NON MI è CHIARO CHE CAVOLO SERVA COMUNQUE...
+		
 		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
 		    Integer funcId = (Integer) funcIt.next();
-		    LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(funcId,
-			    false);
+		    LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(funcId,false);
 		    String folderPath = folder.getPath();
 		    if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
 			visibleInstances++;
 		    }
 		}
 	    } else {
+		logger.debug("Global Admin Case.");
 		// in case of global administrator, he can admin all the
 		// instances of the document
 		visibleInstances = functionalities.size();
 		canAddIstances = false;
 	    }
 
+	    // IN QUESTO PUNTO LEGGERE TUTTE LE FUNZIONALITà E POI PASSARLE AI METODI DOPO ???
+	    
+	    
 	    boolean canExec = false;
+	    // QUESTO PEZZO DI CODICE VERIFICA SE ESISTE ALMENO UNA FUNZIONALITà LEGATA AL DOCUMENTO
+	    // CHE L'UTENTE PUò ACCEDERE CON DIRITTO DI ESECUZIONE.
+	    // UNA SOLUZIONE è FARE IL METODO canExec che accetta un array di funzionalità
+	    
 	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
 		Integer funcId = (Integer) funcIt.next();
+		logger.debug("Verifiy the execution permission");
 		if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
 		    canExec = true;
 		    break;
@@ -197,10 +212,16 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	    rowSBStr += "		canExec=\"" + canExec + "\"";
 	}
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
+	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) IS TRUE");
+	    
+	    // ANCHE IN QUESTO CASI SI PUò FARE UN METODO CHE ACCETTA UN ARRAY
+	    // MA PER QUALE MOTIVO VERIFICO CANEXEC E CANDEV ????  IL CAN EXEC NON LO POSSO PRENDERE
+	    // DAL GIRO PRIMA NEL CASO CI SIA GIà PASSATO ?????
+	    
 	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
 		Integer funcId = (Integer) funcIt.next();
-		if ((ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile) || ObjectsAccessVerifier
-			.canExec(obj.getStateCode(), funcId, profile))
+		if ((ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile) || 
+			ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile))
 			&& canAddIstances) {
 		    visibleInstances++;
 		}
@@ -238,20 +259,26 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	    rowSBStr += "		canDev=\"" + canDev + "\"";
 	}
 
-	if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) || profile
-		.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))
-		&& (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || !profile
-			.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))) {
+	if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) || 
+	     profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))
+		&&    
+	    (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || 
+            !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))) {
+	    
+	    logger.debug("THE LAST IS TRUE!!!!");
+	    
 
 	    if (visible != null && visible.intValue() == 0) {
 		// the document is not visible
 		return null;
 	    }
 
+	    // ANCHE IN QUESTO CASO SI EVITA IL CICLO E CERCHIAMO DI RECUPERARE IL CAN EXEC...
+	    
 	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
 		Integer funcId = (Integer) funcIt.next();
-		if ((ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile) || ObjectsAccessVerifier
-			.canExec(obj.getStateCode(), funcId, profile))
+		if ((ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile) || 
+			ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile))
 			&& canAddIstances) {
 		    visibleInstances++;
 		}
@@ -290,7 +317,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	rowSBStr += " 		/>";
 
 	SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
-	logger.debug("IN");
+	logger.debug("OUT");
 	return rowSB;
     }
 

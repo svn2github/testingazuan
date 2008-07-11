@@ -37,6 +37,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -105,8 +106,8 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	public DatasetMap calculateValue() throws Exception {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
-		categories=new HashMap();
-		subCategories=new HashMap();
+		categories=new LinkedHashMap();
+		subCategories=new LinkedHashMap();
 		subCategoryNames=new ArrayList();
 		categoryNames=new ArrayList();
 
@@ -125,8 +126,8 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
 
-			HashMap series=new HashMap();
-			HashMap additionalValues=new HashMap();
+			HashMap series=new LinkedHashMap();
+			HashMap additionalValues=new LinkedHashMap();
 			String catValue="";
 
 			String nameP="";
@@ -228,7 +229,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			String additional=(String)confParameters.get("add_labels");
 			if(additional.equalsIgnoreCase("true")){
 				additionalLabels=true;
-				catSerLabels=new HashMap();
+				catSerLabels=new LinkedHashMap();
 			}
 			else additionalLabels=false;
 		}
@@ -299,7 +300,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
 		if(colors!=null){
-			colorMap=new HashMap();
+			colorMap=new LinkedHashMap();
 			List atts=colors.getContainedAttributes();
 			String colorSerie="";
 			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
@@ -316,7 +317,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		//reading subcategories labels
 		SourceBean subcatLabels = (SourceBean)content.getAttribute("CONF.SUBCATEGORY_LABELS");
 		if(subcatLabels!=null){
-			subCatLabelsMap=new HashMap();
+			subCatLabelsMap=new LinkedHashMap();
 			List atts=subcatLabels.getContainedAttributes();
 			String label="";
 			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {

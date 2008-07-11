@@ -11,10 +11,10 @@ import java.awt.Font;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -23,9 +23,9 @@ import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
@@ -48,7 +48,7 @@ public class OverlaidStackedBarLine extends BarCharts {
 		// I must identify different series
 
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
-		categories=new HashMap();
+		categories=new LinkedHashMap();
 
 		//DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -71,8 +71,9 @@ public class OverlaidStackedBarLine extends BarCharts {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
 
-			HashMap series=new HashMap();
-			HashMap additionalValues=new HashMap();
+			//HashMap series=new HashMap();
+			HashMap series=new LinkedHashMap();
+			HashMap additionalValues=new LinkedHashMap();
 			String catValue="";
 
 			String nameP="";
@@ -161,7 +162,7 @@ public class OverlaidStackedBarLine extends BarCharts {
 			String additional=(String)confParameters.get("add_labels");
 			if(additional.equalsIgnoreCase("true")){
 				additionalLabels=true;
-				catSerLabels=new HashMap();
+				catSerLabels=new LinkedHashMap();
 			}
 			else additionalLabels=false;
 		}
@@ -173,7 +174,7 @@ public class OverlaidStackedBarLine extends BarCharts {
 
 		//reading series colors if present
 		SourceBean draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
-		seriesDraw=new HashMap();
+		seriesDraw=new LinkedHashMap();
 		if(draws!=null){
 
 			List atts=draws.getContainedAttributes();

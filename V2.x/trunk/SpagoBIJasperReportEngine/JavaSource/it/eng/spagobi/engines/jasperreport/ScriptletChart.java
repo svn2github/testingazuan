@@ -110,16 +110,18 @@ public class ScriptletChart extends JRDefaultScriptlet {
 					if(!exclude.contains(name)){
 						Object value=parametersMap.get(name);
 						if(value!=null){
-							logger.debug("parameters to service: "+name);
+							logger.debug("parameters to service: "+name+" "+value.toString());
 							chartParameters.put(name, value);
 						}				
 					}
 				}
 
-				logger.debug("chart label: "+label);
+				
 
 
 			}
+			
+			logger.debug("chart label: "+label);
 
 			DocumentExecuteServiceProxy proxy=new DocumentExecuteServiceProxy(userId,session);
 			logger.debug("Calling Service");

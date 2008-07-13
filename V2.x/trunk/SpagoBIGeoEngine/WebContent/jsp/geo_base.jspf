@@ -70,7 +70,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	IDatasetProvider datamartProvider = null;
 	IMapProvider mapProvider = null;
 	IMapRenderer mapRenderer = null;
-	SpagoBIRequest spagoBIRequest = null;
 	String baseUrl = null;
 	
 	requestContainer = RequestContainerAccess.getRequestContainer(request);
@@ -82,10 +81,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	baseUrl = request.getProtocol().substring(0, request.getProtocol().indexOf('/')) + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();	
 	
-	analysisMetadata = (EngineAnalysisMetadata)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_METADATA);
-	analysisState = (GeoEngineAnalysisState)sessionContainer.getAttribute(GeoEngineConstants.ANALYSIS_STATE);
 	
 	geoEngineInstance = (GeoEngineInstance)sessionContainer.getAttribute( GeoEngineConstants.GEO_ENGINE_INSTANCE );
+	
+	analysisMetadata = geoEngineInstance.getAnalysisMetadata();
+	analysisState = (GeoEngineAnalysisState)geoEngineInstance.getAnalysisState();
+	
 	
 	mapRenderer = geoEngineInstance.getMapRenderer();
 	mapProvider = geoEngineInstance.getMapProvider();

@@ -26,6 +26,7 @@ import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
 import it.eng.spagobi.engines.geo.datasource.DataSource;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 
@@ -75,8 +76,8 @@ public class SQLDatasetProviderConfigurator {
 				dataSource = getDataSource( dataSetSB );
 				query = getQuery( dataSetSB );	
 				
-				if(sqlDatasetProvider.getEnv().get(Constants.ENV_DATASOURCE) != null) {
-					dataSource = (DataSource)sqlDatasetProvider.getEnv().get(Constants.ENV_DATASOURCE);
+				if(sqlDatasetProvider.getEnv().get(EngineConstants.ENV_DATASOURCE) != null) {
+					dataSource = (DataSource)sqlDatasetProvider.getEnv().get(EngineConstants.ENV_DATASOURCE);
 				}
 				
 				sqlDatasetProvider.setDataSource(dataSource);

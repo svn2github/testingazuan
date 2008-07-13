@@ -28,6 +28,8 @@ import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
+import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
+import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,10 +45,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class GeoEngineInstance {
-	
-	/** The env. */
-	Map env;
+public class GeoEngineInstance extends AbstractEngineInstance {
 	
 	/** The map provider. */
 	IMapProvider mapProvider;
@@ -69,13 +68,17 @@ public class GeoEngineInstance {
 	 * @param mapRenderer the map renderer
 	 */
 	protected GeoEngineInstance(IMapProvider mapProvider, IDatasetProvider datasetProvider, IMapRenderer mapRenderer) {
+		super();
+		
 		logger.debug("IN");
+		
 		setMapProvider( mapProvider );
 		setDatasetProvider( datasetProvider );
 		setMapRenderer( mapRenderer );
 		logger.info("MapProvider class: " + getMapProvider().getClass().getName());
 		logger.info("DatasetProvider class: " + getDatasetProvider().getClass().getName());
 		logger.info("MapRenderer class: " + getMapRenderer().getClass().getName());
+		
 		logger.debug("OUT");
 	}
 	
@@ -88,8 +91,10 @@ public class GeoEngineInstance {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	protected GeoEngineInstance(SourceBean template, Map env) throws GeoEngineException {
+		super( env );
+		
 		logger.debug("IN");
-		setEnv( env );		
+			
 		setMapProvider( GeoEngineComponentFactory.buildMapProvider( template, env ) );
 		setDatasetProvider( GeoEngineComponentFactory.buildDatasetProvider(template, env) );
 		setMapRenderer( GeoEngineComponentFactory.buildMapRenderer(template, env) );
@@ -149,15 +154,11 @@ public class GeoEngineInstance {
 	}
 	
 	
-	/**
-	 * Gets the analysis state.
-	 * 
-	 * @return the analysis state
-	 */
-	public GeoEngineAnalysisState getAnalysisState() {
+
+	public IEngineAnalysisState getAnalysisState() {
 		GeoEngineAnalysisState analysisState = null;
 		
-		analysisState = new GeoEngineAnalysisState(null);
+		analysisState = new GeoEngineAnalysisState();
 		analysisState.setSelectedMapName( getMapProvider().getSelectedMapName() );
 		analysisState.setSelectedHierarchyName( getDatasetProvider().getSelectedHierarchyName() );
 		analysisState.setSelectedLevelName( getDatasetProvider().getSelectedLevelName() );
@@ -175,19 +176,22 @@ public class GeoEngineInstance {
 	/**
 	 * Sets the analysis state.
 	 * 
-	 * @param analysisState the new analysis state
+	 * @param geoAnalysisState the new analysis state
 	 */
-	public void setAnalysisState(GeoEngineAnalysisState analysisState) {	
+	public void setAnalysisState(IEngineAnalysisState analysisState) {	
+		GeoEngineAnalysisState geoAnalysisState = null;
 		String selectedHiearchyName = null;
 		String selectedLevelName = null;
 		String selectedMapName = null;
 		String selectedLayerNames = null;
 		
 		logger.debug("IN");
-		selectedHiearchyName = analysisState.getSelectedHierarchy();
-		selectedLevelName = analysisState.getSelectedHierarchyLevel();
-		selectedMapName = analysisState.getSelectedMapName();
-		selectedLayerNames = analysisState.getSelectedLayers();
+		
+		geoAnalysisState = (GeoEngineAnalysisState)analysisState;
+		selectedHiearchyName = geoAnalysisState.getSelectedHierarchy();
+		selectedLevelName = geoAnalysisState.getSelectedHierarchyLevel();
+		selectedMapName = geoAnalysisState.getSelectedMapName();
+		selectedLayerNames = geoAnalysisState.getSelectedLayers();
 		
 		if(selectedHiearchyName != null) {
 			logger.debug("Previous selected hierarchy: " + getDatasetProvider().getSelectedHierarchyName());
@@ -226,6 +230,11 @@ public class GeoEngineInstance {
 		
 		logger.debug("OUT");
 	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * Render map.
@@ -293,24 +302,4 @@ public class GeoEngineInstance {
 	protected void setMapRenderer(IMapRenderer mapRenderer) {
 		this.mapRenderer = mapRenderer;
 	}
-
-	/**
-	 * Gets the env.
-	 * 
-	 * @return the env
-	 */
-	public Map getEnv() {
-		return env;
-	}
-
-	/**
-	 * Sets the env.
-	 * 
-	 * @param env the new env
-	 */
-	public void setEnv(Map env) {
-		this.env = env;
-	}
-
-	
 }

@@ -44,11 +44,15 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Geo entry point action.
  */
 public class GeoEngineStartAction extends AbstractEngineStartAction {
+	
+	private MapCatalogueAccessUtils mapCatalogueServiceProxy;
+	private String standardHierarchy;
+	
 	
 	// request
 	/** The Constant EXECUTION_CONTEXT. */
@@ -62,22 +66,13 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	// session
 	/** The Constant GEO_ENGINE_INSTANCE. */
-	public static final String GEO_ENGINE_INSTANCE = GeoEngineConstants.GEO_ENGINE_INSTANCE;
-	
-	/** The Constant ANALYSIS_METADATA. */
-	public static final String ANALYSIS_METADATA = GeoEngineConstants.ANALYSIS_METADATA;
-	
-	/** The Constant ANALYSIS_STATE. */
-	public static final String ANALYSIS_STATE = GeoEngineConstants.ANALYSIS_STATE;
-
+	public static final String GEO_ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
 	
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GeoEngineStartAction.class);
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineStartAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException {
 		
 		logger.debug("IN");		
@@ -86,52 +81,17 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			super.service(serviceRequest, serviceResponse);
 				
 			GeoEngineInstance geoEngineInstance;
-			DataSource dataSource;
-			MapCatalogueAccessUtils mapCatalogueServiceProxy;
-			String standardHierarchy;
-			EngineAnalysisMetadata analysisMetadata;
+			Map env;
 			byte[] analysisStateRowData;
 			GeoEngineAnalysisState analysisState = null;
-			String contextUrl;
 			String executionContext;
 			String executionId;
 			String documentLabel;
 			
-			
-			if(false) {
-				throw new RuntimeException("Eccezione di prova");
-			}
-			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
-			logger.debug("Template: " + getTemplate());
-			
-			dataSource = new DataSource( getDataSource() );
-			logger.debug("DataSource: " + dataSource.toString());
-			
-			mapCatalogueServiceProxy = new MapCatalogueAccessUtils( getHttpSession(), getUserId() );
-			logger.debug("MapCatalogueServiceProxy created successfully");
-			standardHierarchy = null;
-			try {
-				standardHierarchy = mapCatalogueServiceProxy.getStandardHierarchy( );
-				logger.debug("Standard hierarchy: " + standardHierarchy);
-			} catch (Exception e) {
-				logger.warn("Impossible to get standard Hierarchy configuration settings from map catalogue");
-			}
-			
-			
-			analysisMetadata = getAnalysisMetadata();
-			logger.debug("AnalysisMetadata: " + analysisMetadata.toString());
-			analysisStateRowData = getAnalysisStateRowData();
-			if(analysisStateRowData != null) {
-				logger.debug("AnalysisStateRowData: " + new String(analysisStateRowData));
-				analysisState = new GeoEngineAnalysisState( analysisStateRowData );		
-				logger.debug("AnalysisState: " + analysisState.toString());
-			} else {
-				logger.debug("AnalysisStateRowData: NULL");
-			}
-			
+			logger.debug("Template: " + getTemplate());	
 			
 			executionContext = getAttributeAsString( EXECUTION_CONTEXT ); 
 			executionId = getAttributeAsString( EXECUTION_ID );
@@ -141,41 +101,29 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
 			logger.debug("Document composition mode active: " + isDocumentCompositionModeActive);
 			
-			
-			contextUrl = getHttpRequest().getProtocol().substring(0, getHttpRequest().getProtocol().indexOf('/'))+ "://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();	
-			logger.debug("Context path: " + contextUrl);
-	
-			Map env = new HashMap();
-			copyRequestParametersIntoEnv(env, serviceRequest);
-			env.put(Constants.ENV_CONTEXT_URL, contextUrl);
-			env.put(Constants.ENV_DATASOURCE, dataSource);
-			env.put(Constants.ENV_MAPCATALOGUE_SERVICE_PROXY, mapCatalogueServiceProxy);
-			if("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive)) {
-				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
-				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
-				env.put(Constants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
-			} else {
-				env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "TRUE");
-				env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
-				env.put(Constants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
-			}
-			
-			if(standardHierarchy != null) {
-				env.put(Constants.ENV_STD_HIERARCHY, standardHierarchy);
-			}				
+			env = getEnv("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive), documentLabel, executionId);
 			
 			geoEngineInstance = GeoEngine.createInstance(getTemplate(), env);
+			geoEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
+			
+			analysisStateRowData = getAnalysisStateRowData();
+			if(analysisStateRowData != null) {
+				logger.debug("AnalysisStateRowData: " + new String(analysisStateRowData));
+				analysisState = new GeoEngineAnalysisState( );
+				analysisState.load( analysisStateRowData );
+				logger.debug("AnalysisState: " + analysisState.toString());
+			} else {
+				logger.debug("AnalysisStateRowData: NULL");
+			}
 			if(analysisState != null) {
 				geoEngineInstance.setAnalysisState( analysisState );
 			}
 			
 			setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, isDocumentCompositionModeActive);
 					
-			setAttributeInSession(EngineConstants.USER_ID, getUserId() );
-			setAttributeInSession(EngineConstants.DOCUMENT_ID, getDocumentId() );
-			setAttributeInSession(EngineConstants.AUDIT_ID, getAuditId() );
-			setAttributeInSession(ANALYSIS_METADATA, analysisMetadata );
-			setAttributeInSession(ANALYSIS_STATE, geoEngineInstance.getAnalysisState() );
+			//setAttributeInSession(EngineConstants.USER_ID, getUserId() );
+			//setAttributeInSession(EngineConstants.DOCUMENT_ID, getDocumentId() );
+			//setAttributeInSession(EngineConstants.AUDIT_ID, getAuditId() );
 			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);		
 		
 		} catch (Exception e) {
@@ -196,74 +144,63 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		logger.debug("OUT");
 	}
 	
-		
-	
-	/**
-	 * Copy request parameters into env.
-	 * 
-	 * @param env the env
-	 * @param serviceRequest the service request
-	 */
-	public void copyRequestParametersIntoEnv(Map env, SourceBean serviceRequest) {
-		Set parameterStopList = null;
-		List requestParameters = null;
-		
-		logger.debug("IN");
-		
-		parameterStopList = new HashSet();
-		parameterStopList.add("template");
-		parameterStopList.add("ACTION_NAME");
-		parameterStopList.add("NEW_SESSION");
-		parameterStopList.add("document");
-		parameterStopList.add("spagobicontext");
-		parameterStopList.add("BACK_END_SPAGOBI_CONTEXT");
-		parameterStopList.add("userId");
-		parameterStopList.add("auditId");
-		
-		
-		requestParameters = serviceRequest.getContainedAttributes();
-		for(int i = 0; i < requestParameters.size(); i++) {
-			SourceBeanAttribute attrSB = (SourceBeanAttribute)requestParameters.get(i);
-			logger.debug("Parameter [" + attrSB.getKey() + "] has been read from request");
-			logger.debug("Parameter [" + attrSB.getKey() + "] is of type  " + attrSB.getClass().getName());
-			logger.debug("Parameter [" + attrSB.getKey() + "] is equal to " + attrSB.getValue().toString());
-			
-			if(parameterStopList.contains(attrSB.getKey())) {
-				logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: FALSE");
-				continue;
-			}
-			
-			env.put(attrSB.getKey(), decodeParameterValue(attrSB.getValue().toString()) );
-			logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: TRUE");
+	private MapCatalogueAccessUtils getMapCatalogueProxy() {
+		if(mapCatalogueServiceProxy == null) {
+			mapCatalogueServiceProxy = new MapCatalogueAccessUtils( getHttpSession(), getUserId() );
 		}
-
-		logger.debug("OUT");
+		
+		return mapCatalogueServiceProxy;
 	}
 	
-	
-	
-	/**
-	 * Decode parameter value.
-	 * 
-	 * @param parValue the par value
-	 * 
-	 * @return the string
-	 */
-	private String decodeParameterValue(String parValue) {
-		String newParValue;
-			
-		ParametersDecoder decoder = new ParametersDecoder();
-		if(decoder.isMultiValues(parValue)) {			
-			List values = decoder.decode(parValue);
-			newParValue = "";
-			for(int i = 0; i < values.size(); i++) {
-				newParValue += (i>0?",":"");
-				newParValue += values.get(i);
-			}
-		} else {
-			newParValue = parValue;
+	private String getStandardHierarchy() {
+		if(standardHierarchy == null) {
+			try {
+				standardHierarchy = getMapCatalogueProxy().getStandardHierarchy( );
+				logger.debug("Standard hierarchy: " + standardHierarchy);
+			} catch (Exception e) {
+				logger.warn("Impossible to get standard Hierarchy configuration settings from map catalogue");
+			}	
 		}
-			
-		return newParValue;
+		
+		return standardHierarchy;
+	}
+	
+	private String getContextUrl() {
+		String contextUrl = null;
+		
+		contextUrl = getHttpRequest().getProtocol().substring(0, getHttpRequest().getProtocol().indexOf('/'))+ "://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();	
+		logger.debug("Context path: " + contextUrl);
+		
+		return contextUrl;
+	}
+	
+	public Map getEnv(boolean isDocumentCompositionModeActive, String documentLabel, String executionId) {
+		Map env = null;
+		
+		env = super.getEnv();
+		
+		DataSource dataSource = new DataSource( getDataSource() );
+		env.put(EngineConstants.ENV_DATASOURCE, dataSource);
+		logger.debug("DataSource: " + dataSource.toString());
+		
+		env.put(Constants.ENV_CONTEXT_URL, getContextUrl());
+		
+		env.put(Constants.ENV_MAPCATALOGUE_SERVICE_PROXY, getMapCatalogueProxy());
+		
+		if(isDocumentCompositionModeActive) {
+			env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
+			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
+			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
+		} else {
+			env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "TRUE");
+			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
+			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
+		}
+		
+		if(getStandardHierarchy() != null) {
+			env.put(Constants.ENV_STD_HIERARCHY, getStandardHierarchy());
+		}		
+		
+		return env;
 	}
 }

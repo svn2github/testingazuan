@@ -75,20 +75,15 @@ public class SaveAnalysisAction extends AbstractGeoEngineAction {
 		logger.debug("Analysy scope: " + scope);
 
 				
-		analysisMetadata = getAnalysisMetadata();
-		analysisState = (GeoEngineAnalysisState)getAnalysisState();		
+		analysisMetadata = getGeoEngineInstance().getAnalysisMetadata();
+		analysisState = (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();		
 		
 		analysisMetadata.setName(name);
 		analysisMetadata.setDescription(description);
 		analysisMetadata.setScope(scope);
-		analysisState.refreshRowData();
 		
-		ContentServiceProxy proxy = new ContentServiceProxy( getUserId(), getHttpSession() );
 	    try {
-	    	String data = new String(analysisState.getRowData());
-	    	String result = proxy.saveSubObject( getDocumentId(), analysisMetadata.getName(),analysisMetadata.getDescription(), 
-	    			analysisMetadata.getScope(), 
-	    			analysisState.getRowData() == null?"": new String(analysisState.getRowData()));			
+	    	boolean result = saveAnalysisState();
 	    	getHttpSession().setAttribute("saveSubObjectMessage", result);
 	    } catch (Exception gse) {		
 	    	logger.error("Error while saving analysis.", gse);

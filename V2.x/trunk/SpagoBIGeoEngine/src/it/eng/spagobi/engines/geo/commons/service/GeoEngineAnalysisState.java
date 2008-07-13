@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class GeoEngineAnalysisState.
  * 
@@ -34,61 +33,44 @@ import java.util.Properties;
  */
 public class GeoEngineAnalysisState extends EngineAnalysisState {
 	
-	/** The properties. */
-	private Properties properties;
+	// property names 
+	public static final String SELECTED_HIERARCHY = "selected_hierachy";
+	public static final String SELECTED_HIERARCHY_LEVEL= "selected_hierarchy_level";
+	public static final String SELECTED_MAP = "selected_map";
+	public static final String SELECTED_LAYERS = "selected_layers";
 	
-	/**
-	 * Instantiates a new geo engine analysis state.
-	 * 
-	 * @param rowData the row data
-	 */
-	public GeoEngineAnalysisState( byte[] rowData ) {
-		super( rowData );
-		parseRowData();
+	
+	
+	public GeoEngineAnalysisState( ) {
+		super();
 	}
-	
-	/**
-	 * Parses the row data.
-	 */
-	private void  parseRowData() {
-		properties = new Properties();
+		
+	public void load(byte[] rowData) {
 		
 		String str = null;
 		String[] chuncks = null;
-		
-		if(getRowData() == null) return;
-		
-		str = new String( getRowData() );
+			
+		str = new String( rowData );
 		chuncks = str.split(";");
 		for(int i = 0; i < chuncks.length; i++) {
 			String[] propChunk = chuncks[i].split("=");
 			String pName = propChunk[0];
 			String pValue = propChunk[1];
-			properties.setProperty(pName, pValue);
+			setProperty(pName, pValue);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.EngineAnalysisState#setRowData(byte[])
-	 */
-	public void setRowData( byte[] rowData ) {
-		super.setRowData(rowData);
-		parseRowData();
-	}
 	
-	/**
-	 * Refresh row data.
-	 */
-	public void refreshRowData( ) {
+	public byte[] store() {
 		StringBuffer buffer = new StringBuffer();
-		Iterator it = properties.keySet().iterator();
+		Iterator it = propertyNameSet().iterator();
 		while( it.hasNext() ) {
 			String pName = (String)it.next();
-			String pValue = properties.getProperty(pName);
+			String pValue = (String)getProperty( pName );
 			buffer.append(pName + "=" + pValue + ";");
 		}
 		
-		super.setRowData(buffer.toString().getBytes());
+		return buffer.toString().getBytes();
 	}
 	
 	/**
@@ -97,7 +79,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @return the selected hierarchy
 	 */
 	public String getSelectedHierarchy() {
-		return properties.getProperty("selected_hierachy");
+		return (String)getProperty(SELECTED_HIERARCHY);
 	}
 	
 	/**
@@ -106,7 +88,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @param hierarchyName the new selected hierarchy name
 	 */
 	public void setSelectedHierarchyName(String hierarchyName) {
-		properties.setProperty("selected_hierachy", hierarchyName);
+		setProperty(SELECTED_HIERARCHY, hierarchyName);
 	}
 
 	/**
@@ -115,7 +97,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @return the selected hierarchy level
 	 */
 	public String getSelectedHierarchyLevel() {
-		return properties.getProperty("selected_hierarchy_level");		
+		return (String)getProperty(SELECTED_HIERARCHY_LEVEL);		
 	}
 	
 	/**
@@ -124,7 +106,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @param levelName the new selected level name
 	 */
 	public void setSelectedLevelName(String levelName) {
-		properties.setProperty("selected_hierarchy_level", levelName);		
+		setProperty(SELECTED_HIERARCHY_LEVEL, levelName);		
 	}
 
 	/**
@@ -133,7 +115,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @return the selected map name
 	 */
 	public String getSelectedMapName() {
-		return properties.getProperty("selected_map");
+		return (String)getProperty(SELECTED_MAP);
 	}
 	
 	/**
@@ -142,7 +124,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @param mapName the new selected map name
 	 */
 	public void setSelectedMapName(String mapName) {
-		properties.setProperty("selected_map", mapName);
+		setProperty(SELECTED_MAP, mapName);
 	}
 
 	/**
@@ -151,7 +133,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @return the selected layers
 	 */
 	public String getSelectedLayers() {
-		return properties.getProperty("selected_layers");
+		return (String)getProperty(SELECTED_LAYERS);
 	}
 	
 	/**
@@ -160,7 +142,7 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 	 * @param layers the new selected layers
 	 */
 	public void setSelectedLayers(String layers) {
-		properties.setProperty("selected_layers", layers);
+		setProperty(SELECTED_LAYERS, layers);
 	}
 	
 	/**
@@ -180,21 +162,4 @@ public class GeoEngineAnalysisState extends EngineAnalysisState {
 			setSelectedLayers(layersStr);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-    	String str = "";
-    	
-    	str += "[";
-    	str += "selectedHierachy:" + getSelectedHierarchy() + "; ";
-    	str += "selectedLevel:" + getSelectedHierarchyLevel() + "; ";
-    	str += "selectedMap:" + getSelectedMapName() + "; ";
-    	str += "selectedLayers:" + getSelectedLayers();
-    	str += "]";
-    	
-    	return str;
-    }
-	
 }

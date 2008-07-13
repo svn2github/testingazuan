@@ -127,8 +127,6 @@ public class Constants {
 	
 	// ENV PROPERTIES
 	
-	/** The Constant ENV_DATASOURCE. */
-	public static final String ENV_DATASOURCE = "DATASOURCE";
 	
 	/** The Constant ENV_MAPCATALOGUE_SERVICE_PROXY. */
 	public static final String ENV_MAPCATALOGUE_SERVICE_PROXY = "MAPCATALOGUE_SERVICE_PROXY";

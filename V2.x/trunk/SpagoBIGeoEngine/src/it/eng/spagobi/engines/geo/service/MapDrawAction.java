@@ -83,17 +83,14 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		logger.debug("IN");
 		
+		
+		
 		try {
 		
-		auditAccessUtils = (AuditAccessUtils)getAttributeFromSession("SPAGOBI_AUDIT_UTILS");
-		if (auditAccessUtils != null) {
-			auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), new Long(System.currentTimeMillis()), null, 
-					"EXECUTION_STARTED", null, null);
-		}
 		
 		super.service(serviceRequest, serviceResponse);
 		
-		
+		getAuditServiceProxy().notifyServiceStartEvent();
 		
 		selectedHierarchyName = getAttributeAsString( HIERARCHY_NAME );				
 		selectedLevelName = getAttributeAsString( HIERARCHY_LEVEL );
@@ -102,7 +99,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		selectedLayers = parseLayers( layers );		
 		
-		GeoEngineAnalysisState analysisState =  (GeoEngineAnalysisState)getAnalysisState();
+		
+		GeoEngineAnalysisState analysisState =  (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();;
 		if(selectedMapName != null) {
 			analysisState.setSelectedMapName( selectedMapName );
 		}
@@ -151,10 +149,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 				SVGMapConverter.SVGToJPEGTransform(inputStream, getOutputStream());
 			} catch (Exception e) {
 				logger.error("error while transforming into jpeg", e);
-				sendError(getOutputStream());
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Error while transforming into jpeg", null);
+				sendError(getOutputStream());				
+				getAuditServiceProxy().notifyServiceErrorEvent( "Error while transforming into jpeg" );
 				return;
 			}
 			try{
@@ -172,9 +168,7 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			} catch (Exception e) {
 				logger.error("error while flushing svg", e);
 				sendError(getOutputStream());
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Error while flushing svg", null);
+				getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing svg" );
 				return;
 			}
 			try{
@@ -188,11 +182,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			return;
 		}
 		
-		// AUDIT UPDATE
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), getAuditId(), null, new Long(System.currentTimeMillis()), 
-				"EXECUTION_PERFORMED", null, null);
+		getAuditServiceProxy().notifyServiceEndEvent( );
 		
-		// delete tmp map file
 		maptmpfile.delete();		
 	}
 	
@@ -293,18 +284,6 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	
 	
 	
-	/**
-	 * Audit execution failure.
-	 * 
-	 * @param msg the msg
-	 */
-	private void auditExecutionFailure(String msg) {
-		String auditId = getHttpRequest().getParameter("SPAGOBI_AUDIT_ID");
-		AuditAccessUtils auditAccessUtils = 
-			(AuditAccessUtils) getHttpRequest().getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
-		if (auditAccessUtils != null) auditAccessUtils.updateAudit(getHttpSession(), getUserId(), auditId, null, new Long(System.currentTimeMillis()), 
-				"EXECUTION_FAILED", msg, null);
-	}
 	
 	/**
 	 * sends an error message to the client.

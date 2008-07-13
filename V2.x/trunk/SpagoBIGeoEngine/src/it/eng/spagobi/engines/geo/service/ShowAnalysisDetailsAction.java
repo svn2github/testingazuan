@@ -25,10 +25,7 @@ import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.utilities.engines.EngineException;
 
-// TODO: Auto-generated Javadoc
-/**
- * Spago Action which executes the map producing request.
- */
+
 public class ShowAnalysisDetailsAction extends AbstractGeoEngineAction {
 	
 	
@@ -52,8 +49,8 @@ public class ShowAnalysisDetailsAction extends AbstractGeoEngineAction {
 		data += "selected_map=" + selectedMap + ";";
 		data += "selected_layers=" + selectedLayers + ";";
 		
-		GeoEngineAnalysisState analysisState = (GeoEngineAnalysisState)getAnalysisState();
-		analysisState.setRowData( data.getBytes() );				
+		GeoEngineAnalysisState analysisState = (GeoEngineAnalysisState)getEngineInstance().getAnalysisState();
+		analysisState.load( data.getBytes() );				
 	}
 	
 

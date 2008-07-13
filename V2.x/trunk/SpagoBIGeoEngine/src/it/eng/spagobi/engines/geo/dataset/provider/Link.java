@@ -73,6 +73,7 @@ public class Link {
 		// scopes
 		public static final String DATASET = "dataset";
 		public static final String ENVIRONMENT = "environment";
+										
 		
 		
 		/** The type. */

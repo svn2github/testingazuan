@@ -10,12 +10,12 @@
 	<!-- to contribute (without having to type -D or edit this file -->
 	<property file="${basedir}/build.properties" />
 	
-	<target name="buildSource" depends="replace"></target>
-	<target name="buildBuild" depends="createBuildScriptFiles"></target>
+	<target name="buildSource" depends="replaceSource"></target>
+	<target name="buildBuild" depends="replaceBuild"></target>
 	<target name="buildApi" depends="makeApi"></target>
 	<target name="buildAll" depends="makeAll"></target>
 		
-	<target name="replace" depends="createSourceScriptFiles">
+	<target name="replaceSource" depends="createSourceScriptFiles">
 		<replace 
 		    file="${js.spagobi.source.dir}/script/chiron.web.js">
 	
@@ -25,16 +25,43 @@
 		  
 		</replace>
 		
-		<replace 
-				    file="${js.spagobi.source.dir}/script/chiron.web.js">
+			<replace 
+				file="${js.spagobi.source.dir}/script/chiron.web.js">
 			
-				  <replacefilter 
-				    token="../js/qooxdoo-0.7.3/frontend/framework/source/resource" 
-				    value="../js/spagobi/build/resource/qx"/>
+			<replacefilter 
+			    token="../js/qooxdoo-0.7.3/frontend/framework/source/resource" 
+			    value="../js/spagobi/build/resource/qx"/>
+			
+			<replacefilter 
+			    token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource";\' 
+			    value='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";\' />
 				  
 		</replace>
 		
 	</target>
+	
+	<target name="replaceBuild" depends="createBuildScriptFiles">
+						 			
+			<replace 
+					    file="${js.spagobi.build.dir}/script/chiron.web.js">
+				
+					  <replacefilter 
+					    token="./resource/qx" 
+					    value="../js/spagobi/build/resource/qx"/>
+				
+				<replacefilter 
+						token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource/spagobi.app";' 
+						value='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";' />
+								
+					  
+			</replace>			
+	</target>
+	
+	
+	
+	
+	
+	
 	
 	<target name="createSourceScriptFiles" depends="makeSource">
 			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 

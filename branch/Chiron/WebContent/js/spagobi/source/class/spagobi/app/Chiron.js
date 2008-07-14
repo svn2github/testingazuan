@@ -36,10 +36,11 @@ qx.Class.define("spagobi.app.Chiron",
   *****************************************************************************
   */
 
+  /*	
   settings : {
     "spagobi.resource" : ".."
   },
-
+  */
 
   /*
   *****************************************************************************
@@ -64,7 +65,7 @@ qx.Class.define("spagobi.app.Chiron",
 		
       	      	
       	 // Define alias for custom resource path
-      	 qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resource"));
+      	 qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
       	 //qx.io.Alias.getInstance().add("spagobi", qx.core.Setting.get("spagobi.test.resourceUri"));
       	 
       	 // Include CSS file
@@ -138,21 +139,24 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	this.toolbars['resources'] = new spagobi.ui.PageView({
       		toolbar: {
-      			defaultBackgroudColor: 'white',
+      			defaultBackgroudColor: 'gray',
       			focusedBackgroudColor: '#DEFF83',
       			buttons: [
       				{
       					name: 'engine',
 						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
-						page: 'engine'
+						page: 'engine',
+						tooltip: 'Engines'
       				}, {
       					name: 'datasource',
 						image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',
-						page: 'datasource'
+						page: 'datasource',
+						tooltip: 'Datasources'
       				}, {
       					name: 'dataset',
 						image:'spagobi/img/spagobi/test/datasetAdministrationIcon.png',
-						page: 'dataset'
+						page: 'dataset',
+						tooltip: 'Dataset'
       				}
       			]
       		},
@@ -167,17 +171,19 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	this.toolbars['catalogues'] = new spagobi.ui.PageView({
       		toolbar: {
-      			defaultBackgroudColor: 'white',
+      			defaultBackgroudColor: 'gray',
       			focusedBackgroudColor: '#DEFF83',
       			buttons: [
       				{
       					name: 'mapmgmt',
 						image:'spagobi/img/spagobi/test/mapManagementIcon.png',
-						page: 'mapmgmt'
+						page: 'mapmgmt',
+						tooltip: 'Maps'
       				}, {
       					name: 'featuremgmt',
 						image:'spagobi/img/spagobi/test/featureManagementIcon.png',
-						page: 'featuremgmt'
+						page: 'featuremgmt',
+						tooltip: 'Features'
       				}
       			]
       		},

@@ -139,8 +139,6 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	this.toolbars['resources'] = new spagobi.ui.PageView({
       		toolbar: {
-      			defaultBackgroudColor: 'gray',
-      			focusedBackgroudColor: '#DEFF83',
       			buttons: [
       				{
       					name: 'engine',

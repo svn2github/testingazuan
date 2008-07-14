@@ -21,11 +21,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
+/*
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it), 
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ */
 
+/**
+* This class defines the Left Vertical Bar of the the GUI
+*/
 
 qx.Class.define("spagobi.ui.IconBar", {
 	extend : qx.ui.layout.VerticalBoxLayout,
-  	
+
+	/** 
+	*  Call to the constructor with the main Config object as its argument which contains the following  properties
+	*  defaultBackgroudColor -> This is the default background color of the button. 
+	*  focusedBackgroudColor -> This is the color of the background when a particular button is focussed.
+	*  @param config (qx.ui.object)
+	*  
+	*/  	
     construct : function( config ) {   
 	    this.base(arguments);
 	    this.setSpacing(0);
@@ -47,102 +62,80 @@ qx.Class.define("spagobi.ui.IconBar", {
 	    }
 	},
 	
+	/**
+	* Global members of the class
+	*  _focusedBackgroudColor
+	*  _defaultBackgroudColor
+	*  _checkedButton
+	*/
 	members :  {
 		
 		_defaultBackgroudColor: 'white',
 		_focusedBackgroudColor: '#DEFF83',
 		_checkedButton: undefined,
-	    
+	   
+		/**	  
+		* This function adds the button on the vertical bar (the butons are actually atoms) by calling another function _addAtom().
+		* The argument to this function is the complex object namely buttonConfig which has the folowing properties
+		* name, image, handler (function),  context (scope object), tooltip, defaultBackgroudColor, focusedBackgroudColor. 
+		* All these properties are explained in brief at the function definition.<b> 
+		* @param buttonConfig (qx.ui.Object)
+		*/    
 	    addButton: function(buttonConfig) {
-	    	//this._addButton(name,image,callback, context,tooltip);
-	    	//this._addButton(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context,buttonConfig.tooltip);
+	    		    
+	    	/**
+	    	*  Call to the funtion which adds the atoms to the bar
+	    	*/
+	    	
 	    	this._addAtom(buttonConfig.name,buttonConfig.image, buttonConfig.handler, buttonConfig.context,buttonConfig.tooltip);
 	 	},
-	 	/*
-	 	_addButton: function(name,image,callback, context,tooltip) {	    
-			var btn = new qx.ui.form.Button('',image);
-			btn.setUserData('name', name);
-			btn.setUserData('checked', false);
-			var tt = new qx.ui.popup.ToolTip(tooltip);
-			btn.setToolTip(tt);
-			tt.setShowInterval(20);
-			var border = new qx.ui.core.Border(0);
-			btn.setBorder(border);
-			btn.addEventListener("execute", callback, context);
-			btn.addEventListener("execute", this.attack, this);//callback, context);
-			btn.addEventListener("mouseover",this._onmouseover);
-			btn.addEventListener("mouseout", this._onmouseout);
-			
-			this.add(btn);
-			return btn;
-	 	},
 	 	
-	 	check : function(e){
 	 	
-	 	    e.getTarget().checked = true;
-	 		e.getTarget().setBackgroundColor('#DEFF83');
-	 		this._checkedButton = e.getTarget();
-	 	},
-	 	
-	 	uncheck : function(){ 
-	 	
-	 	  this._checkedButton.setBackgroundColor(null);
-	 	  this._checkedButton.checked = false;
-	 	  
-	 	
-	 	},
-	 	
-	 	attack: function(e){
-	 	
-	 	if (!this._checkedButton) {
-	 		this.check(e);
-	 		
-	 	} else {
-	 	
-	 	  this.uncheck();
-	 	  this.check(e);
- 	   }
-	    
-       },
-       
-       _onmouseover: function(e) {	 		
-	 		if (e.getTarget().checked == false) {
-	 			e.getTarget().setBackgroundColor('white');
-	 		}
-	 	},
-	 	
-	   _onmouseout: function(e) {
-	        if (e.getTarget().checked == false) {
-	 		e.getTarget().setBackgroundColor(null);
-	 		}
-	 	},
-	 	*/
-	 	_addAtom: function(name,image,callback, context,tooltip) {	    
+	 	/**
+	 	*  Definition of the funtion that adds atoms to the vertical bar with the folowing aruments.
+	 	*  @param name (qx.ui.basic.Atom) -> the name of the button by which it is identified
+	 	*  @param image (qx.ui.basic.Atom) -> The image of the button, as how the button will look.
+	 	*  @param handler (function) -> handler is the callback which will be executed when the button is clicked.
+	 	*  @param context (qx.ui.object) -> Context is the scope to which the callback function will be executed 
+	 	*  @param tooltip (new qx.ui.popup)->This is the tooltip which is a text assciated with each button and is visible when the mouse goes over any button. 
+	 	*  
+	 	*/	 	
+	 	_addAtom: function(name, image, handler, context, tooltip) {	    
 			var atom = new qx.ui.basic.Atom('', image);
 			atom.setUserData('name', name);
 			atom.setUserData('checked', false);
 			var tt = new qx.ui.popup.ToolTip(tooltip);
 			atom.setToolTip(tt);
 			tt.setShowInterval(20);
-			//atom.setBackgroundColor('white');
 			atom.addEventListener("mouseover",this._onmouseover);
     		atom.addEventListener("mouseout", this._onmouseout);
-    		atom.addEventListener("mousedown", callback, context);
-    		atom.addEventListener("mousedown",this.attack, this);///*{if ("mousedown"){ this.atom.setChecked(true);*/callback/*}}*/, context);
+    		atom.addEventListener("mousedown", handler, context);
+    		atom.addEventListener("mousedown",this.select, this);
     		atom.addEventListener("keydown",  this._onkeydown);
     		atom.addEventListener("keypress", this._onkeypress);
 			
 			this.add(atom);
 	 	},
 	 	
-	 	
-	 check : function(e){
-	 	 
-	 	    e.getTarget().setUserData('checked', true);
-	 		e.getTarget().setBackgroundColor('#DEFF83');
-	 		this._checkedButton = e.getTarget();
-	 	},
-	 	
+		 /**
+		  *   This function checks the atom presently clicked
+		  *   and sets the backdround color to the color specified 
+		  *   and also retains the value of the event handler it was triggered  by.
+		  *   @param e (qx.event.type.event)e is the current instance of the event listener.
+		  */	
+		 check : function(e){
+		 	 
+		 	    e.getTarget().setUserData('checked', true);
+		 		e.getTarget().setBackgroundColor('#DEFF83');
+		 		this._checkedButton = e.getTarget();
+		 },
+	 
+		/**
+		 *   This function unchecks the atom presently clicked
+		 *   and sets the backdround color to null 
+		 *   and also changes the value of the "checked" property to false of 
+		 *   the previously checked button.
+		 */	
 	 	uncheck : function(){ 
 	 	
 	 	  this._checkedButton.setBackgroundColor(null);
@@ -151,36 +144,64 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 	
 	 	},
 	 	
-	 	attack: function(e){
+		/**
+		 *   This function calls the check and uncheck functions defined above. 
+		 *   It calls the function check when ever the value of the Global variable
+		 *   "_checkedButton" is undefined pasing the parameter "e" which is the event
+		 *   listener of the current button being clicked as the argument  
+		 *   otherwise calls the uncheck function
+		 *   @param e (qx.event.type.event)e is the current instance of the event listener.
+		 */	
+	 	select: function(e){	 	
+		 	if (!this._checkedButton) {
+		 		this.check(e);		 		
+		 	} else {		 	
+		 	  this.uncheck();
+		 	  this.check(e);		 	  
+		 	}
 	 	
-	 	if (!this._checkedButton) {
-	 		this.check(e);
-	 		
-	 	} else {
+		},
 	 	
-	 	  this.uncheck();
-	 	  this.check(e);
-	 	  
-	 	  
-	 	}
-	 	
-	 },
-	 	
-	 	
+		/* *
+		 *   This function is executed when ever the user moves the mouse over a button. 
+		 *   When a user moves the mouse over any button, this function first checks
+		 *   whether the current button is checked already or not.
+		 *   If checked, it does not do anything but if the current button is not checked  
+		 *   it changes the background color of the button to white.
+		 *   @param e (qx.event.type.event)e is the current instance of the event listener.
+		 */		  	
 	 	 _onmouseover: function(e) {	 		
 	 		if (e.getTarget().getUserData('checked') == false) {
-	 			e.getTarget().setBackgroundColor('gray');
+	 			e.getTarget().setBackgroundColor('white');
 	 		}
 	 	},
-	 	
-	   _onmouseout: function(e) {
+	
+		/* *
+		 *   This function is executed when ever the user moves out the mouse from a button. 
+		 *   When a user moves the mouse out the mouse, this function first checks
+		 *   whether the current button is checked already or not.
+		 *   If checked, it does not do anything but if the current button is not checked  
+		 *   it changes the background color of the button from white to null.
+		 *   @param e (qx.event.type.event) e is the current instance of the event listener.
+		 */	
+		_onmouseout: function(e) {
 	        if (e.getTarget().getUserData('checked') == false) {
 	 		e.getTarget().setBackgroundColor(null);
 	 		}
 	 	},
 	 	
+		/* *
+		 *  This function is called whenever a user presses any key from the keyboard.
+		 *  @param e (qx.event.type.event) e is the current instance of the event listener.
+		 *
+		 */	
 	 	_onkeydown: function(e) {},
-	 	
+	 
+		/* *
+		 *  This function is called whenever a user presses any key from the keyboard.
+		 *  @param e (qx.event.type.event) e is the current instance of the event listener.
+		 *
+		 */	 	
 	 	_onkeypress: function(e) {
 	 		
 			switch(e.getKeyIdentifier()) {
@@ -206,7 +227,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 		    // focus next/previous button
 		    vChild.setFocused(true);
 			vChild.setBackgroundColor('#DEFF83');
-			e.getTarget().setBackgroundColor('gray');
+			e.getTarget().setBackgroundColor('white');
 	 	}
 	 	
 	}

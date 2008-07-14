@@ -34,7 +34,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.utilities.callbacks.mapcatalogue.*,
 				 it.eng.spagobi.engines.geo.map.provider.*,
 				 it.eng.spagobi.engines.geo.map.renderer.*,
-				 it.eng.spagobi.engines.geo.dataset.provider.* "%>
+				 it.eng.spagobi.engines.geo.dataset.provider.*
+				 "%>
 				 
 
 	<%-- Necessary for window Javascript library --%>
@@ -58,6 +59,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	<link rel="stylesheet" href ="../js/lib/prototype-window/themes/debug.css" type="text/css"/>
 
 <% 
+	
 	RequestContainer requestContainer = null;
 	ResponseContainer responseContainer = null;
 	SessionContainer sessionContainer = null;   
@@ -79,17 +81,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	serviceRequest = requestContainer.getServiceRequest();
 	serviceResponse = responseContainer.getServiceResponse();
 	
+	
+	
 	baseUrl = request.getProtocol().substring(0, request.getProtocol().indexOf('/')) + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();	
 	
 	
-	geoEngineInstance = (GeoEngineInstance)sessionContainer.getAttribute( GeoEngineConstants.GEO_ENGINE_INSTANCE );
+	geoEngineInstance = (GeoEngineInstance)sessionContainer.getAttribute( EngineConstants.ENGINE_INSTANCE );
 	
+	
+	try {
 	analysisMetadata = geoEngineInstance.getAnalysisMetadata();
 	analysisState = (GeoEngineAnalysisState)geoEngineInstance.getAnalysisState();
 	
+	System.out.println("---------> Step 2");
 	
 	mapRenderer = geoEngineInstance.getMapRenderer();
 	mapProvider = geoEngineInstance.getMapProvider();
+	} catch(Exception e) {
+		e.printStackTrace();
+	}
+	
 	datamartProvider = geoEngineInstance.getDatasetProvider();
+	System.out.println("---------> Step 3");
 %>
     

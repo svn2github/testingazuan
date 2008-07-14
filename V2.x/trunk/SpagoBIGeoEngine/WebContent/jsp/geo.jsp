@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%	
+	System.out.println("Andiamo avincere");
 	boolean isDrillPanelVisible = true;
 	String isSaveSubObjFuncActive = null;
 	String actionUrl = null;

@@ -13,4 +13,5 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tracing.xml" />	
 	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />	
 	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/renderers.xml" />	
 </MASTER>

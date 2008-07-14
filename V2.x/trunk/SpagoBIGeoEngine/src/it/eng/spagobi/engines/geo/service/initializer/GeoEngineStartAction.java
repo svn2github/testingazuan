@@ -21,26 +21,19 @@
 package it.eng.spagobi.engines.geo.service.initializer;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.GeoEngine;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.datasource.DataSource;
-import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
-import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -119,16 +112,10 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 				geoEngineInstance.setAnalysisState( analysisState );
 			}
 			
-			setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, isDocumentCompositionModeActive);
-					
-			//setAttributeInSession(EngineConstants.USER_ID, getUserId() );
-			//setAttributeInSession(EngineConstants.DOCUMENT_ID, getDocumentId() );
-			//setAttributeInSession(EngineConstants.AUDIT_ID, getAuditId() );
+			setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, isDocumentCompositionModeActive);					
 			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);		
 		
 		} catch (Exception e) {
-			//EMFInternalError error = new EMFInternalError(EMFErrorSeverity.ERROR, "Errore orrore", e, "error object description");
-			//getErrorHandler().addError( error );
 			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
 			
 			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";

@@ -23,7 +23,6 @@ package it.eng.spagobi.engines.geo.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.EngineException;
 

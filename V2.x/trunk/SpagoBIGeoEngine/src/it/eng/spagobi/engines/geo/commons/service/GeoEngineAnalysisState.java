@@ -24,7 +24,6 @@ import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * The Class GeoEngineAnalysisState.

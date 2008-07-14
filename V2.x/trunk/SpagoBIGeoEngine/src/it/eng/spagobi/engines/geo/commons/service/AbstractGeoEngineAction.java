@@ -21,8 +21,8 @@
 package it.eng.spagobi.engines.geo.commons.service;
 
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class AbstractGeoEngineAction extends AbstractEngineAction {
 	 * @return the geo engine instance
 	 */
 	public GeoEngineInstance getGeoEngineInstance() {
-		return (GeoEngineInstance)getAttributeFromSession( GeoEngineConstants.GEO_ENGINE_INSTANCE );
+		return (GeoEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
 	}
 	
 	

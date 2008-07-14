@@ -342,11 +342,11 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					logger.debug("NOT visible " + obj.getName());
 				} else {
 					logger.debug("VISIBLE " + obj.getName());
-					if (canTest && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile))) {
+					if (canTest && (stateObj.equals("TEST"))) {
 						thereIsOneOrMoreObjectsInTestState = true;
 						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
-					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile)) && canExec) {
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL")) && canExec) {
 						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 					}
@@ -412,12 +412,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					} else {
 						String prog = idObj.toString();
 						logger.debug("VISIBLE " + obj.getName());
-						if ((ObjectsAccessVerifier.isAbleToExec(stateObj, profile)) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
+						if ((stateObj.equals("TEST")) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 
 							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'/SpagoBI/img/editTemplate.jpg\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
-						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile))&& canExec) {
+						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL"))&& canExec) {
 								
 							//Vecchio Albero con menu
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");

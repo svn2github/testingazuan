@@ -264,11 +264,13 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
+		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
+		boolean canDev = ObjectsAccessVerifier.canDev(idFolder, profile);
 
 		if (isRoot) {
 			htmlStream.append("	treeDevObjects.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
-			if (ObjectsAccessVerifier.canDev(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
+			if (canDev || canExec) {
 				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
 				htmlStream.append("	treeDevObjects.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
@@ -285,9 +287,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer idObj = obj.getId();
 					String stateObj = obj.getStateCode();
 					String prog = idObj.toString();
-					if (ObjectsAccessVerifier.canDev(stateObj, idFolder, profile)) {
+					if (canDev && (stateObj.equals("DEV"))) {
 						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\', \\'\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
-					} else if(ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
+					} else if(canExec && (stateObj.equals("REL"))) {
 						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\', \\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\', \\'\\')' );\n");
 					}
 				}

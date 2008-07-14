@@ -54,6 +54,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -267,10 +268,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			criteria.setFetchMode("sbiFuncRoles", FetchMode.JOIN);
 			Criterion domainCdCriterrion = Expression.in("functId", functionalityIDs);		
 			criteria.add(domainCdCriterrion);
 			List temp = criteria.list();
+			//Query query=aSession.createQuery("from SbiFunctions f inner join f.sbiFuncRoles where functId in ("+functionalityIDs.get(0)+")");
+			//List temp = query.list();
 			if(!temp.isEmpty()){
 			Iterator it = temp.iterator();
 			while(it.hasNext()){

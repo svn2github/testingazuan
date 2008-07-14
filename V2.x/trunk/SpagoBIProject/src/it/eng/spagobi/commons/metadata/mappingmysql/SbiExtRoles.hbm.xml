@@ -7,6 +7,7 @@
         the hibernate.org cfg2hbm engine
 -->
     <class name="it.eng.spagobi.commons.metadata.SbiExtRoles" table="SBI_EXT_ROLES">
+    <cache usage="read-only"/>
         <id name="extRoleId" type="integer">
             <column name="EXT_ROLE_ID" />
             <generator class="native">

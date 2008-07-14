@@ -75,12 +75,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -1061,8 +1063,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery(" from SbiObjects s order by s.label");
-			List hibList = hibQuery.list();
+			Criteria criteria = aSession.createCriteria(SbiObjects.class);
+			criteria.setFetchMode("sbiObjFuncs", FetchMode.JOIN);
+			//criteria.addOrder(new Order("label",true));
+			
+			//Query hibQuery = aSession.createQuery(" from SbiObjects s order by s.label");
+			//List hibList = hibQuery.list();
+			List hibList = criteria.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
 				realResult.add(toBIObject((SbiObjects) it.next()));

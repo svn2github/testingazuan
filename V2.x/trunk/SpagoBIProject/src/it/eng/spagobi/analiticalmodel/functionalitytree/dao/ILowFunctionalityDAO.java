@@ -84,6 +84,19 @@ public interface ILowFunctionalityDAO {
 	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError;
 	
 	/**
+	 * Load low functionality list by id List
+	 * 
+	 * @param functionalityIDs the functionality id List
+	 * 
+	 * @return the low functionalities List
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
+	 */
+	public List loadLowFunctionalityList(List functionalityIDs) throws EMFUserError ;
+	
+	/**
 	 * Loads all information for a low functionality identified by its
 	 * <code>functionalityPath</code>. All these information, are stored into a
 	 * <code>LowFunctionality</code> object, which is

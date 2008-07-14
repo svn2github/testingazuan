@@ -249,6 +249,52 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	}
 	
 	/**
+	 * Load low functionality list by id List
+	 * 
+	 * @param functionalityIDs the functionality id List
+	 * 
+	 * @return the low functionalities List
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByID(java.lang.Integer)
+	 */
+	public List loadLowFunctionalityList(List functionalityIDs) throws EMFUserError {
+		logger.debug( "IN" );
+		List lowFunctList = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			Criterion domainCdCriterrion = Expression.in("functId", functionalityIDs);		
+			criteria.add(domainCdCriterrion);
+			List temp = criteria.list();
+			if(!temp.isEmpty()){
+			Iterator it = temp.iterator();
+			while(it.hasNext()){
+				SbiFunctions func = (SbiFunctions)it.next();
+				LowFunctionality lowFunctionality = toLowFunctionality(func, false);
+				lowFunctList.add(lowFunctionality);
+			}
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error( "HibernateException",he );
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug( "OUT" );
+		return lowFunctList;
+	}
+	
+	/**
 	 * Load root low functionality.
 	 * 
 	 * @param recoverBIObjects the recover bi objects

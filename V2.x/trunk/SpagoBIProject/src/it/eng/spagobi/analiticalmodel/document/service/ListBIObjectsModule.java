@@ -161,150 +161,93 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	Integer visible = obj.getVisible();
 
 	List functionalities = obj.getFunctionalities();
-	int visibleInstances = 0;
-	boolean canAddIstances = true;
 	boolean stateUp = false;
 	boolean stateDown = false;
-	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) IS TRUE");
-	    logger.debug("initialPath="+initialPath);
-	    if (initialPath != null && !initialPath.trim().equals("")) {
-		// in case of local administrator, he can admin only a part of
-		// the instances of the document
-		logger.debug("Local Admin Case.");
-		
-		// NOTA .. QUESTO è UN CONTEGGIO CHE PUò ESSERE FATTO CON UNA QUERY SECCA PIUTTOSTO CHE CONTARE
-		// IL NUMERO DI RIGHE
-		// NON MI è CHIARO CHE CAVOLO SERVA COMUNQUE...
-		
-		for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
-		    Integer funcId = (Integer) funcIt.next();
-		    LowFunctionality folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(funcId,false);
-		    String folderPath = folder.getPath();
-		    if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
-			visibleInstances++;
-		    }
-		}
-	    } else {
-		logger.debug("Global Admin Case.");
-		// in case of global administrator, he can admin all the
-		// instances of the document
-		visibleInstances = functionalities.size();
-		canAddIstances = false;
-	    }
-
-	    // IN QUESTO PUNTO LEGGERE TUTTE LE FUNZIONALITà E POI PASSARLE AI METODI DOPO ???
-	    
-	    
-	    boolean canExec = false;
-	    // QUESTO PEZZO DI CODICE VERIFICA SE ESISTE ALMENO UNA FUNZIONALITà LEGATA AL DOCUMENTO
-	    // CHE L'UTENTE PUò ACCEDERE CON DIRITTO DI ESECUZIONE.
-	    // UNA SOLUZIONE è FARE IL METODO canExec che accetta un array di funzionalità
-	    
-	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
-		Integer funcId = (Integer) funcIt.next();
-		logger.debug("Verifiy the execution permission");
-		if (ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile)) {
-		    canExec = true;
-		    break;
-		}
-	    }
-	    rowSBStr += "		canExec=\"" + canExec + "\"";
-	}
-	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
-	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) IS TRUE");
-	    
-	    // ANCHE IN QUESTO CASI SI PUò FARE UN METODO CHE ACCETTA UN ARRAY
-	    // MA PER QUALE MOTIVO VERIFICO CANEXEC E CANDEV ????  IL CAN EXEC NON LO POSSO PRENDERE
-	    // DAL GIRO PRIMA NEL CASO CI SIA GIà PASSATO ?????
-	    
-	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
-		Integer funcId = (Integer) funcIt.next();
-		if ((ObjectsAccessVerifier.canDev(obj.getStateCode(), funcId, profile) || 
-			ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile))
-			&& canAddIstances) {
-		    visibleInstances++;
-		}
-	    }
-	    // at this point the document is in DEV state and there is one or
-	    // more visible instances
-	    boolean canDev = true;
-	    if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) {
+	boolean canExec = false;
+	boolean canDev = false;
+	boolean canTest = false;
+	String objectStateCD = obj.getStateCode();
+	int visibleInstances = 0;	
+	List lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityList(functionalities);
+       
+    if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) {
 		canDev = true;
-		if (obj.getStateCode().equalsIgnoreCase("REL")) {
+		canExec = true;
+		canTest = true;
+		visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct);
+		if (objectStateCD.equalsIgnoreCase("REL")) {
 		    stateUp = false;
-		    stateDown = true;
-		} else if (obj.getStateCode().equalsIgnoreCase("DEV")) {
+		    stateDown = true;	   
+		} else if (objectStateCD.equalsIgnoreCase("DEV")) {
 		    stateUp = true;
 		    stateDown = false;
-		} else if (obj.getStateCode().equalsIgnoreCase("TEST")) {
+		} else if (objectStateCD.equalsIgnoreCase("TEST")) {
 		    stateUp = true;
 		    stateDown = true;
 		}
-	    } else if (obj.getStateCode().equalsIgnoreCase("REL")) {
+	} 
+	
+    else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
+		
+	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) IS TRUE");
+	    canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
+	    visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
+	    
+	    if (objectStateCD.equalsIgnoreCase("REL")) {
 		canDev = false;
-	    } else if (obj.getStateCode().equalsIgnoreCase("TEST")) {
+	    } else if (objectStateCD.equalsIgnoreCase("TEST")) {
 		canDev = false;
-		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
-		    stateUp = true;
-		    stateDown = true;
-		}
-	    } else if (obj.getStateCode().equalsIgnoreCase("DEV")) {
-		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
-		    canDev = true;
+	    } else
+	    if (obj.getStateCode().equalsIgnoreCase("DEV")) {
+	    	canDev = ObjectsAccessVerifier.canDev(objectStateCD, lowFunct, profile);
 		    stateUp = true;
 		    stateDown = false;
-		}
 	    }
-	    rowSBStr += "		canDev=\"" + canDev + "\"";
+	    
 	}
 
-	if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) || 
-	     profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))
-		&&    
-	    (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || 
-            !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV))) {
+    else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
 	    
-	    logger.debug("THE LAST IS TRUE!!!!");
+	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST) IS TRUE");
+	    canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
 	    
+	    if (canTest)canExec = canTest;
+	    visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
 
-	    if (visible != null && visible.intValue() == 0) {
+		if (objectStateCD.equalsIgnoreCase("REL")) {
+			canTest = false;
+		    stateUp = false;
+		    stateDown = false;
+		} else if (objectStateCD.equalsIgnoreCase("TEST")) {
+			canTest = ObjectsAccessVerifier.canTest(objectStateCD, lowFunct, profile);
+			stateUp = true;
+			stateDown = true;
+		} else if (objectStateCD.equalsIgnoreCase("DEV")) {
+			canTest = false;
+			stateUp = false;
+			stateDown = false;
+		}
+	}
+    
+    else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)){
+    	logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) IS TRUE");
+    	 canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
+    	 visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
+ 			
+    	stateUp = false;
+	    stateDown = false;
+    }
+    
+	if (visible != null && visible.intValue() == 0) {
 		// the document is not visible
 		return null;
 	    }
-
-	    // ANCHE IN QUESTO CASO SI EVITA IL CICLO E CERCHIAMO DI RECUPERARE IL CAN EXEC...
-	    
-	    for (Iterator funcIt = functionalities.iterator(); funcIt.hasNext();) {
-		Integer funcId = (Integer) funcIt.next();
-		if ((ObjectsAccessVerifier.canTest(obj.getStateCode(), funcId, profile) || 
-			ObjectsAccessVerifier.canExec(obj.getStateCode(), funcId, profile))
-			&& canAddIstances) {
-		    visibleInstances++;
-		}
-	    }
-
-	    if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
-		if (obj.getStateCode().equalsIgnoreCase("REL")) {
-		    stateUp = false;
-		    stateDown = false;
-		} else if (obj.getStateCode().equalsIgnoreCase("TEST")) {
-
-		    if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
-			stateUp = true;
-			stateDown = true;
-		    }
-		} else if (obj.getStateCode().equalsIgnoreCase("DEV")) {
-		    if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
-			stateUp = false;
-			stateDown = false;
-		    }
-		}
-	    }
+	if (canExec == false && canDev == false && canTest==false){
+		return null;
 	}
-	if (visibleInstances == 0)
-	    return null;
 
+	 rowSBStr += "		canExec=\"" + canExec + "\"";   
+	 rowSBStr += "		canDev=\"" + canDev + "\"";
 	rowSBStr += "		stateUp=\"" + stateUp + "\"";
 	rowSBStr += "		stateDown=\"" + stateDown + "\"";
 	rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
@@ -312,7 +255,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	rowSBStr += "		NAME=\"" + obj.getName() + "\"";
 	rowSBStr += "		DESCR=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
 	rowSBStr += "		ENGINE=\"" + obj.getEngine().getName() + "\"";
-	rowSBStr += "		STATE=\"" + obj.getStateCode() + "\"";
+	rowSBStr += "		STATE=\"" + objectStateCD + "\"";
 	rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
 	rowSBStr += " 		/>";
 

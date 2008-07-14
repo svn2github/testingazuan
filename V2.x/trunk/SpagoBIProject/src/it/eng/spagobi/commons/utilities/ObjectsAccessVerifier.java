@@ -23,11 +23,13 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 import java.util.ArrayList;
@@ -80,32 +82,166 @@ public class ObjectsAccessVerifier {
      * @return A boolean control value
      */
     public static boolean canExec(String state, Integer folderId, IEngUserProfile profile) {
-	logger.debug("IN.state=" + state);
-	if (!state.equals("REL")) {
-	    return false;
-	}
-	LowFunctionality folder = null;
-	try {
-	    folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
-	} catch (Exception e) {
-	    logger.error("Exception in loadLowFunctionalityByID", e);
-	    return false;
-	} finally {
-	    logger.debug("OUT");
-	}
-	return canExecInternal(folder, profile);
+		logger.debug("IN.state=" + state);
+		if(isAbleToExec(state, profile)) {
+			/*if (!state.equals("REL")) {
+			    return false;
+			}*/
+			LowFunctionality folder = null;
+			try {
+			    folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
+			} catch (Exception e) {
+			    logger.error("Exception in loadLowFunctionalityByID", e);
+			    return false;
+			} finally {
+			    logger.debug("OUT");
+			}
+			return canExecInternal(folder, profile);
+		} else{
+			return false;
+		}
     }
     
     /**
      * Metodo che verifica se nell'elenco delle funzionalità ne esiste almeno una con diritto di 
      * esecuzione
      * @param state
-     * @param folderId
      * @param profile
      * @return
      */
-    public static boolean canExec(String state, List folderId, IEngUserProfile profile) {
+    public static boolean canExec(String state, List folders, IEngUserProfile profile) {
+    	
+    	logger.debug("IN.state=" + state);
+    	boolean canExec = false;
+		if(isAbleToExec(state, profile)) {
+			
+			Iterator folderIt = folders.iterator();
+			while(folderIt.hasNext()){
+				LowFunctionality folder =(LowFunctionality) folderIt.next();
+				canExec = canExecInternal(folder, profile);
+				if (canExec){
+					return true;
+				}
+			}
 			return false;
+			
+		} else{
+			return false;
+		}
+    }
+    
+    /**
+     * Metodo che verifica se nell'elenco delle funzionalità ne esiste almeno una con diritto di 
+     * esecuzione
+     * @param state
+     * @param profile
+     * @return
+     */
+    public static boolean canDev(String state, List folders, IEngUserProfile profile) {
+    	
+    	logger.debug("IN.state=" + state);
+    	boolean canDev = false;
+		if(isAbleToExec(state, profile)) {
+			
+			Iterator folderIt = folders.iterator();
+			while(folderIt.hasNext()){
+				LowFunctionality folder =(LowFunctionality) folderIt.next();
+				canDev = canDevInternal(folder, profile);
+				if (canDev){
+					return true;
+				}
+			}
+			return false;
+			
+		} else{
+			return false;
+		}
+    }
+    
+    /**
+     * Metodo che verifica se nell'elenco delle funzionalità ne esiste almeno una con diritto di 
+     * esecuzione
+     * @param state
+     * @param profile
+     * @return
+     */
+    public static boolean canTest(String state, List folders, IEngUserProfile profile) {
+    	
+    	logger.debug("IN.state=" + state);
+    	boolean canTest = false;
+		if(isAbleToExec(state, profile)) {
+			
+			Iterator folderIt = folders.iterator();
+			while(folderIt.hasNext()){
+				LowFunctionality folder =(LowFunctionality) folderIt.next();
+				canTest = canTestInternal(folder, profile);
+				if (canTest){
+					return true;
+				}
+			}
+			return false;
+			
+		} else{
+			return false;
+		}
+    }
+    
+    /**
+     * Metodo che verifica il numero di istanze visibili del documento
+     * @param state
+     * @param profile
+     * @return
+     */
+    public static int getVisibleInstances(String initialPath, List folders) {
+    	
+    	logger.debug("IN");
+    	
+    	int visibleInstances = 0 ;
+			if (initialPath != null && !initialPath.trim().equals("")) {
+				Iterator folderIt = folders.iterator();
+				while(folderIt.hasNext()){
+					LowFunctionality folder =(LowFunctionality) folderIt.next();
+					String folderPath = folder.getPath();
+				    if (folderPath.equalsIgnoreCase(initialPath) || folderPath.startsWith(initialPath + "/")) {
+					visibleInstances++;
+				    }		    
+				}
+			}else{
+				visibleInstances = folders.size();
+			}
+			return visibleInstances ;
+			
+    }
+    
+    private static boolean isAbleToExec(String state, IEngUserProfile profile) {
+    	logger.debug("IN.state=" + state);
+    	if (state.equals("REL")) {
+    		return true;
+    	}
+    	else if (state.equals("DEV")) {
+        	try {
+				if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					return true;
+				}else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+					return false;
+				}
+			} catch (EMFInternalError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    	else if (state.equals("TEST")) {
+    		try {
+				if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+					return true;
+				}else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					return false;
+				}
+			} catch (EMFInternalError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}	return false;
     }
 
     /**
@@ -241,6 +377,91 @@ public class ObjectsAccessVerifier {
 	return false;
 
     }
+    
+    /**
+     * Private method called by the corrispondent public method canTest.
+     * Executes roles functionalities control .
+     * 
+     * @param folderId
+     *                The id of the lowFunctionality
+     * @param profile
+     *                user profile
+     * @return A boolean control value
+     */
+    private static boolean canTestInternal(LowFunctionality folder, IEngUserProfile profile) {
+	logger.debug("IN");
+	Collection roles = null;
+	try {
+	    roles = profile.getRoles();
+	} catch (EMFInternalError emfie) {
+	    logger.error("EMFInternalError in profile.getRoles", emfie);
+	    return false;
+	}
+
+	Role[] testRoles = folder.getTestRoles();
+	List testRoleNames = new ArrayList();
+	for (int i = 0; i < testRoles.length; i++) {
+	    Role role = testRoles[i];
+	    testRoleNames.add(role.getName());
+	}
+
+	Iterator iterRoles = roles.iterator();
+	String roleName = "";
+	while (iterRoles.hasNext()) {
+	    roleName = (String) iterRoles.next();
+	    if (testRoleNames.contains(roleName)) {
+		logger.debug("OUT. return true");
+		return true;
+	    }
+	}
+	logger.debug("OUT. return false");
+	return false;
+
+    }
+
+    /**
+     * Private method called by the corrispondent public method canDev. Executes
+     * roles functionalities control .
+     * 
+     * @param folderId
+     *                The id of the lowFunctionality
+     * @param profile
+     *                user profile
+     * @return A boolean control value
+     */
+    private static boolean canDevInternal(LowFunctionality folder, IEngUserProfile profile) {
+	logger.debug("IN");
+	Collection roles = null;
+	try {
+	    roles = profile.getRoles();
+	} catch (EMFInternalError emfie) {
+	    logger.error("EMFInternalError in profile.getRoles", emfie);
+	    logger.debug("OUT. return false");
+	    return false;
+	}
+
+	Role[] devRoles = folder.getDevRoles();
+	List devRoleNames = new ArrayList();
+	for (int i = 0; i < devRoles.length; i++) {
+	    Role role = devRoles[i];
+	    devRoleNames.add(role.getName());
+	}
+
+	Iterator iterRoles = roles.iterator();
+	String roleName = "";
+	while (iterRoles.hasNext()) {
+	    roleName = (String) iterRoles.next();
+	    if (devRoleNames.contains(roleName)) {
+
+		logger.debug("OUT. return true");
+		return true;
+	    }
+	}
+	logger.debug("OUT. return false");
+	return false;
+
+    }
+
 
     /**
      * Private method called by the corrispondent public method canTest.

@@ -213,7 +213,7 @@ public class ObjectsAccessVerifier {
 			
     }
     
-    private static boolean isAbleToExec(String state, IEngUserProfile profile) {
+    public static boolean isAbleToExec(String state, IEngUserProfile profile) {
     	logger.debug("IN.state=" + state);
     	if (state.equals("REL")) {
     		return true;

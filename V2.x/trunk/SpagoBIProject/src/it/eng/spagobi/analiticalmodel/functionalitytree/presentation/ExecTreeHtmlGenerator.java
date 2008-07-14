@@ -308,6 +308,9 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		
 		String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
 		String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
+		boolean canTest = ObjectsAccessVerifier.canTest(idFolder, profile);
+			
 				
 		if (isRoot) {
 			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'true');\n");
@@ -339,11 +342,11 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					logger.debug("NOT visible " + obj.getName());
 				} else {
 					logger.debug("VISIBLE " + obj.getName());
-					if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile)) {
+					if (canTest && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile))) {
 						thereIsOneOrMoreObjectsInTestState = true;
 						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
-					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile)) && canExec) {
 						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 					}
@@ -386,7 +389,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		} 
 	
 		else {
-			if (ObjectsAccessVerifier.canTest(idFolder, profile) || ObjectsAccessVerifier.canExec(idFolder, profile)) {
+			if (canTest|| canExec) {
 				htmlStream.append("	" + treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -409,12 +412,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					} else {
 						String prog = idObj.toString();
 						logger.debug("VISIBLE " + obj.getName());
-						if (ObjectsAccessVerifier.canTest(stateObj, idFolder, profile) && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
+						if ((ObjectsAccessVerifier.isAbleToExec(stateObj, profile)) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 
 							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'/SpagoBI/img/editTemplate.jpg\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
-						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && ObjectsAccessVerifier.canExec(stateObj, idFolder, profile)) {
+						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (ObjectsAccessVerifier.isAbleToExec(stateObj, profile))&& canExec) {
 								
 							//Vecchio Albero con menu
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");

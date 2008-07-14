@@ -167,14 +167,21 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	boolean canDev = false;
 	boolean canTest = false;
 	String objectStateCD = obj.getStateCode();
+	logger.debug("Object State = "+objectStateCD);
 	int visibleInstances = 0;	
 	List lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityList(functionalities);
+	logger.debug("Loaded List of all LowFunctionalities related to the BIObject");
        
     if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) {
+    	logger.debug("Profile logged in has ADMINISTRATOR RIGHTS");
+    	
 		canDev = true;
 		canExec = true;
 		canTest = true;
+		logger.debug("Profile CAN_EXECUTE,TEST,DEV the document");
 		visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct);
+		logger.debug("Got number of visibleInstances fo this document:"+visibleInstances);
+		
 		if (objectStateCD.equalsIgnoreCase("REL")) {
 		    stateUp = false;
 		    stateDown = true;	   
@@ -188,10 +195,13 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	} 
 	
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
+    	logger.debug("Profile logged in has DEVELOPER RIGHTS");
 		
-	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV) IS TRUE");
 	    canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
+	    if (canExec)logger.debug("Profile CAN_EXECUTE the document");
+	    else logger.debug("Profile CAN'T_EXECUTE the document");
 	    visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
+	    logger.debug("Got number of visibleInstances fo this document:"+visibleInstances);
 	    
 	    if (objectStateCD.equalsIgnoreCase("REL")) {
 		canDev = false;
@@ -207,12 +217,17 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	}
 
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
-	    
-	    logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST) IS TRUE");
+    	logger.debug("Profile logged in has TESTING RIGHTS");
+    	
 	    canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
-	    
-	    if (canTest)canExec = canTest;
+	    if (canExec)logger.debug("Profile CAN_EXECUTE the document");
+	    else logger.debug("Profile CAN'T_EXECUTE the document");
+	    if (canTest){
+	    	canExec = canTest;
+	    	logger.debug("Profile CAN_TEST the document");
+	    }
 	    visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
+	    logger.debug("Got number of visibleInstances fo this document:"+visibleInstances);
 
 		if (objectStateCD.equalsIgnoreCase("REL")) {
 			canTest = false;
@@ -230,20 +245,25 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	}
     
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)){
-    	logger.debug("profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) IS TRUE");
+    	logger.debug("Profile logged in has EXECUTION RIGHTS");
+    	
     	 canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
+    	 if (canExec)logger.debug("Profile CAN_EXECUTE the document");
+ 	     else logger.debug("Profile CAN'T_EXECUTE the document");
     	 visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
+    	 logger.debug("Got number of visibleInstances fo this document:"+visibleInstances);
  			
     	stateUp = false;
 	    stateDown = false;
     }
     
 	if (visible != null && visible.intValue() == 0) {
-		// the document is not visible
+		logger.debug("Document not Visible");
 		return null;
 	    }
 	if (canExec == false && canDev == false && canTest==false){
-		return null;
+		logger.debug("Document never Executable for this user");
+		return null;		
 	}
 
 	 rowSBStr += "		canExec=\"" + canExec + "\"";   

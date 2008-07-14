@@ -98,6 +98,7 @@ public class ObjectsAccessVerifier {
 			}
 			return canExecInternal(folder, profile);
 		} else{
+			logger.debug("OUT.return false");
 			return false;
 		}
     }
@@ -120,12 +121,15 @@ public class ObjectsAccessVerifier {
 				LowFunctionality folder =(LowFunctionality) folderIt.next();
 				canExec = canExecInternal(folder, profile);
 				if (canExec){
+					logger.debug("OUT.return true");
 					return true;
 				}
 			}
+			logger.debug("OUT.return false");
 			return false;
 			
 		} else{
+			logger.debug("OUT.return false");
 			return false;
 		}
     }
@@ -148,12 +152,15 @@ public class ObjectsAccessVerifier {
 				LowFunctionality folder =(LowFunctionality) folderIt.next();
 				canDev = canDevInternal(folder, profile);
 				if (canDev){
+					logger.debug("OUT.return true");
 					return true;
 				}
 			}
+			logger.debug("OUT.return false");
 			return false;
 			
 		} else{
+			logger.debug("OUT.return false");
 			return false;
 		}
     }
@@ -176,12 +183,15 @@ public class ObjectsAccessVerifier {
 				LowFunctionality folder =(LowFunctionality) folderIt.next();
 				canTest = canTestInternal(folder, profile);
 				if (canTest){
+					logger.debug("OUT.return true");
 					return true;
 				}
 			}
+			logger.debug("OUT.return false");
 			return false;
 			
 		} else{
+			logger.debug("OUT.return false");
 			return false;
 		}
     }
@@ -209,6 +219,7 @@ public class ObjectsAccessVerifier {
 			}else{
 				visibleInstances = folders.size();
 			}
+			logger.debug("OUT");
 			return visibleInstances ;
 			
     }
@@ -216,13 +227,16 @@ public class ObjectsAccessVerifier {
     public static boolean isAbleToExec(String state, IEngUserProfile profile) {
     	logger.debug("IN.state=" + state);
     	if (state.equals("REL")) {
+    		logger.debug("OUT.return true");
     		return true;
     	}
     	else if (state.equals("DEV")) {
         	try {
 				if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					logger.debug("OUT.return true");
 					return true;
 				}else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+					logger.debug("OUT.return false");
 					return false;
 				}
 			} catch (EMFInternalError e) {
@@ -233,15 +247,19 @@ public class ObjectsAccessVerifier {
     	else if (state.equals("TEST")) {
     		try {
 				if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+					logger.debug("OUT.return true");
 					return true;
 				}else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)||profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					logger.debug("OUT.return false");
 					return false;
 				}
 			} catch (EMFInternalError e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    	}	return false;
+    	}	
+    	logger.debug("OUT");
+    	return false;
     }
 
     /**

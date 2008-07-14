@@ -89,7 +89,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
    	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
     detailHeader.setDisplay(false);        
     detailHeader.setChecked(true);  		
-	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader );
+	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
     this.detailBody.add( this._form );  		 
   	detailPage.getPane().add( this.detailBody );
   		

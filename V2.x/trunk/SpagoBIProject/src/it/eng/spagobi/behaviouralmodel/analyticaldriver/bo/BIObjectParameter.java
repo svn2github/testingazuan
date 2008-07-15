@@ -23,6 +23,7 @@ package it.eng.spagobi.behaviouralmodel.analyticaldriver.bo;
 
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -201,6 +202,28 @@ public class BIObjectParameter implements Serializable {
 	 */
 	public List getParameterValues() {
 		return parameterValues;
+	}
+	
+	/**
+	 * Gets the parameter values as a unique String (values are separated by ";").
+	 * If the parameter has no values set, null is returned.
+	 * 
+	 * @return Returns the parameter values as a unique String (values are separated by ";").
+	 */
+	public String getParameterValuesAsString() {
+		if (parameterValues == null || parameterValues.isEmpty()) {
+			return null;
+		}
+		StringBuffer buffer = new StringBuffer();
+		Iterator it = parameterValues.iterator();
+		while (it.hasNext()) {
+			String aValue = (String) it.next();
+			buffer.append(aValue);
+			if (it.hasNext()) {
+				buffer.append(";");
+			}
+		}
+		return buffer.toString();
 	}
 	
 	/**

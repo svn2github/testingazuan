@@ -124,9 +124,9 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
 					
-					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
-						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
-					}
+					//if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+					if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=name;
+					//}
 					else{												// Case absolute
 						drillParameter.put(name, value);
 					}

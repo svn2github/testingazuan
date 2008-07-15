@@ -87,20 +87,23 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
 
-					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
-						if(value.equalsIgnoreCase("serie"))serieUrlname=name;
-						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
-					}
-					else{			
-						// Case absolute
-						
+					//if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+					if(name.equalsIgnoreCase("seriesurlname"))serieUrlname=value;
+					else if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
+
+					//}
+					//else{			
+					// Case absolute
+
+					else{
 						if(this.getParametersObject().get(name)!=null){
 							value=(String)getParametersObject().get(name);
 						}
-						
+
 						drillParameter.put(name, value);
 					}
 				}
+				//}
 			}
 		}
 		logger.debug("OUT");	
@@ -123,7 +126,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
 		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
-		
+
 		CategoryAxis categoryAxis = new CategoryAxis(categoryLabel);
 		ValueAxis valueAxis = new NumberAxis(valueLabel);
 		org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
@@ -175,7 +178,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		renderer.setDrawBarOutline(false);
 
 
-	/*	if(currentSeries!=null && colorMap!=null){
+		/*	if(currentSeries!=null && colorMap!=null){
 			//for each serie selected
 			int j=0;	
 			for (Iterator iterator = currentSeries.iterator(); iterator.hasNext();) {
@@ -202,17 +205,17 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				}
 			}
 		}*/
-		
-        int seriesN=dataset.getRowCount();
-        if(colorMap!=null){
-         for (int i = 0; i < seriesN; i++) {
- 			String serieName=(String)dataset.getRowKey(i);
- 			Color color=(Color)colorMap.get(serieName);
- 			if(color!=null){
- 				renderer.setSeriesPaint(i, color);
- 			}	
-         }
-        }
+
+		int seriesN=dataset.getRowCount();
+		if(colorMap!=null){
+			for (int i = 0; i < seriesN; i++) {
+				String serieName=(String)dataset.getRowKey(i);
+				Color color=(Color)colorMap.get(serieName);
+				if(color!=null){
+					renderer.setSeriesPaint(i, color);
+				}	
+			}
+		}
 
 
 		CategoryAxis domainAxis = plot.getDomainAxis();

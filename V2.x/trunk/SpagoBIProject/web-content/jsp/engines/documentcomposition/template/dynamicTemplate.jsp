@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <% 
 	logger.debug("IN");
-    String urlIframe = GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp";
+    String urlIframe = "";
 	logger.debug("urlIframe: " + urlIframe);
 	String compositeJSDocumentUrl=urlBuilder.getResourceLink(request, "/js/documentcomposition/documentcomposition.js");
 %> 

@@ -147,10 +147,10 @@ public class ContextManager extends AbstractContainer {
 		}
 	}
 	
-	public void cleanOldContexts(ISessionContainer session, int minutes) {
+	public void cleanOldContexts(int minutes) {
 		logger.debug("IN");
 		try {
-			_strategy.destroyContextsOlderThan(session, minutes);
+			_strategy.destroyContextsOlderThan(_session, minutes);
 		} finally {
 			logger.debug("OUT");
 		}

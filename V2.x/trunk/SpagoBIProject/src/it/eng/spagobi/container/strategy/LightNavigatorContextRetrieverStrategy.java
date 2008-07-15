@@ -110,7 +110,7 @@ public class LightNavigatorContextRetrieverStrategy implements
 								session.remove(attributeName);
 							}
 						} else {
-							logger.debug("Session attribute with key [" + attributeName + "] is not a SpagoBISessionAttribute object; cannot delete it.");
+							logger.debug("Session attribute with key [" + attributeName + "] is not a Context object; cannot delete it.");
 						}
 					}
 				}

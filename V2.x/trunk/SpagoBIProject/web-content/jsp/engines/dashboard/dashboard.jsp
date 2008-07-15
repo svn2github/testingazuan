@@ -20,13 +20,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ page import="java.util.Set" %>
 
-<% SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
+<% 
+   SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+   ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+
+   String execContext = instanceO.getExecutionModality();
+
    if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-<%} %>
-
-<%
+		<%	
+   }
 
     String movie = ChannelUtilities.getSpagoBIContextName(request);
     //String movie = renderRequest.getContextPath();

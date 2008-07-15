@@ -1063,13 +1063,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criteria criteria = aSession.createCriteria(SbiObjects.class);
-			criteria.setFetchMode("sbiObjFuncs", FetchMode.JOIN);
-			//criteria.addOrder(new Order("label",true));
-			
-			//Query hibQuery = aSession.createQuery(" from SbiObjects s order by s.label");
-			//List hibList = hibQuery.list();
-			List hibList = criteria.list();
+			Query hibQuery = aSession.createQuery(" from SbiObjects s inner join fetch s.sbiObjFuncs inner join fetch s.sbiEngines order by s.label");
+			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
 				realResult.add(toBIObject((SbiObjects) it.next()));
@@ -1093,15 +1088,20 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#loadAllBIObjects(java.lang.String)
 	 */
 	public List loadAllBIObjects(String filterOrder) throws EMFUserError {
-		logger.debug("IN");
+		logger.debug("IN.filterOrder="+filterOrder);
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery(" from SbiObjects s order by s." + filterOrder);
+			Query hibQuery = aSession.createQuery("from SbiObjects s inner join fetch s.sbiObjFuncs inner join fetch s.sbiEngines order by s." + filterOrder);
 			List hibList = hibQuery.list();
+			
+			//Criteria criteria = aSession.createCriteria(SbiObjects.class);
+			//criteria.setFetchMode("sbiObjFuncs.sbiEngines", FetchMode.JOIN);
+			//criteria.addOrder(Order.asc(filterOrder));
+			//List hibList = criteria.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
 				realResult.add(toBIObject((SbiObjects) it.next()));

@@ -20,19 +20,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<% SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-   String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-<%
-	}	
-	// identity string for object of the page
-	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	UUID uuidObj = uuidGen.generateTimeBasedUUID();
-	String strUuid = uuidObj.toString();
-	strUuid = strUuid.replaceAll("-", "");
-	//SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-	BIObject biObj = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+<% 
+SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+String execContext = instanceO.getExecutionModality();
+if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
+	%>
+	<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+	<%
+}
+
+// identity string for object of the page
+String strUuid = instanceO.getExecutionId();
+//SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+BIObject biObj = instanceO.getBIObject();
 %>
 
 

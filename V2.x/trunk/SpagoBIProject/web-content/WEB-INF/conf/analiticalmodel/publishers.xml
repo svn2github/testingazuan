@@ -29,6 +29,7 @@
     	</RENDERING>
   	</PUBLISHER>
   	
+  	<!--
     <PUBLISHER name="loopbackAfterSubObjectDeletion">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -49,8 +50,9 @@
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	-->
   	
-  	
+  	<!--
   	<PUBLISHER name="loopbackSnapshotExecution">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
@@ -69,7 +71,7 @@
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-
+	-->
 
   	<PUBLISHER name="listObjParuses">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
@@ -142,15 +144,13 @@
 
 
 
-
+	<!--
 	<PUBLISHER name="loopbackViewPointExecution">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-                <!-- <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" />-->
                 <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
-<!--                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PARAMETERS" />-->
      			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>
@@ -159,14 +159,13 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-               <!--  <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ACTOR" />-->
                 <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.OBJECT_ID" />
-<!--                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.PARAMETERS" />-->
      			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.ROLE" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
+  	-->
   	
   	<PUBLISHER name="returnToExecBIObjLoop">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
@@ -218,32 +217,19 @@
    	 	</RENDERING>
   	</PUBLISHER>
 
-  	<PUBLISHER name="loopbackSingleObjectExecution">
+  	<PUBLISHER name="BIOBJECTSMODULE_LOOP_PUBLISHER">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
                 <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-                <!-- <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ACTOR" />-->
-                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.OBJECT_ID" />
+                <PARAMETER name="OBJECT_LABEL" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.OBJECT_LABEL" />
                 <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.PARAMETERS" />
-     			<PARAMETER name="ROLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.ROLE" />
+                <PARAMETER name="SUBOBJECT_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SUBOBJECT_NAME" />
+                <PARAMETER name="SNAPSHOT_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_NAME" />
+                <PARAMETER name="SNAPSHOT_NUMBER" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_NUMBER" />
                 <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.MODALITY" />
+                <PARAMETER name="IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS" type="ABSOLUTE" scope="" value="TRUE" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-				<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="true" />
-			</RESOURCES>
-   	 	</RENDERING>
-   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
-                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-               <!--  <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.ACTOR" />-->
-                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.OBJECT_ID" />
-                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
-				<PARAMETER name="NEW_SESSION" type="ABSOLUTE" scope="" value="true" />
-				<PARAMETER name="spagobi_execution_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_execution_id" />
-				<PARAMETER name="spagobi_flow_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_flow_id" />
-				<PARAMETER name="spagobi_execution_role" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.spagobi_execution_role" />
-				<PARAMETER name="IGNORE_SUB_NODES" type="RELATIVE" scope="SERVICE_RESPONSE" value="DirectExecutionModule.IGNORE_SUB_NODES" />
 			</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

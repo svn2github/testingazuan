@@ -32,6 +32,9 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -98,7 +101,9 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 			// read the configuration and set relative object into session
 			DocumentCompositionConfiguration docConf = new DocumentCompositionConfiguration(content);
 			SessionContainer session = requestContainer.getSessionContainer();
-			session.setAttribute("docConfig", docConf);
+			ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+					new LightNavigatorContextRetrieverStrategy(requestContainer.getServiceRequest()));
+			contextManager.set("docConfig", docConf);
 	       
 			// set information into response
 			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);

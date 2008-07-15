@@ -37,11 +37,13 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
-import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -50,7 +52,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jfree.data.general.Dataset;
 
 
 
@@ -105,14 +106,6 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 		SessionContainer session = requestContainer.getSessionContainer();
 		IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userId=(String)userProfile.getUserUniqueIdentifier();
-
-		// create the title
-		String title = "";
-		title += obj.getName();
-		String objDescr = obj.getDescription();
-		if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-			title += ": " + objDescr;
-		}
 
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
@@ -308,11 +301,6 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
 				response.setAttribute("sbi",sbi);
-
-				String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-				if (executionContext != null)
-					response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
-
 
 			}
 			catch (Exception eex) {

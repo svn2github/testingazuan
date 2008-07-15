@@ -35,6 +35,9 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -175,11 +178,6 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 
 		}	   
 	    
-
-	    // get execution context
-	    String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-	    if (executionContext != null)
-	    		response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 	    // set information into reponse
 	    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 	    response.setAttribute("movie", movie);

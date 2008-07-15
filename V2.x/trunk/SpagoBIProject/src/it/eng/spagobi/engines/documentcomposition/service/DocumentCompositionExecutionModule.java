@@ -35,9 +35,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -48,8 +45,6 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -139,7 +134,7 @@ public class DocumentCompositionExecutionModule extends AbstractModule {
 		
 			
 	        if (executionRole != null)  {
-	        	response.setAttribute("spagobi_execution_role", executionRole);
+	        	response.setAttribute(SpagoBIConstants.ROLE, executionRole);
 			}
 			// put in session execution modality
 	        sessionContainer.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
@@ -158,27 +153,6 @@ public class DocumentCompositionExecutionModule extends AbstractModule {
 	           	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, documentParameters);
 			}
 		}
-	}
-	
-	private void clearSession (SessionContainer session) {
-		session.delAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		session.delAttribute(SpagoBIConstants.PARAMETERS);
-		session.delAttribute(SpagoBIConstants.ROLE);
-		session.delAttribute("VALIDATE_PAGE_VALIDATEEXECUTEBIOBJECTPAGE");
-		// session parameters for check list
-		session.delAttribute("CHK_LIST_INITIALIZED");
-		session.delAttribute("LOOKUP_PARAMETER_NAME");
-		session.delAttribute("LOOKUP_PARAMETER_ID");
-		session.delAttribute("mod_val_id");
-		session.delAttribute("correlated_paruse_id");
-		session.delAttribute("CHECKEDOBJECTS");
-		session.delAttribute("PAGE_NUMBER");
-		session.delAttribute("RETURN_VALUES");
-		session.delAttribute("RETURN_FROM_MODULE");
-		session.delAttribute("RETURN_STATUS");
-		session.delAttribute("LOOKUP_VALUE");
-		session.delAttribute("LOOKUP_DESC");
-		session.delAttribute("PARAMS_DESCRIPTION_MAP");
 	}
 
 }

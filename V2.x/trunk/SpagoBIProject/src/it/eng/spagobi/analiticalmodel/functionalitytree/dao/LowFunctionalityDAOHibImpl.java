@@ -270,7 +270,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
-			criteria.setFetchMode("sbiFuncRoles", FetchMode.JOIN);
+			//criteria.setFetchMode("sbiFuncRoles", FetchMode.JOIN);
 			Criterion domainCdCriterrion = Expression.in("functId", functionalityIDs);		
 			criteria.add(domainCdCriterrion);
 			List temp = criteria.list();

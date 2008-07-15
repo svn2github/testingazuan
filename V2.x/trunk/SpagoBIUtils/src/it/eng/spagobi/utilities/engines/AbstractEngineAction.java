@@ -123,6 +123,10 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		getEnv().put(EngineConstants.ENV_LOCALE, locale);
 	}
 	
+	public AuditServiceProxy getAuditServiceProxy() {
+		return (AuditServiceProxy)getEnv().get(EngineConstants.ENV_AUDIT_SERVICE_PROXY);
+	}
+	
 	/*
 	
 	public String getUserId() {

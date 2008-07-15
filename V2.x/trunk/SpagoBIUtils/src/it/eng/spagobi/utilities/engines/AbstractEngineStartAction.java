@@ -45,10 +45,12 @@ import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -71,6 +73,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	private SourceBean template;
 	
 	private ContentServiceProxy contentProxy;
+	private AuditServiceProxy auditProxy;
 	
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
@@ -331,57 +334,88 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		return analysisStateRowData;
 	}
     	
-   private ContentServiceProxy getContentServiceProxy() {
+   public ContentServiceProxy getContentServiceProxy() {
 	   if(contentProxy == null) {
 		   contentProxy = new ContentServiceProxy(userId, getHttpRequest().getSession());
 	   }	   
 	    
 	   return contentProxy;
    }
+   
+   public AuditServiceProxy getAuditServiceProxy() {
+	   if(auditProxy == null) {
+		   auditProxy = new AuditServiceProxy(getAuditId(), getUserId(), getHttpRequest().getSession());
+	   }	   
+	    
+	   return auditProxy;
+   }
+   
+   public Map getEnv() {
+	   Map env = new HashMap();
+	   
+	   copyRequestParametersIntoEnv(env, getRequest());
+	   env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
+	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
+	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
+	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
+	   env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+		
+	   return env;
+   }
     
    /**
-     * Read all parameters available in the request into e map object.
-     * 
-     * @param request the request
-     * 
-     * @return the parameters
-     */
-	public Map getParameters(SourceBean request) {
+	 * Copy request parameters into env.
+	 * 
+	 * @param env the env
+	 * @param serviceRequest the service request
+	 */
+	public void copyRequestParametersIntoEnv(Map env, SourceBean serviceRequest) {
+		Set parameterStopList = null;
+		List requestParameters = null;
+		
 		logger.debug("IN");
 		
-		Map parameters = null;
-		Iterator attributes = null;
-		SourceBeanAttribute attribute = null;
-		String parName = null;
-		String parValue = null;
-    	
+		parameterStopList = new HashSet();
+		parameterStopList.add("template");
+		parameterStopList.add("ACTION_NAME");
+		parameterStopList.add("NEW_SESSION");
+		parameterStopList.add("document");
+		parameterStopList.add("spagobicontext");
+		parameterStopList.add("BACK_END_SPAGOBI_CONTEXT");
+		parameterStopList.add("userId");
+		parameterStopList.add("auditId");
 		
-		parameters = new HashMap();
-    	attributes = request.getContainedAttributes().iterator();
-    	
-    	logger.debug("Reading request parameters...");
-    	while (attributes.hasNext()) {
-    		attribute = (SourceBeanAttribute)attributes.next();
-			parName = attribute.getKey();
-			parValue = (String)attribute.getValue();
-    	    addParToParMap(parameters, parName, parValue);
-    	    logger.debug("Read parameter [" + parName + "] with value ["+ parValue + "] from request");
-    	}
-    	
-    	logger.debug("OUT");
-    	return parameters;
+		
+		requestParameters = serviceRequest.getContainedAttributes();
+		for(int i = 0; i < requestParameters.size(); i++) {
+			SourceBeanAttribute attrSB = (SourceBeanAttribute)requestParameters.get(i);
+			logger.debug("Parameter [" + attrSB.getKey() + "] has been read from request");
+			logger.debug("Parameter [" + attrSB.getKey() + "] is of type  " + attrSB.getClass().getName());
+			logger.debug("Parameter [" + attrSB.getKey() + "] is equal to " + attrSB.getValue().toString());
+			
+			if(parameterStopList.contains(attrSB.getKey())) {
+				logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: FALSE");
+				continue;
+			}
+			
+			env.put(attrSB.getKey(), decodeParameterValue(attrSB.getValue().toString()) );
+			logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: TRUE");
+		}
+
+		logger.debug("OUT");
 	}
     
-    /**
-	 * Convert multi-value parameters in a comma separated list of values
+   
+	/**
+	 * Decode parameter value.
 	 * 
-	 * @param params
-	 * @param parName
-	 * @param parValue
+	 * @param parValue the par value
+	 * 
+	 * @return the string
 	 */
-	private void addParToParMap(Map params, String parName, String parValue) {
+	private String decodeParameterValue(String parValue) {
 		String newParValue;
-		
+			
 		ParametersDecoder decoder = new ParametersDecoder();
 		if(decoder.isMultiValues(parValue)) {			
 			List values = decoder.decode(parValue);
@@ -390,13 +424,14 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 				newParValue += (i>0?",":"");
 				newParValue += values.get(i);
 			}
-			
 		} else {
 			newParValue = parValue;
 		}
-		
-		params.put(parName, newParValue);
+			
+		return newParValue;
 	}
+	
+	
 
 	
 }

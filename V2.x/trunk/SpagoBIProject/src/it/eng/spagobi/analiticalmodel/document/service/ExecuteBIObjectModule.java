@@ -206,7 +206,7 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	    	// sets the flag in order to skip snapshots/viewpoints/parameters/subobjects page
 	    	request.setAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 	    	// starts new execution
-	    	initNewExecutionHandler(request, response);
+	    	executionHandler(request, response);
 		} finally {
 			logger.debug("OUT");
 		}

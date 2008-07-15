@@ -133,37 +133,58 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		}
 		
-		if (_serviceValidations == null
-				|| !((String) _serviceValidations.getAttribute("TYPE"))
-						.equalsIgnoreCase(_serviceType)) {
-			TracerSingleton
-					.log(
-							Constants.NOME_MODULO,
-							TracerSingleton.INFORMATION,
-							"Validation::validate:validazione non richiesta, nessuna busta <SERVICE> associata a "
+		if (_serviceValidations == null){
+			TracerSingleton.log(Constants.NOME_MODULO,
+				TracerSingleton.INFORMATION,
+				"Validation::validate: validazione non richiesta, nessuna busta <SERVICE> associata a "
 									+ _serviceName + " di tipo " + _serviceType + " trovata nel file di Configurazione");
-			String nomeBustaInSession = "VALIDATE_"+_serviceType.toUpperCase()+"_" + _serviceName;
-			
-			TracerSingleton
-			.log(
-					Constants.NOME_MODULO,
-					TracerSingleton.INFORMATION,
-					"Validation::validate:provo a cercare la busta nel Session Container con id " + nomeBustaInSession+ " associata a "
-							+ _serviceName + " di tipo " + _serviceType);
-			
-			_serviceValidations = (SourceBean)requestContainer.getSessionContainer().getAttribute(nomeBustaInSession);
-		
-			if (_serviceValidations == null){
-				TracerSingleton
-				.log(
-						Constants.NOME_MODULO,
-						TracerSingleton.INFORMATION,
-						"Validation::validate: Busta di validazione con id  " + nomeBustaInSession + " non trovata "
-								+ _serviceName + " di tipo " + _serviceType);
-				return true;
-			}
-			
+			return true;
 		}
+		
+//		if (_serviceValidations == null
+//				|| !((String) _serviceValidations.getAttribute("TYPE"))
+//						.equalsIgnoreCase(_serviceType)) {
+//			TracerSingleton
+//					.log(
+//							Constants.NOME_MODULO,
+//							TracerSingleton.INFORMATION,
+//							"Validation::validate:validazione non richiesta, nessuna busta <SERVICE> associata a "
+//									+ _serviceName + " di tipo " + _serviceType + " trovata nel file di Configurazione");
+//			String nomeBustaInSession = "VALIDATE_"+_serviceType.toUpperCase()+"_" + _serviceName;
+//			
+//			TracerSingleton
+//			.log(
+//					Constants.NOME_MODULO,
+//					TracerSingleton.INFORMATION,
+//					"Validation::validate:provo a cercare la busta nel Session Container con id " + nomeBustaInSession+ " associata a "
+//							+ _serviceName + " di tipo " + _serviceType);
+//			
+//			try {
+//				SourceBean request = requestContainer.getServiceRequest();
+//				SessionContainer session = requestContainer.getSessionContainer();
+//				SessionContainerControl sessionAccessControl = new SessionContainerControl(request, session);
+//				_serviceValidations = (SourceBean) sessionAccessControl.get(nomeBustaInSession);
+//			} catch (Exception e) {
+//				TracerSingleton
+//				.log(
+//						Constants.NOME_MODULO,
+//						TracerSingleton.MAJOR,
+//						"Validation::validate: Busta di validazione con id  " + nomeBustaInSession + " non trovata "
+//								+ _serviceName + " di tipo " + _serviceType + ". Provo a cercare la busta nel SessionContainer.");
+//				_serviceValidations = (SourceBean)requestContainer.getSessionContainer().getAttribute(nomeBustaInSession);
+//			}
+//		
+//			if (_serviceValidations == null){
+//				TracerSingleton
+//				.log(
+//						Constants.NOME_MODULO,
+//						TracerSingleton.INFORMATION,
+//						"Validation::validate: Busta di validazione con id  " + nomeBustaInSession + " non trovata "
+//								+ _serviceName + " di tipo " + _serviceType);
+//				return true;
+//			}
+//			
+//		}
 		
 		// Nello stesso elemento service ci possono essere pi� buste validation
 		// dipendenti dalle condizioni
@@ -349,292 +370,19 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 				for(int i = 0; i < values.length; i++ ) {
 					
-				value = values[i];
-				
-				itValidators = validators.iterator();
-				
-				List params = null;
-				while (itValidators.hasNext()){
-					currentValidator = (SourceBean)itValidators.next();
-					validatorName = (String)currentValidator.getAttribute("validatorName");
+					value = values[i];
 					
-					if (validatorName.equalsIgnoreCase("MANDATORY")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (GenericValidator.isBlankOrNull(value)){
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MANDATORY, params));	
-							
-						}
-
-					}else if (validatorName.equalsIgnoreCase("URL")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the URL VALIDATOR to field ["+field+"] with value ["+value+"]");
-						UrlValidator urlValidator = new SpagoURLValidator();
-						if (!GenericValidator.isBlankOrNull(value) && !urlValidator.isValid(value)){
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_URL,params));
-							
-						}
-					} 
-					else if (validatorName.equalsIgnoreCase("LETTERSTRING")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the LETTERSTRING VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, LETTER_STRING_REGEXP)){
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_LETTERSTRING,params));
-							
-						}
-					} else if (validatorName.equalsIgnoreCase("ALFANUMERIC")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the ALFANUMERIC VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, ALPHANUMERIC_STRING_REGEXP)){
-						
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_ALFANUMERIC,params));
-							
-						}
-					} else if (validatorName.equalsIgnoreCase("NUMERIC")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERIC VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (!GenericValidator.isBlankOrNull(value) && 
-				            (!(GenericValidator.isInt(value) 
-							|| GenericValidator.isFloat(value) 
-							|| GenericValidator.isDouble(value)
-							|| GenericValidator.isShort(value)
-							|| GenericValidator.isLong(value)))){
-							
-							// The string is not a integer, not a float, not double, not short, not long
-							// so is not a number
-							
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_NUMERIC,params));
-							
-						}
-						
-					} else if (validatorName.equalsIgnoreCase("EMAIL")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the EMAIL VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.isEmail(value)){
-							
-							// Generate errors
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_EMAIL,params));
-							
-						}
-					} else if (validatorName.equalsIgnoreCase("FISCALCODE")){
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the FISCALCODE VALIDATOR to field ["+field+"] with value ["+value+"]");
-						if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, FISCAL_CODE_REGEXP)){
-							
-//							 Generate errors
-							params = new ArrayList();
-							params.add(fieldLabel);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_FISCALCODE,params));
-							
-						}
-					} else if (validatorName.equalsIgnoreCase("DECIMALS")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-							SpagoBITracer.info("SpagoBI", "Validator",
-									"automaticValidator",
-									"Apply the DECIMALS VALIDATOR to field ["
-											+ field + "] with value [" + value
-											+ "]");
-							int maxNumberOfDecimalDigit = Integer.valueOf(
-									(String) currentValidator
-											.getAttribute("arg0")).intValue();
-							SpagoBITracer.info("SpagoBI", "Validator",
-									"automaticValidator",
-									"Max Numbers of decimals is ["
-											+ maxNumberOfDecimalDigit + "]");
-							String decimalSeparator = (String) currentValidator
-									.getAttribute("arg1");
-
-							if (GenericValidator
-									.isBlankOrNull(decimalSeparator)) {
-								decimalSeparator = ".";
-							}
-
-							int pos = value.indexOf(decimalSeparator);
-							String decimalCharacters = "";
-							if (pos != -1)
-								decimalCharacters = value.substring(pos + 1);
-
-							if (decimalCharacters.length() > maxNumberOfDecimalDigit) {
-								// Generate errors
-								params = new ArrayList();
-								params.add(fieldLabel);
-								params.add(String
-										.valueOf(maxNumberOfDecimalDigit));
-								errorHandler.addError(new EMFValidationError(
-										EMFErrorSeverity.ERROR, fieldName, ERROR_DECIMALS, params));
-							}
-						}
-					} else if (validatorName.equalsIgnoreCase("NUMERICRANGE")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-							SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERICRANGE VALIDATOR to field ["+field+"] with value ["+value+"]");
-							String firstValueStr = (String)currentValidator.getAttribute("arg0");
-							String secondValueStr = (String)currentValidator.getAttribute("arg1");
-							SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
-							boolean syntaxCorrect = true;
-							if (!GenericValidator.isDouble(value)){
-								SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  value ["+value+"] is not a Number");
-								syntaxCorrect = false;
-							}
-							if (!GenericValidator.isDouble(firstValueStr)){
-								SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  first value of range ["+firstValueStr+"] is not a Number");
-								syntaxCorrect = false;
-							}
-							if (!GenericValidator.isDouble(secondValueStr)){
-								SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a Number");
-								syntaxCorrect = false;
-							}
-							if (syntaxCorrect){
-								double firstValue = Double.valueOf(firstValueStr).doubleValue();
-								double secondValue = Double.valueOf(secondValueStr).doubleValue();
-								double valueToCheckDouble = Double.valueOf(value).doubleValue();
-								if (!(GenericValidator.isInRange(valueToCheckDouble, firstValue, secondValue))){
-							
-									params = new ArrayList();
-									params.add(fieldLabel);
-									params.add(firstValueStr);
-									params.add(secondValueStr);
-									errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
-							
-								}
-							}else{
-								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC));
-							}
-						}
-					} else if (validatorName.equalsIgnoreCase("DATERANGE")){
-						
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATERANGE VALIDATOR to field ["+field+"] with value ["+value+"]");
-						String firstValueStr = (String)currentValidator.getAttribute("arg0");
-						String secondValueStr = (String)currentValidator.getAttribute("arg1");
-						String dateFormat = (String)currentValidator.getAttribute("arg2");
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Date Format is  ["+dateFormat+"]");
-//						//boolean syntaxCorrect = false;
-						boolean syntaxCorrect = true;
-						
-						//if (!GenericValidator.isDate(value,dateFormat,true)){
-						if (!GenericValidator.isDate(value,dateFormat,true)){
-							SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  value ["+value+"] is not a is not valid Date according to ["+dateFormat+"]");
-							syntaxCorrect = false;
-						}
-						//if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
-						if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
-							SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  first value of range ["+firstValueStr+"] is not valid Date according to ["+dateFormat+"]");
-							syntaxCorrect = false;
-						}
-						//if (!GenericValidator.isDate(secondValueStr,dateFormat, true)){
-						if (!GenericValidator.isDate(secondValueStr,dateFormat,true)){
-							SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a valid Date according to ["+dateFormat+"]");
-							syntaxCorrect = false;
-						}
-						
-						
-						if (syntaxCorrect){
-							DateFormat df = new SimpleDateFormat(dateFormat);
-						
-							Date firstValueDate = df.parse(firstValueStr);
-							Date secondValueDate = df.parse(secondValueStr);
-							Date theValueDate = df.parse(value);
-						
-							if ((theValueDate.getTime() < firstValueDate.getTime()) || (theValueDate.getTime() > secondValueDate.getTime())){
-								params = new ArrayList();
-								params.add(fieldLabel);
-								params.add(firstValueStr);
-								params.add(secondValueStr);
-								errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
-							}
-						}else{
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC));
-						}
-						}
-					} else if (validatorName.equalsIgnoreCase("STRINGRANGE")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the STRINGRANGE VALIDATOR to field ["+field+"] with value ["+value+"]");
-						
-						String firstValueStr = (String)currentValidator.getAttribute("arg0");
-						String secondValueStr = (String)currentValidator.getAttribute("arg1");
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
-						//if (firstValueStr.compareTo(secondValueStr) > 0){
-						if ((value.compareTo(firstValueStr) < 0) || (value.compareTo(secondValueStr) > 0)){
-							params = new ArrayList();
-							params.add(fieldLabel);
-							params.add(firstValueStr);
-							params.add(secondValueStr);
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params));
-						}
-						}
-					} else if (validatorName.equalsIgnoreCase("MAXLENGTH")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MAXLENGTH VALIDATOR to field ["+field+"] with value ["+value+"]");
-						int maxLength = Integer.valueOf((String)currentValidator.getAttribute("arg0")).intValue();
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "maxLength is ["+maxLength+"]");
-						if (!GenericValidator.maxLength(value, maxLength)){
-							
-							params = new ArrayList();
-							params.add(fieldLabel);
-							params.add(String.valueOf(maxLength));
-							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MAXLENGTH,params));
-						
-						}
-						}
-					} else if (validatorName.equalsIgnoreCase("MINLENGTH")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MINLENGTH VALIDATOR to field ["+field+"] with value ["+value+"]");
-						int minLength = Integer.valueOf((String)currentValidator.getAttribute("arg0")).intValue();
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "minLength is ["+minLength+"]");
-						if (!GenericValidator.minLength(value, minLength)){
-							
-							// Generate Errors
-							params = new ArrayList();
-							params.add(fieldLabel);
-							params.add(String.valueOf(minLength));
-							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MINLENGTH,params));
-						
-						}
-						}
-					} else if (validatorName.equalsIgnoreCase("REGEXP")){
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the REGEXP VALIDATOR to field ["+field+"] with value ["+value+"]");
-						String regexp  = (String)currentValidator.getAttribute("arg0");
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "regexp is ["+regexp+"]");
-						if (!(GenericValidator.matchRegexp(value, regexp))){
-							
-							// Generate Errors
-							params = new ArrayList();
-							params.add(fieldLabel);
-							params.add(regexp);
-							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_REGEXP,params));
-						
-						}
-						}
-					} else if (validatorName.equalsIgnoreCase("DATE")){
-						
-						if (!GenericValidator.isBlankOrNull(value)) {
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATE VALIDATOR to field ["+field+"] with value ["+value+"]");
-						String dateFormat = (String)currentValidator.getAttribute("arg0");
-						SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "dateFormat is ["+dateFormat+"]");
-						//if (!GenericValidator.isDate(value, dateFormat, true)){
-						if (!GenericValidator.isDate(value, dateFormat, true)){
-				
-							//Generate Errors
-							params = new ArrayList();
-							params.add(fieldLabel);
-							params.add(dateFormat);
-							
-							errorHandler.addError(new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_DATE,params));
-						}
-						}
-						
-					}
-				}//while (itValidators.hasNext())
+					itValidators = validators.iterator();
+					
+					while (itValidators.hasNext()){
+						currentValidator = (SourceBean)itValidators.next();
+						validatorName = (String) currentValidator.getAttribute("validatorName");
+						String arg0 = (String) currentValidator.getAttribute("arg0");
+						String arg1 = (String) currentValidator.getAttribute("arg1");
+						String arg2 = (String) currentValidator.getAttribute("arg2");
+						EMFValidationError error = validateField(fieldName, fieldLabel, value, validatorName, arg0, arg1, arg2);
+						errorHandler.addError(error);
+					}//while (itValidators.hasNext())
 				} // while 
 				
 			} catch (Exception ex) {
@@ -647,6 +395,288 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 		}
 	}
 
+	public static EMFValidationError validateField(String fieldName, String fieldLabel, String value, 
+			String validatorName, String arg0, String arg1, String arg2) throws Exception {
+		
+		List params = null;
+		
+		if (validatorName.equalsIgnoreCase("MANDATORY")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (GenericValidator.isBlankOrNull(value)){
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MANDATORY, params);	
+				
+			}
+
+		} else if (validatorName.equalsIgnoreCase("URL")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the URL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			UrlValidator urlValidator = new SpagoURLValidator();
+			if (!GenericValidator.isBlankOrNull(value) && !urlValidator.isValid(value)){
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_URL,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("LETTERSTRING")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the LETTERSTRING VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, LETTER_STRING_REGEXP)){
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_LETTERSTRING,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("ALFANUMERIC")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the ALFANUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, ALPHANUMERIC_STRING_REGEXP)){
+			
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_ALFANUMERIC,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("NUMERIC")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && 
+	            (!(GenericValidator.isInt(value) 
+				|| GenericValidator.isFloat(value) 
+				|| GenericValidator.isDouble(value)
+				|| GenericValidator.isShort(value)
+				|| GenericValidator.isLong(value)))){
+				
+				// The string is not a integer, not a float, not double, not short, not long
+				// so is not a number
+				
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_NUMERIC,params);
+				
+			}
+			
+		} else if (validatorName.equalsIgnoreCase("EMAIL")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the EMAIL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.isEmail(value)){
+				
+				// Generate errors
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_EMAIL,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("FISCALCODE")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the FISCALCODE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, FISCAL_CODE_REGEXP)){
+				
+//				 Generate errors
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_FISCALCODE,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("DECIMALS")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+				SpagoBITracer.info("SpagoBI", "Validator",
+						"automaticValidator",
+						"Apply the DECIMALS VALIDATOR to field ["
+								+ fieldName + "] with value [" + value
+								+ "]");
+				int maxNumberOfDecimalDigit = Integer.valueOf(arg0).intValue();
+				SpagoBITracer.info("SpagoBI", "Validator",
+						"automaticValidator",
+						"Max Numbers of decimals is ["
+								+ maxNumberOfDecimalDigit + "]");
+				String decimalSeparator = arg1;
+
+				if (GenericValidator
+						.isBlankOrNull(decimalSeparator)) {
+					decimalSeparator = ".";
+				}
+
+				int pos = value.indexOf(decimalSeparator);
+				String decimalCharacters = "";
+				if (pos != -1)
+					decimalCharacters = value.substring(pos + 1);
+
+				if (decimalCharacters.length() > maxNumberOfDecimalDigit) {
+					// Generate errors
+					params = new ArrayList();
+					params.add(fieldLabel);
+					params.add(String
+							.valueOf(maxNumberOfDecimalDigit));
+					return new EMFValidationError(
+							EMFErrorSeverity.ERROR, fieldName, ERROR_DECIMALS, params);
+				}
+			}
+		} else if (validatorName.equalsIgnoreCase("NUMERICRANGE")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERICRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+				String firstValueStr = arg0;
+				String secondValueStr = arg1;
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+				boolean syntaxCorrect = true;
+				if (!GenericValidator.isDouble(value)){
+					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  value ["+value+"] is not a Number");
+					syntaxCorrect = false;
+				}
+				if (!GenericValidator.isDouble(firstValueStr)){
+					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  first value of range ["+firstValueStr+"] is not a Number");
+					syntaxCorrect = false;
+				}
+				if (!GenericValidator.isDouble(secondValueStr)){
+					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a Number");
+					syntaxCorrect = false;
+				}
+				if (syntaxCorrect){
+					double firstValue = Double.valueOf(firstValueStr).doubleValue();
+					double secondValue = Double.valueOf(secondValueStr).doubleValue();
+					double valueToCheckDouble = Double.valueOf(value).doubleValue();
+					if (!(GenericValidator.isInRange(valueToCheckDouble, firstValue, secondValue))){
+				
+						params = new ArrayList();
+						params.add(fieldLabel);
+						params.add(firstValueStr);
+						params.add(secondValueStr);
+						return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params);
+				
+					}
+				}else{
+					return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC);
+				}
+			}
+		} else if (validatorName.equalsIgnoreCase("DATERANGE")){
+			
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATERANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			String firstValueStr = arg0;
+			String secondValueStr = arg1;
+			String dateFormat = arg2;
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Date Format is  ["+dateFormat+"]");
+//			//boolean syntaxCorrect = false;
+			boolean syntaxCorrect = true;
+			
+			//if (!GenericValidator.isDate(value,dateFormat,true)){
+			if (!GenericValidator.isDate(value,dateFormat,true)){
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  value ["+value+"] is not a is not valid Date according to ["+dateFormat+"]");
+				syntaxCorrect = false;
+			}
+			//if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
+			if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  first value of range ["+firstValueStr+"] is not valid Date according to ["+dateFormat+"]");
+				syntaxCorrect = false;
+			}
+			//if (!GenericValidator.isDate(secondValueStr,dateFormat, true)){
+			if (!GenericValidator.isDate(secondValueStr,dateFormat,true)){
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a valid Date according to ["+dateFormat+"]");
+				syntaxCorrect = false;
+			}
+			
+			
+			if (syntaxCorrect){
+				DateFormat df = new SimpleDateFormat(dateFormat);
+			
+				Date firstValueDate = df.parse(firstValueStr);
+				Date secondValueDate = df.parse(secondValueStr);
+				Date theValueDate = df.parse(value);
+			
+				if ((theValueDate.getTime() < firstValueDate.getTime()) || (theValueDate.getTime() > secondValueDate.getTime())){
+					params = new ArrayList();
+					params.add(fieldLabel);
+					params.add(firstValueStr);
+					params.add(secondValueStr);
+					return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params);
+				}
+			}else {
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_GENERIC);
+			}
+			}
+		} else if (validatorName.equalsIgnoreCase("STRINGRANGE")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the STRINGRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			
+			String firstValueStr = arg0;
+			String secondValueStr = arg1;
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+			//if (firstValueStr.compareTo(secondValueStr) > 0){
+			if ((value.compareTo(firstValueStr) < 0) || (value.compareTo(secondValueStr) > 0)){
+				params = new ArrayList();
+				params.add(fieldLabel);
+				params.add(firstValueStr);
+				params.add(secondValueStr);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_RANGE,params);
+			}
+			}
+		} else if (validatorName.equalsIgnoreCase("MAXLENGTH")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MAXLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			int maxLength = Integer.valueOf(arg0).intValue();
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "maxLength is ["+maxLength+"]");
+			if (!GenericValidator.maxLength(value, maxLength)){
+				
+				params = new ArrayList();
+				params.add(fieldLabel);
+				params.add(String.valueOf(maxLength));
+				
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MAXLENGTH,params);
+			
+			}
+			}
+		} else if (validatorName.equalsIgnoreCase("MINLENGTH")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MINLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			int minLength = Integer.valueOf(arg0).intValue();
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "minLength is ["+minLength+"]");
+			if (!GenericValidator.minLength(value, minLength)){
+				
+				// Generate Errors
+				params = new ArrayList();
+				params.add(fieldLabel);
+				params.add(String.valueOf(minLength));
+				
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_MINLENGTH,params);
+			
+			}
+			}
+		} else if (validatorName.equalsIgnoreCase("REGEXP")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the REGEXP VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			String regexp  = arg0;
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "regexp is ["+regexp+"]");
+			if (!(GenericValidator.matchRegexp(value, regexp))){
+				
+				// Generate Errors
+				params = new ArrayList();
+				params.add(fieldLabel);
+				params.add(regexp);
+				
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_REGEXP,params);
+			
+			}
+			}
+		} else if (validatorName.equalsIgnoreCase("DATE")){
+			
+			if (!GenericValidator.isBlankOrNull(value)) {
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			String dateFormat = arg0;
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "dateFormat is ["+dateFormat+"]");
+			//if (!GenericValidator.isDate(value, dateFormat, true)){
+			if (!GenericValidator.isDate(value, dateFormat, true)){
+	
+				//Generate Errors
+				params = new ArrayList();
+				params.add(fieldLabel);
+				params.add(dateFormat);
+				
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_DATE,params);
+			}
+			}
+			
+		}
+		
+		// all checks had positive result (no errors)
+		return null;
+	}
+	
 }
 
 

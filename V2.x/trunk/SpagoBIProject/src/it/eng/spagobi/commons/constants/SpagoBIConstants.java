@@ -38,7 +38,7 @@ public class SpagoBIConstants {
 	public static final String ADMIN_MODALITY = "ADMIN_MODALITY";
 	public static final String OBJECT_TREE_MODALITY = "OBJECT_TREE_MODALITY";
 	
-	public static final String IGNORE_SUB_NODES = "IGNORE_SUB_NODES";
+	public static final String IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS = "IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS";
 	
 /*	public static final String ACTOR = "ACTOR";
 	public static final String TESTER_ACTOR = "TESTER_ACTOR";
@@ -144,6 +144,9 @@ public class SpagoBIConstants {
 	public static final String SNAPSHOT_LIST = "SNAPSHOT_LIST";
 	public static final String EXEC_SNAPSHOT_MESSAGE = "EXEC_SNAPSHOT_MESSAGE";
 	public static final String ERASE_SNAPSHOT_MESSAGE = "ERASE_SNAPSHOT_MESSAGE";
+	public static final String SNAPSHOT = "SNAPSHOT";
+	public static final String SNAPSHOT_NAME = "SNAPSHOT_NAME";
+	public static final String SNAPSHOT_HISTORY_NUMBER = "SNAPSHOT_HISTORY_NUMBER";
 	public static final String SNAPSHOT_ID = "SNAPSHOT_ID";
 	
 	public static final String VIEWPOINT_SAVE = "VIEWPOINT_SAVE";
@@ -157,6 +160,8 @@ public class SpagoBIConstants {
 	public static final String ROLE = "ROLE";
 	
 	public static final String SINGLE_OBJECT_EXECUTION_MODALITY = "SINGLE_OBJECT_EXECUTION_MODALITY";
+	public static final String NORMAL_EXECUTION_MODALITY = "NORMAL_EXECUTION_MODALITY";
+	
 	public static final String FILTER_TREE_MODALITY = "FILTER_TREE_MODALITY";
 	public static final String ENTIRE_TREE_MODALITY = "ENTIRE_TREE_MODALITY";
 	
@@ -164,7 +169,6 @@ public class SpagoBIConstants {
 	
 	public static final String PUBLISHER_NAME = "PUBLISHER_NAME";
 	public static final String PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT = "loopbackAfterSubObjectDeletion";
-	public static final String PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC = "loopbackSingleObjectExecution";
 	public static final String PUBLISHER_LOOPBACK_VIEWPOINT_EXEC = "loopbackViewPointExecution";
 	
 	public final static String CMS_BIOBJECTS_PATH = "SPAGOBI.CMS_PATHS.BIOBJECTSPATH";
@@ -267,8 +271,6 @@ public class SpagoBIConstants {
 	
 	public static final String SUBOBJECT = "SUBOBJECT";
 	
-	public static final String SNAPSHOT = "SNAPSHOT";
-	
 	//constants for user profiles
 	public static final String ENGINES_MANAGEMENT = "EnginesManagement";
 	public static final String DATASET_MANAGEMENT = "DatasetManagement";
@@ -303,7 +305,6 @@ public class SpagoBIConstants {
 	public static final String DOCUMENT_MOVE_DOWN_STATE = "DocumentMoveDownState" ;
 	public static final String DOCUMENT_MOVE_UP_STATE = "DocumentMoveUpState" ;
 	//for management of DOCUMENT COMPOSITION
-	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	public static final String DOCUMENT_COMPOSITION = "DOCUMENT_COMPOSITION";
 	public static final String DOCUMENT_COMPOSITE_TYPE = "DOCUMENT_COMPOSITE";
 	public static final String PASS_TICKET = "PASS_TICKET";

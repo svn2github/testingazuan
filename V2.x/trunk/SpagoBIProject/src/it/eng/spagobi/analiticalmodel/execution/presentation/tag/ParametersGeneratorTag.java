@@ -34,7 +34,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
@@ -58,6 +58,9 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -92,27 +95,24 @@ public class ParametersGeneratorTag extends TagSupport {
     private RequestContainer requestContainer = null;
     protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
+    private ContextManager contextManager = null;
     public static final int PIXEL_PER_CHAR = 9;
     // identity string for object of the page
     protected String requestIdentity;
     
-    private String roleName=null;
+    private String roleName = null;
 
-    private SessionContainer getSession() {
-	return requestContainer.getSessionContainer();
-    }
-
-    private BIObject getBIObject() {
-	return (BIObject) getSession().getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-    }
-
+	private ExecutionInstance getExecutionInstance() {
+		return contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	}
+	
     private String encodeURL(String relativePath) {
-	return urlBuilder.getResourceLink(httpRequest, relativePath);
+    	return urlBuilder.getResourceLink(httpRequest, relativePath);
     }
 
     private IEngUserProfile getProfile() {
 	logger.debug("IN");
-	SessionContainer session = getSession();
+	SessionContainer session = requestContainer.getSessionContainer();
 	SessionContainer permSession = session.getPermanentContainer();
 	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	logger.debug("OUT");
@@ -132,17 +132,19 @@ public class ParametersGeneratorTag extends TagSupport {
 	msgBuilder = MessageBuilderFactory.getMessageBuilder();
 	if (requestIdentity == null)
 	    requestIdentity = "";
-	BIObject obj = getBIObject();
-	
+	SessionContainer session = requestContainer.getSessionContainer();
+	contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+			new LightNavigatorContextRetrieverStrategy(request));
+
+	ExecutionInstance instance = null;
 	try {
-	    IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
-	    List roles = biobjdao.getCorrectRolesForExecution(obj.getId(), getProfile());
-  	    if(roles.size()>0) {
-  		roleName=(String)roles.get(0);
-  	    }
-	} catch (EMFUserError e) {
-	    logger.error("EMFUserError, reading roleName",e);
+		instance = getExecutionInstance();
+	} catch (Exception e) {
+		logger.error("Error while retrieving execution instance", e);
+		return SKIP_BODY;
 	}
+	BIObject obj = instance.getBIObject();
+	roleName = instance.getExecutionRole();
 	
 	List parameters = obj.getBiObjectParameters();
 	boolean hasParametersToBeShown = false;
@@ -417,8 +419,9 @@ public class ParametersGeneratorTag extends TagSupport {
      * @return true if the parameters form must be displayed, false otherwise
      */
     private boolean hasParametersFormToBeDisplayed() {
-	logger.debug("IN");
-    	BIObject obj = getBIObject();
+    	logger.debug("IN");
+		ExecutionInstance instance = getExecutionInstance();
+    	BIObject obj = instance.getBIObject();
     	List parameters = obj.getBiObjectParameters();
     	// if the document has no parameters returns false
     	if (parameters == null || parameters.size() == 0) return false;
@@ -552,7 +555,9 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append("<script type='text/javascript'>\n");
 	htmlStream.append("		function clearFields" + requestIdentity + "() {\n");
 
-	Iterator it = getBIObject().getBiObjectParameters().iterator();
+	ExecutionInstance instance = getExecutionInstance();
+	BIObject obj = instance.getBIObject();
+	Iterator it = obj.getBiObjectParameters().iterator();
 	String anId = null;
 	while (it.hasNext()) {
 	    BIObjectParameter biparam = (BIObjectParameter) it.next();
@@ -793,7 +798,10 @@ public class ParametersGeneratorTag extends TagSupport {
 	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
-	String tmpValue = (biparam.getParameterValuesDescription().equals("null"))?"":biparam.getParameterValuesDescription();
+	String description = biparam.getParameterValuesDescription();
+	if (description == null) 
+		description = "";
+	String tmpValue = (description.equals("null"))?"":description;
 	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 	htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
@@ -849,7 +857,8 @@ public class ParametersGeneratorTag extends TagSupport {
      */
     private Map getDependencies(BIObjectParameter biparam) {
     	Map toReturn = new HashMap();
-    	BIObject obj = getBIObject();
+    	ExecutionInstance instance = getExecutionInstance();
+    	BIObject obj = instance.getBIObject();
 		BIObjectParameter objParFather = null;
 		ObjParuse objParuse = null;
 		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
@@ -1020,7 +1029,7 @@ public class ParametersGeneratorTag extends TagSupport {
 
     private void eraseParameterValues(BIObjectParameter biparam) {
 	biparam.setParameterValues(null);
-	HashMap paramsDescriptionMap = (HashMap) getSession().getAttribute("PARAMS_DESCRIPTION_MAP");
+	HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
 	paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
     }
 
@@ -1066,7 +1075,9 @@ public class ParametersGeneratorTag extends TagSupport {
      */
     private int getParamLabelDivWidth() {
 	int maxLength = 0;
-	Iterator iterPars = getBIObject().getBiObjectParameters().iterator();
+	ExecutionInstance instance = getExecutionInstance();
+	BIObject obj = instance.getBIObject();
+	Iterator iterPars = obj.getBiObjectParameters().iterator();
 	while (iterPars.hasNext()) {
 	    BIObjectParameter biparam = (BIObjectParameter) iterPars.next();
 	    String label = biparam.getLabel();
@@ -1119,7 +1130,9 @@ public class ParametersGeneratorTag extends TagSupport {
 			// now we have to find the BIObjectParameter father of
 			// the correlation
 			Integer objParFatherId = objParuse.getObjParFatherId();
-			List parameters = getBIObject().getBiObjectParameters();
+			ExecutionInstance instance = getExecutionInstance();
+			BIObject obj = instance.getBIObject();
+			List parameters = obj.getBiObjectParameters();
 			Iterator i = parameters.iterator();
 			while (i.hasNext()) {
 			    BIObjectParameter aBIObjectParameter = (BIObjectParameter) i.next();
@@ -1155,7 +1168,7 @@ public class ParametersGeneratorTag extends TagSupport {
     private String getParameterDescription(BIObjectParameter biparam) {
 	String description = null;
 
-	HashMap paramsDescriptionMap = (HashMap) getSession().getAttribute("PARAMS_DESCRIPTION_MAP");
+	HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
 	description = (String) paramsDescriptionMap.get(biparam.getParameterUrlName());
 
 	return description;

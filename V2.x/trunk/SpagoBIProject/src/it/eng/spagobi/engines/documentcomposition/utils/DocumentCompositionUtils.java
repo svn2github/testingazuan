@@ -25,18 +25,24 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Subreport;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
@@ -76,85 +82,28 @@ public class DocumentCompositionUtils {
 	 * 
 	 * @return String the complete url. It use this format: <code_error>|<url>. If there is an error during the execution <code_error> is valorized and url is null, else it is null and the url is complete.
 	 */
-	public static String getEngineUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
-		String urlReturn = "";
-		BIObject obj = null;
-		Engine engine = null;
-		
-		if (objLabel == null || objLabel.equals("")){
-			logger.error("Object Label is null: cannot get engine's url.");
-			return "1008|";
-		}
-	
+	public static String getExecutionUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		 // get the user profile from session
 		SessionContainer permSession = sessionContainer.getPermanentContainer();
 	    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    
+		String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString()) + 
+				"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "true&"
+				+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
+				+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
 	    // get the execution role
-		String executionRole = (String)sessionContainer.getAttribute(SpagoBIConstants.ROLE);
-		
-		// identity string for object execution
+	    ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(sessionContainer), 
+				new LightNavigatorContextRetrieverStrategy(requestSB));
+	    ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+		String executionRole = instance.getExecutionRole();
+		urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
+		// identity string for context
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    String executionId = uuid.toString();
-	    executionId = executionId.replaceAll("-", "");
+	    UUID uuid = uuidGen.generateRandomBasedUUID();
+	    urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
 
-		// GET ENGINE ASSOCIATED TO THE BIOBJECT
-	    try{
-			obj = (BIObject)DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
-			if (obj == null){
-				logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database.");		
-				
-				List l = new ArrayList();
-				l.add(objLabel);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", l, messageBundle);
-			}
-			engine = obj.getEngine();
-		
-			// get the initial url of the engine
-		    urlReturn = engine.getUrl()+"?userId="+profile.getUserUniqueIdentifier()+"&amp;"+SpagoBIConstants.SBI_CONTEXT+"="+GeneralUtilities.getSpagoBiContext()+"&amp;"+SpagoBIConstants.SBI_BACK_END_HOST+"="+GeneralUtilities.getSpagoBiHostBackEnd()+"&amp;"+SpagoBIConstants.SBI_HOST+"="+GeneralUtilities.getSpagoBiHost();
-		}
-		catch (Exception ex) {		
-			logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database." , ex);		
-			return "1005|";
-		}	
-		
-		// GET THE TYPE OF ENGINE (INTERNAL / EXTERNAL) AND THE SUITABLE BIOBJECT TYPES
-		Domain engineType = null;
-		Domain compatibleBiobjType = null;
-		try {
-			engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
-			compatibleBiobjType = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
-		} catch (EMFUserError error) {
-			 logger.error("Error retrieving document's engine information", error);
-			 return "1009|";
-		} catch (Exception error) {
-			 logger.error("Error retrieving document's engine information", error);
-			 return "1009|";
-		}
-		String compatibleBiobjTypeCd = compatibleBiobjType.getValueCd();
-		String biobjTypeCd = obj.getBiObjectTypeCode();
-		
-		// CHECK IF THE BIOBJECT IS COMPATIBLE WITH THE TYPES SUITABLE FOR THE ENGINE
-		if (!compatibleBiobjTypeCd.equalsIgnoreCase(biobjTypeCd)) {
-			// the engine document type and the biobject type are not compatible
-			 logger.error("Engine cannot execute input document type: " +
-		 				"the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
-		 						"while the input document is a '" + biobjTypeCd + "'.");
-			Vector params = new Vector();
-			params.add(engine.getName());
-			params.add(compatibleBiobjTypeCd);
-			params.add(biobjTypeCd);
-			//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2002, params));
-			return "2002|";
-		}
-		
-		// IF USER CAN'T EXECUTE THE OBJECT RETURN
-		if (!canExecute(profile, obj)) return "1010|"; 
-		
 		//get object configuration
 		DocumentCompositionConfiguration docConfig = null;
-	    docConfig = (DocumentCompositionConfiguration)sessionContainer.getAttribute("docConfig");
+	    docConfig = (DocumentCompositionConfiguration) contextManager.get("docConfig");
 	    
 	    Document document = null;
 		//get correct document configuration
@@ -163,7 +112,7 @@ public class DocumentCompositionUtils {
 		for (int i = 0; i < lstDoc.size(); i++){
 			document = (Document)docConfig.getDocument((String)lstDoc.get(i)); 
 			if (document != null){
-				if (!obj.getLabel().equalsIgnoreCase(document.getSbiObjLabel()))
+				if (!objLabel.equalsIgnoreCase(document.getSbiObjLabel()))
 					continue;
 				else{
 					foundDoc = true;
@@ -173,144 +122,14 @@ public class DocumentCompositionUtils {
 		}
 		if (!foundDoc){
 			List l = new ArrayList();
-			l.add(obj.getLabel());
+			l.add(objLabel);
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
-			logger.error("The object with label " + obj.getLabel() + " hasn't got a document into template" );
+			logger.error("The object with label " + objLabel + " hasn't got a document into template" );
 			return "1002|"; 
 		}
-			
-	    
-		// IF THE ENGINE IS EXTERNAL
-		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
-			try {
-				// instance the driver class
-				String driverClassName = obj.getEngine().getDriverName();
-				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
-			    // get the map of the parameters
-				Map mapPars = null;
-				
-				mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
-				// adding or substituting parameters for viewpoint
-				String id = (String) requestSB.getAttribute("vpId");
-				if (id != null){
-					IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();		
-					Viewpoint vp =  VPDAO.loadViewpointByID(new Integer(id));
-					String[] vpParameters = vp.getVpValueParams().split("%26");
-					if (vpParameters != null){
-						for (int i=0; i< vpParameters.length; i++){
-							String param = (String)vpParameters[i];
-							String name = param.substring(0, param.indexOf("%3D"));
-							String value = param.substring(param.indexOf("%3D")+3);
-							if (mapPars.get(name) != null){
-								mapPars.remove(name);
-								mapPars.put(name, value);
-							}
-							else
-								mapPars.put(name, value);
-						}
-					}
-				}
-
-				// complete the url of the external engine
-				urlReturn = engine.getUrl()+"?"+SpagoBIConstants.SBI_CONTEXT+"="+GeneralUtilities.getSpagoBiContext()+"&amp;"+SpagoBIConstants.SBI_BACK_END_HOST+"="+GeneralUtilities.getSpagoBiHostBackEnd()+"&amp;"+SpagoBIConstants.SBI_HOST+"="+GeneralUtilities.getSpagoBiHost();
-				
-			    Set parKeys = mapPars.keySet();
-				Iterator parKeysIter = parKeys.iterator();
-				while(parKeysIter.hasNext()) {
-		     	   	String parkey = parKeysIter.next().toString();
-		     	   	String parvalue = mapPars.get(parkey).toString();
-		     	   	if(parkey.equalsIgnoreCase("template"))
-		     	   		continue;
-		     	
-		     	   	urlReturn += "&amp;"+parkey+"="+parvalue;
-				}
-		     	
-		     	urlReturn += getParametersUrl(obj, document, requestSB, false);
-		     	urlReturn += "&amp;DOCUMENT_LABEL="+document.getLabel();
-				
-			} catch (Exception e) {
-				 logger.error("Error During object execution", e);
-			}	
-			
-		// IF THE ENGINE IS INTERNAL	
-		} else {
-			
-			String className = engine.getClassName();
-			logger.debug("Try instantiating class " + className + " for internal engine " + engine.getName() + "...");
-			InternalEngineIFace internalEngine = null;
-			// tries to instantiate the class for the internal engine
-			try {
-				if (className == null && className.trim().equals("")) throw new ClassNotFoundException();
-				internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
-			} catch (ClassNotFoundException cnfe) {
-				logger.error("The class ['" + className + "'] for internal engine " + engine.getName() + " was not found.", cnfe);
-				Vector params = new Vector();
-				params.add(className);
-				params.add(engine.getName());
-				return "2001|";
-			} catch (Exception e) {
-				logger.error("Error while instantiating class " + className, e);
-				return "100|";
-			}
-			
-			logger.debug("Class " + className + " instantiated successfully. Now engine's execution starts.");
-			
-			
-			urlReturn = GeneralUtilities.getSpagoBiHost() + GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?USERNAME="+(String)profile.getUserUniqueIdentifier()+
-						"&amp;PAGE=DirectExecutionPage&amp;DOCUMENT_LABEL="+obj.getLabel()+"&amp;DOCUMENT_PARAMETERS=";
-			
-			urlReturn += getParametersUrl(obj, document, requestSB, true);
-			
-			
-		}
-		
-		//if into url therisn't yet document id, adds it
-		if (urlReturn.indexOf("document=") < 0){
-			if (urlReturn.endsWith("DOCUMENT_PARAMETERS="))
-				urlReturn += "%26document%3D" + obj.getId();
-			else
-				urlReturn += "&amp;document=" + obj.getId();
-		}
-		//set EXECUTION_CONTEXT (only for documentcomposition docs)
-		urlReturn += "&amp;" + SpagoBIConstants.EXECUTION_CONTEXT + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION +"&amp;";
-	
-		//prepares and sets parameters value into session
-		HashMap parValueDoc = getAllParamsValue(urlReturn);
-		sessionContainer.setAttribute(document.getLabel(), parValueDoc);
+		urlReturn += getParametersUrl(document, requestSB);
 		//adds '|' char for management error into jsp if is necessary.
 		return "|"+urlReturn;
-	}
-	
-	private static boolean canExecute(IEngUserProfile profile, BIObject biobj) {
-		
-		Integer masterReportId = biobj.getId();
-		String masterReportStatus = biobj.getStateCode();
-		
-		
-		try {
-			ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
-			IBIObjectDAO biobjectdao = DAOFactory.getBIObjectDAO();
-			
-			List subreportList =  subrptdao.loadSubreportsByMasterRptId(masterReportId);
-			for(int i = 0; i < subreportList.size(); i++) {
-				Subreport subreport = (Subreport)subreportList.get(i);
-				BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-				if(!isSubRptStatusAdmissible(masterReportStatus, subrptbiobj.getStateCode())) {
-					//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1062));
-					return false;							
-				}
-				if(!isSubRptExecutableByUser(profile, subrptbiobj)) {
-					//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 1063)); 
-					return false;							
-				}
-			}			
-		} catch (EMFUserError e) {
-			logger.warn("Error while reading subreports",
-					  e);
-			return false;
-		}	
-		
-		return true;
 	}
 
 	/**
@@ -321,7 +140,7 @@ public class DocumentCompositionUtils {
 	 * @param requestSB the request object
 	 * @return a string with the url completed
 	 */
-	private static String getParametersUrl(BIObject doc, Document document, SourceBean requestSB, boolean forInternalEngine){
+	private static String getParametersUrl(Document document, SourceBean requestSB){
 		String paramUrl = "";
 		
 		//set others parameters value
@@ -343,11 +162,8 @@ public class DocumentCompositionUtils {
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 		    	}
 			    if (value.equals("%")) value = "%25";
-			    
-			    if (forInternalEngine && value != null && !value.equals(""))
-			    	paramUrl += "%26" + key + "%3D" + value;
-			    else if (!forInternalEngine && value != null && !value.equals(""))
-			    	paramUrl += "&amp;" + key + "=" + value;
+			    if (value != null && !value.equals(""))
+			    	paramUrl += "&" + key + "=" + value;
 			    cont++;
 			}
 	    }
@@ -360,47 +176,6 @@ public class DocumentCompositionUtils {
 		return paramUrl;
 	}
 
-	private static boolean isSubRptStatusAdmissible(String masterRptStatus, String subRptStatus) {
-		if(masterRptStatus.equalsIgnoreCase("DEV")) {
-			if(subRptStatus.equalsIgnoreCase("DEV") ||
-			   subRptStatus.equalsIgnoreCase("REL")) return true;
-			else return false;
-		}
-		else if(masterRptStatus.equalsIgnoreCase("TEST")) {
-			if(subRptStatus.equalsIgnoreCase("TEST") ||
-			   subRptStatus.equalsIgnoreCase("REL")) return true;
-			else return false;
-		}
-		else if(masterRptStatus.equalsIgnoreCase("REL")) {
-			if(subRptStatus.equalsIgnoreCase("REL")) return true;
-			else return false;
-		}
-		return false;
-	}
-	
-	private static boolean isSubRptExecutableByUser(IEngUserProfile profile, BIObject subrptbiobj) {
-		String subrptbiobjStatus = subrptbiobj.getStateCode();
-		List functionalities = subrptbiobj.getFunctionalities();
-		Iterator functionalitiesIt = functionalities.iterator();
-		boolean isExecutableByUser = false;
-		while (functionalitiesIt.hasNext()) {
-			Integer functionalityId = (Integer) functionalitiesIt.next();
-			if (ObjectsAccessVerifier.canDev(subrptbiobjStatus, functionalityId, profile)) {
-				isExecutableByUser = true;
-				break;
-			}
-			if (ObjectsAccessVerifier.canTest(subrptbiobjStatus, functionalityId, profile)) {
-				isExecutableByUser = true;
-				break;
-			}
-			if (ObjectsAccessVerifier.canExec(subrptbiobjStatus, functionalityId, profile)) {
-				isExecutableByUser = true;
-				break;
-			}
-		}
-		return isExecutableByUser;
-	}
-
 	/**
 	 * Return an hashmap of all parameters for the document managed
 	 * @param urlReturn String with url and parameters
@@ -409,39 +184,13 @@ public class DocumentCompositionUtils {
 	private static HashMap getAllParamsValue(String urlReturn){
 		HashMap retHM = new HashMap();
 		String tmpStr = urlReturn.substring(urlReturn.indexOf("?")+1);
-		String tmpStrDirect = "";
-		if (urlReturn.indexOf("DirectExecutionPage")>0){
-			String[] tmpArr = tmpStr.split("&amp;");
-			for (int i=0; i<tmpArr.length; i++){
-				String strPar = (String)tmpArr[i];
-				String key = strPar.substring(0,strPar.indexOf("="));
-				String value = strPar.substring(strPar.indexOf("=")+1);
-				if (key.equalsIgnoreCase("DOCUMENT_PARAMETERS"))
-					tmpStrDirect = value.substring(3);
-				else
-					retHM.put(key, value);
-				tmpStr = tmpStr.substring(tmpStr.indexOf((String)tmpArr[i])+((String)tmpArr[i]).length()+5);
-			}
-			
-			String[] tmpArrDirect = tmpStrDirect.split("%26");
-			for (int i=0; i<tmpArrDirect.length; i++){
-				String strPar = (String)tmpArrDirect[i];
-				int pos = strPar.indexOf("%3D");
-				String key = strPar.substring(0,strPar.indexOf("%3D"));
-				String value = strPar.substring(strPar.indexOf("%3D")+3);
-				retHM.put(key, value);
-			}
+		String[] tmpArr = tmpStr.split("&");
+		for (int i=0; i<tmpArr.length; i++){
+			String strPar = (String)tmpArr[i];
+			String key = strPar.substring(0,strPar.indexOf("="));
+			String value = strPar.substring(strPar.indexOf("=")+1);
+			retHM.put(key, value);
 		}
-		else{
-			String[] tmpArr = tmpStr.split("&amp;");
-			for (int i=0; i<tmpArr.length; i++){
-				String strPar = (String)tmpArr[i];
-				String key = strPar.substring(0,strPar.indexOf("="));
-				String value = strPar.substring(strPar.indexOf("=")+1);
-				retHM.put(key, value);
-			}
-		}
-		
 		return retHM;
 	}
 }

@@ -70,7 +70,7 @@ public class SchedulerUtilities {
 			}
 		}
 		// check if history is out of range
-		if( (hist<0) || (snapDates.size()-1 > hist) ) {
+		if( (hist<0) || (snapDates.size()-1 < hist) ) {
 			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, SchedulerUtilities.class.getName(), 
 					            "getNamedHistorySnapshot", "History step out of range");
 			throw new Exception("History step out of range");

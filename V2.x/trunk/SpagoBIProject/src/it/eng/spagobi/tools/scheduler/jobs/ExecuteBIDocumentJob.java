@@ -31,6 +31,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -114,18 +115,18 @@ public class ExecuteBIDocumentJob implements Job {
 				BIObjectParameter aBIObjectParameter = null;
 				while (it.hasNext()){
 					aBIObjectParameter = (BIObjectParameter)it.next();
-					SourceBean sbValidate = execCtrl.createValidableFieldSourceBean(aBIObjectParameter);
-					if (sbValidate != null){
-						List lstValidator = sbValidate.getContainedAttributes("VALIDATOR");
-						for (int i=0; i<lstValidator.size(); i++ ){
-							SourceBean sbVal = (SourceBean)lstValidator.get(i);
-							if (sbVal.getAttribute("MANDATORY") == null && 
-								(aBIObjectParameter.getParameterValues() == null  || 
-								 aBIObjectParameter.getParameterValues().size() == 0)){		
+					List checks = aBIObjectParameter.getParameter().getChecks();
+					if (checks != null && !checks.isEmpty()) {
+						Iterator checksIt = checks.iterator();
+						while (checksIt.hasNext()) {
+							Check check = (Check) checksIt.next();
+							if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")&& 
+									(aBIObjectParameter.getParameterValues() == null  || 
+											 aBIObjectParameter.getParameterValues().size() == 0)){		
 								aBIObjectParameter.setParameterValues(new ArrayList());
 								aBIObjectParameter.setHasValidValues(true);
 							}
-			        	}   
+						}
 					}
 					else {
 						if (aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0){	
@@ -192,11 +193,9 @@ public class ExecuteBIDocumentJob implements Job {
 			
 		} catch (Exception e) {
 		    logger.error("Error while executiong job ", e);
-	    }finally{
-		logger.debug("OUT");
+	    } finally {
+	    	logger.debug("OUT");
 	    }
-		
-		
 	}
 
 	

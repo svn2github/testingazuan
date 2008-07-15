@@ -21,14 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.hotlink.service;
 
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
@@ -54,8 +51,6 @@ public class HotLinkModule extends AbstractModule {
 			String operation = (String) request.getAttribute("OPERATION");
 			if (operation == null || operation.equalsIgnoreCase("GET_HOT_LINK_LIST")) {
 				getHotLinkListHandler(request, response);
-			} else if (operation.equalsIgnoreCase("EXECUTE")) {
-				executeHotLinkHandler(request, response);
 			} else if (operation.equalsIgnoreCase("DELETE_REMEMBER_ME")) {
 				deleteRememberMeHandler(request, response);
 			} 
@@ -75,47 +70,6 @@ public class HotLinkModule extends AbstractModule {
 		logger.debug("IN");
 		try {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "HOT_LINK_HOME");
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-
-	private void executeHotLinkHandler(SourceBean request, SourceBean response) throws Exception {
-		logger.debug("IN");
-		try {
-			String docIdStr = (String) request.getAttribute("DOC_ID");
-			Integer docId = new Integer(docIdStr);
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(docId);
-			
-			String parameters = (String) request.getAttribute("PARAMETERS");
-			SessionContainer sessionContainer = this.getRequestContainer().getSessionContainer();
-			
-			// TODO controllare a che serve
-        	// set into the response the right information for loopback
-            //response.setAttribute(ObjectsTreeConstants.OBJECT_ID, docIdStr);
-            
-            
-            sessionContainer.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-            // if the parameters is set put it into the session
-            if (parameters != null && !parameters.trim().equals("")) 
-            	sessionContainer.setAttribute(SpagoBIConstants.PARAMETERS, parameters);
-            // else clean for previous executions
-            else sessionContainer.delAttribute(SpagoBIConstants.PARAMETERS);
-            
-            
-			String subObjName = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
-            // if the subObjName is set put it into the session
-            if (subObjName != null && !subObjName.trim().equals("")) 
-            	sessionContainer.setAttribute("LABEL_SUB_OBJECT", subObjName);
-            // else clean for previous executions
-            else sessionContainer.delAttribute("LABEL_SUB_OBJECT");
-			
-            // set a flag for direct execution (permits to pass parameters page)
-            sessionContainer.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
-            
-            // set into the reponse the publisher name for object execution
-            response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, 
-					  SpagoBIConstants.PUBLISHER_LOOPBACK_SINGLE_OBJECT_EXEC);
 		} finally {
 			logger.debug("OUT");
 		}

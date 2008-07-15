@@ -30,6 +30,9 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -56,6 +59,8 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		logger.debug("IN");
 		
 		SessionContainer session = requestContainer.getSessionContainer();
+		ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+				new LightNavigatorContextRetrieverStrategy(requestContainer.getServiceRequest()));
 		
 		if (obj == null) {
 			logger.error("The input object is null");
@@ -69,26 +74,10 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 		
 		try {
 			response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-//			ObjTemplate objTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
-//			String templateFileName = objTemp.getName();
-//			response.setAttribute("templateFileName", templateFileName);
-//			// create the title
-//			String title = "";
-//			title += obj.getName();
-//			String objDescr = obj.getDescription();
-//			if( (objDescr!=null) && !objDescr.trim().equals("") ) {
-//				title += ": " + objDescr;
-//			}
-//			response.setAttribute("title", title);
-			// set execution context
-		    String executionContext = (String)session.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-		    if (executionContext != null)
-		    		response.setAttribute(SpagoBIConstants.EXECUTION_CONTEXT, SpagoBIConstants.DOCUMENT_COMPOSITION);
 			// set information for the publisher
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "OFFICE_DOC");
 		} catch (Exception e) {
 			logger.error("Cannot exec the Office document");
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 	}
@@ -108,7 +97,6 @@ public class SpagoBIOfficeDocumentInternalEngine implements InternalEngineIFace 
 			throws EMFUserError {
 		// it cannot be invoked
 		logger.error("SpagoBIOfficeDocumentInternalEngine cannot exec subobjects");
-
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 

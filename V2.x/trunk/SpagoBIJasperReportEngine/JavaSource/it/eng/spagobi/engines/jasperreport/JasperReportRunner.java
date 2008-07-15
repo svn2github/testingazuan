@@ -50,6 +50,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
@@ -57,7 +58,6 @@ import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
@@ -263,7 +263,8 @@ public class JasperReportRunner {
 		    } else if (outputType.equalsIgnoreCase("xls")) {
 		    	if(mimeType == null) mimeType = "application/vnd.ms-excel";
 		    	servletResponse.setContentType(mimeType);
-		    	if(exporter == null) exporter = new JRXlsExporter();
+		    	//if(exporter == null) exporter = new JRXlsExporter();
+		    	if(exporter == null) exporter = new JExcelApiExporter();
 		    } else if (outputType.equalsIgnoreCase("xml")) {
 		    	if(mimeType == null) mimeType = "text/xml";
 		    	servletResponse.setContentType(mimeType);
@@ -307,9 +308,9 @@ public class JasperReportRunner {
 			logger.debug("Report exported succesfully");
 	        
 	        
-		}catch(Exception e){
+		}catch(Throwable e){
 			logger.error("An exception has occured", e);
-			throw e;
+			throw new Exception(e);
 		}finally{	  
 			// delete tmp dir for dynamic template management
 			File tmpDir = getJRTempDir(servletContext, executionId);
@@ -607,6 +608,7 @@ public class JasperReportRunner {
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
+			
 
 			SpagoBIAccessUtils util = new SpagoBIAccessUtils();
 			

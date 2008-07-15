@@ -27,16 +27,17 @@ import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerAccess;
 import it.eng.spago.base.ResponseContainerPortletAccess;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.portlet.PortletFileUpload;
 
 public class ChannelUtilities {
 
@@ -90,7 +91,11 @@ public class ChannelUtilities {
 			else sbiMode = "WEB";
 			// based on mode get spago object and url builder
 			if (sbiMode.equalsIgnoreCase("WEB")) {
-				Object attribute = requestContainer.getSessionContainer().getAttribute(preferenceName);
+				SourceBean request = requestContainer.getServiceRequest();
+				SessionContainer session = requestContainer.getSessionContainer();
+				ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+						new LightNavigatorContextRetrieverStrategy(request));
+				Object attribute = contextManager.get(preferenceName);
 				if (attribute != null) prefValue = attribute.toString();
 				else prefValue = defaultValue;
 			} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
@@ -131,42 +136,11 @@ public class ChannelUtilities {
 	
 	
 	/**
-	 * Gets the spago bi content repository servlet.
+	 * Checks if is web running.
 	 * 
-	 * @param httpRequest the http request
-	 * 
-	 * @return the spago bi content repository servlet
+	 * @return true, if is web running
 	 */
-	public static String getSpagoBiContentRepositoryServlet(HttpServletRequest httpRequest){
-	    return getSpagoBIContextName(httpRequest) + "/ContentRepositoryServlet";
-	}
-	
-	
-//	public static SourceBean getSpagoRequestFromMultipart() {
-//		SourceBean request = null;
-//		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-//		// get mode of execution
-//		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-//		// based on mode get spago object and url builder
-//		if(sbiMode.equalsIgnoreCase("PORTLET")){
-//			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-//			if (portletRequest instanceof ActionRequest) {
-//				ActionRequest actionRequest = (ActionRequest) portletRequest;
-//				if (PortletFileUpload.isMultipartContent(actionRequest)) {
-//					request = PortletUtilities.getServiceRequestFromMultipartPortletRequest(portletRequest);
-//				}
-//			}
-//		}
-//		return request;
-//	}
-	
-	
-	/**
- * Checks if is web running.
- * 
- * @return true, if is web running
- */
-public static boolean isWebRunning() {
+	public static boolean isWebRunning() {
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
 		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   

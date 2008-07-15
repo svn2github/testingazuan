@@ -187,7 +187,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String rootDocParameter="";
 		rootDocParameter=((ILinkableChart)sbi).getDocument_Parameters(((ILinkableChart)sbi).getDrillParameter());
 
-		rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
+		//rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
 	
 		String drillLabel="";
 			drillLabel=((ILinkableChart)sbi).getDrillLabel();
@@ -212,7 +212,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		// Old way portlet		
 		String  rootUrl=urlBuilder.getUrl(request,rootPar);
-		//rootUrl=rootUrl+rootDocParameter;
+		rootUrl=rootUrl+"&PARAMETERS="+rootDocParameter;
 	
 		String completeUrl=rootUrl;
 	

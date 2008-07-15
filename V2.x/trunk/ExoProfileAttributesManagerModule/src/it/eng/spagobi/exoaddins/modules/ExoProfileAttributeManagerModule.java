@@ -117,7 +117,7 @@ public class ExoProfileAttributeManagerModule extends AbstractModule {
 								String valueFormatted =  "{,{"; 
 								String[] arValues = value.split(",");
 								for (int i=0; i < arValues.length; i++){
-									valueFormatted += "'" + arValues[i]+"'";
+									valueFormatted += arValues[i];
 									if (i<arValues.length-1)
 										valueFormatted += ",";
 								}

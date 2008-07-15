@@ -8,10 +8,10 @@ How to install the ExoProfileAttributeManagerModule module
 3) Insert into the file exo-home/webapps/spagobi/WEB-INF/conf/master.xml the following lines:
 
 	<!-- start exo profile manager module -->
-	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/pages.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/modules.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/presentation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/components/exoprofileattributemanager/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
 	<!-- end exo profile manager module -->
 	
 4) Insert into the file  exo-home/webapps/spagobi/WEB-INF/portlet.xml the following lines (as a child of the 'portlet-app'  tag):

@@ -74,24 +74,20 @@ public class ExecutionManager {
     }
     */
     
-    /**
-	 * Register execution.
+	/**
+	 * Registers execution
 	 * 
-	 * @param flowId the flow id
-	 * @param executionId the execution id
-	 * @param obj the obj
-	 * @param executionRole the execution role
+	 * @param instance The ExecutionInstance to be registered
 	 */
-	public void registerExecution(String flowId, String executionId, BIObject obj, String executionRole) {
-    	ExecutionInstance newInstance = new ExecutionInstance(flowId, executionId, obj, executionRole);
-    	if (_flows.containsKey(flowId)) {
-    		List instances = (List) _flows.get(flowId);
-    		if (!instances.contains(newInstance)) 
-    			instances.add(newInstance);
+	public void registerExecution(ExecutionInstance instance) {
+    	if (_flows.containsKey(instance.getFlowId())) {
+    		List instances = (List) _flows.get(instance.getFlowId());
+    		if (!instances.contains(instance)) 
+    			instances.add(instance);
     	} else {
     		List list = new ArrayList();
-    		list.add(newInstance);
-    		_flows.put(flowId, list);
+    		list.add(instance);
+    		_flows.put(instance.getFlowId(), list);
     	}
     }
     
@@ -112,7 +108,7 @@ public class ExecutionManager {
     		int i = 0;
     		for (; i < instances.size(); i++) {
     			ExecutionInstance instance = (ExecutionInstance) instances.get(i);
-    			if (instance.executionId.equals(executionId)) {
+    			if (instance.getExecutionId().equals(executionId)) {
     				toReturn = instance;
     				break;
     			}
@@ -139,7 +135,7 @@ public class ExecutionManager {
     		int i = 0;
     		for (; i < instances.size(); i++) {
     			ExecutionInstance instance = (ExecutionInstance) instances.get(i);
-    			if (instance.executionId.equals(executionId)) {
+    			if (instance.getExecutionId().equals(executionId)) {
     				toReturn = instance;
     				break;
     			}
@@ -182,7 +178,7 @@ public class ExecutionManager {
     public BIObject getLastExecutionObject(String flowId) {
     	ExecutionInstance executionInstance = getLastExecutionInstance(flowId);
     	if (executionInstance != null) {
-    		return executionInstance.object;
+    		return executionInstance.getBIObject();
     	} else {
     		return null;
     	}
@@ -198,7 +194,7 @@ public class ExecutionManager {
     public String getLastExecutionId(String flowId) {
     	ExecutionInstance executionInstance = getLastExecutionInstance(flowId);
     	if (executionInstance != null) {
-    		return executionInstance.executionId;
+    		return executionInstance.getExecutionId();
     	} else {
     		return null;
     	}
@@ -234,169 +230,6 @@ public class ExecutionManager {
     		instances = (List) _flows.get(flowId);
     	}
     	return instances;
-    }
-    
-    /**
-     * Stores execution information for a single document execution
-     * 
-     * @author zerbetto
-     *
-     */
-    public class ExecutionInstance {
-    	
-    	private String flowId = null;
-    	private String executionId = null;
-    	private BIObject object = null;
-    	private String executionRole = null;
-    	private Calendar calendar = null; 
-    	
-    	/**
-	     * Instantiates a new execution instance.
-	     * 
-	     * @param flowId the flow id
-	     * @param executionId the execution id
-	     * @param obj the obj
-	     * @param executionRole the execution role
-	     */
-	    public ExecutionInstance (String flowId, String executionId, BIObject obj, String executionRole) {
-    		this.flowId = flowId;
-    		this.executionId = executionId;
-    		this.object = obj;
-    		this.calendar = new GregorianCalendar();
-    		this.executionRole = executionRole;
-    	}
-    	
-    	/*
-    	private BIObject cloneBIObject (BIObject obj) {
-    		// clones the BIObject information
-    		BIObject toReturn = new BIObject();
-    		toReturn.setId(obj.getId());
-    		toReturn.setLabel(obj.getLabel());
-    		toReturn.setName(obj.getName());
-    		toReturn.setDescription(obj.getDescription());
-    		toReturn.setBiObjectTypeCode(obj.getBiObjectTypeCode());
-    		toReturn.setBiObjectTypeID(obj.getBiObjectTypeID());
-    		toReturn.setEncrypt(obj.getEncrypt());
-    		toReturn.setPath(obj.getPath());
-    		toReturn.setStateCode(obj.getStateCode());
-    		toReturn.setStateID(obj.getStateID());
-    		toReturn.setUuid(obj.getUuid());
-    		toReturn.setVisible(obj.getVisible());
-    		
-			List newFunctionalities = new ArrayList();
-			newFunctionalities.addAll(obj.getFunctionalities());
-    		toReturn.setFunctionalities(newFunctionalities);
-    		
-    		List newParameters = new ArrayList();
-    		List parameters = obj.getBiObjectParameters();
-    		if (parameters != null && parameters.size() > 0) {
-    			for (int i = 0; i < parameters.size(); i++) {
-    				BIObjectParameter parameter = (BIObjectParameter) parameters.get(i);
-    				BIObjectParameter newParameter = new BIObjectParameter();
-    				newParameter.setBiObjectID(parameter.getBiObjectID());
-    				newParameter.setHasValidValues(parameter.hasValidValues());
-    				newParameter.setId(parameter.getId());
-    				newParameter.setLabel(parameter.getLabel());
-    				newParameter.setLovResult(parameter.getLovResult());
-    				newParameter.setModifiable(parameter.getModifiable());
-    				newParameter.setMultivalue(parameter.getMultivalue());
-    				newParameter.setParameter(parameter.getParameter());
-    				newParameter.setParameterUrlName(parameter.getParameterUrlName());
-    				List newParameterValues = new ArrayList();
-    				if (parameter.getParameterValues() != null) {
-    					newParameterValues.addAll(parameter.getParameterValues());
-    				}
-    				newParameter.setParameterValues(newParameterValues);
-    				newParameter.setParID(parameter.getParID());
-    				newParameter.setPriority(parameter.getPriority());
-    				newParameter.setProg(parameter.getPriority());
-    				newParameter.setRequired(parameter.getRequired());
-    				newParameter.setTransientParmeters(parameter.isTransientParmeters());
-    				newParameter.setVisible(parameter.getVisible());
-    			}
-    		}
-    		toReturn.setBiObjectParameters(newParameters);
-    		toReturn.setEngine(obj.getEngine());
-
-    		return toReturn;
-    	}
-    	*/
-
-		/**
-	     * Gets the execution id.
-	     * 
-	     * @return the execution id
-	     */
-	    public String getExecutionId() {
-			return executionId;
-		}
-
-		/**
-		 * Sets the execution id.
-		 * 
-		 * @param executionId the new execution id
-		 */
-		public void setExecutionId(String executionId) {
-			this.executionId = executionId;
-		}
-
-		/**
-		 * Gets the flow id.
-		 * 
-		 * @return the flow id
-		 */
-		public String getFlowId() {
-			return flowId;
-		}
-		
-		/**
-		 * Gets the bI object.
-		 * 
-		 * @return the bI object
-		 */
-		public BIObject getBIObject() {
-			return object;
-		}
-
-		/**
-		 * Sets the bI object.
-		 * 
-		 * @param object the new bI object
-		 */
-		public void setBIObject(BIObject object) {
-			this.object = object;
-		}
-    	
-		/**
-		 * Gets the calendar.
-		 * 
-		 * @return the calendar
-		 */
-		public Calendar getCalendar() {
-			return calendar;
-		}
-		
-
-		/**
-		 * Gets the execution role.
-		 * 
-		 * @return the execution role
-		 */
-		public String getExecutionRole() {
-			return executionRole;
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		public boolean equals(Object another) {
-			if (another instanceof ExecutionInstance) {;
-				ExecutionInstance anInstance = (ExecutionInstance) another;
-				return this.executionId.equals(anInstance.executionId);
-			} else 
-				return false;
-		}
-		
     }
     
 }

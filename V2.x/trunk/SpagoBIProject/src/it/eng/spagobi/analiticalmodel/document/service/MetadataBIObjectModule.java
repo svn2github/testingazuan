@@ -29,7 +29,6 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -48,7 +47,6 @@ public class MetadataBIObjectModule extends BaseProfileModule{
 	
 	static private Logger logger = Logger.getLogger(MetadataBIObjectModule.class);
 	EMFErrorHandler errorHandler = null;
-	ExecutionController execContr = null;
 	RequestContainer requestContainer = null;
 	SessionContainer session = null;
 	SessionContainer permanentSession = null;

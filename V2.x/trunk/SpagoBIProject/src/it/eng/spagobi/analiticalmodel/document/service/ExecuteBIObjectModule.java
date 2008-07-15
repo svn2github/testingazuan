@@ -25,9 +25,9 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -39,35 +39,33 @@ import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
-import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.services.BaseProfileModule;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -75,7 +73,7 @@ import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
 /**
- * Executes a report, according to four phases; each phase is identified by a
+ * Executes a report, according to three phases; each phase is identified by a
  * message string.
  * <p>
  * 1) Creates the page
@@ -83,24 +81,20 @@ import org.safehaus.uuid.UUIDGenerator;
  * 2) Selects the role
  * <p>
  * 3) From the field input values loads the object and starts execution
- * <p>
- * 4) See Report/Change the report state
  * 
  * @author Zerbetto
  * @author Fiscato
  * @author Bernabei
  * @author Mark Penningroth (Cincom Systems, Inc.)
  */
-public class ExecuteBIObjectModule extends AbstractModule {
+public class ExecuteBIObjectModule extends BaseProfileModule {
 
-	static private Logger logger = Logger
-			.getLogger(ExecuteBIObjectModule.class);
+	static private Logger logger = Logger.getLogger(ExecuteBIObjectModule.class);
 
 	EMFErrorHandler errorHandler = null;
-	ExecutionController execContr = null;
 	RequestContainer requestContainer = null;
-	SessionContainer session = null;
 	SessionContainer permanentSession = null;
+	ContextManager contextManager = null;
 
 	public static final String MODULE_PAGE = "ExecuteBIObjectPage";
 	public static final String MESSAGE_EXECUTION = "MESSAGEEXEC";
@@ -124,6 +118,10 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
+		
+		// Check of the userId in order to keep performing the request
+		super.service(request, response);
+		
 		String messageExec = (String) request
 				.getAttribute(SpagoBIConstants.MESSAGEDET);
 		logger.debug("using message" + messageExec);
@@ -134,23 +132,19 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			messageExec = subMessageExec;
 		errorHandler = getErrorHandler();
 		requestContainer = this.getRequestContainer();
-		session = requestContainer.getSessionContainer();
+		SessionContainer session = requestContainer.getSessionContainer();
+		contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+				new LightNavigatorContextRetrieverStrategy(request));
+		
 		permanentSession = session.getPermanentContainer();
-		logger
-				.debug("errorHanlder, requestContainer, session, permanentSession retrived ");
-		execContr = new ExecutionController();
+		logger.debug("errorHanlder, requestContainer, session, permanentSession retrived ");
 
 		try {
-			if (messageExec == null) {
-				EMFUserError userError = new EMFUserError(
-						EMFErrorSeverity.ERROR, 101);
-				logger.error("The execution-message parameter is null");
-				throw userError;
-			}
-
-			if (messageExec
-					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_CREATE_PAGE)) {
-				pageCreationHandler(request, response);
+			if (messageExec == null || messageExec.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_CREATE_PAGE)) {
+				initNewExecutionHandler(request, response);
+			} else if (messageExec
+					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE)) {
+				initNewExecutionHandler(request, response);
 			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RUN_SUBOJECT)) {
 				executionSubObjectHandler(request, response);
@@ -158,17 +152,11 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_DELETE_SUBOJECT)) {
 				deleteSubObjectHandler(request, response);
 			} else if (messageExec
-					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE)) {
-				selectRoleHandler(request, response);
-			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RETURN_FROM_LOOKUP)) {
 				lookUpReturnHandler(request, response);
 			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RUN)) {
 				executionHandler(request, response);
-			} else if (messageExec
-					.equalsIgnoreCase(SpagoBIConstants.EXEC_CHANGE_STATE)) {
-				changeStateHandler(request, response);
 			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE)) {
 				execSnapshotHandler(request, response);
@@ -193,10 +181,6 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION)) {
 				recoverExecutionFromCrossNavigationHandler(request, response);
-			} else {
-				logger.error("Illegal request of service");
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-						102));
 			}
 		} catch (EMFUserError e) {
 			errorHandler.addError(e);
@@ -212,48 +196,17 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			// recovers required execution details
 			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
 			String executionId = (String) request.getAttribute("EXECUTION_ID");
-			session.setAttribute("EXECUTION_FLOW_ID", executionFlowId);
-			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+			ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
 			if (executionManager == null) {
 				throw new Exception("Execution Manager not found. Cannot recover execution details.");
 			}
 			ExecutionInstance instance = executionManager.recoverExecution(executionFlowId, executionId);
-			BIObject obj = instance.getBIObject();
-			// set biobject in session
-			setBIObject(obj);
-	    	String executionRole = instance.getExecutionRole();
-	    	// sets role for new execution on request
-	    	request.setAttribute("spagobi_execution_role", executionRole);
+			// set execution instance in session
+			setExecutionInstance(instance);
 	    	// sets the flag in order to skip snapshots/viewpoints/parameters/subobjects page
-	    	request.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
-	    	// deletes parameters of previous execution
-	    	session.delAttribute(ObjectsTreeConstants.PARAMETERS);
-	    	// creates parameters string for new execution
-	    	String documentParameters = "";
-			List parameters = obj.getBiObjectParameters();
-			Iterator parametersIt = parameters.iterator();
-			while (parametersIt.hasNext()) {
-				BIObjectParameter parameter = (BIObjectParameter) parametersIt.next();
-				String parurlname = parameter.getParameterUrlName();
-				List parValues = parameter.getParameterValues();
-				if (parValues == null || parValues.size() == 0) continue;
-				if (parValues.size() == 1) {
-					documentParameters += "&" + parurlname + "=" + parValues.get(0).toString();
-				} else {
-					documentParameters += "&" + parurlname + "=";
-					for (int i = 0; i < parValues.size(); i++) {
-						String aParValue = parValues.get(i).toString();
-						documentParameters += aParValue;
-						if (i < parValues.size() - 1) documentParameters += ";";
-					}
-				}
-			}
-	    	if (documentParameters.startsWith("&")) {
-	    		documentParameters = documentParameters.substring(1);
-	    	}
-	    	session.setAttribute(ObjectsTreeConstants.PARAMETERS, documentParameters);
+	    	request.setAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 	    	// starts new execution
-	    	pageCreationHandler(request, response);
+	    	initNewExecutionHandler(request, response);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -263,21 +216,17 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		throws Exception {
 		logger.debug("IN");
 		try {
+			ExecutionInstance instance = getExecutionInstance();
 			// registers the current execution in the ExecutionManager
-			String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
-			String sourceExecutionId = (String) request.getAttribute("SOURCE_EXECUTION_ID");
-			session.setAttribute("EXECUTION_FLOW_ID", executionFlowId);
-			ExecutionManager executionManager = (ExecutionManager) session.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
+			ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
 			if (executionManager == null) {
 				executionManager = new ExecutionManager();
-				session.setAttribute(ObjectsTreeConstants.EXECUTION_MANAGER, executionManager);
+				contextManager.set(ExecutionManager.class.getName(), executionManager);
 			}
-			BIObject obj = getBIObject();
-			String executionRole = (String) session.getAttribute(SpagoBIConstants.ROLE);
-			executionManager.registerExecution(executionFlowId, sourceExecutionId, obj, executionRole);
+			executionManager.registerExecution(instance);
 			// starts new execution 
-			request.setAttribute(SpagoBIConstants.IGNORE_SUB_NODES, "true");
-			pageCreationHandler(request, response);
+			request.setAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
+			initNewExecutionHandler(request, response);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -287,83 +236,48 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			throws EMFUserError, SourceBeanException {
 		logger.debug("IN");
 		ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
-		String snapshotIdStr = (String) request
-				.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+		String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
 		Integer snapId = new Integer(snapshotIdStr);
 		snapdao.deleteSnapshot(snapId);
-		// get object from session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		// get from the session the execution role
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		// set data in response
-		response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId()
-				.toString());
-		response.setAttribute(SpagoBIConstants.ROLE, role);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}
 
 	/**
-	 * Manage the parameter page creation preaparing and setting into the
-	 * response all the necessary attributes
+	 * Starts a new execution
 	 * 
 	 * @param request
 	 *            The Spago Request SourceBean
 	 * @param response
 	 *            The Spago Response SourceBean
 	 */
-	private void pageCreationHandler(SourceBean request, SourceBean response)
+	private void initNewExecutionHandler(SourceBean request, SourceBean response)
 			throws Exception {
 
 		logger.debug("IN");
 
 		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		logger.debug("user profile retrived " + profile);
-
-		// get the id of the object
-		String idStr = (String) request
-				.getAttribute(ObjectsTreeConstants.OBJECT_ID);
-		String label = (String) request
-				.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
-		logger.debug("Request parameters: " + "biobject id = '" + idStr
-				+ "'; object label = '" + label + "'.");
-		BIObject obj = getBIObject();
-		if (idStr == null && label == null) {
-			if (obj == null) {
-				logger
-						.error("The object id and label are not set and no objects are in session");
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-						"100"));
-				return;
-			} else {
-				logger.debug("Object retrieved from session");
-			}
-		}
-
-		Integer id = null;
-		if (label != null) {
-			logger.debug("Loading biobject with label = '" + label + "' ...");
-			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-			if (obj == null) {
-				logger.error("Object with label = '" + label + "' not found!!");
-				Vector v = new Vector();
-				v.add(label);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-						"1074", v));
-				return;
-			}
-			id = obj.getId();
-
-		} else if (idStr != null) {
-			logger.debug("Loading biobject with id = '" + idStr + "' ...");
-			id = new Integer(idStr);
-			obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-		} else if (obj != null) {
-			id = obj.getId();
-		}
-
+		IEngUserProfile profile = getUserProfile();
+		BIObject obj = getRequiredBIObject(request);
+		// get the list of the subObjects
+		List subObjects = getSubObjectsList(obj, profile);
+		// get the list of snapshots
+		List snapshots = getSnapshotList(obj);
+		// get the list of viewpoints
+		List viewpoints = getViewpointList(obj);
+		// get required snapshot
+		Snapshot snapshot = getRequiredSnapshot(request, snapshots);
+		// get required subObject
+		SubObject subObj = getRequiredSubObject(request, subObjects);
+		// get parameters
+		String userProvidedParametersStr = (String) request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+		logger.debug("Used defined parameters: [" + userProvidedParametersStr + "]");
+		// get execution modality
+		String modality = (String) request.getAttribute(ObjectsTreeConstants.MODALITY);
+		if (modality == null) modality = SpagoBIConstants.NORMAL_EXECUTION_MODALITY;
+		logger.debug("Execution modality: [" + modality + "]");
+		
+		Integer id = obj.getId();
 		logger.debug("BIObject id = " + id);
 
 		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
@@ -372,86 +286,66 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					+ "' cannot be executed by the user!!");
 			Vector v = new Vector();
 			v.add(obj.getLabel());
-			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-					"1075", v, null));
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1075", v, null);
+		}
+		// get all correct execution roles
+		List correctRoles = getCorrectRolesForExecution(profile, id);
+		if (correctRoles == null || correctRoles.size() == 0) {
+			logger.warn("Object cannot be executed by no role of the user");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 1006);
+		}
+		// get role specified on request
+		String role = (String) request.getAttribute(SpagoBIConstants.ROLE);
+		if (role != null && !correctRoles.contains(role)) {
+			logger.warn("Role [" + role + "] is not a correct role for execution");
+			Vector v = new Vector();
+			v.add(role);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 1078, v, null);
+		}
+		
+		// if role is not set, sees if role selection is required 
+		if (role == null) {
+			if (snapshot != null || subObj != null) {
+				// for executing a snapshot or a subObject, role selection is not mandatory, so the first role is selected
+				role = (String) correctRoles.get(0);
+			} else {
+				if (correctRoles.size() > 1) {
+					response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectSelectRole");
+					response.setAttribute("roles", correctRoles);
+					response.setAttribute(ObjectsTreeConstants.OBJECT_ID, id);
+					logger.debug("more than one correct roles for execution, redirect to the role selection page");
+					return;
+				} else {
+					role = (String) correctRoles.get(0);
+				}
+			}
+		}
+		// controls if the user can see the required subobject
+		if (subObj != null) {
+			boolean canSeeSubobject = canSeeSubobject(profile, subObj);
+			if (!canSeeSubobject) {
+				List l = new ArrayList();
+				l.add(subObj.getName());
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
+			}
+		}
+		
+		// instantiates a new Execution controller for the current execution
+		ExecutionInstance instance = createExecutionInstance(id, role, profile, request, modality);
+		// put execution instance in session
+		contextManager.set(ExecutionInstance.class.getName(), instance);
+		instance.refreshParametersValues(request, true);
+		instance.setParameterValues(userProvidedParametersStr, true);
+		// refresh obj variable because createExecutionInstance load the BIObject in a different way
+		obj = instance.getBIObject();
+		
+		// if a snapshot is required, executes it
+		if (snapshot != null) {
+			executeSnapshot(snapshot, response);
 			return;
 		}
-
-		// get parameters statically defined in portlet preferences
-		String userProvidedParametersStr = (String) request.getAttribute(ObjectsTreeConstants.PARAMETERS);
-		if (userProvidedParametersStr == null)
-			userProvidedParametersStr = (String) session.getAttribute(ObjectsTreeConstants.PARAMETERS);
 		
-		//String userProvidedParametersStr = (String) session.getAttribute(ObjectsTreeConstants.PARAMETERS);
-		logger.debug("using parameters " + userProvidedParametersStr);
-
-		// define the variable for execution role
-		String role = (String) request.getAttribute("spagobi_execution_role");
-		List correctRoles = null;
-
-		if (profile
-				.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
-				|| profile
-						.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
-				|| profile
-						.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
-			correctRoles = DAOFactory.getBIObjectDAO()
-					.getCorrectRolesForExecution(id, profile);
-		else
-			correctRoles = DAOFactory.getBIObjectDAO()
-					.getCorrectRolesForExecution(id);
-		logger.debug("correct roles for execution retrived " + correctRoles);
-
-		if (role != null) {
-			// if the role is specified
-			if (!correctRoles.contains(role)) {
-
-				logger.warn("Role [" + role
-						+ "] is not a correct role for execution");
-				Vector v = new Vector();
-				v.add(role);
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-						1078, v, null));
-				return;
-			}
-		} else {
-			// if correct roles is more than one the user has to select one of
-			// them
-			// put in the response the right inforamtion for publisher in order
-			// to show page role selection
-			if (correctRoles.size() > 1) {
-				response.setAttribute("selectionRoleForExecution", "true");
-				response.setAttribute("roles", correctRoles);
-				response.setAttribute(ObjectsTreeConstants.OBJECT_ID, id);
-				logger
-						.debug("more than one correct roles for execution, redirect to the"
-								+ " role selection page");
-				return;
-
-				// if there isn't correct role put in the error stack a new
-				// error
-			} else if (correctRoles.size() < 1) {
-
-				logger.warn("Object cannot be executed by no role of the user");
-				errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-						1006));
-				return;
-
-				// the list contains only one role which is the right role
-			} else {
-				role = (String) correctRoles.get(0);
-			}
-		}
-		logger.debug("using role " + role);
-
-		// NOW THE EXECUTION ROLE IS SELECTED
-		// put in session the execution role
-		session.setAttribute(SpagoBIConstants.ROLE, role);
-
-		// based on the role selected (or the only for the user) load the object
-		// and put it in session
-		obj = execContr.prepareBIObjectInSession(session, id, role,
-				userProvidedParametersStr);
+		// TODO cancellare quando anche la check list è nella finestra di lookup
 		Map paramsDescriptionMap = new HashMap();
 		List biparams = obj.getBiObjectParameters();
 		Iterator iterParams = biparams.iterator();
@@ -460,175 +354,287 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			String nameUrl = biparam.getParameterUrlName();
 			paramsDescriptionMap.put(nameUrl, "");
 		}
+		contextManager.set("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
 
-		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
-
-		// session.delAttribute(ObjectsTreeConstants.PARAMETERS);
-		logger.debug("object retrived and setted into session");
-
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		logger.debug("List subobject loaded: " + subObjects);
-		// put in response the list of subobject
-		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
-		logger.debug("List snapshot loaded: " + snapshots);
-		// put in response the list of snapshot
-		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-
-		// get the list of viewpoints
-		List viewpoints = getViewpointList(obj);
-		logger.debug("List viewpoint loaded: " + viewpoints);
-		// put in response the list of viewpoint
-		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
-
-		// load the object into the Execution controller
-		ExecutionController controller = new ExecutionController();
-		// check parameters values 
-		controlInputParameters(obj.getBiObjectParameters(), profile, role);
-		controller.setBiObject(obj);
-
-		// finds if it is requested to ignore sub-nodes
-		// (subobjects/snapshots/viewpoints)
-		String ignoreSubNodesStr = (String) session
-				.getAttribute(SpagoBIConstants.IGNORE_SUB_NODES);
-		if (ignoreSubNodesStr == null) {
-			ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUB_NODES);
-		}
+		// finds if it is requested to ignore subobjects/snapshots/viewpoints if present
+		String ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS);
 		boolean ignoreSubNodes = false;
-		if (ignoreSubNodesStr != null
-				&& ignoreSubNodesStr.trim().equalsIgnoreCase("true")) {
+		if (ignoreSubNodesStr != null && ignoreSubNodesStr.trim().equalsIgnoreCase("true")) {
 			ignoreSubNodes = true;
 		}
 
-		// subObj is not null if specified on preferences
-		SubObject subObj = getRequiredSubObject(obj, subObjects, profile);
-
-		// (if the object can be directly executed (because it hasn't any
-		// parameter to be
-		// filled by the user) and if the object has no subobject / snapshots /
-		// viewpoints saved
-		// or the request esplicitely asks to ignore subnodes) or (a valid
-		// subobject
-		// is specified by preferences)
-		// then execute it directly without pass through parameters page
-		if ((controller.directExecution() && ((subObjects.size() == 0
+		// (if the object can be directly executed (because it hasn't any parameter to be
+		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved
+		// or the request esplicitely asks to ignore subnodes) or (a valid subobject
+		// is specified by request) then execute it directly without pass through parameters page
+		if ((instance.isDirectExecution() && ((subObjects.size() == 0
 				&& snapshots.size() == 0 && viewpoints.size() == 0) || ignoreSubNodes))
 				|| subObj != null) {
-			logger
-					.debug("object hasn't any parameter to fill and no subObjects");
-			if (subObj == null)
-				controlInputParameters(obj.getBiObjectParameters(), profile,
-						role);
-			// if there are some errors into the errorHandler does not execute
-			// the BIObject
-			if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-						"ExecuteBIObjectPageParameter");
+			// check parameters values 
+			List errors = instance.getParametersErrors();
+			logger.debug("Document can be directly executed");
+			// add errors into error handler if any
+			if (errors.size() != 0) {
+				Iterator errorsIt = errors.iterator();
+				while (errorsIt.hasNext()) {
+					errorHandler.addError((EMFUserError) errorsIt.next());
+				}
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 				return;
 			}
-			execute(obj, subObj, null, response);
-		}
-		if (controller.directExecution()) {
-			logger
-					.debug("object has only subobjects but not parameter to fill");
-			response.setAttribute("NO_PARAMETERS", "TRUE");
+			execute(instance, subObj, null, response);
+		} else {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		}
 		logger.debug("OUT");
 	}
 
 	/**
+	 * creates a new ExecutionInstance
+	 * 
+	 * @param contextManager The object for session access
+	 * @param aRoleName the a role name
+	 * @param biobjectId the id of the current document
+	 * @param userProvidedParametersStr the user provided parameters str
+	 * @param profile the user profile
+	 * 
+	 * @return the BI object
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	private ExecutionInstance createExecutionInstance(Integer biobjectId, String aRoleName, IEngUserProfile profile, SourceBean request, String modality) throws EMFUserError {
+		// create execution id
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuidObj = uuidGen.generateTimeBasedUUID();
+		String executionId = uuidObj.toString();
+		executionId = executionId.replaceAll("-", "");
+		// find execution flow id; it is not specified, it means that a new flow is starting, so it is set to execution id value
+		String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
+		if (executionFlowId == null) 
+			executionFlowId = executionId;
+		// create new execution instance
+		ExecutionInstance instance = null;
+		try {
+			instance = new ExecutionInstance(profile, executionFlowId, executionId, biobjectId, aRoleName, modality);
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		return instance;
+	}
+	
+	private List getCorrectRolesForExecution(IEngUserProfile profile, Integer id) throws EMFInternalError, EMFUserError {
+		logger.debug("IN");
+		List correctRoles = null;
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
+				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
+				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
+			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id, profile);
+		else
+			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id);
+		logger.debug("correct roles for execution retrived " + correctRoles);
+		logger.debug("OUT");
+		return correctRoles;
+	}
+
+	/**
+	 * Get the required BIObject by attribute "OBJECT_ID" or "OBJECT_LABEL" on request.
+	 * @param request The service request
+	 * @return the required BIObject
+	 * @throws EMFUserError if the document is not found or if request attribute "OBJECT_ID" or "OBJECT_LABEL" are missing
+	 */
+	private BIObject getRequiredBIObject(SourceBean request) throws EMFUserError {
+		logger.debug("IN");
+		BIObject obj = null;
+		String idStr = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+		String label = (String) request.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+		logger.debug("Request parameters: " + "biobject id = [" + idStr + "]; object label = [" + label + "].");
+		if (idStr == null && label == null) {
+			logger.error("Cannot load BIObject: neither OBJECT_ID nor OBJECT_LABEL are specified on request");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "1083");
+		}
+		if (label != null) {
+			logger.debug("Loading biobject with label = [" + label + "] ...");
+			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			if (obj == null) {
+				logger.error("Object with label = [" + label + "] not found!!");
+				Vector v = new Vector();
+				v.add(label);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1074", v);
+			}
+		} else {
+			logger.debug("Loading biobject with id = [" + idStr + "] ...");
+			Integer id = new Integer(idStr);
+			obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+			if (obj == null) {
+				logger.error("Object with id = [" + idStr + "] not found!!");
+				Vector v = new Vector();
+				v.add(idStr);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1082", v);
+			}
+		}
+		logger.debug("OUT");
+		return obj;
+	}
+	
+	private SubObject getRequiredSubObject(SourceBean request) throws Exception {
+		logger.debug("IN");
+		ExecutionInstance instance = getExecutionInstance();
+		BIObject obj = instance.getBIObject();
+		List subObjects = getSubObjectsList(obj, getUserProfile());
+		logger.debug("OUT");
+		return getRequiredSubObject(request, subObjects);
+	}
+	
+	/**
 	 * Find the subobject with the name specified by the attribute
-	 * "LABEL_SUB_OBJECT" on SessionContainer. If such a subobject exists and
-	 * the user can execute it, then it is returned; if it doesn't exist, null
-	 * is returned; if it exists but the user is not able to execute it, an
-	 * error is added into the error handler and null is returned.
-	 * 
-	 * 
-	 * @param obj
-	 *            The BIObject being executed
-	 * @param subObjects
-	 *            The list of all the document suobjects
-	 * @param profile
-	 *            The user profile
-	 * @return the subobject to be executed if it exists and the user can
-	 *         execute it
+	 * "LABEL_SUB_OBJECT" or "SUBOBJECT_ID" on request; if those attributes are missing, null is returned. 
+	 * If such a subobject does not exist an error is added into the Error Handler
+	 * and null is returned.
+	 * @param request The service request
+	 * @param subObjects The list of all existing subobjects for the current document
+	 * @return the required subobject
 	 */
 	// MPenningroth 25-JAN-2008
 	// Handle new LABEL_SUB_OBJECT Preference
-	private SubObject getRequiredSubObject(BIObject obj, List subObjects,
-			IEngUserProfile profile) {
+	private SubObject getRequiredSubObject(SourceBean request, List subObjects) {
 		logger.debug("IN");
 		SubObject subObj = null;
-		if (subObjects.size() > 0) {
-			String subObjectName = (String) session
-					.getAttribute("LABEL_SUB_OBJECT");
-			if (subObjectName != null) {
-				Iterator iterSubs = subObjects.iterator();
-				while (iterSubs.hasNext() && subObj == null) {
-					SubObject sd = (SubObject) iterSubs.next();
-					if (sd.getName().equals(subObjectName.trim())) {
-						subObj = sd;
+		String subObjectName = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
+		String subObjectIdStr = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
+		if (subObjectName == null && subObjectIdStr == null) {
+			logger.debug("Neither LABEL_SUB_OBJECT nor SUBOBJECT_ID attribute in request are specified. Returning null.");
+			return null;
+		}
+		if (subObjectName != null) {
+			logger.debug("Looking for subobject with name [" + subObjectName + "] ...");
+			if (subObjects.size() > 0) {
+				if (subObjectName != null) {
+					Iterator iterSubs = subObjects.iterator();
+					while (iterSubs.hasNext() && subObj == null) {
+						SubObject sd = (SubObject) iterSubs.next();
+						if (sd.getName().equals(subObjectName.trim())) {
+							subObj = sd;
+						}
 					}
 				}
-				// TODO - Error case if not found?
+			}
+		} else {
+			logger.debug("Looking for subobject with id [" + subObjectIdStr + "] ...");
+			try {
+				Integer subObjId = new Integer(subObjectIdStr);
+				ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
+				subObj = subdao.getSubObject(subObjId);
+			} catch (Exception e) {
+				logger.error(e);
 			}
 		}
-		if (subObj != null) {
-			if (!subObj.getIsPublic().booleanValue()
-					&& !subObj.getOwner().equals(
-							profile.getUserUniqueIdentifier())) {
-				List l = new ArrayList();
-				l.add(subObj.getName());
-				l.add(obj.getName());
-				EMFUserError userError = new EMFUserError(
-						EMFErrorSeverity.ERROR, 1079, l);
-				errorHandler.addError(userError);
-				return null;
-			}
+		// case subobject not found
+		if (subObj == null) {
+			logger.error("Subobject not found.");
+			List l = new ArrayList();
+			l.add(subObjectName);
+			EMFUserError userError = new EMFUserError(
+					EMFErrorSeverity.ERROR, 1080, l);
+			errorHandler.addError(userError);
 		}
 		logger.debug("OUT");
 		return subObj;
 	}
-
-	/**
-	 * Called after the user change state selection to pass the BIObject from a
-	 * state to another
-	 * 
-	 * @param request
-	 *            The request SourceBean
-	 * @param response
-	 *            The response SourceBean
-	 */
-	private void changeStateHandler(SourceBean request, SourceBean response)
-			throws Exception {
+	
+	
+	private Snapshot getRequiredSnapshot(SourceBean request) throws Exception {
 		logger.debug("IN");
-		// get the type of actor from the session
-		// String actor = (String)session.getAttribute(SpagoBIConstants.ACTOR);
-		// get new state from the request
-		String newState = (String) request.getAttribute("newState");
-		// get object from the session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		// from the string of the new state extract the id and code of the new
-		// state
-		StringTokenizer tokenState = new StringTokenizer(newState, ",");
-		String stateIdStr = tokenState.nextToken();
-		Integer stateId = new Integer(stateIdStr);
-		String stateCode = tokenState.nextToken();
-		// set into the object the new state id and code
-		obj.setStateCode(stateCode);
-		obj.setStateID(stateId);
-		// call the dao in order to modify the object without versioning the
-		// content
-		DAOFactory.getBIObjectDAO().modifyBIObject(obj);
-		// set data for correct loopback to the navigation tree
-		response.setAttribute("isLoop", "true");
+		ExecutionInstance instance = getExecutionInstance();
+		BIObject obj = instance.getBIObject();
+		List snapshots = getSnapshotList(obj);
 		logger.debug("OUT");
+		return getRequiredSnapshot(request, snapshots);
+	}
+	
+	/**
+	 * Find the snapshot with the name specified by the attribute
+	 * "SNAPSHOT_NAME" and number specified by "SNAPSHOT_NUMBER" or by 
+	 * the attribute "SNAPSHOT_ID" on request; 
+	 * if SNAPSHOT_NAME attribute is missing, null is returned. 
+	 * If such a snapshot does not exist an error is added into the Error Handler
+	 * and null is returned.
+	 * @param request The service request
+	 * @param snapshots The list of existing snapshots for the current document
+	 * @return the required snapshot
+	 */
+	private Snapshot getRequiredSnapshot(SourceBean request, List snapshots) {
+		logger.debug("IN");
+		Snapshot snapshot = null;
+		String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+		String snapshotName = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_NAME);
+		if (snapshotName == null && snapshotIdStr == null) {
+			logger.debug("Neither SNAPSHOT_NAME nor SNAPSHOT_ID are specified on request. Returning null.");
+			return null;
+		}
+		// get also the snapshot number
+		String snapshotNumberStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER);
+		int snapshotNumber = 0;
+    	if (snapshotNumberStr != null) {
+	    	try {
+	    		snapshotNumber = new Integer(snapshotNumberStr).intValue();
+	    	} catch (Exception e) {
+	    		logger.error("Snapshot history specified [" + snapshotNumberStr + "] is not a valid integer number, using default 0");
+	    		snapshotNumber = 0;
+	    	}
+    	}
+		if (snapshotName != null) {
+			logger.debug("Looking for snapshot with name [" + snapshotName + "] and number [" + snapshotNumberStr + "] ...");
+			try {
+				snapshot = SchedulerUtilities.getNamedHistorySnapshot(snapshots, snapshotName, snapshotNumber);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		} else {
+			try {
+				Integer snapshotId = new Integer(snapshotIdStr);
+				Iterator it = snapshots.iterator();
+				while (it.hasNext() && snapshot == null) {
+					Snapshot aSnapshot = (Snapshot) it.next();
+					if (aSnapshot.getId().equals(snapshotId)) {
+						snapshot = aSnapshot;
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+		if (snapshot == null) {
+			logger.error("Snapshot not found.");
+			List l = new ArrayList();
+			l.add(snapshotName);
+			l.add(snapshotNumberStr);
+			EMFUserError userError = new EMFUserError(
+					EMFErrorSeverity.ERROR, 1081, l);
+			errorHandler.addError(userError);
+		}
+		logger.debug("OUT");
+		return snapshot;
 	}
 
+	/**
+	 * Controls if the user can execute the input subobject
+	 * 
+	 * @param subObj The subobject to be executed
+	 * @param profile The user profile
+	 * @return true if the user can see the subobject, false otherwise
+	 */
+	private boolean canSeeSubobject(IEngUserProfile profile, SubObject subObj) {
+		logger.debug("IN");
+		boolean toReturn = true;
+		if (!subObj.getIsPublic().booleanValue()
+				&& !subObj.getOwner().equals(
+						profile.getUserUniqueIdentifier())) {
+			toReturn = false;
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	/**
 	 * Find bi obj par id.
 	 * 
@@ -657,14 +663,14 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		return parId;
 	}
 
-	private Object getAttribute(SourceBean request, String attributeName) {
+	private Object getAttributeFromSession(SourceBean request, String attributeName) {
 		logger.debug("IN");
 		Object attribute = null;
 		attribute = request.getAttribute(attributeName);
 		if (attribute == null) {
-			attribute = session.getAttribute(attributeName);
+			attribute = contextManager.get(attributeName);
 			if (attribute != null)
-				session.delAttribute(attributeName);
+				contextManager.remove(attributeName);
 		}
 		logger.debug("OUT");
 		return attribute;
@@ -703,22 +709,21 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	private void lookUpReturnHandler(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
+		ExecutionInstance instance = getExecutionInstance();
 		// get the object from the session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		BIObject obj = instance.getBIObject();
 		// get the parameter name and value from the request
 		String parameterNameFromLookUp = (String) request
 				.getAttribute("LOOKUP_PARAMETER_NAME");
 		if (parameterNameFromLookUp == null)
-			parameterNameFromLookUp = (String) session
-					.getAttribute("LOOKUP_PARAMETER_NAME");
+			parameterNameFromLookUp = contextManager.getString("LOOKUP_PARAMETER_NAME");
 
-		String returnStatus = (String) getAttribute(request, "RETURN_STATUS");
+		String returnStatus = (String) getAttributeFromSession(request, "RETURN_STATUS");
 		if (returnStatus == null)
 			returnStatus = "OK";
 
-		Object lookUpValueObj = getAttribute(request, "LOOKUP_VALUE");
-		Object lookUpDescObj = getAttribute(request, "LOOKUP_DESC");
+		Object lookUpValueObj = getAttributeFromSession(request, "LOOKUP_VALUE");
+		Object lookUpDescObj = getAttributeFromSession(request, "LOOKUP_DESC");
 
 		if (lookUpValueObj != null && !returnStatus.equalsIgnoreCase("ABORT")) {
 
@@ -738,123 +743,18 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					biparam.setParameterValues(paramValues);
 
 					// refresh also the description
-					HashMap paramsDescriptionMap = (HashMap) session
-							.getAttribute("PARAMS_DESCRIPTION_MAP");
+					HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
 					String desc = "";
 					for (int i = 0; i < paramDescriptions.size(); i++) {
 						desc += (i == 0 ? "" : ";")
 								+ paramDescriptions.get(i).toString();
 					}
 					paramsDescriptionMap.put(nameUrl, desc);
-					session.setAttribute("PARAMS_DESCRIPTION_MAP",
-							paramsDescriptionMap);
 				}
 			}
 		}
-
-		// put in session the new object
-		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
-		// get the list of viewpoints
-		List viewpoints = getViewpointList(obj);
-		// put in response the list of subobject names
-		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-		// put in response the list of snapshot
-		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-		// put in response the list of viewpoints
-		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 				"ExecuteBIObjectPageParameter");
-		logger.debug("OUT");
-	}
-
-	/**
-	 * Called after the user role selection to continue the execution phase
-	 * 
-	 * @param request
-	 *            The request SourceBean
-	 * @param response
-	 *            The response SourceBean
-	 */
-	private void selectRoleHandler(SourceBean request, SourceBean response)
-			throws Exception {
-		logger.debug("IN");
-		// get the role selected from request
-		String role = (String) request.getAttribute("role");
-		session.setAttribute(SpagoBIConstants.ROLE, role);
-		// get the id of the object
-		String idStr = (String) request
-				.getAttribute(ObjectsTreeConstants.OBJECT_ID);
-		Integer id = new Integer(idStr);
-		// prepare the object in session
-		String userProvidedParametersStr = (String) session
-				.getAttribute(ObjectsTreeConstants.PARAMETERS);
-		// session.delAttribute(ObjectsTreeConstants.PARAMETERS);
-		BIObject obj = execContr.prepareBIObjectInSession(session, id, role,
-				userProvidedParametersStr);
-		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		// put in response the list of subobject names
-		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
-		// put in response the list of snapshot
-		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-		// get the list of viewpoint
-		List viewpoints = getViewpointList(obj);
-		// put in response the list of viewpoint
-		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
-
-		// set into the execution controlle the object
-		ExecutionController controller = new ExecutionController();
-		controller.setBiObject(obj);
-
-		Map paramsDescriptionMap = new HashMap();
-		List biparams = obj.getBiObjectParameters();
-		Iterator iterParams = biparams.iterator();
-		while (iterParams.hasNext()) {
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			String nameUrl = biparam.getParameterUrlName();
-			paramsDescriptionMap.put(nameUrl, "");
-		}
-
-		session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
-
-		// subObj is not null if specified on preferences
-		SubObject subObj = getRequiredSubObject(obj, subObjects, profile);
-
-		// (if the object can be directly executed (because it hasn't any
-		// parameter to be
-		// filled by the user) and if the object has no subobject saved) or (a
-		// valid subobject
-		// is specified by preferences) then execute it directly without pass
-		// for parameters page
-		if ((controller.directExecution() && subObjects.size() == 0)
-				|| subObj != null) {
-			if (subObj == null)
-				controlInputParameters(obj.getBiObjectParameters(), profile,
-						role);
-			// if there are some errors into the errorHandler does not execute
-			// the BIObject
-			if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-						"ExecuteBIObjectPageParameter");
-				return;
-			}
-			execute(obj, subObj, null, response);
-		}
-		if (controller.directExecution()) {
-			response.setAttribute("NO_PARAMETERS", "TRUE");
-		}
 		logger.debug("OUT");
 	}
 
@@ -869,28 +769,14 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	private void deleteSubObjectHandler(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		// get object from session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
 		// get id of the subobject
-		String subObjIdStr = (String) request
-				.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
+		String subObjIdStr = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
 		Integer subObjId = new Integer(subObjIdStr);
 		// get dao for suboject
 		ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
 		// delete subobject
 		subobjdao.deleteSubObject(subObjId);
-		// get from the session the execution role
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		// set data in response
-		response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId()
-				.toString());
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-				SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
-		response.setAttribute(SpagoBIConstants.ROLE, role);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}
 
@@ -944,26 +830,21 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	 * map of the parameters. For objects executed by an internal engine,
 	 * instantiates the engine class and launches execution method.
 	 * 
-	 * @param obj
-	 *            The BIobject
+	 * @param instance
+	 *            The execution instance
 	 * @param subObj
 	 *            The SubObjectDetail subObject to be executed (in case it is
 	 *            not null)
 	 * @param response
 	 *            The response Source Bean
 	 */
-	private void execute(BIObject obj, SubObject subObj, String[] vpParameters,
+	private void execute(ExecutionInstance instance, SubObject subObj, String[] vpParameters,
 			SourceBean response) {
 		logger.debug("IN");
 
-		// identity string for object execution
-		UUIDGenerator uuidGen = UUIDGenerator.getInstance();
-		UUID uuid = uuidGen.generateTimeBasedUUID();
-		String executionId = uuid.toString();
-		executionId = executionId.replaceAll("-", "");
-
 		EMFErrorHandler errorHandler = getErrorHandler();
 
+		BIObject obj = instance.getBIObject();
 		// GET ENGINE ASSOCIATED TO THE BIOBJECT
 		Engine engine = obj.getEngine();
 
@@ -1003,23 +884,19 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		}
 
 		// GET USER PROFILE
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		IEngUserProfile profile = getUserProfile();
 
 		// IF USER CAN'T EXECUTE THE OBJECT RETURN
 		if (!canExecute(profile, obj))
 			return;
 
 		// GET THE EXECUTION ROLE FROM SESSION
-		String executionRole = (String) session
-				.getAttribute(SpagoBIConstants.ROLE);
+		String executionRole = instance.getExecutionRole();
 
 		// IF THE ENGINE IS EXTERNAL
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
 			try {
-				response.setAttribute("EXECUTION", "true");
-				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,
-						obj);
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageExecution");
 				// instance the driver class
 				String driverClassName = obj.getEngine().getDriverName();
 				IEngineDriver aEngineDriver = (IEngineDriver) Class.forName(
@@ -1034,7 +911,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 					mapPars = aEngineDriver.getParameterMap(obj, profile,
 							executionRole);
 
-				// adding or sobstituting parameters for viewpoint
+				// adding or substituting parameters for viewpoint
 				if (vpParameters != null) {
 					for (int i = 0; i < vpParameters.length; i++) {
 						String param = (String) vpParameters[i];
@@ -1049,8 +926,8 @@ public class ExecuteBIObjectModule extends AbstractModule {
 				}
 			
 				//GET DOC CONFIG FOR DOCUMENT COMPOSITION
-				if (session.getAttribute("docConfig") != null)
-						mapPars.put("docConfig", (DocumentCompositionConfiguration) session.getAttribute("docConfig"));
+				if (contextManager.get("docConfig") != null)
+						mapPars.put("docConfig", (DocumentCompositionConfiguration) contextManager.get("docConfig"));
 			
 				// set into the reponse the parameters map
 				response.setAttribute(ObjectsTreeConstants.REPORT_CALL_URL,
@@ -1058,9 +935,6 @@ public class ExecuteBIObjectModule extends AbstractModule {
 				if (subObj != null) {
 					response.setAttribute(SpagoBIConstants.SUBOBJECT, subObj);
 				}
-				// set into the reponse the execution and flow ids
-				response.setAttribute("spagobi_execution_id", executionId);
-				// response.setAttribute("FLOW_ID", flowId);
 
 			} catch (Exception e) {
 				logger.error("Error During object execution", e);
@@ -1223,101 +1097,21 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	 * @param response
 	 *            The response SourceBean
 	 */
-	private void execSnapshotHandler(SourceBean request, SourceBean response)
-			throws Exception {
+	private void execSnapshotHandler(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
-		// if single object modality, object is in request
-		BIObject obj = (BIObject) request.getAttribute(SpagoBIConstants.OBJECT);
-		if (obj == null) {
-			// normal execution: object is in session
-			obj = getBIObject();
-		}
-		SessionContainer sessionContainer = this.getRequestContainer().getSessionContainer();
-		IEngUserProfile profile = (IEngUserProfile) sessionContainer.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
-		if (!canSee) {
-			logger.error("Object with label = '" + obj.getLabel()
-					+ "' cannot be executed by the user!!");
-			Vector v = new Vector();
-			v.add(obj.getLabel());
-			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-					"1075", v, null));
-			return;
-		}
-		
-		String role = (String) sessionContainer.getAttribute(SpagoBIConstants.ROLE);
-		if (role == null) {
-			// define the variable for execution role
-			List correctRoles = null;
-			if (profile
-					.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
-					|| profile
-							.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
-					|| profile
-							.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
-				correctRoles = DAOFactory.getBIObjectDAO()
-						.getCorrectRolesForExecution(obj.getId(), profile);
-			else
-				correctRoles = DAOFactory.getBIObjectDAO()
-						.getCorrectRolesForExecution(obj.getId());
-			logger.debug("correct roles for execution retrived " + correctRoles);
-
-			if (role != null) {
-				// if the role is specified
-				if (!correctRoles.contains(role)) {
-
-					logger.warn("Role [" + role
-							+ "] is not a correct role for execution");
-					Vector v = new Vector();
-					v.add(role);
-					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-							1078, v, null));
-					return;
-				}
-			} else {
-				// if correct roles is more than one the user has to select one of
-				// them
-				// put in the response the right inforamtion for publisher in order
-				// to show page role selection
-				if (correctRoles.size() > 1) {
-					response.setAttribute("selectionRoleForExecution", "true");
-					response.setAttribute("roles", correctRoles);
-					response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId());
-					logger
-							.debug("more than one correct roles for execution, redirect to the"
-									+ " role selection page");
-					return;
-
-					// if there isn't correct role put in the error stack a new
-					// error
-				} else if (correctRoles.size() < 1) {
-
-					logger.warn("Object cannot be executed by no role of the user");
-					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
-							1006));
-					return;
-
-					// the list contains only one role which is the right role
-				} else {
-					role = (String) correctRoles.get(0);
-				}
-			}
-			logger.debug("using role " + role);
-
-			// NOW THE EXECUTION ROLE IS SELECTED
-			// put in session the execution role
-			session.setAttribute(SpagoBIConstants.ROLE, role);
-		}
-		// propagates the object and the snapshot
-		response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-		String snapIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
-		Snapshot snap = DAOFactory.getSnapshotDAO().loadSnapshot(new Integer(snapIdStr));
-		response.setAttribute(SpagoBIConstants.SNAPSHOT, snap);
+		Snapshot snapshot = getRequiredSnapshot(request);
+		executeSnapshot(snapshot, response);
+		logger.debug("OUT");
+	}
+	
+	private void executeSnapshot(Snapshot snapshot, SourceBean response) throws Exception {
+		logger.debug("IN");
+		response.setAttribute(SpagoBIConstants.SNAPSHOT, snapshot);
 		// set information for the publisher
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ViewSnapshotPubJ");
 		logger.debug("OUT");
 	}
-
+	
 	/**
 	 * Based on the object type lauch the right subobject execution mechanism.
 	 * For object executed by an external engine instances the driver for
@@ -1332,74 +1126,40 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	private void executionSubObjectHandler(SourceBean request,
 			SourceBean response) throws Exception {
 		logger.debug("IN");
+		SubObject subObj = getRequiredSubObject(request);
 		// get object from session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		// get id of the subobject
-		String subObjIdStr = (String) request
-				.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
-		Integer subObjId = new Integer(subObjIdStr);
-		ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
-		SubObject subObj = subdao.getSubObject(subObjId);
-		// load all the parameter value with an empty value
-		List biparams = obj.getBiObjectParameters();
-		Iterator iterParams = biparams.iterator();
-		while (iterParams.hasNext()) {
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			List values = biparam.getParameterValues();
-			if ((values == null) || (values.size() == 0)) {
-				ArrayList paramvalues = new ArrayList();
-				paramvalues.add("");
-				biparam.setParameterValues(paramvalues);
-			}
-		}
+		ExecutionInstance instance = getExecutionInstance();
+		instance.eraseParametersValues();
 		// execution
-		execute(obj, subObj, null, response);
+		execute(instance, subObj, null, response);
 		logger.debug("OUT");
 	}
 
 	/**
-	 * get object from session
+	 * get ExecutionInstance from session
+	 * @throws Exception 
 	 */
-	private BIObject getBIObject() {
-		return (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+	private ExecutionInstance getExecutionInstance() {
+		return contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	}
+
+	/**
+	 * get IEngUserProfile from session
+	 */
+	private IEngUserProfile getUserProfile() {
+		return (IEngUserProfile) this.permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	}
 
 	/**
 	 * set object in session
 	 */
-	private void setBIObject(BIObject obj) {
-		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+	private void setExecutionInstance(ExecutionInstance instance) {
+		contextManager.set(ExecutionInstance.class.getName(), instance);
 	}
 	
 	private boolean isMultivalueParameter(BIObjectParameter biparam) {
 		return (biparam.getParameterValues() != null && biparam
 				.getParameterValues().size() > 1);
-	}
-
-	private void refreshParameter(BIObjectParameter biparam, SourceBean request) {
-		logger.debug("IN");
-		String nameUrl = biparam.getParameterUrlName();
-		List paramAttrsList = request.getAttributeAsList(nameUrl);
-		ArrayList paramvalues = new ArrayList();
-		if (paramAttrsList.size() == 0)
-			return;
-		Iterator iterParAttr = paramAttrsList.iterator();
-		while (iterParAttr.hasNext()) {
-			String values = (String) iterParAttr.next();
-			String[] value = values.split(";");
-			for (int i = 0; i < value.length; i++) {
-				if (!value[i].trim().equalsIgnoreCase(""))
-					paramvalues.add(value[i]);
-			}
-
-		}
-		if (paramvalues.size() == 0)
-			biparam.setParameterValues(null);
-		else
-			biparam.setParameterValues(paramvalues);
-		logger.debug("OUT");
 	}
 
 	private Object getLookedUpObjId(SourceBean request) {
@@ -1428,13 +1188,15 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	 * @param request the request
 	 * 
 	 * @return the looked up parameter
+	 * @throws Exception 
 	 */
-	public BIObjectParameter getLookedUpParameter(SourceBean request) {
+	public BIObjectParameter getLookedUpParameter(SourceBean request) throws Exception {
 		logger.debug("IN");
 		BIObjectParameter lookedupBIParameter = null;
 
 		Integer objParId = getLookedUpParameterId(request);
-		Iterator iterParams = getBIObject().getBiObjectParameters().iterator();
+		BIObject obj = getExecutionInstance().getBIObject();
+		Iterator iterParams = obj.getBiObjectParameters().iterator();
 		while (iterParams.hasNext()) {
 			BIObjectParameter aBIParameter = (BIObjectParameter) iterParams
 					.next();
@@ -1448,28 +1210,6 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	}
 
 	/**
-	 * Checks if is single value.
-	 * 
-	 * @param biparam the biparam
-	 * 
-	 * @return true, if is single value
-	 */
-	public boolean isSingleValue(BIObjectParameter biparam) {
-		logger.debug("IN");
-		boolean isSingleValue = false;
-		try {
-			LovResultHandler lovResultHandler = new LovResultHandler(biparam
-					.getLovResult());
-			if (lovResultHandler.isSingleValue())
-				isSingleValue = true;
-		} catch (SourceBeanException e) {
-			logger.error("SourceBeanException", e);
-		}
-		logger.debug("OUT");
-		return isSingleValue;
-	}
-
-	/**
 	 * Handles the final execution of the object
 	 * 
 	 * @param request
@@ -1480,46 +1220,22 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	private void executionHandler(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		BIObject obj = getBIObject();
-
-		// refresh parameter values
-		List biparams = obj.getBiObjectParameters();
-		Iterator iterParams = biparams.iterator();
-		HashMap paramsDescriptionMap = (HashMap) session.getAttribute("PARAMS_DESCRIPTION_MAP");
-		while (iterParams.hasNext()) {
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-
-			String pendingDelete = (String) request
-					.getAttribute("PENDING_DELETE");
-			if (pendingDelete != null && !pendingDelete.trim().equals("")) {
-				if (isSingleValue(biparam))
-					continue;
-				biparam.setParameterValues(null);
+		ExecutionInstance instance = getExecutionInstance();
+		instance.refreshParametersValues(request, false);
+		
+		String pendingDelete = (String) request.getAttribute("PENDING_DELETE");
+		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
+		if (pendingDelete != null && !pendingDelete.trim().equals("")) {
+			BIObject object = instance.getBIObject();
+			List biparams = object.getBiObjectParameters();
+			Iterator iterParams = biparams.iterator();
+			while (iterParams.hasNext()) {
+				BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
 				if (paramsDescriptionMap.get(biparam.getParameterUrlName()) != null)
 					paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
-			} else {
-				refreshParameter(biparam, request);
-//				String isChanged = (String) request.getAttribute(biparam
-//						.getParameterUrlName()
-//						+ "IsChanged");
-//				if (isChanged != null && isChanged.equalsIgnoreCase("true")) {
-					// refresh also the description
-//					List values = biparam.getParameterValues();
-//					String desc = "";
-//					if (values != null) {
-//						for (int i = 0; i < values.size(); i++) {
-//							desc += (i == 0 ? "" : ";")
-//									+ values.get(i).toString();
-//						}
-//					}
-//					paramsDescriptionMap.put(biparam.getParameterUrlName(),
-//							desc);
-//				}
 			}
-
-//			session.setAttribute("PARAMS_DESCRIPTION_MAP", paramsDescriptionMap);
 		}
-
+		
 		// it is a lookup call
 		Object lookupObjParId = request.getAttribute("LOOKUP_OBJ_PAR_ID");
 		if (isLookupCall(request)) {
@@ -1567,26 +1283,17 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			return;
 		}
 
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-		.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		controlInputParameters(biparams, profile, role);
+		// check parameters values 
+		List errors = instance.getParametersErrors();
+		// add errors into error handler
+		Iterator errorsIt = errors.iterator();
+		while (errorsIt.hasNext()) {
+			errorHandler.addError((EMFUserError) errorsIt.next());
+		}
 
 		if (isRefreshCorrelationCall(request)) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
-//			// get the list of the subObjects
-//			List subObjects = getSubObjectsList(obj, profile);
-//			// put in response the list of subobject names
-//			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-//			// get the list of biobject snapshot
-//			List snapshots = getSnapshotList(obj);
-//			// put in response the list of snapshot
-//			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-//			// get the list of viewpoint
-//			List viewpoints = getViewpointList(obj);
-//			// put in response the list of viewpoint
-//			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 
 			return;
 		}
@@ -1596,81 +1303,16 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
-//			// get the list of the subObjects
-//			List subObjects = getSubObjectsList(obj, profile);
-//			// put in response the list of subobject names
-//			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-//			// get the list of biobject snapshot
-//			List snapshots = getSnapshotList(obj);
-//			// put in response the list of snapshot
-//			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-//			// get the list of viewpoint
-//			List viewpoints = getViewpointList(obj);
-//			// put in response the list of viewpoints
-//			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 
 			return;
 		}
 		// call the execution method
-		execute(obj, null, null, response);
-		logger.debug("OUT");
-	}
-
-	private void controlInputParameters(List biparams, IEngUserProfile profile,
-			String role) throws Exception {
-		logger.debug("IN");
-		if (biparams == null || biparams.size() == 0)
-			return;
-		Iterator iterParams = biparams.iterator();
-		while (iterParams.hasNext()) {
-			// get biparameter
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			// get lov
-			ModalitiesValue lov = biparam.getParameter().getModalityValue();
-			if (lov.getITypeCd().equals("MAN_IN")) {
-				continue;
-			}
-			String parameterValuesDescription = "";
-			// get the lov provider detail
-			String lovProvider = lov.getLovProvider();
-			ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProvider);
-			// get lov result
-			String lovResult = biparam.getLovResult();
-			// get lov result handler
-			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-			List values = biparam.getParameterValues();
-			if (values != null && values.size()>0) {
-				for (int i = 0; i < values.size(); i++) {
-					String value = values.get(i).toString();
-					if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
-							.getValueColumnName())) {
-						biparam.setHasValidValues(false);
-						logger.warn("Parameter '" + biparam.getLabel()
-								+ "' cannot assume value '" + value + "'"
-								+ " for user '"
-								+ profile.getUserUniqueIdentifier().toString()
-								+ "' with role '" + role + "'.");
-						List l = new ArrayList();
-						l.add(biparam.getLabel());
-						l.add(value);
-						EMFUserError userError = new EMFUserError(
-								EMFErrorSeverity.ERROR, 1077, l);
-						errorHandler.addError(userError);
-					} else {
-						biparam.setHasValidValues(true);
-						parameterValuesDescription += lovResultHandler.getValueDescription(value, 
-								lovProvDet.getValueColumnName(), lovProvDet.getDescriptionColumnName());
-						if (i < values.size() - 1) parameterValuesDescription += "; ";
-					}
-				}
-			}
-			biparam.setParameterValuesDescription(parameterValuesDescription);
-		}
+		execute(instance, null, null, response);
 		logger.debug("OUT");
 	}
 
 	/**
-	 * Get the list ofviewpoints
+	 * Get the list of viewpoints
 	 * 
 	 * @param obj
 	 *            BIObject container of the viewpoint
@@ -1681,8 +1323,7 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		List viewpoints = new ArrayList();
 		try {
 			IViewpointDAO biVPDAO = DAOFactory.getViewpointDAO();
-			IEngUserProfile profile = (IEngUserProfile) permanentSession
-					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			IEngUserProfile profile = getUserProfile();
 			viewpoints = biVPDAO.loadAccessibleViewpointsByObjId(obj.getId(), profile);
 		} catch (Exception e) {
 			logger.error("Error retriving the viewpoint list", e);
@@ -1703,40 +1344,23 @@ public class ExecuteBIObjectModule extends AbstractModule {
 	public void saveViewPoint(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		BIObject obj = getBIObject();
-		// get from the session the execution role
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+		ExecutionInstance instance = getExecutionInstance();
 		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
+		IEngUserProfile profile = getUserProfile();
 		String nameVP = (String) request.getAttribute("tmp_nameVP");
 		String descVP = (String) request.getAttribute("tmp_descVP");
 		String scopeVP = (String) request.getAttribute("tmp_scopeVP");
 		String ownerVP = (String) profile.getUserUniqueIdentifier();
-		String contentVP = "";
-
-		// gets parameter's values and creates a string of values
-		List parameters = obj.getBiObjectParameters();
-		// Map paramsDescriptionMap = new HashMap();
-		Iterator iterParams = parameters.iterator();
-		while (iterParams.hasNext()) {
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			
-			String labelUrl = biparam.getParameterUrlName();
-			String value = (request.getAttribute(labelUrl) == null) ? ""
-					: (String) request.getAttribute(labelUrl);
-			// defines the string of parameters to save into db
-			contentVP = contentVP + labelUrl + "%3D" + value + "%26";
-			List paramValues = getAsList(value);
-			biparam.setParameterValues(paramValues);
-		}
 		
-		controlInputParameters(obj.getBiObjectParameters(), profile,
-				role);
+
+		instance.refreshParametersValues(request, false);
+		// check parameters values 
+		List errors = instance.getParametersErrors();
+		// add errors into error handler
+		Iterator errorsIt = errors.iterator();
+		while (errorsIt.hasNext()) {
+			errorHandler.addError((EMFUserError) errorsIt.next());
+		}
 		// if there are some errors into the errorHandler does not save the viewpoint
 		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
@@ -1744,6 +1368,19 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			return;
 		}
 		
+		BIObject obj = instance.getBIObject();
+		// gets parameter's values and creates a string of values
+		List parameters = obj.getBiObjectParameters();
+		Iterator iterParams = parameters.iterator();
+		String contentVP = "";
+		while (iterParams.hasNext()) {
+			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			String value = biparam.getParameterValuesAsString();
+			if (value == null) value = "";
+			String labelUrl = biparam.getParameterUrlName();
+			// defines the string of parameters to save into db
+			contentVP = contentVP + labelUrl + "%3D" + value + "%26";
+		}
 		if (contentVP != null && contentVP.endsWith("%26")) {
 			contentVP = contentVP.substring(0, contentVP.length() - 3);
 		}
@@ -1754,20 +1391,9 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		if (tmpVP != null) {
 			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
 					6002, null));
-			// put in session the new object
-			session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 			// set into the response the right information for loopback
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
-			response.setAttribute(SpagoBIConstants.ROLE, role);
-			// put in response the list of subobject names
-			response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-			// put in response the list of snapshot
-			response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-			// get the list of viewpoint
-			List viewpoints = getViewpointList(obj);
-			// put in response the list of viewpoint
-			response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 			logger.debug("OUT");
 			return;
 		}
@@ -1782,20 +1408,8 @@ public class ExecuteBIObjectModule extends AbstractModule {
 		biViewpointDAO.insertViewpoint(aViewpoint);
 
 		// set data in response
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-				"ExecuteBIObjectPageParameter");
-		response.setAttribute(SpagoBIConstants.ROLE, role);
-		// put in session the new object
-		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 
-		// put in response the list of subobject names
-		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-		// put in response the list of snapshot
-		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-		// get the list of viewpoint
-		List viewpoints = getViewpointList(obj);
-		// put in response the list of viewpoint
-		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
 		logger.debug("OUT");
 		return;
 	}
@@ -1812,20 +1426,9 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			throws EMFUserError, SourceBeanException {
 		logger.debug("IN");
 		String id = (String) request.getAttribute("vpId");
-
 		IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();
 		VPDAO.eraseViewpoint(new Integer(id));
-		// get object from session
-		BIObject obj = (BIObject) session
-				.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-		// get from the session the execution role
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		// set data in response
-		response.setAttribute(ObjectsTreeConstants.OBJECT_ID, obj.getId()
-				.toString());
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-				SpagoBIConstants.PUBLISHER_LOOPBACK_AFTER_DEL_SUBOBJECT);
-		response.setAttribute(SpagoBIConstants.ROLE, role);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}
 
@@ -1841,39 +1444,28 @@ public class ExecuteBIObjectModule extends AbstractModule {
 			throws Exception {
 		logger.debug("IN");
 		// get object from session
-		BIObject obj = getBIObject();
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
+		ExecutionInstance instance = getExecutionInstance();
 		// built the url for the content recovering
 		String content = (request.getAttribute("content") == null) ? ""
 				: (String) request.getAttribute("content");
 		content = content.replace("%26", "&");
 		content = content.replace("%3D", "=");
-		obj = execContr.prepareBIObjectInSession(session, obj.getId(), role,
-				content);
-		
-		// load the object into the Execution controller
-		ExecutionController controller = new ExecutionController();
-		controller.setBiObject(obj);
-		
-		// if the object can be directly executed (because it hasn't any
-		// parameter to be
-		// filled by the user) then execute it directly without pass through
-		// parameters page
-		if (controller.directExecution()) {
-			// get the current user profile
-			IEngUserProfile profile = (IEngUserProfile) permanentSession
-					.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			controlInputParameters(obj.getBiObjectParameters(), profile, role);
-			// if there are some errors into the errorHandler does not execute
-			// the BIObject
-			if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-						"ExecuteBIObjectPageParameter");
-				return;
-			}
-			execute(obj, null, null, response);
-			response.setAttribute("NO_PARAMETERS", "TRUE");
+		// get the current user profile
+		instance.setParameterValues(content, false);
+		// check parameters values 
+		List errors = instance.getParametersErrors();
+		// add errors into error handler
+		Iterator errorsIt = errors.iterator();
+		while (errorsIt.hasNext()) {
+			errorHandler.addError((EMFUserError) errorsIt.next());
 		}
+		// if there are some errors into the errorHandler does not execute the BIObject
+		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
+					"ExecuteBIObjectPageParameter");
+			return;
+		}
+		execute(instance, null, null, response);
 		logger.debug("OUT");
 	}
 
@@ -1892,65 +1484,35 @@ public class ExecuteBIObjectModule extends AbstractModule {
 
 		IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();
 		Viewpoint vp = VPDAO.loadViewpointByID(new Integer(id));
-
-		BIObject obj = getBIObject();
-		// get from the session the execution role
-		String role = (String) session.getAttribute(SpagoBIConstants.ROLE);
-		// get the current user profile
-		IEngUserProfile profile = (IEngUserProfile) permanentSession
-				.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-
+		ExecutionInstance instance = getExecutionInstance();
+		BIObject obj = instance.getBIObject();
 		// gets parameter's values and creates a string of values
 		List parameters = obj.getBiObjectParameters();
 		Iterator iterParams = parameters.iterator();
 
-		String[] vpParameters = vp.getVpValueParams().split("%26");
+		String allParametersValues = vp.getVpValueParams();
+		allParametersValues = allParametersValues.replace("%26", "&");
+		allParametersValues = allParametersValues.replace("%3D", "=");
+		
+		instance.setParameterValues(allParametersValues, false);
+		// check parameters values 
+		List errors = instance.getParametersErrors();
+		// add errors into error handler
+		Iterator errorsIt = errors.iterator();
+		while (errorsIt.hasNext()) {
+			errorHandler.addError((EMFUserError) errorsIt.next());
+		}
+		
+		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
 			String labelUrl = biparam.getParameterUrlName();
-			String value = "";
-			for (int i = 0; i < vpParameters.length; i++) {
-				if ((vpParameters[i]).substring(0,
-						vpParameters[i].indexOf("%3D")).equalsIgnoreCase(
-						labelUrl)) {
-					value = vpParameters[i].substring(vpParameters[i]
-							.indexOf("%3D") + 3);
-					List paramValues = getAsList(value);
-					biparam.setParameterValues(paramValues);
-					// refresh also the description
-					HashMap paramsDescriptionMap = (HashMap) session
-							.getAttribute("PARAMS_DESCRIPTION_MAP");
-					paramsDescriptionMap.put(labelUrl, value);
-					session.setAttribute("PARAMS_DESCRIPTION_MAP",
-							paramsDescriptionMap);
-
-					break;
-				}
-			}
+			String descr = biparam.getParameterValuesDescription();
+			paramsDescriptionMap.put(labelUrl, descr);
 		}
-		controlInputParameters(parameters, profile, role);
 		
-		// put in session the new object
-		session.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-
-		// get the list of the subObjects
-		List subObjects = getSubObjectsList(obj, profile);
-		// put in response the list of subobject names
-		response.setAttribute(SpagoBIConstants.SUBOBJECT_LIST, subObjects);
-		// get the list of biobject snapshot
-		List snapshots = getSnapshotList(obj);
-		// put in response the list of snapshot
-		response.setAttribute(SpagoBIConstants.SNAPSHOT_LIST, snapshots);
-		// get the list of viewpoint
-		List viewpoints = getViewpointList(obj);
-		// put in response the list of viewpoint
-		response.setAttribute(SpagoBIConstants.VIEWPOINT_LIST, viewpoints);
-		// set into the response the right information for loopback
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-				"ExecuteBIObjectPageParameter");
-		response.setAttribute(SpagoBIConstants.ROLE, role);
+		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 		return;
-
 	}
 }

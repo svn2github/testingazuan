@@ -129,7 +129,7 @@ function execCrossNavigation(windowName, label, parameters) {
 											}
 										}
 										else{
-										 	paramsOldValues = tmpUrl.split("&amp;");
+										 	paramsOldValues = tmpUrl.split("&");
 											if (paramsOldValues != null && paramsOldValues.length > 0) {
 												for (k = 0; k < paramsOldValues.length; k++) {
 													//gets old value of parameter:
@@ -208,19 +208,33 @@ Ext.onReady(function() {
 		        collapsible:true,
 		       // width: widthPx,
 		        height:Number(heightPx),
+		        bodyCfg: {
+					tag:'div',
+					cls:'x-panel-body',
+					children:[{
+						tag:'iframe',
+	      				src: asUrls[docLabel],
+	      				frameBorder:0,
+	      				width:'100%',
+	      				height:'100%',
+	      				id: 'iframe_' + strDocLabel,
+	      				name: 'iframe_' + strDocLabel,
+	      				style: {overflow:'auto'}  
+	 				}]
+				},
 		        renderTo: 'divIframe_'+ strDocLabel
 			    });
 				
 			    p.show(this);
-				p.load({
-				   url:urlIframe,
-				    params: {urlDoc:asUrls[docLabel], nameDoc: strDocLabel},
-				    discardUrl: false,
-				    nocache: false,
-				    text: "Loading ...",
-				    timeout: 30,
-				    scripts: true
-				});   
+				//p.load({
+				//   url:urlIframe,
+				//    params: {urlDoc:asUrls[docLabel], nameDoc: strDocLabel},
+				//    discardUrl: false,
+				//    nocache: false,
+				//    text: "Loading ...",
+				//    timeout: 30,
+				//    scripts: true
+				//});   
   			}
   	}
 }); 

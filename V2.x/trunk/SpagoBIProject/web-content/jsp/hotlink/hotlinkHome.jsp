@@ -32,6 +32,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
@@ -94,10 +96,10 @@ Ext.onReady(function(){
 		while (rememberMeListIt.hasNext()) {
 			RememberMe rm = (RememberMe) rememberMeListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", rm.getObjId().toString());
-			params.put("PARAMETERS", rm.getParameters() != null ? rm.getParameters() : "");
+			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put(ObjectsTreeConstants.OBJECT_ID, rm.getObjId().toString());
+			params.put(ObjectsTreeConstants.PARAMETERS, rm.getParameters() != null ? rm.getParameters() : "");
+			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = rm.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
@@ -242,10 +244,10 @@ Ext.onReady(function(){
 		while (mostPopularListIt.hasNext()) {
 			HotLink hotlink = (HotLink) mostPopularListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);
@@ -315,10 +317,10 @@ Ext.onReady(function(){
 		while (myRecentlyUsedListIt.hasNext()) {
 			HotLink hotlink = (HotLink) myRecentlyUsedListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", "HOT_LINK_PAGE");
-			params.put("OPERATION", "EXECUTE");
-			params.put("DOC_ID", hotlink.getObjId().toString());
-			params.put("PARAMETERS", hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
 				params.put(SpagoBIConstants.SUBOBJECT_NAME, subObjName);

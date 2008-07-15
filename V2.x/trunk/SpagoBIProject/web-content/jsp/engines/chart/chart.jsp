@@ -41,49 +41,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
-
-	<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
+<%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
+<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+<%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 
 
 <%
-	BIObject objO=null;
-	String uuidO="";
 	boolean docComposition=false;
-	String executionFlowIdO="";
-
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-   	String execContext = (String)sbModuleResponse.getAttribute(SpagoBIConstants.EXECUTION_CONTEXT);
-   	
+	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	String execContext = instanceO.getExecutionModality();
    	// if in document composition case do not include header.jsp
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 				<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-		<%	
-					objO=obj;
-					uuidO=uuid;
-					executionFlowIdO=executionFlowId;
+				<%
 			   }
    		else // in document composition case doesn't call header so set Object and uuid
 			   {
 	   				docComposition=true;
-				   UUIDGenerator uuidGenO  = UUIDGenerator.getInstance();
-				   UUID uuidObjO = uuidGenO.generateTimeBasedUUID();
-				   uuidO = uuidObjO.toString();
-				   uuidO = uuidO.replaceAll("-", "");
-	   			   objO = (BIObject) sbModuleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
-	   			executionFlowIdO = (String) aSessionContainer.getAttribute("EXECUTION_FLOW_ID");
-	   			if (executionFlowIdO != null) aSessionContainer.delAttribute("EXECUTION_FLOW_ID");
-	   			else executionFlowIdO = uuidO;
 			   }
-   		%>
+   	
+	BIObject objO = instanceO.getBIObject();
+	String uuidO=instanceO.getExecutionId();
+	String executionFlowIdO=instanceO.getFlowId();
+   	%>
 
 
-		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
-<%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
+
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
-	<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+	
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
   
@@ -268,7 +258,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			
 		if(sbiMode.equalsIgnoreCase("WEB") || docComposition==true){
-		   	refreshUrl=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_RUN&OBJECT_ID="+documentid;
+		   	Map pars = new HashMap();
+		   	pars.put("PAGE", "ExecuteBIObjectPage");
+		   	pars.put("MESSAGEDET", "EXEC_PHASE_RUN");
+		   	refreshUrl = urlBuilder.getUrl(request, pars);
 			}
 			else{
 				if(urlBuilder instanceof PortletUrlBuilder){
@@ -341,7 +334,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		limitSeries=true;
 		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
 		{
-		refreshUrlSerie=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl();
 		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
 		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
 		refreshUrlPars.put("OBJECT_ID",documentid);
@@ -360,7 +352,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div>	
 	
-		<form name="serie" action="<%=refreshUrlSerie%>" method="GET" >	
+		<form name="serie" action="<%=refreshUrl%>" method="POST" >	
 	<% 	
 		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
@@ -516,7 +508,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				  		 </div>
 					</td>
 					<td align="left">
-	    				<form  name="<%=par%>" action="<%=refreshUrl%>" method="GET" >
+	    				<form  name="<%=par%>" action="<%=refreshUrl%>" method="POST" >
 	    		  		<%if(sbi.getChangeViewParameter(par)){ %>
 	    		  			<input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
  				  			<input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  

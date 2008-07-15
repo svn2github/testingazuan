@@ -22,14 +22,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
-<%@page import="org.safehaus.uuid.UUID"%>
-<%@page import="org.safehaus.uuid.UUIDGenerator"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
 <script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
@@ -41,27 +40,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
 
 <%
-// get module response
-BIObject obj = (BIObject) aSessionContainer.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+BIObject obj = instance.getBIObject();
 Map executeUrlPars = new HashMap();
 executeUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
 executeUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
 executeUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 String execUrl = urlBuilder.getUrl(request, executeUrlPars);
 // identity string for object of the page
-UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-UUID uuidObj = uuidGen.generateTimeBasedUUID();
-String uuid = uuidObj.toString();
-uuid = uuid.replaceAll("-", "");
+String uuid = instance.getExecutionId();
 
 String title = obj.getName();
 
 //execution role
-String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
+String executionRole = instance.getExecutionRole();
 Role executionRoleObj = DAOFactory.getRoleDAO().loadByName(executionRole);
 
 // execution modality
-String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
+String modality = instance.getExecutionModality();
 if (modality == null) modality = "NORMAL_EXECUTION";
 
 %>

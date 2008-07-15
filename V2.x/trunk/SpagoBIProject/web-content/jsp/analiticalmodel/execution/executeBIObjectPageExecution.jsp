@@ -20,13 +20,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
 <%
-// tries to get from the session the heigh of the output area
-String heightArea = (String) aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
+ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+String modalityO = instanceO.getExecutionModality();
+if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
+	SourceBean moduleResponseO = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	Map documentParametersMap = (Map) moduleResponseO.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
+	Map executionParameters = new HashMap();
+	if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
+	executionParameters.put(SpagoBIConstants.SBICONTEXTURL, GeneralUtilities.getSpagoBiContextAddress());
+	executionParameters.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, GeneralUtilities.getBackEndSpagoBiContextAddress());
+	executionParameters.put("SBI_EXECUTION_ID", instanceO.getExecutionId());
+	executionParameters.put("EXECUTION_CONTEXT", "DOCUMENT_COMPOSITION");
+	// Auditing
+	AuditManager auditManager = AuditManager.getInstance();
+	Integer executionAuditId = auditManager.insertAudit(instanceO.getBIObject(), null, userProfile, instanceO.getExecutionRole(), instanceO.getExecutionModality());
+	// adding parameters for AUDIT updating
+	if (executionAuditId != null) {
+		executionParameters.put(AuditManager.AUDIT_ID, executionAuditId.toString());
+	}
+	String redirectURL = getUrl(instanceO.getBIObject().getEngine().getUrl(), executionParameters);
+	response.sendRedirect(redirectURL);
+} else {
+%>
+<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%
+// tries to get the heigh of the output area
+String heightArea = ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT_AREA", "");
 String heightStr = "";
 if (heightArea == null || heightArea.trim().equals("")) {
 %>
@@ -203,5 +225,6 @@ Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
 <%} %>
 <%-- end refresh Scripts --%>
 
+<% } %>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

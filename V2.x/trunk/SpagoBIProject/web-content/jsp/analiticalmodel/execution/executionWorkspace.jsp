@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
 <script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
@@ -28,10 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
-<%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="java.io.File"%>
-<%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.UrlUtilities"%>
 <%@page import="it.eng.spago.base.SessionContainer"%>
@@ -179,9 +178,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<%
 		} else {
-			
-			ExecutionManager executionManager = ExecutionManager.getInstance();
-			ExecutionManager.ExecutionInstance instance = executionManager.getLastExecutionInstance(requestIdentity);
+			ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
+			ExecutionInstance instance = executionManager.getLastExecutionInstance(requestIdentity);
 			boolean isRefreshRequest = false;
 			if (instance != null) {
 				isRefreshRequest = true;

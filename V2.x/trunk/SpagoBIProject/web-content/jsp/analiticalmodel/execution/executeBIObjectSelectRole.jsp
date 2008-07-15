@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spagobi.commons.constants.ObjectsTreeConstants,
                  it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule,
                  it.eng.spagobi.commons.constants.AdmintoolsConstants,
-                 it.eng.spagobi.commons.constants.SpagoBIConstants,
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 <%@page import="org.safehaus.uuid.UUID"%>
@@ -40,7 +39,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
-<% 
+<%
+
 	// identity string for object of the page
 	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	UUID uuid = uuidGen.generateTimeBasedUUID();
@@ -49,7 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     // get module response
     SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ExecuteBIObjectModule"); 
     // get the list of possible role
-    List roles = (List)moduleResponse.getAttribute("roles");
+    List roles = (List) moduleResponse.getAttribute("roles");
     Iterator iterroles = roles.iterator();
     // get the path of the object
 	Integer id = (Integer) moduleResponse.getAttribute(ObjectsTreeConstants.OBJECT_ID);
@@ -61,15 +61,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    	formActPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formAct = urlBuilder.getUrl(request, formActPars);
     
-    String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY); 
-    
-    String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
-    String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id");
-    
+
 %>
 
 
 <form action="<%= formAct.toString() %>" method="post" id='execRolesForm<%=requestIdentity%>' name='execRolesForm'>
+
+	<%-- start propagating variables --%>
+	<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
+	<%
+	String userProvidedParametersStr = (String) request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+	String modality = (String) aServiceRequest.getAttribute(SpagoBIConstants.MODALITY);
+    String flowId = (String) aServiceRequest.getAttribute("EXECUTION_FLOW_ID");
+    String ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS);
+	if (flowId != null) {
+		%>
+		<input type="hidden" name="EXECUTION_FLOW_ID" value="<%= flowId %>" />
+		<%
+	}
+	if (modality != null) {
+		%>
+		<input type="hidden" name="<%= SpagoBIConstants.MODALITY %>" value="<%= modality %>" />
+		<%
+	}
+	if (userProvidedParametersStr != null) {
+		%>
+		<input type="hidden" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="<%= userProvidedParametersStr %>" />
+		<%
+	}
+	if (ignoreSubNodesStr != null) {
+		%>
+		<input type="hidden" name="<%= SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS %>" value="<%= ignoreSubNodesStr %>" />
+		<%
+	}
+	%>
+	<%-- end propagating variables --%>
 
 
 <table class='header-table-portlet-section'>		
@@ -112,17 +138,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_background_no_img' >
 
-		<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
-		<%
-		if (executionId != null && flowId != null) {
-			%>
-			<input type="hidden" name="spagobi_execution_id" value="<%= executionId %>" />
-			<input type="hidden" name="spagobi_flow_id" value="<%= flowId %>" />
-			<%
-		}
-		%>
-		
-		
  	<div class="div_detail_area_forms">
 	 	<div class='div_detail_label'>
 	 		<span class='portlet-form-field-label'>
@@ -130,7 +145,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 		</span>
 	 	</div>
 	 	<div class='div_detail_form'> 
-	 	    <select class='portlet-form-field' name="role"  style="width:200px;">
+	 	    <select class='portlet-form-field' name="<%= SpagoBIConstants.ROLE %>"  style="width:200px;">
 	 	    <% 
 	 	       while(iterroles.hasNext()) {
 	 	       	String role = (String)iterroles.next(); 

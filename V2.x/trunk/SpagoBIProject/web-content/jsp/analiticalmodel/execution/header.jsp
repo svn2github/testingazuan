@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.Role"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager.ExecutionInstance"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.handlers.BIObjectNotesManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
@@ -49,26 +49,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
 
 <%!
-String getUrl(String baseUrl, Map mapPars) {
-	StringBuffer buffer = new StringBuffer();
-    buffer.append(baseUrl);
-    buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
-	if (mapPars != null && !mapPars.isEmpty()) {
-		java.util.Set keys = mapPars.keySet();
-		Iterator iterKeys = keys.iterator();
-		while (iterKeys.hasNext()) {
-		  	String key = iterKeys.next().toString();
-		  	String value = mapPars.get(key).toString();
-		  	buffer.append(key + "=" + value);
-		  	if (iterKeys.hasNext()) {
-		  		buffer.append("&");
-		  	}
-		}
-	}
-	System.out.println("buffer.toString()."+buffer.toString());
-	return buffer.toString();
-}
-
 boolean areAllParametersTransient(List parametersList) {
 	boolean toReturn = true;
 	if (parametersList != null && parametersList.size() > 0) {
@@ -126,13 +106,16 @@ Role getVirtualRole(IEngUserProfile profile, BIObject obj, String baseRoleName) 
 %>
 
 <%
-// get module response, biobejct, subobject, parameters map
-SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
-BIObject obj = (BIObject) moduleResponse.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+//identity string for object of the page
+ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+String uuid = instance.getExecutionId();
+
+BIObject obj = instance.getBIObject();
 BIObjectNotesManager objectNManager = new BIObjectNotesManager();
 String execIdentifier = objectNManager.getExecutionIdentifier(obj);
 
-
+//get module response, subobject, parameters map
+SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 SubObject subObj = (SubObject) moduleResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
 boolean isExecutingSubObject = subObj != null;
 Snapshot snapshot = (Snapshot) moduleResponse.getAttribute(SpagoBIConstants.SNAPSHOT);
@@ -146,13 +129,13 @@ if (documentParametersMap != null) executionParameters.putAll(documentParameters
 executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
 executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
 executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+executionParameters.put("SBI_EXECUTION_ID", instance.getExecutionId());
 // Auditing
 AuditManager auditManager = AuditManager.getInstance();
-String modality = (String) aSessionContainer.getAttribute(SpagoBIConstants.MODALITY);
-if (modality == null) modality = "NORMAL_EXECUTION";
+String modality = instance.getExecutionModality();
 
 // execution role
-String executionRole = (String)aSessionContainer.getAttribute(SpagoBIConstants.ROLE);
+String executionRole = instance.getExecutionRole();
 Role virtualRole = getVirtualRole(userProfile, obj, executionRole);
 
 Integer executionAuditId = auditManager.insertAudit(obj, subObj, userProfile, executionRole, modality);
@@ -166,11 +149,9 @@ executeUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
 executeUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
 executeUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 String execUrl = urlBuilder.getUrl(request, executeUrlPars);
-// identity string for object of the page
-UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-UUID uuidObj = uuidGen.generateTimeBasedUUID();
-String uuid = uuidObj.toString();
-uuid = uuid.replaceAll("-", "");
+
+
+
 // the toolbar (slider + buttons) visibility is determined by preferences
 boolean toolbarIsVisible = Boolean.parseBoolean(ChannelUtilities.getPreferenceValue(aRequestContainer, "TOOLBAR_VISIBLE", "TRUE"));
 // if the modality is SINGLE_OBJECT and there are no parameters or ALL parameters are transient, the slider for parameters, viewpoints, subobjects and snapshots is not displayed
@@ -180,29 +161,25 @@ boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJ
 
 <div class='execution-page-title'>
 	<%
-	ExecutionManager executionManager = (ExecutionManager) aSessionContainer.getAttribute(ObjectsTreeConstants.EXECUTION_MANAGER);
-	String executionFlowId = (String) aSessionContainer.getAttribute("EXECUTION_FLOW_ID");
-	if (executionFlowId != null) aSessionContainer.delAttribute("EXECUTION_FLOW_ID");
-	else executionFlowId = uuid;
+	ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
+	String executionFlowId = instance.getFlowId();
 	if (!executionFlowId.equals(uuid) && executionManager != null) {
 		List list = executionManager.getBIObjectsExecutionFlow(executionFlowId);
 		for (int i = 0; i < list.size(); i++) {
-			ExecutionManager.ExecutionInstance instance = (ExecutionManager.ExecutionInstance) list.get(i);
-			BIObject aBIObject = instance.getBIObject();
+			ExecutionInstance anInstance = (ExecutionInstance) list.get(i);
+			BIObject aBIObject = anInstance.getBIObject();
 			Map recoverExecutionParams = new HashMap();
 			recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 			recoverExecutionParams.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION);
-			recoverExecutionParams.put("EXECUTION_FLOW_ID", instance.getFlowId());
-			recoverExecutionParams.put("EXECUTION_ID", instance.getExecutionId());
+			recoverExecutionParams.put("EXECUTION_FLOW_ID", anInstance.getFlowId());
+			recoverExecutionParams.put("EXECUTION_ID", anInstance.getExecutionId());
 			recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 			String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
 			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&gt;<%
 		}
 	}
 	%>
-	<%if(toolbarIsVisible){%>
 	<%= title %>
-		<%}%>
 </div>
 
 <%
@@ -225,7 +202,6 @@ if (toolbarIsVisible) {
 				<% if (!modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY)) { %>
 			    <li>
 			    	<%
-			    	 if(!sbiMode.equals("WEB")){
 			    	Map backUrlPars = new HashMap();
 			    	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 			    	%>
@@ -235,7 +211,7 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 					</a>
 			    </li>
-			    <% } 
+			    <%
 				}
 			    %>
 			    <% if (!isExecutingSnapshot) { 

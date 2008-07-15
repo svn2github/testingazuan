@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,28 +16,15 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
    
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
 <%@page import="java.util.HashMap"%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-
-<%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
-<% logger.debug("IN");
-	//gets urls & co of documents
-	HashMap lstUrl = (HashMap)aSessionContainer.getAttribute("docUrls");
-	HashMap lstUrlParams = (HashMap)aSessionContainer.getAttribute("docUrlParams");
-	HashMap lstDocLinked = (HashMap)aSessionContainer.getAttribute("docLinked");
-	HashMap lstFieldLinked = (HashMap)aSessionContainer.getAttribute("fieldLinked");
-	HashMap lstStyle = (HashMap)aSessionContainer.getAttribute("divStyle");
-	HashMap lstStylePanel = (HashMap)aSessionContainer.getAttribute("panelStyle");
-	String executionId = (String) aServiceRequest.getAttribute("spagobi_execution_id");
-	String flowId = (String) aServiceRequest.getAttribute("spagobi_flow_id"); 
-	    
-    String urlIframe = (String)aSessionContainer.getAttribute("urlIframe");
+<% 
+	logger.debug("IN");
+    String urlIframe = GeneralUtilities.getSpagoBiContextAddress()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp";
 	logger.debug("urlIframe: " + urlIframe);
 	String compositeJSDocumentUrl=urlBuilder.getResourceLink(request, "/js/documentcomposition/documentcomposition.js");
 %> 

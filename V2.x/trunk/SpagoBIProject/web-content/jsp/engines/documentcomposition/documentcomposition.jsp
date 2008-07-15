@@ -1,5 +1,4 @@
-
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -17,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 <%@ page import="it.eng.spagobi.engines.documentcomposition.utils.DocumentCompositionUtils,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document,
@@ -35,13 +34,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
-         
-<%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
+<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
 
+<%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
 
 <%  logger.debug("IN");
 	EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();
-	Collection errors = errorHandler.getErrors();
 
    	//acquisizione info come template a cui girare la richiesta
     String nameTemplate = "";
@@ -49,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     //get object configuration
     DocumentCompositionConfiguration docConfig = null;
-    docConfig = (DocumentCompositionConfiguration)aSessionContainer.getAttribute("docConfig");
+    docConfig = (DocumentCompositionConfiguration)contextManager.get("docConfig");
      
     //get template file
     nameTemplate = docConfig.getTemplateFile();
@@ -60,8 +58,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     //get information for document composition
     Map lstUrl = new HashMap();
-    Map lstDivStyle = new HashMap();
-    Map lstPanelStyle = new HashMap();
+    Map lstStyle = new HashMap();
+    Map lstStylePanel = new HashMap();
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
     Map lstFieldLinked = new HashMap(); 
@@ -70,9 +68,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations
     	Document tmpDoc = (Document)lstDoc.get(i);
-    	String tmpUrl = DocumentCompositionUtils.getEngineUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
+    	String tmpUrl = DocumentCompositionUtils.getExecutionUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
     	codeError = tmpUrl.substring(0,tmpUrl.indexOf("|"));
     	tmpUrl = tmpUrl.substring(tmpUrl.indexOf("|")+1);
+    	//tmpUrl += "&CICCIO=PELLICCIO";
     	if (codeError!= null && !codeError.equals("")){
     		List l = new ArrayList();
 			l.add(tmpDoc.getSbiObjLabel());
@@ -85,23 +84,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    	docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
 	  
 	    	lstUrl.put("URL_DOC__" + (i), tmpUrl);
-	        lstDivStyle = docConfig.getLstDivStyle();
-	        lstPanelStyle = docConfig.getLstPanelStyle();
+	    	lstStyle = docConfig.getLstDivStyle();
+	    	lstStylePanel = docConfig.getLstPanelStyle();
 	        lstDocLinked = docConfig.getLstDocLinked();
 	        lstFieldLinked = docConfig.getLstFieldLinked(); 
     	}
-    }
-    aSessionContainer.setAttribute("urlIframe", GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()+"/jsp/engines/documentcomposition/documentcomposition_Iframe.jsp");
-    aSessionContainer.setAttribute("docUrls", lstUrl);
-    aSessionContainer.setAttribute("docUrlParams", lstUrlParams);
-    aSessionContainer.setAttribute("docLinked", lstDocLinked);
-    aSessionContainer.setAttribute("fieldLinked", lstFieldLinked);
-    aSessionContainer.setAttribute("panelStyle", lstPanelStyle);
-    aSessionContainer.setAttribute("divStyle", lstDivStyle);
-   
-    //include jsp requested
-    getServletContext().getRequestDispatcher(nameTemplate).include(request,response);    
-
+    } 
+	%>
+    <%@ include file="/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
+    <%
     logger.debug("OUT");
   
     %>

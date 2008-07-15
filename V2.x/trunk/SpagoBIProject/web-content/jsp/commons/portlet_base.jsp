@@ -34,12 +34,54 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
 <%@page import="java.util.Locale"%>
+<%@page import="java.util.Map"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="it.eng.spagobi.container.ContextManager"%>
+<%@page import="it.eng.spagobi.container.SpagoBISessionContainer"%>
+<%@page import="it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy"%>
+<%@page import="java.util.Iterator"%>
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
+<%!
+String getUrl(String baseUrl, Map mapPars) {
+	StringBuffer buffer = new StringBuffer();
+    buffer.append(baseUrl);
+    buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
+	if (mapPars != null && !mapPars.isEmpty()) {
+		java.util.Set keys = mapPars.keySet();
+		Iterator iterKeys = keys.iterator();
+		while (iterKeys.hasNext()) {
+		  	String key = iterKeys.next().toString();
+		  	String value = mapPars.get(key).toString();
+		  	buffer.append(key + "=" + value);
+		  	if (iterKeys.hasNext()) {
+		  		buffer.append("&");
+		  	}
+		}
+	}
+	return buffer.toString();
+}
+%>
+
+<!-- SCRIPT FOR DOMAIN DEFINITION 
+<script type="text/javascript">
+	document.domain='athos';
+</script>
+-->
+
 <!-- GET SPAGO OBJECTS  -->
 <%
+	//Enumeration headers = request.getHeaderNames();
+	//while (headers.hasMoreElements()) {
+	//	String headerName = (String) headers.nextElement();
+	//	String header = request.getHeader(headerName);
+	//	System.out.println(header + ": ");
+	//}
+
 	RequestContainer aRequestContainer = null;
 	ResponseContainer aResponseContainer = null;
 	SessionContainer aSessionContainer = null;
@@ -79,6 +121,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	SourceBean aServiceResponse = aResponseContainer.getServiceResponse();
 	aSessionContainer = aRequestContainer.getSessionContainer();
 	
+	//get session access control object
+	ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(aSessionContainer), 
+				new LightNavigatorContextRetrieverStrategy(aServiceRequest));
+	
 	// urls for resources
 	String linkSbijs = urlBuilder.getResourceLink(request, "/js/spagobi.js");
 	String linkProto = urlBuilder.getResourceLink(request, "/js/prototype/javascripts/prototype.js");
@@ -101,8 +147,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
-<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
-<%@page import="it.eng.spago.security.IEngUserProfile"%>
 <html lang="<%=locale.getLanguage()%>">
 <body>
 <%} %>

@@ -30,8 +30,9 @@ if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_CO
 	Map documentParametersMap = (Map) moduleResponseO.getAttribute(ObjectsTreeConstants.REPORT_CALL_URL);
 	Map executionParameters = new HashMap();
 	if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
-	executionParameters.put(SpagoBIConstants.SBICONTEXTURL, GeneralUtilities.getSpagoBiContextAddress());
-	executionParameters.put(SpagoBIConstants.BACK_END_SBICONTEXTURL, GeneralUtilities.getBackEndSpagoBiContextAddress());
+	executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+	executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
+	executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 	executionParameters.put("SBI_EXECUTION_ID", instanceO.getExecutionId());
 	executionParameters.put("EXECUTION_CONTEXT", "DOCUMENT_COMPOSITION");
 	// Auditing

@@ -87,7 +87,17 @@
 		    	    it/eng/spagobi/services/common/SsoServiceInterface.class,
 		    	    it/eng/spagobi/services/common/SsoServiceFactory.class,
 		    	    it/eng/spagobi/services/cas/CasSsoService.class,
-				    it/eng/spagobi/commons/bo/UserProfile.class"
+				    it/eng/spagobi/commons/bo/UserProfile.class,
+		    	
+		    		it/eng/spagobi/container/AbstractContainer.class,
+		    		it/eng/spagobi/container/Context.class,
+		    		it/eng/spagobi/container/ContextManager.class,
+		    		it/eng/spagobi/container/IContainer.class,
+		    		it/eng/spagobi/container/ISessionContainer.class,
+		    		it/eng/spagobi/container/SpagoBIRequestContainer.class,
+		    		it/eng/spagobi/container/SpagoBISessionContainer.class,
+		    		it/eng/spagobi/container/strategy/IContextRetrieverStrategy.class,
+		    		it/eng/spagobi/container/strategy/ExecutionContextRetrieverStrategy.class"
 		    />
 		</jar>
 	    	         	           

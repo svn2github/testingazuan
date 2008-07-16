@@ -1,0 +1,1 @@
+Verisone Talend da usare= 2.3.3

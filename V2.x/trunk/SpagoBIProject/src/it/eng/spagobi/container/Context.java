@@ -30,6 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class has an objects container (a simple Map) and a creation date.
+ * Objects are stored with a key that is a String.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class Context {
 	
 	private Calendar _creationDate;
@@ -48,6 +55,10 @@ public class Context {
 		return _container.get(key);
 	}
 	
+	/**
+	 * Returns all the string keys of the stored objects as a list
+	 * @return all the string keys of the stored objects as a list
+	 */
 	public List getKeys() {
 		List toReturn = new ArrayList();
 		Set keys = _container.keySet();
@@ -67,6 +78,11 @@ public class Context {
 		_container.remove(key);
 	}
 	
+	/**
+	 * Return true if this instance is older than the minutes given as input
+	 * @param minutes The number of minutes
+	 * @return true if this instance is older than the minutes given as input
+	 */
 	public boolean isOlderThan(int minutes) {
 		Calendar now = new GregorianCalendar();
     	Calendar someTimeAgo = new GregorianCalendar();

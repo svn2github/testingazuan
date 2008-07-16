@@ -31,6 +31,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * A wrapper of the Spago service request SourceBean object. Inherits all it.eng.spagobi.container.AbstractContainer utility methods.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class SpagoBIRequestContainer extends AbstractContainer implements
 		IContainer {
 

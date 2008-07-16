@@ -31,6 +31,16 @@ import it.eng.spagobi.container.ISessionContainer;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This strategy create/retrieve/destroy the context using the LightNavigationManager.LIGHT_NAVIGATOR_ID attribute contained into 
+ * the Spago request SourceBean object.
+ * The context is put on ISessionContainer object with a key that has a fix part "SPAGOBI_SESSION_ATTRIBUTE" and a dynamic part, the 
+ * LightNavigationManager.LIGHT_NAVIGATOR_ID request attribute; if this attribute is missing, the key used to put context on session is 
+ * the static string "SPAGOBI_SESSION_ATTRIBUTE".
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class LightNavigatorContextRetrieverStrategy implements
 		IContextRetrieverStrategy {
 
@@ -39,6 +49,10 @@ public class LightNavigatorContextRetrieverStrategy implements
 	private static final String _sessionAttributeBaseKey = "SPAGOBI_SESSION_ATTRIBUTE";
 	private String _key;
 	
+	/**
+	 * Look for the LightNavigationManager.LIGHT_NAVIGATOR_ID attribute on request to get the key for context storage on session.
+	 * @param request The Spago SourceBean service request object
+	 */
 	public LightNavigatorContextRetrieverStrategy(SourceBean request) {
 		logger.debug("IN");
 		try {
@@ -55,6 +69,9 @@ public class LightNavigatorContextRetrieverStrategy implements
 		}
 	}
 	
+	/**
+	 * Retrieves the context from the input ISessionContainer instance
+	 */
 	public Context getContext(ISessionContainer sessionContainer) {
 		logger.debug("IN");
 		try {
@@ -66,6 +83,9 @@ public class LightNavigatorContextRetrieverStrategy implements
 		}
 	}
 
+	/**
+	 * Creates a new context and puts it on the input ISessionContainer instance
+	 */
 	public Context createContext(ISessionContainer sessionContainer) {
 		logger.debug("IN");
 		try {
@@ -78,6 +98,9 @@ public class LightNavigatorContextRetrieverStrategy implements
 		}
 	}
 
+	/**
+	 * Destroys the current context on the input ISessionContainer instance
+	 */
 	public void destroyCurrentContext(ISessionContainer sessionContainer) {
 		logger.debug("IN");
 		try {
@@ -92,6 +115,9 @@ public class LightNavigatorContextRetrieverStrategy implements
 		}
 	}
 
+	/**
+	 * Destroys all the contexts on the input ISessionContainer instance older than the number of minutes specified at input.
+	 */
 	public void destroyContextsOlderThan(ISessionContainer session,
 			int minutes) {
 		logger.debug("IN");

@@ -28,6 +28,12 @@ import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This class provides useful methods to manage context on a ISessionContainer
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class ContextManager extends AbstractContainer {
 
 	protected ISessionContainer _session;
@@ -50,9 +56,9 @@ public class ContextManager extends AbstractContainer {
 	}
 	
 	/**
-	 * Retrieves a generic object from session using the given key.
-	 * @param key The key of the object in session
-	 * @return The object in session with the given key
+	 * Retrieves a generic object from context using the given key.
+	 * @param key The key of the object in context
+	 * @return The object in context with the given key
 	 */
 	public Object get(String key) {
 		logger.debug("IN: input key = [" + key + "]");
@@ -81,8 +87,8 @@ public class ContextManager extends AbstractContainer {
 	}
 	
 	/**
-	 * Sets a generic object into session using the given key.
-	 * @param key The key to be used to store object in session
+	 * Sets a generic object into context using the given key.
+	 * @param key The key to be used to store object in context
 	 */
 	public void set(String key, Object object) {
 		logger.debug("IN: input key = [" + key + "], object = [" + object + "]");
@@ -108,8 +114,8 @@ public class ContextManager extends AbstractContainer {
 	}
 	
 	/**
-	 * Removes a generic object from session using the given key.
-	 * @param key The key of the object on session.
+	 * Removes an object (given its key at input) from context.
+	 * @param key The key of the object on context.
 	 */
 	public void remove(String key) {
 		logger.debug("IN: input key = [" + key + "]");
@@ -136,7 +142,7 @@ public class ContextManager extends AbstractContainer {
 	}
 	
 	/**
-	 * Destroys context.
+	 * Destroys current context.
 	 */
 	public void destroyCurrentContext() {
 		logger.debug("IN");
@@ -147,6 +153,9 @@ public class ContextManager extends AbstractContainer {
 		}
 	}
 	
+	/**
+	 * Destroys all contexts older than the number of minutes specified at input.
+	 */
 	public void cleanOldContexts(int minutes) {
 		logger.debug("IN");
 		try {
@@ -156,6 +165,9 @@ public class ContextManager extends AbstractContainer {
 		}
 	}
 
+	/**
+	 * Returns a List of all the String keys of the objects stored on context.
+	 */
 	public List getKeys() {
 		logger.debug("IN");
 		List toReturn = new ArrayList();

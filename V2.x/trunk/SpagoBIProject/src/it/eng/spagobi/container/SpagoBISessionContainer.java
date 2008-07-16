@@ -27,6 +27,12 @@ import it.eng.spago.base.SessionContainer;
 
 import org.apache.log4j.Logger;
 
+/**
+ * A wrapper of the Spago SessionContainer object. Inherits all it.eng.spagobi.container.AbstractContainer utility methods.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class SpagoBISessionContainer extends AbstractContainer implements
 		ISessionContainer {
 

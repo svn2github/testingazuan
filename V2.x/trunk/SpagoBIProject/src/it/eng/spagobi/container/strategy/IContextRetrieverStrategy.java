@@ -24,6 +24,12 @@ package it.eng.spagobi.container.strategy;
 import it.eng.spagobi.container.Context;
 import it.eng.spagobi.container.ISessionContainer;
 
+/**
+ * A strategy is delegated to create/retrieve/destroy the it.eng.spagobi.container.Context on a it.eng.spagobi.container.ISessionContainer instance.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public interface IContextRetrieverStrategy {
 
 	public Context getContext(ISessionContainer sessionContainer);

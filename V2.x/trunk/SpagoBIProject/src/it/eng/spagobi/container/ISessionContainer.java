@@ -21,6 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container;
 
+/**
+ * Interface for a generic session container (i.e. a session object where I can put and retrieve other objects).
+ * Objects are stored with a key that is a String.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public interface ISessionContainer extends IContainer {
 
 }

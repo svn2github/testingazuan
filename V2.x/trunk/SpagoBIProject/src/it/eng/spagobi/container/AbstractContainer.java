@@ -28,10 +28,23 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Abstract class that implements all <code>it.eng.spagobi.container.IContainer</code> methods apart from get/set/remove/getKeys methods.
+ * All other methods are implemented starting from abstract set and get methods. 
+ * This class provides implementation for standard objects cast and conversion such as String, Boolean, Integer.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public abstract class AbstractContainer implements IContainer {
 
 	private static transient Logger logger = Logger.getLogger(AbstractContainer.class);
-
+	
+	/**
+	 * Returns true if no objects are stored into the container with the input key, false otherwise
+	 * @param key The input key
+	 * @return true if no objects are stored into the container with the input key, false otherwise
+	 */
 	public boolean isNull(String key) {
 		logger.debug("IN");
 		try {
@@ -44,6 +57,13 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/**
+	 * Returns true if no objects are stored into the container with the input key or if the relevant 
+	 * object exists and its string representation is blank, false otherwise
+	 * @param key The input key
+	 * @return true true if no objects are stored into the container with the input key or if the relevant 
+	 * object exists and its string representation is blank, false otherwise
+	 */
 	public boolean isBlankOrNull(String key) {
 		logger.debug("IN");
 		try {
@@ -59,6 +79,11 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/**
+	 * Returns the string representation of the object with the given key; if the key has no objects associated, null is returned
+	 * @param key The input key
+	 * @return the string representation of the object with the given key; if the key has no objects associated, null is returned
+	 */
 	public String getString(String key) {
 		logger.debug("IN");
 		try {
@@ -73,6 +98,14 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/** 
+	 * If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this Boolean is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
+	 * 
+	 * @param key The input key
+	 * @return If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this boolean is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
+	 */
 	public Boolean getBoolean(String key) {
 		logger.debug("IN");
 		try {
@@ -92,6 +125,14 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/** 
+	 * If the key has no objects associated, null is returned. If a Integer object is associated to that key, this Integer is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Integer.parseInt(string);<code> and the result is returned.
+	 * 
+	 * @param key The input key
+	 * @return If the key has no objects associated, null is returned. If a Integer object is associated to that key, this Integer is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Integer.parseInt(string);<code> and the result is returned.
+	 */
 	public Integer getInteger(String key) {
 		logger.debug("IN");
 		try {
@@ -111,6 +152,13 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/**
+	 * Return the BIObject associated with the input key.
+	 * If the key is associated to an object that is not a BIObject instance, a ClassCastException is thrown.
+	 * 
+	 * @param key The input key
+	 * @return the BIObject associated with the input key.
+	 */
 	public BIObject getBIObject(String key) {
 		logger.debug("IN");
 		BIObject toReturn = null;
@@ -123,6 +171,13 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 
+	/**
+	 * Return the ExecutionInstance associated with the input key.
+	 * If the key is associated to an object that is not a ExecutionInstance instance, a ClassCastException is thrown.
+	 * 
+	 * @param key The input key
+	 * @return the ExecutionInstance associated with the input key.
+	 */
 	public ExecutionInstance getExecutionInstance(String key) {
 		logger.debug("IN");
 		ExecutionInstance toReturn = null;
@@ -135,6 +190,13 @@ public abstract class AbstractContainer implements IContainer {
 		}
 	}
 	
+	/**
+	 * Return the List associated with the input key.
+	 * If the key is associated to an object that is not a List instance, a ClassCastException is thrown.
+	 * 
+	 * @param key The input key
+	 * @return the List associated with the input key.
+	 */
 	public List getList(String key) {
 		logger.debug("IN");
 		List toReturn = null;

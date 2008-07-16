@@ -153,6 +153,7 @@ public abstract class AbstractContainer implements IContainer {
 	}
 	
 	/**
+	 * <b>TO BE USED ONLY INSIDE SPAGOBI CORE, NOT INSIDE EXTERNAL ENGINES</b>.
 	 * Return the BIObject associated with the input key.
 	 * If the key is associated to an object that is not a BIObject instance, a ClassCastException is thrown.
 	 * 
@@ -172,6 +173,7 @@ public abstract class AbstractContainer implements IContainer {
 	}
 
 	/**
+	 * <b>TO BE USED ONLY INSIDE SPAGOBI CORE, NOT INSIDE EXTERNAL ENGINES</b>.
 	 * Return the ExecutionInstance associated with the input key.
 	 * If the key is associated to an object that is not a ExecutionInstance instance, a ClassCastException is thrown.
 	 * 

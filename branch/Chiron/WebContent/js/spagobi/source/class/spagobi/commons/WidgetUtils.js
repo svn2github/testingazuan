@@ -100,6 +100,23 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             return check_box;
         },  	
         
+        createTextArea: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 0,
+        		//rows: 10,        		
+        		width: 0,
+        		height: 0   		
+        	};
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+            var test_textarea = new qx.ui.form.TextArea();
+            //test_textarea.set( defultConfig );
+            test_textarea.set( config );
+            return test_textarea;
+          
+        },
+        
         createInputTextField: function( config ) {
         	var defultConfig = {
         		top: 0,
@@ -108,6 +125,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		maxLength:100,        		
         		width: 200,
         		height: 20,
+        		labelwidth: 80,
         		mandatory: false		
         	};
         	
@@ -116,7 +134,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	var labelField = this.createLabel({
         		text : config.text,
         		top : config.top,
-        		left : config.left    
+        		left : config.left,
+        		width : config.labelwidth    
         	});
         	
         
@@ -152,7 +171,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left: 10,
         		text: '',
         		items: [],
-        		listeners: []
+        		listeners: [],
+        		labelwidth: 80
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -160,7 +180,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	var labelField = this.createLabel({
         		text : config.text,
         		top : config.top,
-        		left : config.left    
+        		left : config.left,
+        		width : config.labelwidth
         	});
         	        	   
 	        var comboBox = this.createComboBox({
@@ -184,7 +205,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left: 10,
         		text: '',
         		checked: false,
-        		listeners: []
+        		listeners: [],
+        		labelwidth: 80
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -192,7 +214,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	var labelField = this.createLabel({
         		text : config.text,
         		top : config.top,
-        		left : config.left    
+        		left : config.left,
+        		width : config.labelwidth
 	        });
 	        
 	        var checkBox = this.createCheckBox({
@@ -228,6 +251,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			*/
 			subform.setUserData('field', subform);
 			
+			if(config.visible != undefined){
+				subform.setDisplay(config.visible);
+			}	
+			
 			return subform;
 		},
 		
@@ -240,7 +267,57 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			subform.setUserData('field', subform);
 			
 			return subform;
-		}
+		},
+		
+		createInputTextArea: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 10,
+        		text: '',
+        		//rows: 10,        		
+        		width: 200,
+        		height: 50,
+        		mandatory: false,
+        		labelwidth: 80		
+        	};
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        	
+        	var labelField = this.createLabel({
+        		text : config.text,
+        		top : config.top,
+        		left : config.left,
+        		width : config.labelwidth
+        	});
+        	
+        
+        	var textArea = this.createTextArea({
+        		top: config.top,
+        		left: config.left + 30,
+        		//rows: config.rows,        		
+        		width: config.width,
+        		height: config.height   
+        	});
+        	
+        	var atom = new qx.ui.basic.Atom();
+        	atom.add(labelField, textArea);
+        	
+        	if(config.mandatory) {
+        		var mandatoryMarker = this.createLabel({
+	        		text : '*',
+	        		top : config.top,
+	        		left : config.left + 35 
+        		});
+        		atom.add(mandatoryMarker);
+        	}
+        	
+        	atom.setUserData('label', labelField);
+        	atom.setUserData('field', textArea);
+        	
+        	return atom;
+        }
+		
+		
          	
   }
 });

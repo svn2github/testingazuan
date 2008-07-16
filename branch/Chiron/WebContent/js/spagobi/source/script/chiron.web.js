@@ -1,6 +1,6 @@
 document.write('<script type="text/javascript">if(!window.qxsettings)qxsettings={};\
 if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]="../js/spagobi/build/resource/qx";\
-if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource";\
+if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";\
 if(qxsettings["qx.theme"]==undefined)qxsettings["qx.theme"]="qx.theme.ClassicRoyale";\
 if(qxsettings["qx.minLogLevel"]==undefined)qxsettings["qx.minLogLevel"]=200;\
 if(qxsettings["qx.logAppender"]==undefined)qxsettings["qx.logAppender"]="qx.log.appender.Native";\
@@ -298,7 +298,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/IconBar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/splitpane/VerticalSplitPane.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/MasterDetailsPage.js"></script>\
-<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
+<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/LOVDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/DatasetDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/DatasourceDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/MapDetailsForm.js"></script>\
@@ -310,6 +310,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/ButtonView.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Bar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Pane.js"></script>\
+<script type="text/javascript" src="../js/spagobi/source/class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Color.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Border.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/font/Default.js"></script>\

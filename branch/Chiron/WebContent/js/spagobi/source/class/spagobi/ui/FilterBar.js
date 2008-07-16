@@ -20,18 +20,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 * */
 
-/**
- * Created by SpagoBI team
- * Andrea Gioia (andrea.gioia@eng.it), 
- * Amit Rana (amit.rana@eng.it), 
- * Gaurav Jauhri (gaurav.jauhri@eng.it)
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
  
  */
 
-
+/**
+ * Class to create the Filter bar for searching an item in the list 
+ */
 qx.Class.define("spagobi.ui.FilterBar", {
 	extend : qx.ui.layout.HorizontalBoxLayout,
 	
+	/**
+	 * Constructor to create the filter bar.
+	 * <p>The constructor calls the createFilterBar() function.
+	 * <p>Also see the createFilterBar() function
+	 * 
+	 * <p>*Example*
+	 * <p><code>
+	 * var filterBar = new spagobi.ui.FilterBar();
+	 * </code>
+	 * 
+	 */
 	construct : function() {
 		this.base(arguments);
 		this.createFilterBar();

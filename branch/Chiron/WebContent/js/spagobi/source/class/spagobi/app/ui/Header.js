@@ -1,27 +1,45 @@
-/* ************************************************************************
+/*
 
-   qooxdoo - the new era of web development
+SpagoBI - The Business Intelligence Free Platform
 
-   http://qooxdoo.org
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
 
-   Copyright:
-     2004-2008 1&1 Internet AG, Germany, http://www.1und1.de
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-   License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
-     EPL: http://www.eclipse.org/org/documents/epl-v10.php
-     See the LICENSE file in the project's top-level directory for details.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
 
-   Authors:
-     * Fabian Jakobs (fjakobs)
-     * Sebastian Werner (wpbasti)
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-************************************************************************ */
+*/
 
+
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ * 
+ */
+
+/**
+ * Class to show the title text "SpagoBI - Chiron" on the top of the page
+ * @see spagobi.app.Chiron#main
+ */
+ 
 qx.Class.define("spagobi.app.ui.Header",
 {
   extend : qx.ui.embed.HtmlEmbed,
 
+  /**
+   * Constructor to show the title text using HTML tags
+   */	
   construct : function()
   {
     this.base(arguments, "<h1><span>SpagoBI</span> - Chiron</h1>");
@@ -30,3 +48,4 @@ qx.Class.define("spagobi.app.ui.Header",
     this.setHeight(50);
   }
 });
+

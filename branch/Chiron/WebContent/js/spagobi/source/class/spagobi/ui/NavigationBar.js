@@ -20,19 +20,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 * */
 
-/**
- * Created by SpagoBI team
- * Andrea Gioia (andrea.gioia@eng.it), 
- * Amit Rana (amit.rana@eng.it), 
- * Gaurav Jauhri (gaurav.jauhri@eng.it)
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
  
  */
+ 
+/**
+ * Class to create the navigation bar
+ */ 
 
 
 qx.Class.define("spagobi.ui.NavigationBar", {
 	
 	extend : qx.ui.toolbar.ToolBar,
 	
+	/**
+	 * Constructor to create the navigation bar.
+	 * <p>The constructor calls the createNavBar() function.
+	 * <p>Also see the createNavBar() function
+	 * 
+	 * <p>*Example*
+	 * <p><code>
+	 * var navigationBar = new spagobi.ui.NavigationBar();
+	 * </code>
+	 * 
+	 */
 	construct : function() {
 		this.base(arguments);
 		this.createNavBar();

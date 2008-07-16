@@ -32,11 +32,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 
+/**
+ * Class to create the page displayed on right side.
+ * <p> The page contains a Filter bar, a list and a navigation bar on top and a form at the bottom.   
+ */
 
 qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 {
   extend : qx.ui.splitpane.VerticalSplitPane,
 
+  /**
+   * Constructor to create the page on right side.
+   * <p> It splits the given page into 2 parts: top and bottom.
+   * <p> Top part - the Filter bar, list and navigation bar are added.
+   * <p> Bottom part - the form (based on the button selected in vertical tool bar) is added.
+   * 
+   * <p>*Example*
+   * <p><code>
+   * var myForm = new spagobi.ui.custom.MasterDetailsPage('engine');
+   * </code>
+   * 
+   * @param type The name for referring to the selected page. The selected values can be : 
+   * (__'engine'__ / __'dataset'__ / __'datasource'__ /  __'mapmgmt'__ / __'featuremgmt'__)
+   */
+   	
   construct : function(type)
   {
     this.base(arguments, "1*", "2*");
@@ -54,7 +73,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     this._type = type;	
 	if(type === 'engine') {
 		records = spagobi.app.data.DataService.loadEngineRecords();
-		form = new spagobi.ui.custom.EngineDetailsForm(); 
+		//form = new spagobi.ui.custom.EngineDetailsForm(); 
+		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	} else if(type === 'dataset') {
 		records = spagobi.app.data.DataService.loadDatasetRecords();
 		form = new spagobi.ui.custom.DatasetDetailsForm(); 
@@ -101,21 +121,35 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     _form : undefined,
     detailBody : undefined,
     
+     /**
+     * Function to get the current form
+     * 
+     * @return form The selected form 
+     */
     getForm: function() {
     	return this._form;
     },
     
+    /**
+     * Function to select the object
+     * 
+     * @param dataObject The data object
+     */
     selectDataObject: function(dataObject) {
     	//alert(this._form + ' - ' + this._type + " ->\n " + this.printObject(dataObject));
     	this._form.setData(dataObject);
     },
     
+    /**
+     * Function to display the current form on the page
+     */
     show: function() {
     	//this._form.setVisibility(false);
     	this.detailBody.remove(this._form)
     	//this._form.dispose();
     	if(this._type === 'engine') {
-			this._form = new spagobi.ui.custom.EngineDetailsForm(); 
+			//this._form = new spagobi.ui.custom.EngineDetailsForm(); 
+			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
 		} else if(this._type === 'dataset') {
 			this._form = new spagobi.ui.custom.DatasetDetailsForm(); 
 		} else if(this._type === 'datasource') {

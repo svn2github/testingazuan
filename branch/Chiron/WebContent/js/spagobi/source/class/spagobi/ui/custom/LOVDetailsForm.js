@@ -1,0 +1,209 @@
+/*
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ * 
+ */
+ 
+
+/**
+ * This class defines the Predefined List of Values Form.
+ *  
+ */
+qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
+	extend: spagobi.ui.Form,
+	
+/** 
+*  When the constructor is called it returns an object of form type.
+* <p> To this form is associated the following fields :- 
+* <p> Label -> dataindex: 'label'
+* <p> Name  -> dataIndex: 'name'
+* <p> Description -> dataIndex: 'description',
+* <p> Type -> dataIndex: 'type'
+* <p> Form -> dataIndex: 'querystmt'. It contains the following fields:
+* 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Data Source label -> 'datasourcelabel'
+* 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Query Definition -> 'querydef'
+* <p> Form -> dataIndex: 'scriptloadvalues'. It contains the following fields:
+* 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Script -> 'script'
+* <p> Form -> dataIndex: 'fixedlov'. It contains the following fields:
+* 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Value -> 'value'
+* 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Description -> 'description2'
+* <p> Form -> dataIndex: 'javaclass'. It contains the following fields:
+*			<p>&nbsp;&nbsp;&nbsp;&nbsp; Java Class Name -> 'classname'
+* 
+* <p> *Example :- *
+*  var predefLoVform = new spagobi.ui.custom.PredefinedLoVForm();
+*  predefLoVform.setData({
+* 						label: 'Label',
+*  						name: 'Name',
+*						description: 'Description',
+*  						type: 'Type',
+* 						querystmt: {
+* 									datasourcelabel: 'Data Source label',
+* 									querydef: 'Query Definition'
+* 									},
+* 						scriptloadvalues: {
+* 									script: 'Script',
+* 									},
+* 						fixedlov: 	{
+* 									value: 'Value',
+* 									description2: 'Description',
+* 								  	},	
+* 						javaclass: {
+* 									classname: 'Java Class Name'
+* 									}
+*  });
+*
+*/ 
+	
+	construct : function() { 
+		this.base(arguments,[
+        	{
+        		type: 'text',
+        		dataIndex: 'label',
+        		text: 'Label',
+        		mandatory: true	
+        	},{
+        		type: 'text',
+        		dataIndex: 'name',
+        		text: 'Name',
+        		mandatory: true	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'description',
+        		text: 'Description',
+        		mandatory: true	
+        	},  {
+        		type: 'combo',
+        		dataIndex: 'type',
+        		text: 'Type',
+        		items: ["","Query Statement", "Script to load values", "Fixed List of values", "Java class"],
+        		listeners: [
+	        		{
+	        			event: 'changeValue',
+	        			handler: this._documentTypeChangeValueHandler,
+	        			scope: this
+	        		}     		
+        		]
+        	},  {
+        		type: 'form',
+        		dataIndex: 'querystmt',
+        		form:
+        				[
+        					{
+				        		type: 'combo',
+				        		dataIndex: 'datasourcelabel',
+				        		text: 'Data Source label',
+				        		labelwidth: 100,
+				        		items: ["","FoodMart", "Pool", "Connection"]
+			        		},	{
+				        		type: 'textarea',
+				        		dataIndex: 'querydef',
+				        		text: 'Query Definition',
+				        		height: 50	
+			        		}
+			        	],
+			     visible: false 
+        	},  {
+        		type: 'form',
+        		dataIndex: 'scriptloadvalues',
+        		form:
+        				[       		
+        					{
+				        		type: 'textarea',
+				        		dataIndex: 'script',
+				        		text: 'Script',
+				        		height: 50
+        					}
+        				],
+			     visible: false 
+        	},  {
+        		type: 'form',
+        		dataIndex: 'fixedlov',
+        		form:
+        				[				
+        					{
+				        		type: 'text',
+				        		dataIndex: 'value',
+				        		text: 'Value',
+				        		mandatory: true
+				        	},
+        					{
+				        		type: 'text',
+				        		dataIndex: 'description2',
+				        		text: 'Description',
+				        		mandatory: true
+				        	}
+				        ],
+			     visible: false 
+        	},  {
+        		type: 'form',
+        		dataIndex: 'javaclass',
+        		form:
+        				[		
+				        	{
+				        		type: 'text',
+				        		dataIndex: 'classname',
+				        		text: 'Java Class Name',
+				        		labelwidth: 100,
+				        		mandatory: true
+				        	}
+			        	],
+			     visible: false 	
+        	}
+        ]);
+	},
+	
+	/**
+	 * Event handler to display the sub form based on the value of the combo box
+	 */
+	members: {
+		_documentTypeChangeValueHandler : function(e) {
+			
+        	if (e.getValue()== "Query Statement") {
+        		this.getInputField('scriptloadvalues').setDisplay(false);
+        		this.getInputField('fixedlov').setDisplay(false);
+        		this.getInputField('javaclass').setDisplay(false);
+        		this.getInputField('querystmt').setDisplay(true);
+        		
+			} else if (e.getValue()== "Script to load values") {
+        		this.getInputField('querystmt').setDisplay(false);
+        		this.getInputField('fixedlov').setDisplay(false);
+        		this.getInputField('javaclass').setDisplay(false);
+        		this.getInputField('scriptloadvalues').setDisplay(true);
+        		
+        	} else if (e.getValue()== "Fixed List of values") {
+        		this.getInputField('querystmt').setDisplay(false);
+        		this.getInputField('scriptloadvalues').setDisplay(false);
+        		this.getInputField('javaclass').setDisplay(false);
+        		this.getInputField('fixedlov').setDisplay(true);
+        		
+        	} else if (e.getValue()== "Java class") {
+        		this.getInputField('querystmt').setDisplay(false);
+        		this.getInputField('scriptloadvalues').setDisplay(false);
+        		this.getInputField('fixedlov').setDisplay(false);
+        		this.getInputField('javaclass').setDisplay(true);
+        	}
+        }
+	}
+});

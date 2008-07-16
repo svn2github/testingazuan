@@ -1,8 +1,56 @@
 
+/* *
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+* */
+
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ 
+ */
+ 
+/**
+ * Class to create a list (table) 
+ * 
+ */ 
+
+
 qx.Class.define("spagobi.ui.Table",
 {
   extend : qx.ui.table.Table,
 
+  /**
+   * Constructor to create a list (table)
+   * 
+   * *Example*
+   * <p><code>
+   * var obj = new spagobi.ui.custom.MasterDetailsPage();
+   * var records = spagobi.app.data.DataService.loadFeatureRecords();
+   * var listPage = new spagobi.ui.Table(obj, records );
+   * </code>
+   * 
+   * @param controller Object which is used to set the data of the form
+   * @param data Object containing the layout of the list and the data of the list and form
+   */	
   construct : function(controller, data)
   {
     // Establish controller link
@@ -20,16 +68,7 @@ qx.Class.define("spagobi.ui.Table",
     
     this._tableModel.setColumnIds( columnIds );
 	this._tableModel.setColumnNamesById( columnNames );
-    
-    /*
-    this._tableModel.setColumnIds([ "description", "name", "id" ]);
-	this._tableModel.setColumnNamesById(
-    {
-      description : this.tr("Description"),
-      name  : this.tr("Name"),
-      id    : this.tr("ID")
-    });
-	*/
+
 	
     // Customize the table column model. We want one that
     // automatically resizes columns.
@@ -54,17 +93,26 @@ qx.Class.define("spagobi.ui.Table",
     //resizeBehavior.setWidth(0, "3*");
     //resizeBehavior.setWidth(1, "1*");
 
-    //this.getTableColumnModel().setColumnVisible(2, false);
-
+  
     // Add selection listener
     this.getSelectionModel().addEventListener("changeSelection", this._onChangeSelection, this);
     
     this._tableModel.setDataAsMapArray(data.rows, true);
-    //this.getSelectionModel().setSelectionInterval(0, 0);
+    
   },
 
   members :
   {
+  	/**
+  	 * Function used to set the data in the list
+  	 * 
+  	 * *Example*
+  	 * <p><code>
+  	 * 
+  	 * </code>
+  	 * 
+  	 * @param data Object containing the layout of the list and the data of the list and form
+  	 */
     setData: function(data) {
      	
     	var columnIds = [];

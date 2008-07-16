@@ -298,7 +298,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="./class/spagobi/ui/IconBar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/splitpane/VerticalSplitPane.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/MasterDetailsPage.js"></script>\
-<script type="text/javascript" src="./class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
+<script type="text/javascript" src="./class/spagobi/ui/custom/LOVDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/DatasetDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/DatasourceDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/MapDetailsForm.js"></script>\
@@ -310,6 +310,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/ButtonView.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Bar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Pane.js"></script>\
+<script type="text/javascript" src="./class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Color.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Border.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/font/Default.js"></script>\

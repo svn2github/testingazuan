@@ -1,7 +1,102 @@
+/*
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+*/
+
+
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ * 
+ */
+ 
+/**
+ * Class to create the Page view for a selected button of the  top toolbar
+ */
 qx.Class.define("spagobi.ui.PageView", {
 	
 	extend : qx.ui.splitpane.HorizontalSplitPane,
 	
+	/**
+	 * Constructor to create a Page.
+	 * <p> It splits the page into 2 parts. 
+	 * Left part -  vertical toolbar is added
+	 * Right part - selected page (based on button selected on toolbar) is added
+	 * <hr>
+	 * <p> *Config Options*
+	 * <p> *toolbar*: Object 
+	 * 	<p>&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * *toolbar options*:
+	 * 		<p>&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 			defaultBackgroudColor: String
+	 * 				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 				Background color of the button on the left vertical toolbar.
+	 * 
+	 * 		<p>&nbsp;&nbsp;&nbsp;&nbsp;
+	 *  		focusedBackgroudColor: String
+	 * 				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 				Color of button on left vertical tool bar when pressd.	
+	 * 
+	 * 		<p>&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 			buttons : Array
+	 * 				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 				Array of objects with following properties:
+	 * 
+	 * 				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 				name : String
+	 * 					Name of the button for future reference
+	 * 
+	 *  			<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 * 				image : String
+	 * 					Image of the button
+	 * 
+	 * 				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 *  			page : String
+	 * 					Name of the form to be displayed when button is selected.
+	 * 
+	 * <p>*defaultSelectedPage*: String 
+	 * 			<p>&nbsp;&nbsp;&nbsp;&nbsp; Name of the page based on the top toolbar button
+	 * 
+	 * <p>*Example*
+	 * <p><code>
+	 * 	var obj = new spagobi.ui.PageView({
+	 * 			toolbar: {
+     * 					defaultBackgroudColor: 'white',
+     * 					focusedBackgroudColor: '#DEFF83',
+     * 					buttons: [
+     * 							{
+     * 								name: 'engine',
+	 *								image:'spagobi/img/spagobi/test/abc.png',
+	 *								page: 'engine'
+     * 							}, {
+     * 								name: 'datasource',
+	 *								image:'spagobi/img/spagobi/test/xyz.png',
+	 *								page: 'datasource'
+     * 							}]
+     * 			 		},
+     * 			defaultSelectedPage: 'engine' });		 
+	 * </code>
+	 * 
+	 * @param config The config has the properties as described above.
+	 */
 	construct : function(config) {
 		this.base(arguments, 70, "1*");
 		
@@ -34,6 +129,19 @@ qx.Class.define("spagobi.ui.PageView", {
 		_selectedPageName: undefined,
 		_defaultSelectedPageName: undefined,
 		
+		/**
+		 * Function to show the required page on the right side on the window.
+		 * <p>It hides the previously displayed page and makes the current page visible.
+		 * <p>The displayed page contains a list and a form.
+		 * 
+		 * <p>*Example*
+		 * <p><code>
+		 * var p = new spagobi.ui.PageView(..);
+		 * p.selectPage('engine');
+		 * </code>
+		 * 
+		 * @param pageName Name of the page to be shown 
+		 */
 		selectPage: function(pageName) {
     		if(!this._pages[pageName]) {
     			this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
@@ -49,10 +157,16 @@ qx.Class.define("spagobi.ui.PageView", {
 	    	this._pages[pageName].show();    	  
     	},
     	
+    	/**
+    	 * Function to select the default page
+    	 */
     	selectDefaultPage: function() {
     		this.selectPage(this._defaultSelectedPageName);
     	},
     	
+    	/**
+    	 * Function to select the current page name
+    	 */
     	getSelectedPageName: function() {
     		return this._selectedPageName;
     	}

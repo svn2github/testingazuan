@@ -168,7 +168,7 @@ public class TalendWork implements Work {
 	Map endEventParams = new HashMap();
 	endEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_END);
 	// endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-	endEventParams.put(BIOBJECT_ID, _parameters.get(BIOBJECT_ID));
+	endEventParams.put(BIOBJECT_ID, _parameters.get("document"));
 	if (startEventId != null) {
 	    endEventParams.put(START_EVENT_ID, startEventId.toString());
 	}
@@ -178,8 +178,10 @@ public class TalendWork implements Work {
 	try {
 	    logger.debug("Java Command:"+_command);
 	    logger.debug("Executable Job Dir:"+_executableJobDir);
-	    Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
+	    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 
+	    //p.waitFor();
+	    
 	    endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 	    endEventParams.put("operation-result", "success");
 

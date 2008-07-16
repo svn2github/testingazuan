@@ -55,6 +55,15 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 	
 	members : {
 		
+		/**
+		 * Function to create the navigation bar.
+		 * <p>It is called by the constructor.
+		 * <p> The navigation bar has 4 buttons :
+		 * <p> Button to go to first page of list
+		 * <p> Button to go to previous page of list
+		 * <p> Button to go to next page of list
+		 * <p> Button to go to last page of list
+		 */
 		createNavBar : function(){
 			
 			var horizontalbarLayout = new qx.ui.layout.HorizontalBoxLayout();

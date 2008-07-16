@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Class to create the Page view for a selected button of the  top toolbar
  */
+ 
 qx.Class.define("spagobi.ui.PageView", {
 	
 	extend : qx.ui.splitpane.HorizontalSplitPane,
@@ -122,6 +123,9 @@ qx.Class.define("spagobi.ui.PageView", {
 		this.addLeft( this._toolbar );	
 	},
 	
+	/**
+	 * Members of the PageView class
+	 */
 	members : {
 		
 		_toolbar: undefined,

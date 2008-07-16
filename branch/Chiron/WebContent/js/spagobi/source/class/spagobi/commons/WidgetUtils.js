@@ -1,7 +1,33 @@
-/**
- *
- 
+/*
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+*/
+
+
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
+ 
+/**
+ * Class for the creation of a form elemets
+ */ 
 
 
 qx.Class.define("spagobi.commons.WidgetUtils", {
@@ -129,16 +155,30 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		mandatory: false		
         	};
         	
+        	/*
+        	var flag = 0;
+        	
+        	if(config.labelwidth != defultConfig.labelwidth){
+        		var flag = 1;
+        		
+        	}
+        	*/
+        	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
         		text : config.text,
         		top : config.top,
         		left : config.left,
-        		width : config.labelwidth    
+        		width : config.labelwidth   
         	});
         	
-        
+        	/*
+        	if(flag == 1){
+        		config.left = config.left - (config.labelwidth - defultConfig.labelwidth) + 10;
+        	}
+        	*/
+        	
         	var textField = this.createTextField({
         		top: config.top,
         		left: config.left + 30,
@@ -172,7 +212,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text: '',
         		items: [],
         		listeners: [],
-        		labelwidth: 80
+        		labelwidth: 80,
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -181,7 +221,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text : config.text,
         		top : config.top,
         		left : config.left,
-        		width : config.labelwidth
+        		width : config.labelwidth    
         	});
         	        	   
 	        var comboBox = this.createComboBox({
@@ -215,7 +255,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text : config.text,
         		top : config.top,
         		left : config.left,
-        		width : config.labelwidth
+        		width : config.labelwidth   
 	        });
 	        
 	        var checkBox = this.createCheckBox({
@@ -254,7 +294,6 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			if(config.visible != undefined){
 				subform.setDisplay(config.visible);
 			}	
-			
 			return subform;
 		},
 		
@@ -267,9 +306,9 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			subform.setUserData('field', subform);
 			
 			return subform;
-		},
-		
-		createInputTextArea: function( config ) {
+		},  	
+        
+        createInputTextArea: function( config ) {
         	var defultConfig = {
         		top: 0,
         		left: 10,
@@ -316,8 +355,6 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         	return atom;
         }
-		
-		
          	
   }
 });

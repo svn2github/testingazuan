@@ -72,12 +72,12 @@ qx.Class.define("spagobi.ui.Table",
 	
     // Customize the table column model. We want one that
     // automatically resizes columns.
-    this.base(arguments, this._tableModel,
+    this.base(arguments, this._tableModel/*,
     {
       tableColumnModel : function(obj) {
         return new qx.ui.table.columnmodel.Resize(obj);
       }
-    });
+    }*/);
 
     // Basic setup
     this.setDimension("100%", "100%");
@@ -87,9 +87,9 @@ qx.Class.define("spagobi.ui.Table",
     this.getPaneScroller(0).setShowCellFocusIndicator(false);
 
     // Configure columns
-    var columnModel = this.getTableColumnModel();
+   /* var columnModel = this.getTableColumnModel();
     var resizeBehavior = columnModel.getBehavior();
-
+*/
     //resizeBehavior.setWidth(0, "3*");
     //resizeBehavior.setWidth(1, "1*");
 
@@ -101,6 +101,9 @@ qx.Class.define("spagobi.ui.Table",
     
   },
 
+  /**
+   * members of the class
+   */	
   members :
   {
   	/**
@@ -135,6 +138,8 @@ qx.Class.define("spagobi.ui.Table",
      * @param e {Event} TODOC
      * @return {void}
      */
+     
+     
     _onChangeSelection : function(e) {
       	
       var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();

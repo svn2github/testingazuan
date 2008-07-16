@@ -21,11 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-/**
+/* *
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  * @author Amit Rana (amit.rana@eng.it)
  * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * 
  */
+ 
+/**
+ * Main Application Class
+ */ 
 qx.Class.define("spagobi.app.Chiron",
 {
   extend : qx.application.Gui,
@@ -57,8 +62,7 @@ qx.Class.define("spagobi.app.Chiron",
   	
   	mainPane: {},
   	
-  	
-    main : function()
+   	main : function()
     {
 		this.base(arguments);
 		
@@ -87,14 +91,20 @@ qx.Class.define("spagobi.app.Chiron",
       	//this._applyCssTheme();
       	
     },
-     
+    
+    /**
+     * Function which creates the Layout of the complete page.
+     * <p> Defines a Dock Layout to which all the entities 
+     * __Header, Top ToolBar, Vertical Toolbar and Page__ are added.
+     * 
+     */ 
     _createLayout: function() {
-    	var dockLayout = new qx.ui.layout.DockLayout();
+	   	var dockLayout = new qx.ui.layout.DockLayout();
         dockLayout.setEdge(0);
         
         dockLayout.setBackgroundColor('white');
         
-	  	dockLayout.addToDocument(); 
+		dockLayout.addToDocument(); 
 	  	
 	  	// Create header
       	this._headerView = new spagobi.app.ui.Header();
@@ -139,6 +149,8 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	this.toolbars['resources'] = new spagobi.ui.PageView({
       		toolbar: {
+      			//defaultBackgroudColor: 'white',
+      			//focusedBackgroudColor: '#DEFF83',
       			buttons: [
       				{
       					name: 'engine',
@@ -193,6 +205,33 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	this.toolbars['catalogues'].setVisibility(false);
       	
+      	//My code starts
+      	/*
+      	this.toolbars['behaviouralModel'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			defaultBackgroudColor: 'white',
+      			focusedBackgroudColor: '#DEFF83',
+      			buttons: [
+      				{
+      					name: 'mapmgmt',
+						image:'spagobi/img/spagobi/test/predefinedLoVIcon.png',
+						page: 'mapmgmt'
+      				}, {
+      					name: 'featuremgmt',
+						image:'spagobi/img/spagobi/test/predefinedValConstraintsIcon.png',
+						page: 'featuremgmt'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'mapmgmt'
+      	});
+      	
+      	dockLayout.add( this.toolbars['behaviouralModel'] );
+      	this.toolbars['behaviouralModel'].setLiveResize(true);
+      	this.toolbars['behaviouralModel'].setVisibility(false);
+      	*/
+      	 
+      	 //My code ends
       	
       	/*
       	this.mainPane = new qx.ui.splitpane.HorizontalSplitPane(70, "1*");
@@ -220,6 +259,21 @@ qx.Class.define("spagobi.app.Chiron",
   		
     },
     
+    /**
+     * Function to set the vertical bar (on left side of page) corresponding to the 
+     * button selected on top toolbar.
+     * <p>It hides the previously selected vertical toolbar and shows the
+     * currently selected vertical toolbar.
+     * <p>It the toolbar functionality is not yet implemented, it displays
+     * a pop-up alert box.
+     * 
+     * <p>*Example*
+     * <p><code> _selectToolbar('resources'); </code>
+     * <p> shows the vertical toolbar on the left side of page with buttons 
+     * corresponding to "Resources" button on the top tool bar.
+     * 
+     * @param toolbarName {String} The name of the Toolbar button
+     */
     _selectToolbar: function(toolbarName) {
     	if(this.toolbars[toolbarName]) {
     		if(this.selectToolbarName) {
@@ -235,6 +289,14 @@ qx.Class.define("spagobi.app.Chiron",
     	}
     },
     
+    /**
+     * Function to show the selected page based on the button selected on left
+     * vertical bar.
+     * <p> It hides the previously selected page and shows the currently
+     * selected page.
+     *
+     * @param pageName {String} Name of the page to be displayed
+     */
     _selectPage: function(pageName) {
     	if(!this.pages[pageName]) {
     		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
@@ -267,30 +329,16 @@ qx.Class.define("spagobi.app.Chiron",
     	  
     },
     
+    /**
+     * Function to set the theme of the page
+     */
     _applyCssTheme : function() {
     	alert(document.body.className = qx.theme.manager.Meta.getInstance().getTheme());
        document.body.className = qx.theme.manager.Meta.getInstance().getTheme() == qx.theme.Ext ? "Ext" : "Classic";
        //document.body.className = "Ext";
     },
-       
-    reload: function() {
-    	alert('reload');
-    },
-    showAbout: function() {
-    	alert('showAbout');
-    },
-    showPreferences: function() {
-    	alert('showPreferences');
-    },
-    showAddFeed: function() {
-    	alert('showAddFeed');
-    },
-    showRemoveFeed: function() {
-    	alert('showRemoveFeed');
-    },
-    
-    
-
+   
+   
 
     /**
      * TODOC

@@ -162,9 +162,7 @@ qx.Class.define("spagobi.ui.Form", {
 				value = this.getInputField(dataIndex).getUserData('field').getData();
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {	
 				value = this.getInputField(dataIndex).getUserData('field').getValue();
-			}				
-			
-			
+			}			
 			
 			return value;			
 		},
@@ -216,8 +214,8 @@ qx.Class.define("spagobi.ui.Form", {
   				inputField = spagobi.commons.WidgetUtils.createInputFormList(config);    
   				inputField.setUserData('type', 'formList');    
   			} else if(config.type === 'textarea') {
-  				inputField = spagobi.commons.WidgetUtils.createInputTextArea(config); 
-  				inputField.setUserData('type', 'textarea');       
+  				inputField = spagobi.commons.WidgetUtils.createInputTextArea(config);    
+  				inputField.setUserData('type', 'textarea');    
   			}
   			
   			this.dataMappings[config.dataIndex] = inputField;

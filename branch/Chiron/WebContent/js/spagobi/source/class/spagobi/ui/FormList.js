@@ -41,7 +41,7 @@ qx.Class.define("spagobi.ui.FormList", {
 		addInstance: function(o) {
 			var subform;
 			if( typeof(this._config) == 'object' ) {
-				subform = new qx.ui.layout.spagobi.ui.Form(this._config);
+				subform = new spagobi.ui.Form(this._config);
 			} else {
 				subform = new this._config();
 			}	

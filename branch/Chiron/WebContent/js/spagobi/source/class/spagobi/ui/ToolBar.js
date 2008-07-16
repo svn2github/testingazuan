@@ -59,10 +59,11 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		}
 	 * </code>
 	 * 
-	 * @param config  config is an array of objects each having 
+	 * @param config  - Array of objects each having 
 	 * a set of properties like command, label, handler etc. as described above.
 	 * 
 	 * */
+  	
   	construct : function( config ) {
 	    this.base(arguments);
 	    
@@ -70,46 +71,6 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	    	this.addButton( config[i] );
 	    }
 	
-	    // Define commands
-	/*
-		this.addButton({
-	  		command: 'Control+A',
-	  		handler: this._controller.showAddFeed,
-	  		context: this._controller,
-	  		"label": 'Resources',
-	  		icon: 'icon/16/actions/dialog-ok.png',
-	  		tooltip: 'Reload the feeds.'
-	  	});
-	  	
-	  	this.addButton({
-	  		command: 'Control+D',
-	  		handler: this._controller.showRemoveFeed,
-	  		context: this._controller,
-	  		"label": 'Catalogues',
-	  		icon: 'icon/16/actions/dialog-ok.png',
-	  		tooltip: 'Reload the feeds.'
-	  	});
-	  	
-	  	this.add(new qx.ui.toolbar.Separator());
-	  	
-		this.addButton({
-	  		command: 'Control+R',
-	  		handler: this._controller.reload,
-	  		context: this._controller,
-	  		"label": 'Behavioural Model',
-	  		icon: 'icon/16/actions/dialog-ok.png',
-	  		tooltip: 'Reload the feeds.'
-	  	});
-	
-		this.addButton({
-	  		command: 'Control+P',
-	  		handler: this._controller.showPreferences,
-	  		context: this._controller,
-	  		"label": 'Analytical Model',
-	  		icon: 'icon/16/actions/dialog-ok.png',
-	  		tooltip: 'Reload the feeds.'
-	  	});
-	  	*/
 	  	
 	  	this.add(new qx.ui.toolbar.Separator());
 	
@@ -166,10 +127,11 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	},
   
 	members: {
-		/**
+		
+	/**
 	 * Shows a popup box
 	 */	
-	showAbout: function() {alert('Help');},
+		showAbout: function() {alert('Help');},
 		
 	/**
 	 * Function to add a button on the top tool bar.

@@ -50,9 +50,21 @@ qx.Class.define("spagobi.ui.FilterBar", {
 	},
 	
 	members : {
+		
+		/**
+		 * Function to create the filter bar.
+		 * <p> It is called by the constructor.
+		 * <p> The filter bar contains the following items:
+		 * <p> Label - Tells to select the column in the list to search into
+		 * <p> Combo box - Shows a list of columns
+		 * <p> Label - tells the search criteria to be selected
+		 * <p> Combo box - to select the search criteria
+		 * <p> Combo box - select the search criteria
+		 * <p> text field - Tells to specify the text to be searched
+		 */
 		createFilterBar : function(){
 			
-			
+			/*
 			var combo1 = spagobi.commons.WidgetUtils.createInputComboBox(
 											{
 												text: 'The value of the column',
@@ -85,20 +97,56 @@ qx.Class.define("spagobi.ui.FilterBar", {
         										height: 20
 											});
 																 
-			this.add(txt);													 
-			/*
-			var label = new qx.ui.basic.Label("The value of the column");
+			this.add(txt);
+			*/
 			
-			var combo_box = new qx.ui.form.ComboBox();
-			var items = ["Label","Name","Description"];
-			for(var i=0; i< items.length; i++) {
-              var item = new qx.ui.form.ListItem(items[i]);
-              combo_box.add(item);
+			//var space = new qx.ui.embed.HtmlEmbed("<br><br>");
+			//this.add(space);
+			
+			var combo1_label = new qx.ui.basic.Label("The value of the column");
+			with(combo1_label){
+				//setVerticalAlign("bottom");
+			}
+			this.add(combo1_label);
+			
+			var combo1 = new qx.ui.form.ComboBox();
+			var items1 = ["Label","Name","Description"];
+			for(var i=0; i< items1.length; i++) {
+              var item = new qx.ui.form.ListItem(items1[i]);
+              combo1.add(item);
             }
-            combo_box.setSelected(combo_box.getList().getFirstChild());
-            
-            this.add(txtField,combo_box);
-            */
+			this.add(combo1);
+			
+			var combo2_label = new qx.ui.basic.Label("as a");
+			with(combo2_label){
+				//setVerticalAlign("middle");
+			}
+			this.add(combo2_label);
+			
+			var combo2 = new qx.ui.form.ComboBox();
+			var items2 = ["Label","Name","Description"];
+			for(var i=0; i< items2.length; i++) {
+              var item = new qx.ui.form.ListItem(items2[i]);
+              combo2.add(item);
+            }
+			this.add(combo2);
+			
+			var combo3 = new qx.ui.form.ComboBox();
+			var items3 = ["starts with","ends with","contains","=","<","<=",">",">="];
+			for(var i=0; i< items3.length; i++) {
+              var item = new qx.ui.form.ListItem(items3[i]);
+              combo3.add(item);
+            }
+			this.add(combo3);													 
+			
+			var txt1 = new qx.ui.form.TextField();
+			with(txt1){
+				width : 70
+			}
+			this.add(txt1);
+			
+			//this.setAlign("center",null);
+			//this.setHorizontalAlign("center");
 		}
 	}
 	

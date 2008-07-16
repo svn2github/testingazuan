@@ -180,7 +180,7 @@ public class TalendWork implements Work {
 	    logger.debug("Executable Job Dir:"+_executableJobDir);
 	    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 
-	    //p.waitFor();
+	    p.waitFor();
 	    
 	    endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 	    endEventParams.put("operation-result", "success");

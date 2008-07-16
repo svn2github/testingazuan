@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class has an objects container (a simple Map) and a creation date.
+ * This class has an objects container (a simple Map) and a last usage date.
  * Objects are stored with a key that is a String.
  * 
  * @author Zerbetto (davide.zerbetto@eng.it)
@@ -39,19 +39,27 @@ import java.util.Set;
  */
 public class Context {
 	
-	private Calendar _creationDate;
+	private Calendar _lastUsageDate;
 	private Map _container;
 	
 	public Context() {
-		_creationDate = new GregorianCalendar();
+		_lastUsageDate = new GregorianCalendar();
 		_container = new HashMap();
 	}
 	
-	public Calendar getCreationDate() {
-		return _creationDate;
+	/**
+	 * Updates last usage date
+	 */
+	private void updateLastUsageDate() {
+		_lastUsageDate = new GregorianCalendar();
+	}
+	
+	public Calendar getLastUsageDate() {
+		return _lastUsageDate;
 	}
 	
 	public Object get(String key) {
+		updateLastUsageDate();
 		return _container.get(key);
 	}
 	
@@ -60,6 +68,7 @@ public class Context {
 	 * @return all the string keys of the stored objects as a list
 	 */
 	public List getKeys() {
+		updateLastUsageDate();
 		List toReturn = new ArrayList();
 		Set keys = _container.keySet();
 		Iterator it = keys.iterator();
@@ -71,23 +80,25 @@ public class Context {
 	}
 	
 	public void set(String key, Object object) {
+		updateLastUsageDate();
 		_container.put(key, object);
 	}
 	
 	public void remove(String key) {
+		updateLastUsageDate();
 		_container.remove(key);
 	}
 	
 	/**
-	 * Return true if this instance is older than the minutes given as input
+	 * Return true if this instance is older than the minutes given as input, i.e. last usage date is before the given minutes number
 	 * @param minutes The number of minutes
-	 * @return true if this instance is older than the minutes given as input
+	 * @return true if this instance is older than the minutes given as input, i.e. last usage date is before the given minutes number
 	 */
 	public boolean isOlderThan(int minutes) {
 		Calendar now = new GregorianCalendar();
     	Calendar someTimeAgo = new GregorianCalendar();
     	someTimeAgo.set(Calendar.MINUTE, now.get(Calendar.MINUTE) - minutes);
-    	return _creationDate.before(someTimeAgo);
+    	return _lastUsageDate.before(someTimeAgo);
 	}
 	
 }

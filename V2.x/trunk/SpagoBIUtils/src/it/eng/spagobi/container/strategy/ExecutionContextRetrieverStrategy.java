@@ -133,7 +133,7 @@ public class ExecutionContextRetrieverStrategy implements
 						if (attributeObject instanceof Context) {
 							Context context = (Context) attributeObject;
 							if (context.isOlderThan(minutes)) {
-								logger.debug("Deleting context instance with creation date = [" + context.getCreationDate() + "]");
+								logger.debug("Deleting context instance with last usage date = [" + context.getLastUsageDate() + "]");
 								session.remove(attributeName);
 							}
 						} else {

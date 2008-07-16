@@ -87,11 +87,16 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'featuremgmt') {
 		records = spagobi.app.data.DataService.loadFeatureRecords();
 		form = new spagobi.ui.custom.FeatureDetailsForm(); 
+	} 
+	/*else if(type == 'predefinedlov') {
+		records = spagobi.app.data.DataService.loadFeatureRecords();
+		form = new spagobi.ui.custom.PredefinedLoVForm(); 
 	}
+	*/
 		
    	// Create list view
-   	listPage = new spagobi.ui.Table(this, records );
-   	//listPage = new spagobi.ui.PagedTable(this, records );
+   	//listPage = new spagobi.ui.Table(this, records );
+   	listPage = new spagobi.ui.PagedTable(this, records );
    	this.addTop( listPage );
       	
    	// Create detail view
@@ -121,7 +126,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     _form : undefined,
     detailBody : undefined,
     
-     /**
+    /**
      * Function to get the current form
      * 
      * @return form The selected form 
@@ -166,6 +171,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		}
     },
     
+    /**
+     * Function to print the "property: value" pairs of an object
+     * 
+     * @param o The object to be printed in the form of property: value pairs
+     */
     printObject: function(o) {
     	var str = '';
     	for(p in o) {

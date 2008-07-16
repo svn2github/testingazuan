@@ -1,10 +1,6 @@
 /*
 SpagoBI - The Business Intelligence Free Platform
 
-/*
-
-SpagoBI - The Business Intelligence Free Platform
-
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
@@ -56,7 +52,6 @@ qx.Class.define("spagobi.ui.custom.FeatureDetailsForm", {
 	*
 	*/ 
 	construct : function() { 
-		//this.base(arguments, this.self(arguments).formStructure);
 		this.base(arguments,[
         	{
         		type: 'text',
@@ -75,7 +70,6 @@ qx.Class.define("spagobi.ui.custom.FeatureDetailsForm", {
         		items: ["","Territorial", "Positional"],
         		mandatory: true	
         	}
-        ]);
-		
+        	]);
 	}
 });

@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
@@ -320,10 +320,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</td>
 	 					<td class='portlet-section-header' align="center" width="90px">
 							<spagobi:message key = "SBISet.detailMenu.tabCol2" />
-						</td>
-	                    <td class='portlet-section-header' align="center" width="90px">
-                        	&nbsp;
-                        </td> 				
+						</td>				
 	 				</tr>
 	 			     <% 
 	 			    	boolean alternate = false;	
@@ -353,7 +350,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 			            %>
 	 			            
 					 <tr onMouseOver="this.bgColor='#F5F6BE'" onMouseOut="this.bgColor='#FFFFFF'">
-					 	<td class='portlet-font'><%= ruleName + " (" + ruleDescription + ")" %></td>
+					 	<td nowrap class='portlet-font'><%= ruleName + " (" + ruleDescription + ")" %></td>
 					 	
 					 	<td align="center">
 					 	    <input type="checkbox" name="ROLES" id="ROLES" value="<%=ruleId%>" 
@@ -372,30 +369,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 	    />
 					 	</td>
 					
-					<!--    <td>
-					    <a onclick = "selectAllInRows('<%=ruleId%>')" 
-					       title='<spagobi:message key = "SBISet.Funct.selAllRow" />' 
-					       alt='<spagobi:message key = "SBISet.Funct.selAllRow" />'>
-					    	<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
-					    </a>
-					    <a onclick = "deselectAllInRows('<%=ruleId%>')" title='<spagobi:message key = "SBISet.Funct.deselAllRow" />' alt='<spagobi:message key = "SBISet.Funct.deselAllRow" />'>
-					    	<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
-					    </a>
-					    </td>  --> 
-					
 					 </tr>	
                      <% } %>
                      <tr class='<%=rowClass%>'>
                         <td align="center">&nbsp;</td>       
                         <td align="center">
-                        <a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
-                        </a>
-					    <a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
-					    </a>
+                        	<a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
+                        		<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                        	</a>
+					    	<a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
+					    		<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
+					    	</a>
 					    </td>
-						<td align="center">&nbsp;</td>   
                      </tr>
 	 		</table>
 </div>

@@ -13,6 +13,7 @@
     	</MODULES>
   	</PAGE>
   	
+  	<!--
   	<PAGE name="LogoutPage" scope="REQUEST" title="Logout Page" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="LogoutPage" target="LogoutModule">
@@ -24,6 +25,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="LogoutModule"/>
     	</MODULES>
   	</PAGE>
+  	-->
   	
   	<PAGE name="ViewBuilderPage" scope="REQUEST" title="View Builder" >
     	<DEPENDENCIES>

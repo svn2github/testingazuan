@@ -35,16 +35,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
-<%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
-
-<portlet:defineObjects/>
-
 <%
 List rememberMeList = null;
 List mostPopularList = null;
 List myRecentlyUsedList = null;
 
-SourceBean hotlinkSB = (SourceBean) spagoconfig.getAttribute(HotLinkConstants.HOTLINK);
+SourceBean hotlinkSB = (SourceBean) ConfigSingleton.getInstance().getAttribute(HotLinkConstants.HOTLINK);
 SourceBean mostPopular = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MOST_POPULAR);
 SourceBean myRecentlyUsed = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.MY_RECENTLY_USED);
 SourceBean rememberMe = (SourceBean) hotlinkSB.getFilteredSourceBeanAttribute("SECTION", "name", HotLinkConstants.REMEMBER_ME);

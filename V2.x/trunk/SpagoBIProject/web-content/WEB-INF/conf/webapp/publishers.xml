@@ -20,7 +20,7 @@
   	<PUBLISHER name="LogoutPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/index.jsp"/>
+        		<ITEM prog="0" resource="/jsp/wapp/logout.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -159,7 +159,8 @@
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
         		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="objectid" />        		
+        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="objectid" />
+        		<PARAMETER name="MODALITY" type="ABSOLUTE" scope="" value="SINGLE_OBJECT_EXECUTION_MODALITY" />        		
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

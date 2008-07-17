@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <ACTIONS>
+<ACTIONS>
  <ACTION name="MOVE_UP_MENU" class="it.eng.spagobi.wapp.services.MoveUpMenuAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
@@ -9,4 +9,7 @@
  <ACTION name="READ_HTML_FILE" class="it.eng.spagobi.wapp.services.ReadHtmlFile" scope="REQUEST">
  	<CONFIG/>
  </ACTION> 
- </ACTIONS>
+ <ACTION name="LOGOUT_ACTION" class="it.eng.spagobi.commons.services.LogoutAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
+</ACTIONS>

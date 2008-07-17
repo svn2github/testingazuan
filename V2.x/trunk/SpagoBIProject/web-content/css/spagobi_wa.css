@@ -52,19 +52,3 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	font-weight: 600;
 	text-align: left;
 }
-
-/* Column with the header title for each section of the SpagoBI portlet*/
-td.header-title-column-portlet-section {
-	/*padding: 0px 0px 0px 1px;*/
-	/*background-color: #cccccc;*/
-	/*text-align: left;*/
-	background-color: #FFFFFF; 
- 	font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;
-	font-size: 13px;
-	font-weight: 600;
-	/* color: #074B88; */
-	/* background-image: url('/SpagoBI/img/white_corner.gif');  
-	background-position: top right;
-	background-repeat: no-repeat;
-	*/
-}

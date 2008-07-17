@@ -5,9 +5,11 @@
      	<CONFIG/>
     </MODULE>
     
+    <!--
     <MODULE class="it.eng.spagobi.commons.services.LogoutModule" name="LogoutModule">
      	<CONFIG/>
     </MODULE>
+    -->
     
     <MODULE class="it.eng.spagobi.commons.services.ViewBuilderModule" name="ViewBuilderModule">
      	<CONFIG/>

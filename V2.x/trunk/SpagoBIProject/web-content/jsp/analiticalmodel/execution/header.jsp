@@ -227,7 +227,7 @@ if (toolbarIsVisible) {
 					</form>
 					</li>
 				<% } %>
-				<% if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT")) { %>
+				<%if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT")) { %>
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
@@ -278,7 +278,8 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "metadata.Rating" />' />
 					</a>
 				</li>
-				<% } %>
+				<% } 
+				if (!obj.getBiObjectTypeCode().equals("DATAMART") && !obj.getBiObjectTypeCode().equals("DATA_MINING") && !obj.getBiObjectTypeCode().equals("DOSSIER") && !obj.getBiObjectTypeCode().equals("ETL") && !obj.getBiObjectTypeCode().equals("OFFICE_DOC")){%>
 				<li>
 					<a href='javascript:void(0)' onClick="print<%= uuid %>();">
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.print" />'
@@ -286,6 +287,7 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.print" />' />
 					</a>
 				</li>
+				<% } %>
 			</ul>
 		</div>
 	</div>
@@ -697,7 +699,7 @@ if (toolbarIsVisible) {
 	<%-- Scripts for print --%>
 	<%
 	String engineClassName = obj.getEngine().getClassName();
-	if (engineClassName != null && engineClassName.equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")) {
+	if (engineClassName != null && engineClassName.equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")&& (!obj.getBiObjectTypeCode().equals("DATAMART") && !obj.getBiObjectTypeCode().equals("DATA_MINING") && !obj.getBiObjectTypeCode().equals("DOSSIER") && !obj.getBiObjectTypeCode().equals("ETL") && !obj.getBiObjectTypeCode().equals("OFFICE_DOC"))) {
 		%>
 		<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		<script>

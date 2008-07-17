@@ -181,6 +181,10 @@ public class TalendWork implements Work {
 	    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 
 	    p.waitFor();
+	    //CODICE DA USARE EVENTUALMENTE IN FUTURO CON ALTRE MODIFICHE:
+	    /*this.talendJobClass = Class.forName(talendJobClassName); 
+	    this.runJob = this.talendJobClass.getMethod("runJob", new  Class[]{String[].class}); 
+	    int status = ((Integer)runJob.invoke(null,  mainMethodParams)).intValue(); */
 	    
 	    endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
 	    endEventParams.put("operation-result", "success");

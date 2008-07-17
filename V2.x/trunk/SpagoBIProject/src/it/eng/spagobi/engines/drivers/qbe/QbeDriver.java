@@ -99,8 +99,9 @@ public class QbeDriver implements IEngineDriver {
 	 * @return Map The map of the execution call parameters
 	 */
 	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
-		logger.debug("IN");			
-			
+	
+		logger.debug("IN");
+		
 		if(subObject == null) {
 			return getParameterMap(object, profile, roleName);
 		}
@@ -110,15 +111,28 @@ public class QbeDriver implements IEngineDriver {
 			BIObject biobj = (BIObject)object;
 			map = getMap(biobj);
 			SubObject subObjectDetail = (SubObject) subObject;
-			map.put("query", subObjectDetail.getName());
+			
+			Integer id = subObjectDetail.getId();
+			
+			map.put("nameSubObject",  subObjectDetail.getName() );
+			map.put("descriptionSubObject", subObjectDetail.getDescription() );
+			map.put("visibilitySubObject", subObjectDetail.getIsPublic().booleanValue()?"Public":"Private" );
+	        map.put("subobjectId", subObjectDetail.getId());
+		
+			
 		} catch (ClassCastException cce) {
-			logger.error("The parameter is not a BIObject type", cce);
-		} 
+		    logger.error("The second parameter is not a SubObjectDetail type", cce);
+		}
+		
+		
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
 		map = applyService(map);
-		logger.debug("OUT");
+		
+		logger.debug("OUT");		
+		
 		return map;
+		
 	}
 	
 	

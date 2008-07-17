@@ -40,6 +40,7 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
+import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QbeEngineStartAction.
  * 
@@ -68,9 +68,6 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
 	
 	// SESSION PARAMETRES	
-	public static final String USER_ID = EngineConstants.USER_ID;
-	public static final String DOCUMENT_ID = EngineConstants.DOCUMENT_ID;	
-	public static final String AUDIT_ID = EngineConstants.AUDIT_ID;
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
 	
 	
@@ -87,23 +84,16 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     	try {
 			super.service(serviceRequest, serviceResponse);
 			
+			QbeEngineInstance qbeEngineInstance;
+			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
 			logger.debug("Template: " + getTemplate());
-			
-			// AUDIT UPDATE
-			updateAudit(getAuditId(), getUserId());	
-			
 						
-			Map env = new HashMap();
-			copyRequestParametersIntoEnv(env, serviceRequest);
-			env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
-			env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
-			env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, new ContentServiceProxy(getUserId(), getHttpSession()) );
-			env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+			getAuditServiceProxy().notifyServiceStartEvent();
 			
-			QbeEngineInstance qbeEngineInstance = QbeEngine.createInstance( getTemplate(), env );
+			qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
 			qbeEngineInstance.setStandaloneMode( false );
 			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
@@ -114,8 +104,8 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			}
 						
 			
-			setAttributeInSession( USER_ID, getUserId() );
-			setAttributeInSession( AUDIT_ID, getAuditId() );
+			//setAttributeInSession( USER_ID, getUserId() );
+			//setAttributeInSession( AUDIT_ID, getAuditId() );
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
 			setAttribute("query", QueryEncoder.encode(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel()));
 			
@@ -135,93 +125,5 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 		
 
 		logger.debug("OUT");
-	}
-	
-    
-    
-    
-    
-    /**
-	 * Copy request parameters into env.
-	 * 
-	 * @param env the env
-	 * @param serviceRequest the service request
-	 */
-	public void copyRequestParametersIntoEnv(Map env, SourceBean serviceRequest) {
-		Set parameterStopList = null;
-		List requestParameters = null;
-		
-		logger.debug("IN");
-		
-		parameterStopList = new HashSet();
-		parameterStopList.add("template");
-		parameterStopList.add("ACTION_NAME");
-		parameterStopList.add("NEW_SESSION");
-		parameterStopList.add("document");
-		parameterStopList.add("spagobicontext");
-		parameterStopList.add("BACK_END_SPAGOBI_CONTEXT");
-		parameterStopList.add("userId");
-		parameterStopList.add("auditId");
-		
-		
-		requestParameters = serviceRequest.getContainedAttributes();
-		for(int i = 0; i < requestParameters.size(); i++) {
-			SourceBeanAttribute attrSB = (SourceBeanAttribute)requestParameters.get(i);
-			logger.debug("Parameter [" + attrSB.getKey() + "] has been read from request");
-			logger.debug("Parameter [" + attrSB.getKey() + "] is of type  " + attrSB.getClass().getName());
-			logger.debug("Parameter [" + attrSB.getKey() + "] is equal to " + attrSB.getValue().toString());
-			
-			if(parameterStopList.contains(attrSB.getKey())) {
-				logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: FALSE");
-				continue;
-			}
-			
-			env.put(attrSB.getKey(), decodeParameterValue(attrSB.getValue().toString()) );
-			logger.debug("Parameter [" + attrSB.getKey() + "] copyed into environment parameters list: TRUE");
-		}
-
-		logger.debug("OUT");
-	}
-	
-	/**
-	 * Decode parameter value.
-	 * 
-	 * @param parValue the par value
-	 * 
-	 * @return the string
-	 */
-	private String decodeParameterValue(String parValue) {
-		String newParValue;
-			
-		ParametersDecoder decoder = new ParametersDecoder();
-		if(decoder.isMultiValues(parValue)) {			
-			List values = decoder.decode(parValue);
-			newParValue = "";
-			for(int i = 0; i < values.size(); i++) {
-				newParValue += (i>0?",":"");
-				newParValue += values.get(i);
-			}
-		} else {
-			newParValue = parValue;
-		}
-			
-		return newParValue;
-	}
-    
-    
-    /**
-     * Update audit.
-     * 
-     * @param auditId the audit id
-     * @param userId the user id
-     */
-    private void updateAudit(String auditId, String userId) {
-    	HttpSession session = getHttpRequest().getSession();
-		AuditAccessUtils auditAccessUtils = (AuditAccessUtils) session.getAttribute("SPAGOBI_AUDIT_UTILS");
-		if (auditId != null && auditAccessUtils != null) {
-			auditAccessUtils.updateAudit(session, getUserId(), auditId, new Long(System
-				    .currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
-		}
-    }
-    
+	}    
 }

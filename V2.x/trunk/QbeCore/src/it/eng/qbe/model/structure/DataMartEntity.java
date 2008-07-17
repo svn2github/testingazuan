@@ -283,7 +283,7 @@ public class DataMartEntity implements IDataMartItem {
 	 * @param entity the entity
 	 */
 	private void addSubEntity(DataMartEntity entity) {
-		subEntities.put(entity.getName(), entity);
+		subEntities.put(entity.getUniqueName(), entity);
 		getStructure().addEntity(entity);
 	}
 	

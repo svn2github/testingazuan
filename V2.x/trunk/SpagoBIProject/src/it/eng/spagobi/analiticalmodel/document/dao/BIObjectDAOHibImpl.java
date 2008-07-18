@@ -1063,7 +1063,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery(" from SbiObjects s inner join fetch s.sbiObjFuncs inner join fetch s.sbiEngines order by s.label");
+			Query hibQuery = aSession.createQuery(" from SbiObjects s order by s.label");
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -1095,7 +1095,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery("from SbiObjects s inner join fetch s.sbiObjFuncs inner join fetch s.sbiEngines order by s." + filterOrder);
+			Query hibQuery = aSession.createQuery("from SbiObjects s  order by s." + filterOrder);
 			List hibList = hibQuery.list();
 			
 			//Criteria criteria = aSession.createCriteria(SbiObjects.class);

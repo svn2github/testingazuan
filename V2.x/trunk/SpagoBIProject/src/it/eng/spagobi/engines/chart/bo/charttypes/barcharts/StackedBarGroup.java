@@ -32,6 +32,8 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Paint;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
 
 /**   @author Antonella Giachino
@@ -87,7 +91,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	boolean additionalLabels=false;
 	boolean percentageValue=false;
 	HashMap catSerLabels=null;
-
+	HashMap gradientMap=null;  // keeps user selected last gradient colors
 
 	private static transient Logger logger=Logger.getLogger(StackedBarGroup.class);
 
@@ -314,6 +318,23 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				}
 			}		
 		}
+		//reading gradient colors if present
+		SourceBean gradients = (SourceBean)content.getAttribute("CONF.GRADIENTS_COLORS");
+		if(gradients!=null){
+			gradientMap=new LinkedHashMap();
+			List atts=gradients.getContainedAttributes();
+			String gradientSerie="";
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+
+				String serieName=new String(object.getKey());
+				gradientSerie=new String((String)object.getValue());
+				Color col=new Color(Integer.decode(gradientSerie).intValue());
+				if(col!=null){
+					gradientMap.put(serieName,col); 
+				}
+			}		
+		}
 		//reading subcategories labels
 		SourceBean subcatLabels = (SourceBean)content.getAttribute("CONF.SUBCATEGORY_LABELS");
 		if(subcatLabels!=null){
@@ -420,9 +441,6 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-		renderer.setDrawBarOutline(false);
-
-
 
 		int seriesN=dataset.getRowCount();
 		int numSerieColored = 0;
@@ -430,13 +448,22 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			while (numSerieColored < seriesN){
 				for (int i=1; i <= colorMap.size();i++){
 					Color color=(Color)colorMap.get("SER"+i);
+					Color gradient=new Color(Integer.decode("#FFFFFF").intValue());
+					if (gradientMap != null)
+						gradient=(Color)gradientMap.get("SER"+i);
+					
 					if(color!=null){
-						renderer.setSeriesPaint(numSerieColored, color);
+						 Paint p = new GradientPaint(
+						            0.0f, 0.0f, color, 0.0f, 0.0f, gradient);
+
+						//renderer.setSeriesPaint(numSerieColored, color);
+						renderer.setSeriesPaint(numSerieColored, p);
 					}
 					numSerieColored++;
 				}
 			}
 		}
+		renderer.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL));
 
 		MyStandardCategoryItemLabelGenerator generator=null;
 		if(additionalLabels){
@@ -482,7 +509,6 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		SubCategoryAxis domainAxis = new SubCategoryAxis(categoryLabel + " / " + subCategoryLabel);    
 		String subCatLabel = "";
 		for (int j=1; j <= numGroups.intValue(); j++ ){
-	       // domainAxis.setSubLabelPaint(paint)(0.05);
 			if(subCatLabelsMap!=null)
 				subCatLabel=(String)subCatLabelsMap.get("CAT"+j);
 			else
@@ -491,7 +517,9 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	        domainAxis.addSubCategory(subCatLabel);
 		}
 		plot.setDomainAxis(domainAxis);
-		plot.setRenderer(renderer);
+		 plot.setRenderer(renderer);
+		
+
 		/*
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(

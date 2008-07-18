@@ -262,6 +262,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 */
 	public List loadLowFunctionalityList(List functionalityIDs) throws EMFUserError {
 		logger.debug( "IN" );
+		if (functionalityIDs!=null){
+		    logger.debug( "SIZE="+functionalityIDs.size() );
+		    Iterator iter=functionalityIDs.iterator();
+		    while (iter.hasNext()){
+			logger.debug( "Function ID="+((Integer)iter.next()).toString() );
+		    }
+		}
 		List lowFunctList = new ArrayList();
 		Session aSession = null;
 		Transaction tx = null;
@@ -274,7 +281,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			Criterion domainCdCriterrion = Expression.in("functId", functionalityIDs);		
 			criteria.add(domainCdCriterrion);
 			List temp = criteria.list();
-			//Query query=aSession.createQuery("from SbiFunctions f inner join f.sbiFuncRoles where functId in ("+functionalityIDs.get(0)+")");
+			//Query query=aSession.createQuery("from SbiFunctions f inner join f.sbiFuncRoles where s.functId in ("+functionalityIDs.get(0)+")");
 			//List temp = query.list();
 			if(!temp.isEmpty()){
 			Iterator it = temp.iterator();
@@ -282,9 +289,11 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				SbiFunctions func = (SbiFunctions)it.next();
 				LowFunctionality lowFunctionality = toLowFunctionality(func, false);
 				lowFunctList.add(lowFunctionality);
+				logger.debug( "ADD funcionality:"+lowFunctionality.getName() );
 			}
 			}
 			tx.commit();
+		
 		} catch (HibernateException he) {
 			logger.error( "HibernateException",he );
 			if (tx != null)
@@ -295,7 +304,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-		logger.debug( "OUT" );
+		logger.debug( "OUT.Size="+lowFunctList.size() );
 		return lowFunctList;
 	}
 	
@@ -725,10 +734,12 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		logger.debug( "IN" );
 		LowFunctionality lowFunct = new LowFunctionality();
 		lowFunct.setId(hibFunct.getFunctId());
+		logger.debug( "ID="+hibFunct.getFunctId().toString() );
 		lowFunct.setCode(hibFunct.getCode());
 		lowFunct.setCodType(hibFunct.getFunctTypeCd());
 		lowFunct.setDescription(hibFunct.getDescr());
 		lowFunct.setName(hibFunct.getName());
+		logger.debug( "NAME="+hibFunct.getName() );
 		lowFunct.setPath(hibFunct.getPath());
 		lowFunct.setProg(hibFunct.getProg());
 		SbiFunctions parentFuntionality = hibFunct.getParentFunct();
@@ -744,23 +755,26 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		List execRolesList = new ArrayList();
 		
 		Set roles = hibFunct.getSbiFuncRoles();
-		Iterator iterRoles = roles.iterator();
-		while(iterRoles.hasNext()) {
-			SbiFuncRole hibfuncrole = (SbiFuncRole)iterRoles.next();
-		    SbiExtRoles hibRole = hibfuncrole.getId().getRole();
-		    SbiDomains hibState = hibfuncrole.getId().getState();
-		    
-		    RoleDAOHibImpl roleDAO =  new RoleDAOHibImpl();
-		    Role role = roleDAO.toRole(hibRole);
-		    
-		    String state = hibState.getValueCd();
-		    if(state.equals("DEV")) {
-		    	devRolesList.add(role);
-		    } else if(state.equals("TEST")) {
-		    	testRolesList.add(role);
-		    } else if(state.equals("REL")) {
-		    	execRolesList.add(role);
-		    }
+		if (roles!=null){
+        		logger.debug( "getSbiFuncRoles() size="+roles.size() );
+        		Iterator iterRoles = roles.iterator();
+        		while(iterRoles.hasNext()) {
+        			SbiFuncRole hibfuncrole = (SbiFuncRole)iterRoles.next();
+        		    SbiExtRoles hibRole = hibfuncrole.getId().getRole();
+        		    SbiDomains hibState = hibfuncrole.getId().getState();
+        		    logger.debug( "hibfuncrole.getId().getRole().getName()="+hibRole.getName() );
+        		    RoleDAOHibImpl roleDAO =  new RoleDAOHibImpl();
+        		    Role role = roleDAO.toRole(hibRole);
+        		    
+        		    String state = hibState.getValueCd();
+        		    if(state.equals("DEV")) {
+        		    	devRolesList.add(role);
+        		    } else if(state.equals("TEST")) {
+        		    	testRolesList.add(role);
+        		    } else if(state.equals("REL")) {
+        		    	execRolesList.add(role);
+        		    }
+        		}
 		}
 		
 		Role[] execRoles = new Role[execRolesList.size()];

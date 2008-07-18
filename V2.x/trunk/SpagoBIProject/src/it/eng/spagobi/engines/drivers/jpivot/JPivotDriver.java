@@ -138,9 +138,9 @@ public class JPivotDriver implements IEngineDriver {
 	    map = getMap(biobj, profile, roleName);
 	    SubObject subObj = (SubObject) subObject;
 	    map = getParameterMap(object, profile, roleName);
-	    String nameSub = subObj.getName();
+	    String nameSub = (subObj.getName()==null)?"":subObj.getName();
 	    map.put("nameSubObject", nameSub);
-	    String descrSub = subObj.getDescription();
+	    String descrSub = (subObj.getDescription()==null)?"":subObj.getDescription();
 	    map.put("descriptionSubObject", descrSub);
 	    String visStr = "Private";
 	    boolean visBool = subObj.getIsPublic().booleanValue();

@@ -10,7 +10,7 @@
            		<param name="sequence">sbi_menu_seq</param>
             </generator>
         </id>
-        <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
+        <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" fetch="join">
             <column name="biobj_id" />
         </many-to-one>
         <property name="name" type="string">

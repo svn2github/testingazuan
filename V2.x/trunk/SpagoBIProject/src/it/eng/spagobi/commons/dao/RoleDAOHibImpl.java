@@ -30,6 +30,7 @@ package it.eng.spagobi.commons.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
 import it.eng.spagobi.commons.bo.Role;
@@ -43,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -59,6 +61,7 @@ import org.hibernate.criterion.Expression;
  */
 public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 
+	private static transient Logger logger = Logger.getLogger(RoleDAOHibImpl.class);
 	/**
 	 * Load by id.
 	 * 
@@ -478,6 +481,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 	 * @return The corrispondent <code>Role</code> object
 	 */
 	public Role toRole(SbiExtRoles hibRole){
+	    logger.debug( "IN.hibRole.getName()="+hibRole.getName() );
 		Role role = new Role();
 		role.setCode(hibRole.getCode());
 		role.setDescription(hibRole.getDescr());
@@ -493,6 +497,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setIsAbleToSaveIntoPersonalFolder(hibRole.getIsAbleToSaveIntoPersonalFolder() == null || hibRole.getIsAbleToSaveIntoPersonalFolder().booleanValue());
 		role.setRoleTypeCD(hibRole.getRoleTypeCode());
 		role.setRoleTypeID(hibRole.getRoleType().getValueId());
+		logger.debug( "IN" );
 		return role;
 	}
 

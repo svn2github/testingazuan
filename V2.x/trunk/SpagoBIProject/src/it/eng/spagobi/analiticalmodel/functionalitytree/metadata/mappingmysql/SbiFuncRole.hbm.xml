@@ -8,10 +8,10 @@
 -->
     <class name="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole" table="SBI_FUNC_ROLE">
         <composite-id name="id" class="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId">
-            <key-many-to-one name="state" class="it.eng.spagobi.commons.metadata.SbiDomains">
+            <key-many-to-one name="state" class="it.eng.spagobi.commons.metadata.SbiDomains" >
                 <column name="state_id" />
             </key-many-to-one>
-            <key-many-to-one name="role" class="it.eng.spagobi.commons.metadata.SbiExtRoles">
+            <key-many-to-one name="role" class="it.eng.spagobi.commons.metadata.SbiExtRoles" >
                 <column name="role_id" />
             </key-many-to-one>
             <key-many-to-one name="function" class="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions">

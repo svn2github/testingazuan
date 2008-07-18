@@ -11,7 +11,7 @@
             <key-many-to-one name="sbiParuse" class="it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse">
                 <column name="use_id" />
             </key-many-to-one>
-            <key-many-to-one name="sbiExtRoles" class="it.eng.spagobi.commons.metadata.SbiExtRoles">
+            <key-many-to-one name="sbiExtRoles" class="it.eng.spagobi.commons.metadata.SbiExtRoles" lazy="false">
                 <column name="ext_role_id" />
             </key-many-to-one>
         </composite-id>

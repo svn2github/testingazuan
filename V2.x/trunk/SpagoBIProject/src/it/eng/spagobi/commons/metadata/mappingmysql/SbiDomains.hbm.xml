@@ -6,8 +6,7 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.commons.metadata.SbiDomains" table="SBI_DOMAINS">
-    <cache usage="read-only"/>
+    <class name="it.eng.spagobi.commons.metadata.SbiDomains" table="SBI_DOMAINS">    
         <id name="valueId" type="integer">
             <column name="VALUE_ID" />
             <generator class="native">

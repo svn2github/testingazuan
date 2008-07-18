@@ -4,7 +4,6 @@
 <hibernate-mapping>
 
     <class name="it.eng.spagobi.commons.metadata.SbiUserFunctionality" table="SBI_USER_FUNC">
-        <cache usage="read-only"/>
         <id name="id" type="integer">
             <column name="USER_FUNCT_ID" />
             <generator class="native">

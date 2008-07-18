@@ -22,10 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.dao;
 
 
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 
@@ -37,6 +36,8 @@ import org.hibernate.Session;
  */
 public class AbstractHibernateDAO {
 	
+    private static transient Logger logger = Logger.getLogger(AbstractHibernateDAO.class);
+    
 	/**
 	 * Gets tre current session.
 	 * 
@@ -52,9 +53,6 @@ public class AbstractHibernateDAO {
 	 * @param t The input throwable object
 	 */
 	public void logException(Throwable t){
-		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-				            t.getClass().getName(), 
-				            "", 
-				            t.getMessage());
+	    logger.error(t.getClass().getName()+" "+t.getMessage(),t);
 	}
 }

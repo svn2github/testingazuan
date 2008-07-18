@@ -13,7 +13,7 @@
            		<param name="sequence">sbi_objects_seq</param>
             </generator>
         </id>
-        <many-to-one name="sbiEngines" class="it.eng.spagobi.engines.config.metadata.SbiEngines">
+        <many-to-one name="sbiEngines" class="it.eng.spagobi.engines.config.metadata.SbiEngines" fetch="join">
             <column name="engine_id" not-null="true" />
         </many-to-one>
         <many-to-one name="stateConsideration" class="it.eng.spagobi.commons.metadata.SbiDomains">
@@ -28,10 +28,10 @@
         <many-to-one name="objectType" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="biobj_type_id" not-null="true" />
         </many-to-one>
-        <many-to-one name="dataSource" class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource">
+        <many-to-one name="dataSource" class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource" fetch="join">
             <column name="data_source_id" not-null="false" />
         </many-to-one>
-        <many-to-one name="dataSet" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSet">
+        <many-to-one name="dataSet" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" fetch="join">
             <column name="data_set_id" not-null="false" />
         </many-to-one>        
         <property name="objectTypeCode" type="string">

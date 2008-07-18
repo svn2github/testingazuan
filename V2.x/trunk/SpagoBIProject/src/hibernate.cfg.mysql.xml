@@ -14,9 +14,9 @@
         -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.show_sql">false</property>
+       
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
-        
-        
+       
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiDomains.hbm.xml" />
@@ -71,5 +71,17 @@
          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenuRole.hbm.xml" />
+        
+        
+        <class-cache class="it.eng.spagobi.commons.metadata.SbiExtRoles" usage="read-only"/>
+        <class-cache class="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" usage="nonstrict-read-write"/>
+        <class-cache class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource" usage="nonstrict-read-write"/>
+        <class-cache class="it.eng.spagobi.commons.metadata.SbiDomains" usage="read-only"/>
+		<class-cache class="it.eng.spagobi.commons.metadata.SbiUserFunctionality" usage="read-only"/> 
+		<class-cache class="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole" usage="nonstrict-read-write"/>
+	
+		<!--   class-cache class="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions" usage="nonstrict-read-write"/ -->
+		<!--  collection-cache collection="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions.sbiFuncRoles" usage="nonstrict-read-write"/ -->   
+		        
     </session-factory>
 </hibernate-configuration>

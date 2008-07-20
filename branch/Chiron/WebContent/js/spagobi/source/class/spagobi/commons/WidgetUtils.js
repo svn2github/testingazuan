@@ -212,7 +212,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text: '',
         		items: [],
         		listeners: [],
-        		labelwidth: 80,
+        		labelwidth: 80
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);

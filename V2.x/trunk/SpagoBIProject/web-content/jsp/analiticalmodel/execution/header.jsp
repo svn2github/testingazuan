@@ -157,6 +157,7 @@ boolean toolbarIsVisible = Boolean.parseBoolean(ChannelUtilities.getPreferenceVa
 // if the modality is SINGLE_OBJECT and there are no parameters or ALL parameters are transient, the slider for parameters, viewpoints, subobjects and snapshots is not displayed
 List params = obj.getBiObjectParameters();
 boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) || (params != null && params.size() > 0 && !areAllParametersTransient(params));
+String outputType = (String)executionParameters.get("outputType");
 %>
 
 <div class='execution-page-title'>
@@ -181,7 +182,13 @@ boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJ
 	%>
 	<%= title %>
 </div>
-
+<script type="text/javascript">
+		function changeDivDisplay(id,display){
+			elem = document.getElementById(id);
+ 			elem.style.visibility = display;
+		}
+	
+	</script>
 <%
 if (toolbarIsVisible) {
 	%>
@@ -381,7 +388,16 @@ if (toolbarIsVisible) {
 				title: '<spagobi:message key = "sbi.execution.sendTo" />'
 			});
 		};
+		<% if ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		win_sendTo_<%= uuid %>.show();
+		<% if ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		win_sendTo_<%= uuid %>.on('beforehide', function() {
+			changeDivDisplay('divIframe<%= uuid %>','visible');
+			return true;
+		});
+		<% } %>
 	});
 	</script>
 	<% } %>
@@ -433,7 +449,16 @@ if (toolbarIsVisible) {
 				items: saveRememberMeForm<%= uuid %>
 			});
 		};
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		win_saveRM<%= uuid %>.show();
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		win_saveRM<%= uuid %>.on('beforehide', function() {
+			changeDivDisplay('divIframe<%= uuid %>','visible');
+			return true;
+		});
+		<% } %>
 		}
 	);
 	
@@ -610,7 +635,17 @@ if (toolbarIsVisible) {
 				title: '<spagobi:message key = "sbi.execution.notes.insertNotes" />'
 			});
 		};
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		win_notes_<%= uuid %>.show();
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		win_notes_<%= uuid %>.on('beforehide', function() {
+			changeDivDisplay('divIframe<%= uuid %>','visible');
+			return true;
+		});
+		<% } %>
+		
 	});
 	</script>
 	<% } %>
@@ -644,7 +679,16 @@ if (toolbarIsVisible) {
 				title: '<spagobi:message key = "SBISet.objects.captionMetadata" />'
 			});
 		};
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){ %>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		win_metadata_<%= uuid %>.show();
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		win_metadata_<%= uuid %>.on('beforehide', function() {
+			changeDivDisplay('divIframe<%= uuid %>','visible');
+			return true;
+		});
+		<% } %>
 	});
 	</script>
 	<% } %>
@@ -688,9 +732,16 @@ if (toolbarIsVisible) {
 				title: '<spagobi:message key = "metadata.docRating" />'
 			});
 		};
-		
+		<% if ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){ %>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		win_rating_<%= uuid %>.show();
-		
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		win_rating_<%= uuid %>.on('beforehide', function() {
+			changeDivDisplay('divIframe<%= uuid %>','visible');
+			return true;
+		});
+		<% } %>
 	});
 	</script>
 	<% } %>

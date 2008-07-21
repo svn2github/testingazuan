@@ -175,6 +175,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= getUrl(obj.getEngine().getUrl(), executionParameters) %>&EXECUTION_ID=<%= uuid %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>
+
 <%-- End execution iframe --%>
 
 <%-- start cross navigation scripts --%>

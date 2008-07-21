@@ -628,7 +628,7 @@ public class ParametersGeneratorTag extends TagSupport {
         htmlStream.append("		<div style='clear:left;width:" + getParamLabelDivWidth() + "px;float:left;'>\n");
 	
 	htmlStream.append("			<span class='portlet-form-field-label'>");
-	htmlStream.append(biparam.getLabel());
+	String toInsert = biparam.getLabel();
 	//Puts an * if the parameter is mandatory
 	List checks = biparam.getParameter().getChecks();
 	if (!checks.isEmpty()){
@@ -637,10 +637,16 @@ public class ParametersGeneratorTag extends TagSupport {
 		while (it.hasNext()){
 		check = (Check)it.next();
 		if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")){
-			htmlStream.append("*" );
+			toInsert = "* "+toInsert;
+			break;
+		}else{
+			toInsert = "&nbsp; &nbsp;"+toInsert;
 		}
 		} 
+	  }else{
+		  toInsert = "&nbsp;"+toInsert; 
 	  }
+	htmlStream.append(toInsert);
 	htmlStream.append("</span>\n");
 	htmlStream.append("		</div>\n");
 	htmlStream.append("		<div class='div_detail_form'>\n");

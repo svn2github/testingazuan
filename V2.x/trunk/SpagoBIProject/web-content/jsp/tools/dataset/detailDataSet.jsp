@@ -305,7 +305,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDataSet.query" />
 			</span>
 		</div>
-	    <div style="height:90px;">
+	    <div style="height:150px;">
 		<%
 			   String query =""; 
 				if(ds instanceof QueryDataSet){		
@@ -316,7 +316,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 		
-		<textarea id="QUERY" rows="4" cols="80" name="QUERY" <%=disableQuery%>><%=query%></textarea>
+		<textarea id="QUERY" rows="8" cols="80" name="QUERY" style="font-size:9pt" <%=disableQuery%>><%=query%></textarea>
 		<BR>
 	   
 	   </div>

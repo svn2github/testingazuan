@@ -19,8 +19,8 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SEL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'PAR_TYPE', 'Parameter type', 'STRING', 'String', 'Parameter expects textual values' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ROLE_TYPE', 'User role type', 'USER', 'Functional role', 'Functional role for end users' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ROLE_TYPE', 'User role type', 'ADMIN', 'Administrative role', 'Administrative role for developer users'
-INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('ROLE_TYPE', 'Developer role type', 'DEV_ROLE', 'Developer role', 'Developer role for developer users');
-INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('ROLE_TYPE', 'Tester role type', 'TEST_ROLE', 'Tester role', 'Tester role for tester users');
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ROLE_TYPE', 'Developer role type', 'DEV_ROLE', 'Developer role', 'Developer role for developer users';
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ROLE_TYPE', 'Tester role type', 'TEST_ROLE', 'Tester role', 'Tester role for tester users';
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'STATE', 'Object state', 'SUSP', 'Suspended', 'Document temporanlly not in use'  
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'FUNCT_TYPE', 'Functionality', 'LOW_FUNCT', 'Low level functionality', 'BI Functionality joined to cate ries tree' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'FUNCT_TYPE', 'Functionality', 'USER_FUNCT', 'User functionality', 'BI Functionality joined to cate ries tree'
@@ -61,7 +61,7 @@ INSERT SBI_ENGINES
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '',
 '', '', '', 'DashboardInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.engines.dashboard.Spa BIDashboardInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.engines.dashboard.Spa BIDashboardInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DASH'

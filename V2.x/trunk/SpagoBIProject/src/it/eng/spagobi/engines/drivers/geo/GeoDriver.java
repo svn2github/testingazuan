@@ -57,6 +57,7 @@ public class GeoDriver implements IEngineDriver {
 	static private Logger logger = Logger.getLogger(GeoDriver.class);
 	
 	public static final String DOCUMENT_ID = "document";
+	public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
 	public static final String USER_ID = "userId";
 	
 	public static final String COUNTRY = "country";
@@ -178,6 +179,7 @@ public class GeoDriver implements IEngineDriver {
 		ObjTemplate objtemplate;
 		byte[] template;
 		String documentId;
+		String documentlabel;
 		
 		pars = new Hashtable();
 		try {
@@ -191,13 +193,13 @@ public class GeoDriver implements IEngineDriver {
 				throw new Exception("Content of the Active template null");
 			}
 			
-		    documentId = biobj.getId().toString();		    
+		    documentId = biobj.getId().toString();			    
 		    pars.put(DOCUMENT_ID, documentId);
-		    logger.debug("Add document parameter: " + documentId);
+		    logger.debug("Add " + DOCUMENT_ID + " parameter: " + documentId);
 		    
-		    //pars.put("templatePath",biobj.getPath() + "/template");
-			//pars.put("spagobiurl", GeneralUtilities.getSpagoBiContentRepositoryServlet());
-			//pars.put("mapCatalogueManagerUrl", GeneralUtilities.getMapCatalogueManagerServlet());
+		    documentlabel = biobj.getLabel().toString();
+		    pars.put(DOCUMENT_LABEL, documentlabel);
+		    logger.debug("Add " + DOCUMENT_LABEL + " parameter: " + documentlabel);
 		    
 		    pars = addBIParameters(biobj, pars);
 		} catch (Exception e) {

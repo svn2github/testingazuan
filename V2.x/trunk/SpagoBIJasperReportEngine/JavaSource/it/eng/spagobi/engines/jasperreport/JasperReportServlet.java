@@ -161,7 +161,8 @@ public class JasperReportServlet extends HttpServlet {
 	    out.close();
 
 	    if (outputType == null)
-		outputType = ExporterFactory.getDefaultType();
+		//outputType = ExporterFactory.getDefaultType();
+	    outputType = "html";
 	    response.setHeader("Content-Disposition", "filename=\"report." + outputType + "\";");
 	    // response.setContentType((String)extensions.get(outputType));
 	    response.setContentLength((int) tmpFile.length());

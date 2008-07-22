@@ -229,7 +229,8 @@ public class JasperReportRunner {
 			String outputType = (String) parameters.get("outputType");
 			if(outputType == null) {
 				logger.debug("Output type is not specified. Default type will be used");
-				outputType = ExporterFactory.getDefaultType();
+				outputType = "html";
+				//outputType = ExporterFactory.getDefaultType();
 			}
 			logger.debug("Output format is [" + outputType + "]");
 			Monitor monitorExportReport =MonitorFactory.start("JasperReportRunner.ExportReport");

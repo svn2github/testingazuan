@@ -40,7 +40,7 @@
 	<!-- ====================================================================================== -->
 	  
 	<!--
-	<EXPORTERS default="html">
+	<EXPORTERS>
 		
 		<EXPORTER 	format="html" 
 					mime="text/html"

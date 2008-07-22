@@ -465,6 +465,9 @@ if (toolbarIsVisible) {
 	function saveRememberMe<%= uuid %>() {
 		var nameRM = escape(rememberMeName<%= uuid %>.getValue());
 		if (nameRM == null || nameRM == '') {
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		   changeDivDisplay('divIframe<%= uuid %>','hidden');
+		   <% } %>
 			Ext.MessageBox.show({
 				msg: '<spagobi:message key="sbi.rememberme.missingName" />',
 				buttons: Ext.MessageBox.OK,
@@ -475,6 +478,9 @@ if (toolbarIsVisible) {
 		}
 		win_saveRM<%= uuid %>.hide();
 		var descRM = escape(rememberMeDescr<%= uuid %>.getValue());
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		Ext.MessageBox.wait('Please wait...', 'Processing');
 		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
 		url += "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
@@ -510,7 +516,11 @@ if (toolbarIsVisible) {
 			method: 'get',
 			success: function (result, request) {
 				response = result.responseText || "";
+				<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+				changeDivDisplay('divIframe<%= uuid %>','hidden');
+				<% } %>
 				showSaveRememberMeResult<%= uuid %>(response);
+				
 			},
 			params: pars,
 			failure: somethingWentWrongSavingRememberMe
@@ -538,10 +548,17 @@ if (toolbarIsVisible) {
 			width:300,
 			icon: iconRememberMe<%= uuid %>
 		});
+		
 	}
 	
 	function somethingWentWrongSavingRememberMe() {
+	<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+	    changeDivDisplay('divIframe<%= uuid %>','hidden');
+	    <% } %>
 		alert('Error while saving');
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','visible');
+		<% } %>
 	}
 	</script>
 	<% } %>
@@ -561,6 +578,9 @@ if (toolbarIsVisible) {
 			method: 'get',
 			success: function (result, request) {
 				response = result.responseText || "";
+				<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+				changeDivDisplay('divIframe<%= uuid %>','hidden');
+				<% } %>
 				showSaveToPFResult<%= uuid %>(response);
 			},
 			//params: pars,
@@ -587,12 +607,20 @@ if (toolbarIsVisible) {
 			msg: response,
 			buttons: Ext.MessageBox.OK,
 			width:300,
-			icon: iconSaveToPF<%= uuid %>
+			icon: iconSaveToPF<%= uuid %>,
+			animEl: 'root-menu'        			
 		});
-	}
+			
+}
 	
 	function somethingWentWrongSavingIntoMyFolder() {
+	<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','hidden');
+		<% } %>
 		alert('Error while saving');
+		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
+		changeDivDisplay('divIframe<%= uuid %>','visible');
+		<% } %>
 	}
 	</script>
 	<% } %>

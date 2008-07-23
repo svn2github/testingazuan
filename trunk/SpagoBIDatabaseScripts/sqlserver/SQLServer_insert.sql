@@ -50,7 +50,7 @@ INSERT SBI_ENGINES
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '',
 '', '', '', 'DashboardInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.engines.dashboard.Spa BIDashboardInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.engines.dashboard.Spa BIDashboardInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DASH'

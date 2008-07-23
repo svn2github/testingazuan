@@ -38,52 +38,52 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SEL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'PRED_CHECK', 'Check', 'MANDATORY', 'Mandatory', 'Mandatory' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'PRED_CHECK', 'Pred Check', 'FISCALCODE', 'Fiscal Code', 'Fiscal Code' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'PRED_CHECK', 'Pred Check', 'EMAIL', 'E-Mail', 'E-Mail' 
-INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ENGINE_TYPE', 'Engine types', 'EXT', 'External Engine', 'Business intelligence external engine of Spa BI platform' 
-INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ENGINE_TYPE', 'Engine types', 'INT', 'Internal Engine', 'Business intelligence internal engine of Spa BI platform' 
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ENGINE_TYPE', 'Engine types', 'EXT', 'External Engine', 'Business intelligence external engine of SpagoBI platform' 
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'ENGINE_TYPE', 'Engine types', 'INT', 'Internal Engine', 'Business intelligence internal engine of SpagoBI platform' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','LIST','List values selection','Single-value selection from a list' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','CHECK_LIST','CheckList values selection','Multi-value selection from a checklist' 
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'SELECTION_TYPE','Selection modality of parameter values','COMBOBOX','ComboBox values selection','Single value selection from a combobox' 
 
---INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) VALUES (0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '', '', '', '', 'DashboardInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.engines.dashboard.Spa BIDashboardInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DASH') go) 
+--INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) VALUES (0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '', '', '', '', 'DashboardInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DASH') go) 
 INSERT SBI_ENGINES
 (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR,
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '',
 '', '', '', 'DashboardInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.engines.dashboard.Spa BIDashboardInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DASH'
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
--- VALUES (0, 'Booklet Internal Engine', 'Booklet Internal Engine', '', '', '', '', '', 'BookletInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.booklets.engines.Spa BIBookletInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='BOOKLET') go) 
+-- VALUES (0, 'Booklet Internal Engine', 'Booklet Internal Engine', '', '', '', '', '', 'BookletInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spagobi.booklets.engines.SpagoBIBookletInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='BOOKLET') go) 
 INSERT SBI_ENGINES
 (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR,
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Booklet Internal Engine', 'Booklet Internal Engine', '', '',
 '', '', '', 'BookletInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.booklets.engines.Spa BIBookletInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.booklets.engines.SpagoBIBookletInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='BOOKLET'
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) VALUES 
---(0, 'Office Document Internal Engine', 'Office Document Internal Engine', '', '', '', '', '', 'OfficeInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.engines.officeDocuments.Spa BIOfficeDocumentInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='OFFICE_DOC') go) 
+--(0, 'Office Document Internal Engine', 'Office Document Internal Engine', '', '', '', '', '', 'OfficeInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='OFFICE_DOC') go) 
 INSERT SBI_ENGINES
 (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR,
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Office Document Internal Engine', 'Office Document Internal Engine', '', '',
 '', '', '', 'OfficeInternalEng',
-S1.VALUE_ID, 'it.eng.spa bi.engines.officeDocuments.Spa BIOfficeDocumentInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.engines.officeDocuments.SpagoBIOfficeDocumentInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='OFFICE_DOC'
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) 
---VALUES (0, 'Dashboard Composition Internal Engine', 'Dashboard Composition Internal Engine', '', '', '', '', '', 'DashboardCompIE', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.engines.dashboardscomposition.Spa BIDashboardsCompositionInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DASH') go) 
+--VALUES (0, 'Dashboard Composition Internal Engine', 'Dashboard Composition Internal Engine', '', '', '', '', '', 'DashboardCompIE', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spagobi.engines.dashboardscomposition.SpagoBIDashboardsCompositionInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DASH') go) 
 INSERT SBI_ENGINES
 (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR,
  OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE)
 SELECT 0, 'Dashboard Composition Internal Engine', 'Dashboard Composition Internal Engine', '', '',
 '', '', '', 'DashboardCompIE',
-S1.VALUE_ID, 'it.eng.spa bi.engines.dashboardscomposition.Spa BIDashboardsCompositionInternalEngine', S2.VALUE_ID
+S1.VALUE_ID, 'it.eng.spagobi.engines.dashboardscomposition.SpagoBIDashboardsCompositionInternalEngine', S2.VALUE_ID
 from SBI_DOMAINS S1, SBI_DOMAINS S2
 where S1.DOMAIN_CD='ENGINE_TYPE' and S1.VALUE_CD='INT'
 and S2.DOMAIN_CD='BIOBJ_TYPE' and S2.VALUE_CD='DASH'

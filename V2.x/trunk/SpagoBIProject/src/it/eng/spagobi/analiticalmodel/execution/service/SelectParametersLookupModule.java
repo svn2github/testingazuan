@@ -552,10 +552,30 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		moduleConfigStr.append("			<ONCLICK>");
 		moduleConfigStr.append("				<![CDATA[");
 		// sets value and its description on parameters form (that is on parent window)
-		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value += ';<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value += ';<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
-		// hides this window 
-		// moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
+		moduleConfigStr.append("				var a = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value;");
+		moduleConfigStr.append("				var b = ';<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				var pos = a.indexOf(b);");
+		
+		moduleConfigStr.append("				var aDesc = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value ;");
+		moduleConfigStr.append("				var bDesc = ';<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				var posDesc = aDesc.indexOf(bDesc);");
+		
+		moduleConfigStr.append("				if (pos>=0){");
+		moduleConfigStr.append("				 		   var bLength = b.length ;");
+		moduleConfigStr.append("				 		   var endPos = pos + bLength ; ");
+		moduleConfigStr.append("				 		   var aLength = a.length ;");
+		moduleConfigStr.append("				 		   a = a.substring(0,pos)+a.substring(endPos,aLength);");
+		moduleConfigStr.append("				 		   var bLengthDesc = bDesc.length ;");
+		moduleConfigStr.append("				 		   var endPosDesc = posDesc + bLengthDesc ; ");
+		moduleConfigStr.append("				 		   var aLengthDesc = aDesc.length ;");
+		moduleConfigStr.append("				 		   aDesc = aDesc.substring(0,posDesc)+aDesc.substring(endPosDesc,aLengthDesc);");
+		moduleConfigStr.append("				           }else{");
+		moduleConfigStr.append("				            a = a+b;");
+		moduleConfigStr.append("				            aDesc = aDesc+bDesc;");
+		moduleConfigStr.append("				           }");
+
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value = a ;");
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value = aDesc ;");
 		// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
 		// get current biparameter id
 		String objParIdStr = (String) request.getAttribute("objParId");

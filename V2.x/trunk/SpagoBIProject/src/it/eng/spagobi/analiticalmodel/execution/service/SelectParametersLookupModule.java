@@ -71,6 +71,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import sun.nio.cs.ext.ISCII91;
+
 /**
  * 
  * @author Angelo Bernabei - angelo.bernabei@eng.it
@@ -94,6 +96,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
     private static final String RETURN_PARAM = "returnParam";
     
     private static final String RETURN_FIELD_NAME = "parameterFieldName";
+    private boolean isChecklist = false ; 
     
     /**
      * Class Constructor.
@@ -124,6 +127,11 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	// check if the parameter use is manual input
 	IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
 	ParameterUse paruse = parusedao.loadByParameterIdandRole(parId, roleName);
+	//check if the parameter is a list or a check list
+	String selectionType = paruse.getSelectionType();
+	
+	if (selectionType!= null && selectionType.equals("CHECK_LIST"))isChecklist = true;
+	
 	Integer manInp = paruse.getManualInput();
 	if (manInp.intValue() == 1) {
 	    String message = PortletUtilities.getMessage("scheduler.fillparmanually", "component_scheduler_messages");
@@ -472,16 +480,21 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		return list;
 	}
 	logger.debug("valColName="+valColName);
+	int rowSize = 0;
 	// fill paginator
 //	int count = 0;
 	if (rowsSourceBean != null) {
 	    List rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
+	    rowSize = rows.size();
 	    for (int i = 0; i < rows.size(); i++) {
 		paginator.addRow(rows.get(i));
 //		count++;
 	    }
 	}
-//	paginator.setPageSize(count);
+	//in case it is a check list, sets all values in one page
+	//if(isChecklist)
+	// paginator.setPageSize(8000);
+	
 	list.setPaginator(paginator);
 
 	// get all the columns name
@@ -533,36 +546,73 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	}
 	moduleConfigStr.append("	</COLUMNS>");
 	moduleConfigStr.append("	<CAPTIONS>");
-	moduleConfigStr.append("		<SELECT_CAPTION  confirm=\"FALSE\" image=\"/img/button_ok.gif\" label=\"SBIListLookPage.selectButton\">");
-	moduleConfigStr.append("			<ONCLICK>");
-	moduleConfigStr.append("				<![CDATA[");
-	// sets value and its description on parameters form (that is on parent window)
-	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-	moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value='<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
-	// hides this window 
-	moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
-	// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
-	// get current biparameter id
-	String objParIdStr = (String) request.getAttribute("objParId");
-	Integer objParId = new Integer(objParIdStr);
-	// search for biparameters that depend from the current one:
-	List lblBiParamDependent = null;
-	try {
-	    lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(objParId);
-	} catch (Exception e) {
-	    logger.error("Error while recovering dependencies " + " for biparm id " + objParIdStr, e);
-	    lblBiParamDependent = new ArrayList();
+	if(isChecklist){
+		
+		moduleConfigStr.append("		<SELECT_CAPTION  checkList=\"true\" confirm=\"FALSE\" label=\"SBIListLookPage.selectButton\">");
+		moduleConfigStr.append("			<ONCLICK>");
+		moduleConfigStr.append("				<![CDATA[");
+		// sets value and its description on parameters form (that is on parent window)
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value += ';<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value += ';<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
+		// hides this window 
+		// moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
+		// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
+		// get current biparameter id
+		String objParIdStr = (String) request.getAttribute("objParId");
+		Integer objParId = new Integer(objParIdStr);
+		// search for biparameters that depend from the current one:
+		List lblBiParamDependent = null;
+		try {
+		    lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(objParId);
+		} catch (Exception e) {
+		    logger.error("Error while recovering dependencies " + " for biparm id " + objParIdStr, e);
+		    lblBiParamDependent = new ArrayList();
+		}
+		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+			// find parameters form uuid:
+			String uuid = (String) request.getAttribute("uuid");
+			 // sets correlation flag and submits parameters form
+			moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
+			moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+		}
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</ONCLICK>");
+		moduleConfigStr.append("		</SELECT_CAPTION>");
+		
+	}else{
+		
+		moduleConfigStr.append("		<SELECT_CAPTION  confirm=\"FALSE\" image=\"/img/button_ok.gif\" label=\"SBIListLookPage.selectButton\">");
+		moduleConfigStr.append("			<ONCLICK>");
+		moduleConfigStr.append("				<![CDATA[");
+		// sets value and its description on parameters form (that is on parent window)
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value='<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value='<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
+		// hides this window 
+		moduleConfigStr.append("				parent.win_<PARAMETER name='" + RETURN_FIELD_NAME + "' scope='SERVICE_REQUEST'/>.hide();");
+		// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
+		// get current biparameter id
+		String objParIdStr = (String) request.getAttribute("objParId");
+		Integer objParId = new Integer(objParIdStr);
+		// search for biparameters that depend from the current one:
+		List lblBiParamDependent = null;
+		try {
+		    lblBiParamDependent = DAOFactory.getObjParuseDAO().getDependencies(objParId);
+		} catch (Exception e) {
+		    logger.error("Error while recovering dependencies " + " for biparm id " + objParIdStr, e);
+		    lblBiParamDependent = new ArrayList();
+		}
+		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+			// find parameters form uuid:
+			String uuid = (String) request.getAttribute("uuid");
+			 // sets correlation flag and submits parameters form
+			moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
+			moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+		}
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</ONCLICK>");
+		moduleConfigStr.append("		</SELECT_CAPTION>");
+		
 	}
-	if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-		// find parameters form uuid:
-		String uuid = (String) request.getAttribute("uuid");
-		 // sets correlation flag and submits parameters form
-		moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
-		moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
-	}
-	moduleConfigStr.append("				]]>");
-	moduleConfigStr.append("			</ONCLICK>");
-	moduleConfigStr.append("		</SELECT_CAPTION>");
 	moduleConfigStr.append("	</CAPTIONS>");
 	moduleConfigStr.append("	<BUTTONS/>");
 	moduleConfigStr.append("</CONFIG>");

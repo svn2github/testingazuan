@@ -53,6 +53,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.portlet.PortletURL;
@@ -347,6 +348,18 @@ public class ListTag extends TagSupport
 	protected void makeRows() throws JspException 
 	{
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
+		
+		//gets the eventual map for the checklist
+		Map subreportMap = new HashMap();
+		for(int i = 0; i < rows.size(); i++) {
+			SourceBean subreport = (SourceBean)rows.get(i);
+			Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");
+			if(id!=null) {
+				logger.debug("ListTag::makeRows:request: SUBREPORT_ID = " + id);
+			    subreportMap.put(id.toString(), id);
+			}
+			    
+		}
 	    
 		// js function for item action confirm
 		_htmlStream.append(" <script>\n");
@@ -384,7 +397,6 @@ public class ListTag extends TagSupport
 				_htmlStream.append(" <td>" + field + "</td>\n");
 			} 
 			
-			
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 			List captions = captionsSB.getContainedSourceBeanAttributes();
 			Iterator iter = captions.iterator();
@@ -396,6 +408,11 @@ public class ListTag extends TagSupport
 				String captionName = captionSB.getName();
 				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
+				
+				//verifies if it's a checklist
+				String checklist = (String)captionSB.getAttribute("checkList");
+				boolean isChecklist = false ;
+				if (checklist!=null && checklist.equalsIgnoreCase("true")) isChecklist=true;
 				
 				//gets the parameters for the pop up window
 				String popupStr = (String)captionSB.getAttribute("popup");
@@ -432,6 +449,30 @@ public class ListTag extends TagSupport
 				
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
+					
+					if (isChecklist){
+						
+						_htmlStream.append(" <td width='20'>\n");
+						if(subreportMap.containsKey(prog)) {
+							if (onClickFunctionName != null) {
+							_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' name='checkbox:" + prog + "' checked='true'>");
+							}else{
+								_htmlStream.append("<input type='checkbox' name='checkbox:" + prog + "' checked='true'>");	
+							}
+							subreportMap.remove(prog);
+						}
+						else {
+							if (onClickFunctionName != null) {
+								_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' name='checkbox:" + prog + "'>");
+								}else{
+									_htmlStream.append("<input type='checkbox' name='checkbox:" + prog + "'>");
+								}
+							
+						}
+						
+						_htmlStream.append(" </td>\n");
+					
+					}else{
 					// if there are no parameters puts an empty column
 					 String img = (String)captionSB.getAttribute("image");
 					 String labelCode = (String)captionSB.getAttribute("label");
@@ -441,6 +482,7 @@ public class ListTag extends TagSupport
 					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 					_htmlStream.append(" 	</a>\n");
 					_htmlStream.append(" </td>\n");
+					}
 					
 				} else {
 					HashMap paramsMap = getParametersMap(parameters, row);

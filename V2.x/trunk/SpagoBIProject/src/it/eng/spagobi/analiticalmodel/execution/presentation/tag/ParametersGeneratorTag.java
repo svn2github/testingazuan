@@ -720,7 +720,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	} else if (selectionType.equalsIgnoreCase("LIST")) {
 	    createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent);
 	} else if (selectionType.equalsIgnoreCase("CHECK_LIST")) {
-	    createHTMLCheckListButton(biparam, false, htmlStream, lblBiParamDependent);
+		createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent);
 	}
 	logger.debug("OUT");
 	return objParFathLbl;
@@ -854,6 +854,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	htmlStream.append(");\n");	
 	htmlStream.append("\n</script>");	
     }
+    
 
     /**
      * Finds the parameters the input parameter depends on.
@@ -915,7 +916,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		}
 		return toReturn;
 	}
-
+    
 	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
 	    List lblBiParamDependent) {
 

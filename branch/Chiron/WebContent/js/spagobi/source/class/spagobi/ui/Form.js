@@ -154,7 +154,7 @@ qx.Class.define("spagobi.ui.Form", {
 				value = this.getInputField(dataIndex).getUserData('field').getValue();
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
 				value = this.getInputField(dataIndex).getUserData('field').getValue();
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
 				value = this.getInputField(dataIndex).getUserData('field').isChecked();
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {	
 				value = this.getInputField(dataIndex).getUserData('field').getData();
@@ -162,7 +162,9 @@ qx.Class.define("spagobi.ui.Form", {
 				value = this.getInputField(dataIndex).getUserData('field').getData();
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {	
 				value = this.getInputField(dataIndex).getUserData('field').getValue();
-			}			
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {	
+				value = this.getInputField(dataIndex).getUserData('field').getValue();
+			}				
 			
 			return value;			
 		},
@@ -180,13 +182,15 @@ qx.Class.define("spagobi.ui.Form", {
 				this.getInputField(dataIndex).getUserData('field').setValue(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
 				this.getInputField(dataIndex).getUserData('field').setValue(value);
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
 				this.getInputField(dataIndex).getUserData('field').setChecked(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {		
 				this.getInputField(dataIndex).getUserData('field').setData(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {		
 				this.getInputField(dataIndex).getUserData('field').setData(value);
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
+				this.getInputField(dataIndex).getUserData('field').setValue(value);
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {		
 				this.getInputField(dataIndex).getUserData('field').setValue(value);
 			}
 			
@@ -204,9 +208,9 @@ qx.Class.define("spagobi.ui.Form", {
   			} else if(config.type === 'combo') {
   				inputField = spagobi.commons.WidgetUtils.createInputComboBox(config);    
   				inputField.setUserData('type', 'combo');    
-  			} else if(config.type === 'check') {
-  				inputField = spagobi.commons.WidgetUtils.createInputCheckBox(config);    
-  				inputField.setUserData('type', 'check');    
+  			} else if(config.type === 'flag') {
+  				inputField = spagobi.commons.WidgetUtils.createInputFlagBox(config);    
+  				inputField.setUserData('type', 'flag');    
   			} else if(config.type === 'form') {
   				inputField = spagobi.commons.WidgetUtils.createInputForm(config);    
   				inputField.setUserData('type', 'form');    
@@ -216,6 +220,9 @@ qx.Class.define("spagobi.ui.Form", {
   			} else if(config.type === 'textarea') {
   				inputField = spagobi.commons.WidgetUtils.createInputTextArea(config);    
   				inputField.setUserData('type', 'textarea');    
+  			} else if(config.type === 'check') {
+  				inputField = spagobi.commons.WidgetUtils.createInputCheckBox(config);    
+  				inputField.setUserData('type', 'check');    
   			}
   			
   			this.dataMappings[config.dataIndex] = inputField;

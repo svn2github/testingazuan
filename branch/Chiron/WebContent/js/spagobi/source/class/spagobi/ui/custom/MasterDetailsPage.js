@@ -87,12 +87,17 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'featuremgmt') {
 		records = spagobi.app.data.DataService.loadFeatureRecords();
 		form = new spagobi.ui.custom.FeatureDetailsForm(); 
+	} else if(type == 'lov') {
+		records = spagobi.app.data.DataService.loadLOVRecords();
+		form = new spagobi.ui.custom.LOVDetailsForm(); 
+	} else if(type == 'constraints') {
+		records = spagobi.app.data.DataService.loadLOVRecords();
+		form = new spagobi.ui.custom.ConstraintDetailsForm(); 
+	} else if(type == 'parameters') {
+		records = spagobi.app.data.DataService.loadLOVRecords();
+		form = new spagobi.ui.custom.ParameterDetailsForm(); 
 	} 
-	/*else if(type == 'predefinedlov') {
-		records = spagobi.app.data.DataService.loadFeatureRecords();
-		form = new spagobi.ui.custom.PredefinedLoVForm(); 
-	}
-	*/
+	
 		
    	// Create list view
    	//listPage = new spagobi.ui.Table(this, records );

@@ -269,6 +269,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/classic/color/LunaBlue.js"></script>\
 <script type="text/javascript" src="./class/spagobi/commons/WidgetUtils.js"></script>\
 <script type="text/javascript" src="./class/spagobi/commons/CoreUtils.js"></script>\
+<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/form/TextArea.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/Form.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/FormList.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/AbstractPageView.js"></script>\
@@ -291,6 +292,8 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/basic/VerticalSpacer.js"></script>\
 <script type="text/javascript" src="./class/spagobi/app/Chiron.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/io/remote/RequestQueue.js"></script>\
+<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/basic/Inline.js"></script>\
+<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/util/ThemeList.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/layout/DockLayout.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/layout/impl/DockLayoutImpl.js"></script>\
 <script type="text/javascript" src="./class/spagobi/app/ui/Header.js"></script>\
@@ -303,6 +306,8 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="./class/spagobi/ui/custom/DatasourceDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/MapDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/custom/FeatureDetailsForm.js"></script>\
+<script type="text/javascript" src="./class/spagobi/ui/custom/ConstraintDetailsForm.js"></script>\
+<script type="text/javascript" src="./class/spagobi/ui/custom/ParameterDetailsForm.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/PagedTable.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/FilterBar.js"></script>\
 <script type="text/javascript" src="./class/spagobi/ui/Table.js"></script>\
@@ -310,7 +315,6 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/ButtonView.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Bar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/pageview/buttonview/Pane.js"></script>\
-<script type="text/javascript" src="./class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Color.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/Border.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ext/font/Default.js"></script>\
@@ -370,7 +374,6 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/xml/Entity.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/util/range/IntegerRange.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/resizer/Resizer.js"></script>\
-<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/basic/Inline.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/dev/Pollution.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/table/cellrenderer/Image.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/application/Basic.js"></script>\
@@ -387,10 +390,8 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/log/appender/Alert.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/groupbox/CheckGroupBox.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/dev/ObjectSummary.js"></script>\
-<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/form/TextArea.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/client/History.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/embed/NodeEmbed.js"></script>\
-<script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/util/ThemeList.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/locale/data/es_ES.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/theme/ClassicWindows.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/table/model/Remote.js"></script>\
@@ -418,6 +419,7 @@ if(!window.qxvariants)qxvariants={};\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/io/remote/Rpc.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/io/local/CookieTransport.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/table/cellrenderer/Password.js"></script>\
+<script type="text/javascript" src="./class/spagobi/ui/custom/EngineDetailsForm.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/menubar/MenuBar.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/ui/table/celleditor/CheckBox.js"></script>\
 <script type="text/javascript" src="../js/qooxdoo-0.7.3/frontend/framework/source/class/qx/dev/Debug.js"></script>\

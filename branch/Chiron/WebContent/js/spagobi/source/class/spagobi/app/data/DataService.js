@@ -36,19 +36,6 @@ qx.Class.define("spagobi.app.data.DataService", {
   type : "static",
   statics : {
   	
-  	/**
-  	 * Function to display the list for the Engine details page.
-  	 * <p>The function defines the layout of the list and then loads the data into it.
-  	 * <p> see functions : loadEngineMeta() and loadEngineData()
-  	 * 
-  	 * *Example*
-  	 * <p><code>
-  	 * var rec = spagobi.app.data.DataService.loadEngineRecords();
-  	 * </code>
-  	 * 
-  	 * @return The object containing the layout and the data in the list and form
-  	 */
-  	 
   	loadEngineRecords: function() {
   		var records = {};
     	
@@ -58,12 +45,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	return records;
   	},
   	
-  	/**
-  	 * Function which defines the layout of the list for the Engine Details page.
-  	 * <p> This function is called by the loadEngineRecords() function.
-  	 * 
-  	 * @return An array of objects with dataIndex and name properties defined for each column of list
-  	 */
   	loadEngineMeta: function() {
   		return [
     		{
@@ -82,13 +63,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	/**
-  	 * Function used to load the data in the list and form for the Engine Details page.
-  	 * <p> This function is called by the loadEngineRecords() function.
-  	 * 
-  	 * @return Array of objects with data for all the columns of list and elements of the form
-  	 */
-  	 
   	loadEngineData: function() {
   		return [
     		{
@@ -135,18 +109,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	},
   	
   	
-  	/**
-  	 * Function to display the list for the Data Source details page
-  	 * <p>The function defines the layout of the list and then loads the data into it.
-  	 * <p> see functions : loadDatasourceMeta() and loadDatasourceData()
-  	 * 
-  	 * *Example*
-  	 * <p><code>
-  	 * var rec = spagobi.app.data.DataService.loadDatasourceRecords();
-  	 * </code>
-  	 * 
-  	 * @return The object containing the layout of the list and the data in the list and form
-  	 */
+  	
   	
   	
   	loadDatasourceRecords: function() {
@@ -158,12 +121,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	return records;
   	},
   	
-  	/**
-  	 * Function which defines the layout of the list for the Data source details page
-  	 * 
-  	 * @return An array of objects with dataIndex and name properties defined for each column of list
-  	 */
-  
   	loadDatasourceMeta: function() {
   		return [
     		{
@@ -178,12 +135,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     		}
     	];
   	},
-  	
-  	/**
-  	 * Function used to load the data in the list and form for the Data Source details page
-  	 * 
-  	 * @return Array of objects with data for all the columns of list and elements of the form
-  	 */
   	
   	loadDatasourceData: function() {
   		return [
@@ -224,18 +175,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   		];
   	},
   	
-  	/**
-  	 * Function to display the list for the Data Set page
-  	 * <p>The function defines the layout of the list and then loads the data into it.
-  	 * <p> see functions : loadDatasetMeta() and loadDatasetData()
-  	 * 
-  	 * *Example*
-  	 * <p><code>
-  	 * var rec = spagobi.app.data.DataService.loadDatasetRecords();
-  	 * </code>
-  	 * 
-  	 * @return The object containing the layout of the list and the data in the list and form
-  	 */
+  	
   	
   	loadDatasetRecords: function() {
   		var records = {};
@@ -246,12 +186,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	return records;
   	},
   	
-  	
-  	/**
-  	 * Function which defines the layout of the list for the Data set page
-  	 * 
-  	 * @return An array of objects with dataIndex and name properties defined for each column of list
-  	 */  	
   	loadDatasetMeta: function() {
   		return [
     		{
@@ -270,11 +204,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	/**
-  	 * Function used to load the data in the list and form for the Data Set page
-  	 * 
-  	 * @return Array of objects with data for all the columns of list and elements of the form
-  	 */
   	loadDatasetData: function() {
   		return [
   			{
@@ -303,18 +232,15 @@ qx.Class.define("spagobi.app.data.DataService", {
   	},
   	
   	
-  	/**
-  	 * Function to display the list for the Map management page
-  	 * <p>The function defines the layout of the list and then loads the data into it.
-  	 * <p> see functions : loadMapMeta() and loadMapData()
-  	 * 
-  	 * *Example*
-  	 * <p><code>
-  	 * var rec = spagobi.app.data.DataService.loadMapRecords();
-  	 * </code>
-  	 * 
-  	 * @return The object containing the layout of the list and the data in the list and form
-  	 */
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
   	
   	loadMapRecords: function() {
   		var records = {};
@@ -325,12 +251,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	return records;
   	},
   	
-  	/**
-  	 * Function which defines the layout of the list for the Map management page
-  	 * 
-  	 * @return An array of objects with dataIndex and name properties defined for each column of list
-  	 */
-  	 
   	loadMapMeta: function() {
   		return [
     		{
@@ -355,11 +275,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	/**
-  	 * Function used to load the data in the list and form for the Map management page
-  	 * 
-  	 * @return Array of objects with data for all the columns of list and elements of the form
-  	 */
   	loadMapData: function() {
   		return [
   			{
@@ -427,19 +342,6 @@ qx.Class.define("spagobi.app.data.DataService", {
   		];
   	},
   	
-  	/**
-  	 * Function to display the list for the Feature management page
-  	 * <p>The function defines the layout of the list and then loads the data into it.
-  	 * <p> see functions : loadFeatureMeta() and loadFeatureData()
-  	 * 
-  	 * *Example*
-  	 * <p><code>
-  	 * var rec = spagobi.app.data.DataService.loadFeatureRecords();
-  	 * </code>
-  	 * 
-  	 * @return The object containing the layout of the list and the data in the list and form
-  	 */
-  	
   	loadFeatureRecords: function() {
   		var records = {};
     	
@@ -449,11 +351,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	return records;
   	},
   	
-  	 /**
-  	 * Function which defines the layout of the list for the Feature management page
-  	 * 
-  	 * @return An array of objects with dataIndex and name properties defined for each column of list
-  	 */
   	loadFeatureMeta: function() {
   		return [
     		{
@@ -472,11 +369,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	/**
-  	 * Function used to load the data in the list and form for the Feature management page
-  	 * 
-  	 * @return Array of objects with data for all the columns of list and elements of the form
-  	 */
   	loadFeatureData: function() {
   		return [
 	  			{
@@ -497,6 +389,45 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	description: '',
 		        	type: '',
 		        	nummaps: '3'
+		        }  			
+  			 ];
+  	},
+  	
+  	loadLOVRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadLOVMeta();
+    	records.rows =  this.loadLOVData();
+    	
+    	return records;
+  	},
+  	
+  	loadLOVMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}
+    	];
+  	},
+  	
+  	loadLOVData: function() {
+  		return [
+	  			{
+		        	id: '1',
+		        	name: 'name1',
+		        	description: 'ddd1'
+		        }, {
+		        	id: '2',
+		        	name: 'name2',
+		        	description: 'aaa2'
+		        }, {
+		        	id: '3',
+		        	name: 'name3',
+		        	description: 'cvcw3'
 		        }  			
   			 ];
   	}

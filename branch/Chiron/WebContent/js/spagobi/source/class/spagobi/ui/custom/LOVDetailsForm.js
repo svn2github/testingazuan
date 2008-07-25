@@ -82,21 +82,25 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
         		type: 'text',
         		dataIndex: 'label',
         		text: 'Label',
+        		labelwidth: 100,
         		mandatory: true	
         	},{
         		type: 'text',
         		dataIndex: 'name',
         		text: 'Name',
+        		labelwidth: 100,
         		mandatory: true	
         	}, {
         		type: 'text',
         		dataIndex: 'description',
         		text: 'Description',
+        		labelwidth: 100,
         		mandatory: true	
         	},  {
         		type: 'combo',
         		dataIndex: 'type',
         		text: 'Type',
+        		labelwidth: 100,
         		items: ["","Query Statement", "Script to load values", "Fixed List of values", "Java class"],
         		listeners: [
 	        		{
@@ -120,6 +124,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		type: 'textarea',
 				        		dataIndex: 'querydef',
 				        		text: 'Query Definition',
+				        		labelwidth: 100,
 				        		height: 50	
 			        		}
 			        	],
@@ -133,6 +138,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		type: 'textarea',
 				        		dataIndex: 'script',
 				        		text: 'Script',
+				        		labelwidth: 100,
 				        		height: 50
         					}
         				],
@@ -143,16 +149,30 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
         		form:
         				[				
         					{
-				        		type: 'text',
-				        		dataIndex: 'value',
-				        		text: 'Value',
-				        		mandatory: true
-				        	},
-        					{
-				        		type: 'text',
-				        		dataIndex: 'description2',
-				        		text: 'Description',
-				        		mandatory: true
+        					type: 'formList',
+        					dataIndex: 'subformlist',
+        					formList:
+        								[	
+				        					{ 
+				        					  type: 'form',
+				        					  dataindex: 'subform',		
+				        					  form:	
+				        					  		[{
+										        		type: 'text',
+										        		dataIndex: 'value',
+										        		text: 'Value',
+										        		labelwidth: 100,
+										        		mandatory: true
+								        			},
+				        							{
+										        		type: 'text',
+										        		dataIndex: 'description2',
+										        		text: 'Description',
+										        		labelwidth: 100,
+										        		mandatory: true
+								        			}]
+				        					}
+								        ]
 				        	}
 				        ],
 			     visible: false 

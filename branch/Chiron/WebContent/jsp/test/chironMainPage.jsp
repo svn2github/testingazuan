@@ -59,9 +59,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String rootDir = ChironStartAction.DEBUG_MODE.equalsIgnoreCase(mode)
 						? "source"
 						: "build";
+	//rootDir = "build";
 %>
 
 <%@page import="it.eng.spagobi.chiron.ChironStartAction;"%>
+
+<script type="text/javascript">
+	if(!window.qxsettings)qxsettings={};
+	//if(qxsettings["qx.p1"]==undefined)qxsettings["qx.p1"]='value_p1';
+	//if(qxsettings["qx.p2"]==undefined)qxsettings["qx.p2"]='value_p2';
+</script>
 
 <%if(webMode){ %>
 <html>
@@ -72,23 +79,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		<link rel="icon" href="http://imagehosting.com/favicon.ico" />
     	<title>Chiron - Demo</title>    	
     	
+    	<script type="text/javascript">
+			if(qxsettings["spagobi.executionMode"]==undefined)qxsettings["spagobi.executionMode"]='web';
+		</script>
+		  
     	<script type="text/javascript" src='../js/spagobi/<%=rootDir%>/script/chiron.web.js'></script>
 <%} else {%>
 		<script type="text/javascript">
-			if(!window.qxsettings)qxsettings={};
 			if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]='<%=getResourceLink(request, "js/spagobi/build/resource/qx")%>';
-			if(qxsettings["spagobi.test.resourceUri"]==undefined)qxsettings["spagobi.test.resourceUri"]='<%=getResourceLink(request, "")%>';
-			qxsettings["qx.enableApplicationLayout"] = false;
-
+			if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]='<%=getResourceLink(request, "")%>';
+			if(qxsettings["spagobi.executionMode"]==undefined)qxsettings["spagobi.executionMode"]='portal';
 		</script>
-		<!--  
-		<script type="text/javascript" src='<%=getResourceLink(request, "js/spagobi/" + rootDir + "/script/spagobi.test.js")%>'></script>
-		-->
-		<div id="myInlineWidget" > </div>
+		  
+		<script type="text/javascript" src='<%=getResourceLink(request, "js/spagobi/" + "source" + "/script/chiron.portlet.js")%>'></script>
 
 <% } %>
 	
-    	
+  <div style="height:600px;width:100%" id="myInlineWidget" > </div>  	
 
 
 <%if(webMode){ %>    	

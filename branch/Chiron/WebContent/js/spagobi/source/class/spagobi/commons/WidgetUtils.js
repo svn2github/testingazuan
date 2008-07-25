@@ -23,7 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* *
  * @author Andrea Gioia (andrea.gioia@eng.it)
- */
+ * @author Amit Rana (amit.rana@eng.it)
+ * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
  
 /**
  * Class for the creation of a form elemets
@@ -38,7 +39,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text : '',
         		top : 0,
         		left : 0,
-        		width: 80     		
+        		width: 100     		
         	};
         	var test_label = new qx.ui.basic.Label();
         	test_label.set(defultConfig);
@@ -98,7 +99,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           
         },
         
-        createCheckBox : function( config ) {
+        createFlagBox : function( config ) {
           	var defultConfig = {
         		checked: false,
         		top: 0,
@@ -141,6 +142,52 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             test_textarea.set( config );
             return test_textarea;
           
+        },
+        
+        createCheckBox: function( config ){
+        	var defultConfig = {
+        		checked: false,
+	        	top: 0,
+	        	left: 0,
+	        	items: [],
+	        	listeners: [],
+	        	columns: 1
+        	};
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        	
+        	var checkbox_grid = new qx.ui.layout.GridLayout;
+        	checkbox_grid.set({ 
+          		top: config.top, 
+          		left: config.left 
+          	});
+        	
+        	checkbox_grid.setColumnCount(config.columns);	
+    		checkbox_grid.setRowCount(Math.ceil(config.items.length/config.columns));
+    		
+    		var rows = checkbox_grid.getRowCount();
+    		var cols = checkbox_grid.getColumnCount();
+    		
+    		for(i=0,k=0;i<rows ; i++){
+    			for(j=0; j<cols && k<config.items.length; j++,k++){
+    				
+    				var label_text = new qx.ui.basic.Label(config.items[k]);
+		    		var check_box = new qx.ui.form.CheckBox();
+		    		/*
+       				check_box.set({
+			       			checked: config.checked,
+			       			top: config.top,
+			       			left: config.left
+       				});	
+       				*/
+       				
+       				var atom = new qx.ui.basic.Atom();
+       				atom.add(check_box, label_text);
+       				alert('added atom on row(' + i + '), column(' + j + ')');
+       				checkbox_grid.add(atom, j, i);
+    			}
+    		}
+    		alert('checkboxes created succesfully');
+        	return checkbox_grid;
         },
         
         createInputTextField: function( config ) {
@@ -202,6 +249,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', textField);
         	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
+        	
         	return atom;
         },
         
@@ -239,7 +290,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	return atom;
         },
         
-        createInputCheckBox: function( config ) {
+        createInputFlagBox: function( config ) {
         	var defultConfig = {
         		top: 0,
         		left: 10,
@@ -258,7 +309,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		width : config.labelwidth   
 	        });
 	        
-	        var checkBox = this.createCheckBox({
+	        var checkBox = this.createFlagBox({
 	        	checked: config.checked,
 	        	top: config.top,
 	        	left: config.left + 30,
@@ -352,6 +403,46 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', textArea);
+        	
+        	return atom;
+        },
+        
+        /**
+         * Function to create a list of check boxes
+         */
+        createInputCheckBox: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 10,
+        		text: '',
+        		checked: false,
+        		items: [],
+        		listeners: [],
+        		columns: 1,
+        		labelwidth: 80
+        	};
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        	
+        	var labelField = this.createLabel({
+        		text : config.text,
+        		top : config.top,
+        		left : config.left,
+        		width : config.labelwidth   
+	        });
+	        
+	        var checkBox = this.createCheckBox({
+	        	checked: config.checked,
+	        	items: config.items,
+	        	listeners: config.listeners,
+	        	columns: config.columns
+	        });
+        	
+        	
+        	var atom = new qx.ui.basic.Atom();
+        	atom.add(labelField/*, checkBox*/);
+        	atom.setUserData('label', labelField);
+        	atom.setUserData('field', checkBox);
         	
         	return atom;
         }

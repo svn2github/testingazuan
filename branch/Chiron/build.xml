@@ -34,16 +34,43 @@
 			
 			<replacefilter 
 			    token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource";\' 
-			    value='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";\' />
+			    value='if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";\' />
 				  
 		</replace>
+		
+		
+		
+		<replace 
+				    file="${js.spagobi.source.dir}/script/chiron.portlet.js">
+			
+				  <replacefilter 
+				    token="./class/" 
+				    value="/Chiron/js/spagobi/source/class/"/>
+				  
+				</replace>
+		
+		
+		<replace file="${js.spagobi.source.dir}/script/chiron.portlet.js">
+			
+			<replacefilter 
+						    token="../js/qooxdoo-0.7.3/frontend/framework/source/resource" 
+						    value="/Chiron/js/spagobi/build/resource/qx"/>
+			
+			<replacefilter 
+									    token="../js/qooxdoo-0.7.3" 
+									    value="/Chiron/js/qooxdoo-0.7.3"/>
+			
+			<replacefilter 
+						    token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource";\' 
+						    value='if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="/Chiron/";\' />
+									  
+		</replace>	
 		
 	</target>
 	
 	<target name="replaceBuild" depends="createBuildScriptFiles">
 						 			
-			<replace 
-					    file="${js.spagobi.build.dir}/script/chiron.web.js">
+			<replace file="${js.spagobi.build.dir}/script/chiron.web.js">
 				
 					  <replacefilter 
 					    token="./resource/qx" 
@@ -51,10 +78,23 @@
 				
 				<replacefilter 
 						token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource/spagobi.app";' 
-						value='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";' />
+						value='if(qxsettings[spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";' />
 								
 					  
-			</replace>			
+			</replace>	
+		
+			<replace file="${js.spagobi.build.dir}/script/chiron.portlet.js">
+						
+						<replacefilter 
+							    token="./resource/qx" 
+							    value="/Chiron/js/spagobi/build/resource/qx"/>
+						
+						<replacefilter 
+								token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource/spagobi.app";' 
+								value='if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="/Chiron/";' />
+										
+							  
+					</replace>	
 	</target>
 	
 	
@@ -68,13 +108,16 @@
 				  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
 			
 			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 
-						  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
+						  tofile="${js.spagobi.source.dir}/script/chiron.portlet.js"/>
 			
 	</target>
 	
 	<target name="createBuildScriptFiles" depends="makeBuild">
 				<copy file="${js.spagobi.build.dir}/script/spagobi.app.js" 
 					  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
+		
+				<copy file="${js.spagobi.build.dir}/script/spagobi.app.js" 
+							  tofile="${js.spagobi.build.dir}/script/chiron.portlet.js"/>
 				
 	</target>
 	

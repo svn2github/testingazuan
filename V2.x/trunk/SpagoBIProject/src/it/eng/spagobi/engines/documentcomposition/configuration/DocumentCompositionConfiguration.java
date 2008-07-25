@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -43,14 +44,14 @@ import java.util.Properties;
 public class DocumentCompositionConfiguration {
 	private String templateFile;
 	private Map documentsMap;
-	private Map lstDimensions = new HashMap();
+	private Map lstDimensions = new LinkedHashMap();
 	//list used by final jsp
-	private Map lstUrl = new HashMap();
-	private Map lstDivStyle = new HashMap();
-	private Map lstUrlParams  = new HashMap();
-	private Map lstDocLinked = new HashMap();
-	private Map lstFieldLinked = new HashMap();
-	private Map lstPanelStyle = new HashMap();
+	private Map lstUrl = new LinkedHashMap();
+	private Map lstDivStyle = new LinkedHashMap();
+	private Map lstUrlParams  = new LinkedHashMap();
+	private Map lstDocLinked = new LinkedHashMap();
+	private Map lstFieldLinked = new LinkedHashMap();
+	private Map lstPanelStyle = new LinkedHashMap();
 	
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
@@ -73,7 +74,6 @@ public class DocumentCompositionConfiguration {
 		int numOrder;
 		Integer videoWidth[];
 		Integer videoHeight[];
-		String label;
 		String sbiObjLabel;
 		String style;
 		String namePar;
@@ -81,24 +81,6 @@ public class DocumentCompositionConfiguration {
 		String type;
 		String defaultValue;
 		Properties params;
-		
-		/**
-		 * Gets the label.
-		 * 
-		 * @return the label
-		 */
-		public String getLabel() {
-			return label;
-		}
-		
-		/**
-		 * Sets the label.
-		 * 
-		 * @param label the new label
-		 */
-		public void setLabel(String label) {
-			this.label = label;
-		}
 		
 		/**
 		 * Gets the sbi obj label.
@@ -308,7 +290,7 @@ public class DocumentCompositionConfiguration {
 	 * initialize general objects
 	 */
 	private void init(){
-		documentsMap = new HashMap();
+		documentsMap = new LinkedHashMap();
 		lstDimensions.put("widthPxValues800", widthPxValues800);
 		lstDimensions.put("widthPxValues1024", widthPxValues1024);
 		lstDimensions.put("widthPxValues1280", widthPxValues1280);
@@ -326,15 +308,15 @@ public class DocumentCompositionConfiguration {
 	 * @param document the document
 	 */
 	public void addDocument(Document document) {
-		if(documentsMap == null) documentsMap = new HashMap();
-		documentsMap.put(document.getLabel(), document);
+		if(documentsMap == null) documentsMap = new LinkedHashMap();
+		documentsMap.put(document.getSbiObjLabel(), document);
 	}
 	
 	/**
 	 * Reset documents.
 	 */
 	public void resetDocuments() {		
-		documentsMap = new HashMap();
+		documentsMap = new LinkedHashMap();
 	}
 	
 	private void initDocuments(SourceBean documentsConfigurationSB) {
@@ -363,9 +345,7 @@ public class DocumentCompositionConfiguration {
 			documentSB = (SourceBean)documentList.get(i);
 			document = new Document();	
 			//set the number that identify the document within of hash table
-			document.setNumOrder(i);
-			attributeValue = (String)documentSB.getAttribute("label");
-			document.setLabel(attributeValue);			
+			document.setNumOrder(i);	
 			attributeValue = (String)documentSB.getAttribute("sbi_obj_label");
 			document.setSbiObjLabel(attributeValue);
 
@@ -385,8 +365,6 @@ public class DocumentCompositionConfiguration {
 			//loop on parameters of single document
 			for(int j = 0; j < paramList.size(); j++) {
 				paramSB = (SourceBean)paramList.get(j);
-				String label = (paramSB.getAttribute("label")==null)?"":(String)paramSB.getAttribute("label");
-				param.setProperty("label_param_"+i+"_"+j, label);
 				String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
 				param.setProperty("sbi_par_label_param_"+i+"_"+j, sbiParLabel);
 				String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
@@ -439,7 +417,7 @@ public class DocumentCompositionConfiguration {
 	 */
 	public String getLabel(String documentLabel) {
 		Document document = getDocument(documentLabel);
-		if(document != null) return document.getLabel();
+		if(document != null) return document.getSbiObjLabel();
 
 		return null;
 	}
@@ -460,7 +438,7 @@ public class DocumentCompositionConfiguration {
 				for(int i=0; i < arrDocs.length; i++){
 					Document tmpDoc =(Document) arrDocs[i];
 					if (tmpDoc.getNumOrder() == numDocAdded){
-						retLabels.add(tmpDoc.getLabel());
+						retLabels.add(tmpDoc.getSbiObjLabel());
 						numDocAdded ++;
 					}
 				}
@@ -559,7 +537,7 @@ public class DocumentCompositionConfiguration {
 	 */
 	public HashMap getParametersForDocument(String docLabel) {
 		Collection collDocs = documentsMap.values();
-		HashMap retParams = new HashMap();
+		HashMap retParams = new LinkedHashMap();
 		Object[] arrDocs = (Object[])collDocs.toArray();
 		
 		try{
@@ -569,7 +547,7 @@ public class DocumentCompositionConfiguration {
 				for(int i=0; i < arrDocs.length; i++){
 					Document tmpDoc =(Document) arrDocs[i];
 					if (tmpDoc.getNumOrder() == cont){
-						if (tmpDoc.getLabel().equalsIgnoreCase(docLabel)){
+						if (tmpDoc.getSbiObjLabel().equalsIgnoreCase(docLabel)){
 							Properties prop = (Properties)tmpDoc.getParams();
 							Enumeration e =  prop.keys();
 							int totParsLinked = 0;
@@ -605,7 +583,7 @@ public class DocumentCompositionConfiguration {
 			numDoc = tmpDoc.getNumOrder();
 			//set syle for div
 			lstDivStyle.put("STYLE_DOC__"+numDoc, tmpDoc.getStyle());
-			lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getLabel());
+			lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getSbiObjLabel());
 			//gets layout informations (width and height) for next settings of ext-panels
 			String docStyles = tmpDoc.getStyle();
 			String tmpStyle = "";
@@ -684,14 +662,14 @@ public class DocumentCompositionConfiguration {
 								}
 								else if (labelDocLinked.trim().startsWith("refresh_par_linked")){
 									String tmpLabelLinked = labelDocLinked.substring(labelDocLinked.indexOf("=")+1);
-									HashMap paramsDocLinked = getParametersForDocument(linkedDoc.getLabel());
+									HashMap paramsDocLinked = getParametersForDocument(linkedDoc.getSbiObjLabel());
 									int numLinked = linkedDoc.getNumOrder();
 									for (int x=0; x< paramsDocLinked.size(); x++){
 										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
-										String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
-										if (sbiLabelPar != null && !sbiLabelPar.equals("") &&labelPar.equalsIgnoreCase(tmpLabelLinked)){
-											lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
-											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getLabel()+"__"+sbiLabelPar +"|"+labelPar);
+									//String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
+										if (sbiLabelPar != null && !sbiLabelPar.equals("") &&sbiLabelPar.equalsIgnoreCase(tmpLabelLinked)){
+											lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel());
+											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel()+"__"+sbiLabelPar );
 											numParAdd ++;
 											break;
 										}
@@ -739,7 +717,7 @@ public class DocumentCompositionConfiguration {
 	}
 	
 	private HashMap getMapFromString(String strToConvert){
-		HashMap retHash = new HashMap();
+		HashMap retHash = new LinkedHashMap();
 		String[] tmpStr = strToConvert.split(",");
 		for (int i=0; i < tmpStr.length; i++){
 			String key = tmpStr[i].substring(0, tmpStr[i].indexOf("="));

@@ -637,10 +637,10 @@ public class ParametersGeneratorTag extends TagSupport {
 		while (it.hasNext()){
 		check = (Check)it.next();
 		if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")){
-			toInsert = "* "+toInsert;
+			toInsert = "*"+toInsert;
 			break;
 		}else{
-			toInsert = "&nbsp; &nbsp;"+toInsert;
+			toInsert = "&nbsp;"+toInsert;
 		}
 		} 
 	  }else{

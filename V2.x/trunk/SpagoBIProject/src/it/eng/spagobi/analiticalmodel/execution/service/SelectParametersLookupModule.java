@@ -492,8 +492,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 	    }
 	}
 	//in case it is a check list, sets all values in one page
-	//if(isChecklist)
-	// paginator.setPageSize(8000);
+	// if(isChecklist) paginator.setPageSize(rowSize*10);
 	
 	list.setPaginator(paginator);
 
@@ -597,6 +596,27 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		}
 		moduleConfigStr.append("				]]>");
 		moduleConfigStr.append("			</ONCLICK>");
+		
+		moduleConfigStr.append("			<CLICKED>");
+		moduleConfigStr.append("				<![CDATA[");
+		// sets value and its description on parameters form (that is on parent window)
+		moduleConfigStr.append("				var parName = '<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>';");
+		moduleConfigStr.append("				var rowValue = '<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				var alreadySelected = parent.document.getElementById(parName).value;");
+		moduleConfigStr.append("				var pos = alreadySelected.indexOf(rowValue);");
+		moduleConfigStr.append("				if (pos>=0){");
+		moduleConfigStr.append("				    document.getElementById('<PARAMETER name='" + valColName + "' scope='LOCAL'/>').checked = 'true' ;");
+		moduleConfigStr.append("				           }");
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</CLICKED>");
+		
+		moduleConfigStr.append("			<ROWVALUE>");
+		moduleConfigStr.append("				<![CDATA[");
+		// sets value and its description on parameters form (that is on parent window)
+		moduleConfigStr.append("				<PARAMETER name='" + valColName + "' scope='LOCAL'/>");
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</ROWVALUE>");
+		
 		moduleConfigStr.append("		</SELECT_CAPTION>");
 		
 	}else{

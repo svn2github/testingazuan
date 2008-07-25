@@ -435,6 +435,7 @@ public class ListTag extends TagSupport
 					continue;
 				}
 				
+				
 				// onclick function
 				SourceBean onClickSB = (SourceBean) captionSB.getAttribute("ONCLICK");
 				String onClickFunction = readOnClickFunction(onClickSB, row);
@@ -447,30 +448,38 @@ public class ListTag extends TagSupport
 					_htmlStream.append("	</script>\n");
 				}
 				
+				
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
 					
 					if (isChecklist){
 						
+						// already clicked function
+						SourceBean rowVal = (SourceBean) captionSB.getAttribute("ROWVALUE");
+						String rowValue = readOnClickFunction(rowVal, row);
+						
 						_htmlStream.append(" <td width='20'>\n");
-						if(subreportMap.containsKey(prog)) {
-							if (onClickFunctionName != null) {
-							_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' name='checkbox:" + prog + "' checked='true'>");
-							}else{
-								_htmlStream.append("<input type='checkbox' name='checkbox:" + prog + "' checked='true'>");	
-							}
-							subreportMap.remove(prog);
-						}
-						else {
-							if (onClickFunctionName != null) {
-								_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' name='checkbox:" + prog + "'>");
-								}else{
-									_htmlStream.append("<input type='checkbox' name='checkbox:" + prog + "'>");
-								}
-							
+
+						if (onClickFunctionName != null) {								
+							_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' id='" + rowValue + "' name='checkbox:" + rowValue + "'>");
+						}else{
+								_htmlStream.append("<input type='checkbox'  id='" + rowValue + "' name='checkbox:" + rowValue + "' >");	
 						}
 						
 						_htmlStream.append(" </td>\n");
+						
+						// already clicked function
+						SourceBean clicked = (SourceBean) captionSB.getAttribute("CLICKED");
+						String clickedFunction = readOnClickFunction(clicked, row);
+						
+						if (clickedFunction != null) {
+							_htmlStream.append("	<script type='text/javascript'>\n");
+							_htmlStream.append("	function check" + rowValue + "() {\n");
+							_htmlStream.append(         clickedFunction + "\n");
+							_htmlStream.append("	}\n");
+							_htmlStream.append("	check" + rowValue + "() ;\n");
+							_htmlStream.append("	</script>\n");
+						}
 					
 					}else{
 					// if there are no parameters puts an empty column

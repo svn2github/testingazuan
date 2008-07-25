@@ -17,11 +17,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
-   
+
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
 <%@page import="java.util.HashMap"%>
-
 <% 
 	logger.debug("IN");
     String urlIframe = "";
@@ -31,7 +30,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- LIBS AJAX-->
     <script type="text/javascript" src="<%=compositeJSDocumentUrl%>"></script>
 <!-- ENDLIBS -->
- 
 
 <!-- ***************************************************************** -->
 <!-- ***************************************************************** -->
@@ -55,8 +53,6 @@ for (int i=0; i<lstUrl.size(); i++){
 <br> 
  
 <script>
-	//set general url for iframe page
-	setUrlIframe('<%=urlIframe%>');
 	//Create associative arrays with information for refresh (dependencies, ...)   ACTHUNG: Every array is indipendent!!!!
 	var arUrl = new Object();
 	var arLinkedDocs  = new Object();
@@ -71,7 +67,7 @@ for (int i=0; i<lstUrl.size(); i++){
 	 	%> 
 	 		arUrl['<%=totalSbiDocLabel%>'] = ['<%=(String)lstUrl.get("URL_DOC__"+(i))%>'];
 	 		arStylePanels['<%=labelDoc%>'] = ['<%=(String)lstStylePanel.get("STYLE__"+labelDoc)%>'];
-	 	<%	//loop on document linked 
+	 	<%	//loop on document linked  
 			for (int j=0; j<lstFieldLinked.size(); j++){
 	 			if (mainLabel != null && mainLabel.equalsIgnoreCase(labelDoc)){ 
 			 		String fieldMaster =  (String)lstFieldLinked.get("SBI_LABEL_PAR_MASTER__"+i+"__"+(j));

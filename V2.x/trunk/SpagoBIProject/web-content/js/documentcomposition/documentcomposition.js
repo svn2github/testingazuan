@@ -25,9 +25,6 @@ var asLinkedFields = new Object();
 var asStylePanels = new Object();
 var numDocs = 0;
 
-function setUrlIframe (pUrlIframe){
-	urlIframe = pUrlIframe;
-}
 
 function setDocs(pUrls){
 	for (i in pUrls)
@@ -108,41 +105,20 @@ function execCrossNavigation(windowName, label, parameters) {
 									if (tmpNewValue.substring(0, tmpNewValue.indexOf("=")) == sbiParMaster){
 										tmpNewValue = tmpNewValue.substring(tmpNewValue.indexOf("=")+1);
 										var paramsOldValues = null;
-										if (tmpUrl.indexOf("DirectExecutionPage")>0){
-											paramsOldValues = tmpUrl.split("%26");
-											if (paramsOldValues != null && paramsOldValues.length > 0) {
-												for (k = 0; k < paramsOldValues.length; k++) {
-													//gets old value of parameter:
-													if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("%3D")) == sbiLabelPar){
-														tmpOldValue = paramsOldValues[k] ;
-														tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("%3D")+3);
-														if (tmpOldValue != "" && tmpNewValue != ""){
-														  if (tmpNewValue == "%") tmpNewValue = "%25";
-															finalUrl = finalUrl.replace(sbiLabelPar+"%3D"+tmpOldValue, sbiLabelPar+"%3D"+tmpNewValue);
-															newUrl[0] = finalUrl;
-															tmpOldValue = "";
-															tmpNewValue = "";
-															break;
-														}
-													}
-												}
-											}
-										}
-										else{
-										 	paramsOldValues = tmpUrl.split("&");
-											if (paramsOldValues != null && paramsOldValues.length > 0) {
-												for (k = 0; k < paramsOldValues.length; k++) {
-													//gets old value of parameter:
-													if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("=")) == sbiLabelPar){
-														tmpOldValue = paramsOldValues[k] ;
-														tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
-														if (tmpOldValue != "" && tmpNewValue != ""){
-															finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
-															newUrl[0] = finalUrl;
-															tmpOldValue = "";
-															tmpNewValue = "";
-															break;
-														}
+									 	paramsOldValues = tmpUrl.split("&");
+										if (paramsOldValues != null && paramsOldValues.length > 0) {
+											for (k = 0; k < paramsOldValues.length; k++) {
+												//gets old value of parameter:
+												if (paramsOldValues[k].substring(0, paramsOldValues[k].indexOf("=")) == sbiLabelPar){
+													tmpOldValue = paramsOldValues[k] ;
+													tmpOldValue = tmpOldValue.substring(tmpOldValue.indexOf("=")+1);
+													if (tmpOldValue != "" && tmpNewValue != ""){
+													    if (tmpNewValue == "%") tmpNewValue = "%25";
+														finalUrl = finalUrl.replace(sbiLabelPar+"="+tmpOldValue, sbiLabelPar+"="+tmpNewValue);
+														newUrl[0] = finalUrl;
+														tmpOldValue = "";
+														tmpNewValue = "";
+														break;
 													}
 												}
 											}

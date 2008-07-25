@@ -59,17 +59,15 @@ function execCrossNavigation(windowName, label, parameters) {
 	var tmpUrl = "";
 	
 	for(var docMaster in asUrls){
-		var labelMasterDoc = docMaster.substring(docMaster.indexOf('|')+1);
-		var sbiLabelMasterDoc = docMaster.substring(0, docMaster.indexOf('|'));
+		var sbiLabelMasterDoc = docMaster;
 		var generalLabelDoc = "";
-		if (labelMasterDoc == labelDocClicked){
+		if (sbiLabelMasterDoc == labelDocClicked){
 			for (var docLabel in asLinkedDocs){ 
-				if (docLabel.indexOf(labelMasterDoc) >= 0){
+				if (docLabel.indexOf(sbiLabelMasterDoc) >= 0){
 					generalLabelDoc = asLinkedDocs[docLabel];
-					var labelDocLinked = generalLabelDoc[0].substring(generalLabelDoc[0].indexOf('|')+1);
-					var sbiLabelDocLinked = generalLabelDoc[0].substring(0, generalLabelDoc[0].indexOf('|'));
+					var sbiLabelDocLinked = generalLabelDoc[0];
 					//gets iframe element
-					var nameIframe = "iframe_" + labelDocLinked;
+					var nameIframe = "iframe_" + sbiLabelDocLinked;
 					var element = document.getElementById(nameIframe);
 					
 					//updating url with fields found in object
@@ -81,15 +79,13 @@ function execCrossNavigation(windowName, label, parameters) {
 					var finalUrl = "";
 					for (var fieldLabel in asLinkedFields){ 
 						var totalLabelPar =  asLinkedFields[fieldLabel];
-						var labelPar 	= totalLabelPar[0].substring(totalLabelPar[0].indexOf('|')+1);
-						var	sbiLabelPar = totalLabelPar[0].substring(0, totalLabelPar[0].indexOf('|'));
-						var labelSubDoc = fieldLabel.substring(fieldLabel.indexOf('|')+1);
-						labelSubDoc = labelSubDoc.substring(0, labelSubDoc.indexOf("__"));
-						var sbiSubDoc 	= fieldLabel.substring(0, fieldLabel.indexOf('|'));
+						//var labelPar 	= totalLabelPar[0].substring(totalLabelPar[0].indexOf('|')+1);
+						var	sbiLabelPar = totalLabelPar[0];
+						var sbiSubDoc 	= fieldLabel.substring(0, fieldLabel.indexOf("__"));
 	
-						if (labelSubDoc == labelDocLinked){
+						if (sbiSubDoc == sbiLabelDocLinked){
 							if (tmpOldSbiSubDoc != sbiSubDoc){
-								newUrl = asUrls[sbiSubDoc+"|"+labelSubDoc]; //final url
+								newUrl = asUrls[sbiSubDoc]; //final url
 							 	tmpUrl = newUrl[0].substring(newUrl[0].indexOf("?")+1);
 							 	finalUrl = newUrl[0];
 								tmpOldSbiSubDoc = sbiSubDoc;
@@ -135,7 +131,7 @@ function execCrossNavigation(windowName, label, parameters) {
 					var lastUrl = newUrl[0];
 					lastUrl = lastUrl.replace(RE, "&");
 					sendUrl(nameIframe,lastUrl);
-				}//if (docLabel.indexOf(labelMasterDoc) >= 0){
+				}//if (docLabel.indexOf(sbiLabelMasterDoc) >= 0){
 			}//for (var docLabel in asLinkedDocs){ 
 		}
 	}   

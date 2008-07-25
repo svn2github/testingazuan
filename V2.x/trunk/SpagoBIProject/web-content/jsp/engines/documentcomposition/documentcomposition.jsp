@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
 
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
-
+ 
 <%  logger.debug("IN");
 	EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();
 
@@ -63,7 +63,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Map lstUrlParams  = new HashMap();
     Map lstDocLinked = new HashMap();
     Map lstFieldLinked = new HashMap(); 
-      
+     
     //loop on documents
     for (int i = 0; i < lstDoc.size(); i++){
     	//gets url, parameters and other informations
@@ -71,7 +71,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	String tmpUrl = DocumentCompositionUtils.getExecutionUrl(tmpDoc.getSbiObjLabel(), aSessionContainer, aRequestContainer.getServiceRequest());
     	codeError = tmpUrl.substring(0,tmpUrl.indexOf("|"));
     	tmpUrl = tmpUrl.substring(tmpUrl.indexOf("|")+1);
-    	//tmpUrl += "&CICCIO=PELLICCIO";
     	if (codeError!= null && !codeError.equals("")){
     		List l = new ArrayList();
 			l.add(tmpDoc.getSbiObjLabel());
@@ -79,9 +78,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			errorHandler.addError(error);
     	}
     	else{
-	    	lstUrlParams.put("SBI_DOC_LABEL__"+(i),  tmpDoc.getSbiObjLabel() + "|" + tmpDoc.getLabel());
+	    	lstUrlParams.put("SBI_DOC_LABEL__"+(i),  tmpDoc.getSbiObjLabel());
 	    	//prepare list of values for the document that it's loading
-	    	docConfig.getInfoDocumentLinked(tmpDoc.getLabel());
+	    	docConfig.getInfoDocumentLinked(tmpDoc.getSbiObjLabel());
 	  
 	    	lstUrl.put("URL_DOC__" + (i), tmpUrl);
 	    	lstStyle = docConfig.getLstDivStyle();
@@ -93,7 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
     <%@ include file="/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
     <%
-    logger.debug("OUT");
+    logger.debug("OUT"); 
   
     %>
   

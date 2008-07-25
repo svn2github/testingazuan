@@ -599,7 +599,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		
 		moduleConfigStr.append("			<CLICKED>");
 		moduleConfigStr.append("				<![CDATA[");
-		// sets value and its description on parameters form (that is on parent window)
+		// function that checks if the current row is already checked or not
 		moduleConfigStr.append("				var parName = '<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>';");
 		moduleConfigStr.append("				var rowValue = '<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
 		moduleConfigStr.append("				var alreadySelected = parent.document.getElementById(parName).value;");
@@ -612,7 +612,7 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		
 		moduleConfigStr.append("			<ROWVALUE>");
 		moduleConfigStr.append("				<![CDATA[");
-		// sets value and its description on parameters form (that is on parent window)
+		// gets the value of the current row
 		moduleConfigStr.append("				<PARAMETER name='" + valColName + "' scope='LOCAL'/>");
 		moduleConfigStr.append("				]]>");
 		moduleConfigStr.append("			</ROWVALUE>");

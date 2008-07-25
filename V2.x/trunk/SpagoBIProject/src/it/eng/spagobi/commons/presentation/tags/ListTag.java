@@ -451,10 +451,10 @@ public class ListTag extends TagSupport
 				
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
-					
+					// creates a checklist
 					if (isChecklist){
 						
-						// already clicked function
+						// gets the value of the urrent row and puts it as id of the input type checkbox
 						SourceBean rowVal = (SourceBean) captionSB.getAttribute("ROWVALUE");
 						String rowValue = readOnClickFunction(rowVal, row);
 						
@@ -468,7 +468,7 @@ public class ListTag extends TagSupport
 						
 						_htmlStream.append(" </td>\n");
 						
-						// already clicked function
+						// sets the js function that controls if the actual row has already been checked and if yes checks it
 						SourceBean clicked = (SourceBean) captionSB.getAttribute("CLICKED");
 						String clickedFunction = readOnClickFunction(clicked, row);
 						

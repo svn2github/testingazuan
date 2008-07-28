@@ -95,7 +95,7 @@ qx.Class.define("spagobi.app.Chiron",
          	applicationLayout.addToDocument();
          	var d = qx.ui.core.ClientDocument.getInstance();
 	        // Color Themes
-	        qx.util.ThemeList.createMetaButtons(d, 600, 500);
+	        //qx.util.ThemeList.createMetaButtons(d, 600, 500);
       	}
       	
   

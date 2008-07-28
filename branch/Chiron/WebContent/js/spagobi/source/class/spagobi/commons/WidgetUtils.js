@@ -25,9 +25,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * @author Andrea Gioia (andrea.gioia@eng.it)
  * @author Amit Rana (amit.rana@eng.it)
  * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ */
  
 /**
- * Class for the creation of a form elemets
+ * Class for the creation of a form elements like Label, textfield, checkbox, combobox
  */ 
 
 
@@ -144,7 +145,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           
         },
         
-        createCheckBox: function( config ){
+        createCheckBox: function( config ){		//To do ...handle long text labels
         	var defultConfig = {
         		checked: false,
 	        	top: 0,
@@ -156,37 +157,34 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var checkbox_grid = new qx.ui.layout.GridLayout;
-        	checkbox_grid.set({ 
-          		top: config.top, 
-          		left: config.left 
-          	});
+		    checkbox_grid.auto();
+        	checkbox_grid.set({ left: config.left });
         	
         	checkbox_grid.setColumnCount(config.columns);	
     		checkbox_grid.setRowCount(Math.ceil(config.items.length/config.columns));
+    		
+    		//alert('hi');		// why is it coming 2 times ??
     		
     		var rows = checkbox_grid.getRowCount();
     		var cols = checkbox_grid.getColumnCount();
     		
     		for(i=0,k=0;i<rows ; i++){
+    			checkbox_grid.setRowHeight(i, 30);			
     			for(j=0; j<cols && k<config.items.length; j++,k++){
+    				checkbox_grid.setColumnWidth(j, 50);	
     				
     				var label_text = new qx.ui.basic.Label(config.items[k]);
 		    		var check_box = new qx.ui.form.CheckBox();
-		    		/*
-       				check_box.set({
-			       			checked: config.checked,
-			       			top: config.top,
-			       			left: config.left
-       				});	
-       				*/
        				
        				var atom = new qx.ui.basic.Atom();
        				atom.add(check_box, label_text);
-       				alert('added atom on row(' + i + '), column(' + j + ')');
+       				atom.setUserData('label', label_text);
+        			atom.setUserData('field', check_box);
        				checkbox_grid.add(atom, j, i);
+       				
     			}
     		}
-    		alert('checkboxes created succesfully');
+    		
         	return checkbox_grid;
         },
         
@@ -433,17 +431,18 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        
 	        var checkBox = this.createCheckBox({
 	        	checked: config.checked,
+	        	top: 0,		//config.top,
+	        	left: config.left + 30,
 	        	items: config.items,
 	        	listeners: config.listeners,
 	        	columns: config.columns
 	        });
         	
-        	
         	var atom = new qx.ui.basic.Atom();
-        	atom.add(labelField/*, checkBox*/);
+        	atom.add(labelField );
+        	atom.add(checkBox);
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
-        	
         	return atom;
         }
          	

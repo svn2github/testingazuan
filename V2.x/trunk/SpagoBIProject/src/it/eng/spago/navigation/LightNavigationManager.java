@@ -35,6 +35,7 @@ public class LightNavigationManager {
 	public static final String LIGHT_NAVIGATOR_ID = "LIGHT_NAVIGATOR_ID";
 	public static final String LIGHT_NAVIGATOR_DESTROY = "LIGHT_NAVIGATOR_DESTROY";
     public static final String LIGHT_NAVIGATOR_RESET = "LIGHT_NAVIGATOR_RESET";
+    public static final String LIGHT_NAVIGATOR_RESET_INSERT = "LIGHT_NAVIGATOR_RESET_INSERT";
     public static final String LIGHT_NAVIGATOR_DISABLED = "LIGHT_NAVIGATOR_DISABLED";
     public static final String LIGHT_NAVIGATOR_BACK_TO = "LIGHT_NAVIGATOR_BACK_TO";
     public static final String LIGHT_NAVIGATOR_REPLACE_LAST = "LIGHT_NAVIGATOR_REPLACE_LAST";
@@ -52,7 +53,8 @@ public class LightNavigationManager {
      * This method is responsible for the requests stack (the <code>LightNavigator</code>) modification. 
      * It controls if there is one of the following attributes in the service request:
      * <code>LIGHT_NAVIGATOR_DESTROY</code> (requests stack is destroyed); 
-     * <code>LIGHT_NAVIGATOR_RESET</code> (requests stack is resetted); 
+     * <code>LIGHT_NAVIGATOR_RESET</code> (requests stack is resetted and current request is not put into stack); 
+     * <code>LIGHT_NAVIGATOR_RESET_INSERT</code> (requests stack is resetted and current request is put into stack); 
      * <code>LIGHT_NAVIGATOR_DISABLED</code> (the navigator is disabled: the stack is not modified and the original request is returned);
      * <code>LIGHT_NAVIGATOR_BACK_TO</code> (the request in the stack at position represented by this attribute is returned);
      * <code>LIGHT_NAVIGATOR_BACK_TO_MARK</code> (the request in the stack marked by the string represented by this attribute is returned);
@@ -143,6 +145,14 @@ public class LightNavigationManager {
 						"stack reset executed.");
 				TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "The requests stack now is empty.");
 				return serviceRequest;
+			}
+			
+			String lightNavigatorResetInsert = (String) serviceRequest.getAttribute(LIGHT_NAVIGATOR_RESET_INSERT);
+			if (lightNavigatorResetInsert != null) {
+				lightNavigator.reset();
+				TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "LightNavigationManager: controlLightNavigation: " +
+						"stack reset executed.");
+				TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "The requests stack now is empty.");
 			}
 			
 			String mark = (String) serviceRequest.getAttribute(LIGHT_NAVIGATOR_MARK);

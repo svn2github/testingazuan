@@ -292,6 +292,7 @@ public class SpagoBIConstants {
 	public static final String WORKSPACE_MANAGEMENT = "WorkspaceManagement";
 	public static final String WORKLIST_MANAGEMENT = "WorklistManagement";
 	public static final String MAPCATALOGUE_MANAGEMENT = "MapCatalogueManagement";
+	public static final String MAP_FEATURES_MANAGEMENT = "MapFeaturesManagement";
 	public static final String DOCUMENT_MANAGEMENT = "DocumentManagement";
 	public static final String SYNCRONIZE_ROLES_MANAGEMENT = "SyncronizeRolesManagement";
 	public static final String PROFILE_ATTRIBUTES_MANAGEMENT = "ProfileAttributeManagement";
@@ -302,6 +303,7 @@ public class SpagoBIConstants {
 	public static final String DOCUMENT_DETAIL_MANAGEMENT = "DocumentDetailManagement";
 	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";
 	public static final String DOCUMENT_METADATA_MANAGEMENT = "DocumentMetadataManagement";
+	public static final String MENU_MANAGEMENT = "MenuManagement";
 	public static final String DOCUMENT_MOVE_DOWN_STATE = "DocumentMoveDownState" ;
 	public static final String DOCUMENT_MOVE_UP_STATE = "DocumentMoveUpState" ;
 	//for management of DOCUMENT COMPOSITION

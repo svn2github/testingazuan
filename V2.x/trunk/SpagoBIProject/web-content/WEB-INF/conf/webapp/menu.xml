@@ -5,190 +5,189 @@
 	             title="#menu.DataSourceMan"  
 	             functionality="DataSourceManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDataSourcePage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDataSourcePage" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/tools/datasource/datasource_2.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/datasource/datasource16.png">
 	</APPLICATION>
 	<APPLICATION code="DataSetMan" 
 	             title="#menu.DataSetMan"  
 	             functionality="DatasetManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDatasetPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDatasetPage" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/tools/dataset/img_menu.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/dataset/dataset16.png">
 	</APPLICATION>		
 	<APPLICATION code="EngMan" 
 	             title="#menu.EngMan"  
 	             functionality="EnginesManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListEnginesPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListEnginesPage" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/wapp/engines64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/engines16.png">
 	</APPLICATION>
 	<APPLICATION code="FunctMan" 
 	             title="#menu.FunctMan"  
 	             functionality="FunctionalitiesManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/wapp/functionalities64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/functionalities16.png">
 	</APPLICATION>
 	<APPLICATION code="LovMan" 
 	             title="#menu.LovMan"  
 	             functionality="LovsManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListLovsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListLovsPage" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/wapp/lovs64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/lovs16.png">
 	</APPLICATION>
 	<APPLICATION code="ConstraintMan" 
 	             title="#menu.ConstraintMan"  
 	             functionality="ConstraintManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=LISTMODALITIESCHECKSPAGE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=LISTMODALITIESCHECKSPAGE" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/wapp/checks64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/checks16.png">
 	</APPLICATION>
 	<APPLICATION code="ParameterMan" 
 	             title="#menu.ParameterMan"  
 	             functionality="ParameterManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListParametersPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListParametersPage" 
 	             width="800" 
 	             height="350"
-	             iconUrl="/SpagoBI/img/wapp/parameters64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/parameters16.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentAdmin" 
 	             title="#menu.DocumentAdmin"  
 	             functionality="DocumentAdminManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/bidocuments64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentDev" 
 	             title="#menu.DocumentDev"  
 	             functionality="DocumentDevelopment" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/bidocuments64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentTest" 
 	             title="#menu.DocumentTest"  
 	             functionality="DocumentTest" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/bidocuments64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentExec" 
 	             title="#menu.DocumentExec"  
 	             functionality="DocumentExecution" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             modal="true" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/bidocuments64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 	<APPLICATION code="ImpExp" 
 	             title="#menu.ImpExp"  
-	             functionality="ImportExport" 
+	             functionality="ImportExportManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE" 
 	             width="800" 
 	             height="450"
-	             iconUrl="/SpagoBI/img/tools/importexport/importexport64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/importexport/importexport16.png">
 	</APPLICATION>
 	<APPLICATION code="Sched" 
 	             title="#menu.Scheduler"  
-	             functionality="Scheduler" 
+	             functionality="SchedulerManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/scheduleIcon64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/scheduleIcon16.png">
 	</APPLICATION>
 	<APPLICATION code="RolesSynch" 
 	             title="#menu.RolesSynch"  
 	             functionality="SyncronizeRolesManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=DetailRolesPage&amp;MESSAGEDET=LIST_ROLES" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=DetailRolesPage&amp;MESSAGEDET=LIST_ROLES" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/rolesynch64.jpg">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/rolesynch16.png">
 	</APPLICATION>	
 	<!--  <APPLICATION code="Events" 
 	             title="#menu.Events"  
 	             functionality="EventsManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE" 
 	             width="700" 
 	             height="400"
-	             iconUrl="/SpagoBI/img/wapp/events64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/events64.png">
 	</APPLICATION>-->
 	<!--  <APPLICATION code="Worklist" 
 	             title="#menu.Worklist"  
 	             functionality="WorklistManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE" 
 	             width="700" 
 	             height="400"
-	             iconUrl="/SpagoBI/img/wapp/worklist64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/worklist64.png">
 	</APPLICATION>-->
-	<APPLICATION code="WorkExec" 
+	<!-- <APPLICATION code="WorkExec" 
 	             title="#menu.WorkExec"  
 	             functionality="WorkspaceManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&amp;WEBMODE=TRUE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ExecutionWorkspacePage&amp;WEBMODE=TRUE" 
 	             modal="true" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/workspace64.png">
-	</APPLICATION>
-	
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/workspace64.png">
+	</APPLICATION> -->
 	
 	<!-- <APPLICATION code="MapCat" 
 	             title="#menu.MapCat"  
 	             functionality="MapCatalogue" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=START_SBI_MAP_CATALOGUE" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=START_SBI_MAP_CATALOGUE" 
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/map64.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/map64.png">
 	</APPLICATION>          -->
 	
 	<APPLICATION code="MapCat" 
 	             title="#menu.MapCat"  
 	             functionality="MapCatalogueManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListMapsPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListMapsPage" 
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/mapcatalogue/maps.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/maps16.png">
 	</APPLICATION>
 
 	<APPLICATION code="FeatureMapCat" 
 	             title="#menu.FeatureMapCat"  
-	             functionality="MapCatalogueManagement" 
+	             functionality="MapFeaturesManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListFeaturesPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListFeaturesPage" 
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/mapcatalogue/featureManagement.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/featureManagement16.png">
 	</APPLICATION>
 
 	
@@ -196,42 +195,43 @@
 	             title="#menu.DistributionListUser"  
 	             functionality="DistributionListUser" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListUserPage" 
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlistuser.png">  
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlistuser.png">  
 	</APPLICATION>-->
-	<APPLICATION code="DistributionListList" 
+	
+	<!-- <APPLICATION code="DistributionListList" 
 	             title="#menu.DistributionListList"  
 	             functionality="DistributionListManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=ListDistributionListPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListPage" 
 	             modal="false" 
 	             width="750" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/tools/distributionlist/distributionlist.gif">
-	</APPLICATION>
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist.gif">
+	</APPLICATION> -->
 	<!-- <APPLICATION code="HotLink" 
 	             title="#menu.HotLink"  
 	             functionality="DocumentExecution" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST" 
 	             modal="true" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/analiticalmodel/icon-setlog.gif">
+	             iconUrl="${SPAGOBI_CONTEXT}/img/analiticalmodel/icon-setlog.gif">
 	</APPLICATION> -->
-	<APPLICATION code="MenuConfiguration" 
+	<!-- <APPLICATION code="MenuConfiguration" 
 	             title="#menu.menuconfiguration"  
 	             functionality="MenuManagement" 
 	             type="link" 
-	             link="/SpagoBI/servlet/AdapterHTTP?PAGE=MenuConfigurationPage" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=MenuConfigurationPage" 
 	             modal="true" 
 	             width="800" 
 	             height="500"
-	             iconUrl="/SpagoBI/img/wapp/menu.png">
-	</APPLICATION>		
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/menu.png">
+	</APPLICATION> -->		
 	
 	<!-- 
 	<VIEW code="MonitorView" 
@@ -239,7 +239,7 @@
 	      role="Administrator" 
 	      width="800" 
 	      height="450"
-	      iconUrl="/SpagoBI/img/wapp/monitorView64.png">
+	      iconUrl="${SPAGOBI_CONTEXT}/img/wapp/monitorView64.png">
 	      <CONTAINERS>
 		      <CONTAINER id="cont1" width="44%" height="44%" top="3%" left="3%" style="float:left;">
 		      	<TAB title="first tab" id="tab1">

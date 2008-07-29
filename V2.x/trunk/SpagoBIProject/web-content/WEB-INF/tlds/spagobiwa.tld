@@ -11,13 +11,21 @@
   <uri></uri>
   <description>Spago BI Web Application Tags</description>
 
-
-  <!-- START LIST TAGS  -->
+  <!-- START LIST TAGS  
   <tag>
   	<name>FisheyeMenu</name>
     <tag-class>it.eng.spagobi.commons.presentation.tags.FisheyeMenuTag</tag-class>
     <body-content>EMPTY</body-content>
     <description>Rendering of the fisheye menu associated to the user</description>
   </tag>
-    
+  -->
+  
+  <!-- START LIST TAGS  -->
+  <tag>
+  	<name>userMenu</name>
+    <tag-class>it.eng.spagobi.commons.presentation.tags.UserMenuTag</tag-class>
+    <body-content>EMPTY</body-content>
+    <description>Rendering of the menu associated to the user</description>
+  </tag>
+ 
 </taglib>

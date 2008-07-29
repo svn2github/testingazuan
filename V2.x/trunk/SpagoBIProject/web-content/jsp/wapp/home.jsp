@@ -51,10 +51,8 @@ boolean first=true;
 
 <%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <%@page import="it.eng.spagobi.wapp.util.MenuAccessVerifier"%>
-<html>
-  <head>
-    <title>SpagoBI Home</title>
-    
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+
 
 	   <script type="text/javascript" src="<%=linkSbijs%>"></script>
 	   <script type="text/javascript" src="<%=linkProto%>"></script>
@@ -63,23 +61,10 @@ boolean first=true;
 		<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 		<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
    
-   
-   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
+  <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
- 
-  <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/> 
-
- <!--
-    <script type="text/javascript" src="<%=contextName%>/js/spagobi.js"></script>
-    <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/prototype.js"></script>
-    <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/window.js"></script>
-    <script type="text/javascript" src="<%=contextName%>/js/prototype/javascripts/effects.js"></script>
-    <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
-   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script> 
-    <link href="<%=contextName%>/css/extjs/extSpagoBI.css" rel="stylesheet" type="text/css"/>   -->  
- 
-
     
+    <%-- 
     <script type="text/javascript">
 	     var djConfig = {isDebug: false, debugAtAllCosts: false};
     </script>
@@ -88,7 +73,7 @@ boolean first=true;
     	dojo.require("dojo.widget.FisheyeList");
     	dojo.hostenv.writeIncludes();
     </script>
-
+    --%>
     
     <style>
       body {
@@ -140,25 +125,29 @@ boolean first=true;
         
         <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='100%' height='100%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
 				</iframe>
-	        </div>
-	        <div id="footer" style="width:100%;height:50px;">
-	        	<spagobiwa:FisheyeMenu />
 	        </div>
 	    <%}else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='100%' height='100%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
 				</iframe>
 	        </div>
         <%}%>
         <%if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
 			  <div id="leftMenu" style='float:left;background-color: transparent'></div>
 			  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
-		        <iframe id='iframeDoc'  name='iframeDoc'  src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
 				</iframe>
 	        </div>
 		 <%}%>
+		 <script type="text/javascript">
+			if (isMoz()) {
+				document.getElementById('iframeDoc').height='76%';
+			} else {
+				document.getElementById('iframeDoc').height='72%';
+			}
+		 </script>
   
   <%@include file="/html/footer.html" %>
   
@@ -445,46 +434,71 @@ boolean first=true;
 			
 			var miomenu = new Ext.menu.Menu({
 			id: 'menumio',
-			items: [		
-				<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){%>	
+			items: [
+			<%if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MENU_MANAGEMENT)) { %>	
+			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
+				text: '<spagobi:message key="menu.menuconfiguration" />',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/wapp/menu16.png', 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=MenuConfigurationPage')"                           
+			}),
+			<%}%>	
+			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
+				text: '<spagobi:message key="menu.WorkExec" />',
+				group: 'groupmy', 
+				icon: '<%=contextName%>/img/wapp/workspace16.png',
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&WEBMODE=TRUE')"                           
+			}),	
+			<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){ %>	
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="tree.objectstree.name" />',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/wapp/bidocuments64.png', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage')"                           
-						}),
-				<%}%>		
+			}),
+			<%}%>		
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.Worklist" />',
 				group: 'groupmy', 
 				icon: '<%=contextName%>/img/wapp/worklist64.png',
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&WEBMODE=TRUE')"                           
-						}),	
+			}),	
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.HotLink" />',
 				group: 'groupmy',
 				icon: '<%=contextName%>/img/analiticalmodel/icon-setlog.gif', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&OPERATION=GET_HOT_LINK_LIST')"                           
-						}),						
+			}),						
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.DistributionListList" />',
 				group: 'groupmy',
-				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser.png', 
+				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser16.png', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage')"                           
-						}),
+			}),
+			<%if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT)) { %>	
+			new Ext.menu.Item({
+				id: '<%new Double(Math.random()).toString();%>',
+				text: '<spagobi:message key="menu.DistributionListsMan" />',
+				group: 'groupmy',
+				icon: '<%=contextName%>/img/tools/distributionlist/distributionlist16.png', 
+				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListPage')"                           
+			}),
+			<%}%>	
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.Events" />',
 				group: 'groupmy',
-				icon: '<%=contextName%>/img/wapp/events64.png', 				 
+				icon: '<%=contextName%>/img/wapp/events16.png', 				 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&WEBMODE=TRUE')"                           
-						})
-								         ]
-					});		 
+			})
+			]
+			});		 
 			
 		tb.addSeparator();	
 		
@@ -496,13 +510,22 @@ boolean first=true;
 		            cls: 'x-btn-text-icon bmenu',
 		            menu: miomenu
 		        })	
-		    );
-
-				
-
+		    );			
+		
+		<spagobiwa:userMenu/>
 
 
 	tb.addFill();
+
+			//adds exit menu		
+			tb.add(
+				
+				new Ext.Toolbar.TextItem({
+		            text: 'Welcome: <b><%= userProfile.getUserUniqueIdentifier().toString() %></b>&nbsp;&nbsp;&nbsp;'
+		        })	
+		    );
+		    
+			tb.addSeparator();
 
 			//adds exit menu		
 			tb.add(
@@ -512,12 +535,10 @@ boolean first=true;
 		            text: 'Logout',
 		            icon: '<%=contextName%>/img/wapp/exit16.png',
 		            cls: 'x-btn-logout x-btn-text-icon bmenu',
-		             //cls: 'x-btn-text-icon bmenu',
-		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
 		            handler: logout	  
 		        })	
 		    );
-		    	//tb.addFill();
+		    
 		});
 	
 	
@@ -544,7 +565,7 @@ boolean first=true;
 	 }
 	 	 
 	 function execDirectUrl(url){
-	 //alert(url); 	
+	 	url += '&<%= LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT %>=TRUE';
 		document.getElementById('iframeDoc').src = url;
 		return;
 	 }
@@ -735,8 +756,6 @@ var selectNode = function(node, e) {
 		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE');
 	}	
 
-
-		 
   </script>
   
   
@@ -770,9 +789,4 @@ var selectNode = function(node, e) {
   
   	%>
   
-  
-  
-  
-  
-</html>
-
+<%@ include file="/jsp/commons/footer.jsp"%>

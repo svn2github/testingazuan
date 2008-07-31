@@ -78,24 +78,28 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	HashMap userAttributes = new HashMap();
 	List userSB = configSingleton.getFilteredSourceBeanAttributeAsList(
 		"AUTHORIZATIONS.ENTITIES.USERS.USER", "userID", userName);
-	if (userSB.size()>1) logger.warn("There are more user with userID="+userName);
-	else {
-	    SourceBean userTmp = (SourceBean) userSB.get(0);
-	    XmlSecurityInfoProviderImpl xmlSecInfo=new XmlSecurityInfoProviderImpl();
-	    List attributesList=xmlSecInfo.getAllProfileAttributesNames();
-	    if (attributesList!=null){
-		Iterator iterAttributesList = attributesList.iterator();
-		while (iterAttributesList.hasNext()) {
-		    // Attribute to lookup
-		    String attributeName=(String)iterAttributesList.next();
-		    String attributeValue = (String) userTmp.getAttribute(attributeName);
-		    if (attributeValue!=null) {
-			logger.debug("Add attribute. "+attributeName+"="+attributeName+ " to the user"+userName);
-			userAttributes.put(attributeName, attributeValue);
+	if (userSB.size() == 0) {
+		logger.warn("User " + userName + " not found on configuration!!!");
+	} 
+	else 
+		if (userSB.size()>1) logger.warn("There are more user with userID="+userName);
+		else {
+		    SourceBean userTmp = (SourceBean) userSB.get(0);
+		    XmlSecurityInfoProviderImpl xmlSecInfo=new XmlSecurityInfoProviderImpl();
+		    List attributesList=xmlSecInfo.getAllProfileAttributesNames();
+		    if (attributesList!=null){
+				Iterator iterAttributesList = attributesList.iterator();
+				while (iterAttributesList.hasNext()) {
+				    // Attribute to lookup
+				    String attributeName=(String)iterAttributesList.next();
+				    String attributeValue = (String) userTmp.getAttribute(attributeName);
+				    if (attributeValue!=null) {
+					logger.debug("Add attribute. "+attributeName+"="+attributeName+ " to the user"+userName);
+					userAttributes.put(attributeName, attributeValue);
+				    }
+				}		
 		    }
-		}		
-	    }
-	}
+		}
 	
 	
 	logger.debug("Attributes load into SpagoBI profile: " + userAttributes);

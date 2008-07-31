@@ -22,8 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.wapp.metadata;
 // Generated 9-apr-2008 12.18.27 by Hibernate Tools 3.1.0 beta3
 
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +36,11 @@ public class SbiMenu  implements java.io.Serializable {
     // Fields    
 
      private Integer menuId;
-     private SbiObjects sbiObjects;
+     private Integer objId;
+     private String objParameters;
+     private String subObjName;
+     private String snapshotName;
+     private Integer snapshotHistory;
      private String name;
      private String descr;
      private String staticPage;     
@@ -46,7 +48,8 @@ public class SbiMenu  implements java.io.Serializable {
      private Set sbiMenuRoles = new HashSet(0);
      private Boolean homepage;
      private Boolean viewIcons;
-     private Boolean hideExecBar;
+     private Boolean hideToolbar;
+     private Boolean hideSliders;
 
      
 
@@ -69,21 +72,19 @@ public class SbiMenu  implements java.io.Serializable {
     
     /**
      * full constructor.
-     * 
-     * @param menuId the menu id
-     * @param sbiObjects the sbi objects
-     * @param name the name
-     * @param descr the descr
-     * @param parentId the parent id
-     * @param sbiMenuRoles the sbi menu roles
      */
-    public SbiMenu(Integer menuId, SbiObjects sbiObjects, String name, String descr, Integer parentId, Set sbiMenuRoles) {
+    public SbiMenu(Integer menuId, Integer objId, String name, String descr, Integer parentId, Set sbiMenuRoles,
+    	     String objParameters, String subObjName, String snapshotName, Integer snapshotHistory) {
         this.menuId = menuId;
-        this.sbiObjects = sbiObjects;
+        this.objId = objId;
         this.name = name;
         this.descr = descr;
         this.parentId = parentId;
         this.sbiMenuRoles = sbiMenuRoles;
+        this.objParameters = objParameters;
+        this.subObjName = subObjName;
+        this.snapshotName = snapshotName;
+        this.snapshotHistory = snapshotHistory;
     }
     
 
@@ -106,24 +107,6 @@ public class SbiMenu  implements java.io.Serializable {
      */
     public void setMenuId(Integer menuId) {
         this.menuId = menuId;
-    }
-
-    /**
-     * Gets the sbi objects.
-     * 
-     * @return the sbi objects
-     */
-    public SbiObjects getSbiObjects() {
-        return this.sbiObjects;
-    }
-    
-    /**
-     * Sets the sbi objects.
-     * 
-     * @param sbiObjects the new sbi objects
-     */
-    public void setSbiObjects(SbiObjects sbiObjects) {
-        this.sbiObjects = sbiObjects;
     }
 
     /**
@@ -214,12 +197,12 @@ public class SbiMenu  implements java.io.Serializable {
 		this.viewIcons = viewIcons;
 	}
 
-	public Boolean getHideExecBar() {
-		return hideExecBar;
+	public Boolean getHideToolbar() {
+		return hideToolbar;
 	}
 
-	public void setHideExecBar(Boolean hideExecBar) {
-		this.hideExecBar = hideExecBar;
+	public void setHideToolbar(Boolean hideToolbar) {
+		this.hideToolbar = hideToolbar;
 	}
 
 	public String getStaticPage() {
@@ -228,6 +211,54 @@ public class SbiMenu  implements java.io.Serializable {
 
 	public void setStaticPage(String staticPage) {
 		this.staticPage = staticPage;
+	}
+
+	public String getObjParameters() {
+		return objParameters;
+	}
+
+	public void setObjParameters(String objParameters) {
+		this.objParameters = objParameters;
+	}
+
+	public String getSubObjName() {
+		return subObjName;
+	}
+
+	public void setSubObjName(String subObjName) {
+		this.subObjName = subObjName;
+	}
+
+	public String getSnapshotName() {
+		return snapshotName;
+	}
+
+	public void setSnapshotName(String snapshotName) {
+		this.snapshotName = snapshotName;
+	}
+
+	public Integer getSnapshotHistory() {
+		return snapshotHistory;
+	}
+
+	public void setSnapshotHistory(Integer snapshotHistory) {
+		this.snapshotHistory = snapshotHistory;
+	}
+
+	public Integer getObjId() {
+		return objId;
+	}
+
+	public void setObjId(Integer objId) {
+		this.objId = objId;
+	}
+
+	public Boolean getHideSliders() {
+		return hideSliders;
+	}
+
+	public void setHideSliders(Boolean hideSliders) {
+		this.hideSliders = hideSliders;
 	}
    
 

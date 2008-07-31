@@ -38,6 +38,10 @@ public class Menu  implements Serializable  {
 	
     private Integer menuId;
     private Integer objId;
+    private String objParameters;
+    private String subObjName;
+    private String snapshotName;
+    private Integer snapshotHistory;
     private String name;
     private String descr;
     private Integer parentId;
@@ -48,7 +52,8 @@ public class Menu  implements Serializable  {
     private Role[] roles = null;
     private boolean homepage=false;
     private boolean viewIcons=false;
-    private boolean hideExecBar=false;
+    private boolean hideToolbar=false;
+    private boolean hideSliders=false;
     private String staticPage;
 
     
@@ -240,12 +245,12 @@ public class Menu  implements Serializable  {
 		this.viewIcons = viewIcons;
 	}
 
-	public boolean isHideExecBar() {
-		return hideExecBar;
+	public boolean getHideToolbar() {
+		return hideToolbar;
 	}
 
-	public void setHideExecBar(boolean hideExecBar) {
-		this.hideExecBar = hideExecBar;
+	public void setHideToolbar(boolean hideToolbar) {
+		this.hideToolbar = hideToolbar;
 	}
 
 	public String getStaticPage() {
@@ -254,6 +259,46 @@ public class Menu  implements Serializable  {
 
 	public void setStaticPage(String staticPage) {
 		this.staticPage = staticPage;
+	}
+
+	public String getObjParameters() {
+		return objParameters;
+	}
+
+	public void setObjParameters(String objParameters) {
+		this.objParameters = objParameters;
+	}
+
+	public String getSubObjName() {
+		return subObjName;
+	}
+
+	public void setSubObjName(String subObjName) {
+		this.subObjName = subObjName;
+	}
+
+	public String getSnapshotName() {
+		return snapshotName;
+	}
+
+	public void setSnapshotName(String snapshotName) {
+		this.snapshotName = snapshotName;
+	}
+
+	public Integer getSnapshotHistory() {
+		return snapshotHistory;
+	}
+
+	public void setSnapshotHistory(Integer snapshotHistory) {
+		this.snapshotHistory = snapshotHistory;
+	}
+
+	public boolean getHideSliders() {
+		return hideSliders;
+	}
+
+	public void setHideSliders(boolean hideSliders) {
+		this.hideSliders = hideSliders;
 	}
 
 	

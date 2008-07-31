@@ -23,17 +23,10 @@ package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
-import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
-import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.RoleDAOHibImpl;
-import it.eng.spagobi.commons.metadata.SbiBinContents;
-import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.metadata.SbiMenu;
@@ -169,16 +162,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setName(aMenu.getName());
 			hibMenu.setDescr(aMenu.getDescr());
 			hibMenu.setParentId(aMenu.getParentId());	
-
-			SbiObjects objId = null;
-			if(aMenu.getObjId()!=null){
-				objId=(SbiObjects)tmpSession.load(SbiObjects.class,  aMenu.getObjId());
-				hibMenu.setSbiObjects(objId);
-			}
-			else{
-				hibMenu.setSbiObjects(null);
-			}
-
+			hibMenu.setObjId(aMenu.getObjId());
+			hibMenu.setObjParameters(aMenu.getObjParameters());
+			hibMenu.setSubObjName(aMenu.getSubObjName());
+			hibMenu.setSnapshotName(aMenu.getSnapshotName());
+			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
+			
 			//Modify Roles Associated
 			// delete all roles functionality
 			Set oldRoles = hibMenu.getSbiMenuRoles();
@@ -196,7 +185,8 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 
 			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
-			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
+			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
+			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
 
 			hibMenu.setStaticPage(aMenu.getStaticPage());
 			tx.commit();
@@ -236,14 +226,17 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setName(aMenu.getName());
 			hibMenu.setDescr(aMenu.getDescr());
 			hibMenu.setParentId(aMenu.getParentId());
-			if(aMenu.getObjId()!=null){
-				SbiObjects objId = (SbiObjects)tmpSession.load(SbiObjects.class,  aMenu.getObjId());
-				hibMenu.setSbiObjects(objId);}
-			else{
-				hibMenu.setSbiObjects(null);
-			}
+			hibMenu.setObjId(aMenu.getObjId());
+			hibMenu.setObjParameters(aMenu.getObjParameters());
+			hibMenu.setSubObjName(aMenu.getSubObjName());
+			hibMenu.setSnapshotName(aMenu.getSnapshotName());
+			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
+			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
+			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
+			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
+			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
+			hibMenu.setStaticPage(aMenu.getStaticPage());
 			tmpSession.save(hibMenu);
-
 
 			Set menuRoleToSave = new HashSet();
 			Set temp=saveRolesMenu(tmpSession, hibMenu,
@@ -251,14 +244,6 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			menuRoleToSave.addAll(temp);
 			// set new roles into sbiFunctions
 			hibMenu.setSbiMenuRoles(menuRoleToSave);
-
-
-			// if is set as homepage delete previous homepage
-
-			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
-			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
-			hibMenu.setHideExecBar(new Boolean(aMenu.isHideExecBar()));
-			hibMenu.setStaticPage(aMenu.getStaticPage());
 
 			tx.commit();
 		} catch (HibernateException he) {
@@ -480,8 +465,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		menu.setName(hibMenu.getName());
 		menu.setDescr(hibMenu.getDescr());
 		menu.setParentId(hibMenu.getParentId());
-		if (hibMenu.getSbiObjects() != null)
-			menu.setObjId(hibMenu.getSbiObjects().getBiobjId());
+		menu.setObjId(hibMenu.getObjId());
+		menu.setObjParameters(hibMenu.getObjParameters());
+		menu.setSubObjName(hibMenu.getSubObjName());
+		menu.setSnapshotName(hibMenu.getSnapshotName());
+		menu.setSnapshotHistory(hibMenu.getSnapshotHistory());
 		menu.setLevel(getLevel(menu.getParentId(), menu.getObjId()));
 		if(hibMenu.getHomepage()!=null){
 			menu.setHomepage(hibMenu.getHomepage().booleanValue());
@@ -493,11 +481,16 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		}
 		else menu.setViewIcons(false);
 
-		if(hibMenu.getHideExecBar()!=null){
-			menu.setHideExecBar(hibMenu.getHideExecBar().booleanValue());
+		if(hibMenu.getHideToolbar()!=null){
+			menu.setHideToolbar(hibMenu.getHideToolbar().booleanValue());
 		}
-		else menu.setHideExecBar(false);
+		else menu.setHideToolbar(false);
 
+		if(hibMenu.getHideSliders()!=null){
+			menu.setHideSliders(hibMenu.getHideSliders().booleanValue());
+		}
+		else menu.setHideSliders(false);
+		
 		menu.setStaticPage(hibMenu.getStaticPage());
 		
 		

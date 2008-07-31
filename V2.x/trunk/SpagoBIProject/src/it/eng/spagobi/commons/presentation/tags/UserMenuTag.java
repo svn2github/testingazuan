@@ -379,9 +379,9 @@ public class UserMenuTag extends TagSupport {
 		url = url.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
 		url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
 		if (url.indexOf("?") != -1) {
-			url += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + functionality + "&" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
+			url += "&" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
 		} else {
-			url += "?" + LightNavigationManager.LIGHT_NAVIGATOR_ID+ "=" + functionality + "&" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
+			url += "?" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
 		}
 		htmlStream.append("\n 	text: '" + title + "',");
 		htmlStream.append("\n 	icon: '" + iconUrl + "', ");

@@ -53,7 +53,9 @@ public class BIObjectsModule extends AbstractModule {
     public static final String LABEL_SINGLE_OBJECT = "LABEL_SINGLE_OBJECT";
     // MPENNINGROTH 25-Jan-2008 add sub object label support
     public static final String LABEL_SUB_OBJECT = "LABEL_SUB_OBJECT";
-    public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";    
+    public static final String PARAMETERS_SINGLE_OBJECT = "PARAMETERS_SINGLE_OBJECT";
+    public static final String TOOLBAR_VISIBLE = "TOOLBAR_VISIBLE";
+    public static final String SLIDERS_VISIBLE = "SLIDERS_VISIBLE";
     public static final String PATH_SUBTREE = "PATH_SUBTREE";
     public static final String HEIGHT_AREA = "HEIGHT_AREA";
     public static final String SNAPSHOT_NAME = "SNAPSHOT_NAME";
@@ -175,6 +177,12 @@ public class BIObjectsModule extends AbstractModule {
 		String labelSubObject = ChannelUtilities.getPreferenceValue(requestContainer, LABEL_SUB_OBJECT, "");
 		logger.debug("using subobject " + labelSubObject);
         
+		String displayToolbarStr = ChannelUtilities.getPreferenceValue(requestContainer, TOOLBAR_VISIBLE, "TRUE");
+		logger.debug("Display toolbar preference: " + displayToolbarStr);
+		
+		String displaySlidersStr = ChannelUtilities.getPreferenceValue(requestContainer, SLIDERS_VISIBLE, "TRUE");
+		logger.debug("Display sliders preference: " + displaySlidersStr);
+		
         // set into request all information for invoking ExecuteBIObjectModule.pageCreationHandler on loop call
 		response.setAttribute(ObjectsTreeConstants.OBJECT_LABEL, label);
         if (!parameters.trim().equalsIgnoreCase("")) {
@@ -188,6 +196,12 @@ public class BIObjectsModule extends AbstractModule {
         }
         if (!snapHistStr.trim().equalsIgnoreCase("")) {
         	response.setAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER, snapHistStr);
+        }
+        if (!displayToolbarStr.trim().equalsIgnoreCase("")) {
+        	response.setAttribute(SpagoBIConstants.TOOLBAR_VISIBLE, displayToolbarStr);
+        }
+        if (!displaySlidersStr.trim().equalsIgnoreCase("")) {
+        	response.setAttribute(SpagoBIConstants.SLIDERS_VISIBLE, displaySlidersStr);
         }
         response.setAttribute(ObjectsTreeConstants.MODALITY, SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
         // loop publisher to call ExecuteBIObjectModule.pageCreationHandler

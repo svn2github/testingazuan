@@ -158,6 +158,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_RUN)) {
 				executionHandler(request, response);
 			} else if (messageExec
+							.equalsIgnoreCase(SpagoBIConstants.EXEC_PHASE_REFRESH)) {
+				refreshHandler(request, response);
+			} else if (messageExec
 					.equalsIgnoreCase(SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE)) {
 				execSnapshotHandler(request, response);
 			} else if (messageExec
@@ -410,12 +413,23 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		executionId = executionId.replaceAll("-", "");
 		// find execution flow id; it is not specified, it means that a new flow is starting, so it is set to execution id value
 		String executionFlowId = (String) request.getAttribute("EXECUTION_FLOW_ID");
+		logger.debug("Execution flow id request parameter: " + executionFlowId);
 		if (executionFlowId == null) 
 			executionFlowId = executionId;
+		// find if toolbar must be displayed or not, default value is true
+		String displayToolbarStr = (String) request.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
+		logger.debug("Display toolbar request parameter: " + displayToolbarStr);
+		if (displayToolbarStr == null || displayToolbarStr.trim().equals("")) displayToolbarStr = "true";
+		boolean displayToolbar = Boolean.parseBoolean(displayToolbarStr);
+		// find if sliders must be displayed or not, default value is true
+		String displaySliderStr = (String) request.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
+		logger.debug("Display sliders request parameter: " + displaySliderStr);
+		if (displaySliderStr == null || displaySliderStr.trim().equals("")) displaySliderStr = "true";
+		boolean displaySlider = Boolean.parseBoolean(displaySliderStr);
 		// create new execution instance
 		ExecutionInstance instance = null;
 		try {
-			instance = new ExecutionInstance(profile, executionFlowId, executionId, biobjectId, aRoleName, modality);
+			instance = new ExecutionInstance(profile, executionFlowId, executionId, biobjectId, aRoleName, modality, displayToolbar, displaySlider);
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -1209,6 +1223,14 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		return lookedupBIParameter;
 	}
 
+	private void refreshHandler(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
+		ExecutionInstance instance = getExecutionInstance();
+		SubObject subobject = getRequiredSubObject(request);
+		execute(instance, subobject, null, response);
+		logger.debug("OUT");
+	}
+	
 	/**
 	 * Handles the final execution of the object
 	 * 

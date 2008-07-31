@@ -10,25 +10,50 @@
             	<param name="sequence">sbi_menu_seq</param> 
             </generator>
         </id>
-        <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
-            <column name="biobj_id" />
-        </many-to-one>
+        <property name="objId" type="integer">
+            <column name="biobj_id" not-null="false" />
+        </property>
         <property name="name" type="string">
             <column name="name" />
         </property>
         <property name="descr" type="string">
             <column name="descr" />
         </property>
+        <property name="objParameters" type="string">
+            <column name="BIOBJ_PARAMETERS" not-null="false" />
+        </property>
+        <property name="subObjName" type="string">
+            <column name="SUBOBJ_NAME" not-null="false" />
+        </property>   
+        <property name="snapshotName" type="string">
+            <column name="SNAPSHOT_NAME" not-null="false" />
+        </property>    
+        <property name="snapshotHistory" type="integer">
+            <column name="SNAPSHOT_HISTORY" not-null="false" />
+        </property>
         <property name="parentId" type="integer">
             <column name="parent_id" />
         </property>
-        <!-- 
+		<property name="homepage" type="boolean">
+            <column name="homepage" />
+        </property>
+		<property name="viewIcons" type="boolean">
+            <column name="view_icons" />
+        </property>
+		<property name="hideToolbar" type="boolean">
+            <column name="hide_toolbar" />
+        </property>
+		<property name="hideSliders" type="boolean">
+            <column name="hide_sliders" />
+        </property>
+        <property name="staticPage" type="string">
+            <column name="static_page" />
+        </property>                         
         <set name="sbiMenuRoles" inverse="true">
             <key>
-                <column name="MENU_ID" not-null="true" />
+                <column name="menu_id" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.wapp.metadata.SbiMenuRole" />
         </set>
-        -->
     </class>
 </hibernate-mapping>

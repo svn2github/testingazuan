@@ -73,6 +73,8 @@ public class ExecutionInstance {
 	private String executionRole = null;
 	private String executionModality = null;
 	private IEngUserProfile userProfile = null;
+	private boolean displayToolbar = true;
+	private boolean displaySliders = true;
 	private Calendar calendar = null;
 	
 	
@@ -101,6 +103,18 @@ public class ExecutionInstance {
 		initBIParameters();
     }
 	
+    public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
+    		String executionRole, String executionModality, boolean displayToolbar) throws Exception {
+    	this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality);
+    	this.displayToolbar = displayToolbar;
+    }
+    
+    public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
+    		String executionRole, String executionModality, boolean displayToolbar, boolean displaySliders) throws Exception {
+    	this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality, displayToolbar);
+    	this.displaySliders = displaySliders;
+    }
+    
     public void changeExecutionRole(String newRole) throws Exception {
     	logger.debug("IN");
     	List correctExecutionRoles = loadCorrectRolesForExecution();
@@ -144,6 +158,7 @@ public class ExecutionInstance {
 			    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null) {
 			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
 			    				aBIObjectParameter.setHasValidValues(true);
+			    				aBIObjectParameter.setTransientParmeters(true);
 			    			}
 			        	}        	       
 		        	} catch (Exception e) {
@@ -547,6 +562,22 @@ public class ExecutionInstance {
 		return executionModality;
 	}
 	
+	public boolean displayToolbar() {
+		return displayToolbar;
+	}
+
+	public void setDisplayToolbar(boolean displayToolbar) {
+		this.displayToolbar = displayToolbar;
+	}
+	
+	public boolean displaySliders() {
+		return displaySliders;
+	}
+
+	public void setDisplaySliders(boolean displaySliders) {
+		this.displaySliders = displaySliders;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -557,5 +588,5 @@ public class ExecutionInstance {
 		} else 
 			return false;
 	}
-	
+
 }

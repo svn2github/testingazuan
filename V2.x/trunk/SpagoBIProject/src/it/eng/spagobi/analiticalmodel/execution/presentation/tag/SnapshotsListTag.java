@@ -25,13 +25,11 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -63,7 +61,7 @@ public class SnapshotsListTag extends TagSupport {
 
 	static private Logger logger = Logger.getLogger(SnapshotsListTag.class);
 
-	private Integer biobjectId = null;
+	private List snapshotsList = null;
 	
     protected SourceBean request = null;
     protected HttpServletRequest httpRequest = null;
@@ -96,7 +94,6 @@ public class SnapshotsListTag extends TagSupport {
     	String toReturn = null;
     	try {
     		IEngUserProfile profile = getCurrentUserProfile();
-    		List snapshotsList = DAOFactory.getSnapshotDAO().getSnapshots(biobjectId);
 			if (snapshotsList == null || snapshotsList.size() == 0) {
 				// the pageContext attribute is read by the presentation jsp to set the initial visibility of the box
 				pageContext.setAttribute("snapshotsBoxOpen", "false");
@@ -191,9 +188,6 @@ public class SnapshotsListTag extends TagSupport {
 		        buffer.append("</table>\n");
 				toReturn = buffer.toString();
 			}
-		} catch (EMFUserError e) {
-			logger.error("Error while loading snaphosts list", e);
-			toReturn = "<div class='portlet-msg-error'>" + msgBuilder.getMessage("3001", httpRequest) + "</div>";
     	} catch (EMFInternalError e) {
     		logger.error(e);
     		toReturn = "<div class='portlet-msg-error'>" + msgBuilder.getMessage("101", httpRequest) + "</div>";
@@ -219,8 +213,8 @@ public class SnapshotsListTag extends TagSupport {
      * 
      * @return the biobject id
      */
-    public Integer getBiobjectId() {
-    	return biobjectId;
+    public List getSnapshotsList() {
+    	return snapshotsList;
     }
 
 	/**
@@ -228,7 +222,7 @@ public class SnapshotsListTag extends TagSupport {
 	 * 
 	 * @param biobjectId the new biobject id
 	 */
-	public void setBiobjectId(Integer biobjectId) {
-		this.biobjectId = biobjectId;
+	public void setSnapshotsList(List snapshotsList) {
+		this.snapshotsList = snapshotsList;
 	}
 }

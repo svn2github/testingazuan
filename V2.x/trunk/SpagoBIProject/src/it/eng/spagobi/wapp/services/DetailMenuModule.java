@@ -1,9 +1,3 @@
-package it.eng.spagobi.wapp.services;
-
-
-
-
-
 /**
 
 SpagoBI - The Business Intelligence Free Platform
@@ -24,7 +18,8 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
+package it.eng.spagobi.wapp.services;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
@@ -35,33 +30,22 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.dao.IMenuDAO;
-import it.eng.spagobi.wapp.dao.MenuDAOImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
-import org.hibernate.Hibernate;
+import org.apache.log4j.Logger;
 
 /**
  * Implements a module which  handles all  low functionalities management: has methods 
@@ -73,6 +57,8 @@ import org.hibernate.Hibernate;
  */
 public class DetailMenuModule extends AbstractModule {
 
+	static private Logger logger = Logger.getLogger(DetailMenuModule.class);
+	
 	private String modality = "";
 	public final static String MODULE_PAGE = "DetailMenuPage";
 	public final static String MENU_OBJ = "MENU_OBJ";
@@ -339,74 +325,78 @@ public class DetailMenuModule extends AbstractModule {
 
 		String homepageB=(String)request.getAttribute("homepage");
 		String viewIconsB=(String)request.getAttribute("viewicons");
-		String hideExecBarB=(String)request.getAttribute("hideexecbar");
+		String hideToolbarB=(String)request.getAttribute("hideToolbar");
+		String hideSlidersB=(String)request.getAttribute("hideSliders");
 		String staticPage=(String)request.getAttribute("staticpage");
 
 		Menu menu = null;
-
-
 		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 			String idParent = (String)request.getAttribute(DetailMenuModule.PARENT_ID);
-			String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
-
 			menu = new Menu();
-			menu.setName(name);
-			menu.setDescr(description);
 			menu.setHasChildren(false);
 			if(idParent!=null)
 				menu.setParentId(Integer.valueOf(idParent));
 			else
 				menu.setParentId(null);
-
-
-			if(objectId!=null && !objectId.equalsIgnoreCase(""))
-				menu.setObjId(Integer.valueOf(objectId));
-			else menu.setObjId(null);
-
-			if(homepageB!=null)menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());
-			else menu.setHomepage(false);
-
-			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
-			else menu.setViewIcons(false);
-
-			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
-			else menu.setHideExecBar(false);
-
-			menu.setStaticPage(staticPage);
-
-			menu.setRoles(roles);
-
-
 		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
-
 			String idMenu = (String)request.getAttribute(DetailMenuModule.MENU_ID);
-
 			menu = DAOFactory.getMenuDAO().loadMenuByID(Integer.valueOf(idMenu));
-
-			menu.setName(name);
-			menu.setDescr(description);
-
-			menu.setRoles(roles);
-
-			String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
-			if(objectId!=null && !objectId.equalsIgnoreCase("")){
-				menu.setObjId(Integer.valueOf(objectId));
+		}
+		
+		String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
+		if(objectId!=null && !objectId.equalsIgnoreCase("")) {
+			menu.setObjId(Integer.valueOf(objectId));
+			String objParameters = (String) request.getAttribute("objParameters");
+			if (objParameters != null && !objParameters.trim().equals("")) {
+				menu.setObjParameters(objParameters);
+			} else {
+				menu.setObjParameters(null);
 			}
-			else menu.setObjId(null);
-
-			if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
-			else menu.setHomepage(false);
-
-			if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
-			else menu.setViewIcons(false);
-
-			if(hideExecBarB!=null)menu.setHideExecBar(Boolean.valueOf(hideExecBarB).booleanValue());
-			else menu.setHideExecBar(false);	
-
-			menu.setStaticPage(staticPage);
-
+			String subobjectName = (String) request.getAttribute("subobjectName");
+			if (subobjectName != null && !subobjectName.trim().equals("")) {
+				menu.setSubObjName(subobjectName);
+			} else {
+				menu.setSubObjName(null);
+			}
+			String snapshotName = (String) request.getAttribute("snapshotName");
+			if (snapshotName != null && !snapshotName.trim().equals("")) {
+				menu.setSnapshotName(snapshotName);
+			} else {
+				menu.setSnapshotName(null);
+			}
+			String snapshotHistoryStr = (String) request.getAttribute("snapshotHistory");
+			if (snapshotHistoryStr != null && !snapshotHistoryStr.trim().equals("")) {
+				Integer snapshotHistory = null;
+				try {
+					snapshotHistory = new Integer(Integer.parseInt(snapshotHistoryStr));
+				} catch (Exception e) {
+					logger.error("Error while parsing [" + snapshotHistoryStr + "] into an integer", e);
+					snapshotHistory = new Integer(0);
+				}
+				menu.setSnapshotHistory(snapshotHistory);
+			} else {
+				menu.setSnapshotHistory(null);
+			}
+		} else {
+			menu.setObjId(null);
+			menu.setSubObjName(null);
+			menu.setObjParameters(null);
+			menu.setSnapshotName(null);
+			menu.setSnapshotHistory(null);
 		}
 
+		menu.setName(name);
+		menu.setDescr(description);
+		menu.setRoles(roles);
+		menu.setStaticPage(staticPage);
+		if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
+		else menu.setHomepage(false);
+		if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
+		else menu.setViewIcons(false);
+		if(hideToolbarB!=null)menu.setHideToolbar(Boolean.valueOf(hideToolbarB).booleanValue());
+		else menu.setHideToolbar(false);
+		if(hideSlidersB!=null)menu.setHideSliders(Boolean.valueOf(hideSlidersB).booleanValue());
+		else menu.setHideSliders(false);
 		return menu;
 	}
 
@@ -582,14 +572,6 @@ public class DetailMenuModule extends AbstractModule {
 		else
 			return "";
 	}
-
-	public static String toolbarVisibility(Menu menu){
-		if(!menu.isHideExecBar()) return "";
-		else return "&TOOLBAR_VISIBLE=FALSE";
-
-	}
-
-
 
 
 }

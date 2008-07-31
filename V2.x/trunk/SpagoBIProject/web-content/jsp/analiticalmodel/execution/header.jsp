@@ -65,6 +65,7 @@ boolean areAllParametersTransient(List parametersList) {
 }
 --%>
 
+<%!
 // get the virtual role (a role that containes all permissions of the correct execution roles)
 Role getVirtualRole(IEngUserProfile profile, BIObject obj, String baseRoleName) throws Exception {
 	

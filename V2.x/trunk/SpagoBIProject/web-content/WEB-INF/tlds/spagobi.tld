@@ -329,7 +329,7 @@
     
     <!-- END LOV TAGS  -->
     
-    <!-- Tag for view point list -->
+    <!-- Tag for view point list 
     <tag>
         <name>viewPointsList</name>
         <tag-class>it.eng.spagobi.analiticalmodel.execution.presentation.tag.ViewPointsListTag</tag-class>
@@ -341,8 +341,9 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    -->
     
-    <!-- Tag for subObjects list -->
+    <!-- Tag for subObjects list 
     <tag>
         <name>subObjectsList</name>
         <tag-class>it.eng.spagobi.analiticalmodel.execution.presentation.tag.SubObjectsListTag</tag-class>
@@ -354,18 +355,20 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    -->
     
-    <!-- Tag for snapshots list -->
+    <!-- Tag for snapshots list 
     <tag>
         <name>snapshotsList</name>
         <tag-class>it.eng.spagobi.analiticalmodel.execution.presentation.tag.SnapshotsListTag</tag-class>
         <body-content>EMPTY</body-content>
         <description>Rendering of the snapshots list</description>
         <attribute>
-            <name>biobjectId</name>
+            <name>snapshotsList</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    -->
     
 </taglib>

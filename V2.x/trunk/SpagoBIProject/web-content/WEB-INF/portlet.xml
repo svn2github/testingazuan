@@ -478,6 +478,14 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         		<!-- Values are TRUE/FALSE: if TRUE the toolbar is displayed, false otherwise  -->
         		<value>TRUE</value>
         	</preference>
+        	
+        	<!-- Preference for the sliders (parameters/snapshots/subobjects/viewpoints) visibility --> 
+            <preference> 
+        		<name>SLIDERS_VISIBLE</name>
+        		<!-- Values are TRUE/FALSE: if TRUE the toolbar is displayed, false otherwise  -->
+        		<value>TRUE</value>
+        	</preference>
+        	
         </portlet-preferences>
 	</portlet>
 	

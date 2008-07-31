@@ -273,7 +273,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
-			String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path;
+			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
 			
 			//add the serie parameter
 		if(datasetMap.getSelectedSeries().contains("allseries")){
@@ -334,8 +335,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		limitSeries=true;
 		if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
 		{
-		refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
-		refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
+		//refreshUrlPars.put("PAGE","ExecuteBIObjectPage");
+		//refreshUrlPars.put("MESSAGEDET","EXEC_PHASE_RUN");
 		refreshUrlPars.put("OBJECT_ID",documentid);
 		}
 		else
@@ -352,7 +353,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div>	
 	
-		<form name="serie" action="<%=refreshUrl%>" method="POST" >	
+		<form name="serie" action="<%=refreshUrl%>" method="POST" >
+			
+			<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
 	<% 	
 		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)

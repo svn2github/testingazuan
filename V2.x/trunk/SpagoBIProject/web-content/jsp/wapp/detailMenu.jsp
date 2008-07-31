@@ -166,19 +166,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input class='portlet-form-input-field' type="checkbox" 
 	      	   size="50" name="viewicons" id="" 
 	      	   value="true" <%if(menu.isViewIcons()){%> checked="checked" <%}%>/>
-</div>
+		</div>
 		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.menu.HideExecBar" />
+			<spagobi:message key = "SBISet.menu.hideToolbar" />
 		</span>
 		</div>
 		<div class='div_detail_form'> 
 		<input class='portlet-form-input-field' type="checkbox" 
-	      	   size="50" name="hideexecbar" id="" 
-	      	   value="true" <%if(menu.isHideExecBar()){%> checked="checked" <%}%>/>
-	</div>	
-	
-
+	      	   size="50" name="hideToolbar" id="" 
+	      	   value="true" <%if(menu.getHideToolbar()){%> checked="checked" <%}%>/>
+		</div>	
+		<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.menu.hideSliders" />
+		</span>
+		</div>
+		<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="checkbox" 
+	      	   size="50" name="hideSliders" id="" 
+	      	   value="true" <%if(menu.getHideSliders()){%> checked="checked" <%}%>/>
+		</div>	
 
 
 	 <%	
@@ -256,7 +264,59 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			)
 				
 		</script>
-	 
+	
+	<%-- Document parameters --%> 
+	<div class='div_detail_label'>	 
+		 <span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.detailMenu.parameters" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="text" 
+	      	   size="50" maxlength="400" name="objParameters" id="" 
+	      	   value="<%= menu.getObjParameters() != null ? menu.getObjParameters() : "" %>"  />
+	</div>
+	<%-- End Document parameters --%> 
+	
+	<%-- Subobject --%> 
+	<div class='div_detail_label'>	 
+		 <span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.detailMenu.subobject" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="text" 
+	      	   size="50" maxlength="50" name="subobjectName" id="" 
+	      	   value="<%= menu.getSubObjName() != null ? menu.getSubObjName() : "" %>"  />
+	</div>
+	<%-- End Subobject --%> 
+
+	<%-- Snaphost name --%> 
+	<div class='div_detail_label'>	 
+		 <span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.detailMenu.snapshotName" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="text" 
+	      	   size="50" maxlength="50" name="snapshotName" id="" 
+	      	   value="<%= menu.getSnapshotName() != null ? menu.getSnapshotName() : "" %>"  />
+	</div>
+	<%-- End Snaphost name --%> 
+
+	<%-- Snaphost history --%> 
+	<div class='div_detail_label'>	 
+		 <span class='portlet-form-field-label'>
+			<spagobi:message key = "SBISet.detailMenu.snapshotHistory" />
+		</span>
+	</div>
+	<div class='div_detail_form'> 
+		<input class='portlet-form-input-field' type="text" 
+	      	   size="3" maxlength="3" name="snapshotHistory" id="" 
+	      	   value="<%= menu.getSnapshotHistory() != null ? menu.getSnapshotHistory().toString() : "" %>"  />
+	</div>
+	<%-- End Snaphost history --%> 
+	
 	 <% String currentStaticPage=menu.getStaticPage();
 	 	// Get directory
 	 	String rootPath=ConfigSingleton.getRootPath();

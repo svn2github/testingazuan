@@ -158,9 +158,17 @@
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
-        		<PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
-        		<PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="objectid" />
-        		<PARAMETER name="MODALITY" type="ABSOLUTE" scope="" value="SINGLE_OBJECT_EXECUTION_MODALITY" />        		
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+                <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="OBJECT_ID" />
+                <PARAMETER name="TOOLBAR_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TOOLBAR_VISIBLE" />
+                <PARAMETER name="SLIDERS_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="SLIDERS_VISIBLE" />
+        		<PARAMETER name="MODALITY" type="ABSOLUTE" scope="" value="SINGLE_OBJECT_EXECUTION_MODALITY" />
+                <PARAMETER name="PARAMETERS" type="RELATIVE" scope="SERVICE_RESPONSE" value="PARAMETERS" />
+                <PARAMETER name="SUBOBJECT_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="SUBOBJECT_NAME" />
+                <PARAMETER name="SNAPSHOT_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="SNAPSHOT_NAME" />
+                <PARAMETER name="SNAPSHOT_HISTORY_NUMBER" type="RELATIVE" scope="SERVICE_RESPONSE" value="SNAPSHOT_HISTORY_NUMBER" />
+                <PARAMETER name="IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS" type="ABSOLUTE" scope="" value="TRUE" />
+                <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

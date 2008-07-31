@@ -74,6 +74,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String modality = (String) aServiceRequest.getAttribute(SpagoBIConstants.MODALITY);
     String flowId = (String) aServiceRequest.getAttribute("EXECUTION_FLOW_ID");
     String ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS);
+    String displayToolbarStr = (String) request.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
+    String displaySliderStr = (String) request.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
 	if (flowId != null) {
 		%>
 		<input type="hidden" name="EXECUTION_FLOW_ID" value="<%= flowId %>" />
@@ -92,6 +94,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (ignoreSubNodesStr != null) {
 		%>
 		<input type="hidden" name="<%= SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS %>" value="<%= ignoreSubNodesStr %>" />
+		<%
+	}
+	if (displayToolbarStr != null) {
+		%>
+		<input type="hidden" name="<%= SpagoBIConstants.TOOLBAR_VISIBLE %>" value="<%= displayToolbarStr %>" />
+		<%
+	}
+	if (displaySliderStr != null) {
+		%>
+		<input type="hidden" name="<%= SpagoBIConstants.SLIDERS_VISIBLE %>" value="<%= displaySliderStr %>" />
 		<%
 	}
 	%>

@@ -64,16 +64,7 @@ boolean first=true;
   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
   <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
     
-    <%-- 
-    <script type="text/javascript">
-	     var djConfig = {isDebug: false, debugAtAllCosts: false};
-    </script>
-    <script type="text/javascript" src="<%=contextName%>/js/dojo/dojo.js"></script>
-    <script language="JavaScript" type="text/javascript">
-    	dojo.require("dojo.widget.FisheyeList");
-    	dojo.hostenv.writeIncludes();
-    </script>
-    --%>
+    <link href="<%=contextName%>/css/extjs/ext-all-SpagoBI-web.css" rel="stylesheet" type="text/css"/>
     
     <style>
       body {
@@ -125,25 +116,25 @@ boolean first=true;
         
         <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
 				</iframe>
 	        </div>
 	    <%}else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
 				</iframe>
 	        </div>
         <%}%>
         <%if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
 			  <div id="leftMenu" style='float:left;background-color: transparent'></div>
 			  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
-		        <iframe id='iframeDoc'  name='iframeDoc' scrolling='yes' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
 				</iframe>
 	        </div>
 		 <%}%>
 		 <script type="text/javascript">
 			if (isMoz()) {
-				document.getElementById('iframeDoc').height='76%';
+				document.getElementById('iframeDoc').height='75%';
 			} else {
 				document.getElementById('iframeDoc').height='72%';
 			}
@@ -565,7 +556,6 @@ boolean first=true;
 	 }
 	 	 
 	 function execDirectUrl(url){
-	 	url += '&<%= LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT %>=TRUE';
 		document.getElementById('iframeDoc').src = url;
 		return;
 	 }

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
+<%@ taglib prefix="execution" tagdir="/WEB-INF/tags/analiticalmodel/execution" %>
 
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
@@ -48,7 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "jsp/analiticalmodel/execution/box.js")%>"></script>
 
-<%!
+<%--
 boolean areAllParametersTransient(List parametersList) {
 	boolean toReturn = true;
 	if (parametersList != null && parametersList.size() > 0) {
@@ -62,6 +63,7 @@ boolean areAllParametersTransient(List parametersList) {
 	}
 	return toReturn;
 }
+--%>
 
 // get the virtual role (a role that containes all permissions of the correct execution roles)
 Role getVirtualRole(IEngUserProfile profile, BIObject obj, String baseRoleName) throws Exception {
@@ -143,20 +145,30 @@ Integer executionAuditId = auditManager.insertAudit(obj, subObj, userProfile, ex
 if (executionAuditId != null) {
 	executionParameters.put(AuditManager.AUDIT_ID, executionAuditId.toString());
 }
-// TODO: spostare in un tag
-Map executeUrlPars = new HashMap();
-executeUrlPars.put("PAGE", "ValidateExecuteBIObjectPage");
-executeUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_RUN);
-executeUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-String execUrl = urlBuilder.getUrl(request, executeUrlPars);
-
-
+Map refreshUrlPars = new HashMap();
+refreshUrlPars.put("PAGE", "ExecuteBIObjectPage");
+refreshUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_REFRESH);
+refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+if (subObj != null) {
+	refreshUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, subObj.getId().toString());
+}
+String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 
 // the toolbar (slider + buttons) visibility is determined by preferences
-boolean toolbarIsVisible = Boolean.parseBoolean(ChannelUtilities.getPreferenceValue(aRequestContainer, "TOOLBAR_VISIBLE", "TRUE"));
-// if the modality is SINGLE_OBJECT and there are no parameters or ALL parameters are transient, the slider for parameters, viewpoints, subobjects and snapshots is not displayed
-List params = obj.getBiObjectParameters();
-boolean sliderIsVisible = !modality.equalsIgnoreCase(SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY) || (params != null && params.size() > 0 && !areAllParametersTransient(params));
+boolean toolbarIsVisible = instance.displayToolbar();
+boolean sliderIsVisible = instance.displaySliders();
+List subobjectsList = null;
+List snapshotsList = null;
+List viewpointsList = null;
+if (sliderIsVisible) {
+	// loads subobjects/snapshots/viewpoints only if sliders are visible
+	if (virtualRole.isAbleToSeeSubobjects()) subobjectsList = DAOFactory.getSubObjectDAO().getAccessibleSubObjects(obj.getId(), userProfile);
+	if (virtualRole.isAbleToSeeSnapshots()) snapshotsList = DAOFactory.getSnapshotDAO().getSnapshots(obj.getId());
+	if (virtualRole.isAbleToSeeViewpoints()) viewpointsList = DAOFactory.getViewpointDAO().loadAccessibleViewpointsByObjId(obj.getId(), userProfile);
+}
+boolean subobjectsSliderVisible = subobjectsList != null && subobjectsList.size() > 0;
+boolean snapshotsSliderVisible = snapshotsList != null && snapshotsList.size() > 0;
+boolean viewpointsSliderVisible = viewpointsList != null && viewpointsList.size() > 0;
 String outputType = (String)executionParameters.get("outputType");
 %>
 
@@ -198,9 +210,9 @@ if (toolbarIsVisible) {
 		<div class="slider_header">
 			<ul>
 			    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
-				<% if (virtualRole.isAbleToSeeViewpoints()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
-				<% if (virtualRole.isAbleToSeeSubobjects()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
-				<% if (virtualRole.isAbleToSeeSnapshots()) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
+				<% if (viewpointsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
+				<% if (subobjectsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
+				<% if (snapshotsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 			</ul>
 		</div>
 		<% } %>
@@ -221,18 +233,17 @@ if (toolbarIsVisible) {
 			    <%
 				}
 			    %>
-			    <% if (!isExecutingSnapshot) { 
+			    <% if (!isExecutingSnapshot) {
 			    String refreshMode="GET";
 			    if(sbiMode.equals("WEB")){refreshMode="POST";}
-			    	
 			    %>
 			    <li>		    
-					<form id="refresh<%=uuid%>" action="<%= getUrl(execUrl, documentParametersMap)  %>" method="<%=refreshMode%>">
+					<form id="refresh<%=uuid%>" action="<%= refreshUrl %>" method="<%=refreshMode%>">
 					<input id='refreshimage<%= uuid %>' type="image" width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
 							alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'/>
 					</form>
-					</li>
+				</li>
 				<% } %>
 				<%if (virtualRole.isAbleToSendMail() && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT")) { %>
 			    <li>		    
@@ -301,7 +312,11 @@ if (toolbarIsVisible) {
 	
 	<% if (sliderIsVisible) { %>
 		<%-- Parameters --%>
-		<div style="display:none"><div id="parametersContentEl<%= uuid %>"><spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/></div></div>
+		<div style="display:none">
+			<div id="parametersContentEl<%= uuid %>">
+				<spagobi:ParametersGenerator modality="EXECUTION_MODALITY"  requestIdentity="<%=uuid%>"/>
+			</div>
+		</div>
 		<div id="popout_Parameters<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'parametersContentEl<%= uuid %>', 'popout_Parameters<%= uuid %>', 'toggle_Parameters<%= uuid %>', false);
@@ -309,8 +324,13 @@ if (toolbarIsVisible) {
 		<%-- End parameters --%>
 		
 		<%-- ViewPoints --%>
-		<% if (virtualRole.isAbleToSeeViewpoints()) { %>
-		<div style="display:none"><div id="viewpointsContentEl<%= uuid %>"><spagobi:viewPointsList biobjectId="<%= obj.getId() %>" /></div></div>
+		<% if (viewpointsSliderVisible) { %>
+		<div style="display:none">
+			<div id="viewpointsContentEl<%= uuid %>">
+				<%--<spagobi:viewPointsList biobjectId="<%= obj.getId() %>" />--%>
+				<execution:viewpointsList viewpointsList="<%= viewpointsList %>" />
+			</div>
+		</div>
 		<div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpointsContentEl<%= uuid %>', 'popout_ViewPoint<%= uuid %>', 'toggle_ViewPoint<%= uuid %>', false);
@@ -319,8 +339,13 @@ if (toolbarIsVisible) {
 		<%-- End viewPoints --%>
 		
 		<%-- SubObjects --%>
-		<% if (virtualRole.isAbleToSeeSubobjects()) { %>
-		<div style="display:none"><div id="subobjectsContentEl<%= uuid %>"><spagobi:subObjectsList biobjectId="<%= obj.getId() %>" /></div></div>
+		<% if (subobjectsSliderVisible) { %>
+		<div style="display:none">
+			<div id="subobjectsContentEl<%= uuid %>">
+				<%--<spagobi:subObjectsList biobjectId="<%= obj.getId() %>" />--%>
+				<execution:subobjectsList subobjectsList="<%= subobjectsList %>" />
+			</div>
+		</div>
 		<div id="popout_SubObject<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
@@ -329,8 +354,13 @@ if (toolbarIsVisible) {
 		<%-- End SubObjects --%>
 		
 		<%-- Snapshots --%>
-		<% if (virtualRole.isAbleToSeeSnapshots()) { %>
-		<div style="display:none"><div id="snapshotsContentEl<%= uuid %>"><spagobi:snapshotsList biobjectId="<%= obj.getId() %>" /></div></div>
+		<% if (snapshotsSliderVisible) { %>
+		<div style="display:none">
+			<div id="snapshotsContentEl<%= uuid %>">
+				<%--<spagobi:snapshotsList snapshotsList="<%= snapshotsList %>" />--%>
+				<execution:snapshotsList snapshotsList="<%= snapshotsList %>" />
+			</div>
+		</div>
 		<div id="popout_Snapshot<%= uuid %>" class="popout"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshotsContentEl<%= uuid %>', 'popout_Snapshot<%= uuid %>', 'toggle_Snapshot<%= uuid %>', false);

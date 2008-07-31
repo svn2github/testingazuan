@@ -228,6 +228,8 @@
                 <PARAMETER name="SNAPSHOT_NAME" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_NAME" />
                 <PARAMETER name="SNAPSHOT_NUMBER" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SNAPSHOT_NUMBER" />
                 <PARAMETER name="MODALITY" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.MODALITY" />
+                <PARAMETER name="TOOLBAR_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.TOOLBAR_VISIBLE" />
+                <PARAMETER name="SLIDERS_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="BIObjectsModule.SLIDERS_VISIBLE" />
                 <PARAMETER name="IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS" type="ABSOLUTE" scope="" value="TRUE" />
                 <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" type="ABSOLUTE" scope="" value="true" />
 			</RESOURCES>

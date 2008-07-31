@@ -391,8 +391,8 @@ IMG {
 	width:500px;
     padding-top:5px;
     padding-left:5px; 	
-    //border: 1px solid #cccccc;
-    //background-color:#fafafa;
+    border: 1px solid #cccccc;
+    background-color:#fafafa;
 }
 
 .div_detail_area_sub_forms {

@@ -169,17 +169,22 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 
 		String imgFolder=""; 
 		String imgFolderOp="";
-		if(menu.getObjId()!=null){
-			String icon=DetailMenuModule.assignImage(menu);
-			imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_blue.png");
-			imgFolderOp=imgFolder;
-		
-		
-		}
-		else{
-			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_gray.png");
-			imgFolderOp=imgFolder;
-
+		if ((menu.getStaticPage() == null || menu.getStaticPage().trim().equals("")) && menu.getObjId() == null) {
+			imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_white.png");
+		} else {
+			if(menu.getObjId()!=null){
+				//String icon=DetailMenuModule.assignImage(menu);
+				if (menu.getSnapshotName() != null || menu.getSubObjName() != null) {
+					imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_yellow.png");
+				} else {
+					imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_blue.png");
+				}
+				imgFolderOp=imgFolder;
+			}
+			if (menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("")) {
+				imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_gray.png");
+				imgFolderOp=imgFolder;
+			}
 		}
 
 

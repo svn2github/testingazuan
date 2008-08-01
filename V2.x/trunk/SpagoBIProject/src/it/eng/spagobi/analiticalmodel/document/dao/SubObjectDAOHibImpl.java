@@ -76,6 +76,37 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		}
 		return subs;
 	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#getPublicSubObjects(java.lang.Integer)
+	 */
+	public List getPublicSubObjects(Integer idBIObj) throws EMFUserError {
+		List subs = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
+						 "and isPublic = true";
+			Query query = aSession.createQuery(hql);
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				subs.add(toSubobject((SbiSubObjects)it.next()));
+			}
+			tx.commit();
+		}catch(HibernateException he){
+			logger.error(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return subs;
+	}
 
 
 	/* (non-Javadoc)

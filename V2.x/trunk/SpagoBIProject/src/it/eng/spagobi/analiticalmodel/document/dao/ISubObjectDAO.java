@@ -45,7 +45,7 @@ public interface ISubObjectDAO {
 	 * @param idBIObj the id of the biobject parent
 	 * @param profile Profile of the user
 	 * 
-	 * @return List of BIObject.SubObjectDetail objects
+	 * @return List of SubObject objects
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
@@ -76,11 +76,20 @@ public interface ISubObjectDAO {
 	 * 
 	 * @param idBIObj the id of the biobject parent
 	 * 
-	 * @return List of BIObject.SubObjectDetail objects
+	 * @return List of SubObject objects
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
 	public List getSubObjects(Integer idBIObj) throws EMFUserError;
 	
-	
+	/**
+	 * Gets the detail of all the public biobject subobjects.
+	 * 
+	 * @param idBIObj the id of the biobject parent
+	 * 
+	 * @return List of SubObject objects
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public List getPublicSubObjects(Integer idBIObj) throws EMFUserError;
 }

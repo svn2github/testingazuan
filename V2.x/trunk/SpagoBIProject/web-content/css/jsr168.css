@@ -233,7 +233,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 8pt;
 	vertical-align: middle;
-	border: 1px solid;
+	/*border: 1px solid;*/
 }
 
 
@@ -262,6 +262,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	font-size: 8pt;
 	font-weight: bold;
 	color: #074B88;
+}
+
+*.portlet-form-field-label-disabled    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+	color: #BFBFBF;
 }
 
 

@@ -49,7 +49,8 @@
  							parent.document.getElementById('documentReadLabel').value='<PARAMETER name='NAME' scope='LOCAL'/>';
  							parent.document.getElementById('menu_obj').value='<PARAMETER name='ID' scope='LOCAL'/>';
  							parent.win_document.hide();
- 								]]>
+ 							parent.loadObjectDetails(<PARAMETER name='ID' scope='LOCAL'/>);
+ 					]]>
 					</ONCLICK>
 	        </SELECT_CAPTION>
 	       </CAPTIONS>

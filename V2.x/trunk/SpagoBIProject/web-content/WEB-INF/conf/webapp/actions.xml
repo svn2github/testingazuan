@@ -12,4 +12,10 @@
  <ACTION name="LOGOUT_ACTION" class="it.eng.spagobi.commons.services.LogoutAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION> 
+ <ACTION name="GET_PUBLIC_SUBOBJECTS_INFO" class="it.eng.spagobi.analiticalmodel.document.service.GetPublicSubobjectsInfo" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
+ <ACTION name="GET_SNAPSHOTS_INFO" class="it.eng.spagobi.analiticalmodel.document.service.GetSnapshotsInfo" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
 </ACTIONS>

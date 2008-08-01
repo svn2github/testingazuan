@@ -16,8 +16,8 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 */
+
 
 
 /*
@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
-* This class defines the Feature Details Form.  
+* This class defines the Constraint Details Form.  
 *   
 */
 
@@ -55,21 +55,173 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 		this.base(arguments,[
         	{
         		type: 'text',
+        		dataIndex: 'label',
+        		text: 'Label',
+        		labelwidth: 100,
+        		mandatory: true	
+        	}, {
+        		type: 'text',
         		dataIndex: 'name',
         		text: 'Name',
+        		labelwidth: 100,
         		mandatory: true	
         	}, {
         		type: 'text',
         		dataIndex: 'description',
         		text: 'Description',
+        		labelwidth: 100,
         		mandatory: false	
-        	},  {
+        	}, {
         		type: 'combo',
         		dataIndex: 'type',
-        		text: 'Type',
-        		items: ["","Territorial", "Positional"],
-        		mandatory: true	
+        		text: 'Check Type',
+        		items: ["Choose...", "Date", "Regexp", "Max Length", "Range", "Decimal", "Min Length"],
+        		mandatory: false,
+        		labelwidth: 100,
+        		listeners: [
+	        		{
+	        			event: 'changeValue',
+	        			handler: this._documentTypeChangeValueHandler,
+	        			scope: this
+	        		}        		
+        		]	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'datevalueformat',
+        		text: 'Date Value Format',
+        		value: 'dd/mm/yyyy',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false		
+        	}, {
+        		type: 'text',
+        		dataIndex: 'regularexpression',
+        		text: 'Regular Expression',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false 	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'maxlengthvalue',
+        		text: 'Max Length Value',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'lrv',
+        		text: 'Lower Range Value ',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'higherrangevalue',
+        		text: 'Higher Range Value',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false	
+        	}, {
+        		type: 'text',
+        		dataIndex: 'decimalplaces',
+        		text: 'Decimal Places',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false		
+        	},{
+        		type: 'text',
+        		dataIndex: 'minlengthvalue',
+        		text: 'Min Length Value ',
+        		labelwidth: 100,
+        		mandatory: false,
+			    visible: false	
         	}
-        	]);
-	}
+        	
+        ]);
+	},
+	
+	members: {
+		_documentTypeChangeValueHandler : function(e) {
+        		if (e.getValue()==null) {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Date") { 
+					this.getInputField('datevalueformat').setDisplay(true);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Regexp") {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(true);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Max Length") {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(true);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Range") {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(true);
+					this.getInputField('higherrangevalue').setDisplay(true);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Decimal") {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(true);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					
+				} else if (e.getValue()=="Min Length") {
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(true);
+					
+				} else if (e.getValue()=="Choose..."){
+					if(this.getInputField('datevalueformat')){
+					this.getInputField('datevalueformat').setDisplay(false);
+					this.getInputField('regularexpression').setDisplay(false);
+					this.getInputField('maxlengthvalue').setDisplay(false);
+					this.getInputField('lrv').setDisplay(false);
+					this.getInputField('higherrangevalue').setDisplay(false);
+					this.getInputField('decimalplaces').setDisplay(false);
+					this.getInputField('minlengthvalue').setDisplay(false);
+					alert("Please choose a value !!!");
+					}
+				}
+			}	 
+        	
+        	
+        }       
+        
+       
+	
 });

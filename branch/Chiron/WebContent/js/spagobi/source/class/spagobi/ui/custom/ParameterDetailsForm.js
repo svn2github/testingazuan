@@ -55,6 +55,11 @@ qx.Class.define("spagobi.ui.custom.ParameterDetailsForm", {
 		this.base(arguments,[
         	{
         		type: 'text',
+        		dataIndex: 'label',
+        		text: 'Label',
+        		mandatory: true	
+        	}, {
+        		type: 'text',
         		dataIndex: 'name',
         		text: 'Name',
         		mandatory: true	
@@ -63,18 +68,23 @@ qx.Class.define("spagobi.ui.custom.ParameterDetailsForm", {
         		dataIndex: 'description',
         		text: 'Description',
         		mandatory: false	
-        	},  {
-        		type: 'combo',
-        		dataIndex: 'type',
-        		text: 'Type',
-        		items: ["","Territorial", "Positional"],
-        		mandatory: true	
+        	}, {
+	    		type: 'radio',
+	    		dataIndex: 'type',
+	    		text: 'Type',
+	    		items: ["Date", "Number", "String"]
+	       }, {
+        		type: 'flag',
+        		dataIndex: 'functional',
+        		text: 'Functional',
+        		checked: true
+        		
         	}, {
                type: 'check',
                dataIndex: 'mychecklist',
                checked: false,
                text: 'Header',
-               columns: 4,
+               columns: 6,
                items: ["aaaa","bbbb","cccc","dddd","eeee","ffff","gggg","hhhh","iiii","jjjj"]
            }
         ]);

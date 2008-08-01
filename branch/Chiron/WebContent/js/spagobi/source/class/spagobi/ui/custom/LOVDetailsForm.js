@@ -128,7 +128,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		height: 50	
 			        		}
 			        	],
-			     visible: false 
+			     visible: false  
         	},  {
         		type: 'form',
         		dataIndex: 'scriptloadvalues',

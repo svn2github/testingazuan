@@ -104,12 +104,12 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
 	        		}        		
         		]
         	}, {
-        		type: 'check',
+        		type: 'flag',
         		dataIndex: 'useDataSet',
         		text: 'Use Data Set',
         		checked: false	
         	}, {
-        		type: 'check',
+        		type: 'flag',
         		dataIndex: 'useDataSource',
         		text: 'Use Data Source',
 	        	checked: true,
@@ -134,12 +134,14 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
         		type: 'text',
         		dataIndex: 'url',
         		text: 'Url',
-        		mandatory: true			
+        		mandatory: true,
+        		visible: false			
         	}, {
         		type: 'text',
         		dataIndex: 'driver',
         		text: 'Driver Name',
-        		mandatory: true			
+        		mandatory: true,
+        		visible: false			
         	}
         ]);
 		

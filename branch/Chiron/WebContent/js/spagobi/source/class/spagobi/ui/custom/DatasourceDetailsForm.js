@@ -81,7 +81,7 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
         		type: 'combo',
         		dataIndex: 'dialect',
         		text: 'Dialect',
-        		items: ["SQL SERVER","HQL", "MYSQL","INGRES"]		
+        		items: ["Sql Server","HQL", "MySql","Ingres"]		
         	}, {
         		type: 'combo',
         		dataIndex: 'type',
@@ -103,22 +103,26 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
         		type: 'text',
         		dataIndex: 'url',
         		text: 'Url',
-        		mandatory: false
+        		mandatory: false,
+        		visible: false
         	},{
         		type: 'text',
         		dataIndex: 'user',
         		text: 'User',
-        		mandatory: false
+        		mandatory: false,
+        		visible: false
         	},{
         		type: 'text',
         		dataIndex: 'password',
         		text: 'Password',
-        		mandatory: false
+        		mandatory: false,
+        		visible: false
         	},{
         		type: 'text',
         		dataIndex: 'driver',
         		text: 'Driver',
-        		mandatory: false
+        		mandatory: false,
+        		visible: false
         	}
         ]);
 		

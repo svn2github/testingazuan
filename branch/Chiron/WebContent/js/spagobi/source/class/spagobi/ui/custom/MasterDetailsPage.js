@@ -114,6 +114,15 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     var createButton = new qx.ui.pageview.buttonview.Button("New", "spagobi/img/spagobi/test/create.png");                 
     detailPage.getBar().add(createButton, saveButton, deleteButton);   
         
+    /*    
+    //testing for parameter form's getData() function
+    if(type ==='parameters'){
+  		var b = new qx.ui.form.Button("dummy button");
+  		b.addEventListener("execute",this.myFunction,this);
+  		form.add(b);
+  	}
+  	*/
+        
     // Create detail view body
    	this._form = form;       	      	
    	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
@@ -122,7 +131,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
     this.detailBody.add( this._form );  		 
   	detailPage.getPane().add( this.detailBody );
-  		
+  	
   	this.addBottom( detailPage );
   },
 
@@ -158,8 +167,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     	this.detailBody.remove(this._form)
     	//this._form.dispose();
     	if(this._type === 'engine') {
-			//this._form = new spagobi.ui.custom.EngineDetailsForm(); 
-			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
+			this._form = new spagobi.ui.custom.EngineDetailsForm(); 
+			//this._form = new spagobi.ui.custom.LOVDetailsForm(); 
 		} else if(this._type === 'dataset') {
 			this._form = new spagobi.ui.custom.DatasetDetailsForm(); 
 		} else if(this._type === 'datasource') {
@@ -168,7 +177,26 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 			this._form = new spagobi.ui.custom.MapDetailsForm();
 		} else if(this._type === 'featuremgmt') {
 			this._form = new spagobi.ui.custom.FeatureDetailsForm();
-		}
+		} else if(this._type === 'lov') {
+			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
+		} else if(this._type === 'constraints') {
+			this._form = new spagobi.ui.custom.ConstraintDetailsForm(); 
+		} else if(this._type === 'parameters') {
+			this._form = new spagobi.ui.custom.ParameterDetailsForm(); 
+			
+			//testing for parameter form's getData() function for checkbox list.. Don't delete
+   			/*
+	  		var b = new qx.ui.form.Button("dummy button");
+	  		b.addEventListener("execute",this.myFunction,this);
+	  		this._form.add(b);
+  			*/
+  			
+  			//testing for parameter form's getData() function for radio button.. Don't delete
+  			/*var b = new qx.ui.form.Button("dummy button");
+	  		b.addEventListener("execute",this.myRadioFunction,this);
+	  		this._form.add(b);
+	  		*/ 
+		} 
 		
 		this.detailBody.add(this._form);
 		if(!this.isVisibility()) {
@@ -187,6 +215,34 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     		str += p + ': ' + o[p] + ';\n'
     	}
     	return str;
-    }
+    },
+    
+    //testing for parameter form's getData() function for checkbox list... Don't Delete
+    myFunction:function(){
+    	alert("button works");
+    	this._form.setData({mychecklist: ["eeee","jjjj"]});
+    	var o = this._form.getData();
+    	var list = "";
+    	for(prop in o){
+    		if(prop == 'mychecklist'){
+    			for(i=0; i<o[prop].length; i++){
+    				list = list + o[prop][i]+ ",";
+    			}
+    		}
+    	}
+    	alert(list);
+    },
+    
+    //testing for parameter form's getData() function for radio button... Don't Delete
+    myRadioFunction:function(){
+    	alert("button works");
+    	this._form.setData({type: "Number"});
+    	var o = this._form.getData();
+    	var list = "";
+    	for(prop in o){
+    		alert("getData gave: " + o[prop]);
+    	}
+    	
+    }	
   }
 });

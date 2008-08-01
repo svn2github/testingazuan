@@ -56,7 +56,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left: 0,
         		maxLength:100,        		
         		width: 0,
-        		height: 0   		
+        		height: 0,
+        		value: ''   		
         	};
         
             var test_textfield = new qx.ui.form.TextField();
@@ -188,6 +189,34 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	return checkbox_grid;
         },
         
+        createRadioBox: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 0,
+        		items: [],
+        		listeners: []  		
+           	};
+          
+          	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+          	
+          	var atom = new qx.ui.basic.Atom();
+          	var radioButtons = [];
+          	var radioManager = new qx.ui.selection.RadioManager("mygroup");
+          	
+          	for(i=0; i<config.items.length; i++){
+          		
+          		radioButtons[i] = new qx.ui.form.RadioButton(config.items[i]);
+          		radioButtons[i].set({ top: config.top, left: config.left});
+          		
+          		atom.add(radioButtons[i]);		// to return the group of radio buttons as returning a radio manager gives error
+          		radioManager.add(radioButtons[i]);	//to make only 1 radio button be selected at any time
+          		
+          		
+          	}
+          	
+          	return atom;
+		},
+        
         createInputTextField: function( config ) {
         	var defultConfig = {
         		top: 0,
@@ -197,6 +226,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		width: 200,
         		height: 20,
         		labelwidth: 80,
+        		value: '',
         		mandatory: false		
         	};
         	
@@ -229,7 +259,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left: config.left + 30,
         		maxLength: config.maxLength,        		
         		width: config.width,
-        		height: config.height   
+        		height: config.height,
+        		value: config.value  
         	});
         	
         	var atom = new qx.ui.basic.Atom();
@@ -285,6 +316,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', comboBox);
         	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
+        	
         	return atom;
         },
         
@@ -318,6 +353,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.add(labelField, checkBox);
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
+        	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
         	
         	return atom;
         },
@@ -402,11 +441,35 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', textArea);
         	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
+        	
         	return atom;
         },
         
         /**
-         * Function to create a list of check boxes
+         * Function to create a list of check boxes.
+         * <p> The function accepts an object as a parameter with the following properties:
+         * <p> type - Type of field
+         * <p> dataIndex - To identify the field in the form by a name
+         * <p> checked - Indicates if checkbox list will have elements as checked or not
+         * <p> text - The label of the check box list
+         * <p> columns - The number of columns in which the checkboxes are to be displayed
+         * <p> items - Array containg the label of the checkboxes
+         * 
+         * <p> *Example :- *
+ 		 * <p><code>
+         * {
+         *     type: 'check',
+         *     dataIndex: 'mychecklist',
+         *     checked: false,
+         *     text: 'Header',
+         *     columns: 6,
+         *     items: ["aaaa","bbbb","cccc","dddd","eeee","ffff","gggg","hhhh","iiii","jjjj"]
+         * }
+         * 
+         * @param config - Object with properties as described above.
          */
         createInputCheckBox: function( config ) {
         	var defultConfig = {
@@ -428,10 +491,19 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left : config.left,
         		width : config.labelwidth   
 	        });
-	        
+	        /*
 	        var checkBox = this.createCheckBox({
 	        	checked: config.checked,
 	        	top: 0,		//config.top,
+	        	left: config.left + 30,
+	        	items: config.items,
+	        	listeners: config.listeners,
+	        	columns: config.columns
+	        });
+        	*/
+        	var checkBox = new spagobi.ui.CheckBoxList({
+	        	checked: config.checked,
+	        	top: 0,	
 	        	left: config.left + 30,
 	        	items: config.items,
 	        	listeners: config.listeners,
@@ -443,6 +515,47 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.add(checkBox);
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
+        	return atom;
+        },
+        
+        createInputRadio: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 10,
+        		text: '',
+        		checked: false,
+        		items: [],
+        		listeners: [],
+        		labelwidth: 80
+        	};
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        	
+        	var labelField = this.createLabel({
+        		text : config.text,
+        		top : config.top,
+        		left : config.left,
+        		width : config.labelwidth   
+	        });
+	        
+	       
+	        var radioButton = this.createRadioBox({
+	        	checked: config.checked,
+	        	top: config.top,
+	        	left: config.left + 30,
+	        	items: config.items,
+	        	listeners: config.listeners
+	        });
+        	
+        	var atom = new qx.ui.basic.Atom();
+        	atom.add(labelField, radioButton);
+        	atom.setUserData('label', labelField);
+        	atom.setUserData('field', radioButton);
+        	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
+        	
         	return atom;
         }
          	

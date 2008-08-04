@@ -99,6 +99,8 @@ qx.Class.define("spagobi.ui.FormList", {
 		
 		_tabView: undefined,
 		
+		_tabButton: undefined,
+		_tabcount: 0,
 		/**
 		 * Function to get the current value of config object
 		 * @return The current config object
@@ -134,8 +136,13 @@ qx.Class.define("spagobi.ui.FormList", {
 				subform.setData(o);
 			}		
 			
-			var subFormButton = new qx.ui.pageview.tabview.Button('tab-' + this._instances.length);
+			var subFormButton = new qx.ui.pageview.tabview.Button('tab-' + this._tabcount);
+			this._tabcount++;
+			
 			subFormButton.setChecked(true);
+			subFormButton.setShowCloseButton(true);
+			this._tabButton = subFormButton;
+			
 	        this._tabView.getBar().add(subFormButton);
 	        var subFormPage = new qx.ui.pageview.tabview.Page(subFormButton);
 	  		this._tabView.getPane().add(subFormPage);
@@ -145,6 +152,8 @@ qx.Class.define("spagobi.ui.FormList", {
 	  		
 	  		this._dummyFunction();
 	  		
+	  		subFormButton.addEventListener("changeChecked",this._changeSubForm,this);
+	  		subFormButton.addEventListener("closetab",this._closeSubForm,this);
 		},
 		
 		/**
@@ -153,12 +162,15 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * <p> Called by addInstance() function.
 		 */
 		_dummyFunction: function(){
-			var dummysubFormButton = new qx.ui.pageview.tabview.Button('tab');
+			var dummysubFormButton = new qx.ui.pageview.tabview.Button('');
+			dummysubFormButton.setShowCloseButton(true);
+			dummysubFormButton.setCloseButtonImage("icon/16/actions/edit-add.png");
+			
 			this._tabView.getBar().add(dummysubFormButton);
 	        var dummysubFormPage = new qx.ui.pageview.tabview.Page(dummysubFormButton);
 	  		this._tabView.getPane().add(dummysubFormPage);
 	  		
-	  		dummysubFormButton.addEventListener("changeChecked",this._checktab,this);
+	  		dummysubFormButton.addEventListener("changeChecked",this._dummytab,this);
 	  		
 	  		dummysubFormPage.add();
 	  		this._instances[this._instances.length] = {};
@@ -170,11 +182,50 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * <p> The function checks if the dummy tab is selected, and if so, it deletes the current dummy tab,
 		 *     adds a new subform in the tab list and creates the new dummy tab after it.
 		 */
-		_checktab: function(e){
+		_dummytab: function(e){
 			if(e.getTarget().isChecked() == true){
 				this.deleteDataAt(this._instances.length-1);
-				this._instances.length--;
+				//this._instances.length--;
+				this._tabButton.setShowCloseButton(false);
 				this.addInstance();
+			}
+		},
+		
+		_changeSubForm: function(e){ 
+			var btn = e.getTarget(); 
+			if(btn.isChecked() == true){
+				this._tabButton.setShowCloseButton(false); 
+				btn.setShowCloseButton(true);
+				this._tabButton = btn;
+				
+			}
+		},
+		
+		_closeSubForm: function(e){ 
+			if(e.getTarget().isChecked() == true){
+				var btn1 = e.getData();
+				//btn1.setShowCloseButton(false);
+				var itemsList1 = this._tabView.getBar().getChildren();
+				var lengthList1 = itemsList1.length;
+				var btnIndex1 = itemsList1.indexOf(btn1);
+				
+				if( lengthList1 > 2 ) {			// if there are more than 1 tabs created (1 tab plus dummy tab should always be present)
+    				
+	            	if (btnIndex1 < lengthList1-2 ){		//if closing tab is not the last tab in list, select next tab on deletion of current tab
+                		itemsList1[btnIndex1+1].setChecked(true);
+                		this._tabButton = itemsList1[btnIndex1+1];
+              		}
+              		else {									//closing tab is last tab on list, so select previous tab on the deletion of current tab 
+                		itemsList1[btnIndex1-1].setChecked(true);
+                		this._tabButton = itemsList1[btnIndex1-1];
+              		}
+              }
+			   else {
+        			alert("Last Tab won't be removed!");
+      			}
+				
+				this.deleteDataAt(btnIndex1);
+				
 			}
 		},
 		
@@ -225,6 +276,11 @@ qx.Class.define("spagobi.ui.FormList", {
             targetPage.dispose();
             //itemsList[ index ].dispose();
             
+            for(i=index; i<this._instances.length-1; i++){
+					this._instances[i] = this._instances[i+1];
+				}
+			this._instances.length--;
+				
             /*
             if(this.dataObject && this.dataObject[index]) {
             this.dataObject.splice(index, 1);

@@ -95,8 +95,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		form = new spagobi.ui.custom.ConstraintDetailsForm(); 
 	} else if(type == 'parameters') {
 		records = spagobi.app.data.DataService.loadLOVRecords();
-		form = new spagobi.ui.custom.ParameterDetailsForm(); 
-	} 
+		form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
+	}  else if(type == 'configuration') {									//new code
+		records = spagobi.app.data.DataService.loadConfigurationRecords();
+		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
+	}																		//new code ends
 	
 		
    	// Create list view
@@ -133,6 +136,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   	detailPage.getPane().add( this.detailBody );
   	
   	this.addBottom( detailPage );
+  	
+  	//this._form.setScrollLeft(10);
   },
 
   members :
@@ -182,7 +187,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		} else if(this._type === 'constraints') {
 			this._form = new spagobi.ui.custom.ConstraintDetailsForm(); 
 		} else if(this._type === 'parameters') {
-			this._form = new spagobi.ui.custom.ParameterDetailsForm(); 
+			this._form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
 			
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
    			/*
@@ -196,6 +201,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	  		b.addEventListener("execute",this.myRadioFunction,this);
 	  		this._form.add(b);
 	  		*/ 
+		}  else if(this._type == 'configuration') {
+			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 		} 
 		
 		this.detailBody.add(this._form);

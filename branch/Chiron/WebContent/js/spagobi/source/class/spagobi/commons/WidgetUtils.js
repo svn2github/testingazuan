@@ -211,9 +211,17 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           		atom.add(radioButtons[i]);		// to return the group of radio buttons as returning a radio manager gives error
           		radioManager.add(radioButtons[i]);	//to make only 1 radio button be selected at any time
           		
-          		
           	}
           	
+          	for(var i=0; i< config.listeners.length; i++) {
+            	if(config.listeners[i].scope) {
+            		radioManager.addEventListener(config.listeners[i].event, config.listeners[i].handler, config.listeners[i].scope); 
+            	} else {
+            		radioManager.addEventListener(config.listeners[i].event, config.listeners[i].handler); 
+            	}
+            }
+            radioButtons[0].setChecked(true);	//by default, the 1st radio button is selected
+            
           	return atom;
 		},
         
@@ -515,6 +523,11 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.add(checkBox);
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
+        	
+        	if(config.visible != undefined){
+				atom.setDisplay(config.visible);
+        	}
+        	
         	return atom;
         },
         

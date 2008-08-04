@@ -402,44 +402,46 @@ public class ExecutionInstance {
 						}
 					}
 				} else {
-					Iterator valuesIt = values.iterator();
-					while (valuesIt.hasNext()) {
-						String aValue = (String) valuesIt.next();
-						EMFValidationError error = null;
-						if (check.getValueTypeCd().equalsIgnoreCase("LETTERSTRING")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "LETTERSTRING", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("ALFANUMERIC")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "ALFANUMERIC", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("NUMERIC")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERIC", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("EMAIL")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "EMAIL", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("FISCALCODE")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "FISCALCODE", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("INTERNET ADDRESS")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "URL", null, null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("DECIMALS")) {
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DECIMALS", check.getFirstValue(), check.getSecondValue(), null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("RANGE")) {
-							if (biparameter.getParameter().getType().equalsIgnoreCase("DATE")){
-								// In a Parameter where parameterType == DATE the mask represent the date format
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATERANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
-							}else if (biparameter.getParameter().getType().equalsIgnoreCase("NUM")){
-								// In a Parameter where parameterType == NUM the mask represent the decimal format
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERICRANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
-							}else if (biparameter.getParameter().getType().equalsIgnoreCase("STRING")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "STRINGRANGE", check.getFirstValue(), check.getSecondValue(), null);
+					if (values != null && !values.isEmpty()) {
+						Iterator valuesIt = values.iterator();
+						while (valuesIt.hasNext()) {
+							String aValue = (String) valuesIt.next();
+							EMFValidationError error = null;
+							if (check.getValueTypeCd().equalsIgnoreCase("LETTERSTRING")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "LETTERSTRING", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("ALFANUMERIC")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "ALFANUMERIC", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("NUMERIC")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERIC", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("EMAIL")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "EMAIL", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("FISCALCODE")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "FISCALCODE", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("INTERNET ADDRESS")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "URL", null, null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("DECIMALS")) {
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DECIMALS", check.getFirstValue(), check.getSecondValue(), null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("RANGE")) {
+								if (biparameter.getParameter().getType().equalsIgnoreCase("DATE")){
+									// In a Parameter where parameterType == DATE the mask represent the date format
+									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATERANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
+								}else if (biparameter.getParameter().getType().equalsIgnoreCase("NUM")){
+									// In a Parameter where parameterType == NUM the mask represent the decimal format
+									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERICRANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
+								}else if (biparameter.getParameter().getType().equalsIgnoreCase("STRING")){
+									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "STRINGRANGE", check.getFirstValue(), check.getSecondValue(), null);
+								}
+							} else if (check.getValueTypeCd().equalsIgnoreCase("MAXLENGTH")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MAXLENGTH", check.getFirstValue(), null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("MINLENGTH")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MINLENGTH", check.getFirstValue(), null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("REGEXP")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "REGEXP", check.getFirstValue(), null, null);
+							} else if (check.getValueTypeCd().equalsIgnoreCase("DATE")){
+								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATE", check.getFirstValue(), null, null);
 							}
-						} else if (check.getValueTypeCd().equalsIgnoreCase("MAXLENGTH")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MAXLENGTH", check.getFirstValue(), null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("MINLENGTH")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MINLENGTH", check.getFirstValue(), null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("REGEXP")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "REGEXP", check.getFirstValue(), null, null);
-						} else if (check.getValueTypeCd().equalsIgnoreCase("DATE")){
-							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATE", check.getFirstValue(), null, null);
+							toReturn.add(error);
 						}
-						toReturn.add(error);
 					}
 				}
 		}

@@ -235,6 +235,24 @@ qx.Class.define("spagobi.app.Chiron",
       	this.toolbars['behaviouralModel'].setLiveResize(true);
       	this.toolbars['behaviouralModel'].setVisibility(false);
       	
+      	//new code starts
+      	this.toolbars['analyticalModel'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'configuration',
+						image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
+						page: 'configuration',
+						tooltip: 'Documents Configuration'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'configuration'
+      	});
+      	dockLayout.add( this.toolbars['analyticalModel'] );
+      	this.toolbars['analyticalModel'].setLiveResize(true);
+      	this.toolbars['analyticalModel'].setVisibility(false);
+      	//new code ends
       	
       	return dockLayout;  		
     },

@@ -430,6 +430,127 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	description: 'cvcw3'
 		        }  			
   			 ];
+  	},
+  	
+  	
+	loadConfigurationRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadConfigurationMeta();
+    	records.rows =  this.loadConfigurationData();
+    	
+    	return records;
+  	},
+  	
+  	loadConfigurationMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'label',
+	    		name: 'Label'
+    		}, {
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'engine',
+	    		name: 'Engine' 
+    		}, {
+	    		dataIndex: 'state',
+	    		name: 'State'
+    		}, {
+	    		dataIndex: 'instance',
+	    		name: 'Number Of Instance'
+    		}
+    	];
+  	},
+  	
+  	loadConfigurationData: function() {
+  	return [
+    		{
+	        	id: '91',
+	        	"label": 'OLAP',
+	        	name: 'A simple OLAP',
+	        	description: 'Compatible with OLAP engine v3.1',
+	        	type: 'On-line Analytical Processing',
+	        	engine: 'JPIVOT',
+	        	datasource: 'Foodmart',
+	        	useDataSet: 'Dummy Input',
+	        	state: 'Released',
+	        	refreshseconds: '0',
+	        	criptable: true,
+	        	visible: false,
+	        	template: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input',
+	        	features: [{
+		        	id: '11',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }, {
+		        	id: '12',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }]      	        	
+        	}, {
+	        	id: '92',
+	        	"label": 'OLAP',
+	        	name: 'A simple OLAP',
+	        	description: 'Compatible with OLAP engine v3.1',
+	        	type: 'On-line Analytical Processing',
+	        	engine: 'JPIVOT',
+	        	datasource: 'Foodmart',
+	        	useDataSet: 'Dummy Input',
+	        	state: 'Released',
+	        	refreshseconds: '0',
+	        	criptable: true,
+	        	visible: false,
+	        	template: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input',
+	        	features: [{
+		        	id: '11',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }, {
+		        	id: '12',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }]        	        	
+        	}, {
+	        	id: '93',
+	        	"label": 'OLAP',
+	        	name: 'A simple OLAP',
+	        	description: 'Compatible with OLAP engine v3.1',
+	        	type: 'On-line Analytical Processing',
+	        	engine: 'JPIVOT',
+	        	datasource: 'Foodmart',
+	        	useDataSet: 'Dummy Input',
+	        	state: 'Released',
+	        	refreshseconds: '0',
+	        	criptable: true,
+	        	visible: false,
+	        	template: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input',
+	        	features: [{
+		        	id: '11',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }, {
+		        	id: '12',
+		        	title: 'Dummy Input',
+		        	analyticaldriver: 'Dummy Input',
+		        	urlname: 'Dummy Input',
+		        	priority: 'Dummy Input'
+		        }]        	        	
+        	}
+    	];
   	}
   	
   }

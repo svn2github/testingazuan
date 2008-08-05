@@ -106,8 +106,8 @@ public class XYCharts extends ChartImpl{
 			for (int c = xMinValue/blockWidth; c < rangex; c ++) {
             	
             	cell = c+r+(r*(rangex-1));
-            	data[0][cell] = c;
-    			data[1][cell] = r;
+            	data[0][cell] = (c+1)*blockWidth;
+    			data[1][cell] = (r+1)*blockHeight;
     			data[2][cell] =  (new Double(zrangeMax)).doubleValue()*2;
             	
             }

@@ -476,10 +476,10 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	useDataSet: 'Dummy Input',
 	        	state: 'Released',
 	        	refreshseconds: '0',
-	        	criptable: true,
-	        	visible: false,
+	        	cryptable: 'false',
+	        	visibility: 'true',
 	        	template: 'Dummy Input',
-	        	templatebbuild: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input'/*,
 	        	features: [{
 		        	id: '11',
 		        	title: 'Dummy Input',
@@ -492,7 +492,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	analyticaldriver: 'Dummy Input',
 		        	urlname: 'Dummy Input',
 		        	priority: 'Dummy Input'
-		        }]      	        	
+		        }]*/      	        	
         	}, {
 	        	id: '92',
 	        	"label": 'OLAP',
@@ -504,10 +504,10 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	useDataSet: 'Dummy Input',
 	        	state: 'Released',
 	        	refreshseconds: '0',
-	        	criptable: true,
-	        	visible: false,
+	        	cryptable: 'false',
+	        	visibility: 'true',
 	        	template: 'Dummy Input',
-	        	templatebbuild: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input'/*,
 	        	features: [{
 		        	id: '11',
 		        	title: 'Dummy Input',
@@ -520,7 +520,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	analyticaldriver: 'Dummy Input',
 		        	urlname: 'Dummy Input',
 		        	priority: 'Dummy Input'
-		        }]        	        	
+		        }]*/        	        	
         	}, {
 	        	id: '93',
 	        	"label": 'OLAP',
@@ -532,10 +532,10 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	useDataSet: 'Dummy Input',
 	        	state: 'Released',
 	        	refreshseconds: '0',
-	        	criptable: true,
-	        	visible: false,
+	        	cryptable: 'false',
+	        	visibility: 'true',
 	        	template: 'Dummy Input',
-	        	templatebbuild: 'Dummy Input',
+	        	templatebbuild: 'Dummy Input'/*,
 	        	features: [{
 		        	id: '11',
 		        	title: 'Dummy Input',
@@ -548,7 +548,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	analyticaldriver: 'Dummy Input',
 		        	urlname: 'Dummy Input',
 		        	priority: 'Dummy Input'
-		        }]        	        	
+		        }]*/        	        	
         	}
     	];
   	}

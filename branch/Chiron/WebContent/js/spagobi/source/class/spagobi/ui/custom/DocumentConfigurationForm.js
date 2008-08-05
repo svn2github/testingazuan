@@ -48,8 +48,8 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
 	* <p> Data Source -> dataIndex: 'datasource'
 	* <p> State -> dataIndex: 'state'
 	* <p> Refresh Seconds  ->  dataIndex: 'refreshseconds'
-	* <p> Criptable  ->  dataIndex: 'criptable'
-	* <p> Visible  ->    dataIndex: 'visible'
+	* <p> Criptable  ->  dataIndex: 'cryptable'
+	* <p> Visible  ->    dataIndex: 'visibility'
 	* <p> Template ->  dataIndex: 'template'
 	* <p> Template Build ->  dataIndex: 'templatebuild'
 	* <p> formList: spagobi.ui.custom.ConfigurationSubform  ->  dataIndex: 'features'
@@ -138,7 +138,7 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         		items: ["true", "false"]
            	}, {
         		type: 'radio',
-        		dataIndex: 'visible',
+        		dataIndex: 'visibility',
         		text: 'Visible',
         		items: ["true", "false"]			
         	}, {
@@ -161,25 +161,97 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
 	},
 	
 	members: {
+		
+		//	need Andrea's Help!!
+		_funcofrelatedcombo: function (){
+			var array1 = [];
+        	var dummycombo = this.getInputField('engine').getUserData('field');
+        	alert (dummycombo);
+        	//alert(dummycombo.getList());
+        	array1 = dummycombo.getList();
+        	//alert(this.getInputField('engine'));
+        		for (var i =0; i<3; i++)
+        			{
+ 						alert(array1.length);
+        				array1[i] = this.getInputField('engine').items[i];
+        			}	
+         	return array1;
+        	
+        },
+        
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('type') ) {
         		if (e.getValue()=="Report") {
+        			/*var dummyarray = [];
+        			dummyarray = this._funcofrelatedcombo();
+        			for (var i=0; i<dummyarray.length; i++) {
+        				this.getInputField('engine').items[i] = dummyarray[i];
+        			}*/
+        			this.getInputField('engine').setDisplay(true);
+        			this.getInputField('datasource').setDisplay(true);
+        			this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
 					this.getInputField('useDataSet').setDisplay(false);
 					this.getInputField('templatebuild').setDisplay(false);
+					
 				}  else if (e.getValue()=="On-line Analytical Processing") {
+					this.getInputField('engine').setDisplay(true);
+        			this.getInputField('datasource').setDisplay(true);
+        			this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
+        			this.getInputField('templatebuild').setDisplay(true);
 					this.getInputField('useDataSet').setDisplay(false); 
+					
 				}  else if (e.getValue()=="Data Mining Model" || e.getValue()=="Office Document") {
+					this.getInputField('engine').setDisplay(true);
+					this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
 					this.getInputField('datasource').setDisplay(false);
 					this.getInputField('useDataSet').setDisplay(false);
 					this.getInputField('templatebuild').setDisplay(false);
+					
 			   	} else if (e.getValue()=="Dashboard") {
+			   		this.getInputField('engine').setDisplay(true);
+					this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
+					this.getInputField('useDataSet').setDisplay(true);
 					this.getInputField('datasource').setDisplay(false);
 					this.getInputField('templatebuild').setDisplay(false);
+					
 				} else if (e.getValue()=="Datamart Model" || e.getValue()=="Map" || e.getValue()=="ETL Process" || e.getValue()=="Document Composite") {
+					this.getInputField('engine').setDisplay(true);
+				    this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
+        			this.getInputField('datasource').setDisplay(true);
 					this.getInputField('useDataSet').setDisplay(false);
 					this.getInputField('templatebuild').setDisplay(false);
+					
 				} else if (e.getValue()=="Dossier") {
-					this.getInputField('datasource').setDisplay(false); 
+					this.getInputField('engine').setDisplay(true);
+					this.getInputField('state').setDisplay(true);
+        			this.getInputField('refreshseconds').setDisplay(true);
+        			this.getInputField('cryptable').setDisplay(true);
+        			this.getInputField('visibility').setDisplay(true);
+        			this.getInputField('template').setDisplay(true);
+        			this.getInputField('datasource').setDisplay(true);
+					this.getInputField('templatebuild').setDisplay(true);
+					this.getInputField('datasource').setDisplay(false);
+					
 				} 
         	}
         	

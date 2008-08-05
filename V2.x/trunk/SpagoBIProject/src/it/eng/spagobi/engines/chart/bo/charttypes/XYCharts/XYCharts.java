@@ -82,8 +82,8 @@ public class XYCharts extends ChartImpl{
 		List listAtts=sbRows.getAttributeAsList("ROW");
 
 		DefaultXYZDataset dataset = new DefaultXYZDataset();
-		int rangex = listAtts.size();
-		int rangey = listAtts.size();
+		int rangex = (xMaxValue-xMinValue)/blockWidth;
+		int rangey = (yMaxValue-yMinValue)/blockHeight;
 		
 		double[] xvalues = new double[rangey * rangex];
         double[] yvalues = new double[rangey * rangex];        
@@ -94,15 +94,22 @@ public class XYCharts extends ChartImpl{
         
         int xVal = 0;
 		int yVal = 0;
+		int col = 0;
+		int row = 0;
+		int cell = 0;
 		double zVal = 0;
-		int count = 0 ;
+		
 		boolean first=true;
 		
-		for (int c = xMinValue; c < xMaxValue; c += blockWidth) {
-            for (int r = yMinValue; r < yMaxValue; r+= blockHeight) {
-            	data[0][c] = c;
-    			data[1][c] = r;
-    			data[2][c] = new Double(zrangeMax);
+		
+		for (int r = yMinValue/blockHeight; r < rangey; r++)  {
+			for (int c = xMinValue/blockWidth; c < rangex; c ++) {
+            	
+            	cell = c+r+(r*(rangex-1));
+            	data[0][cell] = c;
+    			data[1][cell] = r;
+    			data[2][cell] =  (new Double(zrangeMax)).doubleValue()*2;
+            	
             }
         }
 		
@@ -122,10 +129,12 @@ public class XYCharts extends ChartImpl{
 				if(nameP.equalsIgnoreCase("x"))
 				{
 						xVal = new Integer(value);	
+						col = (xVal/blockWidth)-1;
 				}
 				if(nameP.equalsIgnoreCase("y"))
 				{
-					    yVal = new Integer(value);					
+					    yVal = new Integer(value);	
+					    row = (yVal/blockHeight)-1;
 				}
 				if(nameP.equalsIgnoreCase("z"))
 				{
@@ -134,11 +143,11 @@ public class XYCharts extends ChartImpl{
 			   
 				
 				}
+			cell=col+row+(row*(rangex-1));
+			data[0][cell] = xVal;
+			data[1][cell] = yVal;
+			data[2][cell] = zVal;
 			
-			data[0][count] = xVal;
-			data[1][count] = yVal;
-			data[2][count] = zVal;
-			count++;
 			  // setValueInData(data, xMaxValue , yMinValue, xVal, yVal, zVal);
 			}
 			
@@ -205,7 +214,7 @@ public class XYCharts extends ChartImpl{
 		legendLabels= new String[rangesNum];
 		zvalues = new double[rangesNum];
 		Iterator rangesIter = ranges.iterator();
-		legendLabels[0]="";
+		
 		int j = 1;
 		while(rangesIter.hasNext()) {
 			SourceBean range = (SourceBean)rangesIter.next();
@@ -235,6 +244,7 @@ public class XYCharts extends ChartImpl{
 			
 		}	
 		
+		
 
 		/*if(confParameters.get("add_labels")!=null){	
 			add_labels=(String)confParameters.get("add_labels");
@@ -252,7 +262,7 @@ public class XYCharts extends ChartImpl{
 			xLabel="X";
 		}
 		if(confParameters.get("y_label")!=null){	
-			xLabel=(String)confParameters.get("y_label");
+			yLabel=(String)confParameters.get("y_label");
 		}
 		else
 		{

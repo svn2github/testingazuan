@@ -78,8 +78,11 @@ public class BlockChart extends XYCharts {
         yAxis.setLabel(yLabel);
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         XYBlockRenderer renderer = new XYBlockRenderer();
+        Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
+        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue()*2,outboundCol);
+        paintScale.add((new Double(zrangeMax)).doubleValue()*2,outboundCol);
         
-        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], new Double(zrangeMax), Color.black);
+        
         for (int ke=1; ke<(zvalues.length) ; ke++){
         	String key =new Integer((new Double(zvalues[ke])).intValue()).toString();
         	Color temp =(Color)colorRangeMap.get(key);
@@ -99,8 +102,8 @@ public class BlockChart extends XYCharts {
         JFreeChart chart = new JFreeChart(name, plot);
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
-        SymbolAxis scaleAxis = new SymbolAxis(null, legendLabels);
-        scaleAxis.setRange(zvalues[0], new Double(zrangeMax));
+        SymbolAxis scaleAxis = new SymbolAxis(null,new String[]{"1","2","3","4","5"});
+        scaleAxis.setRange(zvalues[1], new Double(zrangeMax));
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
@@ -110,52 +113,6 @@ public class BlockChart extends XYCharts {
         
         chart.addSubtitle(psl);
         return chart;
-        /*
-		XYZDataset dataset=(XYZDataset)datasets.getDatasets().get("1");
-		NumberAxis xAxis = new NumberAxis("X");
-        xAxis.setLowerMargin(0.0);
-        xAxis.setUpperMargin(0.0);
-        NumberAxis yAxis = new NumberAxis("Y");
-        yAxis.setAutoRangeIncludesZero(false);
-        yAxis.setInverted(false);
-        yAxis.setLowerMargin(0.0);
-        yAxis.setUpperMargin(0.0);
-        yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        XYBlockRenderer renderer = new XYBlockRenderer();
-        renderer.setBlockWidth(50.0);
-        renderer.setBlockHeight(10.0);
-        LookupPaintScale paintScale = new LookupPaintScale(0.5, 3.5, 
-                Color.black);
-        paintScale.add(0.5, Color.green);
-        paintScale.add(1.5, Color.orange);
-        paintScale.add(2.5, Color.red);        
-        renderer.setPaintScale(paintScale);
-        XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        //ValueAxis ciao = new ValueAxis("Bau");
-        
-       
-        plot.setDomainCrosshairLockedOnData(false);
-        plot.setInsets(new RectangleInsets(10, 20, 10, 10));
-        plot.setForegroundAlpha(0.66f);
-        plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
-        JFreeChart chart = new JFreeChart("Titolo", plot);
-     
-        chart.removeLegend();
-        chart.setBackgroundPaint(Color.white);
-        SymbolAxis scaleAxis = new SymbolAxis(null, new String[] {"", "OK", 
-                "Uncertain", "Bad"});
-        scaleAxis.setRange(0.5, 3.5);
-        scaleAxis.setPlot(new PiePlot());
-        scaleAxis.setGridBandsVisible(false);
-        PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
-        psl.setAxisOffset(5.0);
-        psl.setPosition(RectangleEdge.BOTTOM);
-        psl.setMargin(new RectangleInsets(5, 5, 5, 5));
-        chart.addSubtitle(psl);
-        return chart;*/
     }    
 
 }

@@ -25,6 +25,7 @@ package it.eng.spagobi.engines.chart.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.engines.chart.bo.charttypes.XYCharts.BlockChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidStackedBarLine;
@@ -339,6 +340,12 @@ public class ChartImpl implements IChart {
 		if(type.equals("CLUSTERCHART")){
 			if(subtype.equalsIgnoreCase("simplecluster")){
 				sbi=new SimpleCluster();
+			}
+		}
+		
+		if(type.equals("XYCHART")){
+			if(subtype.equalsIgnoreCase("blockchart")){
+				sbi=new BlockChart();
 			}
 		}
 

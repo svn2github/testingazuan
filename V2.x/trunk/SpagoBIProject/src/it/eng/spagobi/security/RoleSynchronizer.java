@@ -41,7 +41,6 @@ import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -76,42 +75,37 @@ public class RoleSynchronizer {
         try {
             IRoleDAO roleDAO = DAOFactory.getRoleDAO();
         	ConfigSingleton conf = ConfigSingleton.getInstance();
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: config singleton retrived " + conf);
+        	logger.debug("Config singleton retrived " + conf);
         	SourceBean secClassSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: source bean security class retrived " + secClassSB);
+        	logger.debug("Source bean security class retrived " + secClassSB);
         	String portalSecurityProviderClass = (String) secClassSB.getAttribute("className");
         	portalSecurityProviderClass = portalSecurityProviderClass.trim();
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: security class name retrived " + portalSecurityProviderClass);
+        	logger.debug("Security class name retrived " + portalSecurityProviderClass);
         	Class secProvClass = Class.forName(portalSecurityProviderClass);
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: security class found " + secProvClass);
+        	logger.debug("Security class found " + secProvClass);
         	ISecurityInfoProvider portalSecurityProvider = (ISecurityInfoProvider)secProvClass.newInstance();
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: security class instance created " + portalSecurityProvider);
+        	logger.debug("Security class instance created " + portalSecurityProvider);
         	SourceBean secFilterSB = (SourceBean)conf.getAttribute("SPAGOBI.SECURITY.ROLE-NAME-PATTERN-FILTER");
-        	TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: source bean filter retrived " + secFilterSB);
+        	logger.debug("Source bean filter retrived " + secFilterSB);
             String rolePatternFilter = secFilterSB.getCharacters();
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: filter string retrived " + rolePatternFilter);
+            logger.debug("Filter string retrived " + rolePatternFilter);
             Pattern filterPattern = Pattern.compile(rolePatternFilter);
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: filter pattern regular expression " + filterPattern);
+            logger.debug("Filter pattern regular expression " + filterPattern);
             Matcher matcher = null;
             List roles = portalSecurityProvider.getRoles();
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        			"RoleSynchronizer::synchronize: complete list retrived " + roles);
+            logger.debug("Complete list retrived " + roles);
         	Role aRole = null;
         	String roleName = null;
         	for (Iterator it = roles.iterator(); it.hasNext(); ){
         		aRole = (Role)it.next();
         		roleName = aRole.getName();
+        		logger.info("Reading role: "+roleName);
         		matcher = filterPattern.matcher(roleName);
-        		if(!matcher.matches())
-        			continue;	
+        		if(!matcher.matches()){
+        		    logger.info("The role: "+roleName+ " doesn't match");
+        		    continue;
+        		}
+        				
         		if (exist(aRole, roleDAO)){
         			logger.info(" Role [" + aRole.getName()+"] already in Database");
         		}else{

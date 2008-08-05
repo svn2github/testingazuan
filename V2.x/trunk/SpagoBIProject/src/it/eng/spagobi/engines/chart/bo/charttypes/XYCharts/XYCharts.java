@@ -33,11 +33,16 @@ public class XYCharts extends ChartImpl{
 	String xrangeMin="";
 	String xrangeMax="";
 	String yrangeMin="";
-	String zrangeMin="";
 	String yrangeMax="";
-	String zrangeMax="";
 	String xLabel="";
 	String yLabel="";
+	String blockW ="";
+	String blockH = "";
+	String outboundColor = "";
+	
+	
+	String zrangeMin="";	
+	String zrangeMax="";	
 	String[] legendLabels =null;
 	double[] zvalues = null;
 	String colours = "";
@@ -45,61 +50,9 @@ public class XYCharts extends ChartImpl{
 	
 	Map confParameters;
 	HashMap colorRangeMap=new HashMap();  // keeps user selected colors// serie position - color
-	HashMap RangeLabelMap =new HashMap();
 
 	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	StyleLabel addLabelsStyle;
-
-
-    private static XYZDataset createDataset() {
-        
-    	
-        double[] xvalues = new double[14 * 60];
-        double[] yvalues = new double[14 * 60];        
-        double[] zvalues = new double[14 * 60];
-        double[][] data = new double[][] {xvalues, yvalues, zvalues};
-        
-        
-        // set the default z-value to zero throughout the data array.
-        for (int c = 0; c < 60; c++) {
-            for (int r = 8; r < 22; r++) {
-                setValue(data, c, r, 0.0);
-            }
-        }
-        
-        for (int r = 8; r < 12; r++) {
-            for (int c = 12; c < 48; c++) {
-                setValue(data, c, r, 1.0);
-            }
-        }
-        for (int r = 12; r < 20; r++) {
-            for (int c = 22; c < 42; c++) {
-                setValue(data, c, r, 1.0);
-            }
-        }
-        
-        setValue(data, 4, 20, 3);
-        setValue(data, 10, 20, 3);
-        setValue(data, 20, 20, 2);
-        setValue(data, 24, 20, 2);
-        setValue(data, 34, 20, 2);
-       
-        DefaultXYZDataset dataset = new DefaultXYZDataset();
-       
-        dataset.addSeries("Series 1", data);
-        return dataset;
-    }
-    
-    private static void setValue(double[][] data, 
-            int c, int r, double value) {
-
-data[0][(r - 8) * 60 + c] = c;
-data[1][(r - 8) * 60 + c] = r;
-data[2][(r - 8) * 60 + c] = value;
-
-}
-
-
 
 	/**
 	 * Inherited by IChart: calculates chart value.
@@ -113,7 +66,7 @@ data[2][(r - 8) * 60 + c] = value;
 		logger.debug("IN");
 		
 		
-		/*
+		
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 
 		// XYZDataset dataset = createDataset();
@@ -121,8 +74,9 @@ data[2][(r - 8) * 60 + c] = value;
 		int xMinValue = (new Integer(xrangeMin)).intValue();
 		int yMaxValue = (new Integer(yrangeMax)).intValue();
 		int yMinValue = (new Integer(yrangeMin)).intValue();
-		
-		
+		int blockWidth =(new Integer(blockW)).intValue();
+		int blockHeight =	(new Integer(blockH)).intValue();
+	
 
 		SourceBean sbRows=SourceBean.fromXMLString(res);
 		List listAtts=sbRows.getAttributeAsList("ROW");
@@ -143,6 +97,15 @@ data[2][(r - 8) * 60 + c] = value;
 		double zVal = 0;
 		int count = 0 ;
 		boolean first=true;
+		
+		for (int c = xMinValue; c < xMaxValue; c += blockWidth) {
+            for (int r = yMinValue; r < yMaxValue; r+= blockHeight) {
+            	data[0][c] = c;
+    			data[1][c] = r;
+    			data[2][c] = new Double(zrangeMax);
+            }
+        }
+		
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -179,9 +142,9 @@ data[2][(r - 8) * 60 + c] = value;
 			  // setValueInData(data, xMaxValue , yMinValue, xVal, yVal, zVal);
 			}
 			
-        dataset.addSeries("Series 1", data);*/
+        dataset.addSeries("Series 1", data);
         
-        XYZDataset dataset = createDataset();
+        //XYZDataset dataset = createDataset();
         
 		DatasetMap datasets=new DatasetMap();
 		datasets.addDataset("1",dataset);
@@ -227,6 +190,9 @@ data[2][(r - 8) * 60 + c] = value;
 			}else if (nameParam.equals("yrange")){
 				yrangeMin = (String)param.getAttribute("value_low");
 				yrangeMax = (String)param.getAttribute("value_high");
+			}else if (nameParam.equals("grid")){
+				blockW = (String)param.getAttribute("width");
+				blockH = (String)param.getAttribute("height");
 			}
 			
 			String valueParam = (String)param.getAttribute("value");
@@ -237,9 +203,10 @@ data[2][(r - 8) * 60 + c] = value;
 		List ranges = zrange.getAttributeAsList("RANGE");
 		int rangesNum = ranges.size();
 		legendLabels= new String[rangesNum];
-		zvalues = new double[rangesNum-1];
+		zvalues = new double[rangesNum];
 		Iterator rangesIter = ranges.iterator();
-		int j = 0;
+		legendLabels[0]="";
+		int j = 1;
 		while(rangesIter.hasNext()) {
 			SourceBean range = (SourceBean)rangesIter.next();
 			String nameParam = (String)range.getAttribute("label");
@@ -257,12 +224,12 @@ data[2][(r - 8) * 60 + c] = value;
 				String high = (String)range.getAttribute("value_high");
 				String low_high = low+","+high;
 				legendLabels[j]=label;
-				RangeLabelMap.put(label, low_high);	
 				colorRangeMap.put( high,col);
 				zvalues[j]=new Double(high);
-			}else{
+			}else if (nameParam.equals("outbound")){
 				String val = (String)range.getAttribute("value");
 				zrangeMax = val;
+				outboundColor = colour;
 			}
 			j++;
 			
@@ -278,14 +245,14 @@ data[2][(r - 8) * 60 + c] = value;
 		}*/
 
 		if(confParameters.get("x_label")!=null){	
-			xLabel=(String)confParameters.get("xlabel");
+			xLabel=(String)confParameters.get("x_label");
 		}
 		else
 		{
 			xLabel="X";
 		}
 		if(confParameters.get("y_label")!=null){	
-			xLabel=(String)confParameters.get("ylabel");
+			xLabel=(String)confParameters.get("y_label");
 		}
 		else
 		{

@@ -65,7 +65,7 @@ public class BlockChart extends XYCharts {
      * @return A chart instance.
      */
 	public JFreeChart createChart(DatasetMap datasets) {
-    	/*XYZDataset dataset=(XYZDataset)datasets.getDatasets().get("1");
+    	XYZDataset dataset=(XYZDataset)datasets.getDatasets().get("1");
         NumberAxis xAxis = new NumberAxis(xLabel);
         xAxis.setLowerMargin(0.0);
         xAxis.setUpperMargin(0.0);
@@ -80,18 +80,22 @@ public class BlockChart extends XYCharts {
         XYBlockRenderer renderer = new XYBlockRenderer();
         
         LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], new Double(zrangeMax), Color.black);
-        for (int ke=0; ke<(zvalues.length-1) ; ke++){
+        for (int ke=1; ke<(zvalues.length) ; ke++){
         	String key =new Integer((new Double(zvalues[ke])).intValue()).toString();
         	Color temp =(Color)colorRangeMap.get(key);
         	paintScale.add(zvalues[ke],temp);
         }       
         renderer.setPaintScale(paintScale);
+        double blockHeight =	(new Double(blockH)).doubleValue();
+        double blockWidth =	(new Double(blockW)).doubleValue();
+        renderer.setBlockWidth(blockWidth);
+        renderer.setBlockHeight(blockHeight);
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
         plot.setBackgroundPaint(Color.lightGray);
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
         plot.setForegroundAlpha(0.66f);
-        plot.setAxisOffset(new RectangleInsets(20, 20, 20, 20));
+        plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
         JFreeChart chart = new JFreeChart(name, plot);
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
@@ -100,12 +104,13 @@ public class BlockChart extends XYCharts {
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
-        psl.setAxisOffset(20.0);
+        psl.setAxisOffset(5.0);
         psl.setPosition(RectangleEdge.BOTTOM);
-        psl.setMargin(new RectangleInsets(20, 20, 20, 20));
+        psl.setMargin(new RectangleInsets(5, 5, 5, 5));
         
         chart.addSubtitle(psl);
-        return chart;*/
+        return chart;
+        /*
 		XYZDataset dataset=(XYZDataset)datasets.getDatasets().get("1");
 		NumberAxis xAxis = new NumberAxis("X");
         xAxis.setLowerMargin(0.0);
@@ -115,19 +120,10 @@ public class BlockChart extends XYCharts {
         yAxis.setInverted(false);
         yAxis.setLowerMargin(0.0);
         yAxis.setUpperMargin(0.0);
-        /*double unit = 20.0;
-        double unit1 = 15.0;
-        double unit2 = 10.0;
-        NumberTickUnit c = new NumberTickUnit(unit);
-        NumberTickUnit c1 = new NumberTickUnit(unit1);
-        NumberTickUnit c2 = new NumberTickUnit(unit2);
-        yAxis.setTickUnit(c);
-        yAxis.setTickUnit(c1);
-        yAxis.setTickUnit(c2);*/
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         XYBlockRenderer renderer = new XYBlockRenderer();
-        renderer.setBlockWidth(2.0);
-        renderer.setBlockHeight(2.0);
+        renderer.setBlockWidth(50.0);
+        renderer.setBlockHeight(10.0);
         LookupPaintScale paintScale = new LookupPaintScale(0.5, 3.5, 
                 Color.black);
         paintScale.add(0.5, Color.green);
@@ -150,8 +146,8 @@ public class BlockChart extends XYCharts {
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
         SymbolAxis scaleAxis = new SymbolAxis(null, new String[] {"", "OK", 
-                "Uncertain", "Bad","Ancora"});
-        scaleAxis.setRange(0.5, 10.5);
+                "Uncertain", "Bad"});
+        scaleAxis.setRange(0.5, 3.5);
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
@@ -159,7 +155,7 @@ public class BlockChart extends XYCharts {
         psl.setPosition(RectangleEdge.BOTTOM);
         psl.setMargin(new RectangleInsets(5, 5, 5, 5));
         chart.addSubtitle(psl);
-        return chart;
+        return chart;*/
     }    
 
 }

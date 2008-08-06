@@ -260,7 +260,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   user = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="USER" 
+			<input class='portlet-form-input-field' type="text" name="USER" autocomplete='off'
 				   size="50" value="<%= user %>" maxlength="50" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>
@@ -275,7 +275,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   pwd = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="password" name="PWD" 
+			<input class='portlet-form-input-field' type="password" name="PWD" autocomplete='off'
 				   size="50" value="<%= pwd %>" maxlength="50" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>

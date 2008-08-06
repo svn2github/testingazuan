@@ -171,19 +171,20 @@ public class ParametersGeneratorTag extends TagSupport {
 			if (par != null){
 				parType = par.getType();
 			}
-			if (!typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {			
+			
+			// the biparameter is not showed if has valid values and (is single value or is transient)
+			if (!biparam.hasValidValues() || (!isSingleValue(biparam) && !biparam.isTransientParmeters())) {
+				
+				if (!typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {
 					createParamValueHiddenInput(htmlStream, biparam);	
 					createParamChangedHiddenInput(htmlStream, biparam);
-			}
-			else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {
-				if (!parType.equals("DATE")){
-					createParamValueHiddenInput(htmlStream, biparam);
-					createParamChangedHiddenInput(htmlStream, biparam);
-				}			    
-			}
-			
-			// the biparameter is not showed if the biparameter is single value and has valid value
-			if (!isSingleValue(biparam) || !biparam.hasValidValues()) {
+				} else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE) ) {
+					if (!parType.equals("DATE")){
+						createParamValueHiddenInput(htmlStream, biparam);
+						createParamChangedHiddenInput(htmlStream, biparam);
+					}
+				}
+				
 			    // opens the div tag for the parameters form only the first
 			    // time
 			    if (!hasParametersToBeShown) {
@@ -414,49 +415,62 @@ public class ParametersGeneratorTag extends TagSupport {
 
     /**
      * Returns true if the parameters form must be displayed:
-     * the parameters forms must not be displayed if the document has no parameters or each parameters has a single value
-     * or modality is SINGLE_OBJECT and each parameters has a valid value
+     * the parameters forms must not be displayed if the document has no parameters or each parameters 
+     * has a valid value and (is single value or is transient) 
      * @return true if the parameters form must be displayed, false otherwise
      */
     private boolean hasParametersFormToBeDisplayed() {
     	logger.debug("IN");
-		ExecutionInstance instance = getExecutionInstance();
-    	BIObject obj = instance.getBIObject();
-    	List parameters = obj.getBiObjectParameters();
-    	// if the document has no parameters returns false
-    	if (parameters == null || parameters.size() == 0) return false;
+    	try {
+			ExecutionInstance instance = getExecutionInstance();
+	    	BIObject obj = instance.getBIObject();
+	    	List parameters = obj.getBiObjectParameters();
+	    	// if the document has no parameters returns false
+	    	if (parameters == null || parameters.size() == 0) return false;
+	    	
+		    Iterator iter = parameters.iterator();
+		    while (iter.hasNext()) {
+		    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+		    	if (!biparam.hasValidValues() || (!isSingleValue(biparam) && !biparam.isTransientParmeters())) {
+		    		return true;
+		    	}
+		    }
+		    return false;
+    	} finally {
+    		logger.debug("OUT");
+    	}
     	
-    	// looks if the parameters are all single value
-    	boolean allParametersAreSingleValue = true;
-	    Iterator iter = parameters.iterator();
-	    while (iter.hasNext()) {
-	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
-	    	if (!isSingleValue(biparam)) {
-	    		allParametersAreSingleValue = false;
-	    		break;
-	    	}
-	    }
-	    // if all parameters are single value, returns false
-	    if (allParametersAreSingleValue) return false;
-    	
-    	// looks if modality is single_object 
-	    if (modality.equalsIgnoreCase(BIObjectsModule.SINGLE_OBJECT)) {
-	    	boolean allParametersHaveValidValues = true;
-    	    iter = parameters.iterator();
-    	    while (iter.hasNext()) {
-    	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
-    	    	if (!biparam.hasValidValues()) {
-    	    		allParametersHaveValidValues = false;
-    	    		break;
-    	    	}
-    	    }
-    	logger.debug("OUT");
-    	    return allParametersHaveValidValues;
-	    } else {
-	    	// if modality is not single_object, parameters form must be shown
-		logger.debug("OUT");
-	    	return true;
-	    }
+//    	// looks if the parameters are all single value
+//    	boolean allParametersAreSingleValue = true;
+//	    Iterator iter = parameters.iterator();
+//	    while (iter.hasNext()) {
+//	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+//	    	if (!isSingleValue(biparam)) {
+//	    		allParametersAreSingleValue = false;
+//	    		break;
+//	    	}
+//	    }
+//	    // if all parameters are single value, returns false
+//	    if (allParametersAreSingleValue) return false;
+//    	
+//    	// looks if modality is single_object 
+//	    if (modality.equalsIgnoreCase(BIObjectsModule.SINGLE_OBJECT)) {
+//	    	boolean allParametersHaveValidValues = true;
+//    	    iter = parameters.iterator();
+//    	    while (iter.hasNext()) {
+//    	    	BIObjectParameter biparam = (BIObjectParameter) iter.next();
+//    	    	if (!biparam.hasValidValues()) {
+//    	    		allParametersHaveValidValues = false;
+//    	    		break;
+//    	    	}
+//    	    }
+//    	    logger.debug("OUT");
+//    	    return allParametersHaveValidValues;
+//	    } else {
+//	    	// if modality is not single_object, parameters form must be shown
+//	    	logger.debug("OUT");
+//	    	return true;
+//	    }
     }
     
     /**

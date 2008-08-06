@@ -23,6 +23,7 @@ package it.eng.spagobi.analiticalmodel.functionalitytree.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
@@ -376,6 +377,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String detUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
+		detUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
 		if (detUrlParMap != null){

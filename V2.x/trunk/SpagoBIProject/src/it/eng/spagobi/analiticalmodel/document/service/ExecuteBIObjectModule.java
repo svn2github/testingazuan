@@ -366,6 +366,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 			ignoreSubNodes = true;
 		}
 
+		// check parameters values 
+		List errors = instance.getParametersErrors();
+		
 		// (if the object can be directly executed (because it hasn't any parameter to be
 		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved
 		// or the request esplicitely asks to ignore subnodes) or (a valid subobject
@@ -373,8 +376,7 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		if ((instance.isDirectExecution() && ((subObjects.size() == 0
 				&& snapshots.size() == 0 && viewpoints.size() == 0) || ignoreSubNodes))
 				|| subObj != null) {
-			// check parameters values 
-			List errors = instance.getParametersErrors();
+
 			logger.debug("Document can be directly executed");
 			// add errors into error handler if any
 			if (errors.size() != 0) {

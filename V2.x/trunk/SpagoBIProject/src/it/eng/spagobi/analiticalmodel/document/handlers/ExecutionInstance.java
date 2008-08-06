@@ -360,7 +360,12 @@ public class ExecutionInstance {
 			toReturn.addAll(errorsOnChecks);
 			List errorsOnValues = getValidationErrorsOnValues(biparam);
 			toReturn.addAll(errorsOnValues);
-			boolean hasValidValues = errorsOnChecks.isEmpty() && errorsOnValues.isEmpty();
+			List values = biparam.getParameterValues();
+			boolean hasValidValues = false;
+			// if parameter has values and there are no errors, the parameter has valid values
+			if (values != null && values.size() > 0 && errorsOnChecks.isEmpty() && errorsOnValues.isEmpty()) {
+				hasValidValues = true;
+			}
 			biparam.setHasValidValues(hasValidValues);
 		}
 		logger.debug("OUT");

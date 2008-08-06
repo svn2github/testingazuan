@@ -70,12 +70,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%-- start propagating variables --%>
 	<input type="hidden" value="<%= id %>" name="<%= ObjectsTreeConstants.OBJECT_ID %>" />
 	<%
-	String userProvidedParametersStr = (String) request.getAttribute(ObjectsTreeConstants.PARAMETERS);
+	String userProvidedParametersStr = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.PARAMETERS);
 	String modality = (String) aServiceRequest.getAttribute(SpagoBIConstants.MODALITY);
     String flowId = (String) aServiceRequest.getAttribute("EXECUTION_FLOW_ID");
-    String ignoreSubNodesStr = (String) request.getAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS);
-    String displayToolbarStr = (String) request.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
-    String displaySliderStr = (String) request.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
+    String ignoreSubNodesStr = (String) aServiceRequest.getAttribute(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS);
+    String displayToolbarStr = (String) aServiceRequest.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
+    String displaySliderStr = (String) aServiceRequest.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
 	if (flowId != null) {
 		%>
 		<input type="hidden" name="EXECUTION_FLOW_ID" value="<%= flowId %>" />

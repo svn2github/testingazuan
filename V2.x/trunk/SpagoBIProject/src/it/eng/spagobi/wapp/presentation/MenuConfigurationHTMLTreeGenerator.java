@@ -171,6 +171,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		String imgFolderOp="";
 		if ((menu.getStaticPage() == null || menu.getStaticPage().trim().equals("")) && menu.getObjId() == null) {
 			imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_white.png");
+			imgFolderOp=imgFolder;
 		} else {
 			if(menu.getObjId()!=null){
 				//String icon=DetailMenuModule.assignImage(menu);

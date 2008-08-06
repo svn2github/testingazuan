@@ -379,15 +379,17 @@ if (toolbarIsVisible) {
 			BIObjectParameter tempObjPar = (BIObjectParameter)itMaster.next();
 			String UrlPar = tempObjPar.getParameterUrlName();
 			List parValues = tempObjPar.getParameterValues();
-			Iterator itTemp = parValues.iterator();
-			String ValuePar = "";
-			while(itTemp.hasNext()){
-				ValuePar += (String)itTemp.next();
-				if (itTemp.hasNext()) ValuePar += ";";
+			if (parValues != null) {
+				Iterator itTemp = parValues.iterator();
+				String ValuePar = "";
+				while(itTemp.hasNext()){
+					ValuePar += (String)itTemp.next();
+					if (itTemp.hasNext()) ValuePar += ";";
+				}
+				
+				urlMasterPar += UrlPar+"="+ValuePar;
+				if (itMaster.hasNext()) urlMasterPar += "&";
 			}
-			
-			urlMasterPar += UrlPar+"="+ValuePar;
-			if (itMaster.hasNext()) urlMasterPar += "&";
 		}
 	%>
 	

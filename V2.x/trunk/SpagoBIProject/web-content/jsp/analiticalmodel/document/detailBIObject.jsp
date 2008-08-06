@@ -779,7 +779,7 @@ function checkFormVisibility(docType) {
 						
 						String pathTemp = obj.getPath() + "/template";
    						String downl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + 
-   									   "&ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&TEMP_ID="+tempVer.getId();
+   									   "&ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&TEMP_ID="+tempVer.getId() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
    						
 		      		        if(isCurrentVer) {
 		      		        	out.print("<td class='portlet-font' >&nbsp;</td>");
@@ -790,7 +790,7 @@ function checkFormVisibility(docType) {
 		      		        	out.print("<td class='portlet-font' ><a href='"+downl+"' style='font-size:9px;' >" + msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages", request) + "</a></td>");
 		      		        } else {
 		      		        	String downloadAlsoLinkedTemplateUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+ "&ACTION_NAME=DOWNLOAD_BIOBJ_TEMPLATE&operation=downloadAll&biobjectId=" + 
-		      		        			obj.getId().toString() + "&fileName=template.zip";
+		      		        			obj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE&fileName=template.zip";
 		      		        	String downloadAlsoLinkedTemplateMsg = msgBuilder.getMessage("SBIDev.docConf.docDet.downloadAlsoLinkedTemplates", "messages", request);
 		      		        	out.print("<td class='portlet-font' ><a href='javascript:downloadAlsoLinkedTemplatesConfirm(\"" + downloadAlsoLinkedTemplateMsg + "\",\"" + downloadAlsoLinkedTemplateUrl + "\", \"" + downl + "\")' style='font-size:9px;' >" 
 		      		        			+ msgBuilder.getMessage("SBIDev.docConf.execBIObject.downloadLink", "messages", request) 

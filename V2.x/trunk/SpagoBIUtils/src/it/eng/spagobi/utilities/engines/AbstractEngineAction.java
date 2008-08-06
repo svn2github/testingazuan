@@ -70,7 +70,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		return getEngineInstance().getEnv();
 	}
 	
-	public boolean saveAnalysisState() throws EngineException {
+	public String saveAnalysisState() throws EngineException {
 		IEngineInstance engineInstance = null;
 		String documentId = null;
 		EngineAnalysisMetadata analysisMetadata = null;
@@ -85,17 +85,17 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		analysisState = engineInstance.getAnalysisState();
 
 		if(getEnv() == null) {
-			return false;
+			return "KO - Missing environment";
 		}
 		
 		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );
 		if(contentServiceProxy == null) {
-			return false;
+			return "KO - Missing content service proxy";
 		}
 		
 		documentId = (String)getEnv().get( EngineConstants.ENV_DOCUMENT_ID );
 		if(documentId == null) {
-			return false;
+			return "KO - Missing document id";
 		}
 		
 		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
@@ -104,10 +104,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 				analysisMetadata.getScope(), 
 				new String(analysisState.store()) );
 		
-		if (serviceResponse.toUpperCase().startsWith("KO")) {
-			return false;
-		}		
-		return true;
+		return serviceResponse;
 	}
 
 	public Locale getLocale() {

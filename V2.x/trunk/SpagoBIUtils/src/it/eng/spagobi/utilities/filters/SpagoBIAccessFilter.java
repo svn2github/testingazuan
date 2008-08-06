@@ -134,7 +134,7 @@ public class SpagoBIAccessFilter implements Filter {
 	    if (userId != null && !userId.equals("scheduler")) {
 		try {
 		    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    if (profile == null) {
+		    if (profile == null || !profile.getUserUniqueIdentifier().toString().equals(userId)) {
 			SecurityServiceProxy proxy = new SecurityServiceProxy(userId, session);
 			profile = proxy.getUserProfile();
 			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);

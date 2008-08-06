@@ -102,10 +102,14 @@ public class WorkManager {
 	    logger.debug("lookup jndi:"+jndi);
 	    Context ctx = new InitialContext();
 	    wm = (FooWorkManager) ctx.lookup(jndi);
-
+	    logger.debug("JNDI lookup successfully executed!!");
 	} catch (NamingException e) {
-	    logger.error("IN", e);
+	    logger.error(e);
 	    throw e;
+	} catch (Exception e) {
+	    logger.error(e);
+	} catch (Throwable t) {
+	    logger.error(t);
 	} finally {
 	    logger.debug("OUT");
 	}

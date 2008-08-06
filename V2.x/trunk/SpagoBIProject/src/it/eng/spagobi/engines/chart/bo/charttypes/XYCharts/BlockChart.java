@@ -103,7 +103,7 @@ public class BlockChart extends XYCharts {
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
         SymbolAxis scaleAxis = new SymbolAxis(null,new String[]{"1","2","3","4","5"});
-        scaleAxis.setRange(zvalues[1], new Double(zrangeMax));
+        scaleAxis.setRange(zvalues[1], new Double(zrangeMax).doubleValue());
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);

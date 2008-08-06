@@ -128,17 +128,17 @@ public class XYCharts extends ChartImpl{
 				value=new String((String)object.getValue());
 				if(nameP.equalsIgnoreCase("x"))
 				{
-						xVal = new Integer(value);	
+						xVal = new Integer(value).intValue();	
 						col = (xVal/blockWidth)-1;
 				}
 				if(nameP.equalsIgnoreCase("y"))
 				{
-					    yVal = new Integer(value);	
+					    yVal = new Integer(value).intValue();	
 					    row = (yVal/blockHeight)-1;
 				}
 				if(nameP.equalsIgnoreCase("z"))
 				{
-						zVal = new Double(value);				
+						zVal = new Double(value).doubleValue();				
 				}			    
 			   
 				
@@ -234,7 +234,7 @@ public class XYCharts extends ChartImpl{
 				String low_high = low+","+high;
 				legendLabels[j]=label;
 				colorRangeMap.put( high,col);
-				zvalues[j]=new Double(high);
+				zvalues[j]=new Double(high).doubleValue();
 			}else if (nameParam.equals("outbound")){
 				String val = (String)range.getAttribute("value");
 				zrangeMax = val;

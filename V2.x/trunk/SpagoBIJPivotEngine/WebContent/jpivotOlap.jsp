@@ -119,7 +119,13 @@ try {
   <wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>
   <wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
   <wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
+  <%
+  if (profile.getFunctionalities().contains("SaveSubobjectFunctionality")) {
+  %>
   <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
+  <%
+  }
+  %>
   <wcf:separator/>
   <wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
   <wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
@@ -171,6 +177,15 @@ if (message != null && !message.trim().equals("")) {
 			<strong style="color:black">
 			<%=EngineMessageBundle.getMessage("save.subobject.ok", locale)%>
 			</strong>
+			<%
+			String subObjId = message.substring("OK - ".length());
+			%>
+			<script type="text/javascript">
+			try {
+				parent.loadSubObject(window.name, <%= subObjId %>);
+			} catch (ex) {
+			}
+			</script>
 		<p>
 		<%
 	} else {
@@ -183,7 +198,7 @@ if (message != null && !message.trim().equals("")) {
 	session.removeAttribute("saveSubObjectMessage");
 }
 %>
-<%-- if there was an overflow, show error message --%>
+<%-- if there was an overflow, show error message 
 <c:if test="${query01.result.overflowOccured}">
   <%
 	// AUDIT UPDATE
@@ -196,6 +211,7 @@ if (message != null && !message.trim().equals("")) {
   <strong style="color:red">Resultset overflow occured</strong>
   </p>
 </c:if>
+--%>
 
 <%-- render navigator --%>
 <wcf:render ref="navi01" xslUri="/WEB-INF/jpivot/navi/navigator.xsl" xslCache="true"/>

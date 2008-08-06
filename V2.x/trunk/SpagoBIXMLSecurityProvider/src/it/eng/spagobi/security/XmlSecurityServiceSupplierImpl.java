@@ -25,12 +25,15 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IUserFunctionalityDAO;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -164,8 +167,19 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
     private String[] readFunctionality(String[] roles) {
 	logger.debug("IN");
 	try {
-	    IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();	
-	    return dao.readUserFunctionality(roles);
+	    IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();
+	    String[] functionalities = dao.readUserFunctionality(roles);
+	    logger.debug("Functionalities retrieved: " + functionalities == null ? "" : functionalities.toString());
+	    if (isAbleToSaveSubObjects(roles)) {
+	    	logger.debug("Adding save subobject functionality...");
+	    	String[] newFunctionalities = new String[functionalities.length + 1];
+	    	for (int i = 0; i < functionalities.length; i++) {
+	    		newFunctionalities[i] = functionalities[i];
+	    	}
+	    	newFunctionalities[newFunctionalities.length - 1] = SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY;
+	    	functionalities = newFunctionalities;
+	    }
+	    return functionalities;
 	} catch (EMFUserError e) {
 	    logger.error("EMFUserError", e);
 	} catch (Exception e) {
@@ -175,5 +189,28 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	}
 	return null;
     }
+    
+	private boolean isAbleToSaveSubObjects(String[] roles) {
+		logger.debug("IN");
+		boolean isAbleToSaveSubObjects = false;
+		try {
+			if (roles != null && roles.length > 0) {
+	    		for (int i = 0; i < roles.length; i++) {
+	    			String roleName = roles[i];
+	    			Role role = DAOFactory.getRoleDAO().loadByName(roleName);
+	    			if (role.isAbleToSaveSubobjects()) {
+	    				logger.debug("User has role " + roleName + " that is able to save subobjects.");
+	    				isAbleToSaveSubObjects = true;
+	    				break;
+	    			}
+	    		}
+			}
+		} catch (EMFUserError e) {
+			logger.error(e);
+		} finally {
+		    logger.debug("OUT");
+		}
+		return isAbleToSaveSubObjects;
+	}
     
 }

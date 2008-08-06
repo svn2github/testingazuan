@@ -82,7 +82,7 @@ public class SaveAnalysisAction extends AbstractGeoEngineAction {
 		analysisMetadata.setScope(scope);
 		
 	    try {
-	    	boolean result = saveAnalysisState();
+	    	String result = saveAnalysisState();
 	    	getHttpSession().setAttribute("saveSubObjectMessage", result);
 	    } catch (Exception gse) {		
 	    	logger.error("Error while saving analysis.", gse);

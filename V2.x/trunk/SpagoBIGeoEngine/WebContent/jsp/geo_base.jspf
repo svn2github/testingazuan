@@ -36,10 +36,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 it.eng.spagobi.engines.geo.map.renderer.*,
 				 it.eng.spagobi.engines.geo.dataset.provider.*
 				 "%>
-				 
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 
 	<%-- Necessary for window Javascript library --%>
-	<script type="text/javascript" src='../js/lib/prototype-window/prototype.js'></script>
+	
+<script type="text/javascript" src='../js/lib/prototype-window/prototype.js'></script>
   	<script type="text/javascript" src='../js/lib/prototype-window/effects.js'></script>
   	<script type="text/javascript" src='../js/lib/prototype-window/window.js'></script>
   	<script type="text/javascript" src='../js/lib/prototype-window/debug.js'></script>
@@ -60,6 +61,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <% 
 	
+	IEngUserProfile profile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
 	RequestContainer requestContainer = null;
 	ResponseContainer responseContainer = null;
 	SessionContainer sessionContainer = null;   

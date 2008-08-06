@@ -88,7 +88,7 @@
 						</center>	
 						
 						<%
-							if(isSaveSubObjFuncActive == null || !isSaveSubObjFuncActive.equalsIgnoreCase("FALSE")) {
+							if(profile.getFunctionalities().contains("SaveSubobjectFunctionality") && (isSaveSubObjFuncActive == null || !isSaveSubObjFuncActive.equalsIgnoreCase("FALSE"))) {
 						%>
 								<p>
 								

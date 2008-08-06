@@ -132,7 +132,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- ============================================================================================================== -->
 
-
+<%
+String message = (String) session.getAttribute("saveSubObjectMessage");
+if (message != null) {
+	if (message.toUpperCase().startsWith("OK - ")) {
+		String subObjId = message.substring("OK - ".length());
+		%>
+		<script type="text/javascript">
+		try {
+			parent.parent.loadSubObject(parent.name, <%= subObjId %>);
+		} catch (ex) {
+		}
+		</script>
+		<%
+	}
+	session.removeAttribute("saveSubObjectMessage");
+}
+%>
 
 
 

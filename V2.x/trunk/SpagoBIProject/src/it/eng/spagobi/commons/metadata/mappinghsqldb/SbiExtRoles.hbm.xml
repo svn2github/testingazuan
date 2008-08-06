@@ -28,6 +28,9 @@
         <property name="descr" type="string">
             <column name="descr" length="160" />
         </property>
+		<property name="isAbleToSaveSubobjects" type="boolean">
+            <column name="save_subobjects" />
+        </property>
 		<property name="isAbleToSeeSubobjects" type="boolean">
             <column name="see_subobjects" />
         </property>

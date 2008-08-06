@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.role.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -72,13 +71,15 @@ public class ModifyRolesAction extends BaseProfileAction {
 				return;
 			}
 			String fieldsOrder = (String) serviceRequest.getAttribute("FIELDS_ORDER");
-			int roleTypeIndex = 0, subojectsIndex = 0, snapshotsIndex = 0, viewpointsIndex = 0, notesIndex = 0, metadataIndex = 0, sendMailIndex = 0, rememberMeIndex = 0, personalFolderIndex = 0;
+			int roleTypeIndex = 0, saveSubojectsIndex = 0, subojectsIndex = 0, snapshotsIndex = 0, viewpointsIndex = 0, notesIndex = 0, metadataIndex = 0, sendMailIndex = 0, rememberMeIndex = 0, personalFolderIndex = 0;
 			String[] fields = fieldsOrder.split(",");
 			for (int i = 0; i < fields.length; i++) {
 				String field = fields[i];
 				if (field.equalsIgnoreCase("Type")) {
 					roleTypeIndex = i;
-				}else if (field.equalsIgnoreCase("Subojects")) {
+				} else if (field.equalsIgnoreCase("SaveSubojects")) {
+					saveSubojectsIndex = i;
+				} else if (field.equalsIgnoreCase("Subojects")) {
 					subojectsIndex = i;
 				} else if (field.equalsIgnoreCase("Snapshots")) {
 					snapshotsIndex = i;
@@ -109,6 +110,7 @@ public class ModifyRolesAction extends BaseProfileAction {
 				Domain roleType = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("ROLE_TYPE", roleTypeStr);
 				role.setRoleTypeID(roleType.getValueId());
 				role.setRoleTypeCD(roleType.getValueCd());
+				role.setIsAbleToSaveSubobjects(Boolean.parseBoolean(values[saveSubojectsIndex]));
 				role.setIsAbleToSeeSubobjects(Boolean.parseBoolean(values[subojectsIndex]));
 				role.setIsAbleToSeeSnapshots(Boolean.parseBoolean(values[snapshotsIndex]));
 				role.setIsAbleToSeeViewpoints(Boolean.parseBoolean(values[viewpointsIndex]));

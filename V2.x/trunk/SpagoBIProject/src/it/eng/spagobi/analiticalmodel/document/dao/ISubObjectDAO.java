@@ -37,7 +37,7 @@ public interface ISubObjectDAO {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
+	public Integer saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
 	
 	/**
 	 * Gets the detail of all the subobjects accessible to the user.

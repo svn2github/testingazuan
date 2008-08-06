@@ -40,6 +40,7 @@ public class SbiExtRoles  implements java.io.Serializable {
      private String code;
      private String name;
      private String descr;
+     private Boolean isAbleToSaveSubobjects;
      private Boolean isAbleToSeeSubobjects;
      private Boolean isAbleToSeeViewpoints;
      private Boolean isAbleToSeeSnapshots;
@@ -361,6 +362,14 @@ public class SbiExtRoles  implements java.io.Serializable {
 	 */
 	public void setIsAbleToSeeMetadata(Boolean isAbleToSeeMetadata) {
 		this.isAbleToSeeMetadata = isAbleToSeeMetadata;
+	}
+
+	public Boolean getIsAbleToSaveSubobjects() {
+		return isAbleToSaveSubobjects;
+	}
+
+	public void setIsAbleToSaveSubobjects(Boolean isAbleToSaveSubobjects) {
+		this.isAbleToSaveSubobjects = isAbleToSaveSubobjects;
 	}
 
 

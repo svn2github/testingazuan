@@ -74,8 +74,8 @@ public class GetSnapshotsInfo extends BaseProfileAction {
 					}
 					int historyLength = findHistoryLength(snapshotsList, snapshot.getName());
 					output.append("{id: " + snapshot.getId().toString() + ", " +
-									"name: '" + JavaScript.escape(snapshot.getName()) + "', " +
-									"description: '" + JavaScript.escape(snapshot.getDescription()) + "', " +
+									"name: \"" + JavaScript.escapeText(snapshot.getName()) + "\", " +
+									"description: \"" + JavaScript.escapeText(snapshot.getDescription()) + "\", " +
 									"historyLength: " + new Integer(historyLength).toString() + "}");
 					if (it.hasNext()) {
 						output.append(";;");

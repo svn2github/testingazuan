@@ -22,16 +22,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.content.service;
 
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
+import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -124,9 +131,17 @@ public class ContentServiceImpl extends AbstractServiceImpl{
         Monitor monitor =MonitorFactory.start("spagobi.service.content.saveSubObject");
         try {
             validateTicket(token,user);
+            IEngUserProfile profile = GeneralUtilities.createNewUserProfile(user);
+            if (!profile.getFunctionalities().contains(SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY)) {
+            	logger.debug("KO - User " + user + " cannot save subobjects");
+            	return "KO - You cannot save subobjects";
+            }
             return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
 	} catch (SecurityException e) {
 	    logger.error("SecurityException",e);
+	    return null;
+	} catch (Exception e) {
+	    logger.error(e);
 	    return null;
 	}finally{
 	    monitor.stop();	   
@@ -134,8 +149,8 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}	
 
     }
-    
-    /**
+
+	/**
      * Save object template.
      * 
      * @param token the token
@@ -219,7 +234,9 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    objSub.setOwner(user);
 	    objSub.setName(analysisName);
 	    objSub.setContent(content.getBytes());
-	    subdao.saveSubObject(docId, objSub);
+	    Integer id = subdao.saveSubObject(docId, objSub);
+	    String toReturn = "OK - " + id.toString();
+	    return toReturn;
 	} catch (NumberFormatException e) {
 	    logger.error("NumberFormatException",e);
 	    return "KO";
@@ -229,7 +246,6 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	}finally{
 	    logger.debug("OUT");
 	}
-	return "OK";
     }
     
     private String saveObjectTemplate(String user,String documentiId,String templateName,String content){

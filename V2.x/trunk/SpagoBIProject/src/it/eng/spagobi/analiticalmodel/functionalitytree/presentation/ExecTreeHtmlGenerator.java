@@ -455,6 +455,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		detUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 		if (detUrlParMap != null){
 			Iterator keysIt = detUrlParMap.keySet().iterator();
 			String paramName = null;
@@ -472,7 +473,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE,"UpdateBIObjectStatePage" );
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.MOVE_STATE_UP);
-		detUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+		detUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
 		String detUrl = urlBuilder.getUrl(httpRequest, detUrlParMap);
 		return detUrl;
@@ -482,7 +483,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, "UpdateBIObjectStatePage" );
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.MOVE_STATE_DOWN);
-		detUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+		detUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
 		String detUrl = urlBuilder.getUrl(httpRequest, detUrlParMap);
 		return detUrl;
@@ -492,6 +493,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private String createEraseDocumentLink(Integer iddoc,Integer idFunct) {
 		HashMap execUrlParMap = new HashMap();
 		execUrlParMap.put(ObjectsTreeConstants.PAGE, "MYFOLDERMANAGEMENTPAGE");
+		execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		execUrlParMap.put("TASK", "ERASE_DOCUMENT");
 		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, iddoc.toString());
 		execUrlParMap.put(ObjectsTreeConstants.FUNCT_ID, idFunct.toString());

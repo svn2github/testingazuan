@@ -39,6 +39,7 @@ public class Role  implements Serializable  {
 	private String roleTypeCD = null;
 	private String code = null;
 	private Integer roleTypeID;
+	private boolean isAbleToSaveSubobjects;
     private boolean isAbleToSeeSubobjects;
     private boolean isAbleToSeeViewpoints;
     private boolean isAbleToSeeSnapshots;
@@ -48,6 +49,24 @@ public class Role  implements Serializable  {
     private boolean isAbleToSaveRememberMe;
     private boolean isAbleToSeeMetadata;
 
+	/**
+	 * Checks if is able to save subobjects.
+	 * 
+	 * @return true, if is able to save subobjects
+	 */
+	public boolean isAbleToSaveSubobjects() {
+		return isAbleToSaveSubobjects;
+	}
+	
+	/**
+	 * Sets the checks if is able to save subobjects.
+	 * 
+	 * @param isAbleToSaveSubobjects the new checks if is able to save subobjects
+	 */
+	public void setIsAbleToSaveSubobjects(boolean isAbleToSaveSubobjects) {
+		this.isAbleToSaveSubobjects = isAbleToSaveSubobjects;
+	}
+    
 	/**
 	 * Checks if is able to see subobjects.
 	 * 

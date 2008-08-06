@@ -307,6 +307,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			hibRole.setCode(aRole.getCode());
 			hibRole.setDescr(aRole.getDescription());
 			hibRole.setName(aRole.getName());
+			hibRole.setIsAbleToSaveSubobjects(new Boolean(aRole.isAbleToSaveSubobjects()));
 			hibRole.setIsAbleToSeeSubobjects(new Boolean(aRole.isAbleToSeeSubobjects()));
 			hibRole.setIsAbleToSeeSnapshots(new Boolean(aRole.isAbleToSeeSnapshots()));
 			hibRole.setIsAbleToSeeViewpoints(new Boolean(aRole.isAbleToSeeViewpoints()));
@@ -487,6 +488,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setDescription(hibRole.getDescr());
 		role.setId(hibRole.getExtRoleId());
 		role.setName(hibRole.getName());
+		role.setIsAbleToSaveSubobjects(hibRole.getIsAbleToSaveSubobjects() == null || hibRole.getIsAbleToSaveSubobjects().booleanValue());
 		role.setIsAbleToSeeSubobjects(hibRole.getIsAbleToSeeSubobjects() == null || hibRole.getIsAbleToSeeSubobjects().booleanValue());
 		role.setIsAbleToSeeSnapshots(hibRole.getIsAbleToSeeSnapshots() == null || hibRole.getIsAbleToSeeSnapshots().booleanValue());
 		role.setIsAbleToSeeViewpoints(hibRole.getIsAbleToSeeViewpoints() == null || hibRole.getIsAbleToSeeViewpoints().booleanValue());

@@ -197,9 +197,10 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#saveSubObject(java.lang.Integer, it.eng.spagobi.analiticalmodel.document.bo.SubObject)
 	 */
-	public void saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError {
+	public Integer saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
+		Integer subObjId = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -229,6 +230,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			hibSub.setSbiBinContents(hibBinContent);
 			hibSub.setSbiObject(hibBIObject);
 			aSession.save(hibSub);
+			subObjId = hibSub.getSubObjId();
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he);
@@ -240,6 +242,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		return subObjId;
 	}
     
 	

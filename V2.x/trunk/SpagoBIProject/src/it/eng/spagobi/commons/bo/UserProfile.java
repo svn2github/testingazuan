@@ -22,7 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.bo;
 
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 
 import java.util.ArrayList;
@@ -73,8 +76,8 @@ public class UserProfile implements IEngUserProfile {
 		logger.debug("USER FUNCTIONALITY:" + profile.getFunctions()[i]);
 		functionalities.add(profile.getFunctions()[i]);
 	    }
-
 	}
+	
 	userAttributes = profile.getAttributes();
 	if (userAttributes != null) {
 	    logger.debug("USER ATTRIBUTES----");

@@ -266,7 +266,9 @@ public class UserMenuTag extends TagSupport {
 		boolean canSeeImportExport = userProfile.isAbleToExecuteAction(SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT);
 		boolean canSeeScheduler = userProfile.isAbleToExecuteAction(SpagoBIConstants.SCHEDULER_MANAGEMENT);
 		boolean canSeeRoles = userProfile.isAbleToExecuteAction(SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT);
-		if (canSeeImportExport || canSeeScheduler || canSeeRoles) {
+		boolean canManageMenues = userProfile.isAbleToExecuteAction(SpagoBIConstants.MENU_MANAGEMENT);
+		boolean canManageDistributionLists = userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT);
+		if (canSeeImportExport || canSeeScheduler || canSeeRoles || canManageMenues || canManageDistributionLists) {
 			htmlStream.append("\n var toolsMenu = new Ext.menu.Menu({ ");
 			htmlStream.append("\n id: 'toolsMenu', ");
 			htmlStream.append("\n items: [");
@@ -280,6 +282,14 @@ public class UserMenuTag extends TagSupport {
 			}
 			if (canSeeRoles) {
 				makeSubMenuItem(htmlStream, SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT);
+				htmlStream.append("\n ,");
+			}
+			if (canManageMenues) {
+				makeSubMenuItem(htmlStream, SpagoBIConstants.MENU_MANAGEMENT);
+				htmlStream.append("\n ,");
+			}
+			if (canManageDistributionLists) {
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {

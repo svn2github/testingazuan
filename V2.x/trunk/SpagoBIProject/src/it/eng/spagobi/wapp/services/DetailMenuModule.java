@@ -323,12 +323,6 @@ public class DetailMenuModule extends AbstractModule {
 			roles[i] = DAOFactory.getRoleDAO().loadByID(new Integer(idRoleStr));
 		}
 
-		String homepageB=(String)request.getAttribute("homepage");
-		String viewIconsB=(String)request.getAttribute("viewicons");
-		String hideToolbarB=(String)request.getAttribute("hideToolbar");
-		String hideSlidersB=(String)request.getAttribute("hideSliders");
-		String staticPage=(String)request.getAttribute("staticpage");
-
 		Menu menu = null;
 		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 			String idParent = (String)request.getAttribute(DetailMenuModule.PARENT_ID);
@@ -343,8 +337,14 @@ public class DetailMenuModule extends AbstractModule {
 			menu = DAOFactory.getMenuDAO().loadMenuByID(Integer.valueOf(idMenu));
 		}
 		
-		String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
-		if(objectId!=null && !objectId.equalsIgnoreCase("")) {
+		menu.setName(name);
+		menu.setDescr(description);
+		menu.setRoles(roles);
+		
+		String nodeContent = (String) request.getAttribute("nodeContent");
+		if ("nodeDocument".equals(nodeContent)) {
+			// menu node with document
+			String objectId=(String)request.getAttribute(DetailMenuModule.MENU_OBJ);
 			menu.setObjId(Integer.valueOf(objectId));
 			String objParameters = (String) request.getAttribute("objParameters");
 			if (objParameters != null && !objParameters.trim().equals("")) {
@@ -377,18 +377,30 @@ public class DetailMenuModule extends AbstractModule {
 			} else {
 				menu.setSnapshotHistory(null);
 			}
-		} else {
+			menu.setStaticPage(null);
+		} else if ("nodeStaticPage".equals(nodeContent)) {
+			// menu node with static page
 			menu.setObjId(null);
 			menu.setSubObjName(null);
 			menu.setObjParameters(null);
 			menu.setSnapshotName(null);
 			menu.setSnapshotHistory(null);
+			String staticPage = (String) request.getAttribute("staticpage");
+			menu.setStaticPage(staticPage);
+		} else {
+			// empty menu node
+			menu.setObjId(null);
+			menu.setSubObjName(null);
+			menu.setObjParameters(null);
+			menu.setSnapshotName(null);
+			menu.setSnapshotHistory(null);
+			menu.setStaticPage(null);
 		}
-
-		menu.setName(name);
-		menu.setDescr(description);
-		menu.setRoles(roles);
-		menu.setStaticPage(staticPage);
+		
+		String homepageB=(String)request.getAttribute("homepage");
+		String viewIconsB=(String)request.getAttribute("viewicons");
+		String hideToolbarB=(String)request.getAttribute("hideToolbar");
+		String hideSlidersB=(String)request.getAttribute("hideSliders");
 		if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
 		else menu.setHomepage(false);
 		if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());

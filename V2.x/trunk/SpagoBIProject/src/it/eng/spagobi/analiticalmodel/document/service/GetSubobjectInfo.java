@@ -23,12 +23,14 @@ package it.eng.spagobi.analiticalmodel.document.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.util.JavaScript;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.container.SpagoBIRequestContainer;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,17 +39,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
- * Retrieves information about all public suobjects of the document identified on request with attribute SpagoBIConstants.OBJECT_ID.
+ * Retrieves information about the subObject identified on request with attribute SpagoBIConstants.SUBOBJECT_ID.
  * The response is something like this (suitable for javascript evaluation):
- * {id: suobject1_id, name: 'suobject1_name', description: 'suobject1_description'};;{id: suobject2_id, name: 'suobject2_name', description: 'suobject2_description'};;...
- * If the document has no public subobjects, an empty string is returned.
+ * {id: suobject_id, name: 'suobject_name', description: 'suobject_description' .....}
+ * If the subObject does not exist, an empty string is returned.
  * 
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class GetPublicSubobjectsInfo extends BaseProfileAction {
+public class GetSubobjectInfo extends BaseProfileAction {
 
-	static Logger logger = Logger.getLogger(GetPublicSubobjectsInfo.class);
+	static Logger logger = Logger.getLogger(GetSubobjectInfo.class);
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		logger.debug("IN");
@@ -57,21 +59,18 @@ public class GetPublicSubobjectsInfo extends BaseProfileAction {
 		StringBuffer output = new StringBuffer();
 		try {
 			SpagoBIRequestContainer request = new SpagoBIRequestContainer(serviceRequest);
-			if (request.isBlankOrNull(SpagoBIConstants.OBJECT_ID)) {
+			if (request.isBlankOrNull(SpagoBIConstants.SUBOBJECT_ID)) {
 				output.append("");
 			} else {
-				Integer objId = request.getInteger(SpagoBIConstants.OBJECT_ID);
-				List suobjects = DAOFactory.getSubObjectDAO().getPublicSubObjects(objId);
-				Iterator it = suobjects.iterator();
-				while (it.hasNext()) {
-					SubObject subobject = (SubObject) it.next();
-					output.append("{id: " + subobject.getId().toString() + ", " +
-									"name: \"" + JavaScript.escapeText(subobject.getName()) + "\", " +
-									"description: \"" + JavaScript.escapeText(subobject.getDescription()) + "\"}");
-					if (it.hasNext()) {
-						output.append(";;");
-					}
-				}
+				Integer subObjId = request.getInteger(SpagoBIConstants.SUBOBJECT_ID);
+				SubObject subobject = DAOFactory.getSubObjectDAO().getSubObject(subObjId);
+				output.append("{id: " + subobject.getId().toString() + ", " +
+						"name: \"" + JavaScript.escapeText(subobject.getName()) + "\", " +
+						"description: \"" + JavaScript.escapeText(subobject.getDescription()) + "\", " +
+						"owner: \"" + JavaScript.escapeText(subobject.getOwner()) + "\", " +
+						"creationDate: \"" + JavaScript.escapeText(subobject.getCreationDate().toString()) + "\", " +
+						"lastModificationDate: \"" + JavaScript.escapeText(subobject.getLastChangeDate().toString()) + "\", " +
+						"isPublic: " + JavaScript.escapeText(subobject.getIsPublic().toString()) + "}");
 			}
 		} catch (Exception e) {
 			logger.error("Error while recovering subobjects list", e);

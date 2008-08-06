@@ -17,5 +17,8 @@
  </ACTION> 
  <ACTION name="GET_SNAPSHOTS_INFO" class="it.eng.spagobi.analiticalmodel.document.service.GetSnapshotsInfo" scope="REQUEST">
  	<CONFIG/>
- </ACTION> 
+ </ACTION>
+  <ACTION name="GET_SUBOBJECT_INFO" class="it.eng.spagobi.analiticalmodel.document.service.GetSubobjectInfo" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 </ACTIONS>

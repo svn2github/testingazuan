@@ -212,7 +212,7 @@ if (toolbarIsVisible) {
 			<ul>
 			    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
 				<% if (viewpointsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
-				<% if (subobjectsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li><% } %>
+				<li class="arrow" id="subobjectsSliderArrow<%= uuid %>" style="display:<%= subobjectsSliderVisible ? "inline" : "none"%>"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li>
 				<% if (snapshotsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 			</ul>
 		</div>
@@ -340,18 +340,16 @@ if (toolbarIsVisible) {
 		<%-- End viewPoints --%>
 		
 		<%-- SubObjects --%>
-		<% if (subobjectsSliderVisible) { %>
 		<div style="display:none">
 			<div id="subobjectsContentEl<%= uuid %>">
 				<%--<spagobi:subObjectsList biobjectId="<%= obj.getId() %>" />--%>
-				<execution:subobjectsList subobjectsList="<%= subobjectsList %>" />
+				<execution:subobjectsList subobjectsList="<%= subobjectsList %>" uuid="<%=uuid%>" />
 			</div>
 		</div>
-		<div id="popout_SubObject<%= uuid %>" class="popout"></div>
+		<div id="popout_SubObject<%= uuid %>" class="popout" style="display:<%= subobjectsSliderVisible ? "inline" : "none"%>"></div>
 		<script>
 		createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', false);
 		</script>
-		<% } %>
 		<%-- End SubObjects --%>
 		
 		<%-- Snapshots --%>

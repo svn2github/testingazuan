@@ -426,15 +426,6 @@ boolean first=true;
 			var miomenu = new Ext.menu.Menu({
 			id: 'menumio',
 			items: [
-			<%if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MENU_MANAGEMENT)) { %>	
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.menuconfiguration" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/wapp/menu16.png', 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=MenuConfigurationPage')"                           
-			}),
-			<%}%>	
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.WorkExec" />',
@@ -472,15 +463,6 @@ boolean first=true;
 				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser16.png', 
 				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage')"                           
 			}),
-			<%if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT)) { %>	
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.DistributionListsMan" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/tools/distributionlist/distributionlist16.png', 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListPage')"                           
-			}),
-			<%}%>	
 			new Ext.menu.Item({
 				id: '<%new Double(Math.random()).toString();%>',
 				text: '<spagobi:message key="menu.Events" />',
@@ -496,8 +478,8 @@ boolean first=true;
 			tb.add(
 				
 				new Ext.Toolbar.MenuButton({
-		            id: 'Menu',
-		            text: 'Menu',
+		            id: '<spagobi:message key="menu.UserMenu" />',
+		            text: '<spagobi:message key="menu.UserMenu" />',
 		            cls: 'x-btn-text-icon bmenu',
 		            menu: miomenu
 		        })	

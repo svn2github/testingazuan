@@ -190,6 +190,27 @@
 	             iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/featureManagement16.png">
 	</APPLICATION>
 
+	<APPLICATION code="MenuConfiguration" 
+	             title="#menu.menuconfiguration"  
+	             functionality="MenuManagement" 
+	             type="link" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=MenuConfigurationPage" 
+	             modal="false" 
+	             width="800" 
+	             height="500"
+	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/menu16.png">
+	</APPLICATION>
+	
+	<APPLICATION code="DistributionListList" 
+	             title="#menu.DistributionListList"  
+	             functionality="DistributionListManagement" 
+	             type="link" 
+	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListPage" 
+	             modal="false" 
+	             width="750" 
+	             height="500"
+	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist16.png">
+	</APPLICATION>
 	
 	<!--<APPLICATION code="DistributionListUser" 
 	             title="#menu.DistributionListUser"  
@@ -202,16 +223,6 @@
 	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlistuser.png">  
 	</APPLICATION>-->
 	
-	<!-- <APPLICATION code="DistributionListList" 
-	             title="#menu.DistributionListList"  
-	             functionality="DistributionListManagement" 
-	             type="link" 
-	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListPage" 
-	             modal="false" 
-	             width="750" 
-	             height="500"
-	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist.gif">
-	</APPLICATION> -->
 	<!-- <APPLICATION code="HotLink" 
 	             title="#menu.HotLink"  
 	             functionality="DocumentExecution" 
@@ -222,16 +233,6 @@
 	             height="500"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/analiticalmodel/icon-setlog.gif">
 	</APPLICATION> -->
-	<!-- <APPLICATION code="MenuConfiguration" 
-	             title="#menu.menuconfiguration"  
-	             functionality="MenuManagement" 
-	             type="link" 
-	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=MenuConfigurationPage" 
-	             modal="true" 
-	             width="800" 
-	             height="500"
-	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/menu.png">
-	</APPLICATION> -->		
 	
 	<!-- 
 	<VIEW code="MonitorView" 

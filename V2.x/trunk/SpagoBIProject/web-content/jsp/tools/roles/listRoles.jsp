@@ -71,7 +71,7 @@ String synchUrl = urlBuilder.getUrl(request, synchUrlParameters);
 	</tr>
 </table>
 
-<div style="width:80%;" class="div_detail_area_forms">
+<div style="width:97%;" class="div_detail_area_forms">
 	<p style="margin: 10px">
 		<div id="renderTo_Roles"></div>
 	</p>
@@ -133,7 +133,7 @@ Ext.onReady(function(){
 			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
     		String roleTypeDescription = msgBuilder.getMessage("SBISet.ListRoles.roleType." + role.getRoleTypeCD(), request);
     		%>['<%= role.getId() %>', '<%= role.getName() %>', '<%= role.getDescription() %>', '<%= roleTypeDescription %>', 
-    		 <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
+    		 <%= role.isAbleToSaveSubobjects() %>, <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
     		 <%= role.isAbleToSeeViewpoints() %>, <%= role.isAbleToSeeNotes() %>, <%= role.isAbleToSeeMetadata() %>, 
     		 <%= role.isAbleToSendMail() %>, <%= role.isAbleToSaveRememberMe() %>, 
     		 <%= role.isAbleToSaveIntoPersonalFolder() %>,'<a href="<%=deleteUrl%>"><img src="<%=urlBuilder.getResourceLink(request, "/img/erase.gif")%>" /></a>']<%= it.hasNext() ? "," : "" %><%
@@ -150,6 +150,7 @@ Ext.onReady(function(){
            {name: 'Name'},
            {name: 'Description'},
            {name: 'Type'},
+           {name: 'SaveSubojects'},
            {name: 'Subojects'},
            {name: 'Snapshots'},
            {name: 'Viewpoints'},
@@ -185,6 +186,12 @@ Ext.onReady(function(){
     
     var checkColumnWidth = 100;
     
+    var saveSubObjectsColumn = new Ext.grid.CheckColumn({
+		header: '<spagobi:message key="SBISet.ListRoles.columnSaveSubobjects" />',
+		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSaveSubobjectsTooltip" />',
+		dataIndex: 'SaveSubojects',
+		align: 'center'
+	});
 	var subObjectsColumn = new Ext.grid.CheckColumn({
 		header: '<spagobi:message key="SBISet.ListRoles.columnSubobjects" />',
 		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSubobjectsTooltip" />',
@@ -256,6 +263,7 @@ Ext.onReady(function(){
                listClass: 'x-combo-list-small'
             })
         },
+        saveSubObjectsColumn,
         subObjectsColumn,
         snapshotsColumn,
         viewpointsColumn,
@@ -275,7 +283,7 @@ Ext.onReady(function(){
     var grid = new Ext.grid.EditorGridPanel({
     	cm: cm,
         store: store,
-		plugins: [subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, metadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn],
+		plugins: [saveSubObjectsColumn, subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, metadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn],
 		viewConfig: {
         	forceFit: true
 		},
@@ -291,7 +299,7 @@ Ext.onReady(function(){
 function saveRoles() {
 	var modifiedRecords = store.getModifiedRecords();
 	var url = '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>';
-	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder';
+	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,SaveSubojects,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder';
 	var modifiedRoles = '';
 	//for (key in modifiedRecords) {
 	//	if (key == 'set' || key == 'get' || key == 'getKeys') continue;
@@ -301,7 +309,7 @@ function saveRoles() {
 		var roleId = record.get('Id');
 		var roleType = record.get('Type');
 		roleType = getRoleTypeCode(roleType);
-		modifiedRoles += '' + roleId + ':' + roleType + ',' + record.get('Subojects') + ',' +  record.get('Snapshots') + ',' 
+		modifiedRoles += '' + roleId + ':' + roleType + ',' + record.get('SaveSubojects') + ',' + record.get('Subojects') + ',' +  record.get('Snapshots') + ',' 
 			+ record.get('Viewpoints') + ',' + record.get('Notes') + ',' + record.get('Metadata') + ',' 
 			+ record.get('SendMail') + ',' + record.get('RememberMe') + ',' + record.get('PersonalFolder') + ';';
 	}

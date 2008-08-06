@@ -20,6 +20,11 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 import it.eng.qbe.newquery.Query;
@@ -43,10 +48,14 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 	public static final String QUERY_RECORDS = "queryRecords";
 	public static final String QUERY_FILTERS = "queryFilters";
 	
+	private static transient Logger logger = Logger.getLogger(SaveQueryAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws EngineException {
 		
 		super.service(request, response);
+		
+		freezeHttpResponse();
+		HttpServletResponse httResponse = getHttpResponse();
 		
 		EngineAnalysisMetadata analysisMetadata = null;
 	
@@ -76,7 +85,15 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		
 		Query queryBkp = getEngineInstance().getQuery();
 		getEngineInstance().setQuery(query);
-		saveAnalysisState();
+		String result = saveAnalysisState();
 		getEngineInstance().setQuery(queryBkp);
+		
+		try {
+			httResponse.getOutputStream().write(result.getBytes());
+			httResponse.getOutputStream().flush();
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		
 	}
 }

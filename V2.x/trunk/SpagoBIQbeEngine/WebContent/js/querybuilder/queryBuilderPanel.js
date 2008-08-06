@@ -237,9 +237,17 @@ var getQueryBuilderPanel = function(query) {
 	        
 	        Ext.Ajax.request({
 				url:  url,
-				success: win.hide(),
+				success: function(result, request) {
+					win.hide();
+					response = result.responseText || "";
+					if (response.match('OK - ')) {
+						try {
+							parent.loadSubObject(window.name, response.substr(5));
+						} catch (ex) {}
+					}
+				},
 				failure: function(){alert('failure')}					
-			});   
+			});
         };
         
         var handleCreateView = function() {

@@ -47,6 +47,9 @@ import org.apache.log4j.Logger;
  */
 public class AbstractEngineAction extends AbstractBaseHttpAction {
 	
+	public static final String PUBLIC_SCOPE = "Public";
+	public static final String PRIVATE_SCOPE = "Private";
+	
 	/**
      * Logger component
      */
@@ -98,10 +101,14 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 			return "KO - Missing document id";
 		}
 		
+	    String isPublic = "false";
+	    if (PUBLIC_SCOPE.equalsIgnoreCase(analysisMetadata.getScope())) 
+	    	isPublic = "true";
+		
 		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
 				analysisMetadata.getName(),
 				analysisMetadata.getDescription(), 
-				analysisMetadata.getScope(), 
+				isPublic, 
 				new String(analysisState.store()) );
 		
 		return serviceResponse;

@@ -116,6 +116,19 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     var deleteButton = new qx.ui.pageview.buttonview.Button("Delete", "spagobi/img/spagobi/test/delete.png");
     var createButton = new qx.ui.pageview.buttonview.Button("New", "spagobi/img/spagobi/test/create.png");                 
     detailPage.getBar().add(createButton, saveButton, deleteButton);   
+    
+    /* test code for the buttons of pageview */
+    var btn = new qx.ui.pageview.buttonview.Button("Logout");
+	detailPage.getBar().add(btn);
+	var dum_page = new qx.ui.pageview.buttonview.Page(btn);
+	detailPage.getPane().add(dum_page);
+	dum_page.setDisplay(false);
+	dum_page.addEventListener("appear", logout);
+	
+	function logout() {
+		alert ("Button works !!!!");
+	}
+    /*End of test code   */
         
     /*    
     //testing for parameter form's getData() function

@@ -20,15 +20,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* Global Settings */
 
-body {
-	margin: 0;
-	padding: 0;
-	font-family: arial,verdana,sans-serif;
-	font-size: small;
-	color: #000;
-	background-color: #fff;
-}
-
 h1, h2, h3, h4,h5, h6, p, ul, ol, li, dl, dt, dd, form, label, img {
 	margin: 0;
 	border: 0;
@@ -103,6 +94,7 @@ Section: Main Contents
 ---------------------------------- */
 
 .header {
+  float: left;
   overflow: auto;
   border-bottom: 2px solid #9a9a9a;
   margin: 2px;

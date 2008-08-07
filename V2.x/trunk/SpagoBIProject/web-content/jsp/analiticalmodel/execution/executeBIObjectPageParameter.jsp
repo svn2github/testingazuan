@@ -74,9 +74,7 @@ String title = obj.getName();
 	<%= title %>
 </div>
 
-<div class='errors-object-details-div'>
-	<spagobi:error/>
-</div>
+<spagobi:error/>
 
 <div class="header">
 	<div class="slider_header">

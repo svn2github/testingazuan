@@ -231,17 +231,6 @@ qx.Class.define("spagobi.app.data.DataService", {
   		];
   	},
   	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
   	loadMapRecords: function() {
   		var records = {};
     	
@@ -283,7 +272,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	description: 'aaa',
 	        	template: '/components/mapcatalogue/maps/import.txt',
 	        	format: 'SVG',
-	        	numfeatures: '0',
+	        	numfeatures: '0'/*,
 	        	features: [{
 		        	id: '1',
 		        	name: 'States',
@@ -296,7 +285,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	description: 'States of EU2',
 		        	type: 'Territorial2',
 		        	nummaps: '2'
-		        }]
+		        }]*/
 	        	 	        	
         	}, {
 	        	id: '2',
@@ -304,7 +293,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	description: 'USA_States',
 	        	template: '/components/mapcatalogue/maps/UsaStates.svg',
 	        	format: 'SVG',
-	        	numfeatures: '1',
+	        	numfeatures: '1'/*,
 	        	features: [{
 		        	id: '2',
 		        	name: 'Frame',
@@ -317,14 +306,14 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	description: 'Just a frameb',
 		        	type: 'Territorialb',
 		        	nummaps: '2b'
-		        }] 	
+		        }] */	
         	}, {
 	        	id: '3',
 	        	name: 'Senzioni_Censimento',
 	        	description: 'Sezioni_Censimento',
 	        	template: '/components/mapcatalogue/maps/Sezioni_Censimento.svg',
 	        	format: 'SVG',
-	        	numfeatures: '13',
+	        	numfeatures: '13'/*,
 	        	features: [{
 		        	id: '3',
 		        	name: 'Unita Urbanistiche',
@@ -337,7 +326,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        	description: 'Divisione territoriale comune GE4',
 		        	type: 'Territorial4',
 		        	nummaps: '34'
-		        }]	     	
+		        }]*/	     	
         	}  			
   		];
   	},

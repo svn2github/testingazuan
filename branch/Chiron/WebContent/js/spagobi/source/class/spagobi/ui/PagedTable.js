@@ -77,6 +77,7 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	
     	var atom1 = new qx.ui.basic.Atom();
     	atom1.add( this._filterBar );
+    	atom1.setHorizontalAlign("center")
     	this.add( atom1 );
     	    	
     	var atom0 = new qx.ui.basic.Atom();

@@ -56,9 +56,11 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/actions.xml" />
     
-  <!-- engines.documentcomposition -->	
+<!-- engines.documentcomposition -->
+	<!--
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/pages.xml" />
+	-->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/publishers.xml" /> 
   

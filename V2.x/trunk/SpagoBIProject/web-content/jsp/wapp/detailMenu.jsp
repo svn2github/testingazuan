@@ -82,6 +82,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="java.io.File"%>
+<%@page import="it.eng.spagobi.wapp.dao.MenuDAOImpl"%>
 <form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
@@ -598,6 +599,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <% 
+	// Get the roloes
 		Integer id = menu.getMenuId();
 		Role[] rolesObj = menu.getRoles();
 		
@@ -622,23 +624,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 			     <% 
 	 			    	boolean alternate = false;	
 	 			     	String rowClass = null;
-	 			     	for(int i=0; i<sysRoles.length; i++) { 
+	 			     	MenuDAOImpl menuDao=(MenuDAOImpl)DAOFactory.getMenuDAO();
+		 	    		List children=menuDao.getChildrenMenu(menu.getMenuId());
+	 			     	for(int i=0; i<sysRoles.length; i++) {   // for all the possible roles
 	 			            String ruleId = sysRoles[i][0];
 	 			            String ruleName = sysRoles[i][1];
 	 			            String ruleDescription = sysRoles[i][2];
 	 			            DetailMenuModule detMenu = new DetailMenuModule();
-	 			            boolean isParent=false;
-	 			            boolean is=false;
+	 			            boolean isParent=false;    // current role is a parent one
+	 			            boolean is=false;			
 		            		
-	 			            for(int j=0; j<rules.length; j++) {
+	 			            for(int j=0; j<rules.length; j++) {   // set if role in iteration is one of menu's
 	 			               if(rules[j].equals(ruleId)) { is = true; }
 	 			               		}
-
-			               	if(!modality.equals(AdmintoolsConstants.DETAIL_INS)){
+					// If there is a parent judge if role in iteration is a parent one
+			               	//if(!modality.equals(AdmintoolsConstants.DETAIL_INS)){
 			               		if(parentMenu!=null){
  			               		if(detMenu.isParentRule(ruleId,parentMenu)){isParent = true;}
 			               		}
-			               		}
+			               		//}
 	 			            
 	 			            
 
@@ -651,17 +655,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 	
 					 	<td align="center">
 					 	    <input type="checkbox" name="ROLES" id="ROLES" value="<%=ruleId%>" 
-					 	    	<%
+					 	    	<% // in insert case check is it is current, disable elsewhere
+					 	    	boolean alDisabled=false;
 					 	    	if(modality.equals(AdmintoolsConstants.DETAIL_INS)){
 					 	    		if(is==true)	out.print(" checked='checked' ");
 					 	    		else out.print(" disabled='disabled' ");				
-					 	    	}
+					 	    	} // in detail case 
 					 	    	else if(modality.equals(AdmintoolsConstants.DETAIL_MOD)){ //Case modify
 					 	    			if(is==true){	out.print(" checked='checked' ");} 
 					 	    			else {
-					 	    				if (isParent==false && parentMenu!=null && parentMenu.getParentId() != null) out.print(" disabled='disabled' ");
+					 	    				if (isParent==false && parentMenu!=null/*&& parentMenu.getParentId() != null*/) 
+					 	    						{out.print(" disabled='disabled' "); alDisabled=true; }
 					 	    				}
-					 	    	}
+					 	    	//if is in detail and has children cannot change roles
+								
+					 	    	if(!alDisabled){
+					 	    		
+					 	    		if(!children.isEmpty()) {
+					 	    			out.print(" disabled='disa	bled' ");					 	    					
+					 	    				}
+					 	    			}
+					 	    		}
 					 	    	%> 
 					 	    />
 					 	</td>

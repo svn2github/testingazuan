@@ -292,7 +292,7 @@ public class ExecutionInstance {
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
 			if (pendingDelete != null && !pendingDelete.trim().equals("")) {
-				if (isSingleValue(biparam))
+				if (isSingleValue(biparam) || biparam.isTransientParmeters())
 					continue;
 				biparam.setParameterValues(null);
 			} else {

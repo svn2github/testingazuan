@@ -262,14 +262,12 @@ boolean first=true;
 					                            <%}%>
 						                        })
 							                        <%if(x < lstChildrenLev4.size()-1){%>
-						                            ,
+						                            , // comma level 4
 						                         <%}%>	                  	                       				                   		
 					            			<%
 												    } //can View 4
-												    }//for LEVEL 4
-								    		 if(k < lstChildrenLev3.size()-1){%>
-					                            ,
-					                        <%}%>
+												}//for LEVEL 4
+								    		%>
 					                        ]}}
 					            		<%}
 					    			    else{ %>

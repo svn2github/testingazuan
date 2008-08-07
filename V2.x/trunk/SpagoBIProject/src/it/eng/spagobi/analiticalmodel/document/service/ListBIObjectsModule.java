@@ -335,6 +335,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		    + "		<PARAMETER name=\""
 		    + ObjectsTreeConstants.OBJECT_ID
 		    + "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> "
+		    + "		<PARAMETER name=\""
+		    + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED
+		    + "\" scope=\"\" type=\"ABSOLUTE\" value=\"TRUE\"/> "
 		    + "	</METADATA_CAPTION>";
 	}
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_DETAIL_MANAGEMENT)) {

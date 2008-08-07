@@ -1258,6 +1258,8 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 				if (paramsDescriptionMap.get(biparam.getParameterUrlName()) != null)
 					paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
 			}
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
+			return;
 		}
 		
 		// it is a lookup call

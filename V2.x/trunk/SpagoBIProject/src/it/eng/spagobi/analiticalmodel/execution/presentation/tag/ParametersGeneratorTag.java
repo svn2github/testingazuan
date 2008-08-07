@@ -586,18 +586,18 @@ public class ParametersGeneratorTag extends TagSupport {
 	    String selectionType = modVal.getSelectionType();
 
 	    if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "')) document.getElementById('" + id + requestIdentity + "').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "Desc')) document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
 	    } else if (selectionType.equalsIgnoreCase("COMBOBOX")) {
-		htmlStream.append(" document.getElementById('" + id + requestIdentity
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "')) document.getElementById('" + id + requestIdentity
 			+ "').value = document.getElementById('" + id + requestIdentity + "Desc').value;\n");
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').selectedIndex = 0;\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "Desc')) document.getElementById('" + id + requestIdentity + "Desc').selectedIndex = 0;\n");
 	    } else if (selectionType.equalsIgnoreCase("CHECK_LIST")) {
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "')) document.getElementById('" + id + requestIdentity + "').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "Desc')) document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
 	    } else if (selectionType.equalsIgnoreCase("LIST")) {
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "').value = '';\n");
-		htmlStream.append(" document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "')) document.getElementById('" + id + requestIdentity + "').value = '';\n");
+		htmlStream.append(" if (document.getElementById('" + id + requestIdentity + "Desc')) document.getElementById('" + id + requestIdentity + "Desc').value = '';\n");
 	    }
 	}
 	htmlStream.append(" setDeleteFlag" + requestIdentity + "();\n");

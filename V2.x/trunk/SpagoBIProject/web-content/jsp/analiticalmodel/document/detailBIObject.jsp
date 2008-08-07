@@ -241,7 +241,7 @@ function checkFormVisibility(docType) {
 <table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 	<tr>
 		<td>
-			<div class="div_detail_area_forms">
+			<div class="div_detail_area_forms" id='biobjectForm' name='biobjectForm'>
 			
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>

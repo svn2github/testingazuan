@@ -192,16 +192,16 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 		eval(stringToEval);
 		var table = document.getElementById('subObjectTable_' + uuid);
 		var rowsNumber = table.rows.length;
-		if (rowsNumber == 1) {
-			var subObjectsArrow = document.getElementById('subobjectsSliderArrow' + uuid);
-			var subObjectsPopout = document.getElementById('popout_SubObject' + uuid);
-			if (subObjectsArrow) {
-				subObjectsArrow.style.display = "inline";
-			}
-			if (subObjectsPopout) {
-				subObjectsPopout.style.display = "inline";
-			}
-		}
+		//if (rowsNumber == 1) {
+		//	var subObjectsArrow = document.getElementById('subobjectsSliderArrow' + uuid);
+		//	var subObjectsPopout = document.getElementById('popout_SubObject' + uuid);
+		//	if (subObjectsArrow) {
+		//		subObjectsArrow.style.display = "inline";
+		//	}
+		//	if (subObjectsPopout) {
+		//		subObjectsPopout.style.display = "inline";
+		//	}
+		//}
 		var newRow = table.insertRow(rowsNumber);
 		var nameCell = newRow.insertCell(0);
 		var empty1 = newRow.insertCell(1);

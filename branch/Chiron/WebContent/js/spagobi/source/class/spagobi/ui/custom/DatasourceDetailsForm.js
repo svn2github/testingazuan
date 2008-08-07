@@ -70,7 +70,7 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
         	{
         		type: 'text',
         		dataIndex: 'label',
-        		text: 'LABEL',
+        		text: 'Label',
         		mandatory: true	
         	}, {
         		type: 'text',

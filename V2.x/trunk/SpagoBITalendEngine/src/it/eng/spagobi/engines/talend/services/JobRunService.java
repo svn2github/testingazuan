@@ -262,7 +262,13 @@ public class JobRunService extends HttpServlet {
 				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
 						"EXECUTION_FAILED", "Job execution error", null);
 				result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
-			}    	
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				// AUDIT UPDATE
+				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
+						"EXECUTION_FAILED", "Job execution error", null);
+				result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
+			}
 
 			response.getOutputStream().write(result.getBytes());
 

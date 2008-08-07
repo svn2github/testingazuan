@@ -259,15 +259,21 @@ qx.Class.define("spagobi.ui.FormList", {
                 		itemsList1[btnIndex1-1].setChecked(true);
                 		this._tabButton = itemsList1[btnIndex1-1];
               		}
+              		if(this._currentSubform.getInputField('mychecklist') != undefined){
+					this._checklistAllow(btn1,btnIndex1);
+      		   }
+				this.deleteDataAt(btnIndex1);
+              		
                }
 			   else {
         			alert("Last Tab won't be removed!");
       		   }
+      		   /*
       		   if(this._currentSubform.getInputField('mychecklist') != undefined){
 					this._checklistAllow(btn1,btnIndex1);
       		   }
 				this.deleteDataAt(btnIndex1);
-				
+				*/
 			}
 		},
 		

@@ -148,6 +148,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
   			// calculate height of the frame
   			heightFrame = heightVisArea - pos<%=uuid%>[1] - heightFooter;
   			iframeEl = document.getElementById('iframeexec<%=uuid%>');
+  			if (heightFrame <= 0) heightFrame = 600;
   			iframeEl.style.height = heightFrame + 'px';
 		}
 	

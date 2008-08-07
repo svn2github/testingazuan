@@ -81,7 +81,7 @@ String title = obj.getName();
 		<ul>
 		    <li class="arrow"><a href="javascript:void(0);" id="toggle_Parameters<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.parameters'/></a></li>
 			<% if (viewpointsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_ViewPoint<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.viewpoints'/></a></li><% } %>
-			<li class="arrow" style="display:<%= subobjectsSliderVisible ? "inline" : "none"%>"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li>
+			<li class="arrow"><a href="javascript:void(0);" id="toggle_SubObject<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.subobjects'/></a></li>
 			<% if (snapshotsSliderVisible) { %><li class="arrow"><a href="javascript:void(0);" id="toggle_Snapshot<%= uuid %>" >&nbsp;<spagobi:message key='sbi.execution.snapshots'/></a></li><% } %>
 		</ul>
 	</div>
@@ -140,10 +140,10 @@ createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpoin
 		<execution:subobjectsList subobjectsList="<%= subobjectsList %>" uuid="<%=uuid%>" />
 	</div>
 </div>
-<div id="popout_SubObject<%= uuid %>" class="popout" style="display:<%= subobjectsSliderVisible ? "inline" : "none"%>"></div>
+<div id="popout_SubObject<%= uuid %>" class="popout"></div>
 <script>
 createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjectsContentEl<%= uuid %>', 
-		'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', true);
+		'popout_SubObject<%= uuid %>', 'toggle_SubObject<%= uuid %>', <%= subobjectsSliderVisible ? "true" : "false" %>);
 </script>
 <%-- End SubObjects --%>
 

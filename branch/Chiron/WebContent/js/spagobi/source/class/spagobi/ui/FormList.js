@@ -101,6 +101,14 @@ qx.Class.define("spagobi.ui.FormList", {
 		
 		_tabButton: undefined,
 		_tabcount: 0,
+		_formCount:0,
+		_checkObject: {
+						_checkedFields : [],
+						_subFormid: []
+					  },
+		_currentSubform: undefined,
+		
+		//str:"",
 		/**
 		 * Function to get the current value of config object
 		 * @return The current config object
@@ -136,12 +144,13 @@ qx.Class.define("spagobi.ui.FormList", {
 				subform.setData(o);
 			}		
 			
+			this._currentSubform = subform;
 			var subFormButton = new qx.ui.pageview.tabview.Button('tab-' + this._tabcount);
 			this._tabcount++;
 			
 			subFormButton.setChecked(true);
 			subFormButton.setShowCloseButton(true);
-			this._tabButton = subFormButton;
+			//this._tabButton = subFormButton;
 			
 	        this._tabView.getBar().add(subFormButton);
 	        var subFormPage = new qx.ui.pageview.tabview.Page(subFormButton);
@@ -154,6 +163,19 @@ qx.Class.define("spagobi.ui.FormList", {
 	  		
 	  		subFormButton.addEventListener("changeChecked",this._changeSubForm,this);
 	  		subFormButton.addEventListener("closetab",this._closeSubForm,this);
+	  		
+	  		if(this._instances.length > 2){	//this part of code is executed only when there are at least 2 subforms
+		  		var itemsList1 = this._tabView.getBar().getChildren();
+				var oldForm = itemsList1.indexOf(this._tabButton);
+				var newForm = itemsList1.indexOf(subFormButton);
+				this._currentSubform = this._instances[oldForm];
+				var newSubForm = this._instances[newForm];
+				
+				if(this._currentSubform.getInputField('mychecklist') != undefined){
+					this._checkbox(this._currentSubform,newSubForm,oldForm,newForm);
+				}
+	  		}
+			this._tabButton = subFormButton;
 		},
 		
 		/**
@@ -185,8 +207,16 @@ qx.Class.define("spagobi.ui.FormList", {
 		_dummytab: function(e){
 			if(e.getTarget().isChecked() == true){
 				this.deleteDataAt(this._instances.length-1);
-				//this._instances.length--;
 				this._tabButton.setShowCloseButton(false);
+				//this.addInstance();
+				/*
+				var itemsList1 = this._tabView.getBar().getChildren();
+				var btnIndex1 = itemsList1.indexOf(this._tabButton);
+				this._currentSubform = this._instances[btnIndex1];
+				if(this._currentSubform.getInputField('mychecklist') != undefined){
+					//this._checkbox(this._currentSubform);	//new form to be passed and not current
+				}
+				*/
 				this.addInstance();
 			}
 		},
@@ -196,8 +226,18 @@ qx.Class.define("spagobi.ui.FormList", {
 			if(btn.isChecked() == true){
 				this._tabButton.setShowCloseButton(false); 
 				btn.setShowCloseButton(true);
-				this._tabButton = btn;
+				//this._tabButton = btn;
 				
+				var itemsList1 = this._tabView.getBar().getChildren();
+				var oldForm = itemsList1.indexOf(this._tabButton);
+				var newForm = itemsList1.indexOf(btn);
+				this._currentSubform = this._instances[oldForm];
+				var newSubForm = this._instances[newForm];
+				
+				if(this._currentSubform.getInputField('mychecklist') != undefined){
+					this._checkbox(this._currentSubform,newSubForm,oldForm,newForm);	//new form to be passed and not current
+				}
+				this._tabButton = btn;
 			}
 		},
 		
@@ -219,11 +259,13 @@ qx.Class.define("spagobi.ui.FormList", {
                 		itemsList1[btnIndex1-1].setChecked(true);
                 		this._tabButton = itemsList1[btnIndex1-1];
               		}
-              }
+               }
 			   else {
         			alert("Last Tab won't be removed!");
-      			}
-				
+      		   }
+      		   if(this._currentSubform.getInputField('mychecklist') != undefined){
+					this._checklistAllow(btn1,btnIndex1);
+      		   }
 				this.deleteDataAt(btnIndex1);
 				
 			}
@@ -280,6 +322,8 @@ qx.Class.define("spagobi.ui.FormList", {
 					this._instances[i] = this._instances[i+1];
 				}
 			this._instances.length--;
+			
+			
 				
             /*
             if(this.dataObject && this.dataObject[index]) {
@@ -301,11 +345,104 @@ qx.Class.define("spagobi.ui.FormList", {
 			}
 			
 			this.dataObject = o;		
-		}
+		},
 		
-	},
-	
-	statics : {
-	
-	}
+		_checkbox: function(subform,newSubForm,oldFormIndex,newFormIndex){
+			//alert("inside fn. defn");
+			var dummyWidget = subform.getInputField('mychecklist'); 
+			if(dummyWidget.getUserData('type')== 'check'){
+				//if(dummyWidget.exclusivecheckbox != undefined){
+				var grid = dummyWidget.getUserData('field').getChildren();//has to be specific to a form
+				var gridNew = newSubForm.getInputField('mychecklist').getUserData('field').getChildren();
+				
+				
+				
+				//var str = "";
+				for(i=0; i<grid.length; i++){			//current form's checked labels stored in global array
+					if(grid[i].getUserData('field').getChecked() == true){
+						if(this._checkObject._checkedFields.length == 0){
+							this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
+							this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
+							//this.str = this.str + grid[i].getUserData('label').getText() + ", ";
+						}
+						else{
+							var flag = 0;
+							for(j=0; j<this._checkObject._checkedFields.length; j++){
+								if(this._checkObject._subFormid[j] == oldFormIndex  && this._checkObject._checkedFields[j]==grid[i].getUserData('label').getText()){
+									flag = 1;
+									break;
+								}
+							}
+							if(flag == 0){		
+									this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
+									this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
+									//this.str = this.str + grid[i].getUserData('label').getText() + ", ";
+							}
+						}
+					}	
+				}
+				//alert(this.str);
+				
+				for(i=0; i<this._checkObject._checkedFields.length; i++){	//if there are already other tabs
+					if(this._checkObject._subFormid[i] != newFormIndex){
+						for(j=0; j<gridNew.length; j++){
+							if(this._checkObject._checkedFields[i] == gridNew[j].getUserData('label').getText()){
+								//alert('global: '+this._checkObject._checkedFields[i] + ",form: " + gridNew[j].getUserData('label').getText());
+								gridNew[j].getUserData('field').setEnabled(false);
+								break;
+							}
+						}
+					}
+				}	
+				
+			}//end of if
+		},//end of fn.
+		
+		_checklistAllow:function(button,buttonIndex){
+			var delForm = this._instances[buttonIndex];
+			var checkList = delForm.getInputField('mychecklist'); 
+			var grid = checkList.getUserData('field').getChildren();
+			var checkedLabel = [];
+			
+			var str = "";
+			for(i=0; i<grid.length; i++){			
+				if(grid[i].getUserData('field').getChecked() == true){
+					checkedLabel[checkedLabel.length] = grid[i].getUserData('label').getText();
+					}
+			}
+			
+			for(j=0; j<checkedLabel.length; j++){
+				for(i=0; i<this._checkObject._checkedFields.length; i++){
+					if(this._checkObject._subFormid[i] == buttonIndex){
+						if(this._checkObject._checkedFields[i] == checkedLabel[j]){
+							for(k=i; k<this._checkObject._checkedFields.length-1; k++){
+								this._checkObject._checkedFields[k] = this._checkObject._checkedFields[k+1];
+								this._checkObject._subFormid[k] = this._checkObject._subFormid[k+1]; 
+								}
+							this._checkObject._checkedFields.length--;
+							this._checkObject._subFormid.length--;	
+						}
+					}
+				}
+			}
+				
+			for(cnt=0; cnt<this._instances.length-1; cnt++){
+				var myForm = this._instances[cnt];
+				if(myForm!=delForm){
+					var chklst = myForm.getInputField('mychecklist'); 
+					var chkGrid = chklst.getUserData('field').getChildren();
+					for(j=0; j<checkedLabel.length; j++){
+						for(l=0; l<chkGrid.length; l++){
+							if(chkGrid[l].getUserData('label').getText() == checkedLabel[j]){
+								chkGrid[l].getUserData('field').setEnabled(true);
+								break;
+							}
+						}
+					}
+			 	}		//end of if 	
+			}
+			
+			
+		}
+	}	
 });

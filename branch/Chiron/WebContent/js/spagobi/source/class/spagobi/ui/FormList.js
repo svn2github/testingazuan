@@ -369,23 +369,58 @@ qx.Class.define("spagobi.ui.FormList", {
 						if(this._checkObject._checkedFields.length == 0){
 							this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
 							this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
-							//this.str = this.str + grid[i].getUserData('label').getText() + ", ";
+							this.str = this.str + oldFormIndex+ ":"+grid[i].getUserData('label').getText() + ", ";
 						}
 						else{
 							var flag = 0;
 							for(j=0; j<this._checkObject._checkedFields.length; j++){
 								if(this._checkObject._subFormid[j] == oldFormIndex  && this._checkObject._checkedFields[j]==grid[i].getUserData('label').getText()){
 									flag = 1;
+									//alert("duplicate entry not added in global array");
 									break;
 								}
 							}
 							if(flag == 0){		
 									this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
 									this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
-									//this.str = this.str + grid[i].getUserData('label').getText() + ", ";
+							this.str = this.str + oldFormIndex + ":"+ grid[i].getUserData('label').getText() + ", ";
 							}
 						}
-					}	
+					}
+					
+					/* if checkbox unchecked in form, make it enable in rest subforms */
+					for(j=0; j<this._checkObject._checkedFields.length; j++){
+						if(this._checkObject._subFormid[j] == oldFormIndex){
+							for(ii=0; ii<grid.length; ii++){
+								if(this._checkObject._checkedFields[j] == grid[ii].getUserData('label').getText() && grid[ii].getUserData('field').getChecked() == false){ //if checkbox made unchecked
+									
+									/* make the newly made unchecked checkbox as available in rest of subforms*/
+									for(cnt=0; cnt<this._instances.length-1; cnt++){
+										var myForm = this._instances[cnt];
+										var chklst = myForm.getInputField('mychecklist'); 
+										var chkGrid = chklst.getUserData('field').getChildren();
+										for(l=0; l<chkGrid.length; l++){
+											if(chkGrid[l].getUserData('label').getText() == this._checkObject._checkedFields[j]){
+												chkGrid[l].getUserData('field').setEnabled(true);
+											}	
+										}
+									}
+									
+									/*delete from global */
+									for(k=j; k<this._checkObject._checkedFields.length-1; k++){
+										this._checkObject._checkedFields[k] = this._checkObject._checkedFields[k+1];
+										this._checkObject._subFormid[k] = this._checkObject._subFormid[k+1]; 
+									}
+									this._checkObject._checkedFields.length--;
+									this._checkObject._subFormid.length--;
+							
+									//break;
+								}
+							}
+						}
+						
+					}
+						
 				}
 				//alert(this.str);
 				
@@ -410,7 +445,7 @@ qx.Class.define("spagobi.ui.FormList", {
 			var grid = checkList.getUserData('field').getChildren();
 			var checkedLabel = [];
 			
-			var str = "";
+		//	var str = "";
 			for(i=0; i<grid.length; i++){			
 				if(grid[i].getUserData('field').getChecked() == true){
 					checkedLabel[checkedLabel.length] = grid[i].getUserData('label').getText();

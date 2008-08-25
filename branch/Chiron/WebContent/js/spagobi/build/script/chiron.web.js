@@ -1,6 +1,6 @@
 if(!window.qxsettings)qxsettings={};
 if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]="../js/spagobi/build/resource/qx";
-if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource/spagobi.app";
+if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";
 if(qxsettings["qx.theme"]==undefined)qxsettings["qx.theme"]="qx.theme.ClassicRoyale";
 if(qxsettings["qx.minLogLevel"]==undefined)qxsettings["qx.minLogLevel"]=200;
 if(qxsettings["qx.logAppender"]==undefined)qxsettings["qx.logAppender"]="qx.log.appender.Native";
@@ -11366,7 +11366,6 @@ destruct:function(){if(this._element){this._element.onload=this._element.onerror
 /* ID: spagobi.app.Chiron */
 qx.Class.define("spagobi.app.Chiron",
 {extend:qx.application.Gui,
-settings:{"spagobi.resource":".."},
 members:{toolbars:[],
 selectToolbarName:undefined,
 pages:[],
@@ -11374,7 +11373,7 @@ selectPageName:undefined,
 mainPane:{},
 main:function(){arguments.callee.base.call(this);
 qx.io.Alias.getInstance().add("spagobi",
-qx.core.Setting.get("spagobi.resource"));
+qx.core.Setting.get("spagobi.resourceUri"));
 qx.html.StyleSheet.includeFile(qx.io.Alias.getInstance().resolve("spagobi/css/reader.css"));
 qx.io.remote.RequestQueue.getInstance().setMaxConcurrentRequests(10);
 this._createLayout();
@@ -11415,29 +11414,32 @@ context:this,
 icon:'icon/16/actions/dialog-ok.png',
 tooltip:'Reload the feeds.'}]);
 $0.addTop(this._toolBarView);
-this.toolbars['resources']=new spagobi.ui.PageView({toolbar:{defaultBackgroudColor:'white',
-focusedBackgroudColor:'#DEFF83',
-buttons:[{name:'engine',
+this.toolbars['resources']=new spagobi.ui.PageView({toolbar:{buttons:[{name:'engine',
 image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
-page:'engine'},
+page:'engine',
+tooltip:'Engines'},
 {name:'datasource',
 image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',
-page:'datasource'},
+page:'datasource',
+tooltip:'Datasources'},
 {name:'dataset',
 image:'spagobi/img/spagobi/test/datasetAdministrationIcon.png',
-page:'dataset'}]},
+page:'dataset',
+tooltip:'Dataset'}]},
 defaultSelectedPage:'engine'});
 $0.add(this.toolbars['resources']);
 this.toolbars['resources'].setLiveResize(true);
 this.toolbars['resources'].setVisibility(false);
-this.toolbars['catalogues']=new spagobi.ui.PageView({toolbar:{defaultBackgroudColor:'white',
+this.toolbars['catalogues']=new spagobi.ui.PageView({toolbar:{defaultBackgroudColor:'gray',
 focusedBackgroudColor:'#DEFF83',
 buttons:[{name:'mapmgmt',
 image:'spagobi/img/spagobi/test/mapManagementIcon.png',
-page:'mapmgmt'},
+page:'mapmgmt',
+tooltip:'Maps'},
 {name:'featuremgmt',
 image:'spagobi/img/spagobi/test/featureManagementIcon.png',
-page:'featuremgmt'}]},
+page:'featuremgmt',
+tooltip:'Features'}]},
 defaultSelectedPage:'mapmgmt'});
 $0.add(this.toolbars['catalogues']);
 this.toolbars['catalogues'].setLiveResize(true);
@@ -16884,58 +16886,74 @@ getSelectedPageName:function(){return this._selectedPageName;
 qx.Class.define("spagobi.ui.IconBar",
 {extend:qx.ui.layout.VerticalBoxLayout,
 construct:function($0){arguments.callee.base.call(this);
-if($0){if($0.defaultBackgroudColor){this._defaultBackgroudColor=$0.defaultBackgroudColor;
-this.setBackgroundColor(this._defaultBackgroudColor);
+this.setSpacing(0);
+if($0){if($0.selectedBackgroudColor){this._selectedBackgroudColor=$0.selectedBackgroudColor;
 }
 if($0.focusedBackgroudColor){this._focusedBackgroudColor=$0.focusedBackgroudColor;
 }
 if($0.buttons){for(var $1=0;$1<$0.buttons.length;$1++){this.addButton($0.buttons[$1]);
 }}}},
-members:{_defaultBackgroudColor:'white',
-_focusedBackgroudColor:'#DEFF83',
+members:{_selectedBackgroudColor:'#DEFF83',
+_focusedBackgroudColor:'gray',
+_checkedButton:undefined,
 addButton:function($0){this._addAtom($0.name,
 $0.image,
 $0.handler,
-$0.context);
-},
-_addButton:function($0,
-$1,
-$2,
-$3){var $4=new qx.ui.form.Button('',
-$1);
-$4.addEventListener("execute",
-$2,
-$3);
-this.add($4);
-return $4;
+$0.context,
+$0.tooltip);
 },
 _addAtom:function($0,
 $1,
 $2,
-$3){var $4=new qx.ui.basic.Atom('',
+$3,
+$4){var $5=new qx.ui.basic.Atom('',
 $1);
-$4.setUserData('name',
+$5.setUserData('name',
 $0);
-$4.setBackgroundColor('white');
-$4.addEventListener("mouseover",
-this._onmouseover);
-$4.addEventListener("mouseout",
-this._onmouseout);
-$4.addEventListener("mousedown",
+$5.setUserData('checked',
+false);
+if($4){var $6=new qx.ui.popup.ToolTip($4);
+$5.setToolTip($6);
+$6.setShowInterval(20);
+}$5.addEventListener("mouseover",
+this._onmouseover,
+this);
+$5.addEventListener("mouseout",
+this._onmouseout,
+this);
+$5.addEventListener("mousedown",
 $2,
 $3);
-$4.addEventListener("keydown",
-this._onkeydown);
-$4.addEventListener("keypress",
-this._onkeypress);
-this.add($4);
+$5.addEventListener("mousedown",
+this._onmousedown,
+this);
+$5.addEventListener("keydown",
+this._onkeydown,
+this);
+$5.addEventListener("keypress",
+this._onkeypress,
+this);
+this.add($5);
 },
-_onmouseover:function($0){$0.getTarget().setBackgroundColor('#DEFF83');
+_check:function($0){$0.setUserData('checked',
+true);
+$0.setBackgroundColor(this._selectedBackgroudColor);
+this._checkedButton=$0;
 },
-_onmouseout:function($0){$0.getTarget().setBackgroundColor('white');
+_uncheck:function(){this._checkedButton.setBackgroundColor(null);
+this._checkedButton.setUserData('checked',
+false);
 },
-_onmousedown:function($0){alert('_onmousedown');
+select:function($0){if(!this._checkedButton){this._check($0);
+}else{this._uncheck();
+this._check($0);
+}},
+_onmousedown:function($0){this.select($0.getTarget());
 },
+_onmouseover:function($0){if($0.getTarget().getUserData('checked')==false){$0.getTarget().setBackgroundColor(this._focusedBackgroudColor);
+}},
+_onmouseout:function($0){if($0.getTarget().getUserData('checked')==false){$0.getTarget().setBackgroundColor(null);
+}},
 _onkeydown:function($0){},
 _onkeypress:function($0){switch($0.getKeyIdentifier()){case "Up":var $1=true;
 break;
@@ -16944,8 +16962,8 @@ break;
 default:return;
 }var $2=($1?($0.getTarget().isFirstChild()?$0.getTarget().getParent().getLastChild():$0.getTarget().getPreviousSibling()):($0.getTarget().isLastChild()?$0.getTarget().getParent().getFirstChild():$0.getTarget().getNextSibling()));
 $2.setFocused(true);
-$2.setBackgroundColor('#DEFF83');
-$0.getTarget().setBackgroundColor('white');
+$2.setBackgroundColor(this._focusedBackgroudColor);
+$0.getTarget().setBackgroundColor(null);
 }}});
 
 
@@ -16979,7 +16997,7 @@ var $4;
 var $5;
 this._type=$0;
 if($0==='engine'){$4=spagobi.app.data.DataService.loadEngineRecords();
-$5=new spagobi.ui.custom.EngineDetailsForm();
+$5=new spagobi.ui.custom.LOVDetailsForm();
 }else if($0==='dataset'){$4=spagobi.app.data.DataService.loadDatasetRecords();
 $5=new spagobi.ui.custom.DatasetDetailsForm();
 }else if($0==='datasource'){$4=spagobi.app.data.DataService.loadDatasourceRecords();
@@ -17019,7 +17037,7 @@ getForm:function(){return this._form;
 selectDataObject:function($0){this._form.setData($0);
 },
 show:function(){this.detailBody.remove(this._form);
-if(this._type==='engine'){this._form=new spagobi.ui.custom.EngineDetailsForm();
+if(this._type==='engine'){this._form=new spagobi.ui.custom.LOVDetailsForm();
 }else if(this._type==='dataset'){this._form=new spagobi.ui.custom.DatasetDetailsForm();
 }else if(this._type==='datasource'){this._form=new spagobi.ui.custom.DatasourceDetailsForm();
 }else if(this._type==='mapmgmt'){this._form=new spagobi.ui.custom.MapDetailsForm();
@@ -17290,6 +17308,7 @@ if(this.getInputField($0).getUserData('type')==='text'){$1=this.getInputField($0
 }else if(this.getInputField($0).getUserData('type')==='check'){$1=this.getInputField($0).getUserData('field').isChecked();
 }else if(this.getInputField($0).getUserData('type')==='form'){$1=this.getInputField($0).getUserData('field').getData();
 }else if(this.getInputField($0).getUserData('type')==='formList'){$1=this.getInputField($0).getUserData('field').getData();
+}else if(this.getInputField($0).getUserData('type')==='textarea'){$1=this.getInputField($0).getUserData('field').getValue();
 }return $1;
 },
 setInputFieldValue:function($0,
@@ -17300,6 +17319,7 @@ if(this.getInputField($0).getUserData('type')==='text'){this.getInputField($0).g
 }else if(this.getInputField($0).getUserData('type')==='check'){this.getInputField($0).getUserData('field').setChecked($1);
 }else if(this.getInputField($0).getUserData('type')==='form'){this.getInputField($0).getUserData('field').setData($1);
 }else if(this.getInputField($0).getUserData('type')==='formList'){this.getInputField($0).getUserData('field').setData($1);
+}else if(this.getInputField($0).getUserData('type')==='textarea'){this.getInputField($0).getUserData('field').setValue($1);
 }},
 addInputField:function($0){if($0.type==='text'){inputField=spagobi.commons.WidgetUtils.createInputTextField($0);
 inputField.setUserData('type',
@@ -17316,6 +17336,9 @@ inputField.setUserData('type',
 }else if($0.type==='formList'){inputField=spagobi.commons.WidgetUtils.createInputFormList($0);
 inputField.setUserData('type',
 'formList');
+}else if($0.type==='textarea'){inputField=spagobi.commons.WidgetUtils.createInputTextArea($0);
+inputField.setUserData('type',
+'textarea');
 }this.dataMappings[$0.dataIndex]=inputField;
 this.add(inputField);
 }},
@@ -17383,18 +17406,30 @@ $0.listeners[$3].scope);
 $0.listeners[$3].handler);
 }}return $2;
 },
+createTextArea:function($0){var $1={top:0,
+left:0,
+width:0,
+height:0};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=new qx.ui.form.TextArea();
+$2.set($0);
+return $2;
+},
 createInputTextField:function($0){var $1={top:0,
 left:10,
 text:'',
 maxLength:100,
 width:200,
 height:20,
+labelwidth:80,
 mandatory:false};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
+left:$0.left,
+width:$0.labelwidth});
 var $3=this.createTextField({top:$0.top,
 left:$0.left+30,
 maxLength:$0.maxLength,
@@ -17417,12 +17452,14 @@ createInputComboBox:function($0){var $1={top:0,
 left:10,
 text:'',
 items:[],
-listeners:[]};
+listeners:[],
+labelwidth:80};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
+left:$0.left,
+width:$0.labelwidth});
 var $3=this.createComboBox({top:$0.top,
 left:$0.left+30,
 items:$0.items,
@@ -17440,12 +17477,14 @@ createInputCheckBox:function($0){var $1={top:0,
 left:10,
 text:'',
 checked:false,
-listeners:[]};
+listeners:[],
+labelwidth:80};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
+left:$0.left,
+width:$0.labelwidth});
 var $3=this.createCheckBox({checked:$0.checked,
 top:$0.top,
 left:$0.left+30,
@@ -17464,13 +17503,44 @@ if(typeof ($0.form)=='object'){$1=new spagobi.ui.Form($0.form);
 }else{$1=new $0.form();
 }$1.setUserData('field',
 $1);
-return $1;
+if($0.visible!=undefined){$1.setDisplay($0.visible);
+}return $1;
 },
 createInputFormList:function($0){var $1;
 $1=new spagobi.ui.FormList($0.formList);
 $1.setUserData('field',
 $1);
 return $1;
+},
+createInputTextArea:function($0){var $1={top:0,
+left:10,
+text:'',
+width:200,
+height:50,
+mandatory:false,
+labelwidth:80};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=this.createLabel({text:$0.text,
+top:$0.top,
+left:$0.left,
+width:$0.labelwidth});
+var $3=this.createTextArea({top:$0.top,
+left:$0.left+30,
+width:$0.width,
+height:$0.height});
+var $4=new qx.ui.basic.Atom();
+$4.add($2,
+$3);
+if($0.mandatory){var $5=this.createLabel({text:'*',
+top:$0.top,
+left:$0.left+35});
+$4.add($5);
+}$4.setUserData('label',
+$2);
+$4.setUserData('field',
+$3);
+return $4;
 }}});
 
 
@@ -18964,6 +19034,47 @@ $1.getInnerHeight=$1.getPreferredBoxHeight;
 
 
 
+/* ID: qx.ui.form.TextArea */
+qx.Class.define("qx.ui.form.TextArea",
+{extend:qx.ui.form.TextField,
+properties:{appearance:{refine:true,
+init:"text-area"},
+allowStretchY:{refine:true,
+init:true},
+spellCheck:{refine:true,
+init:true},
+wrap:{check:"Boolean",
+init:true,
+apply:"_applyWrap"}},
+members:{_inputTag:"textarea",
+_inputType:null,
+_inputOverflow:"auto",
+_applyElement:function($0,
+$1){arguments.callee.base.call(this,
+$0,
+$1);
+this._styleWrap();
+},
+_applyWrap:function($0,
+$1){this._styleWrap();
+},
+_styleWrap:qx.core.Variant.select("qx.client",
+{"mshtml":function(){if(this._inputElement){this._inputElement.wrap=this.getWrap()?"soft":"off";
+}},
+"gecko":function(){if(this._inputElement){var $0=this.getWrap()?"soft":"off";
+var $1=this.getWrap()?"":"auto";
+this._inputElement.setAttribute('wrap',
+$0);
+this._inputElement.style.overflow=$1;
+}},
+"default":function(){if(this._inputElement){this._inputElement.style.whiteSpace=this.getWrap()?"normal":"nowrap";
+}}}),
+_computePreferredInnerHeight:function(){return 60;
+}}});
+
+
+
+
 /* ID: spagobi.ui.FormList */
 qx.Class.define("spagobi.ui.FormList",
 {extend:spagobi.ui.Form,
@@ -19345,8 +19456,8 @@ init:"tab-view-page"}}});
 
 
 
-/* ID: spagobi.ui.custom.EngineDetailsForm */
-qx.Class.define("spagobi.ui.custom.EngineDetailsForm",
+/* ID: spagobi.ui.custom.LOVDetailsForm */
+qx.Class.define("spagobi.ui.custom.LOVDetailsForm",
 {extend:spagobi.ui.Form,
 construct:function(){arguments.callee.base.call(this,
 [{type:'text',
@@ -19360,58 +19471,76 @@ mandatory:true},
 {type:'text',
 dataIndex:'description',
 text:'Description',
-mandatory:false},
+mandatory:true},
 {type:'combo',
-dataIndex:'documentType',
-text:'Document type',
-items:["Report",
-"Map"]},
-{type:'combo',
-dataIndex:'engineType',
-text:'Engine type',
-items:["Internal",
-"External"],
+dataIndex:'type',
+text:'Type',
+items:["",
+"Query Statement",
+"Script to load values",
+"Fixed List of values",
+"Java class"],
 listeners:[{event:'changeValue',
 handler:this._documentTypeChangeValueHandler,
 scope:this}]},
-{type:'check',
-dataIndex:'useDataSet',
-text:'Use Data Set',
-checked:false},
-{type:'check',
-dataIndex:'useDataSource',
-text:'Use Data Source',
-checked:true,
-listeners:[{event:'changeChecked',
-handler:this._useDataSourceChangeCheckedHandler,
-scope:this}]},
-{type:'combo',
-dataIndex:'dataSource',
-text:'Data Source',
-items:["foodmart",
-"geo",
-"spagobi"]},
-{type:'text',
-dataIndex:'class',
-text:'Class',
+{type:'form',
+dataIndex:'querystmt',
+form:[{type:'combo',
+dataIndex:'datasourcelabel',
+text:'Data Source label',
+labelwidth:100,
+items:["",
+"FoodMart",
+"Pool",
+"Connection"]},
+{type:'textarea',
+dataIndex:'querydef',
+text:'Query Definition',
+height:50}],
+visible:false},
+{type:'form',
+dataIndex:'scriptloadvalues',
+form:[{type:'textarea',
+dataIndex:'script',
+text:'Script',
+height:50}],
+visible:false},
+{type:'form',
+dataIndex:'fixedlov',
+form:[{type:'text',
+dataIndex:'value',
+text:'Value',
 mandatory:true},
 {type:'text',
-dataIndex:'url',
-text:'Url',
-mandatory:true},
-{type:'text',
-dataIndex:'driver',
-text:'Driver Name',
-mandatory:true}]);
+dataIndex:'description2',
+text:'Description',
+mandatory:true}],
+visible:false},
+{type:'form',
+dataIndex:'javaclass',
+form:[{type:'text',
+dataIndex:'classname',
+text:'Java Class Name',
+labelwidth:100,
+mandatory:true}],
+visible:false}]);
 },
-members:{_documentTypeChangeValueHandler:function($0){if(this&&this.getInputField('url')){if($0.getValue()=="Internal"){this.getInputField('url').setDisplay(false);
-this.getInputField('driver').setDisplay(false);
-this.getInputField('class').setDisplay(true);
-}else{this.getInputField('url').setDisplay(true);
-this.getInputField('driver').setDisplay(true);
-this.getInputField('class').setDisplay(false);
-}}},
-_useDataSourceChangeCheckedHandler:function($0){if(this&&this.getInputField('dataSource')){this.getInputField('dataSource').setDisplay($0.getValue());
+members:{_documentTypeChangeValueHandler:function($0){if($0.getValue()=="Query Statement"){this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('querystmt').setDisplay(true);
+}else if($0.getValue()=="Script to load values"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(true);
+}else if($0.getValue()=="Fixed List of values"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(true);
+}else if($0.getValue()=="Java class"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(true);
 }}}});
 
 
@@ -25550,7 +25679,7 @@ $1);
 
 /* ID: qx.locale.data.C */
 qx.locale.Locale.define("qx.locale.data.C",
-{cldr_alternateQuotationEnd:"”",
+{cldr_alternateQuotationEnd:"�?",
 cldr_alternateQuotationStart:"“",
 cldr_am:"am",
 cldr_date_format_full:"EEEE, MMMM d, yyyy",

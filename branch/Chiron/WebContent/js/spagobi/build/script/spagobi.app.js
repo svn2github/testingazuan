@@ -11366,7 +11366,6 @@ destruct:function(){if(this._element){this._element.onload=this._element.onerror
 /* ID: spagobi.app.Chiron */
 qx.Class.define("spagobi.app.Chiron",
 {extend:qx.application.Gui,
-settings:{"spagobi.resource":".."},
 members:{toolbars:[],
 selectToolbarName:undefined,
 pages:[],
@@ -11374,16 +11373,27 @@ selectPageName:undefined,
 mainPane:{},
 main:function(){arguments.callee.base.call(this);
 qx.io.Alias.getInstance().add("spagobi",
-qx.core.Setting.get("spagobi.resource"));
+qx.core.Setting.get("spagobi.resourceUri"));
 qx.html.StyleSheet.includeFile(qx.io.Alias.getInstance().resolve("spagobi/css/reader.css"));
 qx.io.remote.RequestQueue.getInstance().setMaxConcurrentRequests(10);
-this._createLayout();
-this._selectToolbar('resources');
+var $0=this._createLayout();
+var $1=qx.core.Setting.get("spagobi.executionMode");
+if($1&&$1==='portal'){var $2=qx.ui.core.ClientDocument.getInstance();
+var $3=new qx.ui.basic.Inline("myInlineWidget");
+$3.setHeight("70%");
+$3.setWidth("100%");
+$2.add($3);
+$3.add($0);
+}else{$0.addToDocument();
+var $2=qx.ui.core.ClientDocument.getInstance();
+qx.util.ThemeList.createMetaButtons($2,
+600,
+500);
+}this._selectToolbar('resources');
 },
 _createLayout:function(){var $0=new qx.ui.layout.DockLayout();
 $0.setEdge(0);
 $0.setBackgroundColor('white');
-$0.addToDocument();
 this._headerView=new spagobi.app.ui.Header();
 $0.addTop(this._headerView);
 this._toolBarView=new spagobi.ui.ToolBar([{command:'Control+Q',
@@ -11415,33 +11425,51 @@ context:this,
 icon:'icon/16/actions/dialog-ok.png',
 tooltip:'Reload the feeds.'}]);
 $0.addTop(this._toolBarView);
-this.toolbars['resources']=new spagobi.ui.PageView({toolbar:{defaultBackgroudColor:'white',
-focusedBackgroudColor:'#DEFF83',
-buttons:[{name:'engine',
+this.toolbars['resources']=new spagobi.ui.PageView({toolbar:{buttons:[{name:'engine',
 image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
-page:'engine'},
+page:'engine',
+tooltip:'Engines'},
 {name:'datasource',
 image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',
-page:'datasource'},
+page:'datasource',
+tooltip:'Datasources'},
 {name:'dataset',
 image:'spagobi/img/spagobi/test/datasetAdministrationIcon.png',
-page:'dataset'}]},
+page:'dataset',
+tooltip:'Dataset'}]},
 defaultSelectedPage:'engine'});
 $0.add(this.toolbars['resources']);
 this.toolbars['resources'].setLiveResize(true);
 this.toolbars['resources'].setVisibility(false);
-this.toolbars['catalogues']=new spagobi.ui.PageView({toolbar:{defaultBackgroudColor:'white',
-focusedBackgroudColor:'#DEFF83',
-buttons:[{name:'mapmgmt',
+this.toolbars['catalogues']=new spagobi.ui.PageView({toolbar:{buttons:[{name:'mapmgmt',
 image:'spagobi/img/spagobi/test/mapManagementIcon.png',
-page:'mapmgmt'},
+page:'mapmgmt',
+tooltip:'Maps'},
 {name:'featuremgmt',
 image:'spagobi/img/spagobi/test/featureManagementIcon.png',
-page:'featuremgmt'}]},
+page:'featuremgmt',
+tooltip:'Features'}]},
 defaultSelectedPage:'mapmgmt'});
 $0.add(this.toolbars['catalogues']);
 this.toolbars['catalogues'].setLiveResize(true);
 this.toolbars['catalogues'].setVisibility(false);
+this.toolbars['behaviouralModel']=new spagobi.ui.PageView({toolbar:{buttons:[{name:'lov',
+image:'spagobi/img/spagobi/test/lovManagementIcon.png',
+page:'lov',
+tooltip:'Maps'},
+{name:'constraints',
+image:'spagobi/img/spagobi/test/constraintManagementIcon.png',
+page:'constraints',
+tooltip:'Features'},
+{name:'parameters',
+image:'spagobi/img/spagobi/test/parameterManagementIcon.png',
+page:'parameters',
+tooltip:'Features'}]},
+defaultSelectedPage:'lov'});
+$0.add(this.toolbars['behaviouralModel']);
+this.toolbars['behaviouralModel'].setLiveResize(true);
+this.toolbars['behaviouralModel'].setVisibility(false);
+return $0;
 },
 _selectToolbar:function($0){if(this.toolbars[$0]){if(this.selectToolbarName){this.toolbars[this.selectToolbarName].setVisibility(false);
 }this.toolbars[$0].setVisibility(true);
@@ -12641,284 +12669,120 @@ document.body.removeChild(this._element);
 
 
 
-/* ID: qx.ui.layout.DockLayout */
-qx.Class.define("qx.ui.layout.DockLayout",
-{extend:qx.ui.core.Parent,
-construct:function(){arguments.callee.base.call(this);
-},
-properties:{mode:{check:["vertical",
-"horizontal",
-"ordered"],
-init:"vertical",
-apply:"_applyMode",
-themeable:true}},
-members:{_applyMode:function($0,
-$1){this.addToQueueRuntime("mode");
-},
-_createLayoutImpl:function(){return new qx.ui.layout.impl.DockLayoutImpl(this);
-},
-addLeft:function($0){this._addAlignedHorizontal("left",
-arguments);
-},
-addRight:function($0){this._addAlignedHorizontal("right",
-arguments);
-},
-addTop:function($0){this._addAlignedVertical("top",
-arguments);
-},
-addBottom:function($0){this._addAlignedVertical("bottom",
-arguments);
-},
-_addAlignedVertical:function($0,
-$1){for(var $2=0,
-$3=$1.length;$2<$3;$2++){$1[$2].setVerticalAlign($0);
-}this.add.apply(this,
-$1);
-},
-_addAlignedHorizontal:function($0,
-$1){for(var $2=0,
-$3=$1.length;$2<$3;$2++){$1[$2].setHorizontalAlign($0);
-}this.add.apply(this,
-$1);
-}}});
-
-
-
-
-/* ID: qx.ui.layout.impl.DockLayoutImpl */
-qx.Class.define("qx.ui.layout.impl.DockLayoutImpl",
-{extend:qx.ui.layout.impl.LayoutImpl,
-construct:function($0){arguments.callee.base.call(this,
-$0);
-},
-statics:{METHOD_LOCATION:"layoutChild_location_",
-_childRanking:{vertical:function($0){return $0.getVerticalAlign()?1e6:$0.getHorizontalAlign()?2e6:3e6;
-},
-horizontal:function($0){return $0.getHorizontalAlign()?1e6:$0.getVerticalAlign()?2e6:3e6;
-},
-ordered:function($0){return $0.getHorizontalAlign()||$0.getVerticalAlign()?1e6:2e6;
-}},
-_childCheck:{common:function($0){if(!($0._computedLeftTypeNull&&$0._computedRightTypeNull&&$0._computedTopTypeNull&&$0._computedBottomTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any location values for children: "+$0+"!");
-}},
-horizontal:function($0){if(!($0._computedMinHeightTypeNull&&$0._computedHeightTypeNull&&$0._computedMaxHeightTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any vertical dimension for 'horizontal' placed children: "+$0+"!");
-}},
-vertical:function($0){if(!($0._computedMinWidthTypeNull&&$0._computedWidthTypeNull&&$0._computedMaxWidthTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any horizontal dimension for 'vertical' placed children: "+$0+"!");
-}},
-"default":function($0){qx.ui.layout.impl.DockLayoutImpl._childCheck.horizontal($0);
-qx.ui.layout.impl.DockLayoutImpl._childCheck.vertical($0);
-}}},
-members:{computeChildBoxWidth:function($0){if(this.getChildAlignMode($0)=="horizontal"){return $0.getWidthValue()||$0._computeBoxWidthFallback();
-}return this.getWidget().getInnerWidth()-this._lastLeft-this._lastRight;
-},
-computeChildBoxHeight:function($0){if(this.getChildAlignMode($0)=="vertical"){return $0.getHeightValue()||$0._computeBoxHeightFallback();
-}return this.getWidget().getInnerHeight()-this._lastTop-this._lastBottom;
-},
-updateChildOnInnerWidthChange:function($0){$0._recomputePercentX();
-$0.addToLayoutChanges("location");
-return true;
-},
-updateChildOnInnerHeightChange:function($0){$0._recomputePercentY();
-$0.addToLayoutChanges("location");
-return true;
-},
-updateSelfOnJobQueueFlush:qx.lang.Function.returnFalse,
-updateChildrenOnJobQueueFlush:function($0){if($0.mode||$0.addChild||$0.removeChild){this.getWidget()._addChildrenToLayoutQueue("location");
-}},
-flushChildrenQueue:function($0){var $1=this.getWidget(),
-$2=$1.getVisibleChildren(),
-$3=$2.length,
-$4=$1.getMode();
-this._lastLeft=this._lastRight=this._lastTop=this._lastBottom=0;
-var $5=qx.ui.layout.impl.DockLayoutImpl._childRanking[$4];
-var $6=qx.lang.Array.copy($2).sort(function($7,
-$8){return ($5($7)+$2.indexOf($7))-($5($8)+$2.indexOf($8));
-});
-for(var $9=0;$9<$3;$9++){$1._layoutChild($6[$9]);
-}},
-getChildAlign:function($0){return $0.getVerticalAlign()||$0.getHorizontalAlign()||"default";
-},
-getChildAlignMode:function($0){return $0.getVerticalAlign()?"vertical":$0.getHorizontalAlign()?"horizontal":"default";
-},
-layoutChild:function($0,
-$1){qx.ui.layout.impl.DockLayoutImpl._childCheck.common($0);
-qx.ui.layout.impl.DockLayoutImpl._childCheck[this.getChildAlignMode($0)]($0);
-this.layoutChild_sizeX_essentialWrapper($0,
-$1);
-this.layoutChild_sizeY_essentialWrapper($0,
-$1);
-this.layoutChild_sizeLimitX($0,
-$1);
-this.layoutChild_sizeLimitY($0,
-$1);
-this[qx.ui.layout.impl.DockLayoutImpl.METHOD_LOCATION+this.getChildAlign($0)]($0,
-$1);
-},
-layoutChild_location_top:function($0,
-$1){$0._renderRuntimeTop(this._lastTop);
-$0._renderRuntimeLeft(this._lastLeft);
-this.layoutChild_location_horizontal($0);
-this._lastTop+=$0.getBoxHeight();
-},
-layoutChild_location_left:function($0,
-$1){$0._renderRuntimeLeft(this._lastLeft);
-$0._renderRuntimeTop(this._lastTop);
-this.layoutChild_location_vertical($0);
-this._lastLeft+=$0.getBoxWidth();
-},
-_applyComputedWidth:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0){$0._recomputeBoxWidth();
-$0._recomputeOuterWidth();
-$0._recomputeInnerWidth();
-$0._renderRuntimeWidth($0.getBoxWidth());
-},
-"default":function($0){$0._recomputeBoxWidth();
-$0._recomputeOuterWidth();
-$0._recomputeInnerWidth();
-}}),
-_applyComputedHeight:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0){$0._recomputeBoxHeight();
-$0._recomputeOuterHeight();
-$0._recomputeInnerHeight();
-$0._renderRuntimeHeight($0.getBoxHeight());
-},
-"default":function($0){$0._recomputeBoxHeight();
-$0._recomputeOuterHeight();
-$0._recomputeInnerHeight();
-}}),
-layoutChild_sizeX:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0,
-$1){if($1.initial||$1.width||$1.minWidth||$1.maxWidth){$0._computedWidthTypeNull&&$0._computedMinWidthTypeNull&&$0._computedMaxWidthTypeNull?$0._resetRuntimeWidth():$0._renderRuntimeWidth($0.getBoxWidth());
-}},
-"default":function($0,
-$1){if($1.initial||$1.width){$0._computedWidthTypeNull?$0._resetRuntimeWidth():$0._renderRuntimeWidth($0.getWidthValue());
-}}}),
-layoutChild_sizeY:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0,
-$1){if($1.initial||$1.height||$1.minHeight||$1.maxHeight){$0._computedHeightTypeNull&&$0._computedMinHeightTypeNull&&$0._computedMaxHeightTypeNull?$0._resetRuntimeHeight():$0._renderRuntimeHeight($0.getBoxHeight());
-}},
-"default":function($0,
-$1){if($1.initial||$1.height){$0._computedHeightTypeNull?$0._resetRuntimeHeight():$0._renderRuntimeHeight($0.getHeightValue());
-}}}),
-layoutChild_location_horizontal:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0){this._applyComputedWidth($0);
-},
-"default":function($0){this._applyComputedWidth($0);
-$0._renderRuntimeRight(this._lastRight);
-}}),
-layoutChild_location_vertical:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0){this._applyComputedHeight($0);
-},
-"default":function($0){this._applyComputedHeight($0);
-$0._renderRuntimeBottom(this._lastBottom);
-}}),
-layoutChild_location_right:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0,
-$1){$0._renderRuntimeLeft(this.getWidget().getInnerWidth()-this._lastRight-$0.getBoxWidth());
-$0._renderRuntimeTop(this._lastTop);
-this.layoutChild_location_vertical($0);
-this._lastRight+=$0.getBoxWidth();
-},
-"default":function($0,
-$1){$0._renderRuntimeRight(this._lastRight);
-$0._renderRuntimeTop(this._lastTop);
-this.layoutChild_location_vertical($0);
-this._lastRight+=$0.getBoxWidth();
-}}),
-layoutChild_location_bottom:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0,
-$1){$0._renderRuntimeTop(this.getWidget().getInnerHeight()-this._lastBottom-$0.getBoxHeight());
-$0._renderRuntimeLeft(this._lastLeft);
-this.layoutChild_location_horizontal($0);
-this._lastBottom+=$0.getBoxHeight();
-},
-"default":function($0,
-$1){$0._renderRuntimeBottom(this._lastBottom);
-$0._renderRuntimeLeft(this._lastLeft);
-this.layoutChild_location_horizontal($0);
-this._lastBottom+=$0.getBoxHeight();
-}}),
-layoutChild_location_default:qx.core.Variant.select("qx.client",
-{"mshtml|opera":function($0,
-$1){$0._resetRuntimeRight();
-$0._resetRuntimeBottom();
-$0._renderRuntimeTop(this._lastTop);
-$0._renderRuntimeLeft(this._lastLeft);
-this._applyComputedWidth($0);
-this._applyComputedHeight($0);
-},
-"default":function($0,
-$1){$0._resetRuntimeWidth();
-$0._resetRuntimeHeight();
-$0._renderRuntimeTop(this._lastTop);
-$0._renderRuntimeRight(this._lastRight);
-$0._renderRuntimeBottom(this._lastBottom);
-$0._renderRuntimeLeft(this._lastLeft);
-this._applyComputedWidth($0);
-this._applyComputedHeight($0);
-}})}});
-
-
-
-
-/* ID: qx.ui.embed.HtmlEmbed */
-qx.Class.define("qx.ui.embed.HtmlEmbed",
-{extend:qx.ui.basic.Terminator,
+/* ID: qx.ui.basic.Inline */
+qx.Class.define("qx.ui.basic.Inline",
+{extend:qx.ui.layout.CanvasLayout,
 construct:function($0){arguments.callee.base.call(this);
-if($0!=null){this.setHtml($0);
+this.setStyleProperty("position",
+"relative");
+if($0!=null){this.setInlineNodeId($0);
 }},
-properties:{html:{check:"String",
-init:"",
-apply:"_applyHtml",
-event:"changeHtml"},
-textAlign:{check:["left",
-"center",
-"right",
-"justify"],
-nullable:true,
-themeable:true,
-apply:"_applyTextAlign"},
-font:{refine:true,
-init:null},
-textColor:{refine:true,
-init:null}},
-members:{_applyHtml:function(){if(this._isCreated){this._syncHtml();
+properties:{inlineNodeId:{check:"String",
+nullable:true}}});
+
+
+
+
+/* ID: qx.util.ThemeList */
+qx.Class.define("qx.util.ThemeList",
+{statics:{__createButtons:function($0,
+$1,
+$2,
+$3,
+$4,
+$5){var $6,
+$7;
+for(var $8=0,
+$9=$3.length;$8<$9;$8++){$6=$3[$8];
+if($6.type==="abstract"){continue;
+}$7=new qx.ui.form.Button($4+$6.title,
+"icon/16/actions/dialog-ok.png");
+$7.setUserData("theme",
+$6);
+$7.setLocation($1,
+$2);
+$7.addEventListener("execute",
+$5);
+$0.add($7);
+$2+=30;
 }},
-_applyTextAlign:function($0,
-$1){$0===null?this.removeStyleProperty("textAlign"):this.setStyleProperty("textAlign",
-$0);
+createMetaButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getMetaThemes(),
+"Theme: ",
+function($4){qx.theme.manager.Meta.getInstance().setTheme($4.getTarget().getUserData("theme"));
+});
 },
-_applyFont:function($0,
-$1){qx.theme.manager.Font.getInstance().connect(this._styleFont,
-this,
-$0);
+createColorButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getColorThemes(),
+"Color Theme: ",
+function($4){qx.theme.manager.Color.getInstance().setColorTheme($4.getTarget().getUserData("theme"));
+});
 },
-_styleFont:function($0){$0?$0.render(this):qx.ui.core.Font.reset(this);
+createBorderButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getBorderThemes(),
+"Border Theme: ",
+function($4){qx.theme.manager.Border.getInstance().setBorderTheme($4.getTarget().getUserData("theme"));
+});
 },
-_applyTextColor:function($0,
-$1){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
-this,
-$0);
+createFontButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getFontThemes(),
+"Font Theme: ",
+function($4){qx.theme.manager.Font.getInstance().setFontTheme($4.getTarget().getUserData("theme"));
+});
 },
-_styleTextColor:function($0){$0?this.setStyleProperty("color",
-$0):this.removeStyleProperty("color");
+createWidgetButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getWidgetThemes(),
+"Widget Theme: ",
+function($4){qx.theme.manager.Widget.getInstance().setWidgetTheme($4.getTarget().getUserData("theme"));
+});
 },
-_applyElementData:function(){this._syncHtml();
+createIconButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getIconThemes(),
+"Icon Theme: ",
+function($4){qx.theme.manager.Icon.getInstance().setIconTheme($4.getTarget().getUserData("theme"));
+});
 },
-_syncHtml:function(){this._getTargetNode().innerHTML=this.getHtml();
+createAppearanceButtons:function($0,
+$1,
+$2){var $3=qx.theme.manager.Meta.getInstance();
+return this.__createButtons($0,
+$1,
+$2,
+$3.getAppearanceThemes(),
+"Appearance Theme: ",
+function($4){qx.theme.manager.Appearance.getInstance().setAppearanceTheme($4.getTarget().getUserData("theme"));
+});
 }}});
-
-
-
-
-/* ID: spagobi.app.ui.Header */
-qx.Class.define("spagobi.app.ui.Header",
-{extend:qx.ui.embed.HtmlEmbed,
-construct:function(){arguments.callee.base.call(this,
-"<h1><span>SpagoBI</span> - Chiron</h1>");
-this.setHtmlProperty("className",
-"header");
-this.setHeight(50);
-}});
 
 
 
@@ -13604,90 +13468,6 @@ if(!$0._computedTopTypeNull){$4+=$0.getTopValue();
 }else if(!$0._computedBottomTypeNull){$4-=$0.getBottomValue();
 }$0._resetRuntimeBottom();
 $0._renderRuntimeTop($4);
-}}}});
-
-
-
-
-/* ID: qx.ui.layout.HorizontalBoxLayout */
-qx.Class.define("qx.ui.layout.HorizontalBoxLayout",
-{extend:qx.ui.layout.BoxLayout});
-
-
-
-
-/* ID: qx.ui.toolbar.ToolBar */
-qx.Class.define("qx.ui.toolbar.ToolBar",
-{extend:qx.ui.layout.HorizontalBoxLayout,
-construct:function(){arguments.callee.base.call(this);
-this.addEventListener("keypress",
-this._onkeypress);
-this.initHeight();
-},
-properties:{appearance:{refine:true,
-init:"toolbar"},
-height:{refine:true,
-init:"auto"},
-openMenu:{check:"qx.ui.menu.Menu",
-event:"changeOpenMenu",
-nullable:true},
-show:{init:"both",
-check:["both",
-"label",
-"icon",
-"none"],
-nullable:true,
-inheritable:true,
-event:"changeShow"}},
-members:{getAllButtons:function(){var $0=this.getChildren();
-var $1=$0.length;
-var $2=[];
-var $3;
-for(var $4=0;$4<$1;$4++){$3=$0[$4];
-if($3 instanceof qx.ui.toolbar.MenuButton){$2.push($3);
-}else if($3 instanceof qx.ui.toolbar.Part){$2=$2.concat($3.getChildren());
-}}return $2;
-},
-_onkeypress:function($0){switch($0.getKeyIdentifier()){case "Left":return this._onkeypress_left();
-case "Right":return this._onkeypress_right();
-}},
-_onkeypress_left:function(){var $0=this.getOpenMenu();
-if(!$0){return;
-}var $1=$0.getOpener();
-if(!$1){return;
-}var $2=this.getAllButtons();
-var $3=$2.length;
-var $4=$2.indexOf($1);
-var $5;
-var $6=null;
-for(var $7=$4-1;$7>=0;$7--){$5=$2[$7];
-if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
-break;
-}}if(!$6){for(var $7=$3-1;$7>$4;$7--){$5=$2[$7];
-if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
-break;
-}}}
-if($6){qx.ui.menu.Manager.getInstance().update();
-$6._showMenu(true);
-}},
-_onkeypress_right:function(){var $0=this.getOpenMenu();
-if(!$0){return;
-}var $1=$0.getOpener();
-if(!$1){return;
-}var $2=this.getAllButtons();
-var $3=$2.length;
-var $4=$2.indexOf($1);
-var $5;
-var $6=null;
-for(var $7=$4+1;$7<$3;$7++){$5=$2[$7];
-if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
-break;
-}}if(!$6){for(var $7=0;$7<$4;$7++){$5=$2[$7];
-if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
-break;
-}}}
-if($6){qx.ui.menu.Manager.getInstance().update();
-$6._showMenu(true);
 }}}});
 
 
@@ -14460,6 +14240,372 @@ this.removeState("pressed");
 this.execute();
 $0.stopPropagation();
 }}}}});
+
+
+
+
+/* ID: qx.ui.layout.DockLayout */
+qx.Class.define("qx.ui.layout.DockLayout",
+{extend:qx.ui.core.Parent,
+construct:function(){arguments.callee.base.call(this);
+},
+properties:{mode:{check:["vertical",
+"horizontal",
+"ordered"],
+init:"vertical",
+apply:"_applyMode",
+themeable:true}},
+members:{_applyMode:function($0,
+$1){this.addToQueueRuntime("mode");
+},
+_createLayoutImpl:function(){return new qx.ui.layout.impl.DockLayoutImpl(this);
+},
+addLeft:function($0){this._addAlignedHorizontal("left",
+arguments);
+},
+addRight:function($0){this._addAlignedHorizontal("right",
+arguments);
+},
+addTop:function($0){this._addAlignedVertical("top",
+arguments);
+},
+addBottom:function($0){this._addAlignedVertical("bottom",
+arguments);
+},
+_addAlignedVertical:function($0,
+$1){for(var $2=0,
+$3=$1.length;$2<$3;$2++){$1[$2].setVerticalAlign($0);
+}this.add.apply(this,
+$1);
+},
+_addAlignedHorizontal:function($0,
+$1){for(var $2=0,
+$3=$1.length;$2<$3;$2++){$1[$2].setHorizontalAlign($0);
+}this.add.apply(this,
+$1);
+}}});
+
+
+
+
+/* ID: qx.ui.layout.impl.DockLayoutImpl */
+qx.Class.define("qx.ui.layout.impl.DockLayoutImpl",
+{extend:qx.ui.layout.impl.LayoutImpl,
+construct:function($0){arguments.callee.base.call(this,
+$0);
+},
+statics:{METHOD_LOCATION:"layoutChild_location_",
+_childRanking:{vertical:function($0){return $0.getVerticalAlign()?1e6:$0.getHorizontalAlign()?2e6:3e6;
+},
+horizontal:function($0){return $0.getHorizontalAlign()?1e6:$0.getVerticalAlign()?2e6:3e6;
+},
+ordered:function($0){return $0.getHorizontalAlign()||$0.getVerticalAlign()?1e6:2e6;
+}},
+_childCheck:{common:function($0){if(!($0._computedLeftTypeNull&&$0._computedRightTypeNull&&$0._computedTopTypeNull&&$0._computedBottomTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any location values for children: "+$0+"!");
+}},
+horizontal:function($0){if(!($0._computedMinHeightTypeNull&&$0._computedHeightTypeNull&&$0._computedMaxHeightTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any vertical dimension for 'horizontal' placed children: "+$0+"!");
+}},
+vertical:function($0){if(!($0._computedMinWidthTypeNull&&$0._computedWidthTypeNull&&$0._computedMaxWidthTypeNull)){throw new Error("qx.ui.layout.impl.DockLayoutImpl: It is not allowed to define any horizontal dimension for 'vertical' placed children: "+$0+"!");
+}},
+"default":function($0){qx.ui.layout.impl.DockLayoutImpl._childCheck.horizontal($0);
+qx.ui.layout.impl.DockLayoutImpl._childCheck.vertical($0);
+}}},
+members:{computeChildBoxWidth:function($0){if(this.getChildAlignMode($0)=="horizontal"){return $0.getWidthValue()||$0._computeBoxWidthFallback();
+}return this.getWidget().getInnerWidth()-this._lastLeft-this._lastRight;
+},
+computeChildBoxHeight:function($0){if(this.getChildAlignMode($0)=="vertical"){return $0.getHeightValue()||$0._computeBoxHeightFallback();
+}return this.getWidget().getInnerHeight()-this._lastTop-this._lastBottom;
+},
+updateChildOnInnerWidthChange:function($0){$0._recomputePercentX();
+$0.addToLayoutChanges("location");
+return true;
+},
+updateChildOnInnerHeightChange:function($0){$0._recomputePercentY();
+$0.addToLayoutChanges("location");
+return true;
+},
+updateSelfOnJobQueueFlush:qx.lang.Function.returnFalse,
+updateChildrenOnJobQueueFlush:function($0){if($0.mode||$0.addChild||$0.removeChild){this.getWidget()._addChildrenToLayoutQueue("location");
+}},
+flushChildrenQueue:function($0){var $1=this.getWidget(),
+$2=$1.getVisibleChildren(),
+$3=$2.length,
+$4=$1.getMode();
+this._lastLeft=this._lastRight=this._lastTop=this._lastBottom=0;
+var $5=qx.ui.layout.impl.DockLayoutImpl._childRanking[$4];
+var $6=qx.lang.Array.copy($2).sort(function($7,
+$8){return ($5($7)+$2.indexOf($7))-($5($8)+$2.indexOf($8));
+});
+for(var $9=0;$9<$3;$9++){$1._layoutChild($6[$9]);
+}},
+getChildAlign:function($0){return $0.getVerticalAlign()||$0.getHorizontalAlign()||"default";
+},
+getChildAlignMode:function($0){return $0.getVerticalAlign()?"vertical":$0.getHorizontalAlign()?"horizontal":"default";
+},
+layoutChild:function($0,
+$1){qx.ui.layout.impl.DockLayoutImpl._childCheck.common($0);
+qx.ui.layout.impl.DockLayoutImpl._childCheck[this.getChildAlignMode($0)]($0);
+this.layoutChild_sizeX_essentialWrapper($0,
+$1);
+this.layoutChild_sizeY_essentialWrapper($0,
+$1);
+this.layoutChild_sizeLimitX($0,
+$1);
+this.layoutChild_sizeLimitY($0,
+$1);
+this[qx.ui.layout.impl.DockLayoutImpl.METHOD_LOCATION+this.getChildAlign($0)]($0,
+$1);
+},
+layoutChild_location_top:function($0,
+$1){$0._renderRuntimeTop(this._lastTop);
+$0._renderRuntimeLeft(this._lastLeft);
+this.layoutChild_location_horizontal($0);
+this._lastTop+=$0.getBoxHeight();
+},
+layoutChild_location_left:function($0,
+$1){$0._renderRuntimeLeft(this._lastLeft);
+$0._renderRuntimeTop(this._lastTop);
+this.layoutChild_location_vertical($0);
+this._lastLeft+=$0.getBoxWidth();
+},
+_applyComputedWidth:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0){$0._recomputeBoxWidth();
+$0._recomputeOuterWidth();
+$0._recomputeInnerWidth();
+$0._renderRuntimeWidth($0.getBoxWidth());
+},
+"default":function($0){$0._recomputeBoxWidth();
+$0._recomputeOuterWidth();
+$0._recomputeInnerWidth();
+}}),
+_applyComputedHeight:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0){$0._recomputeBoxHeight();
+$0._recomputeOuterHeight();
+$0._recomputeInnerHeight();
+$0._renderRuntimeHeight($0.getBoxHeight());
+},
+"default":function($0){$0._recomputeBoxHeight();
+$0._recomputeOuterHeight();
+$0._recomputeInnerHeight();
+}}),
+layoutChild_sizeX:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0,
+$1){if($1.initial||$1.width||$1.minWidth||$1.maxWidth){$0._computedWidthTypeNull&&$0._computedMinWidthTypeNull&&$0._computedMaxWidthTypeNull?$0._resetRuntimeWidth():$0._renderRuntimeWidth($0.getBoxWidth());
+}},
+"default":function($0,
+$1){if($1.initial||$1.width){$0._computedWidthTypeNull?$0._resetRuntimeWidth():$0._renderRuntimeWidth($0.getWidthValue());
+}}}),
+layoutChild_sizeY:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0,
+$1){if($1.initial||$1.height||$1.minHeight||$1.maxHeight){$0._computedHeightTypeNull&&$0._computedMinHeightTypeNull&&$0._computedMaxHeightTypeNull?$0._resetRuntimeHeight():$0._renderRuntimeHeight($0.getBoxHeight());
+}},
+"default":function($0,
+$1){if($1.initial||$1.height){$0._computedHeightTypeNull?$0._resetRuntimeHeight():$0._renderRuntimeHeight($0.getHeightValue());
+}}}),
+layoutChild_location_horizontal:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0){this._applyComputedWidth($0);
+},
+"default":function($0){this._applyComputedWidth($0);
+$0._renderRuntimeRight(this._lastRight);
+}}),
+layoutChild_location_vertical:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0){this._applyComputedHeight($0);
+},
+"default":function($0){this._applyComputedHeight($0);
+$0._renderRuntimeBottom(this._lastBottom);
+}}),
+layoutChild_location_right:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0,
+$1){$0._renderRuntimeLeft(this.getWidget().getInnerWidth()-this._lastRight-$0.getBoxWidth());
+$0._renderRuntimeTop(this._lastTop);
+this.layoutChild_location_vertical($0);
+this._lastRight+=$0.getBoxWidth();
+},
+"default":function($0,
+$1){$0._renderRuntimeRight(this._lastRight);
+$0._renderRuntimeTop(this._lastTop);
+this.layoutChild_location_vertical($0);
+this._lastRight+=$0.getBoxWidth();
+}}),
+layoutChild_location_bottom:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0,
+$1){$0._renderRuntimeTop(this.getWidget().getInnerHeight()-this._lastBottom-$0.getBoxHeight());
+$0._renderRuntimeLeft(this._lastLeft);
+this.layoutChild_location_horizontal($0);
+this._lastBottom+=$0.getBoxHeight();
+},
+"default":function($0,
+$1){$0._renderRuntimeBottom(this._lastBottom);
+$0._renderRuntimeLeft(this._lastLeft);
+this.layoutChild_location_horizontal($0);
+this._lastBottom+=$0.getBoxHeight();
+}}),
+layoutChild_location_default:qx.core.Variant.select("qx.client",
+{"mshtml|opera":function($0,
+$1){$0._resetRuntimeRight();
+$0._resetRuntimeBottom();
+$0._renderRuntimeTop(this._lastTop);
+$0._renderRuntimeLeft(this._lastLeft);
+this._applyComputedWidth($0);
+this._applyComputedHeight($0);
+},
+"default":function($0,
+$1){$0._resetRuntimeWidth();
+$0._resetRuntimeHeight();
+$0._renderRuntimeTop(this._lastTop);
+$0._renderRuntimeRight(this._lastRight);
+$0._renderRuntimeBottom(this._lastBottom);
+$0._renderRuntimeLeft(this._lastLeft);
+this._applyComputedWidth($0);
+this._applyComputedHeight($0);
+}})}});
+
+
+
+
+/* ID: qx.ui.embed.HtmlEmbed */
+qx.Class.define("qx.ui.embed.HtmlEmbed",
+{extend:qx.ui.basic.Terminator,
+construct:function($0){arguments.callee.base.call(this);
+if($0!=null){this.setHtml($0);
+}},
+properties:{html:{check:"String",
+init:"",
+apply:"_applyHtml",
+event:"changeHtml"},
+textAlign:{check:["left",
+"center",
+"right",
+"justify"],
+nullable:true,
+themeable:true,
+apply:"_applyTextAlign"},
+font:{refine:true,
+init:null},
+textColor:{refine:true,
+init:null}},
+members:{_applyHtml:function(){if(this._isCreated){this._syncHtml();
+}},
+_applyTextAlign:function($0,
+$1){$0===null?this.removeStyleProperty("textAlign"):this.setStyleProperty("textAlign",
+$0);
+},
+_applyFont:function($0,
+$1){qx.theme.manager.Font.getInstance().connect(this._styleFont,
+this,
+$0);
+},
+_styleFont:function($0){$0?$0.render(this):qx.ui.core.Font.reset(this);
+},
+_applyTextColor:function($0,
+$1){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
+this,
+$0);
+},
+_styleTextColor:function($0){$0?this.setStyleProperty("color",
+$0):this.removeStyleProperty("color");
+},
+_applyElementData:function(){this._syncHtml();
+},
+_syncHtml:function(){this._getTargetNode().innerHTML=this.getHtml();
+}}});
+
+
+
+
+/* ID: spagobi.app.ui.Header */
+qx.Class.define("spagobi.app.ui.Header",
+{extend:qx.ui.embed.HtmlEmbed,
+construct:function(){arguments.callee.base.call(this,
+"<h1><span>SpagoBI</span> - Chiron</h1>");
+this.setHtmlProperty("className",
+"header");
+this.setHeight(50);
+}});
+
+
+
+
+/* ID: qx.ui.layout.HorizontalBoxLayout */
+qx.Class.define("qx.ui.layout.HorizontalBoxLayout",
+{extend:qx.ui.layout.BoxLayout});
+
+
+
+
+/* ID: qx.ui.toolbar.ToolBar */
+qx.Class.define("qx.ui.toolbar.ToolBar",
+{extend:qx.ui.layout.HorizontalBoxLayout,
+construct:function(){arguments.callee.base.call(this);
+this.addEventListener("keypress",
+this._onkeypress);
+this.initHeight();
+},
+properties:{appearance:{refine:true,
+init:"toolbar"},
+height:{refine:true,
+init:"auto"},
+openMenu:{check:"qx.ui.menu.Menu",
+event:"changeOpenMenu",
+nullable:true},
+show:{init:"both",
+check:["both",
+"label",
+"icon",
+"none"],
+nullable:true,
+inheritable:true,
+event:"changeShow"}},
+members:{getAllButtons:function(){var $0=this.getChildren();
+var $1=$0.length;
+var $2=[];
+var $3;
+for(var $4=0;$4<$1;$4++){$3=$0[$4];
+if($3 instanceof qx.ui.toolbar.MenuButton){$2.push($3);
+}else if($3 instanceof qx.ui.toolbar.Part){$2=$2.concat($3.getChildren());
+}}return $2;
+},
+_onkeypress:function($0){switch($0.getKeyIdentifier()){case "Left":return this._onkeypress_left();
+case "Right":return this._onkeypress_right();
+}},
+_onkeypress_left:function(){var $0=this.getOpenMenu();
+if(!$0){return;
+}var $1=$0.getOpener();
+if(!$1){return;
+}var $2=this.getAllButtons();
+var $3=$2.length;
+var $4=$2.indexOf($1);
+var $5;
+var $6=null;
+for(var $7=$4-1;$7>=0;$7--){$5=$2[$7];
+if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
+break;
+}}if(!$6){for(var $7=$3-1;$7>$4;$7--){$5=$2[$7];
+if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
+break;
+}}}
+if($6){qx.ui.menu.Manager.getInstance().update();
+$6._showMenu(true);
+}},
+_onkeypress_right:function(){var $0=this.getOpenMenu();
+if(!$0){return;
+}var $1=$0.getOpener();
+if(!$1){return;
+}var $2=this.getAllButtons();
+var $3=$2.length;
+var $4=$2.indexOf($1);
+var $5;
+var $6=null;
+for(var $7=$4+1;$7<$3;$7++){$5=$2[$7];
+if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
+break;
+}}if(!$6){for(var $7=0;$7<$4;$7++){$5=$2[$7];
+if($5 instanceof qx.ui.toolbar.MenuButton&&$5.getEnabled()){$6=$5;
+break;
+}}}
+if($6){qx.ui.menu.Manager.getInstance().update();
+$6._showMenu(true);
+}}}});
 
 
 
@@ -16884,58 +17030,74 @@ getSelectedPageName:function(){return this._selectedPageName;
 qx.Class.define("spagobi.ui.IconBar",
 {extend:qx.ui.layout.VerticalBoxLayout,
 construct:function($0){arguments.callee.base.call(this);
-if($0){if($0.defaultBackgroudColor){this._defaultBackgroudColor=$0.defaultBackgroudColor;
-this.setBackgroundColor(this._defaultBackgroudColor);
+this.setSpacing(0);
+if($0){if($0.selectedBackgroudColor){this._selectedBackgroudColor=$0.selectedBackgroudColor;
 }
 if($0.focusedBackgroudColor){this._focusedBackgroudColor=$0.focusedBackgroudColor;
 }
 if($0.buttons){for(var $1=0;$1<$0.buttons.length;$1++){this.addButton($0.buttons[$1]);
 }}}},
-members:{_defaultBackgroudColor:'white',
-_focusedBackgroudColor:'#DEFF83',
+members:{_selectedBackgroudColor:'#DEFF83',
+_focusedBackgroudColor:'gray',
+_checkedButton:undefined,
 addButton:function($0){this._addAtom($0.name,
 $0.image,
 $0.handler,
-$0.context);
-},
-_addButton:function($0,
-$1,
-$2,
-$3){var $4=new qx.ui.form.Button('',
-$1);
-$4.addEventListener("execute",
-$2,
-$3);
-this.add($4);
-return $4;
+$0.context,
+$0.tooltip);
 },
 _addAtom:function($0,
 $1,
 $2,
-$3){var $4=new qx.ui.basic.Atom('',
+$3,
+$4){var $5=new qx.ui.basic.Atom('',
 $1);
-$4.setUserData('name',
+$5.setUserData('name',
 $0);
-$4.setBackgroundColor('white');
-$4.addEventListener("mouseover",
-this._onmouseover);
-$4.addEventListener("mouseout",
-this._onmouseout);
-$4.addEventListener("mousedown",
+$5.setUserData('checked',
+false);
+if($4){var $6=new qx.ui.popup.ToolTip($4);
+$5.setToolTip($6);
+$6.setShowInterval(20);
+}$5.addEventListener("mouseover",
+this._onmouseover,
+this);
+$5.addEventListener("mouseout",
+this._onmouseout,
+this);
+$5.addEventListener("mousedown",
 $2,
 $3);
-$4.addEventListener("keydown",
-this._onkeydown);
-$4.addEventListener("keypress",
-this._onkeypress);
-this.add($4);
+$5.addEventListener("mousedown",
+this._onmousedown,
+this);
+$5.addEventListener("keydown",
+this._onkeydown,
+this);
+$5.addEventListener("keypress",
+this._onkeypress,
+this);
+this.add($5);
 },
-_onmouseover:function($0){$0.getTarget().setBackgroundColor('#DEFF83');
+_check:function($0){$0.setUserData('checked',
+true);
+$0.setBackgroundColor(this._selectedBackgroudColor);
+this._checkedButton=$0;
 },
-_onmouseout:function($0){$0.getTarget().setBackgroundColor('white');
+_uncheck:function(){this._checkedButton.setBackgroundColor(null);
+this._checkedButton.setUserData('checked',
+false);
 },
-_onmousedown:function($0){alert('_onmousedown');
+select:function($0){if(!this._checkedButton){this._check($0);
+}else{this._uncheck();
+this._check($0);
+}},
+_onmousedown:function($0){this.select($0.getTarget());
 },
+_onmouseover:function($0){if($0.getTarget().getUserData('checked')==false){$0.getTarget().setBackgroundColor(this._focusedBackgroudColor);
+}},
+_onmouseout:function($0){if($0.getTarget().getUserData('checked')==false){$0.getTarget().setBackgroundColor(null);
+}},
 _onkeydown:function($0){},
 _onkeypress:function($0){switch($0.getKeyIdentifier()){case "Up":var $1=true;
 break;
@@ -16944,8 +17106,8 @@ break;
 default:return;
 }var $2=($1?($0.getTarget().isFirstChild()?$0.getTarget().getParent().getLastChild():$0.getTarget().getPreviousSibling()):($0.getTarget().isLastChild()?$0.getTarget().getParent().getFirstChild():$0.getTarget().getNextSibling()));
 $2.setFocused(true);
-$2.setBackgroundColor('#DEFF83');
-$0.getTarget().setBackgroundColor('white');
+$2.setBackgroundColor(this._focusedBackgroudColor);
+$0.getTarget().setBackgroundColor(null);
 }}});
 
 
@@ -16979,7 +17141,7 @@ var $4;
 var $5;
 this._type=$0;
 if($0==='engine'){$4=spagobi.app.data.DataService.loadEngineRecords();
-$5=new spagobi.ui.custom.EngineDetailsForm();
+$5=new spagobi.ui.custom.LOVDetailsForm();
 }else if($0==='dataset'){$4=spagobi.app.data.DataService.loadDatasetRecords();
 $5=new spagobi.ui.custom.DatasetDetailsForm();
 }else if($0==='datasource'){$4=spagobi.app.data.DataService.loadDatasourceRecords();
@@ -16988,7 +17150,13 @@ $5=new spagobi.ui.custom.DatasourceDetailsForm();
 $5=new spagobi.ui.custom.MapDetailsForm();
 }else if($0=='featuremgmt'){$4=spagobi.app.data.DataService.loadFeatureRecords();
 $5=new spagobi.ui.custom.FeatureDetailsForm();
-}$1=new spagobi.ui.Table(this,
+}else if($0=='lov'){$4=spagobi.app.data.DataService.loadLOVRecords();
+$5=new spagobi.ui.custom.LOVDetailsForm();
+}else if($0=='constraints'){$4=spagobi.app.data.DataService.loadLOVRecords();
+$5=new spagobi.ui.custom.ConstraintDetailsForm();
+}else if($0=='parameters'){$4=spagobi.app.data.DataService.loadLOVRecords();
+$5=new spagobi.ui.custom.ParameterDetailsForm();
+}$1=new spagobi.ui.PagedTable(this,
 $4);
 this.addTop($1);
 $2=new qx.ui.pageview.buttonview.ButtonView();
@@ -17019,7 +17187,7 @@ getForm:function(){return this._form;
 selectDataObject:function($0){this._form.setData($0);
 },
 show:function(){this.detailBody.remove(this._form);
-if(this._type==='engine'){this._form=new spagobi.ui.custom.EngineDetailsForm();
+if(this._type==='engine'){this._form=new spagobi.ui.custom.LOVDetailsForm();
 }else if(this._type==='dataset'){this._form=new spagobi.ui.custom.DatasetDetailsForm();
 }else if(this._type==='datasource'){this._form=new spagobi.ui.custom.DatasourceDetailsForm();
 }else if(this._type==='mapmgmt'){this._form=new spagobi.ui.custom.MapDetailsForm();
@@ -17259,6 +17427,26 @@ name:'Unita Urbanistiche',
 description:'',
 type:'',
 nummaps:'3'}];
+},
+loadLOVRecords:function(){var $0={};
+$0.meta=this.loadLOVMeta();
+$0.rows=this.loadLOVData();
+return $0;
+},
+loadLOVMeta:function(){return [{dataIndex:'name',
+name:'Name'},
+{dataIndex:'description',
+name:'Description'}];
+},
+loadLOVData:function(){return [{id:'1',
+name:'name1',
+description:'ddd1'},
+{id:'2',
+name:'name2',
+description:'aaa2'},
+{id:'3',
+name:'name3',
+description:'cvcw3'}];
 }}});
 
 
@@ -17287,9 +17475,11 @@ getInputFieldValue:function($0){var $1;
 if(!this.getInputField($0))return null;
 if(this.getInputField($0).getUserData('type')==='text'){$1=this.getInputField($0).getUserData('field').getValue();
 }else if(this.getInputField($0).getUserData('type')==='combo'){$1=this.getInputField($0).getUserData('field').getValue();
-}else if(this.getInputField($0).getUserData('type')==='check'){$1=this.getInputField($0).getUserData('field').isChecked();
+}else if(this.getInputField($0).getUserData('type')==='flag'){$1=this.getInputField($0).getUserData('field').isChecked();
 }else if(this.getInputField($0).getUserData('type')==='form'){$1=this.getInputField($0).getUserData('field').getData();
 }else if(this.getInputField($0).getUserData('type')==='formList'){$1=this.getInputField($0).getUserData('field').getData();
+}else if(this.getInputField($0).getUserData('type')==='textarea'){$1=this.getInputField($0).getUserData('field').getValue();
+}else if(this.getInputField($0).getUserData('type')==='check'){$1=this.getInputField($0).getUserData('field').getValue();
 }return $1;
 },
 setInputFieldValue:function($0,
@@ -17297,9 +17487,11 @@ $1){if(!this.getInputField($0)){return;
 }
 if(this.getInputField($0).getUserData('type')==='text'){this.getInputField($0).getUserData('field').setValue($1);
 }else if(this.getInputField($0).getUserData('type')==='combo'){this.getInputField($0).getUserData('field').setValue($1);
-}else if(this.getInputField($0).getUserData('type')==='check'){this.getInputField($0).getUserData('field').setChecked($1);
+}else if(this.getInputField($0).getUserData('type')==='flag'){this.getInputField($0).getUserData('field').setChecked($1);
 }else if(this.getInputField($0).getUserData('type')==='form'){this.getInputField($0).getUserData('field').setData($1);
 }else if(this.getInputField($0).getUserData('type')==='formList'){this.getInputField($0).getUserData('field').setData($1);
+}else if(this.getInputField($0).getUserData('type')==='textarea'){this.getInputField($0).getUserData('field').setValue($1);
+}else if(this.getInputField($0).getUserData('type')==='check'){this.getInputField($0).getUserData('field').setValue($1);
 }},
 addInputField:function($0){if($0.type==='text'){inputField=spagobi.commons.WidgetUtils.createInputTextField($0);
 inputField.setUserData('type',
@@ -17307,15 +17499,21 @@ inputField.setUserData('type',
 }else if($0.type==='combo'){inputField=spagobi.commons.WidgetUtils.createInputComboBox($0);
 inputField.setUserData('type',
 'combo');
-}else if($0.type==='check'){inputField=spagobi.commons.WidgetUtils.createInputCheckBox($0);
+}else if($0.type==='flag'){inputField=spagobi.commons.WidgetUtils.createInputFlagBox($0);
 inputField.setUserData('type',
-'check');
+'flag');
 }else if($0.type==='form'){inputField=spagobi.commons.WidgetUtils.createInputForm($0);
 inputField.setUserData('type',
 'form');
 }else if($0.type==='formList'){inputField=spagobi.commons.WidgetUtils.createInputFormList($0);
 inputField.setUserData('type',
 'formList');
+}else if($0.type==='textarea'){inputField=spagobi.commons.WidgetUtils.createInputTextArea($0);
+inputField.setUserData('type',
+'textarea');
+}else if($0.type==='check'){inputField=spagobi.commons.WidgetUtils.createInputCheckBox($0);
+inputField.setUserData('type',
+'check');
 }this.dataMappings[$0.dataIndex]=inputField;
 this.add(inputField);
 }},
@@ -17330,7 +17528,7 @@ qx.Class.define("spagobi.commons.WidgetUtils",
 statics:{createLabel:function($0){var $1={text:'',
 top:0,
 left:0,
-width:80};
+width:100};
 var $2=new qx.ui.basic.Label();
 $2.set($1);
 $2.set($0);
@@ -17366,7 +17564,7 @@ $0.listeners[$3].handler);
 }}$2.setSelected($2.getList().getFirstChild());
 return $2;
 },
-createCheckBox:function($0){var $1={checked:false,
+createFlagBox:function($0){var $1={checked:false,
 top:0,
 left:0,
 listeners:[]};
@@ -17383,18 +17581,59 @@ $0.listeners[$3].scope);
 $0.listeners[$3].handler);
 }}return $2;
 },
+createTextArea:function($0){var $1={top:0,
+left:0,
+width:0,
+height:0};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=new qx.ui.form.TextArea();
+$2.set($0);
+return $2;
+},
+createCheckBox:function($0){var $1={checked:false,
+top:0,
+left:0,
+items:[],
+listeners:[],
+columns:1};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=new qx.ui.layout.GridLayout;
+$2.set({top:$0.top,
+left:$0.left});
+$2.setColumnCount($0.columns);
+$2.setRowCount(Math.ceil($0.items.length/$0.columns));
+var $3=$2.getRowCount();
+var $4=$2.getColumnCount();
+for(i=0,
+k=0;i<$3;i++){for(j=0;j<$4&&k<$0.items.length;j++,
+k++){var $5=new qx.ui.basic.Label($0.items[k]);
+var $6=new qx.ui.form.CheckBox();
+var $7=new qx.ui.basic.Atom();
+$7.add($6,
+$5);
+alert('added atom on row('+i+'), column('+j+')');
+$2.add($7,
+j,
+i);
+}}alert('checkboxes created succesfully');
+return $2;
+},
 createInputTextField:function($0){var $1={top:0,
 left:10,
 text:'',
 maxLength:100,
 width:200,
 height:20,
+labelwidth:80,
 mandatory:false};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
+left:$0.left,
+width:$0.labelwidth});
 var $3=this.createTextField({top:$0.top,
 left:$0.left+30,
 maxLength:$0.maxLength,
@@ -17411,18 +17650,21 @@ $4.add($5);
 $2);
 $4.setUserData('field',
 $3);
-return $4;
+if($0.visible!=undefined){$4.setDisplay($0.visible);
+}return $4;
 },
 createInputComboBox:function($0){var $1={top:0,
 left:10,
 text:'',
 items:[],
-listeners:[]};
+listeners:[],
+labelwidth:80};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
+left:$0.left,
+width:$0.labelwidth});
 var $3=this.createComboBox({top:$0.top,
 left:$0.left+30,
 items:$0.items,
@@ -17436,17 +17678,19 @@ $4.setUserData('field',
 $3);
 return $4;
 },
-createInputCheckBox:function($0){var $1={top:0,
+createInputFlagBox:function($0){var $1={top:0,
 left:10,
 text:'',
 checked:false,
-listeners:[]};
+listeners:[],
+labelwidth:80};
 $0=spagobi.commons.CoreUtils.apply($1,
 $0);
 var $2=this.createLabel({text:$0.text,
 top:$0.top,
-left:$0.left});
-var $3=this.createCheckBox({checked:$0.checked,
+left:$0.left,
+width:$0.labelwidth});
+var $3=this.createFlagBox({checked:$0.checked,
 top:$0.top,
 left:$0.left+30,
 listeners:$0.listeners});
@@ -17464,13 +17708,70 @@ if(typeof ($0.form)=='object'){$1=new spagobi.ui.Form($0.form);
 }else{$1=new $0.form();
 }$1.setUserData('field',
 $1);
-return $1;
+if($0.visible!=undefined){$1.setDisplay($0.visible);
+}return $1;
 },
 createInputFormList:function($0){var $1;
 $1=new spagobi.ui.FormList($0.formList);
 $1.setUserData('field',
 $1);
 return $1;
+},
+createInputTextArea:function($0){var $1={top:0,
+left:10,
+text:'',
+width:200,
+height:50,
+mandatory:false,
+labelwidth:80};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=this.createLabel({text:$0.text,
+top:$0.top,
+left:$0.left,
+width:$0.labelwidth});
+var $3=this.createTextArea({top:$0.top,
+left:$0.left+30,
+width:$0.width,
+height:$0.height});
+var $4=new qx.ui.basic.Atom();
+$4.add($2,
+$3);
+if($0.mandatory){var $5=this.createLabel({text:'*',
+top:$0.top,
+left:$0.left+35});
+$4.add($5);
+}$4.setUserData('label',
+$2);
+$4.setUserData('field',
+$3);
+return $4;
+},
+createInputCheckBox:function($0){var $1={top:0,
+left:10,
+text:'',
+checked:false,
+items:[],
+listeners:[],
+columns:1,
+labelwidth:80};
+$0=spagobi.commons.CoreUtils.apply($1,
+$0);
+var $2=this.createLabel({text:$0.text,
+top:$0.top,
+left:$0.left,
+width:$0.labelwidth});
+var $3=this.createCheckBox({checked:$0.checked,
+items:$0.items,
+listeners:$0.listeners,
+columns:$0.columns});
+var $4=new qx.ui.basic.Atom();
+$4.add($2);
+$4.setUserData('label',
+$2);
+$4.setUserData('field',
+$3);
+return $4;
 }}});
 
 
@@ -18964,6 +19265,626 @@ $1.getInnerHeight=$1.getPreferredBoxHeight;
 
 
 
+/* ID: qx.ui.form.TextArea */
+qx.Class.define("qx.ui.form.TextArea",
+{extend:qx.ui.form.TextField,
+properties:{appearance:{refine:true,
+init:"text-area"},
+allowStretchY:{refine:true,
+init:true},
+spellCheck:{refine:true,
+init:true},
+wrap:{check:"Boolean",
+init:true,
+apply:"_applyWrap"}},
+members:{_inputTag:"textarea",
+_inputType:null,
+_inputOverflow:"auto",
+_applyElement:function($0,
+$1){arguments.callee.base.call(this,
+$0,
+$1);
+this._styleWrap();
+},
+_applyWrap:function($0,
+$1){this._styleWrap();
+},
+_styleWrap:qx.core.Variant.select("qx.client",
+{"mshtml":function(){if(this._inputElement){this._inputElement.wrap=this.getWrap()?"soft":"off";
+}},
+"gecko":function(){if(this._inputElement){var $0=this.getWrap()?"soft":"off";
+var $1=this.getWrap()?"":"auto";
+this._inputElement.setAttribute('wrap',
+$0);
+this._inputElement.style.overflow=$1;
+}},
+"default":function(){if(this._inputElement){this._inputElement.style.whiteSpace=this.getWrap()?"normal":"nowrap";
+}}}),
+_computePreferredInnerHeight:function(){return 60;
+}}});
+
+
+
+
+/* ID: qx.ui.layout.GridLayout */
+qx.Class.define("qx.ui.layout.GridLayout",
+{extend:qx.ui.core.Parent,
+construct:function(){arguments.callee.base.call(this);
+this._columnData=[];
+this._rowData=[];
+this._spans=[];
+},
+properties:{horizontalSpacing:{check:"Integer",
+init:0,
+apply:"_applyHorizontalSpacing",
+themeable:true},
+verticalSpacing:{check:"Integer",
+init:0,
+apply:"_applyVerticalSpacing",
+themeable:true},
+horizontalChildrenAlign:{check:["left",
+"center",
+"right"],
+init:"left",
+apply:"_applyHorizontalChildrenAlign",
+themeable:true},
+verticalChildrenAlign:{check:["top",
+"middle",
+"bottom"],
+init:"top",
+apply:"_applyVerticalChildrenAlign",
+themeable:true},
+cellPaddingTop:{check:"Integer",
+nullable:true},
+cellPaddingRight:{check:"Integer",
+nullable:true,
+themeable:true},
+cellPaddingBottom:{check:"Integer",
+nullable:true,
+themeable:true},
+cellPaddingLeft:{check:"Integer",
+nullable:true,
+themeable:true}},
+members:{_applyHorizontalSpacing:function($0,
+$1){this.addToQueueRuntime("horizontalSpacing");
+this._invalidatePreferredInnerDimensions();
+},
+_applyVerticalSpacing:function($0,
+$1){this.addToQueueRuntime("verticalSpacing");
+this._invalidatePreferredInnerDimensions();
+},
+_applyHorizontalChildrenAlign:function($0,
+$1){this.addToQueueRuntime("horizontalChildrenAlign");
+this._invalidatePreferredInnerDimensions();
+},
+_applyVerticalChildrenAlign:function($0,
+$1){this.addToQueueRuntime("verticalChildrenAlign");
+this._invalidatePreferredInnerDimensions();
+},
+_createLayoutImpl:function(){return new qx.ui.layout.impl.GridLayoutImpl(this);
+},
+add:function($0,
+$1,
+$2){$0._col=$1;
+$0._row=$2;
+if(this.isFillCell($1,
+$2)){throw new Error("Could not insert child "+$0+" into a fill cell: "+$1+"x"+$2);
+}arguments.callee.base.call(this,
+$0);
+},
+_syncDataFields:function($0,
+$1,
+$2){if($2>$1){for(var $3=$1;$3<$2;$3++){$0[$3]={};
+}}else if($1>$2){$0.splice($2,
+$1-$2);
+}},
+_columnCount:0,
+setColumnCount:function($0){this._columnCount=$0;
+this._syncColumnDataFields();
+},
+getColumnCount:function(){return this._columnCount;
+},
+addColumn:function(){this._columnCount++;
+this._syncColumnDataFields();
+},
+removeColumn:function(){if(this._columnCount>0){this._columnCount--;
+this._syncColumnDataFields();
+}},
+_syncColumnDataFields:function(){var $0=this._columnData;
+var $1=$0.length;
+var $2=this._columnCount;
+this._syncDataFields($0,
+$1,
+$2);
+},
+_rowCount:0,
+setRowCount:function($0){this._rowCount=$0;
+this._syncRowDataFields();
+},
+getRowCount:function(){return this._rowCount;
+},
+addRow:function(){this._rowCount++;
+this._syncRowDataFields();
+},
+removeRow:function(){if(this._rowCount>0){this._rowCount--;
+this._syncRowDataFields();
+}},
+_syncRowDataFields:function(){var $0=this._rowData;
+var $1=$0.length;
+var $2=this._rowCount;
+this._syncDataFields($0,
+$1,
+$2);
+},
+_getColumnProperty:function($0,
+$1){try{return this._columnData[$0][$1]||null;
+}catch(ex){this.error("Error while getting column property ("+$0+"|"+$1+")",
+ex);
+return null;
+}},
+_setupColumnProperty:function($0,
+$1,
+$2){this._columnData[$0][$1]=$2;
+this._invalidateColumnLayout();
+},
+_removeColumnProperty:function($0,
+$1,
+$2){delete this._columnData[$0][$1];
+this._invalidateColumnLayout();
+},
+_invalidateColumnLayout:function(){if(!this._initialLayoutDone||!this._isDisplayable){return;
+}this.forEachVisibleChild(function(){this.addToQueue("width");
+});
+},
+_getRowProperty:function($0,
+$1){try{return this._rowData[$0][$1]||null;
+}catch(ex){this.error("Error while getting row property ("+$0+"|"+$1+")",
+ex);
+return null;
+}},
+_setupRowProperty:function($0,
+$1,
+$2){this._rowData[$0][$1]=$2;
+this._invalidateRowLayout();
+},
+_removeRowProperty:function($0,
+$1,
+$2){delete this._rowData[$0][$1];
+this._invalidateRowLayout();
+},
+_invalidateRowLayout:function(){if(!this._initialLayoutDone||!this._isDisplayable){return;
+}this.forEachVisibleChild(function(){this.addToQueue("height");
+});
+},
+setColumnWidth:function($0,
+$1){this._setupColumnProperty($0,
+"widthValue",
+$1);
+var $2=qx.ui.core.Parent.prototype._evalUnitsPixelPercentAutoFlex($1);
+this._setupColumnProperty($0,
+"widthType",
+$2);
+var $3,
+$4;
+switch($2){case qx.ui.core.Widget.TYPE_PIXEL:$3=$4=Math.round($1);
+break;
+case qx.ui.core.Widget.TYPE_PERCENT:case qx.ui.core.Widget.TYPE_FLEX:$3=parseFloat($1);
+$4=null;
+break;
+case qx.ui.core.Widget.TYPE_AUTO:$3=$4=null;
+break;
+default:$3=$4=null;
+}this._setupColumnProperty($0,
+"widthParsed",
+$3);
+this._setupColumnProperty($0,
+"widthComputed",
+$4);
+},
+setRowHeight:function($0,
+$1){this._setupRowProperty($0,
+"heightValue",
+$1);
+var $2=qx.ui.core.Widget.prototype._evalUnitsPixelPercentAutoFlex($1);
+this._setupRowProperty($0,
+"heightType",
+$2);
+var $3,
+$4;
+switch($2){case qx.ui.core.Widget.TYPE_PIXEL:$3=$4=Math.round($1);
+break;
+case qx.ui.core.Widget.TYPE_PERCENT:case qx.ui.core.Widget.TYPE_FLEX:$3=parseFloat($1);
+$4=null;
+break;
+case qx.ui.core.Widget.TYPE_AUTO:$3=$4=null;
+break;
+default:$3=$4=null;
+}this._setupRowProperty($0,
+"heightParsed",
+$3);
+this._setupRowProperty($0,
+"heightComputed",
+$4);
+},
+getColumnBoxWidth:function($0){var $1=this._getColumnProperty($0,
+"widthComputed");
+if($1!=null){return $1;
+}var $2=this._getColumnProperty($0,
+"widthType");
+var $3=this._getColumnProperty($0,
+"widthParsed");
+var $1=null;
+switch($2){case qx.ui.core.Widget.TYPE_PIXEL:$1=Math.max(0,
+$3);
+break;
+case qx.ui.core.Widget.TYPE_PERCENT:$1=this.getInnerWidth()*Math.max(0,
+$3)*0.01;
+break;
+case qx.ui.core.Widget.TYPE_AUTO:$1=null;
+break;
+case qx.ui.core.Widget.TYPE_FLEX:$1=null;
+break;
+}this._setupColumnProperty($0,
+"widthComputed",
+$1);
+return $1;
+},
+getRowBoxHeight:function($0){var $1=this._getRowProperty($0,
+"heightComputed");
+if($1!=null){return $1;
+}var $2=this._getRowProperty($0,
+"heightType");
+var $3=this._getRowProperty($0,
+"heightParsed");
+var $1=null;
+switch($2){case qx.ui.core.Widget.TYPE_PIXEL:$1=Math.max(0,
+$3);
+break;
+case qx.ui.core.Widget.TYPE_PERCENT:$1=this.getInnerHeight()*Math.max(0,
+$3)*0.01;
+break;
+case qx.ui.core.Widget.TYPE_AUTO:$1=null;
+break;
+case qx.ui.core.Widget.TYPE_FLEX:$1=null;
+break;
+}this._setupRowProperty($0,
+"heightComputed",
+$1);
+return $1;
+},
+getComputedCellPaddingLeft:function($0,
+$1){return this.getColumnPaddingLeft($0)||this.getRowPaddingLeft($1)||this.getCellPaddingLeft()||0;
+},
+getComputedCellPaddingRight:function($0,
+$1){return this.getColumnPaddingRight($0)||this.getRowPaddingRight($1)||this.getCellPaddingRight()||0;
+},
+getComputedCellPaddingTop:function($0,
+$1){return this.getRowPaddingTop($1)||this.getColumnPaddingTop($0)||this.getCellPaddingTop()||0;
+},
+getComputedCellPaddingBottom:function($0,
+$1){return this.getRowPaddingBottom($1)||this.getColumnPaddingBottom($0)||this.getCellPaddingBottom()||0;
+},
+getColumnInnerWidth:function($0,
+$1){return this.getColumnBoxWidth($0)-this.getComputedCellPaddingLeft($0,
+$1)-this.getComputedCellPaddingRight($0,
+$1);
+},
+getRowInnerHeight:function($0,
+$1){return this.getRowBoxHeight($1)-this.getComputedCellPaddingTop($0,
+$1)-this.getComputedCellPaddingBottom($0,
+$1);
+},
+setColumnHorizontalAlignment:function($0,
+$1){this._setupColumnProperty($0,
+"horizontalAlignment",
+$1);
+},
+setColumnVerticalAlignment:function($0,
+$1){this._setupColumnProperty($0,
+"verticalAlignment",
+$1);
+},
+setRowHorizontalAlignment:function($0,
+$1){this._setupRowProperty($0,
+"horizontalAlignment",
+$1);
+},
+setRowVerticalAlignment:function($0,
+$1){this._setupRowProperty($0,
+"verticalAlignment",
+$1);
+},
+getColumnHorizontalAlignment:function($0){return this._getColumnProperty($0,
+"horizontalAlignment");
+},
+getColumnVerticalAlignment:function($0){return this._getColumnProperty($0,
+"verticalAlignment");
+},
+getRowHorizontalAlignment:function($0){return this._getRowProperty($0,
+"horizontalAlignment");
+},
+getRowVerticalAlignment:function($0){return this._getRowProperty($0,
+"verticalAlignment");
+},
+setColumnPaddingTop:function($0,
+$1){this._setupColumnProperty($0,
+"paddingTop",
+$1);
+},
+setColumnPaddingRight:function($0,
+$1){this._setupColumnProperty($0,
+"paddingRight",
+$1);
+},
+setColumnPaddingBottom:function($0,
+$1){this._setupColumnProperty($0,
+"paddingBottom",
+$1);
+},
+setColumnPaddingLeft:function($0,
+$1){this._setupColumnProperty($0,
+"paddingLeft",
+$1);
+},
+setRowPaddingTop:function($0,
+$1){this._setupRowProperty($0,
+"paddingTop",
+$1);
+},
+setRowPaddingRight:function($0,
+$1){this._setupRowProperty($0,
+"paddingRight",
+$1);
+},
+setRowPaddingBottom:function($0,
+$1){this._setupRowProperty($0,
+"paddingBottom",
+$1);
+},
+setRowPaddingLeft:function($0,
+$1){this._setupRowProperty($0,
+"paddingLeft",
+$1);
+},
+getColumnPaddingTop:function($0){return this._getColumnProperty($0,
+"paddingTop");
+},
+getColumnPaddingRight:function($0){return this._getColumnProperty($0,
+"paddingRight");
+},
+getColumnPaddingBottom:function($0){return this._getColumnProperty($0,
+"paddingBottom");
+},
+getColumnPaddingLeft:function($0){return this._getColumnProperty($0,
+"paddingLeft");
+},
+getRowPaddingTop:function($0){return this._getRowProperty($0,
+"paddingTop");
+},
+getRowPaddingRight:function($0){return this._getRowProperty($0,
+"paddingRight");
+},
+getRowPaddingBottom:function($0){return this._getRowProperty($0,
+"paddingBottom");
+},
+getRowPaddingLeft:function($0){return this._getRowProperty($0,
+"paddingLeft");
+},
+_changeInnerWidth:function($0,
+$1){for(var $2=0,
+$3=this.getColumnCount();$2<$3;$2++){if(this._getColumnProperty($2,
+"widthType")==qx.ui.core.Widget.TYPE_PERCENT){this._setupColumnProperty($2,
+"widthComputed",
+null);
+}}arguments.callee.base.call(this,
+$0,
+$1);
+},
+_changeInnerHeight:function($0,
+$1){for(var $2=0,
+$3=this.getRowCount();$2<$3;$2++){if(this._getRowProperty($2,
+"heightType")==qx.ui.core.Widget.TYPE_PERCENT){this._setupRowProperty($2,
+"heightComputed",
+null);
+}}arguments.callee.base.call(this,
+$0,
+$1);
+},
+getInnerWidthForChild:function($0){return this._getColumnProperty($0._col,
+"widthComputed");
+},
+getInnerHeightForChild:function($0){return this._getRowProperty($0._row,
+"heightComputed");
+},
+mergeCells:function($0,
+$1,
+$2,
+$3){var $4=this._spans;
+var $5=$0+$2-1;
+var $6=$1+$3-1;
+if(this._collidesWithSpans($0,
+$1,
+$5,
+$6)){this.debug("Span collision detected!");
+return false;
+}$4.push({startCol:$0,
+startRow:$1,
+endCol:$5,
+endRow:$6,
+colLength:$2,
+rowLength:$3});
+return true;
+},
+hasSpans:function(){return this._spans.length>0;
+},
+getSpanEntry:function($0,
+$1){for(var $2=0,
+$3=this._spans,
+$4=$3.length,
+$5;$2<$4;$2++){$5=$3[$2];
+if($0>=$5.startCol&&$0<=$5.endCol&&$1>=$5.startRow&&$1<=$5.endRow){return $5;
+}}return null;
+},
+isSpanStart:function($0,
+$1){for(var $2=0,
+$3=this._spans,
+$4=$3.length,
+$5;$2<$4;$2++){$5=$3[$2];
+if($5.startCol==$0&&$5.startRow==$1){return true;
+}}return false;
+},
+isSpanCell:function($0,
+$1){for(var $2=0,
+$3=this._spans,
+$4=$3.length,
+$5;$2<$4;$2++){$5=$3[$2];
+if($0>=$5.startCol&&$0<=$5.endCol&&$1>=$5.startRow&&$1<=$5.endRow){return true;
+}}return false;
+},
+isFillCell:function($0,
+$1){for(var $2=0,
+$3=this._spans,
+$4=$3.length,
+$5;$2<$4;$2++){$5=$3[$2];
+if($0>=$5.startCol&&$0<=$5.endCol&&$1>=$5.startRow&&$1<=$5.endRow&&($0>$5.startCol||$1>$5.startRow)){return true;
+}}return false;
+},
+_collidesWithSpans:function($0,
+$1,
+$2,
+$3){for(var $4=0,
+$5=this._spans,
+$6=$5.length,
+$7;$4<$6;$4++){$7=$5[$4];
+if($2>=$7.startCol&&$0<=$7.endCol&&$3>=$7.startRow&&$1<=$7.endRow){return true;
+}}return false;
+}},
+destruct:function(){this._disposeFields("_columnData",
+"_rowData",
+"_spans");
+}});
+
+
+
+
+/* ID: qx.ui.layout.impl.GridLayoutImpl */
+qx.Class.define("qx.ui.layout.impl.GridLayoutImpl",
+{extend:qx.ui.layout.impl.LayoutImpl,
+construct:function($0){arguments.callee.base.call(this,
+$0);
+},
+members:{computeChildBoxWidth:function($0){var $1=this.getWidget();
+var $2=$1.getColumnInnerWidth($0._col,
+$0._row);
+if($1.isSpanStart($0._col,
+$0._row)){var $3=$1.getSpanEntry($0._col,
+$0._row);
+for(var $4=1;$4<$3.colLength;$4++){$2+=$1.getComputedCellPaddingRight($0._col+$4-1,
+$0._row);
+$2+=$1.getComputedCellPaddingLeft($0._col+$4,
+$0._row);
+$2+=$1.getHorizontalSpacing();
+$2+=$1.getColumnInnerWidth($0._col+$4,
+$0._row);
+}}return $0.getAllowStretchX()?$2:Math.min($0.getWidthValue(),
+$2);
+},
+computeChildBoxHeight:function($0){var $1=this.getWidget();
+var $2=$1.getRowInnerHeight($0._col,
+$0._row);
+if($1.isSpanStart($0._col,
+$0._row)){var $3=$1.getSpanEntry($0._col,
+$0._row);
+for(var $4=1;$4<$3.rowLength;$4++){$2+=$1.getComputedCellPaddingBottom($0._col,
+$0._row+$4-1);
+$2+=$1.getComputedCellPaddingTop($0._col,
+$0._row+$4);
+$2+=$1.getVerticalSpacing();
+$2+=$1.getRowInnerHeight($0._col,
+$0._row+$4);
+}}return $0.getAllowStretchY()?$2:Math.min($0.getHeightValue(),
+$2);
+},
+computeChildrenNeededWidth:function(){var $0=this.getWidget();
+var $1=$0.getHorizontalSpacing();
+var $2=-$1;
+for(var $3=0,
+$4=$0.getColumnCount();$3<$4;$3++){$2+=$0.getColumnBoxWidth($3)+$1;
+}return $2;
+},
+computeChildrenNeededHeight:function(){var $0=this.getWidget();
+var $1=$0.getVerticalSpacing();
+var $2=-$1;
+for(var $3=0,
+$4=$0.getRowCount();$3<$4;$3++){$2+=$0.getRowBoxHeight($3)+$1;
+}return $2;
+},
+updateChildOnInnerWidthChange:function($0){$0._recomputePercentX();
+$0.addToLayoutChanges("locationX");
+return true;
+},
+updateChildOnInnerHeightChange:function($0){$0._recomputePercentY();
+$0.addToLayoutChanges("locationY");
+return true;
+},
+layoutChild:function($0,
+$1){this.layoutChild_sizeX($0,
+$1);
+this.layoutChild_sizeY($0,
+$1);
+this.layoutChild_sizeLimitX($0,
+$1);
+this.layoutChild_sizeLimitY($0,
+$1);
+this.layoutChild_marginX($0,
+$1);
+this.layoutChild_marginY($0,
+$1);
+this.layoutChild_locationX($0,
+$1);
+this.layoutChild_locationY($0,
+$1);
+},
+layoutChild_sizeX:function($0,
+$1){$0._renderRuntimeWidth($0.getBoxWidth());
+},
+layoutChild_sizeY:function($0,
+$1){$0._renderRuntimeHeight($0.getBoxHeight());
+},
+layoutChild_locationX:function($0,
+$1){var $2=this.getWidget();
+var $3=$2.getHorizontalSpacing();
+var $4=$2.getPaddingLeft()+$2.getComputedCellPaddingLeft($0._col,
+$0._row);
+for(var $5=0;$5<$0._col;$5++){$4+=$2.getColumnBoxWidth($5)+$3;
+}
+switch($0.getHorizontalAlign()||$2.getColumnHorizontalAlignment($0._col)||$2.getRowHorizontalAlignment($0._row)||$2.getHorizontalChildrenAlign()){case "center":$4+=Math.round(($2.getColumnInnerWidth($0._col,
+$0._row)-$0.getBoxWidth())/2);
+break;
+case "right":$4+=$2.getColumnInnerWidth($0._col,
+$0._row)-$0.getBoxWidth();
+break;
+}$0._renderRuntimeLeft($4);
+},
+layoutChild_locationY:function($0,
+$1){var $2=this.getWidget();
+var $3=$2.getVerticalSpacing();
+var $4=$2.getPaddingTop()+$2.getComputedCellPaddingTop($0._col,
+$0._row);
+for(var $5=0;$5<$0._row;$5++){$4+=$2.getRowBoxHeight($5)+$3;
+}
+switch($0.getVerticalAlign()||$2.getRowVerticalAlignment($0._row)||$2.getColumnVerticalAlignment($0._col)||$2.getVerticalChildrenAlign()){case "middle":$4+=Math.round(($2.getRowInnerHeight($0._col,
+$0._row)-$0.getBoxHeight())/2);
+break;
+case "bottom":$4+=$2.getRowInnerHeight($0._col,
+$0._row)-$0.getBoxHeight();
+break;
+}$0._renderRuntimeTop($4);
+}}});
+
+
+
+
 /* ID: spagobi.ui.FormList */
 qx.Class.define("spagobi.ui.FormList",
 {extend:spagobi.ui.Form,
@@ -18982,7 +19903,7 @@ getConfig:function(){return _config;
 setConfig:function($0){this._config=$0;
 },
 addInstance:function($0){var $1;
-if(typeof (this._config)=='object'){$1=new qx.ui.layout.spagobi.ui.Form(this._config);
+if(typeof (this._config)=='object'){$1=new spagobi.ui.Form(this._config);
 }else{$1=new this._config();
 }
 if($0){$1.setData($0);
@@ -18993,7 +19914,22 @@ var $3=new qx.ui.pageview.tabview.Page($2);
 this._tabView.getPane().add($3);
 $3.add($1);
 this._instances[this._instances.length]=$1;
+this._dummyFunction();
 },
+_dummyFunction:function(){var $0=new qx.ui.pageview.tabview.Button('tab');
+this._tabView.getBar().add($0);
+var $1=new qx.ui.pageview.tabview.Page($0);
+this._tabView.getPane().add($1);
+$0.addEventListener("changeChecked",
+this._checktab,
+this);
+$1.add();
+this._instances[this._instances.length]={};
+},
+_checktab:function($0){if($0.getTarget().isChecked()==true){this.deleteDataAt(this._instances.length-1);
+this._instances.length--;
+this.addInstance();
+}},
 getData:function(){for(var $0=0;$0<this._instances.length;$0++){this.dataObject[$0]=this._instances[$0].getData();
 }return this.dataObject;
 },
@@ -19345,73 +20281,103 @@ init:"tab-view-page"}}});
 
 
 
-/* ID: spagobi.ui.custom.EngineDetailsForm */
-qx.Class.define("spagobi.ui.custom.EngineDetailsForm",
+/* ID: spagobi.ui.custom.LOVDetailsForm */
+qx.Class.define("spagobi.ui.custom.LOVDetailsForm",
 {extend:spagobi.ui.Form,
 construct:function(){arguments.callee.base.call(this,
 [{type:'text',
 dataIndex:'label',
 text:'Label',
+labelwidth:100,
 mandatory:true},
 {type:'text',
 dataIndex:'name',
 text:'Name',
+labelwidth:100,
 mandatory:true},
 {type:'text',
 dataIndex:'description',
 text:'Description',
-mandatory:false},
+labelwidth:100,
+mandatory:true},
 {type:'combo',
-dataIndex:'documentType',
-text:'Document type',
-items:["Report",
-"Map"]},
-{type:'combo',
-dataIndex:'engineType',
-text:'Engine type',
-items:["Internal",
-"External"],
+dataIndex:'type',
+text:'Type',
+labelwidth:100,
+items:["",
+"Query Statement",
+"Script to load values",
+"Fixed List of values",
+"Java class"],
 listeners:[{event:'changeValue',
 handler:this._documentTypeChangeValueHandler,
 scope:this}]},
-{type:'check',
-dataIndex:'useDataSet',
-text:'Use Data Set',
-checked:false},
-{type:'check',
-dataIndex:'useDataSource',
-text:'Use Data Source',
-checked:true,
-listeners:[{event:'changeChecked',
-handler:this._useDataSourceChangeCheckedHandler,
-scope:this}]},
-{type:'combo',
-dataIndex:'dataSource',
-text:'Data Source',
-items:["foodmart",
-"geo",
-"spagobi"]},
-{type:'text',
-dataIndex:'class',
-text:'Class',
+{type:'form',
+dataIndex:'querystmt',
+form:[{type:'combo',
+dataIndex:'datasourcelabel',
+text:'Data Source label',
+labelwidth:100,
+items:["",
+"FoodMart",
+"Pool",
+"Connection"]},
+{type:'textarea',
+dataIndex:'querydef',
+text:'Query Definition',
+labelwidth:100,
+height:50}],
+visible:false},
+{type:'form',
+dataIndex:'scriptloadvalues',
+form:[{type:'textarea',
+dataIndex:'script',
+text:'Script',
+labelwidth:100,
+height:50}],
+visible:false},
+{type:'form',
+dataIndex:'fixedlov',
+form:[{type:'formList',
+dataIndex:'subformlist',
+formList:[{type:'form',
+dataindex:'subform',
+form:[{type:'text',
+dataIndex:'value',
+text:'Value',
+labelwidth:100,
 mandatory:true},
 {type:'text',
-dataIndex:'url',
-text:'Url',
-mandatory:true},
-{type:'text',
-dataIndex:'driver',
-text:'Driver Name',
-mandatory:true}]);
+dataIndex:'description2',
+text:'Description',
+labelwidth:100,
+mandatory:true}]}]}],
+visible:false},
+{type:'form',
+dataIndex:'javaclass',
+form:[{type:'text',
+dataIndex:'classname',
+text:'Java Class Name',
+labelwidth:100,
+mandatory:true}],
+visible:false}]);
 },
-members:{_documentTypeChangeValueHandler:function($0){if(this&&this.getInputField('url')){if($0.getValue()=="Internal"){this.getInputField('url').setDisplay(false);
-this.getInputField('driver').setDisplay(false);
-this.getInputField('class').setDisplay(true);
-}else{this.getInputField('url').setDisplay(true);
-this.getInputField('driver').setDisplay(true);
-this.getInputField('class').setDisplay(false);
-}}},
-_useDataSourceChangeCheckedHandler:function($0){if(this&&this.getInputField('dataSource')){this.getInputField('dataSource').setDisplay($0.getValue());
+members:{_documentTypeChangeValueHandler:function($0){if($0.getValue()=="Query Statement"){this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('querystmt').setDisplay(true);
+}else if($0.getValue()=="Script to load values"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(true);
+}else if($0.getValue()=="Fixed List of values"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('javaclass').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(true);
+}else if($0.getValue()=="Java class"){this.getInputField('querystmt').setDisplay(false);
+this.getInputField('scriptloadvalues').setDisplay(false);
+this.getInputField('fixedlov').setDisplay(false);
+this.getInputField('javaclass').setDisplay(true);
 }}}});
 
 
@@ -19566,6 +20532,138 @@ items:["",
 "Positional"],
 mandatory:true}]);
 }});
+
+
+
+
+/* ID: spagobi.ui.custom.ConstraintDetailsForm */
+qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm",
+{extend:spagobi.ui.Form,
+construct:function(){arguments.callee.base.call(this,
+[{type:'text',
+dataIndex:'name',
+text:'Name',
+mandatory:true},
+{type:'text',
+dataIndex:'description',
+text:'Description',
+mandatory:false},
+{type:'combo',
+dataIndex:'type',
+text:'Type',
+items:["",
+"Territorial",
+"Positional"],
+mandatory:true}]);
+}});
+
+
+
+
+/* ID: spagobi.ui.custom.ParameterDetailsForm */
+qx.Class.define("spagobi.ui.custom.ParameterDetailsForm",
+{extend:spagobi.ui.Form,
+construct:function(){arguments.callee.base.call(this,
+[{type:'text',
+dataIndex:'name',
+text:'Name',
+mandatory:true},
+{type:'text',
+dataIndex:'description',
+text:'Description',
+mandatory:false},
+{type:'combo',
+dataIndex:'type',
+text:'Type',
+items:["",
+"Territorial",
+"Positional"],
+mandatory:true},
+{type:'check',
+dataIndex:'mychecklist',
+checked:false,
+text:'Header',
+columns:4,
+items:["aaaa",
+"bbbb",
+"cccc",
+"dddd",
+"eeee",
+"ffff",
+"gggg",
+"hhhh",
+"iiii",
+"jjjj"]}]);
+}});
+
+
+
+
+/* ID: spagobi.ui.PagedTable */
+qx.Class.define("spagobi.ui.PagedTable",
+{extend:qx.ui.layout.VerticalBoxLayout,
+construct:function($0,
+$1){arguments.callee.base.call(this);
+this._filterBar=new spagobi.ui.FilterBar();
+this._table=new spagobi.ui.Table($0,
+$1);
+this._navigationBar=new spagobi.ui.NavigationBar();
+var $2=new qx.ui.basic.Atom();
+$2.add(this._filterBar);
+this.add($2);
+var $3=new qx.ui.basic.Atom();
+$3.add(this._table);
+this.add($3);
+var $4=new qx.ui.basic.Atom();
+$4.add(this._navigationBar);
+this.add($4);
+},
+members:{_filterBar:undefined,
+_navigationBar:undefined,
+_table:undefined}});
+
+
+
+
+/* ID: spagobi.ui.FilterBar */
+qx.Class.define("spagobi.ui.FilterBar",
+{extend:qx.ui.layout.HorizontalBoxLayout,
+construct:function(){arguments.callee.base.call(this);
+this.createFilterBar();
+},
+members:{createFilterBar:function(){var $0=new qx.ui.basic.Label("The value of the column");
+with($0){}this.add($0);
+var $1=new qx.ui.form.ComboBox();
+var $2=["Label",
+"Name",
+"Description"];
+for(var $3=0;$3<$2.length;$3++){var $4=new qx.ui.form.ListItem($2[$3]);
+$1.add($4);
+}this.add($1);
+var $5=new qx.ui.basic.Label("as a");
+with($5){}this.add($5);
+var $6=new qx.ui.form.ComboBox();
+var $7=["Label",
+"Name",
+"Description"];
+for(var $3=0;$3<$7.length;$3++){var $4=new qx.ui.form.ListItem($7[$3]);
+$6.add($4);
+}this.add($6);
+var $8=new qx.ui.form.ComboBox();
+var $9=["starts with",
+"ends with",
+"contains",
+"=",
+"<",
+"<=",
+">",
+">="];
+for(var $3=0;$3<$9.length;$3++){var $4=new qx.ui.form.ListItem($9[$3]);
+$8.add($4);
+}this.add($8);
+var $a=new qx.ui.form.TextField();
+with($a){width:70}this.add($a);
+}}});
 
 
 
@@ -23728,17 +24826,13 @@ $3[$1.meta[$4].dataIndex]=$1.meta[$4].name;
 this._tableModel.setColumnIds($2);
 this._tableModel.setColumnNamesById($3);
 arguments.callee.base.call(this,
-this._tableModel,
-{tableColumnModel:function($5){return new qx.ui.table.columnmodel.Resize($5);
-}});
+this._tableModel);
 this.setDimension("100%",
 "100%");
 this.setBorder("line-bottom");
 this.setStatusBarVisible(false);
 this.getDataRowRenderer().setHighlightFocusRow(false);
 this.getPaneScroller(0).setShowCellFocusIndicator(false);
-var $6=this.getTableColumnModel();
-var $7=$6.getBehavior();
 this.getSelectionModel().addEventListener("changeSelection",
 this._onChangeSelection,
 this);
@@ -24015,336 +25109,31 @@ destruct:function(){this._disposeFields("_rowArr",
 
 
 
-/* ID: qx.ui.table.columnmodel.Resize */
-qx.Class.define("qx.ui.table.columnmodel.Resize",
-{extend:qx.ui.table.columnmodel.Basic,
+/* ID: spagobi.ui.NavigationBar */
+qx.Class.define("spagobi.ui.NavigationBar",
+{extend:qx.ui.toolbar.ToolBar,
 construct:function(){arguments.callee.base.call(this);
-this._bInProgress=false;
-this._bAppeared=false;
+this.createNavBar();
 },
-properties:{behavior:{check:"qx.ui.table.columnmodel.resizebehavior.Abstract",
-init:null,
-nullable:true,
-apply:"_applyBehavior",
-event:"changeBehavior"}},
-members:{_applyBehavior:function($0,
-$1){if($1!=null){$1.dispose();
-$1=null;
-}this.getBehavior()._setNumColumns(this._columnDataArr.length);
-},
-init:function($0,
-$1){arguments.callee.base.call(this,
-$0);
-if(this.getBehavior()==null){this.setBehavior(new qx.ui.table.columnmodel.resizebehavior.Default());
-}this._table=$1;
-$1.addEventListener("appear",
-this._onappear,
-this);
-$1.addEventListener("tableWidthChanged",
-this._ontablewidthchanged,
-this);
-$1.addEventListener("verticalScrollBarChanged",
-this._onverticalscrollbarchanged,
-this);
-this.addEventListener("widthChanged",
-this._oncolumnwidthchanged,
-this);
-this.addEventListener("visibilityChanged",
-this._onvisibilitychanged,
-this);
-this._table.addEventListener("columnVisibilityMenuCreateEnd",
-this._addResetColumnWidthButton,
-this);
-this.getBehavior()._setNumColumns($0);
-},
-_addResetColumnWidthButton:function($0){var $1=$0.getData();
-var $2=$1.menu;
-var $3;
-var $4=qx.io.Alias;
-var $5=$4.getInstance().resolve("icon/16/actions/view-refresh.png");
-$3=new qx.ui.menu.Separator();
-$2.add($3);
-$3=new qx.ui.menu.Button("Reset column widths",
-$5);
-$2.add($3);
-$3.addEventListener("execute",
-this._onappear,
-this);
-},
-_onappear:function($0){if(this._bInProgress){return ;
-}this._bInProgress=true;
-{};
-this.getBehavior().onAppear(this,
-$0);
-qx.client.Timer.once(function(){if(!this._table.getDisposed()){this._table._updateScrollerWidths();
-this._table._updateScrollBarVisibility();
-}},
-this,
-0);
-this._bInProgress=false;
-this._bAppeared=true;
-},
-_ontablewidthchanged:function($0){if(this._bInProgress||!this._bAppeared){return ;
-}this._bInProgress=true;
-{};
-this.getBehavior().onTableWidthChanged(this,
-$0);
-this._bInProgress=false;
-},
-_onverticalscrollbarchanged:function($0){if(this._bInProgress||!this._bAppeared){return ;
-}this._bInProgress=true;
-{};
-this.getBehavior().onVerticalScrollBarChanged(this,
-$0);
-qx.client.Timer.once(function(){if(!this._table.getDisposed()){this._table._updateScrollerWidths();
-this._table._updateScrollBarVisibility();
-}},
-this,
-0);
-this._bInProgress=false;
-},
-_oncolumnwidthchanged:function($0){if(this._bInProgress||!this._bAppeared){return ;
-}this._bInProgress=true;
-{};
-this.getBehavior().onColumnWidthChanged(this,
-$0);
-this._bInProgress=false;
-},
-_onvisibilitychanged:function($0){if(this._bInProgress||!this._bAppeared){return ;
-}this._bInProgress=true;
-{};
-this.getBehavior().onVisibilityChanged(this,
-$0);
-this._bInProgress=false;
-}},
-settings:{"qx.tableResizeDebug":false},
-destruct:function(){this._disposeFields("_table");
-}});
-
-
-
-
-/* ID: qx.ui.table.columnmodel.resizebehavior.Abstract */
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Abstract",
-{type:"abstract",
-extend:qx.core.Object,
-construct:function(){arguments.callee.base.call(this);
-this._resizeColumnData=[];
-},
-members:{_setNumColumns:function($0){throw new Error("_setNumColumns is abstract");
-},
-onAppear:function($0,
-$1){throw new Error("onAppear is abstract");
-},
-onTableWidthChanged:function($0,
-$1){throw new Error("onTableWidthChanged is abstract");
-},
-onVerticalScrollBarChanged:function($0,
-$1){throw new Error("onVerticalScrollBarChanged is abstract");
-},
-onColumnWidthChanged:function($0,
-$1){throw new Error("onColumnWidthChanged is abstract");
-},
-onVisibilityChanged:function($0,
-$1){throw new Error("onVisibilityChanged is abstract");
-},
-_getAvailableWidth:function($0){var $1=$0._table.getElement();
-var $2=qx.html.Dimension.getInnerWidth($1);
-var $3=$0._table._getPaneScrollerArr();
-var $4=$3[$3.length-1];
-$0._table._updateScrollBarVisibility();
-if($0._table.getColumnVisibilityButtonVisible()||($4._verScrollBar.getVisibility()&&$4._verScrollBar.getWidth()=="auto")){return {width:$2-qx.ui.core.Widget.SCROLLBAR_SIZE,
-extraWidth:0};
-}return {width:$2-qx.ui.core.Widget.SCROLLBAR_SIZE,
-extraWidth:qx.ui.core.Widget.SCROLLBAR_SIZE};
-}},
-destruct:function(){this._disposeFields("_resizeColumnData");
-}});
-
-
-
-
-/* ID: qx.ui.table.columnmodel.resizebehavior.Default */
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.Default",
-{extend:qx.ui.table.columnmodel.resizebehavior.Abstract,
-construct:function(){arguments.callee.base.call(this);
-},
-statics:{MIN_WIDTH:10},
-properties:{newResizeBehaviorColumnData:{check:"Function",
-init:function($0){return new qx.ui.table.columnmodel.resizebehavior.ColumnData();
-}},
-initializeWidthsOnEveryAppear:{check:"Boolean",
-init:false}},
-members:{widthsInitialized:false,
-setWidth:function($0,
-$1){if($0>=this._resizeColumnData.length){throw new Error("Column number out of range");
-}this._resizeColumnData[$0].setWidth($1);
-},
-setMinWidth:function($0,
-$1){if($0>=this._resizeColumnData.length){throw new Error("Column number out of range");
-}this._resizeColumnData[$0].setMinWidth($1);
-},
-setMaxWidth:function($0,
-$1){if($0>=this._resizeColumnData.length){throw new Error("Column number out of range");
-}this._resizeColumnData[$0].setMaxWidth($1);
-},
-set:function($0,
-$1){for(var $2 in $1){switch($2){case "width":this.setWidth($0,
-$1[$2]);
-break;
-case "minWidth":this.setMinWidth($0,
-$1[$2]);
-break;
-case "maxWidth":this.setMaxWidth($0,
-$1[$2]);
-break;
-default:throw new Error("Unknown property: "+$2);
-}}},
-onAppear:function($0,
-$1){if(!this.widthsInitialized||this.getInitializeWidthsOnEveryAppear()){this._width=this._getAvailableWidth($0);
-this._computeColumnsFlexWidth($0,
-$1);
-this.widthsInitialized=true;
-}},
-onTableWidthChanged:function($0,
-$1){this._computeColumnsFlexWidth($0,
-$1);
-},
-onVerticalScrollBarChanged:function($0,
-$1){this._computeColumnsFlexWidth($0,
-$1);
-},
-onColumnWidthChanged:function($0,
-$1){this._extendNextColumn($0,
-$1);
-},
-onVisibilityChanged:function($0,
-$1){var $2=$1.getData();
-if($2.visible){this._computeColumnsFlexWidth($0,
-$1);
-return;
-}this._extendLastColumn($0,
-$1);
-},
-_setNumColumns:function($0){if($0<=this._resizeColumnData.length){this._resizeColumnData.splice($0);
-return;
-}for(var $1=this._resizeColumnData.length;$1<$0;$1++){this._resizeColumnData[$1]=this.getNewResizeBehaviorColumnData()();
-this._resizeColumnData[$1]._columnNumber=$1;
-}},
-_computeColumnsFlexWidth:function($0,
-$1){{};
-var $2=$0._visibleColumnArr;
-var $3=$2.length;
-var $4;
-var $5=[];
-var $6=0;
-var $7;
-var $8=this._getAvailableWidth($0);
-var $9=$8.width;
-var $a=$8.extraWidth;
-for($7=0;$7<$3;$7++){$4=this._resizeColumnData[$2[$7]];
-if($4._computedWidthTypeAuto){$4._computedWidthTypeAuto=false;
-$4._computedWidthTypeFlex=true;
-$4._computedWidthParsed=1;
-}if($4._computedWidthTypeFlex){$5.push($4);
-}else if($4._computedWidthTypePercent){$4._computedWidthPercentValue=Math.round($9*($4._computedWidthParsed/100));
-$6+=$4._computedWidthPercentValue;
-}else{$6+=$4.getWidth();
-}}{};
-var $b=$9-$6;
-var $c=$5.length;
-var $d=0;
-for($7=0;$7<$c;$7++){$d+=$5[$7]._computedWidthParsed;
-}var $e=$b/$d;
-var $f=true;
-for($c=$5.length;$f&&$c>0;$c=$5.length){$f=false;
-for($7=$c-1;$7>=0;$7--){$4=$5[$7];
-var $g=$4._computedWidthFlexValue=$4._computedWidthParsed*$e;
-var $h=$4.getMinWidthValue();
-var $i=$4.getMaxWidthValue();
-if($h&&$g<$h){$4._computedWidthFlexValue=Math.round($h);
-$6+=$4._computedWidthFlexValue;
-qx.lang.Array.removeAt($5,
-$7);
-$f=true;
-$4=null;
-}else if($i&&$g>$i){$4._computedWidthFlexValue=Math.round($i);
-$6+=$4._computedWidthFlexValue;
-qx.lang.Array.removeAt($5,
-$7);
-$f=true;
-$4=null;
-}}}if($5.length>0){$d=0;
-for($7=0;$7<$c;$7++){$d+=$5[$7]._computedWidthParsed;
-}$b=$9-$6;
-$e=$b/$d;
-if($b<=0){for($7=0;$7<$c;$7++){$4=$5[$7];
-$g=$4._computedWidthFlexValue=(qx.ui.table.columnmodel.resizebehavior.Default.MIN_WIDTH*$5[$7]._computedWidthParsed);
-$4._computedWidthFlexValue=Math.round($g);
-$6+=$4._computedWidthFlexValue;
-}}else{for($7=0;$7<$c;$7++){$4=$5[$7];
-$g=$4._computedWidthFlexValue=$4._computedWidthParsed*$e;
-if($g<qx.ui.table.columnmodel.resizebehavior.Default.MIN_WIDTH){$g=qx.ui.table.columnmodel.resizebehavior.Default.MIN_WIDTH;
-}$4._computedWidthFlexValue=Math.round($g);
-$6+=$4._computedWidthFlexValue;
-}}}if($4!=null&&$b>0){$4._computedWidthFlexValue+=$9-$6;
-}for($7=0;$7<$3;$7++){var $j;
-$4=this._resizeColumnData[$2[$7]];
-if($4._computedWidthTypeFlex){$j=$4._computedWidthFlexValue;
-}else if($4._computedWidthTypePercent){$j=$4._computedWidthPercentValue;
-}else{$j=$4.getWidth();
-}if($7==$3-1){$j+=$a;
-}$0.setColumnWidth($2[$7],
-$j);
-{};
-}},
-_extendNextColumn:function($0,
-$1){var $2=$1.getData();
-var $3=$0._visibleColumnArr;
-var $4=this._getAvailableWidth($0);
-var $5=$4.width;
-var $6=$3.length;
-if($2.newWidth>$2.oldWidth){return ;
-}var $7;
-var $8;
-var $9=0;
-for($7=0;$7<$6;$7++){$9+=$0.getColumnWidth($3[$7]);
-}if($9<$5){for($7=0;$7<$3.length;$7++){if($3[$7]==$2.col){$8=$3[$7+1];
-break;
-}}
-if($8){var $a=($5-($9-$0.getColumnWidth($8)));
-$0.setColumnWidth($8,
-$a);
-}}},
-_extendLastColumn:function($0,
-$1){var $2=$1.getData();
-if($2.visible){return;
-}var $3=$0._visibleColumnArr;
-var $4=this._getAvailableWidth($0);
-var $5=$4.width;
-var $6=$3.length;
-var $7;
-var $8;
-var $9=0;
-for($7=0;$7<$6;$7++){$9+=$0.getColumnWidth($3[$7]);
-}if($9<$5){$8=$3[$3.length-1];
-var $a=($5-($9-$0.getColumnWidth($8)));
-$0.setColumnWidth($8,
-$a);
-}}},
-destruct:function(){this._disposeFields("_resizeColumnData",
-"_width");
-}});
-
-
-
-
-/* ID: qx.ui.table.columnmodel.resizebehavior.ColumnData */
-qx.Class.define("qx.ui.table.columnmodel.resizebehavior.ColumnData",
-{extend:qx.ui.core.Widget,
-construct:function(){arguments.callee.base.call(this);
-this.setWidth("1*");
-}});
+members:{createNavBar:function(){var $0=new qx.ui.layout.HorizontalBoxLayout();
+$0.setSpacing(15);
+var $1=new qx.ui.toolbar.Button("",
+"spagobi/img/spagobi/test/firstPage.png");
+$0.add($1);
+var $2=new qx.ui.toolbar.Button("",
+"spagobi/img/spagobi/test/previousPage.png");
+$0.add($2);
+$0.add(new qx.ui.basic.HorizontalSpacer());
+var $3=new qx.ui.toolbar.Button("",
+"spagobi/img/spagobi/test/nextPage.png");
+$0.add($3);
+var $4=new qx.ui.toolbar.Button("",
+"spagobi/img/spagobi/test/lastPage.png");
+$0.add($4);
+$0.setAlign("center",
+null);
+this.add($0);
+}}});
 
 
 

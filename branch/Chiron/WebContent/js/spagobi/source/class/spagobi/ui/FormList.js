@@ -108,7 +108,7 @@ qx.Class.define("spagobi.ui.FormList", {
 					  },
 		_currentSubform: undefined,
 		
-		//str:"",
+		str:"",
 		/**
 		 * Function to get the current value of config object
 		 * @return The current config object
@@ -170,7 +170,7 @@ qx.Class.define("spagobi.ui.FormList", {
 				var newForm = itemsList1.indexOf(subFormButton);
 				this._currentSubform = this._instances[oldForm];
 				var newSubForm = this._instances[newForm];
-				
+				//alert("Old form id is: " + oldForm);
 				if(this._currentSubform.getInputField('mychecklist') != undefined){
 					this._checkbox(this._currentSubform,newSubForm,oldForm,newForm);
 				}
@@ -363,27 +363,28 @@ qx.Class.define("spagobi.ui.FormList", {
 				
 				
 				
-				//var str = "";
+				
 				for(i=0; i<grid.length; i++){			//current form's checked labels stored in global array
 					if(grid[i].getUserData('field').getChecked() == true){
 						if(this._checkObject._checkedFields.length == 0){
 							this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
 							this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
-							this.str = this.str + oldFormIndex+ ":"+grid[i].getUserData('label').getText() + ", ";
+							//alert("Old form id is: " + oldFormIndex);
+							//this.str = this.str + oldFormIndex+ ":"+grid[i].getUserData('label').getText() + ", ";
 						}
 						else{
 							var flag = 0;
 							for(j=0; j<this._checkObject._checkedFields.length; j++){
 								if(this._checkObject._subFormid[j] == oldFormIndex  && this._checkObject._checkedFields[j]==grid[i].getUserData('label').getText()){
 									flag = 1;
-									//alert("duplicate entry not added in global array");
 									break;
 								}
 							}
 							if(flag == 0){		
 									this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getText();
 									this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
-							this.str = this.str + oldFormIndex + ":"+ grid[i].getUserData('label').getText() + ", ";
+							//alert("Old form id is: " + oldFormIndex);
+							//this.str = this.str + oldFormIndex + ":"+ grid[i].getUserData('label').getText() + ", ";
 							}
 						}
 					}

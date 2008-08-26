@@ -117,7 +117,19 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     var createButton = new qx.ui.pageview.buttonview.Button("New", "spagobi/img/spagobi/test/create.png");                 
     detailPage.getBar().add(createButton, saveButton, deleteButton);   
     
-    /* test code for the buttons of pageview */
+    // Functionality for Save button
+    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
+	save_page.setDisplay(false);
+	detailPage.getPane().add(save_page);
+	save_page.addEventListener("appear", ShowDetails, this);
+	
+	function ShowDetails() {
+		var alias = this.getForm();//.getData();
+		alert (this.printObject(alias));
+	}
+
+    
+    /* test code for the dummy Logout button of pageview */
     var btn = new qx.ui.pageview.buttonview.Button("Logout");
 	detailPage.getBar().add(btn);
 	var dum_page = new qx.ui.pageview.buttonview.Page(btn);

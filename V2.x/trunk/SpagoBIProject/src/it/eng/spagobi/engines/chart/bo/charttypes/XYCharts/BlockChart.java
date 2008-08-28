@@ -28,6 +28,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.jfree.chart.title.PaintScaleLegend;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
@@ -70,18 +71,25 @@ public class BlockChart extends XYCharts {
         xAxis.setLowerMargin(0.0);
         xAxis.setUpperMargin(0.0);
         xAxis.setLabel(xLabel);
+        if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
+	        xAxis.setLabelFont(addLabelsStyle.getFont());
+	        xAxis.setLabelPaint(addLabelsStyle.getColor());
+        }
         NumberAxis yAxis = new NumberAxis(yLabel);
         yAxis.setAutoRangeIncludesZero(false);
         yAxis.setInverted(false);
         yAxis.setLowerMargin(0.0);
         yAxis.setUpperMargin(0.0);
         yAxis.setLabel(yLabel);
+        if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
+        	yAxis.setLabelFont(addLabelsStyle.getFont());
+        	yAxis.setLabelPaint(addLabelsStyle.getColor());
+        }
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         XYBlockRenderer renderer = new XYBlockRenderer();
         Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
         LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue()*2,outboundCol);
         paintScale.add((new Double(zrangeMax)).doubleValue()*2,outboundCol);
-        
         
         for (int ke=1; ke<(zvalues.length) ; ke++){
         	String key =new Integer((new Double(zvalues[ke])).intValue()).toString();
@@ -93,13 +101,20 @@ public class BlockChart extends XYCharts {
         double blockWidth =	(new Double(blockW)).doubleValue();
         renderer.setBlockWidth(blockWidth);
         renderer.setBlockHeight(blockHeight);
+        
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
         plot.setBackgroundPaint(Color.lightGray);
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
         plot.setForegroundAlpha(0.66f);
         plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
-        JFreeChart chart = new JFreeChart(name, plot);
+        JFreeChart chart = new JFreeChart(plot);
+        TextTitle title =setStyleTitle(name, styleTitle);
+        chart.setTitle(title);
+        if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
         SymbolAxis scaleAxis = new SymbolAxis(null,new String[]{"1","2","3","4","5"});
@@ -108,7 +123,7 @@ public class BlockChart extends XYCharts {
         scaleAxis.setGridBandsVisible(false);
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
         psl.setAxisOffset(5.0);
-        psl.setPosition(RectangleEdge.BOTTOM);
+        psl.setPosition(RectangleEdge.RIGHT);
         psl.setMargin(new RectangleInsets(5, 5, 5, 5));
         
         chart.addSubtitle(psl);

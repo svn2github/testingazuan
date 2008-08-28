@@ -57,6 +57,10 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	
     	this._filterBar = new spagobi.ui.FilterBar();
     	this._table = new spagobi.ui.Table(controller, data);
+    	this._table.set(
+		{ 
+			width : 800
+		});
     	this._navigationBar = new spagobi.ui.NavigationBar();
     	
     	/*
@@ -77,7 +81,9 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	
     	var atom1 = new qx.ui.basic.Atom();
     	atom1.add( this._filterBar );
-    	atom1.setHorizontalAlign("center")
+    	atom1.setHorizontalAlign("center");
+    	//atom1.setVerticalAlign("bottom");
+    	atom1.set ({height: 50/*, marginTop: 0*/});
     	this.add( atom1 );
     	    	
     	var atom0 = new qx.ui.basic.Atom();

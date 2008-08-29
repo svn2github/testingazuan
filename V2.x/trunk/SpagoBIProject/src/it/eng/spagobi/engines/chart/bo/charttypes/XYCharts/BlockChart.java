@@ -97,7 +97,7 @@ public class BlockChart extends XYCharts {
         LookupPaintScale legendPaintScale = new LookupPaintScale(0.5, 0.5+zvalues.length, outboundCol);
         
         for (int ke=0; ke<=(zvalues.length-1) ; ke++){
-        	double key =(new Double(zvalues[ke])).doubleValue();
+        	Double key =(new Double(zvalues[ke]));
         	Color temp =(Color)colorRangeMap.get(key);
         	paintScale.add(zvalues[ke],temp);
         	legendPaintScale.add(0.5+ke, temp);

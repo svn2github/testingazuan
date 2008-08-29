@@ -68,6 +68,7 @@ public class BlockChart extends XYCharts {
      */
 	public JFreeChart createChart(DatasetMap datasets) {
     	XYZDataset dataset=(XYZDataset)datasets.getDatasets().get("1");
+    	//Creates the xAxis with its label and style
         NumberAxis xAxis = new NumberAxis(xLabel);
         xAxis.setLowerMargin(0.0);
         xAxis.setUpperMargin(0.0);
@@ -76,6 +77,7 @@ public class BlockChart extends XYCharts {
 	        xAxis.setLabelFont(addLabelsStyle.getFont());
 	        xAxis.setLabelPaint(addLabelsStyle.getColor());
         }
+        //Creates the yAxis with its label and style
         NumberAxis yAxis = new NumberAxis(yLabel);
         yAxis.setAutoRangeIncludesZero(false);
         yAxis.setInverted(false);
@@ -89,20 +91,18 @@ public class BlockChart extends XYCharts {
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         
         Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
-        /*LookupPaintScale paintScale = new LookupPaintScale(1, 7, 
-                Color.black);
-        paintScale.add(1, Color.green);
-        paintScale.add(3, Color.orange);
-        paintScale.add(5, Color.red);    */
         
-        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue(),outboundCol);
-        //paintScale.add((new Double(zrangeMax)).doubleValue(),outboundCol);
+        //Sets the graph paint scale and the legend paintscale
+        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue()*2,outboundCol);
+        LookupPaintScale legendPaintScale = new LookupPaintScale(0.5, 0.5+zvalues.length, outboundCol);
         
-        for (int ke=0; ke<(zvalues.length-1) ; ke++){
+        for (int ke=0; ke<=(zvalues.length-1) ; ke++){
         	double key =(new Double(zvalues[ke])).doubleValue();
         	Color temp =(Color)colorRangeMap.get(key);
         	paintScale.add(zvalues[ke],temp);
+        	legendPaintScale.add(0.5+ke, temp);
         }     
+        //Configures the renderer
         XYBlockRenderer renderer = new XYBlockRenderer();
         renderer.setPaintScale(paintScale);
         double blockHeight =	(new Double(blockH)).doubleValue();
@@ -110,6 +110,7 @@ public class BlockChart extends XYCharts {
         renderer.setBlockWidth(blockWidth);
         renderer.setBlockHeight(blockHeight);
         
+        //configures the plot with title, subtitle, axis ecc.
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
         plot.setBackgroundPaint(Color.lightGray);
         plot.setDomainGridlinePaint(Color.white);
@@ -125,18 +126,20 @@ public class BlockChart extends XYCharts {
 		}
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
-        SymbolAxis scaleAxis = new SymbolAxis(null, new String[] {"", "OK", "Uncertain", "Bad","A","E"});
-        //scaleAxis.setRange(1, 7);
-        scaleAxis.setRange(zvalues[0], new Double(zrangeMax).doubleValue());
+        
+        //Sets legend labels
+        SymbolAxis scaleAxis = new SymbolAxis(null,legendLabels);
+        scaleAxis.setRange(0.5, 0.5+zvalues.length);
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
       
-        PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
+        //draws legend as chart subtitle
+        PaintScaleLegend psl = new PaintScaleLegend(legendPaintScale, scaleAxis);
         psl.setAxisOffset(5.0);
         psl.setPosition(RectangleEdge.RIGHT);
-        psl.setMargin(new RectangleInsets(5, 5, 5, 5));
-        
+        psl.setMargin(new RectangleInsets(5, 5, 5, 5));        
         chart.addSubtitle(psl);
+        
         return chart;
     }    
 

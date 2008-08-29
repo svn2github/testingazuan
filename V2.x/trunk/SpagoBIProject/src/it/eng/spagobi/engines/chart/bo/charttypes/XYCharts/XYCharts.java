@@ -212,10 +212,10 @@ public class XYCharts extends ChartImpl{
 		List ranges = zrange.getAttributeAsList("RANGE");
 		int rangesNum = ranges.size();
 		legendLabels= new String[rangesNum];
-		zvalues = new double[rangesNum];
+		zvalues = new double[rangesNum-1];
 		Iterator rangesIter = ranges.iterator();
 		
-		int j = 1;
+		int j = 0;
 		while(rangesIter.hasNext()) {
 			SourceBean range = (SourceBean)rangesIter.next();
 			String nameParam = (String)range.getAttribute("label");
@@ -230,11 +230,13 @@ public class XYCharts extends ChartImpl{
 			
 			if (!nameParam.equals("outbound")){
 				String low = (String)range.getAttribute("value_low");
+				double lowz = new Double(low).doubleValue();
 				String high = (String)range.getAttribute("value_high");
+				double highz = new Double(high).doubleValue();
 				String low_high = low+","+high;
 				legendLabels[j]=label;
-				colorRangeMap.put( high,col);
-				zvalues[j]=new Double(high).doubleValue();
+				colorRangeMap.put( highz-((highz-lowz)/2),col);
+				zvalues[j]=highz-((highz-lowz)/2);
 			}else if (nameParam.equals("outbound")){
 				String val = (String)range.getAttribute("value");
 				zrangeMax = val;

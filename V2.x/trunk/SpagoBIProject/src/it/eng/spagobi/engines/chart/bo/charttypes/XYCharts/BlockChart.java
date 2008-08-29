@@ -7,6 +7,7 @@ import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -86,16 +87,23 @@ public class BlockChart extends XYCharts {
         	yAxis.setLabelPaint(addLabelsStyle.getColor());
         }
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        XYBlockRenderer renderer = new XYBlockRenderer();
-        Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
-        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue()*2,outboundCol);
-        paintScale.add((new Double(zrangeMax)).doubleValue()*2,outboundCol);
         
-        for (int ke=1; ke<(zvalues.length) ; ke++){
-        	String key =new Integer((new Double(zvalues[ke])).intValue()).toString();
+        Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
+        /*LookupPaintScale paintScale = new LookupPaintScale(1, 7, 
+                Color.black);
+        paintScale.add(1, Color.green);
+        paintScale.add(3, Color.orange);
+        paintScale.add(5, Color.red);    */
+        
+        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue(),outboundCol);
+        //paintScale.add((new Double(zrangeMax)).doubleValue(),outboundCol);
+        
+        for (int ke=0; ke<(zvalues.length-1) ; ke++){
+        	double key =(new Double(zvalues[ke])).doubleValue();
         	Color temp =(Color)colorRangeMap.get(key);
         	paintScale.add(zvalues[ke],temp);
-        }       
+        }     
+        XYBlockRenderer renderer = new XYBlockRenderer();
         renderer.setPaintScale(paintScale);
         double blockHeight =	(new Double(blockH)).doubleValue();
         double blockWidth =	(new Double(blockW)).doubleValue();
@@ -117,10 +125,12 @@ public class BlockChart extends XYCharts {
 		}
         chart.removeLegend();
         chart.setBackgroundPaint(Color.white);
-        SymbolAxis scaleAxis = new SymbolAxis(null,new String[]{"1","2","3","4","5"});
-        scaleAxis.setRange(zvalues[1], new Double(zrangeMax).doubleValue());
+        SymbolAxis scaleAxis = new SymbolAxis(null, new String[] {"", "OK", "Uncertain", "Bad","A","E"});
+        //scaleAxis.setRange(1, 7);
+        scaleAxis.setRange(zvalues[0], new Double(zrangeMax).doubleValue());
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
+      
         PaintScaleLegend psl = new PaintScaleLegend(paintScale, scaleAxis);
         psl.setAxisOffset(5.0);
         psl.setPosition(RectangleEdge.RIGHT);

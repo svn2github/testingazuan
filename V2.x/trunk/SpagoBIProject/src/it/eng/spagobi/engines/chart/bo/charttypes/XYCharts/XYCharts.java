@@ -36,6 +36,7 @@ public class XYCharts extends ChartImpl{
 	String yrangeMax="";
 	String xLabel="";
 	String yLabel="";
+	String zLabel="";
 	String blockW ="";
 	String blockH = "";
 	String outboundColor = "";
@@ -270,6 +271,13 @@ public class XYCharts extends ChartImpl{
 		else
 		{
 			yLabel="Y";
+		}
+		if(confParameters.get("z_label")!=null){	
+			zLabel=(String)confParameters.get("z_label");
+		}
+		else
+		{
+			zLabel="Z";
 		}
 
 

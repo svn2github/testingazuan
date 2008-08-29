@@ -132,6 +132,10 @@ public class BlockChart extends XYCharts {
         scaleAxis.setRange(0.5, 0.5+zvalues.length);
         scaleAxis.setPlot(new PiePlot());
         scaleAxis.setGridBandsVisible(false);
+        scaleAxis.setLabel(zLabel);
+        //scaleAxis.setLabelAngle(3.14/2);
+        scaleAxis.setLabelFont(addLabelsStyle.getFont());
+        scaleAxis.setLabelPaint(addLabelsStyle.getColor());
       
         //draws legend as chart subtitle
         PaintScaleLegend psl = new PaintScaleLegend(legendPaintScale, scaleAxis);

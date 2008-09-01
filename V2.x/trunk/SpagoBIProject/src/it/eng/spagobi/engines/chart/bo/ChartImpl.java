@@ -40,6 +40,8 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
+import it.eng.spagobi.engines.chart.bo.charttypes.scattercharts.MarkerScatter;
+import it.eng.spagobi.engines.chart.bo.charttypes.scattercharts.SimpleScatter;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
@@ -348,7 +350,15 @@ public class ChartImpl implements IChart {
 				sbi=new BlockChart();
 			}
 		}
-
+		
+		if(type.equals("SCATTERCHART")){
+			if(subtype.equalsIgnoreCase("simplescatter")){
+				sbi=new SimpleScatter();
+			}
+			if(subtype.equalsIgnoreCase("markerscatter")){
+				sbi=new MarkerScatter();
+			}
+		}
 
 
 		return sbi;

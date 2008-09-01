@@ -79,6 +79,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	HashMap colorMap=null;  // keeps user selected colors
 	boolean additionalLabels=false;
 	boolean percentageValue=false;
+	boolean makePercentage=false;
 	HashMap catSerLabels=null;
 
 
@@ -251,6 +252,18 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			additionalLabels=false;
 		}
 
+		if(confParameters.get("make_percentage")!=null){	
+			String perc=(String)confParameters.get("make_percentage");
+			if(perc.equalsIgnoreCase("true")){
+				makePercentage=true;
+			}
+			else makePercentage=false;
+		}
+		else
+		{
+			makePercentage=false;
+		}
+		
 		if(confParameters.get("percentage_value")!=null){	
 			String perc=(String)confParameters.get("percentage_value");
 			if(perc.equalsIgnoreCase("true")){
@@ -362,8 +375,11 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		renderer.setBaseItemLabelsVisible(true);
 		if (percentageValue)
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
+		else if(makePercentage)
+		       renderer.setRenderAsPercentages(true);
 		else
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+		
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
 		boolean document_composition=false;
@@ -406,8 +422,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		logger.debug("Axis creation");
 		// set the range axis to display integers only...
+		
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		if(makePercentage)
+			rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
+		else
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 		renderer.setDrawBarOutline(false);
 

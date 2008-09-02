@@ -1,40 +1,33 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Shape;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
-
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Vector;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
 import org.jfree.ui.TextAnchor;
 
 public class OverlaidBarLine extends BarCharts {
@@ -78,8 +71,8 @@ public class OverlaidBarLine extends BarCharts {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
 
-			HashMap series=new HashMap();
-			HashMap additionalValues=new HashMap();
+			HashMap series=new LinkedHashMap();
+			HashMap additionalValues=new LinkedHashMap();
 			String catValue="";
 
 			String nameP="";
@@ -168,7 +161,7 @@ public class OverlaidBarLine extends BarCharts {
 			String additional=(String)confParameters.get("add_labels");
 			if(additional.equalsIgnoreCase("true")){
 				additionalLabels=true;
-				catSerLabels=new HashMap();
+				catSerLabels=new LinkedHashMap();
 			}
 			else additionalLabels=false;
 		}
@@ -180,7 +173,7 @@ public class OverlaidBarLine extends BarCharts {
 
 		//reading series colors if present
 		SourceBean draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
-		seriesDraw=new HashMap();
+		seriesDraw=new LinkedHashMap();
 		if(draws!=null){
 
 			List atts=draws.getContainedAttributes();
@@ -344,8 +337,7 @@ public class OverlaidBarLine extends BarCharts {
 		JFreeChart chart = new JFreeChart(plot);
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
-		chart.setTitle(title);
-
+		chart.setBackgroundPaint(Color.white);
 		return chart;
 
 

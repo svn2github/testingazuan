@@ -93,7 +93,7 @@ public class BlockChart extends XYCharts {
         Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
         
         //Sets the graph paint scale and the legend paintscale
-        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue()*2,outboundCol);
+        LookupPaintScale paintScale = new LookupPaintScale(zvalues[0], (new Double(zrangeMax)).doubleValue(),outboundCol);
         LookupPaintScale legendPaintScale = new LookupPaintScale(0.5, 0.5+zvalues.length, outboundCol);
         
         for (int ke=0; ke<=(zvalues.length-1) ; ke++){

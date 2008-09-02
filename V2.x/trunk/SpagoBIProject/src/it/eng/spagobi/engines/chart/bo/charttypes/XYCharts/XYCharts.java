@@ -237,8 +237,8 @@ public class XYCharts extends ChartImpl{
 				double highz = new Double(high).doubleValue();
 				String low_high = low+","+high;
 				legendLabels[j+1]=label;
-				colorRangeMap.put(new Double( highz-((highz-lowz)/2)),col);
-				zvalues[j]=highz-((highz-lowz)/2);
+				colorRangeMap.put(new Double( highz-((highz-lowz))),col);
+				zvalues[j]=highz-((highz-lowz));
 			}else if (nameParam.equals("outbound")){
 				String val = (String)range.getAttribute("value");
 				zrangeMax = val;

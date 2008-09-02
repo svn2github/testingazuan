@@ -24,9 +24,16 @@ public class SimpleCluster extends ClusterCharts {
 				name, yLabel, xLabel, dataset, 
 				PlotOrientation.HORIZONTAL, true, true, false);
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
+		/*Font font = new Font("Tahoma", Font.BOLD, titleDimension);
 		TextTitle title = new TextTitle(name, font);
+		chart.setTitle(title);*/
+		
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
 
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setForegroundAlpha(0.65f);

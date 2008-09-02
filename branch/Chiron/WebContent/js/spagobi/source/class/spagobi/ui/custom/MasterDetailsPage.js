@@ -103,8 +103,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	
 		
    	// Create list view
-   	//listPage = new spagobi.ui.Table(this, records );
-   	listPage = new spagobi.ui.PagedTable(this, records );
+   	//listPage = new spagobi.ui.Table(this, records ); //works fine
+   	listPage = new spagobi.ui.PagedTable(this, records ); // problem with table resize
    	this.addTop( listPage );
       	
    	// Create detail view
@@ -124,12 +124,13 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	save_page.addEventListener("appear", ShowDetails, this);
 	
 	function ShowDetails() {
-		var alias = this.getForm();//.getData();
+		var alias = this.getForm().getData();
 		alert (this.printObject(alias));
 	}
 
     
-    /* test code for the dummy Logout button of pageview */
+    /* 
+     //test code for the dummy Logout button of pageview 
     var btn = new qx.ui.pageview.buttonview.Button("Logout");
 	detailPage.getBar().add(btn);
 	var dum_page = new qx.ui.pageview.buttonview.Page(btn);
@@ -140,7 +141,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	function logout() {
 		alert ("Button works !!!!");
 	}
-    /*End of test code   */
+    //End of test code   
+     */
         
     /*    
     //testing for parameter form's getData() function

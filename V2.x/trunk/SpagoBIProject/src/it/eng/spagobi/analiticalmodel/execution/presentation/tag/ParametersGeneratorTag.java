@@ -798,7 +798,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
 	String userId = getProfile().getUserUniqueIdentifier().toString();
-	String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + 
+	String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
 		"&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  
 		"&parameterId=" + biparam.getParID().toString() + "&roleName=" + roleName +
 		"&parameterFieldName=" + parameterFieldName + "&returnParam=" + biparam.getParameterUrlName() + requestIdentity +

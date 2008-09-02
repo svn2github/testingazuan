@@ -215,17 +215,17 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'lov',
 						image:'spagobi/img/spagobi/test/lovManagementIcon.png',
 						page: 'lov',
-						tooltip: 'Maps'
+						tooltip: 'List of Values'
       				}, {
       					name: 'constraints',
 						image:'spagobi/img/spagobi/test/constraintManagementIcon.png',
 						page: 'constraints',
-						tooltip: 'Features'
+						tooltip: 'Constraints'
       				}, {
       					name: 'parameters',
 						image:'spagobi/img/spagobi/test/parameterManagementIcon.png',
 						page: 'parameters',
-						tooltip: 'Features'
+						tooltip: 'Analytical Drivers'
       				}
       			]
       		},

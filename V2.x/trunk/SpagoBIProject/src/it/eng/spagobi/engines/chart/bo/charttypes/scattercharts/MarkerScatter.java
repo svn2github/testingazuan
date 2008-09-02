@@ -100,12 +100,13 @@ public class MarkerScatter extends ScatterCharts {
 				name, yLabel, xLabel, dataset, 
 				PlotOrientation.HORIZONTAL, true, true, false);
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
-
+		chart.setBackgroundPaint(Color.white);
+		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setForegroundAlpha(0.65f);
+		
 
 		XYItemRenderer renderer = plot.getRenderer();
 
@@ -165,7 +166,8 @@ public class MarkerScatter extends ScatterCharts {
 
         if (xRangeLow != null && !xRangeLow.equals("") && xRangeHigh != null && !xRangeHigh.equals("")){
 	        ValueAxis rangeAxis = plot.getRangeAxis();
-		    rangeAxis.setRange(Double.parseDouble(xRangeLow), Double.parseDouble(xRangeHigh));
+		    //rangeAxis.setRange(Double.parseDouble(xRangeLow), Double.parseDouble(xRangeHigh));
+		    rangeAxis.setRangeWithMargins(Double.parseDouble(xRangeLow), Double.parseDouble(xRangeHigh));
         }
         else{
         	NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -174,7 +176,8 @@ public class MarkerScatter extends ScatterCharts {
         }
         if (yRangeLow != null && !yRangeLow.equals("") && yRangeHigh != null && !yRangeHigh.equals("")){
 		    ValueAxis domainAxis = plot.getDomainAxis();
-		    domainAxis.setRange(Double.parseDouble(yRangeLow), Double.parseDouble(yRangeHigh));
+		    //domainAxis.setRange(Double.parseDouble(yRangeLow), Double.parseDouble(yRangeHigh));
+		    domainAxis.setRangeWithMargins(Double.parseDouble(yRangeLow), Double.parseDouble(yRangeHigh));
         }
         else{
         	NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();

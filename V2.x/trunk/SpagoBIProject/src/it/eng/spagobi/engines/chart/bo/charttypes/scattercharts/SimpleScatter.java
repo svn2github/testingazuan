@@ -26,9 +26,11 @@ public class SimpleScatter extends ScatterCharts {
 				PlotOrientation.HORIZONTAL, true, true, false);
 
 		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		//TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
-
+		chart.setBackgroundPaint(Color.white);
+		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setForegroundAlpha(0.65f);
 

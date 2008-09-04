@@ -20,7 +20,6 @@
  **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.bo.Formula;
 import it.eng.qbe.conf.QbeConf;
@@ -41,7 +40,6 @@ import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
 import it.eng.qbe.newquery.Query;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.query.IQuery;
-import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
@@ -49,15 +47,16 @@ import it.eng.spagobi.utilities.sql.SqlUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -67,7 +66,6 @@ import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.Path;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
@@ -163,7 +161,6 @@ public class DataMartModel implements IDataMartModel {
 			Session session = getDataSource().getSessionFactory().openSession();	
 			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter( session );
 			String sqlQuery = queryRewriter.rewrite(hqlQuery);
-			
 					
 			if (!SqlUtils.isSelectStatement(sqlQuery)){  
 				throw new Exception("It's not possible change database status with qbe query");
@@ -206,10 +203,14 @@ public class DataMartModel implements IDataMartModel {
 					if (it.hasNext()){
 						className = (String)it.next();
 					}
+					
 					String packageName = className.substring(0, className.lastIndexOf("."));
 					SQLFieldsReader sqlFieldsReader = new SQLFieldsReader(sqlQuery, sqlConnection);
 					
+					System.out.println( "--> " + packageName + "." + name +  "//" + name);
+					
 					List columnNames = new ArrayList();
+					List columnAliases = new ArrayList();
 					List columnHibernateTypes = new ArrayList();
 					
 					Iterator queryFileds = query.getSelectFields().iterator();
@@ -220,12 +221,18 @@ public class DataMartModel implements IDataMartModel {
 						SelectField field = (SelectField)queryFileds.next();
 						Field column = (Field)columns.get(i++);
 						
+						
 						DataMartField datamartField = getDataMartModelStructure().getField( field.getUniqueName() );
 						columnHibernateTypes.add( datamartField.getType() );
-						columnNames.add( column.getName() );					
+						columnNames.add( column.getName() );
+						columnAliases.add( field.getAlias() );
+						System.out.println( "--> " + packageName + "." + name +  "/id." 
+								+ Utils.asJavaPropertyIdentifier( column.getName() ) + "=" + field.getAlias());
+						
 					}
 					
-					viewReverseEngineering(name, packageName, thisTmpDir, columnNames, columnHibernateTypes);
+					
+					viewReverseEngineering(name, packageName, thisTmpDir, columnNames, columnAliases, columnHibernateTypes);
 					
 					compileJavaClasses(thisTmpDir);
 					
@@ -249,11 +256,9 @@ public class DataMartModel implements IDataMartModel {
 					tx.commit();
 							
 				}
-			}catch (Throwable t) {
-				t.printStackTrace();
-				if (tx != null)
-					tx.rollback();
-				
+			}catch (Exception e) {				
+				if (tx != null) tx.rollback();
+				throw e;				
 			} finally{
 				if (s != null){
 					s.close();
@@ -319,7 +324,7 @@ public class DataMartModel implements IDataMartModel {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void viewReverseEngineering(String name, String packageName, File destDir, List columnNames, List columnHibernateTypes) throws IOException {
+	private void viewReverseEngineering(String name, String packageName, File destDir, List columnNames, List columnAliases, List columnHibernateTypes) throws IOException {
 		
 		String directoryOfPackage = Utils.packageAsDir(packageName);
 		String destinationFoder = destDir.toString() + File.separator + directoryOfPackage + File.separator;
@@ -328,10 +333,10 @@ public class DataMartModel implements IDataMartModel {
 			f.mkdirs();
 		}
 		
-		BufferedWriter bwHbm = new BufferedWriter(new FileWriter(destinationFoder+ Utils.asJavaClassIdentifier(name)+".hbm.xml"));
-		BufferedWriter bwJava = new BufferedWriter(new FileWriter(destinationFoder+ Utils.asJavaClassIdentifier(name)+"Id.java"));
-		BufferedWriter labelProps = new BufferedWriter(new FileWriter(destDir+ "label.properties"));
-		BufferedWriter qbeProps = new BufferedWriter(new FileWriter(destDir+ "qbe.properties"));
+		BufferedWriter bwHbm = new BufferedWriter(new FileWriter(destinationFoder + Utils.asJavaClassIdentifier(name)+".hbm.xml"));
+		BufferedWriter bwJava = new BufferedWriter(new FileWriter(destinationFoder + Utils.asJavaClassIdentifier(name)+"Id.java"));
+		BufferedWriter labelProps = new BufferedWriter(new FileWriter(destDir + File.separator + "label.properties"));
+		BufferedWriter qbeProps = new BufferedWriter(new FileWriter(destDir + File.separator + "qbe.properties"));
 		
 		
 		bwJava.write("package "+packageName+";\n");
@@ -347,8 +352,8 @@ public class DataMartModel implements IDataMartModel {
 		bwHbm.write("<class name=\""+packageName+"."+Utils.asJavaClassIdentifier(name)+"\" table=\""+name+"\">\n");
 		bwHbm.write("  <composite-id name=\"id\" class=\""+packageName+"."+Utils.asJavaClassIdentifier(name)+"Id\">\n");
 		
-		labelProps.write("class." + packageName + "." + Utils.asJavaClassIdentifier(name) + "=" + Utils.asJavaClassIdentifier(name) + "\n\n");
-		qbeProps.write(packageName + "." + Utils.asJavaClassIdentifier(name) + ".type=view");		
+		labelProps.write(packageName + "." + Utils.asJavaClassIdentifier(name) + "//" + Utils.asJavaClassIdentifier(name) + "=" + Utils.asJavaClassIdentifier(name) + "\n\n");
+		qbeProps.write(packageName + "." + Utils.asJavaClassIdentifier(name) + "//" + Utils.asJavaClassIdentifier(name) + ".type=view");		
 		
 		for(int i = 0; i < columnNames.size(); i++) {
 			String columnName = (String)columnNames.get(i);
@@ -370,7 +375,7 @@ public class DataMartModel implements IDataMartModel {
             bwJava.write("    this."+javaFldName+"=par;\n");
             bwJava.write("}\n");
             
-            labelProps.write("field.id." + javaFldName + "=id." + javaFldName + "\n");
+            labelProps.write(packageName + "." + Utils.asJavaClassIdentifier(name) + "/id." + javaFldName + "=" + (String)columnAliases.get(i) + "\n");
 		}
 		bwJava.write("}\n");
 		

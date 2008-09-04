@@ -180,11 +180,13 @@ public class DatamartStructureBuilder {
 		
 		String identifierPropertyName = classMetadata.getIdentifierPropertyName();
 		
-
 		if (identifierType.isComponentType()) {
 			
 				ComponentType componentIdentifierType = (ComponentType)identifierType;	
-				String[] subPropertyNames = componentIdentifierType.getPropertyNames();				
+				String[] subPropertyNames = componentIdentifierType.getPropertyNames();
+				Property property = classMapping.getIdentifierProperty();
+				
+				
 				Type[] subPropertyTypes = componentIdentifierType.getSubtypes();
 				
 				propertyClass = new String[subPropertyNames.length];
@@ -195,10 +197,25 @@ public class DatamartStructureBuilder {
 				
 				for (int j=0; j < subPropertyNames.length; j++){
 					subPropertyClass = subPropertyTypes[j].getClass();
-					identifierPropertyNames.add(identifierPropertyName + "." + subPropertyNames[j]);
-					propertyClass[j] = subPropertyClass.getName();
-					type[j] = subPropertyTypes[j].getName();
+					
+					if( subPropertyTypes[j].isComponentType() ) {
+						ComponentType cType = (ComponentType)subPropertyTypes[j];	
+						String[] sPropertyNames = cType.getPropertyNames();
+						Type[] sTypes = cType.getSubtypes();
+						for(int z = 0; z < sPropertyNames.length; z++) {
+							identifierPropertyNames.add(identifierPropertyName + "." + subPropertyNames[j] + "."+ sPropertyNames[z]);
+							propertyClass[j] = subPropertyClass.getName();
+							type[j] = subPropertyTypes[j].getName();
+						}
+					} else {
+						identifierPropertyNames.add(identifierPropertyName + "." + subPropertyNames[j]);
+						propertyClass[j] = subPropertyClass.getName();
+						type[j] = subPropertyTypes[j].getName();
+					}
 				}	
+				
+				
+			
 				
 		} else {
 			
@@ -214,13 +231,14 @@ public class DatamartStructureBuilder {
 		    	
 		
 		
-		
 		Iterator it = classMapping.getIdentifierProperty().getColumnIterator();
-		for (int k = 0; it.hasNext(); k++){
+		for (int k = 0; k < scale.length; k++){
+			if(!it.hasNext()) continue;
 			Column column = (Column)it.next();
 			scale[k] = column.getScale();
 			precision[k] = column.getPrecision();
 		}
+		
 		
 		
 		for (int j = 0; j < identifierPropertyNames.size(); j++) {

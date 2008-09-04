@@ -73,6 +73,47 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		return getEngineInstance().getEnv();
 	}
 	
+	public String xsaveAnalysisState() throws EngineException {
+		IEngineInstance engineInstance = null;
+		String documentId = null;
+		EngineAnalysisMetadata analysisMetadata = null;
+		IEngineAnalysisState analysisState = null;
+		ContentServiceProxy  contentServiceProxy = null;
+		String serviceResponse= null;
+				
+		
+		engineInstance = getEngineInstance();
+		analysisMetadata = engineInstance.getAnalysisMetadata();
+		analysisState = engineInstance.getAnalysisState();
+
+		if(getEnv() == null) {
+			return "KO - Missing environment";
+		}
+		
+		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );
+		if(contentServiceProxy == null) {
+			return "KO - Missing content service proxy";
+		}
+		
+		documentId = (String)getEnv().get( EngineConstants.ENV_DOCUMENT_ID );
+		if(documentId == null) {
+			return "KO - Missing document id";
+		}
+		
+	    String isPublic = "false";
+	    if (PUBLIC_SCOPE.equalsIgnoreCase(analysisMetadata.getScope())) 
+	    	isPublic = "true";
+		
+		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
+				analysisMetadata.getName(),
+				analysisMetadata.getDescription(), 
+				isPublic, 
+				new String(analysisState.store()) );
+		
+		return serviceResponse;
+	}
+	
+	
 	public String saveAnalysisState() throws EngineException {
 		IEngineInstance engineInstance = null;
 		String documentId = null;

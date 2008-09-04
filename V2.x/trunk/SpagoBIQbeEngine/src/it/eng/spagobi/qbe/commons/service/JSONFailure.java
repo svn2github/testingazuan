@@ -33,15 +33,19 @@ import org.json.JSONObject;
 public class JSONFailure extends JSONResponse {
 
 	public JSONFailure(EngineException exception) {
-		setType(JSONResponse.FAILURE);
-		JSONObject error = new JSONObject();
+		super(JSONResponse.FAILURE, createResponseContent(exception) );
+	}
+
+	private static JSONObject createResponseContent(EngineException exception) {
+		JSONObject content = new JSONObject();
+		
 		try {
-			error.put("cause", exception.getCause());
+			content.put("cause", exception.getCause());			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
-		setResult( error ); 
+		return content;
 	}
 
 }

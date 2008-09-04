@@ -20,13 +20,14 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.XIStatement;
 import it.eng.qbe.newquery.SelectField;
-import it.eng.qbe.query.ISelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+
+import it.eng.spagobi.qbe.commons.service.JSONSuccess;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.IOException;
@@ -34,25 +35,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ExecuteQueryAction.
  */
-public class ExecuteQueryAction extends AbstractQbeEngineAction {
+public class ExecuteQueryAction extends AbstractQbeEngineAction {	
 	
-	
-	/** The Constant LIMIT. */
+	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
-	
-	/** The Constant START. */
 	public static final String START = "start";
 	
 	/** The Constant MAX_RESULT. */
@@ -61,139 +58,152 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
     
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
-		
-		//IStatement statement = null;
-		XIStatement xstatement = null;
+				
+		XIStatement statement = null;
 		Integer limit = null;
 		Integer start = null;
-		SourceBean queryResponseSourceBean = null;
-		//SourceBean xqueryResponseSourceBean = null;
+		SourceBean queryResponseSourceBean = null;		
+		List results = null;
+		Integer resultNumber = null;
 		JSONObject gridDataFeed = new JSONObject();
-		
-		
-			
+					
 		logger.debug("IN");
 		
 		try {
 		
 			super.service(request, response);		
-				
-			//statement = getDatamartModel().createStatement( getQuery() );
-			xstatement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );
 			
 			limit = getAttributeAsInteger( LIMIT );
-			start = getAttributeAsInteger( START );			
-		
-			//statement.setMaxResults( MAX_RESULT );
-			//statement.setParameters( getDatamartModel().getDataMartProperties() );
-			//statement.setParameters( getEnv() );
-			xstatement.setParameters( getEnv() );
+			logger.debug(LIMIT + ": " + limit);
+			start = getAttributeAsInteger( START );	
+			logger.debug(START + ": " + start);
+			
+			logger.debug("max results: " + MAX_RESULT );
+			
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+			
+			statement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );	
+			logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+			statement.setParameters( getEnv() );
+			logger.debug("Executable query: [" + statement.getQueryString() + "]");
 			
 			try {
-				logger.debug("Execute Query.");
-				//queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
-				queryResponseSourceBean = xstatement.executeWithPagination(start, limit, MAX_RESULT);
+				logger.debug("Executing query ...");
+				queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
+				Assert.assertNotNull(queryResponseSourceBean, "The the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
-				String query = xstatement.getQueryString();
-				logger.error("An error occurred while executing query: " + query, e);
-				String description = "An error occurred in " + getActionName() + " service while executing query: " + query;
-				String str = e.getMessage()!=null? e.getMessage(): e.getClass().getName();
-				description += "<br>The root cause of the error is: " + str;
+				logger.debug("Query execution aborted because of an internal exceptian");
+				String query = statement.getQueryString();
+				String message = "An error occurred in " + getActionName() + " service while executing query: [" + query + "]";				
 				List hints = new ArrayList();
+				hints.add("Check if the query is properly formed: [" + query + "]");
 				hints.add("Check connection configuration");
 				hints.add("Check the qbe jar file");
-				throw new QbeEngineException("Service error", description, hints, e);
+				throw new QbeEngineException(message, hints, e);
 			}
-			logger.debug("After executeWithPagination");
-				
-			List results = (List)queryResponseSourceBean.getAttribute("list");
-			Integer resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
-			logger.debug("ResultNumber="+resultNumber);
-			Iterator it = results.iterator();
-			Object o = null;
-			Object[] row;
+			logger.debug("Query executed succesfully");
 			
-			JSONObject metadata = new JSONObject();
-			JSONArray fields = null;
-			JSONArray rows = new JSONArray();
-				
-			metadata.put("totalProperty", "results");
-			metadata.put("root", "rows");
-			metadata.put("id", "id");
-			gridDataFeed.put("metaData", metadata);
-			gridDataFeed.put("results", resultNumber.intValue());
-			gridDataFeed.put("rows", rows);
+			results = (List)queryResponseSourceBean.getAttribute("list");
+			Assert.assertNotNull(results, "The the attribute [list] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
+			logger.debug("Fetched records: " + results.size());
 			
-			int recNo = 0;
-			while (it.hasNext()){
-				logger.debug("Reading result.");	
-				o = it.next();
-				
-			    if (!(o instanceof Object[])){
-			    	row = new Object[1];
-			    	row[0] = o == null? "": o.toString();
-			    }else{
-			    	row = (Object[])o;
-			    }
-			    
-				if(fields == null) {
-					fields = new JSONArray();
-					fields.put("recNo");
-					// Giro le intestazioni di colonne
-					Iterator fieldsIterator = getEngineInstance().getQuery().getSelectFields().iterator();
-					for (int j=0; j < row.length; j++){ 
-						JSONObject field = new JSONObject();
-						SelectField f = (SelectField)fieldsIterator.next();
-						if(!f.isVisible()) continue;
-						String header = f.getAlias();
-						if( header != null) field.put("header", header);
-						else field.put("header", "Column-" + (j+1));
-						
-						field.put("name", "column-" + (j+1));						
-						
-						field.put("dataIndex", "column-" + (j+1));
-						fields.put(field);
-					}					
-					metadata.put("fields", fields);
-				}
-			    
-			    // Giro le colonne
-				JSONObject record= null;
-				for (int j=0; j < row.length; j++){ 
-					if(record == null) {
-						record = new JSONObject();
-						record.put("id", ++recNo);
-					}
-					record.put("column-" + (j+1), row[j]!=null?row[j].toString():" ");
-				}
-				if(record != null) rows.put(record);
-			}		
-		} catch (Exception e) {
-			logger.error("Exception in JASON Creation",e);
-			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
+			resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
+			Assert.assertNotNull(resultNumber, "The the attribute [resultNumber] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
+			logger.debug("Total records: " + resultNumber);			
 			
-			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
-			Throwable rootException = e;
-			while(rootException.getCause() != null) rootException = rootException.getCause();
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			description += "<br>The root cause of the error is: " + str;
-			List hints = new ArrayList();
-			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			throw new QbeEngineException("Service error", description, hints, e);
+			gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
+			
+			try {
+				writeBackToClient( new JSONSuccess(gridDataFeed) );
+			} catch (IOException e) {
+				throw new EngineException("Impossible to write back the responce to the client", e);
+			}
+			
+		} catch (Exception e) {			
+			QbeEngineException engineException;
+			
+			if(e instanceof QbeEngineException) {
+				engineException = (QbeEngineException)e;			
+			} else {
+				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
+			}
+			 
+			engineException.setEngineInstance( getEngineInstance() );
+			
+			throw engineException;
+		} finally {
+			logger.debug("OUT");
 		}
+	}
+	
+	private JSONObject buildGridDataFeed(List results, int resultNumber) throws JSONException {
+		JSONObject gridDataFeed = new JSONObject();
 		
-		freezeHttpResponse();
-		HttpServletResponse httpResp = getHttpResponse();		
-		try {
-			httpResp.getOutputStream().print(gridDataFeed.toString());
-			httpResp.getOutputStream().flush();
-		} catch (IOException e) {
-      logger.error("IOException in Output Flush",e);
-		}
+		Iterator it = results.iterator();
+		Object o = null;
+		Object[] row;
+		
+		JSONObject metadata = new JSONObject();
+		JSONArray fields = null;
+		JSONArray rows = new JSONArray();
+			
+		metadata.put("totalProperty", "results");
+		metadata.put("root", "rows");
+		metadata.put("id", "id");
+		gridDataFeed.put("metaData", metadata);
+		gridDataFeed.put("results", resultNumber);
+		gridDataFeed.put("rows", rows);
+		
+		int recNo = 0;
+		while (it.hasNext()){
+			logger.debug("Reading result.");	
+			o = it.next();
+			
+		    if (!(o instanceof Object[])){
+		    	row = new Object[1];
+		    	row[0] = o == null? "": o.toString();
+		    }else{
+		    	row = (Object[])o;
+		    }
+		    
+			if(fields == null) {
+				fields = new JSONArray();
+				fields.put("recNo");
+				// Giro le intestazioni di colonne
+				Iterator fieldsIterator = getEngineInstance().getQuery().getSelectFields().iterator();
+				for (int j=0; j < row.length; j++){ 
+					JSONObject field = new JSONObject();
+					SelectField f = (SelectField)fieldsIterator.next();
+					if(!f.isVisible()) continue;
+					String header = f.getAlias();
+					if( header != null) field.put("header", header);
+					else field.put("header", "Column-" + (j+1));
+					
+					field.put("name", "column-" + (j+1));						
+					
+					field.put("dataIndex", "column-" + (j+1));
+					fields.put(field);
+				}					
+				metadata.put("fields", fields);
+			}
+		    
+		    // Giro le colonne
+			JSONObject record= null;
+			for (int j=0; j < row.length; j++){ 
+				if(record == null) {
+					record = new JSONObject();
+					record.put("id", ++recNo);
+				}
+				record.put("column-" + (j+1), row[j]!=null?row[j].toString():" ");
+			}
+			if(record != null) rows.put(record);
+		}		
+		
+		return gridDataFeed;
 	}
 
 }

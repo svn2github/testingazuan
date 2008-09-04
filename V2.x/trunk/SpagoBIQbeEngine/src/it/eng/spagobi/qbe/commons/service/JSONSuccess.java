@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -30,8 +31,12 @@ import org.json.JSONObject;
  */
 public class JSONSuccess extends JSONResponse {
 
-	public JSONSuccess(JSONObject result) {
-		super(JSONResponse.SUCCESS, result);
+	public JSONSuccess(JSONObject content) {
+		super(JSONResponse.SUCCESS, content);
+	}
+	
+	public JSONSuccess(JSONArray content) {
+		super(JSONResponse.SUCCESS, content);
 	}
 
 }

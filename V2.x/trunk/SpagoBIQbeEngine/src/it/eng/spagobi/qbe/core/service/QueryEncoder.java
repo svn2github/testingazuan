@@ -21,22 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.core.service;
 
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.newquery.Query;
+import it.eng.qbe.newquery.SelectField;
+import it.eng.qbe.newquery.WhereField;
+import it.eng.spagobi.utilities.assertion.Assert;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.newquery.Query;
-import it.eng.qbe.newquery.SelectField;
-import it.eng.qbe.newquery.WhereField;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.IWhereField;
-import it.eng.qbe.wizard.EntityClass;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -73,6 +70,7 @@ public class QueryEncoder {
 			if(fieldUniqueName != null) {
 				// add field
 				DataMartField field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
+				Assert.assertNotNull(field, "Inpossible to retrive from datamart-structure a fild named " + fieldUniqueName + ". Please check select clause in  query: " + queryFields);
 				query.addSelectFiled(field.getUniqueName(), funct, alias, visible, group.equalsIgnoreCase("true"), order);
 				if(group.equalsIgnoreCase("true")) {
 					query.addGroupByField(field.getUniqueName());

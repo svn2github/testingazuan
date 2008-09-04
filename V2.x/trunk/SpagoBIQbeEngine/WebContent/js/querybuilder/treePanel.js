@@ -66,6 +66,13 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
     var tree = new Ext.tree.TreePanel({
         //title          : 'Datamart Tree',
         collapsible      : true,
+        enableDD		 : true,
+        dropConfig		: {
+					        isValidDropPoint : function(n, pt, dd, e, data){
+					          return false;
+					        }      
+      					  },
+      	ddGroup			 : 'gridDDGroup',
         animCollapse     : true,
         collapseFirst	 : false,
         border           : false,
@@ -73,7 +80,6 @@ it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel = functio
         autoScroll       : true,
         containerScroll  : true,
         animate          : false,
-        enableDD         : false,
         trackMouseOver 	 : true,
         useArrows 		 : true,
         loader           : treeLoader
@@ -124,7 +130,7 @@ treePanelComponent.selectNode = function(node, e) {
 };
 
 treePanelComponent.refresh = function() {
-	alert('refresh + tree');
+	//alert('refresh + tree');
 	this.treeLoaderPtr.load(this.rootNodePtr, function(){});
 };
 

@@ -23,6 +23,7 @@ package it.eng.spagobi.qbe.commons.service;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,68 +36,55 @@ import it.eng.spagobi.utilities.service.IServiceResponse;
  */
 public class JSONResponse implements IServiceResponse {
 
-	String type;
-	JSONObject result;
+	int statusCode;
+	String content;
 	
-	public static final String SUCCESS = "SUCCESS";
-	public static final String FAILURE = "FAILURE";
-	public static final String ACKNOWLEDGE = "ACKNOWLEDGE";
 	
+	public static int ACKNOWLEDGE = 200;
+	public static int SUCCESS = 200;
+	public static int FAILURE = 500;
+	
+		
 	JSONResponse() {}
 	
-	public JSONResponse(String type, JSONObject result) {
-		setType( type );
-		setResult( result );
+	public JSONResponse(int statusCode, JSONObject content) {
+		setStatusCode( statusCode );
+		setContent( content.toString() );
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.service.IServiceResponse#getContent()
-	 */
+	public JSONResponse(int statusCode, JSONArray content) {
+		setStatusCode( statusCode );
+		setContent( content.toString() );
+	}
+
+	private void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
+	}
+	
+	private void setContent(String content) {
+		this.content = content;
+	}
+	
 	public String getContent() throws IOException {
-		JSONObject response = new JSONObject();
-		try {
-			response.put( "type", getType());
-			if( getResult() != null ) {
-				response.put( "result", getResult() );
-			}
-			
-		} catch (JSONException e) {
-			throw new IOException("Impossible to build JSON response");
-		}
-		return response.toString();
+		return content;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.service.IServiceResponse#getName()
-	 */
-	public String getName() {
-		return "response";
-	}
+	
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.service.IServiceResponse#getType()
-	 */
-	public String getType() {		
+	
+	public String getContentType() {		
 		return "text/json";
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.service.IServiceResponse#isInline()
-	 */
 	public boolean isInline() {
 		return true;
 	}
-
-	public JSONObject getResult() {
-		return result;
+	
+	public String getFileName() {
+		return "response";
 	}
-
-	public void setResult(JSONObject result) {
-		this.result = result;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 }

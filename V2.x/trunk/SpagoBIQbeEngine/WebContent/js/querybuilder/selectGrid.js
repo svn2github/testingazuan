@@ -291,9 +291,11 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		
 		    // create the Grid
 		    this.grid = new Ext.grid.EditorGridPanel({
+		    	id: 'select-grid',
 		        store: this.store,
-		        cm: cm,
-		        clicksToEdit:1,
+		        cm: cm,  
+		        sm : new Ext.grid.RowSelectionModel(),
+        		clicksToEdit:2,
 		        plugins: [visibleCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn],
 		        style:'padding:10px',
 		        frame: true,
@@ -305,7 +307,11 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		        collapsible:true,
 		        viewConfig: {
 		            forceFit:true
-		        },		        
+		        },		       
+		         enableDragDrop:true,
+        		//ddText: 'drag and drop to change order',
+        		ddGroup: 'gridDDGroup',
+         
 		        // inline toolbars
 		        tbar:[{
 		            text: this.labels.hideBT,
@@ -326,7 +332,34 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		        }],
 		        iconCls:'icon-grid'        
 		    });
-		    cm.defaultSortable = true;		 
+		    cm.defaultSortable = true;	
+		    
+		    this.grid.on("mouseover", function(e, t){
+		    	var row;
+		        this.targetRow = t;
+		        if((row = this.getView().findRowIndex(t)) !== false){
+		            this.getView().addRowClass(row, "row-over");
+		        }     
+		     }, this.grid);
+		     
+		     this.grid.on("mouseout", function(e, t){
+		        var row;
+		        this.targetRow = undefined;
+		        if((row = this.getView().findRowIndex(t)) !== false && row !== this.getView().findRowIndex(e.getRelatedTarget())){
+		            this.getView().removeRowClass(row, "row-over");
+		        }
+		     }, this.grid);
+		    
+		    this.grid.on('keydown', function(e){ 
+		      if(e.keyCode === 46) {
+		        var sm=this.getSelectionModel();
+		        var ds = this.getStore()
+		        var rows=sm.getSelections();
+		        for (i = 0; i < rows.length; i++) {
+		          this.store.remove( ds.getById(rows[i].id) );
+		        }
+		      }      
+		    }, this.grid);	 
 		    
 		         
 		},  
@@ -369,8 +402,8 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 			 */ 
 	  	},
 	  	
-		addRow : function(config) {
-		  var record = new this.Record({
+		addRow : function(config, i) {		    
+		   var record = new this.Record({
 		       funct: '',
 		       order: '',
 		       alias:'', 
@@ -379,8 +412,14 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		       field: config.data['field'],
 		       visible: true 
 		    });
-		    
-		    this.store.add(record); 
+	    
+	    	//alert("C: " + i); 
+	    
+	    	if(i != undefined) {
+	      		this.store.insert(i, record); 
+	    	} else {
+	      		this.store.add(record); 
+	    	}
 		},
 	
 		getRowsAsJSONParams : function() {

@@ -21,6 +21,8 @@
 	<qbe:url type="resource" var="href" ref="../css/qbe.css"/>
 	<link rel="styleSheet" href ="${href}" type="text/css" />
 	
+	<qbe:url type="resource" var="src" ref="../js/querybuilder/exceptionHandler.js"/>
+	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/serviceRegistry.js"/>
 	<script type="text/javascript" src='${src}'/></script>
@@ -47,9 +49,6 @@
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/treePanel.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/querybuilder/daniela.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/queryResultsPanel.js"/>

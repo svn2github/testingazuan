@@ -20,7 +20,6 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.XIStatement;
 import it.eng.qbe.newexport.Field;
 import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
@@ -28,33 +27,28 @@ import it.eng.qbe.newexport.ReportRunner;
 import it.eng.qbe.newexport.SQLFieldsReader;
 import it.eng.qbe.newexport.TemplateBuilder;
 import it.eng.qbe.newquery.SelectField;
-import it.eng.qbe.query.ISelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineException;
 import it.eng.spagobi.utilities.mime.MimeUtils;
 import it.eng.spagobi.utilities.strings.StringUtils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 
@@ -64,7 +58,7 @@ import org.json.JSONObject;
  */
 public class ExportResultAction extends AbstractQbeEngineAction {
 	
-	// request
+	// INPUT PARAMETERS
 	public static final String MIME_TYPE = "MIME_TYPE";
 	public static final String RESPONSE_TYPE = "RESPONSE_TYPE";
 	
@@ -78,82 +72,170 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response) throws EngineException  {				
 		
-		XIStatement xstatement = null;
-		Vector fields = null;
+		String responseType = null;
+		boolean writeBackResponseInline = false;
+		String mimeType = null;
+		String fileExtension = null;
+		XIStatement statement = null;
+		Session session = null;	
+		Connection connection = null;
+		HqlToSqlQueryRewriter queryRewriter = null;
+		String hqlQuery = null;
+		String sqlQuery = null;
+		SQLFieldsReader fieldsReader = null;
+		Vector extractedFields = null;
+		Map params = null;
+		TemplateBuilder templateBuilder = null;
+		String templateContent = null;
+		File reportFile = null;
+		ReportRunner runner = null;
 		
 		logger.debug("IN");
 		
-		super.service(request, response);	
-		
-		String mimeType = getAttributeAsString( MIME_TYPE );
-		String responseType = getAttributeAsString( RESPONSE_TYPE );
-		
-		if( StringUtils.isEmpty( mimeType ) ||  !MimeUtils.isValidMimeType( mimeType )  ) {
-			throw new EngineException("[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
-		}
-		
-		if( StringUtils.isEmpty( responseType ) 
-				|| (!RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType) 
-						&&  !RESPONSE_TYPE_ATTACHMENT.equalsIgnoreCase(responseType)) ) {
-			throw new EngineException("[" + responseType + "] is not a valid value for " + RESPONSE_TYPE + " parameter");
-		}
-		
-		String fileExtension = MimeUtils.getFileExtension( mimeType );
-		boolean writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
-		
-		xstatement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );		
-		
-		xstatement.setParameters( getEnv() );
-		String hqlQuery = xstatement.getQueryString();
-		
-		Session session = getEngineInstance().getDatamartModel().getDataSource().getSessionFactory().openSession();	
-		HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter( session );
-		String sqlQuery = queryRewriter.rewrite(hqlQuery);
-		SQLFieldsReader fieldsReader= new SQLFieldsReader(sqlQuery, session.connection());
 		try {
-			fields = fieldsReader.readFields();
-		} catch (Exception e) {
-			throw new EngineException("Impossible to extract fields from query: " + hqlQuery, e);
+			super.service(request, response);	
+			
+			mimeType = getAttributeAsString( MIME_TYPE );
+			logger.debug(MIME_TYPE + ": " + mimeType);		
+			responseType = getAttributeAsString( RESPONSE_TYPE );
+			logger.debug(RESPONSE_TYPE + ": " + responseType);
+					
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+					
+			Assert.assertNotNull(mimeType, "Input parameter [" + MIME_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue( MimeUtils.isValidMimeType( mimeType ) == true, "[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
+			
+			Assert.assertNotNull(responseType, "Input parameter [" + RESPONSE_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue( RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType) || RESPONSE_TYPE_ATTACHMENT.equalsIgnoreCase(responseType), "[" + responseType + "] is not a valid value for " + RESPONSE_TYPE + " parameter");
+			
+			
+			fileExtension = MimeUtils.getFileExtension( mimeType );
+			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
+			
+			statement = getEngineInstance().getDatamartModel().createXStatement( getEngineInstance().getQuery() );		
+			logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+			
+			statement.setParameters( getEnv() );
+			hqlQuery = statement.getQueryString();
+			logger.debug("Executable HQL query: [" + hqlQuery + "]");
+					
+			session = getEngineInstance().getDatamartModel().getDataSource().getSessionFactory().openSession();	
+			queryRewriter = new HqlToSqlQueryRewriter( session );
+			sqlQuery = queryRewriter.rewrite(hqlQuery);
+			logger.debug("Executable SQL query: [" + sqlQuery + "]");
+			
+			logger.debug("Exctracting fields ...");
+			fieldsReader = new SQLFieldsReader(sqlQuery, session.connection());
+			try {
+				extractedFields = fieldsReader.readFields();
+			} catch (Exception e) {
+				logger.debug("Impossible to extract fields from query");
+				throw new EngineException("Impossible to extract fields from query: " + hqlQuery, e);
+			}
+			logger.debug("Fields extracted succesfully");
+			
+			Assert.assertTrue(getEngineInstance().getQuery().getSelectFields().size() == extractedFields.size(), 
+					"The number of fields extracted from query resultset cannot be different from the number of fields specified into the query select clause");
+			
+			decorateExtractedFields( extractedFields );
+			
+			
+			
+			params = new HashMap();
+			params.put("pagination", getPaginationParamVaue(mimeType) );
+			
+			templateBuilder = new TemplateBuilder(sqlQuery, extractedFields, params);
+			templateContent = templateBuilder.buildTemplate();
+			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
+				try {
+					reportFile = File.createTempFile("report", ".rpt");
+				} catch (IOException ioe) {
+					throw new EngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
+				}
+				
+				setJasperClasspath();
+				connection = session.connection();
+				
+				runner = new ReportRunner( );
+				try {
+					runner.run( templateContent, reportFile, mimeType, connection);
+				}  catch (Exception e) {
+					throw new EngineException("Impossible compile or to export the report", e);
+				}
+				
+				try {				
+					writeBackToClient(reportFile, writeBackResponseInline, "report." + fileExtension, mimeType);
+				} catch (IOException ioe) {
+					throw new EngineException("Impossible to write back the responce to the client", ioe);
+				}			
+			} else {
+				try {				
+					writeBackToClient(200, templateContent, writeBackResponseInline, "report." + fileExtension, mimeType);
+				} catch (IOException e) {
+					throw new EngineException("Impossible to write back the responce to the client", e);
+				}
+			}
+		} catch (Exception e) {			
+			QbeEngineException engineException;
+			
+			if(e instanceof QbeEngineException) {
+				engineException = (QbeEngineException)e;			
+			} else {
+				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
+			}
+			 
+			engineException.setEngineInstance( getEngineInstance() );
+			
+			throw engineException;
+		} finally {
+			
+			try {
+				// closing session will close also all connection created into this section
+				session.close();
+			} catch (Exception e) {
+				logger.warn("Impossible to close the connection used to execute the report in " + getActionName() + " service", e);
+			}
+			
+			if(reportFile != null && reportFile.exists()) {
+				try {
+					reportFile.delete();
+				} catch (Exception e) {
+					logger.warn("Impossible to delete temporary file " + reportFile, e);
+				}
+			}
+			logger.debug("OUT");
 		}
-		
+	}
+	
+	
+
+
+	
+
+
+
+
+	private void decorateExtractedFields(List extractedFields) {
 		List selectedFields = getEngineInstance().getQuery().getSelectFields();
 		Iterator selectedFieldsIterator = selectedFields.iterator();
-		Iterator extractedFieldsIterator =  fields.iterator();
+		Iterator extractedFieldsIterator =  extractedFields.iterator();
 		while( extractedFieldsIterator.hasNext() ) {
 			Field exctractedField = (Field)extractedFieldsIterator.next();
 			SelectField selectedField = (SelectField)selectedFieldsIterator.next();
 			exctractedField.setAlias( selectedField.getAlias() );
 			exctractedField.setVisible( selectedField.isVisible() );
 		}
-		
-		TemplateBuilder templateBuilder = new TemplateBuilder(sqlQuery, fields, new HashMap());
-		String templateContent = templateBuilder.buildTemplate();
-		if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
-			try {
-				File reportFile = File.createTempFile("report", ".rpt");
-				setJasperClasspath();
-				ReportRunner runner = new ReportRunner( );
-				runner.run( templateContent, reportFile, mimeType, session.connection() );
-				writeBackToClient(reportFile, writeBackResponseInline, "report." + fileExtension, mimeType);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				
-				writeBackToClient(templateContent, writeBackResponseInline, "report." + fileExtension, mimeType);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
-		
-		session.close();
-			
-		
-		logger.debug("OUT");
 	}
 	
+	private String getPaginationParamVaue(String mimeType) {
+		if("application/pdf".equalsIgnoreCase(mimeType) || "application/rtf".equalsIgnoreCase(mimeType)) {
+			return "false";
+		} 
+
+		return "true";
+	}
 	
 	/**
 	 * Sets the jasper classpath.

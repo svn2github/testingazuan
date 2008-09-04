@@ -21,19 +21,14 @@
 	
   	
   	
-  	
-  	<!-- Deprecated -->
-  	<!-- 
-		<PUBLISHER name="QBE_LOOP_TREEOBJECT_PAGE">
-  		
-    	<RENDERING channel="PORTLET" mode="" type="LOOP">
-      		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="BIObjectsPage" />
-                <PARAMETER name="ACTOR" type="RELATIVE" scope="SERVICE_RESPONSE" value="ACTOR" />
+  	<!--  
+  	<PUBLISHER name="SERVICE_EXCEPTION_ACTION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
 			</RESOURCES>
-   	 	</RENDERING>
-   	 	
-  	</PUBLISHER>
+		</RENDERING>
+	</PUBLISHER>
 	-->
   	
   	

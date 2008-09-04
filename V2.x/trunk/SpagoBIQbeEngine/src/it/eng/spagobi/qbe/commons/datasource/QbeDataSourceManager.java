@@ -101,7 +101,7 @@ public class QbeDataSourceManager implements DataSourceManager {
 		dataSource = getDataSourceCache().getDataSource(dataSourceName);
 		
 		
-		//dataSource = null;
+		dataSource = null;
 		if (dataSource == null) {
 			dataSource = DataSourceFactory.buildDataSource(dataSourceName, dataMartName, dataMartNames, dblinkMap, connection);
 			getDataSourceCache().addDataSource(dataSourceName, dataSource);

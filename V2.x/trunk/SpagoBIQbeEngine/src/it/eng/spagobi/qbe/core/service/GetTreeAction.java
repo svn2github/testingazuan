@@ -20,9 +20,10 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.qbe.commons.service.JSONSuccess;
 import it.eng.spagobi.qbe.tree.ExtJsQbeTreeBuilder;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeFieldFilter;
@@ -30,6 +31,7 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.IOException;
@@ -37,6 +39,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 
 /**
@@ -45,43 +48,79 @@ import org.json.JSONArray;
  */
 public class GetTreeAction extends AbstractQbeEngineAction {
 
-	// valid input parameter names
-	/** The Constant DATAMART_NAME. */
+	// INPUT PARAMETERS
 	public static final String DATAMART_NAME = "DATAMART_NAME";
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(GetTreeAction.class);
+    
+    
 	public void service(SourceBean request, SourceBean response) throws EngineException {
-		super.service(request, response);	
 		
-		
-		String datamartName = getAttributeAsString(DATAMART_NAME); 		
+		String datamartName = null;
+		IQbeTreeEntityFilter entityFilter = null;
+		IQbeTreeFieldFilter fieldFilter = null;
+		QbeTreeFilter treeFilter = null;
+		ExtJsQbeTreeBuilder qbeBuilder = null;
+		List trees = null;
 		JSONArray nodes = null;
 		
-		IQbeTreeEntityFilter entityFilter = new QbeTreeOrderEntityFilter(
-					new QbeTreeAccessModalityEntityFilter(), getLocale() );
-		IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
-	   	
-		QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-	   	
-		ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
-	   	List trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());
-		
-	   	nodes = (JSONArray)trees.get(0);		
-		String treeData = nodes.toString();
-		
-		
-		
-		freezeHttpResponse();
-		HttpServletResponse httpResp = getHttpResponse();
+		logger.debug("IN");
 		
 		try {
-			httpResp.getOutputStream().print(treeData);
-			httpResp.getOutputStream().flush();
-		} catch (IOException e) { 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			super.service(request, response);	
+			
+			
+			datamartName = getAttributeAsString(DATAMART_NAME); 		
+			logger.debug(DATAMART_NAME + ": " + datamartName);
+			
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(datamartName, "Input parameter [" + DATAMART_NAME + "] cannot be null in oder to execute " + this.getActionName() + " service");		
+					
+			
+			entityFilter = new QbeTreeOrderEntityFilter(new QbeTreeAccessModalityEntityFilter(), getLocale() );
+			fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
+		   	treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
+		   	
+			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
+		   	trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());			
+		   	nodes = (JSONArray)trees.get(0);		
+			//String treeData = nodes.toString();
+			
+			
+			/*
+			freezeHttpResponse();
+			HttpServletResponse httpResp = getHttpResponse();
+			
+			try {
+				httpResp.getOutputStream().print(treeData);
+				httpResp.getOutputStream().flush();
+			} catch (IOException e) { 
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 */
+			
+			try {
+				writeBackToClient( new JSONSuccess(nodes) );
+			} catch (IOException e) {
+				throw new EngineException("Impossible to write back the responce to the client", e);
+			}
+			
+		} catch(Exception e) {
+			QbeEngineException engineException = null;
+			
+			if(e instanceof QbeEngineException) {
+				engineException = (QbeEngineException)e;
+			} else {
+				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
+			}
+			
+			engineException.setEngineInstance( getEngineInstance() );
+						
+			throw engineException;
+		} finally {
+			logger.debug("OUT");
 		}
 		
 

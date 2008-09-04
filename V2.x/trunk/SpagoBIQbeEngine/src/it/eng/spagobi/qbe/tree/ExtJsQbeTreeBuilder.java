@@ -26,8 +26,13 @@ import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -122,7 +127,7 @@ public class ExtJsQbeTreeBuilder  {
 		return list;
 	}
 	
-	
+	public PrintWriter writer;
 	
 	/**
 	 * Builds the qbe tree.
@@ -133,7 +138,16 @@ public class ExtJsQbeTreeBuilder  {
 	 */
 	private JSONArray buildQbeTree(String datamartName)  {			
 		JSONArray nodes = new JSONArray();	
-		addEntityNodes(nodes, datamartName);	
+		File file = new File(new File(ConfigSingleton.getRootPath()), "labels.properties");
+		try {
+			writer = new PrintWriter(new FileWriter(file));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		addEntityNodes(nodes, datamartName);
+		System.out.println("File saved: " + file.getAbsoluteFile());
+		writer.flush();
+		writer.close();
 		return nodes;
 	}
 	
@@ -190,6 +204,9 @@ public class ExtJsQbeTreeBuilder  {
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();	
 		String iconCls = datamartProperties.getEntityIconClass( entity );			
 		String label = geEntityLabel( entity );
+		
+		writer.println("\n\n####################################################");
+		writer.println( entity.getUniqueName().replaceAll(":", "/") + "=");
 		
 			
 		JSONArray childrenNodes = getFieldNodes(entity, recursionLevel);
@@ -269,7 +286,7 @@ public class ExtJsQbeTreeBuilder  {
 		String fieldLabel = geFieldLabel( field );		
 		String entityLabel = geEntityLabel( parentEntity );
 		
-		System.out.println( field.getUniqueName().replaceAll(":", "/") + "=" );
+		writer.println( field.getUniqueName().replaceAll(":", "/") + "=");
 		
 		JSObject fieldNode = new JSObject();
 		try {

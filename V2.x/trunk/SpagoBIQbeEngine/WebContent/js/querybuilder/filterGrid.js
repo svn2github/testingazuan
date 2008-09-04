@@ -248,9 +248,11 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		    
 		    // create the Grid
 		    this.grid = new Ext.grid.EditorGridPanel({
+		    	id: 'filter-grid',
 		        store: this.store,
 		        cm: cm,
-		        clicksToEdit:1,
+		        sm : new Ext.grid.RowSelectionModel(),
+		        clicksToEdit:2,
 		        plugins: [delButtonColumn],
 		        style:'padding:10px',
 		        frame: true,
@@ -263,6 +265,8 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		        viewConfig: {
 		            forceFit:true
 		        },
+		        enableDragDrop:true,
+        		ddGroup: 'gridDDGroup',
 		        
 		        
 		        
@@ -274,11 +278,38 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		        }],
 		        iconCls:'icon-grid'        
 		    });
+		    
+		    this.grid.on("mouseover", function(e, t){
+		    	var row;
+		        this.targetRow = t;
+		        if((row = this.getView().findRowIndex(t)) !== false){
+		            this.getView().addRowClass(row, "row-over");
+		        }     
+		     }, this.grid);
+		     
+		     this.grid.on("mouseout", function(e, t){
+		        var row;
+		        this.targetRow = undefined;
+		        if((row = this.getView().findRowIndex(t)) !== false && row !== this.getView().findRowIndex(e.getRelatedTarget())){
+		            this.getView().removeRowClass(row, "row-over");
+		        }
+		     }, this.grid);
+		    
+		    this.grid.on('keydown', function(e){ 
+		      if(e.keyCode === 46) {
+		        var sm=this.getSelectionModel();
+		        var ds = this.getStore()
+		        var rows=sm.getSelections();
+		        for (i = 0; i < rows.length; i++) {
+		          this.store.remove( ds.getById(rows[i].id) );
+		        }
+		      }      
+		    }, this.grid);
 		},
 
 
 		loadSavedData : function(query) {
-	  		alert('FILTER\'S GRID - loadSavedData');
+	  		//alert('FILTER\'S GRID - loadSavedData');
 	  		for(var i = 0; i < query.filters.length; i++) {
 	  			var filter = query.filters[i];
 	  			var record = new this.Record(filter);
@@ -291,7 +322,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		 *
 		 * config: a filterGridComponent.Record object used as initial configuration for the added record. 
 		 */
-		addRow : function(config) {
+		addRow : function(config, i) {
 		  var record = new this.Record({
 		  	   id: config.data['id'], 
 		       type:'Static Value',
@@ -302,7 +333,11 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		       field: config.data['field']  
 		    });
 		    
-		   this.grid.store.add(record); 
+		    if(i != undefined) {
+      			this.grid.store.insert(i, record); 
+    		} else {
+      			this.grid.store.add(record); 
+    		}
 		},
 		
 		getRowsAsJSONParams : function() {

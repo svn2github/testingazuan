@@ -21,12 +21,12 @@
 
 package it.eng.spagobi.qbe.commons.exception;
 
+import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QbeEngineException.
  */
@@ -35,8 +35,7 @@ public class QbeEngineException extends EngineException {
 	/** The hints. */
 	List hints;
 	
-	/** The description. */
-	String description;
+	QbeEngineInstance engineInstance;
 	
 	
 	/**
@@ -56,6 +55,7 @@ public class QbeEngineException extends EngineException {
      */
     public QbeEngineException(String message, Throwable ex) {
     	super(message, ex);
+    	this.hints = new ArrayList();
     }
     
     /**
@@ -66,24 +66,10 @@ public class QbeEngineException extends EngineException {
      * @param hints the hints
      * @param ex the ex
      */
-    public QbeEngineException(String message, String description, List hints, Throwable ex ) {
+    public QbeEngineException(String message, List hints, Throwable ex ) {
     	super(message, ex);
     	this.hints = hints;
-    	this.description = description;
     }
-
-	/**
-	 * Instantiates a new qbe engine exception.
-	 * 
-	 * @param message the message
-	 * @param description the description
-	 */
-	public QbeEngineException(String message, String description) {
-		super(message);
-		this.hints = new ArrayList();
-		this.hints.add("Sorry, there are no hints available right now on how to fix this problem");
-    	this.description = description;
-	}
 	
 	/**
 	 * Instantiates a new qbe engine exception.
@@ -92,26 +78,28 @@ public class QbeEngineException extends EngineException {
 	 * @param description the description
 	 * @param hints the hints
 	 */
-	public QbeEngineException(String message, String description, List hints) {
+	public QbeEngineException(String message, List hints) {
 		super(message);
 		this.hints = hints;
-    	this.description = description;
 	}
 
-	/**
-	 * Instantiates a new qbe engine exception.
-	 * 
-	 * @param message the message
-	 * @param description the description
-	 * @param ex the ex
-	 */
-	public QbeEngineException(String message, String description, Throwable ex ) {
-    	super(message, ex);
-    	this.hints = new ArrayList();
-		this.hints.add("Sorry, there are no hints available right now on how to fix this problem");
-    	this.description = description;
-    }
-
+	public String getRootCause() {
+		String rootCause;		
+		Throwable rootException;
+		
+		rootException = this;
+		while(rootException.getCause() != null) {
+			rootException = rootException.getCause();
+		}
+		
+		rootCause = rootException.getMessage()!=null
+			? rootException.getClass().getName() + ": " + rootException.getMessage()
+			: rootException.getClass().getName();
+		
+		return rootCause;
+	}
+	
+	
 	/**
 	 * Gets the hints.
 	 * 
@@ -130,23 +118,14 @@ public class QbeEngineException extends EngineException {
 		this.hints = hints;
 	}
 
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
+	public QbeEngineInstance getEngineInstance() {
+		return engineInstance;
 	}
 
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setEngineInstance(QbeEngineInstance engineInstance) {
+		this.engineInstance = engineInstance;
 	}
+
 
 }
 

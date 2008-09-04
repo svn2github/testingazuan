@@ -65,6 +65,7 @@ public class PageTag extends QbeTagSupport {
 			}
 	    	pageContext.getOut().print( buffer.toString() );
 	      } catch (Exception ex) {
+	    	 ex.printStackTrace();
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());
 	      }
 	      return EVAL_BODY_INCLUDE;

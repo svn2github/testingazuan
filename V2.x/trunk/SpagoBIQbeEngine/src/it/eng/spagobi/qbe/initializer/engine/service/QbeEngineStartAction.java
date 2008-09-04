@@ -119,7 +119,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			description += "<br>The root cause of the error is: " + str;
 			List hints = new ArrayList();
 			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			throw new QbeEngineException("Service error", description, hints, e);
+			throw new QbeEngineException(description, hints, e);
 		}
 		
 		

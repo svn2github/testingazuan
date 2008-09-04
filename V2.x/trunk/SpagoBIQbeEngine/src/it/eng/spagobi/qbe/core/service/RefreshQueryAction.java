@@ -20,31 +20,21 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.newquery.Query;
-import it.eng.qbe.query.IOrderByField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.IWhereField;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.JSONAcknowledge;
 import it.eng.spagobi.qbe.commons.service.JSONFailure;
-import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -70,12 +60,15 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);		
 			
-			jsonEncodedQuery = getAttributeAsString( QUERY );
-			
+			jsonEncodedQuery = getAttributeAsString( QUERY );			
 			logger.debug(QUERY + " = [" + jsonEncodedQuery + "]");
 			
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(jsonEncodedQuery, "Input parameter [" + QUERY + "] cannot be null in oder to execute " + this.getActionName() + " service");
+			
+			
 			try {
-				query = QueryEncoder.decode( jsonEncodedQuery, getDatamartModel() );
+				query = QueryEncoder.decode( jsonEncodedQuery, getEngineInstance().getDatamartModel() );
 			} catch (JSONException e) {
 				throw new EngineException("Impossible to syncronize the query with the server. Query passed by the client is malformed", e);
 			}
@@ -88,21 +81,16 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 			}
 		
 		} catch(Exception e) {
-			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
+			QbeEngineException engineException = null;
 			
-			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
-			Throwable rootException = e;
-			while(rootException.getCause() != null) rootException = rootException.getCause();
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			description += "<br>The root cause of the error is: " + str;
-			List hints = new ArrayList();
-			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			QbeEngineException engineException = new QbeEngineException("Service error", description, hints, e);
-			try {
-				writeBackToClient( new JSONFailure( engineException ) );
-			} catch (IOException ioe) {
-				throw new EngineException("Impossible to write back the responce to the client", e);
+			if(e instanceof QbeEngineException) {
+				engineException = (QbeEngineException)e;
+			} else {
+				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
 			}
+			
+			engineException.setEngineInstance( getEngineInstance() );
+						
 			throw engineException;
 		} finally {
 			logger.debug("OUT");

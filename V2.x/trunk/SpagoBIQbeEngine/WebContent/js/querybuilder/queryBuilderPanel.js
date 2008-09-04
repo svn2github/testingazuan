@@ -9,7 +9,7 @@
 var getQueryBuilderPanel = function(query) {
 
             var menuTree1 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();                
-            var menuTree2 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();    
+            //var menuTree2 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();    
        
     
             var treesPanel = new Ext.Panel({
@@ -27,14 +27,14 @@ var getQueryBuilderPanel = function(query) {
                   title:'Datamart 1',
                   items: [menuTree1],
                   border:false
-                },{
+                }/*,{
                   id:'block2',
                   autoScroll       : true,
         		  containerScroll  : true,
                   title:'Datamart 2',
                   items: [menuTree2],
                   border:false
-                }]
+                }*/]
               });
     
               var queryBuilderWESTPanel = new Ext.Panel({
@@ -104,7 +104,14 @@ var getQueryBuilderPanel = function(query) {
                     qtip:'Save query as view',
                     // hidden:true,
                     handler: function(event, toolEl, panel){
-                      showDialog2();	   
+                      Ext.Ajax.request({
+						   url: it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('REFRESH_QUERY_ACTION'),
+						   success: handleSaveView,
+						   failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure,					
+						   params: getParams
+						});  
+                      
+                      //showDialog2();	   
 					} 
                   },{
                     id:'gear',
@@ -114,7 +121,7 @@ var getQueryBuilderPanel = function(query) {
                       Ext.Ajax.request({
 						   url: it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('REFRESH_QUERY_ACTION'),
 						   success: handleExecQuery,
-						   failure: function(){alert('failure')},					
+						   failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure,					
 						   params: getParams
 						});                      
                     }
@@ -155,10 +162,11 @@ var getQueryBuilderPanel = function(query) {
         
         
         
-        var handleExecQuery = function() {
-        	it.eng.spagobi.engines.qbe.app.activateTab();
+        var handleExecQuery = function(response, options) {
+     		it.eng.spagobi.engines.qbe.app.activateTab();
         	execQuery();
         };
+    
         
        
        var viewName = new Ext.form.TextField({
@@ -246,13 +254,16 @@ var getQueryBuilderPanel = function(query) {
 						} catch (ex) {}
 					}
 				},
-				failure: function(){alert('failure')}					
-			});
+				failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure					
+			});   
+        };
+        
+        var handleSaveView = function() {
+        	showDialog2();
         };
         
         var handleCreateView = function() {
         	var vName = viewName.getValue();
-        	//alert('pippo: ' + vName);
         	
         	var qRecords = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams();
 	        var qFilters = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
@@ -265,7 +276,7 @@ var getQueryBuilderPanel = function(query) {
         	Ext.Ajax.request({
 				url:  url,
 				success: refreshTreeAndExit,
-				failure: function(){alert('failure')}					
+				failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure				
 			});   
         	
         };

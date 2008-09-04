@@ -223,19 +223,21 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	}
 	
 	public void writeBackToClient(IServiceResponse response) throws IOException {
-		writeBackToClient(response.getContent(),
+		writeBackToClient(response.getStatusCode(),
+				response.getContent(),
 				response.isInline(),
-				response.getName(),
-				response.getType());
+				response.getFileName(),
+				response.getContentType());
 	}
 	
-	public void writeBackToClient(String content, boolean inline, String contentName, String contentType) throws IOException {
+	public void writeBackToClient(int statusCode, String content, boolean inline, String fileName, String contentType) throws IOException {
 		freezeHttpResponse();
 		
 		// setup response header
-		getHttpResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + contentName + "\";");
+		getHttpResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "\";");
 		getHttpResponse().setContentType( contentType );
 		getHttpResponse().setContentLength( content.length() );
+		getHttpResponse().setStatus(statusCode);
 		
 		getHttpResponse().getWriter().print(content);
 	}

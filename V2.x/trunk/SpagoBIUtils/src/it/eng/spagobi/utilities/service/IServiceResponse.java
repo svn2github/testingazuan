@@ -30,8 +30,12 @@ import it.eng.spagobi.utilities.engines.EngineException;
  *
  */
 public interface IServiceResponse {
+	
+	int getStatusCode();
+	
+	String getContentType();
 	String getContent() throws IOException;
+	
 	boolean isInline();
-	String getName();
-	String getType();
+	String getFileName();	
 }

@@ -49,6 +49,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -89,6 +90,7 @@ public class ChartImpl implements IChart {
 	protected boolean slider=true;
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
+	protected HashMap seriesLabelsMap = null;
 
 	/**
 	 * configureChart reads the content of the template and sets the chart parameters.
@@ -256,6 +258,21 @@ public class ChartImpl implements IChart {
 					slider=false;
 			}
 
+			//reading series orders if present
+			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
+			if(sbSerieLabels!=null){
+				seriesLabelsMap=new LinkedHashMap();
+				List atts=sbSerieLabels.getContainedAttributes();
+				String serieLabel="";
+				for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+					String serieName=(String)object.getKey();
+					serieLabel=new String((String)object.getValue());
+					if(serieLabel!=null){
+						seriesLabelsMap.put(serieName, serieLabel); 
+					}
+				}		
+			}
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
@@ -730,6 +747,14 @@ public class ChartImpl implements IChart {
 
 	public void setTitleDimension(int titleDimension) {
 		this.titleDimension = titleDimension;
+	}
+
+	public HashMap getSeriesLabels() {
+		return seriesLabelsMap;
+	}
+
+	public void setSeriesLabels(HashMap seriesLabels) {
+		this.seriesLabelsMap = seriesLabels;
 	}
 
 }

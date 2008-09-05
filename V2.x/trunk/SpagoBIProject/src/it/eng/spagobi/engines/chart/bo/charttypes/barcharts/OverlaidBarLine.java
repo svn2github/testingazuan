@@ -34,6 +34,7 @@ public class OverlaidBarLine extends BarCharts {
 
 
 	HashMap seriesDraw=null;
+	HashMap seriesCaptions=null;
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
 	boolean useBars=false;
@@ -45,7 +46,7 @@ public class OverlaidBarLine extends BarCharts {
 	public DatasetMap calculateValue() throws Exception {
 
 		seriesNames=new Vector();
-		// I must identify different series
+		seriesCaptions=new LinkedHashMap();
 
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		categories=new HashMap();
@@ -87,7 +88,9 @@ public class OverlaidBarLine extends BarCharts {
 
 
 			//run all the attributes, to define series!
+			int numColumn = 0;
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+				numColumn ++;
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
 				nameP=new String(object.getKey());
@@ -108,7 +111,13 @@ public class OverlaidBarLine extends BarCharts {
 						}
 					}
 					else{
-						series.put(nameP, value);
+						if(seriesLabelsMap!=null){
+							String serieLabel = (String)seriesLabelsMap.get(nameP);
+							series.put(serieLabel, value);
+							seriesCaptions.put(serieLabel, nameP);
+						}
+						else
+							series.put(nameP, value);
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
@@ -119,17 +128,24 @@ public class OverlaidBarLine extends BarCharts {
 			// for each serie
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
+				String labelS = "";
 				String valueS=(String)series.get(nameS);
 				if(!hiddenSeries.contains(nameS)){
-
+					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
+						nameS = (String)(seriesCaptions.get(nameS));
+						labelS = (String)seriesLabelsMap.get(nameS);
+					}
+					else
+						labelS = nameS;	
+					
 					// if to draw as a line
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 					}
 					else{ // if to draw as a bar
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("bar"))).addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 
 					}
 					// if there is an additional label are 
@@ -277,15 +293,23 @@ public class OverlaidBarLine extends BarCharts {
 			if(colorMap!=null){
 				for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
 					String serName = (String) iterator.next();
-					int index=datasetBar.getRowIndex(serName);
+					String labelName = "";
+					int index=-1;
+					
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetBar.getRowIndex(labelName);
+					}
+					else
+						index=datasetBar.getRowIndex(serName);
+					
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						barRenderer.setSeriesPaint(index, color);
 					}	
 				}
 			}
-
-
 
 
 			plot.setDataset(1,datasetBar);
@@ -306,12 +330,20 @@ public class OverlaidBarLine extends BarCharts {
 			DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
 
 
-
 			if(colorMap!=null){
 				for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
 					String serName = (String) iterator.next();
-
-					int index=datasetLine.getRowIndex(serName);
+					String labelName = "";
+					int index=-1;
+					
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetLine.getRowIndex(labelName);
+					}
+					else
+						index=datasetLine.getRowIndex(serName);
+					
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						lineRenderer.setSeriesPaint(index, color);
@@ -331,7 +363,6 @@ public class OverlaidBarLine extends BarCharts {
 
 
 		//plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);

@@ -73,6 +73,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     backUrlPars.put("MESSAGEDET", "EXIT_FROM_DETAIL");
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
+    
+    //boolean flgLoadParDC = moduleResponse.getAttribute(DetailBIObjectModule.LOADING_PARS_DC);
    	
 %>
 
@@ -87,7 +89,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
 <%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
 <%@page import="it.eng.spagobi.tools.dataset.dao.IDataSetDAO"%>
+
 <script>
+var versionTemplateChanged = 'false';
+var fileUploadChanged = 'false';
+
+function versionTemplateSelected () {
+	versionTemplateChanged = 'true';
+}
+
+function fileToUploadInserted() {
+	fileUploadChanged = 'true';
+}
+
 function showEngField(docType) {
 	var ind = docType.indexOf(",");
 	var type = docType.substring(ind+1);
@@ -172,6 +186,30 @@ function checkFormVisibility(docType) {
 	}
 	
 }
+
+function saveDocument(goBack) {
+
+	var type = document.getElementById('doc_type').value;
+	if (type.match('DOCUMENT_COMPOSITE') != null){
+	    var message = "<%=msgBuilder.getMessage("1084", request) %>";
+		if (versionTemplateChanged == 'true' || fileUploadChanged == 'true'){
+			versionTemplateChanged = 'false';
+			fileUploadChanged = 'false';
+			if (confirm(message)) {
+				document.getElementById('loadParsDC').name = 'loadParsDC';
+				document.getElementById('loadParsDC').value = 'loadParsDC';
+			}
+		}		
+	}
+	
+	if (goBack == 'true'){
+	    document.getElementById('saveAndGoBack').name = 'saveAndGoBack';
+		document.getElementById('saveAndGoBack').value = 'saveAndGoBack';		
+	}
+		
+	document.objectForm.submit();
+}
+
 </script>
 
 <form method='POST' action='<%=formUrl%>' id = 'objectForm' name='objectForm' enctype="multipart/form-data">
@@ -204,16 +242,34 @@ function checkFormVisibility(docType) {
 			}
 		%>
 		<td class='header-button-column-portlet-section'>
+		<input type="hidden" name="" value="" id="loadParsDC" />
+			<a href='javascript:saveDocument("false");'> 
+			<img name='save' id='save' class='header-button-image-portlet-section'
+				   src='<%=urlBuilder.getResourceLink(request, "/img/save.png") %>'
+      		 title='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />' 
+      		 alt='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />' />
+			</a>
+		<!-- 
 			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
 				src='<%=urlBuilder.getResourceLink(request, "/img/save.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveButt" />'
 			/>
+			-->
 		</td>
 		<td class='header-button-column-portlet-section'>
+		<input type="hidden" name="" value="" id="saveAndGoBack" />
+		<a href='javascript:saveDocument("true");'> 
+			<img name='isaveAndGoBack' id='isaveAndGoBack' class='header-button-image-portlet-section'
+				   src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
+      		 title='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' 
+      		 alt='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' />
+			</a>
+			<!-- 
 			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
 				src='<%= urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />'
 			/> 
+			-->
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) {%>
@@ -1029,17 +1085,6 @@ toggleWithCookie('metadata_<%=obj.getId().toString()%>', 'metadataDiv_<%=obj.get
 	if (initialBIObjectParameter == null) initialBIObjectParameter = objPar;
 %>
 
-var versionTemplateChanged = 'false';
-var fileUploadChanged = 'false';
-
-function versionTemplateSelected () {
-	versionTemplateChanged = 'true';
-}
-
-function fileToUploadInserted() {
-	fileUploadChanged = 'true';
-}
-
 function isBIObjectFormChanged() {
 	
 	var biobjFormModified = 'false';
@@ -1168,7 +1213,8 @@ function verifyDependencies() {
 		%>
 		document.getElementById('loadParametersLookup').name = 'loadParametersLookup';
 		document.getElementById('loadParametersLookup').value = 'loadParametersLookup';
-		document.getElementById('save').click();
+		//document.getElementById('save').click();
+		document.objectForm.submit();
 		
 		<%
 	}
@@ -1195,7 +1241,8 @@ function saveBIParameterConfirm (message) {
 	
 	document.getElementById('goToDependenciesPage').name = 'goToDependenciesPage';
 	document.getElementById('goToDependenciesPage').value= 'goToDependenciesPage';
-	document.getElementById('save').click();
+	document.objectForm.submit();
+	//document.getElementById('save').click();
 }
 
 function checkDocumentType(message) {
@@ -1207,13 +1254,15 @@ function checkDocumentType(message) {
 			if (confirm(message)) {
 				document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
 				document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
-				document.getElementById('save').click();
+				//document.getElementById('save').click();
+				document.objectForm.submit();
 			}
 		} else {
 			document.getElementById('loadLinksLookup').name = 'loadLinksLookup';
 			document.getElementById('loadLinksLookup').value = 'loadLinksLookup';
 			
-			document.getElementById('save').click();
+			//document.getElementById('save').click();
+			document.objectForm.submit();
 		}
 	} else {
 		alert('<spagobi:message key = "SBIDev.docConf.docDet.noPermissibleLinks" />');

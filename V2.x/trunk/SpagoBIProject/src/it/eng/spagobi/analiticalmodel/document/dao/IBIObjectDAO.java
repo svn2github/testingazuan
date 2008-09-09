@@ -128,7 +128,6 @@ public interface IBIObjectDAO {
 	 */
 	public BIObject loadBIObjectForTree(Integer id) throws EMFUserError;
 	
-	
 	/**
 	 * Implements the query to modify a BI Object. All information needed is stored
 	 * into the input <code>BIObject</code> object.
@@ -140,6 +139,17 @@ public interface IBIObjectDAO {
 	
 	public void modifyBIObject(BIObject obj) throws EMFUserError;
 	
+	/**
+	 * Implements the query to modify a BI Object. All information needed is stored
+	 * into the input <code>BIObject</code> object.
+	 * 
+	 * @param obj the obj
+     * @param loadParsDC the boolean that permit the loading of parameters of a document composition
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	
+	public void modifyBIObject(BIObject obj, boolean loadParsDC ) throws EMFUserError;
 	
 	/**
 	 * Implements the query to modify a BI Object and its template. All information needed is stored
@@ -152,7 +162,19 @@ public interface IBIObjectDAO {
 	 */
 	public void modifyBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError;
 	
-
+	
+	/**
+	 * Implements the query to modify a BI Object and its template. All information needed is stored
+	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
+	 * 
+	 * @param objTemp The template of the biobject
+	 * @param obj the obj
+	 * @param loadParsDC the boolean that permit the loading of parameters of a document composition
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void modifyBIObject(BIObject obj, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError;
+	
 	/**
 	 * Implements the query to insert a BIObject. All information needed is stored
 	 * into the input <code>BIObject</code> object.
@@ -168,11 +190,33 @@ public interface IBIObjectDAO {
 	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
 	 * 
 	 * @param obj The object containing all insert information
-	 * @param objTemp The template of the biobject
+	 * @param loadParsDC the boolean that permit the loading of parameters of a document composition
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
+	public void insertBIObject(BIObject obj, boolean loadParsDC) throws EMFUserError;
+	
+	/**
+	 * Implements the query to insert a BIObject and its template. All information needed is stored
+	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
+	 * 
+	 * @param obj The object containing all insert information
+	 * @param objTemp The template of the biobject
+	 * @throws EMFUserError If an Exception occurred
+	 */
 	public void insertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError;
+	
+	/**
+	 * Implements the query to insert a BIObject and its template. All information needed is stored
+	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
+	 * 
+	 * @param obj The object containing all insert information
+	 * @param objTemp The template of the biobject
+	 * @param loadParsDC the boolean that permit the loading of parameters of a document composition
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertBIObject(BIObject obj, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError;
 
 	/**
 	 * Deletes a BIObject from a functionality. If the functionality is not specified

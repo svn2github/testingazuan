@@ -52,7 +52,6 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
@@ -75,14 +74,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.Order;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -348,9 +345,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 
 	
 	
-	
-	
-	
 	/**
 	 * Modify bi object.
 	 * 
@@ -361,7 +355,22 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObject(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
 	 */
 	public void modifyBIObject(BIObject obj) throws EMFUserError {
-		internalModify(obj, null);
+		internalModify(obj, null, false);
+	}
+	
+	
+	/**
+	 * Modify bi object.
+	 * 
+	 * @param obj the obj
+	 * @param loadParsDC boolean for management Document Composition params
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObject(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
+	 */
+	public void modifyBIObject(BIObject obj, boolean loadParsDC) throws EMFUserError {
+		internalModify(obj, null, loadParsDC);
 	}
 
 	/**
@@ -375,7 +384,22 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObjectWithoutVersioning(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
 	 */
 	public void modifyBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
-		internalModify(obj, objTemp);
+		internalModify(obj, objTemp, false);
+	}
+		
+	/**
+	 * Modify bi object.
+	 * 
+	 * @param obj the obj
+	 * @param objTemp the obj temp
+	 * @param loadParsDC boolean for management Document Composition params
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO#modifyBIObjectWithoutVersioning(it.eng.spagobi.analiticalmodel.document.bo.BIObject)
+	 */
+	public void modifyBIObject(BIObject obj, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError {
+		internalModify(obj, objTemp, loadParsDC);
 
 	}
 	
@@ -385,7 +409,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @param objTemp The BIObject template 
 	 * @throws EMFUserError If any exception occurred
 	 */
-	private void internalModify(BIObject biObject, ObjTemplate objTemp) throws EMFUserError {
+	private void internalModify(BIObject biObject, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -458,7 +482,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					//if the input document is a document composition and template is changed deletes existing parameters 
 					//and creates all new parameters automatically 
 					//(the parameters are recovered from all documents that compose general document)
-					if (biObject.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) &&
+					if (loadParsDC &&
 						(oldTemp==null || objTemp.getId()==null || objTemp.getId().compareTo(oldTemp.getId()) != 0)){
 							insertParametersDocComposition(aSession, biObject, objTemp, true);
 					}
@@ -552,8 +576,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
-		internalInsertBIObject(obj, objTemp);
+	public void insertBIObject(BIObject obj, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError {
+		internalInsertBIObject(obj, objTemp, loadParsDC);
 	}
 	
 	/**
@@ -565,10 +589,36 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void insertBIObject(BIObject obj) throws EMFUserError {
-		internalInsertBIObject(obj, null);
+		internalInsertBIObject(obj, null, false);
 	}
 	
-	private void internalInsertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
+	/**
+	 * Implements the query to insert a BIObject. All information needed is stored
+	 * into the input <code>BIObject</code> object.
+	 * 
+	 * @param obj The object containing all insert information
+	 * @param loadParsDC boolean for management Document Composition params
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertBIObject(BIObject obj, boolean loadParsDC) throws EMFUserError {
+		internalInsertBIObject(obj, null, loadParsDC);
+	}
+	
+	/**
+	 * Implements the query to insert a BIObject. All information needed is stored
+	 * into the input <code>BIObject</code> object.
+	 * 
+	 * @param obj The object containing all insert information
+	 * @param loadParsDC boolean for management Document Composition params
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertBIObject(BIObject obj, ObjTemplate objTemp) throws EMFUserError {
+		internalInsertBIObject(obj, objTemp, false);
+	}
+	
+	private void internalInsertBIObject(BIObject obj, ObjTemplate objTemp, boolean loadParsDC) throws EMFUserError {
 	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -648,7 +698,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			//if the document is a document composition creates all parameters automatically 
 			//(the parameters are recovered from all documents that compose general document)
-			if (obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)){
+			if (loadParsDC){
 				insertParametersDocComposition(aSession, hibBIObject);
 			}
 			

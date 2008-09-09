@@ -87,7 +87,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	public final static String NAME_ATTR_LIST_DS = "datasource";
 	public final static String NAME_ATTR_LIST_LANGUAGES = "languages";
 	public final static String NAME_ATTR_LIST_DATASET = "datasets";
-	
+	public final static String LOADING_PARS_DC = "loadingParsDC";
 	
 	//private String actor = null;
 	private EMFErrorHandler errorHandler = null;
@@ -95,6 +95,7 @@ public class DetailBIObjectModule extends AbstractModule {
 	private String initialPath = null;
 	private DetBIObjModHelper helper = null;
 	SessionContainer session = null;
+	
 	
 	
 	/* (non-Javadoc)
@@ -811,6 +812,10 @@ public class DetailBIObjectModule extends AbstractModule {
 			// define variable that contains the id of the parameter selected
 			String selectedObjParIdStr = null;
 			selectedObjParIdStr = "-1";
+			
+			//next attribute defines if load automatically all parameters for a document composition type or not.
+			boolean loadParsDCClicked =  request.getAttribute("loadParsDC") != null;
+			
 			// make a validation of the request data
 			ValidationCoordinator.validate("PAGE", "BIObjectValidation", this);			
 			// if there are some validation errors into the errorHandler return without write into DB 
@@ -849,12 +854,16 @@ public class DetailBIObjectModule extends AbstractModule {
 //					Integer dsId = engine.getDataSourceId();
 //					obj.setDataSourceId(dsId);
 //				}
+				//if the object is a documen composition asks to the user if he wants load all parameters or not
+				if (obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)){
+					response.setAttribute(LOADING_PARS_DC, "true");
+				}
 				// inserts into DB the new BIObject
 				if(objTemp==null) {
-					DAOFactory.getBIObjectDAO().insertBIObject(obj);
+					DAOFactory.getBIObjectDAO().insertBIObject(obj, loadParsDCClicked);
 				} else {
 				        
-					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp);
+					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp, loadParsDCClicked);
 				}
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
 				
@@ -958,9 +967,9 @@ public class DetailBIObjectModule extends AbstractModule {
 					
 					// it is requested to modify the main values of the BIObject
 					if(objTemp==null) {
-						DAOFactory.getBIObjectDAO().modifyBIObject(obj);
+						DAOFactory.getBIObjectDAO().modifyBIObject(obj, loadParsDCClicked);
 					} else {
-						DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp);
+						DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp, loadParsDCClicked);
 					}
 	    			// reloads the BIObject 
 	    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
@@ -1004,14 +1013,4 @@ public class DetailBIObjectModule extends AbstractModule {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

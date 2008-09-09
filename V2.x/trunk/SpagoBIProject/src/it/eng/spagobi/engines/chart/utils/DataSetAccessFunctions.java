@@ -40,6 +40,8 @@ import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -191,8 +193,25 @@ public class DataSetAccessFunctions {
 					}
 					else if(typePar.equalsIgnoreCase("Number")){
 						try {
-			    		      Double doubleValue=new Double(Double.parseDouble(value));
-			    		      value=doubleValue.toString();
+							 StringTokenizer st = new StringTokenizer(value);
+							 
+							 String numTemp = "";
+							 Double doubleValue = null;
+							 value = "";
+							 while(st.hasMoreTokens()){
+								 
+								 numTemp = st.nextToken("'");
+								 if(numTemp.equals(",")){
+									 continue;
+								 }
+								 doubleValue=new Double(Double.parseDouble(numTemp));
+								 value = value + doubleValue.toString();
+								 
+								 if(st.hasMoreTokens()){
+									 value = value + ",";
+								 }
+							 }
+							  
 			    		      } catch (NumberFormatException e) {
 			    		    	  throw new Exception();
 			    		      }

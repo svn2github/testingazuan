@@ -174,6 +174,12 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 						if(values.size()==1){
 							String value=(String)values.get(0);
 							parametersMap.put(url, value);
+						}else if(values.size() >=1){
+							String value = "'"+(String)values.get(0)+"'";
+							for(int k = 1; k< values.size() ; k++){
+								value = value + ",'" + (String)values.get(k)+"'";
+							}
+							parametersMap.put(url, value);
 						}
 					}
 

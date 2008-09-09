@@ -185,7 +185,7 @@ public class DataSetAccessFunctions {
 					throw new Exception();
 				}
 				else{
-					if(typePar.equalsIgnoreCase("String")){
+					if(typePar.equalsIgnoreCase("String")&& !value.startsWith("'")){
 						value="'"+value+"'";
 				
 					}

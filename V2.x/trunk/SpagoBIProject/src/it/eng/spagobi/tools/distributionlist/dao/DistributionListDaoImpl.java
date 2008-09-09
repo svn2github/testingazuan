@@ -1,4 +1,4 @@
-/**
+ /**
 
 SpagoBI - The Business Intelligence Free Platform
 

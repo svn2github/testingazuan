@@ -37,6 +37,9 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -439,8 +442,12 @@ public class ExecuteBIDocumentJob implements Job {
 				while(j.hasNext()){
 					Email e = (Email) j.next();
 					String email = e.getEmail();
-					if (j.hasNext()) {mailTos = mailTos+email+",";}
-					else {mailTos = mailTos+email;}
+					String userTemp = e.getUserId();
+					IEngUserProfile userProfile = GeneralUtilities.createNewUserProfile(userTemp);				
+					if(ObjectsAccessVerifier.canSee(biobj, userProfile))	{				
+						if (j.hasNext()) {mailTos = mailTos+email+",";}
+						else {mailTos = mailTos+email;}
+					}
 					
 				}
 			}

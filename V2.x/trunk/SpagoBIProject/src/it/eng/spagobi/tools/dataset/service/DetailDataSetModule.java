@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -763,12 +764,50 @@ public class DetailDataSetModule extends AbstractModule {
 					String valueToPass="";
 
 					if(type.equals("String")){
-						valueToPass="'"+value+"'";
+						//valueToPass="'"+value+"'";
+						
+						StringTokenizer st = new StringTokenizer(value);
+						 
+						 String numTemp = "";
+						 value = "";
+						 
+						 
+							 while(st.hasMoreTokens()){
+								 
+								 numTemp = st.nextToken(",");
+									 
+									 value = value + "'"+numTemp+"'";									 
+									 if(st.hasMoreTokens()){
+										 value = value + ",";
+									 }
+							 }
+							 valueToPass = value;	 
+						 
 					}
 					else if(type.equals("Number")){
 						try {
-							Double doubleValue=new Double(Double.parseDouble(value));
-							valueToPass=doubleValue.toString();
+							 StringTokenizer st = new StringTokenizer(value);
+							 
+							 String numTemp = "";
+							 Double doubleValue = null;
+							 value = "";
+							 
+							 
+								 while(st.hasMoreTokens()){
+									 
+									 numTemp = st.nextToken(",");
+									 doubleValue=new Double(Double.parseDouble(numTemp));
+									 value = value + doubleValue.toString();
+									 
+									 if(st.hasMoreTokens()){
+										 value = value + ",";
+									 }
+								 }
+							 
+								 
+								 valueToPass = value;
+							 
+							
 						} catch (NumberFormatException e) {
 							throw new Exception();
 						}

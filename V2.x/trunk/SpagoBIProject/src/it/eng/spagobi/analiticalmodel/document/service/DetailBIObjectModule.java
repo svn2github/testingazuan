@@ -854,10 +854,6 @@ public class DetailBIObjectModule extends AbstractModule {
 //					Integer dsId = engine.getDataSourceId();
 //					obj.setDataSourceId(dsId);
 //				}
-				//if the object is a documen composition asks to the user if he wants load all parameters or not
-				if (obj.getBiObjectTypeCode().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)){
-					response.setAttribute(LOADING_PARS_DC, "true");
-				}
 				// inserts into DB the new BIObject
 				if(objTemp==null) {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, loadParsDCClicked);

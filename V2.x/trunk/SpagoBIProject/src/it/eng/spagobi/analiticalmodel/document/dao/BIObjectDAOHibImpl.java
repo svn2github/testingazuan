@@ -1429,6 +1429,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try{
 			//gets document composition configuration
 			ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(sbiObject.getBiobjId());
+			logger.debug("Template document composition in insert: " + template );
 	        if(template==null)  return;
 	        byte[] contentBytes = template.getContent();
 	        String contentStr = new String(contentBytes);

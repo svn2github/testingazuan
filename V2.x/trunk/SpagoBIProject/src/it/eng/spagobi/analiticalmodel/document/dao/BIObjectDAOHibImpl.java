@@ -697,9 +697,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				insertObjTemplate(aSession, objTemp, hibBIObject);
 			}
 			
+			
 			//if the document is a document composition creates all parameters automatically 
 			//(the parameters are recovered from all documents that compose general document)
 			if (loadParsDC){
+				//next commit is necessary for the insertion of document composition parameters
+				tx.commit();
+				tx = aSession.beginTransaction();
 				insertParametersDocComposition(aSession, hibBIObject);
 			}
 			

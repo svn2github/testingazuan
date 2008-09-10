@@ -191,7 +191,7 @@ function saveDocument(goBack) {
 
 	var type = document.getElementById('doc_type').value;
 	if (type.match('DOCUMENT_COMPOSITE') != null){
-	    var message = "<%=msgBuilder.getMessage("1084", request) %>";
+	    var message = "<%=msgBuilder.getMessage("1012", "component_spagobidocumentcompositionIE_messages",  request) %>";
 		if (versionTemplateChanged == 'true' || fileUploadChanged == 'true'){
 			versionTemplateChanged = 'false';
 			fileUploadChanged = 'false';

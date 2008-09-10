@@ -488,6 +488,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					}
 				 } catch (Exception e) {
 			        	logger.error("Error during creation of document composition parameters : ", e);
+			        	throw new EMFUserError(EMFErrorSeverity.ERROR, e.getMessage());
 			      }
 				
 			}
@@ -1367,40 +1368,51 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	        //for every document child gets parameters and inserts these into new document composition object
 	        for (int i=0; i<lstLabeldDocs.size(); i++){
 	        	BIObject docChild = DAOFactory.getBIObjectDAO().loadBIObjectByLabel((String)lstLabeldDocs.get(i));
-	        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
-	        	for (int j=0; j<lstDocChildParameters.size(); j++){
-	        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
-	        		if (!totalParameters.contains(objPar.getLabel())){
-	        			SbiObjects aSbiObject = new SbiObjects();
-	        			//aSbiObject.setBiobjId(biObject.getId());
-	        			Integer objId = biObject.getId();
-						if (objId == null || objId.compareTo(new Integer("0"))==0)
-							objId = biObject.getId();
-	        			aSbiObject.setBiobjId(objId);
-	        			
-	        			SbiParameters aSbiParameter = new SbiParameters();
-	        			aSbiParameter.setParId(objPar.getParID());
-	        			SbiObjPar sbiObjPar = new SbiObjPar();
-	        			sbiObjPar.setSbiObject(aSbiObject);
-	        			sbiObjPar.setSbiParameter(aSbiParameter);
-	        			sbiObjPar.setObjParId(new Integer("-1"));
-	        			sbiObjPar.setLabel(objPar.getLabel());
-	        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
-	        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
-	        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
-	        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
-	        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
-	        			sbiObjPar.setProg(objPar.getProg());
-	        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
-	        	        aSession.save(sbiObjPar);
-	        			totalParameters.add(objPar.getLabel());
-	        		}
-	        	}
 	        	
+	        	if (docChild == null){
+	        		logger.error("Error while getting document child "+ (String)lstLabeldDocs.get(i) +" for document composition.");
+	        		List lstLabel = new ArrayList();
+	        		lstLabel.add((String)lstLabeldDocs.get(i));
+	    			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", lstLabel, "component_spagobidocumentcompositionIE_messages");
+	        	}
+	        	else {
+		        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
+		        	for (int j=0; j<lstDocChildParameters.size(); j++){
+		        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
+		        		if (!totalParameters.contains(objPar.getLabel())){
+		        			SbiObjects aSbiObject = new SbiObjects();
+		        			//aSbiObject.setBiobjId(biObject.getId());
+		        			Integer objId = biObject.getId();
+							if (objId == null || objId.compareTo(new Integer("0"))==0)
+								objId = biObject.getId();
+		        			aSbiObject.setBiobjId(objId);
+		        			
+		        			SbiParameters aSbiParameter = new SbiParameters();
+		        			aSbiParameter.setParId(objPar.getParID());
+		        			SbiObjPar sbiObjPar = new SbiObjPar();
+		        			sbiObjPar.setSbiObject(aSbiObject);
+		        			sbiObjPar.setSbiParameter(aSbiParameter);
+		        			sbiObjPar.setObjParId(new Integer("-1"));
+		        			sbiObjPar.setLabel(objPar.getLabel());
+		        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
+		        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
+		        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
+		        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
+		        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
+		        			sbiObjPar.setProg(objPar.getProg());
+		        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
+		        	        aSession.save(sbiObjPar);
+		        			totalParameters.add(objPar.getLabel());
+		        		}
+		        	}
+	        	}
 	        }
 	        logger.debug("OUT");
+		} catch (EMFUserError eu) {
+			throw eu;
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
 	
@@ -1429,40 +1441,50 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	        //for every document child gets parameters and inserts these into new document composition object
 	        for (int i=0; i<lstLabeldDocs.size(); i++){
 	        	BIObject docChild = DAOFactory.getBIObjectDAO().loadBIObjectByLabel((String)lstLabeldDocs.get(i));
-	        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
-	        	for (int j=0; j<lstDocChildParameters.size(); j++){
-	        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
-	        		if (!totalParameters.contains(objPar.getLabel())){
-	        			SbiObjects aSbiObject = new SbiObjects();
-	        			//aSbiObject.setBiobjId(biObject.getId());
-	        			Integer objId = sbiObject.getBiobjId();
-						if (objId == null || objId.compareTo(new Integer("0"))==0)
-							objId = sbiObject.getBiobjId();
-	        			aSbiObject.setBiobjId(objId);
-	        			
-	        			SbiParameters aSbiParameter = new SbiParameters();
-	        			aSbiParameter.setParId(objPar.getParID());
-	        			SbiObjPar sbiObjPar = new SbiObjPar();
-	        			sbiObjPar.setSbiObject(aSbiObject);
-	        			sbiObjPar.setSbiParameter(aSbiParameter);
-	        			sbiObjPar.setObjParId(new Integer("-1"));
-	        			sbiObjPar.setLabel(objPar.getLabel());
-	        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
-	        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
-	        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
-	        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
-	        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
-	        			sbiObjPar.setProg(objPar.getProg());
-	        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
-	        	        aSession.save(sbiObjPar);
-	        			totalParameters.add(objPar.getLabel());
-	        		}
+	        	if (docChild == null){
+	        		logger.error("Error while getting document child "+ (String)lstLabeldDocs.get(i) +" for document composition.");
+	        		List lstLabel = new ArrayList();
+	        		lstLabel.add((String)lstLabeldDocs.get(i));
+	    			throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", lstLabel, "component_spagobidocumentcompositionIE");
 	        	}
-	        	
+	        	else {
+		        	List lstDocChildParameters = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(docChild.getId());
+		        	for (int j=0; j<lstDocChildParameters.size(); j++){
+		        		BIObjectParameter objPar  = (BIObjectParameter)lstDocChildParameters.get(j);
+		        		if (!totalParameters.contains(objPar.getLabel())){
+		        			SbiObjects aSbiObject = new SbiObjects();
+		        			//aSbiObject.setBiobjId(biObject.getId());
+		        			Integer objId = sbiObject.getBiobjId();
+							if (objId == null || objId.compareTo(new Integer("0"))==0)
+								objId = sbiObject.getBiobjId();
+		        			aSbiObject.setBiobjId(objId);
+		        			
+		        			SbiParameters aSbiParameter = new SbiParameters();
+		        			aSbiParameter.setParId(objPar.getParID());
+		        			SbiObjPar sbiObjPar = new SbiObjPar();
+		        			sbiObjPar.setSbiObject(aSbiObject);
+		        			sbiObjPar.setSbiParameter(aSbiParameter);
+		        			sbiObjPar.setObjParId(new Integer("-1"));
+		        			sbiObjPar.setLabel(objPar.getLabel());
+		        			sbiObjPar.setParurlNm(objPar.getParameterUrlName());
+		        			sbiObjPar.setReqFl(new Short(objPar.getRequired().shortValue()));
+		        			sbiObjPar.setModFl(new Short(objPar.getModifiable().shortValue()));
+		        			sbiObjPar.setViewFl(new Short(objPar.getVisible().shortValue()));
+		        			sbiObjPar.setMultFl(new Short(objPar.getMultivalue().shortValue()));
+		        			sbiObjPar.setProg(objPar.getProg());
+		        			sbiObjPar.setPriority(new Integer(totalParameters.size()+1)); 
+		        	        aSession.save(sbiObjPar);
+		        			totalParameters.add(objPar.getLabel());
+		        		}
+		        	}
+	        	}
 	        }
 	        logger.debug("OUT");
+		} catch (EMFUserError eu) {
+			throw eu;
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
 	}
 }

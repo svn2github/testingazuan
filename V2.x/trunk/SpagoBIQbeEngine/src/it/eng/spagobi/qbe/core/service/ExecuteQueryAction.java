@@ -87,7 +87,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 			
 			statement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );	
-			logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
 			statement.setParameters( getEnv() );
 			logger.debug("Executable query: [" + statement.getQueryString() + "]");
 			

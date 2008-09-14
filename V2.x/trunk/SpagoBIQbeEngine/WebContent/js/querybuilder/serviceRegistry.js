@@ -26,9 +26,18 @@ it.eng.spagobi.engines.qbe.serviceregistry.module = function(){
         	Ext.apply(baseUrl, url); 
         },
         
-        getServiceUrl : function(actionName){
-        	var baseUrlStr = baseUrl.protocol + "://" + baseUrl.host + ":" + baseUrl.port + "/" + baseUrl.contextPath + "/" + baseUrl.controllerPath;
-        	var serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
+        getServiceUrl : function(actionName, absolute){
+        	var baseUrlStr;
+        	var serviceUrl;
+        	
+        	if(absolute === undefined || absolute === false) {
+        		baseUrlStr = 'AdapterHTTP';
+        	} else {
+        		baseUrlStr = baseUrl.protocol + "://" + baseUrl.host + ":" + baseUrl.port + "/" + baseUrl.contextPath + "/" + baseUrl.controllerPath;
+        	}
+        	
+        	serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
+        	//alert("Service invocation: " + serviceUrl); 
         	return serviceUrl;
         }       
         

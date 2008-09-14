@@ -115,7 +115,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
 			
 			statement = getEngineInstance().getDatamartModel().createXStatement( getEngineInstance().getQuery() );		
-			logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
 			
 			statement.setParameters( getEnv() );
 			hqlQuery = statement.getQueryString();

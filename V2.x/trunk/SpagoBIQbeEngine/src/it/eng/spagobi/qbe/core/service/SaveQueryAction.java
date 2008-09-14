@@ -68,6 +68,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		String queryRecords = null;
 		String queryFilters = null;
 		EngineAnalysisMetadata analysisMetadata = null;
+		String result = null;
 		
 		logger.debug("IN");
 		
@@ -117,22 +118,14 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			
 			Query queryBkp = getEngineInstance().getQuery();
 			getEngineInstance().setQuery(query);
-			String result = saveAnalysisState();
+			result = saveAnalysisState();
 			getEngineInstance().setQuery(queryBkp);
-				
+			
 			try {
-				httResponse.getOutputStream().write(result.getBytes());
-				httResponse.getOutputStream().flush();
-			} catch (IOException e) {
-				logger.error(e);
-			}	
-			/*			
-			try {
-				writeBackToClient( new JSONAcknowledge() );
+				writeBackToClient( new JSONSuccess( result ) );
 			} catch (IOException e) {
 				throw new EngineException("Impossible to write back the responce to the client", e);
 			}
-			*/
 			
 		} catch(Exception e) {
 			QbeEngineException engineException = null;

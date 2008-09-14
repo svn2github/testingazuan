@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineException;
 import it.eng.spagobi.utilities.service.IServiceResponse;
 
@@ -55,6 +56,17 @@ public class JSONResponse implements IServiceResponse {
 	public JSONResponse(int statusCode, JSONArray content) {
 		setStatusCode( statusCode );
 		setContent( content.toString() );
+	}
+
+	public JSONResponse(int statusCode, String content) {
+		JSONObject o = null;
+		try {
+			new JSONObject("{text: " + content + "}");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			Assert.assertUnreachable("Default json object generated to wrap a simple text response is not well formed");
+		}
+		setContent( o.toString() );
 	}
 
 	private void setStatusCode(int statusCode) {

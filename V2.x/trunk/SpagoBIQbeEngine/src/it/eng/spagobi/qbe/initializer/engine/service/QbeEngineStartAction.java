@@ -102,10 +102,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				analysisState.load( getAnalysisStateRowData() );
 				qbeEngineInstance.setAnalysisState( analysisState );
 			}
-						
-			
-			//setAttributeInSession( USER_ID, getUserId() );
-			//setAttributeInSession( AUDIT_ID, getAuditId() );
+				
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
 			setAttribute("query", QueryEncoder.encode(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel()));
 			

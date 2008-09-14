@@ -245,12 +245,15 @@ var getQueryBuilderPanel = function(query) {
 	        
 	        Ext.Ajax.request({
 				url:  url,
-				success: function(result, request) {
+				success: function(response, options) {
+					var content;
+					
 					win.hide();
-					response = result.responseText || "";
-					if (response.match('OK - ')) {
+					content = Ext.util.JSON.decode( response.responseText );
+					content.text = content.text || "";
+					if (content.text.match('OK - ')) {
 						try {
-							parent.loadSubObject(window.name, response.substr(5));
+							parent.loadSubObject(window.name, content.text.substr(5));
 						} catch (ex) {}
 					}
 				},

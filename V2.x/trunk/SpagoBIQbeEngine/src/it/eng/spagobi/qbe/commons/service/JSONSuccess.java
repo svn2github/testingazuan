@@ -30,7 +30,11 @@ import org.json.JSONObject;
  *
  */
 public class JSONSuccess extends JSONResponse {
-
+	
+	public JSONSuccess(String content) {
+		super(JSONResponse.SUCCESS, content );
+	}
+	
 	public JSONSuccess(JSONObject content) {
 		super(JSONResponse.SUCCESS, content);
 	}

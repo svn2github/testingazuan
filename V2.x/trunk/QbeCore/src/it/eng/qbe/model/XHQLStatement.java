@@ -59,36 +59,7 @@ public class XHQLStatement extends XBasicStatement {
 	}
 	
 
-	/*
-	private String buildSelectClause(Query query, Map entityAliases) {
-		StringBuffer buffer = new StringBuffer();
-		List selectFields = query.getSelectFields();
-		
-		if(selectFields == null ||selectFields.size() == 0) {
-			return "";
-		}
-		
-		buffer.append("SELECT");
-		
-		Iterator it = selectFields.iterator();
-		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
-			DataMartEntity entity = datamartField.getParent();
-			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-			}
-			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-			String fieldName = entityAlias + "." + datamartField.getName();
-			buffer.append(" " + selectField.getFunction().applay(fieldName) + " " + selectField.getAlias());
-			if( it.hasNext() ) {
-				buffer.append(",");
-			}
-		}
-		
-		return buffer.toString().trim();
-	}
-	*/
+
 	
 	private String buildSelectClause(Query query, Map entityAliases) {
 		StringBuffer buffer = new StringBuffer();
@@ -293,13 +264,43 @@ public class XHQLStatement extends XBasicStatement {
 	
 	private String buildOrderByClause(Query query, Map entityAliases) {
 		StringBuffer buffer = new StringBuffer();
+		List selectFields = query.getSelectFields();
+		
+		if(selectFields == null ||selectFields.size() == 0) {
+			return "";
+		}
+		
+		buffer.append("ORDER BY");
+		
+		Iterator it = selectFields.iterator();
+		while( it.hasNext() ) {
+			SelectField selectField = (SelectField)it.next();
+			if(selectField.isOrderByField()) {
+				DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
+				DataMartEntity entity = datamartField.getParent().getRoot(); 
+				String queryName = datamartField.getQueryName();
+				if(!entityAliases.containsKey(entity.getUniqueName())) {
+					entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
+				}
+				String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
+				String fieldName = entityAlias + "." + queryName;
+				buffer.append(" " + selectField.getFunction().apply(fieldName));
+				buffer.append(" " + (selectField.isAscendingOrder()?"ASC": "DESC") );
+				if( it.hasNext() ) {
+					buffer.append(",");
+				}
+			}
+		}
+		
+		return buffer.toString().trim();
+		
+		/*
+		StringBuffer buffer = new StringBuffer();
 		List orderByFields = query.getOrderByFields();
 		
 		if(orderByFields == null ||orderByFields.size() == 0) {
 			return "";
 		}
-		
-		buffer.append("ORDER BY");
 		
 		Iterator it = orderByFields.iterator();
 		while( it.hasNext() ) {
@@ -312,6 +313,7 @@ public class XHQLStatement extends XBasicStatement {
 			}
 			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
 			String fieldName = entityAlias + "." + queryName;
+			
 			buffer.append(" " + fieldName + " " + (orderByField.isAscendingOrder()?"ASC": "DESC") );
 			if( it.hasNext() ) {
 				buffer.append(",");
@@ -319,6 +321,7 @@ public class XHQLStatement extends XBasicStatement {
 		}
 		
 		return buffer.toString().trim();
+		*/
 	}
 	
 	

@@ -22,25 +22,20 @@ package it.eng.qbe.datasource;
 
 import it.eng.qbe.bo.Formula;
 import it.eng.qbe.conf.QbeConf;
-import it.eng.qbe.locale.LocaleUtils;
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
+import org.apache.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Table;
@@ -65,6 +60,10 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	
 	/** The formula. */
 	private Formula formula = null;	
+	
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(AbstractHibernateDataSource.class);
+	
 	
 	
 	/**
@@ -126,7 +125,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 			IDataMartModelRetriever dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
 			datamartJarFile = dataMartModelRetriever.getDatamartJarFile(datamartName);
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error(DataMartModel.class, e);
 		}
 		
 		return datamartJarFile;
@@ -146,7 +145,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 			dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
 			viewNames = dataMartModelRetriever.getViewNames(datamartName);
 		} catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error(DataMartModel.class, e);
 		}		
 		
 		return viewNames;
@@ -167,7 +166,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 			IDataMartModelRetriever dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
 			viewJarFile =  dataMartModelRetriever.getViewJarFile(datamartName, viewName);
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error(DataMartModel.class, e);
 		}
 		
 		return viewJarFile;
@@ -177,119 +176,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	
 	
 	
-	/*
-	protected Properties loadLabelProperties(String datamartName) {
-		Properties labelProperties = new Properties();
-		
-		File dmJarFile = getDatamartJarFile(datamartName);
-		JarFile jf;
-		try {
-			jf = new JarFile(dmJarFile);		
-			
-			labelProperties = LocaleUtils.getLabelProperties(jf);
-					
-			List viewNames = getViewNames(datamartName);
-			Iterator it = viewNames.iterator();
-			while(it.hasNext()) {
-				String viewName = (String)it.next();
-				File viewJarFile = getViewJarFile(datamartName, viewName);
-				jf = new JarFile(viewJarFile);
-				Properties tmpProps = LocaleUtils.getLabelProperties(jf);
-				labelProperties.putAll(tmpProps);
-			}		
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return labelProperties;
-	}
 	
-	
-	protected Properties loadLabelProperties(String datamartName, Locale locale) {
-		
-		Properties labelProperties = null;
-		
-		File dmJarFile = getDatamartJarFile(datamartName);
-		if(dmJarFile == null || !dmJarFile.exists()) return new Properties();
-		
-		try{
-			
-			JarFile jf = new JarFile(dmJarFile);
-			
-			labelProperties = LocaleUtils.getLabelProperties(jf, locale);
-				
-			if (labelProperties.isEmpty()) {
-				return loadLabelProperties(datamartName);
-			} else {
-				List viewNames = getViewNames(datamartName);
-				Iterator it = viewNames.iterator();
-				while(it.hasNext()) {
-					String viewName = (String)it.next();
-					File viewJarFile = getViewJarFile(datamartName, viewName);
-					jf = new JarFile(viewJarFile);
-					Properties tmpProps = LocaleUtils.getLabelProperties(jf, locale);
-					if(tmpProps.isEmpty()) tmpProps = LocaleUtils.getLabelProperties(jf);
-					labelProperties.putAll(tmpProps);
-				}
-			}			
-		}catch (Exception e) {
-			e.printStackTrace();
-			return new Properties();
-		}	
-		
-		
-		return labelProperties;	
-	}
-	
-	protected Properties loadQbeProperties(String datamartName) {
-		
-		Properties qbeProperties = null;
-		
-		File dmJarFile = getDatamartJarFile(datamartName);
-		if(dmJarFile == null || !dmJarFile.exists()) return new Properties();
-		
-		JarFile jf = null;
-		try {
-			jf = new JarFile(dmJarFile);
-			qbeProperties = loadQbePropertiesFormJarFile(jf);
-			
-			List viewNames = getViewNames(datamartName);
-			Iterator it = viewNames.iterator();
-			while(it.hasNext()) {
-				String viewName = (String)it.next();
-				File viewJarFile = getViewJarFile(datamartName, viewName);
-				jf = new JarFile(viewJarFile);
-				Properties tmpProps = loadQbePropertiesFormJarFile(jf);
-				qbeProperties.putAll(tmpProps);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new Properties();
-		}				
-		
-		return qbeProperties;	
-	}
-	
-	private Properties loadQbePropertiesFormJarFile(JarFile jf){
-		Properties prop = null;
-		
-		try{
-			ZipEntry ze = jf.getEntry("qbe.properties");
-			if (ze != null){
-				prop = new Properties();
-				prop.load(jf.getInputStream(ze));
-			} else {
-				prop = new Properties();
-			}
-		} catch(IOException ioe){
-			ioe.printStackTrace();
-			return new Properties();
-		}
-		return prop;
-	}
-	
-	*/
 	
 	/**
 	 * Load formula file.
@@ -313,12 +200,18 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		boolean wasAlreadyLoaded = false;
 		ApplicationContainer container = null;
 		
+		logger.debug("IN");
+		
 		try {
+			
+			logger.debug("jar file to be loaded: " + jarFile.getAbsoluteFile());
 			
 			container = ApplicationContainer.getInstance();
 			if (container != null) {
 				ClassLoader cl = (ClassLoader) container.getAttribute("DATAMART_CLASS_LOADER");
 				if (cl != null) {
+					logger.debug("Found a cached loader of type: " + cl.getClass().getName());
+					logger.debug("Set as current loader the one previusly cached");
 					Thread.currentThread().setContextClassLoader(cl);
 				}
 			}
@@ -333,21 +226,24 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 					className = className.replaceAll("/", ".");
 					className = className.replaceAll("\\\\", ".");
 					try {
+						logger.debug("loading class [" + className  + "]" + " with class loader [" + Thread.currentThread().getContextClassLoader().getClass().getName()+ "]");
 						Thread.currentThread().getContextClassLoader().loadClass(className);
 						wasAlreadyLoaded = true;
+						logger.debug("Class [" + className  + "] has been already loaded (?");
 						break;
 					} catch (Exception e) {
 						wasAlreadyLoaded = false;
+						logger.debug("Class [" + className  + "] hasn't be loaded yet (?)");
 						break;
 					}
 				}
 			}
 			
 		} catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error(DataMartModel.class, e);
 		}
 		
-		
+		logger.debug("Jar file [" + jarFile.getName()  + "] already loaded: " + wasAlreadyLoaded);
 		
 		try {
 			/*
@@ -370,7 +266,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 			}
 			
 		} catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error(DataMartModel.class, e);
 		}
 	}
 

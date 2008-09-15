@@ -78,7 +78,7 @@
 				
 				<replacefilter 
 						token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource/spagobi.app";' 
-						value='if(qxsettings[spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";' />
+						value='if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";' />
 								
 					  
 			</replace>	
@@ -145,7 +145,7 @@
 		  </exec>
 		</target>
 	
-	<target name="makeAll" depends="makeSource,makeBuild,makeApi"></target>
+	<target name="makeAll" depends="buildSource,buildBuild,buildApi"></target>
 
 
 

@@ -310,8 +310,7 @@ public class SimpleDial extends DialCharts{
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setBackgroundPaint(color);
 		
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title = setStyleTitle(name, styleTitle);
 		chart1.setTitle(title);
 		
 		logger.debug("OUT");

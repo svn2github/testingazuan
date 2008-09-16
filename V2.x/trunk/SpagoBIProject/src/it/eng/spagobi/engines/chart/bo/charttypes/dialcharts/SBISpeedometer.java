@@ -68,6 +68,8 @@ public class SBISpeedometer extends DialCharts{
 	Vector intervals;
 	double increment=0.0;
 	int minorTickCount=0;
+	boolean dialtextuse = false ;
+	String dialtext = "";
 
 
 	/**
@@ -109,6 +111,18 @@ public class SBISpeedometer extends DialCharts{
 			}
 			else {
 				setMinorTickCount(10);
+			}
+			
+			if(confParameters.get("dialtextuse")!=null){	
+				String dialtextusetemp=(String)confParameters.get("dialtextuse");
+				if(dialtextusetemp.equalsIgnoreCase("true")){
+					dialtextuse = true;
+				}
+				else dialtextuse = false;
+			}
+			
+			if(dialtextuse && confParameters.get("dialtext")!=null){
+				dialtext=(String)confParameters.get("dialtext");
 			}
 
 
@@ -208,12 +222,14 @@ public class SBISpeedometer extends DialCharts{
 		plot.setDialFrame(new StandardDialFrame());
 
 		plot.setBackground(new DialBackground());
-		DialTextAnnotation annotation1 = new DialTextAnnotation(name);
-		annotation1.setFont(new Font("Dialog", Font.BOLD, 14));
-		annotation1.setRadius(0.7);
+		if(dialtextuse){
+			DialTextAnnotation annotation1 = new DialTextAnnotation(dialtext);			
+			annotation1.setFont(styleTitle.getFont());
+			annotation1.setRadius(0.7);
 
-		plot.addLayer(annotation1);
-
+			plot.addLayer(annotation1);
+		}
+		
 		DialValueIndicator dvi = new DialValueIndicator(0);
 		plot.addLayer(dvi);
 
@@ -258,8 +274,7 @@ public class SBISpeedometer extends DialCharts{
 		logger.debug("OUT");
 		JFreeChart chart=new JFreeChart(name, plot);
 		
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		
 		chart.setBackgroundPaint(color);

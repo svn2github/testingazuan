@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-
+ 
 /* *
  * @author Andrea Gioia (andrea.gioia@eng.it)
  * @author Amit Rana (amit.rana@eng.it)
@@ -385,18 +385,18 @@ qx.Class.define("spagobi.app.Chiron",
       			buttons: [
       				{
       					name: 'link1',
-						image:'spagobi/img/spagobi/test/importexport64.png',
+						image:'spagobi/img/spagobi/test/todoList_2.png',
 						page: 'link1',
 						tooltip: 'Remember Me'
       				}, {
       					name: 'link2',
 						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
-						page: 'link1',
+						page: 'link2',
 						tooltip: 'Most Popular'
       				}, {
-      					name: 'link2',
-						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
-						page: 'link1',
+      					name: 'link3',
+						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
+						page: 'link3',
 						tooltip: 'Most Recently Used'
       				}
       			]

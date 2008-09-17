@@ -59,12 +59,12 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	this._table = new spagobi.ui.Table(controller, data);
     	this._table.set(
 		{ 
-			width : 900
+			width : 1060
 		});
-    	this._navigationBar = new spagobi.ui.NavigationBar();
+    	this._navigationBar = new spagobi.ui.NavigationBar(); 
     	
-    	/*
-    	this.addColumn();
+    	/* 
+    	this.addColumn(); 
     	
     	this.addRow();
     	this.add(this._filterBar, 0, 0);

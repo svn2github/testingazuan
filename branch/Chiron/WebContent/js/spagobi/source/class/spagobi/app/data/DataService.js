@@ -36,6 +36,165 @@ qx.Class.define("spagobi.app.data.DataService", {
   type : "static",
   statics : {
   	
+  	loadlink1Records: function(){
+  		var records = {};
+    	
+    	records.meta =  this.loadLink1Meta();
+    	records.rows =  this.loadLink1Data();
+    	
+    	return records;
+  	},
+  	
+  	loadLink1Meta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'document',
+	    		name: 'Document' 
+    		}, {
+	    		dataIndex: 'documentname',
+	    		name: 'DocumentName' 
+    		}, {
+	    		dataIndex: 'documentdescription',
+	    		name: 'DocumentDescription' 
+    		},{
+	    		dataIndex: 'documenttype',
+	    		name: 'DocumentType'
+    		}
+    	];
+  	},
+  	
+  	loadLink1Data: function() {
+  		return [
+    		{
+	        	id: '190',
+	        	name: 'hot_Customer_Profile',
+	        	document: 'Customer_Profile',
+	        	documentname: 'Customer_Profile',
+	        	Documentdescription: 'Customer_Profile',
+	        	documenttype: 'Report'        	        	
+        	}, {
+	        	id: '191',
+	        	name: 'Ciao',
+	        	document: 'Qbe_Test',
+	        	documentname: 'A Simple QBE on FoodMart',
+	        	Documentdescription: '',
+	        	documenttype: 'dataMart'       	        	
+        	}, {
+	        	id: '192',
+	        	name: 'Blaaa',
+	        	document: 'OlAP',
+	        	documentname: 'A simple OLAP',
+	        	Documentdescription: 'OLAP',
+	        	documenttype: 'OLAP'            	        	
+        	}
+    	];
+  	},
+  	
+  	loadlink2Records: function(){
+  		var records = {};
+    	
+    	records.meta =  this.loadLink2Meta();
+    	records.rows =  this.loadLink2Data();
+    	
+    	return records;
+  	},
+  	
+  	loadLink2Meta: function() {
+  		return [
+    		{
+	    		dataIndex: 'document',
+	    		name: 'Document' 
+    		}, {
+	    		dataIndex: 'documentname',
+	    		name: 'DocumentName' 
+    		}, {
+	    		dataIndex: 'documentdescription',
+	    		name: 'DocumentDescription' 
+    		},{
+	    		dataIndex: 'documenttype',
+	    		name: 'DocumentType'
+    		}
+    	];
+  	},
+  	
+  	loadLink2Data: function() {
+  		return [
+    		{
+	        	id: '193',
+	        	document: 'BarChart',
+	        	documentname: 'A Simple bar chart',
+	        	Documentdescription: '',
+	        	documenttype: 'DASH'        	        	
+        	}, {
+	        	id: '194',
+	        	document: 'mapUSA',
+	        	documentname: 'A map with sales of FoodMart',
+	        	Documentdescription: 'Map USA',
+	        	documenttype: 'MAP'       	        	
+        	}, {
+	        	id: '195',
+	        	document: 'OlAP',
+	        	documentname: 'A simple OLAP',
+	        	Documentdescription: '',
+	        	documenttype: 'OLAP'            	        	
+        	}
+    	];
+  	},
+  	
+  	loadlink3Records: function(){
+  		var records = {};
+    	
+    	records.meta =  this.loadLink3Meta();
+    	records.rows =  this.loadLink3Data();
+    	
+    	return records;
+  	},
+  	
+  	loadLink3Meta: function() {
+  		return [
+    		{
+	    		dataIndex: 'document',
+	    		name: 'Document' 
+    		}, {
+	    		dataIndex: 'documentname',
+	    		name: 'DocumentName' 
+    		}, {
+	    		dataIndex: 'documentdescription',
+	    		name: 'DocumentDescription' 
+    		},{
+	    		dataIndex: 'documenttype',
+	    		name: 'DocumentType'
+    		}
+    	];
+  	},
+  	
+  	loadLink3Data: function() {
+  		return [
+    		{
+	        	id: '196',
+	        	document: 'SpeedoMeterChart',
+	        	documentname: 'A Simple speedo Meter',
+	        	Documentdescription: 'yahoo',
+	        	documenttype: 'DASH'        	        	
+        	}, {
+	        	id: '197',
+	        	document: 'SpeedoMeterChart',
+	        	documentname: 'A Simple speedo Meter',
+	        	Documentdescription: 'Google',
+	        	documenttype: 'DASH'           	        	
+        	}, {
+	        	id: '198',
+	        	document: 'SpeedoMeterChart',
+	        	documentname: 'A Simple speedo Meter',
+	        	Documentdescription: 'Ask',
+	        	documenttype: 'DASH'                	        	
+        	}
+    	];
+  	},
+  	
   	loadEngineRecords: function() {
   		var records = {};
     	

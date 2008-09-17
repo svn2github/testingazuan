@@ -34,6 +34,7 @@ package it.eng.spagobi.utilities.engines;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import java.util.Locale;
@@ -79,35 +80,23 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		EngineAnalysisMetadata analysisMetadata = null;
 		IEngineAnalysisState analysisState = null;
 		ContentServiceProxy  contentServiceProxy = null;
-		String serviceResponse= null;
-				
+		String serviceResponse= null;	
 		
 		engineInstance = getEngineInstance();
 		analysisMetadata = engineInstance.getAnalysisMetadata();
 		analysisState = engineInstance.getAnalysisState();
-
-		if(getEnv() == null) {
-			return "KO - Missing environment";
-		}
 		
-		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );
-		if(contentServiceProxy == null) {
-			return "KO - Missing content service proxy";
-		}
-		
+		Assert.assertNotNull(getEnv(),"ENV cannot be null in order to save the analysis state");
+		Assert.assertNotNull(getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY ),"ENV property " + EngineConstants.ENV_CONTENT_SERVICE_PROXY + " cannot be null in order to save the analysis state");
+		Assert.assertNotNull(getEnv().get( EngineConstants.ENV_DOCUMENT_ID ),"ENV property " + EngineConstants.ENV_DOCUMENT_ID + " cannot be null in order to save the analysis state");
+				
+		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );		
 		documentId = (String)getEnv().get( EngineConstants.ENV_DOCUMENT_ID );
-		if(documentId == null) {
-			return "KO - Missing document id";
-		}
-		
-	    String isPublic = "false";
-	    if (PUBLIC_SCOPE.equalsIgnoreCase(analysisMetadata.getScope())) 
-	    	isPublic = "true";
 		
 		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
 				analysisMetadata.getName(),
 				analysisMetadata.getDescription(), 
-				isPublic, 
+				PUBLIC_SCOPE.equalsIgnoreCase(analysisMetadata.getScope())? "true": "false", 
 				new String(analysisState.store()) );
 		
 		return serviceResponse;

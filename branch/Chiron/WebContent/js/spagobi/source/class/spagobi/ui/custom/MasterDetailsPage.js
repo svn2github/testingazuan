@@ -17,9 +17,9 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
+ 
 */
-
+  
 /*
  * TODO generalize the constructor in this way ...
  * 
@@ -96,15 +96,24 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'parameters') {
 		records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
-	}  else if(type == 'configuration') {									//new code
+	} else if(type == 'configuration') {									//new code
 		records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-	}																		//new code ends
+	} else if(type == 'link1') {									//new code
+		records = spagobi.app.data.DataService.loadlink1Records();
+		form = new spagobi.ui.custom.Link1DummyForm(); 
+	} else if(type == 'link2') {									//new code
+		records = spagobi.app.data.DataService.loadlink2Records();
+		form = new spagobi.ui.custom.Link2DummyForm(); 
+	} else if(type == 'link3') {									//new code
+		records = spagobi.app.data.DataService.loadlink3Records();
+		form = new spagobi.ui.custom.Link3DummyForm(); 
+	}																								//new code ends
 	
 		
    	// Create list view
    	//listPage = new spagobi.ui.Table(this, records ); //works fine
-   	listPage = new spagobi.ui.PagedTable(this, records ); // problem with table resize
+   	listPage = new spagobi.ui.PagedTable(this,records); // problem with table resize
    	this.addTop( listPage );
       	
    	// Create detail view
@@ -214,7 +223,13 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		} else if(this._type === 'constraints') {
 			this._form = new spagobi.ui.custom.ConstraintDetailsForm(); 
 		} else if(this._type === 'parameters') {
-			this._form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
+			this._form = new spagobi.ui.custom.AnalyticalDriverDetailsForm();
+		} else if(this._type === 'link1') {
+			this._form = new spagobi.ui.custom.Link1DummyForm();
+		} else if(this._type === 'link2') {
+			this._form = new spagobi.ui.custom.Link2DummyForm();
+		} else if(this._type === 'link3') {
+			this._form = new spagobi.ui.custom.Link3DummyForm();	
 			
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
    			/*

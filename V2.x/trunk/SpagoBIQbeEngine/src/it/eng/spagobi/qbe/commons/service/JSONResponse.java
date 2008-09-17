@@ -61,7 +61,7 @@ public class JSONResponse implements IServiceResponse {
 	public JSONResponse(int statusCode, String content) {
 		JSONObject o = null;
 		try {
-			new JSONObject("{text: " + content + "}");
+			o = new JSONObject("{text: " + content + "}");
 		} catch (JSONException e) {
 			e.printStackTrace();
 			Assert.assertUnreachable("Default json object generated to wrap a simple text response is not well formed");

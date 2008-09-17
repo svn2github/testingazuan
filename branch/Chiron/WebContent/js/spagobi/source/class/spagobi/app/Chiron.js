@@ -285,7 +285,7 @@ qx.Class.define("spagobi.app.Chiron",
       				}
       			]
       		},
-      		defaultSelectedPage: 'funcManagement'
+      		defaultSelectedPage: 'configuration'
       	});
       	dockLayout.add( this.toolbars['analyticalModel'] );
       	this.toolbars['analyticalModel'].setLiveResize(true);

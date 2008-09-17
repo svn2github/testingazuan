@@ -107,7 +107,6 @@ qx.Class.define("spagobi.app.Chiron",
      * Function which creates the Layout of the complete page.
      * <p> Defines a Dock Layout to which all the entities 
      * __Header, Top ToolBar, Vertical Toolbar and Page__ are added.
-     * 
      */ 
     _createLayout: function() {
 	   	var dockLayout = new qx.ui.layout.DockLayout();
@@ -147,6 +146,41 @@ qx.Class.define("spagobi.app.Chiron",
 		  		handler: function() {this._selectToolbar('analyticalModel');},
 		  		context: this,
 		  		"label": 'Analytical Model',
+		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+T',
+		  		handler: function() {this._selectToolbar('adminDistributionList');},
+		  		context: this,
+		  		"label": 'Admin Distribution List',
+		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+Y',
+		  		handler: function() {this._selectToolbar('functionality');},
+		  		context: this,
+		  		"label": 'Functionality',
+		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+U',
+		  		handler: function() {this._selectToolbar('events');},
+		  		context: this,
+		  		"label": 'Events',
+		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+I',
+		  		handler: function() {this._selectToolbar('tools');},
+		  		context: this,
+		  		"label": 'Tools',
+		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+O',
+		  		handler: function() {this._selectToolbar('hotLinks');},
+		  		context: this,
+		  		"label": 'Hot Links',
 		  		icon: 'icon/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}
@@ -215,17 +249,17 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'lov',
 						image:'spagobi/img/spagobi/test/lovManagementIcon.png',
 						page: 'lov',
-						tooltip: 'List of Values'
+						tooltip: ' Predefined List of Values'
       				}, {
       					name: 'constraints',
 						image:'spagobi/img/spagobi/test/constraintManagementIcon.png',
 						page: 'constraints',
-						tooltip: 'Constraints'
+						tooltip: 'Predefined Values Constraints'
       				}, {
       					name: 'parameters',
 						image:'spagobi/img/spagobi/test/parameterManagementIcon.png',
 						page: 'parameters',
-						tooltip: 'Analytical Drivers'
+						tooltip: 'Analytical Drivers Management'
       				}
       			]
       		},
@@ -235,11 +269,15 @@ qx.Class.define("spagobi.app.Chiron",
       	this.toolbars['behaviouralModel'].setLiveResize(true);
       	this.toolbars['behaviouralModel'].setVisibility(false);
       	
-      	//new code starts
       	this.toolbars['analyticalModel'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
+      					name: 'funcManagement',
+						image:'spagobi/img/spagobi/test/folderAdministrationIcon.png',
+						page: 'funcManagement',
+						tooltip: 'functionalities Management'
+      				}, {
       					name: 'configuration',
 						image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
 						page: 'configuration',
@@ -247,13 +285,128 @@ qx.Class.define("spagobi.app.Chiron",
       				}
       			]
       		},
-      		defaultSelectedPage: 'configuration'
+      		defaultSelectedPage: 'funcManagement'
       	});
       	dockLayout.add( this.toolbars['analyticalModel'] );
       	this.toolbars['analyticalModel'].setLiveResize(true);
       	this.toolbars['analyticalModel'].setVisibility(false);
-      	//new code ends
       	
+      	//new code starts
+      	this.toolbars['adminDistributionList'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'distributionList',
+						image:'spagobi/img/spagobi/test/distributionlistuser.png',
+						page: 'distributionList',
+						tooltip: 'Distribution List User'
+      				}, {
+      					name: 'distributionListConfig',
+						image:'spagobi/img/spagobi/test/distributionlist.gif',
+						page: 'distributionListConfig',
+						tooltip: 'Distribution List Configuration'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'distributionList'
+      	});
+      	dockLayout.add( this.toolbars['adminDistributionList'] );
+      	this.toolbars['adminDistributionList'].setLiveResize(true);
+      	this.toolbars['adminDistributionList'].setVisibility(false);
+      	
+      	this.toolbars['functionality'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'func',
+						//image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
+						page: 'func',
+						tooltip: 'Functionalities'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'func'
+      	});
+      	dockLayout.add( this.toolbars['functionality'] );
+      	this.toolbars['functionality'].setLiveResize(true);
+      	this.toolbars['functionality'].setVisibility(false);
+      	
+      	this.toolbars['events'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'workflow',
+						image:'spagobi/img/spagobi/test/todoList_2.png',
+						page: 'workflow',
+						tooltip: 'Workflow To Do List'
+      				}, {
+      					name: 'event',
+						image:'spagobi/img/spagobi/test/events.png',
+						page: 'event',
+						tooltip: 'Events'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'workflow'
+      	});
+      	dockLayout.add( this.toolbars['events'] );
+      	this.toolbars['events'].setLiveResize(true);
+      	this.toolbars['events'].setVisibility(false);
+      	
+      	this.toolbars['tools'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'tool',
+						image:'spagobi/img/spagobi/test/importexport64.png',
+						page: 'tool',
+						tooltip: 'Import / Export '
+      				}, {
+      					name: 'schedule',
+						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
+						page: 'schedule',
+						tooltip: 'Schedule Document Executions '
+      				}, {
+      					name: 'roles',
+						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
+						page: 'roles',
+						tooltip: 'Roles Synchronization'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'tool'
+      	});
+      	dockLayout.add( this.toolbars['tools'] );
+      	this.toolbars['tools'].setLiveResize(true);
+      	this.toolbars['tools'].setVisibility(false);
+      	
+      	this.toolbars['hotLinks'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'link1',
+						image:'spagobi/img/spagobi/test/importexport64.png',
+						page: 'link1',
+						tooltip: 'Remember Me'
+      				}, {
+      					name: 'link2',
+						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
+						page: 'link1',
+						tooltip: 'Most Popular'
+      				}, {
+      					name: 'link2',
+						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
+						page: 'link1',
+						tooltip: 'Most Recently Used'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'link1'
+      	});
+      	dockLayout.add( this.toolbars['hotLinks'] );
+      	this.toolbars['hotLinks'].setLiveResize(true);
+      	this.toolbars['hotLinks'].setVisibility(false);
+      	//new code ends
       	return dockLayout;  		
     },
     

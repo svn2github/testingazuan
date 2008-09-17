@@ -73,21 +73,21 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	name: 'hot_Customer_Profile',
 	        	document: 'Customer_Profile',
 	        	documentname: 'Customer_Profile',
-	        	Documentdescription: 'Customer_Profile',
+	        	documentdescription: 'Customer_Profile',
 	        	documenttype: 'Report'        	        	
         	}, {
 	        	id: '191',
 	        	name: 'Ciao',
 	        	document: 'Qbe_Test',
 	        	documentname: 'A Simple QBE on FoodMart',
-	        	Documentdescription: '',
+	        	documentdescription: '',
 	        	documenttype: 'dataMart'       	        	
         	}, {
 	        	id: '192',
 	        	name: 'Blaaa',
 	        	document: 'OlAP',
 	        	documentname: 'A simple OLAP',
-	        	Documentdescription: 'OLAP',
+	        	documentdescription: 'OLAP',
 	        	documenttype: 'OLAP'            	        	
         	}
     	];
@@ -126,19 +126,19 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	id: '193',
 	        	document: 'BarChart',
 	        	documentname: 'A Simple bar chart',
-	        	Documentdescription: '',
+	        	documentdescription: '',
 	        	documenttype: 'DASH'        	        	
         	}, {
 	        	id: '194',
 	        	document: 'mapUSA',
 	        	documentname: 'A map with sales of FoodMart',
-	        	Documentdescription: 'Map USA',
+	        	documentdescription: 'Map USA',
 	        	documenttype: 'MAP'       	        	
         	}, {
 	        	id: '195',
 	        	document: 'OlAP',
 	        	documentname: 'A simple OLAP',
-	        	Documentdescription: '',
+	        	documentdescription: '',
 	        	documenttype: 'OLAP'            	        	
         	}
     	];
@@ -177,19 +177,19 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	id: '196',
 	        	document: 'SpeedoMeterChart',
 	        	documentname: 'A Simple speedo Meter',
-	        	Documentdescription: 'yahoo',
+	        	documentdescription: 'yahoo',
 	        	documenttype: 'DASH'        	        	
         	}, {
 	        	id: '197',
 	        	document: 'SpeedoMeterChart',
 	        	documentname: 'A Simple speedo Meter',
-	        	Documentdescription: 'Google',
+	        	documentdescription: 'Google',
 	        	documenttype: 'DASH'           	        	
         	}, {
 	        	id: '198',
 	        	document: 'SpeedoMeterChart',
 	        	documentname: 'A Simple speedo Meter',
-	        	Documentdescription: 'Ask',
+	        	documentdescription: 'Ask',
 	        	documenttype: 'DASH'                	        	
         	}
     	];

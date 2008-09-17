@@ -276,7 +276,7 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'funcManagement',
 						image:'spagobi/img/spagobi/test/folderAdministrationIcon.png',
 						page: 'funcManagement',
-						tooltip: 'functionalities Management'
+						tooltip: 'Functionalities Management'
       				}, {
       					name: 'configuration',
 						image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
@@ -285,7 +285,7 @@ qx.Class.define("spagobi.app.Chiron",
       				}
       			]
       		},
-      		defaultSelectedPage: 'configuration'
+      		defaultSelectedPage: 'funcManagement'
       	});
       	dockLayout.add( this.toolbars['analyticalModel'] );
       	this.toolbars['analyticalModel'].setLiveResize(true);

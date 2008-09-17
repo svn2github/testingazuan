@@ -699,6 +699,45 @@ qx.Class.define("spagobi.app.data.DataService", {
 		        }]*/        	        	
         	}
     	];
+  	},
+  	
+  	loadFunctinalitiesRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadFunctinalitiesMeta();
+    	records.rows =  this.loadFunctinalitiesData();
+    	
+    	return records;
+  	},
+  	
+  	loadFunctinalitiesMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}
+    	];
+  	},
+  	
+  	loadFunctinalitiesData: function() {
+  		return [
+	  			{
+		        	id: '1',
+		        	name: 'name1',
+		        	description: 'ddd1'
+		        }, {
+		        	id: '2',
+		        	name: 'name2',
+		        	description: 'aaa2'
+		        }, {
+		        	id: '3',
+		        	name: 'name3',
+		        	description: 'cvcw3'
+		        }  			
+  			 ];
   	}
   	
   }

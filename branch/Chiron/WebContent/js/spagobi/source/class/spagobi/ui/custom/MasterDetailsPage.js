@@ -73,8 +73,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     this._type = type;	
 	if(type === 'engine') {
 		records = spagobi.app.data.DataService.loadEngineRecords();
-		//form = new spagobi.ui.custom.EngineDetailsForm(); 
-		form = new spagobi.ui.custom.LOVDetailsForm(); 
+		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'dataset') {
 		records = spagobi.app.data.DataService.loadDatasetRecords();
 		form = new spagobi.ui.custom.DatasetDetailsForm(); 
@@ -99,6 +98,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'configuration') {									//new code
 		records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
+	} else if(this._type === 'funcManagement') {
+		records = spagobi.app.data.DataService.loadFunctinalitiesRecords();
+		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	} else if(type == 'link1') {									//new code
 		records = spagobi.app.data.DataService.loadlink1Records();
 		form = new spagobi.ui.custom.Link1DummyForm(); 
@@ -209,27 +211,45 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     	//this._form.dispose();
     	if(this._type === 'engine') {
 			this._form = new spagobi.ui.custom.EngineDetailsForm(); 
-			//this._form = new spagobi.ui.custom.LOVDetailsForm(); 
+		
 		} else if(this._type === 'dataset') {
 			this._form = new spagobi.ui.custom.DatasetDetailsForm(); 
+		
 		} else if(this._type === 'datasource') {
 			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
 		} else if(this._type === 'mapmgmt') {
 			this._form = new spagobi.ui.custom.MapDetailsForm();
+		
 		} else if(this._type === 'featuremgmt') {
 			this._form = new spagobi.ui.custom.FeatureDetailsForm();
+		
 		} else if(this._type === 'lov') {
 			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
+		
 		} else if(this._type === 'constraints') {
 			this._form = new spagobi.ui.custom.ConstraintDetailsForm(); 
+		
 		} else if(this._type === 'parameters') {
 			this._form = new spagobi.ui.custom.AnalyticalDriverDetailsForm();
+		
 		} else if(this._type === 'link1') {
 			this._form = new spagobi.ui.custom.Link1DummyForm();
+		
 		} else if(this._type === 'link2') {
 			this._form = new spagobi.ui.custom.Link2DummyForm();
+		
 		} else if(this._type === 'link3') {
 			this._form = new spagobi.ui.custom.Link3DummyForm();	
+		
+		}  else if(this._type == 'configuration') {
+			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
+		
+		}  else if(this._type === 'funcManagement') {
+			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
+		
+		}
+		
 			
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
    			/*
@@ -243,9 +263,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	  		b.addEventListener("execute",this.myRadioFunction,this);
 	  		this._form.add(b);
 	  		*/ 
-		}  else if(this._type == 'configuration') {
-			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-		} 
+		
 		
 		this.detailBody.add(this._form);
 		if(!this.isVisibility()) {

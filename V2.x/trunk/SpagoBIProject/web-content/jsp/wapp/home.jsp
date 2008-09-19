@@ -496,6 +496,14 @@ boolean first=true;
 		        })	
 		    );
 		    
+		    
+		<%
+    	// Check if SSO is active
+    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+    	String active = (String) validateSB.getCharacters();
+    	if (active == null || active.equalsIgnoreCase("false")) {
+		%>
 			tb.addSeparator();
 
 			//adds exit menu		
@@ -510,7 +518,12 @@ boolean first=true;
 		        })	
 		    );
 		    
-		});
+		
+		<%
+	  	}
+		%>
+		
+	});
 	
 	
 	 function execDirectDoc(btn){

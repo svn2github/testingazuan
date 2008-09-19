@@ -41,6 +41,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -96,21 +97,34 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		errorHandler = getErrorHandler();
 		
+//		Principal principal=this.getHttpRequest().getUserPrincipal();
+//		String userId=null;
+//		if (principal==null){
+//		    userId=(String)request.getAttribute("userId");
+//		    logger.info("User read from request."+userId);
+//		}else {
+//		    userId=principal.getName();
+//		    logger.info("User read from Principal."+userId);
+//		}
+		String userId = GeneralUtilities.findUserId(request, this.getHttpRequest());
+		if (userId == null) {
+			logger.error("User identifier not found. Cannot build user profile object");
+			// TODO manager exception
+			throw new SecurityException("User identifier not found.");
+		}
+		
 		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		if (profile==null){
-        		Principal principal=this.getHttpRequest().getUserPrincipal();
-        		String userId=null;
-        		if (principal==null){
-        		    userId=(String)request.getAttribute("userId");
-        		    logger.info("User read from request."+userId);
-        		}else {
-        		    userId=principal.getName();
-        		    logger.info("User read from Principal."+userId);
-        		}
-        		
-        		String pwd=(String)request.getAttribute("password");       
-        	
-        		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+		if (profile==null || !userId.equals(profile.getUserUniqueIdentifier().toString())){
+			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	    	// Check if SSO is active
+	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+	    	String active = (String) validateSB.getCharacters();
+	    	// If SSO is not active, check username and password, i.e. performs the authentication;
+	    	// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
+	    	// any authentication, just creates the user profile object and puts it into Spago permanent container
+	    	if (active == null || active.equalsIgnoreCase("false")) {
+				String pwd=(String)request.getAttribute("password");       
 		        try {
 		        	if (!supplier.checkAuthorization(userId, pwd)){
 		        		logger.error("pwd uncorrect");
@@ -118,21 +132,28 @@ public class LoginModule extends AbstractHttpModule {
 		    			errorHandler.addError(emfu); 		    	
 		    			return;
 		        	}
-		        			
-		            SpagoBIUserProfile user= supplier.createUserProfile(userId);
-		            if (user == null){		            	
-		            	logger.error("user not created");
-		            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
-		    			errorHandler.addError(emfu); 		    	
-		    			return;
-		            }
-		            profile=new UserProfile(user);
-		            // put user profile into session
-		            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		        } catch (Exception e) {
 		            logger.error("Reading user information... ERROR",e);
 		            throw new SecurityException();
-		        }		    
+		        }
+	    	}
+	        
+	        try {
+	            SpagoBIUserProfile user= supplier.createUserProfile(userId);
+	            if (user == null){		            	
+	            	logger.error("user not created");
+	            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
+	    			errorHandler.addError(emfu); 		    	
+	    			return;
+	            }
+	            profile=new UserProfile(user);
+	            // put user profile into session
+	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	        } catch (Exception e) {
+	            logger.error("Reading user information... ERROR",e);
+	            throw new SecurityException();
+	        }
+	            
 		}
 		getMenuItems(request, response);
 		// fill response attributes

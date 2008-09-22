@@ -249,6 +249,11 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
 		TextTitle title = new TextTitle(name, font);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
+
 
 
 		return chart;

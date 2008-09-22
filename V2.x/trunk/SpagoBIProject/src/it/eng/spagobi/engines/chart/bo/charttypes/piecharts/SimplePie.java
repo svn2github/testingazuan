@@ -183,9 +183,12 @@ public class SimplePie extends PieCharts{
 			}
 		}
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
 
 
 		return chart;

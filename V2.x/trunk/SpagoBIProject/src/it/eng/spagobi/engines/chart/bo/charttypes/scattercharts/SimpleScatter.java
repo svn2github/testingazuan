@@ -30,6 +30,10 @@ public class SimpleScatter extends ScatterCharts {
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		chart.setBackgroundPaint(Color.white);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
 		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setForegroundAlpha(0.65f);

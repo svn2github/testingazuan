@@ -92,9 +92,13 @@ public class Thermometer extends DialCharts{
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               
 		chart.setBackgroundPaint(color);
 	
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
+
 		
 		plot.setInsets(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setPadding(new RectangleInsets(10.0, 10.0, 10.0, 10.0));

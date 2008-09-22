@@ -312,6 +312,11 @@ public class SimpleDial extends DialCharts{
 		
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart1.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart1.addSubtitle(subTitle);
+		}
+
 		
 		logger.debug("OUT");
 		return chart1;

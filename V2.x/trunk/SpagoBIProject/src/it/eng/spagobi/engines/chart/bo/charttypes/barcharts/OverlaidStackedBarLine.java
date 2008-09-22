@@ -367,6 +367,11 @@ public class OverlaidStackedBarLine extends BarCharts {
 		JFreeChart chart = new JFreeChart(plot);
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
+
 		chart.setBackgroundPaint(Color.white);
 		return chart;
 

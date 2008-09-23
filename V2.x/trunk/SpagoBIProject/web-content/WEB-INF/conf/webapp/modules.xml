@@ -61,13 +61,7 @@
 	        <COLUMN label="menu.lookupDocumentList.description" name="DESCR"/>
 	        <COLUMN label="menu.lookupDocumentList.engine" name="ENGINE"/>
 	      </COLUMNS>
-	      <BUTTONS>
-	          <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIDev.ListParamUse.ListLookupLov.backButton">
-		          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="MenuConfigurationPage"/>
-		          <!--  <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="RETURN_BACK_FROM_LOOKUP"/>-->
-		          <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
-	      </BACK_BUTTON>
-	      </BUTTONS>
+	      <BUTTONS/>
 	    </CONFIG>
   	</MODULE>
 	

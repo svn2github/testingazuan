@@ -1,0 +1,25 @@
+<UPRS_SECURITY>
+	<CONF>
+		<PROXY host="www-proxy" port="8080" user="giachino" password="" />
+	</CONF>
+	
+	<DATASET>
+		<!-- <DATASOURCE type="connection" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@161.27.25.232:1521:SBIMDS" user="SBIMDS" password="SBIMDS"/>-->
+		<DATASOURCE type="connection" driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9002/spagobi" user="sa" password=""/>
+		<STATEMENTS>
+			<STATEMENT name="SELECT_ROLES_LIST" 
+		  			   query="SELECT DISTINCT NAME as CODE, DESCR as DESCRIPTION FROM SBI_EXT_ROLES "/>
+		  			   
+		  	<STATEMENT name="SELECT_USER_ROLES_LIST" 
+		  			   query="SELECT DISTINCT NAME as CODE, DESCR as DESCRIPTION FROM SBI_EXT_ROLES WHERE ROLE_TYPE_CD = ? "/>
+		  			   
+		    <STATEMENT name="SELECT_ATTRIBUTES_LIST" 
+		  			   query="SELECT DISTINCT FUNCT_TYPE_CD as DESCRIPTION FROM SBI_FUNCTIONS "/>
+		  			   
+		    <STATEMENT name="SELECT_USER_ATTRIBUTES_LIST" 
+		  			   query="SELECT DISTINCT NAME as DESCRIPTION DESCR as CODE FROM SBI_EXT_ROLES WHERE ROLE_TYPE_CD = ?  "/>
+		</STATEMENTS>
+	</DATASET>
+	
+	
+</UPRS_SECURITY>

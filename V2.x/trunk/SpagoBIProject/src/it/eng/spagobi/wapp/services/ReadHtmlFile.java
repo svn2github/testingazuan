@@ -12,24 +12,29 @@ import java.io.FileInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 public class ReadHtmlFile extends AbstractHttpAction{
 
+	static private Logger logger = Logger.getLogger(ReadHtmlFile.class);
+	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 	throws Exception {
-
+	    logger.debug("IN");
 		freezeHttpResponse();
 		HttpServletResponse httpResp = getHttpResponse();
 		httpResp.setContentType("text/html");
 		ServletOutputStream out = httpResp.getOutputStream();
 
 		String menuId=(String)serviceRequest.getAttribute("MENU_ID");
+		logger.debug("menuId="+menuId);
 		if(menuId!=null){
 			Menu menu=DAOFactory.getMenuDAO().loadMenuByID(Integer.valueOf(menuId));
 			String fileName=menu.getStaticPage();
-
+			logger.debug("fileName="+fileName);
 			String rootPath=ConfigSingleton.getRootPath();
 			String filePath=rootPath+System.getProperty("file.separator")+"static_content"+System.getProperty("file.separator")+fileName;
-
+			logger.debug("filePath="+filePath);
 			FileInputStream fis=new FileInputStream(filePath);
 
 			int avalaible = fis.available();   // Mi informo sul num. bytes.
@@ -41,9 +46,10 @@ public class ReadHtmlFile extends AbstractHttpAction{
 			fis.close();
 			out.flush();	
 			out.close();	 	
-
+			logger.debug("OUT");
 		}
 		else{
+		    logger.error("missin id");
 			throw new Exception("missin id");
 		}
 	}

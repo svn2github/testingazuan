@@ -556,7 +556,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String currentStaticPage=menu.getStaticPage();
 	// Get directory
 	String rootPath=ConfigSingleton.getRootPath();
-	String dirPath=rootPath+"/static_content";
+	String dirPath=rootPath+System.getProperty("file.separator")+"static_content";
 	File dir=new File(dirPath);
 	if (dir!=null && dir.isDirectory()){
 		// get all avalaible files

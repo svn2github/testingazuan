@@ -1282,7 +1282,7 @@ public class ListTag extends TagSupport
 			}
 			if ( !conditionsVerified) {
 				// if conditions are not verified puts an empty column
-				_htmlStream.append(" <td class=\"header-button-column-portlet-section width='40px'  >&nbsp;</td>\n");
+				_htmlStream.append(" <td class='header-button-column-portlet-section' width='40px'>&nbsp;</td>\n");
 				continue;
 			}
 			

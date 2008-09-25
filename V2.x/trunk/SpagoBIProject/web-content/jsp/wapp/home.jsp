@@ -554,7 +554,7 @@ boolean first=true;
 	 }
 	 
 	 function returnHome(){
-	 var urlH="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE')" 
+	 var urlH="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE&userId=<%= userProfile.getUserUniqueIdentifier().toString() %>" 
 	 location.href = urlH;
 	 }
 	 

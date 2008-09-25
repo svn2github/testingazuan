@@ -28,7 +28,7 @@ public class ReadHtmlFile extends AbstractHttpAction{
 			String fileName=menu.getStaticPage();
 
 			String rootPath=ConfigSingleton.getRootPath();
-			String filePath=rootPath+"\\static_content\\"+fileName;
+			String filePath=rootPath+System.getProperty("file.separator")+"static_content"+System.getProperty("file.separator")+fileName;
 
 			FileInputStream fis=new FileInputStream(filePath);
 

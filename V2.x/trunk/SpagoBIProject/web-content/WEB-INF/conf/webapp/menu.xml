@@ -75,7 +75,7 @@
 	</APPLICATION>
 	<APPLICATION code="DocumentDev" 
 	             title="#menu.DocumentDev"  
-	             functionality="DocumentDevelopment" 
+	             functionality="DocumentDevManagement" 
 	             type="link" 
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
@@ -84,7 +84,7 @@
 	</APPLICATION>
 	<APPLICATION code="DocumentTest" 
 	             title="#menu.DocumentTest"  
-	             functionality="DocumentTest" 
+	             functionality="DocumentTestManagement" 
 	             type="link" 
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
@@ -93,7 +93,7 @@
 	</APPLICATION>
 	<APPLICATION code="DocumentExec" 
 	             title="#menu.DocumentExec"  
-	             functionality="DocumentExecution" 
+	             functionality="DocumentUserManagement" 
 	             type="link" 
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             modal="true" 

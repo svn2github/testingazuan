@@ -23,7 +23,6 @@ package it.eng.spagobi.tools.dataset.wsconnectors;
 
 import java.util.HashMap;
 
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 /**
  * @author Angelo Bernabei

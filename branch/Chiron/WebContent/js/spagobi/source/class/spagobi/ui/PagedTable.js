@@ -54,12 +54,14 @@ qx.Class.define("spagobi.ui.PagedTable", {
 	construct : function(controller, data)  {
     	    	
     	this.base(arguments);    	
-    	
+    	this.setWidth("100%");// try also "auto"
+		this.setHeight("100%");
     	this._filterBar = new spagobi.ui.FilterBar();
     	this._table = new spagobi.ui.Table(controller, data);
     	this._table.set(
 		{ 
-			width : 1060
+			width : 940,//"100%",// 940
+			height: "85%"//100//"20%" //70 //'100%' 
 		});
     	this._navigationBar = new spagobi.ui.NavigationBar(); 
     	
@@ -78,7 +80,6 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	this.setDimension("100%", "100%");
     	*/
     	
-    	
     	var atom1 = new qx.ui.basic.Atom();
     	atom1.add( this._filterBar );
     	atom1.setHorizontalAlign("center");
@@ -91,6 +92,7 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	this.add( atom0 );
     	    	
     	var atom2 = new qx.ui.basic.Atom();
+    	atom2.setHorizontalAlign("center");
     	atom2.add( this._navigationBar );
     	this.add( atom2 );
     	

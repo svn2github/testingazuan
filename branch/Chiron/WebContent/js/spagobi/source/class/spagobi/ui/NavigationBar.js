@@ -34,7 +34,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qx.Class.define("spagobi.ui.NavigationBar", {
 	
-	extend : qx.ui.toolbar.ToolBar,
+	extend : qx.ui.layout.HorizontalBoxLayout,
+	//extend : qx.ui.toolbar.ToolBar,
 	
 	/**
 	 * Constructor to create the navigation bar.
@@ -49,6 +50,10 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
+		this.setWidth("100%");// try also "auto"
+		this.setHeight("100%");
+	//	this.setCentered(true);//setLeft("center");
+		this.setTop(-5);
 		this.createNavBar();
 		
 	},
@@ -66,25 +71,26 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		 */
 		createNavBar : function(){
 			
-			var horizontalbarLayout = new qx.ui.layout.HorizontalBoxLayout();
-  			horizontalbarLayout.setSpacing(15);
-			
 			var firstPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");
-			horizontalbarLayout.add(firstPageButton);
+			this.add(firstPageButton);
+		//	horizontalbarLayout.add(firstPageButton);
 			
 			var prevPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/previousPage.png");
-			horizontalbarLayout.add(prevPageButton);
+			this.add(prevPageButton);
+			//horizontalbarLayout.add(prevPageButton);
 			
-			horizontalbarLayout.add(new qx.ui.basic.HorizontalSpacer());
+			//horizontalbarLayout.add(new qx.ui.basic.HorizontalSpacer());
 			
 			var nextPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");
-			horizontalbarLayout.add(nextPageButton);
+			this.add(nextPageButton);
+			//horizontalbarLayout.add(nextPageButton);
 			
 			var lastPageButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/lastPage.png");
-			horizontalbarLayout.add(lastPageButton);
+			this.add(lastPageButton);
+			//horizontalbarLayout.add(lastPageButton);
 			
-			horizontalbarLayout.setAlign("center",null);
-			this.add(horizontalbarLayout);
+			/*horizontalbarLayout.setAlign("right",null);
+			this.add(horizontalbarLayout);*/
 		}	
 	}
 });

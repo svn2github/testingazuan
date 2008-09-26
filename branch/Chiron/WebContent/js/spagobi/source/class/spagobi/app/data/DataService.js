@@ -36,6 +36,146 @@ qx.Class.define("spagobi.app.data.DataService", {
   type : "static",
   statics : {
   	
+  	loadRolesRecords: function(){
+  		var records = {};
+    	
+    	records.meta =  this.loadRolesMeta();
+    	records.rows =  this.loadRolesData();
+    	
+    	return records;
+  	},
+  	
+  	loadRolesMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'type',
+	    		name: 'Type' 
+    		}, {
+	    		dataIndex: 'savecustomview',
+	    		name: 'SaveCustomView' 
+    		}, {
+	    		dataIndex: 'seecustomview',
+	    		name: 'SeeCustomView' 
+    		}, {
+	    		dataIndex: 'notes',
+	    		name: 'Notes'
+    		}, {
+	    		dataIndex: 'metadata',
+	    		name: 'MetaData'
+    		}, {
+	    		dataIndex: 'sendmail',
+	    		name: 'SendMail'
+    		}, {
+	    		dataIndex: 'hotlinks',
+	    		name: 'HotLinks'
+    		}, {
+	    		dataIndex: 'ziipa',
+	    		name: 'AB' 
+    		}, {
+	    		dataIndex: 'zuppo',
+	    		name: 'ABC' 
+    		}, {
+	    		dataIndex: 'zippi',
+	    		name: 'ABCD' 
+    		}
+    	];
+  	},
+  	
+  	loadRolesData: function() {
+  		/*
+      	Test Area Begins --GJ
+      	
+      	var zoo = new qx.ui.table.cellrenderer.Boolean();
+      	var box = new qx.ui.form.CheckBox();
+  		box.setDisplay(true);
+      	var atom78 = new qx.ui.basic.Atom();
+        atom78.add(box); 
+      	     	
+      	var flag_box = {};
+  		flag_box.box = new qx.ui.form.CheckBox();
+  		flag_box.box.set({
+       			checked: true
+       			//top: config.top,
+       			//left: config.left
+        	});
+        flag_box.box.setDisplay(true);
+        
+        Test Area Ends -- GJ
+        */
+        
+  		return [
+    		{ 
+	        	id: '180',
+	        	name: '/Admin',
+	        	type: 'Functional_Role',
+	        	savecustomview: true,
+	        	seecustomview: true,
+	        	notes: true,
+	        	metadata: true,
+	        	sendmail: true, 
+	        	hotlinks: true,
+	        	ziipa: false,
+	        	zuppo: true,
+	        	zippi: false         	        	
+        	}, {
+	        	id: '181',
+	        	name: '/Community',
+	        	type: 'Functional_Role',
+	        	savecustomview: true,
+	        	seecustomview: true,
+	        	notes: true,
+	        	metadata: true,
+	        	sendmail: true, 
+	        	hotlinks: true,
+	        	ziipa: false,
+	        	zuppo: true,
+	        	zippi: false    	        	
+        	}, {
+	        	id: '182',
+	        	name: '/Guest',
+	        	type: 'Functional_Role',
+	        	savecustomview: true,
+	        	seecustomview: true,
+	        	notes: true,
+	        	metadata: true,
+	        	sendmail: true, 
+	        	hotlinks: true,
+	        	ziipa: false,
+	        	zuppo: true,
+	        	zippi: false      	        	
+        	}, {
+	        	id: '183',
+	        	name: '/Guest',
+	        	type: 'Functional_Role',
+	        	savecustomview: true,
+	        	seecustomview: true,
+	        	notes: true,
+	        	metadata: true,
+	        	sendmail: true, 
+	        	hotlinks: true,
+	        	ziipa: false,
+	        	zuppo: true,
+	        	zippi: false      	        	
+        	}, {
+	        	id: '184',
+	        	name: '/Guest',
+	        	type: 'Functional_Role',
+	        	savecustomview: true,
+	        	seecustomview: true,
+	        	notes: true,
+	        	metadata: true,
+	        	sendmail: true, 
+	        	hotlinks: true,
+	        	ziipa: false,
+	        	zuppo: true,
+	        	zippi: false      	        	
+        	}
+    	];
+  	},
+  	
   	loadlink1Records: function(){
   		var records = {};
     	
@@ -184,7 +324,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	document: 'SpeedoMeterChart',
 	        	documentname: 'A Simple speedo Meter',
 	        	documentdescription: 'Google',
-	        	documenttype: 'DASH'           	        	
+	        	documenttype: 'DASH'            	        	
         	}, {
 	        	id: '198',
 	        	document: 'SpeedoMeterChart',
@@ -228,7 +368,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	id: '135',
 	        	"label": 'JASPER',
 	        	name: 'JasperReport Engine',
-	        	description: 'Compatible with JasperReport engine v3.1',
+	        	description: 'Compatible with JasperReport engine v3.1 bnvdjvhklvhklvhklvhzòvhxcfjvjklbnòbvjdkhnklj',
 	        	documentType: 'Map',
 	        	engineType: 'External',
 	        	useDataSet: false,
@@ -250,6 +390,71 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	"class": '',
 	        	url: 'http://localhost:8080/SpagoBIQbeEngine/AdapterHTTP?ACTION_NAME=START_ACTION',
 	        	driver: 'it.eng.spagobi.engines.drivers.QbeDriver'        	        	
+        	}, {
+	        	id: '138',
+	        	"label": 'DASH',
+	        	name: 'Dashboard Engine',
+	        	description: 'Dashboard Engine',
+	        	documentType: 'Map',
+	        	engineType: 'Internal',
+	        	useDataSet: false,
+	        	useDataSource: true,
+	        	dataSource: 'geo',
+	        	"class": 'it.eng.spagobi.Dashboard',
+	        	url: '',
+	        	driver: ''        	        	
+        	}, {
+	        	id: '137',
+	        	"label": 'QBE',
+	        	name: 'Qbe Engine',
+	        	description: 'Query by Example',
+	        	documentType: 'Map',
+	        	engineType: 'External',
+	        	useDataSet: false,
+	        	useDataSource: true,
+	        	dataSource: 'geo',
+	        	"class": '',
+	        	url: 'http://localhost:8080/SpagoBIQbeEngine/AdapterHTTP?ACTION_NAME=START_ACTION',
+	        	driver: 'it.eng.spagobi.engines.drivers.QbeDriver'        	        	
+        	}, {
+	        	id: '138',
+	        	"label": 'DASH',
+	        	name: 'Dashboard Engine',
+	        	description: 'Dashboard Engine',
+	        	documentType: 'Map',
+	        	engineType: 'Internal',
+	        	useDataSet: false,
+	        	useDataSource: true,
+	        	dataSource: 'geo',
+	        	"class": 'it.eng.spagobi.Dashboard',
+	        	url: '',
+	        	driver: ''        	        	
+        	}, {
+	        	id: '137',
+	        	"label": 'QBE',
+	        	name: 'Qbe Engine',
+	        	description: 'Query by Example',
+	        	documentType: 'Map',
+	        	engineType: 'External',
+	        	useDataSet: false,
+	        	useDataSource: true,
+	        	dataSource: 'geo',
+	        	"class": '',
+	        	url: 'http://localhost:8080/SpagoBIQbeEngine/AdapterHTTP?ACTION_NAME=START_ACTION',
+	        	driver: 'it.eng.spagobi.engines.drivers.QbeDriver'        	        	
+        	}, {
+	        	id: '138',
+	        	"label": 'DASH',
+	        	name: 'Dashboard Engine',
+	        	description: 'Dashboard Engine',
+	        	documentType: 'Map',
+	        	engineType: 'Internal',
+	        	useDataSet: false,
+	        	useDataSource: true,
+	        	dataSource: 'geo',
+	        	"class": 'it.eng.spagobi.Dashboard',
+	        	url: '',
+	        	driver: ''        	        	
         	}, {
 	        	id: '138',
 	        	"label": 'DASH',

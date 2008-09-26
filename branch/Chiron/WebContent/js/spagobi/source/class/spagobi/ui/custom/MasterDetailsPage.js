@@ -58,8 +58,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
    	
   construct : function(type)
   {
-    this.base(arguments, "1*", "2*");
-    
+   // this.base(arguments, "1*", "2*");
+    this.base(arguments,180, "1*");//, "2*");
+    this.setWidth("100%");
+    this.setHeight("100%");
     var listPage;
     var detailPage;
     var detailHeader;
@@ -98,7 +100,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'configuration') {									//new code
 		records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-	} else if(this._type === 'funcManagement') {
+	} else if(type === 'funcManagement') {
 		records = spagobi.app.data.DataService.loadFunctinalitiesRecords();
 		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	} else if(type == 'link1') {									//new code
@@ -110,6 +112,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'link3') {									//new code
 		records = spagobi.app.data.DataService.loadlink3Records();
 		form = new spagobi.ui.custom.Link3DummyForm(); 
+	} else if(type == 'roles') {									//new code
+		records = spagobi.app.data.DataService.loadRolesRecords();
+		form = new spagobi.ui.custom.RolesDummyForm(); 
 	}																								//new code ends
 	
 		
@@ -123,11 +128,18 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     detailPage.setEdge(0);     
         
     // Create detail view toolbar
-    var saveButton = new qx.ui.pageview.buttonview.Button("Save", "spagobi/img/spagobi/test/save.png");
-    var deleteButton = new qx.ui.pageview.buttonview.Button("Delete", "spagobi/img/spagobi/test/delete.png");
-    var createButton = new qx.ui.pageview.buttonview.Button("New", "spagobi/img/spagobi/test/create.png");                 
-    detailPage.getBar().add(createButton, saveButton, deleteButton);   
-    
+      var saveButton = new qx.ui.pageview.buttonview.Button(/*"Save");//*/"", "spagobi/img/spagobi/test/save.png");
+    var SB = new qx.ui.popup.ToolTip("Save");
+    saveButton.setToolTip(SB);
+    var deleteButton = new qx.ui.pageview.buttonview.Button(/*"Delete");//*/"", "spagobi/img/spagobi/test/delete.png");
+    var SD = new qx.ui.popup.ToolTip("Delete");
+    deleteButton.setToolTip(SD);
+    var createButton = new qx.ui.pageview.buttonview.Button(/*"New");//*/"", "spagobi/img/spagobi/test/create.png");
+    var NB = new qx.ui.popup.ToolTip("New");
+    createButton.setToolTip(NB);
+                     
+    detailPage.getBar().add(createButton, saveButton, deleteButton);               
+   
     // Functionality for Save button
     var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
 	save_page.setDisplay(false);
@@ -170,12 +182,134 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     detailHeader.setDisplay(false);        
     detailHeader.setChecked(true);  		
 	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
+    this.detailBody.setOverflow("auto");
     this.detailBody.add( this._form );  		 
   	detailPage.getPane().add( this.detailBody );
   	
-  	this.addBottom( detailPage );
+  	if(type == 'funcManagement'){
+  		
+  		var bottomPart = new qx.ui.layout.VerticalBoxLayout();
+  		
+  		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
+  		with(headerLabel){
+  			width : 200;
+  			height : 300
+  		};
+  		
+  		//var h1 = new qx.ui.embed.HtmlEmbed("<h1>Fn</h1>");
+  		
+  		var tree = new spagobi.ui.Tree({root: "Functionalities" });
+  		/*
+  		 with(tree)
+        {
+          setBackgroundColor("white");
+          setBorder("inset");
+          setOverflow("scrollY");
+  
+          setHeight(null);
+          setTop(48);
+          setLeft(20);
+          setWidth(200);
+          setBottom(48);
+        };
+  		 */
+  		 		
+  		var node1 = tree.addNode({
+		  							name  : "Report",
+		  							parent: tree,
+		  							id	  : "node1"
+  								});
+  		var node2 = tree.addNode({
+		  							name  : "OLAP",
+		  							parent: tree,
+		  							id	  : "node2"	
+  								});
+  		var node3 = tree.addNode({
+		  							name  : "myOLAP",
+		  							parent: node2,
+		  							id	  : "node3",
+		  							file  : true	
+  								});
+  		var node4 = tree.addNode({
+		  							name  : "DashBoard",
+		  							parent: tree,
+		  							id	  : "node4",
+		  							init_icon: "icon/16/places/user-trash.png",
+		  							click_icon: "",
+		  							checkBox  : true	
+  								});
+  		var node5 = tree.addNode({
+		  							name  : "myDashBoardFolder",
+		  							parent: node4,
+		  							id	  : "node5",
+		  							checkBox: true
+		  						});
+  		var node6 = tree.addNode({
+		  							name  : "myDashBoard",
+		  							parent: node4,
+		  							id	  : "node6",
+		  							checkBox: true,
+		  							init_icon: "icon/16/places/user-desktop.png",
+		  							click_icon: "",
+		  							file  : true	
+  								});	
+  		//tree.deleteNode("node3");						
+  								 											
+  		tree.addEventListener("click",tree.onClickMenu,tree);		// mouseevent
+  		//tree.getManager().addEventListener("changeSelection",tree.onClickMenu,tree);	//data event
+  		//tree.getManager().addEventListener("changeSelection",this._onSelectTreeNode,tree);
+  		
+  		//tree.setSelectedElement(tree);
+  		//alert (tree.getSelectedElement()); // changeSelected
+  		//var e = tree.getSelectedElement();  	e.addEventListener("click",tree.onClickMenu,tree); 		
+  		//tree.setUseDoubleClick(true);
+  		  			
+  		bottomPart.add(headerLabel/*,h1*/, tree);	
+  		
+  			
+  		/* 
+  		Context menu using a button - to test context menu functionality
+  		var w1 = new qx.ui.form.Button("Open");
+  		w1.setTop(120);
+        w1.setLeft(320);
+        
+  		var contextMenu = new qx.ui.menu.Menu;
+   		var insertButton = new qx.ui.menu.Button("Insert");
+   		var deleteButton = new qx.ui.menu.Button("Delete");
+   		contextMenu.add(insertButton,deleteButton);
+  		var d = qx.ui.core.ClientDocument.getInstance();
+  		d.add(contextMenu);
+  		
+  		w1.addEventListener("click", function(e)
+        {
+          if (contextMenu.isSeeable())
+          {
+            contextMenu.hide();
+          }
+          else
+          {
+            var el = this.getElement();
+  
+            contextMenu.setLeft(qx.html.Location.getPageBoxLeft(el));
+            contextMenu.setTop(qx.html.Location.getPageBoxBottom(el));
+  
+            contextMenu.show();
+          };
+  
+          e.setPropagationStopped(true);
+        });
+  		
+  		bottomPart.add(w1);
+  		*/
+  		
+  				
+  		this.addBottom(bottomPart);
+  	}
+  	else{
+  		this.addBottom( detailPage );
+  	}
   	
-  	//this._form.setScrollLeft(10);
+  	
   },
 
   members :
@@ -248,8 +382,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		}  else if(this._type === 'funcManagement') {
 			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
 		
+		}  else if(this._type === 'roles') {
+			this._form = new spagobi.ui.custom.RolesDummyForm();
 		}
-		
 			
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
    			/*
@@ -310,6 +445,16 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     		alert("getData gave: " + o[prop]);
     	}
     	
+    },
+    
+    _onClickMenu: function(e){
+    	alert("value:" + this.getCurrentNode());		//working	
+    	//alert("value:" + this.getCurrentNode().label);
+    	//treerowstructure.getLabelObject()
+    },
+    
+    _onSelectTreeNode:function(e){
+    	this.addEventListener("click",this.onClickMenu,this);
     }	
   }
 });

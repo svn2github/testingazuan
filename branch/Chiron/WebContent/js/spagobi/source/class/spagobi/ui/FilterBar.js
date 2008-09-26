@@ -46,6 +46,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
+		this.setWidth("100%");// try also "auto"
+		this.setHeight("100%");
+		this.setTop(20);
 		this.createFilterBar();
 	},
 	
@@ -103,9 +106,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			//var space = new qx.ui.embed.HtmlEmbed("<br><br>");
 			//this.add(space);
 			
-			var combo1_label = new qx.ui.basic.Label("The value of the column");
+			var combo1_label = new qx.ui.basic.Label("  The value of the column   ");
 			with(combo1_label){
-				//setVerticalAlign("bottom");
+				setTextAlign("center");
 			}
 			this.add(combo1_label);
 			
@@ -117,9 +120,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
             }
 			this.add(combo1);
 			
-			var combo2_label = new qx.ui.basic.Label("as a");
+			var combo2_label = new qx.ui.basic.Label(" as a ");
 			with(combo2_label){
-				//setVerticalAlign("middle");
+				setTextAlign("center");
 			}
 			this.add(combo2_label);
 			
@@ -131,6 +134,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
             }
 			this.add(combo2);
 			
+			var dummy_label = new qx.ui.basic.Label(" ");
+			this.add(dummy_label);
+			
 			var combo3 = new qx.ui.form.ComboBox();
 			var items3 = ["starts with","ends with","contains","=","<","<=",">",">="];
 			for(var i=0; i< items3.length; i++) {
@@ -138,6 +144,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
               combo3.add(item);
             }
 			this.add(combo3);													 
+			
+			var dummy_label1 = new qx.ui.basic.Label(" ");
+			this.add(dummy_label1);
 			
 			var txt1 = new qx.ui.form.TextField();
 			with(txt1){

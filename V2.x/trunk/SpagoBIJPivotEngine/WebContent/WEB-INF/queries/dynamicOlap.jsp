@@ -131,18 +131,19 @@ LICENSE: see LICENSE.txt file
 				if (clickables != null && clickables.size() > 0) {
 					for (int i = 0; i < clickables.size(); i++) {
 						Node clickable = (Node) clickables.get(i);
-						String urlPattern = clickable.valueOf("@urlPattern");
+						String targetDocument = clickable.valueOf("@targetDocument");
+						String targetDocumentParameters = "";
 						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
-							urlPattern += "?";
 							for (int j = 0; j < clickParameters.size(); j++) {
 								Node clickParameter = (Node) clickParameters.get(j);
 								String clickParameterName = clickParameter.valueOf("@name");
 								String clickParameterValue = clickParameter.valueOf("@value");
-								urlPattern += clickParameterName + "=" + clickParameterValue + "&";
+								targetDocumentParameters += clickParameterName + "=" + clickParameterValue + "&";
 							}
 						}
 						String uniqueName = clickable.valueOf("@uniqueName");
+						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "'')";
 						%>
 						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
 						<%
@@ -165,18 +166,19 @@ LICENSE: see LICENSE.txt file
 				if (clickables != null && clickables.size() > 0) {
 					for (int i = 0; i < clickables.size(); i++) {
 						Node clickable = (Node) clickables.get(i);
-						String urlPattern = clickable.valueOf("@urlPattern");
+						String targetDocument = clickable.valueOf("@targetDocument");
+						String targetDocumentParameters = "";
 						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
-							urlPattern += "?";
 							for (int j = 0; j < clickParameters.size(); j++) {
 								Node clickParameter = (Node) clickParameters.get(j);
 								String clickParameterName = clickParameter.valueOf("@name");
 								String clickParameterValue = clickParameter.valueOf("@value");
-								urlPattern += clickParameterName + "=" + clickParameterValue + "&";
+								targetDocumentParameters += clickParameterName + "=" + clickParameterValue + "&";
 							}
 						}
 						String uniqueName = clickable.valueOf("@uniqueName");
+						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "'')";
 						%>
 						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
 						<%

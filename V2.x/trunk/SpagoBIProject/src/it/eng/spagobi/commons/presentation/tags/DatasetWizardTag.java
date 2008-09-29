@@ -23,17 +23,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.commons.presentation.tags;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -392,8 +389,8 @@ public class DatasetWizardTag  extends TagSupport {
 			output.append("				<img width='22px' height='22px'\n");
 			output.append("				 	 src='" + urlImg +"'\n");
 			output.append("					 name='info'\n");
-			output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.dataset.availableProfAttr", "messages")+"'\n");
-			output.append("					 title='"+PortletUtilities.getMessage("SBIDev.dataset.availableProfAttr", "messages")+"'/>\n");
+			output.append("					 alt='" + msgBuilder.getMessage("SBIDev.dataset.availableProfAttr", "messages", this.httpRequest) + "'\n");
+			output.append("					 title='" + msgBuilder.getMessage("SBIDev.dataset.availableProfAttr", "messages", this.httpRequest) + "'/>\n");
 			output.append("			</a>\n");
 			output.append("		</td>\n");
 			String outputStr = output.toString();

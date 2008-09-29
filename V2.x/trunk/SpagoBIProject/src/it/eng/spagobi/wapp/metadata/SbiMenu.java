@@ -41,12 +41,12 @@ public class SbiMenu  implements java.io.Serializable {
      private String subObjName;
      private String snapshotName;
      private Integer snapshotHistory;
+     private String functionality;
      private String name;
      private String descr;
      private String staticPage;     
      private Integer parentId;
      private Set sbiMenuRoles = new HashSet(0);
-     private Boolean homepage;
      private Boolean viewIcons;
      private Boolean hideToolbar;
      private Boolean hideSliders;
@@ -181,14 +181,6 @@ public class SbiMenu  implements java.io.Serializable {
         this.sbiMenuRoles = sbiMenuRoles;
     }
 
-	public Boolean getHomepage() {
-		return homepage;
-	}
-
-	public void setHomepage(Boolean homepage) {
-		this.homepage = homepage;
-	}
-
 	public Boolean getViewIcons() {
 		return viewIcons;
 	}
@@ -260,7 +252,14 @@ public class SbiMenu  implements java.io.Serializable {
 	public void setHideSliders(Boolean hideSliders) {
 		this.hideSliders = hideSliders;
 	}
-   
+
+	public String getFunctionality() {
+		return functionality;
+	}
+
+	public void setFunctionality(String functionality) {
+		this.functionality = functionality;
+	}
 
 
 }

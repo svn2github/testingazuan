@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -378,6 +379,7 @@ public class DetailMenuModule extends AbstractModule {
 				menu.setSnapshotHistory(null);
 			}
 			menu.setStaticPage(null);
+			menu.setFunctionality(null);
 		} else if ("nodeStaticPage".equals(nodeContent)) {
 			// menu node with static page
 			menu.setObjId(null);
@@ -385,8 +387,19 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setObjParameters(null);
 			menu.setSnapshotName(null);
 			menu.setSnapshotHistory(null);
+			menu.setFunctionality(null);
 			String staticPage = (String) request.getAttribute("staticpage");
 			menu.setStaticPage(staticPage);
+		} else if ("nodeFunctionality".equals(nodeContent)) {
+			// menu node with static page
+			menu.setObjId(null);
+			menu.setSubObjName(null);
+			menu.setObjParameters(null);
+			menu.setSnapshotName(null);
+			menu.setSnapshotHistory(null);
+			menu.setStaticPage(null);
+			String functionality = (String) request.getAttribute("functionality");
+			menu.setFunctionality(functionality);
 		} else {
 			// empty menu node
 			menu.setObjId(null);
@@ -395,14 +408,13 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setSnapshotName(null);
 			menu.setSnapshotHistory(null);
 			menu.setStaticPage(null);
+			menu.setFunctionality(null);
 		}
 		
 		String homepageB=(String)request.getAttribute("homepage");
 		String viewIconsB=(String)request.getAttribute("viewicons");
 		String hideToolbarB=(String)request.getAttribute("hideToolbar");
 		String hideSlidersB=(String)request.getAttribute("hideSliders");
-		if(homepageB!=null){menu.setHomepage(Boolean.valueOf(homepageB).booleanValue());}
-		else menu.setHomepage(false);
 		if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
 		else menu.setViewIcons(false);
 		if(hideToolbarB!=null)menu.setHideToolbar(Boolean.valueOf(hideToolbarB).booleanValue());
@@ -580,6 +592,14 @@ public class DetailMenuModule extends AbstractModule {
 		else if(menu.getStaticPage()!=null){
 			url="/img/wapp/static_page.png";
 			return url;
+		}
+		else if (menu.getFunctionality() != null && !menu.getFunctionality().equals("")) {
+			SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", menu.getFunctionality());
+			if (config != null) {
+				String iconUrl = (String) config.getAttribute("iconUrl");
+				iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", "");
+				return iconUrl;
+			} else return "";
 		}
 		else
 			return "";

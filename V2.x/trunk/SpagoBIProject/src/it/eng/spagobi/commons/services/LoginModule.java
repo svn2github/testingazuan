@@ -176,9 +176,12 @@ public class LoginModule extends AbstractHttpModule {
 			// get config
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 
-			//if the user isn't an administrator the menu is created and putted into the response with other informations like the type of layout,
-			//otherwise don't because the administrator can view only classic services of administration. 
-			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
+			//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
+			//otherwise don't, administrators, developers, testers, behavioral model administrators
+			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
+					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
+					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
+					&& !profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
 				String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode"); 
 				String menuExtra = (configSingleton.getAttribute("SPAGOBI.MENU.viewExtra")==null)?DEFAULT_EXTRA:(String)configSingleton.getAttribute("SPAGOBI.MENU.viewExtra"); 
 				Collection lstRolesForUser = profile.getRoles();

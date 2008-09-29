@@ -42,6 +42,7 @@ public class Menu  implements Serializable  {
     private String subObjName;
     private String snapshotName;
     private Integer snapshotHistory;
+    private String functionality;
     private String name;
     private String descr;
     private Integer parentId;
@@ -50,7 +51,6 @@ public class Menu  implements Serializable  {
     private boolean hasChildren;
     private List	lstChildren;
     private Role[] roles = null;
-    private boolean homepage=false;
     private boolean viewIcons=false;
     private boolean hideToolbar=false;
     private boolean hideSliders=false;
@@ -229,14 +229,6 @@ public class Menu  implements Serializable  {
 		this.roles = roles;
 	}
 
-	public boolean isHomepage() {
-		return homepage;
-	}
-
-	public void setHomepage(boolean homepage) {
-		this.homepage = homepage;
-	}
-
 	public boolean isViewIcons() {
 		return viewIcons;
 	}
@@ -299,6 +291,14 @@ public class Menu  implements Serializable  {
 
 	public void setHideSliders(boolean hideSliders) {
 		this.hideSliders = hideSliders;
+	}
+
+	public String getFunctionality() {
+		return functionality;
+	}
+
+	public void setFunctionality(String functionality) {
+		this.functionality = functionality;
 	}
 
 	

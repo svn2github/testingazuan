@@ -167,6 +167,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setSubObjName(aMenu.getSubObjName());
 			hibMenu.setSnapshotName(aMenu.getSnapshotName());
 			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
+			hibMenu.setFunctionality(aMenu.getFunctionality());
 			
 			//Modify Roles Associated
 			// delete all roles functionality
@@ -183,7 +184,6 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			// set new roles into sbiFunctions
 			hibMenu.setSbiMenuRoles(menuRoleToSave);	
 
-			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
 			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
@@ -231,7 +231,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setSubObjName(aMenu.getSubObjName());
 			hibMenu.setSnapshotName(aMenu.getSnapshotName());
 			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
-			hibMenu.setHomepage(new Boolean(aMenu.isHomepage()));
+			hibMenu.setFunctionality(aMenu.getFunctionality());
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
 			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
@@ -470,11 +470,8 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		menu.setSubObjName(hibMenu.getSubObjName());
 		menu.setSnapshotName(hibMenu.getSnapshotName());
 		menu.setSnapshotHistory(hibMenu.getSnapshotHistory());
+		menu.setFunctionality(hibMenu.getFunctionality());
 		menu.setLevel(getLevel(menu.getParentId(), menu.getObjId()));
-		if(hibMenu.getHomepage()!=null){
-			menu.setHomepage(hibMenu.getHomepage().booleanValue());
-		}
-		else menu.setHomepage(false);
 
 		if(hibMenu.getViewIcons()!=null){
 			menu.setViewIcons(hibMenu.getViewIcons().booleanValue());

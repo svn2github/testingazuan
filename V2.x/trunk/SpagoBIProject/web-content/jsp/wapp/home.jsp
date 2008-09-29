@@ -32,6 +32,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.services.LoginModule"%>
 <%@page import="it.eng.spagobi.wapp.bo.Menu"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
+<%@page import="it.eng.spagobi.wapp.util.MenuAccessVerifier"%>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
@@ -46,12 +49,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	String menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
 	String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
-boolean first=true;
+	boolean first=true;
 %>
-
-<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
-<%@page import="it.eng.spagobi.wapp.util.MenuAccessVerifier"%>
-<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 
 	   <script type="text/javascript" src="<%=linkSbijs%>"></script>
@@ -99,114 +98,157 @@ boolean first=true;
 
   <body>
 
-	 <%@include file="/html/banner.html" %>
-	 
-	 		<div id="menubar" style="width:100%;background:#EEEFF3;"> 
-           </div>  
+	<%@include file="/html/banner.html" %>
+
+	<%-- contains the menu --%>
+	<div id="menubar" style="width:100%;background:#EEEFF3;"> 
+	</div>
 	
-	<!-- <div id="background" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
-    	<div id="backgroundlogo" style="width:100%;height:100%;background-image:url(<%=contextName%>/img/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;">   
-        <div id="header" style="width:100%;height:70px;border-width:10px;">
-            <div id="logotitle" style="border-width:10px;height:57px;background-image:url(<%=contextName%>/img/wapp/titlelogo.gif);background-repeat:no-repeat;background-position: top left;"> 
-            </div>                        	
-             <div id="menubar" style="border-width:10px;float:left;width:100%;height:18px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
-            </div>
-        </div>-->
-        
-        
-        <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
-		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
-				</iframe>
-	        </div>
-	    <%}else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
-		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
-				</iframe>
-	        </div>
-        <%}%>
-        <%if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
-			  <div id="leftMenu" style='float:left;background-color: transparent'></div>
-			  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
-		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
-				</iframe>
-	        </div>
-		 <%}%>
-		 <script type="text/javascript">
-			if (isMoz()) {
-				document.getElementById('iframeDoc').height='75%';
-			} else {
-				document.getElementById('iframeDoc').height='72%';
-			}
-		 </script>
+	<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
+	<div id="content" style="margin:2;">
+		<iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
+		</iframe>
+	</div>
+	<% } %>
+	
+	<%--if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
+	  <div id="leftMenu" style='float:left;background-color: transparent'></div>
+	  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
+        <iframe id='iframeDoc'  name='iframeDoc' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
+		</iframe>
+       </div>
+	<%}--%>
+	
+	<script type="text/javascript">
+	if (isMoz()) {
+		document.getElementById('iframeDoc').height='75%';
+	} else {
+		document.getElementById('iframeDoc').height='72%';
+	}
+	</script>
   
-  <%@include file="/html/footer.html" %>
+	<%@include file="/html/footer.html" %>
   
   </body>
+  
   <script>
-  	//setContextName("<%=contextName%>");
+  	<%-- Ext overriding methods for mouseout and mouseexit from menu --%>
+	Ext.override(Ext.menu.Menu, {
+	  render : function(){
+	    if(this.el){
+	      return;
+	    }
+	    var el = this.el = this.createEl();
+	    
+	    if(!this.keyNav){
+	      this.keyNav = new Ext.menu.MenuNav(this);
+	    }
+	    if(this.plain){
+	      el.addClass("x-menu-plain");
+	    }
+	    if(this.cls){
+	      el.addClass(this.cls);
+	    }
+	    // generic focus element
+	    this.focusEl = el.createChild({
+	      tag: "a", cls: "x-menu-focus", href: "#", onclick: "return false;", tabIndex:"-1"
+	    });
+	    var ul = el.createChild({tag: "ul", cls: "x-menu-list"});
+	    ul.on("click", this.onClick, this);
+	    ul.on("mouseover", this.onMouseOver, this);
+	    ul.on("mouseout", this.onMouseOut, this);
+	    if (!this.topmenu) {
+	      this.addEvents("mouseenter", "mouseexit");
+	      this.mouseout = null;
+	    }
+	    el.on("mouseover", function(e, t){
+	      if(this.topmenu){
+	        clearTimeout(this.topmenu.mouseout);
+	        this.topmenu.mouseout=null;
+	      }else if (this.mouseout == null) this.fireEvent("mouseenter", this, e, t);
+	      else {
+	        clearTimeout(this.mouseout);
+	        this.mouseout = null;
+	      }
+	    }, this);
+	    el.on("mouseout", function(e, t){
+	      if (this.topmenu) {
+	        this.topmenu.mouseout = (function(){
+	          this.topmenu.mouseout = null;
+	          this.topmenu.fireEvent("mouseexit", this.topmenu, e, t);
+	        }).defer(100, this);
+	      } else {
+	        this.mouseout = (function(){
+	          this.mouseout = null;
+	          this.fireEvent("mouseexit", this, e, t);
+	        }).defer(100, this);
+	      }
+	    }, this);
+	    el.on("mouseup", function(e, t){
+	      e.stopEvent();
+	    })
+	    this.items.each(function(item){
+	      var li = document.createElement("li");
+	      li.className = "x-menu-list-item";
+	      ul.dom.appendChild(li);
+	      if(item.menu)item.menu.topmenu=this.topmenu||this;
+	      item.render(li, this);
+	    }, this);
+	    this.ul = ul;
+	    this.autoWidth();
+	  }
+	});
+  	
+  	
   	
 	<%//loading menu on TOP (max 4 levels)
-	  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
-	  	Ext.onReady(function(){  	
-	  	 		Ext.QuickTips.init();
-		 		//MENU MANAGEMENT
-				var tb = new Ext.Toolbar();			
-				tb.render('menubar');
+	if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)) {
+	%>
+	Ext.onReady(function(){  	
+		Ext.QuickTips.init();
+		//MENU MANAGEMENT
+		var tb = new Ext.Toolbar();			
+		tb.render('menubar');
 			
-
-			//adds exit menu		
-			tb.add(
-				
-				new Ext.Toolbar.Button({
-		            id: 'home',
-		            text: 'Home',
-		            icon: '<%=contextName%>/img/wapp/gohome.png',
-		            cls: 'x-btn-text-icon bmenu',
-		             //cls: 'x-btn-text-icon bmenu',
-		           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
-					handler: returnHome	  
-		        })	
-		    );
-		    
-		    tb.addSeparator();
-			
-			
-		    <%    if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){
-
-		  
-		    Integer currParentId = new Integer("-1");
-		    	for (int i=0; i<lstMenu.size(); i++){
-			    	Menu menuElem = (Menu)lstMenu.get(i);
-			    	boolean canView=MenuAccessVerifier.canView(menuElem,userProfile);
-			    	if(canView){
-
-			    	if (menuElem.getParentId() != null && !menuElem.getParentId().equals("") && 
-			    		menuElem.getParentId().compareTo(currParentId) != 0)
-			    		currParentId = menuElem.getParentId();
-			    	else currParentId = menuElem.getMenuId();
-			    	if (menuElem.getLevel().intValue() == 1){
-			  %>
-				    var menu<%=i%> = new Ext.menu.Menu({
-				    id: 'basicMenu_<%=i%>',
-				    items: [
-				    	<%if (menuElem.getHasChildren()){			    		
-				    		  List lstChildrenLev2 = menuElem.getLstChildren();
-				    		  for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
-				    			Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);	
-						    	boolean canView2=MenuAccessVerifier.canView(childElemLev2,userProfile);
-						    	if(canView2){
-
-				    			if (childElemLev2.getHasChildren()){%>
-				    			     {id: '<%new Double(Math.random()).toString();%>',
-				    			     text: '<%=childElemLev2.getName()%>',
-				    				 <% if(childElemLev2.getObjId()!=null){%>
-					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev2.getObjId().toString()%>')"                   
+		<%
+		//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
+		//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
+		if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
+				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
+				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
+				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)) {  // for behavioral model administrators
+		Integer currParentId = new Integer("-1");
+		for (int i=0; i<lstMenu.size(); i++){
+			Menu menuElem = (Menu)lstMenu.get(i);
+			if (menuElem.getParentId() != null && !menuElem.getParentId().equals("") && 
+					menuElem.getParentId().compareTo(currParentId) != 0)
+				currParentId = menuElem.getParentId();
+			else currParentId = menuElem.getMenuId();
+			if (menuElem.getLevel().intValue() == 1){
+				%>
+				var menu<%=i%> = new Ext.menu.Menu({
+				id: 'basicMenu_<%=i%>',
+				items: [
+				<%
+				if (menuElem.getHasChildren()){			    		
+					List lstChildrenLev2 = menuElem.getLstChildren();
+					for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
+						Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);	
+						boolean canView2=MenuAccessVerifier.canView(childElemLev2,userProfile);
+						if(canView2){
+							if (childElemLev2.getHasChildren()){
+							%>
+								{id: '<%new Double(Math.random()).toString();%>',
+				    			     text: '<%=msgBuilder.getMessage(childElemLev2.getName(), "messages", request)%>',
+				    				 		<% if(childElemLev2.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
-					                       		 <%}
-					                        else{%>
-						                         href: ''   
-						                            <%}%>,		// comma
+					                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
+						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"
+						                    <%} else if(childElemLev2.getFunctionality()!=null) {%>
+						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>')"
+						                    <%} else {%>
+						                         href: ''     
+						                    <%}%>,		// comma
 											<%String icon2=DetailMenuModule.assignImage(childElemLev2);
 						                         if(childElemLev2.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
 						                         	icon: '<%=contextName%><%=icon2%>',
@@ -221,16 +263,16 @@ boolean first=true;
 			    			     %>						    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {id: '<%new Double(Math.random()).toString();%>',
-					    			    text: '<%=childElemLev3.getName()%>',
-					    				 <% if(childElemLev3.getObjId()!=null){
-					    				 %>
-					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
+					    			    text: '<%=msgBuilder.getMessage(childElemLev3.getName(), "messages", request)%>',
+				    				 		<% if(childElemLev3.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
-					                       		 
-					                       		 <%}
-					                        else{%>
-						                         href: ''   
-						                            <%}%>,		// comma
+					                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
+						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"
+						                    <%} else if(childElemLev3.getFunctionality()!=null) {%>
+						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>')"
+						                    <%} else {%>
+						                         href: ''     
+						                    <%}%>,		// comma
 											<%String icon3=DetailMenuModule.assignImage(childElemLev3);
 						                         if(childElemLev3.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
 						                         	icon: '<%=contextName%><%=icon3%>',
@@ -245,25 +287,25 @@ boolean first=true;
 					    			    %>
 							    			    new Ext.menu.Item({
 						                            id: '<%new Double(Math.random()).toString();%>',
-						                            text: '<%=childElemLev4.getName()%>',
+						                            text: '<%=msgBuilder.getMessage(childElemLev4.getName(), "messages", request)%>',
 						                            group: 'group_4', 
 						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
 						                            if( childElemLev4.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 						                            icon: '<%=contextName%><%=icon%>',
-						                            <%}%>						                            
-						                            <% if(childElemLev4.getObjId()!=null){
-						                            %>		
-						                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev4.getObjId().toString()%>')"                           
-						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   
-						                           
-						                           <%}
-													else if(childElemLev4.getStaticPage()!=null){%>
-													href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   	                            
-					                            <%}%>
+						                            <%}%>
+						    				 		<% if(childElemLev4.getObjId()!=null){%>
+							                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   
+							                        <%} else if(childElemLev4.getStaticPage()!=null) {%>
+								                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev4.getMenuId()%>')"
+								                    <%} else if(childElemLev4.getFunctionality()!=null) {%>
+								                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev4, contextName)%>')"
+								                    <%} else {%>
+								                         href: ''     
+								                    <%}%>,		// comma
 						                        })
-							                        <%if(x < lstChildrenLev4.size()-1){%>
-						                            , // comma level 4
-						                         <%}%>	                  	                       				                   		
+												<%if(x < lstChildrenLev4.size()-1){%>
+												, // comma level 4
+												<%}%>	                  	                       				                   		
 					            			<%
 												    } //can View 4
 												}//for LEVEL 4
@@ -273,22 +315,21 @@ boolean first=true;
 					    			    else{ %>
 					                        new Ext.menu.Item({
 					                            id: '<%new Double(Math.random()).toString();%>',
-					                            text: '<%=childElemLev3.getName()%>',
+					                            text: '<%=msgBuilder.getMessage(childElemLev3.getName(), "messages", request)%>',
 					                            group: 'group_3',
 												<%String icon=DetailMenuModule.assignImage(childElemLev3);
 						                          if(childElemLev3.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 						                          icon: '<%=contextName%><%=icon%>',
 						                          <%}%>					                             
-					                            <% if(childElemLev3.getObjId()!=null){
-		
-					                            %>
-					                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=childElemLev3.getObjId().toString()%>')"                   
-					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
-
-					                        <%}
-												else if(childElemLev3.getStaticPage()!=null){%>
-												href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   	                            
-				                            <%}%>
+					                            <% if(childElemLev3.getObjId()!=null){%>
+						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
+						                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
+							                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"
+							                    <%} else if(childElemLev3.getFunctionality()!=null) {%>
+							                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>')"
+							                    <%} else {%>
+							                         href: ''     
+							                    <%}%>
 					                        })
 					                        
 					                   <%}%>					                      
@@ -303,20 +344,21 @@ boolean first=true;
 		    			    else{ %>
 		                        new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: '<%=childElemLev2.getName()%>',
+		                            text: '<%=msgBuilder.getMessage(childElemLev2.getName(), "messages", request)%>',
 		                            group: 'group_2',
 									<%String icon=DetailMenuModule.assignImage(childElemLev2);
 									   if(childElemLev2.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 										icon: '<%=contextName%><%=icon%>',
 											<%}%>		                             
-		                                <% if(childElemLev2.getObjId()!=null){
-		                                %>
-										href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
-		                        		
-		                        		<%}
-										else if(childElemLev2.getStaticPage()!=null){%>
-										href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   	                            
-		                            <%}%>
+		                            <% if(childElemLev2.getObjId()!=null){%>
+			                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
+			                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
+				                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"
+				                    <%} else if(childElemLev2.getFunctionality()!=null) {%>
+				                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>')"
+				                    <%} else {%>
+				                         href: ''     
+				                    <%}%>
 		                        })	                       
 		                    <%}%>		                      
 		                    <%if(j < lstChildrenLev2.size()-1){%>
@@ -327,24 +369,23 @@ boolean first=true;
 				    	}else{%>
 				    	 	new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: '<%=menuElem.getName()%>',
+		                            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
 		                            group: 'group_1',		                             
-							<% if(menuElem.getObjId()!=null){
-							%>
-		                            //href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&OBJECT_ID=<%=menuElem.getObjId().toString()%>')"                           
-									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
-
-		                        <%}	
-								else if(menuElem.getStaticPage()!=null){%>
-									href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>')"                   	                            
-	                            <%}%>
-	                            
+	                            <% if(menuElem.getObjId()!=null){%>
+		                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
+		                        <%} else if(menuElem.getStaticPage()!=null) {%>
+			                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>')"
+			                    <%} else if(menuElem.getFunctionality()!=null) {%>
+			                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>')"
+			                    <%} else {%>
+			                         href: ''     
+			                    <%}%>
 		                            
 		                        })	     			    						     
 						   <%}%>      	 
 				         ]
 					});		
-						
+					menu<%=i%>.addListener('mouseexit', function() {menu<%=i%>.hide();});
 				<%
 				if(first==true){
 				first=false;
@@ -363,7 +404,7 @@ boolean first=true;
 					tb.add(
 						new Ext.Toolbar.MenuButton({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: '<%=menuElem.getName()%>',
+				            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
@@ -389,7 +430,7 @@ boolean first=true;
 			    		tb.add(
 						new Ext.Toolbar.Button({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: '<%=menuElem.getName()%>',
+				            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
@@ -416,90 +457,23 @@ boolean first=true;
 					} // else has no children
 			    	
 			    	}
-			    	} // first can View
 			    	} //for
-		    } // User menu (not admin)
-			%>			
-			
-			<%--
-			var miomenu = new Ext.menu.Menu({
-			id: 'menumio',
-			items: [
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.WorkExec" />',
-				group: 'groupmy', 
-				icon: '<%=contextName%>/img/wapp/workspace16.png',
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ExecutionWorkspacePage&WEBMODE=TRUE')"                           
-			}),	
-			<%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){ %>	
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="tree.objectstree.name" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/wapp/bidocuments64.png', 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage')"                           
-			}),
-			<%}%>		
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.Worklist" />',
-				group: 'groupmy', 
-				icon: '<%=contextName%>/img/wapp/worklist64.png',
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=WorkflowToDoListPage&WEBMODE=TRUE')"                           
-			}),	
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.HotLink" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/analiticalmodel/icon-setlog.gif', 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=HOT_LINK_PAGE&OPERATION=GET_HOT_LINK_LIST')"                           
-			}),						
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.DistributionListList" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/tools/distributionlist/distributionlistuser16.png', 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage')"                           
-			}),
-			new Ext.menu.Item({
-				id: '<%new Double(Math.random()).toString();%>',
-				text: '<spagobi:message key="menu.Events" />',
-				group: 'groupmy',
-				icon: '<%=contextName%>/img/wapp/events16.png', 				 
-				href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&WEBMODE=TRUE')"                           
-			})
-			]
-			});		 
-			
-		tb.addSeparator();	
+			%>
 		
-			tb.add(
-				
-				new Ext.Toolbar.MenuButton({
-		            id: '<spagobi:message key="menu.UserMenu" />',
-		            text: '<spagobi:message key="menu.UserMenu" />',
-		            cls: 'x-btn-text-icon bmenu',
-		            menu: miomenu
-		        })	
-		    );			
-		
-		--%>
-		
+		<% } else { %>
 		<spagobiwa:userMenu/>
-
-
-	tb.addFill();
-
-			//adds exit menu		
-			tb.add(
-				
-				new Ext.Toolbar.TextItem({
-		            text: 'Welcome: <b><%= userProfile.getUserUniqueIdentifier().toString() %></b>&nbsp;&nbsp;&nbsp;'
-		        })	
-		    );
+		<% } %>
+		
+		tb.addFill();
+			
+		tb.add(
+			new Ext.Toolbar.TextItem({
+				text: '<spagobi:message key="menu.welcome" />: <b><%= userProfile.getUserUniqueIdentifier().toString() %></b>&nbsp;&nbsp;&nbsp;'
+			})	
+		);
 		    
-		    
+		
+		//adds exit menu
 		<%
     	// Check if SSO is active
     	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
@@ -509,18 +483,15 @@ boolean first=true;
 		%>
 			tb.addSeparator();
 
-			//adds exit menu		
 			tb.add(
-				
 				new Ext.Toolbar.Button({
 		            id: '<%new Double(Math.random()).toString();%>',
-		            text: 'Logout',
+		            text: '<spagobi:message key="menu.logout" />',
 		            icon: '<%=contextName%>/img/wapp/exit16.png',
 		            cls: 'x-btn-logout x-btn-text-icon bmenu',
 		            handler: logout	  
 		        })	
 		    );
-		    
 		
 		<%
 	  	}
@@ -529,39 +500,38 @@ boolean first=true;
 	});
 	
 	
-	 function execDirectDoc(btn){
-	 	var url = "";
-	 	var idMenu = btn.id;
-	 	//idMenu = idMenu.substring(idMenu.indexOf("|_|")+1);
-	 	
-	 	if (idMenu != null && idMenu != 'null'){
+	function execDirectDoc(btn){
+		var url = "";
+		var idMenu = btn.id;
+		if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
 		}
 		return;
 	 }
 	 
-	 function readHtmlFile(btn){
-		 var url = "";
+	function readHtmlFile(btn){
+		var url = "";
 	 	var idMenu = btn.id;
 	 	 if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
 		}
 		return;
-	 }
+	}
 	 	 
-	 function execDirectUrl(url){
+	function execDirectUrl(url){
 		document.getElementById('iframeDoc').src = url;
 		return;
-	 }
-	 
-	 function returnHome(){
-	 var urlH="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE&userId=<%= userProfile.getUserUniqueIdentifier().toString() %>" 
-	 location.href = urlH;
-	 }
-	 
-<%} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
+	}
+	
+	function logout() {
+		window.location = "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
+	}
+	
+	<% } %>
+	
+<%--} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
 
     Ext.onReady(function(){
 	    //Logout
@@ -709,70 +679,37 @@ var selectNode = function(node, e) {
 	return;
 };  
 
-<%} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){ %>
-	    Ext.onReady(function(){  	
-		  	 		Ext.QuickTips.init();
-			 		//MENU MANAGEMENT
-					var tb = new Ext.Toolbar();			
-					tb.render('menubar');
-					tb.add(
-				
-						new Ext.Toolbar.MenuButton({
-							id: '<%new Double(Math.random()).toString();%>',
-				            text: 'Logout',
-				            icon: '<%=contextName%>/img/wapp/exit16.png',
-				            cls: 'x-btn-text-icon bmenu x-btn-logout',
-				           // tooltip: {text:'Exit', title:'Exit', autoHide:true},
-				            handler: logout	  
-				        })	
-				    );
-		 });
-
-    <%}%>
-    function logout(){
-		 	window.location = "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
-	}	
-	function distribution_list_user(){
-		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=ListDistributionListUserPage');
-	}	
-	function functionality_list(){
-		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION');
-	}	
-	function event_list(){
-		 	execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE');
-	}	
-
+<%}--%>
+    
   </script>
   
   
-  <!-- I want to execute if there is an homepage, only for user!-->
-  <%     
-  if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP) || menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT) ){
-  			boolean found=false;
-  			for (int i=0; i<lstMenu.size() && !found; i++){
-  				Menu menuElem = (Menu)lstMenu.get(i);
-  				boolean isHomepage=menuElem.isHomepage();
-  				Integer objId=menuElem.getObjId();
-  				if(isHomepage && objId!=null){
-  					found=true;
-  				%> 					
-  					<script type="text/javascript">
-  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>'); 
-  					</script>  					
-  					<%
-  				}
-  				else if(isHomepage && menuElem.getStaticPage()!=null){
-  					found=true;
-  	  				%> 					
-  	  					<script type="text/javascript">
-  					javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>'); 
-  	  					</script>  					
-  	  					<%
-  	  				}
-  					
-  		}
-  }
-  
+	<!-- I want to execute if there is an homepage, only for user!-->
+	<%
+	if (lstMenu.size() > 0) {
+		Menu menuElem = (Menu) lstMenu.get(0);
+		Integer objId=menuElem.getObjId();
+		if (objId!=null) {
+			%> 					
+			<script type="text/javascript">
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>'); 
+			</script>  					
+			<%
+		} else if(menuElem.getStaticPage()!=null) {
+			%> 					
+			<script type="text/javascript">
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>'); 
+			</script>  					
+			<%
+		} else if(menuElem.getFunctionality()!=null && !menuElem.getFunctionality().trim().equals("")) {
+			String url = DetailMenuModule.findFunctionalityUrl(menuElem, contextName);
+			%> 					
+			<script type="text/javascript">
+			execDirectUrl('<%=url%>');
+			</script>  					
+			<%
+		}
+	}
   	%>
   
 <%@ include file="/jsp/commons/footer.jsp"%>

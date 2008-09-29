@@ -150,16 +150,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.menu.Homepage" />
-		</span>
-		</div>
-			<div class='div_detail_form'> 
-		<input class='portlet-form-input-field' type="checkbox" 
-	      	   size="50" name="homepage" id="" 
-	      	   value="true" <%if(menu.isHomepage()){%> checked="checked" <%}%>/>
-	</div>
-		<div class='div_detail_label'>
-		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.menu.viewDocumentIcons" />
 		</span>
 		</div>
@@ -210,23 +200,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<option value="nodeEmpty"><spagobi:message key="SBISet.menu.nodeEmpty" /></option>
 			<option value="nodeDocument" <%= menu.getObjId() != null ? "selected" : ""%>><spagobi:message key="SBISet.menu.nodeDocument" /></option>
 			<option value="nodeStaticPage" <%= menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("") ? "selected" : ""%>><spagobi:message key="SBISet.menu.nodeStaticPage" /></option>
+			<option value="nodeFunctionality" <%= menu.getFunctionality() != null && !menu.getFunctionality().trim().equals("") ? "selected" : ""%>><spagobi:message key="SBISet.menu.nodeFunctionality" /></option>
 		</select>
 		</div>
 
 		<%
 		String toggledDivs = null;
 		String currentVisibleDiv = null;
+		toggledDivs = "['nodeDocument','nodeStaticPage', 'nodeFunctionality']";
+		currentVisibleDiv = "'nodeEmpty'";
 		if (menu.getObjId() != null) {
-			toggledDivs = "['nodeEmpty','nodeStaticPage']";
+			toggledDivs = "['nodeEmpty','nodeStaticPage', 'nodeFunctionality']";
 			currentVisibleDiv = "'nodeDocument'";
-		} else {
-			if (menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("")) {
-				toggledDivs = "['nodeEmpty','nodeDocument']";
-				currentVisibleDiv = "'nodeStaticPage'";
-			} else {
-				toggledDivs = "['nodeDocument','nodeStaticPage']";
-				currentVisibleDiv = "'nodeEmpty'";
-			}
+		}
+		if (menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("")) {
+			toggledDivs = "['nodeEmpty','nodeDocument', 'nodeFunctionality']";
+			currentVisibleDiv = "'nodeStaticPage'";
+		}
+		if (menu.getFunctionality() != null && !menu.getFunctionality().trim().equals("")) {
+			toggledDivs = "['nodeEmpty','nodeDocument','nodeStaticPage']";
+			currentVisibleDiv = "'nodeFunctionality'";
 		}
 		%>
 
@@ -552,27 +545,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 	</div>
 	
-	<% 
-	String currentStaticPage=menu.getStaticPage();
-	// Get directory
-	String rootPath=ConfigSingleton.getRootPath();
-	String dirPath=rootPath+System.getProperty("file.separator")+"static_content";
-	File dir=new File(dirPath);
-	if (dir!=null && dir.isDirectory()){
-		// get all avalaible files
-		String[] files=dir.list();
-		 
-		%>
-		<div id="nodeStaticPage">
-			<div class='div_detail_label'>
-				<span class='portlet-form-field-label'>
-					<spagobi:message key = "SBISet.menu.staticPage" />
-				</span>
-			</div>
-			<div class='div_detail_form'> 
-				<select name="staticpage" size="1" class='portlet-form-input-field'>
-					<option value=""> </option>
-						<%//Insert all options (only HTML files) 
+	
+	<div id="nodeStaticPage">
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.menu.staticPage" />
+			</span>
+		</div>
+		<div class='div_detail_form'> 
+			<select name="staticpage" size="1" class='portlet-form-input-field'>
+				<option value=""> </option>
+					<%//Insert all options (only HTML files) 
+					String currentStaticPage=menu.getStaticPage();
+					// Get directory
+					String rootPath=ConfigSingleton.getRootPath();
+					String dirPath=rootPath + System.getProperty("file.separator") + "static_content";
+					File dir=new File(dirPath);
+					if (dir!=null && dir.isDirectory()){
+						// get all avalaible files
+						String[] files=dir.list();
 						String selected="";
 						for(int i=0;i<files.length;i++) {
 							String fileName=files[i];
@@ -585,15 +576,40 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<%
 							} 
 						}
-						%>
-				</select>	
-			</div>
+					}
+					%>
+			</select>	
 		</div>
-		<%
-	} 
-	%>
+	</div>
+		
 	 
-
+	<div id="nodeFunctionality">
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.menu.functionality" />
+			</span>
+		</div>
+		<div class='div_detail_form'> 
+			<select name="functionality" size="1" class='portlet-form-input-field'>
+				<option value=""> </option>
+				<option value="DocumentUserManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("DocumentUserManagement")) ? "selected='selected'" : ""%>>
+					<spagobi:message key="tree.objectstree.name" />
+				</option>
+				<option value="WorklistManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("WorklistManagement")) ? "selected='selected'" : ""%>>
+					<spagobi:message key="menu.Worklist" />
+				</option>
+				<option value="HotLinkManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("HotLinkManagement")) ? "selected='selected'" : ""%>>
+					<spagobi:message key="menu.HotLink" />
+				</option>
+				<option value="DistributionListUser" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("DistributionListUser")) ? "selected='selected'" : ""%>>
+					<spagobi:message key="menu.DistributionListList" />
+				</option>
+				<option value="EventsManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("EventsManagement")) ? "selected='selected'" : ""%>>
+					<spagobi:message key="menu.Events" />
+				</option>
+			</select>
+		</div>
+	</div>
 
 <spagobi:error/>
 

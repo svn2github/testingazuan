@@ -128,7 +128,7 @@
 	             height="500"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/rolesynch16.png">
 	</APPLICATION>	
-	<!--  <APPLICATION code="Events" 
+	<APPLICATION code="Events" 
 	             title="#menu.Events"  
 	             functionality="EventsManagement" 
 	             type="link" 
@@ -136,8 +136,8 @@
 	             width="700" 
 	             height="400"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/events64.png">
-	</APPLICATION>-->
-	<!--  <APPLICATION code="Worklist" 
+	</APPLICATION>
+	<APPLICATION code="Worklist" 
 	             title="#menu.Worklist"  
 	             functionality="WorklistManagement" 
 	             type="link" 
@@ -145,7 +145,7 @@
 	             width="700" 
 	             height="400"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/worklist64.png">
-	</APPLICATION>-->
+	</APPLICATION>
 	<!-- <APPLICATION code="WorkExec" 
 	             title="#menu.WorkExec"  
 	             functionality="WorkspaceManagement" 
@@ -212,7 +212,7 @@
 	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist16.png">
 	</APPLICATION>
 	
-	<!--<APPLICATION code="DistributionListUser" 
+	<APPLICATION code="DistributionListUser" 
 	             title="#menu.DistributionListUser"  
 	             functionality="DistributionListUser" 
 	             type="link" 
@@ -221,18 +221,18 @@
 	             width="750" 
 	             height="500"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlistuser.png">  
-	</APPLICATION>-->
+	</APPLICATION>
 	
-	<!-- <APPLICATION code="HotLink" 
+	<APPLICATION code="HotLink" 
 	             title="#menu.HotLink"  
-	             functionality="DocumentExecution" 
+	             functionality="HotLinkManagement" 
 	             type="link" 
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST" 
 	             modal="true" 
 	             width="800" 
 	             height="500"
 	             iconUrl="${SPAGOBI_CONTEXT}/img/analiticalmodel/icon-setlog.gif">
-	</APPLICATION> -->
+	</APPLICATION>
 	
 	<!-- 
 	<VIEW code="MonitorView" 

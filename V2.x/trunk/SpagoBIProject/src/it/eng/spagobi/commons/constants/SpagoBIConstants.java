@@ -307,6 +307,7 @@ public class SpagoBIConstants {
 	public static final String DOCUMENT_STATE_MANAGEMENT = "DocumentStateManagement";
 	public static final String DOCUMENT_METADATA_MANAGEMENT = "DocumentMetadataManagement";
 	public static final String MENU_MANAGEMENT = "MenuManagement";
+	public static final String HOTLINK_MANAGEMENT = "HotLinkManagement";
 	
 	public static final String SAVE_SUBOBJECT_FUNCTIONALITY = "SaveSubobjectFunctionality";
 	

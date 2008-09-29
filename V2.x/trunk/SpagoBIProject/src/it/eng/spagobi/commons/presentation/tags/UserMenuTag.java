@@ -103,6 +103,7 @@ public class UserMenuTag extends TagSupport {
 			}
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
+			htmlStream.append("\n reourcesMenu.addListener('mouseexit', function() {reourcesMenu.hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
 			htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.Resources", httpRequest) + "',");
@@ -199,6 +200,7 @@ public class UserMenuTag extends TagSupport {
 			}
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
+			htmlStream.append("\n analiticalModelMenu.addListener('mouseexit', function() {analiticalModelMenu.hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
 			htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.AnaliticalModel", httpRequest) + "',");
@@ -243,6 +245,7 @@ public class UserMenuTag extends TagSupport {
 			}
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
+			htmlStream.append("\n behaviouralModel.addListener('mouseexit', function() {behaviouralModel.hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
 			htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.BehaviouralModelMenu", httpRequest) + "',");
@@ -297,6 +300,7 @@ public class UserMenuTag extends TagSupport {
 			}
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
+			htmlStream.append("\n toolsMenu.addListener('mouseexit', function() {toolsMenu.hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
 			htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.ToolsMenu", httpRequest) + "',");
@@ -327,6 +331,7 @@ public class UserMenuTag extends TagSupport {
 			makeSubMenuItem(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT);
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
+			htmlStream.append("\n mapCatalogueMenu.addListener('mouseexit', function() {mapCatalogueMenu.hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
 			htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.MapCatalogueMenu", httpRequest) + "',");
@@ -370,8 +375,41 @@ public class UserMenuTag extends TagSupport {
 		makeBehaviouralModelMenu(htmlStream);
 		makeToolsMenu(htmlStream);
 		makeMapCatalogueMenu(htmlStream);
+		makeUserMenu(htmlStream);
 		//makeMenuConfigurationButton(htmlStream);
 		//makeWorkspaceButton(htmlStream);
+	}
+	
+	private void makeUserMenu(StringBuffer htmlStream) {
+		htmlStream.append("\n var userMenu = new Ext.menu.Menu({ ");
+		htmlStream.append("\n id: 'userMenu', ");
+		htmlStream.append("\n items: [");
+		// TODO uncomment when workspace is working
+//		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKSPACE_MANAGEMENT);
+//		htmlStream.append("\n ,");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER);
+		htmlStream.append("\n ,");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKLIST_MANAGEMENT);
+		htmlStream.append("\n ,");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.HOTLINK_MANAGEMENT);
+		htmlStream.append("\n ,");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER);
+		htmlStream.append("\n ,");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT);
+		htmlStream.append("\n ,");
+		
+		
+		htmlStream.append("\n ");
+		htmlStream.append("\n ]");
+		htmlStream.append("\n });");
+		htmlStream.append("\n userMenu.addListener('mouseexit', function() {userMenu.hide();});");
+		htmlStream.append("\n tb.add(");
+		htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
+		htmlStream.append("\n 		text: '" + msgBuilder.getMessage("menu.UserMenu", httpRequest) + "',");
+		htmlStream.append("\n 		cls: 'x-btn-text-icon bmenu',");
+		htmlStream.append("\n 		menu: userMenu");
+		htmlStream.append("\n 	})");
+		htmlStream.append("\n );");
 	}
 	
 	private void makeSubMenuItem(StringBuffer htmlStream, String functionality) {

@@ -42,6 +42,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -153,6 +154,11 @@ public class LoginModule extends AbstractHttpModule {
 	            logger.error("Reading user information... ERROR",e);
 	            throw new SecurityException();
 	        }
+	        
+			String username = (String) profile.getUserUniqueIdentifier();
+			if (!UserUtilities.userFunctionalityRootExists(username)) {
+			    UserUtilities.createUserFunctionalityRoot(profile);
+			}
 	            
 		}
 		getMenuItems(request, response);
@@ -177,13 +183,11 @@ public class LoginModule extends AbstractHttpModule {
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 
 			//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
-			//otherwise don't, administrators, developers, testers, behavioral model administrators
+			//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
 			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
 					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
 					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
 					&& !profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
-				String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode"); 
-				String menuExtra = (configSingleton.getAttribute("SPAGOBI.MENU.viewExtra")==null)?DEFAULT_EXTRA:(String)configSingleton.getAttribute("SPAGOBI.MENU.viewExtra"); 
 				Collection lstRolesForUser = profile.getRoles();
 				Object[] arrRoles = lstRolesForUser.toArray();
 				for (int i=0; i< arrRoles.length; i++){
@@ -205,11 +209,12 @@ public class LoginModule extends AbstractHttpModule {
 						logger.debug("Role " + (String)arrRoles[i] + " not found on db");
 				}
 				response.setAttribute(LIST_MENU, lstFinalMenu);
-				response.setAttribute(MENU_MODE, menuMode);
-				response.setAttribute(MENU_EXTRA, menuExtra);
 			}	
-			else
-				response.setAttribute(MENU_MODE, LAYOUT_ADMIN_MENU);
+
+			//String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode");
+			//response.setAttribute(MENU_MODE, menuMode);
+			response.setAttribute(MENU_MODE, DEFAULT_LAYOUT_MODE);
+			
 		} catch (Exception ex) {
 			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
 			HashMap params = new HashMap();

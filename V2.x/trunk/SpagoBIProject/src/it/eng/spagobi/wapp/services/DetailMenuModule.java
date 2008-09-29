@@ -36,6 +36,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.dao.IMenuDAO;
@@ -49,12 +50,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 /**
- * Implements a module which  handles all  low functionalities management: has methods 
- * for low functionalities load, detail, modify/insertion and deleting operations. 
- * The <code>service</code> method has  a switch for all these operations, differentiated the ones 
- * from the others by a <code>message</code> String.
- * 
- * @author sulis
+ * @author Gavardi Giulio
  */
 public class DetailMenuModule extends AbstractModule {
 
@@ -605,5 +601,28 @@ public class DetailMenuModule extends AbstractModule {
 			return "";
 	}
 
+	public static String findFunctionalityUrl(Menu menu, String contextPath) {
+		logger.debug("IN");
+		String url = null;
+		try {
+			if (menu.getFunctionality() == null || menu.getFunctionality().trim().equals("")) {
+				logger.error("Input menu is not associated to a SpagoBI functionality");
+			} else {
+				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", menu.getFunctionality());
+				if (config != null) {
+					url = (String) config.getAttribute("link");
+					url = url.replace("${SPAGOBI_CONTEXT}", contextPath);
+					url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
+				} else {
+					logger.warn("No configuration found for SpagoBI functionality [" + menu.getFunctionality() + "]");
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			logger.debug("OUT: url = [" + url + "]");
+		}
+		return url;
+	}
 
 }

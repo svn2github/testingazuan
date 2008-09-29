@@ -22,3 +22,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <spagobi:list moduleName="ListLookupDocumentModule" />
 
+<%@ include file="/jsp/commons/footer.jsp"%>

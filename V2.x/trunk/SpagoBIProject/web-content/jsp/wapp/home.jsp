@@ -116,12 +116,12 @@ boolean first=true;
         
         <%if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ADMIN_MENU)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
 				</iframe>
 	        </div>
 	    <%}else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){%>
 		    <div id="content" style="margin:2;">
-		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white'>
+		        <iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
 				</iframe>
 	        </div>
         <%}%>
@@ -421,6 +421,7 @@ boolean first=true;
 		    } // User menu (not admin)
 			%>			
 			
+			<%--
 			var miomenu = new Ext.menu.Menu({
 			id: 'menumio',
 			items: [
@@ -482,6 +483,8 @@ boolean first=true;
 		            menu: miomenu
 		        })	
 		    );			
+		
+		--%>
 		
 		<spagobiwa:userMenu/>
 

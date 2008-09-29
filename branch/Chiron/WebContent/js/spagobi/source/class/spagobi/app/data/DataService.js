@@ -368,7 +368,7 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	id: '135',
 	        	"label": 'JASPER',
 	        	name: 'JasperReport Engine',
-	        	description: 'Compatible with JasperReport engine v3.1 bnvdjvhklvhklvhklvhzòvhxcfjvjklbnòbvjdkhnklj',
+	        	description: 'Compatible with JasperReport engine v3.1',
 	        	documentType: 'Map',
 	        	engineType: 'External',
 	        	useDataSet: false,

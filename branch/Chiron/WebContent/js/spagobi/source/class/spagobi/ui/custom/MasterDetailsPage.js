@@ -97,27 +97,27 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'parameters') {
 		records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
-	} else if(type == 'configuration') {									//new code
+	} else if(type == 'configuration') {									
 		records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-	} else if(type === 'funcManagement') {
+	} /*else if(type === 'funcManagement') {
 		records = spagobi.app.data.DataService.loadFunctinalitiesRecords();
 		form = new spagobi.ui.custom.LOVDetailsForm(); 
-	} else if(type == 'link1') {									//new code
+	}*/ else if(type == 'link1') {									
 		records = spagobi.app.data.DataService.loadlink1Records();
 		form = new spagobi.ui.custom.Link1DummyForm(); 
-	} else if(type == 'link2') {									//new code
+	} else if(type == 'link2') {									
 		records = spagobi.app.data.DataService.loadlink2Records();
 		form = new spagobi.ui.custom.Link2DummyForm(); 
-	} else if(type == 'link3') {									//new code
+	} else if(type == 'link3') {									
 		records = spagobi.app.data.DataService.loadlink3Records();
 		form = new spagobi.ui.custom.Link3DummyForm(); 
-	} else if(type == 'roles') {									//new code
+	} else if(type == 'roles') {									
 		records = spagobi.app.data.DataService.loadRolesRecords();
 		form = new spagobi.ui.custom.RolesDummyForm(); 
-	}																								//new code ends
+	}
 	
-		
+	if(type != 'funcManagement'){	
    	// Create list view
    	//listPage = new spagobi.ui.Table(this, records ); //works fine
    	listPage = new spagobi.ui.PagedTable(this,records); // problem with table resize
@@ -144,12 +144,12 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
 	save_page.setDisplay(false);
 	detailPage.getPane().add(save_page);
-	save_page.addEventListener("appear", ShowDetails, this);
+	save_page.addEventListener("appear", this.ShowDetails, this);
 	
-	function ShowDetails() {
+	/*function ShowDetails() {
 		var alias = this.getForm().getData();
 		alert (this.printObject(alias));
-	}
+	}*/
 
     
     /* 
@@ -185,6 +185,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     this.detailBody.setOverflow("auto");
     this.detailBody.add( this._form );  		 
   	detailPage.getPane().add( this.detailBody );
+  	
+  	this.addBottom( detailPage );
+  	}		// if (type != func mgmt)
   	
   	if(type == 'funcManagement'){
   		
@@ -304,11 +307,13 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   		
   				
   		this.addBottom(bottomPart);
+  		//this.addBottom(tree);
   	}
-  	else{
+  	/*
+  	   else{
   		this.addBottom( detailPage );
   	}
-  	
+  	*/
   	
   },
 
@@ -341,7 +346,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
      */
     show: function() {
     	//this._form.setVisibility(false);
-    	this.detailBody.remove(this._form)
+    	if(this.detailBody != undefined) {	// this._type != 'funcManagement'
+    		this.detailBody.remove(this._form)
+    	}	
     	//this._form.dispose();
     	if(this._type === 'engine') {
 			this._form = new spagobi.ui.custom.EngineDetailsForm(); 
@@ -379,10 +386,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		}  else if(this._type == 'configuration') {
 			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 		
-		}  else if(this._type === 'funcManagement') {
+		} /* else if(this._type === 'funcManagement') {
 			this._form = new spagobi.ui.custom.LOVDetailsForm(); 
 		
-		}  else if(this._type === 'roles') {
+		}*/ else if(this._type === 'roles') {
 			this._form = new spagobi.ui.custom.RolesDummyForm();
 		}
 			
@@ -399,8 +406,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	  		this._form.add(b);
 	  		*/ 
 		
-		
-		this.detailBody.add(this._form);
+		if(this.detailBody != undefined) {
+			this.detailBody.add(this._form);
+		}
+			
 		if(!this.isVisibility()) {
 			this.setVisibility(true);
 		}
@@ -455,6 +464,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     
     _onSelectTreeNode:function(e){
     	this.addEventListener("click",this.onClickMenu,this);
-    }	
+    },
+    
+    ShowDetails: function () {
+		var alias = this.getForm().getData();
+		alert (this.printObject(alias));
+	}	
   }
 });

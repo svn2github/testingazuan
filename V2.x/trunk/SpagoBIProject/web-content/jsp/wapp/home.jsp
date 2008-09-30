@@ -35,6 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <%@page import="it.eng.spagobi.wapp.util.MenuAccessVerifier"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spago.util.JavaScript"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
@@ -53,7 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
-	   <script type="text/javascript" src="<%=linkSbijs%>"></script>
+<script type="text/javascript" src="<%=linkSbijs%>"></script>
 	   <script type="text/javascript" src="<%=linkProto%>"></script>
 		<script type="text/javascript" src="<%=linkProtoWin%>"></script>
 		<script type="text/javascript" src="<%=linkProtoEff%>"></script>
@@ -239,7 +240,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							if (childElemLev2.getHasChildren()){
 							%>
 								{id: '<%new Double(Math.random()).toString();%>',
-				    			     text: '<%=msgBuilder.getMessage(childElemLev2.getName(), "messages", request)%>',
+				    			     text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev2.getName(), "menu", request))%>",
 				    				 		<% if(childElemLev2.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
 					                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
@@ -263,7 +264,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    			     %>						    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {id: '<%new Double(Math.random()).toString();%>',
-					    			    text: '<%=msgBuilder.getMessage(childElemLev3.getName(), "messages", request)%>',
+					    			    text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev3.getName(), "menu", request))%>",
 				    				 		<% if(childElemLev3.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
 					                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
@@ -287,7 +288,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					    			    %>
 							    			    new Ext.menu.Item({
 						                            id: '<%new Double(Math.random()).toString();%>',
-						                            text: '<%=msgBuilder.getMessage(childElemLev4.getName(), "messages", request)%>',
+						                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev4.getName(), "menu", request))%>",
 						                            group: 'group_4', 
 						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
 						                            if( childElemLev4.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -315,7 +316,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					    			    else{ %>
 					                        new Ext.menu.Item({
 					                            id: '<%new Double(Math.random()).toString();%>',
-					                            text: '<%=msgBuilder.getMessage(childElemLev3.getName(), "messages", request)%>',
+					                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev3.getName(), "menu", request))%>",
 					                            group: 'group_3',
 												<%String icon=DetailMenuModule.assignImage(childElemLev3);
 						                          if(childElemLev3.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -344,7 +345,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    			    else{ %>
 		                        new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: '<%=msgBuilder.getMessage(childElemLev2.getName(), "messages", request)%>',
+		                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev2.getName(), "menu", request))%>",
 		                            group: 'group_2',
 									<%String icon=DetailMenuModule.assignImage(childElemLev2);
 									   if(childElemLev2.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -369,7 +370,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	}else{%>
 				    	 	new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
+		                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 		                            group: 'group_1',		                             
 	                            <% if(menuElem.getObjId()!=null){%>
 		                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
@@ -404,7 +405,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					tb.add(
 						new Ext.Toolbar.MenuButton({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
+				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
@@ -430,7 +431,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    		tb.add(
 						new Ext.Toolbar.Button({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: '<%=msgBuilder.getMessage(menuElem.getName(), "messages", request)%>',
+				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',

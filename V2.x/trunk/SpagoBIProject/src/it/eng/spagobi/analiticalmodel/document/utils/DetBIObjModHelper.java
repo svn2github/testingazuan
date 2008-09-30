@@ -110,6 +110,7 @@ public class DetBIObjModHelper {
 		String relname = (String) request.getAttribute("relname");
 		String criptableStr = (String) request.getAttribute("criptable");
 		String visibleStr = (String) request.getAttribute("visible");
+		String profiledVisibilityStr = (String) request.getAttribute("profileVisibility");
 		String path = (String) request.getAttribute("path");
 		String typeAttr = (String) request.getAttribute("type");
 		String engineIdStr = (String) request.getAttribute("engine");
@@ -224,6 +225,7 @@ public class DetBIObjModHelper {
 		obj.setDescription(description);
 		obj.setEncrypt(encrypt);
 		obj.setVisible(visible);
+		obj.setProfiledVisibility(profiledVisibilityStr);
 		obj.setEngine(engine);
 		obj.setDataSourceId(ds == null ? null : new Integer(ds.getDsId()));
 		obj.setDataSetId(dataset == null ? null : new Integer(dataset.getDsId()));

@@ -755,7 +755,7 @@ public class GeneralUtilities {
      * @throws Exception
      *                 in case of sintax error
      */
-    private static String[] findAttributeValues(String attributeValue) throws Exception {
+    public static String[] findAttributeValues(String attributeValue) throws Exception {
 	logger.debug("IN");
 	String sintaxErrorMsg = "Multi value attribute sintax error.";
 	if (attributeValue.length() < 6)

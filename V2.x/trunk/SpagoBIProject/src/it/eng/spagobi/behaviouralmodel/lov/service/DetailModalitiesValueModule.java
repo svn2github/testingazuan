@@ -54,6 +54,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.security.ISecurityInfoProvider;
+import it.eng.spagobi.security.SecurityInfoProviderFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -631,21 +632,11 @@ public class DetailModalitiesValueModule extends AbstractModule {
 	}
 	
 	private void loadAllProfileAttributes(SourceBean response) throws SourceBeanException {
-		SourceBean configSingleton = ConfigSingleton.getInstance();
-		SourceBean portalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
-		logger.debug(" Portal security class configuration " + portalSecuritySB);
-		String portalSecurityClassName = (String) portalSecuritySB.getAttribute("className");
-		logger.debug(" Portal security class name: " + portalSecurityClassName);
-		if (portalSecurityClassName == null || portalSecurityClassName.trim().equals("")) {
-			logger.error(" Portal security class name not set!!!!");
-			return;
-		}
-		portalSecurityClassName = portalSecurityClassName.trim();
 		ISecurityInfoProvider portalSecurityProvider = null;
 		try {
-			portalSecurityProvider = (ISecurityInfoProvider)Class.forName(portalSecurityClassName).newInstance();
+			portalSecurityProvider = SecurityInfoProviderFactory.getPortalSecurityProvider();
 		} catch (Exception e) {
-			logger.error(" Error while istantiating portal security class '" + portalSecurityClassName + "'.", e);
+			logger.error(" Error while istantiating portal security class", e);
 			return;
 		}
 		List profileattrs = portalSecurityProvider.getAllProfileAttributesNames();

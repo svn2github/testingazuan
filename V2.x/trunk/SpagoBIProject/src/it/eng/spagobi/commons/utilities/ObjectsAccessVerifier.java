@@ -33,6 +33,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -633,12 +634,89 @@ public class ObjectsAccessVerifier {
 	    }
 	    boolean canExec = canExec(state, folderId, profile);
 	    if (canExec) {
-		canSee = true;
-		break;
+			// administrators, developers, testers, behavioural model administrators can see that document
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
+					|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
+					|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
+					|| profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)) {  // for behavioral model administrators
+				canSee = true;
+			} else {
+				canSee = checkProfileVisibility(obj, profile);
+			}
+	    	break;
 	    }
 	}
 	logger.debug("OUT.canSee=" + canSee);
 	return canSee;
     }
 
+    /**
+     * Checks if the document in input has profiled visibility constraints. If it is the case, checks if the user in input has 
+     * suitable profile attributes.
+     * @param obj
+     * @param profile
+     * @return true if document profiled visibility constraints are satisfied by the user
+     * @throws EMFInternalError 
+     */
+    public static boolean checkProfileVisibility(BIObject obj, IEngUserProfile profile) throws EMFInternalError {
+    	logger.debug("IN: obj label is [" + obj.getLabel() + "]; user is [" + profile.getUserUniqueIdentifier().toString() + "]");
+    	boolean toReturn = true;
+    	String profVisibility = obj.getProfiledVisibility();
+    	if (profVisibility == null || profVisibility.trim().equals("")) {
+    		logger.debug("Biobject with label [" + obj.getLabel() + "] has no profile visibility contraints.");
+    		return true;
+    	}
+    	logger.debug("Biobject with label [" + obj.getLabel() + "] has profile visibility contraints = [" + profVisibility + "]");
+    	String[] constraints = profVisibility.split(" AND ");
+    	for (int i = 0; i < constraints.length; i++) {
+    		String constraint = constraints[i];
+    		logger.debug("Examining constraint [" + constraint + "] ...");
+    		int index = constraint.indexOf("=");
+    		if (index == -1) {
+    			logger.error("Constraint [" + constraint + "] is not correct!! It should have the syntax PROFILE_ATTRIBUTE_NAME=VALUE. It will be ignored.");
+    			continue;
+    		}
+    		String profileAttrName = constraint.substring(0, index).trim();
+    		String value = constraint.substring(index + 1).trim();
+    		if (!profile.getUserAttributeNames().contains(profileAttrName)) {
+    			logger.debug("User profile hasn't the required profile attribute [" + profileAttrName + "], it does not satisfy constraint");
+    			toReturn = false;
+    			break;
+    		}
+    		Object profileAttr = profile.getUserAttribute(profileAttrName);
+    		if (profileAttr == null) {
+    			logger.debug("User profile attribute [" + profileAttrName + "] is null, it does not satisfy constraint");
+    			toReturn = false;
+    			break;
+    		}
+    		String profileAttrStr = profileAttr.toString();
+    		if (profileAttrStr.startsWith("{")) {
+    			// the profile attribute is multi-value
+    			String[] values = null;
+				try {
+					values = GeneralUtilities.findAttributeValues(profileAttrStr);
+				} catch (Exception e) {
+					logger.error("Error while reading profile attribute", e);
+					logger.debug("User profile attribute [" + profileAttrName + "] does not satisfy constraint");
+	    			toReturn = false;
+	    			break;
+				}
+    			if (!Arrays.asList(values).contains(value)) {
+					logger.debug("User profile attribute [" + profileAttrName + "] does not contain [" + value + "] value, it does not satisfy constraint");
+	    			toReturn = false;
+	    			break;
+    			}
+    		} else {
+    			// the profile attribute is single-value
+    			if (!profileAttrStr.equals(value)) {
+					logger.debug("User profile attribute [" + profileAttrName + "] is not equal to [" + value + "], it does not satisfy constraint");
+	    			toReturn = false;
+	    			break;
+    			}
+    		}
+    	}
+    	logger.debug("OUT.canSee=" + toReturn);
+    	return toReturn;
+    }
+    
 }

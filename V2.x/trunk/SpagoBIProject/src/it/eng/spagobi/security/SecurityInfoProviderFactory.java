@@ -33,52 +33,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 package it.eng.spagobi.security;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+
+import org.apache.log4j.Logger;
 
 /**
- * Defines portal security provider information and  has a methot to get them.
- * 
- * @author sulis
- *
+ * @author Zerbetto
  */
 public class SecurityInfoProviderFactory {
-	
-	
 		
-		private static ISecurityInfoProvider aPortalSecurityProvider = null;
-		private static final String DEFAULT_SECURITY_PROVIDER_CLASS = "it.eng.spagobi.security.ExoPortalSecurityProviderImpl";
+		static private Logger logger = Logger.getLogger(SecurityInfoProviderFactory.class);
 		
 		/**
-		 * Reads the security provider class from the spagobi.xml file; if no class is
-		 * found, the default provider class is selected.
+		 * Reads the security provider class from the spagobi.xml file
 		 * 
-		 * @return the singleton instance of ISecurityInfoProvider
+		 * @return the instance of ISecurityInfoProvider
 		 */
-		public static synchronized ISecurityInfoProvider getPortalSecurityProvider(){
-			
-			// Read the securityProviderClass from configuration file spagobi.xml
-			String securityProviderClass = (String)ConfigSingleton.getInstance().getAttribute("SPAGOBI.PORTAL_SECURITY_PROVIDER_CLASS");
-			if(securityProviderClass!=null){
-				securityProviderClass = securityProviderClass.trim();
+		public static synchronized ISecurityInfoProvider getPortalSecurityProvider() throws Exception {
+			logger.debug("IN");
+			SourceBean configSingleton = ConfigSingleton.getInstance();
+			SourceBean portalSecuritySB = (SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+			logger.debug(" Portal security class configuration " + portalSecuritySB);
+			String portalSecurityClassName = (String) portalSecuritySB.getAttribute("className");
+			logger.debug(" Portal security class name: " + portalSecurityClassName);
+			if (portalSecurityClassName == null || portalSecurityClassName.trim().equals("")) {
+				logger.error(" Portal security class name not set!!!!");
+				throw new Exception("Portal security class name not set");
 			}
-			
-			//If we don't found class secuirtyProviderClass we set the default (EXO)
-			if (securityProviderClass == null){
-				SpagoBITracer.info("UTILITIES", "PortalSecurityProviderFactory", "getPortalSecurityProvider()", "SPAGOBI.PORTAL_SECURITY_PROVIDER_CLASS not found USE THE DEAULT " + DEFAULT_SECURITY_PROVIDER_CLASS);
-				securityProviderClass = DEFAULT_SECURITY_PROVIDER_CLASS;
+			portalSecurityClassName = portalSecurityClassName.trim();
+			ISecurityInfoProvider portalSecurityProvider = null;
+			try {
+				portalSecurityProvider = (ISecurityInfoProvider)Class.forName(portalSecurityClassName).newInstance();
+			} catch (Exception e) {
+				logger.error(" Error while istantiating portal security class '" + portalSecurityClassName + "'.", e);
+				throw e;
 			}
-			
-			SpagoBITracer.info("UTILITIES", "PortalSecurityProviderFactory", "getPortalSecurityProvider()","securityProviderClass  is " + securityProviderClass);
-			
-			if (aPortalSecurityProvider == null){
-				try{
-					aPortalSecurityProvider = (ISecurityInfoProvider)Class.forName(securityProviderClass).newInstance();
-				}catch (Exception e) {
-					SpagoBITracer.critical("UTILITIES", "PortalSecurityProviderFactory", "getPortalSecurityProvider()","Error istantiatin security provider [" + securityProviderClass + "]", e); 
-				}//catch
-			}//if 
-			return aPortalSecurityProvider;
+			return portalSecurityProvider;
 		}
 	}
 

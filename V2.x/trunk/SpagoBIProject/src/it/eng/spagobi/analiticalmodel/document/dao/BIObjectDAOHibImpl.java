@@ -438,6 +438,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setName(biObject.getName());
 			hibBIObject.setEncrypt(new Short(biObject.getEncrypt().shortValue()));
 			hibBIObject.setVisible(new Short(biObject.getVisible().shortValue()));
+			hibBIObject.setProfiledVisibility(biObject.getProfiledVisibility());
 			hibBIObject.setRelName(biObject.getRelName());
 			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, biObject.getStateID());
 			hibBIObject.setState(hibState);
@@ -636,6 +637,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			hibBIObject.setName(obj.getName());
 			hibBIObject.setEncrypt(new Short(obj.getEncrypt().shortValue()));
 			hibBIObject.setVisible(new Short(obj.getVisible().shortValue()));
+			hibBIObject.setProfiledVisibility(obj.getProfiledVisibility());
 			hibBIObject.setRelName(obj.getRelName());
 			
 			SbiDomains hibState = (SbiDomains) aSession.load(SbiDomains.class, obj.getStateID());
@@ -1062,6 +1064,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aBIObject.setEncrypt(new Integer(hibBIObject.getEncrypt().intValue()));
 			// set visible flag
 			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
+			// set profiled visibility information
+			aBIObject.setProfiledVisibility(hibBIObject.getProfiledVisibility());
 			// set engine						
 			aBIObject.setEngine(new EngineDAOHibImpl().toEngine(hibBIObject.getSbiEngines()));
 			// set data source

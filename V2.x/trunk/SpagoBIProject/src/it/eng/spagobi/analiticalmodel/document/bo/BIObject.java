@@ -64,6 +64,8 @@ public class BIObject implements Serializable {
 	
 	// VISIBLE NUMBER Y Parameter visible request.
 	private Integer visible = null;
+	
+	private String profiledVisibility;
 
 	// REL_NAME VARCHAR2(256) Y Relative path + file object name
 	private String relName = null;
@@ -589,6 +591,14 @@ public class BIObject implements Serializable {
 	
 	public void setRefreshSeconds(Integer refreshSeconds) {
 		this.refreshSeconds = refreshSeconds;
+	}
+
+	public String getProfiledVisibility() {
+		return profiledVisibility;
+	}
+
+	public void setProfiledVisibility(String profiledVisibility) {
+		this.profiledVisibility = profiledVisibility;
 	}
 	
 	

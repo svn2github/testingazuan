@@ -341,14 +341,18 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
 					logger.debug("NOT visible " + obj.getName());
 				} else {
-					logger.debug("VISIBLE " + obj.getName());
 					if (canTest && (stateObj.equals("TEST"))) {
 						thereIsOneOrMoreObjectsInTestState = true;
 						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
 					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL")) && canExec) {
-						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+						boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
+						if (profileAttrsOk) {
+							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+						} else {
+							logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
+						}
 					}
 				}
 			}
@@ -422,7 +426,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 							//Vecchio Albero con menu
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 							//Nuovo albero con Icona dei metadati
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'/SpagoBI/img/editTemplate.jpg\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+							boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
+							if (profileAttrsOk) {
+								htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'/SpagoBI/img/editTemplate.jpg\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+							} else {
+								logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
+							}
 							
 						}
 					}

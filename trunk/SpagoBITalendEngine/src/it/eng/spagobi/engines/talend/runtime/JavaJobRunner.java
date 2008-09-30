@@ -47,7 +47,7 @@ import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * @author Andrea Gioia
- *
+ * @author Luca Andreatta (modification for sub-projects management)
  */
 public class JavaJobRunner implements IJobRunner {
 private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
@@ -226,10 +226,13 @@ private static transient Logger logger = Logger.getLogger(PerlJobRunner.class);
     		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());
     	}
     	
-    	classpath.append( (libs.size()>0? File.pathSeparator : "") + TalendScriptAccessUtils.getExecutableFileName(job));
+    	List subJobLibs = TalendScriptAccessUtils.getMainJobLibs(job, runtimeRepository);
+    	for(int i = 0; i < subJobLibs.size(); i++){
+    		File file = (File)subJobLibs.get(i);    		
+    		classpath.append( (classpath.length()>0? File.pathSeparator : "") + file.getName());
+    	}
     	
-    	logger.debug(classpath);
-    	//System.out.println(classpath);
+    	classpath.append(File.pathSeparator+"../lib/"+File.pathSeparator);
     	
     	return classpath.toString();
     }

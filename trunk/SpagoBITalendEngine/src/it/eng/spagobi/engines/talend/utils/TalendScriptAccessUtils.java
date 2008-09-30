@@ -32,7 +32,7 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 
 /**
  * @author Andrea Gioia
- *
+ * @author Luca Andreatta (modification for sub-projects management)
  */
 public class TalendScriptAccessUtils {
 	
@@ -93,7 +93,32 @@ public class TalendScriptAccessUtils {
 		return libs;
 	}
 	
-	
+	/**
+	 * Gets a list of jar files of the job to execute and connected sub-jobs.
+	 * 
+	 * @param job the job to execute
+	 * @param runtimeRepository the runtime repository
+	 * 
+	 * @return the main job libs
+	 */
+	public static List getMainJobLibs(Job job, RuntimeRepository runtimeRepository) {
+		List libs = new ArrayList();
+		if(job.isPerlJob()) {
+    		// do nothing
+    	} else if(job.isJavaJob()) {
+    		File executableJobProjectDir = runtimeRepository.getExecutableJobProjectDir(job);
+    		File libsDir = new File(executableJobProjectDir, job.getName());
+    		File[] files	= libsDir.listFiles();  
+    		for(int i  = 0; i < files.length; i++) {
+    			if (files[i].getName().endsWith(".jar"))
+    				libs.add(files[i]);
+    		}
+    	} else{
+    		return null;
+    	}
+		
+		return libs;
+	}
 	
 	
 	///////////////////////////////////////////////////////////////

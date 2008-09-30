@@ -48,6 +48,7 @@ public class SbiObjects  implements java.io.Serializable {
      private String objectTypeCode;
      private Short encrypt;
      private Short visible;
+     private String profiledVisibility;
      private String stateCode;
      private Short schedFl;
      private String execModeCode;
@@ -652,6 +653,14 @@ public class SbiObjects  implements java.io.Serializable {
 
 	public void setRefreshSeconds(Integer refreshSeconds) {
 		this.refreshSeconds = refreshSeconds;
+	}
+
+	public String getProfiledVisibility() {
+		return profiledVisibility;
+	}
+
+	public void setProfiledVisibility(String profiledVisibility) {
+		this.profiledVisibility = profiledVisibility;
 	}
 	
 	

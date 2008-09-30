@@ -43,6 +43,9 @@
         <property name="visible" type="short">
             <column name="visible" />
         </property>
+        <property name="profiledVisibility" type="string">
+            <column name="PROF_VISIBILITY" />
+        </property>
         <property name="stateCode" type="string">
             <column name="state_cd" length="20" not-null="true" />
         </property>

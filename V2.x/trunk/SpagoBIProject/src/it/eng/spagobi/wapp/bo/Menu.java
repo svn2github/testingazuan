@@ -48,6 +48,7 @@ public class Menu  implements Serializable  {
     private Integer parentId;
     private Integer level;
     private Integer depth;    
+    private Integer prog;    
     private boolean hasChildren;
     private List	lstChildren;
     private Role[] roles = null;
@@ -299,6 +300,14 @@ public class Menu  implements Serializable  {
 
 	public void setFunctionality(String functionality) {
 		this.functionality = functionality;
+	}
+
+	public Integer getProg() {
+		return prog;
+	}
+
+	public void setProg(Integer prog) {
+		this.prog = prog;
 	}
 
 	

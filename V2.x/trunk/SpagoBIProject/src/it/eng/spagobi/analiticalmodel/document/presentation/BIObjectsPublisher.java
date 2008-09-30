@@ -125,6 +125,7 @@ public class BIObjectsPublisher implements PublisherDispatcherIFace {
 					pubName = "treeExecObjects";
 				else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST))
 					pubName = "treeExecObjects";
+				else pubName = "treeExecObjects";
 			}
 			catch (Exception e){
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 

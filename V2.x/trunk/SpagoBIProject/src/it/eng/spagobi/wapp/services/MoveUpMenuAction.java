@@ -2,7 +2,6 @@ package it.eng.spagobi.wapp.services;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 public class MoveUpMenuAction extends AbstractAction {

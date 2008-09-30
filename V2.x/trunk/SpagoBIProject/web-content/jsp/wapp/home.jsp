@@ -410,20 +410,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
-				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
-				            <%if(menuElem.getObjId()!=null){%>
-				            	,
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
+				            <% if(menuElem.getObjId()!=null) { %>
 				            	handler: execDirectDoc 	            	
-				            	<%}
-				            else if(menuElem.getStaticPage()!=null){%>
-				            	,
+							<% } else if(menuElem.getStaticPage()!=null) { %>
 				            	handler: readHtmlFile 
-				            	<%}%>
-				            	<%if (menuElem.getHasChildren()){%>	
+							<% } else if(menuElem.getFunctionality()!=null) { %>
+								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+				            	handler: getFunctionality 
+							<% } %>
+							<%if (menuElem.getHasChildren()) { %>
 				            	,
 				            	menu: menu<%=i%>  	  
-				            <%}%>
+				            <% } %>
 				        })					    				        				
 					);				
 				<%}
@@ -438,18 +437,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
 				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
-				            <%if(menuElem.getObjId()!=null){    // if there is an association to an object choose that, if a one to html page, choose that, else no handler is set%>     
-				            	,
+				            <% if(menuElem.getObjId()!=null) { %>
 				            	handler: execDirectDoc 	            	
-				            	<%}
-				            else if(menuElem.getStaticPage()!=null){%>
-				            	,
+							<% } else if(menuElem.getStaticPage()!=null) { %>
 				            	handler: readHtmlFile 
-				            	<%}%>
-				            	<%if (menuElem.getHasChildren()){%>	
+							<% } else if(menuElem.getFunctionality()!=null) { %>
+								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+				            	handler: getFunctionality 
+							<% } %>
+							<%if (menuElem.getHasChildren()) { %>
 				            	,
 				            	menu: menu<%=i%>  	  
-				            <%}%>
+				            <% } %>
 				        })					    				        				
 					);	
 			    	
@@ -508,6 +507,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
 		}
+		return;
+	 }
+
+	function getFunctionality(btn){
+		var url = btn.url;
+		execDirectUrl(url);
 		return;
 	 }
 	 

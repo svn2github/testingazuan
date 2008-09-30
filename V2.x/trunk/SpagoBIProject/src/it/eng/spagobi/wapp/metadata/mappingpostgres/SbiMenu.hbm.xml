@@ -48,7 +48,10 @@
         </property>
         <property name="staticPage" type="string">
             <column name="static_page" />
-        </property>                         
+        </property>  
+        <property name="prog" type="integer">
+            <column name="prog" />
+        </property>                          
         <set name="sbiMenuRoles" inverse="true">
             <key>
                 <column name="menu_id" not-null="true" />

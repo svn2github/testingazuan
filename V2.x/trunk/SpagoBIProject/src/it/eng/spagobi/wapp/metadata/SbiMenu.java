@@ -50,7 +50,7 @@ public class SbiMenu  implements java.io.Serializable {
      private Boolean viewIcons;
      private Boolean hideToolbar;
      private Boolean hideSliders;
-
+     private Integer prog;
      
 
     // Constructors
@@ -259,6 +259,14 @@ public class SbiMenu  implements java.io.Serializable {
 
 	public void setFunctionality(String functionality) {
 		this.functionality = functionality;
+	}
+
+	public Integer getProg() {
+		return prog;
+	}
+
+	public void setProg(Integer prog) {
+		this.prog = prog;
 	}
 
 

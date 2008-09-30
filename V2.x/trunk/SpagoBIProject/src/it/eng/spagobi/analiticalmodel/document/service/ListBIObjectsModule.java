@@ -248,7 +248,17 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
     	logger.debug("Profile logged in has EXECUTION RIGHTS");
     	
     	 canExec = ObjectsAccessVerifier.canExec(objectStateCD, lowFunct, profile);
-    	 if (canExec)logger.debug("Profile CAN_EXECUTE the document");
+    	 if (canExec) {
+    		 logger.debug("Profile has the execution permission for the document [" + obj.getLabel() + "].");
+    		 canExec = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
+    		 if (canExec) {
+    			 logger.debug("Profile satisfies profiled visiblity constraints for the document [" + obj.getLabel() + "].");
+    		 } else {
+    			 logger.debug("Profile DOES NOT satisfy profiled visiblity constraints for the document [" + obj.getLabel() + "].");
+    		 }
+    	 }
+    	 
+    	 if (canExec) logger.debug("Profile CAN_EXECUTE the document");
  	     else logger.debug("Profile CAN'T_EXECUTE the document");
     	 visibleInstances = ObjectsAccessVerifier.getVisibleInstances(initialPath, lowFunct); 
     	 logger.debug("Got number of visibleInstances fo this document:"+visibleInstances);

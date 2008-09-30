@@ -396,9 +396,6 @@ public class UserMenuTag extends TagSupport {
 		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER);
 		htmlStream.append("\n ,");
 		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT);
-		htmlStream.append("\n ,");
-		
-		
 		htmlStream.append("\n ");
 		htmlStream.append("\n ]");
 		htmlStream.append("\n });");

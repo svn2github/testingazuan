@@ -18,7 +18,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject,
@@ -46,8 +45,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.HashMap,
 				 it.eng.spagobi.commons.bo.Subreport,
 				 it.eng.spago.security.IEngUserProfile" %>
+<%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 
 
+<%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
+<%@page import="it.eng.spagobi.tools.dataset.dao.IDataSetDAO"%>
+<%@page import="it.eng.spagobi.security.SecurityInfoProviderFactory"%>
+<%@page import="it.eng.spagobi.security.ISecurityInfoProvider"%>
+<%@page import="org.apache.log4j.Logger"%>
+
+<%! private static transient Logger logger = Logger.getLogger(DetailBIObjectModule.class);%>
 <%
 	// GET RESPONSE OBJECTS
     SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("DetailBIObjectModule"); 
@@ -77,18 +90,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     //boolean flgLoadParDC = moduleResponse.getAttribute(DetailBIObjectModule.LOADING_PARS_DC);
    	
 %>
-
-<%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
-<%@page import="java.util.GregorianCalendar"%>
-<%@page import="java.util.Calendar"%>
-<%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
-
-
-<%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.dao.IDataSetDAO"%>
 
 <script>
 var versionTemplateChanged = 'false';
@@ -654,6 +655,86 @@ function saveDocument(goBack) {
 							<span class="portlet-font">False</span>
 					</input>
 				</div>
+
+				<!-- FIELD FOR VISIBILITY CONSTRAINTS USING USER PROFILE ATTRIBUTES -->
+				<div class='div_detail_label'>
+					<span class='portlet-form-field-label'>
+						<spagobi:message key = "SBIDev.docConf.docDet.visibilityRulesField" />
+					</span>
+				</div>
+				<%
+				List attributeNames = null;
+				try {
+					ISecurityInfoProvider portalSecurityProvider = SecurityInfoProviderFactory.getPortalSecurityProvider();
+					attributeNames = portalSecurityProvider.getAllProfileAttributesNames();
+				} catch (Exception e) {
+					logger.error("detailBIObject.jsp: Error while retrieving the list of available profile attributes", e);
+					attributeNames = new ArrayList();
+				}
+				String profiledVisibilityRules = obj.getProfiledVisibility();
+				%>
+				<div class='div_detail_form' style="height:100px">
+					<table style="width: 50%;">
+						<tr>
+							<td colspan="2">
+								<textarea id="profileVisibility" name="profileVisibility" rows="3" cols="35" readonly><%= profiledVisibilityRules != null ? profiledVisibilityRules : "" %></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<select name="attributeName" id="attributeName" class='portlet-form-input-field' style='width:80px;'>
+									<option value=""></option>
+									<%
+									Iterator attributeNamesIter = attributeNames.iterator();
+									while (attributeNamesIter.hasNext()) {
+										String profAttrName = (String) attributeNamesIter.next();
+									%>
+								 	<option value="<%=profAttrName%>"><%=profAttrName%></option>
+								 	<% } %>
+								</select>
+								<span style="font-size: 7pt;">=</span>
+								<input type="text" name="attributeValue" id="attributeValue" class='portlet-form-input-field' style='width:80px;' />
+								<img src="<%=urlBuilder.getResourceLink(request, "/img/attach.gif") %>" 
+										alt="<spagobi:message key = "SBIDev.docConf.docDet.addRule" />" 
+										title="<spagobi:message key = "SBIDev.docConf.docDet.addRule" />" 
+										onclick="addConstraint()"/>
+							</td>
+							<td>
+								<img src="<%=urlBuilder.getResourceLink(request, "/img/clear.gif") %>" 
+										alt="<spagobi:message key = "SBIDev.docConf.docDet.eraseRules" />" 
+										title="<spagobi:message key = "SBIDev.docConf.docDet.eraseRules" />" 
+										onclick="clearConstraints()"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<script>
+				function addConstraint(){
+					valore = document.getElementById('attributeValue').value;
+					if (valore == null || valore == '') {
+						alert('Missing value');
+						return;
+					}
+					combo = document.getElementById('attributeName');
+					attributo = combo.options[combo.selectedIndex].value;
+					if (attributo == null || attributo == '') {
+						alert('Missing profile attribute');
+						return;
+					}
+					addToTextArea(attributo + ' = ' + valore);
+				}
+				
+				function addToTextArea(constraint){
+					str = document.getElementById('profileVisibility').innerHTML;
+					if (str == '') str = constraint;
+					else str = str + ' AND ' + constraint;
+					document.getElementById('profileVisibility').innerHTML = str;
+				}
+				
+				function clearConstraints(){
+					document.getElementById('profileVisibility').innerHTML='';
+				}
+				</script>
 
 				<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
 				<div id="form_upload">

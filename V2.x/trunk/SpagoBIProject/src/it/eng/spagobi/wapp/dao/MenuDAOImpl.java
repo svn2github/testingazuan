@@ -23,6 +23,7 @@ package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -39,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -50,9 +52,9 @@ import org.hibernate.criterion.Expression;
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
  *
- */
+ */ 
 public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
-
+	private static transient Logger logger = Logger.getLogger(MenuDAOImpl.class);
 	/**
 	 * Load menu by id.
 	 * 
@@ -236,6 +238,20 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
 			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
 			hibMenu.setStaticPage(aMenu.getStaticPage());
+			
+			// manages prog column that determines the menu order
+			Query hibQuery = null;
+			if (aMenu.getParentId() == null) //hibMenu.setProg(new Integer(1));
+				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId is null ");
+			else 
+				// loads sub menu
+				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId = " + aMenu.getParentId());
+				
+			Integer maxProg = (Integer) hibQuery.uniqueResult();
+			if (maxProg != null) hibMenu.setProg(new Integer(maxProg.intValue() + 1));
+			else hibMenu.setProg(new Integer(1));
+			
+			
 			tmpSession.save(hibMenu);
 
 			Set menuRoleToSave = new HashSet();
@@ -289,7 +305,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				tmpSession.delete(role);
 			}
 
-
+			// update prog column in other menu
+			String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > " 
+				+ hibMenu.getProg() + " and s.parentId = " + hibMenu.getParentId();
+			Query query = tmpSession.createQuery(hqlUpdateProg);
+			query.executeUpdate();
+			
 			tmpSession.delete(hibMenu);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -326,7 +347,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			Query hibQuery = tmpSession.createQuery(" from SbiMenu");
+			Query hibQuery = tmpSession.createQuery(" from SbiMenu s order by s.parentId, s.prog");
 
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();			
@@ -472,6 +493,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		menu.setSnapshotHistory(hibMenu.getSnapshotHistory());
 		menu.setFunctionality(hibMenu.getFunctionality());
 		menu.setLevel(getLevel(menu.getParentId(), menu.getObjId()));
+		menu.setProg(hibMenu.getProg());
 
 		if(hibMenu.getViewIcons()!=null){
 			menu.setViewIcons(hibMenu.getViewIcons().booleanValue());
@@ -608,10 +630,83 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * @throws EMFUserError
 	 */
 
+	public void createMasterMenu(Integer menuID) throws EMFUserError {
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+
+			SbiMenu sbiMenu=(SbiMenu)tmpSession.load(SbiMenu.class, menuID);
+
+			Integer fatherId=sbiMenu.getParentId();
+			SbiMenu sbiFatherMenu=(SbiMenu)tmpSession.load(SbiMenu.class, fatherId);
+
+			Integer grandFatherId=sbiFatherMenu.getParentId();
+
+			//Change children: 
+
+			// get the children of old father, they will point to new father
+			Criterion parentCriterrion = Expression.eq("parentId",
+					fatherId);
+			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
+			criteria.add(parentCriterrion);
+
+			// Get the list of children from the old father
+			List oldFatherChildren=criteria.list();
+
+			//I can retrieve all the children now and save all them
+			for (Iterator iterator = oldFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				sbiMenuO.setParentId(menuID);
+			}
+
+
+			Criterion childCriterrion = Expression.eq("parentId",
+					menuID);
+			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
+			childCriteria.add(childCriterrion);
+
+			// Get the list of children from the new father
+			List newFatherChildren=childCriteria.list();
+
+			for (Iterator iterator = newFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
+			}
+			
+			Integer fatherProg = sbiFatherMenu.getProg();
+			Integer menuProg = sbiMenu.getProg();
+			sbiMenu.setParentId(grandFatherId);
+			sbiMenu.setProg(fatherProg);
+			sbiFatherMenu.setParentId(menuID);
+			sbiFatherMenu.setProg(menuProg);
+
+
+			tx.commit();
+		} catch (HibernateException he) {
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+	}
+
+	/**
+	 * Move up the current folder
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+
 	public void moveUpMenu(Integer menuID) throws EMFUserError {
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
+			/*
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
@@ -641,6 +736,102 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			}
 
 
+			Criterion childCriterrion = Expression.eq("parentId",
+					menuID);
+			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
+			childCriteria.add(childCriterrion);
+
+			// Get the list of children from the new father
+			List newFatherChildren=childCriteria.list();
+
+			for (Iterator iterator = newFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
+			}
+
+
+			sbiMenu.setParentId(grandFatherId);
+			sbiFatherMenu.setParentId(menuID);
+
+
+*/
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			SbiMenu hibMenu = (SbiMenu) tmpSession.load(SbiMenu.class, menuID);
+			Integer oldProg = hibMenu.getProg();
+			Integer newProg = new Integer(oldProg.intValue() - 1);
+			String upperMenuHql = "";
+			if (hibMenu.getParentId() == null)
+				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				" and s.parentId is null ";
+			else
+			 upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				" and s.parentId = " + hibMenu.getParentId().toString();
+			
+			Query query = tmpSession.createQuery(upperMenuHql);
+			SbiMenu hibUpperMenu = (SbiMenu) query.uniqueResult();
+			if (hibUpperMenu == null) {
+				logger.error("The menu with prog [" + newProg + "] does not exist.");
+				return;
+			}
+			
+			hibMenu.setProg(newProg);
+			hibUpperMenu.setProg(oldProg);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} catch(Exception e){
+			logger.error("Error: " + e.getMessage());
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}finally {
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+			}
+		}
+	}
+	
+	/**
+	 * Move down the current folder
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+
+	public void moveDownMenu(Integer menuID) throws EMFUserError {
+		Session tmpSession = null;
+		Transaction tx = null;
+		try {
+			/*
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+
+			SbiMenu sbiMenu=(SbiMenu)tmpSession.load(SbiMenu.class, menuID);
+
+			Integer fatherId=sbiMenu.getParentId();
+
+			SbiMenu sbiFatherMenu=(SbiMenu)tmpSession.load(SbiMenu.class, fatherId);
+
+			Integer grandFatherId=sbiFatherMenu.getParentId();
+
+			//Change children: 
+
+			// get the children of old father, they will point to new father
+			Criterion parentCriterrion = Expression.eq("parentId",
+					fatherId);
+			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
+			criteria.add(parentCriterrion);
+
+			// Get the list of children from the old father
+			List oldFatherChildren=criteria.list();
+
+			//I can retrieve all the children now and save all them
+			for (Iterator iterator = oldFatherChildren.iterator(); iterator.hasNext();) {
+				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
+				sbiMenuO.setParentId(menuID);
+			}
 
 
 			Criterion childCriterrion = Expression.eq("parentId",
@@ -662,6 +853,32 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 
 
 			tx.commit();
+			*/
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();
+			SbiMenu hibMenu = (SbiMenu) tmpSession.load(SbiMenu.class, menuID);
+			Integer oldProg = hibMenu.getProg();
+			Integer newProg = new Integer(oldProg.intValue() + 1);
+			
+			String upperMenuHql = "";
+			if (hibMenu.getParentId() == null)
+				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				" and s.parentId is null ";
+			else
+				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				" and s.parentId = " + hibMenu.getParentId().toString();
+			
+			Query query = tmpSession.createQuery(upperMenuHql);
+			SbiMenu hibUpperMenu = (SbiMenu) query.uniqueResult();
+			if (hibUpperMenu == null) {
+				logger.error("The menu with prog [" + newProg + "] does not exist.");
+				return;
+			}
+			
+			hibMenu.setProg(newProg);
+			hibUpperMenu.setProg(oldProg);
+			
+			tx.commit();
 		} catch (HibernateException he) {
 			if (tx != null)
 				tx.rollback();
@@ -673,7 +890,6 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			}
 		}
 	}
-
 
 
 }

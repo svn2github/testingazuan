@@ -133,6 +133,21 @@ public interface IMenuDAO {
 	 * @throws EMFUserError
 	 */
 	
-	public void moveUpMenu(Integer menuID) throws EMFUserError;
+	public void createMasterMenu(Integer menuID) throws EMFUserError;
 
+	/**
+	 * Move up the current node 
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+	
+	public void moveUpMenu(Integer menuID) throws EMFUserError;
+	
+	/**
+	 * Move down the current node 
+	 * @param menuID
+	 * @throws EMFUserError
+	 */
+	
+	public void moveDownMenu(Integer menuID) throws EMFUserError;
 }

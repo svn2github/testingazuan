@@ -195,8 +195,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   		
   		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
   		with(headerLabel){
-  			width : 200;
-  			height : 300
+  			width = 200;
+  			height = 300;
   		};
   		
   		//var h1 = new qx.ui.embed.HtmlEmbed("<h1>Fn</h1>");
@@ -255,8 +255,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		  							init_icon: "icon/16/places/user-desktop.png",
 		  							click_icon: "",
 		  							file  : true	
-  								});	
-  		//tree.deleteNode("node3");						
+  								});
+  		//tree.deleteNode(node3);							
+  		//tree.deleteNodebyID("node3");						
   								 											
   		tree.addEventListener("click",tree.onClickMenu,tree);		// mouseevent
   		//tree.getManager().addEventListener("changeSelection",tree.onClickMenu,tree);	//data event

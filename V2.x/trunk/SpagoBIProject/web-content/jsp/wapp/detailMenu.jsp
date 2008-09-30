@@ -83,6 +83,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="java.io.File"%>
 <%@page import="it.eng.spagobi.wapp.dao.MenuDAOImpl"%>
+<%@page import="java.util.Vector"%>
 <form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
@@ -672,19 +673,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 	<td align="center">
 					 	    <input type="checkbox" name="ROLES" id="ROLES" value="<%=ruleId%>" 
 					 	    	<% // in insert case check is it is current, disable elsewhere
-					 	    	boolean alDisabled=false;
+					 	    	
+					 	    	// need this to put role that must be passed with hidden input, in the case that is in detail, has chidren and the role is checked
+					 	    	String roleToPass=null;
+					 	    	
+					 	    boolean alDisabled=false;
 					 	    	if(modality.equals(AdmintoolsConstants.DETAIL_INS)){
 					 	    		if(is==true)	out.print(" checked='checked' ");
 					 	    		else out.print(" disabled='disabled' ");				
 					 	    	} // in detail case 
 					 	    	else if(modality.equals(AdmintoolsConstants.DETAIL_MOD)){ //Case modify
-					 	    			if(is==true){	out.print(" checked='checked' ");} 
+					 	    			if(is==true){	out.print(" checked='checked' ");
+					 	    			// if I am in detail case and the nmenu has children and a role is checked I must pass the role
+					 	    				if(!children.isEmpty()) {
+					 	    					roleToPass=new String(ruleId);
+					 	    				}
+					 	    			} 
 					 	    			else {
 					 	    				if (isParent==false && parentMenu!=null/*&& parentMenu.getParentId() != null*/) 
 					 	    						{out.print(" disabled='disabled' "); alDisabled=true; }
 					 	    				}
 					 	    	//if is in detail and has children cannot change roles
-								
+								// Aniway still I have to put the roles
 					 	    	if(!alDisabled){
 					 	    		
 					 	    		if(!children.isEmpty()) {
@@ -694,6 +704,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 	    		}
 					 	    	%> 
 					 	    />
+					 	    
+					 	    <%// if the role has to be passed as hidden input
+					 	    if(roleToPass!=null){%>
+					 	    <input type="hidden" name="ROLES" id="ROLES" value="<%=ruleId%>"/>
+					 	    <%}%>
 					 	</td>
 					
 					 </tr>	

@@ -38,6 +38,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.wapp.dao.MenuDAOImpl"%>
 <%@page import="java.util.Vector"%>
 <%@page import="it.eng.spago.error.EMFUserError"%>
+<%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO"%>
+<%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMenuModule"); 
@@ -194,7 +196,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 		</div>
 		<div class='div_detail_form'> 
-		<select name="nodeContent" onchange="changeDiv(this.value)">
+		<select name="nodeContent" onchange="changeDiv(this.value)" class='portlet-form-input-field'>
 			<option value="nodeEmpty"><spagobi:message key="SBISet.menu.nodeEmpty" /></option>
 			<option value="nodeDocument" <%= menu.getObjId() != null ? "selected" : ""%>><spagobi:message key="SBISet.menu.nodeDocument" /></option>
 			<option value="nodeStaticPage" <%= menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("") ? "selected" : ""%>><spagobi:message key="SBISet.menu.nodeStaticPage" /></option>
@@ -248,7 +250,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		function loadObjectDetails(objId) {
 			if (biobjectId != objId) {
 				var errorImg = document.getElementById('docNotFoundErrorImg');
-				if (errorImg) errorImg.style.display = 'none'
+				if (errorImg) errorImg.style.display = 'none';
 				loadSubObjects(objId);
 				loadSnapshots(objId);
 				biobjectId = objId;
@@ -444,7 +446,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<%
 						if (!biobjectFound) {
 							%>
-							<img id="docNotFoundErrorImg" name="docNotFoundErrorImg" src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+							<img id="docNotFoundErrorImg" name="docNotFoundErrorImg" style="display:inline;"
+								src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
 								title="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" 
 								alt="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" />
 							<%
@@ -508,7 +511,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<select name="subobjectName" id="subobjectName">
+				<select name="subobjectName" id="subobjectName" class='portlet-form-input-field'>
 				</select>
 			</div>
 		</div>
@@ -523,7 +526,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'> 
-				<select name="snapshotName" id="snapshotName" onchange="changeSnapshotHistoryOptions(this.value)">
+				<select name="snapshotName" id="snapshotName" class='portlet-form-input-field' onchange="changeSnapshotHistoryOptions(this.value)">
 				</select>
 			</div>
 			<%-- End Snaphost name --%> 
@@ -535,7 +538,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<select name="snapshotHistory" id="snapshotHistory">
+				<select name="snapshotHistory" id="snapshotHistory" class='portlet-form-input-field'>
 				</select>
 			</div>
 			<%-- End Snaphost history --%>
@@ -588,25 +591,81 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</span>
 		</div>
 		<div class='div_detail_form'> 
-			<select name="functionality" size="1" class='portlet-form-input-field'>
+			<select name="functionality" size="1" class='portlet-form-input-field' onchange="changeInitialPathVisibility(this);">
 				<option value=""> </option>
-				<option value="DocumentUserManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("DocumentUserManagement")) ? "selected='selected'" : ""%>>
+				<option value="<%= SpagoBIConstants.DOCUMENT_MANAGEMENT_USER %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="tree.objectstree.name" />
 				</option>
-				<option value="WorklistManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("WorklistManagement")) ? "selected='selected'" : ""%>>
+				<option value="<%= SpagoBIConstants.WORKLIST_MANAGEMENT %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.WORKLIST_MANAGEMENT)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="menu.Worklist" />
 				</option>
-				<option value="HotLinkManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("HotLinkManagement")) ? "selected='selected'" : ""%>>
+				<option value="<%= SpagoBIConstants.HOTLINK_MANAGEMENT %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.HOTLINK_MANAGEMENT)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="menu.HotLink" />
 				</option>
-				<option value="DistributionListUser" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("DistributionListUser")) ? "selected='selected'" : ""%>>
+				<option value="<%= SpagoBIConstants.DISTRIBUTIONLIST_USER %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.DISTRIBUTIONLIST_USER)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="menu.DistributionListList" />
 				</option>
-				<option value="EventsManagement" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("EventsManagement")) ? "selected='selected'" : ""%>>
+				<option value="<%= SpagoBIConstants.EVENTS_MANAGEMENT %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.EVENTS_MANAGEMENT)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="menu.Events" />
 				</option>
 			</select>
 		</div>
+		
+		<script>
+		function changeInitialPathVisibility(selectObj) {
+			var initialPathDiv = document.getElementById('initialPathDiv');
+			var selectedOption = selectObj.options[selectObj.selectedIndex];
+			if (selectedOption.value == '<%= SpagoBIConstants.DOCUMENT_MANAGEMENT_USER %>') { 
+				initialPathDiv.style.display = 'inline';
+			} else {
+				initialPathDiv.style.display = 'none';
+			}
+		}
+		</script>
+		
+		<%-- Documents tree initial path div --%>
+		<div id="initialPathDiv" name="initialPathDiv" style="display: <%= (menu.getFunctionality() != null && menu.getFunctionality().equals("DocumentUserManagement")) ? "inline" : "none" %>"> 
+			<div class='div_detail_label'>	 
+				 <span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.menu.initialPath" />
+				</span>
+			</div>
+			<div class='div_detail_form'>
+				<select name="initialPath" id="initialPath" class='portlet-form-input-field' onchange="checkForErrorImg()">
+					<%
+					ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
+					List folders = functionalityDAO.loadAllLowFunctionalities(false);
+					Iterator fodlersIter = folders.iterator();
+					boolean pathFound = false;
+					while (fodlersIter.hasNext()) {
+						LowFunctionality folder = (LowFunctionality) fodlersIter.next();
+						String selectedStr = folder.getPath().equals(menu.getInitialPath()) ? "selected='selected'" : "";
+						if (!pathFound) pathFound = folder.getPath().equals(menu.getInitialPath());
+						%><option <%= selectedStr %>><%= folder.getPath() %></option><%
+					}
+					%>
+				</select>
+				<%
+				if (!pathFound && menu.getInitialPath() != null && !menu.getInitialPath().equals("")) {
+					%>
+					<img id="pathNotFoundErrorImg" name="pathNotFoundErrorImg" style="display:inline;"
+						src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+						title="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" 
+						alt="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" />
+					<%
+				}
+				%>
+			</div>
+		</div>
+		
+		<script>
+		function checkForErrorImg() {
+			var errorPathImg = document.getElementById('pathNotFoundErrorImg');
+			if (errorPathImg) errorPathImg.style.display = 'none';
+		}
+		</script>
+		<%-- End documents tree initial path div --%>
+		
 	</div>
 
 <spagobi:error/>

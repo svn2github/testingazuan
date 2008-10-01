@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities;
 
+import java.util.Locale;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -92,11 +94,8 @@ public class ChannelUtilities {
 			// based on mode get spago object and url builder
 			if (sbiMode.equalsIgnoreCase("WEB")) {
 				SourceBean request = requestContainer.getServiceRequest();
-				SessionContainer session = requestContainer.getSessionContainer();
-				ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(session), 
-						new LightNavigatorContextRetrieverStrategy(request));
-				Object attribute = contextManager.get(preferenceName);
-				if (attribute != null) prefValue = attribute.toString();
+				Object prefValueObj = request.getAttribute(preferenceName);
+				if (prefValueObj != null) prefValue = prefValueObj.toString();
 				else prefValue = defaultValue;
 			} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 				PortletRequest portReq = PortletUtilities.getPortletRequest();

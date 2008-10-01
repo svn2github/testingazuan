@@ -33,8 +33,11 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
+import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -376,6 +379,7 @@ public class DetailMenuModule extends AbstractModule {
 			}
 			menu.setStaticPage(null);
 			menu.setFunctionality(null);
+			menu.setInitialPath(null);
 		} else if ("nodeStaticPage".equals(nodeContent)) {
 			// menu node with static page
 			menu.setObjId(null);
@@ -384,6 +388,7 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setSnapshotName(null);
 			menu.setSnapshotHistory(null);
 			menu.setFunctionality(null);
+			menu.setInitialPath(null);
 			String staticPage = (String) request.getAttribute("staticpage");
 			menu.setStaticPage(staticPage);
 		} else if ("nodeFunctionality".equals(nodeContent)) {
@@ -396,6 +401,12 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setStaticPage(null);
 			String functionality = (String) request.getAttribute("functionality");
 			menu.setFunctionality(functionality);
+			if (functionality.equals("DocumentUserManagement")) {
+				String initialPath = (String) request.getAttribute("initialPath");
+				menu.setInitialPath(initialPath);
+			} else {
+				menu.setInitialPath(null);
+			}
 		} else {
 			// empty menu node
 			menu.setObjId(null);
@@ -405,6 +416,7 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setSnapshotHistory(null);
 			menu.setStaticPage(null);
 			menu.setFunctionality(null);
+			menu.setInitialPath(null);
 		}
 		
 		String homepageB=(String)request.getAttribute("homepage");
@@ -605,14 +617,21 @@ public class DetailMenuModule extends AbstractModule {
 		logger.debug("IN");
 		String url = null;
 		try {
-			if (menu.getFunctionality() == null || menu.getFunctionality().trim().equals("")) {
+			String functionality = menu.getFunctionality();
+			if (functionality == null || functionality.trim().equals("")) {
 				logger.error("Input menu is not associated to a SpagoBI functionality");
 			} else {
-				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", menu.getFunctionality());
+				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", functionality);
 				if (config != null) {
 					url = (String) config.getAttribute("link");
 					url = url.replace("${SPAGOBI_CONTEXT}", contextPath);
 					url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
+					if (functionality.equals(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)) {
+						String initialPath = menu.getInitialPath();
+						if (initialPath != null && !initialPath.trim().equals("")) {
+							url += "&" + BIObjectsModule.MODALITY + "=" + BIObjectsModule.FILTER_TREE + "&" + TreeObjectsModule.PATH_SUBTREE + "=" + initialPath;
+						}
+					}
 				} else {
 					logger.warn("No configuration found for SpagoBI functionality [" + menu.getFunctionality() + "]");
 				}

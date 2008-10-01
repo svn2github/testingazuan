@@ -43,6 +43,7 @@ public class Menu  implements Serializable  {
     private String snapshotName;
     private Integer snapshotHistory;
     private String functionality;
+    private String initialPath;
     private String name;
     private String descr;
     private Integer parentId;
@@ -308,6 +309,14 @@ public class Menu  implements Serializable  {
 
 	public void setProg(Integer prog) {
 		this.prog = prog;
+	}
+
+	public String getInitialPath() {
+		return initialPath;
+	}
+
+	public void setInitialPath(String initialPath) {
+		this.initialPath = initialPath;
 	}
 
 	

@@ -170,6 +170,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setSnapshotName(aMenu.getSnapshotName());
 			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
 			hibMenu.setFunctionality(aMenu.getFunctionality());
+			hibMenu.setInitialPath(aMenu.getInitialPath());
 			
 			//Modify Roles Associated
 			// delete all roles functionality
@@ -234,6 +235,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setSnapshotName(aMenu.getSnapshotName());
 			hibMenu.setSnapshotHistory(aMenu.getSnapshotHistory());
 			hibMenu.setFunctionality(aMenu.getFunctionality());
+			hibMenu.setInitialPath(aMenu.getInitialPath());
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
 			hibMenu.setHideSliders(new Boolean(aMenu.getHideSliders()));
@@ -492,6 +494,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		menu.setSnapshotName(hibMenu.getSnapshotName());
 		menu.setSnapshotHistory(hibMenu.getSnapshotHistory());
 		menu.setFunctionality(hibMenu.getFunctionality());
+		menu.setInitialPath(hibMenu.getInitialPath());
 		menu.setLevel(getLevel(menu.getParentId(), menu.getObjId()));
 		menu.setProg(hibMenu.getProg());
 

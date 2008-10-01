@@ -31,7 +31,10 @@
         </property>
         <property name="functionality" type="string">
             <column name="FUNCTIONALITY" not-null="false" />
-        </property> 
+        </property>
+        <property name="initialPath" type="string">
+            <column name="INITIAL_PATH" not-null="false" />
+        </property>
         <property name="parentId" type="integer">
             <column name="parent_id" />
         </property>

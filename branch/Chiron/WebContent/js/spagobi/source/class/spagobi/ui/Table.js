@@ -87,7 +87,9 @@ qx.Class.define("spagobi.ui.Table",
     var resizeBehavior = columnModel.getBehavior();
 	
 	
-    if (data.meta.length >= 7)
+    if (data.ID != undefined)
+    {
+    	if (data.ID == "ROLES")
 	{
 		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
 	 	
@@ -124,6 +126,7 @@ qx.Class.define("spagobi.ui.Table",
 	    columnModel.setDataCellRenderer(10, new qx.ui.table.cellrenderer.Boolean());
 	*/
 	
+    }
     }
 	
 	// Basic setup
@@ -231,13 +234,28 @@ qx.Class.define("spagobi.ui.Table",
     },
     
     /**
+  	 * Function used to get the data in the list
+  	 * 
+  	 * *Example*
+  	 * <p><code>
+  	 * 
+  	 * </code>
+  	 * 
+  	 0// /*@param data Object containing the layout of the list and the data of the list and form
+  	 */
+  	 
+     getUpdatedData: function() {
+     		
+     		return this._tableModel.getData();
+     },
+     
+     /**
      * TODOC
      *
      * @type member
      * @param e {Event} TODOC
      * @return {void}
      */
-     
      
     _onChangeSelection : function(e) {
       	
@@ -264,9 +282,16 @@ qx.Class.define("spagobi.ui.Table",
   			//var event_data = new qx.ui.table.pane.CellEvent(null,null,event);
   			var colnum = e.getColumn();
   			var romnum = e.getRow();
+  			
+  			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
+				return;
+			}
+  			
   			//	alert(event +" ," +colnum +" ,"+ romnum);
   			//var changedData = event.getData();
   			//	alert (this.getTableModel().getValue(colnum,romnum));
+  			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
+  			
 			if ( this.getTableModel().getValue(colnum,romnum) == true )
 			{
 				//event.setData(false);// == false;
@@ -280,13 +305,7 @@ qx.Class.define("spagobi.ui.Table",
 				//	alert (this.getTableModel().getValue(colnum,romnum));
 				//event_data.setData(true);
 			}
-  		  // get changed data
   		  
-  		/*  var key   	= columnModel.getValue(0,changedData.firstRow);
-  		  var value 	= columnModel.getValue(changedData.firstColumn,changedData.firstRow);
-
-        this.info("User edited property '" + key + "' and entered value '" + value +"'.");
-	*/
       }
   }
 });

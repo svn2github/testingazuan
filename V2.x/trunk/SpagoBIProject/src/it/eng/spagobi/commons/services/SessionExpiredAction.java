@@ -25,12 +25,18 @@ package it.eng.spagobi.commons.services;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
 
+import org.apache.log4j.Logger;
+
 public class SessionExpiredAction extends AbstractAction {
 
+	static private Logger logger = Logger.getLogger(SessionExpiredAction.class);
+	
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
+		logger.debug("OUT");
 	}
 
 }

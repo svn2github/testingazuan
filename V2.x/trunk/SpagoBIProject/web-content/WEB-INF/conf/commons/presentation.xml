@@ -5,6 +5,8 @@
 	<MAPPING business_name="SaveConfigurationPage" business_type="PAGE" publisher_name="SaveConfigurationPubJ"/>
     <MAPPING business_name="SERVICE_CALLER_PAGE" business_type="PAGE" publisher_name="ServiceCallerPublisher"/>
 	
+	<MAPPING business_name="SESSION_EXPIRED_ACTION" business_type="ACTION" publisher_name="SESSION_EXPIRED_PUBLISHER"/>
+	
 	<!-- new organization portlet for SpagoBI 2.0 -->
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_ANALITICAL_MODELS" publisher_name="LoginSBIAnaliticalModelPublisher"/>
 	<MAPPING business_type="ACTION" business_name="LOGIN_ACTION_SBI_BEHAVIORAL_MODELS" publisher_name="LoginSBIBehavioralModelPublisher"/>

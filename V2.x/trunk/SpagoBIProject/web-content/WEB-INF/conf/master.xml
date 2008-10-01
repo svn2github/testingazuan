@@ -8,7 +8,9 @@
 	<CONFIGURATOR path="/WEB-INF/conf/commons/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/commons/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/commons/presentation.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/commons/publishers.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/commons/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/errors.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/traps.xml" />	
 	
 <!-- analiticalmodel -->
 	

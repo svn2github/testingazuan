@@ -175,5 +175,13 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
-  	                                  	
+
+	<PUBLISHER name="SESSION_EXPIRED_PUBLISHER">
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/commons/sessionExpired.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+
 </PUBLISHERS>

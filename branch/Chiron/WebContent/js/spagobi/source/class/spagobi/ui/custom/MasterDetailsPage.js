@@ -62,66 +62,66 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     this.base(arguments,180, "1*");//, "2*");
     this.setWidth("100%");
     this.setHeight("100%");
-    var listPage;
-    var detailPage;
+   /* var listPage;*/
+   var detailPage;
     var detailHeader;
     //var detailBody ;
     
     this.setEdge(0);
    	this.setBorder("line-left");
       		
-    var records;
-    var form;  	
+ /*   var records;*/
+    var form;	
     this._type = type;	
 	if(type === 'engine') {
-		records = spagobi.app.data.DataService.loadEngineRecords();
+		this.records = spagobi.app.data.DataService.loadEngineRecords();
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'dataset') {
-		records = spagobi.app.data.DataService.loadDatasetRecords();
+		this.records = spagobi.app.data.DataService.loadDatasetRecords();
 		form = new spagobi.ui.custom.DatasetDetailsForm(); 
 	} else if(type === 'datasource') {
-		records = spagobi.app.data.DataService.loadDatasourceRecords();
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type == 'mapmgmt') {
-		records = spagobi.app.data.DataService.loadMapRecords();
+		this.records = spagobi.app.data.DataService.loadMapRecords();
 		form = new spagobi.ui.custom.MapDetailsForm(); 
 	} else if(type == 'featuremgmt') {
-		records = spagobi.app.data.DataService.loadFeatureRecords();
+		this.records = spagobi.app.data.DataService.loadFeatureRecords();
 		form = new spagobi.ui.custom.FeatureDetailsForm(); 
 	} else if(type == 'lov') {
-		records = spagobi.app.data.DataService.loadLOVRecords();
+		this.records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	} else if(type == 'constraints') {
-		records = spagobi.app.data.DataService.loadLOVRecords();
+		this.records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.ConstraintDetailsForm(); 
 	} else if(type == 'parameters') {
-		records = spagobi.app.data.DataService.loadLOVRecords();
+		this.records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
 	} else if(type == 'configuration') {									
-		records = spagobi.app.data.DataService.loadConfigurationRecords();
+		this.records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 	} /*else if(type === 'funcManagement') {
 		records = spagobi.app.data.DataService.loadFunctinalitiesRecords();
 		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	}*/ else if(type == 'link1') {									
-		records = spagobi.app.data.DataService.loadlink1Records();
+		this.records = spagobi.app.data.DataService.loadlink1Records();
 		form = new spagobi.ui.custom.Link1DummyForm(); 
 	} else if(type == 'link2') {									
-		records = spagobi.app.data.DataService.loadlink2Records();
+		this.records = spagobi.app.data.DataService.loadlink2Records();
 		form = new spagobi.ui.custom.Link2DummyForm(); 
 	} else if(type == 'link3') {									
-		records = spagobi.app.data.DataService.loadlink3Records();
+		this.records = spagobi.app.data.DataService.loadlink3Records();
 		form = new spagobi.ui.custom.Link3DummyForm(); 
 	} else if(type == 'roles') {									
-		records = spagobi.app.data.DataService.loadRolesRecords();
+		this.records = spagobi.app.data.DataService.loadRolesRecords();
 		form = new spagobi.ui.custom.RolesDummyForm(); 
 	}
 	
 	if(type != 'funcManagement'){	
    	// Create list view
    	//listPage = new spagobi.ui.Table(this, records ); //works fine
-   	listPage = new spagobi.ui.PagedTable(this,records); // problem with table resize
-   	this.addTop( listPage );
+   	this.listPage = new spagobi.ui.PagedTable(this,this.records); // problem with table resize
+   	this.addTop( this.listPage );
       	
    	// Create detail view
    	detailPage = new qx.ui.pageview.buttonview.ButtonView();
@@ -322,7 +322,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   {
     _form : undefined,
     detailBody : undefined,
-    
+  	records : undefined,
+    listPage : undefined,
+   // form : undefined,
     /**
      * Function to get the current form
      * 
@@ -468,8 +470,19 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     },
     
     ShowDetails: function () {
+		
+		if (this.records.ID != undefined)
+    {
+    		if (this.records.ID == "ROLES")
+		{
+			alert (this.listPage._table.getUpdatedData());
+		}
+    }
+		else
+    {
 		var alias = this.getForm().getData();
 		alert (this.printObject(alias));
 	}	
+  }
   }
 });

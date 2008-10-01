@@ -470,8 +470,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		}
 		if (label != null) {
 			logger.debug("Loading biobject with label = [" + label + "] ...");
-			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-			if (obj == null) {
+			try {
+				obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			} catch (EMFUserError error) {
 				logger.error("Object with label = [" + label + "] not found!!");
 				Vector v = new Vector();
 				v.add(label);
@@ -480,8 +481,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		} else {
 			logger.debug("Loading biobject with id = [" + idStr + "] ...");
 			Integer id = new Integer(idStr);
-			obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-			if (obj == null) {
+			try {
+				obj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+			} catch (EMFUserError error) {
 				logger.error("Object with id = [" + idStr + "] not found!!");
 				Vector v = new Vector();
 				v.add(idStr);

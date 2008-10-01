@@ -29,6 +29,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
+<%@page import="it.eng.spagobi.wapp.bo.Menu"%>
+<%@page import="it.eng.spagobi.wapp.services.TreeMenuModule"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="java.io.File"%>
+<%@page import="it.eng.spagobi.wapp.dao.MenuDAOImpl"%>
+<%@page import="java.util.Vector"%>
+<%@page import="it.eng.spago.error.EMFUserError"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMenuModule"); 
@@ -72,18 +81,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
 %>
 
-
-
-
-
-<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
-<%@page import="it.eng.spagobi.wapp.bo.Menu"%>
-<%@page import="it.eng.spagobi.wapp.services.TreeMenuModule"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
-<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-<%@page import="java.io.File"%>
-<%@page import="it.eng.spagobi.wapp.dao.MenuDAOImpl"%>
-<%@page import="java.util.Vector"%>
 <form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
@@ -250,6 +247,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		function loadObjectDetails(objId) {
 			if (biobjectId != objId) {
+				var errorImg = document.getElementById('docNotFoundErrorImg');
+				if (errorImg) errorImg.style.display = 'none'
 				loadSubObjects(objId);
 				loadSnapshots(objId);
 				biobjectId = objId;
@@ -259,7 +258,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		function loadSubObjects(objId) {
 			var params;
 			Ext.Ajax.request({
-				url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(userId) %>&ACTION_NAME=GET_PUBLIC_SUBOBJECTS_INFO&<%=SpagoBIConstants.OBJECT_ID%>=' + objId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
+				url: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() %>?ACTION_NAME=GET_PUBLIC_SUBOBJECTS_INFO&<%=SpagoBIConstants.OBJECT_ID%>=' + objId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
 				method: 'get',
 				success: function (result, request) {
 					response = result.responseText || "";
@@ -273,7 +272,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		function loadSnapshots(objId) {
 			var params;
 			Ext.Ajax.request({
-				url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(userId) %>&ACTION_NAME=GET_SNAPSHOTS_INFO&<%=SpagoBIConstants.OBJECT_ID%>=' + objId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
+				url: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() %>?ACTION_NAME=GET_SNAPSHOTS_INFO&<%=SpagoBIConstants.OBJECT_ID%>=' + objId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
 				method: 'get',
 				success: function (result, request) {
 					response = result.responseText || "";
@@ -396,48 +395,38 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			alert('Something went wrong during ajax call');
 		}
 		
+		</script>
+
+		<%	
+		String url=request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?PAGE=DocumentLookupPage&NEW_SESSION=TRUE&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+		boolean biobjectFound = true;
+	 	String objId="";
+		String objName="";	 
+	 	if (menu.getObjId()!=null) {
+			Integer id=menu.getObjId();	
+			objId = id.toString();
+			BIObject obj = null;
+			try {
+				obj=DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+				objName=obj.getName();
+			} catch (EMFUserError error) {
+				biobjectFound = false;
+			}
+		}
+		%>
+
 		<%
-		if (menu.getObjId() != null) {
+		// if the menu contains a document reference and this document exists, load document information (subobjects, snapshots)
+		if (menu.getObjId() != null && biobjectFound) {
 			%>
+			<script>
 			loadObjectDetails(<%= menu.getObjId() %>);
+			</script>
 			<%
 		}
 		%>
-		
-		</script>
-		
-		<%--
-		<script type="text/javascript">
-		Ext.onReady(function(){
-		    var tabs = new Ext.TabPanel({
-		        renderTo: 'nodeDocument_renderTo',
-		        activeTab: 0,
-		        frame:true,
-		        defaults:{autoHeight: true},
-		        items:[
-		            {contentEl:'nodeDocument', title: '<spagobi:message key="SBISet.menu.documentContent" />'},
-		            {contentEl:'nodeStaticPage', title: '<spagobi:message key="SBISet.menu.staticPageContent" />'}
-		        ]
-		    });
-		});
-		</script>
-		--%>
 
-	 <%	
-		String url=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?" + "PAGE=DocumentLookupPage&NEW_SESSION=TRUE&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
 
-	 	String objId="";
-		String objName="";	 
-	 	if(menu.getObjId()!=null){
-			Integer id=menu.getObjId();	
-			 objId=id.toString();
-			BIObject obj=DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-		 	if(obj!=null){
-			objName=obj.getName();
-		 	}
-		 }
-			 %>
-	
 	<div id="nodeEmpty">
 	</div>
 	
@@ -452,7 +441,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 													
 						<input class='portlet-form-input-field' type="text" size="50" readonly="readonly" 
 										name="documentReadLabel" id="documentReadLabel" value="<%=objName%>" maxlength="400" /> 
-					
+						<%
+						if (!biobjectFound) {
+							%>
+							<img id="docNotFoundErrorImg" name="docNotFoundErrorImg" src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+								title="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" 
+								alt="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" />
+							<%
+						}
+						%>
 						<a href='javascript:void(0);' id="documentLink" style="text-decoration:none;">
 							<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
 						</a>

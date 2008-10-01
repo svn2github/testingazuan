@@ -436,7 +436,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								icon: '<%=contextName%><%=icon%>',
 									<%}%>					            
 				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
 				            <% if(menuElem.getObjId()!=null) { %>
 				            	handler: execDirectDoc 	            	
 							<% } else if(menuElem.getStaticPage()!=null) { %>

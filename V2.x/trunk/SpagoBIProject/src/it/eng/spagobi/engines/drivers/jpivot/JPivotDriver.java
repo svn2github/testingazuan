@@ -42,6 +42,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -71,11 +72,13 @@ public class JPivotDriver implements IEngineDriver {
 	Locale portalLocale = null;
 	try {
 	    portalLocale = PortletUtilities.getPortalLocale();
+	    logger.debug("Portal locale: " + portalLocale);
 	} catch (Exception e) {
 	    logger.error("Error while getting portal locale.");
-	    portalLocale = new Locale("en", "US");
+	    portalLocale = MessageBuilder.getBrowserLocaleFromSpago();
+	    logger.debug("Spago locale: " + portalLocale);
 	}
-	logger.debug("Portal locale: " + portalLocale);
+	
 	SourceBean languageSB = null;
 	if (portalLocale != null && portalLocale.getLanguage() != null) {
 	    languageSB = (SourceBean) config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE",

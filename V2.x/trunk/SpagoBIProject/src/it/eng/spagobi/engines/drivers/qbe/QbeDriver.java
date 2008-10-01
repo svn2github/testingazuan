@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -276,10 +277,11 @@ public class QbeDriver implements IEngineDriver {
 		Locale portalLocale = null;
 		try {
 			portalLocale =  PortletUtilities.getPortalLocale();
+			logger.debug("Portal locale: " + portalLocale);
 		} catch (Exception e) {
-			logger.warn("Impossible to get portal locale.");
-			logger.warn("Default lacale will be used (country: US; language: en).");
-			portalLocale = new Locale("en", "US");
+		    logger.warn("Error while getting portal locale.");
+		    portalLocale = MessageBuilder.getBrowserLocaleFromSpago();
+		    logger.debug("Spago locale: " + portalLocale);
 		}
 		
 		SourceBean languageSB = null;

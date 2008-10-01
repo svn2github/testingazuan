@@ -179,7 +179,7 @@ public class MessageBuilder implements IMessageBuilder {
 	
 	
 	
-	private Locale getBrowserLocaleFromSpago() {
+	public static Locale getBrowserLocaleFromSpago() {
 	    logger.debug("IN");
 		Locale browserLocale = null;
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
@@ -232,7 +232,7 @@ public class MessageBuilder implements IMessageBuilder {
 	
 	
 	
-	private Locale getDefaultLocale() {
+	public static Locale getDefaultLocale() {
 	    logger.debug("IN");
 	 	// get the configuration sourceBean/language code/country code of the default language
 	 	SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()

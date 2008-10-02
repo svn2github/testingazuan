@@ -62,16 +62,16 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     this.base(arguments,180, "1*");//, "2*");
     this.setWidth("100%");
     this.setHeight("100%");
-   /* var listPage;*/
-   var detailPage;
+    //var listPage;
+    var detailPage;
     var detailHeader;
     //var detailBody ;
     
     this.setEdge(0);
    	this.setBorder("line-left");
       		
- /*   var records;*/
-    var form;	
+    //var records;
+    var form;  	
     this._type = type;	
 	if(type === 'engine') {
 		this.records = spagobi.app.data.DataService.loadEngineRecords();
@@ -115,6 +115,27 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();
 		form = new spagobi.ui.custom.RolesDummyForm(); 
+	} else if(type === 'distributionList') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'distributionListConfig') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'func') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'workflow') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'event') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'tool') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'schedule') {
+		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	}
 	
 	if(type != 'funcManagement'){	
@@ -260,6 +281,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   		//tree.deleteNodebyID("node3");						
   								 											
   		tree.addEventListener("click",tree.onClickMenu,tree);		// mouseevent
+  		//tree.addEventListener("changeSelected",tree.onClickMenu,tree);
   		//tree.getManager().addEventListener("changeSelection",tree.onClickMenu,tree);	//data event
   		//tree.getManager().addEventListener("changeSelection",this._onSelectTreeNode,tree);
   		
@@ -322,9 +344,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   {
     _form : undefined,
     detailBody : undefined,
-  	records : undefined,
+    records : undefined,
     listPage : undefined,
-   // form : undefined,
+    
     /**
      * Function to get the current form
      * 
@@ -394,6 +416,27 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		
 		}*/ else if(this._type === 'roles') {
 			this._form = new spagobi.ui.custom.RolesDummyForm();
+		} else if(this._type === 'distributionList') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'distributionListConfig') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'func') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'workflow') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'event') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'tool') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
+		} else if(this._type === 'schedule') {
+			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		
 		}
 			
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
@@ -466,23 +509,21 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     },
     
     _onSelectTreeNode:function(e){
-    	this.addEventListener("click",this.onClickMenu,this);
+    	//this.addEventListener("click",this.onClickMenu,this);
+    	alert(this + "," + e.getData());
+    	this.onClickMenu();
     },
     
     ShowDetails: function () {
-		
-		if (this.records.ID != undefined)
-    {
-    		if (this.records.ID == "ROLES")
-		{
-			alert (this.listPage._table.getUpdatedData());
-		}
-    }
-		else
-    {
-		var alias = this.getForm().getData();
-		alert (this.printObject(alias));
+		if (this.records.ID != undefined){
+    		if (this.records.ID == "ROLES"){
+				alert (this.listPage._table.getUpdatedData());
+			}
+    	}
+		else{
+			var alias = this.getForm().getData();
+			alert (this.printObject(alias));
+		}	
 	}	
-  }
   }
 });

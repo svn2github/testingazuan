@@ -67,7 +67,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               * Function to show a Context Menu associated to the node when it is clicked
 	               * <p> It is called by a generic event handler associated with the tree
 	               * <p><p>
-	               * <p> *Example :- *
+	               * *Example :- *
 	               * <p> var myTree = new spagobi.ui.Tree({root: "Root"});
 	               * <p> myTree.addEventListener("click",myTree.onClickMenu,myTree);
 	               *                                                                                     	               
@@ -81,6 +81,9 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		//var node = this.getSelectedElement();
 	               		//alert("clicked: " + e.getTarget() + "tree node: " + this.getSelectedElement());
 	               		//alert("left:" + this.getSelectedElement().getLeft() + ", width: " + this.getSelectedElement().getWidth());
+	               		
+	               		//var nodeLabel = e.getTarget()[0]._labelObject.getText();
+	               		//alert(nodeLabel);
 	               		
 	               		var insertCmd = new qx.client.Command();
         				insertCmd.addEventListener("execute", this._insertCmd,this
@@ -130,13 +133,42 @@ qx.Class.define("spagobi.ui.Tree", {
         													alert("Delete");
         													}*/
         									);
+        				
+        				var moveUpCmd = new qx.client.Command();
+        				moveUpCmd.addEventListener("execute", this.moveUpNode,this);
+        				
+        				var moveDownCmd = new qx.client.Command();
+        				moveDownCmd.addEventListener("execute", this.moveDownNode,this);
         									
 	               		var contextMenu = new qx.ui.menu.Menu;
-	               		var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd);
+	               		var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd); // handleClick(var vItem, Event e)
 	               		var deleteButton = new qx.ui.menu.Button("Delete",null,deleteCmd);
-	               		contextMenu.add(insertButton,deleteButton);
-	               		var d = qx.ui.core.ClientDocument.getInstance();
-  						d.add(contextMenu);
+	               		var moveUpButton = new qx.ui.menu.Button("Move Up",null,moveUpCmd);
+	               		var moveDownButton = new qx.ui.menu.Button("Move Down",null,moveDownCmd);
+	               		
+	               		if(this.getManager().getSelectedItem() == this){		// If Root Node
+	               			contextMenu.add(insertButton,deleteButton);
+	               		}
+	               		
+	               		else{
+	               			var selectionManager = this.getManager();
+	               			var item = selectionManager.getSelectedItem();
+	               			
+	               			if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+	               				contextMenu.add(insertButton,deleteButton,moveDownButton);
+	               			}
+	               			
+	               			else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+	               				contextMenu.add(insertButton,deleteButton,moveUpButton);	               				
+	               			}
+                 			//var previousItem = selectionManager.getPrevious(this.getSelectedItem()); //getLeadItem(), getNextSibling, getPreviousSibling, 
+                 			else{
+	               				contextMenu.add(insertButton,deleteButton,moveUpButton,moveDownButton);
+                 			}
+	               		}
+	               		
+  						contextMenu.addToDocument();		//var d = qx.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
+  						
   						//alert(contextMenu.getParent().getVisibility() + ", "+ contextMenu.getParent().getDisplay());
   						//alert(contextMenu.getVisibility() + ", "+ contextMenu.getDisplay());
   						//alert(contextMenu.isSeeable());
@@ -149,8 +181,9 @@ qx.Class.define("spagobi.ui.Tree", {
 				          {
 				            
 				  			var ele = this.getSelectedElement().getElement();
-				  			
-				  			contextMenu.setLeft(qx.html.Location.getPageBoxRight(ele));
+				  			//alert(this.getSelectedElement().getLeft() + ", " + qx.html.Location.getPageBoxRight(ele));
+				  			//alert(this.getSelectedElement().getTop()+ this.getSelectedElement().getHeight()+ ", " + qx.html.Location.getPageBoxBottom(ele));
+				  			contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); //getClientAreaRight
 				  			contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
 				  			//contextMenu.setLeft(178);
 				  			//contextMenu.setTop(300);
@@ -163,9 +196,10 @@ qx.Class.define("spagobi.ui.Tree", {
 				  			//contextMenu.setDisplay(true);
 				            contextMenu.show();
 				          }
-				  
+				  		
 				        // e.stopPropagation(true);	//use ??
-				          
+				        //this.setSelectedElement(null);
+				        //this.getManager().setSelectedItem(null);
 	               },
 	               
 	               /**
@@ -270,10 +304,10 @@ qx.Class.define("spagobi.ui.Tree", {
 	               * <p>         }
 	               * <p>
                    * *Example :-* 
-                   * The below code cretaes the tree as :		Root
-                   * 											 -- 	SubFolder1
-                   * 											 -- |_| SubFolder2	
-                   * 														-- |_| File1
+                   * The below code creates the tree as :	<p> Root
+                   * 										<p>&nbsp;&nbsp; -- 	SubFolder1
+                   * 										<p>&nbsp;&nbsp; -- |_| SubFolder2	
+                   * 										<p>&nbsp;&nbsp;&nbsp;&nbsp;	-- |_| File1
                    * var myTree = new spagobi.ui.Tree({root: "Root" });
                    * var node1 = myTree.addNode({
                    * 							name  : "SubFolder1",
@@ -404,7 +438,34 @@ qx.Class.define("spagobi.ui.Tree", {
                   */
                  getCurrentNode:function(){
                  	return this.getSelectedElement();
-                 }
+                 },
                  
+                 /**
+                  * 
+                  */
+                 moveUpNode: function(){
+                 	
+                 	var selectionManager = this.getManager();
+	               	var item = selectionManager.getSelectedItem();
+	               	var previousItem = selectionManager.getPreviousSibling(item);
+	               	var parentItem = item.getParentFolder();
+	               	
+	               	parentItem.remove(item);
+	               	parentItem.addBeforeToFolder(item,previousItem);
+	               	
+                 },
+                 
+                 /**
+                  * 
+                  */
+                 moveDownNode: function(){
+                 	var selectionManager = this.getManager();
+	               	var item = selectionManager.getSelectedItem();
+	               	var nextItem = selectionManager.getNextSibling(item);
+	               	var parentItem = item.getParentFolder();
+	               	
+	               	parentItem.remove(item);
+	               	parentItem.addAfterToFolder(item,nextItem);
+                 }
           }
 });

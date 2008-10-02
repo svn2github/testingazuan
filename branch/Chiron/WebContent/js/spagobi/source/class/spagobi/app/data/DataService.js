@@ -39,6 +39,8 @@ qx.Class.define("spagobi.app.data.DataService", {
   	loadRolesRecords: function(){
   		var records = {};
     	
+    	records.ID = "ROLES";
+    	
     	records.meta =  this.loadRolesMeta();
     	records.rows =  this.loadRolesData();
     	

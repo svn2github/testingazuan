@@ -15,7 +15,8 @@
 				 org.eclipse.birt.report.IBirtConstants,
 				 org.eclipse.birt.report.service.api.ParameterSelectionChoice,
 				 org.eclipse.birt.report.utility.ParameterAccessor,
-				 org.eclipse.birt.report.utility.DataUtil" %>
+				 org.eclipse.birt.report.utility.DataUtil,
+				 java.util.List" %>
 
 <%-----------------------------------------------------------------------------
 	Expected java beans
@@ -33,6 +34,8 @@
 	String defaultValue = parameterBean.getDefaultValue( );
 	String defaultDisplayText = parameterBean.getDefaultDisplayText( );
 	boolean isDisplayTextInList = parameterBean.isDisplayTextInList( );
+	boolean allowMultiValue = !parameterBean.allowNewValues( ) && parameterBean.getParameter( ).isMultiValue( );
+	List values = parameterBean.getValueList( );	
 %>
 <TR>
 	<TD NOWRAP>
@@ -55,6 +58,7 @@
 	<TD NOWRAP></TD>
 	<TD NOWRAP WIDTH="100%">
 		<INPUT TYPE="HIDDEN" ID="control_type" VALUE="select">
+		<INPUT TYPE="HIDDEN" ID="data_type" VALUE="<%="" + parameterBean.getParameter( ).getDataType( ) %>">
 		<INPUT TYPE="HIDDEN"
 			ID="<%= encodedParameterName + "_value" %>"
 			NAME="<%= encodedParameterName %>"
@@ -82,27 +86,72 @@
 		<SELECT ID="<%= encodedParameterName + "_selection"%>"
 			TITLE="<%= parameterBean.getToolTip( ) %>"
 			CLASS="birtviewer_parameter_dialog_Select" 
-			<%= !CHECKED ? "DISABLED='true'" : "" %> >
+			<%= !CHECKED ? "DISABLED='true'" : "" %> 
+			<%=  allowMultiValue? "multiple='true'" : "" %> >
 <%
+
+	if ( !parameterBean.isRequired( ) )
+	{
+		if( allowMultiValue )
+		{
+			if( DataUtil.contain( values, null, true ) )
+			{
+	%>
+		<OPTION VALUE="" TITLE="<%= IBirtConstants.NULL_VALUE %>" SELECTED ><%= IBirtConstants.NULL_VALUE %></OPTION>
+	<%			
+			}
+			else
+			{
+	%>
+		<OPTION VALUE="" TITLE="<%= IBirtConstants.NULL_VALUE %>"><%= IBirtConstants.NULL_VALUE %></OPTION>
+	<%				
+			}
+		}
+		else
+		{
+	%>
+		<OPTION VALUE="" TITLE="<%= IBirtConstants.NULL_VALUE %>" <%= ( paramValue == null )? "SELECTED" : ""%> ><%= IBirtConstants.NULL_VALUE %></OPTION>
+	<%
+		}
+	}
+
 	if ( parameterBean.getSelectionList( ) != null )
 	{
 		if( !parameterBean.isRequired( ) || ( parameterBean.isCascade( ) && DataUtil.trimString( defaultValue ).length( )<=0 ) )
 		{
+			if( allowMultiValue && DataUtil.contain( values, "", true ) )
+			{
+%>
+		<OPTION SELECTED></OPTION>
+<%				
+			}
+			else
+			{
 %>
 		<OPTION></OPTION>
 <%
+			}
 		}
 		
 		if ( DataUtil.trimString( defaultValue ).length( ) > 0 && !parameterBean.isDefaultValueInList( ) ) // Add default value in Combo Box
 		{
-			boolean flag = CHECKED && !parameterBean.isValueInList( );
-			// if displayText is in request, use it
-			if( flag && parameterBean.isDisplayTextInReq( ) )
+			boolean flag = false;
+			if( allowMultiValue )
 			{
-				defaultDisplayText = displayText;
+				flag = DataUtil.contain( values, defaultValue, true );
+			}
+			else
+			{
+				flag = CHECKED && !parameterBean.isValueInList( );
+				// if displayText is in request, use it
+				if( flag && parameterBean.isDisplayTextInReq( ) )
+				{
+					defaultDisplayText = displayText;
+				}				
 			}
 %>
 			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( defaultValue ) %>" 
+			        TITLE="<%= ParameterAccessor.htmlEncode( defaultDisplayText ) %>"
 				<%=  flag ? "SELECTED" : "" %> > <%= ParameterAccessor.htmlEncode( defaultDisplayText ) %></OPTION>
 <%	
 		}
@@ -114,27 +163,46 @@
 			String label = selectionItem.getLabel( );
 			String value = ( String ) selectionItem.getValue( );
 
-			if ( !isSelected && paramValue != null && paramValue.equals( value ) 
-				 && ( !isDisplayTextInList || ( isDisplayTextInList && label.equals( displayText ) ) ) )
+			if( allowMultiValue )
 			{
-				isSelected = true;				
+				if( DataUtil.contain( values, value, true ) )
+				{
 %>
-			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>" SELECTED><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
+			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>"
+			        TITLE="<%= ParameterAccessor.htmlEncode( label ) %>"
+			        SELECTED><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
 <%
+					
+				}
+				else
+				{
+%>
+			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>"
+			        TITLE="<%= ParameterAccessor.htmlEncode( label ) %>"><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
+<%					
+				}
 			}
 			else
 			{
+				if ( !isSelected && paramValue != null && paramValue.equals( value ) 
+					 && ( !isDisplayTextInList || ( isDisplayTextInList && label.equals( displayText ) ) ) )
+				{
+					isSelected = true;				
 %>
-			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>"><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
+			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>" 
+			        TITLE="<%= ParameterAccessor.htmlEncode( label ) %>"
+			        SELECTED><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
 <%
+				}
+				else
+				{
+%>
+			<OPTION VALUE="<%= ParameterAccessor.htmlEncode( value ) %>"
+			        TITLE="<%= ParameterAccessor.htmlEncode( label ) %>"><%= ParameterAccessor.htmlEncode( label ) %></OPTION>
+<%
+				}
 			}
 		}
-	}
-	if ( !parameterBean.isRequired( ) )
-	{
-%>
-		<OPTION VALUE="" <%= ( paramValue == null )? "SELECTED" : ""%> >Null Value</OPTION>
-<%
 	}
 %>
 		</SELECT>

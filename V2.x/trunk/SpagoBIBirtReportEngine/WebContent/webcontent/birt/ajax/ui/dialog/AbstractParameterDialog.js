@@ -32,7 +32,7 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 	 */
 	 __neh_click_radio_closure : null,
 	 __neh_change_select_closure : null,
-
+	 
 	/**
 	 *	Initialize dialog base.
 	 *	@return, void
@@ -65,6 +65,11 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 	 */
 	__propogateCascadeParameter : function( data )
 	{
+		if ( this.__operationCancelled )
+		{
+			return;
+		}
+		
 		if( data )
 		{
 			var cascade_param = data.getElementsByTagName( 'CascadeParameter' )[0];//assume there is only one cascadeparameter
@@ -80,6 +85,7 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 				var selections = selectionLists[k].getElementsByTagName( 'Selections' );
 				
 				var append_selection = document.getElementById( param_name + "_selection" );
+				append_selection.title = "";
 				var len = append_selection.options.length;
 								
 				// Clear our selection list.
@@ -115,7 +121,7 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 						oOption.value = oValue.data;
 					else
 						oOption.value = "";
-					append_selection.options.add( oOption );
+					append_selection.options[append_selection.options.length] = oOption;
 				}
 			}
 		}
@@ -272,7 +278,7 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 					{
 						if( temp.defaultValue == "" )
 						{
-							alert( temp.name + " should have a value" );
+							alert( birtUtility.formatMessage( Constants.error.parameterRequired, temp.name ) );
 							return false;
 						}
 						this.__parameter[k].value = temp.defaultValue;
@@ -326,7 +332,7 @@ AbstractParameterDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 							
 							if ( oSEC[0].selectedIndex == -1 )
 							{
-								alert( oIEC[j].value + " should have a value" );
+								alert( birtUtility.formatMessage( Constants.error.parameterRequired, oIEC[j].value ) );
 								return false;
 							}
 							else

@@ -16,6 +16,14 @@ AbstractExceptionDialog = function( ) { };
 
 AbstractExceptionDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 {
+	__faultCode : "",
+
+	__setFaultContainersWidth: function( width )
+	{		
+		document.getElementById("faultStringContainer").style.width = width;
+		document.getElementById("exceptionTraceContainer").style.width = width;
+	},
+	
 	/**
 	 *	Binding data to the dialog UI. Data includes zoom scaling factor.
 	 *
@@ -28,9 +36,9 @@ AbstractExceptionDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 	 	{
 	 		return;
 	 	}
-	 	
+		
 	 	var oSpans = this.__instance.getElementsByTagName( 'SPAN' );
-
+		
 	 	// Prepare fault string (reason)
 	 	var faultStrings = data.getElementsByTagName( 'faultstring' );
 	 	if ( faultStrings[0] && faultStrings[0].firstChild )
@@ -52,5 +60,24 @@ AbstractExceptionDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 		{
 			oSpans[1].innerHTML = "";
 		}
+
+		var faultCodeElement = data.getElementsByTagName( 'faultcode' );
+	 	if ( faultCodeElement[0] && faultCodeElement[0].firstChild )
+	 	{
+			this.__faultCode = faultCodeElement[0].firstChild.data;
+		}
+		else
+		{
+			this.__faultCode = "";
+		}
+	
+		if ( this.__faultCode == "DocumentProcessor.getPageNumber( )" )
+		{
+			birtEventDispatcher.broadcastEvent( 
+				birtEvent.__E_GETPAGE_INIT, 
+				{ name : Constants.PARAM_PAGE, value : 1 } 
+				);
+		}				
+	
 	}
 } );

@@ -224,6 +224,26 @@
 				Specifies the output format of report.
 			</description>			
 		</attribute>
+
+		<attribute>
+			<name>emitterId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the emitter id for the report output.
+			</description>			
+		</attribute>
+		
+		<attribute>
+			<name>pageOverflow</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the page overflow setting for the PDF format.
+				One of the following values:
+				0 for "auto", 1 for "actual size", 2 for "fit to page". 
+			</description>			
+		</attribute>
 		
 		<attribute>
 			<name>rtl</name>
@@ -314,6 +334,16 @@
 			</description>			
 		</attribute>
 
+		<attribute>
+			<name>isReportlet</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies whether render reportlet by bookmark.
+				Default to false.
+			</description>			
+		</attribute>
+		
 	</tag>
 
  	<!--**********************************************-->
@@ -511,6 +541,26 @@
 		</attribute>
 		
 		<attribute>
+			<name>emitterId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the emitter id for the report output.
+			</description>			
+		</attribute>
+
+		<attribute>
+			<name>pageOverflow</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the page overflow setting for the PDF format.
+				One of the following values:
+				0 for "auto", 1 for "actual size", 2 for "fit to page". 
+			</description>			
+		</attribute>
+		
+		<attribute>
 			<name>rtl</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -566,6 +616,16 @@
 			<rtexprvalue>true</rtexprvalue>
 			<description>
 				Specifies page range when render document file.
+			</description>			
+		</attribute>
+
+		<attribute>
+			<name>isReportlet</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies whether render reportlet by bookmark.
+				Default to false.
 			</description>			
 		</attribute>
 		        
@@ -852,6 +912,26 @@
 		</attribute>
 		
 		<attribute>
+			<name>emitterId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the emitter id for the report output.
+			</description>			
+		</attribute>
+		
+		<attribute>
+			<name>pageOverflow</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies the page overflow setting for the PDF format.
+				One of the following values:
+				0 for "auto", 1 for "actual size", 2 for "fit to page". 
+			</description>			
+		</attribute>
+
+		<attribute>
 			<name>rtl</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -909,6 +989,16 @@
 				Specifies whether shows the Navigation Bar.
 				If allowPageBreak is false,ignore this attribute.
 				Default to true.
+			</description>			
+		</attribute>
+
+		<attribute>
+			<name>isReportlet</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies whether render reportlet by bookmark.
+				Default to false.
 			</description>			
 		</attribute>
 				        

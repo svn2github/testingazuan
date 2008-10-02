@@ -119,7 +119,7 @@
 		
 	</HEAD>
 	
-	<BODY CLASS="BirtViewer_Body"  ONLOAD="javascript:init( );" LEFTMARGIN='0px' STYLE='overflow:hidden'>
+	<BODY CLASS="BirtViewer_Body"  ONLOAD="javascript:init( );" SCROLL="no" LEFTMARGIN='0px' STYLE='overflow:hidden'>
 		<%
 		if( attributeBean.isRtl() )
 		{
@@ -147,6 +147,9 @@
 		}
 		%>
 	</BODY>
+
+	<%@include file="../common/Locale.jsp" %>	
+	<%@include file="../common/Attributes.jsp" %>	
 
 	<script type="text/javascript">
 	// <![CDATA[
@@ -197,6 +200,7 @@
 		else
 		{
 		%>
+			soapURL = birtUtility.initDPI( soapURL );
 			birtParameterDialog.__init_page_all( );
 		<%
 		}
@@ -213,7 +217,7 @@
 				action = action.replace( reg, "$1" );
 			}
 			
-			window.location.href = action + "#" + bookmark;		
+			window.location.href = action + "#" + birtUtility.htmlDecode( bookmark );		
 		}
 		
 	</script>

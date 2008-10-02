@@ -52,6 +52,11 @@ BirtProgressBar.prototype = Object.extend( new AbstractUIComponent( ),
 	__task_id : 'taskid',
 		
 	/**
+	 * When click cancel button, indicate whether redirect a cancel page
+	 */
+	__redirect : false,
+	
+	/**
 	 *	Initialization routine required by "ProtoType" lib.
 	 *	@return, void
 	 */
@@ -220,11 +225,56 @@ BirtProgressBar.prototype = Object.extend( new AbstractUIComponent( ),
 	__neh_click: function( event )
 	{
 		var oTaskId = document.getElementById( this.__task_id );
-		if( oTaskId && window.confirm( "Do you want to cancel current task?" ) )
+		if( oTaskId && window.confirm( Constants.error.confirmCancelTask ) )
+		{	
+			if( this.__redirect )
+			{
+				this.cancel( oTaskId.value );	
+			}
+			else
+			{
+				birtEventDispatcher.broadcastEvent( birtEvent.__E_CANCEL_TASK, { name : Constants.PARAM_TASKID, value : oTaskId.value } );
+				Event.element( event ).disabled = true;
+			}			
+		}	
+	},
+	
+	/**
+	 *	Try to cancel the process.
+	 *
+	 *	@return, void
+	 */
+	cancel: function( taskid )
+	{
+		if( !taskid )
 		{
-			birtEventDispatcher.broadcastEvent( birtEvent.__E_CANCEL_TASK, { name : "taskid", value : oTaskId.value } );
-			Event.element( event ).disabled = true;
+			var oTaskId = document.getElementById( this.__task_id );
+			if( oTaskId )
+				taskid = oTaskId.value;
 		}
+						 
+		if( !taskid || taskid.length <= 0 )
+			return;
+						 
+		var hiddenForm = document.createElement( 'form' );
+		hiddenForm.method = 'post';
+		hiddenForm.target = '_self';
+		var url = soapURL;
+		url = url.replace( /[\/][a-zA-Z]+[?]/, '/CancelTask.jsp?' );
+		hiddenForm.action = url;
+	
+		var taskidInput = document.createElement( 'input' );
+		taskidInput.type = 'hidden';
+		taskidInput.name = Constants.PARAM_TASKID;
+		taskidInput.value = taskid;
+		hiddenForm.appendChild( taskidInput );
+		
+		var divObj = document.createElement( "DIV" );
+		document.body.appendChild( divObj );
+		divObj.style.display = "none";
+		divObj.appendChild( hiddenForm );
+		
+		hiddenForm.submit( );		
 	},
 
 	/**
@@ -249,5 +299,16 @@ BirtProgressBar.prototype = Object.extend( new AbstractUIComponent( ),
 		var container = document.getElementById( this.__cancel_button );
 		if( container )
 			container.style.display = 'none';
+	},
+	
+	/**
+	 * Set redirect flag
+	 * 
+	 * @param, flag
+	 * @return, void
+	 */
+	setRedirect : function( flag )
+	{
+		this.__redirect = flag;		
 	}
 } );

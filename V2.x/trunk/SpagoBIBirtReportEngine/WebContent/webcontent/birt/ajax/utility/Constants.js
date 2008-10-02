@@ -49,9 +49,23 @@ var Constants = {
 	PARAM_OVERWRITE : '__overwrite',
 	PARAM_PAGE : '__page',
 	PARAM_PAGERANGE : '__pagerange',
-	PARAM_EXPORT_ENCODING : '__exportEncoding',
+	PARAM_PARAMETERPAGE : '__parameterpage',
+	PARAM_BOOKMARK : '__bookmark',
+	PARAM_INSTANCE_ID : '__instanceid',
+	PARAM_SVG : '__svg',
+	PARAM_TASKID : '__taskid',
+	PARAM_ISTOC : '__istoc',
+	PARAM_RESULTSETNAME : '__resultsetname',
+	PARAM_SELECTEDCOLUMNNUMBER : '__selectedcolumnnumber',
+	PARAM_SELECTEDCOLUMN : '__selectedcolumn',
+	PARAM_EXPORT_ENCODING : '__exportencoding',
 	PARAM_SEP : '__sep',
+	PARAM_EXPORT_DATATYPE : '__exportdatatype',
+	PARAM_LOCALENEUTRAL : '__localeneutral',
+	PARAM_DATA_EXTRACT_FORMAT : '__extractformat',
+	PARAM_DATA_EXTRACT_EXTENSION : '__extractextension',
 	PARAM_ISNULL : '__isnull',
+	PARAM_EMITTER_ID : '__emitterid',
 	
 	PARAM_PRINTER_NAME : '__printer',
 	PARAM_PRINTER_COPIES : '__printer_copies',
@@ -60,16 +74,35 @@ var Constants = {
 	PARAM_PRINTER_MODE : '__printer_mode',
 	PARAM_PRINTER_MEDIASIZE : '__printer_pagesize',
 	
-	PARAM_FITTOPAGE : '__fittopage',
-	PARAM_PAGEBREAKONLY : '__pagebreakonly',
+	PARAM_PAGE_OVERFLOW : '__pageoverflow',
+	PARAM_PAGEBREAKONLY : '__pagebreakonly',		
+	
+	// Parameter Data Type
+	TYPE_ANY : '0',
+	TYPE_STRING : '1',
+	TYPE_FLOAT : '2',
+	TYPE_DECIMAL : '3',
+	TYPE_DATE_TIME : '4',
+	TYPE_BOOLEAN : '5',
+	TYPE_INTEGER : '6',
+	TYPE_DATE : '7',
+	TYPE_TIME : '8',
+	
+	// Servlet patterns
+	SERVLET_OUTPUT : 'output',
+	SERVLET_EXTRACT : 'extract',
 	
 	// Output formats
 	FORMAT_POSTSCRIPT : 'postscript',
 	FORMAT_PDF : 'pdf',
 	FORMAT_HTML : 'html',
+	FORMAT_PPT : 'ppt',
 	
 	// Action names
 	ACTION_PRINT : 'print',
+	
+	// Window names
+	WINDOW_PRINT_PREVIEW : 'birtPrint',
 	
 	/** 
 	event.returnvalue indicating that event has already been handled

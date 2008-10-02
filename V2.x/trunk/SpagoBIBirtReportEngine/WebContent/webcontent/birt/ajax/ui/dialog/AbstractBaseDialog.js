@@ -18,7 +18,7 @@ AbstractBaseDialog.prototype =
 {		
 	contentHolderWidth: 500, //TODO - move to display constants? Default width in pixels
 	visible: null, //Is the dialog currently visible		
-	
+	__operationCancelled: false,
 	 
 	/**
 	 Initialize dialog base
@@ -56,6 +56,12 @@ AbstractBaseDialog.prototype =
 		this.drag_closure = this.__neh_drag.bindAsEventListener(this);
 		this.disposeSelection_closure = this.__neh_disposeSelection.bindAsEventListener(this);
 		this.enableSelection_closure = this.__neh_enableSelection.bindAsEventListener(this);
+		
+	    this.__beh_cancelOperation_closure = this.__beh_cancelOperation.bindAsEventListener( this );
+		
+		birtEventDispatcher.registerEventHandler( birtEvent.__E_CANCEL_TASK, this.htmlId, this.__beh_cancelOperation_closure );
+		
+		this.__operationCancelled = false;
 		
 		// Initialize shared events	
 		this.__base_installEventHandlers(htmlId);	
@@ -156,7 +162,9 @@ AbstractBaseDialog.prototype =
 	 *	@return, void
 	 */
 	__l_show : function( )
-	{	
+	{
+		// reset cancelled flag
+		this.__operationCancelled = false;
 		this.__preShow();
 			
 				//check if the dialog is already shown
@@ -179,6 +187,26 @@ AbstractBaseDialog.prototype =
 			this.__setWidth();
 				
 			BirtPosition.center( this.__instance );
+			
+			// workaround for IE7 in rtl mode
+			if ( BrowserUtility.isIE7 && rtl )
+			{
+				// force refreshing the DIV elements,
+				// else their positioning might become brokem after opening
+				// the same dialog box twice...
+				var titleContainer = $(this.htmlId + "dialogTitleBar"); 
+				if ( titleContainer )
+				{
+					titleContainer.style.direction = "rtl";
+					var elements = titleContainer.getElementsByTagName("div");
+					for ( var i = 0; i < elements.length; i++ )
+					{
+						var el = elements[i];
+						el.style.display = "none";
+						el.style.display = "block";
+					}
+				}
+			}
 			
 			Event.observe( window, 'resize', this.__neh_resize_closure, false );
 			Event.observe( document, 'mouseup', this.disposeSelection_closure, false );			
@@ -423,5 +451,18 @@ AbstractBaseDialog.prototype =
 	getHtmlId: function()
 	{
 		return this.htmlId;
+	},
+	
+	/**
+	 * This event handler is called whenever an operation has been cancelled.
+	 * If the dialog box is visible, sets the cancelled flag to true.
+	 */
+	__beh_cancelOperation : function()
+	{
+		if ( this.visible )
+		{
+			this.__operationCancelled = true;
+		}
 	}
+	
 }

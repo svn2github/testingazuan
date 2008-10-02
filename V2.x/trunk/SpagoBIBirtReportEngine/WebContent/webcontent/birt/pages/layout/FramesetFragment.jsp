@@ -115,6 +115,7 @@
 		<script src="birt/ajax/ui/dialog/BirtSimpleExportDataDialog.js" type="text/javascript"></script>
 		<script src="birt/ajax/ui/dialog/BirtExportReportDialog.js" type="text/javascript"></script>
 		<script src="birt/ajax/ui/dialog/BirtPrintReportDialog.js" type="text/javascript"></script>
+		<script src="birt/ajax/ui/dialog/BirtPrintReportServerDialog.js" type="text/javascript"></script>
 		<script src="birt/ajax/ui/dialog/AbstractExceptionDialog.js" type="text/javascript"></script>
 		<script src="birt/ajax/ui/dialog/BirtExceptionDialog.js" type="text/javascript"></script>
 		<script src="birt/ajax/ui/dialog/BirtConfirmationDialog.js" type="text/javascript"></script>
@@ -128,15 +129,13 @@
 		
 	</HEAD>
 	
-	<BODY CLASS="BirtViewer_Body"  ONLOAD="javascript:init( );" LEFTMARGIN='0px' STYLE='overflow:hidden'>
-		<%
-		if( attributeBean.isRtl() )
-		{
-		%>
-		<DIV DIR="rtl">
-		<%
-		}
-		%>
+	<BODY 
+		CLASS="BirtViewer_Body"  
+		ONLOAD="javascript:init( );" 
+		SCROLL="no" 
+		LEFTMARGIN='0px' 
+		STYLE='overflow:hidden; direction: <%= attributeBean.isRtl()?"rtl":"ltr" %>'
+		>
 		<!-- Header section -->
 		<TABLE ID='layout' CELLSPACING='0' CELLPADDING='0' STYLE='width:100%;height:100%'>
 			<%
@@ -173,15 +172,10 @@
 				}
 			%>
 		</TABLE>
-		<%
-		if( attributeBean.isRtl() )
-		{
-		%>
-		</DIV>
-		<%
-		}
-		%>
 	</BODY>
+
+	<%@include file="../common/Locale.jsp" %>	
+	<%@include file="../common/Attributes.jsp" %>	
 
 	<script type="text/javascript">
 	// <![CDATA[
@@ -214,18 +208,23 @@
 		var BrowserUtility = new BrowserUtility();
 		DragDrop = new BirtDndManager();
 		
-		var birtReportDocument = new BirtReportDocument( "Document" );
 		var birtToolbar = new BirtToolbar( 'toolbar' );
 		var navigationBar = new BirtNavigationBar( 'navigationBar' );
 		var birtToc = new BirtToc( 'display0' );
 		var birtProgressBar = new BirtProgressBar( 'progressBar' );
+		var birtReportDocument = new BirtReportDocument( "Document", birtToc );
 
 		var birtParameterDialog = new BirtParameterDialog( 'parameterDialog', 'frameset' );
 		var birtSimpleExportDataDialog = new BirtSimpleExportDataDialog( 'simpleExportDataDialog' );
 		var birtExportReportDialog = new BirtExportReportDialog( 'exportReportDialog' );
 		var birtPrintReportDialog = new BirtPrintReportDialog( 'printReportDialog' );
+		var birtPrintReportServerDialog = new BirtPrintReportServerDialog( 'printReportServerDialog' );
 		var birtExceptionDialog = new BirtExceptionDialog( 'exceptionDialog' );
 		var birtConfirmationDialog = new BirtConfirmationDialog( 'confirmationDialog' );
+
+		// register the base elements to the mask, so their input
+		// will be disabled when a dialog is popped up.
+		Mask.setBaseElements( new Array( birtToolbar.__instance, navigationBar.__instance, birtReportDocument.__instance) );
 		
 		function init()
 		{		
@@ -239,6 +238,7 @@
 		else
 		{
 		%>
+			soapURL = birtUtility.initDPI( soapURL );
 			navigationBar.__init_page( );
 		<%
 		}
@@ -248,7 +248,7 @@
 		// When link to internal bookmark, use javascript to fire an Ajax request
 		function catchBookmark( bookmark )
 		{	
-			birtEventDispatcher.broadcastEvent( birtEvent.__E_GETPAGE, { name : "bookmark", value : bookmark } );		
+			birtEventDispatcher.broadcastEvent( birtEvent.__E_GETPAGE, { name : "__bookmark", value : bookmark } );		
 		}
 		
 	</script>

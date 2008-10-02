@@ -19,6 +19,7 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 {
 	__instance : null,
 	__has_svg_support : false,
+	__tocElement : null,
 	
 	/**
 	 *	Event handler closures.
@@ -28,12 +29,7 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 	__beh_toc_closure : null,
 	__beh_getPage_closure : null,
 	__beh_changeParameter_closure : null,
-		
-	/**
-	 *	Task Id parameter
-	 */
-	 __task_id : "taskid",
-	 		
+		 		
 	/**
 	 *	Local version of __cb_installEventHandlers.
 	 */
@@ -68,18 +64,13 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 	 */
 	__neh_resize : function( event )
 	{
-		var width;
-		if( rtl )
+		var tocWidth = 0;
+		if ( this.__tocElement && this.__tocElement.__instance )
 		{
-			var offsetRight = this.__instance.offsetLeft + this.__instance.offsetWidth;
-			var offsetPadding = BirtPosition.viewportWidth( ) - offsetRight;					
-			width = BirtPosition.viewportWidth( ) -  ( offsetPadding >= 250 ? 250 : 0 ) - 3;
-		}
-		else
-		{
-			width = BirtPosition.viewportWidth( ) -  ( this.__instance.offsetLeft >= 250 ? 250 : 0 ) - 3;
+			tocWidth = this.__tocElement.getWidth();
 		}
 		
+		var width = BirtPosition.viewportWidth( ) -  tocWidth - 3;		
 		if( width > 0 )
 			this.__instance.style.width = width + "px";
 			
@@ -122,18 +113,19 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 		{		
 	        birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 	        							  "ChangeParameter", null, birtParameterDialog.__parameter,
-										  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-										  { name : "page", value : pageNum },
-										  { name : this.__task_id, value : taskid } );
+										  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+										  { name : Constants.PARAM_PAGE, value : pageNum },
+										  { name : Constants.PARAM_TASKID, value : taskid } );
 		}
 		else
 		{
 	        birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 	        							  "ChangeParameter", null, birtParameterDialog.__parameter,
-										  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-										  { name : this.__task_id, value : taskid } );			
+										  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+										  { name : Constants.PARAM_TASKID, value : taskid } );			
 		}
 		birtSoapRequest.setURL( soapURL );
+		birtProgressBar.setRedirect( true );
 		birtEventDispatcher.setFocusId( null );	// Clear out current focusid.
 		return true;
 	},
@@ -148,7 +140,7 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 		
 	    birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 	    							 "GetCascadingParameter", null, object,
-	    							 { name : this.__task_id, value : taskid } );
+	    							 { name : Constants.PARAM_TASKID, value : taskid } );
 		birtSoapRequest.setURL( soapURL );
 		birtEventDispatcher.setFocusId( null );	// Clear out current focusid.
 		return true;
@@ -162,18 +154,8 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 	 */
 	__beh_toc : function( id )
 	{
-		var width;
-		if( rtl )
-		{
-			var offsetRight = this.__instance.offsetLeft + this.__instance.offsetWidth;
-			var offsetPadding = BirtPosition.viewportWidth( ) - offsetRight;		
-			width = BirtPosition.viewportWidth( ) - ( offsetPadding < 250 ? 250 : 0 ) - 3;
-		}
-		else
-		{
-			width = BirtPosition.viewportWidth( ) -  ( this.__instance.offsetLeft < 250 ? 250 : 0 ) - 3;			
-		}
-		this.__instance.style.width = width + "px";
+		// resize document window
+		this.__neh_resize();
 	},
 
 	/**
@@ -188,24 +170,33 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 		// set task id
 		var taskid = birtUtility.setTaskId( );
 		
-		birtSoapRequest.setURL( soapURL );
+		var url = soapURL;
+		// if set bookmark, delete the bookmark parameter in URL
+		if( object && object.name && object.name == Constants.PARAM_BOOKMARK )
+		{
+			url = birtUtility.deleteURLParameter( url, Constants.PARAM_BOOKMARK );
+			url = birtUtility.deleteURLParameter( url, Constants.PARAM_ISTOC );
+		}
+		
+		birtSoapRequest.setURL( url );
 		if ( object )
 		{
 			birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 										  "GetPage", null,
 										  object,
-										  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-										  { name : this.__task_id, value : taskid } );
+										  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+										  { name : Constants.PARAM_TASKID, value : taskid } );
 		}
 		else
 		{
 			birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 										  "GetPage", null,
-										  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-										  { name : this.__task_id, value : taskid } );
+										  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+										  { name : Constants.PARAM_TASKID, value : taskid } );
 		}
 
 		birtEventDispatcher.setFocusId( null );	// Clear out current focusid.
+		birtProgressBar.setRedirect( true );
 		return true;
 	},
 
@@ -232,17 +223,17 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 				birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 											  "GetPage", null, birtParameterDialog.__parameter,
 											  object,
-											  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-											  { name : "page", value : pageNum },
-											  { name : this.__task_id, value : taskid } );
+											  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+											  { name : Constants.PARAM_PAGE, value : pageNum },
+											  { name : Constants.PARAM_TASKID, value : taskid } );
 			}
 			else
 			{
 				birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 											  "GetPage", null, birtParameterDialog.__parameter,
 											  object,
-											  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-											  { name : this.__task_id, value : taskid } );				
+											  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+											  { name : Constants.PARAM_TASKID, value : taskid } );				
 			}
 		}
 		else
@@ -251,20 +242,21 @@ AbstractBaseReportDocument.prototype = Object.extend( new AbstractReportComponen
 			{
 				birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 											  "GetPage", null, birtParameterDialog.__parameter,
-											  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-											  { name : "page", value : pageNum },
-											  { name : this.__task_id, value : taskid } );				
+											  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+											  { name : Constants.PARAM_PAGE, value : pageNum },
+											  { name : Constants.PARAM_TASKID, value : taskid } );				
 			}
 			else
 			{
 				birtSoapRequest.addOperation( Constants.documentId, Constants.Document,
 											  "GetPage", null, birtParameterDialog.__parameter,
-											  { name : "svg", value : this.__has_svg_support? "true" : "false" },
-											  { name : this.__task_id, value : taskid } );
+											  { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+											  { name : Constants.PARAM_TASKID, value : taskid } );
 			}
 		}
 
 		birtEventDispatcher.setFocusId( null );	// Clear out current focusid.
+		birtProgressBar.setRedirect( true );
 		return true;
 	},
 	

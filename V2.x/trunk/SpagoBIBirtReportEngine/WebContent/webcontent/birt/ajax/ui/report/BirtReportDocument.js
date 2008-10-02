@@ -22,9 +22,10 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 	 *
 	 *	@return, void
 	 */
-	initialize : function( id )
+	initialize : function( id, tocElement )
 	{
 		this.__instance = $( id );
+		this.__tocElement = tocElement;
 		this.__neh_resize( );
 		this.__has_svg_support = hasSVGSupport;
 		
@@ -35,6 +36,7 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 		this.__beh_changeParameter_closure = this.__beh_changeParameter.bind( this );
 		this.__beh_toc_closure = this.__beh_toc.bindAsEventListener( this );
 		this.__beh_cacheParameter_closure = this.__beh_cacheParameter.bind( this );
+		this.__beh_printServer_closure = this.__beh_printServer.bind( this );
 		this.__beh_print_closure = this.__beh_print.bind( this );
 		this.__beh_pdf_closure = this.__beh_pdf.bind( this );
 		this.__beh_cancelTask_closure = this.__beh_cancelTask.bind( this );
@@ -52,6 +54,7 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_QUERY_EXPORT, this.__instance.id, this.__beh_export );
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_CACHE_PARAMETER, this.__instance.id, this.__beh_cacheParameter_closure );
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_PRINT, this.__instance.id, this.__beh_print_closure );
+		birtEventDispatcher.registerEventHandler( birtEvent.__E_PRINT_SERVER, this.__instance.id, this.__beh_printServer_closure );
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_PDF, this.__instance.id, this.__beh_pdf_closure );
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_CANCEL_TASK, this.__instance.id, this.__beh_cancelTask_closure );
 		birtEventDispatcher.registerEventHandler( birtEvent.__E_GETPAGE_ALL, this.__instance.id, this.__beh_getPageAll_closure );
@@ -83,6 +86,17 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 	},
 
 	/**
+	 *	Birt event handler for "PrintServer" event.
+	 *
+	 *	@id, document id (optional since there's only one document instance)
+	 *	@return, true indicating server call
+	 */
+	__beh_printServer : function( id )
+	{
+		birtPrintReportServerDialog.__cb_bind( );
+	},
+
+	/**
 	 *	Birt event handler for "print" event.
 	 *
 	 *	@id, document id (optional since there's only one document instance)
@@ -92,70 +106,6 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 	{
 		birtPrintReportDialog.__cb_bind( );
 	},
-	
-	/* 
-	__beh_print : function( id )
-	{		
-		// If print the whole report
-		if ( confirm( "Do you want to print the whole report?" ) )
-		{
-			var action = window.location.href;
-			var reg = new RegExp( "/frameset[^\\?]*", "g" );
-			action = action.replace( reg, "/preview" );
-
-			var divObj = document.createElement( "DIV" );
-			document.body.appendChild( divObj );
-			divObj.style.display = "none";
-			
-			var formObj = document.createElement( "FORM" );
-			divObj.appendChild( formObj );
-			
-			if ( !birtParameterDialog.collect_parameter( ) )
-				return;
-			
-			if ( birtParameterDialog.__parameter != null )
-			{
-				for( var i = 0; i < birtParameterDialog.__parameter.length; i++ )	
-				{
-					var param = document.createElement( "INPUT" );
-					formObj.appendChild( param );
-					param.TYPE = "HIDDEN";
-					param.name = birtParameterDialog.__parameter[i].name;
-					param.value = birtParameterDialog.__parameter[i].value;
-					
-					//replace the URL parameter			
-					var reg = new RegExp( "&" + param.name + "[^&]*&*", "g" );
-					action = action.replace( reg, "&" );
-				}
-			}	
-	
-			formObj.action = action;
-			formObj.method = "post";
-			formObj.submit( );
-					
-			window.print( );
-		}
-		else
-		{
-			var docObj = document.getElementById( "Document" );
-			if ( !docObj || birtUtility.trim( docObj.innerHTML ).length <= 0)
-			{
-				alert ( "Please generate the current report first." );
-				return;
-			}	
-			
-			var pwin = window.open( "", "print" ); 
-			if ( !pwin )
-			{
-				pwin = window;
-			}
-				
-			pwin.document.write( docObj.innerHTML ); 		
-			pwin.print( );
-			pwin.location.reload( );			
-		}		
-	},
-	*/
 	
 	/**
 	 *	Birt event handler for "pdf" event.
@@ -168,7 +118,7 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 		var docObj = document.getElementById( "Document" );
 		if ( !docObj || birtUtility.trim( docObj.innerHTML ).length <= 0)
 		{
-			alert ( "Report document should be generated first." );	
+			alert ( Constants.error.generateReportFirst );	
 			return;
 		}	
 		else
@@ -238,18 +188,19 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 		{
 	        birtSoapRequest.addOperation( Constants.documentId, Constants.Document, "GetPageAll",
 	        							   null, birtParameterDialog.__parameter, object,
-	        							   { name : "svg", value : this.__has_svg_support? "true" : "false" },
-	        							   { name : this.__task_id, value : taskid } );
+	        							   { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+	        							   { name : Constants.PARAM_TASKID, value : taskid } );
 		}
 		else
 		{
 	        birtSoapRequest.addOperation( Constants.documentId, Constants.Document, "GetPageAll",
 	        							   null, birtParameterDialog.__parameter,
-        							       { name : "svg", value : this.__has_svg_support? "true" : "false" },
-	        							   { name : this.__task_id, value : taskid } );			
+        							       { name : Constants.PARAM_SVG, value : this.__has_svg_support? "true" : "false" },
+	        							   { name : Constants.PARAM_TASKID, value : taskid } );			
 		}
 		birtSoapRequest.setURL( soapURL );
 		birtEventDispatcher.setFocusId( null );	// Clear out current focusid.
+		birtProgressBar.setRedirect( true );
 		return true;
 	},
 
@@ -262,5 +213,52 @@ BirtReportDocument.prototype = Object.extend( new AbstractBaseReportDocument( ),
 	__beh_exportReport : function( id )
 	{
 		birtExportReportDialog.__cb_bind( );
+	},
+	
+	/**
+	 *	Called after the component content is rendered.	 
+	 *
+	 *	@id, ui object id
+	 *	@return, void
+	 */	
+	__postRender : function( id )
+	{
+		// ensures that the rendered component is the report document
+		if ( id == "Document" )
+		{
+			var docObj = document.getElementById( id );
+			if ( docObj )
+			{
+				if ( BrowserUtility.isSafari || BrowserUtility.isKHTML || BrowserUtility.isFirefox )
+				{
+					var divs = docObj.getElementsByTagName("div");
+					if ( divs && divs[0] )
+					{
+						/*
+							Workaround for: 
+							- Safari: Scrollbar bug (Bugzilla 175647)
+							- Firefox: In rtl mode, a white space appears on the left of
+							the content (Bugzilla 223782)
+						*/					
+						divs[0].style.position = BrowserUtility.isFirefox?null:"auto";
+
+						// Fix Safari rtl scrollbar bug					
+						if ( rtl && BrowserUtility.isSafari )
+						{
+							// Safari doesn't put the scrollbar on the left
+							// but the report content is still overlapped
+							// by the scrollbar which is on the right
+							// so add a padding to fix it.
+							divs[0].style.paddingRight = "20px";
+						}
+					}
+				}
+				
+				// set document scrollbar position to the top
+				docObj.scrollTop = "0px";				
+				docObj.scrollLeft = rtl?docObj.offsetWidth:"0px";
+			}
+		}
 	}
+	
 });

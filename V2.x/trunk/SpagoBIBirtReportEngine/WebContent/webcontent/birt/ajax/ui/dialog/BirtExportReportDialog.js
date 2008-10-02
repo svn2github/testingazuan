@@ -63,13 +63,14 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 	 */
 	__okPress : function( )
 	{
-		this.__l_hide( );
-		
 		var oSelect = $( 'exportFormat' );
 		if( oSelect.value == '' )
 			return;
 		
-		this.__exportAction( );
+		if ( this.__exportAction( ) )
+		{
+			this.__l_hide( );
+		}
 	},
 	
 	/**
@@ -84,8 +85,8 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 		var docObj = document.getElementById( "Document" );
 		if ( !docObj || birtUtility.trim( docObj.innerHTML ).length <= 0)
 		{
-			alert ( "Report document should be generated first." );	
-			return;
+			alert ( Constants.error.generateReportFirst );	
+			return false;
 		}	
 		else
 		{	
@@ -107,13 +108,12 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 			{
 				action = action.replace( reg, "$1=" + format );
 			}
-			
-			// Delete page and pagerange settings in url if existed
-			reg = new RegExp( "([&|?]{1})" + Constants.PARAM_PAGE + "\s*=[^&|^#]*", "gi" );
-			action = action.replace( reg, "$1");
-			
-			reg = new RegExp( "([&|?]{1})" + Constants.PARAM_PAGERANGE + "\s*=[^&|^#]*", "gi" );
-			action = action.replace( reg, "$1");				
+
+			// Delete page, pagerange and parameterpage settings in url if existed
+			action = birtUtility.deleteURLParameter( action, Constants.PARAM_PAGE );
+			action = birtUtility.deleteURLParameter( action, Constants.PARAM_PAGERANGE );
+			action = birtUtility.deleteURLParameter( action, Constants.PARAM_PARAMETERPAGE );
+			action = birtUtility.deleteURLParameter( action, Constants.PARAM_EMITTER_ID );
 			
 			if( $( 'exportPageCurrent' ).checked )
 			{
@@ -125,36 +125,42 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 			{
 				// Set page range setting
 				var pageRange = birtUtility.trim( $( 'exportPageRange_input' ).value );
+				if ( !birtUtility.checkPageRange( pageRange ) )
+				{
+					alert( Constants.error.invalidPageRange );
+					return false;
+				}
 				action = action + "&" + Constants.PARAM_PAGERANGE + "=" + pageRange;
 			}			
 			
-			// If output format is pdf/postscript, set some options
-			if( format == Constants.FORMAT_PDF || format == Constants.FORMAT_POSTSCRIPT )
+			// If output format is pdf/ppt/postscript, set some options
+			if( this.__isPDFLayout( format ) )
 			{
-				var fittopage = "false";
-				var pagebreakonly = "false";
+				// auto fit
+				var pageOverflow = 0;
+				//var pagebreakonly = "true";
 				
-				// fit to page width
-				if( $( 'exportFitToWidth' ).checked )
+				// actual size
+				if( $( 'exportFitToActual' ).checked )
 				{
-					fittopage = "true";
+					pageOverflow = 1;
 				}
 				else if( $( 'exportFitToWhole' ).checked )
 				{
-					fittopage = "true";
-					pagebreakonly = "true";
+					pageOverflow = 2;
 				}
 
-				reg = new RegExp( "([&|?]{1}" + Constants.PARAM_FITTOPAGE + "\s*)=([^&|^#]*)", "gi" );
+				reg = new RegExp( "([&|?]{1}" + Constants.PARAM_PAGE_OVERFLOW + "\s*)=([^&|^#]*)", "gi" );
 				if( action.search( reg ) < 0 )
 				{
-					action = action + "&" + Constants.PARAM_FITTOPAGE + "=" + fittopage;
+					action = action + "&" + Constants.PARAM_PAGE_OVERFLOW + "=" + pageOverflow;
 				}
 				else
 				{
-					action = action.replace( reg, "$1=" + fittopage );
+					action = action.replace( reg, "$1=" + pageOverflow );
 				}
 				
+				/*
 				reg = new RegExp( "([&|?]{1}" + Constants.PARAM_PAGEBREAKONLY + "\s*)=([^&|^#]*)", "gi" );
 				if( action.search( reg ) < 0 )
 				{
@@ -163,7 +169,8 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 				else
 				{
 					action = action.replace( reg, "$1=" + pagebreakonly );
-				}							
+				}
+				*/							
 			}
 			
 			// Force "__asattachment" as true
@@ -191,6 +198,8 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 			formObj.action = action;
 			formObj.method = "post";			
 			formObj.submit( );
+			
+			return true;
 		}		
 	},
 	
@@ -230,7 +239,7 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 	__enableExtSection : function( )
 	{		
 		var format = $( 'exportFormat' ).value.toLowerCase( );
-		if( format == Constants.FORMAT_PDF || format == Constants.FORMAT_POSTSCRIPT )
+		if( this.__isPDFLayout( format ) )
 		{
 			this.__setDisabled( 'exportFitSetting', false );
 		}
@@ -256,6 +265,27 @@ BirtExportReportDialog.prototype = Object.extend( new AbstractBaseDialog( ),
 			for( var i=0; i<oInputs.length; i++ )
 				oInputs[i].disabled = flag;
 		}
+	},
+	
+	/**
+	 * Check whether this format uses the PDF layout
+	 *
+	 * @param format, the output format 
+	 * @return true or false
+	 */	 
+	__isPDFLayout : function( format )
+	{
+		if( !format )
+			return false;
+		
+		if( format == Constants.FORMAT_PDF 
+		    || format == Constants.FORMAT_POSTSCRIPT
+		    || format == Constants.FORMAT_PPT )
+		{
+			return true;
+		}    
+		
+		return false;
 	},
 		 
 	/**

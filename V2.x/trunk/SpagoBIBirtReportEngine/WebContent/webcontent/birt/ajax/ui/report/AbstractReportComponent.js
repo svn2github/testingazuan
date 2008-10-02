@@ -53,21 +53,36 @@ AbstractReportComponent.prototype =
 		container.style.padding = "0px";
 		container.style.width = "100%";
 		container.innerHTML = content;
-		oDiv.appendChild( container );		
+		
+		
+		// FIXME: Mozilla 1.7.12 produces an exception on the following line
+		// because the "content" variable contains some unrecognized parts
+		// see Bugzilla Bug 199998
+		try
+		{
+			oDiv.appendChild( container );
+		}
+		catch ( error )
+		{
+			// ignore exception
+		}		
 		
 		var scripts = container.getElementsByTagName( "script" );
 		for( var i = 0; i < scripts.length; i++ )
 		{
 		    if( scripts[i].src )
-		    {
-		    	var head = document.getElementsByTagName( "head" )[0];
-		    	
-		    	var scriptObj = document.createElement( "script" );
-				scriptObj.setAttribute( "type", "text/javascript" );
-				scriptObj.setAttribute( "src", scripts[i].src );
+		    {		
+		    	// workaround for IE, need append these scripts in head    			    					
+				if( BrowserUtility.__isIE( ) )
+				{
+				   	var scriptObj = document.createElement( "script" );
+					scriptObj.setAttribute( "type", "text/javascript" );
+					scriptObj.setAttribute( "src", scripts[i].src );
 				
-				if( head )
-					head.appendChild( scriptObj );
+					var head = document.getElementsByTagName( "head" )[0];	
+					if( head )
+						head.appendChild( scriptObj );
+				}	
 		    }
 		    else if ( scripts[i].innerHTML )
 		    {	    	
@@ -76,6 +91,21 @@ AbstractReportComponent.prototype =
 			        window.execScript( scripts[i].innerHTML );
 		    }
 		}
+
+		if ( BrowserUtility.__isSafari() || BrowserUtility.__isKHTML() )
+		{
+			// add the styles explicitly into the head
+			var styles = container.getElementsByTagName("style");
+			for ( var i = 0; i < styles.length; i++ )
+			{
+				var style = styles[i];
+				var styleContent = style.innerHTML;
+				if ( styleContent )
+				{
+					birtUtility.addStyleSheet( styleContent );
+				}
+			}
+		}
 		
 		// workaround for bug 165750, overflow-x and overflow-y only used in IE
 		if( BrowserUtility.__isIE( ) )
@@ -83,8 +113,21 @@ AbstractReportComponent.prototype =
 			container.style.overflowX = "visible";
 			container.style.overflowY = "visible";
 		}
+		
+		this.__postRender(id);
 	},
 	
+	/**
+	 *	Called after the component content is rendered.	 
+	 *
+	 *	@id, ui object id
+	 *	@return, void
+	 */	
+	__postRender : function( id )
+	{
+		//implementation is left to extending class
+	},
+		
 	/**
 	 *	Install native/birt event handlers.
 	 *

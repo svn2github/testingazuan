@@ -11,7 +11,9 @@
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ page session="false" buffer="none" %>
 <%@ page import="org.eclipse.birt.report.presentation.aggregation.IFragment,
+				 org.eclipse.birt.report.utility.ParameterAccessor,
 				 org.eclipse.birt.report.context.BaseAttributeBean,
+				 org.eclipse.birt.report.engine.api.DataExtractionFormatInfo,
 				 org.eclipse.birt.report.resource.BirtResources" %>
 
 <%-----------------------------------------------------------------------------
@@ -20,6 +22,9 @@
 <jsp:useBean id="fragment" type="org.eclipse.birt.report.presentation.aggregation.IFragment" scope="request" />
 <jsp:useBean id="attributeBean" type="org.eclipse.birt.report.context.BaseAttributeBean" scope="request" />
 
+<%
+	DataExtractionFormatInfo[] dataExtractInfos = ParameterAccessor.supportedDataExtractions;
+%>
 <%-----------------------------------------------------------------------------
 	Export data dialog fragment
 -----------------------------------------------------------------------------%>
@@ -71,8 +76,8 @@
 									<%
 									}
 									%>		
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.addall" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.addall" )%>' 
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.addall" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.addall" )%>" 
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>
 							<TR height="2px"><TD></TD></TR>
@@ -92,8 +97,8 @@
 									<%
 									}
 									%>									 
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.add" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.add" )%>' 								
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.add" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.add" )%>" 								
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>
 							<TR height="2px"><TD></TD></TR>
@@ -113,8 +118,8 @@
 									<%
 									}
 									%>									  
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.remove" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.remove" )%>' 								
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.remove" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.remove" )%>" 								
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>
 							<TR height="2px"><TD></TD></TR>
@@ -134,8 +139,8 @@
 									<%
 									}
 									%>									  
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.removeall" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.removeall" )%>' 								
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.removeall" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.removeall" )%>" 								
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>
 						</TABLE>
@@ -150,15 +155,15 @@
 						<TABLE VALIGN="middle">
 							<TR><TD>
 								<INPUT TYPE="image" NAME="Up" SRC="birt/images/Up_disabled.gif" 
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.up" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.up" )%>' 
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.up" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.up" )%>" 
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>
 							<TR height="2px"><TD></TD></TR>
 							<TR><TD>
 								<INPUT TYPE="image" NAME="Down" SRC="birt/images/Down_disabled.gif" 
-									ALT='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.down" )%>' 
-									TITLE='<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.down" )%>' 								
+									ALT="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.down" )%>" 
+									TITLE="<%= BirtResources.getHtmlMessage( "birt.viewer.dialog.exportdata.down" )%>" 								
 									CLASS="birtviewer_exportdata_dialog_button">
 							</TD></TR>							
 						</TABLE>
@@ -181,6 +186,29 @@
 	<TR HEIGHT="5px"><TD></TD></TR>
 	<TR>
 		<TD COLSPAN="4">			
+			<DIV>
+				<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.extension" )%> 
+				<SELECT ID="exportDataExtension" CLASS="birtviewer_exportdata_dialog_select">
+				<%
+					for ( int i = 0; i < dataExtractInfos.length; i++ )
+					{
+						DataExtractionFormatInfo extensionInfo  = dataExtractInfos[i];
+						if( extensionInfo.getId() == null 
+							|| extensionInfo.getFormat() == null 
+							|| ( extensionInfo.isHidden() != null && extensionInfo.isHidden().booleanValue() ) )
+							continue;
+						
+						String extensionName = extensionInfo.getName( );
+						if( extensionName == null )
+							extensionName = "";
+				%>
+						<OPTION VALUE="<%= extensionInfo.getId() %>"><%= extensionName %>(*.<%= extensionInfo.getFormat() %>)</OPTION>
+				<%
+					}
+				%>
+				</SELECT>
+			</DIV>
+			<BR/>
 			<DIV ID="exportDataEncodingSetting">
 				<TABLE>
 					<TR>
@@ -208,8 +236,9 @@
 				</SELECT>
 			</DIV>
 			<BR/>
-			<DIV STYLE="font-size:7pt">
-				<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.format" )%>
+			<DIV>
+				<INPUT TYPE="checkbox" ID="exportColumnDataType"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.datatype" )%>
+				&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="checkbox" ID="exportColumnLocaleNeutral"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.localeneutral" )%>
 			</DIV>
 		</TD>
 	</TR>

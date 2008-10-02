@@ -26,7 +26,7 @@ BirtUtility.prototype =
 	 * URL parameter to indicate the client DPI setting
 	 */
 	__PARAM_DPI : '__dpi',
-	
+
 	/**
 	 * @returns true if left button was pressed
 	 */
@@ -49,22 +49,6 @@ BirtUtility.prototype =
 			}
 			element.removeChild( element.firstChild );
 		}
-	},
-	
-	/**
-	 * @returns viewport height minus horizontal scroll bar if present.
-	 */
-	clientHeight : function( )
-	{
-		return document.body.clientHeight;
-	},
-	
-	/**
-	 * @returns viewport width minus vertical scroll bar if present.
-	 */
-	clientWidth : function( )
-	{
-		return document.body.clientWidth;
 	},
 
 	haveTagName : function( domTree, tag )
@@ -204,7 +188,9 @@ BirtUtility.prototype =
 	{
 		var paramString = "";
 		var paramStartIndex = url.indexOf( parameterName );
-		if ( paramStartIndex >= 0 )
+		var equalSign = url.charAt(paramStartIndex + parameterName.length);
+		
+		if ( paramStartIndex >= 0 && ( equalSign == "=" || equalSign == "&" ) )
 		{
 			var paramEndIndex = url.indexOf( "&", paramStartIndex );
 			if ( paramEndIndex >= 0 )
@@ -220,23 +206,20 @@ BirtUtility.prototype =
 	},
 	
 	/**
-	 * Modify the URL to change to the new report identified by newReportPath. The original locale will be kept.
-	 * @param newReportPath - the path of the report to be opened, e.g., /iportal/bizRD/report1.webrptdesign
+	 * Deletes a parameter specified in the given URL.
+	 * If for example the given URL is the following http://localhost/myUrl?param1=2&param2=3&param3=4
+	 * and the value of parameterName is "param2", the resulting URL will be:
+	 * http://localhost/myUrl?param1=2&param3=4
+	 * @param url url to process
+	 * @param parameterName parameter to remove
+	 * @return processed url
 	 */
-	changeReport: function ( newReportPath )
+	deleteURLParameter : function(url, parameterName )
 	{
-		var url = document.location.href;
-		var parameterIndex = url.indexOf( "?" );
-	
-		if ( parameterIndex >= 0 )
-		{
-			localeString = this.getURLParameter( url, "__locale" );
-			iPortalIDString = this.getURLParameter( url, "iPortalID" );
-			url = url.substring( 0, parameterIndex ) + "?__report=" + newReportPath + localeString + iPortalIDString;
-			window.location = url;
-		}	
+		var reg = new RegExp( "([&|?]{1})" + escape(encodeURIComponent(parameterName)) + "\s*=[^&|^#]*", "gi" );
+		return url.replace( reg, "$1");		
 	},
-
+	
 	/**
 	 * Insert a string into the cursor position of a textarea.<b> 
 	 * textarea: DOM element of textarea to be inserted.
@@ -440,31 +423,114 @@ BirtUtility.prototype =
 			
 		return pageNum;
 	},
+
+	// get total page number
+	getTotalPageNumber: function( )
+	{
+		var pageNum = 0;
+		var oPage = $( 'totalPage' );
+		if ( oPage )
+		{
+			pageNum = ( oPage.firstChild.data == '+' )? '+' : parseInt( oPage.firstChild.data );		
+		}
+			
+		return pageNum;
+	},
+	
+	/**
+	 * Checks the given page range syntax is valid, and if the page exist.
+	 * @param range in the format "1-4,6,7"
+	 * @return true if the range is correct 
+	 */
+	checkPageRange: function( range )
+	{
+		if ( !range )
+		{
+			return false;
+		}
+		var myRange = birtUtility.trim(range);
+
+		// check if the range format is correct
+		if ( !myRange.match( /^[0-9]+\s*(-\s*[0-9]+)?(\s*,\s*[0-9]+(-[0-9]+)?)*$/ ) )
+		{
+			return false;
+		}	
+		
+		var lastPage = this.getTotalPageNumber();
+		
+		// split the range parts
+		var parts = myRange.split(",");
+		for ( i = 0; i < parts.length; i++ )
+		{
+			var part = parts[i];			
+			var boundaries = part.split("-");
+
+			// page range
+			if ( boundaries.length == 2 )
+			{
+				var pageStart = parseInt( boundaries[0] );
+				var pageEnd = parseInt( boundaries[1] );
+				if ( isNaN( pageStart ) || isNaN( pageEnd ) 
+					|| pageEnd <= pageStart || pageStart < 1 || pageEnd < 1
+					|| pageStart > lastPage || pageEnd > lastPage )
+				{
+					return false;
+				}
+			}
+			// single page number
+			else if ( boundaries.length == 1 )
+			{
+				var pageNum = parseInt( boundaries[0] ); 
+				if ( isNaN( pageNum ) || pageNum < 1 || pageNum > lastPage )
+				{
+					return false;
+				}
+			}
+			// invalid format
+			else
+			{
+				return false;
+			}			
+		}
+		return true;
+	},
 	
 	/**
 	 * Initialize the client DPI setting
+	 * 
+	 * @param, url
+	 * @return, string
 	 */
-	initDPI : function( )
+	initDPI : function( url )
 	{
+		var href;
+		
 		try
 		{
+			if( url )
+			{
+				href = url;
+			}
+			else
+			{
+				href = document.location.href;
+			}
+			
 			var dpi;
 			if( screen.deviceXDPI )
 				dpi = screen.deviceXDPI;
 			
-			if( !dpi )
-				return;
-					
-			var href = window.location.href;
-			var reg = new RegExp( "([&|?]{1}" + this.__PARAM_DPI + "\s*)=([^&|^#]*)", "gi" );
-			if( href.search( reg ) < 0 )
+			if( dpi )
 			{
-				href = href + "&" + this.__PARAM_DPI + "=" + dpi;
-				window.location.href = href;
-			}
+				var reg = new RegExp( "([&|?]{1}" + this.__PARAM_DPI + "\s*)=([^&|^#]*)", "gi" );
+				if( href.search( reg ) < 0 )
+					href = href + "&" + this.__PARAM_DPI + "=" + dpi;
+			}			
 		}
 		catch(e)
-		{}		
+		{}
+		
+		return href;		
 	},
 	
 	/**
@@ -514,7 +580,162 @@ BirtUtility.prototype =
 			} 
 		} 	
 	},
+	
+	/**
+	 * Formats the given messages by putting the given values in
+	 * the placeholders. The placeholder format is {0}, {1}, ...
+	 * @param message template text containing placeholders
+	 * @param params an array of values to put into the placeholders, 
+	 * or a single string
+	 * @return formatted text 
+	 */
+	formatMessage : function( message, params )
+	{
+		if ( !message )
+		{
+			return;
+		}
 		
+		if ( !params )
+		{
+			return message;
+		}
+
+		if ( !(params.constructor == Array) )
+		{
+			params = new Array(params);
+		}		
+
+		for ( i = 0; i < params.length; i++ )
+		{
+			var pattern = new RegExp("\\\{" + i + "\\\}","g");
+			message = message.replace(pattern, params[i]);
+		}
+		return message;
+	},
+	
+	/**
+	 *  This method is a workaround for a Mozilla/Firefox bug which prevents some HTML 
+	 * elements to be resized properly when a contained element's "display" style has
+	 * been changed.
+	 * The refresh is done by moving the element back and forth one pixel.
+	 */
+	refreshElement : function( htmlElement )
+	{
+		var currentLeft = parseInt(htmlElement.style.left);
+		var currentTop = parseInt(htmlElement.style.top);
+		// shake it!
+		htmlElement.style.left = (currentLeft - 1) + "px";
+		htmlElement.style.top = (currentTop - 1) + "px";
+		htmlElement.style.left = currentLeft + "px";
+		htmlElement.style.top = currentTop + "px";
+	},
+	
+	/**
+	 * Do html decode for input string
+	 * 
+	 */
+	htmlDecode : function( str )
+	{
+		if( !str )
+			return null;
+		
+		str = str.replace( "&#09;", "\t" );
+		str = str.replace( "<br>", "\n" );
+		str = str.replace( "&#13;", "\r" );
+		str = str.replace( "&#32;", " " );
+		str = str.replace( "&#34;", "\"" );
+		str = str.replace( "&#39;", "'" );
+		str = str.replace( "&#60;", "<" );
+		str = str.replace( "&#62;", ">" );
+		str = str.replace( "&#96;", "`" );
+		str = str.replace( "&#38;", "&" );
+		str = str.replace( "&#92;", "\\" );
+		str = str.replace( "&#47;", "/" );
+
+		return str;
+	},
+
+	_TABBABLE_TAGS : new Array("A","BUTTON","TEXTAREA","INPUT","IFRAME", "SELECT"),
+	
+	/**
+	 * Disables the tab indexs for all the tabbable elements
+	 * which are children of the given element.
+	 * @param element element
+	 */
+	disableTabIndexes : function(element)
+	{
+		for (var j = 0; j < this._TABBABLE_TAGS.length; j++)
+		{
+			var tagElements = element.getElementsByTagName(this._TABBABLE_TAGS[j]);
+			for (var k = 0 ; k < tagElements.length; k++)
+			{
+				var el = tagElements[k];
+				el._tabIndexSaved = el.tabIndex;
+				el.tabIndex="-1";
+			}
+		}
+	},
+
+	/**
+	 * Restores the tab indexs for all the tabbable elements
+	 * which are children of the given element.
+	 * @param element element
+	 */
+	restoreTabIndexes : function(element) {
+		for (var j = 0; j < this._TABBABLE_TAGS.length; j++)
+		{
+			var tagElements = element.getElementsByTagName(this._TABBABLE_TAGS[j]);
+			for (var k = 0 ; k < tagElements.length; k++)
+			{
+				var el = tagElements[k]; 
+				if ( el._tabIndexSaved )
+				{
+					el.tabIndex = el._tabIndexSaved;
+					delete el._tabIndexSaved;
+				}
+				else
+				{
+					el.tabIndex = null;
+				}
+			}
+		}
+	},
+
+
+	/**
+ 	 * Returns the HEAD element of the page.
+	 */
+	getHeadElement : function()
+	{
+		if ( !this._headElement )
+		{
+			this._headElement = document.getElementsByTagName("head")[0];
+		}
+		return this._headElement;
+	},
+
+	/**
+	* Adds a style sheet into the managed document.
+	* @param styleContent style sheet content
+	*/
+	addStyleSheet : function( styleContent )
+	{
+
+
+		var element = document.createElement("style");
+		element.type = "text/css";
+		if ( element.styleSheet )
+		{
+			element.styleSheet.cssText = styleContent;
+		}
+		else
+		{
+			element.appendChild( document.createTextNode( styleContent ) );
+		}			
+		this.getHeadElement().appendChild( element );
+	},
+	
 	noComma : "" //just to avoid javascript syntax errors
 }
 

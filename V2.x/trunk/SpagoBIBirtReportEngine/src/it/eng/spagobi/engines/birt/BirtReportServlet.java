@@ -50,6 +50,12 @@ import org.eclipse.birt.report.utility.BirtUtility;
 
 import sun.misc.BASE64Decoder;
 
+/**
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ * 
+ * DATE            CONTRIBUTOR/DEVELOPER                        NOTE
+ * 02-10-2008      Zerbetto Davide/Julien Decreuse (Smile)		Upgrade to Birt 2.3.0 API
+**/
 public class BirtReportServlet extends HttpServlet {
 
     private IReportEngine birtReportEngine = null;
@@ -361,7 +367,7 @@ public class BirtReportServlet extends HttpServlet {
 	    renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
 	}
 
-	Map context = BirtUtility.getAppContext(request, BirtReportServlet.class.getClassLoader());
+	Map context = BirtUtility.getAppContext(request);
 	task.setAppContext(context);
 	renderOption.setOutputStream((OutputStream) response.getOutputStream());
 	task.setRenderOption(renderOption);

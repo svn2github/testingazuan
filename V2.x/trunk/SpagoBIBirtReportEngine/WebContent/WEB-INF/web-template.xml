@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
-    
-<web-app>
+<web-app
+	 xmlns="http://java.sun.com/xml/ns/j2ee"
+	 version="2.4"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <display-name>Eclipse BIRT Report Viewer</display-name>
 
@@ -26,7 +26,7 @@
 		<param-value>${birt.viewer.working.path}/documents</param-value>
 	</context-param>
 
-	<!-- If usr can only access the reprot resources under working folder. Default is false -->
+	<!-- If only access the reprot resources under working folder. Default is false -->
 	<context-param>
 		<param-name>WORKING_FOLDER_ACCESS_ONLY</param-name>
 		<param-value>false</param-value>
@@ -68,6 +68,22 @@
 		<param-value></param-value>
 	</context-param>
 
+	<!-- Preview report max cube fetch levels limited. (Only support to preview a report design file using preview pattern.)-->
+	<context-param>
+		<param-name>BIRT_VIEWER_MAX_CUBE_ROWLEVELS</param-name>
+		<param-value></param-value>
+	</context-param>
+	<context-param>
+		<param-name>BIRT_VIEWER_MAX_CUBE_COLUMNLEVELS</param-name>
+		<param-value></param-value>
+	</context-param>
+
+	<!-- Memory size(MB) for creating cube. -->
+	<context-param>
+		<param-name>BIRT_VIEWER_CUBE_MEMORY_SIZE</param-name>
+		<param-value></param-value>
+	</context-param>
+	
 	<!-- If always overwrite generated document file.For designer,defalult to false -->
 	<context-param>
 		<param-name>BIRT_OVERWRITE_DOCUMENT</param-name>
@@ -91,7 +107,21 @@
 		<param-name>HTML_ENABLE_AGENTSTYLE_ENGINE</param-name>
 		<param-value>true</param-value>
 	</context-param>
-				
+
+	<!-- Viewer Filter.Currently, set request character encoding to UTF-8. -->
+	<filter>
+    	<filter-name>ViewerFilter</filter-name>
+        <filter-class>org.eclipse.birt.report.filter.ViewerFilter</filter-class>
+	</filter>
+    <filter-mapping>
+        <filter-name>ViewerFilter</filter-name>
+        <servlet-name>ViewerServlet</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ViewerFilter</filter-name>
+        <servlet-name>EngineServlet</servlet-name>
+    </filter-mapping>
+    				
 	<!-- Viewer Servlet Context Listener -->
 	<listener>
 		<listener-class>org.eclipse.birt.report.listener.ViewerServletContextListener</listener-class>
@@ -114,8 +144,6 @@
 		<servlet-class>org.eclipse.birt.report.servlet.BirtEngineServlet</servlet-class>
 	</servlet>
 
-	@generated@
-	
 	<servlet-mapping>
 		<servlet-name>ViewerServlet</servlet-name>
 		<url-pattern>/frameset</url-pattern>
@@ -141,9 +169,25 @@
 		<url-pattern>/parameter</url-pattern>
 	</servlet-mapping>	
 
-	<taglib>
-		<taglib-uri>/birt.tld</taglib-uri>
-		<taglib-location>/WEB-INF/tlds/birt.tld</taglib-location>
-	</taglib>
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/document</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/output</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/extract</url-pattern>
+	</servlet-mapping>
 		
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/birt.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/birt.tld</taglib-location>
+		</taglib>
+	</jsp-config>		
 </web-app>

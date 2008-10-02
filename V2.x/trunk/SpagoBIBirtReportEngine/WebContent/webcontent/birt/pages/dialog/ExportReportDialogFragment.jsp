@@ -52,13 +52,13 @@
 				<TABLE>
 					<TR>
 						<TD>
-							<INPUT TYPE="radio" ID="exportPageAll" NAME="exportPages" CHECKED/><%=BirtResources.getMessage( "birt.viewer.dialog.page.all" )%>
+							<INPUT TYPE="radio" ID="exportPageAll" NAME="exportPages" CHECKED/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.page.all" )%>
 						</TD>
 						<TD STYLE="padding-left:5px">	
-							<INPUT TYPE="radio" ID="exportPageCurrent" NAME="exportPages"/><%=BirtResources.getMessage( "birt.viewer.dialog.page.current" )%>
+							<INPUT TYPE="radio" ID="exportPageCurrent" NAME="exportPages"/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.page.current" )%>
 						</TD>	
 						<TD STYLE="padding-left:5px">
-							<INPUT TYPE="radio" ID="exportPageRange" NAME="exportPages"/><%=BirtResources.getMessage( "birt.viewer.dialog.page.range" )%>
+							<INPUT TYPE="radio" ID="exportPageRange" NAME="exportPages"/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.page.range" )%>
 							<INPUT TYPE="text" CLASS="birtviewer_exportreport_dialog_input" ID="exportPageRange_input" DISABLED="true"/>
 						</TD>
 					</TR>		
@@ -67,7 +67,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD>&nbsp;&nbsp;<%=BirtResources.getMessage( "birt.viewer.dialog.page.range.description" )%></TD>
+		<TD>&nbsp;&nbsp;<%=BirtResources.getHtmlMessage( "birt.viewer.dialog.page.range.description" )%></TD>
 	</TR>
 	<TR HEIGHT="5px"><TD><HR/></TD></TR>
 	<TR>
@@ -76,13 +76,13 @@
 				<TABLE>
 					<TR>
 						<TD>
-							<INPUT TYPE="radio" ID="exportFitToActual" NAME="exportFit" CHECKED/><%=BirtResources.getMessage( "birt.viewer.dialog.export.pdf.fittoactual" )%>
+							<INPUT TYPE="radio" ID="exportFitToAuto" NAME="exportFit" CHECKED/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.export.pdf.fittoauto" )%>
+						</TD>
+						<TD>
+							<INPUT TYPE="radio" ID="exportFitToActual" NAME="exportFit"/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.export.pdf.fittoactual" )%>
 						</TD>
 						<TD STYLE="padding-left:5px">	
-							<INPUT TYPE="radio" ID="exportFitToWidth" NAME="exportFit"/><%=BirtResources.getMessage( "birt.viewer.dialog.export.pdf.fittowidth" )%>
-						</TD>
-						<TD STYLE="padding-left:5px">	
-							<INPUT TYPE="radio" ID="exportFitToWhole" NAME="exportFit"/><%=BirtResources.getMessage( "birt.viewer.dialog.export.pdf.fittowhole" )%>
+							<INPUT TYPE="radio" ID="exportFitToWhole" NAME="exportFit"/><%=BirtResources.getHtmlMessage( "birt.viewer.dialog.export.pdf.fittowhole" )%>
 						</TD>
 					</TR>
 				</TABLE>			

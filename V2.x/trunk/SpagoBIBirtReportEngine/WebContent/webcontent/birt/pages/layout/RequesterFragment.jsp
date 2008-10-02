@@ -140,6 +140,9 @@
 		%>
 	</BODY>
 	
+	<%@include file="../common/Locale.jsp" %>	
+	<%@include file="../common/Attributes.jsp" %>	
+	
 	<script type="text/javascript">
 	// <![CDATA[
 		var hasSVGSupport = false;
@@ -175,7 +178,9 @@
 		var birtReportDocument = new BirtReportDocument( "Document" );
 		
 		<%
-		if ( "/parameter".equalsIgnoreCase( request.getServletPath( ) ) )
+		//FIXME: workaround for Jetty
+		String servletPath = (String)request.getAttribute( "ServletPath" );
+		if ( "/parameter".equalsIgnoreCase( servletPath ) )
 		{
 		%>
 			var birtParameterDialog = new BirtParameterDialog( 'parameterDialog', 'parameter' );

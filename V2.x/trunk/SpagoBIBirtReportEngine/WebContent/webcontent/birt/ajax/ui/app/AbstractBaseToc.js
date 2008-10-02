@@ -58,7 +58,9 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 	__neh_mousemove : function ( event )
 	{
 		var obj = Event.element( event );
-		obj.style.background = "#EEEEEE" ;
+		obj.style.filter = 'alpha( opacity=80)';
+		obj.style.opacity = 0.8;
+		obj.style.MozOpacity = 0.8;
 	},
 	
 	/**
@@ -67,7 +69,9 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 	__neh_mouseout  : function ( event )
 	{
 		var obj = Event.element( event );
-		obj.style.background = "#FFFFFF";
+		obj.style.filter = 'alpha( opacity=100)';
+		obj.style.opacity = 1;
+		obj.style.MozOpacity = 1;		
 	},
 	
 	/**
@@ -94,14 +98,21 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 		{
 			var imgid = this.__nodeid + '_' + i ;
 			var tr1 = document.createElement( "tr" );
-			var td1 = document.createElement( "td" );
-			td1.valign = "top";
-			td1.id = "td" + imgid ;
+			var td11 = document.createElement( "td" );
+			td11.valign = "top";
+			td11.id = "td" + imgid;
 
 			var tmp = datas[i];
 
+			var displaynames = tmp.getElementsByTagName( 'DisplayName' );
+			var displayname = displaynames[0].firstChild;
+			var s_displayname = "";
+			if( displayname )
+				s_displayname = displayname.data;			
+			
 			var isLeafs = tmp.getElementsByTagName( 'IsLeaf' );
-			var img = document.createElement( "img" );
+			var img = document.createElement( "input" );
+			img.type = "image";
 			img.style.backgroundRepeat = 'no-repeat';
 			img.style.paddingLeft = '0px';
 			img.style.width = '8px';
@@ -109,67 +120,72 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 			img.plusMinus = '+';	//default it is collapsed
 			img.id = imgid;
 			img.query = '0';		//default it needs to communicate with the server.
+			img.title = s_displayname;
 			
 			if ( isLeafs[0].firstChild.data == "false" )
 			{
 				img.src = "birt/images/Expand.gif" ;
-				img.style.cursor = 'pointer';
-				Event.observe( img, 'click', this.__neh_img_click_closure, false );
+				img.style.cursor = 'pointer';			
+				Event.observe( img, 'click', this.__neh_img_click_closure, false );				
 			}
 			else
 			{
 				img.src = "birt/images/Leaf.gif" ;
 				img.style.cursor = 'default';
+				Event.observe( img, 'click', this.__neh_item_click, false );				
 			}
+			
+			Event.observe( img, 'keydown', this.__neh_item_click, false );
 
+			td11.width = "10px";
+			td11.appendChild( img );
+			
+			var td12 = document.createElement( "td" );
+			td12.valign = "top";
+			
 			var nodeIds = tmp.getElementsByTagName( 'Id' );
 			img.nodeId = nodeIds[0].firstChild.data;
 			
 			var bookmarks = tmp.getElementsByTagName( 'Bookmark' );
-			img.bookmark = bookmarks[0].firstChild.data;
-			td1.appendChild( img );
-			td1.appendChild( document.createTextNode( " " ) );
+			img.bookmark = bookmarks[0].firstChild.data;			
 
-			var spantmp = document.createElement( "input" );
-			var displaynames = tmp.getElementsByTagName( 'DisplayName' );
-			var displayname = displaynames[0].firstChild;
-			var s_displayname = "";
-			if( displayname )
-				s_displayname = displayname.data;
-				
-			spantmp.type = "button";
-			spantmp.value = s_displayname;
-			spantmp.title = "TOC Link " + s_displayname;
-			spantmp.id =  'span_' + imgid;
-			
+			var tocitem = document.createElement( "div" );			
+			tocitem.title = s_displayname;
+			tocitem.id =  'span_' + imgid;
+			tocitem.innerHTML = s_displayname;
+						
 			var cssText = "cursor:pointer;border:0px;font-family:Verdana;font-size:9pt;background-color:#FFFFFF;overflow:visible;";			
 			var styles = tmp.getElementsByTagName( 'Style' );
 			if( styles && styles.length > 0 )
 			{
 				if( styles[0].firstChild )
-					spantmp.style.cssText = cssText + styles[0].firstChild.data;
+					tocitem.style.cssText = cssText + styles[0].firstChild.data;
 				else
-					spantmp.style.cssText = cssText;							
-			}				
-			td1.appendChild( spantmp );
-			td1.noWrap = true;
+					tocitem.style.cssText = cssText;							
+			}
+							
+			td12.appendChild( tocitem );
+			td12.noWrap = true;
 			
-			tr1.appendChild( td1 );
+			tr1.appendChild( td11 );
+			tr1.appendChild( td12 );
 			
 			var tr2 = document.createElement( "tr" );
 			var td2 = document.createElement( "td" );
 			td2.id = 'display' + imgid;
 			td2.style.paddingLeft = '16px';
 			td2.style.display = 'none';
+			td2.colSpan = 2;
 			tr2.appendChild( td2 );
 			
 			tbody.appendChild( tr1 );
 			tbody.appendChild( tr2 );
 			
 			//observe the text so that when click the text ,we can expand or collapse the toc
-			Event.observe( spantmp , 'mouseover', this.__neh_item_mouse_over, false );
-			Event.observe( spantmp , 'mouseout', this.__neh_item_mouse_out, false );	
-			Event.observe( spantmp , 'click', this.__neh_item_click, false );			
+			Event.observe( tocitem, 'mouseover', this.__neh_item_mouse_over, false );
+			Event.observe( tocitem, 'mouseout', this.__neh_item_mouse_out, false );	
+			Event.observe( tocitem, 'click', this.__neh_item_click, false );
+			Event.observe( tocitem, 'keydown', this.__neh_item_click, false );
 		}
 		tableEle.appendChild( tbody );
 		var displayid = 'display' + this.__nodeid;
@@ -192,16 +208,65 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 	 */
 	__neh_text_click : function ( event )
 	{
-		var clickText = Event.element( event );
-		var clickId = clickText.id;
-		//as the clicktextid is 'span_' + id, so we need to substr to get the imgid
-		var spanlength = "span_".length;
-		var imgid = clickId.substr( spanlength );
+		var clickElement = Event.element( event );
+		var clickId = clickElement.id;
+		var imgid;
+		
+		if( clickElement.type == "image" )
+		{
+			//get the img id
+			imgid = clickId;
+			
+			if( clickElement.src.indexOf( "Expand" ) > -1 )
+			{
+				// keydown on Expand img
+				if( event.type == 'keydown' )
+				{
+					if( event.keyCode == 39 )
+						this.__neh_img_click( event );
+				}		
+			}
+			else if( clickElement.src.indexOf( "Collapse" ) > -1 )
+			{
+				// keydown on Collapse img
+				if( event.type == 'keydown' )
+				{
+					if( event.keyCode == 37 )
+						this.__neh_img_click( event );
+				}
+			}			
+		}
+		else
+		{
+			//as the clicktextid is 'span_' + id, so we need to substr to get the imgid
+			var len = "span_".length;
+			imgid = clickId.substr( len );
+		}
+		
+		if( event.type == 'keydown' )
+		{
+			// Press "Enter" and "Space"
+			if( event.keyCode != 13 && event.keyCode != 32)
+				return;									
+		}
+			
 		var clickImg = $( imgid );
 		var query = clickImg.query;
 		var plusMinus = clickImg.plusMinus;
 		var bookmark = clickImg.bookmark;
-		birtEventDispatcher.broadcastEvent( birtEvent.__E_GETPAGE, { name: "bookmark", value: bookmark } );
+		
+		var params = new Array( );
+		params[0] = { };
+		params[0].name = Constants.PARAM_BOOKMARK;
+		params[0].value = bookmark;
+		
+		// passed bookmark name is not a TOC name.
+		params[1] = { };
+		params[1].name = Constants.PARAM_ISTOC;
+		params[1].value = "false";
+		
+		birtEventDispatcher.broadcastEvent( birtEvent.__E_GETPAGE, params );
+		Event.stop(event);
 	},
 	
 	/**
@@ -381,5 +446,10 @@ AbstractBaseToc.prototype = Object.extend( new AbstractUIComponent( ),
 		{
 			root.query = '0';
 		}
+	},
+	
+	getWidth : function()
+	{
+		return this.__instance.offsetWidth;
 	}
 } );

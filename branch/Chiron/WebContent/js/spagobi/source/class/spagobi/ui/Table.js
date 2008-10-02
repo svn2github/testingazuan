@@ -87,44 +87,44 @@ qx.Class.define("spagobi.ui.Table",
     var resizeBehavior = columnModel.getBehavior();
 	
 	
-    if (data.ID != undefined)
-    {
-    	if (data.ID == "ROLES")
-	{
-		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
-	 	
-   		 var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
-
-		columnModel.setDataCellRenderer(2, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(2, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(3, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(3, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(4, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(4, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(5, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(5, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(6, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(6, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(7, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(7, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(8, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(8, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(9, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(9, propertyCellEditorFactory);
-		columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
-		columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
+   if (data.ID != undefined){
+    	if (data.ID == "ROLES"){
 		
-		this.addEventListener("cellClick",this._onCellCilck, this );	
-	/*	
-	//	columnModel.setDataCellRenderer(2, new qx.ui.table.cellrenderer.Boolean());
-	 //   columnModel.setDataCellRenderer(3, new qx.ui.table.cellrenderer.Boolean());    
+			var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
+	 	
+   		 	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
+
+			columnModel.setDataCellRenderer(2, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(2, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(3, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(3, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(4, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(4, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(5, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(5, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(6, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(6, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(7, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(7, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(8, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(8, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(9, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(9, propertyCellEditorFactory);
+			columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
+			columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
+		
+			this.addEventListener("cellClick",this._onCellCilck, this );
+			
+		/*	
+		//	columnModel.setDataCellRenderer(2, new qx.ui.table.cellrenderer.Boolean());
+	 	//  columnModel.setDataCellRenderer(3, new qx.ui.table.cellrenderer.Boolean());    
 	    columnModel.setDataCellRenderer(4, new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc));
 	    columnModel.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Boolean());
 	    columnModel.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Boolean());
 	    columnModel.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Boolean());
 	    columnModel.setDataCellRenderer(9, new qx.ui.table.cellrenderer.Boolean());
 	    columnModel.setDataCellRenderer(10, new qx.ui.table.cellrenderer.Boolean());
-	*/
+		*/
 	
     }
     }
@@ -241,7 +241,7 @@ qx.Class.define("spagobi.ui.Table",
   	 * 
   	 * </code>
   	 * 
-  	 0// /*@param data Object containing the layout of the list and the data of the list and form
+  	 * @param data Object containing the layout of the list and the data of the list and form
   	 */
   	 
      getUpdatedData: function() {
@@ -256,6 +256,7 @@ qx.Class.define("spagobi.ui.Table",
      * @param e {Event} TODOC
      * @return {void}
      */
+     
      
     _onChangeSelection : function(e) {
       	
@@ -275,7 +276,7 @@ qx.Class.define("spagobi.ui.Table",
     
     _onCellCilck : function(e){
 	
-			if ( ! e instanceof qx.event.type.DataEvent ){
+			if ( ! e instanceof qx.event.type.DataEvent){
 				return;
 			}
 			
@@ -284,15 +285,13 @@ qx.Class.define("spagobi.ui.Table",
   			var romnum = e.getRow();
   			
   			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
-				return;
-			}
-  			
+  				return;
+  			}
   			//	alert(event +" ," +colnum +" ,"+ romnum);
   			//var changedData = event.getData();
-  			//	alert (this.getTableModel().getValue(colnum,romnum));
   			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
-  			
-			if ( this.getTableModel().getValue(colnum,romnum) == true )
+			
+			if ( this.getTableModel().getValue(colnum,romnum) === true )
 			{
 				//event.setData(false);// == false;
 				this.getTableModel().setValue(colnum,romnum,false);

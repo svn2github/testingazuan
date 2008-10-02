@@ -53,9 +53,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	boolean first=true;
 %>
 
+<%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
 <script>
 sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 </script>
+<%-- End javascript object useful for session expired management (see also sessionExpired.jsp) --%>
 
 
 <script type="text/javascript" src="<%=linkSbijs%>"></script>

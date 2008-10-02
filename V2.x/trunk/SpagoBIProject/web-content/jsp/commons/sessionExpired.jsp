@@ -23,6 +23,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          pageEncoding="ISO-8859-1" 
 %>
 
+<%-- 
+SpagoBI Web Application can have different nested iframes. 
+If the session expires, the user would see SpagoBI start page on the nested iframe, that is not so good... 
+The top window contains a javascript variable which name is 'sessionExpiredSpagoBIJS' (see home.jsp), so the following javascript 
+looks for the parent window (using recursion) that contains that variable, and redirects that window.
+If this window is not found, than the current window is redirect to SpagoBI start page.
+--%>
+
 <script>
 var sessionExpiredSpagoBIJSFound = false;
 try {

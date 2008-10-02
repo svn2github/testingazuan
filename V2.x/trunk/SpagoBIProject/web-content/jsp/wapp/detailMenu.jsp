@@ -40,6 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.error.EMFUserError"%>
 <%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO"%>
 <%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality"%>
+<%@page import="it.eng.spago.util.JavaScript"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMenuModule"); 
@@ -631,32 +632,57 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<select name="initialPath" id="initialPath" class='portlet-form-input-field' onchange="checkForErrorImg()">
-					<%
-					ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
-					List folders = functionalityDAO.loadAllLowFunctionalities(false);
+				<input class='portlet-form-input-field' type="text" size="50" readonly="readonly" onchange="checkForErrorImg();"
+						name="initialPath" id="initialPath" value="<%= menu.getInitialPath() != null ? menu.getInitialPath() : "" %>" maxlength="400" />
+				<a href='javascript:void(0);' id="initialPathLink" style="text-decoration:none;">
+					<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+				</a>
+				<%
+				ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
+				List folders = functionalityDAO.loadAllLowFunctionalities(false);
+				// if the menu has a initial path set, checks if it exists
+				if (menu.getInitialPath() != null && !menu.getInitialPath().equals("")) {
 					Iterator fodlersIter = folders.iterator();
 					boolean pathFound = false;
 					while (fodlersIter.hasNext()) {
 						LowFunctionality folder = (LowFunctionality) fodlersIter.next();
-						String selectedStr = folder.getPath().equals(menu.getInitialPath()) ? "selected='selected'" : "";
-						if (!pathFound) pathFound = folder.getPath().equals(menu.getInitialPath());
-						%><option <%= selectedStr %>><%= folder.getPath() %></option><%
+						pathFound = folder.getPath().equals(menu.getInitialPath());
+						if (pathFound) break;
 					}
-					%>
-				</select>
-				<%
-				if (!pathFound && menu.getInitialPath() != null && !menu.getInitialPath().equals("")) {
-					%>
-					<img id="pathNotFoundErrorImg" name="pathNotFoundErrorImg" style="display:inline;"
-						src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
-						title="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" 
-						alt="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" />
-					<%
+					if (!pathFound) {
+						%>
+						<img id="pathNotFoundErrorImg" name="pathNotFoundErrorImg" style="display:inline;"
+							src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+							title="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" 
+							alt="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" />
+						<%
+					}
 				}
 				%>
 			</div>
 		</div>
+		
+		<script>
+		var win_initialPath;
+		Ext.get('initialPathLink').on('click', function(){
+			if(!win_initialPath){
+				win_initialPath = new Ext.Window({
+					id:'popup_initialPath',
+					title:"<%= JavaScript.escapeText(msgBuilder.getMessage("SBISet.menu.selectInitialPath", "messages", request)) %>",
+					contentEl: 'divInitialPathSelection',
+					layout:'fit',
+					width:500,
+					height:350,
+					closeAction:'hide',
+					plain: true,
+					autoScroll: true,
+					maximizable: true,
+					style: 'background-color: white;'
+				});
+			};
+			win_initialPath.show();
+		});
+		</script>
 		
 		<script>
 		function checkForErrorImg() {
@@ -667,6 +693,52 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%-- End documents tree initial path div --%>
 		
 	</div>
+
+	<!-- Div for initial path selection -->
+	<div style="display:none">
+		<div id="divInitialPathSelection" name="divInitialPathSelection" style='background-color:white;'>
+		</div>
+		<LINK rel='StyleSheet' href='<%= urlBuilder.getResourceLink(request, "/css/dtree.css" ) %>' type='text/css' />
+		<SCRIPT language='JavaScript' src='<%= urlBuilder.getResourceLink(request, "/js/dtree.js" ) %>'></SCRIPT>
+		<%
+		String nameTree = msgBuilder.getMessage("tree.functtree.name" ,"messages", request);
+		%>
+		<script language="JavaScript1.2">
+	   	var nameTree = 'treeFunct';
+	   	treeFunct = new dTree('treeFunct', '<%= request.getContextPath() %>');
+	   	treeFunct.config.useSelection = false;
+	   	treeFunct.add(-100,-1,'<%= nameTree %>');
+	   	<%
+	   	Iterator fodlersIter = folders.iterator();
+	   	String imgFolder = urlBuilder.getResourceLink(request, "/img/treefolder.gif");
+		String imgFolderOp = urlBuilder.getResourceLink(request, "/img/treefolderopen.gif");
+	   	while (fodlersIter.hasNext()) {
+			LowFunctionality folder = (LowFunctionality) fodlersIter.next();
+	   		boolean isUserFunct = folder.getCodType().equals("USER_FUNCT");
+	   		if (isUserFunct) {
+	   			continue;
+	   		}
+			boolean isRoot = folder.getParentId() == null;
+			String nameLabel = folder.getName();
+			String name = msgBuilder.getMessage(nameLabel, "messages", request);
+			%>
+			treeFunct.add(<%= folder.getId() %>, <%= isRoot ? "-100" : folder.getParentId() %>,"<%= JavaScript.escapeText(name) %>", 
+				'javascript:setInitialpath(\'<%= folder.getPath() %>\')', '', '', '<%=imgFolder %>', '<%=imgFolderOp %>', '', '');
+			<%
+	   	}
+	   	%>
+	   	document.getElementById('divInitialPathSelection').innerHTML = treeFunct;
+	   	
+	   	function setInitialpath(initialPath) {
+	   		document.getElementById('initialPath').value = initialPath;
+	   		win_initialPath.hide();
+	   	}
+	   	
+	   	function linkEmpty() {
+	   	}
+		</script>
+	</div>
+	<!-- End div for initial path selection -->
 
 <spagobi:error/>
 

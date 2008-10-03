@@ -94,51 +94,69 @@
 		<param-value>true</param-value>
 	</context-param>
 
- <!-- 
-	 <filter>
- <filter-name>CAS_Filter</filter-name>
- <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+	<!--
+	<filter>
+		<filter-name>CAS_Filter</filter-name>
+		<filter-class>
+			edu.yale.its.tp.cas.client.filter.CASFilter
+		</filter-class>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.loginUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/login
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.validateUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/serviceValidate
+			</param-value>
+		</init-param>
     <init-param>
-       <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
-       <param-value>https://localhost:8443/exo-cas-2/login</param-value>
-    </init-param>
-    <init-param>
-       <param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
-       <param-value>https://localhost:8443/exo-cas-2/serviceValidate</param-value>
+       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       <param-value>localhost:8443</param-value>
     </init-param>
 		<init-param>
 			<param-name>
-				edu.yale.its.tp.cas.client.filter.serviceUrl
+				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
 			</param-name>
-			<param-value>https://localhost:8443/SpagoBIBirtReportEngine/BirtReportServlet</param-value>
-		</init-param>
-       <init-param>
-  			 <param-name>edu.yale.its.tp.cas.client.filter.proxyCallbackUrl</param-name> 
-             <param-value>https://localhost:8443/SpagoBIBirtReportEngine/proxyReceptor</param-value> 
-       </init-param>  
+			<param-value>
+				https://localhost:8443/SpagoBIBirtReportEngine/proxyReceptor
+			</param-value>
+		</init-param>	
+
      <init-param>
   			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
              <param-value>true</param-value> 
-       </init-param>           
- </filter>
- -->
+       </init-param> 
+       	
+	</filter>
+	-->
+
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
 	
- <!-- 	
-  <filter-mapping>
-    <filter-name>CAS_Filter</filter-name>
-    <url-pattern>/BirtReportServlet/*</url-pattern>
- </filter-mapping>
-
- --> 	
+	<!--
+	<filter-mapping>
+	    <filter-name>CAS_Filter</filter-name>
+	    <url-pattern>/BirtReportServlet/*</url-pattern>
+	</filter-mapping>
+	-->
+	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/BirtReportServlet/*</url-pattern>
 	</filter-mapping>
-	 
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/BirtReportServletBackEnd/*</url-pattern>
+	</filter-mapping>	
 
 		
 	<!-- Viewer Servlet Context Listener -->
@@ -168,6 +186,16 @@
 	-->
 
 	<servlet>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
+		<init-param>
+  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
+  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
+  		</init-param>
+  </servlet>
+
+
+	<servlet>
         <servlet-name>BirtReportServlet</servlet-name>
         <servlet-class>it.eng.spagobi.engines.birt.BirtReportServlet</servlet-class>
     </servlet>
@@ -186,7 +214,12 @@
         <servlet-name>ReadTicketServlet</servlet-name>
         <servlet-class>it.eng.spagobi.utilities.callbacks.ticket.ReadTicketServlet</servlet-class>
     </servlet>    
-    
+
+ 	<servlet-mapping>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<url-pattern>/proxyReceptor</url-pattern> 
+  	</servlet-mapping> 
+
     <servlet-mapping>
         <servlet-name>ReadTicketServlet</servlet-name>
         <url-pattern>/servlet/ReadTicket</url-pattern>

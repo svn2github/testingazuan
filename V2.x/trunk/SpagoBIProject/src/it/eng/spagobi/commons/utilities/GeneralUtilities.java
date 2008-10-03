@@ -429,9 +429,16 @@ public class GeneralUtilities {
     public static String substituteParametersInString(String statement, Map valuesMap)
 	    throws Exception {
 	logger.debug("IN");
-	int profileAttributeStartIndex = statement.indexOf("$P{");
-	if (profileAttributeStartIndex != -1) {
-	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+	
+	boolean changePars = true;
+	while ( changePars ){
+		//int profileAttributeStartIndex = statement.indexOf("$P{");
+		int profileAttributeStartIndex = statement.indexOf("$P{");
+		if (profileAttributeStartIndex != -1) 
+		    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+		else
+		    changePars = false;
+		
 	}
 	logger.debug("OUT");
 	return statement;
@@ -454,6 +461,8 @@ public class GeneralUtilities {
     private static String substituteParametersInString(String statement, Map valuesMap,
 	    int profileAttributeStartIndex) throws Exception {
 	logger.debug("IN");
+	
+	
 	int profileAttributeEndIndex = statement.indexOf("}",profileAttributeStartIndex);
 	if (profileAttributeEndIndex == -1)
 	    throw new Exception("Not closed profile attribute: '}' expected.");
@@ -467,7 +476,7 @@ public class GeneralUtilities {
 	String suffix = "";
 	boolean attributeExcpetedToBeMultiValue = false;
 	if (startConfigIndex != -1) {
-	    // the attribute profile is expected to be multivalue
+	    // the parameter is expected to be multivalue
 	    attributeExcpetedToBeMultiValue = true;
 	    int endConfigIndex = attribute.length() - 1;
 	    if (attribute.charAt(endConfigIndex) != ')')
@@ -501,59 +510,66 @@ public class GeneralUtilities {
 
 	}
 	else{
-	
-	logger.debug("Profile attribute value found: '" + value+ "'");
-	String replacement = null;
-	String newListOfValues = null;
-	if (attributeExcpetedToBeMultiValue) {
-	    if (value.startsWith("{")) {
-		// the profile attribute is multi-value
-		String[] values = findAttributeValues(value);
-		logger.debug("N. " + values.length + " profile attribute values found: '" + values + "'");
-		newListOfValues = values[0];
-		for (int i = 1; i < values.length; i++) {
-		    newListOfValues = newListOfValues + split + values[i];
-		}
-	    } else {
-		logger
-			.warn("The attribute value has not the sintax of a multi value attribute; considering it as a single value.");
-		newListOfValues = value;
-	    }
-	} else {
-	    if (value.startsWith("{")) {
-		// the profile attribute is multi-value
-		logger
-			.warn("The attribute value seems to be a multi value attribute; trying considering it as a multi value using its own splitter and no prefix and suffix.");
-		try {
-		    // checks the sintax
-		    String[] values = findAttributeValues(value);
-		    newListOfValues = values[0];
-		    for (int i = 1; i < values.length; i++) {
-			newListOfValues = newListOfValues + value.charAt(1) + values[i];
+
+		if (value.startsWith("' {")) value = value.substring (1);
+		if (value.endsWith("}'")) value = value.substring(0,value.indexOf("}'")+1);
+		value = value.trim();
+		logger.debug("Parameter value found: " + value);
+		String replacement = null;
+		String newListOfValues = null;
+		if (attributeExcpetedToBeMultiValue) {
+		    if (value.startsWith("{")) {
+			// the parameter is multi-value
+			String[] values = findAttributeValues(value);
+			logger.debug("N. " + values.length + " profile attribute values found: '" + values + "'");
+			newListOfValues = values[0];
+			for (int i = 1; i < values.length; i++) {
+			    newListOfValues = newListOfValues + split + values[i];
+			}
+		    } else {
+			logger
+				.warn("The attribute value has not the sintax of a multi value attribute; considering it as a single value.");
+			newListOfValues = value;
 		    }
-		} catch (Exception e) {
-		    logger
-			    .error(
-				    "The attribute value does not respect the sintax of a multi value attribute; considering it as a single value.",
-				    e);
-		    newListOfValues = value;
-		}
+		} else {
+		    if (value.startsWith("{")) {
+			// the profile attribute is multi-value
+			logger
+				.warn("The attribute value seems to be a multi value attribute; trying considering it as a multi value using its own splitter and no prefix and suffix.");
+			try {
+			    // checks the sintax
+			    String[] values = findAttributeValues(value);
+			    newListOfValues = values[0];
+			    for (int i = 1; i < values.length; i++) {
+				newListOfValues = newListOfValues + value.charAt(1) + values[i];
+			    }
+			} catch (Exception e) {
+			    logger
+				    .error(
+					    "The attribute value does not respect the sintax of a multi value attribute; considering it as a single value.",
+					    e);
+			    newListOfValues = value;
+			}
 	    } else {
 		newListOfValues = value;
 	    }
 	}
 
 	replacement = prefix + newListOfValues + suffix;
+	if (!replacement.startsWith("'")) replacement = "'" + replacement;
+	if (!replacement.endsWith("'")) replacement = replacement + "'";
 	attribute = quote(attribute);
 	statement = statement.replaceAll("\\$P\\{" + attribute + "\\}", replacement);
 
 //	statement = statement.replaceAll("\\P\\{" + attribute + "\\}", replacement);
-
-	profileAttributeStartIndex = statement.indexOf("$P{", profileAttributeEndIndex);
+/*
+	profileAttributeStartIndex = statement.indexOf("$P{", profileAttributeEndIndex-1);
 	if (profileAttributeStartIndex != -1)
 	    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+*/
 	logger.debug("OUT");
 	}
+	
 	return statement;
 	
 	}

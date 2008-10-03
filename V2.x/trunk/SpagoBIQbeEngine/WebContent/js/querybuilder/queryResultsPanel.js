@@ -14,7 +14,15 @@ var storeConfig = {
         params: {start:0,
                  limit: 25 },
         proxy: new Ext.data.HttpProxy({
-           url: execServiceUrl
+           url: execServiceUrl,
+           success: function(response){
+           	 var o = Ext.util.JSON.decode( response.responseText );
+           	 if(o.results == 0) {
+           		alert("Query returns no data.");
+           	 }           
+           },
+   		   failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure
+           
         }),
 
         // create reader that reads the Topic records
@@ -30,7 +38,14 @@ var getQueryResultsPanel = function() {
     store = new Ext.data.Store( storeConfig );
     
     store.on('metachange', updateColumnModel);
-    
+    /*
+    store.proxy.on('loadexception', function(proxy, options, response){          
+    	alert(response.responseText);
+    	alert(response.toSource());   
+    	alert(options.toSource());  
+    	alert(proxy.toSource());            
+    }); 
+    */
     
     cm = new Ext.grid.ColumnModel([
         new Ext.grid.RowNumberer(),

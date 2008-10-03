@@ -23,10 +23,12 @@ package it.eng.spagobi.qbe.core.service;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.newquery.ExpressionNode;
 import it.eng.qbe.newquery.Query;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.newquery.WhereField;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.strings.StringUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,14 +47,35 @@ public class QueryEncoder {
 		JSONObject recordJSON = new JSONObject(query);
 		return decode(recordJSON.getJSONArray("fields").toString(),
 				recordJSON.getJSONArray("filters").toString(),
+				recordJSON.getJSONObject("expression").toString(),
 				datamartModel);
 	}
 	
-	public static Query decode(String queryFields, String queryFilters, DataMartModel datamartModel) throws JSONException {
+	public static Query decode(String queryFields, String queryFilters, String queryFilterExp, DataMartModel datamartModel) throws JSONException {
 		Query query = null;
 		
 		query = new Query();		
-
+		decodeFilterExp(query, queryFilterExp, datamartModel);
+		
+		// ----------------------------------------------------
+		// DECODE fields
+		// ----------------------------------------------------
+		decodeFields(query, queryFields, datamartModel);
+		
+		// ----------------------------------------------------
+		// DECODE filters
+		// ----------------------------------------------------
+		decodeFilters(query, queryFilters, datamartModel);
+		
+		// ----------------------------------------------------
+		// DECODE expression
+		// ----------------------------------------------------
+		//decodeFilterExp(query, queryFilterExp, datamartModel);
+		
+		return query;
+	}
+	
+	private static void decodeFields(Query query, String queryFields, DataMartModel datamartModel) throws JSONException {
 		JSONArray recordsJOSN = new JSONArray( queryFields );
 		for(int i = 0; i < recordsJOSN.length(); i++) {
 			JSONObject recordJSON = recordsJOSN.getJSONObject(i);
@@ -61,14 +84,12 @@ public class QueryEncoder {
 						   && !recordJSON.getString("alias").trim().equalsIgnoreCase("")
 						   ? recordJSON.getString("alias")
 						   : "Column_" + (i+1);
-			String fieldA = recordJSON.getString("field");
 			String group = recordJSON.getString("group");
 			String order = recordJSON.getString("order");
 			String funct = recordJSON.getString("funct");
 			boolean visible = recordJSON.getBoolean("visible");
 												
 			if(fieldUniqueName != null) {
-				// add field
 				DataMartField field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
 				Assert.assertNotNull(field, "Inpossible to retrive from datamart-structure a fild named " + fieldUniqueName + ". Please check select clause in  query: " + queryFields);
 				query.addSelectFiled(field.getUniqueName(), funct, alias, visible, group.equalsIgnoreCase("true"), order);
@@ -80,24 +101,95 @@ public class QueryEncoder {
 				}
 			}	
 		}
-		
+	}
+	
+	private static void decodeFilters(Query query, String queryFilters, DataMartModel datamartModel) throws JSONException {
 		JSONArray filtersJOSN = new JSONArray( queryFilters );
 		for(int i = 0; i < filtersJOSN.length(); i++) {
 			JSONObject filterJSON = filtersJOSN.getJSONObject(i);
+			String fname = filterJSON.getString("fname");
+			String fdesc =  filterJSON.getString("fname");
 			String fieldUniqueName = filterJSON.getString("id");
-			//String alias = filterJSON.getString("alias");
 			String operator = filterJSON.getString("operator");
-			String value = filterJSON.getString("value");
-			String type = filterJSON.getString("type");
+			String operand = filterJSON.getString("operand");
+			String operandDesc = filterJSON.getString("odesc");
+			String operandType = filterJSON.getString("otype");
+			String boperator = filterJSON.getString("boperator");
 			
-			if(operator == null || operator.trim().equalsIgnoreCase("") || operator.equalsIgnoreCase("NONE")) continue;
 			
-			DataMartField field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
-			query.addWhereFiled(field.getUniqueName(), operator, value);
+			
+			Assert.assertTrue(!StringUtils.isEmpty(operator), "Undefined operator for filter: " + filterJSON.toString());
+			Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + filterJSON.toString());
+			
+			
+		    DataMartField field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
+			query.addWhereFiled(fname, fdesc,field.getUniqueName(), operator, operand, operandType, operandDesc, boperator);
+		}	
+	}
+	
+	private static void decodeFilterExp(Query query, String queryFilterExp, DataMartModel datamartModel) throws JSONException {
+		JSONObject filterExpJOSN = new JSONObject( queryFilterExp );
+		ExpressionNode filterExp = getFilterExpTree(filterExpJOSN);
+		query.setWhereClauseStructure( filterExp );
+		if(filterExp != null) {
+			System.out.println(">>>>>>> " + getFilterExpAsString(filterExp));
 		}
 		
-		return query;
 	}
+	
+	private static String getFilterExpAsString(ExpressionNode filterExp) {
+		String str = "";
+		
+		String type = filterExp.getType();
+		if("NODE_OP".equalsIgnoreCase( type )) {
+			for(int i = 0; i < filterExp.getChildNodes().size(); i++) {
+				ExpressionNode child = (ExpressionNode)filterExp.getChildNodes().get(i);
+				String childStr = getFilterExpAsString(child);
+				if("NODE_OP".equalsIgnoreCase( child.getType() )) {
+					childStr = "(" + childStr + ")";
+				}
+				str += (i==0?"": " " + filterExp.getValue());
+				str += " " + childStr;
+			}
+		} else {
+			str += filterExp.getValue();
+		}
+		
+		return str;
+	}
+	
+	private static ExpressionNode getFilterExpTree(JSONObject nodeJSON) throws JSONException {
+		ExpressionNode node = null;
+		String nodeType;
+		String nodeValue;
+		JSONArray childNodesJSON;
+		
+		if(nodeJSON.has("type") && nodeJSON.has("value")) {		
+			nodeType = nodeJSON.getString("type");
+			nodeValue = nodeJSON.getString("value");			
+			node = new ExpressionNode(nodeType, nodeValue);
+			
+			childNodesJSON = nodeJSON.getJSONArray("childNodes");
+			for(int i = 0; i < childNodesJSON.length(); i++) {
+				JSONObject childNodeJSON = childNodesJSON.getJSONObject(i);
+				node.addChild( getFilterExpTree(childNodeJSON) );
+			}
+		}
+		return node;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/*
@@ -138,14 +230,14 @@ public class QueryEncoder {
 		
 		/*
 		{
-  "id" : "it.eng.spagobi.ProductClass:productClassId",
-  "entity" : "ProductClass",
-  "field"  : "productClassId",
-  //"alias"  : "",
-  "operator"  : "GREATER THAN",
-  "value"  : "5",
-  "type"  : "Static Value"
-  }
+		  "id" : "it.eng.spagobi.ProductClass:productClassId",
+		  "entity" : "ProductClass",
+		  "field"  : "productClassId",
+		  //"alias"  : "",
+		  "operator"  : "GREATER THAN",
+		  "value"  : "5",
+		  "type"  : "Static Value"
+		  }
 		 */
 		List whereFields = query.getWhereFields();
 		Iterator filterFieldsIt = whereFields.iterator();
@@ -154,22 +246,51 @@ public class QueryEncoder {
 			WhereField filterField = (WhereField)filterFieldsIt.next();
 			DataMartField datamartField = datamartModel.getDataMartModelStructure().getField( filterField.getUniqueName() );
 			JSONObject filterJSON = new JSONObject();
+			filterJSON.put("fname", filterField.getFname());
+			filterJSON.put("fdesc", filterField.getFdesc());
 			filterJSON.put("id", datamartField.getUniqueName());
 			filterJSON.put("entity", datamartField.getParent().getName());
 			filterJSON.put("field", datamartField.getName());
-			//filterJSON.put("alias", "");
-			filterJSON.put("operator", filterField.getOperator().getName());
-			filterJSON.put("value", filterField.getRightHandValue().toString());
-			filterJSON.put("type", "Static Value");
+			filterJSON.put("operator", filterField.getOperator());
+			filterJSON.put("operand", filterField.getOperand().toString());
+			filterJSON.put("odesc", filterField.getOperandDesc());			
+			filterJSON.put("otype", filterField.getOperandType());
+			filterJSON.put("boperator", filterField.getBoperator());
 			
 			filtersJOSN.put(filterJSON);
 		}
 		
+		
+		JSONObject filterExpJOSN = encodeFilterExp( query.getWhereClauseStructure() );
+		
+		
 		JSONObject queryJSON = new JSONObject();
 		queryJSON.put("fields", recordsJOSN);
 		queryJSON.put("filters", filtersJOSN);
+		queryJSON.put("expression", filterExpJOSN);
 		
 		return queryJSON.toString();
 	}
+	
+	private static JSONObject encodeFilterExp(ExpressionNode filterExp) throws JSONException {
+		JSONObject exp = new JSONObject();
+		JSONArray childsJSON = new JSONArray();
+		
+		if(filterExp == null) return exp;
+		
+		exp.put("type", filterExp.getType()) ;
+		exp.put("value", filterExp.getValue());
+				
+		for(int i = 0; i < filterExp.getChildNodes().size(); i++) {
+			ExpressionNode child = (ExpressionNode)filterExp.getChildNodes().get(i);
+			JSONObject childJSON = encodeFilterExp(child);
+			childsJSON.put(childJSON);
+		}		
+		
+		exp.put("childNodes", childsJSON);
+		 
+		return exp;
+	}	
+	
 
 }

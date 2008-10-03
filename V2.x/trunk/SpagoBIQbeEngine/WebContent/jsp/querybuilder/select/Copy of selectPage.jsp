@@ -21,8 +21,6 @@
 	<qbe:url type="resource" var="href" ref="../css/qbe.css"/>
 	<link rel="styleSheet" href ="${href}" type="text/css" />
 	
-	<qbe:url type="resource" var="src" ref="../js/querybuilder/exceptionHandler.js"/>
-	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/serviceRegistry.js"/>
 	<script type="text/javascript" src='${src}'/></script>
@@ -38,15 +36,6 @@
     	it.eng.spagobi.engines.qbe.serviceregistry.module.init();
     	it.eng.spagobi.engines.qbe.serviceregistry.module.setBaseUrl(url);
     </script>
-    
-    <qbe:url type="resource" var="src" ref="../js/querybuilder/overrides.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/querybuilder/parser.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/querybuilder/filterWizard.js"/>
-	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/buttonColumn.js"/>
 	<script type="text/javascript" src='${src}'/></script>
@@ -58,6 +47,9 @@
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/treePanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/querybuilder/daniela.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/queryResultsPanel.js"/>

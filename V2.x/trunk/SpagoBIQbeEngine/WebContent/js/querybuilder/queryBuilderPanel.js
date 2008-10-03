@@ -235,6 +235,7 @@ var getQueryBuilderPanel = function(query) {
         	
         	var qRecords = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams();
 	        var qFilters = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
+	        var qFilterExp = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
 	        
 	        var url = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('SAVE_QUERY_ACTION');
 	        url += '&queryName=' + qName;
@@ -242,6 +243,7 @@ var getQueryBuilderPanel = function(query) {
 	        url += '&queryScope=' + qScope;
 	        url += '&queryRecords=' + qRecords;
 	        url += '&queryFilters=' + qFilters;
+	        url += '&queryFilterExp=' + qFilterExp;
 	        
 	        Ext.Ajax.request({
 				url:  url,
@@ -270,6 +272,8 @@ var getQueryBuilderPanel = function(query) {
         	
         	var qRecords = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams();
 	        var qFilters = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
+	        var qFilterExp = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
+	        
 	        
 	        var url = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('CREATE_VIEW_ACTION');
 	        url += '&viewName=' + vName;
@@ -361,8 +365,11 @@ var getQueryBuilderPanel = function(query) {
         	
         	var queryStr = '{';
         	queryStr += 'fields : ' + it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams() + ',';
-        	queryStr += 'filters : ' + it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
+        	queryStr += 'filters : ' + it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams() + ',';
+        	queryStr += 'expression: ' +  it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
         	queryStr += '}';
+        	
+        	//alert('>>> ' + queryStr);
         	
         	var params = {
         		query: queryStr 

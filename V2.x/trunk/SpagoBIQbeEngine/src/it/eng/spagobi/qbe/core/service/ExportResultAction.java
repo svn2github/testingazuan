@@ -177,7 +177,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					throw new EngineException("Impossible to write back the responce to the client", e);
 				}
 			}
-		} catch (Exception e) {			
+		} catch (Throwable e) {			
 			QbeEngineException engineException;
 			
 			if(e instanceof QbeEngineException) {

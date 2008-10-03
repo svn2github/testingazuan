@@ -257,7 +257,8 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		              typeAhead: true,
 		              mode: 'local',
 		              triggerAction: 'all',
-		              emptyText:'Select a state...',
+		              autocomplete: 'off',
+		              emptyText:'Select a function...',
 		              selectOnFocus:true
 		            })
 		        },{
@@ -274,7 +275,8 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		              typeAhead: true,
 		              mode: 'local',
 		              triggerAction: 'all',
-		              emptyText:'Select a state...',
+		              autocomplete: 'off',
+		              emptyText:'Select ordering direction...',
 		              selectOnFocus:true
 		            })
 		        },

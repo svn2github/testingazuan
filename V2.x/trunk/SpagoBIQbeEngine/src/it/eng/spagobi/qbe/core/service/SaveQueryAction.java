@@ -54,6 +54,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 	public static final String QUERY_SCOPE = "queryScope";
 	public static final String QUERY_RECORDS = "queryRecords";
 	public static final String QUERY_FILTERS = "queryFilters";
+	public static final String QUERY_FILTEREXP = "queryFilterExp";
 	
 
 	/** Logger component. */
@@ -67,6 +68,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		String  queryScope  = null;
 		String queryRecords = null;
 		String queryFilters = null;
+		String queryFilterExp = null;
 		EngineAnalysisMetadata analysisMetadata = null;
 		String result = null;
 		
@@ -89,6 +91,8 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			logger.debug(QUERY_RECORDS + ": " + queryRecords);
 			queryFilters = getAttributeAsString(QUERY_FILTERS);
 			logger.debug(QUERY_FILTERS + ": " + queryFilters);
+			queryFilterExp = getAttributeAsString(QUERY_FILTEREXP);
+			logger.debug(QUERY_FILTEREXP + ": " + queryFilterExp);
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertTrue(!StringUtils.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
@@ -111,7 +115,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			
 			Query query = null;
 			try {
-				query = QueryEncoder.decode(queryRecords, queryFilters, getDatamartModel());
+				query = QueryEncoder.decode(queryRecords, queryFilters, queryFilterExp, getDatamartModel());
 			} catch (JSONException e) {
 				throw new EngineException("Impossible to decode query string comming from client", e);
 			}

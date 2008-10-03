@@ -192,34 +192,42 @@ it.eng.spagobi.engines.qbe.app = function() {
   		
   				notifyDrop : function(ddSource, e, data){
        
-       				// the row index on which the tree node has been dropped on
+       				// the row index and the column number on whitch the tree node has been dropped on
          			var rowIndex;
+         			var colIndex;
          
-			        if(filterGrid.targetRow) {
-			          rowIndex = filterGrid.getView().findRowIndex( filterGrid.targetRow );
+			        if(filterGrid.targetRow) {			          
+			          rowIndex = filterGrid.targetRowIndex;
+			          colIndex = filterGrid.targetColIndex;
+			          //rowIndex = filterGrid.getView().findRowIndex( filterGrid.targetRow );
+			          //colIndex = selectGrid.getView().findCellIndex( filterGrid.targetRow );			          
 			        }
         
 			        if(rowIndex == undefined || rowIndex === false) {
 			          // append the new row
-			          rowIndex = undefined//;filterGrid.getStore().getCount();
+			          rowIndex = undefined;
 			        }   
+			        
+			        if(colIndex == undefined || colIndex === false) {
+          				colIndex = undefined;
+        			} 
         
         			//alert("A:" + rowIndex );
           
           
 		          	var sourceObject;
 		          	if(ddSource.tree) {
-		            	this.notifyDropFromTree(ddSource, e, data, rowIndex);
+		            	this.notifyDropFromTree(ddSource, e, data, rowIndex, colIndex);
 		          	} else if(ddSource.grid &&  ddSource.grid.id === 'select-grid') {
-		            	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex);
+		            	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex, colIndex);
 		          	} else if(ddSource.grid &&  ddSource.grid.id === 'filter-grid') {
-		            	this.notifyDropFromFilterGrid(ddSource, e, data, rowIndex);
+		            	this.notifyDropFromFilterGrid(ddSource, e, data, rowIndex, colIndex);
 		          	} else {
 		            	alert('Source object: unknown');
 		          	}        
       			},
         
-	      		notifyDropFromTree: function(ddSource, e, data, rowIndex) {
+	      		notifyDropFromTree: function(ddSource, e, data, rowIndex, colIndex) {
 	        		//alert('Source object: tree');
 	        
 	        		// the node dragged from tree to grid
@@ -229,16 +237,24 @@ it.eng.spagobi.engines.qbe.app = function() {
 	          
 	
 	        		if(node.attributes.field && node.attributes.type == 'field') {
-	          			var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
-	          				id: ddSource.dragData.node.id , 
-	            			entity: ddSource.dragData.node.attributes.entity , 
-	            			field: ddSource.dragData.node.attributes.field  
-	          			});
-	        
-	          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
+	        			if(colIndex === 5) {
+	        				var store = filterGrid.getStore();
+	        				var row = store.getAt(rowIndex);
+	        				row.data['otype'] = 'Field Content';
+	        				row.data['odesc'] = ddSource.dragData.node.attributes.entity + ' / ' + ddSource.dragData.node.attributes.field;
+	        				row.data['operand'] = ddSource.dragData.node.id;
+	        				filterGrid.store.fireEvent('datachanged', filterGrid.store) ;
+	        			} else {
+		          			var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+		          				id: ddSource.dragData.node.id , 
+		            			entity: ddSource.dragData.node.attributes.entity , 
+		            			field: ddSource.dragData.node.attributes.field  
+		          			});
+		          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
+	        			}
 	        		} else {
 	          			var str = "";
-	          				for(p in node.attributes) {
+	          			for(p in node.attributes) {
 	            			str += p + "; " +  node.attributes[p] + "\n";
 	          			}
 	        		}
@@ -246,35 +262,49 @@ it.eng.spagobi.engines.qbe.app = function() {
 	        		filterGrid.getView().refresh();
 	      		},
       
-	      		notifyDropFromSelectGrid: function(ddSource, e, data, rowIndex) {
+	      		notifyDropFromSelectGrid: function(ddSource, e, data, rowIndex, colIndex) {
 	        		//alert('Source object: select-grid');
 	        		var sm=filterGrid.getSelectionModel();
 	        		var ds = filterGrid.getStore();
 	        		var ddDs = selectGrid.getStore();;
 	        		var rows=sm.getSelections();
 	       
-	        		//alert("B:" + rowIndex);
-	        
+	        		
 	        		var rows = ddSource.dragData.selections;  
-	        		rows = rows.sort(function(r1, r2) {
-	              		var row1 = ddDs.getById(r1.id);
-	              		var row2 = ddDs.getById(r2.id);
-	              		return ddDs.indexOf(r2) - ddDs.indexOf(r1);
-	           		});
-	        		if(rowIndex == undefined) {
-	          			rows = rows.reverse();
+	        		if(colIndex === 5) {
+	        			if(rows.length > 1 ) {
+	        				alert('Error: impossible to use as value into a filter a collection of fields');
+	        			}
+	        			var store = filterGrid.getStore();
+	        			var row = store.getAt(rowIndex);
+	        			row.data['otype'] = 'Field Content';
+	        			row.data['odesc'] = rows[0].data['entity'] + ' / ' + rows[0].data['field'];
+	        			row.data['operand'] = rows[0].data['id'];
+	        			filterGrid.store.fireEvent('datachanged', filterGrid.store) ;
+	        		} else {
+	        			rows = rows.sort(function(r1, r2) {
+		              		var row1 = ddDs.getById(r1.id);
+		              		var row2 = ddDs.getById(r2.id);
+		              		return ddDs.indexOf(r2) - ddDs.indexOf(r1);
+	           			});
+		        		if(rowIndex == undefined) {
+		          			rows = rows.reverse();
+		        		}
+		           
+		        		for (i = 0; i < rows.length; i++) {
+		          			if(!this.copy) {
+		               			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow( rows[i], rowIndex );
+		          			}
+		        		}     
+		        
+		        		filterGrid.getView().refresh();
 	        		}
-	           
-	        		for (i = 0; i < rows.length; i++) {
-	          			if(!this.copy) {
-	               			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow( rows[i], rowIndex );
-	          			}
-	        		}     
-	        
-	        		filterGrid.getView().refresh();
+	        		
+	        		
+	        		
 	      		},
       
-	      		notifyDropFromFilterGrid: function(ddSource, e, data,rowIndex) {
+	      		notifyDropFromFilterGrid: function(ddSource, e, data,rowIndex, colIndex) {
 	        		//alert('Source object: filter-grid');
 	       			var sm=filterGrid.getSelectionModel();
 	          		var ds = filterGrid.getStore();

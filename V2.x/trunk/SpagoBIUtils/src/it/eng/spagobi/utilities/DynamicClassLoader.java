@@ -82,7 +82,7 @@ public class DynamicClassLoader extends URLClassLoader {
 		try {
 			classToReturn = super.loadClass(className, resolve);
 		} catch (Exception e) {
-			//System.out.println(e);
+			System.out.println(e);
 		}
 		if(classToReturn == null) {
 			ZipFile zipFile = null;
@@ -95,7 +95,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
 				bis.read(res, 0, res.length);
 			} catch (Exception ex) {
-				System.out.println("className: " + className + " Exception: "+ ex);
+				System.out.println("className: " +  className + " Exception: "+ ex);
 			} finally {
 				if (bis!=null) {
 					try {
@@ -108,15 +108,21 @@ public class DynamicClassLoader extends URLClassLoader {
 					} catch (IOException ioex) {}
 				}
 			}
-			if (res == null) 
-				return super.findSystemClass(className);
-	 
-			classToReturn = defineClass(className, res, 0, res.length);
-			if (classToReturn == null) 
-				throw new ClassFormatError();
-	 
-			if (resolve) 
-				resolveClass(classToReturn);
+			
+			try {
+				if (res == null) 
+					return super.findSystemClass(className);
+		 
+				classToReturn = defineClass(className, res, 0, res.length);
+				if (classToReturn == null) 
+					throw new ClassFormatError();
+		 
+				if (resolve) 
+					resolveClass(classToReturn);
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+				throw new ClassNotFoundException("Impossible to load class " + className, ex);
+			}
 		}
 		return classToReturn;
 	}

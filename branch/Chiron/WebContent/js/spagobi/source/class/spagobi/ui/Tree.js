@@ -55,6 +55,12 @@ qx.Class.define("spagobi.ui.Tree", {
           	 var trs = qx.ui.tree.TreeRowStructure.getInstance().standard(config.root);
 		     this.base(arguments, trs);
           	
+          	 this.setSelectedElement(null);
+          	 this.getManager().setSelectedItem(null);
+          	 //alert(this.getSelectedElement());
+          	 //alert(this.getManager().getSelectedItem());
+          	 //this.setSelectedElement(this);
+          	 //this.getSelectedElement().setSelected(true);
           },
           
           members: {
@@ -74,9 +80,18 @@ qx.Class.define("spagobi.ui.Tree", {
 	               */                               
 	               onClickMenu: function(e){
 	               		
-	               		//alert(this.getSelectedElement());  //working
+	               		alert(this.getManager().getSelectedItem());
 	               		
-	               		//alert(this.getSelectedElement().label);//error
+	               		if(this.getSelectedElement() == undefined || this.getManager().getSelectedItem() == undefined){		// null
+	               			alert("no Element Selected");
+	               			return;
+	               		}
+	               		
+	               		//alert(this.getSelectedElement().getLabel());
+	               		//alert(this.getSelectedElement()); //qx.ui.tree.Tree / qx.ui.tree.TreeFolder / qx.ui.tree.Treefile
+	               		//alert(this.getSelectedElement().getLabel());		//gives label of Node
+	               		
+	               		
 	               		//var node = e.getValue();//error
 	               		//var node = this.getSelectedElement();
 	               		//alert("clicked: " + e.getTarget() + "tree node: " + this.getSelectedElement());
@@ -151,36 +166,56 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		}
 	               		
 	               		else{
-	               			var selectionManager = this.getManager();
-	               			var item = selectionManager.getSelectedItem();
-	               			
-	               			if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
-	               				contextMenu.add(insertButton,deleteButton,moveDownButton);
-	               			}
-	               			
-	               			else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
-	               				contextMenu.add(insertButton,deleteButton,moveUpButton);	               				
-	               			}
-                 			//var previousItem = selectionManager.getPrevious(this.getSelectedItem()); //getLeadItem(), getNextSibling, getPreviousSibling, 
-                 			else{
-	               				contextMenu.add(insertButton,deleteButton,moveUpButton,moveDownButton);
-                 			}
+		               			var selectionManager = this.getManager();
+		               			var item = selectionManager.getSelectedItem();
+		               			
+		               			if(item instanceof qx.ui.tree.TreeFile){			//leaf nodes don't have insert option	
+		               				
+		               				if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+		               					contextMenu.add(deleteButton,moveDownButton);
+		               				}
+		               			
+		               				else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+		               					contextMenu.add(deleteButton,moveUpButton);	               				
+		               				}
+	                 				else{
+		               					contextMenu.add(deleteButton,moveUpButton,moveDownButton);
+	                 				}	
+		               			}
+		               			
+		               			else{															// For folders, you have insert option even if they are at leaf
+		               				if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+		               					contextMenu.add(insertButton,deleteButton,moveDownButton);
+		               				}
+		               			
+		               				else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+		               					contextMenu.add(insertButton,deleteButton,moveUpButton);	               				
+		               				}
+	                 				//var previousItem = selectionManager.getPrevious(this.getSelectedItem()); //getLeadItem(), getNextSibling, getPreviousSibling, 
+	                 				else{
+		               					contextMenu.add(insertButton,deleteButton,moveUpButton,moveDownButton);
+	                 				}
+	               				}
 	               		}
-	               		
+  						
   						contextMenu.addToDocument();		//var d = qx.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
   						
   						//alert(contextMenu.getParent().getVisibility() + ", "+ contextMenu.getParent().getDisplay());
   						//alert(contextMenu.getVisibility() + ", "+ contextMenu.getDisplay());
   						//alert(contextMenu.isSeeable());
   						
-  						if (contextMenu.isSeeable())
-				          {
+  						if (contextMenu.isSeeable()){		//never gets executed
+				            alert('hi');
 				            contextMenu.hide();
-				          }
-				        else
-				          {
+				            this.setSelectedElement(null);
+				            
+				            	alert(this.getSelectedElement);
+				        }
+				        else{
 				            
 				  			var ele = this.getSelectedElement().getElement();
+				  			//this.getSelectedElement().getLeft(); // NULL
+				  			//alert(qx.html.Location.getPageBoxLeft(ele) + "," + qx.html.Location.getPageBoxRight(ele));	//same
 				  			//alert(this.getSelectedElement().getLeft() + ", " + qx.html.Location.getPageBoxRight(ele));
 				  			//alert(this.getSelectedElement().getTop()+ this.getSelectedElement().getHeight()+ ", " + qx.html.Location.getPageBoxBottom(ele));
 				  			contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); //getClientAreaRight
@@ -194,11 +229,19 @@ qx.Class.define("spagobi.ui.Tree", {
 				  					//contextMenu.setLeft(this.getSelectedElement().getLeft()); //not working
 				  					//contextMenu.setTop(this.getSelectedElement().getBottom());//not working
 				  			//contextMenu.setDisplay(true);
-				            contextMenu.show();
-				          }
+				            
+				            //if(this.getSelectedElement().getSelected() == true){
+				            	//alert(this.getSelectedElement().getLabel());
+				            	contextMenu.show();
+				            //}
+				        }
 				  		
 				        // e.stopPropagation(true);	//use ??
-				        //this.setSelectedElement(null);
+				        
+				        //this.getManager().setSelectedItem(null);
+				        
+				        this.getSelectedElement().setSelected(false);
+				        this.setSelectedElement(null);
 				        //this.getManager().setSelectedItem(null);
 	               },
 	               
@@ -280,10 +323,10 @@ qx.Class.define("spagobi.ui.Tree", {
 						c.parent = this.getSelectedElement();
 						c.id = "node"+this._nodeId;
 						this._nodeId++;
-						this.addNode(c);
+						var node = this.addNode(c);
 						this.insertWin.close();
-						//this.setSelectedElement(null);
-						// working
+						
+						//node.setSelected(true);
 						
 	               },
 	               	
@@ -345,7 +388,7 @@ qx.Class.define("spagobi.ui.Tree", {
                  										// ... or specia node with a icon, checkbox and name 
                  		
                  		treeRowStructure = qx.ui.tree.TreeRowStructure.getInstance().newRow();                 
-                 	
+                 		treeRowStructure.addIndent();
                  		if(config.init_icon != undefined && config.click_icon != undefined){
                  			treeRowStructure.addIcon(config.init_icon, config.click_icon);
                  		}
@@ -402,6 +445,9 @@ qx.Class.define("spagobi.ui.Tree", {
 	              			currentItem.destroy();
 	              			currentItem = null;
           			}
+          			
+          			//this.getSelectedElement().getParent().setSelected(true);	//else try getParentFolder()
+          			
                  },
                  
                  /**
@@ -419,6 +465,8 @@ qx.Class.define("spagobi.ui.Tree", {
               			currentItem.destroy();
               			currentItem = null;
           			}
+          			
+          			//this.getSelectedElement().getParent().setSelected(true);
                  },
                  
                  /**
@@ -453,6 +501,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	parentItem.remove(item);
 	               	parentItem.addBeforeToFolder(item,previousItem);
 	               	
+	               	//parentItem.setSelected(true);
                  },
                  
                  /**
@@ -466,6 +515,8 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	
 	               	parentItem.remove(item);
 	               	parentItem.addAfterToFolder(item,nextItem);
+	               	
+	               	//parentItem.setSelected(true);
                  }
           }
 });

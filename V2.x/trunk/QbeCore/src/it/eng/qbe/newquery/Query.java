@@ -41,6 +41,9 @@ public class Query {
 	List orderByClause;
 	List groupByClause;	
 	
+	ExpressionNode whereClauseStructure;
+	Map whereFieldMap;
+	
 	
 	
 		
@@ -50,7 +53,8 @@ public class Query {
 		
 		whereClause = new ArrayList();
 		orderByClause = new ArrayList();
-		groupByClause = new ArrayList();		
+		groupByClause = new ArrayList();
+		whereFieldMap = new HashMap();
 	}
 	
 	public boolean isEmpty() {
@@ -66,8 +70,17 @@ public class Query {
 		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, visible, groupByField, orderType) );
 	}
 	
-	public void addWhereFiled(String fieldUniqueName, String operator, Object rightHandValue) {
-		whereClause.add( new WhereField(fieldUniqueName, operator, rightHandValue) );
+	public void addWhereFiled(String fname, String fdesc, 
+			String fieldUniqueName, String operator, 
+			Object operand, String operandType, String operandDesc,
+			String boperator) {
+		WhereField whereField = new WhereField(fname, fieldUniqueName, fieldUniqueName, operator, operand, operandType, operandDesc, boperator);
+		whereClause.add( whereField );
+		whereFieldMap.put("$F{" + fname + "}", whereField);
+	}
+	
+	public WhereField getWhereFieldByName(String fname) {
+		return (WhereField)whereFieldMap.get(fname.trim());
 	}
 	
 	public void addGroupByField(String fieldUniqueName) {
@@ -96,6 +109,14 @@ public class Query {
 
 	public List getGroupByFields() {
 		return groupByClause;
+	}
+
+	public ExpressionNode getWhereClauseStructure() {
+		return whereClauseStructure;
+	}
+
+	public void setWhereClauseStructure(ExpressionNode whereClauseStructure) {
+		this.whereClauseStructure = whereClauseStructure;
 	}
 
 }

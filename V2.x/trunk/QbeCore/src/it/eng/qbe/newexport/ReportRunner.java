@@ -36,6 +36,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
@@ -110,7 +111,7 @@ public class ReportRunner {
 		} else if (outputType.equalsIgnoreCase("application/rtf"))	{			
 		   	exporter = new JRRtfExporter(); 		
 		} else if (outputType.equalsIgnoreCase("application/vnd.ms-excel")) {
-		   	exporter = new JRXlsExporter();
+		   	exporter = new JExcelApiExporter();
 		} else {
 		   	exporter = new JRPdfExporter();
 		}
@@ -118,6 +119,7 @@ public class ReportRunner {
 		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 	    exporter.setParameter(JRExporterParameter.OUTPUT_FILE , reportFile);
 	    exporter.exportReport();
+	    
 	}
 	
 	/**

@@ -31,11 +31,14 @@ import it.eng.qbe.model.structure.DataMartField;
  *
  */
 public class WhereField {
+	private String fname;
+	private String fdesc;
 	private String uniqueName;
-	private IConditionalOperator operator;
-	private Object rightHandValue;
-	
-	public static Map conditionalOperator;
+	private String operator;
+	private Object operand;
+	private String operandType;
+	private String operandDesc;
+	private String boperator;
 	
 	public static final String EQUALS_TO = "EQUALS TO";
 	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
@@ -45,157 +48,50 @@ public class WhereField {
 	public static final String EQUALS_OR_LESS_THAN = "EQUALS OR LESS THAN";
 	public static final String STARTS_WITH = "STARTS WITH";
 	public static final String NOT_STARTS_WITH = "NOT STARTS WITH";
-	public static final String ENDS_WITH = "ENDS WITH";
-	
-	/** The Constant NOT_ENDS_WITH. */
-	public static final String NOT_ENDS_WITH = "NOT ENDS WITH";
-	
-	/** The Constant NOT_NULL. */
-	public static final String NOT_NULL = "NOT NULL";
-	
-	/** The Constant IS_NULL. */
-	public static final String IS_NULL = "IS NULL";
-	
-	/** The Constant CONTAINS. */
-	public static final String CONTAINS = "CONTAINS";
-	
-	/** The Constant NOT_CONTAINS. */
-	public static final String NOT_CONTAINS = "NOT CONTAINS";
+	public static final String ENDS_WITH = "ENDS WITH";	
+	public static final String NOT_ENDS_WITH = "NOT ENDS WITH";	
+	public static final String NOT_NULL = "NOT NULL";	
+	public static final String IS_NULL = "IS NULL";	
+	public static final String CONTAINS = "CONTAINS";	
+	public static final String NOT_CONTAINS = "NOT CONTAINS";	
+	public static final String BETWEEN = "BETWEEN";	
+	public static final String NOT_BETWEEN = "NOT BETWEEN";	
+	public static final String IN = "IN";	
+	public static final String NOT_IN = "NOT IN";	
 	
 	
 	
-	static {
-		conditionalOperator = new HashMap();
-		conditionalOperator.put(EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return EQUALS_TO;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + "=" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(NOT_EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return NOT_EQUALS_TO;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + "!=" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return GREATER_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + ">" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return EQUALS_OR_GREATER_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + ">=" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(LESS_THAN, new IConditionalOperator() {
-			public String getName() {return LESS_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + "<" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(EQUALS_OR_LESS_THAN, new IConditionalOperator() {
-			public String getName() {return EQUALS_OR_LESS_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + "<=" + rightHandValue;
-			}
-		});
-		conditionalOperator.put(STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return STARTS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {				
-				rightHandValue = rightHandValue.trim();
-				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
-				rightHandValue = rightHandValue + "%";
-				return leftHandValue + " like '" + rightHandValue + "'";
-			}
-		});
-		conditionalOperator.put(NOT_STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return NOT_STARTS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				rightHandValue = rightHandValue.trim();
-				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
-				rightHandValue = rightHandValue + "%";
-				return leftHandValue + " not like '" + rightHandValue + "'";
-			}
-		});
-		conditionalOperator.put(ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return ENDS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				rightHandValue = rightHandValue.trim();
-				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
-				rightHandValue = "%" + rightHandValue;
-				return leftHandValue + " like '" + rightHandValue + "'";
-			}
-		});
-		conditionalOperator.put(NOT_ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return NOT_ENDS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				rightHandValue = rightHandValue.trim();
-				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
-				rightHandValue = "%" + rightHandValue;
-				return leftHandValue + " not like '" + rightHandValue + "'";
-			}
-		});		
-		conditionalOperator.put(CONTAINS, new IConditionalOperator() {
-			public String getName() {return CONTAINS;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				rightHandValue = rightHandValue.trim();
-				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
-				rightHandValue = "%" + rightHandValue + "%";
-				return leftHandValue + " like '" + rightHandValue + "'";
-			}
-		});
-		conditionalOperator.put(IS_NULL, new IConditionalOperator() {
-			public String getName() {return IS_NULL;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + " IS NULL";
-			}
-		});
-		conditionalOperator.put(NOT_NULL, new IConditionalOperator() {
-			public String getName() {return NOT_NULL;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				return leftHandValue + " IS NOT NULL";
-			}
-		});
-	}
-	
-	public WhereField(String uniqueName, String operator, Object rightHandValue) {
+	public WhereField(String fname, String fdesc, 
+			String uniqueName, String operator, Object operand, String type, String desc, String boperator) {
+		
 		setUniqueName(uniqueName);
 		setOperator( operator );
-		setRightHandValue( rightHandValue );
+		setOperand( operand );
+		setOperandType(type);
+		setOperandDesc(desc);
+		setFname(fname);
+		setFdesc(fdesc);
+		setBoperator(boperator);
 	}
 	
-	public WhereField(String uniqueName, String operator) {
+	public WhereField(String fname, String fdesc,  String uniqueName, String operator, String boperator) {
 		setUniqueName(uniqueName);
 		setOperator( operator );
-		setRightHandValue( null );
+		setOperand( null );
+		setOperandType( null );
+		setFname(fname);
+		setFdesc(fdesc);
+		setBoperator(boperator);
 	}
 	
-	public static interface IConditionalOperator {	
-		String getName();
-		String apply(String leftHandValue, String rightHandValue);
-	}
-
-	public IConditionalOperator getOperator() {
-		return operator;
-	}
-
-	public void setOperator(IConditionalOperator operator) {
-		this.operator = operator;
-	}
 	
-	public void setOperator(String operatorName) {
-		this.operator = (IConditionalOperator)conditionalOperator.get( operatorName );
+
+	public Object getOperand() {
+		return operand;
 	}
 
-	public Object getRightHandValue() {
-		return rightHandValue;
-	}
-
-	public void setRightHandValue(Object rightHandValue) {
-		this.rightHandValue = rightHandValue;
+	public void setOperand(Object operand) {
+		this.operand = operand;
 	}
 
 	public String getUniqueName() {
@@ -204,5 +100,53 @@ public class WhereField {
 
 	public void setUniqueName(String uniqueName) {
 		this.uniqueName = uniqueName;
+	}
+
+	public String getOperandType() {
+		return operandType;
+	}
+
+	public void setOperandType(String operandType) {
+		this.operandType = operandType;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	public String getOperandDesc() {
+		return operandDesc;
+	}
+
+	public void setOperandDesc(String operandDesc) {
+		this.operandDesc = operandDesc;
+	}
+
+	public String getFname() {
+		return fname;
+	}
+
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+
+	public String getFdesc() {
+		return fdesc;
+	}
+
+	public void setFdesc(String fdesc) {
+		this.fdesc = fdesc;
+	}
+
+	public String getBoperator() {
+		return boperator;
+	}
+
+	public void setBoperator(String boperator) {
+		this.boperator = boperator;
 	}
 }

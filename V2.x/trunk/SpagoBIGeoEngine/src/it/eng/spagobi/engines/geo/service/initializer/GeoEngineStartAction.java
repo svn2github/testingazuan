@@ -155,7 +155,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	private String getContextUrl() {
 		String contextUrl = null;
 		
-		contextUrl = getHttpRequest().getProtocol().substring(0, getHttpRequest().getProtocol().indexOf('/'))+ "://" + getHttpRequest().getServerName() + ":" + getHttpRequest().getServerPort() + getHttpRequest().getContextPath();	
+		contextUrl = getHttpRequest().getContextPath();	
 		logger.debug("Context path: " + contextUrl);
 		
 		return contextUrl;

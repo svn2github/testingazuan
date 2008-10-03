@@ -69,7 +69,7 @@ String getUrl(String baseUrl, Map mapPars) {
 
 <!-- SCRIPT FOR DOMAIN DEFINITION 
 <script type="text/javascript">
-	document.domain='athos';
+	document.domain='engilab.ewebpd.eng.it';
 </script>
 -->
 
@@ -140,17 +140,15 @@ String getUrl(String baseUrl, Map mapPars) {
 %>
 
 
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
-<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
-
-   
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 <html lang="<%=locale.getLanguage()%>">
 <body>
 <%} %>
 
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
+<SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 
 <!-- import css  --> 
 <%

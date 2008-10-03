@@ -442,17 +442,58 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		loadSavedData : function(query) {
 	  		for(var i = 0; i < query.filters.length; i++) {
 	  			var filter = query.filters[i];
-	  			//alert(filter.toSource());
 	  			var record = new this.Record(filter);
-	  			this.store.add(record);  
+	  			this.store.add(record); 
 	  		}
+	  		
 	  		if(query.expression) {
-	  			alert('Exp. ' + query.expression.toSource());
-	  			it.eng.spagobi.engines.qbe.filterwizard.setExpression(query.expression); 
-	  			this.setWizardExpression(false); // togle oce fixed
+	  			var expStr = this.loadSavedExpression(query.expression);
+	  			it.eng.spagobi.engines.qbe.filterwizard.setExpression( expStr ); 
+	  			this.setWizardExpression(true); // togle oce fixed
 	  		}
 	  		
 	  	},
+	  	
+	  	loadSavedExpression : function(expression) {
+	  		var str = "";
+	  		
+	  		if(expression.type == 'NODE_OP') {
+	  			for(var i = 0; i < expression.childNodes.length; i++) {
+	  				var child = expression.childNodes[i];
+	  				var childStr = this.loadSavedExpression(child); 
+	  				if(child.type == "NODE_OP") {
+	  					childStr = "(" + childStr + ")";
+	  				}
+	  				str += (i==0?"": " " + expression.value);
+					str += " " + childStr;
+	  			}
+	  		} else {
+	  			str += expression.value;
+	  		}
+	  		
+	  		return str;
+	  	},
+	  	
+	  	/*
+	  	 String str = "";
+		
+		String type = filterExp.getType();
+		if("NODE_OP".equalsIgnoreCase( type )) {
+			for(int i = 0; i < filterExp.getChildNodes().size(); i++) {
+				ExpressionNode child = (ExpressionNode)filterExp.getChildNodes().get(i);
+				String childStr = getFilterExpAsString(child);
+				if("NODE_OP".equalsIgnoreCase( child.getType() )) {
+					childStr = "(" + childStr + ")";
+				}
+				str += (i==0?"": " " + filterExp.getValue());
+				str += " " + childStr;
+			}
+		} else {
+			str += filterExp.getValue();
+		}
+		
+		return str;
+	  	 */
 		
 		/**
 		 * Add a new row to the filter grid. 
@@ -531,7 +572,6 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 				this.syncWizardExpressionWithGrid();
 			}
 			var json = it.eng.spagobi.engines.qbe.filterwizard.getExpressionAsJSON();
-			alert(json);
 			
 			return json;
 		},

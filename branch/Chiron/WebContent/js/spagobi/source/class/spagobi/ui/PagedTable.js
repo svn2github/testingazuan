@@ -55,15 +55,21 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	    	
     	this.base(arguments);    	
     	this.setWidth("100%");// try also "auto"
-		this.setHeight("100%");
-    	this._filterBar = new spagobi.ui.FilterBar();
+		this.setHeight("*100%");
+	//	alert (document.documentElement.clientWidth);
+  //	alert (window.innerWidth);
+//		alert (screen.width);
+	//  alert (this.getWidthValue());
+		alert (this.getMaxWidth());
+		this._filterBar = new spagobi.ui.FilterBar();
     	this._table = new spagobi.ui.Table(controller, data);
-    	this._table.set(
+    	/*this._table.set(
 		{ 
-			width : 940,//"100%",// 940
+			//width : 940,//"100%",// 940
 			height: "85%"//100//"20%" //70 //'100%' 
-		});
-    	this._navigationBar = new spagobi.ui.NavigationBar(); 
+		});*/
+		
+		this._navigationBar = new spagobi.ui.NavigationBar(); 
     	
     	/* 
     	this.addColumn(); 

@@ -130,7 +130,12 @@ qx.Class.define("spagobi.ui.Table",
     }
 	
 	// Basic setup
-    this.setDimension("100%", "100%");
+  //  this.setDimension("100%", "100%");
+    //alert (this.getWidthValue());
+    var a = (91.8 * screen.width)/100;
+    //this.setWidth(940);
+    this.setWidth(a);
+    this.setHeight("85%");
     this.setBorder("inset-thin");					//line-bottom
     this.setOverflow("auto");
     this.setStatusBarVisible(false);

@@ -56,10 +56,12 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
    * (__'engine'__ / __'dataset'__ / __'datasource'__ /  __'mapmgmt'__ / __'featuremgmt'__)
    */
    	
-  construct : function(type)
+  construct : function(type, parentContainer)
   {
-   // this.base(arguments, "1*", "2*");
-    this.base(arguments,180, "1*");//, "2*");
+  	this.base(arguments,180, "1*", "3*");
+  	parentContainer.addRight(this);
+  	
+  	
     this.setWidth("100%");
     this.setHeight("100%");
     //var listPage;
@@ -100,10 +102,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'configuration') {									
 		this.records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-	} /*else if(type === 'funcManagement') {
-		records = spagobi.app.data.DataService.loadFunctinalitiesRecords();
-		form = new spagobi.ui.custom.LOVDetailsForm(); 
-	}*/ else if(type == 'link1') {									
+	} else if(type == 'link1') {									
 		this.records = spagobi.app.data.DataService.loadlink1Records();
 		form = new spagobi.ui.custom.Link1DummyForm(); 
 	} else if(type == 'link2') {									
@@ -139,75 +138,49 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	}
 	
 	if(type != 'funcManagement'){	
-   	// Create list view
-   	//listPage = new spagobi.ui.Table(this, records ); //works fine
-   	this.listPage = new spagobi.ui.PagedTable(this,this.records); // problem with table resize
-   	this.addTop( this.listPage );
-      	
-   	// Create detail view
-   	detailPage = new qx.ui.pageview.buttonview.ButtonView();
-    detailPage.setEdge(0);     
-        
-    // Create detail view toolbar
-      var saveButton = new qx.ui.pageview.buttonview.Button(/*"Save");//*/"", "spagobi/img/spagobi/test/save.png");
-    var SB = new qx.ui.popup.ToolTip("Save");
-    saveButton.setToolTip(SB);
-    var deleteButton = new qx.ui.pageview.buttonview.Button(/*"Delete");//*/"", "spagobi/img/spagobi/test/delete.png");
-    var SD = new qx.ui.popup.ToolTip("Delete");
-    deleteButton.setToolTip(SD);
-    var createButton = new qx.ui.pageview.buttonview.Button(/*"New");//*/"", "spagobi/img/spagobi/test/create.png");
-    var NB = new qx.ui.popup.ToolTip("New");
-    createButton.setToolTip(NB);
-                     
-    detailPage.getBar().add(createButton, saveButton, deleteButton);               
-   
-    // Functionality for Save button
-    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
-	save_page.setDisplay(false);
-	detailPage.getPane().add(save_page);
-	save_page.addEventListener("appear", this.ShowDetails, this);
-	
-	/*function ShowDetails() {
-		var alias = this.getForm().getData();
-		alert (this.printObject(alias));
-	}*/
-
-    
-    /* 
-     //test code for the dummy Logout button of pageview 
-    var btn = new qx.ui.pageview.buttonview.Button("Logout");
-	detailPage.getBar().add(btn);
-	var dum_page = new qx.ui.pageview.buttonview.Page(btn);
-	detailPage.getPane().add(dum_page);
-	dum_page.setDisplay(false);
-	dum_page.addEventListener("appear", logout);
-	
-	function logout() {
-		alert ("Button works !!!!");
-	}
-    //End of test code   
-     */
-        
-    /*    
-    //testing for parameter form's getData() function
-    if(type ==='parameters'){
-  		var b = new qx.ui.form.Button("dummy button");
-  		b.addEventListener("execute",this.myFunction,this);
-  		form.add(b);
-  	}
-  	*/
-        
-    // Create detail view body
-   	this._form = form;       	      	
-   	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
-    detailHeader.setDisplay(false);        
-    detailHeader.setChecked(true);  		
-	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
-    this.detailBody.setOverflow("auto");
-    this.detailBody.add( this._form );  		 
-  	detailPage.getPane().add( this.detailBody );
-  	
-  	this.addBottom( detailPage );
+	   	// Create list view
+	   	this.listPage = new spagobi.ui.PagedTable(this,this.records); 
+	   	this.addTop( this.listPage );
+	    //this.listPage.setWidth('100%'); 
+	    //this.listPage.setHeight('100%');  	
+	      	
+	      	
+	   	// Create detail view
+	   	detailPage = new qx.ui.pageview.buttonview.ButtonView();
+	    detailPage.setEdge(0);     
+	        
+	    // Create detail view toolbar
+	      var saveButton = new qx.ui.pageview.buttonview.Button(/*"Save");//*/"", "spagobi/img/spagobi/test/save.png");
+	    var SB = new qx.ui.popup.ToolTip("Save");
+	    saveButton.setToolTip(SB);
+	    var deleteButton = new qx.ui.pageview.buttonview.Button(/*"Delete");//*/"", "spagobi/img/spagobi/test/delete.png");
+	    var SD = new qx.ui.popup.ToolTip("Delete");
+	    deleteButton.setToolTip(SD);
+	    var createButton = new qx.ui.pageview.buttonview.Button(/*"New");//*/"", "spagobi/img/spagobi/test/create.png");
+	    var NB = new qx.ui.popup.ToolTip("New");
+	    createButton.setToolTip(NB);
+	                     
+	    detailPage.getBar().add(createButton, saveButton, deleteButton);               
+	   
+	    // Functionality for Save button
+	    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
+		save_page.setDisplay(false);
+		detailPage.getPane().add(save_page);
+		save_page.addEventListener("appear", this.ShowDetails, this);
+		
+		
+	        
+	    // Create detail view body
+	   	this._form = form;       	      	
+	   	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
+	    detailHeader.setDisplay(false);        
+	    detailHeader.setChecked(true);  		
+		this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
+	    this.detailBody.setOverflow("auto");
+	    this.detailBody.add( this._form );  		 
+	  	detailPage.getPane().add( this.detailBody );
+	  	
+	  	this.addBottom( detailPage );
   	}		// if (type != func mgmt)
   	
   	if(type == 'funcManagement'){
@@ -275,14 +248,14 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		  							checkBox: true,
 		  							init_icon: "icon/16/places/user-desktop.png",
 		  							click_icon: "",
-		  							file  : true	
+		  							file  : true
   								});
   		//tree.deleteNode(node3);							
   		//tree.deleteNodebyID("node3");						
   								 											
-  		tree.addEventListener("click",tree.onClickMenu,tree);		// mouseevent
+  		//tree.addEventListener("click",tree.onClickMenu,tree);		// mouseevent
   		//tree.addEventListener("changeSelected",tree.onClickMenu,tree);
-  		//tree.getManager().addEventListener("changeSelection",tree.onClickMenu,tree);	//data event
+  		tree.getManager().addEventListener("changeSelection",tree.onClickMenu,tree);	//data event
   		//tree.getManager().addEventListener("changeSelection",this._onSelectTreeNode,tree);
   		
   		//tree.setSelectedElement(tree);

@@ -148,8 +148,8 @@ qx.Class.define("spagobi.ui.PageView", {
 		 */
 		selectPage: function(pageName) {
     		if(!this._pages[pageName]) {
-    			this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
-    			this.addRight( this._pages[pageName] ); 
+    			this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName, this);
+    			//this.addRight( this._pages[pageName] ); 
     		}
     	
     	

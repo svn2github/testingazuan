@@ -450,8 +450,8 @@ qx.Class.define("spagobi.app.Chiron",
      */
     _selectPage: function(pageName) {
     	if(!this.pages[pageName]) {
-    		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
-    		this.mainPane.addRight( this.pages[pageName] ); 
+    		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName, this.mainPane);
+    		//this.mainPane.addRight( this.pages[pageName] ); 
     	}
     	
     	

@@ -55,9 +55,7 @@ qx.Class.define("spagobi.ui.Table",
   {
     // Establish controller link
     this._controller = controller;
-    
-    //var columnIds = [];
-    //var columnNames = {};
+	
     for(var i = 0; i < data.meta.length; i++) {
     	this.columnIds[i] =  data.meta[i].dataIndex;
     	this.columnNames[data.meta[i].dataIndex] = data.meta[i].name;
@@ -113,33 +111,22 @@ qx.Class.define("spagobi.ui.Table",
 			columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
 			columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
 		
-			this.addEventListener("cellClick",this._onCellCilck, this );
-			
-		/*	
-		//	columnModel.setDataCellRenderer(2, new qx.ui.table.cellrenderer.Boolean());
-	 	//  columnModel.setDataCellRenderer(3, new qx.ui.table.cellrenderer.Boolean());    
-	    columnModel.setDataCellRenderer(4, new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc));
-	    columnModel.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Boolean());
-	    columnModel.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Boolean());
-	    columnModel.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Boolean());
-	    columnModel.setDataCellRenderer(9, new qx.ui.table.cellrenderer.Boolean());
-	    columnModel.setDataCellRenderer(10, new qx.ui.table.cellrenderer.Boolean());
-		*/
-	
-    }
+			this.addEventListener("cellClick",this._onCellCilck, this );	
+    	}
     }
 	
 	// Basic setup
-  //  this.setDimension("100%", "100%");
-    //alert (this.getWidthValue());
-    var a = (91.8 * screen.width)/100;
-    //this.setWidth(940);
-    this.setWidth(a);
-    this.setHeight("85%");
-    this.setBorder("inset-thin");					//line-bottom
+ 
+    //var a = (91.8 * screen.width)/100;
+    this.setWidth("100%");
+    this.setHeight("100%");
     this.setOverflow("auto");
+    
+    
+    this.setBorder("inset-thin");					//line-bottom
+    
     this.setStatusBarVisible(false);
-    this.getDataRowRenderer().setHighlightFocusRow(false);
+    this.getDataRowRenderer().setHighlightFocusRow(true);
     this.getPaneScroller(0).setShowCellFocusIndicator(false);
     
     this._tableModel.setDataAsMapArray(data.rows, true);

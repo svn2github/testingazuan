@@ -54,52 +54,35 @@ qx.Class.define("spagobi.ui.PagedTable", {
 	construct : function(controller, data)  {
     	    	
     	this.base(arguments);    	
-    	this.setWidth("100%");// try also "auto"
-		this.setHeight("*100%");
-	//	alert (document.documentElement.clientWidth);
-  //	alert (window.innerWidth);
-//		alert (screen.width);
-	//  alert (this.getWidthValue());
-		alert (this.getMaxWidth());
+	
 		this._filterBar = new spagobi.ui.FilterBar();
-    	this._table = new spagobi.ui.Table(controller, data);
-    	/*this._table.set(
-		{ 
-			//width : 940,//"100%",// 940
-			height: "85%"//100//"20%" //70 //'100%' 
-		});*/
-		
+    	this._table = new spagobi.ui.Table(controller, data);    
 		this._navigationBar = new spagobi.ui.NavigationBar(); 
     	
-    	/* 
-    	this.addColumn(); 
-    	
-    	this.addRow();
-    	this.add(this._filterBar, 0, 0);
-    	
-    	this.addRow();
-    	this.add(this._table, 0, 1);
-    	
-    	this.addRow();
-    	this.add(this._navigationBar, 0, 2);
-    	
-    	this.setDimension("100%", "100%");
-    	*/
+    	this.setWidth('100%'); 
+	    this.setHeight('100%'); 
+	    //this.setBackgroundColor('white');
     	
     	var atom1 = new qx.ui.basic.Atom();
-    	atom1.add( this._filterBar );
-    	atom1.setHorizontalAlign("center");
-    	//atom1.setVerticalAlign("bottom");
-    	atom1.set ({height: 50/*, marginTop: 0*/});
+    	atom1.setWidth('100%'); 
+    	//atom1.setBackgroundColor('gray');
+    	atom1.add( this._filterBar );    	  	
     	this.add( atom1 );
-    	    	
+    	atom1.setHorizontalAlign("center");   
+    	   	
     	var atom0 = new qx.ui.basic.Atom();
+    	atom0.setWidth('100%'); 
+	    atom0.setHeight('5*'); 
+	    atom0.setBackgroundColor('white');
     	atom0.add( this._table );
     	this.add( atom0 );
-    	    	
+    	  
+    	   	
     	var atom2 = new qx.ui.basic.Atom();
-    	atom2.setHorizontalAlign("center");
+    	atom2.setWidth('100%');  
+    	//atom2.setBackgroundColor('#A9A9A9');
     	atom2.add( this._navigationBar );
+    	atom2.setHorizontalAlign("center");
     	this.add( atom2 );
     	
   	},

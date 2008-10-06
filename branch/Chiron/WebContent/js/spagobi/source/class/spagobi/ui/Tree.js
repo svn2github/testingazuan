@@ -81,9 +81,11 @@ qx.Class.define("spagobi.ui.Tree", {
 	               onClickMenu: function(e){
 	               		
 	               		alert(this.getManager().getSelectedItem());
+	               		//this.getManager().getSelectedItem();
+	               		
 	               		
 	               		if(this.getSelectedElement() == undefined || this.getManager().getSelectedItem() == undefined){		// null
-	               			alert("no Element Selected");
+	               			//alert("no Element Selected");
 	               			return;
 	               		}
 	               		
@@ -163,9 +165,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		
 	               		if(this.getManager().getSelectedItem() == this){		// If Root Node
 	               			contextMenu.add(insertButton,deleteButton);
-	               		}
-	               		
-	               		else{
+	               		} else {
 		               			var selectionManager = this.getManager();
 		               			var item = selectionManager.getSelectedItem();
 		               			
@@ -181,9 +181,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	                 				else{
 		               					contextMenu.add(deleteButton,moveUpButton,moveDownButton);
 	                 				}	
-		               			}
-		               			
-		               			else{															// For folders, you have insert option even if they are at leaf
+		               			} else{															// For folders, you have insert option even if they are at leaf
 		               				if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
 		               					contextMenu.add(insertButton,deleteButton,moveDownButton);
 		               				}
@@ -204,24 +202,27 @@ qx.Class.define("spagobi.ui.Tree", {
   						//alert(contextMenu.getVisibility() + ", "+ contextMenu.getDisplay());
   						//alert(contextMenu.isSeeable());
   						
+  						
+  						alert('debugpt0: ' + contextMenu.isSeeable());
   						if (contextMenu.isSeeable()){		//never gets executed
 				            alert('hi');
 				            contextMenu.hide();
 				            this.setSelectedElement(null);
-				            
-				            	alert(this.getSelectedElement);
+				            alert(this.getSelectedElement);
 				        }
 				        else{
-				            
+				            alert('debugpt1');
 				  			var ele = this.getSelectedElement().getElement();
 				  			//this.getSelectedElement().getLeft(); // NULL
 				  			//alert(qx.html.Location.getPageBoxLeft(ele) + "," + qx.html.Location.getPageBoxRight(ele));	//same
 				  			//alert(this.getSelectedElement().getLeft() + ", " + qx.html.Location.getPageBoxRight(ele));
 				  			//alert(this.getSelectedElement().getTop()+ this.getSelectedElement().getHeight()+ ", " + qx.html.Location.getPageBoxBottom(ele));
-				  			contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); //getClientAreaRight
-				  			contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
-				  			//contextMenu.setLeft(178);
-				  			//contextMenu.setTop(300);
+				  			//contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); //getClientAreaRight
+				  			//contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
+				  			
+				  			contextMenu.setLeft(178);
+				  			contextMenu.setTop(300);
+				  			
 				  			//contextMenu.setPosition('bottom-left')
 				  			//alert(contextMenu.getLeft() +", " +contextMenu.getTop() + ", " + contextMenu.getVisibility() + ""+ contextMenu.getDisplay());
 				            //contextMenu.setLeft(qx.bom.element.Location.getRight(ele));

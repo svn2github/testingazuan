@@ -48,7 +48,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 		this.base(arguments);
 		this.setWidth("100%");// try also "auto"
 		this.setHeight("100%");
-		this.setTop(20);
+		this.setTop(0);
 		this.createFilterBar();
 	},
 	

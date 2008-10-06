@@ -53,7 +53,7 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		this.setWidth("100%");// try also "auto"
 		this.setHeight("100%");
 	//	this.setCentered(true);//setLeft("center");
-		this.setTop(-5);
+		//this.setTop(-5);
 		this.createNavBar();
 		
 	},

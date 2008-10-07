@@ -156,12 +156,18 @@ public class ProcessOOTemplateAction implements ActionHandler {
 			    "com.sun.star.connection.Connector", xRemoteContext);
 		    XConnector xConnector = (XConnector) UnoRuntime.queryInterface(XConnector.class, x);
 		    logger.debug("XConnector retrieved: " + xConnector);
-		    XConnection connection = xConnector.connect("socket,host=" + host + ",port=" + port);
-		    if (connection == null) {
-		    	logger.error("Cannot connect to open office using host " + host + " and port " + port);
-		    	throw new OpenOfficeConnectionException("Cannot connect to open office using host " + host
-		    			+ " and port " + port);
-		    }
+            XConnection connection = null;
+            try {
+			    connection = xConnector.connect("socket,host=" + host + ",port=" + port);
+			    if (connection == null) {
+			    	logger.error("Cannot connect to open office using host " + host + " and port " + port);
+			    	throw new OpenOfficeConnectionException("Cannot connect to open office using host " + host
+			    			+ " and port " + port);
+			    }
+            } catch (Exception e) {
+            	logger.error("Cannot connect to open office using host " + host + " and port " + port, e);
+            	throw new OpenOfficeConnectionException("Cannot connect to open office using host " + host + " and port " + port);
+            }
 		    logger.debug("XConnection retrieved: " + connection);
 		    x = xRemoteContext.getServiceManager().createInstanceWithContext("com.sun.star.bridge.BridgeFactory",
 			    xRemoteContext);

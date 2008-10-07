@@ -77,7 +77,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String downloadVersionUrl = DossierUtilities.getDossierServiceUrl(request) + "&" +
    							   DossierConstants.DOSSIER_SERVICE_TASK + "=" + 
    							   DossierConstants.DOSSIER_SERVICE_TASK_DOWN_PRESENTATION_VERSION + "&" +
-		                       DossierConstants.DOSSIER_ID+"="+dossierIdStr;
+		                       DossierConstants.DOSSIER_ID+"="+dossierIdStr + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=true";
    
 %>
 

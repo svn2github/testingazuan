@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.dossier.modules;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
@@ -140,6 +140,11 @@ public class DossierCollaborationModule extends AbstractModule {
 	
 	private void publishHandler(SourceBean request, SourceBean response) {
 		try{
+			SessionContainer session = this.getRequestContainer().getSessionContainer();
+			SessionContainer permanentSession = session.getPermanentContainer();
+			IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			String userId = (String) profile.getUserUniqueIdentifier();
+			
 			String label = (String)request.getAttribute("label");
 			if(label==null) label = "";
 			String description = (String)request.getAttribute("description");
@@ -212,12 +217,13 @@ public class DossierCollaborationModule extends AbstractModule {
 				}
 				// create biobject
 				BIObject biobj = new BIObject();
+				biobj.setCreationUser(userId);
 				biobj.setDescription(description);
 				biobj.setLabel(label);
 				biobj.setName(name);
 				biobj.setEncrypt(new Integer(0));
 				biobj.setEngine(engine);
-				biobj.setDataSourceId(engine.getDataSourceId());
+				biobj.setDataSourceId(null);
 				biobj.setRelName("");
 				biobj.setBiObjectTypeCode(officeDocDom.getValueCd());
 				biobj.setBiObjectTypeID(officeDocDom.getValueId());
@@ -388,13 +394,6 @@ public class DossierCollaborationModule extends AbstractModule {
 			// save workflow data
 			jbpmContext.save(processInstance); 
 			
-		    try {
-		    	response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierExecution");
-		    	response.setAttribute(DossierConstants.EXECUTION_MESSAGE, executionMsg);
-		    } catch (Exception e) {
-		    	logger.error("Error while setting attributes into response", e);
-		    }
-			
 	    } catch (Exception e) {
 	    	if (executionMsg == null) {
 	    		executionMsg = msgBuilder.getMessage("dossier.workProcessStartError", "component_dossier_messages");
@@ -406,11 +405,6 @@ public class DossierCollaborationModule extends AbstractModule {
 	    } finally {
 	    	if (executionMsg == null) {
 	    		executionMsg = msgBuilder.getMessage("dossier.workProcessStartCorrectly", "component_dossier_messages");
-	    		try {
-					response.setAttribute(DossierConstants.EXECUTION_MESSAGE, executionMsg);
-				} catch (SourceBeanException e) {
-					logger.error(e);
-				}
 	    		// AUDIT UPDATE
 	    		auditManager.updateAudit(auditId, new Long(System.currentTimeMillis()), null, 
 						"EXECUTION_STARTED", null, null);
@@ -430,7 +424,14 @@ public class DossierCollaborationModule extends AbstractModule {
 			    logger.debug("Deleted folder " + pathTempFolder);
 		    }
 	    	logger.debug("OUT");
-	    } 
+	    }
+	    
+	    try {
+	    	response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierExecution");
+	    	response.setAttribute(DossierConstants.EXECUTION_MESSAGE, executionMsg);
+	    } catch (Exception e) {
+	    	logger.error("Error while setting attributes into response", e);
+	    }
 
 	}
 	

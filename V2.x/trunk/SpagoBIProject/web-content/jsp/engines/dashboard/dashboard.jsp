@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,9 +16,10 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ page import="java.util.Set" %>
+<%@page import="java.net.URLEncoder"%>
 
 <% 
    SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
@@ -26,9 +27,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
    String execContext = instanceO.getExecutionModality();
 
-   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+   Integer executionAuditId_dash = null;
+   
+	if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
-		<%	
+		<%
+		executionAuditId_dash = executionAuditId;
+	} else {
+		ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+		AuditManager auditManager = AuditManager.getInstance();
+		executionAuditId_dash = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());
    }
 
     String movie = ChannelUtilities.getSpagoBIContextName(request);
@@ -47,12 +55,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	else dataurl = dataurl + "/" + dataurlRel;
 	Map confParameters = (Map)sbModuleResponse.getAttribute("confParameters");
 	Map dataParameters = (Map)sbModuleResponse.getAttribute("dataParameters");
+	dataParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	// adding parameters for AUDIT updating
+	if (executionAuditId_dash != null) {
+		dataParameters.put(AuditManager.AUDIT_ID, executionAuditId_dash.toString());
+	}
 	
 	// start to create the calling url
 	// put the two dimensio parameter
 	movie += "?paramHeight="+height+"&paramWidth="+width; 
 	// create the dataurl string
-	if (dataurl.contains("?")) dataurl += "%26";
+	if (dataurl.contains("?")) dataurl += "&";
 	else dataurl += "?";
 	// for each data parameter append to the dataurl 
 	Set dataKeys = dataParameters.keySet();
@@ -60,7 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	while(iterDataKeys.hasNext()) {
 		String name = (String)iterDataKeys.next();
 		String value = (String)dataParameters.get(name);
-	    dataurl += name + "%3D" + value + "%26"; 
+	    dataurl += name + "=" + value + "&"; 
 	}
 	
     // for each conf parameter append to the movie url  
@@ -73,7 +86,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
     // append to the calling url the dataurl	
-	movie += "&dataurl=" + dataurl;
+	movie += "&dataurl=" + URLEncoder.encode(dataurl);
     
 %>
 

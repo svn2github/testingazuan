@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.service;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
@@ -45,6 +46,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -116,7 +118,8 @@ public class DetailBIObjectModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		// RECOVER REQUEST CONTAINER, SESSION CONTAINER, USER PROFILE AND ERROR HANDLER
-		RequestContainer requestContainer = this.getRequestContainer();		
+		RequestContainer requestContainer = this.getRequestContainer();	
+		ResponseContainer responseContainer = this.getResponseContainer();	
 		session = requestContainer.getSessionContainer();
 		SessionContainer permanentSession = session.getPermanentContainer();
 		profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -131,7 +134,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		}
 		*/
 		// CREATE THE HELPER
-		helper = new DetBIObjModHelper(requestContainer, request, response);
+		helper = new DetBIObjModHelper(requestContainer, responseContainer, request, response);
 		// GET THE EXECUTION MODALITY AND THE INITIAL PATH  
 		String modality = (String) ChannelUtilities.getPreferenceValue(this.getRequestContainer(), BIObjectsModule.MODALITY, "");
 		initialPath = null;
@@ -733,6 +736,9 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setBiObjectTypeID(null);
             obj.setBiObjectTypeCode("");
             obj.setRefreshSeconds(new Integer(0));
+            Domain state = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("STATE", "DEV");
+            obj.setStateCode(state.getValueCd());
+            obj.setStateID(state.getValueId());
             List functionalitites = new ArrayList();
             obj.setFunctionalities(functionalitites);
             response.setAttribute(NAME_ATTR_OBJECT, obj);

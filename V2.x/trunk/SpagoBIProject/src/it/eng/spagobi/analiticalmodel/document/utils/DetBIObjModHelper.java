@@ -22,11 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.utils;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -41,18 +39,15 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.commons.exceptions.DuplicateLabelException;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.engines.config.exceptions.NoEngineSuitableException;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -68,6 +63,7 @@ public class DetBIObjModHelper {
 	SourceBean request = null;
 	SourceBean response = null;
 	RequestContainer reqCont = null;
+	ResponseContainer respCont = null;
 	
 	/**
 	 * Instantiates a new det bi obj mod helper.
@@ -76,10 +72,11 @@ public class DetBIObjModHelper {
 	 * @param request the request
 	 * @param response the response
 	 */
-	public DetBIObjModHelper(RequestContainer reqCont, SourceBean request, SourceBean response) {
+	public DetBIObjModHelper(RequestContainer reqCont, ResponseContainer respCont, SourceBean request, SourceBean response) {
 		this.request = request;
 		this.response = response;
 		this.reqCont = reqCont;
+		this.respCont = respCont;
 	}
 	
 	
@@ -144,7 +141,10 @@ public class DetBIObjModHelper {
 			// if engine id is not specified take the first engine for the biobject type
 			List engines = DAOFactory.getEngineDAO().loadAllEnginesForBIObjectType(typeCode);
 			if(engines.size() == 0) {
-				throw new NoEngineSuitableException("No Engines defined for BIObject type " + typeCode);
+				Domain domain = DAOFactory.getDomainDAO().loadDomainById(typeIdInt);
+				Vector vector = new Vector();
+				vector.add(domain.getValueName());
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 1064, vector, new HashMap());
 			}
 			engine = (Engine) engines.get(0);
 		} else {
@@ -170,7 +170,8 @@ public class DetBIObjModHelper {
 		List functionalities = new ArrayList();
 		List functionalitiesStr = request.getAttributeAsList(ObjectsTreeConstants.FUNCT_ID);
 		if (functionalitiesStr.size() == 0) {
-			throw new NoEngineSuitableException("No Functionalities Associated to the BIObject");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, ObjectsTreeConstants.FUNCT_ID, "1008");
+			this.respCont.getErrorHandler().addError(error);
 		} else {
 			for (Iterator it = functionalitiesStr.iterator(); it.hasNext(); ) {
 				String functIdStr = (String) it.next();
@@ -215,7 +216,8 @@ public class DetBIObjModHelper {
 		// CHECK IF THE LABEL IS ALREADY ASSIGNED TO AN EXISTING OBJECT
 		BIObject aBIObject = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
 		if (aBIObject != null && !aBIObject.getId().equals(id)) {
-			throw new DuplicateLabelException("The label " + label + " is assigned to another object");
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "label", "1056");
+			this.respCont.getErrorHandler().addError(error);
 		}
 
 		// SET DATA INTO OBJECT

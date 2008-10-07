@@ -38,7 +38,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -205,7 +204,6 @@ public class AuditManager {
 	audit.setDocumentType(obj.getBiObjectTypeCode());
 	audit.setDocumentState(obj.getStateCode());
 
-	audit.setExecutionStartTime(GregorianCalendar.getInstance().getTime());
 	String documentParameters = "";
 	List parameters = obj.getBiObjectParameters();
 	ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();

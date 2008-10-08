@@ -354,7 +354,7 @@ public class ExportManager implements IExportManager {
 	    }
 	    
 	    Engine engine = biobj.getEngine();
-	    if (engine.getUseDataSource()) {
+	    if (engine.getUseDataSource() && engine.getDataSourceId() != null) {
 		    Integer engineDataSourceId = engine.getDataSourceId();
 		    DataSource ds = dataSourceDao.loadDataSourceByID(engineDataSourceId);
 		    exporter.insertDataSource(ds, session);

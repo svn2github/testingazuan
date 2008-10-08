@@ -277,7 +277,7 @@ public class ExporterMetadata {
 			SbiDomains engineTypeDom = (SbiDomains)session.load(SbiDomains.class, engine.getEngineTypeId());
 			hibEngine.setEngineType(engineTypeDom);
 			hibEngine.setUseDataSource(new Boolean(engine.getUseDataSource()));
-			if (engine.getUseDataSource()) {
+			if (engine.getUseDataSource() && engine.getDataSourceId() != null) {
 				SbiDataSource ds = (SbiDataSource) session.load(SbiDataSource.class, engine.getDataSourceId());
 				hibEngine.setDataSource(ds);
 			}

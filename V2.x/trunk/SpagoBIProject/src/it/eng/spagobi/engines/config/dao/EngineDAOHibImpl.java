@@ -358,7 +358,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setEngineTypeId(hibEngine.getEngineType().getValueId());
 		eng.setClassName(hibEngine.getClassNm());
 		eng.setBiobjTypeId(hibEngine.getBiobjType().getValueId());
-		eng.setDataSourceId(new Integer((hibEngine.getDataSource()==null)?-1:hibEngine.getDataSource().getDsId()));
+		eng.setDataSourceId(hibEngine.getDataSource() == null ? null : new Integer(hibEngine.getDataSource().getDsId()));
 		return eng;
 	}
 	

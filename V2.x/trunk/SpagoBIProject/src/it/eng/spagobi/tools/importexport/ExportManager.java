@@ -45,6 +45,7 @@ import it.eng.spagobi.behaviouralmodel.lov.dao.IModalitiesValueDAO;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -419,11 +420,16 @@ public class ExportManager implements IExportManager {
 	    List functs = biobj.getFunctionalities();
 	    Iterator iterFunct = functs.iterator();
 	    while (iterFunct.hasNext()) {
-		Integer functId = (Integer) iterFunct.next();
-		ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
-		LowFunctionality funct = lowFunctDAO.loadLowFunctionalityByID(functId, false);
-		exporter.insertFunctionality(funct, session);
-		exporter.insertObjFunct(biobj, funct, session);
+			Integer functId = (Integer) iterFunct.next();
+			ILowFunctionalityDAO lowFunctDAO = DAOFactory.getLowFunctionalityDAO();
+			LowFunctionality funct = lowFunctDAO.loadLowFunctionalityByID(functId, false);
+			if (funct.getCodType().equals(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE)) {
+				logger.debug("User folder [" + funct.getPath() + "] will be not exported.");
+				// if the folder is a personal folder, it is not exported
+				continue;
+			}
+			exporter.insertFunctionality(funct, session);
+			exporter.insertObjFunct(biobj, funct, session);
 	    }
 	    // export parameters
 	    List biparams = biobjDAO.getBIObjectParameters(biobj);

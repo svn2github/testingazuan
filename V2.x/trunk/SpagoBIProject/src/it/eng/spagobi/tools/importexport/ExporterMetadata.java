@@ -476,6 +476,7 @@ public class ExporterMetadata {
 			hibBIObj.setLanguage(biobj.getLanguage());
 			hibBIObj.setObjectve(biobj.getObjectve());
 			hibBIObj.setRefreshSeconds(biobj.getRefreshSeconds());
+			hibBIObj.setProfiledVisibility(biobj.getProfiledVisibility());
 			
 			session.save(hibBIObj);
 			tx.commit();

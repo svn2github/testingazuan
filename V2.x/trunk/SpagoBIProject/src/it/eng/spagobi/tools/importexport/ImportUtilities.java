@@ -552,6 +552,7 @@ public class ImportUtilities {
 		newObj.setStateConsideration(obj.getStateConsideration());
 		newObj.setStateConsiderationCode(obj.getStateConsiderationCode());
 		newObj.setVisible(obj.getVisible());
+		newObj.setProfiledVisibility(obj.getProfiledVisibility());
 		newObj.setUuid(obj.getUuid());
 		newObj.setCreationDate(obj.getCreationDate());
 		newObj.setCreationUser(obj.getCreationUser());
@@ -687,6 +688,13 @@ public class ImportUtilities {
 		    existingObj.setSchedFl(exportedObj.getSchedFl());
 		    existingObj.setSbiObjStates(new HashSet());
 		    existingObj.setVisible(exportedObj.getVisible());
+		    existingObj.setProfiledVisibility(exportedObj.getProfiledVisibility());
+		    existingObj.setRefreshSeconds(exportedObj.getRefreshSeconds());
+		    existingObj.setExtendedDescription(exportedObj.getExtendedDescription());
+		    existingObj.setKeywords(exportedObj.getKeywords());
+		    existingObj.setLanguage(exportedObj.getLanguage());
+		    existingObj.setObjectve(exportedObj.getObjectve());
+		    
 		    // deletes existing associations between object and parameters 
 		    Set objPars = existingObj.getSbiObjPars();
 		    Iterator objParsIt = objPars.iterator();

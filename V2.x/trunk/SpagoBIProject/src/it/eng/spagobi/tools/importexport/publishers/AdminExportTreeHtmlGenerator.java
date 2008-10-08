@@ -96,7 +96,7 @@ public class AdminExportTreeHtmlGenerator extends AdminTreeHtmlGenerator {
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		/* ********* start luca changes *************** */
-	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		boolean isUserFunct = folder.getCodType().equals(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE);
 	   		if(isUserFunct) {
 	   			continue;
 	   		}

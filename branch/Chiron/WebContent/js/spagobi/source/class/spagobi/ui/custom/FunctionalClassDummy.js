@@ -5,7 +5,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   construct : function(type)
   {
    // this.base(arguments, "1*", "2*");
-    this.base(arguments,"1*","2*");//, "2*"); //  180
+    this.base(arguments,"1*","4*");//, "2*"); //  180
     this.setWidth("100%");
     this.setHeight("100%");
     this.setLiveResize(false);
@@ -70,9 +70,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		this.addLeft(bottomPart);
   		
+  		var rightPart = new spagobi.ui.custom.FunctionalityTreeSubClass();
   		
-  		
-  		this.addRight(dummyTree);
+  		this.addRight(rightPart);
    } 		
   }
   

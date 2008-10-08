@@ -55,7 +55,7 @@ qx.Class.define("spagobi.ui.Table",
   {
     // Establish controller link
     this._controller = controller;
-	
+    
     for(var i = 0; i < data.meta.length; i++) {
     	this.columnIds[i] =  data.meta[i].dataIndex;
     	this.columnNames[data.meta[i].dataIndex] = data.meta[i].name;
@@ -92,6 +92,14 @@ qx.Class.define("spagobi.ui.Table",
 	 	
    		 	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
 
+			for(i=0; i<data.columns.length; i++){
+				columnModel.setDataCellRenderer(data.columns[i], propertyCellRendererFactory);
+				columnModel.setCellEditorFactory(data.columns[i], propertyCellEditorFactory);
+			}
+			
+			this.addEventListener("cellClick",this._onCellCilck, this );
+			
+			/*
 			columnModel.setDataCellRenderer(2, propertyCellRendererFactory);
 			columnModel.setCellEditorFactory(2, propertyCellEditorFactory);
 			columnModel.setDataCellRenderer(3, propertyCellRendererFactory);
@@ -111,20 +119,31 @@ qx.Class.define("spagobi.ui.Table",
 			columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
 			columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
 		
-			this.addEventListener("cellClick",this._onCellCilck, this );	
-    	}
+			
+			
+			
+		//	columnModel.setDataCellRenderer(2, new qx.ui.table.cellrenderer.Boolean());
+	 	//  columnModel.setDataCellRenderer(3, new qx.ui.table.cellrenderer.Boolean());    
+	 //   columnModel.setDataCellRenderer(4, new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc));
+	 //   columnModel.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Boolean());
+	 //   columnModel.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Boolean());
+	 //   columnModel.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Boolean());
+	//    columnModel.setDataCellRenderer(9, new qx.ui.table.cellrenderer.Boolean());
+	//   columnModel.setDataCellRenderer(10, new qx.ui.table.cellrenderer.Boolean());
+		
+	*/
+    }
     }
 	
 	// Basic setup
- 
-    //var a = (91.8 * screen.width)/100;
-    this.setWidth("100%");
-    this.setHeight("100%");
-    this.setOverflow("auto");
-    
-    
+ //this.setDimension('100%', '100%');
+    //alert (this.getWidthValue());
+    //var a = (92 * screen.width)/100;
+   	//this.setWidth(a);
+    this.setWidth('100%');
+    this.setHeight('100%');
     this.setBorder("inset-thin");					//line-bottom
-    
+    this.setOverflow("auto");
     this.setStatusBarVisible(false);
     this.getDataRowRenderer().setHighlightFocusRow(true);
     this.getPaneScroller(0).setShowCellFocusIndicator(false);

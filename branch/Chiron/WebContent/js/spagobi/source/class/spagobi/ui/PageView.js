@@ -148,8 +148,15 @@ qx.Class.define("spagobi.ui.PageView", {
 		 */
 		selectPage: function(pageName) {
     		if(!this._pages[pageName]) {
-    			this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName, this);
-    			//this.addRight( this._pages[pageName] ); 
+    			if (pageName== "funcManagement")
+    			{
+    				this._pages[pageName] = new spagobi.ui.custom.FunctionalClassDummy(pageName);
+    			}
+    			else
+    			{	
+    				this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
+    			}
+    			this.addRight( this._pages[pageName] ); 
     		}
     	
     	
@@ -157,8 +164,10 @@ qx.Class.define("spagobi.ui.PageView", {
 	    		this._pages[this._selectedPageName].setVisibility(false);
 	    	}
 	    	this._selectedPageName = pageName;
-	    		
-	    	this._pages[pageName].show();    	  
+	    	if (this._pages[pageName] != "funcManagement")
+	    	{	
+	    		this._pages[pageName].show();
+	    	}    	  
     	},
     	
     	/**

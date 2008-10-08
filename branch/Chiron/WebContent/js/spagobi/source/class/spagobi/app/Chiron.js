@@ -111,7 +111,7 @@ qx.Class.define("spagobi.app.Chiron",
     _createLayout: function() {
 	   	var dockLayout = new qx.ui.layout.DockLayout();
         dockLayout.setEdge(0);
-        
+ //       dockLayout.setWidth(screen.width);
         dockLayout.setBackgroundColor('white');
         
 	  	// Create header
@@ -319,7 +319,7 @@ qx.Class.define("spagobi.app.Chiron",
       			buttons: [
       				{
       					name: 'func',
-						//image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
+						image:'spagobi/img/spagobi/test/mapManagementIcon.png',
 						page: 'func',
 						tooltip: 'Functionalities'
       				}
@@ -450,8 +450,15 @@ qx.Class.define("spagobi.app.Chiron",
      */
     _selectPage: function(pageName) {
     	if(!this.pages[pageName]) {
-    		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName, this.mainPane);
-    		//this.mainPane.addRight( this.pages[pageName] ); 
+    		if (pageName == "funcManagement")
+    			{
+    				this._pages[pageName] = new spagobi.ui.custom.FunctionalClassDummy(pageName);
+    			}
+    		else
+    			{	
+    		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
+    			}
+    		this.mainPane.addRight( this.pages[pageName] ); 
     	}
     	
     	

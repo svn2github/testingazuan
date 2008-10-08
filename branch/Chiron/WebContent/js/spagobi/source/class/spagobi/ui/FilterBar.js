@@ -48,8 +48,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
 		this.base(arguments);
 		this.setWidth("100%");// try also "auto"
 		this.setHeight("100%");
-		this.setTop(0);
+		//this.setTop(10);
 		this.createFilterBar();
+	//	this.setOverflow("auto");
 	},
 	
 	members : {
@@ -107,9 +108,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			//this.add(space);
 			
 			var combo1_label = new qx.ui.basic.Label("  The value of the column   ");
-			with(combo1_label){
+		/*	with(combo1_label){
 				setTextAlign("center");
-			}
+			}*/
 			this.add(combo1_label);
 			
 			var combo1 = new qx.ui.form.ComboBox();
@@ -121,9 +122,9 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			this.add(combo1);
 			
 			var combo2_label = new qx.ui.basic.Label(" as a ");
-			with(combo2_label){
+		/*	with(combo2_label){
 				setTextAlign("center");
-			}
+			}*/
 			this.add(combo2_label);
 			
 			var combo2 = new qx.ui.form.ComboBox();

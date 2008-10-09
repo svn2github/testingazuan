@@ -6,7 +6,7 @@
     <class name="it.eng.spagobi.hotlink.rememberme.metadata.SbiRememberMe" table="SBI_REMEMBER_ME">
         <id name="id" type="integer">
             <column name="ID" />
-            <generator class="identity">
+            <generator class="identity" />
         </id>
         <property name="name" type="string">
             <column name="NAME" length="50" not-null="true" />

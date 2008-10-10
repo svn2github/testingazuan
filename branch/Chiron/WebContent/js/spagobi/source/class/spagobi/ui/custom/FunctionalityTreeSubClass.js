@@ -11,79 +11,132 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	  
 	  this.createToolbar();
 	  
-	  this.createTextField({
-        		type: 'text',
-        		dataIndex: 'label',
-        		text: 'Label',
-        		labelwidth: 100,
-        		mandatory: true	
-        	});
-	  this.createTextField({
-        		type: 'text',
-        		dataIndex: 'name',
-        		text: 'Name',
-        		labelwidth: 100,
-        		mandatory: true	
-        	});
+	  this._textfield1 = this.createTextField({
+								        		type: 'text',
+								        		dataIndex: 'label',
+								        		text: 'Label',
+								        		labelwidth: 100,
+								        		mandatory: true	
+								        	});
+     // this.setUserData('label',_textfield1); //required if local variable used for constuctor
+        	
+	  this._textfield2 = this.createTextField({
+								        		type: 'text',
+								        		dataIndex: 'name',
+								        		text: 'Name',
+								        		labelwidth: 100,
+								        		mandatory: true	
+								        	});
       
-      this.createTextField({
-        		type: 'text',
-        		dataIndex: 'description',
-        		text: 'Description',
-        		labelwidth: 100,
-        		mandatory: false	
-        	});
+      this._textfield3 = this.createTextField({
+								        		type: 'text',
+								        		dataIndex: 'description',
+								        		text: 'Description',
+								        		labelwidth: 100,
+								        		mandatory: false	
+								        	});
 	 
-	 // this.CreateTableWithCheckbox();
+	  this.CreateTableWithCheckbox();
   },
   
   members :
   {
+  		 _textfield1 : undefined,
+  		 _textfield2 : undefined,
+  		 _textfield3 : undefined,
+  		 
 	  	  createToolbar : function(){
 	  	
 		  var tb = new qx.ui.toolbar.ToolBar;
 		  
-		  var saveButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/save.png");
-		  var SB = new qx.ui.popup.ToolTip("Save");
-		  saveButton.setToolTip(SB);
-		  var deleteButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/delete.png");
-		  var SD = new qx.ui.popup.ToolTip("Delete");
-		  deleteButton.setToolTip(SD);
 		  var createButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/create.png");
 		  var NB = new qx.ui.popup.ToolTip("New");
 		  createButton.setToolTip(NB);
-		  	
-		  	
-		  tb.add(createButton,saveButton,deleteButton);
 		  
-		  this.add(tb);	
+		  var saveButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/save.png");
+		  var SB = new qx.ui.popup.ToolTip("Save");
+		  saveButton.setToolTip(SB);
+		  
+		  var deleteButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/delete.png");
+		  var SD = new qx.ui.popup.ToolTip("Delete");
+		  deleteButton.setToolTip(SD);
+		  
+		  
+		  var moveUpButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/go-up.png");
+		  var moveUpToolTip = new qx.ui.popup.ToolTip("Move up");
+		  moveUpButton.setToolTip(moveUpToolTip);
+		  
+		  var moveDownButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/go-down.png");
+		  var moveDownToolTip = new qx.ui.popup.ToolTip("Move Down");
+		  moveDownButton.setToolTip(moveDownToolTip);	
+		  	
+		  tb.add(createButton,saveButton,deleteButton,moveUpButton,moveDownButton);
+		  
+		  tb.setUserData('create',createButton);
+		  tb.setUserData('save',saveButton);
+		  tb.setUserData('delete',deleteButton);
+		  tb.setUserData('moveUp',moveUpButton);
+		  tb.setUserData('moveDown',moveDownButton);
+		  
+		  this.add(tb);
+		  this.setUserData('toolBar', tb);
+		  // Button event listeners in parent class - FunctionalClassDummy.js
      },
   
   		  createTextField : function(config){
   		
   		  var textfield = spagobi.commons.WidgetUtils.createInputTextField(config);
-  		  textfield.setTop(20);
+  		  //textfield.setTop(20);
   		  this.add(textfield);
+  		  
+  		  return textfield;
    	 },
    	 
    	 	  CreateTableWithCheckbox : function (){
    	 	  
    	 	  var tableData = spagobi.app.data.DataService.loadFunctinalitiesRecords();
    	 	  var newTable = new spagobi.ui.Table(this, tableData);
-   	 	  newTable.setTop(20);
-   	 	  this.add( newTable );
-   	 	  /*var atom0 = new qx.ui.basic.Atom();
+   	 	  //newTable.setTop(20);
+   	 	  //this.add( newTable );
+   	 	  /*
+   	 	  var atom0 = new qx.ui.basic.Atom();
 	      atom0.setWidth('100%'); 
 	      atom0.setHeight('1*');
 	      atom0.setBackgroundColor('white');
 	      atom0.add( newTable );
 	      this.add( atom0 );
-	     */
-   	 	  	
+	      */
+	      newTable.setWidth('100%');
+    	  newTable.setHeight('1*');
+    	  this.add(newTable);
+    	  
+	      /*
+	      var b = new qx.ui.form.Button("Check");
+	      b.setLeft(100);
+	      b.setTop(100);
+	      b.addEventListener("execute", function(e){
+	      alert(this.getLeft() + "," + atom0.getLeft() + ","+ newTable.getLeft());
+	      alert(this.getWidth() + "," + atom0.getWidth() + "," + newTable.getWidth());	
+	      },this);
+	      b.addToDocument();
+	      */ 
    	 },
    	 
    	 	selectDataObject: function(dataObject) {
    	 	
+   	 },
+   	 
+   	 setData: function(config){
+   	 	
+   	 	//this.getUserData('label');
+   	 	var txt1 = this._textfield1.getUserData('field');
+   	 	txt1.setValue(config.label);
+   	 	
+   	 	var txt2 = this._textfield2.getUserData('field');
+   	 	txt2.setValue(config.name);
+   	 	
+   	 	var txt3 = this._textfield3.getUserData('field');
+   	 	txt3.setValue(config.desc);
    	 }
    	 
    	 

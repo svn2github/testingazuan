@@ -74,13 +74,18 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	atom1.setHorizontalAlign("center");
     	this.add( atom1 );
     	
-    	    	
+    	/*    	
     	var atom0 = new qx.ui.basic.Atom();
     	atom0.setWidth('100%'); 
         atom0.setHeight('1*');
         atom0.setBackgroundColor('white');
     	atom0.add( this._table );
     	this.add( atom0 );
+    	*/
+    	this._table.setWidth('100%');
+    	this._table.setHeight('1*');
+    	this.add(this._table);
+    	
     	    	
     	var atom2 = new qx.ui.basic.Atom();
   //  	atom2.setWidth('100%');  

@@ -56,6 +56,9 @@ qx.Class.define("spagobi.ui.Table",
     // Establish controller link
     this._controller = controller;
     
+    
+    this.columnIds = [];
+    this.columnNames = {};
     for(var i = 0; i < data.meta.length; i++) {
     	this.columnIds[i] =  data.meta[i].dataIndex;
     	this.columnNames[data.meta[i].dataIndex] = data.meta[i].name;

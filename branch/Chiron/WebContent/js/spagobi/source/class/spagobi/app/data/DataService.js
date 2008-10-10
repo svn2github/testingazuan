@@ -40,7 +40,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   		var records = {};
     	
     	records.ID = "ROLES";
-    	
+    	records.columns = [2,3,4,5,6,7,8,9,10];
     	records.meta =  this.loadRolesMeta();
     	records.rows =  this.loadRolesData();
     	
@@ -910,7 +910,8 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadFunctinalitiesRecords: function() {
   		var records = {};
-    	
+    	records.ID = "ROLES";
+    	records.columns = [2,3,4];
     	records.meta =  this.loadFunctinalitiesMeta();
     	records.rows =  this.loadFunctinalitiesData();
     	
@@ -920,31 +921,196 @@ qx.Class.define("spagobi.app.data.DataService", {
   	loadFunctinalitiesMeta: function() {
   		return [
     		{
-	    		dataIndex: 'name',
-	    		name: 'Name'
+	    		dataIndex: 'roles',
+	    		name: 'Roles'
     		}, {
-	    		dataIndex: 'description',
-	    		name: 'Description' 
+	    		dataIndex: 'group',
+	    		name: 'Group' 
+    		}, {
+	    		dataIndex: 'dev',
+	    		name: 'Development'
+    		}, {
+	    		dataIndex: 'test',
+	    		name: 'Test' 
+    		}, {
+	    		dataIndex: 'exe',
+	    		name: 'Execution' 
     		}
     	];
   	},
   	
   	loadFunctinalitiesData: function() {
   		return [
-	  			{
-		        	id: '1',
-		        	name: 'name1',
-		        	description: 'ddd1'
-		        }, {
-		        	id: '2',
-		        	name: 'name2',
-		        	description: 'aaa2'
-		        }, {
-		        	id: '3',
-		        	name: 'name3',
-		        	description: 'cvcw3'
-		        }  			
-  			 ];
+  				{
+				  	id		: '1',
+				    roles	: '/admin',
+				    group   : '/admin',
+				    dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '2',
+				    roles   : '/community',
+				    group   : '/community',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '3',
+				    roles   : '/community/direction',
+				    group   : '/community/direction',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '4',
+				    roles   : '/community/editors',
+				    group   : '/community/editors',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '5',
+				    roles   : '/community/hr',
+				    group   : '/community/hr',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '6',
+				    roles   : '/guest',
+				    group   : '/guest',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '7',
+				    roles   : '/portal',
+				    group   : '/portal',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '8',
+				    roles   : '/portal/admin',
+				    group   : '/portal/admin',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '9',
+				    roles   : '/portal/share',
+				    group   : '/portal/share',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				  	id		: '10',
+				    roles   : '/portal/site',
+				    group   : '/portal/site',
+				  	dev		: false,
+				  	test	: false,
+				  	exe		: false
+				},{
+				   id  		: '11',
+				   roles   	: '/spagobi',
+				   group   	: 'spagobi',
+				   dev     	: false,
+				   test    	: false,
+				   exe     	: false
+				},{
+				   id  		: '12',
+				   roles    : '/spagobi/admin',
+				   group    : 'admin',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '13',
+				   roles    : '/spagobi/dev',
+				   group    : 'dev',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '14',
+				   roles    : '/spagobi/test',
+				   group    : 'test',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '15',
+				   roles    : '/spagobi/user',
+				   group    : 'user',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '16',
+				   roles    : '/user',
+				   group    : '/user',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '17',
+				   roles    : '/spagobi/modeladmin',
+				   group    : 'modeladmin',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '18',
+				   roles    : '/Test',
+				   group    : 'Test',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '19',
+				   roles    : '/spagobi/user/general_manager',
+				   group    : 'general_manager',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '20',
+				   roles    : '/spagobi/user/product_manager',
+				   group    : 'product_manager',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '21',
+				   roles    : '/spagobi/user/sales_manager',
+				   group    : 'sales_manager',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '22',
+				   roles    : '/spagobi/model',
+				   group    : 'model',
+					 dev    : false,
+					 test   : false,
+					 exe    : false
+				},{
+				   id  		: '23',
+				   roles    : '/spagobi/user/demo',
+				   group    : 'demo',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				},{
+				   id  		: '24',
+				   roles    : '/spagobi/demo',
+				   group    : 'demo',
+				   dev      : false,
+				   test     : false,
+				   exe      : false
+				}
+	  		   ];
   	}
   	
   }

@@ -55,8 +55,10 @@ qx.Class.define("spagobi.ui.Tree", {
           	 var trs = qx.ui.tree.TreeRowStructure.getInstance().standard(config.root);
 		     this.base(arguments, trs);
           	
-          	 this.setSelectedElement(null);
-          	 this.getManager().setSelectedItem(null);
+          	 //this.setUserData('node', this);
+          	 //this.setSelectedElement(null);
+          	 //this.getManager().setSelectedItem(null);
+          	 
           	 //alert(this.getSelectedElement());
           	 //alert(this.getManager().getSelectedItem());
           	 //this.setSelectedElement(this);
@@ -80,8 +82,8 @@ qx.Class.define("spagobi.ui.Tree", {
 	               */                               
 	               onClickMenu: function(e){
 	               		
-	               		alert(this.getManager().getSelectedItem());
-	               		//this.getManager().getSelectedItem();
+	               		//alert(this.getManager().getSelectedItem());
+	               		
 	               		
 	               		
 	               		if(this.getSelectedElement() == undefined || this.getManager().getSelectedItem() == undefined){		// null
@@ -197,13 +199,14 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		}
   						
   						contextMenu.addToDocument();		//var d = qx.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
+  						contextMenu.show();
   						
   						//alert(contextMenu.getParent().getVisibility() + ", "+ contextMenu.getParent().getDisplay());
   						//alert(contextMenu.getVisibility() + ", "+ contextMenu.getDisplay());
   						//alert(contextMenu.isSeeable());
   						
   						
-  						alert('debugpt0: ' + contextMenu.isSeeable());
+  						
   						if (contextMenu.isSeeable()){		//never gets executed
 				            alert('hi');
 				            contextMenu.hide();
@@ -211,27 +214,34 @@ qx.Class.define("spagobi.ui.Tree", {
 				            alert(this.getSelectedElement);
 				        }
 				        else{
-				            alert('debugpt1');
+				            
 				  			var ele = this.getSelectedElement().getElement();
+				  			contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); 
+				  			contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
+				  			//contextMenu.show();
+				  			
 				  			//this.getSelectedElement().getLeft(); // NULL
 				  			//alert(qx.html.Location.getPageBoxLeft(ele) + "," + qx.html.Location.getPageBoxRight(ele));	//same
 				  			//alert(this.getSelectedElement().getLeft() + ", " + qx.html.Location.getPageBoxRight(ele));
 				  			//alert(this.getSelectedElement().getTop()+ this.getSelectedElement().getHeight()+ ", " + qx.html.Location.getPageBoxBottom(ele));
-				  			//contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); //getClientAreaRight
-				  			//contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
 				  			
-				  			contextMenu.setLeft(178);
-				  			contextMenu.setTop(300);
+				  			
+				  			//contextMenu.setLeft(178);
+				  			//contextMenu.setTop(300);
 				  			
 				  			//contextMenu.setPosition('bottom-left')
-				  			//alert(contextMenu.getLeft() +", " +contextMenu.getTop() + ", " + contextMenu.getVisibility() + ""+ contextMenu.getDisplay());
+				  			
+				  			//alert( contextMenu.getVisibility() + ","+ contextMenu.getDisplay() + "," +contextMenu.getParent().isSeeable());
+				            //alert('hi');
+				            contextMenu.setDisplay(true);
+				            //alert( contextMenu.getVisibility() + ","+ contextMenu.getDisplay() + "," +contextMenu.getParent().isSeeable());
+				            
 				            //contextMenu.setLeft(qx.bom.element.Location.getRight(ele));
 				            //contextMenu.setTop(qx.bom.element.Location.getBottom(ele));
 				  					//contextMenu.setLeft(this.getSelectedElement().getLeft()); //not working
 				  					//contextMenu.setTop(this.getSelectedElement().getBottom());//not working
-				  			//contextMenu.setDisplay(true);
-				            
-				            //if(this.getSelectedElement().getSelected() == true){
+				  			
+				  			//if(this.getSelectedElement().getSelected() == true){
 				            	//alert(this.getSelectedElement().getLabel());
 				            	contextMenu.show();
 				            //}
@@ -418,9 +428,31 @@ qx.Class.define("spagobi.ui.Tree", {
                   		treeNode = new qx.ui.tree.TreeFolder(treeRowStructure);
                   	}                                                  
                   	
-                  	config.parent.add(treeNode);
-                   	this.setUserData(config.id, treeNode);
-                   	return treeNode;
+                  	//alert(config.parent);
+                  	if(config.parent == this){ //instanceof qx.ui.tree.Tree){
+                  		//alert('adding in tree');
+                  		config.parent.add(treeNode);
+                  		
+                   	//this.setUserData(config.id, treeNode);
+                  	}
+                   	else{
+                   		//alert('adding below tree');
+                   	 	var p = config.parent.getUserData('node');
+                   	 	p.add(treeNode);
+                   	}
+                   	
+                   	
+                   	 var atom = new qx.ui.basic.Atom();
+        			 //atom.add(treeNode);//,config.data);
+        			 
+        			 atom.setUserData('node', treeNode);
+        			 atom.setUserData('data', config.data);
+        			 
+        			 this.setUserData(config.name,atom);	//Label of node is used as its id .. later we can use its level or hierarchy path
+                   	 
+                   	
+                   	//return treeNode;
+                   	return atom;
 	             },
 	             
 	             
@@ -499,10 +531,10 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	var previousItem = selectionManager.getPreviousSibling(item);
 	               	var parentItem = item.getParentFolder();
 	               	
-	               	parentItem.remove(item);
+	               	//parentItem.remove(item);
 	               	parentItem.addBeforeToFolder(item,previousItem);
 	               	
-	               	//parentItem.setSelected(true);
+	               	item.setSelected(true);
                  },
                  
                  /**
@@ -514,10 +546,31 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	var nextItem = selectionManager.getNextSibling(item);
 	               	var parentItem = item.getParentFolder();
 	               	
-	               	parentItem.remove(item);
+	               	//parentItem.remove(item);
 	               	parentItem.addAfterToFolder(item,nextItem);
 	               	
-	               	//parentItem.setSelected(true);
+	               	item.setSelected(true);
+                 },
+                 
+                 /*
+                 getNodeID: function(n){
+                 	return this.getUserData();
+                 },
+                 */
+                 
+                 getNodeData: function(){
+                 	
+                 	//var info = {};
+                 	var node = this.getCurrentNode();
+                 	//info.label = node.getLabel();
+                 	
+                 	var nodeId = node.getLabel();
+                 	var atom = this.getUserData(nodeId);
+                 	
+                 	if(atom.getUserData('data') != undefined)
+                 		var info = atom.getUserData('data');
+                 	
+                 	return info;
                  }
           }
 });

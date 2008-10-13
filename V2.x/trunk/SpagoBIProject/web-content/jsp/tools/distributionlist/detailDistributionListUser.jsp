@@ -296,7 +296,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							else if (!dayRep.equals("0")){
 								days = days.replace(',',';');
 								if (dayRep.equals("1")){
-									frequency = msgBuilder.getMessage("sbi.frequency.everyD", "messages", request)+" ";
+									frequency = frequency + msgBuilder.getMessage("sbi.frequency.everyFirstD", "messages", request)+" ";
 								}
 								else
 								{frequency = frequency + msgBuilder.getMessage("sbi.frequency.every", "messages", request)+" "+dayRep+" "+msgBuilder.getMessage("sbi.frequency.days", "messages", request) ;}

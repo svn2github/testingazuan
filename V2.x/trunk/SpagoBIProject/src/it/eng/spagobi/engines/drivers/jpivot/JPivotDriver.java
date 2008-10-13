@@ -359,58 +359,69 @@ public class JPivotDriver implements IEngineDriver {
 	    String memName = (String) memNamesIter.next();
 	    String tmpMemName = memName;
 	    // check if the name has a profile attribute
-	    int startInd = memName.indexOf("${");
+	    int startInd = memName.indexOf("${"); 
 	    if (startInd != -1) {
-		// if it has, recover the name and value of the profile
-		// attribute
-		int endInd = memName.indexOf("}", startInd);
-		String nameProfAttr = memName.substring((startInd + 2), endInd);
-		String valueProfAttr = null;
-		try {
-		    valueProfAttr = (String) profile.getUserAttribute(nameProfAttr);
-		    valueProfAttr = valueProfAttr.replaceAll("'","");
-		} catch (Exception e) {
-		    logger.error("Error while recovering profile attribute " + nameProfAttr + " of the user "
-			    + profile.getUserUniqueIdentifier(), e);
-		}
-		// if the value of the profile attribute is not null
-		if (valueProfAttr != null) {
-		    // all values special character
-		    if (valueProfAttr.equalsIgnoreCase("*")) {
-			String tmp = tmpMemName.substring(0, startInd);
-			int indlp = tmp.lastIndexOf(".");
-			if (indlp != -1) {
-			    tmpMemName = tmpMemName.substring(0, indlp);
-			} else {
-			    tmpMemName = "";
+			// if it has, recover the name and value of the profile
+			// attribute
+			int endInd = memName.indexOf("}", startInd);
+			String nameProfAttr = memName.substring((startInd + 2), endInd);
+			String valueProfAttr = null;
+			
+			try {
+			    valueProfAttr = (String) profile.getUserAttribute(nameProfAttr);
+    
+			    //modify for using null or {,{''}} in EXO like default value for all elements
+			    if (valueProfAttr == null || valueProfAttr.equals("{,{''}}")) valueProfAttr = "*";
+			    
+			} catch (Exception e) {
+			    logger.error("Error while recovering profile attribute " + nameProfAttr + " of the user "
+				    + profile.getUserUniqueIdentifier(), e);
 			}
-			generatedMemList.add(tmpMemName);
-			// the attribute is multivalue
-		    } else if (isAttributeMultivalue(valueProfAttr)) {
-			String[] values = splitProfAttrValues(valueProfAttr);
-			List tmpMemNames = new ArrayList();
-			for (int i = 0; i < values.length; i++) {
-			    String val = values[i];
-			    String tmpMemNamei = tmpMemName.substring(0, startInd) + val
-				    + tmpMemName.substring(endInd + 1);
-			    tmpMemNames.add(tmpMemNamei);
+			valueProfAttr = valueProfAttr.replaceAll("'","");
+			// if the value of the profile attribute is not null
+			if (valueProfAttr != null) {
+				logger.debug("** valueProfAttr: -" + valueProfAttr + "-");
+			    // all values special character
+			    if (valueProfAttr.equalsIgnoreCase("*") || valueProfAttr.equalsIgnoreCase("")) {
+					String tmp = tmpMemName.substring(0, startInd);
+					int indlp = tmp.lastIndexOf(".");
+					if (indlp != -1) {
+					    tmpMemName = tmpMemName.substring(0, indlp);
+					} else {
+					    tmpMemName = "";
+					}
+					logger.debug("** Added  tmpMemName: -" + tmpMemName + "-");
+					generatedMemList.add(tmpMemName);
+				// the attribute is multivalue
+			    } else if (isAttributeMultivalue(valueProfAttr)) {
+					String[] values = splitProfAttrValues(valueProfAttr);
+					List tmpMemNames = new ArrayList();
+					for (int i = 0; i < values.length; i++) {
+					    String val = values[i];
+					    String tmpMemNamei = tmpMemName.substring(0, startInd) + val
+						    + tmpMemName.substring(endInd + 1);
+					    logger.debug("** Added  tmpMemNamei: -" + tmpMemNamei + "-");
+					    tmpMemNames.add(tmpMemNamei);
+					}
+					tmpMemNames = generateMemeberNames(tmpMemNames, profile);
+					generatedMemList.addAll(tmpMemNames);
+				// the attribute is single value
+			    } else {
+					tmpMemName = tmpMemName.substring(0, startInd) + valueProfAttr
+						+ tmpMemName.substring(endInd + 1);
+					List tmpMemNames = new ArrayList();
+					logger.debug("** Added tmpMemName: -" + tmpMemName + "-");
+					tmpMemNames.add(tmpMemName);
+					tmpMemNames = generateMemeberNames(tmpMemNames, profile);
+					generatedMemList.addAll(tmpMemNames);
+			    }
+			} else { // if(valueProfAttr!=null)
+				logger.debug("** Added  memName: -" + memName + "-");
+			    generatedMemList.add(memName);
 			}
-			tmpMemNames = generateMemeberNames(tmpMemNames, profile);
-			generatedMemList.addAll(tmpMemNames);
-			// the attribute is single value
-		    } else {
-			tmpMemName = tmpMemName.substring(0, startInd) + valueProfAttr
-				+ tmpMemName.substring(endInd + 1);
-			List tmpMemNames = new ArrayList();
-			tmpMemNames.add(tmpMemName);
-			tmpMemNames = generateMemeberNames(tmpMemNames, profile);
-			generatedMemList.addAll(tmpMemNames);
-		    }
-		} else { // if(valueProfAttr!=null)
-		    generatedMemList.add(memName);
-		}
 	    } else { // if(startInd!=-1)
-		generatedMemList.add(memName);
+	    	logger.debug("** Added  memName: -" + memName + "-");
+	    	generatedMemList.add(memName);
 	    }
 	}
 	logger.debug("OUT");

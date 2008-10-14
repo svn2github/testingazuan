@@ -56,9 +56,10 @@ qx.Class.define("spagobi.ui.Table",
     // Establish controller link
     this._controller = controller;
     
-    
+    // Reset the class member variables so that each button of icon bar shows its resp. table columns
     this.columnIds = [];
     this.columnNames = {};
+    
     for(var i = 0; i < data.meta.length; i++) {
     	this.columnIds[i] =  data.meta[i].dataIndex;
     	this.columnNames[data.meta[i].dataIndex] = data.meta[i].name;
@@ -143,6 +144,7 @@ qx.Class.define("spagobi.ui.Table",
     //alert (this.getWidthValue());
     //var a = (92 * screen.width)/100;
    	//this.setWidth(a);
+    
     this.setWidth('100%');
     this.setHeight('100%');
     this.setBorder("inset-thin");					//line-bottom

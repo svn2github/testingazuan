@@ -8,13 +8,17 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
     this.base(arguments,"1*","4*");//, "2*"); //  180
     this.setWidth("100%");
     this.setHeight("100%");
-    this.setLiveResize(false);
-    //this.setShowKnob(false);
+    
+    //this.setLiveResize(true);    //this.setShowKnob(false);
     
    
    if(type === 'funcManagement') { 
-    var leftPart = new qx.ui.layout.VerticalBoxLayout();
-  		
+    	var leftPart = new qx.ui.layout.VerticalBoxLayout();
+  		leftPart.setWidth("100%");
+   		leftPart.setHeight("100%");
+    	leftPart.setOverflow("auto"); 
+    	leftPart.setBackgroundColor('white');
+    	
   		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
   		with(headerLabel){
   			width = 200;
@@ -23,9 +27,17 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   	//var dummyTree = new spagobi.ui.Tree({root: "Functionalities" });
   	var tree = new spagobi.ui.Tree({root: "Functionalities" });
-  	
-  	//var atom = new qx.ui.basic.Atom();
-  	//tree.setUserData('node', tree);
+  	/*
+  	with(tree)
+        {
+          setBackgroundColor("white");
+          //setBorder("inset");
+          setOverflow("auto");
+  
+          setWidth('100%');
+    	  setHeight('1*');
+        };
+  	*/
   	
   	var node1 = tree.addNode({
 		  							name  : "Report",
@@ -104,12 +116,22 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		this._tree = tree;						
   		//tree.addEventListener("click",tree.onClickMenu,tree);						
   		tree.getManager().addEventListener("changeSelection",this.showInfo,this);
-  								
-  		leftPart.add(headerLabel, tree);	
+  		
+  		
+  		//leftPart.setBackgroundColor('white');
+  		
+  		leftPart.add(headerLabel, tree);
+  		
+  		//leftPart.setOverflow("auto");	
+  		
   		this.addLeft(leftPart);
   		
+  		
   		var rightPart = new spagobi.ui.custom.FunctionalityTreeSubClass();
+  		rightPart.setWidth("100%");
+   		rightPart.setHeight("100%");
   		this.addRight(rightPart);
+  		rightPart.setOverflow("auto");
   		
   		var toolBar = rightPart.getUserData('toolBar');
   		
@@ -208,6 +230,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		this.showButtons();
   		
+  		if(this._tree.getManager().getSelectedItem() == this._tree){		// If Root Node
+  			return;
+  		}
 	    var nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
   		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
   		

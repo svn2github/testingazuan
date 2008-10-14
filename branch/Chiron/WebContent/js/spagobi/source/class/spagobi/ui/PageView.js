@@ -35,7 +35,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qx.Class.define("spagobi.ui.PageView", {
 	
 	extend : qx.ui.splitpane.HorizontalSplitPane,
-	
+	//extend : qx.ui.layout.HorizontalBoxLayout,		//1
+	//extend : qx.ui.layout.DockLayout,
 	/**
 	 * Constructor to create a Page.
 	 * <p> It splits the page into 2 parts. 
@@ -99,8 +100,8 @@ qx.Class.define("spagobi.ui.PageView", {
 	 * @param config The config has the properties as described above.
 	 */
 	construct : function(config) {
-		this.base(arguments, 70, "1*");
-		
+		this.base(arguments, 70, "1*");		//HorizontalSplitPane //2
+		//this.base(arguments);				//3
 		this._pages = [];
 		
 		var toolbarConfig = {
@@ -110,7 +111,24 @@ qx.Class.define("spagobi.ui.PageView", {
 		this._toolbar = new spagobi.ui.IconBar( toolbarConfig );
 		
 		var buttonsConfig = config.toolbar.buttons;
-		for(var i = 0; i < buttonsConfig.length; i++) {			
+		for(var i = 0; i < buttonsConfig.length; i++) {
+			
+			//
+			/* New code
+					if(buttonsConfig[i].name == 'engine'){
+						this.setSplitterSize(50);
+						//alert('Children : '+this.getChildrenLength());
+						var c = this.getChildren();
+						for(j=0; j<c.length; j++){
+							alert('Child '+ j + ': '+ c[j]);
+							alert(c[j].getAllowStretchX());
+							c[j].setAllowStretchX(false); 	//boxlayout
+							alert(c[j].getAllowStretchX());
+						}	
+						//this.getFirstChild().getAllowStretchX();
+					}
+			//  
+			 */	
 			buttonsConfig[i].handler =  function(e){this.selectPage(e.getTarget().getUserData('name'));};
 			buttonsConfig[i].context = this;
 			this._toolbar.addButton( buttonsConfig[i] );
@@ -120,7 +138,17 @@ qx.Class.define("spagobi.ui.PageView", {
 			this._defaultSelectedPageName = config.defaultSelectedPage;
 		}	
 		
-		this.addLeft( this._toolbar );	
+		this.addLeft( this._toolbar );		//HorizontalSplitPane	//4
+		
+		this._toolbar.setAllowStretchX(false);
+		
+		//alert(this.splitpane-slider);
+		//alert(this.splitpane-slider.getEnabled());
+		//this.splitpane-slider.setEnabled(false);
+		
+		//this.add( this._toolbar );		//5
+		//this._toolbar.setWidth(65);		//6
+		//alert("2");
 	},
 	
 	/**
@@ -156,7 +184,11 @@ qx.Class.define("spagobi.ui.PageView", {
     			{	
     				this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
     			}
-    			this.addRight( this._pages[pageName] ); 
+    			this.addRight( this._pages[pageName] );		//HorizontalSplitPane		//7
+    			//this.add( this._pages[pageName] );		//8
+    			//this._pages[pageName].setWidth("1*");
+    			this._pages[pageName].setAllowStretchX(false);
+    			//alert('Page:' + this._pages[pageName].getAllowStretchX()); 
     		}
     	
     	
@@ -164,10 +196,11 @@ qx.Class.define("spagobi.ui.PageView", {
 	    		this._pages[this._selectedPageName].setVisibility(false);
 	    	}
 	    	this._selectedPageName = pageName;
-	    	if (this._pages[pageName] != "funcManagement")
-	    	{	
+	    	/*
+	    	if (pageName != "funcManagement"){	
 	    		this._pages[pageName].show();
-	    	}    	  
+	    	}
+	    	*/    	  
     	},
     	
     	/**

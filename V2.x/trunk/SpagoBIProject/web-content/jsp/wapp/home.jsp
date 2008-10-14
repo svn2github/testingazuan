@@ -413,22 +413,21 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 							id:'<%=menuElem.getMenuId()%>',
 				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
-								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
+							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
-									<%}%>					            
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
+							<%}%>					            
 				            <% if(menuElem.getObjId()!=null) { %>
-				            	handler: execDirectDoc 	            	
+				            	handler: execDirectDoc,
 							<% } else if(menuElem.getStaticPage()!=null) { %>
-				            	handler: readHtmlFile 
+				            	handler: readHtmlFile,
 							<% } else if(menuElem.getFunctionality()!=null) { %>
 								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
-				            	handler: getFunctionality 
+				            	handler: getFunctionality,
 							<% } %>
 							<%if (menuElem.getHasChildren()) { %>
-				            	,
-				            	menu: menu<%=i%>  	  
+				            	menu: menu<%=i%>,
 				            <% } %>
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 				        })					    				        				
 					);				
 				<%}
@@ -438,23 +437,21 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 							id:'<%=menuElem.getMenuId()%>',
 				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
-								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
+							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
-									<%}%>					            
-				            //tooltip: {text:'<%=menuElem.getDescr()%>', title:'<%=menuElem.getDescr()%>', autoHide:true},
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu ',
+							<%}%>					            
 				            <% if(menuElem.getObjId()!=null) { %>
-				            	handler: execDirectDoc 	            	
+				            	handler: execDirectDoc,
 							<% } else if(menuElem.getStaticPage()!=null) { %>
-				            	handler: readHtmlFile 
+				            	handler: readHtmlFile,
 							<% } else if(menuElem.getFunctionality()!=null) { %>
 								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
-				            	handler: getFunctionality 
+				            	handler: getFunctionality,
 							<% } %>
 							<%if (menuElem.getHasChildren()) { %>
-				            	,
-				            	menu: menu<%=i%>  	  
+				            	menu: menu<%=i%>, 	  
 				            <% } %>
+				            cls: 'x-btn-menubutton x-btn-text-icon bmenu'
 				        })					    				        				
 					);	
 			    	

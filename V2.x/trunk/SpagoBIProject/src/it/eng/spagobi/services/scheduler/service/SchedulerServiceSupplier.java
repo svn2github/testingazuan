@@ -487,9 +487,9 @@ public class SchedulerServiceSupplier {
 				// get the start date param (format yyyy-mm-gg) and start time (format hh:mm:ss....)
 				String startDateStr = (String)request.getAttribute("startDate");
 				String startTimeStr = (String)request.getAttribute("startTime");
-				String startDay = startDateStr.substring(8);
-				String startMonth = startDateStr.substring(5, 7);
-				String startYear = startDateStr.substring(0,4);
+				String startDay = startDateStr.substring(0,2);
+				String startMonth = startDateStr.substring(3, 5);
+				String startYear = startDateStr.substring(6,10);
 				Calendar startCal = new GregorianCalendar(new Integer(startYear).intValue(), 
 						                                  new Integer(startMonth).intValue()-1, 
 						                                  new Integer(startDay).intValue());

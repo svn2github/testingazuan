@@ -38,6 +38,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
 <%@page import="it.eng.spagobi.tools.distributionlist.bo.DistributionList"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="it.eng.spago.util.StringUtils"%>
+<%@page import="java.text.ParseException"%>
 
 <%  
    	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TriggerManagementModule"); 
@@ -523,6 +526,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						trigName = jobInfo.getJobName() + "_schedule_" + hour24 + "" + min + "" + sec; 
 					}
 				}
+				String saveFormat = "dd/MM/yyyy";
+				String startDate = triggerInfo.getStartDate();
+				String trigStartDate = "";
+				
+				SimpleDateFormat f =  new SimpleDateFormat();
+				f.applyPattern(saveFormat);
+				Date d = new Date();
+				try {if (!startDate.equals("")){
+						d = f.parse(startDate);
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				if (!startDate.equals("")){
+					
+					String datePickerFormat = "MM/dd/yyyy";
+					trigStartDate = StringUtils.dateToString(d, datePickerFormat);
+				}else {trigStartDate = startDate ; }
+				
 				%>
 				<div class='div_form_field'>
 					<input id="triggername" value="<%=trigName%>" type="text" name="triggername" size="35" <%=readonly%> />
@@ -547,8 +569,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=triggerInfo.getStartDateRFC3339()%>" 
+					<input type="text" value="<%=trigStartDate%>" 
 			    		   name="startdate" id="startdate"  
+			    		   saveFormat="<%=saveFormat%>"  displayFormat="<%=saveFormat%>"
 			       		   dojoType="dropdowndatepicker" widgetId="startDateWidget" />
 						   &nbsp;*
 				</div>	

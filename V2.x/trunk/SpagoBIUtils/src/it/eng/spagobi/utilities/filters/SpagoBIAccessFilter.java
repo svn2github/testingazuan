@@ -168,12 +168,14 @@ public class SpagoBIAccessFilter implements Filter {
 		logger.error("SpagoBIAccessFilter" + ":doFilter ServletException !!");
 		logger.error(" msg: [" + e.getMessage() + "]");
 		Throwable t = e.getCause();
-		logger.error("-----------------------------");
-		logger.error("ROOT CAUSE:");
-		logger.error("-----------------------------");
-		logger.error(" msg: [" +t.getMessage() + "]");
-		logger.error(" stacktrace:");
-		t.printStackTrace();
+		if (t != null) {
+			logger.error("-----------------------------");
+			logger.error("ROOT CAUSE:");
+			logger.error("-----------------------------");
+			logger.error(" msg: [" +t.getMessage() + "]");
+			logger.error(" stacktrace:");
+			t.printStackTrace();
+		}
 	}
 		
 	logger.debug("OUT");

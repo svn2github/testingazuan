@@ -130,10 +130,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 		
 		<%
+			List viewedDocuments = new ArrayList();
 			Iterator it2 = documents.iterator();
 			while(it2.hasNext()){
 				
 				BIObject bo = (BIObject)it2.next();
+				Integer objId = bo.getId();
+				if (viewedDocuments.contains(objId)) continue;
+				
 				String docName = bo.getName();
 				String docDescr = bo.getDescription();
 				
@@ -323,7 +327,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   	</td>
 			
 				   	</tr>
-	<% }}} %>
+	<% }}   
+				viewedDocuments.add(objId);	
+			} %>
 	
 		<spagobi:error/>
 								

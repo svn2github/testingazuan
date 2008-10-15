@@ -567,6 +567,11 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			}
 			SourceBean sbOrig = SourceBean.fromXMLString(xml);
 			String trigNameOrig = (String)sbOrig.getAttribute("triggerName");
+			
+			List listRowsOrig = sbOrig.getAttributeAsList("PARAMETERS.PARAMETER");
+	    	SourceBean tmpSBOrig = (SourceBean)listRowsOrig.get(0);
+	    	String parvaluesOrig =(String) tmpSBOrig.getAttribute("value");
+			
 			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
 			
 			aSession = getSession();
@@ -584,7 +589,13 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			    	String xmlstr = temp.getXml();
 			    	SourceBean sb = SourceBean.fromXMLString(xmlstr);
 			    	String trigName = (String)sb.getAttribute("triggerName");
-			    	if (trigName != null && trigName.equals(trigNameOrig)){ hibDistributionListsObjects = temp; };
+			    	
+			    	List listRows = sb.getAttributeAsList("PARAMETERS.PARAMETER");
+			    	SourceBean tmpSB = (SourceBean)listRows.get(0);
+			    	String parvalues =(String) tmpSB.getAttribute("value");
+					
+			    	
+			    	if (trigName != null && trigName.equals(trigNameOrig) && parvalues!=null && parvalues.equals(parvaluesOrig)){ hibDistributionListsObjects = temp; };
 			    }			
 			}
 			
@@ -708,10 +719,11 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" group by sdlo.xml";
 			Query query = tmpSession.createQuery(hql);
 			
 			List l = query.list();
+			
 			if(!l.isEmpty()){
 		    Iterator it = l.iterator();
 		    while(it.hasNext()){

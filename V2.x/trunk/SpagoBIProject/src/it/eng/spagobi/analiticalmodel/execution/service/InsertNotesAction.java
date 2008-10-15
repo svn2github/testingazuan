@@ -47,9 +47,6 @@ import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-import com.sun.faces.util.Base64;
-import com.thoughtworks.xstream.core.util.Base64Encoder;
-
 public class InsertNotesAction extends BaseProfileAction{
 	
 	private static transient Logger logger = Logger.getLogger(InsertNotesAction.class);

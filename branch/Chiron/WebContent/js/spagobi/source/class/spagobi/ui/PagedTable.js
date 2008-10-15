@@ -52,7 +52,7 @@ qx.Class.define("spagobi.ui.PagedTable", {
 	 * @param data Object containing the layout of the list and the data of the list and form
 	 */
 	construct : function(controller, data)  {
-    	    	
+    	   	
     	this.base(arguments);    	
     	this.setWidth("100%");// try also "auto"
 		this.setHeight("100%");

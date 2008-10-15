@@ -116,7 +116,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		form = new spagobi.ui.custom.Link3DummyForm(); 
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();
-		form = new spagobi.ui.custom.RolesDummyForm(); 
+		form = new spagobi.ui.custom.MapDetailsForm(); 
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
@@ -141,7 +141,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	}
 	
 	
-	
+		
 		this.listPage = new spagobi.ui.PagedTable(this,this.records); 
 	   	this.addTop( this.listPage );
 	   	
@@ -245,7 +245,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
      * Function to display the current form on the page
      */
     show: function() {
-    	//this._form.setVisibility(false);
+    /*	//this._form.setVisibility(false);
     	if(this.detailBody != undefined) {	// this._type != 'funcManagement'
     		this.detailBody.remove(this._form)
     	}	
@@ -287,7 +287,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 		
 		}  else if(this._type === 'roles') {
-			this._form = new spagobi.ui.custom.RolesDummyForm();
+			this._form = new spagobi.ui.custom.MapDetailsForm();
 			
 		} else if(this._type === 'distributionList') {
 			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
@@ -316,18 +316,18 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	  		var b = new qx.ui.form.Button("dummy button");
 	  		b.addEventListener("execute",this.myFunction,this);
 	  		this._form.add(b);
-  			*/
+  			
   			
   			//testing for parameter form's getData() function for radio button.. Don't delete
   			/*var b = new qx.ui.form.Button("dummy button");
 	  		b.addEventListener("execute",this.myRadioFunction,this);
 	  		this._form.add(b);
-	  		*/ 
+	  		 
 		
 		if(this.detailBody != undefined) {
 			this.detailBody.add(this._form);
 		}
-			
+		*/	
 		if(!this.isVisibility()) {
 			this.setVisibility(true);
 		}

@@ -4,12 +4,12 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   
   construct : function(type)
   {
-   // this.base(arguments, "1*", "2*");
+   
     this.base(arguments,"1*","4*");//, "2*"); //  180
     this.setWidth("100%");
     this.setHeight("100%");
+    this.setLiveResize(true);
     
-    //this.setLiveResize(true);    //this.setShowKnob(false);
     
    
    if(type === 'funcManagement') { 
@@ -18,6 +18,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
    		leftPart.setHeight("100%");
     	leftPart.setOverflow("auto"); 
     	leftPart.setBackgroundColor('white');
+    //	leftPart.setBorder(new qx.ui.core.Border(1,"","blue"));
     	
   		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
   		with(headerLabel){
@@ -25,7 +26,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   			height = 300;
   		};
   		
-  	//var dummyTree = new spagobi.ui.Tree({root: "Functionalities" });
+  	
   	var tree = new spagobi.ui.Tree({root: "Functionalities" });
   	/*
   	with(tree)
@@ -114,15 +115,10 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		
   		this._tree = tree;						
-  		//tree.addEventListener("click",tree.onClickMenu,tree);						
+  								
   		tree.getManager().addEventListener("changeSelection",this.showInfo,this);
   		
-  		
-  		//leftPart.setBackgroundColor('white');
-  		
   		leftPart.add(headerLabel, tree);
-  		
-  		//leftPart.setOverflow("auto");	
   		
   		this.addLeft(leftPart);
   		
@@ -153,6 +149,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		this._moveDownButton.setEnabled(false);
   		
   		this._right = rightPart;
+  
    } 		
   },
   
@@ -200,7 +197,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
        					else{
        						this._moveDownButton.setEnabled(true); 
        					}
-     				//} 
+     				
        			}	// end of file nodes
        			else{											// If not Files (i.e. if Folders)
        					this._createButton.setEnabled(true);
@@ -246,7 +243,15 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   	moveDown: function(e){
   		this._tree.moveDownNode();		// Calls moveDownNode() function of Tree.js
   		this.showButtons();				// Change the toolbar button display based on new arrangement
-  	}
+  	},
+  	
+  	show: function() {
+  		if(!this.isVisibility()) {
+			this.setVisibility(true);
+		}
+    }
+  		
+  	
   }
   
 });  

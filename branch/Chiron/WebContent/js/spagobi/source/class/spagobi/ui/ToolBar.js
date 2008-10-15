@@ -127,7 +127,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	},
   
 	members: {
-		
+		button : undefined,
 	/**
 	 * Shows a popup box
 	 */	
@@ -178,23 +178,25 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	    		command.addEventListener("execute", btnConfig.handler, btnConfig.context);
   			}
     		
-    		var button = new qx.ui.toolbar.Button(this.tr(btnConfig.label), btnConfig.icon);
+    		 this.button = new qx.ui.toolbar.Button(this.tr(btnConfig.label), btnConfig.icon);
 			
+	//		button.setDisableUncheck(true);
+			 
 			if(command) {
-				button.setCommand( command );
+				this.button.setCommand( command );
 			} else if( btnConfig.handler ) {
-				button.addEventListener("execute", btnConfig.handler, btnConfig.context);
+				this.button.addEventListener("execute", btnConfig.handler, btnConfig.context);
 			}
 			
 			if(btnConfig.tooltip) {
 				if(command) {
-					button.setToolTip(new qx.ui.popup.ToolTip(this.tr('(%1) ' + btnConfig.tooltip, command.toString())));
+					this.button.setToolTip(new qx.ui.popup.ToolTip(this.tr('(%1) ' + btnConfig.tooltip, command.toString())));
 				} else {
-					button.setToolTip(new qx.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));				
+					this.button.setToolTip(new qx.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));				
 				}				
 			}
 			
-			this.add(button);
+			this.add(this.button);
   		}
   }
 });

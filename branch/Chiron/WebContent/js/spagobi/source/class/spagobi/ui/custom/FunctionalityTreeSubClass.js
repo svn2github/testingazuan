@@ -8,6 +8,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	  this.base(arguments);    	
 	  this.setWidth("100%");
 	  this.setHeight("100%");
+	//  this.setBackgroundColor('green');
 	  
 	  this.createToolbar();
 	  
@@ -41,6 +42,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
   
   members :
   {
+  		 newTable : undefined,
+  		 columnIds : [],
+     	 columnNames : {},
   		 _textfield1 : undefined,
   		 _textfield2 : undefined,
   		 _textfield3 : undefined,
@@ -56,6 +60,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 		  var saveButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/save.png");
 		  var SB = new qx.ui.popup.ToolTip("Save");
 		  saveButton.setToolTip(SB);
+		  
+		  saveButton.addEventListener("execute", this.ShowDetails,this);
 		  
 		  var deleteButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/delete.png");
 		  var SD = new qx.ui.popup.ToolTip("Delete");
@@ -82,33 +88,26 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 		  this.setUserData('toolBar', tb);
 		  // Button event listeners in parent class - FunctionalClassDummy.js
      },
-  
+  		  
+		
   		  createTextField : function(config){
   		
   		  var textfield = spagobi.commons.WidgetUtils.createInputTextField(config);
   		  //textfield.setTop(20);
   		  this.add(textfield);
   		  
-  		  return textfield;
+  		  return textfield;  // ask AMIT about the return statement!!
    	 },
    	 
    	 	  CreateTableWithCheckbox : function (){
    	 	  
    	 	  var tableData = spagobi.app.data.DataService.loadFunctinalitiesRecords();
-   	 	  var newTable = new spagobi.ui.Table(this, tableData);
-   	 	  //newTable.setTop(20);
-   	 	  //this.add( newTable );
-   	 	  /*
-   	 	  var atom0 = new qx.ui.basic.Atom();
-	      atom0.setWidth('100%'); 
-	      atom0.setHeight('1*');
-	      atom0.setBackgroundColor('white');
-	      atom0.add( newTable );
-	      this.add( atom0 );
-	      */
-	      newTable.setWidth('100%');
-    	  newTable.setHeight('1*');
-    	  this.add(newTable);
+   	 	  
+   	 	  this.newTable = new spagobi.ui.Table(this, tableData);
+   	 	  this.newTable.setWidth('100%');
+		  this.newTable.setHeight('1*');
+		  this.add(this.newTable);
+
     	  
 	      /*
 	      var b = new qx.ui.form.Button("Check");
@@ -122,11 +121,57 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	      */ 
    	 },
    	 
-   	 	selectDataObject: function(dataObject) {
+   	 	propertyCellEditorFactoryFunc : function (cellInfo)
    	 	
-   	 },
+   	 	{
+  			return new qx.ui.table.celleditor.CheckBox;
+  		},
+   	 	
+   	 	propertyCellRendererFactoryFunc : function (cellInfo)
+	    {
+	      	return new qx.ui.table.cellrenderer.Boolean;
+	    },
+   	 	
+   	 	_onCellCilck : function(e){
+	
+			if ( ! e instanceof qx.event.type.DataEvent){
+				return;
+			}
+			
+  			//var event_data = new qx.ui.table.pane.CellEvent(null,null,event);
+  			var colnum = e.getColumn();
+  			var romnum = e.getRow();
+  			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
+  				return;
+  			}
+  			//	alert(event +" ," +colnum +" ,"+ romnum);
+  			//var changedData = event.getData();
+  			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
+			
+			if ( this.getTableModel().getValue(colnum,romnum) === true )
+			{
+				//event.setData(false);// == false;
+				this.getTableModel().setValue(colnum,romnum,false);
+				//	alert (this.getTableModel().getValue(colnum,romnum));
+			}
+			else 
+			{
+				//event.setData(true);// == true;
+				this.getTableModel().setValue(colnum,romnum,true);
+				//	alert (this.getTableModel().getValue(colnum,romnum));
+				//event_data.setData(true);
+			}
+  		  
+      },
+   	 	
+   	 	ShowDetails: function () {
+		
+				alert (this.newTable.getUpdatedData());
+			
+    },
+   	 	
    	 
-   	 setData: function(config){
+   	 	setData: function(config){
    	 	
    	 	//this.getUserData('label');
    	 	var txt1 = this._textfield1.getUserData('field');

@@ -55,6 +55,7 @@ qx.Class.define("spagobi.app.Chiron",
 
   members :
   {
+  //	lastvalue : true,
   	toolbars: [],
   	selectToolbarName: undefined,
   	pages: [],
@@ -79,7 +80,7 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	// Create Application Layout
       	var applicationLayout = this._createLayout();
-      	
+  //    	alert(applicationLayout.);
       	var executionMode = qx.core.Setting.get("spagobi.executionMode");
       	if(executionMode && executionMode === 'portal') {
       		var d = qx.ui.core.ClientDocument.getInstance();
@@ -112,7 +113,7 @@ qx.Class.define("spagobi.app.Chiron",
 	   	var dockLayout = new qx.ui.layout.DockLayout();
         dockLayout.setEdge(0);
  //       dockLayout.setWidth(screen.width);
-        dockLayout.setBackgroundColor('white');
+  //      dockLayout.setBackgroundColor('white');
         
 	  	// Create header
       	this._headerView = new spagobi.app.ui.Header();
@@ -127,6 +128,7 @@ qx.Class.define("spagobi.app.Chiron",
 		  		"label": 'Resources',
 		  		icon: 'icon/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
+		  //		value : 'true'
 	  		}, {
 		  		command: 'Control+W',
 		  		handler: function() {this._selectToolbar('catalogues');},
@@ -134,6 +136,7 @@ qx.Class.define("spagobi.app.Chiron",
 		  		"label": 'Catalogues',
 		  		icon: 'icon/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
+		  		
 	  		}, {
 		  		command: 'Control+E',
 		  		handler: function() {this._selectToolbar('behaviouralModel');},
@@ -363,12 +366,12 @@ qx.Class.define("spagobi.app.Chiron",
 						tooltip: 'Import / Export '
       				}, {
       					name: 'schedule',
-						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
+						image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',//scheduleIcon64_blu.png',
 						page: 'schedule',
 						tooltip: 'Schedule Document Executions '
       				}, {
       					name: 'roles',
-						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
+						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',//rolesynch64.jpg',
 						page: 'roles',
 						tooltip: 'Roles Synchronization'
       				}
@@ -426,6 +429,7 @@ qx.Class.define("spagobi.app.Chiron",
      * @param toolbarName {String} The name of the Toolbar button
      */
     _selectToolbar: function(toolbarName) {
+    	
     	if(this.toolbars[toolbarName]) {
     		if(this.selectToolbarName) {
     			this.toolbars[this.selectToolbarName].setVisibility(false);

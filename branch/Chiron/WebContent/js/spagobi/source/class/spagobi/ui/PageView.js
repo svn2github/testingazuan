@@ -108,7 +108,8 @@ qx.Class.define("spagobi.ui.PageView", {
 		
 		var toolbarConfig = {
 			defaultBackgroudColor: config.toolbar.defaultBackgroudColor,
-			focusedBackgroudColor: config.toolbar.focusedBackgroudColor
+			focusedBackgroudColor: config.toolbar.focusedBackgroudColor,
+			defaultSelectedPage : config.defaultSelectedPage
 		};
 		this._toolbar = new spagobi.ui.IconBar( toolbarConfig );
 		

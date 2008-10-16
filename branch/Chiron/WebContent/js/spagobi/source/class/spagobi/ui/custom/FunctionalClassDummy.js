@@ -18,7 +18,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
    		leftPart.setHeight("100%");
     	leftPart.setOverflow("auto"); 
     	leftPart.setBackgroundColor('white');
-    //	leftPart.setBorder(new qx.ui.core.Border(1,"","blue"));
+    	leftPart.setBorder(new qx.ui.core.Border(1));
     	
   		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
   		with(headerLabel){

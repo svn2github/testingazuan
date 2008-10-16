@@ -377,7 +377,7 @@ qx.Class.define("spagobi.app.Chiron",
       				}
       			]
       		},
-      		defaultSelectedPage: 'roles'
+      		defaultSelectedPage: 'tool'
       	});
       	dockLayout.add( this.toolbars['tools'] );
       	this.toolbars['tools'].setLiveResize(true);

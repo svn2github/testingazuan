@@ -53,12 +53,13 @@ qx.Class.define("spagobi.ui.Table",
    */	
   construct : function(controller, data)
   {
-  	
     // Establish controller link
     this._controller = controller;
-       
+    
+    // Reset the class member variables so that each button of icon bar shows its resp. table columns
     this.columnIds = [];
     this.columnNames = {};
+    
     for(var i = 0; i < data.meta.length; i++) {
     	this.columnIds[i] =  data.meta[i].dataIndex;
     	this.columnNames[data.meta[i].dataIndex] = data.meta[i].name;
@@ -75,9 +76,8 @@ qx.Class.define("spagobi.ui.Table",
     // automatically resizes columns.
     this.base(arguments, this._tableModel,
     {
-      
       tableColumnModel : function(obj) {
-      	return new qx.ui.table.columnmodel.Resize(obj);
+        return new qx.ui.table.columnmodel.Resize(obj);
       }
     });
 
@@ -91,7 +91,7 @@ qx.Class.define("spagobi.ui.Table",
 	
    if (data.ID != undefined){
     	if (data.ID == "ROLES"){
-			
+		
 			var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
 	 	
    		 	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
@@ -101,7 +101,7 @@ qx.Class.define("spagobi.ui.Table",
 				columnModel.setCellEditorFactory(data.columns[i], propertyCellEditorFactory);
 			}
 			
-			this.addEventListener("cellClick",this._onCellCilck, this );
+			this.addEventListener("cellClick",this._onCellClick, this );
 			
 			/*
 			columnModel.setDataCellRenderer(2, propertyCellRendererFactory);
@@ -123,7 +123,7 @@ qx.Class.define("spagobi.ui.Table",
 			columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
 			columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
 		
-		*/
+			
 			
 			
 		//	columnModel.setDataCellRenderer(2, new qx.ui.table.cellrenderer.Boolean());
@@ -135,22 +135,16 @@ qx.Class.define("spagobi.ui.Table",
 	//    columnModel.setDataCellRenderer(9, new qx.ui.table.cellrenderer.Boolean());
 	//   columnModel.setDataCellRenderer(10, new qx.ui.table.cellrenderer.Boolean());
 		
-	
+	*/
     }
     }
-    
-    else 
-    	{
-    		
-    		this.getSelectionModel().addEventListener("changeSelection", this._onChangeSelection, this);
-    	}
-    	
 	
 	// Basic setup
  //this.setDimension('100%', '100%');
     //alert (this.getWidthValue());
     //var a = (92 * screen.width)/100;
    	//this.setWidth(a);
+    
     this.setWidth('100%');
     this.setHeight('100%');
     this.setBorder("inset-thin");					//line-bottom
@@ -162,7 +156,7 @@ qx.Class.define("spagobi.ui.Table",
     this._tableModel.setDataAsMapArray(data.rows, true);
     
     // Add selection listener
-    
+    this.getSelectionModel().addEventListener("changeSelection", this._onChangeSelection, this);
     
   },
 
@@ -290,15 +284,14 @@ qx.Class.define("spagobi.ui.Table",
 		 
         // If this is undefined, the data is not yet ready...
         if (itemData) {
-        	if (this._controller != spagobi.ui.custom.FunctionalityTreeSubClass )
-        	
-        	this._controller.selectDataObject(itemData);
+        //if (this._controller != spagobi.ui.custom.FunctionalityTreeSubClass )
+          this._controller.selectDataObject(itemData);
         }
       }
             
     },
     
-    _onCellCilck : function(e){
+    _onCellClick : function(e){
 	
 			if ( ! e instanceof qx.event.type.DataEvent){
 				return;
@@ -307,6 +300,7 @@ qx.Class.define("spagobi.ui.Table",
   			//var event_data = new qx.ui.table.pane.CellEvent(null,null,event);
   			var colnum = e.getColumn();
   			var romnum = e.getRow();
+  			
   			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
   				return;
   			}

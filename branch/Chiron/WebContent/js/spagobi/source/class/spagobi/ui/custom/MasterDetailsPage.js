@@ -58,8 +58,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
    	
   construct : function(type)
   {
-   // this.base(arguments, "1*", "2*");
-    this.base(arguments,"1*","2*");//, "2*"); //  180
+	this.base(arguments, "1*", "2*");
     this.setWidth("100%");
     this.setHeight("100%");
     this.setLiveResize(true);
@@ -105,7 +104,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'configuration') {									
 		this.records = spagobi.app.data.DataService.loadConfigurationRecords();
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
-	}  else if(type == 'link1') {									
+	} else if(type == 'link1') {									
 		this.records = spagobi.app.data.DataService.loadlink1Records();
 		form = new spagobi.ui.custom.Link1DummyForm(); 
 	} else if(type == 'link2') {									
@@ -116,7 +115,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		form = new spagobi.ui.custom.Link3DummyForm(); 
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();
-		form = new spagobi.ui.custom.MapDetailsForm(); 
+		form = new spagobi.ui.custom.RolesDummyForm(); 
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
@@ -141,57 +140,57 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	}
 	
 	
-		
+	
 		this.listPage = new spagobi.ui.PagedTable(this,this.records); 
 	   	this.addTop( this.listPage );
-	   	
-  	// Create detail view
-	  
-	  detailPage = new qx.ui.pageview.buttonview.ButtonView();
-	  detailPage.setEdge(0);
-  	
-    
-    // Create detail view toolbar
-      var saveButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/save.png");
-   var SB = new qx.ui.popup.ToolTip("Save");
-    saveButton.setToolTip(SB);
-    var deleteButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/delete.png");
-    var SD = new qx.ui.popup.ToolTip("Delete");
-    deleteButton.setToolTip(SD);
-    var createButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/create.png");
-    var NB = new qx.ui.popup.ToolTip("New");
-    createButton.setToolTip(NB);
-                     
-    detailPage.getBar().add(createButton, saveButton, deleteButton);               
-   
-    // Functionality for Save button
-    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
-	save_page.setDisplay(false);
-	detailPage.getPane().add(save_page);
-	save_page.addEventListener("appear", this.ShowDetails, this);
-	
-	function ShowDetails() {
+	   	this.listPage.setOverflow("auto");
+	    //this.listPage.setWidth('100%'); 
+	    //this.listPage.setHeight('100%');  	
+	      	
+	      	
+	   	// Create detail view
+	   	detailPage = new qx.ui.pageview.buttonview.ButtonView();
+	    detailPage.setEdge(0);     
+	        
+	    // Create detail view toolbar
+	      var saveButton = new qx.ui.pageview.buttonview.Button(/*"Save");//*/"", "spagobi/img/spagobi/test/save.png");
+	    var SB = new qx.ui.popup.ToolTip("Save");
+	    saveButton.setToolTip(SB);
+	    var deleteButton = new qx.ui.pageview.buttonview.Button(/*"Delete");//*/"", "spagobi/img/spagobi/test/delete.png");
+	    var SD = new qx.ui.popup.ToolTip("Delete");
+	    deleteButton.setToolTip(SD);
+	    var createButton = new qx.ui.pageview.buttonview.Button(/*"New");//*/"", "spagobi/img/spagobi/test/create.png");
+	    var NB = new qx.ui.popup.ToolTip("New");
+	    createButton.setToolTip(NB);
+	                     
+	    detailPage.getBar().add(createButton, saveButton, deleteButton);               
+	   
+	    // Functionality for Save button
+	    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
+		save_page.setDisplay(false);
+		detailPage.getPane().add(save_page);
+		save_page.addEventListener("appear", this.ShowDetails, this);
+		
+		/*
+		function ShowDetails() {
 		var alias = this.getForm().getData();
 		alert (this.printObject(alias));
-	}
-
-    
-    /* 
-     //test code for the dummy Logout button of pageview 
-    var btn = new qx.ui.pageview.buttonview.Button("Logout");
-	detailPage.getBar().add(btn);
-	var dum_page = new qx.ui.pageview.buttonview.Page(btn);
-	detailPage.getPane().add(dum_page);
-	dum_page.setDisplay(false);
-	dum_page.addEventListener("appear", logout);
-	
-	function logout() {
-		alert ("Button works !!!!");
-	}
-    //End of test code   
-     */
-        
-    /*    
+		}
+	    */    
+	    // Create detail view body
+	   	this._form = form;       	      	
+	   	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
+	    detailHeader.setDisplay(false);        
+	    detailHeader.setChecked(true);  		
+		this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
+	    this.detailBody.setOverflow("auto");
+	    this.detailBody.add( this._form );  		 
+	  	detailPage.getPane().add( this.detailBody );
+	  	
+	  	this.addBottom( detailPage );
+	  	//this.setOverflow("auto");
+  			
+  	/*    
     //testing for parameter form's getData() function
     if(type ==='parameters'){
   		var b = new qx.ui.form.Button("dummy button");
@@ -199,21 +198,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   		form.add(b);
   	}
   	*/
-        
-    // Create detail view body
-   	this._form = form;       	      	
-   	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
-    detailHeader.setDisplay(false);        
-    detailHeader.setChecked(true);  		
-	this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
-    this.detailBody.setOverflow("auto");
-    this.detailBody.add( this._form );  		 
-  	detailPage.getPane().add( this.detailBody );
-  	
-  	this.addBottom( detailPage );
-  	
-},
-  	
+  	//alert("3");//4
+  },
 
   members :
   {
@@ -244,8 +230,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     /**
      * Function to display the current form on the page
      */
-    show: function() {
-    /*	//this._form.setVisibility(false);
+ //   show: function() {
+    	//this._form.setVisibility(false);
+    	/*
     	if(this.detailBody != undefined) {	// this._type != 'funcManagement'
     		this.detailBody.remove(this._form)
     	}	
@@ -283,12 +270,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		} else if(this._type === 'link3') {
 			this._form = new spagobi.ui.custom.Link3DummyForm();	
 		
-		}  else if(this._type == 'configuration') {
+		} else if(this._type == 'configuration') {
 			this._form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 		
-		}  else if(this._type === 'roles') {
-			this._form = new spagobi.ui.custom.MapDetailsForm();
-			
+		} else if(this._type === 'roles') {
+			this._form = new spagobi.ui.custom.RolesDummyForm();
 		} else if(this._type === 'distributionList') {
 			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 		
@@ -310,28 +296,32 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		} else if(this._type === 'schedule') {
 			this._form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 		
-		} 
+		}
+		*/	
 			//testing for parameter form's getData() function for checkbox list.. Don't delete
    			/*
 	  		var b = new qx.ui.form.Button("dummy button");
 	  		b.addEventListener("execute",this.myFunction,this);
 	  		this._form.add(b);
-  			
+  			*/
   			
   			//testing for parameter form's getData() function for radio button.. Don't delete
   			/*var b = new qx.ui.form.Button("dummy button");
 	  		b.addEventListener("execute",this.myRadioFunction,this);
 	  		this._form.add(b);
-	  		 
-		
+	  		*/ 
+		/*
 		if(this.detailBody != undefined) {
 			this.detailBody.add(this._form);
 		}
-		*/	
+		*/
+		/*
+		show: function() {
 		if(!this.isVisibility()) {
 			this.setVisibility(true);
 		}
     },
+    */
     
     /**
      * Function to print the "property: value" pairs of an object

@@ -52,7 +52,8 @@ qx.Class.define("spagobi.ui.IconBar", {
 	construct : function( config ) {   
 	    this.base(arguments);
 	    this.setSpacing(0);
-	   // alert(this.getBackgroundColor());
+	    
+	    
 	    if(config) {
 	    	if(config.selectedBackgroudColor) {
 		    	this._selectedBackgroudColor = config.selectedBackgroudColor;
@@ -61,20 +62,21 @@ qx.Class.define("spagobi.ui.IconBar", {
 	    	if(config.focusedBackgroudColor) {
 		    	this._focusedBackgroudColor = config.focusedBackgroudColor;
 	    	}
-		    if(config.defaultSelectedPage) {
-			this._defaultSelectedPageName = config.defaultSelectedPage;
-		}
-		    
-		    
-		  /*  if(config.buttons) {
+	    	
+	    	if(config.defaultSelectedPage) {
+				this._defaultSelectedPageName = config.defaultSelectedPage;
+			}
+		    /*
+		    if(config.buttons) {
 			    for(var i = 0; i < config.buttons.length; i++) {
 			    	this.addButton( config.buttons[i] );
 			    }
-		    }*/		    
+		    }
+		    */		    
 	    }
 	   
 	    
-
+	//alert("4");//1
 	},
 	
 

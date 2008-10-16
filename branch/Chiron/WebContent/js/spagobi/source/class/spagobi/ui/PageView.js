@@ -100,10 +100,9 @@ qx.Class.define("spagobi.ui.PageView", {
 	 */
 	construct : function(config) {
 		this.base(arguments, 70, "1*");
-	//	this.setLiveResize(true);
-	//	this.setLiveResize(false);
 		this.setShowKnob(false);
 		this.setSplitterSize(0);
+		
 		this._pages = [];
 		
 		var toolbarConfig = {
@@ -141,7 +140,8 @@ qx.Class.define("spagobi.ui.PageView", {
 			this._defaultSelectedPageName = config.defaultSelectedPage;
 		}	
 		
-		this.addLeft( this._toolbar );	
+		this.addLeft( this._toolbar );
+		
 	},
 	
 	/**
@@ -177,18 +177,25 @@ qx.Class.define("spagobi.ui.PageView", {
     			{	
     				this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
     			}
-    			this.addRight( this._pages[pageName] ); 
+    			
+    			this.addRight( this._pages[pageName] );
     		}
     	
     	
 	    	if(this._selectedPageName) {
-	    		this._pages[this._selectedPageName].setVisibility(false);
+	    		//this._pages[this._selectedPageName].setVisibility(false);
+	    		this._pages[this._selectedPageName].setDisplay(false);
 	    	}
 	    	this._selectedPageName = pageName;
-	    //	if ( pageName != "funcManagement")
-	    //	{	
-	    		this._pages[pageName].show();
-	    //	} 	  
+	    	
+	    	
+	    	//this._pages[pageName].setVisibility(true);	// added
+	    	this._pages[pageName].setDisplay(true);	// added
+	    	
+	    			//if (pageName != "funcManagement"){	
+	    	//this._pages[pageName].show();
+	    			//}
+	    	 	  
     	},
     	
     	/**

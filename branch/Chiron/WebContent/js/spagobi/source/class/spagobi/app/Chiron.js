@@ -55,7 +55,6 @@ qx.Class.define("spagobi.app.Chiron",
 
   members :
   {
-  //	lastvalue : true,
   	toolbars: [],
   	selectToolbarName: undefined,
   	pages: [],
@@ -80,7 +79,7 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	// Create Application Layout
       	var applicationLayout = this._createLayout();
-  //    	alert(applicationLayout.);
+      	
       	var executionMode = qx.core.Setting.get("spagobi.executionMode");
       	if(executionMode && executionMode === 'portal') {
       		var d = qx.ui.core.ClientDocument.getInstance();
@@ -113,7 +112,7 @@ qx.Class.define("spagobi.app.Chiron",
 	   	var dockLayout = new qx.ui.layout.DockLayout();
         dockLayout.setEdge(0);
  //       dockLayout.setWidth(screen.width);
-  //      dockLayout.setBackgroundColor('white');
+        dockLayout.setBackgroundColor('white');
         
 	  	// Create header
       	this._headerView = new spagobi.app.ui.Header();
@@ -128,7 +127,6 @@ qx.Class.define("spagobi.app.Chiron",
 		  		"label": 'Resources',
 		  		icon: 'icon/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-		  //		value : 'true'
 	  		}, {
 		  		command: 'Control+W',
 		  		handler: function() {this._selectToolbar('catalogues');},
@@ -136,7 +134,6 @@ qx.Class.define("spagobi.app.Chiron",
 		  		"label": 'Catalogues',
 		  		icon: 'icon/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-		  		
 	  		}, {
 		  		command: 'Control+E',
 		  		handler: function() {this._selectToolbar('behaviouralModel');},
@@ -294,7 +291,7 @@ qx.Class.define("spagobi.app.Chiron",
       	this.toolbars['analyticalModel'].setLiveResize(true);
       	this.toolbars['analyticalModel'].setVisibility(false);
       	
-      	//new code starts
+      	
       	this.toolbars['adminDistributionList'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
@@ -314,7 +311,7 @@ qx.Class.define("spagobi.app.Chiron",
       		defaultSelectedPage: 'distributionList'
       	});
       	dockLayout.add( this.toolbars['adminDistributionList'] );
-      	this.toolbars['adminDistributionList'].setLiveResize(true);
+        this.toolbars['adminDistributionList'].setLiveResize(true);
       	this.toolbars['adminDistributionList'].setVisibility(false);
       	
       	this.toolbars['functionality'] = new spagobi.ui.PageView({
@@ -331,7 +328,7 @@ qx.Class.define("spagobi.app.Chiron",
       		defaultSelectedPage: 'func'
       	});
       	dockLayout.add( this.toolbars['functionality'] );
-      	this.toolbars['functionality'].setLiveResize(true);
+        this.toolbars['functionality'].setLiveResize(true);
       	this.toolbars['functionality'].setVisibility(false);
       	
       	this.toolbars['events'] = new spagobi.ui.PageView({
@@ -353,7 +350,7 @@ qx.Class.define("spagobi.app.Chiron",
       		defaultSelectedPage: 'workflow'
       	});
       	dockLayout.add( this.toolbars['events'] );
-      	this.toolbars['events'].setLiveResize(true);
+        this.toolbars['events'].setLiveResize(true);
       	this.toolbars['events'].setVisibility(false);
       	
       	this.toolbars['tools'] = new spagobi.ui.PageView({
@@ -366,21 +363,21 @@ qx.Class.define("spagobi.app.Chiron",
 						tooltip: 'Import / Export '
       				}, {
       					name: 'schedule',
-						image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',//scheduleIcon64_blu.png',
+						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
 						page: 'schedule',
 						tooltip: 'Schedule Document Executions '
       				}, {
       					name: 'roles',
-						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',//rolesynch64.jpg',
+						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
 						page: 'roles',
 						tooltip: 'Roles Synchronization'
       				}
       			]
       		},
-      		defaultSelectedPage: 'tool'
+      		defaultSelectedPage: 'roles'
       	});
       	dockLayout.add( this.toolbars['tools'] );
-      	this.toolbars['tools'].setLiveResize(true);
+        this.toolbars['tools'].setLiveResize(true);
       	this.toolbars['tools'].setVisibility(false);
       	
       	this.toolbars['hotLinks'] = new spagobi.ui.PageView({
@@ -407,9 +404,9 @@ qx.Class.define("spagobi.app.Chiron",
       		defaultSelectedPage: 'link1'
       	});
       	dockLayout.add( this.toolbars['hotLinks'] );
-      	this.toolbars['hotLinks'].setLiveResize(true);
+        this.toolbars['hotLinks'].setLiveResize(true);
       	this.toolbars['hotLinks'].setVisibility(false);
-      	//new code ends
+      	//alert("1");//3
       	return dockLayout;  		
     },
     
@@ -429,7 +426,6 @@ qx.Class.define("spagobi.app.Chiron",
      * @param toolbarName {String} The name of the Toolbar button
      */
     _selectToolbar: function(toolbarName) {
-    	
     	if(this.toolbars[toolbarName]) {
     		if(this.selectToolbarName) {
     			this.toolbars[this.selectToolbarName].setVisibility(false);
@@ -452,6 +448,7 @@ qx.Class.define("spagobi.app.Chiron",
      *
      * @param pageName {String} Name of the page to be displayed
      */
+     /*
     _selectPage: function(pageName) {
     	if(!this.pages[pageName]) {
     		if (pageName == "funcManagement")
@@ -460,9 +457,10 @@ qx.Class.define("spagobi.app.Chiron",
     			}
     		else
     			{	
-    		this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
+    				this.pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
     			}
-    		this.mainPane.addRight( this.pages[pageName] ); 
+    		this.mainPane.addRight( this.pages[pageName] ); 		//HorizontalSplitPane
+    		//this.mainPane.add( this.pages[pageName] );
     	}
     	
     	
@@ -471,14 +469,14 @@ qx.Class.define("spagobi.app.Chiron",
     	}
     	this.selectPageName = pageName;
     		
-    	this.pages[pageName].show();
+    	//this.pages[pageName].show();
+    	this._pages[pageName].setVisibility(true);
     	
     	/*
     	if(!this.pages[pageName].isVisibility()) {
     		this.pages[pageName].setVisibility(true);   
     	} 
-    	*/
-    	/* 	
+    	 	
     	if(!this.pages[pageName]) {
     		this.pages[pageName] = new spagobi.test.view.MasterDetailsPage(pageName);
     		this.mainPane.addRight( this.pages[pageName] ); 
@@ -487,9 +485,10 @@ qx.Class.define("spagobi.app.Chiron",
     		this.pages[pageName].moveSelfBefore( this.pages[this.selectPageName] );
     	}
     	this.selectPageName = pageName;
-    	*/
+    	* /
     	  
     },
+    */
     
     /**
      * Function to set the theme of the page

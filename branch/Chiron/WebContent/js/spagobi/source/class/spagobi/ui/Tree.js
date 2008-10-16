@@ -55,6 +55,9 @@ qx.Class.define("spagobi.ui.Tree", {
           	 var trs = qx.ui.tree.TreeRowStructure.getInstance().standard(config.root);
 		     this.base(arguments, trs);
           	
+          	 //this.setWidth("100%"); // don't set it, else scroll bar appear permanantly
+    		 //this.setHeight("100%");
+    		 
           	 //this.setUserData('node', this);
           	 //this.setSelectedElement(null);
           	 //this.getManager().setSelectedItem(null);
@@ -208,10 +211,10 @@ qx.Class.define("spagobi.ui.Tree", {
   						
   						
   						if (contextMenu.isSeeable()){		//never gets executed
-				            alert('hi');
+				            //alert('hi');
 				            contextMenu.hide();
 				            this.setSelectedElement(null);
-				            alert(this.getSelectedElement);
+				            //alert(this.getSelectedElement);
 				        }
 				        else{
 				            
@@ -468,17 +471,25 @@ qx.Class.define("spagobi.ui.Tree", {
 	              *                                               	               
 	              */
 	             deleteNode: function(e){
+	               
+	             	var currentItem = this.getSelectedElement();
+	             	alert(currentItem + "," + currentItem.getLabel());
+	             	currentItem.destroy();			//currentItem.remove();
+	             	alert("1. " + currentItem + "," + currentItem.getLabel());
+	             	/*
+	             	 var currentItem = this.getManager().getSelectedItem();
 	             	
-	             	var currentItem = this.getManager().getSelectedItem();
-	             	
+	             	//alert(currentItem + ","+currentItem.getLabel());
 	             	if(currentItem == this){
 	             		alert("Root node cannot be deleted");
 	             	}
           			else if (currentItem != null) {
+          					
 	              			currentItem.destroy();
+	              			
 	              			currentItem = null;
           			}
-          			
+          			*/
           			//this.getSelectedElement().getParent().setSelected(true);	//else try getParentFolder()
           			
                  },
@@ -502,6 +513,27 @@ qx.Class.define("spagobi.ui.Tree", {
           			//this.getSelectedElement().getParent().setSelected(true);
                  },
                  
+                 deleteTreeNode: function(){
+                 	/*
+                 	 * working but long version
+                 	var currentItem = this.getSelectedElement();
+                 	var atomLabel = currentItem.getLabel();
+                 	var atom = this.getUserData(atomLabel);
+                 	var node = atom.getUserData('node');
+                 	var nodeParent = node.getParentFolder();
+                 	nodeParent.remove(node);
+                 	*/
+                 	
+                 	var currentItem = this.getSelectedElement();
+                 	var nodeParent = currentItem.getParentFolder();
+                 	nodeParent.remove(currentItem);
+                 	nodeParent.setSelected(true);
+                 	
+                 	//alert(nodeParent.getChildrenLength()); why 2 as horizontalbox and vbox??
+                 	//node.destroy();
+                 	//this.remove(atom); //removeFromTreeQueue() // this.removeChildFromTreeQueue(node)
+                 	
+                 },
                  /**
                   * Function to get the currently selected node of the tree
                   * 
@@ -560,16 +592,16 @@ qx.Class.define("spagobi.ui.Tree", {
                  
                  getNodeData: function(){
                  	
-                 	//var info = {};
+                 	var info = {};
                  	var node = this.getCurrentNode();
-                 	//info.label = node.getLabel();
                  	
                  	var nodeId = node.getLabel();
                  	var atom = this.getUserData(nodeId);
                  	
                  	if(atom.getUserData('data') != undefined)
-                 		var info = atom.getUserData('data');
+                 		info.data = atom.getUserData('data');
                  	
+                 	info.tree = this;
                  	return info;
                  }
           }

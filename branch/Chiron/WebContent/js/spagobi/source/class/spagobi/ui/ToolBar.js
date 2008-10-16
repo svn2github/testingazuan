@@ -67,6 +67,8 @@ qx.Class.define("spagobi.ui.ToolBar", {
   	construct : function( config ) {
 	    this.base(arguments);
 	    
+	    this._toolBarManager = new qx.ui.selection.RadioManager(null);
+	    
 	    for(var i = 0; i < config.length; i++) {
 	    	this.addButton( config[i] );
 	    }
@@ -124,10 +126,13 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		icon: 'icon/16/actions/help-about.png',
 	  		tooltip: 'Help'
 	  	});
+	  	
+	  	
 	},
   
 	members: {
-		button : undefined,
+		
+		_toolBarManager: undefined,
 	/**
 	 * Shows a popup box
 	 */	
@@ -178,25 +183,27 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	    		command.addEventListener("execute", btnConfig.handler, btnConfig.context);
   			}
     		
-    		 this.button = new qx.ui.toolbar.Button(this.tr(btnConfig.label), btnConfig.icon);
+    		//var button = new qx.ui.toolbar.Button(this.tr(btnConfig.label), btnConfig.icon);
+    		var button = new qx.ui.toolbar.RadioButton(this.tr(btnConfig.label), btnConfig.icon);
 			
-	//		button.setDisableUncheck(true);
-			 
+        	this._toolBarManager.add(button);		// Radio Mananger
+			
 			if(command) {
-				this.button.setCommand( command );
+				button.setCommand( command );
 			} else if( btnConfig.handler ) {
-				this.button.addEventListener("execute", btnConfig.handler, btnConfig.context);
+				button.addEventListener("execute", btnConfig.handler, btnConfig.context);
+				
 			}
 			
 			if(btnConfig.tooltip) {
 				if(command) {
-					this.button.setToolTip(new qx.ui.popup.ToolTip(this.tr('(%1) ' + btnConfig.tooltip, command.toString())));
+					button.setToolTip(new qx.ui.popup.ToolTip(this.tr('(%1) ' + btnConfig.tooltip, command.toString())));
 				} else {
-					this.button.setToolTip(new qx.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));				
+					button.setToolTip(new qx.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));				
 				}				
 			}
 			
-			this.add(this.button);
+			this.add(button);
   		}
   }
 });

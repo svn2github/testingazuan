@@ -8,7 +8,6 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	  this.base(arguments);    	
 	  this.setWidth("100%");
 	  this.setHeight("100%");
-	//  this.setBackgroundColor('green');
 	  
 	  this.createToolbar();
 	  
@@ -19,7 +18,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 								        		labelwidth: 100,
 								        		mandatory: true	
 								        	});
-     // this.setUserData('label',_textfield1); //required if local variable used for constuctor
+      this.setUserData('label',this._textfield1);
         	
 	  this._textfield2 = this.createTextField({
 								        		type: 'text',
@@ -28,6 +27,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 								        		labelwidth: 100,
 								        		mandatory: true	
 								        	});
+      this.setUserData('name',this._textfield2);
       
       this._textfield3 = this.createTextField({
 								        		type: 'text',
@@ -36,18 +36,18 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 								        		labelwidth: 100,
 								        		mandatory: false	
 								        	});
-	 
-	  this.CreateTableWithCheckbox();
+	  this.setUserData('description',this._textfield3);
+	  
+	  this._table = this.CreateTableWithCheckbox();
+	  this.setUserData('table',this._table);
   },
   
   members :
   {
-  		 newTable : undefined,
-  		 columnIds : [],
-     	 columnNames : {},
   		 _textfield1 : undefined,
   		 _textfield2 : undefined,
   		 _textfield3 : undefined,
+  		 _table 	 : undefined,
   		 
 	  	  createToolbar : function(){
 	  	
@@ -60,8 +60,6 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 		  var saveButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/save.png");
 		  var SB = new qx.ui.popup.ToolTip("Save");
 		  saveButton.setToolTip(SB);
-		  
-		  saveButton.addEventListener("execute", this.ShowDetails,this);
 		  
 		  var deleteButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/delete.png");
 		  var SD = new qx.ui.popup.ToolTip("Delete");
@@ -76,112 +74,156 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 		  var moveDownToolTip = new qx.ui.popup.ToolTip("Move Down");
 		  moveDownButton.setToolTip(moveDownToolTip);	
 		  	
-		  tb.add(createButton,saveButton,deleteButton,moveUpButton,moveDownButton);
+		  var clearAllButton = new qx.ui.toolbar.Button("", "spagobi/img/spagobi/test/reset.gif");
+		  var clearAllToolTip = new qx.ui.popup.ToolTip("Clear all Data");
+		  clearAllButton.setToolTip(clearAllToolTip);
+		  	
+		  tb.add(createButton,saveButton,deleteButton,moveUpButton,moveDownButton,clearAllButton);
 		  
 		  tb.setUserData('create',createButton);
 		  tb.setUserData('save',saveButton);
 		  tb.setUserData('delete',deleteButton);
 		  tb.setUserData('moveUp',moveUpButton);
 		  tb.setUserData('moveDown',moveDownButton);
+		  tb.setUserData('clearAll',clearAllButton);
 		  
 		  this.add(tb);
 		  this.setUserData('toolBar', tb);
 		  // Button event listeners in parent class - FunctionalClassDummy.js
      },
-  		  
-		
+  
   		  createTextField : function(config){
   		
   		  var textfield = spagobi.commons.WidgetUtils.createInputTextField(config);
   		  //textfield.setTop(20);
   		  this.add(textfield);
   		  
-  		  return textfield;  // ask AMIT about the return statement!!
+  		  return textfield;
    	 },
    	 
    	 	  CreateTableWithCheckbox : function (){
    	 	  
    	 	  var tableData = spagobi.app.data.DataService.loadFunctinalitiesRecords();
-   	 	  
-   	 	  this.newTable = new spagobi.ui.Table(this, tableData);
-   	 	  this.newTable.setWidth('100%');
-		  this.newTable.setHeight('1*');
-		  this.add(this.newTable);
-
+   	 	  var newTable = new spagobi.ui.Table(this, tableData);
+   	 	  //newTable.setTop(20);
+   	 	  //this.add( newTable );
+   	 	  /*
+   	 	  var atom0 = new qx.ui.basic.Atom();
+	      atom0.setWidth('100%'); 
+	      atom0.setHeight('1*');
+	      atom0.setBackgroundColor('white');
+	      atom0.add( newTable );
+	      this.add( atom0 );
+	      */
+	      
+	      newTable.setWidth('100%');
+    	  newTable.setHeight('1*');
+    	  this.add(newTable);
+    	      	  
+    	  return newTable;
     	  
-	      /*
-	      var b = new qx.ui.form.Button("Check");
-	      b.setLeft(100);
-	      b.setTop(100);
-	      b.addEventListener("execute", function(e){
-	      alert(this.getLeft() + "," + atom0.getLeft() + ","+ newTable.getLeft());
-	      alert(this.getWidth() + "," + atom0.getWidth() + "," + newTable.getWidth());	
-	      },this);
-	      b.addToDocument();
-	      */ 
    	 },
    	 
-   	 	propertyCellEditorFactoryFunc : function (cellInfo)
+   	 	selectDataObject: function(dataObject) {
    	 	
-   	 	{
-  			return new qx.ui.table.celleditor.CheckBox;
-  		},
-   	 	
-   	 	propertyCellRendererFactoryFunc : function (cellInfo)
-	    {
-	      	return new qx.ui.table.cellrenderer.Boolean;
-	    },
-   	 	
-   	 	_onCellCilck : function(e){
-	
-			if ( ! e instanceof qx.event.type.DataEvent){
-				return;
-			}
-			
-  			//var event_data = new qx.ui.table.pane.CellEvent(null,null,event);
-  			var colnum = e.getColumn();
-  			var romnum = e.getRow();
-  			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
-  				return;
-  			}
-  			//	alert(event +" ," +colnum +" ,"+ romnum);
-  			//var changedData = event.getData();
-  			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
-			
-			if ( this.getTableModel().getValue(colnum,romnum) === true )
-			{
-				//event.setData(false);// == false;
-				this.getTableModel().setValue(colnum,romnum,false);
-				//	alert (this.getTableModel().getValue(colnum,romnum));
-			}
-			else 
-			{
-				//event.setData(true);// == true;
-				this.getTableModel().setValue(colnum,romnum,true);
-				//	alert (this.getTableModel().getValue(colnum,romnum));
-				//event_data.setData(true);
-			}
-  		  
-      },
-   	 	
-   	 	ShowDetails: function () {
-		
-				alert (this.newTable.getUpdatedData());
-			
-    },
-   	 	
+   	 },
    	 
-   	 	setData: function(config){
+   	 resetOldData: function(/*txt1,txt2,txt3,tableModel,tableData*/){
+   	 	//if(txt1 == undefined){
+	   	 	var txt1 = this._textfield1.getUserData('field');
+	   	 	var txt2 = this._textfield2.getUserData('field');
+	   	 	var txt3 = this._textfield3.getUserData('field');
+	   	 	
+	   	 	
+	   	 	
+	   	 	var tableModel = this._table.getTableModel();
+	 		var tableData = tableModel.getData();
+	 		
+	 		var tableRowCount = tableData.length;
+   	 	//}
    	 	
-   	 	//this.getUserData('label');
+   	 	txt1.setValue('');
+   	 	txt2.setValue('');
+   	 	txt3.setValue('');
+   	 	for(var i=0; i<tableRowCount; i++){
+ 			
+ 			if(tableData[i][2]){
+ 				tableData[i][2] = false;
+ 			}	
+ 			if(tableData[i][3]){
+ 				tableData[i][3] = false;
+ 			}	
+ 			if(tableData[i][4]){
+ 				tableData[i][4] = false;	
+ 			}
+ 		}
+ 		tableModel.setData(tableData);
+  		
+  		
+   	 },
+   	 
+   	 setData: function(config){
+   	 	
    	 	var txt1 = this._textfield1.getUserData('field');
-   	 	txt1.setValue(config.label);
-   	 	
    	 	var txt2 = this._textfield2.getUserData('field');
-   	 	txt2.setValue(config.name);
-   	 	
    	 	var txt3 = this._textfield3.getUserData('field');
-   	 	txt3.setValue(config.desc);
+   	 	/*
+   	 	//Reset original Data
+   	 	txt1.setValue('');
+   	 	txt2.setValue('');
+   	 	txt3.setValue('');
+   	 	*/
+   	 	
+   	 	//var rowcount = this._table.getTableModel().getRowCount();
+   	 		
+   	 		
+ 		var tableModel = this._table.getTableModel();
+ 		var tableData = tableModel.getData();
+ 		
+ 		var tableRowCount = tableData.length;
+ 		/*   	 		
+ 		//Reset old Data
+ 		for(var i=0; i<tableRowCount; i++){
+ 			
+ 			if(tableData[i][2]){
+ 				tableData[i][2] = false;
+ 			}	
+ 			if(tableData[i][3]){
+ 				tableData[i][3] = false;
+ 			}	
+ 			if(tableData[i][4]){
+ 				tableData[i][4] = false;	
+ 			}
+ 		}
+ 		tableModel.setData(tableData);
+ 		*/
+ 		
+ 		this.resetOldData(txt1,txt2,txt3,tableModel,tableData);
+ 		
+ 		if(config.tree.getManager().getSelectedItem() == config.tree){		// If Root Node
+  			return;
+  		}
+   	 	
+ 		//Set Current Data
+   	 	txt1.setValue(config.data.label);
+   	 	txt2.setValue(config.data.name);
+   	 	txt3.setValue(config.data.desc);
+   	 	
+   	 		//Set new data
+   	 		if(config.data.func != undefined){
+   	 			
+   	 			var roleCount = config.data.func.length;
+   	 			for(var j=0; j<roleCount; j++){
+	   	 			for(var i=0; i<tableRowCount; i++){
+	   	 				if(tableData[i][0] == config.data.func[j].role){
+	   	 					tableModel.setValue(2,i,config.data.func[j].dev);
+	   	 					tableModel.setValue(3,i,config.data.func[j].test);
+	   	 					tableModel.setValue(4,i,config.data.func[j].exe);
+	   	 					break;
+	   	 				}
+	   	 			}
+	   	 		} // end for
+   	 	} //end if
    	 }
    	 
    	 

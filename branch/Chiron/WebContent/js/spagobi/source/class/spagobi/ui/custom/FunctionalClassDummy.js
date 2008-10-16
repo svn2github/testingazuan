@@ -4,12 +4,12 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   
   construct : function(type)
   {
-   
+   // this.base(arguments, "1*", "2*");
     this.base(arguments,"1*","4*");//, "2*"); //  180
     this.setWidth("100%");
     this.setHeight("100%");
-    this.setLiveResize(true);
     
+    //this.setLiveResize(true);    //this.setShowKnob(false);
     
    
    if(type === 'funcManagement') { 
@@ -26,7 +26,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   			height = 300;
   		};
   		
-  	
+  	//var dummyTree = new spagobi.ui.Tree({root: "Functionalities" });
   	var tree = new spagobi.ui.Tree({root: "Functionalities" });
   	/*
   	with(tree)
@@ -47,7 +47,23 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  							data  : {
 		  							 			label : 'ReportLabel',
 		  							 			name  : 'ReportName',
-		  							 			desc  : 'ReportDesc'
+		  							 			desc  : 'ReportDesc',
+		  							 			func  : [
+		  							 						{
+		  							 							role	: '/admin',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						},
+		  							 						{
+		  							 							role	: '/community/direction',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						}
+		  							 			]	
 		  							 		}
 		  					});
 		  					
@@ -59,7 +75,23 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  							data  : {
 		  							 			label : 'OLAPLabel',
 		  							 			name  : 'OLAPName',
-		  							 			desc  : 'OLAPDesc'
+		  							 			desc  : 'OLAPDesc',
+		  							 			func  : [
+		  							 						{
+		  							 							role	: '/community',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						},
+		  							 						{
+		  							 							role	: '/guest',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						}
+		  							 			]
 		  							 		}
   								});
   		var node3 = tree.addNode({
@@ -115,10 +147,15 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		
   		this._tree = tree;						
-  								
+  		//tree.addEventListener("click",tree.onClickMenu,tree);		//contextmenu				
   		tree.getManager().addEventListener("changeSelection",this.showInfo,this);
   		
+  		
+  		//leftPart.setBackgroundColor('white');
+  		
   		leftPart.add(headerLabel, tree);
+  		
+  		//leftPart.setOverflow("auto");	
   		
   		this.addLeft(leftPart);
   		
@@ -133,13 +170,19 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		this._createButton = toolBar.getUserData('create');
   		this._saveButton = toolBar.getUserData('save');
+  		this._saveButton.addEventListener("execute", this.save,this);
+  		
   		this._deleteButton = toolBar.getUserData('delete');
+  		this._deleteButton.addEventListener("execute", this.deleteNode,this);
   		
   		this._moveUpButton = toolBar.getUserData('moveUp');
   		this._moveUpButton.addEventListener("execute",this.moveUp,this);
   		
   		this._moveDownButton = toolBar.getUserData('moveDown');
   		this._moveDownButton.addEventListener("execute",this.moveDown,this);
+  		
+  		this._clearAllButton = toolBar.getUserData('clearAll');
+  		this._clearAllButton.addEventListener("execute",this.clearAll,this);
   		
   		//Set Focus of buttons only when Node selected
   		this._createButton.setEnabled(false);
@@ -149,7 +192,6 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		this._moveDownButton.setEnabled(false);
   		
   		this._right = rightPart;
-  
    } 		
   },
   
@@ -197,7 +239,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
        					else{
        						this._moveDownButton.setEnabled(true); 
        					}
-     				
+     				//} 
        			}	// end of file nodes
        			else{											// If not Files (i.e. if Folders)
        					this._createButton.setEnabled(true);
@@ -227,10 +269,15 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		this.showButtons();
   		
+  		var nodeData = {};
+  		
   		if(this._tree.getManager().getSelectedItem() == this._tree){		// If Root Node
-  			return;
+  			nodeData.tree = this._tree;
   		}
-	    var nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
+  		else{
+	    	nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
+  		}
+  			
   		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
   		
   	},
@@ -245,13 +292,49 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		this.showButtons();				// Change the toolbar button display based on new arrangement
   	},
   	
+  	/*
   	show: function() {
-  		if(!this.isVisibility()) {
+		if(!this.isVisibility()) {
 			this.setVisibility(true);
 		}
     }
-  		
-  	
+    */
+    
+    save: function () {
+    	var txt1 = this._right.getUserData('label');
+    	var nodeLabel = txt1.getUserData('field');
+    	
+    	var txt2 = this._right.getUserData('name');
+    	var nodeName = txt2.getUserData('field');
+    	
+    	var txt3 = this._right.getUserData('description');
+    	var nodeDesc = txt3.getUserData('field');
+    	
+    	var table = this._right.getUserData('table');
+    	//alert (table.getUpdatedData());
+    	
+    	var info = {
+    				label : nodeLabel.getValue(),
+    				name  : nodeName.getValue(),
+    				desc  : nodeDesc.getValue(),
+    				roles : table.getUpdatedData() 		
+    	};
+    	
+    	var str = '';
+    	for(p in info) {
+    		str += p + ': ' + info[p] + ';\n'
+    	}
+		alert(str);
+	},
+	
+	deleteNode: function(e){
+		this._tree.deleteTreeNode();
+	},
+	
+	clearAll: function(e){
+		this._right.resetOldData();
+	}
+    
   }
   
 });  

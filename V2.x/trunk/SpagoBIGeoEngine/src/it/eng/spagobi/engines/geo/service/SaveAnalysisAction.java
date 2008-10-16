@@ -24,7 +24,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import org.apache.log4j.Logger;
 
@@ -54,40 +55,48 @@ public class SaveAnalysisAction extends AbstractGeoEngineAction {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
 		
 		logger.debug("IN");
 		
-		String name = null;
-		String description  = null;
-		String scope = null;
-		EngineAnalysisMetadata analysisMetadata = null;
-		GeoEngineAnalysisState analysisState = null;
-				
-		super.service(serviceRequest, serviceResponse);
-		
-		name = getAttributeAsString( ANALYSYS_NAME );
-		logger.debug("Analysy name: " + name);
-		description  = getAttributeAsString( ANALYSYS_DESCRIPTION );
-		logger.debug("Analysy description: " + description);
-		scope = getAttributeAsString( ANALYSYS_SCOPE );
-		logger.debug("Analysy scope: " + scope);
+		try {
+			String name = null;
+			String description  = null;
+			String scope = null;
+			EngineAnalysisMetadata analysisMetadata = null;
+			GeoEngineAnalysisState analysisState = null;
+					
+			super.service(serviceRequest, serviceResponse);
+			
+			name = getAttributeAsString( ANALYSYS_NAME );
+			logger.debug("Analysy name: " + name);
+			description  = getAttributeAsString( ANALYSYS_DESCRIPTION );
+			logger.debug("Analysy description: " + description);
+			scope = getAttributeAsString( ANALYSYS_SCOPE );
+			logger.debug("Analysy scope: " + scope);
 
-				
-		analysisMetadata = getGeoEngineInstance().getAnalysisMetadata();
-		analysisState = (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();		
+					
+			analysisMetadata = getGeoEngineInstance().getAnalysisMetadata();
+			analysisState = (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();		
+			
+			analysisMetadata.setName(name);
+			analysisMetadata.setDescription(description);
+			analysisMetadata.setScope(scope);
+			
+		    try {
+		    	String result = saveAnalysisState();
+		    	getHttpSession().setAttribute("saveSubObjectMessage", result);
+		    } catch (Exception gse) {		
+		    	logger.error("Error while saving analysis.", gse);
+		    	getHttpSession().setAttribute("saveSubObjectMessage", "KO - " + gse.getMessage());
+		    }  
+		}  catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+		} finally {
+			// no resources need to be released
+		}	
 		
-		analysisMetadata.setName(name);
-		analysisMetadata.setDescription(description);
-		analysisMetadata.setScope(scope);
-		
-	    try {
-	    	String result = saveAnalysisState();
-	    	getHttpSession().setAttribute("saveSubObjectMessage", result);
-	    } catch (Exception gse) {		
-	    	logger.error("Error while saving analysis.", gse);
-	    	getHttpSession().setAttribute("saveSubObjectMessage", "KO - " + gse.getMessage());
-	    }  
+		logger.debug("OUT");
 		
 	}
 }

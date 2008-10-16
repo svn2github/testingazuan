@@ -21,7 +21,7 @@
 
 package it.eng.spagobi.engines.geo.commons.excpetion;
 
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * The Class GeoEngineException.
  */
-public class GeoEngineException extends EngineException {
+public class GeoEngineException extends SpagoBIEngineException {
     
 	/** The hints. */
 	List hints;

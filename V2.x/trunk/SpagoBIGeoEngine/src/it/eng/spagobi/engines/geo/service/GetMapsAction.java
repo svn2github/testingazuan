@@ -24,7 +24,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import java.util.List;
 
@@ -48,56 +49,58 @@ public class GetMapsAction extends AbstractGeoEngineAction {
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(GetMapsAction.class);
 	
-    
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) throws EngineException  {
-		
-		logger.debug("IN");
+	public void service(SourceBean request, SourceBean response) {
 		
 		String featureName = null;
 		List maps = null;
 		StringBuffer buffer = null;
 		SourceBean result = null;
 		
-		super.service(request, response);
-		
-		featureName = getAttributeAsString(FEATURE_NAME);
-				
-		try {
-			maps = getGeoEngineInstance().getMapProvider().getMapNamesByFeature(featureName);
-			if(maps == null) throw new Exception("The map list returned by the map provider is NULL");
-		} catch (Exception e) {
-			logger.error("Impossible to get a list of map containing layer [" + featureName + "] ");
-			throw new EngineException("Impossible to get a list of map containing layer [" + featureName + "] ", e);
-		}
-		
-		if(maps.size() == 0) {
-			logger.warn("The list of map containing layer [" + featureName + "] is empty");
-		}
-		
-		buffer = new StringBuffer();
-		buffer.append("<MAPS>");
-		for(int i = 0; i < maps.size(); i++) {
-			String mapName = (String)maps.get(i);
-			buffer.append("<MAP>" + mapName + "</MAP>");
-		}
-		buffer.append("</MAPS>");
-		
-		logger.debug( "Map list: " + buffer.toString() );
+		logger.debug("IN");
 		
 		try {
-			result = new SourceBean("RESPONSE");
-			result.setAttribute(SourceBean.fromXMLString(buffer.toString()));
-		} catch (SourceBeanException e) {
-			throw new GeoEngineException("Impossible to generate service responce bean in " + GetMapsAction.class, e);
-		}
-		
-		response.setBean(result);
-		response.setName(result.getName());
-		
-		logger.debug( "Generated service response: " + response );
+			super.service(request, response);
+			
+			featureName = getAttributeAsString(FEATURE_NAME);
+					
+			try {
+				maps = getGeoEngineInstance().getMapProvider().getMapNamesByFeature(featureName);
+				if(maps == null) throw new Exception("The map list returned by the map provider is NULL");
+			} catch (Exception e) {
+				logger.error("Impossible to get a list of map containing layer [" + featureName + "] ");
+				throw new SpagoBIEngineException("Impossible to get a list of map containing layer [" + featureName + "] ", e);
+			}
+			
+			if(maps.size() == 0) {
+				logger.warn("The list of map containing layer [" + featureName + "] is empty");
+			}
+			
+			buffer = new StringBuffer();
+			buffer.append("<MAPS>");
+			for(int i = 0; i < maps.size(); i++) {
+				String mapName = (String)maps.get(i);
+				buffer.append("<MAP>" + mapName + "</MAP>");
+			}
+			buffer.append("</MAPS>");
+			
+			logger.debug( "Map list: " + buffer.toString() );
+			
+			try {
+				result = new SourceBean("RESPONSE");
+				result.setAttribute(SourceBean.fromXMLString(buffer.toString()));
+			} catch (SourceBeanException e) {
+				throw new GeoEngineException("Impossible to generate service responce bean in " + GetMapsAction.class, e);
+			}
+			
+			response.setBean(result);
+			response.setName(result.getName());
+			
+			logger.debug( "Generated service response: " + response );
+		} catch (Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+		} finally {
+			// no resources need to be released
+		}	
 		
 		logger.debug("OUT");
 	}

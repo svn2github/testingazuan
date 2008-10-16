@@ -23,34 +23,46 @@ package it.eng.spagobi.engines.geo.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+
+import org.apache.log4j.Logger;
 
 
 public class ShowAnalysisDetailsAction extends AbstractGeoEngineAction {
 	
+	// INPUT PARAMETERS
+	//public static final String VIEW_NAME = "viewName";	
 	
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(ShowAnalysisDetailsAction.class);
+    
 		
-		super.service(serviceRequest, serviceResponse);
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse)  {
 		
-		String selectedHiearchy = (String)serviceRequest.getAttribute("selected_hierachy");
-		String selectedHierarchyLevel = (String)serviceRequest.getAttribute("selected_hierarchy_level");
-		String selectedMap = (String)serviceRequest.getAttribute("selected_map");
-		String selectedLayers = (String)serviceRequest.getAttribute("selected_layers");
-		selectedLayers = selectedLayers.replaceAll(";", ",");
-		
-		String data = "";
-		data += "selected_hierachy=" + selectedHiearchy + ";";
-		data += "selected_hierarchy_level=" + selectedHierarchyLevel + ";";
-		data += "selected_map=" + selectedMap + ";";
-		data += "selected_layers=" + selectedLayers + ";";
-		
-		GeoEngineAnalysisState analysisState = (GeoEngineAnalysisState)getEngineInstance().getAnalysisState();
-		analysisState.load( data.getBytes() );				
+		try {
+			super.service(serviceRequest, serviceResponse);
+			
+			String selectedHiearchy = (String)serviceRequest.getAttribute("selected_hierachy");
+			String selectedHierarchyLevel = (String)serviceRequest.getAttribute("selected_hierarchy_level");
+			String selectedMap = (String)serviceRequest.getAttribute("selected_map");
+			String selectedLayers = (String)serviceRequest.getAttribute("selected_layers");
+			selectedLayers = selectedLayers.replaceAll(";", ",");
+			
+			String data = "";
+			data += "selected_hierachy=" + selectedHiearchy + ";";
+			data += "selected_hierarchy_level=" + selectedHierarchyLevel + ";";
+			data += "selected_map=" + selectedMap + ";";
+			data += "selected_layers=" + selectedLayers + ";";
+			
+			GeoEngineAnalysisState analysisState = (GeoEngineAnalysisState)getEngineInstance().getAnalysisState();
+			analysisState.load( data.getBytes() );
+		} catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+		} finally {
+			// no resources need to be released
+		}	
+						
 	}
 	
 

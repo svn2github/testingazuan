@@ -27,7 +27,8 @@ import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,10 +68,8 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(MapDrawAction.class);
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
+	
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
 		
 		String selectedHierarchyName = null;
 		String selectedLevelName = null;
@@ -85,106 +84,100 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 		
 		
 		
-		try {
+		try {	
 		
-		
-		super.service(serviceRequest, serviceResponse);
-		
-		getAuditServiceProxy().notifyServiceStartEvent();
-		
-		selectedHierarchyName = getAttributeAsString( HIERARCHY_NAME );				
-		selectedLevelName = getAttributeAsString( HIERARCHY_LEVEL );
-		selectedMapName = getAttributeAsString( MAP );
-		layers = getAttribute( LAYERS );
-		
-		selectedLayers = parseLayers( layers );		
-		
-		
-		GeoEngineAnalysisState analysisState =  (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();;
-		if(selectedMapName != null) {
-			analysisState.setSelectedMapName( selectedMapName );
-		}
-		if(selectedHierarchyName != null) {
-			analysisState.setSelectedHierarchyName( selectedHierarchyName );
-		}
-		if(selectedLevelName != null) {
-			analysisState.setSelectedLevelName( selectedLevelName );
-		}
-		if(selectedLayers != null && selectedLayers.size() > 0) {
-			analysisState.setSelectedLayers( selectedLayers );
-		}
-		
-		getGeoEngineInstance().setAnalysisState( analysisState );
-	
-		outputFormat = Constants.DSVG;
-		
-	
-		
-		maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
-		
-		} catch (Exception e) {
-			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
+			super.service(serviceRequest, serviceResponse);
 			
-			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
-			Throwable rootException = e;
-			while(rootException.getCause() != null) rootException = rootException.getCause();
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			description += "<br>The root cause of the error is: " + str;
-			List hints = new ArrayList();
-			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			throw new GeoEngineException("Service error", description, hints, e);
-		}
-		
-		this.freezeHttpResponse();	
-		
-		String contentType = getContentType(outputFormat);
-		getHttpResponse().setContentType(contentType);
-		
-		
-		// based on the format requested fill the response
-		if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
-			InputStream inputStream = null;
-			try {
-				inputStream = new FileInputStream(maptmpfile);
-				SVGMapConverter.SVGToJPEGTransform(inputStream, getOutputStream());
-			} catch (Exception e) {
-				logger.error("error while transforming into jpeg", e);
-				sendError(getOutputStream());				
-				getAuditServiceProxy().notifyServiceErrorEvent( "Error while transforming into jpeg" );
-				return;
+			getAuditServiceProxy().notifyServiceStartEvent();
+			
+			selectedHierarchyName = getAttributeAsString( HIERARCHY_NAME );				
+			selectedLevelName = getAttributeAsString( HIERARCHY_LEVEL );
+			selectedMapName = getAttributeAsString( MAP );
+			layers = getAttribute( LAYERS );
+			
+			selectedLayers = parseLayers( layers );		
+			
+			
+			GeoEngineAnalysisState analysisState =  (GeoEngineAnalysisState)getGeoEngineInstance().getAnalysisState();;
+			if(selectedMapName != null) {
+				analysisState.setSelectedMapName( selectedMapName );
 			}
-			try{
-				inputStream.close();
-			} catch (Exception e ){
-				logger.error("error while closing input stream", e);
+			if(selectedHierarchyName != null) {
+				analysisState.setSelectedHierarchyName( selectedHierarchyName );
 			}
-		} else if(outputFormat.equalsIgnoreCase(Constants.SVG) 
-				|| outputFormat.equalsIgnoreCase(Constants.DSVG)
-				|| outputFormat.equalsIgnoreCase(Constants.XDSVG)) {
-			InputStream inputStream = null;
-			try {
-				inputStream = new FileInputStream(maptmpfile);
-				flushFromInputStreamToOutputStream(inputStream, getOutputStream(), false);
-			} catch (Exception e) {
-				logger.error("error while flushing svg", e);
+			if(selectedLevelName != null) {
+				analysisState.setSelectedLevelName( selectedLevelName );
+			}
+			if(selectedLayers != null && selectedLayers.size() > 0) {
+				analysisState.setSelectedLayers( selectedLayers );
+			}
+			
+			getGeoEngineInstance().setAnalysisState( analysisState );
+		
+			outputFormat = Constants.DSVG;
+			
+		
+			
+			maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
+		
+			this.freezeHttpResponse();	
+			
+			String contentType = getContentType(outputFormat);
+			getHttpResponse().setContentType(contentType);
+			
+			
+			// based on the format requested fill the response
+			if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
+				InputStream inputStream = null;
+				try {
+					inputStream = new FileInputStream(maptmpfile);
+					SVGMapConverter.SVGToJPEGTransform(inputStream, getOutputStream());
+				} catch (Exception e) {
+					logger.error("error while transforming into jpeg", e);
+					sendError(getOutputStream());				
+					getAuditServiceProxy().notifyServiceErrorEvent( "Error while transforming into jpeg" );
+					return;
+				}
+				try{
+					inputStream.close();
+				} catch (Exception e ){
+					logger.error("error while closing input stream", e);
+				}
+			} else if(outputFormat.equalsIgnoreCase(Constants.SVG) 
+					|| outputFormat.equalsIgnoreCase(Constants.DSVG)
+					|| outputFormat.equalsIgnoreCase(Constants.XDSVG)) {
+				InputStream inputStream = null;
+				try {
+					inputStream = new FileInputStream(maptmpfile);
+					flushFromInputStreamToOutputStream(inputStream, getOutputStream(), false);
+				} catch (Exception e) {
+					logger.error("error while flushing svg", e);
+					sendError(getOutputStream());
+					getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing svg" );
+					return;
+				}
+				try{
+					inputStream.close();
+				} catch (Exception e ){
+					logger.error("error while closing input stream", e);
+				}
+			} else {
+				logger.error("Output Format not specified");
 				sendError(getOutputStream());
-				getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing svg" );
 				return;
 			}
-			try{
-				inputStream.close();
-			} catch (Exception e ){
-				logger.error("error while closing input stream", e);
-			}
-		} else {
-			logger.error("Output Format not specified");
-			sendError(getOutputStream());
-			return;
-		}
+			
+			getAuditServiceProxy().notifyServiceEndEvent( );
+			
+			maptmpfile.delete();	
+			
+		} catch (Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+		} finally {
+			// no resources need to be released
+		}	
 		
-		getAuditServiceProxy().notifyServiceEndEvent( );
-		
-		maptmpfile.delete();		
+		logger.debug("OUT");
 	}
 	
 	

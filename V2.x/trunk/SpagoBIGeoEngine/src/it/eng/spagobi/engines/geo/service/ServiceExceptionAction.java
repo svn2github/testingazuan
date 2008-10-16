@@ -23,7 +23,7 @@ package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.util.Iterator;
 
@@ -38,13 +38,11 @@ import org.apache.log4j.Logger;
 public class ServiceExceptionAction extends AbstractGeoEngineAction {
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(ShowDataDetailsAction.class);
+    public static transient Logger logger = Logger.getLogger(ServiceExceptionAction.class);
 	
     
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
+	
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
 		
 		
 		Iterator it = getErrorHandler().getErrors().iterator();

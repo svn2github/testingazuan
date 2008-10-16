@@ -22,7 +22,8 @@ package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import org.apache.log4j.Logger;
 
@@ -53,22 +54,28 @@ public class ShowDataDetailsAction extends AbstractGeoEngineAction {
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.utilities.engines.AbstractEngineAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
 		
 		String featureValue = null;
 		SourceBean resultSB = null;
 		
 		logger.debug("IN");
 		
-		super.service(serviceRequest, serviceResponse);
-		
-		featureValue = getAttributeAsString(SELECTED_FEATURE_ID);
-		logger.debug("Selected feature: " + featureValue);
-		resultSB = getGeoEngineInstance().getDatasetProvider().getDataDetails(featureValue);
-		logger.debug("ResultSet: \n" + resultSB);
-				
-		setAttributeInSession(RESULT_SET, resultSB);
-		setAttributeInSession(SELECTED_FEATURE_DESC, featureValue);
+		try{
+			super.service(serviceRequest, serviceResponse);
+			
+			featureValue = getAttributeAsString(SELECTED_FEATURE_ID);
+			logger.debug("Selected feature: " + featureValue);
+			resultSB = getGeoEngineInstance().getDatasetProvider().getDataDetails(featureValue);
+			logger.debug("ResultSet: \n" + resultSB);
+					
+			setAttributeInSession(RESULT_SET, resultSB);
+			setAttributeInSession(SELECTED_FEATURE_DESC, featureValue);
+		} catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+		} finally {
+			// no resources need to be released
+		}	
 		
 		logger.debug("OUT");
 	}

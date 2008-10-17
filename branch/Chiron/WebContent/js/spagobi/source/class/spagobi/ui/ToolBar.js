@@ -136,8 +136,11 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	/**
 	 * Shows a popup box
 	 */	
-		showAbout: function() {alert('Help');},
+		showAbout: function(e) {
+			alert('Help');
 		
+		},
+					
 	/**
 	 * Function to add a button on the top tool bar.
 	 * <p> It is called by the spagobi.ui.ToolBar object's constructor
@@ -204,6 +207,12 @@ qx.Class.define("spagobi.ui.ToolBar", {
 			}
 			
 			this.add(button);
+			
+			if(btnConfig.defaultbutton != undefined){
+				if(btnConfig.defaultbutton == true){
+					button.setChecked(true);
+				}
+			}
   		}
   }
 });

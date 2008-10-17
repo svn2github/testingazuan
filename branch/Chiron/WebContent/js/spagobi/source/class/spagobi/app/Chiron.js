@@ -126,7 +126,8 @@ qx.Class.define("spagobi.app.Chiron",
 		  		context: this,
 		  		"label": 'Resources',
 		  		icon: 'icon/16/actions/dialog-ok.png',
-		  		tooltip: 'Reload the feeds.'
+		  		tooltip: 'Reload the feeds.',
+		  		defaultbutton: true
 	  		}, {
 		  		command: 'Control+W',
 		  		handler: function() {this._selectToolbar('catalogues');},
@@ -302,7 +303,7 @@ qx.Class.define("spagobi.app.Chiron",
 						tooltip: 'Distribution List User'
       				}, {
       					name: 'distributionListConfig',
-						image:'spagobi/img/spagobi/test/distributionlist.gif',
+						image:'spagobi/img/spagobi/test/distributionlist.png',
 						page: 'distributionListConfig',
 						tooltip: 'Distribution List Configuration'
       				}
@@ -435,6 +436,8 @@ qx.Class.define("spagobi.app.Chiron",
     			this.toolbars[toolbarName].selectDefaultPage();
     		}
     		this.selectToolbarName = toolbarName;
+    		
+    		
     	} else {
     		alert(toolbarName + ' is not yet implemented !');
     	}

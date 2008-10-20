@@ -41,7 +41,9 @@ import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -253,6 +255,8 @@ public class DetailDataSetModule extends AbstractModule {
 				if(dsNew instanceof FileDataSet)type="0";			// what type is dataset?
 				else if(dsNew instanceof QueryDataSet)type="1";
 				else if(dsNew instanceof WSDataSet)type="2";
+				else if(dsNew instanceof ScriptDataSet)type="3";
+				else if(dsNew instanceof JClassDataSet)type="4";
 
 				// check if it has to change parameters		(now only in Query Case) 
 				if(type.equals("1")){
@@ -517,7 +521,32 @@ public class DetailDataSetModule extends AbstractModule {
 							((WSDataSet)ds).setExecutorClass(executorClass);
 
 						}
-					}
+					}else
+						if(typeds.equalsIgnoreCase("3")){
+							if(dsOld instanceof ScriptDataSet){
+								ds=dsOld;
+							}
+							else{
+								ds=new ScriptDataSet();
+							}
+							if(serviceRequest.getAttribute("SCRIPT")!=null){
+								String script=(String)serviceRequest.getAttribute("SCRIPT");
+								((ScriptDataSet)ds).setScript(script);
+							}
+						}
+						else
+							if(typeds.equalsIgnoreCase("4")){
+								if(dsOld instanceof JClassDataSet){
+									ds=dsOld;
+								}
+								else{
+									ds=new JClassDataSet();
+								}
+								if(serviceRequest.getAttribute("JCLASSNAME")!=null){
+									String javaClassName=(String)serviceRequest.getAttribute("JCLASSNAME");
+									((JClassDataSet)ds).setJavaClassName(javaClassName);
+								}
+							}
 
 
 

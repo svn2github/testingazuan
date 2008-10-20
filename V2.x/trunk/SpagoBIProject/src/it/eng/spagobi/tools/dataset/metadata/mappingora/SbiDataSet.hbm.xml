@@ -45,6 +45,16 @@
 	        <property name="executorClass" type="string">
 	            <column name="EXECUTOR_CLASS" />
 	        </property>	        
-		</subclass> 				         
+		</subclass> 	
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet" discriminator-value="SbiScriptDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
+	        <property name="script" type="string">
+	            <column name="SCRIPT" />
+	        </property>
+		</subclass>   
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet" discriminator-value="SbiJClassDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
+	        <property name="javaClassName" type="string">
+	            <column name="JCLASS_NAME" />
+	        </property>
+		</subclass>   				         
     </class>
 </hibernate-mapping>

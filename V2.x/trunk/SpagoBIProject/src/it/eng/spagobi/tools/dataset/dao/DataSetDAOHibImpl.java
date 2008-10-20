@@ -28,11 +28,15 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl;
@@ -232,6 +236,20 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}	
 			}
 			
+			else if(aDataSet instanceof ScriptDataSet){
+
+				if(((ScriptDataSet)aDataSet).getScript()!=null){
+					((SbiScriptDataSet)hibDataSet).setScript(((ScriptDataSet)aDataSet).getScript());
+				}
+			}
+			
+			else if(aDataSet instanceof JClassDataSet){
+
+				if(((JClassDataSet)aDataSet).getJavaClassName()!=null){
+					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JClassDataSet)aDataSet).getJavaClassName());
+				}
+			}
+			
 			hibDataSet.setLabel(aDataSet.getLabel());
 			hibDataSet.setName(aDataSet.getName());			
 			hibDataSet.setDescription(aDataSet.getDescription());
@@ -303,6 +321,20 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				if(((WSDataSet)aDataSet).getExecutorClass()!=null){
 					((SbiWSDataSet)hibDataSet).setExecutorClass(((WSDataSet)aDataSet).getExecutorClass());
 				}	
+			}
+			
+			else if(aDataSet instanceof JClassDataSet){
+				hibDataSet=new SbiJClassDataSet();
+				if(((JClassDataSet)aDataSet).getJavaClassName()!=null){
+					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JClassDataSet)aDataSet).getJavaClassName());
+				}
+			}
+			
+			else if(aDataSet instanceof ScriptDataSet){
+				hibDataSet=new SbiScriptDataSet();
+				if(((ScriptDataSet)aDataSet).getScript()!=null){
+					((SbiScriptDataSet)hibDataSet).setScript(((ScriptDataSet)aDataSet).getScript());
+				}
 			}
 
 
@@ -398,6 +430,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			ds=new WSDataSet();
 			((WSDataSet)ds).setAdress(((SbiWSDataSet)hibDataSet).getAdress());
 			((WSDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
+		}
+		
+		if(hibDataSet instanceof SbiScriptDataSet){
+			ds=new ScriptDataSet();
+			((ScriptDataSet)ds).setScript(((SbiScriptDataSet)hibDataSet).getScript());
+		}
+		
+		if(hibDataSet instanceof SbiJClassDataSet){
+			ds=new JClassDataSet();
+			((JClassDataSet)ds).setJavaClassName(((SbiJClassDataSet)hibDataSet).getJavaClassName());
 		}
 
 		ds.setDsId(hibDataSet.getDsId());

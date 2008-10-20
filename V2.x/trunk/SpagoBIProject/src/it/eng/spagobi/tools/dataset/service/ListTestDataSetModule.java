@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.dataset.service;
 
+import groovy.lang.Binding;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
@@ -43,13 +44,21 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.behaviouralmodel.lov.bo.IJavaClassLov;
+import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
+import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
+import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -141,9 +150,6 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		String typeDataset=getDataSetType(dataSet);
 		//String typeDataset=(String)request.getAttribute("typeDataset");
 		//DataSet dataSet=(DataSet)request.getAttribute("dataset");
-
-
-
 				
 		IEngUserProfile profile = null;
 		profile = (IEngUserProfile)session.getAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
@@ -246,6 +252,46 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				if(fis!=null)fis.close();
 			}
 
+		}else if(typeDataset.equals("3")) {
+			ScriptDataSet scriptDataSet=(ScriptDataSet)dataSet;
+			String script = scriptDataSet.getScript();
+			String result = null;
+			/*HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
+			Binding bind = ScriptManager.fillBinding(attributes);*/
+			result = ScriptManager.runScript(script);
+			
+			// check if the result must be converted into the right xml sintax
+			boolean toconvert = checkSintax(result);
+			if(toconvert) { 
+				result = convertResult(result);
+			}
+			rowsSourceBean = SourceBean.fromXMLString(result);
+			colNames = findFirstRowAttributes(rowsSourceBean);
+			
+		} else if(typeDataset.equals("4")) {
+			JClassDataSet jClassDataSet=(JClassDataSet)dataSet;
+			String javaClassName = jClassDataSet.getJavaClassName();
+			JavaClassDetail javaClassDetail =new JavaClassDetail();
+			try{					
+				IJavaClassDataSet javaClassLov = (IJavaClassDataSet) Class.forName(javaClassName).newInstance();
+	    		String result = javaClassLov.getValues(profile);
+	    		result = result.trim();
+	    		boolean toconvert =javaClassDetail.checkSintax(result);
+	    		// check if the result must be converted into the right xml sintax
+				if(toconvert) { 
+					result = javaClassDetail.convertResult(result);
+				}
+        		rowsSourceBean = SourceBean.fromXMLString(result);
+        		colNames = findFirstRowAttributes(rowsSourceBean);
+			} catch (Exception e) {
+				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+			                        "getList", "Error while executing the java class lov", e);
+				String stacktrace = e.toString();
+				response.setAttribute("stacktrace", stacktrace);
+				response.setAttribute("errorMessage", "Error while executing java class");
+				response.setAttribute("testExecuted", "false");
+				return list;
+			}
 		}
 		
 		// Build the list fill paginator
@@ -310,6 +356,10 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			if(a instanceof QueryDataSet)type="1";
 			else 		
 				if(a instanceof WSDataSet)type="2";
+				else 		
+					if(a instanceof ScriptDataSet)type="3";
+					else 		
+						if(a instanceof JClassDataSet)type="4";
 		return type;
 
 	}
@@ -386,6 +436,90 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		}
 		return result;
 	}
+	
+	private boolean checkSintax(String result) {
+		
+		List visibleColumnNames = null;
+		String valueColumnName = "";
+		String descriptionColumnName = "";
+		
+		boolean toconvert = false;
+		try{
+			SourceBean source = SourceBean.fromXMLString(result);
+			if(!source.getName().equalsIgnoreCase("ROWS")) {
+				toconvert = true;
+			} else {
+				List rowsList = source.getAttributeAsList(DataRow.ROW_TAG);
+				if( (rowsList==null) || (rowsList.size()==0) ) {
+					toconvert = true;
+				} else {
+					// TODO this part can be moved to the import transformer
+					// RESOLVES RETROCOMPATIBILITY PROBLEMS
+					// finds the name of the first attribute of the rows if exists 
+					String defaultName = "";
+					SourceBean rowSB = (SourceBean) rowsList.get(0);
+					List attributes = rowSB.getContainedAttributes();
+					if (attributes != null && attributes.size() > 0) {
+						SourceBeanAttribute attribute = (SourceBeanAttribute) attributes.get(0);
+						defaultName = attribute.getKey();
+					}
+					// if a value column is specified, it is considered
+					SourceBean valueColumnSB = (SourceBean) source.getAttribute("VALUE-COLUMN");
+					if (valueColumnSB != null) {
+						String valueColumn = valueColumnSB.getCharacters();
+						if (valueColumn != null) {
+							valueColumnName = valueColumn;
+						}
+					} else {
+						valueColumnName = defaultName;
+					}
+					SourceBean visibleColumnsSB = (SourceBean) source.getAttribute("VISIBLE-COLUMNS");
+					if (visibleColumnsSB != null) {
+						String allcolumns = visibleColumnsSB.getCharacters();
+						if (allcolumns != null) {
+							String[] columns = allcolumns.split(",");
+							visibleColumnNames = Arrays.asList(columns);
+						}
+					} else {
+						String[] columns = new String[] {defaultName};
+						visibleColumnNames = Arrays.asList(columns);
+					}
+					SourceBean descriptionColumnSB = (SourceBean) source.getAttribute("DESCRIPTION-COLUMN");
+					if (descriptionColumnSB != null) {
+						String descriptionColumn = descriptionColumnSB.getCharacters();
+						if (descriptionColumn != null) {
+							descriptionColumnName = descriptionColumn;
+						}
+					} else {
+						descriptionColumnName = defaultName;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					              "checkSintax", "the result of the lov is not formatted " +
+					              "with the right structure so it will be wrapped inside an xml envelope");
+			toconvert = true;
+		}
+		return toconvert;
+	}
+	
+	private String convertResult(String result) {
+		List visibleColumnNames = null;
+		String valueColumnName = "";
+		String descriptionColumnName = "";
+		StringBuffer sb = new StringBuffer();
+		sb.append("<ROWS>");
+		sb.append("<ROW VALUE=\"" + result +"\"/>");
+		sb.append("</ROWS>");
+		descriptionColumnName = "VALUE";
+		valueColumnName = "VALUE";
+		String [] visibleColumnNamesArray = new String [] {"VALUE"};
+		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
+		return sb.toString();
+	}
+	
 	
 
 

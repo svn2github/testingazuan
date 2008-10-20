@@ -176,7 +176,7 @@ public class ScriptDetail  implements ILovDetail  {
 	 * @param result the result of the lov
 	 * @return true if the result is formatted correctly false otherwise
 	 */
-	private boolean checkSintax(String result) {
+	public boolean checkSintax(String result) {
 		boolean toconvert = false;
 		try{
 			SourceBean source = SourceBean.fromXMLString(result);
@@ -294,7 +294,7 @@ public class ScriptDetail  implements ILovDetail  {
 	 * @param result the result of the script
 	 * @return
 	 */
-	private String convertResult(String result) {
+	public String convertResult(String result) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<ROWS>");
 		sb.append("<ROW VALUE=\"" + result +"\"/>");

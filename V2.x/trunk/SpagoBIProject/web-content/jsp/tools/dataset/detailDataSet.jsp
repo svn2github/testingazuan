@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         java.util.Map,java.util.HashMap,java.util.List,
 	 				         java.util.Iterator,
 	 				         it.eng.spagobi.commons.bo.Domain,
+	 				         it.eng.spagobi.tools.dataset.bo.*,
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
 	 				         <script type="text/javascript" src="<%=linkProto%>"></script>
 	 				         
@@ -55,12 +56,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 
-<%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.FileDataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.QueryDataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.WSDataSet"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.DataSetParametersList"%>
 
 <script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
@@ -132,10 +128,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String disableFile="disabled";
 				String disableQuery="disabled";
 				String disableWs="disabled";
-				
+				String disableScript="disabled";
+				String disableJClass="disabled";
+			
 				String hideFile="style=\"display: none;\"";
 				String hideQuery="style=\"display: none;\"";
 				String hideWs="style=\"display: none;\"";
+				String hideScript="style=\"display: none;\"";
+				String hideJClass="style=\"display: none;\"";
 				
 				String type="";
 				
@@ -143,7 +143,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					type="file";
 					disableFile="";
 					hideFile="";
-   	       }
+   	       		}
 				else if(ds instanceof QueryDataSet){
 					type="query";
 					disableQuery="";
@@ -153,6 +153,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					type="ws";
 					disableWs="";
 					hideWs="";
+				
+				} 
+				else if(ds instanceof ScriptDataSet){
+					type="script";
+					disableScript="";
+					hideScript="";
+				
+				} 
+				else if(ds instanceof JClassDataSet){
+					type="javaclass";
+					disableJClass="";
+					hideJClass="";
 				
 				} 
    	       
@@ -240,6 +252,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				else if(type.equals("ws")){
 						mess="2";
 				} 
+				else if(type.equals("script")){
+						mess="3";
+				} 
+				else if(type.equals("javaclass")){
+						mess="4";
+				} 
 			     
 
 		%>
@@ -268,12 +286,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	   	<input type="radio" name="typeDataSet" value="0" <% if(type.equalsIgnoreCase("file")) { out.println(" checked='checked' "); } %> onClick="DisableFields('file')">
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.fileType" /></span>
 			</input>
-      	   	<input type="radio" name="typeDataSet" value="1" 
-      	   			<% if(type.equalsIgnoreCase("query")) { out.println(" checked='checked' "); } %> onClick="DisableFields('query')">
+      	   	<input type="radio" name="typeDataSet" value="1" <% if(type.equalsIgnoreCase("query")) { out.println(" checked='checked' "); } %> onClick="DisableFields('query')">
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.queryType" /></span>
 			</input>
-		<!--	<input type="radio" name="typeDataSet" value="2" <% if(type.equalsIgnoreCase("ws")) { out.println(" checked='checked' "); } %> onClick="DisableFields('ws')">
-					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.wsType" /></span> -->
+			<input type="radio" name="typeDataSet" value="2" <% if(type.equalsIgnoreCase("ws")) { out.println(" checked='checked' "); } %> onClick="DisableFields('ws')">
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.wsType" /></span> 
+			</input>
+			<input type="radio" name="typeDataSet" value="3" <% if(type.equalsIgnoreCase("script")) { out.println(" checked='checked' "); } %> onClick="DisableFields('script')">
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.scriptType" /></span> 
+			</input>
+			<input type="radio" name="typeDataSet" value="4" <% if(type.equalsIgnoreCase("javaclass")) { out.println(" checked='checked' "); } %> onClick="DisableFields('javaclass')">
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDataSet.jClassType" /></span> 
 			</input>
 		</div>
 		<%} %>
@@ -402,6 +425,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 	</div>
 	
+	<div id="scriptcontainer" <%=hideScript%>>
+		<div class='div_detail_label' id="SCRIPTNAMELABEL" >
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDataSet.script" />
+			</span>
+		</div>
+	    <div class='div_detail_form' style="height:150px;">
+		<%
+			   String script = "" ; 
+		       if(ds instanceof ScriptDataSet){	
+		    	   script = ((ScriptDataSet)ds).getScript();
+		       }
+			   if((script==null) || (script.equalsIgnoreCase("null"))  ) {
+				   script = "";
+			   }
+		%>
+		  <textarea id="SCRIPT" rows="8" cols="80" name="SCRIPT" style="font-size:9pt" <%=disableScript%>><%=script%></textarea>
+
+	   </div>
+	   </div>
+	   
+	   <div id="jclasscontainer" <%=hideJClass%>>
+		<div class='div_detail_label' id="JCLASSLABEL" >
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDataSet.jClassName" />
+			</span>
+		</div>
+	    <div class='div_detail_form'>
+		<%
+			   String javaClassName =""; 
+		       if(ds instanceof JClassDataSet){	
+		    	   javaClassName = ((JClassDataSet)ds).getJavaClassName();
+		       }
+			   if((javaClassName==null) || (javaClassName.equalsIgnoreCase("null"))  ) {
+				   javaClassName = "";
+			   }
+		%>
+			<input class='portlet-form-input-field' type="text" name="JCLASSNAME" id="JCLASSNAME"
+				   size="100" value="<%=javaClassName%>" maxlength="50" <%=disableJClass%> />
+	   </div>
+	   </div>
+	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
 			<!-- START DIV FIX LIST WIZARD --> 
@@ -500,10 +565,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.QUERY.disabled=true;
 			document.dsForm.EXECUTORCLASS.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "none";
 			document.getElementById("filecontainer").style.display = "inline";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
+			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("jclasscontainer").style.display = "none";
 	
 			
 		}
@@ -514,10 +583,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.QUERY.disabled=false;
 			document.dsForm.EXECUTORCLASS.disabled=true;
 			document.dsForm.DATASOURCE.disabled=false;
+			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "inline";
 			document.getElementById("wscontainer").style.display = "none";
+			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("jclasscontainer").style.display = "none";
 			
 		}
 	    else 
@@ -527,11 +600,47 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.QUERY.disabled=true;
 			document.dsForm.EXECUTORCLASS.disabled=false;
 			document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "none";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "inline";
+			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("jclasscontainer").style.display = "none";
 	
+		}
+		else
+		if (type == 'script') {
+			document.dsForm.FILENAME.disabled=true;
+			document.dsForm.ADDRESS.disabled=true;
+			document.dsForm.QUERY.disabled=true;
+			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.SCRIPT.disabled=false;
+			document.dsForm.JCLASSNAME.disabled=true;
+			document.getElementById("tag").style.display = "none";
+			document.getElementById("filecontainer").style.display = "none";
+			document.getElementById("querycontainer").style.display = "none";
+			document.getElementById("wscontainer").style.display = "none";
+			document.getElementById("scriptcontainer").style.display = "inline";
+			document.getElementById("jclasscontainer").style.display = "none";
+		}
+		else
+		if (type == 'javaclass') {
+			document.dsForm.FILENAME.disabled=true;
+			document.dsForm.ADDRESS.disabled=true;
+			document.dsForm.QUERY.disabled=true;
+			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.DATASOURCE.disabled=true;
+			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.JCLASSNAME.disabled=false;
+			document.getElementById("tag").style.display = "none";
+			document.getElementById("filecontainer").style.display = "none";
+			document.getElementById("querycontainer").style.display = "none";
+			document.getElementById("wscontainer").style.display = "none";
+			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("jclasscontainer").style.display = "inline";
 		}
 	}
 	

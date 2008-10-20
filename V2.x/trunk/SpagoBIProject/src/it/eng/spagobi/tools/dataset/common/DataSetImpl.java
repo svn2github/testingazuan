@@ -65,15 +65,15 @@ public class DataSetImpl implements IDataSet{
 	 */
     if (ds != null) {
     String type= "";
-	    if(ds instanceof FileDataSet)type="FileDataSet";
+	    if(ds instanceof FileDataSet)type="it.eng.spagobi.tools.dataset.bo.FileDataSet";
 		else 		
-			if(ds instanceof QueryDataSet)type="QueryDataSet";
+			if(ds instanceof QueryDataSet)type="it.eng.spagobi.tools.dataset.bo.QueryDataSet";
 			else 		
-				if(ds instanceof WSDataSet)type="WSDataSet";
+				if(ds instanceof WSDataSet)type="it.eng.spagobi.tools.dataset.bo.WSDataSet";
 				else 		
-					if(ds instanceof ScriptDataSet)type="ScriptDataSet";
+					if(ds instanceof ScriptDataSet)type="it.eng.spagobi.tools.dataset.bo.ScriptDataSet";
 					else 		
-						if(ds instanceof JClassDataSet)type="JClassDataSet";
+						if(ds instanceof JClassDataSet)type="it.eng.spagobi.tools.dataset.bo.JClassDataSet";
 	    try {
 			dataReader = (IDataReader) Class.forName(type).newInstance();
 		} catch (InstantiationException e) {
@@ -86,46 +86,16 @@ public class DataSetImpl implements IDataSet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    dataReader.read(parameters);
+	    dataStore = dataReader.read(parameters);
     }
 	
     }
 
     public IDataStore getDataStore() {
     	
-    	IDataStore ids= null;
-    	try {
-			ids = (IDataStore) Class.forName("DataStoreImpl").newInstance();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ids;
+		return this.dataStore;
     }
     
-    /**
-     * Questo metodo :
-     * 	1. accede al DB per recuperare la definizione del Data Set ( utilizza il WS ?? )
-     *  2. 
-     */
-    public void loadData(IEngUserProfile profile, String dataSetLabel, HashMap parameters) {
-    	
-    	try {
-    	this.ds = DAOFactory.getDataSetDAO().loadDataSetByLabel(dataSetLabel);
-		this.profile = profile;
-		this.parameters = parameters;
-				
-		} catch (EMFUserError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
 
     public void setFetchSize(int l) {
 

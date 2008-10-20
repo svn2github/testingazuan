@@ -160,7 +160,7 @@ public class JavaClassDetail implements ILovDetail {
 	 * @param result the result of the lov
 	 * @return true if the result is formatted correctly false otherwise
 	 */
-	private boolean checkSintax(String result) {
+	public boolean checkSintax(String result) {
 		boolean toconvert = false;
 		try{
 			SourceBean source = SourceBean.fromXMLString(result);
@@ -252,7 +252,7 @@ public class JavaClassDetail implements ILovDetail {
 	 * @param result the result of the query (which is not formatted with the right xml structure)
 	 * @return the xml structure of the result 
 	 */
-	private String convertResult(String result) {
+	public String convertResult(String result) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<ROWS>");
 		sb.append("<ROW VALUE=\"" + result +"\"/>");

@@ -169,6 +169,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		var toolBar = rightPart.getUserData('toolBar');
   		
   		this._createButton = toolBar.getUserData('create');
+  		this._createButton.addEventListener("execute", this.createNode,this);
+  		
   		this._saveButton = toolBar.getUserData('save');
   		this._saveButton.addEventListener("execute", this.save,this);
   		
@@ -300,7 +302,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
     }
     */
     
-    save: function () {
+    save: function (e) {
     	var txt1 = this._right.getUserData('label');
     	var nodeLabel = txt1.getUserData('field');
     	
@@ -311,7 +313,10 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
     	var nodeDesc = txt3.getUserData('field');
     	
     	var table = this._right.getUserData('table');
-    	//alert (table.getUpdatedData());
+    	
+    	//alert(table.getDataRowRenderer().getHighlightFocusRow());
+    	//table.getDataRowRenderer().setHighlightFocusRow(false);
+    	//alert(table.getDataRowRenderer().getHighlightFocusRow());
     	
     	var info = {
     				label : nodeLabel.getValue(),
@@ -333,6 +338,22 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 	
 	clearAll: function(e){
 		this._right.resetOldData();
+	},
+	
+	createNode: function(e){
+		
+		
+		var dataObject = this._right.getData();
+		var parent = this._tree.getSelectedElement();
+		
+		var nodeObject = {};
+		nodeObject.name = dataObject.label;
+		nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+		nodeObject.data = dataObject;
+		
+		var treeNode = this._tree.addNode(nodeObject);
+		this._tree.setSelectedElement(treeNode.getUserData('node'));
+				
 	}
     
   }

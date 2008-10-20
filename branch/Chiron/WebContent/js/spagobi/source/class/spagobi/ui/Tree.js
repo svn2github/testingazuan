@@ -472,11 +472,8 @@ qx.Class.define("spagobi.ui.Tree", {
 	              */
 	             deleteNode: function(e){
 	               
-	             	var currentItem = this.getSelectedElement();
-	             	alert(currentItem + "," + currentItem.getLabel());
-	             	currentItem.destroy();			//currentItem.remove();
-	             	alert("1. " + currentItem + "," + currentItem.getLabel());
-	             	/*
+	             	//var currentItem = this.getSelectedElement();
+	             	
 	             	 var currentItem = this.getManager().getSelectedItem();
 	             	
 	             	//alert(currentItem + ","+currentItem.getLabel());
@@ -489,7 +486,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	              			
 	              			currentItem = null;
           			}
-          			*/
+          			
           			//this.getSelectedElement().getParent().setSelected(true);	//else try getParentFolder()
           			
                  },
@@ -596,7 +593,7 @@ qx.Class.define("spagobi.ui.Tree", {
                  	var node = this.getCurrentNode();
                  	
                  	var nodeId = node.getLabel();
-                 	var atom = this.getUserData(nodeId);
+                 	var atom = this.getUserData(nodeId);	//nodeid = label .. to be changed
                  	
                  	if(atom.getUserData('data') != undefined)
                  		info.data = atom.getUserData('data');

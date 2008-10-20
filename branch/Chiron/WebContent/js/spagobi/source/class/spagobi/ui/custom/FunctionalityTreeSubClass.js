@@ -119,7 +119,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	      newTable.setWidth('100%');
     	  newTable.setHeight('1*');
     	  this.add(newTable);
-    	      	  
+    	  
+    	  //alert(newTable.getDataRowRenderer());    	  
     	  return newTable;
     	  
    	 },
@@ -224,9 +225,54 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	   	 			}
 	   	 		} // end for
    	 	} //end if
+   	 },
+   	 
+   	 getData: function(){
+   	 	
+   	 	//this._table.getDataRowRenderer().setHighlightFocusRow(false);
+   	 	
+   	 	var info = {};
+   	 	
+   	 	var nodeLabel = this._textfield1.getUserData('field');
+    	var nodeName  = this._textfield2.getUserData('field');
+    	var nodeDesc  = this._textfield3.getUserData('field');
+    	
+    	info.label = nodeLabel.getValue();
+		info.name = nodeName.getValue();
+		info.desc = nodeDesc.getValue();
+		info.func = [];
+		
+    	var table 	  = this._table;
+    	var tableModel = table.getTableModel();
+ 		var tableData  = tableModel.getData();
+ 		var tableRowCount = tableData.length;
+ 		
+ 		for(var i=0,j=-1; i<tableRowCount; i++){
+ 			if(tableData[i][2] || tableData[i][3] || tableData[i][4]){
+ 				j++;
+ 				info.func[j] = {};
+ 				info.func[j].role = tableData[i][0];
+ 				info.func[j].dev  = tableData[i][2];
+ 				info.func[j].test = tableData[i][3];
+ 				info.func[j].exe  = tableData[i][4];
+ 				
+ 			}
+ 		}
+    	
+    	/*
+    	alert('elements: '+ info.func.length);
+    	var str = '';
+    	for(k=0; k<info.func.length; k++){
+	    	str+= k+';\n';
+	    	for(p in info.func[k]) {
+	    		str += p + ': ' + info.func[k][p] + ';\n'
+	    	}
+	    	
+    	}
+		alert(str);
+		*/
+   	 	return info;
    	 }
-   	 
-   	 
   	
   }
   

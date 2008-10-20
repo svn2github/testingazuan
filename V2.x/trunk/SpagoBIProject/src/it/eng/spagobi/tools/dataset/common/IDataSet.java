@@ -13,12 +13,12 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
  */
 public interface IDataSet {
     /**
-     * This method retrive the data
+     * This method retrives the data
      */
     void loadData(HashMap parameters);
     
     /**
-     * this method return the data retrived with "loadData"
+     * this method returns the data retrived with "loadData"
      * @return
      */
     IDataStore getDataStore();

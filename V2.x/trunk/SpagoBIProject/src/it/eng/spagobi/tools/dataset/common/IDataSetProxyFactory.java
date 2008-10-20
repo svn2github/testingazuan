@@ -23,5 +23,5 @@ public interface IDataSetProxyFactory {
      * @param parameters
      * @return
      */
-    IDataSetProxy crateDataSetProxy(IEngUserProfile profile,String dataSetLabel,HashMap parameters);
+    IDataSetProxy crateDataSetProxy(IEngUserProfile profile);
 }

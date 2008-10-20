@@ -41,20 +41,7 @@ public interface IDataSetProxy {
 
     
     
-    /**
-     * This method retrive the data
-     */
-    void loadData();
-    
-    /**
-     * this method return the data retrived with "loadData"
-     * @return
-     */
-    IDataStore getDataStore();
-    
-    IDataStore fetchNext();
-    
-    void setFetchSize(int l);
+    IDataSet getDataSet(String dsName);
     
 
 }

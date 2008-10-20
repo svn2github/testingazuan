@@ -13,10 +13,10 @@ import java.util.HashMap;
  */
 public class DataSetProxyFactory implements IDataSetProxyFactory {
 
+    
+    public IDataSetProxy crateDataSetProxy(IEngUserProfile profile) {
 
-    public IDataSetProxy crateDataSetProxy(IEngUserProfile profile, String dataSetLabel, HashMap parameters) {
-
-	return new DataSetProxyImpl(profile,dataSetLabel,parameters);
+	return new DataSetProxyImpl(profile);
     }
 
 }

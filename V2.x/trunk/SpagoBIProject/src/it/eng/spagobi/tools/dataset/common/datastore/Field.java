@@ -10,16 +10,28 @@ package it.eng.spagobi.tools.dataset.common.datastore;
  */
 public class Field implements IField {
 
+	Object value = null;
 
-    public IFieldMeta getFieldMeta() {
+    public Field(Object value) {
+		super();
+		this.value = value;
+	}
+
+
+	public IFieldMeta getFieldMeta() {
 	// TODO Auto-generated method stub
 	return null;
     }
 
 
     public Object getValue() {
-	// TODO Auto-generated method stub
-	return null;
+
+    	return this.value;
     }
+
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
 
 }

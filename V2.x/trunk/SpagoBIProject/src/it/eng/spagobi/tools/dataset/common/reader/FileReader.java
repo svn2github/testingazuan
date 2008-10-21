@@ -7,11 +7,14 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
+import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
 import java.io.FileInputStream;
@@ -28,17 +31,32 @@ import org.xml.sax.InputSource;
  *         angelo.bernabei@eng.it
  */
 public class FileReader implements IDataReader {
+	
+	String fileName = "";
 
 
-    public IDataStore read(HashMap parameters) {
+    public FileReader(String fileName) {
+		super();
+		this.fileName = fileName;
+	}
 
-    	IDataStore dataStore = (IDataStore)new DataStoreImpl();
-    	
-		String pathFile=(String)parameters.get("FILENAME");
 
+	public String getFileName() {
+		return fileName;
+	}
+
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+
+	public IDataStore read(HashMap parameters) {
+
+		IDataStore ids = (IDataStore)new DataStoreImpl();
 		FileInputStream fis=null;
 		try{
-		fis=new FileInputStream(pathFile);
+		fis=new FileInputStream(fileName);
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -56,13 +74,16 @@ public class FileReader implements IDataReader {
 				if(row.size()>=1){
 					Iterator iterator = row.iterator(); 
 					SourceBean sb = (SourceBean) iterator.next();
+					IRecord r = (IRecord)new Record();
+					
 					List sbas=sb.getContainedAttributes();
 					for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+						
 						SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-						String name=object.getKey();
-						colNames.add(name);
+						IField f = (IField)new Field(object);
+						r.appendField(f);
 					}
-					
+					ids.appendRow(r);
 				}
 			}
 		}
@@ -79,7 +100,7 @@ public class FileReader implements IDataReader {
 					e.printStackTrace();
 				}
 		}
-	return null;
+	return ids;
     }
 
 }

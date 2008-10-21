@@ -47,11 +47,13 @@ public class DataSetImpl implements IDataSet{
     private DataSetImpl(){
 	
     }
+    
     public DataSetImpl(DataSet ds,IEngUserProfile profile){
 	this.profile=profile;
 	this.ds=ds;
 	
     }
+    
     public IDataStore fetchNext() {
     	
     	IDataStore dataStore = (IDataStore)new DataStoreImpl();

@@ -10,4 +10,5 @@ package it.eng.spagobi.tools.dataset.common.datastore;
 public interface IField {
     Object getValue();
     IFieldMeta getFieldMeta();
+    public void setValue(Object value) ;
 }

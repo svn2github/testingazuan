@@ -11,14 +11,16 @@ public class Record implements IRecord {
 
 
     public IField getFieldById(int position) {
-	// TODO Auto-generated method stub
-	return null;
+    	IField field = (IField)new Field();
+    	
+    	return field;
     }
 
 
     public IField getFieldByName(String name) {
-	// TODO Auto-generated method stub
-	return null;
+    	IField field = (IField)new Field();
+	
+	return field;
     }
 
 }

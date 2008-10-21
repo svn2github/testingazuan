@@ -21,8 +21,10 @@ public class DataStoreImpl implements IDataStore {
 
 
     public IRecord getAt(int i) {
+    	
+    	IRecord record = (IRecord)new Record();
 
-	return null;
+	return record;
     }
 
 
@@ -33,8 +35,10 @@ public class DataStoreImpl implements IDataStore {
 
 
     public IRecord getRecordByID(Object id) {
+    	
+    	IRecord record = (IRecord)new Record();
 
-	return null;
+	return record;
     }
 
 

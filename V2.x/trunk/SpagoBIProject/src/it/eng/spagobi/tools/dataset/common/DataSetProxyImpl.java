@@ -41,6 +41,7 @@ public class DataSetProxyImpl implements IDataSetProxy {
     private DataSetProxyImpl(){
 	
     }
+    
     public DataSetProxyImpl(IEngUserProfile profile){
 	this.profile=profile;
     }   

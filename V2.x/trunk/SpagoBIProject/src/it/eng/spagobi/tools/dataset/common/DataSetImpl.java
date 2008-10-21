@@ -12,7 +12,10 @@ import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
 
 import java.util.HashMap;
@@ -50,8 +53,10 @@ public class DataSetImpl implements IDataSet{
 	
     }
     public IDataStore fetchNext() {
+    	
+    	IDataStore dataStore = (IDataStore)new DataStoreImpl();
 
-	return null;
+	return dataStore;
     }
 
     public void loadData(HashMap parameters) {

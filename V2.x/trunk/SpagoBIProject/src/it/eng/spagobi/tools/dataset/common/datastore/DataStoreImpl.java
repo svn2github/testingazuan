@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
 import java.util.ArrayList;
@@ -72,8 +73,29 @@ public class DataStoreImpl implements IDataStore {
 
 
     public String toXml() {
+    	
+    	String xml = "";
+    	xml += "<ROWS>";
+		Iterator i = records.iterator();
+		while (i.hasNext()){
+			xml += "<ROW ";
+			IRecord r =(IRecord) i.next();				
+			List fields = r.getFields();
+			Iterator it = fields.iterator();
+			while(it.hasNext()){					
+				IField f = (IField)it.next();
+				IFieldMeta fMeta = (IFieldMeta)f.getMetadata();
+				String fieldName = fMeta.getName();
+				SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
+				String fieldValue = (String)fieldObject.getValue();
+				xml += fieldName +"=\'"+fieldValue+"\' ";
+			}
+			xml += " />";
+			
+		}
+		xml += "</ROWS>";
 
-	return null;
+	return xml;
     }
 
 }

@@ -410,7 +410,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	public DataSet toDataSet(SbiDataSet hibDataSet){
 		DataSet ds = new DataSet();
 		if(hibDataSet instanceof SbiFileDataSet){
-			ds=new FileDataSet();
+			ds = new FileDataSet();
 			((FileDataSet)ds).setFileName(((SbiFileDataSet)hibDataSet).getFileName());
 		}
 		

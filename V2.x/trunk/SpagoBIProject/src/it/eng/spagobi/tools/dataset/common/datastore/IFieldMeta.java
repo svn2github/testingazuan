@@ -8,8 +8,11 @@ package it.eng.spagobi.tools.dataset.common.datastore;
  *         angelo.bernabei@eng.it
  */
 public interface IFieldMeta {
-
+	
     String getName();
     String getType();
     String getProperty();
+    void setName(String name);
+    void setType(String type);
+    void setProperty(String property);
 }

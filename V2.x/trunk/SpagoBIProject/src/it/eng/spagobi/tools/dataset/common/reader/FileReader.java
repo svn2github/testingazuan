@@ -11,12 +11,15 @@ import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
+import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +38,13 @@ public class FileReader implements IDataReader {
 	String fileName = "";
 
 
-    public FileReader(String fileName) {
+    public FileReader() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public FileReader(String fileName) {
 		super();
 		this.fileName = fileName;
 	}
@@ -54,9 +63,9 @@ public class FileReader implements IDataReader {
 	public IDataStore read(HashMap parameters) {
 
 		IDataStore ids = (IDataStore)new DataStoreImpl();
-		FileInputStream fis=null;
+		FileInputStream fis = null;
 		try{
-		fis=new FileInputStream(fileName);
+			fis = new FileInputStream(fileName);
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -73,6 +82,9 @@ public class FileReader implements IDataReader {
 				List row =rowsSourceBean.getAttributeAsList("ROW");
 				if(row.size()>=1){
 					Iterator iterator = row.iterator(); 
+					
+					while(iterator.hasNext()){
+											
 					SourceBean sb = (SourceBean) iterator.next();
 					IRecord r = (IRecord)new Record();
 					
@@ -80,10 +92,14 @@ public class FileReader implements IDataReader {
 					for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
 						
 						SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-						IField f = (IField)new Field(object);
+						String fieldName=object.getKey();
+						IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
+						fMeta.setName(fieldName);
+						IField f = (IField)new Field(fMeta,object);
 						r.appendField(f);
 					}
 					ids.appendRow(r);
+					}
 				}
 			}
 		}

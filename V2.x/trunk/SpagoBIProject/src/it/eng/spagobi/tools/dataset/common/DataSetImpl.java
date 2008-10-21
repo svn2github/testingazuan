@@ -16,6 +16,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.tools.dataset.common.reader.FileReader;
 import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
 
 import java.util.HashMap;
@@ -72,17 +73,36 @@ public class DataSetImpl implements IDataSet{
 	 */
     if (ds != null) {
     String type= "";
-	    if(ds instanceof FileDataSet)type="it.eng.spagobi.tools.dataset.bo.FileDataSet";
+    try {
+	    if(ds instanceof FileDataSet){
+	    	type="it.eng.spagobi.tools.dataset.common.reader.FileReader";
+	    	FileDataSet ds2 =(FileDataSet)ds;
+	    	String fileName = ds2.getFileName();
+	    	dataReader = (IDataReader) new FileReader(fileName);
+	    	
+	    }
 		else 		
-			if(ds instanceof QueryDataSet)type="it.eng.spagobi.tools.dataset.bo.QueryDataSet";
+			if(ds instanceof QueryDataSet){
+				type="it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader";
+				dataReader = (IDataReader) Class.forName(type).newInstance();
+			}
 			else 		
-				if(ds instanceof WSDataSet)type="it.eng.spagobi.tools.dataset.bo.WSDataSet";
+				if(ds instanceof WSDataSet){
+					type="it.eng.spagobi.tools.dataset.common.reader.WebServiceReader";
+					dataReader = (IDataReader) Class.forName(type).newInstance();
+				}
 				else 		
-					if(ds instanceof ScriptDataSet)type="it.eng.spagobi.tools.dataset.bo.ScriptDataSet";
+					if(ds instanceof ScriptDataSet){
+						type="it.eng.spagobi.tools.dataset.common.reader.GroovyReader";
+						dataReader = (IDataReader) Class.forName(type).newInstance();
+					}
 					else 		
-						if(ds instanceof JClassDataSet)type="it.eng.spagobi.tools.dataset.bo.JClassDataSet";
-	    try {
-			dataReader = (IDataReader) Class.forName(type).newInstance();
+						if(ds instanceof JClassDataSet){
+							type="it.eng.spagobi.tools.dataset.common.reader.ClassReader";
+							dataReader = (IDataReader) Class.forName(type).newInstance();
+						}
+	    
+			
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

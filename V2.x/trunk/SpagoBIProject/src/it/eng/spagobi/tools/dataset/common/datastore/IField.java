@@ -9,6 +9,7 @@ package it.eng.spagobi.tools.dataset.common.datastore;
  */
 public interface IField {
     Object getValue();
-    IFieldMeta getFieldMeta();
+    public IFieldMeta getMetadata();
+	public void setMetadata(IFieldMeta metadata);
     public void setValue(Object value) ;
 }

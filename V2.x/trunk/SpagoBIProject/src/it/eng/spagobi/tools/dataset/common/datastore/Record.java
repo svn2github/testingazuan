@@ -4,7 +4,9 @@
 package it.eng.spagobi.tools.dataset.common.datastore;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
 
 /**
  * @author Angelo Bernabei
@@ -12,7 +14,7 @@ import java.util.List;
  */
 public class Record implements IRecord {
 
-	List fields = null;
+	List fields = new ArrayList();
 
     public Record(List fields) {
 		super();
@@ -44,8 +46,17 @@ public class Record implements IRecord {
 
     public IField getFieldByName(String name) {
     	
-	
-	return null;
+    	IField toReturn = null;
+    	Iterator itF=  fields.iterator();
+    	while (itF.hasNext()){
+    		IField f =(IField)itF.next();
+    		String fName = f.getMetadata().getName();
+    		if (fName.equals(name)){
+    			toReturn = f;
+    			break;
+    		}
+    	}
+      return toReturn;
     }
 
 

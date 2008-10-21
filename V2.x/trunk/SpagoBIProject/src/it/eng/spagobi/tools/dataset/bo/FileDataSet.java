@@ -50,6 +50,7 @@ public class FileDataSet extends DataSet {
      */
     public FileDataSet(){
     	super();
+    	this.fileName="";
     }
     
     /**
@@ -62,7 +63,17 @@ public class FileDataSet extends DataSet {
     	setLabel(a.getLabel());
     	setName(a.getName());
     	setDescription(a.getDescription());
+    	this.fileName = "";
 	}
+    
+    public FileDataSet(DataSet a, String fileName) {
+    	setDsId(a.getDsId());
+    	setLabel(a.getLabel());
+    	setName(a.getName());
+    	setDescription(a.getDescription());
+    	this.fileName = fileName;
+	}
+
 
 	/**
 	 * Gets the file name.

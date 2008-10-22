@@ -41,7 +41,7 @@ public class DataSetConfig {
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
-    	public static DataSet createDataSet(SpagoBiDataSet ds){
+    	public static DataSetConfig createDataSet(SpagoBiDataSet ds){
     	    // a seconda del campo type costruisce l'oggetto corretto
     	    // figlio di DataSet
     	    return null;

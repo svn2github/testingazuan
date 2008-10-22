@@ -21,10 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.dataset.service;
 
-import it.eng.spagobi.services.dataset.stub.DataSetWsInterface;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 
-import java.rmi.RemoteException;
-import java.util.HashMap;
+
 
 
 
@@ -32,15 +31,30 @@ import java.util.HashMap;
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class DataSetWsImpl implements DataSetWsInterface {
+public class DataSetWsImpl {
 
 
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.services.dataset.stub.DataSetWsInterface#readData(java.util.HashMap, java.lang.String)
+    SpagoBiDataSet getDataSet(String token,String user,String datasetId){
+	return null;
+    }
+    /**
+     * 
+     * @param token  String
+     * @param user String
+     * @param label String
+     * @return SpagoBiDataSet
      */
-    public String readData(HashMap parameters, String operation) throws RemoteException {
-
-	return "<ROWS><ROW name=\"io\" value=\"5\"/><ROW name=\"tu\" value=\"3\"/><ROW name=\"egli\" value=\"3\"/><ROW name=\"noi\" value=\"1\"/><ROW name=\"voi\" value=\"2\"/><ROW name=\"essi\" value=\"7\"/></ROWS>";
+    SpagoBiDataSet getDataSetByLabel(String token,String user,String label){
+	return null;
+    }
+    /**
+     * 
+     * @param token String
+     * @param user String
+     * @return SpagoBiDataSet[]
+     */
+    SpagoBiDataSet[] getAllDataSet(String token,String user){
+	return null;
     }
 
 }

@@ -31,18 +31,46 @@ public class DataSetServiceSoapBindingSkeleton implements it.eng.spagobi.service
         org.apache.axis.description.FaultDesc _fault;
         org.apache.axis.description.ParameterDesc [] _params;
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"), java.util.HashMap.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
-        _oper = new org.apache.axis.description.OperationDesc("readData", _params, new javax.xml.namespace.QName("", "readDataReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobidataset", "readData"));
+        _oper = new org.apache.axis.description.OperationDesc("getDataSet", _params, new javax.xml.namespace.QName("", "getDataSetReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.dataset.services.spagobi.eng.it", "SpagoBiDataSet"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobidataset", "getDataSet"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
-        if (_myOperations.get("readData") == null) {
-            _myOperations.put("readData", new java.util.ArrayList());
+        if (_myOperations.get("getDataSet") == null) {
+            _myOperations.put("getDataSet", new java.util.ArrayList());
         }
-        ((java.util.List)_myOperations.get("readData")).add(_oper);
+        ((java.util.List)_myOperations.get("getDataSet")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getDataSetByLabel", _params, new javax.xml.namespace.QName("", "getDataSetByLabelReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.dataset.services.spagobi.eng.it", "SpagoBiDataSet"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobidataset", "getDataSetByLabel"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getDataSetByLabel") == null) {
+            _myOperations.put("getDataSetByLabel", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getDataSetByLabel")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getAllDataSet", _params, new javax.xml.namespace.QName("", "getAllDataSetReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobidataset", "ArrayOf_tns2_SpagoBiDataSet"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobidataset", "getAllDataSet"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getAllDataSet") == null) {
+            _myOperations.put("getAllDataSet", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getAllDataSet")).add(_oper);
     }
 
     public DataSetServiceSoapBindingSkeleton() {
@@ -52,9 +80,21 @@ public class DataSetServiceSoapBindingSkeleton implements it.eng.spagobi.service
     public DataSetServiceSoapBindingSkeleton(it.eng.spagobi.services.dataset.stub.DataSetWsInterface impl) {
         this.impl = impl;
     }
-    public java.lang.String readData(java.util.HashMap in0, java.lang.String in1) throws java.rmi.RemoteException
+    public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getDataSet(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.readData(in0, in1);
+        it.eng.spagobi.services.dataset.bo.SpagoBiDataSet ret = impl.getDataSet(in0, in1, in2);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getDataSetByLabel(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.dataset.bo.SpagoBiDataSet ret = impl.getDataSetByLabel(in0, in1, in2);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet[] getAllDataSet(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.dataset.bo.SpagoBiDataSet[] ret = impl.getAllDataSet(in0, in1);
         return ret;
     }
 

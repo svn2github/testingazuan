@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.dataset;
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+
 import java.util.HashMap;
 
 /**
@@ -31,9 +34,25 @@ public interface DataSetWsInterface {
 
     /**
      * 
-     * @param params HashMap input parameters
-     * @param operation String operation
-     * @return XML data rapresentation
+     * @param token  String
+     * @param user String
+     * @param datasetId String
+     * @return SpagoBiDataSet
      */
-    String readData(HashMap params, String operation);
+    SpagoBiDataSet getDataSet(String token,String user,String datasetId);
+    /**
+     * 
+     * @param token  String
+     * @param user String
+     * @param label String
+     * @return SpagoBiDataSet
+     */
+    SpagoBiDataSet getDataSetByLabel(String token,String user,String label);    
+    /**
+     * 
+     * @param token String
+     * @param user String
+     * @return SpagoBiDataSet[]
+     */
+    SpagoBiDataSet[] getAllDataSet(String token,String user);
 }

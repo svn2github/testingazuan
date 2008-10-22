@@ -3,9 +3,7 @@
  */
 package it.eng.spagobi.tools.dataset.common;
 
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.tools.dataset.bo.DataSet;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
@@ -14,10 +12,12 @@ import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.tools.dataset.common.reader.ClassReader;
 import it.eng.spagobi.tools.dataset.common.reader.FileReader;
+import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
 import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader;
+import it.eng.spagobi.tools.dataset.common.reader.WebServiceReader;
 
 import java.util.HashMap;
 
@@ -73,46 +73,35 @@ public class DataSetImpl implements IDataSet{
 	 */
     if (ds != null) {
     String type= "";
-    try {
-	    if(ds instanceof FileDataSet){
-	    	type="it.eng.spagobi.tools.dataset.common.reader.FileReader";
-	    	FileDataSet ds2 =(FileDataSet)ds;
-	    	String fileName = ds2.getFileName();
-	    	dataReader = (IDataReader) new FileReader(fileName);
-	    	
-	    }
+    if(ds instanceof FileDataSet){
+		type="it.eng.spagobi.tools.dataset.common.reader.FileReader";
+		FileDataSet ds2 =(FileDataSet)ds;
+		dataReader = (IDataReader) new FileReader(ds2);	
+	}
+	else 		
+		if(ds instanceof QueryDataSet){
+			type="it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader";
+			QueryDataSet ds2 =(QueryDataSet)ds;
+			dataReader = (IDataReader) new SQLResultSetReader(profile,ds2);
+		}
 		else 		
-			if(ds instanceof QueryDataSet){
-				type="it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader";
-				dataReader = (IDataReader) Class.forName(type).newInstance();
+			if(ds instanceof WSDataSet){
+				type="it.eng.spagobi.tools.dataset.common.reader.WebServiceReader";
+				WSDataSet ds2 = (WSDataSet)ds;
+				dataReader = (IDataReader)new WebServiceReader(ds2);
 			}
 			else 		
-				if(ds instanceof WSDataSet){
-					type="it.eng.spagobi.tools.dataset.common.reader.WebServiceReader";
-					dataReader = (IDataReader) Class.forName(type).newInstance();
+				if(ds instanceof ScriptDataSet){
+					type="it.eng.spagobi.tools.dataset.common.reader.GroovyReader";
+					ScriptDataSet ds2 = (ScriptDataSet)ds;
+					dataReader = (IDataReader)new GroovyReader(ds2);
 				}
 				else 		
-					if(ds instanceof ScriptDataSet){
-						type="it.eng.spagobi.tools.dataset.common.reader.GroovyReader";
-						dataReader = (IDataReader) Class.forName(type).newInstance();
+					if(ds instanceof JClassDataSet){
+						type="it.eng.spagobi.tools.dataset.common.reader.ClassReader";
+						JClassDataSet ds2 = (JClassDataSet)ds;
+						dataReader = (IDataReader)new ClassReader(profile, ds2);
 					}
-					else 		
-						if(ds instanceof JClassDataSet){
-							type="it.eng.spagobi.tools.dataset.common.reader.ClassReader";
-							dataReader = (IDataReader) Class.forName(type).newInstance();
-						}
-	    
-			
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	    dataStore = dataReader.read(parameters);
     }
 	

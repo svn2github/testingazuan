@@ -5,10 +5,7 @@ package it.eng.spagobi.tools.dataset.common.reader;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
-import it.eng.spagobi.tools.dataset.common.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
@@ -17,9 +14,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
-import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,8 +30,7 @@ import org.xml.sax.InputSource;
  */
 public class FileReader implements IDataReader {
 	
-	String fileName = "";
-
+	FileDataSet ds = null;
 
     public FileReader() {
 		super();
@@ -44,19 +38,19 @@ public class FileReader implements IDataReader {
 	}
 
 
-	public FileReader(String fileName) {
+	public FileReader(FileDataSet dataSet) {
 		super();
-		this.fileName = fileName;
+		this.ds = dataSet;
 	}
 
 
-	public String getFileName() {
-		return fileName;
+	public FileDataSet getDs() {
+		return ds;
 	}
 
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setDs(FileDataSet ds) {
+		this.ds = ds;
 	}
 
 
@@ -64,6 +58,7 @@ public class FileReader implements IDataReader {
 
 		IDataStore ids = (IDataStore)new DataStoreImpl();
 		FileInputStream fis = null;
+		String fileName = ds.getFileName();
 		try{
 			fis = new FileInputStream(fileName);
 		}

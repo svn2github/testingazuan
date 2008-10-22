@@ -27,7 +27,7 @@ import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class SbiQueryDataSet extends SbiDataSet{
+public class SbiQueryDataSet extends SbiDataSetConfig{
     private String query=null;
     private SbiDataSource dataSource=null;
     

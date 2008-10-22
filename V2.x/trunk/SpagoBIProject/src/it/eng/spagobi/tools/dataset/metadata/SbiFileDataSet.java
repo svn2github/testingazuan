@@ -26,7 +26,7 @@ package it.eng.spagobi.tools.dataset.metadata;
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class SbiFileDataSet extends SbiDataSet{
+public class SbiFileDataSet extends SbiDataSetConfig{
     private String fileName=null;
 
     /**

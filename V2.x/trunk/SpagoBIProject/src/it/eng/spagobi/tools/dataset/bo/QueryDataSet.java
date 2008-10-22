@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * @author Giulio Gavardi
  *     giulio.gavardi@eng.it
  */
-public class QueryDataSet extends DataSet {
+public class QueryDataSet extends DataSetConfig {
     private String query=null;
     private static transient Logger logger=Logger.getLogger(QueryDataSet.class);
     private DataSource dataSource=null;
@@ -85,7 +85,7 @@ public class QueryDataSet extends DataSet {
 	 * 
 	 * @param a the a
 	 */
-	public QueryDataSet(DataSet a) {
+	public QueryDataSet(DataSetConfig a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
     	setName(a.getName());

@@ -61,7 +61,7 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -642,13 +642,13 @@ public class ImportManager implements IImportManager, Serializable {
 
     private void importDataSet(boolean overwrite) throws EMFUserError {
     	logger.debug("IN");
-    	SbiDataSet exportedDataSet = null;
+    	SbiDataSetConfig exportedDataSet = null;
 		try {
 		    List exportedDatasets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
 		    Iterator iterSbiDataSet = exportedDatasets.iterator();
 
 		    while (iterSbiDataSet.hasNext()) {
-				exportedDataSet = (SbiDataSet) iterSbiDataSet.next();
+				exportedDataSet = (SbiDataSetConfig) iterSbiDataSet.next();
 				Integer oldId = new Integer(exportedDataSet.getDsId());
 				Integer existingDatasetId = null;
 				Map datasetAss = metaAss.getDataSetIDAssociation();
@@ -663,11 +663,11 @@ public class ImportManager implements IImportManager, Serializable {
 				if (existingDatasetId != null) {
 					logger.info("The dataset with label:[" + exportedDataSet.getLabel() + "] is just present. It will be updated.");
 				    metaLog.log("The dataset with label = [" + exportedDataSet.getLabel() + "] will be updated.");
-					SbiDataSet existingDataset = ImportUtilities.modifyExistingSbiDataSet(exportedDataSet, sessionCurrDB, existingDatasetId);
+					SbiDataSetConfig existingDataset = ImportUtilities.modifyExistingSbiDataSet(exportedDataSet, sessionCurrDB, existingDatasetId);
 				    ImportUtilities.associateWithExistingEntities(existingDataset, exportedDataSet, sessionCurrDB, importer, metaAss);
 				    sessionCurrDB.update(existingDataset);
 				} else {
-					SbiDataSet newDataset = ImportUtilities.makeNewSbiDataSet(exportedDataSet);
+					SbiDataSetConfig newDataset = ImportUtilities.makeNewSbiDataSet(exportedDataSet);
 					ImportUtilities.associateWithExistingEntities(newDataset, exportedDataSet, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.save(newDataset);
 					metaLog.log("Inserted new dataset " + newDataset.getName());
@@ -2051,11 +2051,11 @@ public class ImportManager implements IImportManager, Serializable {
 	List exportedDataset = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
 	Iterator iterSbiDataset = exportedDataset.iterator();
 	while (iterSbiDataset.hasNext()) {
-		SbiDataSet dsExp = (SbiDataSet) iterSbiDataset.next();
+		SbiDataSetConfig dsExp = (SbiDataSetConfig) iterSbiDataset.next();
 		String label = dsExp.getLabel();
-	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSet());
+	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSetConfig());
 	    if (existObj != null) {
-	    	SbiDataSet dsCurr = (SbiDataSet) existObj;
+	    	SbiDataSetConfig dsCurr = (SbiDataSetConfig) existObj;
 	    	metaAss.insertCoupleDataSets(new Integer(dsExp.getDsId()), new Integer(dsCurr.getDsId()));
 			metaLog.log("Found an existing dataset " + dsCurr.getLabel() + " with "
 				+ "the same label of one exported dataset");

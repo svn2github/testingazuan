@@ -4,11 +4,14 @@
 package it.eng.spagobi.tools.dataset.common.datastore;
 
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Angelo Bernabei
@@ -16,6 +19,7 @@ import java.util.List;
  */
 public class DataStoreImpl implements IDataStore {
 	
+	private static transient Logger logger = Logger.getLogger(DataStoreImpl.class);
 	List records = null;
 
 

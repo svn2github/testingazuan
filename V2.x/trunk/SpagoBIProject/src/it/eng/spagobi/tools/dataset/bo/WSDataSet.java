@@ -25,7 +25,7 @@ package it.eng.spagobi.tools.dataset.bo;
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class WSDataSet extends DataSet {
+public class WSDataSet extends DataSetConfig {
     private String adress=null;
    private String operation=null;
     private String executorClass=null;
@@ -71,7 +71,7 @@ public class WSDataSet extends DataSet {
 	 * 
 	 * @param a the a
 	 */
-	public WSDataSet(DataSet a) {
+	public WSDataSet(DataSetConfig a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
     	setName(a.getName());

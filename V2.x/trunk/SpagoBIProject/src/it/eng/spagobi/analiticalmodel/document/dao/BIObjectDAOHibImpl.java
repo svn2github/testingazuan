@@ -61,7 +61,7 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -426,9 +426,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			hibBIObject.setDataSource(dSource);
 			
-			SbiDataSet dSet = null;
+			SbiDataSetConfig dSet = null;
 			if (biObject.getDataSetId() != null) {
-				dSet = (SbiDataSet) aSession.load(SbiDataSet.class, biObject.getDataSetId());
+				dSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class, biObject.getDataSetId());
 			}
 			hibBIObject.setDataSet(dSet);
 			
@@ -652,9 +652,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			hibBIObject.setDataSource(dSource);
 			
-			SbiDataSet dSet= null;
+			SbiDataSetConfig dSet= null;
 			if (obj.getDataSetId() != null) {
-				dSet = (SbiDataSet) aSession.load(SbiDataSet.class, obj.getDataSetId());
+				dSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class, obj.getDataSetId());
 			}
 			hibBIObject.setDataSet(dSet);
 			

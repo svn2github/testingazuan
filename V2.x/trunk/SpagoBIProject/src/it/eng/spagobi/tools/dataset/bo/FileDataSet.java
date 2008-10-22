@@ -41,7 +41,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.DialCharts;
  
 *         
  */
-public class FileDataSet extends DataSet {
+public class FileDataSet extends DataSetConfig {
     private String fileName=null;
 	private static transient Logger logger=Logger.getLogger(FileDataSet.class);
     
@@ -58,7 +58,7 @@ public class FileDataSet extends DataSet {
      * 
      * @param a the a
      */
-    public FileDataSet(DataSet a) {
+    public FileDataSet(DataSetConfig a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
     	setName(a.getName());
@@ -66,7 +66,7 @@ public class FileDataSet extends DataSet {
     	this.fileName = "";
 	}
     
-    public FileDataSet(DataSet a, String fileName) {
+    public FileDataSet(DataSetConfig a, String fileName) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
     	setName(a.getName());

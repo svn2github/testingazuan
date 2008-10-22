@@ -4,7 +4,7 @@
 package it.eng.spagobi.tools.dataset.common;
 
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
@@ -21,6 +21,8 @@ import it.eng.spagobi.tools.dataset.common.reader.WebServiceReader;
 
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
@@ -32,9 +34,9 @@ public class DataSetImpl implements IDataSet{
      *  Una volta in possesso della definizione del data set crea l'oggetto
      *  reader corretto a seconda del tipo di DataSet
      */
-    
+	private static transient Logger logger = Logger.getLogger(DataSetImpl.class);
     IDataStore dataStore=null;
-    DataSet ds=null;
+    DataSetConfig ds=null;
     IEngUserProfile profile=null;
     private HashMap parameters=null;
     
@@ -49,7 +51,7 @@ public class DataSetImpl implements IDataSet{
 	
     }
     
-    public DataSetImpl(DataSet ds,IEngUserProfile profile){
+    public DataSetImpl(DataSetConfig ds,IEngUserProfile profile){
 	this.profile=profile;
 	this.ds=ds;
 	

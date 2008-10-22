@@ -46,7 +46,7 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -422,11 +422,11 @@ public class ImporterMetadata {
 	    hqlQuery = sessionCurrDB.createQuery(hql);
 	    SbiObjParuse hibObjParUse = (SbiObjParuse) hqlQuery.uniqueResult();
 	    return hibObjParUse;
-	} else if (hibObj instanceof SbiDataSet) {
+	} else if (hibObj instanceof SbiDataSetConfig) {
 	    String label = (String) unique;
 	    hql = "from SbiDataSet ds where ds.label = '" + label + "'";
 	    hqlQuery = sessionCurrDB.createQuery(hql);
-	    SbiDataSet hibDs = (SbiDataSet) hqlQuery.uniqueResult();
+	    SbiDataSetConfig hibDs = (SbiDataSetConfig) hqlQuery.uniqueResult();
 	    return hibDs;
 	} else if (hibObj instanceof SbiDataSource) {
 	    String label = (String) unique;

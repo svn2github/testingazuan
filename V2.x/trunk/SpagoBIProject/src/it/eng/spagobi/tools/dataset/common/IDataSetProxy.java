@@ -24,7 +24,7 @@ package it.eng.spagobi.tools.dataset.common;
 import java.util.HashMap;
 
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 /**

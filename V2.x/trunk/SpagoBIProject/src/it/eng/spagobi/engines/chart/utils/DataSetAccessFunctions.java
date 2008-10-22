@@ -29,7 +29,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -79,7 +79,7 @@ public class DataSetAccessFunctions {
 	public static String getDataSetResultFromId(IEngUserProfile profile,String dsId, Map parameters) throws Exception {
 		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
-		DataSet ds = dsDAO.loadDataSetByID(Integer.valueOf(dsId));
+		DataSetConfig ds = dsDAO.loadDataSetByID(Integer.valueOf(dsId));
 	
 		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
 		return result;
@@ -101,7 +101,7 @@ public class DataSetAccessFunctions {
 	public static String getDataSetResultFromLabel(IEngUserProfile profile,String label, Map parameters) throws Exception {
 		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
-		DataSet ds = dsDAO.loadDataSetByLabel(label);
+		DataSetConfig ds = dsDAO.loadDataSetByLabel(label);
 	
 		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
 		return result;
@@ -121,7 +121,7 @@ public class DataSetAccessFunctions {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public static String getDataSetResult(IEngUserProfile profile,DataSet ds, Map parameters) throws Exception {
+	public static String getDataSetResult(IEngUserProfile profile,DataSetConfig ds, Map parameters) throws Exception {
 		logger.debug("IN");
 
 

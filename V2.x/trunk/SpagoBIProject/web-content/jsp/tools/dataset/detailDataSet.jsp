@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
-		DataSet ds = (DataSet)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
+		DataSetConfig ds = (DataSetConfig)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
 		String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -318,7 +318,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="FILENAME" id="FILENAME"
-				   size="50" value="<%=fileName%>" maxlength="50" <%=disableFile%> />
+				   size="50" value="<%=fileName%>" maxlength="300" <%=disableFile%> />
 	   </div>
 	   </div>
 	   

@@ -50,7 +50,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
@@ -349,7 +349,7 @@ public class ExportManager implements IExportManager {
 
 	    Integer objDataSetId = biobj.getDataSetId();
 	    if (objDataSetId != null) {
-	    	DataSet dataset = dataSetDao.loadDataSetByID(objDataSetId);
+	    	DataSetConfig dataset = dataSetDao.loadDataSetByID(objDataSetId);
 	    	exporter.insertDataSet(dataset, session);
 	    }
 	    
@@ -381,7 +381,7 @@ public class ExportManager implements IExportManager {
 					if (datasetnameSB != null) {
 						String datasetLabel = (String) datasetnameSB.getAttribute("value");
 					    IDataSetDAO datasetDao = DAOFactory.getDataSetDAO();
-					    DataSet dataset = datasetDao.loadDataSetByLabel(datasetLabel);
+					    DataSetConfig dataset = datasetDao.loadDataSetByLabel(datasetLabel);
 					    if (dataset == null) {
 					    	logger.warn("Error while exporting dashboard with id " + idObj + " and label " + biobj.getLabel() + " : " +
 								"the template refers to a dataset with label " + datasetLabel + " that does not exist!");

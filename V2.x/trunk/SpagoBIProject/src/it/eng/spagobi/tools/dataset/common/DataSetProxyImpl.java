@@ -10,7 +10,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.LovDAOHibImpl;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
@@ -58,7 +58,7 @@ public class DataSetProxyImpl implements IDataSetProxy {
     	
     	IDataSet ids= null;
     	try {
-    		DataSet ds= DAOFactory.getDataSetDAO().loadDataSetByLabel(dataSetLabel);
+    		DataSetConfig ds= DAOFactory.getDataSetDAO().loadDataSetByLabel(dataSetLabel);
 			ids = (IDataSet)new DataSetImpl(ds,profile);
 		} catch (EMFUserError e) {
 			// TODO Auto-generated catch block

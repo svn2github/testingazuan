@@ -2,7 +2,7 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import org.apache.log4j.Logger;
 
-public class JClassDataSet extends DataSet {
+public class JClassDataSet extends DataSetConfig {
 	 private String javaClassName = null;
 	 private static transient Logger logger=Logger.getLogger(FileDataSet.class);
 	 
@@ -16,7 +16,7 @@ public class JClassDataSet extends DataSet {
 		super();
 	}
 
-	public JClassDataSet(DataSet a) {
+	public JClassDataSet(DataSetConfig a) {
     	setDsId(a.getDsId());
     	setLabel(a.getLabel());
     	setName(a.getName());

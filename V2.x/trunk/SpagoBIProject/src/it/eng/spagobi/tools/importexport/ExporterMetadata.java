@@ -79,11 +79,11 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
@@ -191,7 +191,7 @@ public class ExporterMetadata {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void insertDataSet(DataSet dataset, Session session) throws EMFUserError {
+	public void insertDataSet(DataSetConfig dataset, Session session) throws EMFUserError {
 	    logger.debug("IN");
 		try {
 			// if it is a query data set, insert datasource first, before opening a new transaction
@@ -206,7 +206,7 @@ public class ExporterMetadata {
 			if(!hibList.isEmpty()) {
 				return;
 			}
-			SbiDataSet hibDataset = null;
+			SbiDataSetConfig hibDataset = null;
 			if (dataset instanceof FileDataSet) {
 				hibDataset = new SbiFileDataSet();
 				((SbiFileDataSet) hibDataset).setFileName(((FileDataSet) dataset).getFileName()); 
@@ -465,7 +465,7 @@ public class ExporterMetadata {
 			}
 			Integer dataSetId = biobj.getDataSetId();
 			if (dataSetId != null) {
-				SbiDataSet dataset = (SbiDataSet) session.load(SbiDataSet.class, dataSetId);
+				SbiDataSetConfig dataset = (SbiDataSetConfig) session.load(SbiDataSetConfig.class, dataSetId);
 				hibBIObj.setDataSet(dataset);
 			}
 			

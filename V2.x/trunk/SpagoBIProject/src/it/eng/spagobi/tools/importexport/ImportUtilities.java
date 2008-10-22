@@ -44,7 +44,7 @@ import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
@@ -283,9 +283,9 @@ public class ImportUtilities {
 	 * 
 	 * @return the sbi data set
 	 */
-	public static SbiDataSet makeNewSbiDataSet(SbiDataSet dataset){
+	public static SbiDataSetConfig makeNewSbiDataSet(SbiDataSetConfig dataset){
 	    logger.debug("IN");
-	    SbiDataSet newDataset = null;
+	    SbiDataSetConfig newDataset = null;
 	    
 		if (dataset instanceof SbiFileDataSet) {
 			newDataset = new SbiFileDataSet();
@@ -824,7 +824,7 @@ public class ImportUtilities {
 			SbiDataSource localDS = getAssociatedSbiDataSource(exportedObj, sessionCurrDB, metaAss);
 			if (localDS != null) obj.setDataSource(localDS);
 			// reading exist datasset
-			SbiDataSet localDataSet = getAssociatedSbiDataSet(exportedObj, sessionCurrDB, metaAss);
+			SbiDataSetConfig localDataSet = getAssociatedSbiDataSet(exportedObj, sessionCurrDB, metaAss);
 			if (localDataSet != null) obj.setDataSet(localDataSet);
 		} finally {
 			logger.debug("OUT");
@@ -858,14 +858,14 @@ public class ImportUtilities {
 
 	}
 
-	private static SbiDataSet getAssociatedSbiDataSet(
+	private static SbiDataSetConfig getAssociatedSbiDataSet(
 			SbiObjects exportedObj, Session sessionCurrDB,
 			MetadataAssociations metaAss) {
 		logger.debug("IN");
-		SbiDataSet expDataset = exportedObj.getDataSet();
+		SbiDataSetConfig expDataset = exportedObj.getDataSet();
 		if (expDataset != null) {
 			Integer existingDatasetId = (Integer) metaAss.getDataSetIDAssociation().get(new Integer(expDataset.getDsId()));
-			SbiDataSet localDS = (SbiDataSet) sessionCurrDB.load(SbiDataSet.class, existingDatasetId);
+			SbiDataSetConfig localDS = (SbiDataSetConfig) sessionCurrDB.load(SbiDataSetConfig.class, existingDatasetId);
 			logger.debug("OUT");
 			return localDS;
 		} else {
@@ -972,12 +972,12 @@ public class ImportUtilities {
 	 * @return the existing dataset modified as per the exported dataset in input
 	 * 
 	 * @throws EMFUserError 	 */
-	public static SbiDataSet modifyExistingSbiDataSet(SbiDataSet exportedDataset,
+	public static SbiDataSetConfig modifyExistingSbiDataSet(SbiDataSetConfig exportedDataset,
 			Session sessionCurrDB, Integer existingId) {
     	logger.debug("IN");
-    	SbiDataSet existingDataset = null;
+    	SbiDataSetConfig existingDataset = null;
     	try {
-    		existingDataset = (SbiDataSet) sessionCurrDB.load(SbiDataSet.class, existingId);
+    		existingDataset = (SbiDataSetConfig) sessionCurrDB.load(SbiDataSetConfig.class, existingId);
     		// TODO sistemare il cambio di subclass
     		if ((existingDataset instanceof SbiFileDataSet && !(exportedDataset instanceof SbiFileDataSet))
     			|| (existingDataset instanceof SbiQueryDataSet && !(exportedDataset instanceof SbiQueryDataSet))
@@ -1101,8 +1101,8 @@ public class ImportUtilities {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public static void associateWithExistingEntities(SbiDataSet dataset,
-			SbiDataSet exportedDataset, Session sessionCurrDB,
+	public static void associateWithExistingEntities(SbiDataSetConfig dataset,
+			SbiDataSetConfig exportedDataset, Session sessionCurrDB,
 			ImporterMetadata importer, MetadataAssociations metaAss) throws EMFUserError {
 		logger.debug("IN");
 		try {

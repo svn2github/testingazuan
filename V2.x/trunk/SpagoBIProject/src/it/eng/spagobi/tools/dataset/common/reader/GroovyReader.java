@@ -27,12 +27,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
 public class GroovyReader implements IDataReader {
 
+	private static transient Logger logger = Logger.getLogger(GroovyReader.class);
 	ScriptDataSet ds=null;
 
     public GroovyReader() {

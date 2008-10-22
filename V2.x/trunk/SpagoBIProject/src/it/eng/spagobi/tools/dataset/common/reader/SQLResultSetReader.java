@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
@@ -25,7 +27,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -44,6 +46,7 @@ import it.eng.spagobi.tools.datasource.bo.DataSource;
  */
 public class SQLResultSetReader implements IDataReader {
 
+	private static transient Logger logger = Logger.getLogger(SQLResultSetReader.class);
     IEngUserProfile profile=null;
     QueryDataSet ds=null;
 

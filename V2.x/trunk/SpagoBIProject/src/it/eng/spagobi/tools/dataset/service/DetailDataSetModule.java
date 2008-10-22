@@ -37,7 +37,7 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.security.ISecurityInfoProvider;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -150,7 +150,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 */   
 	private void getDataSet(SourceBean request, SourceBean response) throws EMFUserError {		
 		try {		 									
-			DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
+			DataSetConfig ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
 			prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_MOD, response);
 
 			if (request.getAttribute("SUBMESSAGEDET") != null &&
@@ -207,7 +207,7 @@ public class DetailDataSetModule extends AbstractModule {
 		String parametersXMLModified = (String) serviceRequest.getAttribute(DetailDataSetModule.DATASET_MODIFIED);
 		if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
-		DataSet	dsNew  = (DataSet) session.getAttribute(DetailDataSetModule.DATASET);
+		DataSetConfig	dsNew  = (DataSetConfig) session.getAttribute(DetailDataSetModule.DATASET);
 //		check if we are coming from the test
 		String returnFromTestMsg = (String) serviceRequest.getAttribute(DetailDataSetModule.RETURN_FROM_TEST_MSG);
 		boolean testCase=false;
@@ -334,7 +334,7 @@ public class DetailDataSetModule extends AbstractModule {
 				return;
 			}	 		
 			DAOFactory.getDataSetDAO().insertDataSet(dsNew);   //Insert DataSet
-			DataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
+			DataSetConfig tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
 			int t=tmpDS.getDsId();
 			dsNew.setDsId(t);
 			mod = SpagoBIConstants.DETAIL_MOD;
@@ -375,7 +375,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * 
 	 * @throws SourceBeanException the source bean exception
 	 */
-	public List getParametersToFill(DataSet ds) throws SourceBeanException{
+	public List getParametersToFill(DataSetConfig ds) throws SourceBeanException{
 		String parametersXML=ds.getParameters();
 		if(parametersXML!=null && !((parametersXML.trim()).equals(""))){
 			DataSetParametersList dsParam=new DataSetParametersList(parametersXML);
@@ -414,7 +414,7 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 
 			//delete the ds
-			DataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
+			DataSetConfig ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
 			DAOFactory.getDataSetDAO().eraseDataSet(ds);
 		}
 		catch (EMFUserError e){
@@ -446,9 +446,9 @@ public class DetailDataSetModule extends AbstractModule {
 
 		try {
 
-			DataSet ds = null;
+			DataSetConfig ds = null;
 			//response.setAttribute("modality", modalita);
-			ds = new DataSet();
+			ds = new DataSetConfig();
 			ds.setDsId(-1);
 			ds.setDescription("");
 			ds.setLabel("");
@@ -466,8 +466,8 @@ public class DetailDataSetModule extends AbstractModule {
 	}
 
 
-	private DataSet recoverDataSetDetails (SourceBean serviceRequest, String mod, DataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
-		DataSet ds  =null;
+	private DataSetConfig recoverDataSetDetails (SourceBean serviceRequest, String mod, DataSetConfig dsOld) throws EMFUserError, SourceBeanException, IOException  {
+		DataSetConfig ds  =null;
 		String typeds= (String)serviceRequest.getAttribute("typeDataSet");
 
 		
@@ -578,7 +578,7 @@ public class DetailDataSetModule extends AbstractModule {
 
 
 
-	private boolean doDatasetParameterItemTask(DataSet dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
+	private boolean doDatasetParameterItemTask(DataSetConfig dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
 		boolean changeItems = false;
 		// checks if it is requested to delete a Fix Lov item
 		Object indexOfDatasetParameterItemToDeleteObj = request.getAttribute("indexOfDatasetParameterItemToDelete");
@@ -704,7 +704,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * @param modVal	The ModalitiesValue to modify with the new entry
 	 * @throws SourceBeanException	If a SourceBean Exception occurred
 	 */
-	private DataSetParametersList addDatasetParameterItem (SourceBean request, DataSet dataset) throws SourceBeanException {
+	private DataSetParametersList addDatasetParameterItem (SourceBean request, DataSetConfig dataset) throws SourceBeanException {
 		String dsPars = dataset.getParameters();
 		DataSetParametersList dsDetList = null;
 		if ((dsPars==null) || (dsPars.trim().equals(""))) {
@@ -730,7 +730,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * @throws EMFInternalError 
 	 */
 
-	private void prepareDetailDatasetPage (DataSet dataset, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
+	private void prepareDetailDatasetPage (DataSetConfig dataset, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
 		response.setAttribute(DetailDataSetModule.DATASET, dataset);
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
@@ -777,8 +777,8 @@ public class DetailDataSetModule extends AbstractModule {
 
 	private void testDatasetAfterParameterFilling(SourceBean request, 	SourceBean response) throws EMFUserError, SourceBeanException  {
 		try {
-			DataSet ds = null;
-			ds = (DataSet) session.getAttribute(DetailDataSetModule.DATASET);
+			DataSetConfig ds = null;
+			ds = (DataSetConfig) session.getAttribute(DetailDataSetModule.DATASET);
 			List parametersFill = getParametersToFill(ds);
 			if(parametersFill.size()!=0) {
 				Map attributes = new HashMap();

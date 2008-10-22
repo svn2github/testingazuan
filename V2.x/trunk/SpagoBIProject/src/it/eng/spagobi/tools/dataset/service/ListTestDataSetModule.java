@@ -53,13 +53,19 @@ import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.common.DataSetImpl;
+import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.FileInputStream;
@@ -145,7 +151,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		SessionContainer session = requestContainer.getSessionContainer();
 
 
-		DataSet dataSet=(DataSet)session.getAttribute(DetailDataSetModule.DATASET);
+		DataSetConfig dataSet=(DataSetConfig)session.getAttribute(DetailDataSetModule.DATASET);
 
 		String typeDataset=getDataSetType(dataSet);
 		//String typeDataset=(String)request.getAttribute("typeDataset");
@@ -164,7 +170,33 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
+		
+		DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
+		DataSetImpl dsi = new DataSetImpl(dataSet,profile);
+		Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
+		HashMap parametersFilled=(HashMap)par;
+		dsi.loadData(parametersFilled);
+		IDataStore ids = dsi.getDataStore();
+		String resultXml = ids.toXml();
+		
+		rowsSourceBean=SourceBean.fromXMLString(resultXml);
+		//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
+		if(rowsSourceBean!=null){
+			List row =rowsSourceBean.getAttributeAsList("ROW");
+			if(row.size()>=1){
+				Iterator iterator = row.iterator(); 
+				SourceBean sb = (SourceBean) iterator.next();
+				List sbas=sb.getContainedAttributes();
+				for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+					String name=object.getKey();
+					colNames.add(name);
+				}
+				
+			}
+		}
 
+		/*
 		if(typeDataset.equals("1")) {
 			QueryDataSet queryDataSet=(QueryDataSet)dataSet;
 
@@ -206,6 +238,30 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 
 			}
 		} else if(typeDataset.equals("0")) {
+			DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
+			DataSetImpl dsi = new DataSetImpl(dataSet,profile);
+			Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
+			HashMap parametersFilled=(HashMap)par;
+			dsi.loadData(parametersFilled);
+			IDataStore ids = dsi.getDataStore();
+			String resultXml = ids.toXml();
+			
+			rowsSourceBean=SourceBean.fromXMLString(resultXml);
+			//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
+			if(rowsSourceBean!=null){
+				List row =rowsSourceBean.getAttributeAsList("ROW");
+				if(row.size()>=1){
+					Iterator iterator = row.iterator(); 
+					SourceBean sb = (SourceBean) iterator.next();
+					List sbas=sb.getContainedAttributes();
+					for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+						SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+						String name=object.getKey();
+						colNames.add(name);
+					}
+					
+				}
+			}
 
 			FileDataSet fileDataSet=(FileDataSet)dataSet;
 			String pathFile=fileDataSet.getFileName();
@@ -256,8 +312,8 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			ScriptDataSet scriptDataSet=(ScriptDataSet)dataSet;
 			String script = scriptDataSet.getScript();
 			String result = null;
-			/*HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
-			Binding bind = ScriptManager.fillBinding(attributes);*/
+			//HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
+			Binding bind = ScriptManager.fillBinding(attributes);
 			result = ScriptManager.runScript(script);
 			
 			// check if the result must be converted into the right xml sintax
@@ -292,7 +348,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				response.setAttribute("testExecuted", "false");
 				return list;
 			}
-		}
+		}*/
 		
 		// Build the list fill paginator
 		if(rowsSourceBean != null) {
@@ -349,7 +405,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 
 
 
-	private String getDataSetType(DataSet a){
+	private String getDataSetType(DataSetConfig a){
 		String type="";
 		if(a instanceof FileDataSet)type="0";
 		else 		

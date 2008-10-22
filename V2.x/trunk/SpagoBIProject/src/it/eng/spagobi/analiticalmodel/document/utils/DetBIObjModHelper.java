@@ -48,7 +48,7 @@ import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.ArrayList;
@@ -160,7 +160,7 @@ public class DetBIObjModHelper {
 		}
 		
 		String datasetIdStr = (String) request.getAttribute("dataset");
-		DataSet dataset  = null;
+		DataSetConfig dataset  = null;
 		if (datasetIdStr != null && !datasetIdStr.equals("")) {
 			Integer datasetIdInt = new Integer(datasetIdStr);
 			dataset = DAOFactory.getDataSetDAO().loadDataSetByID(datasetIdInt);

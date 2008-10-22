@@ -1,6 +1,6 @@
 package it.eng.spagobi.tools.dataset.metadata;
 
-public class SbiScriptDataSet extends SbiDataSet {
+public class SbiScriptDataSet extends SbiDataSetConfig {
 
 	 private String script =null;
 

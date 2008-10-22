@@ -26,13 +26,13 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.tools.dataset.bo.DataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
@@ -70,16 +70,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByID(java.lang.Integer)
 	 */
-	public DataSet loadDataSetByID(Integer dsID) throws EMFUserError {
+	public DataSetConfig loadDataSetByID(Integer dsID) throws EMFUserError {
 		logger.debug("IN");
-		DataSet toReturn = null;
+		DataSetConfig toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiDataSet hibDataSet = (SbiDataSet)aSession.load(SbiDataSet.class,  dsID);
+			SbiDataSetConfig hibDataSet = (SbiDataSetConfig)aSession.load(SbiDataSetConfig.class,  dsID);
 			toReturn = toDataSet(hibDataSet);
 			tx.commit();
 
@@ -112,18 +112,18 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByLabel(string)
 	 */	
-	public DataSet loadDataSetByLabel(String label) throws EMFUserError {
+	public DataSetConfig loadDataSetByLabel(String label) throws EMFUserError {
 		logger.debug("IN");
-		DataSet biDS = null;
+		DataSetConfig biDS = null;
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			Criterion labelCriterrion = Expression.eq("label", label);
-			Criteria criteria = tmpSession.createCriteria(SbiDataSet.class);
+			Criteria criteria = tmpSession.createCriteria(SbiDataSetConfig.class);
 			criteria.add(labelCriterrion);	
-			SbiDataSet hibDS = (SbiDataSet) criteria.uniqueResult();
+			SbiDataSetConfig hibDS = (SbiDataSetConfig) criteria.uniqueResult();
 			if (hibDS == null) return null;
 			biDS = toDataSet(hibDS);				
 
@@ -166,7 +166,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			Iterator it = hibList.iterator();
 
 			while (it.hasNext()) {
-				realResult.add(toDataSet((SbiDataSet) it.next()));
+				realResult.add(toDataSet((SbiDataSetConfig) it.next()));
 			}
 			tx.commit();
 		} catch (HibernateException he) {
@@ -193,9 +193,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#modifyDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#modifyDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
 	 */
-	public void modifyDataSet(DataSet aDataSet) throws EMFUserError {
+	public void modifyDataSet(DataSetConfig aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -204,7 +204,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			tx = aSession.beginTransaction();
 
 
-			SbiDataSet hibDataSet = (SbiDataSet) aSession.load(SbiDataSet.class,
+			SbiDataSetConfig hibDataSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
 					new Integer(aDataSet.getDsId()));			
 			
 			if(aDataSet instanceof FileDataSet){
@@ -282,16 +282,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#insertDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#insertDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
 	 */
-	public void insertDataSet(DataSet aDataSet) throws EMFUserError {
+	public void insertDataSet(DataSetConfig aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiDataSet hibDataSet =null;
+			SbiDataSetConfig hibDataSet =null;
 
 
 			if(aDataSet instanceof FileDataSet){
@@ -368,16 +368,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#eraseDataSet(it.eng.spagobi.tools.dataset.bo.DataSet)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#eraseDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
 	 */
-	public void eraseDataSet(DataSet aDataSet) throws EMFUserError {
+	public void eraseDataSet(DataSetConfig aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiDataSet hibDataSet = (SbiDataSet) aSession.load(SbiDataSet.class,
+			SbiDataSetConfig hibDataSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
 					new Integer(aDataSet.getDsId()));
 
 			aSession.delete(hibDataSet);
@@ -407,8 +407,8 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @return The corrispondent <code>DataSet</code> object
 	 */
-	public DataSet toDataSet(SbiDataSet hibDataSet){
-		DataSet ds = new DataSet();
+	public DataSetConfig toDataSet(SbiDataSetConfig hibDataSet){
+		DataSetConfig ds = new DataSetConfig();
 		if(hibDataSet instanceof SbiFileDataSet){
 			ds = new FileDataSet();
 			((FileDataSet)ds).setFileName(((SbiFileDataSet)hibDataSet).getFileName());

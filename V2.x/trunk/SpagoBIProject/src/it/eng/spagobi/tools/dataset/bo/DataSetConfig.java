@@ -19,19 +19,48 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.tools.dataset.metadata;
+package it.eng.spagobi.tools.dataset.bo;
+
+import org.apache.log4j.Logger;
+
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
 
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class SbiDataSet {
-	private int dsId;	
-	private String name=null;
+public class DataSetConfig {
+
+
+
+	private static transient Logger logger = Logger.getLogger(DataSetConfig.class);
+	private int dsId;
+    	private String name=null;
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
+
     	
+    	
+	/**
+	 * Gets the ds id.
+	 * 
+	 * @return the ds id
+	 */
+	public int getDsId() {
+			return dsId;
+		}
+		
+		/**
+		 * Sets the ds id.
+		 * 
+		 * @param dsId the new ds id
+		 */
+		public void setDsId(int dsId) {
+			this.dsId = dsId;
+		}
+	
 	/**
 	 * Gets the parameters.
 	 * 
@@ -105,21 +134,26 @@ public class SbiDataSet {
 	}
 	
 	/**
-	 * Gets the ds id.
+	 * Gets the data set result.
 	 * 
-	 * @return the ds id
-	 */
-	public int getDsId() {
-		return dsId;
-	}
-
-	/**
-	 * Sets the ds id.
+	 * @param profile the profile
 	 * 
-	 * @param dsId the new ds id
+	 * @return the data set result
+	 * 
+	 * @throws Exception the exception
 	 */
-	public void setDsId(int dsId) {
-		this.dsId = dsId;
+	public String getDataSetResult(IEngUserProfile profile) throws Exception
+	{
+		return null;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
     	
 }

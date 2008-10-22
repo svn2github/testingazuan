@@ -23,7 +23,7 @@ package it.eng.spagobi.analiticalmodel.document.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.*;
@@ -70,7 +70,7 @@ public class SbiObjects  implements java.io.Serializable {
      private Date creationDate=null;
      private String creationUser=null;
      private Integer refreshSeconds=null;     
-     private SbiDataSet dataSet=null;
+     private SbiDataSetConfig dataSet=null;
      
     // Constructors
 
@@ -622,7 +622,7 @@ public class SbiObjects  implements java.io.Serializable {
 	 * 
 	 * @return the data set
 	 */
-	public SbiDataSet getDataSet() {
+	public SbiDataSetConfig getDataSet() {
 	    return dataSet;
 	}
 
@@ -631,7 +631,7 @@ public class SbiObjects  implements java.io.Serializable {
 	 * 
 	 * @param dataSet the new data set
 	 */
-	public void setDataSet(SbiDataSet dataSet) {
+	public void setDataSet(SbiDataSetConfig dataSet) {
 	    this.dataSet = dataSet;
 	}
 

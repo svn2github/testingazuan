@@ -2,10 +2,12 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" table="SBI_DATA_SET" lazy="false">
+    <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" table="SBI_DATA_SET" lazy="false">
         <id name="dsId" type="int">
             <column name="DS_ID" />     
-             <generator class="identity"/>      
+            <generator class="native">
+           		<param name="sequence">sbi_data_set_seq</param>
+            </generator>     
         </id>
 		<discriminator column="OBJECT_TYPE" type="string"/>        
         <property name="name" type="string">
@@ -37,10 +39,13 @@
 	        <property name="adress" type="string">
 	            <column name="ADRESS" />
 	        </property>
+	        <property name="operation" type="string">
+	            <column name="OPERATION" />
+	        </property>	        
 	        <property name="executorClass" type="string">
 	            <column name="EXECUTOR_CLASS" />
 	        </property>	        
-		</subclass> 		
+		</subclass> 	
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet" discriminator-value="SbiScriptDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="script" type="string">
 	            <column name="SCRIPT" />

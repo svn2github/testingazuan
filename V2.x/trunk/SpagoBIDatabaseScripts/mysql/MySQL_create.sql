@@ -646,3 +646,197 @@ CREATE TABLE SBI_MENU_ROLE (
        EXT_ROLE_ID INTEGER NOT NULL,
        PRIMARY KEY (MENU_ID, EXT_ROLE_ID)
 )TYPE=INNODB;
+
+
+CREATE TABLE SBI_KPI_ROLE (
+	id_kpi_role INTEGER NOT NULL,
+	KPI_ID INTEGER NOT NULL,
+	EXT_ROLE_ID INTEGER NOT NULL,
+ PRIMARY KEY (id_kpi_role)
+ ) TYPE=INNODB;
+
+CREATE TABLE SBI_KPI (
+	KPI_ID INTEGER NOT NULL,
+	id_measure_unit INTEGER NOT NULL,
+	DS_ID Int NOT NULL,
+	id_kpi_parent INTEGER NOT NULL,
+	THRESHOLD_ID INTEGER NOT NULL,
+	name Varchar(120),
+	document_label Varchar(20),
+	code Varchar(20),
+	metric Varchar(20),
+	description Varchar(255),
+	standard_weight Double,
+	flg_is_father Char(1),
+ PRIMARY KEY (KPI_ID)
+) TYPE=INNODB;
+
+CREATE TABLE SBI_MEASURE_UNIT (
+	id_measure_unit INTEGER NOT NULL,
+	name Varchar(20),
+	SCALE_TYPE_ID INTEGER NOT NULL,
+	SCALE_CD Varchar(40),
+	SCALE_NM Varchar(400),
+ Primary Key (id_measure_unit)
+ ) TYPE=INNODB;
+
+CREATE TABLE SBI_THRESHOLD (
+	THRESHOLD_ID INTEGER NOT NULL,
+	THRESHOLD_TYPE_ID INTEGER NOT NULL,
+	name Varchar(127),
+	description Varchar(255),
+ Primary Key (THRESHOLD_ID)
+ ) TYPE=INNODB;
+
+Create table SBI_THRESHOLD_VALUE (
+	id_threshold_value INTEGER NOT NULL,
+	THRESHOLD_ID INTEGER NOT NULL,
+	SEVERITY_ID INTEGER,
+	min_value Double,
+	max_value Double,
+	label Varchar(20),
+	colour Varchar(20),
+ Primary Key (id_threshold_value)
+) TYPE=INNODB;
+
+Create table SBI_KPI_MODEL (
+	KPI_MODEL_ID INTEGER NOT NULL,
+	KPI_ID INTEGER NOT NULL,
+	KPI_MODEL_TYPE_ID INTEGER NOT NULL,
+	KPI_PARENT_MODEL_ID INTEGER NOT NULL,
+	KPI_MODEL_CD Varchar(40),
+	KPI_MODEL_NM Varchar(400),
+	KPI_MODELCATEGO_DESC Varchar(1000),
+ Primary Key (KPI_MODEL_ID)
+) TYPE=INNODB;
+
+Create table SBI_KPI_MODEL_ATTR (
+	KPI_MODEL_ATTR_ID INTEGER NOT NULL,
+	KPI_MODEL_ATTR_TYPE_ID INTEGER NOT NULL,
+	KPI_MODEL_ATTR_CD Varchar(40),
+	KPI_MODEL_ATTR_NM Varchar(400),
+	KPI_MODEL_ATTR_DESCR Varchar(1000),
+ Primary Key (KPI_MODEL_ATTR_ID)
+) TYPE=INNODB;
+
+Create table SBI_KPI_MODEL_ATTR_VAL (
+	KPI_MODEL_ATTR_VAL_ID INTEGER NOT NULL,
+	KPI_MODEL_ATTR_ID INTEGER NOT NULL,
+	KPI_MODEL_ID INTEGER NOT NULL,
+	ATTR_VALUE Varchar(2048),
+ Primary Key (KPI_MODEL_ATTR_VAL_ID)
+) TYPE=INNODB;
+
+Create table SBI_PERIODICITY (
+	id_periodicity INTEGER NOT NULL,
+	name Varchar(40),
+	unit Varchar(40),
+ Primary Key (id_periodicity)
+) TYPE=INNODB;
+
+Create table SBI_KPI_PERIODICITY (
+	id_kpi_instance_period INTEGER NOT NULL,
+	id_kpi_instance INTEGER NOT NULL,
+	id_periodicity INTEGER NOT NULL,
+	per_value Double,
+ Primary Key (id_kpi_instance_period)
+) TYPE=INNODB;
+
+Create table SBI_KPI_INSTANCE (
+	id_kpi_instance INTEGER NOT NULL,
+	KPI_ID INTEGER NOT NULL,
+	THRESHOLD_ID INTEGER NOT NULL,
+	id_measure_unit INTEGER NOT NULL,
+	weight Double,
+ Primary Key (id_kpi_instance)
+) TYPE=INNODB;
+
+Create table SBI_KPI_INSTANCE_HISTORY (
+	id_kpi_instance_history INTEGER NOT NULL,
+	id_measure_unit INTEGER NOT NULL,
+	THRESHOLD_ID INTEGER NOT NULL,
+	id_kpi_instance INTEGER NOT NULL,
+	weight Double,
+	instance_date TIMESTAMP,
+ Primary Key (id_kpi_instance_history)
+) TYPE=INNODB;
+
+Create table SBI_KPI_VALUE (
+	id_kpi_instance_value INTEGER NOT NULL,
+	id_kpi_instance INTEGER NOT NULL,
+	KPI_VALUE Varchar(40),
+	KPI_DATE Varchar(20),
+	id_document_meas_res Varchar(20),
+	BEGIN_DT TIMESTAMP,
+	END_DT TIMESTAMP,
+ Primary Key (id_kpi_instance_value)
+) TYPE=INNODB;
+
+Create table SBI_KPI_MODEL_INST (
+	KPI_MODEL_INST INTEGER NOT NULL,
+	KPI_MODEL_INST_PAR INTEGER NOT NULL,
+	id_kpi_instance INTEGER NOT NULL,
+	name Varchar(20),
+	description Varchar(20),
+ Primary Key (KPI_MODEL_INST)
+) TYPE=INNODB;
+
+Create table SBI_RESOURCES (
+	RESOURCE_ID INTEGER NOT NULL,
+	RESOURCE_TYPE_ID INTEGER NOT NULL,
+	TABLE_NAME Varchar(40),
+	COLUMN_NAME Varchar(40),
+	RESOURCE_NAME Varchar(40),
+ Primary Key (RESOURCE_ID)
+) TYPE=INNODB;
+
+
+Create table SBI_KPI_MODEL_RESOURCES (
+	KPI_MODEL_RESOURCES_ID INTEGER NOT NULL,
+	RESOURCE_ID INTEGER NOT NULL,
+	KPI_MODEL_INST INTEGER NOT NULL,
+ Primary Key (KPI_MODEL_RESOURCES_ID)
+) TYPE=INNODB;
+
+Create table SBI_ALARM (
+	ALARM_ID INTEGER NOT NULL,
+	id_kpi_instance INTEGER NOT NULL,
+	MODALITY_ID INTEGER NOT NULL ,
+	DOCUMENT_ID INTEGER ,
+	LABEL Varchar(50),
+	NAME Varchar(50),
+	DESCR Varchar(200),
+	TEXT Varchar(1000) ,
+	URL Varchar(20) ,
+	SINGLE_EVENT Char(1) ,
+ Primary Key (ALARM_ID)
+) TYPE=INNODB;
+
+
+Create table SBI_ALARM_EVENT (
+	ALARM_EVENT_ID INTEGER NOT NULL,
+	ALARM_ID INTEGER NOT NULL,
+	EVENT_TS TIMESTAMP ,
+	ACTIVE Char(1),
+	KPI_VALUE Varchar(50) ,
+	THRESHOLD_VALUE Varchar(50),
+	KPI_NAME Varchar(100),
+	RESOURCES Varchar(200),
+ Primary Key (ALARM_EVENT_ID)
+) TYPE=INNODB;
+
+Create table SBI_ALARM_CONTACT (
+	ALARM_CONTACT_ID INTEGER NOT NULL,
+	NAME Varchar(100) NOT NULL,
+	EMAIL Varchar(100),
+	MOBILE Varchar(50),
+	RESOURCES Varchar(200),
+ Primary Key (ALARM_CONTACT_ID)
+) TYPE=INNODB;
+
+Create table SBI_ALARM_DISTRIBUTION (
+	ALARM_CONTACT_ID INTEGER NOT NULL,
+	ALARM_ID INTEGER NOT NULL,
+ Primary Key (ALARM_CONTACT_ID,ALARM_ID)
+) TYPE=INNODB;
+

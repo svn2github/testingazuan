@@ -53,8 +53,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 
 
-<%@page import="it.eng.spagobi.tools.dataset.bo.DataSet"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.DataSetConfig"%>
 <%@page import="it.eng.spagobi.tools.dataset.dao.IDataSetDAO"%>
 <%@page import="it.eng.spagobi.security.SecurityInfoProviderFactory"%>
 <%@page import="it.eng.spagobi.security.ISecurityInfoProvider"%>
@@ -475,7 +474,7 @@ function saveDocument(goBack) {
 			if(obj.getDataSetId()!=null){
 				 currDataSetId=obj.getDataSetId();
 				 currDataSetIdValue=currDataSetId.toString();
-				 DataSet dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(currDataSetId); 
+				 DataSetConfig dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(currDataSetId); 
 				 if(dataSet!=null){	
 				 	currDataSetLabel=dataSet.getLabel();
 						}

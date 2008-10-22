@@ -66,7 +66,7 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingmysql/SbiRememberMe.hbm.xml" />
         
-        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSet.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSetConfig.hbm.xml" />
         
          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenu.hbm.xml" />
@@ -74,7 +74,7 @@
         
         
         <class-cache class="it.eng.spagobi.commons.metadata.SbiExtRoles" usage="read-only"/>
-        <class-cache class="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" usage="nonstrict-read-write"/>
+        <class-cache class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" usage="nonstrict-read-write"/>
         <class-cache class="it.eng.spagobi.tools.datasource.metadata.SbiDataSource" usage="nonstrict-read-write"/>
         <class-cache class="it.eng.spagobi.commons.metadata.SbiDomains" usage="read-only"/>
 		<class-cache class="it.eng.spagobi.commons.metadata.SbiUserFunctionality" usage="read-only"/> 

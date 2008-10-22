@@ -64,7 +64,7 @@
 
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappinghsqldb/SbiRememberMe.hbm.xml" />
-         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappinghsqldb/SbiDataSet.hbm.xml" />
+         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappinghsqldb/SbiDataSetConfig.hbm.xml" />
          
          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappinghsqldb/SbiMenu.hbm.xml" />

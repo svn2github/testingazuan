@@ -36,10 +36,7 @@ public class WsConnector implements IWsConnector {
      * @see it.eng.spagobi.tools.dataset.wsconnectors.IWsConnector#readDataSet(java.lang.String, java.util.HashMap, java.lang.String)
      */
     public String readDataSet(String adress, HashMap params, String operation) {
-	DataSetWsServiceProxy proxy=new DataSetWsServiceProxy(adress);
-	
-	
-	return proxy.readData(params, operation);
+return null;
     }
 
 }

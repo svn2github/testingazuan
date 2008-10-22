@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 
 /**
  * @author Angelo Bernabei
@@ -37,7 +38,12 @@ public class DataSet {
     	private String label=null;
     	private String parameters=null;
 
-    	
+    	public static DataSet createDataSet(SpagoBiDataSet ds){
+    	    // a seconda del campo type costruisce l'oggetto corretto
+    	    // figlio di DataSet
+    	    return null;
+    	    
+    	}
     	
 	/**
 	 * Gets the ds id.

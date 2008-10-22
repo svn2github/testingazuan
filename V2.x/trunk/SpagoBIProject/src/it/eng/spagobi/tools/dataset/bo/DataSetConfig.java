@@ -24,6 +24,7 @@ package it.eng.spagobi.tools.dataset.bo;
 import org.apache.log4j.Logger;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
 
 /**
@@ -40,7 +41,13 @@ public class DataSetConfig {
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
-
+    	public static DataSet createDataSet(SpagoBiDataSet ds){
+    	    // a seconda del campo type costruisce l'oggetto corretto
+    	    // figlio di DataSet
+    	    return null;
+    	    
+    	}
+    	
     	
     	
 	/**

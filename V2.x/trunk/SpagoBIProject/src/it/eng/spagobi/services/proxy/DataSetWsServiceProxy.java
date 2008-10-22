@@ -23,6 +23,7 @@ package it.eng.spagobi.services.proxy;
 
 import it.eng.spagobi.services.dataset.stub.DataSetWsInterfaceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.tools.dataset.bo.DataSet;
 
 import java.net.URL;
 
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger;
  *         angelo.bernabei@eng.it 
  * 
  */
-public final class DataSetWsServiceProxy {
+public final class DataSetWsServiceProxy extends AbstractServiceProxy{
 
     static private Logger logger = Logger.getLogger(DataSetWsServiceProxy.class);
 
@@ -79,10 +80,10 @@ public final class DataSetWsServiceProxy {
      * 
      * @return String data
      */
-    public String readData(java.util.HashMap parameters, java.lang.String operation) {
+    public DataSet getDataSetByLabel(String label) {
 	logger.debug("IN");
 	try {
-	    return lookUp().readData(parameters, operation);
+	    return DataSet.createDataSet(lookUp().getDataSetByLabel(readTicket(), userId,label));
 	} catch (Exception e) {
 	    logger.error("Error during service execution", e);
 

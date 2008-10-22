@@ -78,6 +78,7 @@ public class DataStoreImpl implements IDataStore {
 
     public String toXml() {
     	
+    	logger.debug("IN");
     	String xml = "";
     	xml += "<ROWS>";
 		Iterator i = records.iterator();
@@ -99,6 +100,7 @@ public class DataStoreImpl implements IDataStore {
 		}
 		xml += "</ROWS>";
 
+		logger.debug("OUT");
 	return xml;
     }
 

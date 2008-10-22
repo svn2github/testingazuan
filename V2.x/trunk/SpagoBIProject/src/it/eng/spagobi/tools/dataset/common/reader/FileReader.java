@@ -14,6 +14,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.tools.dataset.service.ListTestDataSetModule;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
 /**
@@ -30,6 +32,7 @@ import org.xml.sax.InputSource;
  */
 public class FileReader implements IDataReader {
 	
+	private static transient Logger logger = Logger.getLogger(FileReader.class);
 	FileDataSet ds = null;
 
     public FileReader() {
@@ -56,6 +59,8 @@ public class FileReader implements IDataReader {
 
 	public IDataStore read(HashMap parameters) {
 
+		logger.debug("IN");
+		
 		IDataStore ids = (IDataStore)new DataStoreImpl();
 		FileInputStream fis = null;
 		String fileName = ds.getFileName();
@@ -63,7 +68,8 @@ public class FileReader implements IDataReader {
 			fis = new FileInputStream(fileName);
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			logger.error("Exception during File Opening");
 		}
 		try{
 		InputSource inputSource=new InputSource(fis);
@@ -81,6 +87,7 @@ public class FileReader implements IDataReader {
 					while(iterator.hasNext()){
 											
 					SourceBean sb = (SourceBean) iterator.next();
+					//For each row I instanciate an IRecord
 					IRecord r = (IRecord)new Record();
 					
 					List sbas=sb.getContainedAttributes();
@@ -90,6 +97,7 @@ public class FileReader implements IDataReader {
 						String fieldName=object.getKey();
 						IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
 						fMeta.setName(fieldName);
+						//Each Record is made out of different IFields with a value and metadata
 						IField f = (IField)new Field(fMeta,object);
 						r.appendField(f);
 					}
@@ -100,17 +108,19 @@ public class FileReader implements IDataReader {
 		}
 
 		catch (Exception e) {
-			//return null;
+			e.printStackTrace();
+			logger.error("Exception reading File data");
 		}
 		finally{
 			if(fis!=null)
 				try {
 					fis.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					logger.error("IOException during File Closure");
 				}
 		}
+		logger.debug("OUT");
 	return ids;
     }
 

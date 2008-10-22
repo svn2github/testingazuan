@@ -81,6 +81,7 @@ public class SQLResultSetReader implements IDataReader {
 
 	public IDataStore read(HashMap parameters) {
 		
+		logger.debug("IN");
 		IDataStore ids = (IDataStore)new DataStoreImpl();
 		DataSource dataSource=ds.getDataSource();
 		String datasource=null;
@@ -111,6 +112,7 @@ public class SQLResultSetReader implements IDataReader {
 						while(iterator.hasNext()){
 												
 						SourceBean sb = (SourceBean) iterator.next();
+						//For each row I instanciate an IRecord
 						IRecord r = (IRecord)new Record();
 						
 						List sbas=sb.getContainedAttributes();
@@ -120,6 +122,7 @@ public class SQLResultSetReader implements IDataReader {
 							String fieldName=object.getKey();
 							IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
 							fMeta.setName(fieldName);
+							//Each Record is made out of different IFields with a value and metadata
 							IField f = (IField)new Field(fMeta,object);
 							r.appendField(f);
 						}
@@ -128,14 +131,16 @@ public class SQLResultSetReader implements IDataReader {
 					}
 				}
 			}catch (Exception e) {
-
+				e.printStackTrace();
+				logger.debug("Exception during Query result reading");
 			}
-
+			logger.debug("OUT");
 	return ids;
     }
 
 	public static Object executeSelect(String datasource, String statement, List columnsNames) throws EMFInternalError {
 		
+		logger.debug("IN");
 		Object result = null;
 
 		DataConnection dataConnection = null;
@@ -156,7 +161,9 @@ public class SQLResultSetReader implements IDataReader {
 		} finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		}
+		logger.debug("OUT");
 		return result;
+		
 	}
 
 

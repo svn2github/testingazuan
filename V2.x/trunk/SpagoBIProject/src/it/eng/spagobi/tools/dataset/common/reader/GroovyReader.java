@@ -50,6 +50,7 @@ public class GroovyReader implements IDataReader {
 
 	public IDataStore read(HashMap parameters) {
 		
+		logger.debug("IN");
 		IDataStore ids = (IDataStore)new DataStoreImpl();
     	
 		String script = ds.getScript();
@@ -76,6 +77,7 @@ public class GroovyReader implements IDataReader {
 				while(iterator.hasNext()){
 										
 				SourceBean sb = (SourceBean) iterator.next();
+				//For each row I instanciate an IRecord
 				IRecord r = (IRecord)new Record();
 				
 				List sbas=sb.getContainedAttributes();
@@ -85,6 +87,7 @@ public class GroovyReader implements IDataReader {
 					String fieldName=object.getKey();
 					IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
 					fMeta.setName(fieldName);
+					//Each Record is made out of different IFields with a value and metadata
 					IField f = (IField)new Field(fMeta,object);
 					r.appendField(f);
 				}
@@ -93,18 +96,19 @@ public class GroovyReader implements IDataReader {
 			}
 		}
 		} catch (SourceBeanException e) {
-			// TODO Auto-generated catch block
+			logger.error("SourceBeanException",e);
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			logger.error("Exception",e);
 			e.printStackTrace();
 		}
-
+		logger.debug("OUT");
 	return ids;
     }
     
     private boolean checkSintax(String result) {
 		
+    	logger.debug("IN");
 		List visibleColumnNames = null;
 		String valueColumnName = "";
 		String descriptionColumnName = "";
@@ -163,15 +167,18 @@ public class GroovyReader implements IDataReader {
 			}
 			
 		} catch (Exception e) {
-			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					              "checkSintax", "the result of the lov is not formatted " +
-					              "with the right structure so it will be wrapped inside an xml envelope");
+			e.printStackTrace();
+			logger.error("the result of the dataset is not formatted with the right structure so it will be wrapped inside an xml envelope",e);
 			toconvert = true;
 		}
+		logger.debug("OUT");
 		return toconvert;
 	}
 	
 	private String convertResult(String result) {
+		
+		logger.debug("IN");
+		
 		List visibleColumnNames = null;
 		String valueColumnName = "";
 		String descriptionColumnName = "";
@@ -183,6 +190,8 @@ public class GroovyReader implements IDataReader {
 		valueColumnName = "VALUE";
 		String [] visibleColumnNamesArray = new String [] {"VALUE"};
 		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
+		
+		logger.debug("OUT");
 		return sb.toString();
 	}
 

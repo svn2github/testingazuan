@@ -48,6 +48,7 @@ public class ClassReader implements IDataReader {
 
 	public IDataStore read(HashMap parameters) {
     	
+		logger.debug("IN");
     	IDataStore ids = (IDataStore)new DataStoreImpl();
     	
 		String javaClassName = ds.getJavaClassName();
@@ -75,6 +76,7 @@ public class ClassReader implements IDataReader {
     				while(iterator.hasNext()){
     										
     				SourceBean sb = (SourceBean) iterator.next();
+    				//For each row I instanciate an IRecord
     				IRecord r = (IRecord)new Record();
     				
     				List sbas=sb.getContainedAttributes();
@@ -84,6 +86,7 @@ public class ClassReader implements IDataReader {
     					String fieldName=object.getKey();
     					IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
     					fMeta.setName(fieldName);
+    					//Each Record is made out of different IFields with a value and metadata
     					IField f = (IField)new Field(fMeta,object);
     					r.appendField(f);
     				}
@@ -93,9 +96,10 @@ public class ClassReader implements IDataReader {
     		}
     		
 		} catch (Exception e) {
-			String stacktrace = e.toString();
+			e.printStackTrace();
+			logger.error("Exception reading JavaClass data");
 		}
-
+		logger.debug("OUT");
 	return ids;
     }
 

@@ -42,6 +42,7 @@ public class DataSetConfig {
     	private String label=null;
     	private String parameters=null;
     	public static DataSetConfig createDataSet(SpagoBiDataSet ds){
+    		
     	    // a seconda del campo type costruisce l'oggetto corretto
     	    // figlio di DataSet
     	    return null;
@@ -154,13 +155,5 @@ public class DataSetConfig {
 		return null;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-    	
+   	
 }

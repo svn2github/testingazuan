@@ -45,6 +45,8 @@ public class DataSetWsImpl {
      * @return SpagoBiDataSet
      */
     SpagoBiDataSet getDataSetByLabel(String token,String user,String label){
+    	//prend datasetconfig e trasf in SpagoBIdataset
+    	//poi nel proxy trasformarlo
 	return null;
     }
     /**

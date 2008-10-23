@@ -424,7 +424,7 @@ public class ImporterMetadata {
 	    return hibObjParUse;
 	} else if (hibObj instanceof SbiDataSetConfig) {
 	    String label = (String) unique;
-	    hql = "from SbiDataSet ds where ds.label = '" + label + "'";
+	    hql = "from SbiDataSetConfig ds where ds.label = '" + label + "'";
 	    hqlQuery = sessionCurrDB.createQuery(hql);
 	    SbiDataSetConfig hibDs = (SbiDataSetConfig) hqlQuery.uniqueResult();
 	    return hibDs;

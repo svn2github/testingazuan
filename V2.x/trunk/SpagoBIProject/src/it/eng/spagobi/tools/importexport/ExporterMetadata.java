@@ -201,7 +201,7 @@ public class ExporterMetadata {
 			}
 			
 			Transaction tx = session.beginTransaction();
-			Query hibQuery = session.createQuery(" from SbiDataSet where dsId = " + dataset.getDsId());
+			Query hibQuery = session.createQuery(" from SbiDataSetConfig where dsId = " + dataset.getDsId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
 				return;

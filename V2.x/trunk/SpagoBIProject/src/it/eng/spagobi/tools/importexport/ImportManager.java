@@ -644,7 +644,7 @@ public class ImportManager implements IImportManager, Serializable {
     	logger.debug("IN");
     	SbiDataSetConfig exportedDataSet = null;
 		try {
-		    List exportedDatasets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
+		    List exportedDatasets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSetConfig", null);
 		    Iterator iterSbiDataSet = exportedDatasets.iterator();
 
 		    while (iterSbiDataSet.hasNext()) {
@@ -2048,7 +2048,7 @@ public class ImportManager implements IImportManager, Serializable {
 				+ "the same label of one exported data source");
 	    }
 	}
-	List exportedDataset = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSet", null);
+	List exportedDataset = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSetConfig", null);
 	Iterator iterSbiDataset = exportedDataset.iterator();
 	while (iterSbiDataset.hasNext()) {
 		SbiDataSetConfig dsExp = (SbiDataSetConfig) iterSbiDataset.next();

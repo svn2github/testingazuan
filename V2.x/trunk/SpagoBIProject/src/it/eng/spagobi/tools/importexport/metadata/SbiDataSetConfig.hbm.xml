@@ -19,12 +19,12 @@
         <property name="parameters" type="string">
             <column name="PARAMS" />
         </property>   
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />
 	        </property>
 		</subclass>   
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet" discriminator-value="SbiQueryDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet" discriminator-value="SbiQueryDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >
 	        <property name="query" type="string">
 	            <column name="QUERY" />
 	        </property>
@@ -32,7 +32,7 @@
 	            <column name="DATA_SOURCE_ID" not-null="false" />
 	        </many-to-one>	        
 		</subclass> 
-		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet" discriminator-value="SbiWSDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
+		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet" discriminator-value="SbiWSDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >
 	        <property name="adress" type="string">
 	            <column name="ADRESS" />
 	        </property>

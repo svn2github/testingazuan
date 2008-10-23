@@ -160,7 +160,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			Query hibQuery = aSession.createQuery(" from SbiDataSet");
+			Query hibQuery = aSession.createQuery(" from SbiDataSetConfig");
 
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();

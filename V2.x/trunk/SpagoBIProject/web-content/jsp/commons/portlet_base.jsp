@@ -42,6 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.container.SpagoBISessionContainer"%>
 <%@page import="it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
@@ -110,6 +111,9 @@ String getUrl(String baseUrl, Map mapPars) {
 		locale = request.getLocale();
 	}
 	
+    // = (String)sessionContainer.getAttribute(Constants.USER_LANGUAGE);
+    //country = (String)sessionContainer.getAttribute(Constants.USER_COUNTRY);
+	
 	// create url builder 
 	urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
 
@@ -120,6 +124,7 @@ String getUrl(String baseUrl, Map mapPars) {
 	SourceBean aServiceRequest = aRequestContainer.getServiceRequest();
 	SourceBean aServiceResponse = aResponseContainer.getServiceResponse();
 	aSessionContainer = aRequestContainer.getSessionContainer();
+	
 	
 	//get session access control object
 	ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(aSessionContainer), 
@@ -134,6 +139,12 @@ String getUrl(String baseUrl, Map mapPars) {
 	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
 
 	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	// updates locale information on permanent container for Spago messages mechanism
+	if (locale != null) {
+		permanentSession.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+		permanentSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+	}
+	
 	IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	String userId="";
 	if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
@@ -142,7 +153,7 @@ String getUrl(String baseUrl, Map mapPars) {
 
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
-<html lang="<%=locale.getLanguage()%>">
+<html lang="<%=locale != null ? locale.getLanguage() : GeneralUtilities.getDefaultLocale().getLanguage()%>">
 <body>
 <%} %>
 

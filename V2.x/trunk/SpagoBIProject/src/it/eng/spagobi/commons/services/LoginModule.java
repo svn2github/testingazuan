@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.services;
 
+import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -49,11 +50,11 @@ import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.bo.Menu;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -150,6 +151,12 @@ public class LoginModule extends AbstractHttpModule {
 	            profile=new UserProfile(user);
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	    		// updates locale information on permanent container for Spago messages mechanism
+	    		Locale locale = this.getHttpRequest().getLocale();
+	    		if (locale != null) {
+	    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+	    		}
 	        } catch (Exception e) {
 	            logger.error("Reading user information... ERROR",e);
 	            throw new SecurityException();

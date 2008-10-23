@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.services;
 
+import it.eng.spago.base.Constants;
+import it.eng.spago.base.PortletAccess;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -41,6 +43,7 @@ import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.security.Principal;
+import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 
@@ -89,7 +92,12 @@ public class PortletLoginModule extends AbstractModule {
 		SessionContainer sessionCont = reqCont.getSessionContainer();
 		SessionContainer permSession = sessionCont.getPermanentContainer();
 		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-		
+		// updates locale information on permanent container for Spago messages mechanism
+		Locale locale = PortletAccess.getPortalLocale();
+		if (locale != null) {
+			permSession.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+			permSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+		}
 		
 		String username = (String)profile.getUserUniqueIdentifier();
 		if(!UserUtilities.userFunctionalityRootExists(username)) {

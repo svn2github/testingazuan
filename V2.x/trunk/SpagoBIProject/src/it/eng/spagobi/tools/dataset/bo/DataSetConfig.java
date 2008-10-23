@@ -23,6 +23,8 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
@@ -52,11 +54,60 @@ public class DataSetConfig {
 		public static DataSetConfig createDataSet(SpagoBiDataSet ds){
     		
 			
-    	    // a seconda del campo type costruisce l'oggetto corretto
-    	    // figlio di DataSet
-    	    return null;
-    	    
+			String type= ds.getType();
+			if (type.equals("SbiScriptDataSet")){
+				ScriptDataSet dsc = new ScriptDataSet();
+				dsc.setDescription(ds.getDescription());
+				dsc.setLabel(ds.getLabel());
+				dsc.setName(ds.getName());
+				dsc.setParameters(ds.getParameters());
+				dsc.setScript(ds.getScript());				
+				
+			}else if (type.equals("SbiQueryDataSet")){
+				
+				QueryDataSet dsc = new QueryDataSet();
+				dsc.setDescription(ds.getDescription());
+				dsc.setLabel(ds.getLabel());
+				dsc.setName(ds.getName());
+				dsc.setParameters(ds.getParameters());
+				dsc.setQuery(ds.getQuery());
+				return dsc;
+				
+			}else if (type.equals("SbiJClassDataSet")){
+				
+				JClassDataSet dsc = new JClassDataSet();
+				dsc.setDescription(ds.getDescription());
+				dsc.setLabel(ds.getLabel());
+				dsc.setName(ds.getName());
+				dsc.setParameters(ds.getParameters());
+				ds.setJavaClassName(ds.getJavaClassName());
+				return dsc;
+				
+			}else if (type.equals("SbiWSDataSet")){
+				
+				WSDataSet dsc = new WSDataSet();
+				dsc.setDescription(ds.getDescription());
+				dsc.setLabel(ds.getLabel());
+				dsc.setName(ds.getName());
+				dsc.setParameters(ds.getParameters());
+				dsc.setOperation(ds.getOperation());
+				dsc.setExecutorClass(ds.getExecutorClass());
+				return dsc;
+				
+			}else if (type.equals("SbiFileDataSet")){
+				
+				FileDataSet dsc = new FileDataSet();
+				dsc.setDescription(ds.getDescription());
+				dsc.setLabel(ds.getLabel());
+				dsc.setName(ds.getName());
+				dsc.setParameters(ds.getParameters());
+				dsc.setFileName(ds.getFileName());
+				return dsc;
+			}
+			return null;  	        	    
     	}
+		
+		
     	public SpagoBiDataSet toSpagoBiDataSet(){
     		return null;
     	}

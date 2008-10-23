@@ -21,7 +21,7 @@ public class DataSetProxyFactory implements IDataSetProxyFactory {
 
 	public IDataSetProxy crateDataSetProxy(IEngUserProfile profile) {
 		// TODO Auto-generated method stub
-		return null;
+		return new DataSetProxyImpl(profile);
 	}
     
 

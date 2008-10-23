@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.bo;
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
@@ -102,6 +104,20 @@ public class WSDataSet extends DataSetConfig {
 	 */
 	public void setOperation(String operation) {
 	    this.operation = operation;
+	}
+
+	@Override
+	public SpagoBiDataSet toSpagoBiDataSet() {
+		SpagoBiDataSet sbd = new SpagoBiDataSet();
+		sbd.setLabel(getLabel());
+		sbd.setName(getName());
+		sbd.setParameters(getParameters());
+		sbd.setDescription(getDescription());
+		sbd.setType("SbiWSDataSet");
+		sbd.setAdress(adress);
+		sbd.setOperation(operation);
+		sbd.setExecutorClass(executorClass);
+		return sbd;
 	}
 	
     

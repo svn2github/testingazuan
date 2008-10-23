@@ -33,6 +33,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.sql.Connection;
@@ -191,6 +192,19 @@ public class QueryDataSet extends DataSetConfig {
 		}
 		logger.debug("OUT");
 		return result;
+	}
+
+	@Override
+	public SpagoBiDataSet toSpagoBiDataSet() {
+		SpagoBiDataSet sbd = new SpagoBiDataSet();
+		sbd.setQuery(query);
+		sbd.setLabel(getLabel());
+		sbd.setName(getName());
+		sbd.setParameters(getParameters());
+		sbd.setDescription(getDescription());
+		sbd.setType("SbiQueryDataSet");
+		sbd.setDataSource(dataSource.toSpagoBiDataSource());
+		return sbd;
 	}
 
 	

@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.proxy;
 
-import it.eng.spagobi.services.content.stub.ContentServiceServiceLocator;
+
 import it.eng.spagobi.services.dataset.stub.DataSetWsInterfaceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 
-import java.net.URL;
+
 
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;

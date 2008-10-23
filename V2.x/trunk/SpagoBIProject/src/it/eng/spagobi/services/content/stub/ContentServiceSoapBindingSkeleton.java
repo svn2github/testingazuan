@@ -34,6 +34,7 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"), java.util.HashMap.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("readTemplate", _params, new javax.xml.namespace.QName("", "readTemplateReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://bo.content.services.spagobi.eng.it", "Content"));
@@ -147,9 +148,9 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
     public ContentServiceSoapBindingSkeleton(it.eng.spagobi.services.content.stub.ContentService impl) {
         this.impl = impl;
     }
-    public it.eng.spagobi.services.content.bo.Content readTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public it.eng.spagobi.services.content.bo.Content readTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.util.HashMap in3) throws java.rmi.RemoteException
     {
-        it.eng.spagobi.services.content.bo.Content ret = impl.readTemplate(in0, in1, in2);
+        it.eng.spagobi.services.content.bo.Content ret = impl.readTemplate(in0, in1, in2, in3);
         return ret;
     }
 

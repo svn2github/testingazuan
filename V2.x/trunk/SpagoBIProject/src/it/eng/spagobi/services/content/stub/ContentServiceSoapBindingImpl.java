@@ -12,9 +12,9 @@ import it.eng.spagobi.services.content.service.MapCatalogueImpl;
 import it.eng.spagobi.services.content.service.PublishImpl;
 
 public class ContentServiceSoapBindingImpl implements it.eng.spagobi.services.content.stub.ContentService{
-    public it.eng.spagobi.services.content.bo.Content readTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    public it.eng.spagobi.services.content.bo.Content readTemplate(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.util.HashMap in3) throws java.rmi.RemoteException {
 	ContentServiceImpl service=new ContentServiceImpl();
-	return service.readTemplate(in0, in1, in2);
+	return service.readTemplate(in0, in1, in2,in3);
     }
     public it.eng.spagobi.services.content.bo.Content readSubObjectContent(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
 	ContentServiceImpl service=new ContentServiceImpl();

@@ -81,14 +81,14 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * 
      * @return Content
      */
-    public Content readTemplate(String document) {
+    public Content readTemplate(String document,HashMap attributes) {
 	logger.debug("IN.document="+document);
 	if (document==null || document.length()==0){
 	    logger.error("Documenti ID is NULL");
 	    return null;
 	}
 	try {
-	    return lookUp().readTemplate(readTicket(), userId, document);
+	    return lookUp().readTemplate(readTicket(), userId, document,attributes);
 	} catch (Exception e) {
 	    logger.error("Error during service execution",e);
 

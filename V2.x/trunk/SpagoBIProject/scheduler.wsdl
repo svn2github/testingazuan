@@ -3,47 +3,9 @@
 <!--WSDL created by Apache Axis version: 1.3
 Built on Oct 05, 2005 (05:23:37 EDT)-->
 
-   <wsdl:message name="getJobSchedulationDefinitionResponse">
+   <wsdl:message name="existJobDefinitionResponse">
 
-      <wsdl:part name="getJobSchedulationDefinitionReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="scheduleJobRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="defineJobRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="scheduleJobResponse">
-
-      <wsdl:part name="scheduleJobReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getJobListResponse">
-
-      <wsdl:part name="getJobListReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getJobDefinitionResponse">
-
-      <wsdl:part name="getJobDefinitionReturn" type="soapenc:string"/>
+      <wsdl:part name="existJobDefinitionReturn" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -59,15 +21,15 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getJobSchedulationListRequest">
+   <wsdl:message name="deleteJobResponse">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="deleteJobReturn" type="soapenc:string"/>
 
-      <wsdl:part name="in1" type="soapenc:string"/>
+   </wsdl:message>
 
-      <wsdl:part name="in2" type="soapenc:string"/>
+   <wsdl:message name="defineJobResponse">
 
-      <wsdl:part name="in3" type="soapenc:string"/>
+      <wsdl:part name="defineJobReturn" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -83,7 +45,19 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getJobSchedulationDefinitionRequest">
+   <wsdl:message name="scheduleJobResponse">
+
+      <wsdl:part name="scheduleJobReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobListResponse">
+
+      <wsdl:part name="getJobListReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobSchedulationListRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
@@ -107,27 +81,19 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="existJobDefinitionResponse">
+   <wsdl:message name="getJobSchedulationDefinitionResponse">
 
-      <wsdl:part name="existJobDefinitionReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getJobSchedulationListResponse">
-
-      <wsdl:part name="getJobSchedulationListReturn" type="soapenc:string"/>
+      <wsdl:part name="getJobSchedulationDefinitionReturn" type="soapenc:string"/>
 
    </wsdl:message>
 
-   <wsdl:message name="defineJobResponse">
+   <wsdl:message name="scheduleJobRequest">
 
-      <wsdl:part name="defineJobReturn" type="soapenc:string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
 
-   </wsdl:message>
+      <wsdl:part name="in1" type="soapenc:string"/>
 
-   <wsdl:message name="deleteJobResponse">
-
-      <wsdl:part name="deleteJobReturn" type="soapenc:string"/>
+      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -139,7 +105,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getJobDefinitionRequest">
+   <wsdl:message name="getJobSchedulationDefinitionRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
@@ -154,6 +120,40 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    <wsdl:message name="deleteSchedulationResponse">
 
       <wsdl:part name="deleteSchedulationReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="defineJobRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobDefinitionResponse">
+
+      <wsdl:part name="getJobDefinitionReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobSchedulationListResponse">
+
+      <wsdl:part name="getJobSchedulationListReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobDefinitionRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
 
    </wsdl:message>
 

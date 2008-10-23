@@ -23,6 +23,7 @@ package it.eng.spagobi.services.content.service;
 
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import it.eng.spago.error.EMFInternalError;
@@ -71,7 +72,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
      * 
      * @return the content
      */
-    public Content readTemplate(String token, String user, String document) {
+    public Content readTemplate(String token, String user, String document,HashMap attributes) {
 
 	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
         logger.debug("IN");

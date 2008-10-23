@@ -15,7 +15,7 @@
   <service name="SecurityService" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:spagobisecurity"/>
       <parameter name="wsdlServiceElement" value="SecurityServiceService"/>
-      <parameter name="schemaUnqualified" value="urn:spagobisecurity,http://xml.apache.org/xml-soap,http://bo.security.services.spagobi.eng.it"/>
+      <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap,http://bo.security.services.spagobi.eng.it,urn:spagobisecurity"/>
       <parameter name="wsdlServicePort" value="SecurityService"/>
       <parameter name="className" value="it.eng.spagobi.services.security.stub.SecurityServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="SecurityService"/>
@@ -23,19 +23,19 @@
       <parameter name="allowedMethods" value="*"/>
       <parameter name="scope" value="Session"/>
 
+      <arrayMapping
+        xmlns:ns="urn:spagobisecurity"
+        qname="ns:ArrayOf_soapenc_string"
+        type="java:java.lang.String[]"
+        innerType="cmp-ns:string" xmlns:cmp-ns="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
       <typeMapping
         xmlns:ns="http://bo.security.services.spagobi.eng.it"
         qname="ns:SpagoBIUserProfile"
         type="java:it.eng.spagobi.services.security.bo.SpagoBIUserProfile"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <arrayMapping
-        xmlns:ns="urn:spagobisecurity"
-        qname="ns:ArrayOf_soapenc_string"
-        type="java:java.lang.String[]"
-        innerType="cmp-ns:string" xmlns:cmp-ns="http://schemas.xmlsoap.org/soap/encoding/"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
   </service>

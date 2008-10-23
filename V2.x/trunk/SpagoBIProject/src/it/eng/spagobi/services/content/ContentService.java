@@ -39,7 +39,7 @@ public interface ContentService {
 	 * @param token
 	 * @return
 	 */
-    Content readTemplate(String token,String user,String document);  
+    Content readTemplate(String token,String user,String document,HashMap attributes);  
     /**
      * 
      * @param token String

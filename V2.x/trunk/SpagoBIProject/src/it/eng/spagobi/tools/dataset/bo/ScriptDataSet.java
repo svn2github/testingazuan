@@ -1,5 +1,7 @@
 package it.eng.spagobi.tools.dataset.bo;
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+
 import org.apache.log4j.Logger;
 
 public class ScriptDataSet extends DataSetConfig {
@@ -29,6 +31,18 @@ public class ScriptDataSet extends DataSetConfig {
 
 	public void setScript(String script) {
 		this.script = script;
+	}
+
+	@Override
+	public SpagoBiDataSet toSpagoBiDataSet() {
+		SpagoBiDataSet sbd = new SpagoBiDataSet();
+		sbd.setLabel(getLabel());
+		sbd.setName(getName());
+		sbd.setParameters(getParameters());
+		sbd.setDescription(getDescription());
+		sbd.setType("SbiScriptDataSet");
+		sbd.setScript(script);
+		return sbd;
 	}
 	
 	

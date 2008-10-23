@@ -21,12 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.proxy;
 
+import it.eng.spagobi.services.content.stub.ContentServiceServiceLocator;
 import it.eng.spagobi.services.dataset.stub.DataSetWsInterfaceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 
 import java.net.URL;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
@@ -42,35 +44,33 @@ public final class DataSetWsServiceProxy extends AbstractServiceProxy{
 
     static private Logger logger = Logger.getLogger(DataSetWsServiceProxy.class);
 
-    private URL url = null;
 
-    /**
-     * The Constructor.
-     * 
-     * @param adress the adress
-     */
-    public DataSetWsServiceProxy(String adress) {
-	try {
-	    this.url = new URL(adress);
-	} catch (Exception e) {
-	    logger.error("Service Adress is incorrect", e);
-	}
+
+    public DataSetWsServiceProxy(String user,HttpSession session) {
+    	super( user,session);
+    	if (user==null) logger.error("User ID IS NULL....");
+    	if (session==null) logger.error("HttpSession IS NULL....");
     }
-
     private DataSetWsServiceProxy() {
-    }
-
+    	super ();
+    }  
+    
     private it.eng.spagobi.services.dataset.stub.DataSetWsInterface lookUp() throws SecurityException {
 	try {
 	    DataSetWsInterfaceServiceLocator locator = new DataSetWsInterfaceServiceLocator();
 	    it.eng.spagobi.services.dataset.stub.DataSetWsInterface service = null;
-	    service = locator.getDataSetService(url);
+	    if (serviceUrl!=null ){
+		    service = locator.getDataSetService(serviceUrl);		
+	    }else {
+		    service = locator.getDataSetService();		
+	    }
 	    return service;
 	} catch (ServiceException e) {
 	    logger.error("Error during service execution", e);
 	    throw new SecurityException();
 	}
     }
+
 
     /**
      * Read data.
@@ -81,7 +81,11 @@ public final class DataSetWsServiceProxy extends AbstractServiceProxy{
      * @return String data
      */
     public DataSetConfig getDataSetByLabel(String label) {
-	logger.debug("IN");
+	logger.debug("IN.label="+label);
+	if (label==null || label.length()==0){
+	    logger.error("label is NULL");
+	    return null;
+	}
 	try {
 	    return DataSetConfig.createDataSet(lookUp().getDataSetByLabel(readTicket(), userId,label));
 	} catch (Exception e) {

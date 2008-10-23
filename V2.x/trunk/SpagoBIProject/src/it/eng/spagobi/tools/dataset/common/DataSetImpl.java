@@ -73,66 +73,24 @@ public class DataSetImpl implements IDataSet{
     logger.debug("IN");
     if (ds != null) {
     String type= "";
-    if(ds instanceof FileDataSet){
-		//type="it.eng.spagobi.tools.dataset.common.reader.FileReader";   
-    	//Creation of the specific DataSet
-		FileDataSet ds2 =(FileDataSet)ds;
-		logger.debug("FileDataSet created");
-		//Instanciation of the correct DataReader
-		SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getAttribute("DATASET.FILE_READER"));		
-		type = (String) reader.getAttribute("class");
-		dataReader = (IDataReader) new FileReader(ds2);	
-		logger.debug("FileReader instanciated");
+    
+    String dsType=ds.getClass().getName();
+    SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("DATASET.READER", "type", dsType));
+    try {
+		dataReader= (IDataReader)Class.forName((String) reader.getAttribute("class")).newInstance();
+	} catch (InstantiationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IllegalAccessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
-	else 		
-		if(ds instanceof QueryDataSet){
-			//type="it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader";
-			//Creation of the specific DataSet
-			QueryDataSet ds2 =(QueryDataSet)ds;
-			logger.debug("QueryDataSet created");
-			SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getAttribute("DATASET.SQL_READER"));		
-			type = (String) reader.getAttribute("class");
-			//Instanciation of the correct DataReader
-			dataReader = (IDataReader) new SQLResultSetReader(profile,ds2);
-			logger.debug("SQLResultSetReader instanciated");
-		}
-		else 		
-			if(ds instanceof WSDataSet){
-				//type="it.eng.spagobi.tools.dataset.common.reader.WebServiceReader";
-				//Creation of the specific DataSet
-				WSDataSet ds2 = (WSDataSet)ds;
-				logger.debug("WSDataSet created");
-				SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getAttribute("DATASET.WS_READER"));		
-				type = (String) reader.getAttribute("class");
-				//Instanciation of the correct DataReader
-				dataReader = (IDataReader)new WebServiceReader(ds2);
-				logger.debug("WebServiceReader instanciated");
-			}
-			else 		
-				if(ds instanceof ScriptDataSet){
-					//type="it.eng.spagobi.tools.dataset.common.reader.GroovyReader";
-					//Creation of the specific DataSet
-					ScriptDataSet ds2 = (ScriptDataSet)ds;
-					logger.debug("ScriptDataSet created");
-					SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getAttribute("DATASET.SCRIPT_READER"));		
-					type = (String) reader.getAttribute("class");
-					//Instanciation of the correct DataReader
-					dataReader = (IDataReader)new GroovyReader(ds2);
-					logger.debug("GroovyReader instanciated");
-				}
-				else 		
-					if(ds instanceof JClassDataSet){
-						//type="it.eng.spagobi.tools.dataset.common.reader.ClassReader";
-						//Creation of the specific DataSet
-						JClassDataSet ds2 = (JClassDataSet)ds;
-						logger.debug("JClassDataSet created");
-						SourceBean reader = ((SourceBean)ConfigSingleton.getInstance().getAttribute("DATASET.JCLASS_READER"));		
-						type = (String) reader.getAttribute("class");
-						//Instanciation of the correct DataReader
-						dataReader = (IDataReader)new ClassReader(profile, ds2);
-						logger.debug("ClassReader instanciated");
-					}
-	    dataStore = dataReader.read(parameters);
+    dataReader.setDataSetConfig(ds);
+    dataReader.setProfile(profile);
+	dataStore = dataReader.read(parameters);
     }
     logger.debug("OUT");
     }

@@ -32,6 +32,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.DialCharts;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 
 /**
  * @author Angelo Bernabei
@@ -42,7 +43,8 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.DialCharts;
 *         
  */
 public class FileDataSet extends DataSetConfig {
-    private String fileName=null;
+    
+	private String fileName=null;
 	private static transient Logger logger=Logger.getLogger(FileDataSet.class);
     
     /**
@@ -52,6 +54,19 @@ public class FileDataSet extends DataSetConfig {
     	super();
     	this.fileName="";
     }
+    
+	
+	@Override
+	public SpagoBiDataSet toSpagoBiDataSet() {
+		SpagoBiDataSet sbd = new SpagoBiDataSet();
+		sbd.setLabel(getLabel());
+		sbd.setName(getName());
+		sbd.setParameters(getParameters());
+		sbd.setDescription(getDescription());
+		sbd.setType("SbiFileDataSet");
+		sbd.setFileName(fileName);
+		return sbd;
+	}
     
     /**
      * Instantiates a new file data set.

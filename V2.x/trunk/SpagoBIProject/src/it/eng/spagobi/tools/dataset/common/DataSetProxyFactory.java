@@ -14,9 +14,15 @@ import java.util.HashMap;
 public class DataSetProxyFactory implements IDataSetProxyFactory {
 
     
-    public IDataSetProxy crateDataSetProxy(IEngUserProfile profile) {
+    public IDataSetProxy crateLocalDataSetProxy(IEngUserProfile profile) {
 
-	return new DataSetProxyImpl(profile);
+    	return new DataSetProxyImpl(profile);
     }
+
+	public IDataSetProxy crateDataSetProxy(IEngUserProfile profile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
 
 }

@@ -63,20 +63,10 @@ public class SQLResultSetReader implements IDataReader {
 		return ds;
 	}
 
-	public void setDs(QueryDataSet ds) {
-		this.ds = ds;
-	}
-
 
     public SQLResultSetReader() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
-	public SQLResultSetReader(IEngUserProfile profile, QueryDataSet ds) {
-		super();
-		this.profile = profile;
-		this.ds = ds;
 	}
 
 	public IDataStore read(HashMap parameters) {
@@ -164,6 +154,10 @@ public class SQLResultSetReader implements IDataReader {
 		logger.debug("OUT");
 		return result;
 		
+	}
+
+	public void setDataSetConfig(DataSetConfig ds) {
+		this.ds =(QueryDataSet) ds;	
 	}
 
 

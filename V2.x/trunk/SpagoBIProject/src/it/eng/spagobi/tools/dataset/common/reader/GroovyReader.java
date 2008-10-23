@@ -7,9 +7,11 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
@@ -37,16 +39,13 @@ public class GroovyReader implements IDataReader {
 
 	private static transient Logger logger = Logger.getLogger(GroovyReader.class);
 	ScriptDataSet ds=null;
+	IEngUserProfile profile=null;
 
     public GroovyReader() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public GroovyReader(ScriptDataSet ds) {
-		super();
-		this.ds = ds;
-	}
 
 	public IDataStore read(HashMap parameters) {
 		
@@ -201,6 +200,20 @@ public class GroovyReader implements IDataReader {
 
 	public void setDs(ScriptDataSet ds) {
 		this.ds = ds;
+	}
+
+	public void setDataSetConfig(DataSetConfig ds) {
+		this.ds =(ScriptDataSet)ds;
+		
+	}
+
+	public void setProfile(IEngUserProfile profile) {
+		this.profile = profile;
+		
+	}
+
+	public IEngUserProfile getProfile() {
+		return profile;
 	}
 	
 

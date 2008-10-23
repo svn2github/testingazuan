@@ -7,6 +7,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
@@ -40,11 +41,6 @@ public class ClassReader implements IDataReader {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ClassReader(IEngUserProfile profile, JClassDataSet ds) {
-		super();
-		this.profile = profile;
-		this.ds = ds;
-	}
 
 	public IDataStore read(HashMap parameters) {
     	
@@ -115,8 +111,8 @@ public class ClassReader implements IDataReader {
 		return ds;
 	}
 
-	public void setDs(JClassDataSet ds) {
-		this.ds = ds;
+	public void setDataSetConfig(DataSetConfig ds) {
+		this.ds = (JClassDataSet)ds;
 	}
 
 }

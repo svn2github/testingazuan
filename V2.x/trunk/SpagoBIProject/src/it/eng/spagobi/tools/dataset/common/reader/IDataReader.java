@@ -24,5 +24,9 @@ public interface IDataReader {
      */
 
     IDataStore read(HashMap parameters);
+    
+    void setDataSetConfig(DataSetConfig ds);
+    
+    void setProfile(IEngUserProfile profile) ;
 
 }

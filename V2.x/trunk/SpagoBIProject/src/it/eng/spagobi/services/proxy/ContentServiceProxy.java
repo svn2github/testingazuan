@@ -49,9 +49,9 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @param session http session
      */
     public ContentServiceProxy(String user,HttpSession session) {
-	super( user,session);
-	if (user==null) logger.error("User ID IS NULL....");
-	if (session==null) logger.error("HttpSession IS NULL....");
+    	super( user,session);
+    	if (user==null) logger.error("User ID IS NULL....");
+    	if (session==null) logger.error("HttpSession IS NULL....");
     }
     
     private ContentServiceProxy() {

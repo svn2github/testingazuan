@@ -41,12 +41,24 @@ public class DataSetConfig {
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
-    	public static DataSetConfig createDataSet(SpagoBiDataSet ds){
+    	
+    	
+    	
+    	public DataSetConfig() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+    	
+		public static DataSetConfig createDataSet(SpagoBiDataSet ds){
     		
+			
     	    // a seconda del campo type costruisce l'oggetto corretto
     	    // figlio di DataSet
     	    return null;
     	    
+    	}
+    	public SpagoBiDataSet toSpagoBiDataSet(){
+    		return null;
     	}
     	
     	

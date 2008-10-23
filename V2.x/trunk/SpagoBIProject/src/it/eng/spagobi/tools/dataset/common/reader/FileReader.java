@@ -5,6 +5,8 @@ package it.eng.spagobi.tools.dataset.common.reader;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -34,17 +36,28 @@ public class FileReader implements IDataReader {
 	
 	private static transient Logger logger = Logger.getLogger(FileReader.class);
 	FileDataSet ds = null;
+	IEngUserProfile profile=null;
 
-    public FileReader() {
+    public IEngUserProfile getProfile() {
+		return profile;
+	}
+
+
+
+
+	public void setProfile(IEngUserProfile profile) {
+		this.profile = profile;
+	}
+
+
+
+
+	public FileReader() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 
-	public FileReader(FileDataSet dataSet) {
-		super();
-		this.ds = dataSet;
-	}
 
 
 	public FileDataSet getDs() {
@@ -52,8 +65,8 @@ public class FileReader implements IDataReader {
 	}
 
 
-	public void setDs(FileDataSet ds) {
-		this.ds = ds;
+	public void setDataSetConfig(DataSetConfig ds) {
+		this.ds = (FileDataSet)ds;
 	}
 
 

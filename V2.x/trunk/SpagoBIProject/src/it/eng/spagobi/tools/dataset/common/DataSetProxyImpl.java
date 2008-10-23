@@ -10,6 +10,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.dao.LovDAOHibImpl;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.services.proxy.DataSetWsServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
@@ -21,6 +22,8 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
 
 import java.util.HashMap;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -35,7 +38,7 @@ import org.hibernate.Transaction;
 public class DataSetProxyImpl implements IDataSetProxy {
 
 	private static transient Logger logger = Logger.getLogger(DataSetProxyImpl.class);
-    IEngUserProfile profile=null;
+    private IEngUserProfile profile=null;
 
     
     private DataSetProxyImpl(){
@@ -55,11 +58,11 @@ public class DataSetProxyImpl implements IDataSetProxy {
      */ 
     public IDataSet getDataSet(String dataSetLabel){
     	  	
-    	
+    	DataSetConfig ds=null;
     	IDataSet ids= null;
     	try {
-    		DataSetConfig ds= DAOFactory.getDataSetDAO().loadDataSetByLabel(dataSetLabel);
-			ids = (IDataSet)new DataSetImpl(ds,profile);
+    		ds= DAOFactory.getDataSetDAO().loadDataSetByLabel(dataSetLabel);
+    		ids = (IDataSet)new DataSetImpl(ds,profile);
 		} catch (EMFUserError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,5 +71,21 @@ public class DataSetProxyImpl implements IDataSetProxy {
     			
     }
     
+    public IDataSet getRemoteDataSet(String dataSetLabel,String user,HttpSession session){
+	  	
+    	DataSetConfig ds=null;
+    	IDataSet ids= null;
+    	try {
+
+    		DataSetWsServiceProxy dsProxy=new DataSetWsServiceProxy(user,session);
+    		ds=dsProxy.getDataSetByLabel(dataSetLabel);
+    		ids = (IDataSet)new DataSetImpl(ds,profile);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ids;
+    			
+    }    
  
 }

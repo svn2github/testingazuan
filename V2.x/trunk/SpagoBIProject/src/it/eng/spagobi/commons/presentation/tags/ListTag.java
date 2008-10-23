@@ -78,6 +78,7 @@ public class ListTag extends TagSupport
 	
 	protected String _actionName = null;
 	protected String _moduleName = null;
+	protected String _bundle = null;
 	protected String _serviceName = null;
 	protected SourceBean _content = null;
 	protected SourceBean _layout = null;
@@ -138,6 +139,9 @@ public class ListTag extends TagSupport
 		_errorHandler = _responseContainer.getErrorHandler();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		
+		if (_bundle == null)
+			_bundle = "messages";
 		
 		profile = (IEngUserProfile) _requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		
@@ -247,7 +251,7 @@ public class ListTag extends TagSupport
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
 		
 		if (titleCode != null && buttons.size() > 0) {
-			String title = msgBuilder.getMessage(titleCode, "messages", httpRequest);
+			String title = msgBuilder.getMessage(titleCode, _bundle, httpRequest);
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
 			_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
 			_htmlStream.append("			<td class=\"header-title-column-portlet-section\" style=\"vertical-align:middle;padding-left:5px;\" >" + title + "</td>\n");
@@ -298,7 +302,7 @@ public class ListTag extends TagSupport
 			String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
-			if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(labelColumnCode, "messages", httpRequest);
+			if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(labelColumnCode, _bundle, httpRequest);
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
@@ -485,7 +489,7 @@ public class ListTag extends TagSupport
 					// if there are no parameters puts an empty column
 					 String img = (String)captionSB.getAttribute("image");
 					 String labelCode = (String)captionSB.getAttribute("label");
-					 String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);					 
+					 String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);					 
 					 _htmlStream.append(" <td width='40px'>\n");
 					 _htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
 					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
@@ -498,7 +502,7 @@ public class ListTag extends TagSupport
 					String img = (String)captionSB.getAttribute("image");
 					String labelCode = (String)captionSB.getAttribute("label");
 					//String label = PortletUtilities.getMessage(labelCode, "messages");
-					String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
+					String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
 					String buttonUrl = null;
 					if (!paramsMap.isEmpty()){
 						buttonUrl = createUrl(paramsMap);
@@ -522,7 +526,7 @@ public class ListTag extends TagSupport
 						if (verifyConditions(confirmConditionSB, row)) {
 							String msgCode = (String) confirmConditionSB.getAttribute("msg");
 							String bundle = (String) confirmConditionSB.getAttribute("bundle");
-							if (bundle == null || bundle.trim().equals("")) bundle = "messages";
+							if (bundle == null || bundle.trim().equals("")) bundle = _bundle;
 							msg = msgBuilder.getMessage(msgCode, bundle, httpRequest);
 							confirm = true;
 						}
@@ -997,7 +1001,7 @@ public class ListTag extends TagSupport
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 				String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 				String labelColumn = new String(nameColumn);
-				if (labelColumnCode != null) labelColumn =  msgBuilder.getMessage(labelColumnCode, "messages", httpRequest);
+				if (labelColumnCode != null) labelColumn =  msgBuilder.getMessage(labelColumnCode, _bundle, httpRequest);
 				String selected = "";
 				if (nameColumn.equalsIgnoreCase(columnFilter))
 					selected = " selected='selected' "; 
@@ -1293,7 +1297,7 @@ public class ListTag extends TagSupport
 			String labelCode = (String) buttonSB.getAttribute("label");
 			
 			//String label = PortletUtilities.getMessage(labelCode, "messages");
-			String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
+			String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
 			String buttonUrl = createUrl(paramsMap);
 			
 			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
@@ -1412,6 +1416,20 @@ public class ListTag extends TagSupport
 			"ListTag::setModuleName:: moduleName [" + moduleName + "]");
 		_moduleName = moduleName;
 	} // public void setModuleName(String moduleName)
+	
+	/**
+	 * Traces the setting of a bundle name.
+	 * 
+	 * @param bundle The bundle name string at input.
+	 */
+	
+	public void setBundle(String bundle) {
+		TracerSingleton.log(
+			Constants.NOME_MODULO,
+			TracerSingleton.INFORMATION,
+			"ListTag::setBundle:: bundle [" + bundle + "]");
+		_bundle = bundle;
+	} // public void setBundle(String bundle)
 
 	/**
 	 * Do end tag.

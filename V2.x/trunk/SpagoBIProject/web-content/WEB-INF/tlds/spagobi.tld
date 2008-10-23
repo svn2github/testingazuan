@@ -17,20 +17,25 @@
 
     <!-- START LIST TAGS  -->
    <tag>
-        <name>list</name>
-        <tag-class>it.eng.spagobi.commons.presentation.tags.ListTag</tag-class>
-        <body-content>EMPTY</body-content>
-        <description>Rendering of a list</description>
-        <attribute>
-            <name>moduleName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>filter</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
+       <name>list</name>
+       <tag-class>it.eng.spagobi.commons.presentation.tags.ListTag</tag-class>
+       <body-content>EMPTY</body-content>
+       <description>Rendering of a list</description>
+       <attribute>
+           <name>moduleName</name>
+           <required>true</required>
+           <rtexprvalue>true</rtexprvalue>
+       </attribute>
+       <attribute>
+           <name>filter</name>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+       </attribute>
+       <attribute>
+           <name>bundle</name>
+           <required>false</required>
+           <rtexprvalue>true</rtexprvalue>
+       </attribute> 
     </tag>
     
     <!-- display the list of biobject links  -->

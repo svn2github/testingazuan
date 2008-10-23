@@ -120,7 +120,8 @@ qx.Class.define("spagobi.ui.IconBar", {
 			atom.setUserData('checked', false);
 			if (name == this._defaultSelectedPageName)
 			{
-				atom.setBackgroundColor(this._selectedBackgroudColor);
+				//atom.setBackgroundColor(this._selectedBackgroudColor);
+				this._check(atom);
 			}
 			if (tooltip){
 				var tt = new qx.ui.popup.ToolTip(tooltip);

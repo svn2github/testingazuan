@@ -295,6 +295,7 @@ public class ExecutionInstance {
 				if (isSingleValue(biparam) || biparam.isTransientParmeters())
 					continue;
 				biparam.setParameterValues(null);
+				biparam.setParameterValuesDescription(null);
 			} else {
 				refreshParameter(biparam, request, transientMode);
 			}

@@ -32,16 +32,19 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
-import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,11 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 
 	private EMFErrorHandler errorHand = null;
-	
-	protected SessionContainer getSession(SourceBean request) {
-		RequestContainer reqCont = getRequestContainer();
-		return reqCont.getSessionContainer();		
-	}
+	ContextManager contextManager = null;
 	
 	protected void getErroHandler() {
 		ResponseContainer respCont = getResponseContainer();
@@ -80,11 +79,12 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 		// get error handler
 		getErroHandler();
 		// get biobject from the session
-		BIObject obj = (BIObject) getSession(request).getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+		BIObject obj = instance.getBIObject();
 		// get the id of the lookup parameter
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		if(objParIdStr==null) 
-			objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
+//		if(objParIdStr==null) 
+//			objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
 		Integer objParId = Integer.valueOf(objParIdStr);
 		// get the id of the paruse correlated 
 		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));
@@ -135,12 +135,15 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 		ResponseContainer respCont = ChannelUtilities.getResponseContainer(httpRequest);
 		errorHand = respCont.getErrorHandler();
 		SessionContainer sessionCont = reqCont.getSessionContainer();
+		contextManager = new ContextManager(new SpagoBISessionContainer(sessionCont), 
+				new LightNavigatorContextRetrieverStrategy(request));
 		// get biobject from the session
-		BIObject obj = (BIObject) sessionCont.getAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR);
+		ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+		BIObject obj = instance.getBIObject();
 		// get the id of the lookup parameter
 		String objParIdStr = (String) request.getAttribute("LOOKUP_PARAMETER_ID");
-		if(objParIdStr==null) 
-			objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
+//		if(objParIdStr==null) 
+//			objParIdStr = (String)getSession(request).getAttribute("LOOKUP_PARAMETER_ID");
 		Integer objParId = Integer.valueOf(objParIdStr);
 		// get the id of the paruse correlated 
 		Integer correlatedParuseId = Integer.valueOf((String) request.getAttribute("correlated_paruse_id"));

@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
@@ -1311,19 +1312,31 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 			return;
 		}
 
-		// check parameters values 
+		// check parameters values: this operation also load parameter values description into parameters objects
 		List errors = instance.getParametersErrors();
-		// add errors into error handler
-		Iterator errorsIt = errors.iterator();
-		while (errorsIt.hasNext()) {
-			errorHandler.addError((EMFUserError) errorsIt.next());
-		}
-
+		
+		// if this is a correlation refresh call, errors are ignored
 		if (isRefreshCorrelationCall(request)) {
+			if (errors.size() > 0) {
+				// puts into error handler only errors on parameter values (that are instances of EMFUserError), not on 
+				// checks (that are instances of EMFValidationError)
+				Iterator errorsIt = errors.iterator();
+				while (errorsIt.hasNext()) {
+					EMFUserError error = (EMFUserError) errorsIt.next();
+					if (error instanceof EMFValidationError) continue;
+					else errorHandler.addError(error);
+				}
+			}
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 					"ExecuteBIObjectPageParameter");
 
 			return;
+		}
+
+		// add errors into error handler
+		Iterator errorsIt = errors.iterator();
+		while (errorsIt.hasNext()) {
+			errorHandler.addError((EMFUserError) errorsIt.next());
 		}
 
 		// if there are some errors into the errorHandler does not execute the

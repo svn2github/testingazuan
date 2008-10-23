@@ -10,6 +10,8 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetWsServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
@@ -141,7 +143,13 @@ public class JasperReportRunner {
 	    	String executionId = uuid_local.toString();
 	    	executionId = executionId.replaceAll("-", "");
 	    	String flgTemplateStandard = "true";
+
 	    	ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
+
+	    	DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userId,session);
+	    	
+	    	DataSetConfig dsConf= dataSetProxy.getDataSetByLabel("ProvaFile");
+	    	System.out.println("Nome ds"+dsConf.getName());
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			
@@ -149,7 +157,7 @@ public class JasperReportRunner {
 			// (by default is WEB_INF/lib)
 			setJRClasspath(getJRLibDir(servletContext));
 			
-			Content template=contentProxy.readTemplate( documentId);
+			Content template=contentProxy.readTemplate( documentId,new HashMap());
 			logger.debug("Read the template."+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -603,7 +611,7 @@ public class JasperReportRunner {
 		}
 				
 		for(int i = 0; i < subreports.length; i++) {
-			Content template=contentProxy.readTemplate(subreports[i]);
+			Content template=contentProxy.readTemplate(subreports[i],new HashMap());
 			logger.debug("Read the template.(subreport)"+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();

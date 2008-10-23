@@ -128,8 +128,9 @@ public class JasperReportServlet extends HttpServlet {
 	if (auditAccessUtils != null)
 	    auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, new Long(System
 		    .currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
-
+	logger.debug("GetConnection...");
 	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
+	logger.debug("GetConnection...");
 	Connection con = getConnection(requestConnectionName,session,(String)profile.getUserUniqueIdentifier(),documentId);
 
 	if (con == null) {

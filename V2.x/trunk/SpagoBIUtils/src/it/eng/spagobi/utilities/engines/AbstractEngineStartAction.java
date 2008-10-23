@@ -186,7 +186,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		String templateContent = null;
 		
 		contentProxy = getContentServiceProxy();		
-		template = contentProxy.readTemplate(documentId);
+		template = contentProxy.readTemplate(documentId,new HashMap());
 		logger.debug("Read the template."+ template.getFileName());	
 		
 		

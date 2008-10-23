@@ -34,6 +34,8 @@ package it.eng.spagobi.utilities.service;
 
 
 
+import java.util.HashMap;
+
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
@@ -126,7 +128,7 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
 	 */
 	public Content getRowTemplate() {
 		ContentServiceProxy contentProxy = new ContentServiceProxy( getUserId(), getSession());
-		Content template = contentProxy.readTemplate( getDocumentId() );
+		Content template = contentProxy.readTemplate( getDocumentId() ,new HashMap());
 		
 		return template;
 	}

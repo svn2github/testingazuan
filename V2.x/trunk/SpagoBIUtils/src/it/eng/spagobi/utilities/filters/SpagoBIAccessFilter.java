@@ -32,6 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.filters;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -54,6 +55,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
 
 public class SpagoBIAccessFilter implements Filter {
 
@@ -83,11 +86,10 @@ public class SpagoBIAccessFilter implements Filter {
 	    String requestUrl = httpRequest.getRequestURL().toString();
 	    logger.info("requestUrl:" + requestUrl);
 	    
-	    String userId = (String) request.getParameter("userId");
+	    String userIdentifier = (String) request.getParameter("userId");
 	    String document = (String) request.getParameter("document");
-	    logger.info("Filter USER_ID from request:" + userId);
+	    logger.info("Filter userIdentifier from request:" + userIdentifier);
 	    logger.info("Filter document  from request:" + document);
-	    session.setAttribute("userId", userId);
 	    session.setAttribute("document", document);
 	    session.setAttribute("isBackend", "false");
 	    boolean isBackend=false;
@@ -108,8 +110,8 @@ public class SpagoBIAccessFilter implements Filter {
 	    
 
 
-	    if (userId != null && !isBackend)
-		checkUserWithSSO(userId, session);
+	    if (userIdentifier != null && !isBackend)
+		userIdentifier=checkUserWithSSO(userIdentifier, session);
 
 	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 	    String spagoBackEndUrl = request.getParameter(SpagoBIConstants.SBI_BACK_END_HOST);
@@ -131,13 +133,14 @@ public class SpagoBIAccessFilter implements Filter {
 		logger.warn("spagoUrl is null!!!!!!");	    
 
 	    IEngUserProfile profile = null;
-	    if (userId != null && !userId.equals("scheduler")) {
+	    if (userIdentifier != null && !userIdentifier.equals("scheduler")) {
 		try {
 		    profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    if (profile == null || !profile.getUserUniqueIdentifier().toString().equals(userId)) {
-			SecurityServiceProxy proxy = new SecurityServiceProxy(userId, session);
+		    if (profile == null || !profile.getUserUniqueIdentifier().toString().equals(userIdentifier)) {
+			SecurityServiceProxy proxy = new SecurityServiceProxy(userIdentifier, session);
 			profile = proxy.getUserProfile();
 			session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+			session.setAttribute("userId", profile.getUserUniqueIdentifier());
 		    } else {
 			logger.debug("Found user profile in session");
 		    }
@@ -146,7 +149,7 @@ public class SpagoBIAccessFilter implements Filter {
 		    throw new ServletException();
 		}
 	    }
-	    if (userId != null && userId.equals("scheduler")) {
+	    if (userIdentifier != null && userIdentifier.equals("scheduler")) {
 		session.setAttribute(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
 	    }
 
@@ -160,7 +163,9 @@ public class SpagoBIAccessFilter implements Filter {
 		}
 	    }
 	}
-	
+	chain.doFilter(request, response);
+/*	
+This code doesn't show the original error
 	try {
 		chain.doFilter(request, response);
 	} catch (Exception e){
@@ -168,33 +173,31 @@ public class SpagoBIAccessFilter implements Filter {
 		logger.error("SpagoBIAccessFilter" + ":doFilter ServletException !!");
 		logger.error(" msg: [" + e.getMessage() + "]");
 		Throwable t = e.getCause();
-		if (t != null) {
-			logger.error("-----------------------------");
-			logger.error("ROOT CAUSE:");
-			logger.error("-----------------------------");
-			logger.error(" msg: [" +t.getMessage() + "]");
-			logger.error(" stacktrace:");
-			t.printStackTrace();
-		}
+		logger.error("-----------------------------");
+		logger.error("ROOT CAUSE:");
+		logger.error("-----------------------------");
+		logger.error(" msg: [" +t.getMessage() + "]");
+		logger.error(" stacktrace:");
+		t.printStackTrace();
 	}
-		
+	
+*/	
 	logger.debug("OUT");
     }
 
-    private void checkUserWithSSO(String userId, HttpSession session) throws ServletException {
-
+    private String checkUserWithSSO(String userId, HttpSession session) throws ServletException {
+    
 	if (EnginConf.getInstance().isSsoActive()) {
 	    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-	    String ssoUserId = userProxy.readUserId(session);
+	    String ssoUserIdentifier = userProxy.readUserIdentifier(session);
+	   // userId = userId.replace(' ', '+');
+	    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
 	    logger.debug("got userId from IProxyService=" + userId);
-	    if (!userId.equalsIgnoreCase(ssoUserId)) {
-		logger.debug("SSO is active but the user in request and sessione are different!!!");
-		throw new ServletException();
-	    }
+	    return ssoUserIdentifier;
 	} else {
 	    logger.debug("SSO is inactive...");
+	    return userId;
 	}
-
     }
 
     /* (non-Javadoc)

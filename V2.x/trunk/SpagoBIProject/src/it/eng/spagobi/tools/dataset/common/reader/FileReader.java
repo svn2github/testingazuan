@@ -86,11 +86,6 @@ public class FileReader implements IDataReader {
 		catch (Exception e) {
 			e.printStackTrace();
 			logger.debug("File not found",e);
-			try {
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
-			} catch (EMFUserError e1) {
-				e1.printStackTrace();
-			}
 		}
 		try{
 		InputSource inputSource=new InputSource(fis);

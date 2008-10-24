@@ -189,7 +189,7 @@ This code doesn't show the original error
     
 	if (EnginConf.getInstance().isSsoActive()) {
 	    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-	    String ssoUserIdentifier = userProxy.readUserIdentifier(session);
+	    String ssoUserIdentifier = userProxy.readUserId(session);
 	   // userId = userId.replace(' ', '+');
 	    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
 	    logger.debug("got userId from IProxyService=" + userId);

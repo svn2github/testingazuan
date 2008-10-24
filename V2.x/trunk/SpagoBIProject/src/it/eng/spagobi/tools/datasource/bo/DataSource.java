@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.datasource.bo;
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -46,6 +49,18 @@ public class DataSource implements Serializable {
 	private Set engines = null;
 	private Set objects = null;
 	
+	public SpagoBiDataSource toSpagoBiDataSource(){
+		SpagoBiDataSource sbd = new SpagoBiDataSource();
+		sbd.setDriver(driver);
+		sbd.setHibDialectClass("");
+		sbd.setHibDialectName("");
+		sbd.setJndiName(jndi);
+		sbd.setLabel(label);
+		sbd.setPassword(pwd);
+		sbd.setUrl(urlConnection);
+		sbd.setUser(user);
+		return sbd;
+	}
 	/**
 	 * Gets the ds id.
 	 * 

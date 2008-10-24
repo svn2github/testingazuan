@@ -194,7 +194,7 @@ public class QueryDataSet extends DataSetConfig {
 		return result;
 	}
 
-	@Override
+	
 	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd = new SpagoBiDataSet();
 		sbd.setQuery(query);

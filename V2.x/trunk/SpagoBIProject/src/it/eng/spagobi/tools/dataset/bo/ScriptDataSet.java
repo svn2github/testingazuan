@@ -33,7 +33,7 @@ public class ScriptDataSet extends DataSetConfig {
 		this.script = script;
 	}
 
-	@Override
+
 	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd = new SpagoBiDataSet();
 		sbd.setLabel(getLabel());

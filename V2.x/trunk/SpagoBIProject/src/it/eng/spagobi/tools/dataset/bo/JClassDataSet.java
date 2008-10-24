@@ -36,7 +36,7 @@ public class JClassDataSet extends DataSetConfig {
 	}
 
 
-	@Override
+	
 	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd = new SpagoBiDataSet();
 		sbd.setLabel(getLabel());

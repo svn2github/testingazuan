@@ -106,7 +106,7 @@ public class WSDataSet extends DataSetConfig {
 	    this.operation = operation;
 	}
 
-	@Override
+	
 	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd = new SpagoBiDataSet();
 		sbd.setLabel(getLabel());

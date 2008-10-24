@@ -24,9 +24,12 @@ package it.eng.spagobi.engines.chart.utils;
 
 
 
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
@@ -35,10 +38,16 @@ import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.common.DataSetImpl;
+import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
+import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -123,13 +132,24 @@ public class DataSetAccessFunctions {
 	 */
 	public static String getDataSetResult(IEngUserProfile profile,DataSetConfig ds, Map parameters) throws Exception {
 		logger.debug("IN");
-
-
+		
 		if (profile == null) {
 			profile = new UserProfile("anonymous");
 		}
-
-
+		
+		SourceBean rowsSourceBean = null;
+		List colNames = new ArrayList();
+		
+		DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
+		DataSetImpl dsi = new DataSetImpl(ds,profile);
+		HashMap parametersFilled=(HashMap)parameters;
+		dsi.loadData(parametersFilled);
+		IDataStore ids = dsi.getDataStore();
+		String resultXml = ids.toXml();
+		
+		
+		
+/*
 		String dataPars = ds.getParameters();
 
 		if(dataPars!=null && dataPars!=""){
@@ -155,9 +175,9 @@ public class DataSetAccessFunctions {
 
 
 		}
-		String toReturn = ds.getDataSetResult(profile);
-		logger.debug("OUT" + toReturn);
-		return toReturn;
+		String toReturn = ds.getDataSetResult(profile);*/
+		logger.debug("OUT" + resultXml);
+		return resultXml;
 	}
 
 

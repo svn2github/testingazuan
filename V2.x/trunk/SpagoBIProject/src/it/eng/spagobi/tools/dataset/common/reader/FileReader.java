@@ -5,6 +5,8 @@ package it.eng.spagobi.tools.dataset.common.reader;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -34,6 +36,7 @@ import org.xml.sax.InputSource;
  */
 public class FileReader implements IDataReader {
 	
+	public static final String messageBundle = "component_spagobidashboardIE_messages";
 	private static transient Logger logger = Logger.getLogger(FileReader.class);
 	FileDataSet ds = null;
 	IEngUserProfile profile=null;
@@ -82,7 +85,12 @@ public class FileReader implements IDataReader {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Exception during File Opening");
+			logger.debug("File not found",e);
+			try {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
+			} catch (EMFUserError e1) {
+				e1.printStackTrace();
+			}
 		}
 		try{
 		InputSource inputSource=new InputSource(fis);

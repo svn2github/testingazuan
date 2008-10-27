@@ -24,12 +24,15 @@ import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
@@ -59,6 +62,9 @@ public class DatamartStructureBuilder {
 	 * @param dataSource the data source
 	 */
 	public DatamartStructureBuilder(IHibernateDataSource dataSource) {
+		if(dataSource== null) {
+			throw new IllegalArgumentException("DataSource parameter cannot be null");
+		}
 		setDataSource( dataSource );
 	}
 	
@@ -80,7 +86,14 @@ public class DatamartStructureBuilder {
 		datamartNames = getDataSource().getDatamartNames();
 		for(int i = 0; i < datamartNames.size(); i++) {
 			datamartName = (String)datamartNames.get(i);
-			classMetadata = getDataSource().getSessionFactory(datamartName).getAllClassMetadata();
+			Assert.assertNotNull(getDataSource(), "datasource cannot be null");	
+			SessionFactory sf = getDataSource().getSessionFactory(datamartName);
+			if(sf == null) {
+				throw new MissingResourceException("Impossible to find the jar file associated to datamart named: [" + datamartName + "]"
+						, SessionFactory.class.getName()
+						, datamartName );
+			}
+			classMetadata = sf.getAllClassMetadata();
 			for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {
 				String entityType = (String)it.next();			
 				addEntity(dataMartStructure, entityType);		
@@ -121,6 +134,8 @@ public class DatamartStructureBuilder {
 			DataMartEntity subentity = (DataMartEntity)it.next();
 			if (subentity.getType().equalsIgnoreCase(dataMartEntity.getType())){
 				// ciclo di periodo 0!
+			} else if(recursionLevel > 3) {
+				// prune recursion tree 
 			} else {
 				addSubEntity(dataMartEntity, 
 						subentity.getType(),

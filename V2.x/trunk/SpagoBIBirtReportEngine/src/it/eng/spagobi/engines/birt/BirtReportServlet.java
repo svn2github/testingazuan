@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.birt;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
 import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
@@ -91,7 +92,8 @@ public class BirtReportServlet extends HttpServlet {
 	HttpSession session = request.getSession();
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	String documentId = (String) request.getParameter("document");
-	String userId = (String) profile.getUserUniqueIdentifier();
+	String userId = (String) ((UserProfile)profile).getUserId();
+	
 	logger.debug("userId=" + userId);
 	logger.debug("documentId=" + documentId);
 
@@ -187,10 +189,13 @@ public class BirtReportServlet extends HttpServlet {
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	String documentId = (String) servletRequest.getParameter("document");
 	String userId = (String) profile.getUserUniqueIdentifier();
+	//String userId = (String)((UserProfile) profile).getUserId();
 	logger.debug("userId=" + userId);
 	logger.debug("documentId=" + documentId);
 	
 	ContentServiceProxy contentProxy = new ContentServiceProxy(userId, servletRequest.getSession());
+	
+	
 	Content template = contentProxy.readTemplate(documentId);
 	logger.debug("Read the template=" + template.getFileName());
 	InputStream is = null;

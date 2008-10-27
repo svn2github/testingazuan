@@ -31,7 +31,7 @@ public interface IEngineInstance {
 	String getId();
 	Map getEnv();
 	void setEnv(Map env);
-	void validate() throws EngineException;
+	void validate() throws SpagoBIEngineException;
 	EngineAnalysisMetadata getAnalysisMetadata();
 	void setAnalysisMetadata(EngineAnalysisMetadata analysisMetadata);
 	IEngineAnalysisState getAnalysisState();

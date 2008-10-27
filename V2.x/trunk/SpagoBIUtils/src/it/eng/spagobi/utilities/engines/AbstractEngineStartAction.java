@@ -108,7 +108,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean request, SourceBean response) throws EngineException {
+	public void service(SourceBean request, SourceBean response) throws SpagoBIEngineException {
 		setRequest(request);
 		setResponse(response);				
 	}

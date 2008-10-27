@@ -61,7 +61,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
         super.init(config);
     } 
 	
-	public void service(SourceBean request, SourceBean response) throws EngineException {
+	public void service(SourceBean request, SourceBean response) {
 		setRequest( request );
 		setResponse( response );
 	}	
@@ -74,7 +74,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		return getEngineInstance().getEnv();
 	}
 	
-	public String xsaveAnalysisState() throws EngineException {
+	public String xsaveAnalysisState() throws SpagoBIEngineException {
 		IEngineInstance engineInstance = null;
 		String documentId = null;
 		EngineAnalysisMetadata analysisMetadata = null;
@@ -103,7 +103,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 	}
 	
 	
-	public String saveAnalysisState() throws EngineException {
+	public String saveAnalysisState() throws SpagoBIEngineException {
 		IEngineInstance engineInstance = null;
 		String documentId = null;
 		EngineAnalysisMetadata analysisMetadata = null;

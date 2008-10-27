@@ -4,9 +4,9 @@ import java.util.Set;
 
 public interface IEngineAnalysisState {
 
-	void load(byte[] rowData) throws EngineException;
+	void load(byte[] rowData) throws SpagoBIEngineException;
 
-	byte[] store() throws EngineException;
+	byte[] store() throws SpagoBIEngineException;
 
 	Object getProperty(Object pName);
 

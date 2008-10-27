@@ -99,7 +99,22 @@ if (heightArea == null || heightArea.trim().equals("")) {
 		pos<%=uuid%> = null; 
 	
 		function adaptSize<%=uuid%>Funct() {
-				
+		
+			if (parent.sessionExpiredSpagoBIJS) {
+				// case when document is executed inside main iframe in SpagoBI Web application
+				heightMainIFrame = 0;
+				// calculates the iframe height
+				if(isIE5()) { heightMainIFrame = document.body.clientHeight; }
+				if(isIE6()) { heightMainIFrame = document.body.clientHeight; }
+				if(isIE7()) { heightMainIFrame = document.body.clientHeight; }
+				if(isMoz()) { heightMainIFrame = innerHeight; }
+				// minus a fixed size (header height)
+				heightExecIFrame = heightMainIFrame - 70;
+				iframeEl = document.getElementById('iframeexec<%=uuid%>');
+				iframeEl.style.height = heightExecIFrame + 'px';
+				return;
+			}
+			
 			// calculate height of the visible area
 			heightVisArea = 0;
 

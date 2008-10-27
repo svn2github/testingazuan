@@ -171,12 +171,12 @@ boolean subobjectsSliderVisible = subobjectsList != null && subobjectsList.size(
 boolean snapshotsSliderVisible = snapshotsList != null && snapshotsList.size() > 0;
 boolean viewpointsSliderVisible = viewpointsList != null && viewpointsList.size() > 0;
 String outputType = (String)executionParameters.get("outputType");
+ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
+String executionFlowId = instance.getFlowId();
 %>
 
 <div class='execution-page-title'>
 	<%
-	ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
-	String executionFlowId = instance.getFlowId();
 	if (!executionFlowId.equals(uuid) && executionManager != null) {
 		List list = executionManager.getBIObjectsExecutionFlow(executionFlowId);
 		for (int i = 0; i < list.size(); i++) {
@@ -201,7 +201,7 @@ String outputType = (String)executionParameters.get("outputType");
  			elem.style.visibility = display;
 		}
 	
-	</script>
+</script>
 <%
 if (toolbarIsVisible) {
 	%>

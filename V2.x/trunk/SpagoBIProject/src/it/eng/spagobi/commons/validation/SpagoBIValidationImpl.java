@@ -30,12 +30,12 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.service.RequestContextIFace;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.message.MessageBundle;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.ValidationEngineIFace;
 import it.eng.spago.validation.impl.ValidatorLocator;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.text.DateFormat;
@@ -346,12 +346,12 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				// ********************************************
 				if (fieldLabel != null && fieldLabel.startsWith("#")) {
 					String key = fieldLabel.substring(1);
-					String boundle = (String) field.getAttribute("boundle");
+					String bundle = (String) field.getAttribute("bundle");
 					String fieldDescription = "";
-					if((boundle!=null) && !boundle.trim().equals("")){
-						fieldDescription = PortletUtilities.getMessage(key, boundle);
+					if((bundle!=null) && !bundle.trim().equals("")){
+						fieldDescription = MessageBundle.getMessage(key, bundle);
 					} else {
-						fieldDescription = PortletUtilities.getMessage(key, "messages");
+						fieldDescription = MessageBundle.getMessage(key);
 					}
 					if (fieldDescription != null && !fieldDescription.trim().equals("")) fieldLabel = fieldDescription;
 				}

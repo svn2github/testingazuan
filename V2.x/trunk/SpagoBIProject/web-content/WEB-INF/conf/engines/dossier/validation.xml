@@ -7,7 +7,7 @@
 				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_SAVE_CONFIGURED_DOCUMENT"/>
 			</CONDITIONS>
 			<FIELDS>
-				<FIELD name="logicalname" label="#dossier.logNameObject" boundle="component_dossier_messages">
+				<FIELD name="logicalname" label="#dossier.logNameObject" bundle="component_dossier_messages">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 			</FIELDS>
@@ -21,13 +21,13 @@
 				<PARAMETER name="OPERATION" scope="SERVICE_REQUEST" value="OPERATION_PUBLISH_PRESENTATION"/>
 			</CONDITIONS>
 			<FIELDS>
-				<FIELD name="label" label="#SBIDev.docConf.docDet.labelField" boundle="messages">
+				<FIELD name="label" label="#SBIDev.docConf.docDet.labelField" bundle="messages">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
-				<FIELD name="name" label="#SBIDev.docConf.docDet.nameField" boundle="messages">
+				<FIELD name="name" label="#SBIDev.docConf.docDet.nameField" bundle="messages">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
-				<FIELD name="FUNCT_ID" label="#SBISet.treeFunct.title" boundle="messages">
+				<FIELD name="FUNCT_ID" label="#SBISet.treeFunct.title" bundle="messages">
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 			</FIELDS>

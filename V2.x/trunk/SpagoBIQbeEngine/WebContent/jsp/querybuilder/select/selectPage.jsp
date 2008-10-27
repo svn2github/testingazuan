@@ -42,6 +42,12 @@
     <qbe:url type="resource" var="src" ref="../js/querybuilder/overrides.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/querybuilder/commons.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	
+	
+	
 	<qbe:url type="resource" var="src" ref="../js/querybuilder/parser.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	

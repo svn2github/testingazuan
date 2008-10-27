@@ -32,7 +32,8 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.mime.MimeUtils;
 import it.eng.spagobi.utilities.strings.StringUtils;
 
@@ -70,7 +71,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
     public static transient Logger logger = Logger.getLogger(ExportResultAction.class);
     
 	
-	public void service(SourceBean request, SourceBean response) throws EngineException  {				
+	public void service(SourceBean request, SourceBean response) {				
 		
 		String responseType = null;
 		boolean writeBackResponseInline = false;
@@ -132,7 +133,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 				extractedFields = fieldsReader.readFields();
 			} catch (Exception e) {
 				logger.debug("Impossible to extract fields from query");
-				throw new EngineException("Impossible to extract fields from query: " + hqlQuery, e);
+				throw new SpagoBIEngineException("Impossible to extract fields from query: " + hqlQuery, e);
 			}
 			logger.debug("Fields extracted succesfully");
 			
@@ -152,7 +153,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 				try {
 					reportFile = File.createTempFile("report", ".rpt");
 				} catch (IOException ioe) {
-					throw new EngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
+					throw new SpagoBIEngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
 				}
 				
 				setJasperClasspath();
@@ -162,33 +163,23 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 				try {
 					runner.run( templateContent, reportFile, mimeType, connection);
 				}  catch (Exception e) {
-					throw new EngineException("Impossible compile or to export the report", e);
+					throw new SpagoBIEngineException("Impossible compile or to export the report", e);
 				}
 				
 				try {				
 					writeBackToClient(reportFile, writeBackResponseInline, "report." + fileExtension, mimeType);
 				} catch (IOException ioe) {
-					throw new EngineException("Impossible to write back the responce to the client", ioe);
+					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
 				}			
 			} else {
 				try {				
 					writeBackToClient(200, templateContent, writeBackResponseInline, "report." + fileExtension, mimeType);
 				} catch (IOException e) {
-					throw new EngineException("Impossible to write back the responce to the client", e);
+					throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
 				}
 			}
-		} catch (Throwable e) {			
-			QbeEngineException engineException;
-			
-			if(e instanceof QbeEngineException) {
-				engineException = (QbeEngineException)e;			
-			} else {
-				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
-			}
-			 
-			engineException.setEngineInstance( getEngineInstance() );
-			
-			throw engineException;
+		} catch (Throwable t) {			
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			
 			try {
@@ -205,8 +196,9 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					logger.warn("Impossible to delete temporary file " + reportFile, e);
 				}
 			}
-			logger.debug("OUT");
 		}
+		
+		logger.debug("OUT");
 	}
 	
 	

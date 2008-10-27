@@ -55,7 +55,7 @@ public class QueryEncoder {
 		Query query = null;
 		
 		query = new Query();		
-		decodeFilterExp(query, queryFilterExp, datamartModel);
+		
 		
 		// ----------------------------------------------------
 		// DECODE fields
@@ -70,7 +70,7 @@ public class QueryEncoder {
 		// ----------------------------------------------------
 		// DECODE expression
 		// ----------------------------------------------------
-		//decodeFilterExp(query, queryFilterExp, datamartModel);
+		decodeFilterExp(query, queryFilterExp, datamartModel);
 		
 		return query;
 	}

@@ -32,7 +32,9 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,7 +57,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
     public static transient Logger logger = Logger.getLogger(GetTreeAction.class);
     
     
-	public void service(SourceBean request, SourceBean response) throws EngineException {
+	public void service(SourceBean request, SourceBean response) {
 		
 		String datamartName = null;
 		IQbeTreeEntityFilter entityFilter = null;
@@ -85,40 +87,16 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
 		   	trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());			
 		   	nodes = (JSONArray)trees.get(0);		
-			//String treeData = nodes.toString();
-			
-			
-			/*
-			freezeHttpResponse();
-			HttpServletResponse httpResp = getHttpResponse();
-			
-			try {
-				httpResp.getOutputStream().print(treeData);
-				httpResp.getOutputStream().flush();
-			} catch (IOException e) { 
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 */
 			
 			try {
 				writeBackToClient( new JSONSuccess(nodes) );
 			} catch (IOException e) {
-				throw new EngineException("Impossible to write back the responce to the client", e);
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
-		} catch(Exception e) {
-			QbeEngineException engineException = null;
-			
-			if(e instanceof QbeEngineException) {
-				engineException = (QbeEngineException)e;
-			} else {
-				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
-			}
-			
-			engineException.setEngineInstance( getEngineInstance() );
-						
-			throw engineException;
+		} catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
 		}

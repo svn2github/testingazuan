@@ -36,7 +36,9 @@ import it.eng.spagobi.qbe.commons.service.JSONAcknowledge;
 import it.eng.spagobi.qbe.commons.service.JSONSuccess;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.strings.StringUtils;
 
 import org.apache.log4j.Logger;
@@ -61,7 +63,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
     public static transient Logger logger = Logger.getLogger(SaveQueryAction.class);
     
 	
-	public void service(SourceBean request, SourceBean response) throws EngineException {
+	public void service(SourceBean request, SourceBean response) {
 		
 		String queryName = null;		
 		String  queryDescritpion  = null;		
@@ -74,8 +76,8 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		
 		logger.debug("IN");
 		
-		freezeHttpResponse();
-		HttpServletResponse httResponse = getHttpResponse();
+		//freezeHttpResponse();
+		//HttpServletResponse httResponse = getHttpResponse();
 		
 		
 		try {
@@ -117,7 +119,8 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			try {
 				query = QueryEncoder.decode(queryRecords, queryFilters, queryFilterExp, getDatamartModel());
 			} catch (JSONException e) {
-				throw new EngineException("Impossible to decode query string comming from client", e);
+				String message = "Impossible to decode query string comming from client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
 			Query queryBkp = getEngineInstance().getQuery();
@@ -128,23 +131,16 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			try {
 				writeBackToClient( new JSONSuccess( result ) );
 			} catch (IOException e) {
-				throw new EngineException("Impossible to write back the responce to the client", e);
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
-		} catch(Exception e) {
-			QbeEngineException engineException = null;
-			
-			if(e instanceof QbeEngineException) {
-				engineException = (QbeEngineException)e;
-			} else {
-				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
-			}
-			
-			engineException.setEngineInstance( getEngineInstance() );
-						
-			throw engineException;
+		} catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			logger.debug("OUT");
+			// no resources need to be released
 		}
+		
+		logger.debug("OUT");
 	}
 }

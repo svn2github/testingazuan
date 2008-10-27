@@ -23,10 +23,13 @@ Ext.override(Ext.tree.TreeLoader, {
         	resultNode = new Ext.tree.TreeNode(attr);
         	resultNode.attributes = attr.attributes;
         	//alert(attr.attributes.field);
+        } else {
+        	resultNode = new Ext.tree.AsyncTreeNode(attr);
         }
-        return(resultNode ?
-                        resultNode :
-                        new Ext.tree.AsyncTreeNode(attr));
+        
+        return resultNode;
+        
+        //return(resultNode ? resultNode: new Ext.tree.AsyncTreeNode(attr));
     }
 }) ; 
   

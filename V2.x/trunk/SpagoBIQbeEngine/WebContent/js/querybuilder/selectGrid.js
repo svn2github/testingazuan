@@ -259,6 +259,14 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		              triggerAction: 'all',
 		              autocomplete: 'off',
 		              emptyText:'Select a function...',
+		              /*
+		              listeners: {
+		              	'change': {
+        					fn: this.updateGroupByColumn
+        					, scope: this
+		              	}
+        			  },
+        			  */
 		              selectOnFocus:true
 		            })
 		        },{
@@ -316,21 +324,30 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
          
 		        // inline toolbars
 		        tbar:[{
-		            text: this.labels.hideBT,
-		            tooltip:this.labels.hideTT,
-		            iconCls:'option'
-		        }, '-', {
-		            text: this.labels.groupBT,
-		            tooltip: this.labels.groupTT,
-		            iconCls:'option'
-		        },'-',{
 		            text: this.labels.addBT,
 		            tooltip: this.labels.addTT,
 		            iconCls:'option'
 		        },'-',{
+		            text: this.labels.hideBT,
+		            tooltip:this.labels.hideTT,
+		            enableToggle: true,
+		            iconCls:'option',
+		            listeners: {
+		            	'toggle': {
+        					fn: this.hideNonVisibleRows,
+        					scope: this
+        				}
+		            }
+		        },'-',{
 		            text: this.labels.clearBT,
 		            tooltip: this.labels.clearTT,
-		            iconCls:'remove'
+		            iconCls:'remove',
+		            listeners: {
+		            	'click': {
+        					fn: this.deleteGrid,
+        					scope: this
+        				}
+		            }
 		        }],
 		        iconCls:'icon-grid'        
 		    });
@@ -361,7 +378,11 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		          this.store.remove( ds.getById(rows[i].id) );
 		        }
 		      }      
-		    }, this.grid);	 
+		    }, this.grid);	
+		    
+		    this.grid.store.on('update', function(e){
+		    	this.updateGroupByColumn();
+		    }, this); 
 		    
 		         
 		},  
@@ -443,7 +464,55 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 			jsonStr += ']';
 			
 			return jsonStr;
+		},
+		
+		deleteGrid : function() {
+			this.grid.store.removeAll();
+		},
+		
+		hideNonVisibleRows : function(button, pressed) {
+			
+			this.grid.store.filterBy(function(record, id) {
+				if(!pressed) return true; // show all
+				
+				return record.data['visible'];
+			});
+		},
+		
+		updateGroupByColumn : function() {
+			
+			var index = this.grid.store.findBy(function(record) {
+				var isFunction = !(record.data['funct'] == undefined
+						|| record.data['funct'].trim() == ''
+							|| record.data['funct'] == 'NONE');
+				return isFunction;
+			});
+						
+			var groupFlag = (index == -1? '': 'true');			
+						
+			this.grid.store.each(function(record) {
+				
+				//alert('[' + record.data['funct'] + '] - ' + (record.data['funct'] == undefined));	
+				//alert('[' + record.data['funct'] + '] - ' + (record.data['funct'].trim() == ''));	
+				//alert('[' + record.data['funct'] + '] - ' + (record.data['funct'] == 'NONE'));	
+				
+					
+				if( record.data['funct'] == undefined
+						|| record.data['funct'].trim() == ''
+							|| record.data['funct'] == 'NONE') {
+						//alert('true');
+						record.data['group'] = groupFlag;	
+					} else {
+						//alert('false');
+						record.data['group'] = '';	
+					}								
+			});
+			
+						
+			this.grid.getView().refresh();		
+			
 		}
+		
 	};
 	
 }();

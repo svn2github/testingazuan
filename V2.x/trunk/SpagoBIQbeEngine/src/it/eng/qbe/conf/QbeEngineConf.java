@@ -205,38 +205,20 @@ public class QbeEngineConf {
 		return queryPersister;
 	}
 	
-	
-	/*
-	private void addFunctianalityProperties(Map functionalities, String functionalityName, Properties props) {
-		Properties p = (Properties)functionalities.get(functionalityName);
-		if(p == null) {
-			p = new Properties();
-		}
-		p.putAll(props);
-		functionalities.put(functionalityName, p);
-	}
-	
-	public Map getFunctianalityProperties(SourceBean functionalitiesSB) {
-		Map functionalities = new HashMap();
-		
-		List list = functionalitiesSB.getAttributeAsList("FUNCTIONALITY");
-		for(int i = 0; i < list.size(); i++) {
-			SourceBean functionalitySB = (SourceBean)list.get(i);
-			String functionalityName = (String)functionalitySB.getAttribute("name");
-			Properties props = new Properties();
-			List parameters = functionalitySB.getAttributeAsList("PARAMETER");
-			for(int j = 0; j < parameters.size(); j++) {
-				SourceBean parameterSB = (SourceBean)parameters.get(j);
-				String parameterName = (String)parameterSB.getAttribute("name");
-				String parameterValue = (String)parameterSB.getAttribute("value");
-				props.put(parameterName, parameterValue);
+	public Integer getResultLimit() {
+		Integer resultLimit = null;
+		String resultLimitStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
+		if(resultLimitStr == null || resultLimitStr.equalsIgnoreCase("none")) {
+			resultLimit = null;
+		} else {
+			try {
+				resultLimit = new Integer(resultLimitStr);
+			} catch(Throwable t) {
+				t.printStackTrace();
 			}
-			addFunctianalityProperties(functionalities, functionalityName, props);
 		}
-		
-		return functionalities;
+		return resultLimit;
 	}
-	*/
 	
 	/**
 	 * Gets the locale.

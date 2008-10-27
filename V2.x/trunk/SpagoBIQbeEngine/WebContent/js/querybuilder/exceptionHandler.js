@@ -23,7 +23,15 @@ it.eng.spagobi.engines.qbe.exceptionhandler.module = function(){
         	}
         	
         	var content = Ext.util.JSON.decode( response.responseText );
-        	alert(content.cause);
+        	Ext.MessageBox.show({
+           		title: 'Service Error',
+           		msg: content.cause,
+           		buttons: Ext.MessageBox.OK,
+           		//fn: showResult,
+           		icon: Ext.MessageBox.ERROR
+       		});
+        	
+        	//alert();
         }
         
 	};

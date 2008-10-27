@@ -134,11 +134,22 @@ it.eng.spagobi.engines.qbe.app = function() {
 			        
 			          	it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record, rowIndex);
 			          	
+			        } else if(node.attributes.attributes.type == 'entity'){
+	        			
+	        			for(var i = 0; i < node.attributes.children.length; i++) {
+	        				if(node.attributes.children[i].attributes.type != 'field') continue;
+	        				
+	        				var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+		          				id: node.attributes.children[i].id , 
+		            			entity: node.attributes.children[i].attributes.entity , 
+		            			field: node.attributes.children[i].attributes.field  
+		          			});
+		          			it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record, rowIndex);
+	        			}
+			        
 			        } else {
-			        	var str = "";
-			          	for(p in node.attributes) {
-			            	str += p + "; " +  node.attributes[p] + "\n";
-			          	}
+			        	alert("Error: unknown node type");
+			        	//it.eng.spagobi.engines.qbe.commons.dump(node);
 			        }
         
         			selectGrid.getView().refresh();
@@ -252,11 +263,20 @@ it.eng.spagobi.engines.qbe.app = function() {
 		          			});
 		          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
 	        			}
+	        		} else if(node.attributes.attributes.type == 'entity'){
+	        			
+	        			for(var i = 0; i < node.attributes.children.length; i++) {
+	        				if(node.attributes.children[i].attributes.type != 'field') continue;
+	        				
+	        				var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+		          				id: node.attributes.children[i].id , 
+		            			entity: node.attributes.children[i].attributes.entity , 
+		            			field: node.attributes.children[i].attributes.field  
+		          			});
+		          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
+	        			}
 	        		} else {
-	          			var str = "";
-	          			for(p in node.attributes) {
-	            			str += p + "; " +  node.attributes[p] + "\n";
-	          			}
+	        			alert("Error: unknown node type");
 	        		}
 	        
 	        		filterGrid.getView().refresh();

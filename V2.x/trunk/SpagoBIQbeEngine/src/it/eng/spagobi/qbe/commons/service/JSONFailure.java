@@ -21,7 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +33,11 @@ import org.json.JSONObject;
  */
 public class JSONFailure extends JSONResponse {
 
-	public JSONFailure(EngineException exception) {
+	public JSONFailure(SpagoBIEngineServiceException exception) {
 		super(JSONResponse.FAILURE, createResponseContent(exception) );
 	}
 
-	private static JSONObject createResponseContent(EngineException exception) {
+	private static JSONObject createResponseContent(SpagoBIEngineServiceException exception) {
 		JSONObject content = new JSONObject();
 		
 		try {

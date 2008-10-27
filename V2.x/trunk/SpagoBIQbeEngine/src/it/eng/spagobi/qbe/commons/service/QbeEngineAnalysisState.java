@@ -25,7 +25,7 @@ import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.newquery.Query;
 import it.eng.spagobi.qbe.core.service.QueryEncoder;
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 		setDatamartModel( datamartModel );
 	}
 
-	public void load(byte[] rowData) throws EngineException {
+	public void load(byte[] rowData) throws SpagoBIEngineException {
 		String str = null;
 			
 		str = new String( rowData );
@@ -57,18 +57,18 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 		try {
 			query = QueryEncoder.decode( str, getDatamartModel() );
 		} catch (JSONException e) {
-			throw new EngineException("Impossible to load analysis state from row-data", e);
+			throw new SpagoBIEngineException("Impossible to load analysis state from row-data", e);
 		}
 		setProperty( QUERY, query );
 	}
 
-	public byte[] store() throws EngineException {
+	public byte[] store() throws SpagoBIEngineException {
 		String rowData = null;
 				
 		try {
 			rowData = QueryEncoder.encode( getQuery(), getDatamartModel() );
 		} catch (JSONException e) {
-			throw new EngineException("Impossible to store analysis state from query object", e);
+			throw new SpagoBIEngineException("Impossible to store analysis state from query object", e);
 		}
 		
 		return rowData.getBytes();

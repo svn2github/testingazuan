@@ -42,6 +42,8 @@ import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,20 +73,19 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
 	
 	
-	
-	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
 	
 	
-    public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws QbeEngineException {
+    public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
+    	QbeEngineInstance qbeEngineInstance = null;
     	
     	logger.debug("IN");
        
     	try {
 			super.service(serviceRequest, serviceResponse);
 			
-			QbeEngineInstance qbeEngineInstance;
+			
 			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
@@ -106,20 +107,11 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
 			setAttribute("query", QueryEncoder.encode(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel()));
 			
-		} catch (Exception e) {
-			if(e instanceof QbeEngineException) throw (QbeEngineException)e;
-			
-			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
-			Throwable rootException = e;
-			while(rootException.getCause() != null) rootException = rootException.getCause();
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			description += "<br>The root cause of the error is: " + str;
-			List hints = new ArrayList();
-			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			throw new QbeEngineException(description, hints, e);
-		}
-		
-		
+		} catch (Throwable e) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
+		} finally {
+			// no resources need to be released
+		}		
 
 		logger.debug("OUT");
 	}    

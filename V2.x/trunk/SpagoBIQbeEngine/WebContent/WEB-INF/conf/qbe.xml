@@ -26,7 +26,7 @@
 		checkerClass="it.eng.qbe.utility.SimpleSpaceChecker" 
 		failIfSpaceLess="25"/>
 	
-	<QBE-SQL-RESULT-LIMIT value="10000"/>
+	<QBE-SQL-RESULT-LIMIT value="none"/>
 	
 	<GEO-ENGINE-URL value="http://localhost:8080/SpagoBIGeoEngine"/>
 	

@@ -22,7 +22,7 @@
 package it.eng.spagobi.qbe.commons.exception;
 
 import it.eng.spagobi.qbe.QbeEngineInstance;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,11 @@ import java.util.List;
 /**
  * The Class QbeEngineException.
  */
-public class QbeEngineException extends EngineException {
+public class QbeEngineException extends SpagoBIEngineException {
     
-	/** The hints. */
+	/** The hints. 
 	List hints;
+	*/
 	
 	QbeEngineInstance engineInstance;
 	
@@ -55,8 +56,17 @@ public class QbeEngineException extends EngineException {
      */
     public QbeEngineException(String message, Throwable ex) {
     	super(message, ex);
-    	this.hints = new ArrayList();
+    	//this.hints = new ArrayList();
     }
+    
+    public QbeEngineInstance getEngineInstance() {
+		return engineInstance;
+	}
+
+	public void setEngineInstance(QbeEngineInstance engineInstance) {
+		this.engineInstance = engineInstance;
+	}
+    
     
     /**
      * Instantiates a new qbe engine exception.
@@ -65,24 +75,28 @@ public class QbeEngineException extends EngineException {
      * @param description the description
      * @param hints the hints
      * @param ex the ex
-     */
+     
     public QbeEngineException(String message, List hints, Throwable ex ) {
     	super(message, ex);
     	this.hints = hints;
     }
-	
+	*/
+    
 	/**
 	 * Instantiates a new qbe engine exception.
 	 * 
 	 * @param message the message
 	 * @param description the description
 	 * @param hints the hints
-	 */
+	 
 	public QbeEngineException(String message, List hints) {
 		super(message);
 		this.hints = hints;
 	}
+	*/
 
+    	
+    /*
 	public String getRootCause() {
 		String rootCause;		
 		Throwable rootException;
@@ -98,33 +112,30 @@ public class QbeEngineException extends EngineException {
 		
 		return rootCause;
 	}
+	*/
 	
 	
 	/**
 	 * Gets the hints.
 	 * 
 	 * @return the hints
-	 */
+	 
 	public List getHints() {
 		return hints;
 	}
+	*/
 
 	/**
 	 * Sets the hints.
 	 * 
 	 * @param hints the new hints
-	 */
+	 
 	public void setHints(List hints) {
 		this.hints = hints;
 	}
+	*/
 
-	public QbeEngineInstance getEngineInstance() {
-		return engineInstance;
-	}
-
-	public void setEngineInstance(QbeEngineInstance engineInstance) {
-		this.engineInstance = engineInstance;
-	}
+	
 
 
 }

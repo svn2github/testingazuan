@@ -216,6 +216,12 @@ public class ExtJsQbeTreeBuilder  {
 			entityNode.put("id", entity.getUniqueName());
 			entityNode.put("text", label );
 			entityNode.put("iconCls", iconCls);
+			
+			JSObject nodeAttributes = new JSObject();
+			nodeAttributes.put("iconCls", iconCls);
+			nodeAttributes.put("type", "entity");
+			entityNode.put("attributes", nodeAttributes);
+			
 			entityNode.put("children", childrenNodes);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -293,12 +299,12 @@ public class ExtJsQbeTreeBuilder  {
 			fieldNode.put("id", field.getUniqueName());
 			fieldNode.put("text", fieldLabel);
 			fieldNode.put("leaf", true);
+			
 			JSObject nodeAttributes = new JSObject();
-
-			nodeAttributes.put("entity", entityLabel);
-			nodeAttributes.put("field", fieldLabel);
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "field");
+			nodeAttributes.put("entity", entityLabel);
+			nodeAttributes.put("field", fieldLabel);
 			fieldNode.put("attributes", nodeAttributes);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

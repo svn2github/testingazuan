@@ -291,6 +291,10 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		    });
 		    */
 		    
+		    var boperatorRenderer = function(val){
+        	 return '<span style="color:green;">' + val + '</span>';  
+        	}; 
+		    
 		    var cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
 		        {
@@ -347,10 +351,13 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		           header: this.labels.boperator,
 		           dataIndex: 'boperator',
 		           editor: cb,
+		           renderer:this.boperatorRenderer,
 		           width: 75
 		        },
 		        delButtonColumn
 		    ]);
+		    
+		    
 		    
 		    
 		    cm.defaultSortable =true;
@@ -384,7 +391,13 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		        {
 		            text: this.labels.clearBT,
 		            tooltip: this.labels.clearTT,
-		            iconCls:'remove'
+		            iconCls:'remove',
+		            listeners: {
+		            	'click': {
+        					fn: this.deleteGrid,
+        					scope: this
+        				}
+		            }
 		        }, {
 		        	text: 'Exp Wizard',
 		            tooltip: 'Exp Wizard',
@@ -608,6 +621,10 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		
 		isWizardExpression: function() {
 			return this.wizardExpression;
+		},
+		
+		deleteGrid : function() {
+			this.grid.store.removeAll();
 		},
 		
 		wizardExpression: false

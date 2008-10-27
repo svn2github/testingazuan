@@ -26,7 +26,8 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.JSONFailure;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -45,9 +46,8 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
     public static transient Logger logger = Logger.getLogger(ServiceExceptionAction.class);
 	
    
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws EngineException  {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse)  {
 		
-		freezeHttpResponse();
 		
 		Iterator it = getErrorHandler().getErrors().iterator();
 		while(it.hasNext()) {
@@ -55,14 +55,15 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
 			if(o instanceof EMFInternalError) {
 				EMFInternalError error = (EMFInternalError)o;
 				Exception e = error.getNativeException();
-				if(e instanceof QbeEngineException) {
-					QbeEngineException qbeError = (QbeEngineException)e;
-					logError(qbeError);
+				if(e instanceof SpagoBIEngineServiceException) {
+					SpagoBIEngineServiceException serviceError = (SpagoBIEngineServiceException)e;
+					logError(serviceError);
 					
 					try {
-						writeBackToClient( new JSONFailure( qbeError ) );
+						writeBackToClient( new JSONFailure( serviceError ) );
 					} catch (IOException ioe) {
-						throw new EngineException("Impossible to write back the responce to the client", e);
+						String message = "Impossible to write back the responce to the client";
+						throw new SpagoBIEngineServiceException(getActionName(), message, e);
 					}
 				}
 			}
@@ -71,18 +72,18 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
 	}
 
 
-	private void logError(QbeEngineException qbeError) {
-		logger.error(qbeError.getMessage());
-		logger.error("The error root cause is: " + qbeError.getRootCause());	
-		if(qbeError.getHints().size() > 0) {
-			Iterator hints = qbeError.getHints().iterator();
+	private void logError(SpagoBIEngineServiceException serviceError) {
+		logger.error(serviceError.getMessage());
+		logger.error("The error root cause is: " + serviceError.getRootCause());	
+		if(serviceError.getHints().size() > 0) {
+			Iterator hints = serviceError.getHints().iterator();
 			while(hints.hasNext()) {
 				String hint = (String)hints.next();
 				logger.info("hint: " + hint);
 			}
 			
 		}
-		logger.error("The error root cause stack trace is:",  qbeError.getCause());	
-		logger.error("The error full stack trace is:", qbeError);			
+		logger.error("The error root cause stack trace is:",  serviceError.getCause());	
+		logger.error("The error full stack trace is:", serviceError);			
 	}
 }

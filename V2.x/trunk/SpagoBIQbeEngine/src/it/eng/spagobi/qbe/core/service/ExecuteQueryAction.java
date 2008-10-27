@@ -20,6 +20,7 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
+import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.XIStatement;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.spago.base.SourceBean;
@@ -28,7 +29,9 @@ import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
 import it.eng.spagobi.qbe.commons.service.JSONSuccess;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,17 +56,18 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public static final String START = "start";
 	
 	/** The Constant MAX_RESULT. */
-	public static final int MAX_RESULT = 14000;
+	//public static final int MAX_RESULT = 14000;
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
     
 	
-	public void service(SourceBean request, SourceBean response) throws EngineException  {				
+	public void service(SourceBean request, SourceBean response)  {				
 				
 		XIStatement statement = null;
 		Integer limit = null;
 		Integer start = null;
+		Integer maxSize = null;
 		SourceBean queryResponseSourceBean = null;		
 		List results = null;
 		Integer resultNumber = null;
@@ -79,8 +83,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			logger.debug(LIMIT + ": " + limit);
 			start = getAttributeAsInteger( START );	
 			logger.debug(START + ": " + start);
-			
-			logger.debug("max results: " + MAX_RESULT );
+			maxSize = QbeEngineConf.getInstance().getResultLimit();			
+			logger.debug("max results: " + (maxSize != null? maxSize: "none") );
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
@@ -93,17 +97,22 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			
 			try {
 				logger.debug("Executing query ...");
-				queryResponseSourceBean = statement.executeWithPagination(start, limit, MAX_RESULT);
+				queryResponseSourceBean = statement.executeWithPagination(start, limit, (maxSize == null? -1: maxSize.intValue()));
 				Assert.assertNotNull(queryResponseSourceBean, "The the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
-				String query = statement.getQueryString();
-				String message = "An error occurred in " + getActionName() + " service while executing query: [" + query + "]";				
-				List hints = new ArrayList();
-				hints.add("Check if the query is properly formed: [" + query + "]");
-				hints.add("Check connection configuration");
-				hints.add("Check the qbe jar file");
-				throw new QbeEngineException(message, hints, e);
+				SpagoBIEngineServiceException exception;
+				String message;
+				String query;
+				
+				query = statement.getQueryString();
+				message = "An error occurred in " + getActionName() + " service while executing query: [" +  query + "]";				
+				exception = new SpagoBIEngineServiceException(getActionName(), message, e);
+				exception.addHint("Check if the query is properly formed: [" + query + "]");
+				exception.addHint("Check connection configuration");
+				exception.addHint("Check the qbe jar file");
+				
+				throw exception;
 			}
 			logger.debug("Query executed succesfully");
 			
@@ -120,24 +129,17 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			try {
 				writeBackToClient( new JSONSuccess(gridDataFeed) );
 			} catch (IOException e) {
-				throw new EngineException("Impossible to write back the responce to the client", e);
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
-		} catch (Exception e) {			
-			QbeEngineException engineException;
-			
-			if(e instanceof QbeEngineException) {
-				engineException = (QbeEngineException)e;			
-			} else {
-				engineException = new QbeEngineException("An internal error occurred in " + getActionName() + " service", e);
-			}
-			 
-			engineException.setEngineInstance( getEngineInstance() );
-			
-			throw engineException;
+		} catch(Throwable t) {
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			logger.debug("OUT");
-		}
+			// no resources need to be released
+		}	
+		
+		logger.debug("OUT");
 	}
 	
 	private JSONObject buildGridDataFeed(List results, int resultNumber) throws JSONException {

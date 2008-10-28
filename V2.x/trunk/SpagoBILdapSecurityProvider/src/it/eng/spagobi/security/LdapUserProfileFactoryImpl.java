@@ -5,14 +5,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+ * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+ * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -30,12 +30,17 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
-**/
+ **/
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IUserFunctionalityDAO;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 
@@ -44,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -57,28 +63,66 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 
     static private Logger logger = Logger.getLogger(LdapUserProfileFactoryImpl.class);
 
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.services.security.service.ISecurityServiceSupplier#checkAuthorization(java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.eng.spagobi.services.security.service.ISecurityServiceSupplier#checkAuthorization(java.lang.String,
+     *      java.lang.String)
      */
-    public boolean checkAuthorization(String userId, String function) {
-	logger.warn("checkAuthorization NOT implemented");
-	return true;
+    public boolean checkAuthorization(String userId, String pwd) {
+	logger.warn("NOT IMPLEMENTED!!!!!!!!");
+	return false;
+    }
+
+    public boolean checkAuthentication(String userId, String psw) {
+	logger.debug("IN");
+	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
+	try {
+	    return conn.autenticateUser(userId, psw);
+	} catch (UnsupportedEncodingException e) {
+	    logger.error("UnsupportedEncodingException", e);
+	} catch (LDAPException e) {
+	    logger.error("LDAPException", e);
+	}
+	logger.debug("OUT.False");
+	return false;
+    }
+
+    public List getUserRoles(String user, SourceBean config) {
+	List roles = new ArrayList();
+	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
+	List ldapRoles = null;
+	try {
+	    ldapRoles = conn.getUserGroup(user);
+
+	} catch (UnsupportedEncodingException e) {
+	    e.printStackTrace();
+	} catch (LDAPException e) {
+	    e.printStackTrace();
+	}
+	Iterator iter_sb_roles = ldapRoles.iterator();
+	while (iter_sb_roles.hasNext()) {
+	    String roleStr = (String) iter_sb_roles.next();
+	    Role role = new Role(roleStr, roleStr);
+	    roles.add(role);
+	}
+
+	return roles;
     }
 
     /**
      * Return an IEngUserProfile implementation starting from the Principal of
      * the user.
      * 
-     * @param userId the user id
+     * @param userId
+     *                the user id
      * 
      * @return The User Profile Interface implementation object
      */
     public SpagoBIUserProfile createUserProfile(String userId) {
-	SpagoBIUserProfile profile = null;
-
-	RequestContainer reqCont = RequestContainer.getRequestContainer();
-
-	SourceBean configSingleton = (SourceBean) ConfigSingleton.getInstance();
+	logger.debug("IN");
+	SpagoBIUserProfile profile = new SpagoBIUserProfile();
+	profile.setUserId(userId);
 
 	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
 	List ldapRoles = null;
@@ -87,80 +131,97 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	    ldapRoles = conn.getUserGroup(userId);
 	    attributes = conn.getUserAttributes(userId);
 	} catch (UnsupportedEncodingException e) {
-	    e.printStackTrace();
+	    logger.error("UnsupportedEncodingException", e);
 	} catch (LDAPException e) {
-	    e.printStackTrace();
+	    logger.error("LDAPException", e);
 	}
 
-	List functs = new ArrayList();
+	List roles = new ArrayList();
 	Iterator iterRoles = ldapRoles.iterator();
 	while (iterRoles.hasNext()) {
 	    String roleName = (String) iterRoles.next();
-	    List functsSB = configSingleton.getFilteredSourceBeanAttributeAsList(
-		    "LDAP_AUTHORIZATIONS.RELATIONS.PRIVILEDGES.PRIVILEDGE", "roleName", roleName);
-	    Iterator iterFunctsSB = functsSB.iterator();
-	    while (iterFunctsSB.hasNext()) {
-		SourceBean functSB = (SourceBean) iterFunctsSB.next();
-		String functionalityName = (String) functSB.getAttribute("functionalityName");
-		if (!functs.contains(functionalityName)) {
-		    functs.add(functionalityName);
-		}
-	    }
+	    Role role = new Role(roleName, roleName);
+	    roles.add(role);
 	}
+	String[] roleStr = new String[roles.size()];
+	for (int i = 0; i < roles.size(); i++) {
+	    roleStr[i] = (String) roles.get(i);
+	}
+	profile.setRoles(roleStr);
+	profile.setAttributes(createMapAttributes(attributes));
+	profile.setFunctions(readFunctionality(profile.getRoles()));
 
-	//profile = new SpagoBIUserProfile(attributes, functs, ldapRoles, userId);
+	logger.debug("OUT");
+
 	return profile;
     }
 
-    /*
-     * public class SpagoBIUserProfile implements IEngUserProfile {
-     * 
-     * String userId = null; Collection functionalities = null; Collection roles =
-     * null; Map attributes = null; String application = null;
-     * 
-     * public SpagoBIUserProfile(String userName, Collection functs, Collection
-     * roles, Map attrs) { this.userId = userName; this.functionalities =
-     * functs; this.roles = roles; this.attributes = createMapAttributes(attrs); }
-     * 
-     * private Map createMapAttributes(Map attr){ Map result=new HashMap();
-     * 
-     * SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
-     * SourceBean config =
-     * (SourceBean)configSingleton.getAttribute("LDAP_AUTHORIZATIONS.CONFIG");
-     * List attrList=config.getAttributeAsList(LDAPConnector.ATTRIBUTES_ID);
-     * Iterator iterAttr=attrList.iterator(); while (iterAttr.hasNext()){
-     * SourceBean tmp=(SourceBean)iterAttr.next(); String
-     * key=(String)tmp.getAttribute("name"); String
-     * keyLdap=(String)tmp.getCharacters(); String
-     * value=(String)attr.get(keyLdap); if (value!=null && key!=null){
-     * result.put(key, value); } } return result; }
-     * 
-     * public Collection getFunctionalities() throws EMFInternalError { return
-     * this.functionalities; }
-     * 
-     * public Collection getFunctionalitiesByRole(String arg0) throws
-     * EMFInternalError { return null; }
-     * 
-     * public Collection getRoles() throws EMFInternalError { return this.roles; }
-     * 
-     * public Object getUserAttribute(String arg0) throws EMFInternalError {
-     * return attributes.get(arg0); }
-     * 
-     * public Collection getUserAttributeNames() { return attributes.keySet(); }
-     * 
-     * public Object getUserUniqueIdentifier() { return userId; }
-     * 
-     * public boolean hasRole(String arg0) throws EMFInternalError { return
-     * roles.contains(arg0); }
-     * 
-     * public boolean isAbleToExecuteAction(String arg0) throws EMFInternalError {
-     * return true; }
-     * 
-     * public boolean isAbleToExecuteModuleInPage(String arg0, String arg1)
-     * throws EMFInternalError { return true; }
-     * 
-     * public void setApplication(String arg0) throws EMFInternalError {
-     * this.application = arg0; } }
-     */
+    private String[] readFunctionality(String[] roles) {
+	logger.debug("IN");
+	try {
+	    IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();
+	    String[] functionalities = dao.readUserFunctionality(roles);
+	    logger.debug("Functionalities retrieved: " + functionalities == null ? "" : functionalities.toString());
+	    if (isAbleToSaveSubObjects(roles)) {
+		logger.debug("Adding save subobject functionality...");
+		String[] newFunctionalities = new String[functionalities.length + 1];
+		for (int i = 0; i < functionalities.length; i++) {
+		    newFunctionalities[i] = functionalities[i];
+		}
+		newFunctionalities[newFunctionalities.length - 1] = SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY;
+		functionalities = newFunctionalities;
+	    }
+	    return functionalities;
+	} catch (EMFUserError e) {
+	    logger.error("EMFUserError", e);
+	} catch (Exception e) {
+	    logger.error("Exception", e);
+	} finally {
+	    logger.debug("OUT");
+	}
+	return null;
+    }
+
+    private boolean isAbleToSaveSubObjects(String[] roles) {
+	logger.debug("IN");
+	boolean isAbleToSaveSubObjects = false;
+	try {
+	    if (roles != null && roles.length > 0) {
+		for (int i = 0; i < roles.length; i++) {
+		    String roleName = roles[i];
+		    Role role = DAOFactory.getRoleDAO().loadByName(roleName);
+		    if (role.isAbleToSaveSubobjects()) {
+			logger.debug("User has role " + roleName + " that is able to save subobjects.");
+			isAbleToSaveSubObjects = true;
+			break;
+		    }
+		}
+	    }
+	} catch (EMFUserError e) {
+	    logger.error(e);
+	} finally {
+	    logger.debug("OUT");
+	}
+	return isAbleToSaveSubObjects;
+    }
+
+    private HashMap createMapAttributes(Map attr) {
+	HashMap result = new HashMap();
+
+	SourceBean configSingleton = (SourceBean) ConfigSingleton.getInstance();
+	SourceBean config = (SourceBean) configSingleton.getAttribute("LDAP_AUTHORIZATIONS.CONFIG");
+	List attrList = config.getAttributeAsList(LDAPConnector.ATTRIBUTES_ID);
+	Iterator iterAttr = attrList.iterator();
+	while (iterAttr.hasNext()) {
+	    SourceBean tmp = (SourceBean) iterAttr.next();
+	    String key = (String) tmp.getAttribute("name");
+	    String keyLdap = (String) tmp.getCharacters();
+	    String value = (String) attr.get(keyLdap);
+	    if (value != null && key != null) {
+		result.put(key, value);
+	    }
+	}
+	return result;
+    }
 
 }

@@ -285,7 +285,7 @@ public class WekaServlet extends HttpServlet {
 		Connection con = getConnection(request.getSession(),(String)profile.getUserUniqueIdentifier(),(String)params.get("document"));
 		try {
 			ContentServiceProxy contentProxy=new ContentServiceProxy(userId,request.getSession());
-			Content template=contentProxy.readTemplate( (String)params.get("document"));
+			Content template=contentProxy.readTemplate( (String)params.get("document"),new HashMap());
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] content = bASE64Decoder.decodeBuffer(template.getContent());
 

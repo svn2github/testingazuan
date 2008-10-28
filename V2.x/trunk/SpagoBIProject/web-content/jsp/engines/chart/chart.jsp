@@ -69,7 +69,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String executionFlowIdO=instanceO.getFlowId();
    	%>
 
-
+	<%-- div with wait while loading message --%>
+	<div id="divLoadingMessage<%= uuidO %>" style="display:inline;">
+		<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
+		<spagobi:message key='sbi.execution.pleaseWait'/>
+	</div>
 
 <link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
@@ -651,7 +655,10 @@ if(document.getElementById('refreshimage<%= uuidO %>')){
 	
 	%>
 
-
+<%-- when the execution is performed, the please while loading message is hidden --%>
+<script type="text/javascript">
+document.getElementById('divLoadingMessage<%= uuidO %>').style.display = 'none';
+</script>
 
 
 

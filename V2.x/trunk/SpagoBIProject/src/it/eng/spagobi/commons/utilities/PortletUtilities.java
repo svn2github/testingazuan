@@ -277,7 +277,7 @@ public class PortletUtilities {
 		 * Get the locale of the portal or the one setted into the configuration files 
 		 * @return locale for message resolution
 		 */
-		private static Locale getLocaleForMessage() {
+		public static Locale getLocaleForMessage() {
 			String portalLang = null;
 			 try {
 			 	// get the locale and the language of the portal

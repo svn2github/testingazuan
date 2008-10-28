@@ -36,6 +36,11 @@
            <required>false</required>
            <rtexprvalue>true</rtexprvalue>
        </attribute> 
+        <attribute>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     
     <!-- display the list of biobject links  -->

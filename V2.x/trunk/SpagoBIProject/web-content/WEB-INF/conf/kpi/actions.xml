@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ACTIONS>
+  <ACTION name="KPIConfigurationAction" class="it.eng.spagobi.kpi.service.KPIConfigurationAction"
+    scope="REQUEST">
+    <CONFIG></CONFIG>
+  </ACTION>
+</ACTIONS>

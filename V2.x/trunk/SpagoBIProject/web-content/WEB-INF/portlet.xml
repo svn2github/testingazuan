@@ -520,4 +520,34 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         </portlet-info>
 	</portlet>
 	
+    <portlet>
+      <description>KPI Configuration</description>    
+      <portlet-name>KPIConfiguration</portlet-name>   
+      <display-name>KPI Configuration</display-name>    
+      <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+      <init-param>
+        <name>serviceType</name>
+        <value>ACTION</value>
+      </init-param>
+      <init-param>
+        <name>serviceName</name>
+        <value>KPIConfigurationAction</value>
+      </init-param>
+      <init-param>
+        <name>light_navigation</name>
+        <value>ENABLED</value>
+      </init-param>           
+      <expiration-cache>0</expiration-cache>
+      <supports>
+        <mime-type>text/html</mime-type>
+        <portlet-mode>VIEW</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <portlet-info>
+        <title>KPI Configuration</title>
+        <short-title>KPIConfiguration</short-title>
+        <keywords>KPI Configuration</keywords>
+      </portlet-info>
+    </portlet>
+  
 </portlet-app>

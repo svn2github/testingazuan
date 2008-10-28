@@ -166,9 +166,15 @@ if (heightArea == null || heightArea.trim().equals("")) {
   			if (heightFrame <= 0) heightFrame = 600;
   			iframeEl.style.height = heightFrame + 'px';
 		}
-	
+
+		
+		function hideLoadingMessage<%=uuid%>Funct() {
+			document.getElementById('divLoadingMessage<%= uuid %>').style.display = 'none';
+		}
+
 		try {
 			SbiJsInitializer.adaptSize<%=uuid%> = adaptSize<%=uuid%>Funct;
+			SbiJsInitializer.hideLoadingMessage<%=uuid%> = hideLoadingMessage<%=uuid%>Funct;
 	    } catch (err) {
 			alert('Cannot resize the document view area');
 		}
@@ -185,6 +191,11 @@ if (heightArea == null || heightArea.trim().equals("")) {
 	heightStr = "height:"+heightArea+"px;";
 }
 %>
+
+<div id="divLoadingMessage<%= uuid %>" style="display:inline;">
+	<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
+	<spagobi:message key='sbi.execution.pleaseWait'/>
+</div>
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= uuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">

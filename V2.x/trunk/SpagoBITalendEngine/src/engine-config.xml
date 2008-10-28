@@ -9,6 +9,8 @@
 	<ACTIVE_SSO>false</ACTIVE_SSO>
 	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
 	<PASS>PASS</PASS>
+	<!--  SPAGOBI_SERVER_URL Address for invoking WebService, if empty use the request parameters -->
+	<SPAGOBI_SERVER_URL>http://localhost:8080/SpagoBI</SPAGOBI_SERVER_URL>
 	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
 	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>

@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -60,8 +61,6 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	SpagoBIUserProfile profile = new SpagoBIUserProfile();
 	profile.setUserId(userId);
 
-	// get request container
-	RequestContainer reqCont = RequestContainer.getRequestContainer();
 	// get user name
 	String userName = userId;
 	// get config
@@ -79,32 +78,31 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 
 	// start load profile attributes
 	HashMap userAttributes = new HashMap();
-	List userSB = configSingleton.getFilteredSourceBeanAttributeAsList(
-		"AUTHORIZATIONS.ENTITIES.USERS.USER", "userID", userName);
+	List userSB = configSingleton.getFilteredSourceBeanAttributeAsList("AUTHORIZATIONS.ENTITIES.USERS.USER",
+		"userID", userName);
 	if (userSB.size() == 0) {
-		logger.warn("User " + userName + " not found on configuration!!!");
-	} 
-	else 
-		if (userSB.size()>1) logger.warn("There are more user with userID="+userName);
-		else {
-		    SourceBean userTmp = (SourceBean) userSB.get(0);
-		    XmlSecurityInfoProviderImpl xmlSecInfo=new XmlSecurityInfoProviderImpl();
-		    List attributesList=xmlSecInfo.getAllProfileAttributesNames();
-		    if (attributesList!=null){
-				Iterator iterAttributesList = attributesList.iterator();
-				while (iterAttributesList.hasNext()) {
-				    // Attribute to lookup
-				    String attributeName=(String)iterAttributesList.next();
-				    String attributeValue = (String) userTmp.getAttribute(attributeName);
-				    if (attributeValue!=null) {
-					logger.debug("Add attribute. "+attributeName+"="+attributeName+ " to the user"+userName);
-					userAttributes.put(attributeName, attributeValue);
-				    }
-				}		
+	    logger.warn("User " + userName + " not found on configuration!!!");
+	} else if (userSB.size() > 1)
+	    logger.warn("There are more user with userID=" + userName);
+	else {
+	    SourceBean userTmp = (SourceBean) userSB.get(0);
+	    XmlSecurityInfoProviderImpl xmlSecInfo = new XmlSecurityInfoProviderImpl();
+	    List attributesList = xmlSecInfo.getAllProfileAttributesNames();
+	    if (attributesList != null) {
+		Iterator iterAttributesList = attributesList.iterator();
+		while (iterAttributesList.hasNext()) {
+		    // Attribute to lookup
+		    String attributeName = (String) iterAttributesList.next();
+		    String attributeValue = (String) userTmp.getAttribute(attributeName);
+		    if (attributeValue != null) {
+			logger.debug("Add attribute. " + attributeName + "=" + attributeName + " to the user"
+				+ userName);
+			userAttributes.put(attributeName, attributeValue);
 		    }
 		}
-	
-	
+	    }
+	}
+
 	logger.debug("Attributes load into SpagoBI profile: " + userAttributes);
 
 	// end load profile attributes
@@ -114,27 +112,15 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	    roleStr[i] = (String) roles.get(i);
 	}
 
-
 	profile.setRoles(roleStr);
 	profile.setAttributes(userAttributes);
 	profile.setFunctions(readFunctionality(profile.getRoles()));
-	
+
 	logger.debug("OUT");
 	return profile;
     }
 
-    /**
-     * Return a boolean : true if the user is authorized to continue, false
-     * otherwise.
-     * 
-     * @param String
-     *                the current user id
-     * @param String
-     *                the current pwd
-     * @return The User Profile Interface implementation object
-     */
-
-    public boolean checkAuthorization(String userId, String pwd) {
+    public boolean checkAuthentication(String userId, String psw) {
 	logger.debug("IN - userId: " + userId);
 
 	// get request container
@@ -153,7 +139,7 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	while (iterPwdSB.hasNext()) {
 	    SourceBean pwdSB = (SourceBean) iterPwdSB.next();
 	    String tmpPwd = (String) pwdSB.getAttribute("password");
-	    if (!tmpPwd.equals(pwd)) {
+	    if (!tmpPwd.equals(psw)) {
 		logger.error("UserName/pws not found into xml file");
 		return false;
 	    }
@@ -163,7 +149,23 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	logger.debug("OUT");
 	return true;
     }
-    
+
+    /**
+     * Return a boolean : true if the user is authorized to continue, false
+     * otherwise.
+     * 
+     * @param String
+     *                the current user id
+     * @param String
+     *                the current pwd
+     * @return The User Profile Interface implementation object
+     */
+
+    public boolean checkAuthorization(String userId, String pwd) {
+	logger.warn("checkAuthorization NOT implemented");
+	return false;
+    }
+
     private String[] readFunctionality(String[] roles) {
 	logger.debug("IN");
 	try {
@@ -171,13 +173,13 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	    String[] functionalities = dao.readUserFunctionality(roles);
 	    logger.debug("Functionalities retrieved: " + functionalities == null ? "" : functionalities.toString());
 	    if (isAbleToSaveSubObjects(roles)) {
-	    	logger.debug("Adding save subobject functionality...");
-	    	String[] newFunctionalities = new String[functionalities.length + 1];
-	    	for (int i = 0; i < functionalities.length; i++) {
-	    		newFunctionalities[i] = functionalities[i];
-	    	}
-	    	newFunctionalities[newFunctionalities.length - 1] = SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY;
-	    	functionalities = newFunctionalities;
+		logger.debug("Adding save subobject functionality...");
+		String[] newFunctionalities = new String[functionalities.length + 1];
+		for (int i = 0; i < functionalities.length; i++) {
+		    newFunctionalities[i] = functionalities[i];
+		}
+		newFunctionalities[newFunctionalities.length - 1] = SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY;
+		functionalities = newFunctionalities;
 	    }
 	    return functionalities;
 	} catch (EMFUserError e) {
@@ -189,28 +191,29 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	}
 	return null;
     }
-    
-	private boolean isAbleToSaveSubObjects(String[] roles) {
-		logger.debug("IN");
-		boolean isAbleToSaveSubObjects = false;
-		try {
-			if (roles != null && roles.length > 0) {
-	    		for (int i = 0; i < roles.length; i++) {
-	    			String roleName = roles[i];
-	    			Role role = DAOFactory.getRoleDAO().loadByName(roleName);
-	    			if (role.isAbleToSaveSubobjects()) {
-	    				logger.debug("User has role " + roleName + " that is able to save subobjects.");
-	    				isAbleToSaveSubObjects = true;
-	    				break;
-	    			}
-	    		}
-			}
-		} catch (EMFUserError e) {
-			logger.error(e);
-		} finally {
-		    logger.debug("OUT");
+
+    private boolean isAbleToSaveSubObjects(String[] roles) {
+	logger.debug("IN");
+	boolean isAbleToSaveSubObjects = false;
+	try {
+	    if (roles != null && roles.length > 0) {
+		for (int i = 0; i < roles.length; i++) {
+		    String roleName = roles[i];
+		    Role role = DAOFactory.getRoleDAO().loadByName(roleName);
+		    if (role.isAbleToSaveSubobjects()) {
+			logger.debug("User has role " + roleName + " that is able to save subobjects.");
+			isAbleToSaveSubObjects = true;
+			break;
+		    }
 		}
-		return isAbleToSaveSubObjects;
+	    }
+	} catch (EMFUserError e) {
+	    logger.error(e);
+	} finally {
+	    logger.debug("OUT");
 	}
+	return isAbleToSaveSubObjects;
+    }
     
+
 }

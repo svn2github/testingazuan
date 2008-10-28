@@ -40,6 +40,18 @@ public interface ISecurityServiceSupplier {
     	 * @return SpagoBIUserProfile
     	 */
 	SpagoBIUserProfile createUserProfile(String userId);	
-	
+	/**
+	 * 
+	 * @param userId
+	 * @param function
+	 * @return
+	 */
         boolean checkAuthorization(String userId, String function);
+        /**
+         * 
+         * @param userId
+         * @param psw
+         * @return
+         */
+        boolean checkAuthentication(String userId, String psw);
 }

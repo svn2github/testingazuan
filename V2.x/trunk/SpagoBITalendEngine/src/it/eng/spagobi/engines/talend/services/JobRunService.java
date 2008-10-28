@@ -174,7 +174,7 @@ public class JobRunService extends HttpServlet {
 		ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
 
 		try {								
-			Content template=contentProxy.readTemplate(documentId);
+			Content template=contentProxy.readTemplate(documentId,new HashMap());
 			logger.debug("Read the template."+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();

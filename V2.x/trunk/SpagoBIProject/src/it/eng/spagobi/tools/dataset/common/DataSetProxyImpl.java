@@ -71,6 +71,13 @@ public class DataSetProxyImpl implements IDataSetProxy {
     			
     }
     
+    public IDataSet getDataSet(DataSetConfig ds){
+    	IDataSet ids= null;
+    	ids = (IDataSet)new DataSetImpl(ds,profile);
+        return ids;
+    			
+    }
+    
     public IDataSet getRemoteDataSet(String dataSetLabel,String user,HttpSession session){
 	  	
     	DataSetConfig ds=null;

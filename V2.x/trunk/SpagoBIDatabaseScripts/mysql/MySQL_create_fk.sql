@@ -218,37 +218,44 @@ ALTER TABLE SBI_MENU_ROLE ADD CONSTRAINT FK_SBI_MENU_ROLE1 FOREIGN KEY FK_SBI_ME
 ALTER TABLE SBI_MENU_ROLE ADD CONSTRAINT FK_SBI_MENU_ROLE2 FOREIGN KEY FK_SBI_MENU_ROLE2 (EXT_ROLE_ID) REFERENCES SBI_EXT_ROLES (EXT_ROLE_ID) ON DELETE CASCADE;
 
 
-Alter table SBI_MEASURE_UNIT ADD CONSTRAINT SCALE_TYPE Foreign Key SCALE_TYPE(SCALE_TYPE_ID) REFERENCES SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD CONSTRAINT KPI_MODEL_TYPE Foreign Key KPI_MODEL_TYPE(KPI_MODEL_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR ADD CONSTRAINT KPI_MODEL_ATTR_TYPE Foreign Key KPI_MODEL_ATTR_TYPE(KPI_MODEL_ATTR_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_THRESHOLD_VALUE ADD CONSTRAINT SEVERITY Foreign Key SEVERITY(SEVERITY_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_RESOURCES ADD CONSTRAINT RESOURCE_TYPE Foreign Key RESOURCE_TYPE(RESOURCE_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD CONSTRAINT MODALITY Foreign Key MODALITY(MODALITY_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_ROLE ADD CONSTRAINT EXT_ROLE Foreign Key EXT_ROLE(EXT_ROLE_ID) references SBI_EXT_ROLES (EXT_ROLE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD CONSTRAINT DOCUMENT Foreign Key DOCUMENT(DOCUMENT_ID) references SBI_OBJECTS (BIOBJ_ID) ON DELETE CASCADE;
-Alter table SBI_KPI ADD CONSTRAINT id_kpi Foreign Key id_kpi(id_kpi_parent) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_ROLE ADD CONSTRAINT KPI1 Foreign Key KPI1(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE ADD CONSTRAINT KPI2 Foreign Key KPI2(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD CONSTRAINT KPI3 Foreign Key KPI3(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI ADD CONSTRAINT id_measure Foreign Key id_measure(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE ADD CONSTRAINT id_measure_unit1 Foreign Key id_measure_unit1(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE_HISTORY ADD CONSTRAINT id_measure_unit2 Foreign Key id_measure_unit2(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI ADD CONSTRAINT THRESHOLD Foreign Key THRESHOLD(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) on delete no action on update no action;
-Alter table SBI_THRESHOLD_VALUE ADD CONSTRAINT THRESHOLD1 Foreign Key THRESHOLD1(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) on delete cascade on update no action;
-Alter table SBI_KPI_INSTANCE ADD CONSTRAINT THRESHOLD2 Foreign Key THRESHOLD2(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE_HISTORY ADD CONSTRAINT THRESHOLD3 Foreign Key THRESHOLD3(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR_VAL ADD CONSTRAINT KPI_MODEL Foreign Key KPI_MODEL(KPI_MODEL_ID) references SBI_KPI_MODEL (KPI_MODEL_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD CONSTRAINT KPI_PARENT_MODEL Foreign Key KPI_PARENT_MODEL(KPI_PARENT_MODEL_ID) references SBI_KPI_MODEL (KPI_MODEL_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR_VAL ADD CONSTRAINT KPI_MODEL_ATTR Foreign Key KPI_MODEL_ATTR(KPI_MODEL_ATTR_ID) references SBI_KPI_MODEL_ATTR (KPI_MODEL_ATTR_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_PERIODICITY ADD CONSTRAINT id_periodicity1 Foreign Key id_periodicity1(id_periodicity) references SBI_PERIODICITY (id_periodicity) ON DELETE CASCADE;
-Alter table SBI_KPI_PERIODICITY ADD CONSTRAINT id_periodicity2 Foreign Key id_periodicity2(id_periodicity) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_INST ADD CONSTRAINT id_kpi_instance1 Foreign Key id_kpi_instance1(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_VALUE ADD CONSTRAINT id_kpi_instance2 Foreign Key id_kpi_instance2(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE_HISTORY ADD CONSTRAINT id_kpi_instance3 Foreign Key id_kpi_instance3(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD CONSTRAINT id_kpi_instance4 Foreign Key id_kpi_instance4(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_INST ADD CONSTRAINT KPI_MODEL_INST_PAR Foreign Key KPI_MODEL_INST_PAR(KPI_MODEL_INST_PAR) references SBI_KPI_MODEL_INST (KPI_MODEL_INST) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_RESOURCES ADD CONSTRAINT KPI_MODEL_INST Foreign Key KPI_MODEL_INST(KPI_MODEL_INST) references SBI_KPI_MODEL_INST (KPI_MODEL_INST) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_RESOURCES ADD CONSTRAINT RESOURCE Foreign Key RESOURCE(RESOURCE_ID) references SBI_RESOURCES (RESOURCE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_EVENT ADD CONSTRAINT ALARM1 Foreign Key ALARM1(ALARM_ID) references SBI_ALARM (ALARM_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_DISTRIBUTION ADD CONSTRAINT ALARM2 Foreign Key ALARM2(ALARM_ID) references SBI_ALARM (ALARM_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_DISTRIBUTION ADD CONSTRAINT ALARM_CONTACT Foreign Key ALARM_CONTACT(ALARM_CONTACT_ID) references SBI_ALARM_CONTACT (ALARM_CONTACT_ID) ON DELETE CASCADE;
+-- KPI DEFINITION
+Alter table `SBI_KPI_MODEL_ATTR` add Foreign Key (`KPI_MODEL_ATTR_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_ATTR_VAL` add Foreign Key (`KPI_MODEL_ID`) references `SBI_KPI_MODEL` (`KPI_MODEL_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_ATTR_VAL` add Foreign Key (`KPI_MODEL_ATTR_ID`) references `SBI_KPI_MODEL_ATTR` (`KPI_MODEL_ATTR_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_MODEL_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_PARENT_MODEL_ID`) references `SBI_KPI_MODEL` (`KPI_MODEL_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_MEASURE_UNIT` add Foreign Key (`SCALE_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`DS_ID`) references `SBI_DATA_SET` (`DS_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`id_kpi_parent`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete no action on update no action;
+Alter table `SBI_KPI_ROLE` add Foreign Key (`EXT_ROLE_ID`) references `SBI_EXT_ROLES` (`EXT_ROLE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_ROLE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_THRESHOLD` add Foreign Key (`THRESHOLD_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_THRESHOLD_VALUE` add Foreign Key (`SEVERITY_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_THRESHOLD_VALUE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete cascade on update no action;
+
+-- KPI INSTANCE
+Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_CATEG_INST_PAR`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_PERIODICITY` add Foreign Key (`id_periodicity`) references `SBI_PERIODICITY` (`id_periodicity`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_PERIODICITY` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`KPI_MODEL_INST`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`RESOURCE_ID`) references `SBI_RESOURCES` (`RESOURCE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_RESOURCES` add Foreign Key (`RESOURCE_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_VALUE` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
+
+-- KPI ALARM
+Alter table `SBI_ALARM` add Foreign Key (`MODALITY_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM` add Foreign Key (`DOCUMENT_ID`) references `SBI_OBJECTS` (`BIOBJ_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM_EVENT` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_EVENT_ID`) references `SBI_ALARM_EVENT` (`ALARM_EVENT_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_CONTACT_ID`) references `SBI_ALARM_CONTACT` (`ALARM_CONTACT_ID`) on delete  restrict on update  restrict;

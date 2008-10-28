@@ -125,6 +125,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/tools/dataset/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/validation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/dataset.xml" />
 	
 	<!-- tools.distributionlist -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/modules.xml" />

@@ -129,7 +129,7 @@ public class LoginModule extends AbstractHttpModule {
 	    	if (active == null || active.equalsIgnoreCase("false")) {
 				String pwd=(String)request.getAttribute("password");       
 		        try {
-		        	if (!supplier.checkAuthorization(userId, pwd)){
+		        	if (!supplier.checkAuthentication(userId, pwd)){
 		        		logger.error("pwd uncorrect");
 		            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
 		    			errorHandler.addError(emfu); 		    	

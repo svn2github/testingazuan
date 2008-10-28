@@ -28,19 +28,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.services;
 
 import it.eng.spago.base.Constants;
-import it.eng.spago.base.PortletAccess;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.proxy.SecurityServiceProxy;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -50,10 +45,6 @@ import java.security.Principal;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -116,7 +107,7 @@ public class PortletLoginAction extends AbstractHttpAction {
 
 		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 		// updates locale information on permanent container for Spago messages mechanism
-		Locale locale = PortletAccess.getPortalLocale();
+		Locale locale = PortletUtilities.getLocaleForMessage();
 		if (locale != null) {
 			permSession.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
 			permSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());

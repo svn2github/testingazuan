@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
@@ -106,9 +107,9 @@ String getUrl(String baseUrl, Map mapPars) {
 	else sbiMode = "WEB";
 	
 	if (sbiMode.equals("PORTLET")) {
-		locale = PortletAccess.getPortalLocale();
+		locale = PortletUtilities.getLocaleForMessage();
 	} else {
-		locale = request.getLocale();
+		locale = MessageBuilder.getBrowserLocaleFromSpago();
 	}
 	
     // = (String)sessionContainer.getAttribute(Constants.USER_LANGUAGE);

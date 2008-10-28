@@ -44,6 +44,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -152,7 +153,7 @@ public class LoginModule extends AbstractHttpModule {
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		// updates locale information on permanent container for Spago messages mechanism
-	    		Locale locale = this.getHttpRequest().getLocale();
+	    		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();
 	    		if (locale != null) {
 	    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
 	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());

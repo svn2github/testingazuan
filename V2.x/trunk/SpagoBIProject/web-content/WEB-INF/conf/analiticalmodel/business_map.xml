@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<BUSINESS_MAP>
+	<MAP_ACTIONS>
+<MAP_ACTION actionName="MOVE_UP_LOWFUNCTIONALITY" businessProcess="DocumentManagement" />
+<MAP_ACTION actionName="MOVE_DOWN_LOWFUNCTIONALITY" businessProcess="DocumentManagement" />
+<MAP_ACTION actionName="DOWNLOAD_BIOBJ_TEMPLATE" businessProcess="DocumentManagement" />
+<MAP_ACTION actionName="SAVE_PERSONAL_FOLDER" businessProcess="DocumentUserManagement" />
+<MAP_ACTION actionName="GET_SNAPSHOT_CONTENT" businessProcess="DocumentUserManagement" />
+<MAP_ACTION actionName="SHOW_SEND_TO_FORM" businessProcess="DocumentUserManagement" />
+<MAP_ACTION actionName="SEND_TO_ACTION" businessProcess="DocumentUserManagement" />
+<MAP_ACTION actionName="INSERT_NOTES_ACTION" businessProcess="DocumentUserManagement" />
+<MAP_ACTION actionName="RATING_ACTION" businessProcess="DocumentUserManagement" />
+
+	</MAP_ACTIONS>
+	<MAP_PAGE_MODULES>
+<MAP_PAGE_MODULE pageName="ListBIObjectsPage" moduleName="ListBIObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="ReportsLookupPage" moduleName="ListLookupReportsModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="MYFOLDERMANAGEMENTPAGE" moduleName="EraseDocumentModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="MYFOLDERMANAGEMENTPAGE" moduleName="BIObjectsModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="MYFOLDERMANAGEMENTPAGE" moduleName="TreeObjectsModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="DetailFunctionalityPage" moduleName="DetailFunctionalityModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="UpdateBIObjectStatePage" moduleName="UpdateBIObjectStateModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="BIObjectsPage" moduleName="BIObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="BIObjectsPage" moduleName="TreeObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="BIObjectsPage" moduleName="ListBIObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="PortletLoginModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="ExecutionWorkspaceModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="PortletLoginModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="BIObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="TreeObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="ListBIObjectsModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="DetailBIObjectPage" moduleName="DetailBIObjectModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="MetadataBIObjectPage" moduleName="MetadataBIObjectModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="DocumentTemplateBuildPage" moduleName="DocumentTemplateBuildModule" businessProcess="DocumentManagement" />
+<MAP_PAGE_MODULE pageName="ExecuteBIObjectPage" moduleName="ExecuteBIObjectModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="SelectParameterPage" moduleName="SelectParameterPageModule" businessProcess="DocumentUserManagement" />
+<MAP_PAGE_MODULE pageName="SelectDatasetLookupPage" moduleName="SelectDatasetLookupModule" businessProcess="DocumentUserManagement" />
+
+	</MAP_PAGE_MODULES>
+</BUSINESS_MAP>

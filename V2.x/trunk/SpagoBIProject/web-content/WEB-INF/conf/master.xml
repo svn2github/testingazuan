@@ -19,7 +19,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/presentation.xml" />
   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/publishers.xml" />  
- 
+   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/business_map.xml" /> 
 <!-- behaviouralmodel -->
 	
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/modules.xml" />
@@ -60,8 +60,7 @@
     
 <!-- engines.documentcomposition -->
 	<!--
-	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/modules.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/pages.xml" />
+	
 	-->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/publishers.xml" /> 
@@ -156,7 +155,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/publishers.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/security.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/menu.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
@@ -184,7 +182,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/useragents.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/mail.xml" />
-	
+	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
 
 	<!-- profile manager -->
 	<!--

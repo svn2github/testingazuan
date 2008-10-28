@@ -3,8 +3,8 @@
 
     <!-- ********************* START MODE CONFIGURATION ************************ -->
 
-	 <!-- SPAGOBI-MODE mode="WEB" -->
-	 <SPAGOBI-MODE mode="PORTLET" />
+	 <SPAGOBI-MODE mode="WEB" />
+	 <!-- SPAGOBI-MODE mode="PORTLET" / -->
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
@@ -18,7 +18,7 @@
 			- 'YES': view the right menu with extra-contents like hotlink, distribution list, ...
 			' 'NO': non view right menu  
 	 -->
-	<!--  <MENU mode="ALL_TOP" viewExtra="YES"/> -->
+  <MENU mode="ALL_TOP" viewExtra="YES"/>
 	 
 
     <!-- ********************* END MENU CONFIGURATION ************************** -->
@@ -26,8 +26,8 @@
      
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
      
-     <!-- Xml (Spago framework) security Provider  -->
-     <!--
+     <!-- Xml (Spago framework) security Provider  -->  
+ 
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
@@ -35,8 +35,14 @@
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlSecurityServiceSupplierImpl" />
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+    	<ROLE-TYPE-PATTERNS>
+	    	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
+	    	<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
+	    	<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
+	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
+    	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	 -->
+
    <!-- Web security Provider  (LDAP) -->
    <!--
 	<SECURITY>
@@ -48,13 +54,13 @@
 		<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 	</SECURITY>
 	  -->
-     <!-- Exo security Provider  -->
+     <!-- Exo security Provider  
     
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
-				<NAME_PORTAL_APPLICATION>@portal.context@</NAME_PORTAL_APPLICATION>
+				<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
@@ -67,7 +73,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	
+	 -->
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
 
@@ -102,16 +108,14 @@
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />
-    
 
-     <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
+     <SPAGOBI_CONTEXT>/SpagoBI</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
+     <SPAGOBI_HOST>http://localhost:8080</SPAGOBI_HOST>
  	
- 	   <BACKEND_SPAGOBI_HOST>@spagobi.backend.host@</BACKEND_SPAGOBI_HOST>
+ 	 <BACKEND_SPAGOBI_HOST>http://localhost:8080</BACKEND_SPAGOBI_HOST>
  	  
-
- 	 
+ 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	
 	 <PORTLET_EDIT_MODE_ROLES>

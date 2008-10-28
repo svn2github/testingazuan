@@ -1,31 +1,11 @@
 /**
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-**/
+ * SpagoBIUserProfile.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ */
 
 package it.eng.spagobi.services.security.bo;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 public class SpagoBIUserProfile  implements java.io.Serializable {
     private java.util.HashMap attributes;
@@ -36,82 +16,28 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
 
     private java.lang.String userId;
 
-    /**
-     * Instantiates a new spago bi user profile.
-     */
+    private java.lang.String userIdentifier;
+
+    private java.lang.String userName;
+
     public SpagoBIUserProfile() {
     }
 
-    /**
-     * Instantiates a new spago bi user profile.
-     * 
-     * @param attributes the attributes
-     * @param functions the functions
-     * @param roles the roles
-     * @param userId the user id
-     */
     public SpagoBIUserProfile(
            java.util.HashMap attributes,
            java.lang.String[] functions,
            java.lang.String[] roles,
-           java.lang.String userId) {
+           java.lang.String userId,
+           java.lang.String userIdentifier,
+           java.lang.String userName) {
            this.attributes = attributes;
            this.functions = functions;
            this.roles = roles;
            this.userId = userId;
+           this.userIdentifier = userIdentifier;
+           this.userName = userName;
     }
 
-    /**
-     * Read user attribute.
-     * 
-     * @param key the key
-     * 
-     * @return the object
-     */
-    public Object readUserAttribute(String key){
-	return attributes.get(key);
-	
-    }
-    
-    
-    /**
-     * Creates the role iterator.
-     * 
-     * @return the iterator
-     */
-    public Iterator createRoleIterator() {
-	List rolesList=new ArrayList();
-	if (roles==null) return null;
-	int l=roles.length;
-	for (int i=0;i<l;i++){
-	    rolesList.add(roles[i]);
-	}
-        return rolesList.iterator();
-    }
-    
-    /**
-     * Creates the functions iterator.
-     * 
-     * @return the iterator
-     */
-    public Iterator createFunctionsIterator() {
-	List functionsList=new ArrayList();
-	if (functions==null) return null;
-	int l=functions.length;
-	for (int i=0;i<l;i++){
-	    functionsList.add(functions[i]);
-	}
-        return functionsList.iterator();
-    }    
-
-    /**
-     * Read attributes names.
-     * 
-     * @return the collection
-     */
-    public Collection readAttributesNames(){
-	return attributes.values();
-    }
 
     /**
      * Gets the attributes value for this SpagoBIUserProfile.
@@ -126,7 +52,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the attributes value for this SpagoBIUserProfile.
      * 
-     * @param attributes the attributes
+     * @param attributes
      */
     public void setAttributes(java.util.HashMap attributes) {
         this.attributes = attributes;
@@ -146,7 +72,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the functions value for this SpagoBIUserProfile.
      * 
-     * @param functions the functions
+     * @param functions
      */
     public void setFunctions(java.lang.String[] functions) {
         this.functions = functions;
@@ -166,7 +92,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the roles value for this SpagoBIUserProfile.
      * 
-     * @param roles the roles
+     * @param roles
      */
     public void setRoles(java.lang.String[] roles) {
         this.roles = roles;
@@ -186,19 +112,53 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     /**
      * Sets the userId value for this SpagoBIUserProfile.
      * 
-     * @param userId the user id
+     * @param userId
      */
     public void setUserId(java.lang.String userId) {
         this.userId = userId;
     }
-    
-    
+
+
+    /**
+     * Gets the userIdentifier value for this SpagoBIUserProfile.
+     * 
+     * @return userIdentifier
+     */
+    public java.lang.String getUserIdentifier() {
+        return userIdentifier;
+    }
+
+
+    /**
+     * Sets the userIdentifier value for this SpagoBIUserProfile.
+     * 
+     * @param userIdentifier
+     */
+    public void setUserIdentifier(java.lang.String userIdentifier) {
+        this.userIdentifier = userIdentifier;
+    }
+
+
+    /**
+     * Gets the userName value for this SpagoBIUserProfile.
+     * 
+     * @return userName
+     */
+    public java.lang.String getUserName() {
+        return userName;
+    }
+
+
+    /**
+     * Sets the userName value for this SpagoBIUserProfile.
+     * 
+     * @param userName
+     */
+    public void setUserName(java.lang.String userName) {
+        this.userName = userName;
+    }
 
     private java.lang.Object __equalsCalc = null;
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBIUserProfile)) return false;
         SpagoBIUserProfile other = (SpagoBIUserProfile) obj;
@@ -221,16 +181,18 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
               java.util.Arrays.equals(this.roles, other.getRoles()))) &&
             ((this.userId==null && other.getUserId()==null) || 
              (this.userId!=null &&
-              this.userId.equals(other.getUserId())));
+              this.userId.equals(other.getUserId()))) &&
+            ((this.userIdentifier==null && other.getUserIdentifier()==null) || 
+             (this.userIdentifier!=null &&
+              this.userIdentifier.equals(other.getUserIdentifier()))) &&
+            ((this.userName==null && other.getUserName()==null) || 
+             (this.userName!=null &&
+              this.userName.equals(other.getUserName())));
         __equalsCalc = null;
         return _equals;
     }
 
     private boolean __hashCodeCalc = false;
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -264,6 +226,12 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
         }
         if (getUserId() != null) {
             _hashCode += getUserId().hashCode();
+        }
+        if (getUserIdentifier() != null) {
+            _hashCode += getUserIdentifier().hashCode();
+        }
+        if (getUserName() != null) {
+            _hashCode += getUserName().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -299,25 +267,29 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("userIdentifier");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "userIdentifier"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("userName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "userName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**
-     * Return type metadata object.
-     * 
-     * @return the type desc
+     * Return type metadata object
      */
     public static org.apache.axis.description.TypeDesc getTypeDesc() {
         return typeDesc;
     }
 
     /**
-     * Get Custom Serializer.
-     * 
-     * @param mechType the mech type
-     * @param _javaType the _java type
-     * @param _xmlType the _xml type
-     * 
-     * @return the serializer
+     * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
            java.lang.String mechType, 
@@ -329,13 +301,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
     }
 
     /**
-     * Get Custom Deserializer.
-     * 
-     * @param mechType the mech type
-     * @param _javaType the _java type
-     * @param _xmlType the _xml type
-     * 
-     * @return the deserializer
+     * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
            java.lang.String mechType, 

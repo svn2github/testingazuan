@@ -26,6 +26,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.security.AuthorizationsBusinessMapper;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 
 import java.util.ArrayList;
@@ -138,12 +139,14 @@ public class UserProfile implements IEngUserProfile {
 	return SCHEDULER_USER_NAME.equals(userid);
     }
 
+
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getFunctionalities()
      */
     public Collection getFunctionalities() throws EMFInternalError {
 	return functionalities;
     }
+
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getFunctionalitiesByRole(java.lang.String)
@@ -153,12 +156,14 @@ public class UserProfile implements IEngUserProfile {
 
     }
 
+
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getRoles()
      */
     public Collection getRoles() throws EMFInternalError {
 	return this.roles;
     }
+
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getUserAttribute(java.lang.String)
@@ -167,12 +172,14 @@ public class UserProfile implements IEngUserProfile {
 	return userAttributes.get(attributeName);
     }
 
+
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getUserAttributeNames()
      */
     public Collection getUserAttributeNames() {
 	return userAttributes.keySet();
     }
+
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getUserUniqueIdentifier()
@@ -181,6 +188,7 @@ public class UserProfile implements IEngUserProfile {
 	return userUniqueIdentifier;
     }
 
+
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#hasRole(java.lang.String)
      */
@@ -188,22 +196,32 @@ public class UserProfile implements IEngUserProfile {
 	return this.roles.contains(roleName);
     }
 
+
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#isAbleToExecuteAction(java.lang.String)
      */
-    public boolean isAbleToExecuteAction(String arg0) throws EMFInternalError {
-	if (this.functionalities.contains(arg0))
+    public boolean isAbleToExecuteAction(String actionName) throws EMFInternalError {
+	// first check if the actionName is a functionality...
+	if ( this.functionalities.contains(actionName) ){
 	    return true;
-	else
-	    return false;
+	}
+	String functionality = AuthorizationsBusinessMapper.getInstance().mapActionToBusinessProcess(actionName);
+        if (functionality != null){
+            return this.functionalities.contains(functionality);
+        }else return false;    
     }
+
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#isAbleToExecuteModuleInPage(java.lang.String, java.lang.String)
      */
-    public boolean isAbleToExecuteModuleInPage(String arg0, String arg1) throws EMFInternalError {
-	return true;
+    public boolean isAbleToExecuteModuleInPage(String pageName, String moduleName) throws EMFInternalError {
+	String functionality = AuthorizationsBusinessMapper.getInstance().mapPageModuleToBusinessProcess(pageName, moduleName);
+        if (functionality != null){
+            return this.functionalities.contains(functionality);
+        }else return false;  
     }
+
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#setApplication(java.lang.String)

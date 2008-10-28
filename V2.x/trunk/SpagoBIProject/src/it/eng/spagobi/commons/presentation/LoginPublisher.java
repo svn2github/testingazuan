@@ -18,35 +18,44 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
+
+import org.apache.log4j.Logger;
 
 public class LoginPublisher extends GenericPublisher {
 
-	/* (non-Javadoc)
-	 * @see it.eng.spago.presentation.PublisherDispatcherIFace#getPublisherName(it.eng.spago.base.RequestContainer, it.eng.spago.base.ResponseContainer)
-	 */
-	public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
-		EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
-		SourceBean serviceResp = responseContainer.getServiceResponse();
-		// get the response of the module
-		SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("LoginModule");
-		String publisherName =  getPublisherName(requestContainer, responseContainer, moduleResponse);
+    static Logger logger = Logger.getLogger(LoginPublisher.class);
 
-		/*if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return new String("error");
-		}
-		*/
-		if (publisherName != null)
-			return publisherName;
-		else 
-			return new String("login");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.eng.spago.presentation.PublisherDispatcherIFace#getPublisherName(it.eng.spago.base.RequestContainer,
+     *      it.eng.spago.base.ResponseContainer)
+     */
+    public String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer) {
+	logger.debug("IN");
+
+	SourceBean serviceResp = responseContainer.getServiceResponse();
+	// get the response of the module
+	SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("LoginModule");
+	String publisherName = getPublisherName(requestContainer, responseContainer, moduleResponse);
+
+	/*
+	 * if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) { return new
+	 * String("error"); }
+	 */
+	if (publisherName != null) {
+	    logger.debug("OUT.publisherName=" + publisherName);
+	    return publisherName;
+	} else {
+	    logger.debug("OUT.publisherName=login");
+	    return new String("login");
 	}
+    }
 
 }

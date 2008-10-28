@@ -30,18 +30,22 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
+
+import org.apache.log4j.Logger;
 
 public abstract class GenericPublisher implements PublisherDispatcherIFace {
 
+    static Logger logger = Logger.getLogger(GenericPublisher.class);
+    
     protected String getPublisherName(RequestContainer requestContainer, ResponseContainer responseContainer,SourceBean moduleResponse) {
-	// get error handler
+	logger.debug("IN");
 	EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 	
 	// if there are some errors (not validation error) into the errorHandler
 	// return the name for the errors publisher
 	if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 	    if (!GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
+		logger.debug("OUT");
 		return "error";
 	    }
 	}
@@ -49,21 +53,23 @@ public abstract class GenericPublisher implements PublisherDispatcherIFace {
 	// if the module response is null throws an error and return the name of
 	// the errors publisher
 	if (moduleResponse == null) {
-	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName",
-		    "Module response null");
+	    logger.error("Module response null");
 	    EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10);
 	    errorHandler.addError(error);
+	    logger.debug("OUT");
 	    return "error";
 	}
 	// get the value of the publisher name attribute
 	String publisherName = (String) moduleResponse.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
+	logger.debug("publisherName="+publisherName);
 	if (publisherName != null && !publisherName.trim().equals("")) {
+	    logger.debug("OUT");
 	    return publisherName;
 	} else {
-	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), "getPublisherName",
-		    "Publisher name attribute not found");
+	    logger.error("Publisher name attribute not found");
 	    EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10);
 	    errorHandler.addError(error);
+	    logger.debug("OUT");
 	    return "error";
 	}
     }

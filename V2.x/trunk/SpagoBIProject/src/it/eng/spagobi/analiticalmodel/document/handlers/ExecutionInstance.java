@@ -39,6 +39,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 
 import java.util.ArrayList;
@@ -479,7 +480,7 @@ public class ExecutionInstance {
 				if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 						.getValueColumnName())) {
 					logger.error("Parameter '" + biparam.getLabel() + "' cannot assume value '" + value + "'" +
-        					" for user '" + this.userProfile.getUserUniqueIdentifier().toString() 
+        					" for user '" + ((UserProfile)this.userProfile).getUserId().toString()
         					+ "' with role '" + this.executionRole + "'.");
 					List l = new ArrayList();
 					l.add(biparam.getLabel());

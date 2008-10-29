@@ -70,7 +70,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
 					  " where mf.id.menuId = m.menuId " + 
 					  " and mf.id.extRoleId = " + roleId.toString() +
-					  " order by m.parentId, m.prog, m.menuId";
+					  " order by m.parentId, m.prog";
 			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();

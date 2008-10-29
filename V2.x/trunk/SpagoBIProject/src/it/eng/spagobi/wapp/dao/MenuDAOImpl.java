@@ -445,7 +445,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			String hql = " from SbiMenu s where s.id.parentId = "+ menuId;
+			String hql = " from SbiMenu s where s.id.parentId = "+ menuId + " order by s.prog";
 			Query aQuery = tmpSession.createQuery(hql);
 
 			List hibList = aQuery.list();

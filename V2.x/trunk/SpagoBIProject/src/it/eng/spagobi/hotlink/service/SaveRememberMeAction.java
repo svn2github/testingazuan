@@ -24,6 +24,7 @@ package it.eng.spagobi.hotlink.service;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
@@ -63,7 +64,7 @@ public class SaveRememberMeAction extends BaseProfileAction {
 			Integer docId = new Integer(docIdStr);
 			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			String userId = profile.getUserUniqueIdentifier().toString();
+			String userId = ((UserProfile)profile).getUserId().toString();  
 			String subobjectIdStr = (String) serviceRequest.getAttribute("subobject_id");
 			Integer subobjectId = null;
 			if (subobjectIdStr != null && !subobjectIdStr.trim().equals("")) {

@@ -50,7 +50,7 @@ public class CasSsoService implements SsoServiceInterface {
      * 
      * @return String
      */
-    public String readUserId(HttpSession session){
+    public String readUserIdentifier(HttpSession session){
 	String user=(String)session.getAttribute(CASFilter.CAS_FILTER_USER);
 	logger.debug("CAS user in HttpSession:"+user);
 	return user;
@@ -63,7 +63,7 @@ public class CasSsoService implements SsoServiceInterface {
      * 
      * @return String
      */
-    public String readUserId(PortletSession session){
+    public String readUserIdentifier(PortletSession session){
 	String user=(String)session.getAttribute(CASFilter.CAS_FILTER_USER);
 	logger.debug("CAS user in PortletSession:"+user);
 	return user;
@@ -112,13 +112,15 @@ public class CasSsoService implements SsoServiceInterface {
 	    pv.setRenew(false);
 	    pv.validate();
 	    if (pv.isAuthenticationSuccesful()) {
-		String tmpUserId = pv.getUser();
-		logger.debug("CAS User:" + tmpUserId);
-		if (  userId==null || !userId.equals(tmpUserId)) {
-		    logger.warn("Proxy and application users are not the same !!!!! " + userId + "-"
-			    + tmpUserId);
-		    throw new SecurityException();
-		}
+			String tmpUserId = pv.getUser();
+			logger.debug("CAS User:" + tmpUserId);
+			if (  userId==null || !userId.equals(tmpUserId)) {
+			    logger.warn("Proxy and application users are not the same !!!!! " + userId + "-"
+				    + tmpUserId);
+			    throw new SecurityException();
+			}
+			
+			
 	    } else {
 		logger.error("Token NOT VALID");
 		throw new SecurityException();

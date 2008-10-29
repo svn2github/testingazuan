@@ -29,6 +29,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -196,7 +197,9 @@ public class AuditManager {
     public Integer insertAudit(BIObject obj, SubObject subObj, IEngUserProfile profile, String role, String modality) {
 	logger.debug("IN");
 	SbiAudit audit = new SbiAudit();
-	audit.setUserName(profile.getUserUniqueIdentifier().toString());
+	logger.debug("userID for audit"+ ((UserProfile)profile).getUserId().toString());
+	audit.setUserName(((UserProfile)profile).getUserId().toString());
+
 	audit.setUserGroup(role);
 	audit.setDocumentId(obj.getId());
 	audit.setDocumentLabel(obj.getLabel());
@@ -354,7 +357,7 @@ public class AuditManager {
 	    toReturn = _auditDAO.getMostPopular(roles, limit);
 	} catch (Exception e) {
 	    logger
-		    .error("Error while loading most popular for user " + profile.getUserUniqueIdentifier().toString(),
+		    .error("Error while loading most popular for user " + ((UserProfile)profile).getUserId().toString(),
 			    e);
 	} finally {
 	    logger.debug("OUT");
@@ -374,10 +377,10 @@ public class AuditManager {
 	logger.debug("IN");
 	List toReturn = new ArrayList();
 	try {
-	    toReturn = _auditDAO.getMyRecentlyUsed(profile.getUserUniqueIdentifier().toString(), limit);
+	    toReturn = _auditDAO.getMyRecentlyUsed(((UserProfile)profile).getUserId().toString(), limit);
 	} catch (Exception e) {
 	    logger.error("Error while loading my recently used for user "
-		    + profile.getUserUniqueIdentifier().toString(), e);
+		    + ((UserProfile)profile).getUserId().toString(), e);
 	} finally {
 	    logger.debug("OUT");
 	}

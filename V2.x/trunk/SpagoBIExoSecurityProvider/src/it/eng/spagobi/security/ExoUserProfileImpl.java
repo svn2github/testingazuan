@@ -63,6 +63,7 @@ public class ExoUserProfileImpl implements ISecurityServiceSupplier {
 	logger.debug("IN. userId=" + userId);
 	SpagoBIUserProfile profile = new SpagoBIUserProfile();
 	try {
+		profile.setUniqueIdentifier(userId);
 	    profile.setUserId(userId);
 	    ArrayList roles = new ArrayList();
 	    HashMap userAttributes = new HashMap();

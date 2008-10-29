@@ -42,8 +42,38 @@ if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_CO
 	if (executionAuditId != null) {
 		executionParameters.put(AuditManager.AUDIT_ID, executionAuditId.toString());
 	}
-	String redirectURL = getUrl(instanceO.getBIObject().getEngine().getUrl(), executionParameters);
-	response.sendRedirect(redirectURL);
+	String uuid = instanceO.getExecutionId();
+	%>
+	
+	<%-- div with "wait while loading" message: it will disappear when iframe below will be loaded --%>
+	<div id="divLoadingMessage<%= uuid %>" style="display:inline;">
+		<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
+		<spagobi:message key='sbi.execution.pleaseWait'/>
+	</div>
+	
+	<iframe id="iframeexec<%=uuid%>" name="iframeexec<%=uuid%>" src="" style="width:100%;height:100%" frameborder="0" >
+	</iframe>
+	
+	<form name="formexecution<%=uuid%>" id='formexecution<%=uuid%>' method="get"
+         	      action="<%=instanceO.getBIObject().getEngine().getUrl()%>"
+         	      target='_self'>
+	<%
+	java.util.Set keys = executionParameters.keySet();
+	Iterator iterKeys = keys.iterator();
+	while(iterKeys.hasNext()) {
+		String key = iterKeys.next().toString();
+		String value = executionParameters.get(key).toString();
+		%>
+		<input type="hidden" name="<%=key%>" value="<%=value%>" />
+		<%
+	}
+	%>
+	</form>
+	
+	<script>
+	document.getElementById('formexecution<%=uuid%>').submit();
+	</script>
+	<%
 } else {
 %>
 <%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
@@ -192,6 +222,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 }
 %>
 
+<%-- div with "wait while loading" message: it will disappear when window is loaded thanks to SbiJsInitializer.hideLoadingMessage property --%>
 <div id="divLoadingMessage<%= uuid %>" style="display:inline;">
 	<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
 	<spagobi:message key='sbi.execution.pleaseWait'/>

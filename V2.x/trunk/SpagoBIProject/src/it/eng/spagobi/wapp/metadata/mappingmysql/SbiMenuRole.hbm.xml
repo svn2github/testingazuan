@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 9-apr-2008 12.18.26 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.wapp.metadata.SbiMenuRole" table="sbi_menu_role">
+    <class name="it.eng.spagobi.wapp.metadata.SbiMenuRole" table="SBI_MENU_ROLE">
         <composite-id name="id" class="it.eng.spagobi.wapp.metadata.SbiMenuRoleId">
             <key-property name="menuId" type="integer">
                 <column name="menu_id" />

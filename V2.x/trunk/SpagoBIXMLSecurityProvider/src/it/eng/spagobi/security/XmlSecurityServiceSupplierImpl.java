@@ -59,6 +59,7 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	logger.debug("IN - userId: " + userId);
 
 	SpagoBIUserProfile profile = new SpagoBIUserProfile();
+	profile.setUniqueIdentifier(userId);
 	profile.setUserId(userId);
 
 	// get user name

@@ -19,6 +19,7 @@
 <%@tag import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@tag import="it.eng.spago.base.SourceBean"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
+<%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
@@ -133,7 +134,8 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 					</td>	            
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 					<%
-	                if (ownerVP.equals(profile.getUserUniqueIdentifier().toString())) {
+	                //if (ownerVP.equals(profile.getUserUniqueIdentifier().toString())) {
+	                if (ownerVP.equals(((UserProfile)profile).getUserId().toString())) {
 	                	%>
 	                 	<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteViewpoint"/>'); 
 	                 											if (conf) {document.location='<%= deleteVPUrl.toString() %>';}">

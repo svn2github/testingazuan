@@ -18,6 +18,7 @@
 <%@tag import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@tag import="java.util.Date"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
@@ -102,7 +103,9 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	        if (subObj.getIsPublic().booleanValue()) {
 	        	visib = "Public";
 	        } 
-	        if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+	        //if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+	        	System.out.println("*** UserID tag subobjects: " + ((UserProfile)profile).getUserId().toString());
+	        if (owner.equals(((UserProfile)profile).getUserId().toString())) {
 	        	delete = "delete";
 	        }
 	        
@@ -133,7 +136,8 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= visib %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
 	           			<%
-	           		if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+	           		//if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+	           		if (owner.equals(((UserProfile)profile).getUserId().toString())) {
 	           			%>
 	                   		<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 	               				<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSubObject" />'); 
@@ -255,7 +259,7 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	function loadSubObject(windowName, subObjId) {
 		var params;
 		Ext.Ajax.request({
-			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
+			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
 			method: 'get',
 			success: function (result, request) {
 				response = result.responseText || "";

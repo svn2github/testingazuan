@@ -149,7 +149,7 @@ public class JasperReportRunner {
 	    	DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userId,session);
 	    	
 	    	DataSetConfig dsConf= dataSetProxy.getDataSetByLabel("ProvaFile");
-	    	System.out.println("Nome ds"+dsConf.getName());
+	    	if (dsConf!=null) System.out.println("Nome ds"+dsConf.getName());
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			

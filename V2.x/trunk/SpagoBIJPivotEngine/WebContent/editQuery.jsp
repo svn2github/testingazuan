@@ -87,7 +87,7 @@ if (schema != null && !schema.trim().equals("")) {
 			//String templateBase64Coded = (String) session.getAttribute("template");
 			//byte[] templateContent = bASE64Decoder.decodeBuffer(templateBase64Coded);
 			//ByteArrayInputStream is = new ByteArrayInputStream(templateContent);			
-			Content template = contentProxy.readTemplate(documentId);
+			Content template = contentProxy.readTemplate(documentId, new HashMap());
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			ByteArrayInputStream is = new java.io.ByteArrayInputStream(templateContent);
 

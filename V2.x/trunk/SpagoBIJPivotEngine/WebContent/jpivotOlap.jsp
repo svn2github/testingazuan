@@ -34,6 +34,8 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@ page import="org.apache.log4j.Logger"%>
+<%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
@@ -60,7 +62,8 @@ logger.debug("Reading a user profile...");
 String userId = null;
 IEngUserProfile profile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 if (profile!=null){
-    userId = (String)profile.getUserUniqueIdentifier();
+   // userId = (String)profile.getUserUniqueIdentifier();
+	 userId = (String)((UserProfile)profile).getUserId();
 }
 if(profile==null || userId==null) {
     logger.debug("User profile is null");

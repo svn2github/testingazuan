@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
@@ -92,6 +93,7 @@ public class JasperReportRunner {
 	
 	private String documentId=null;
 	private String userId=null;	
+	private String userUniqueIdentifier=null;	
 	
 	/**
 	 * Class Constructor.
@@ -123,11 +125,13 @@ public class JasperReportRunner {
 		
 		HttpSession session=servletRequest.getSession();
 		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		userId=(String)profile.getUserUniqueIdentifier();
+		userId=(String)((UserProfile)profile).getUserId();
+		userUniqueIdentifier=(String)profile.getUserUniqueIdentifier();
 		
 		logger.debug("Read user data from the request. userId="+userId+". DocumentId="+documentId);
 		
-		parameters.put("SBI_USERID", userId);
+		//parameters.put("SBI_USERID", userId);
+		parameters.put("SBI_USERID", userUniqueIdentifier);
 		parameters.put("SBI_HTTP_SESSION", session);
 		
 		
@@ -144,12 +148,14 @@ public class JasperReportRunner {
 	    	executionId = executionId.replaceAll("-", "");
 	    	String flgTemplateStandard = "true";
 
-	    	ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
-
-	    	DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userId,session);
+	    	//ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
+	    	ContentServiceProxy contentProxy=new ContentServiceProxy(userUniqueIdentifier,session);
 	    	
-	    	DataSetConfig dsConf= dataSetProxy.getDataSetByLabel("ProvaFile");
-	    	if (dsConf!=null) System.out.println("Nome ds"+dsConf.getName());
+	    	//DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userId,session);
+	    	DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userUniqueIdentifier,session);
+	    	
+	    	/*DataSetConfig dsConf= dataSetProxy.getDataSetByLabel("ProvaFile");
+	    	if (dsConf!=null) System.out.println("Nome ds"+dsConf.getName());*/
 		try {								
 			String tmpDirectory = System.getProperty("java.io.tmpdir");
 			

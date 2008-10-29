@@ -29,6 +29,7 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
@@ -161,7 +162,7 @@ public class SubObjectsListTag extends TagSupport {
                     if (subObj.getIsPublic().booleanValue()) {
                     	visib = "Public";
                     } 
-                    if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+                    if (owner.equals(((UserProfile)profile).getUserId().toString())) {
                     	delete = "delete";
                     }
                     Map execSubObjUrlPars = new HashMap();
@@ -193,7 +194,7 @@ public class SubObjectsListTag extends TagSupport {
             		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td> \n");
             		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' >" + visib + "</td>\n");
             		buffer.append("		<td class='" + rowClass + "' width='20px'>&nbsp;</td>\n");
-            		if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
+            		if (owner.equals(((UserProfile)profile).getUserId().toString())) {
                     	buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
                 		String eraseMsg = msgBuilder.getMessage("ConfirmMessages.DeleteSubObject", "messages", httpRequest);
                 		buffer.append("			<a href=\"javascript:var conf = confirm('" + eraseMsg + "'); if (conf) {document.location='" + deleteSubObjUrl.toString() + "';}\">\n");

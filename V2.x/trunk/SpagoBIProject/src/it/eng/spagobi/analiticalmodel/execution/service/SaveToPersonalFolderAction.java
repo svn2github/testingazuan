@@ -24,12 +24,12 @@ package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import java.util.List;
@@ -70,7 +70,8 @@ public class SaveToPersonalFolderAction extends BaseProfileAction{
 				logger.error("User profile not found");
 				throw new Exception("User profile not found");
 			}
-			String userId = profile.getUserUniqueIdentifier().toString();
+			String userId = ((UserProfile)profile).getUserId().toString();
+			logger.debug("*** savePersonal - userId: " + userId);
 			String documentIdStr = (String) request.getAttribute("documentId");
 			if (documentIdStr == null || documentIdStr.trim().equals("")){
 				logger.error("Document id not specified!!");

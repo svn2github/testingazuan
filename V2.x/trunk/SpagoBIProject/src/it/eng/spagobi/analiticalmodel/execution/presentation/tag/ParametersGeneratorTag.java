@@ -35,7 +35,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
-import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
@@ -48,6 +47,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovToListService;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -63,7 +63,6 @@ import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -110,14 +109,17 @@ public class ParametersGeneratorTag extends TagSupport {
     	return urlBuilder.getResourceLink(httpRequest, relativePath);
     }
 
-    private IEngUserProfile getProfile() {
+    private UserProfile getProfile() {
 	logger.debug("IN");
 	SessionContainer session = requestContainer.getSessionContainer();
 	SessionContainer permSession = session.getPermanentContainer();
-	IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	//IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	UserProfile profile = (UserProfile) permSession.getAttribute(UserProfile.ENG_USER_PROFILE);
 	logger.debug("OUT");
 	return profile;
     }
+    
+ 
 
     /* (non-Javadoc)
      * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
@@ -797,7 +799,8 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	String parameterId=biparam.getId().toString();
 	String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
-	String userId = getProfile().getUserUniqueIdentifier().toString();
+	String userId = getProfile().getUserId().toString();
+	String userUniqueIdentifier = getProfile().getUserUniqueIdentifier().toString();
 	String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
 		"&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  
 		"&parameterId=" + biparam.getParID().toString() + "&roleName=" + roleName +

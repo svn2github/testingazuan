@@ -37,6 +37,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
@@ -54,7 +55,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -878,7 +878,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 					SessionContainer sessCont = reqCont.getSessionContainer();
 					SessionContainer permCont = sessCont.getPermanentContainer();
 					profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-					username = (String)profile.getUserUniqueIdentifier();
+					username = (String)((UserProfile)profile).getUserId();
 				}
 			} catch (Exception e) {
 				logger.error("Error while recovering user profile", e);

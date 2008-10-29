@@ -31,6 +31,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
@@ -207,7 +208,7 @@ public class ViewPointsListTag extends TagSupport {
 	                buffer.append("     </td>\n");	            
 	                buffer.append("    <td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 	                IEngUserProfile userProfile = getCurrentUserProfile();
-	                if (ownerVP.equals(userProfile.getUserUniqueIdentifier().toString())) {
+	                if (ownerVP.equals(((UserProfile)userProfile).getUserId().toString())) {
 	                 	String eraseVPMsg = msgBuilder.getMessage("ConfirmMessages.DeleteViewpoint", httpRequest);
 	                 	buffer.append("		<a href=\"javascript:var conf = confirm('" + eraseVPMsg + "'); if (conf) {document.location='" + deleteVPUrl.toString() + "';}\">\n");
 	                 	buffer.append("			<img \n");

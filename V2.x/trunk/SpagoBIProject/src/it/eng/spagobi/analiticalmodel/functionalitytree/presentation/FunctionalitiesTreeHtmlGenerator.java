@@ -29,6 +29,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.DetailFunctionalityModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctionality;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -112,7 +113,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 			SessionContainer sessionContainer = reqCont.getSessionContainer();
 			SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 	        IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
 	   		if(isUserFunct) {
 	   			continue;
 	   		}

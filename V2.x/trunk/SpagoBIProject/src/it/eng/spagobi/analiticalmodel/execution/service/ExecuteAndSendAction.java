@@ -186,7 +186,7 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 		    String active = (String) validateSB.getCharacters();
 		    if (active != null && active.equals("true")) {
 			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-			userId = userProxy.readUserId(req.getSession());
+			userId = userProxy.readUserIdentifier(req.getSession());
 			logger.debug("got userId from IProxyService=" + userId);
 		    } else {
 			userId = req.getParameter("userId");

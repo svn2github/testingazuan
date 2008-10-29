@@ -29,8 +29,8 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule;
-import it.eng.spagobi.analiticalmodel.document.service.UpdateBIObjectStateModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
@@ -40,7 +40,6 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -233,7 +232,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
 	   		/* ********* start luca changes *************** */
-	   		boolean isUserFunct = folder.getPath().startsWith("/"+profile.getUserUniqueIdentifier());
+	   		boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
 	   		if(isUserFunct) {
 	   			continue;
 	   		}
@@ -315,7 +314,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	}
 	
 	private String createMetadataObjectLink(Integer id) {
-		String detUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
+		String detUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString());
 		HashMap detUrlParMap = new HashMap();
 		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);

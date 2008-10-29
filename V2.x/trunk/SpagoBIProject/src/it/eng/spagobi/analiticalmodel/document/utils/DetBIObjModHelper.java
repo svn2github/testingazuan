@@ -48,6 +48,7 @@ import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -94,7 +95,8 @@ public class DetBIObjModHelper {
 		SessionContainer session = reqCont.getSessionContainer();
 		SessionContainer permanentSession = session.getPermanentContainer();
 		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String userId=(String)profile.getUserUniqueIdentifier();
+		//String userId=(String)profile.getUserUniqueIdentifier();
+		String userId=(String)((UserProfile)profile).getUserId();
 		// GET THE INITIAL PATH 
 		String initialPath = (String)ChannelUtilities.getPreferenceValue(reqCont, TreeObjectsModule.PATH_SUBTREE, "");
 		// CREATE AN EMPTY BIOBJECT
@@ -265,7 +267,8 @@ public class DetBIObjModHelper {
 		SessionContainer session = reqCont.getSessionContainer();
 		SessionContainer permanentSession = session.getPermanentContainer();	    
 		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String userId=(String)profile.getUserUniqueIdentifier();
+		//String userId=(String)profile.getUserUniqueIdentifier();
+		String userId=(String)((UserProfile)profile).getUserId();
 	    ObjTemplate templ = null;
 		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
 		if (uploaded != null) {

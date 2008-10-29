@@ -22,10 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.bo;
 
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.security.AuthorizationsBusinessMapper;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 
@@ -49,6 +46,8 @@ public class UserProfile implements IEngUserProfile {
     private static String SCHEDULER_USER_NAME = "scheduler";
 
     private String userUniqueIdentifier = null;
+    private String userId = null;
+    private String userName = null;
     private Map userAttributes = null;
     private Collection roles = null;
     private Collection functionalities = null;
@@ -60,7 +59,9 @@ public class UserProfile implements IEngUserProfile {
      */
     public UserProfile(SpagoBIUserProfile profile) {
 	logger.debug("IN");
-	this.userUniqueIdentifier = profile.getUserId();
+	this.userUniqueIdentifier = profile.getUniqueIdentifier();
+	this.userName = profile.getUserName();
+	this.userId = profile.getUserId();
 	roles = new ArrayList();
 	if (profile.getRoles() != null) {
 	    int l = profile.getRoles().length;
@@ -185,9 +186,26 @@ public class UserProfile implements IEngUserProfile {
      * @see it.eng.spago.security.IEngUserProfile#getUserUniqueIdentifier()
      */
     public Object getUserUniqueIdentifier() {
-	return userUniqueIdentifier;
+    	return userUniqueIdentifier;
     }
 
+    /* (non-Javadoc)
+     * @see it.eng.spago.security.IEngUserProfile#getUserName()
+     */
+    public Object getUserName() {
+    	String retVal = userName;
+    	if (retVal == null) retVal = userUniqueIdentifier;
+    	return retVal;
+    }
+
+    /* (non-Javadoc)
+     * @see it.eng.spago.security.IEngUserProfile#getUserId()
+     */
+    public Object getUserId() {
+    	String retVal = userId;
+    	if (retVal == null) retVal = userUniqueIdentifier;
+    	return retVal;
+    }
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#hasRole(java.lang.String)

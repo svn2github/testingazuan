@@ -82,6 +82,7 @@ public class UserMenuTag extends TagSupport {
 		boolean canSeeEngines = userProfile.isAbleToExecuteAction(SpagoBIConstants.ENGINES_MANAGEMENT);
 		boolean canSeeDatasources = userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASOURCE_MANAGEMENT);
 		boolean canSeeDatasets = userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASET_MANAGEMENT);
+		logger.debug("user canSeeEngines: " + canSeeEngines + "user canSeeDatasources: " + canSeeDatasources + "user canSeeDatasets: " + canSeeDatasets);
 		if (canSeeEngines || canSeeDatasources || canSeeDatasets) {
 			htmlStream.append("\n var reourcesMenu = new Ext.menu.Menu({ ");
 			htmlStream.append("\n id: 'reourcesMenu', ");
@@ -411,6 +412,7 @@ public class UserMenuTag extends TagSupport {
 	
 	private void makeSubMenuItem(StringBuffer htmlStream, String functionality) {
 		SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", functionality);
+		logger.debug(" config for functionality: " +  functionality + " and sourcebean: " + config) ;
 		htmlStream.append("\n new Ext.menu.Item({");
 		htmlStream.append("\n 	id: '" + new Double(Math.random()).toString() + "',");
 		String title = (String) config.getAttribute("title");

@@ -35,6 +35,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
@@ -1375,7 +1376,7 @@ public class ListTag extends TagSupport
 	}
 	protected String createUrl_popup(HashMap paramsMap) {
 
-	        String url = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
+	        String url = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString());
 	        paramsMap.put("TYPE_LIST", "TYPE_LIST");
 			if (paramsMap != null){
 				Iterator keysIt = paramsMap.keySet().iterator();

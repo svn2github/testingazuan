@@ -92,7 +92,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 		String active = (String) validateSB.getCharacters();
 		if (active != null && active.equals("true")) {
 		    SsoServiceInterface proxy = SsoServiceFactory.createProxyService();
-		    userId = proxy.readUserId(request.getSession());
+		    userId = proxy.readUserIdentifier(request.getSession());
 		    logger.debug("got userId from IProxyService=" + userId);
 		} else {
 		    userId = request.getParameter("userId");
@@ -109,7 +109,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 		}
 
 	    }
-	    userId = (String) profile.getUserUniqueIdentifier();
+	    userId = (String) ((UserProfile)profile).getUserId();
 
 	    String documentId = request.getParameter("documentId");
 	    logger.debug("got parameter documentId=" + documentId);

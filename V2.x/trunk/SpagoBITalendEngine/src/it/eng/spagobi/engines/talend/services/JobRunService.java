@@ -32,6 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.services;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
@@ -72,7 +73,8 @@ public class JobRunService extends HttpServlet {
 	public static final String JS_EXT_ZIP = ".zip";	
 	private Locale locale;
 	private String documentId=null;
-	private String userId=null;	
+	private String userId=null;
+	private String userUniqueIdentifier=null;	
 
 	protected AuditAccessUtils auditAccessUtils;
 
@@ -133,7 +135,8 @@ public class JobRunService extends HttpServlet {
 
 		logger.debug("documentId:"+documentId);
 		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		userId=(String)profile.getUserUniqueIdentifier();
+		userId=(String)((UserProfile)profile).getUserId();
+		userUniqueIdentifier=(String)((UserProfile)profile).getUserUniqueIdentifier();
 		Map params = new HashMap();
 		Enumeration enumer = request.getParameterNames();
 		params.put("userId", userId);	
@@ -171,7 +174,8 @@ public class JobRunService extends HttpServlet {
 		locale = getLocale(request);
 
 
-		ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
+		//ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
+		ContentServiceProxy contentProxy=new ContentServiceProxy(userUniqueIdentifier,session);
 
 		try {								
 			Content template=contentProxy.readTemplate(documentId,new HashMap());

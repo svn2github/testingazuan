@@ -46,6 +46,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Subreport;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -647,7 +648,7 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		boolean toReturn = true;
 		if (!subObj.getIsPublic().booleanValue()
 				&& !subObj.getOwner().equals(
-						profile.getUserUniqueIdentifier())) {
+				((UserProfile)profile).getUserId())) {
 			toReturn = false;
 		}
 		logger.debug("OUT");
@@ -1391,7 +1392,8 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		String nameVP = (String) request.getAttribute("tmp_nameVP");
 		String descVP = (String) request.getAttribute("tmp_descVP");
 		String scopeVP = (String) request.getAttribute("tmp_scopeVP");
-		String ownerVP = (String) profile.getUserUniqueIdentifier();
+		//String ownerVP = (String) profile.getUserUniqueIdentifier();
+		String ownerVP = (String) ((UserProfile)profile).getUserId();
 		
 
 		instance.refreshParametersValues(request, false);

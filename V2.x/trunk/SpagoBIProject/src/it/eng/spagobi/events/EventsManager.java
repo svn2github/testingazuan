@@ -23,6 +23,7 @@ package it.eng.spagobi.events;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.events.bo.EventLog;
 import it.eng.spagobi.events.dao.EventLogDAOHibImpl;
 
@@ -165,7 +166,7 @@ public class EventsManager {
 		try {
 			registeredEventsList = eventLogDAO.loadEventsLogByUser(profile);
 		} catch (EMFUserError e) {
-			logger.error("Error while loading events list for the user '" + profile.getUserUniqueIdentifier().toString(), e);
+			logger.error("Error while loading events list for the user '" + ((UserProfile)profile).getUserId().toString(), e);
 		}
 		logger.debug("OUT");
 		return registeredEventsList;

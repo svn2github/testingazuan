@@ -72,7 +72,7 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 			logger.debug("got userId from Principal="+userId);
 		    }
 			SsoServiceInterface proxy=SsoServiceFactory.createProxyService();
-			userId=proxy.readUserId(req.getSession());
+			userId=proxy.readUserIdentifier(req.getSession());
 			logger.debug("got userId from IProxyService="+userId);
 		}else {
 		    	userId = (String)request.getAttribute("userId");

@@ -27,36 +27,21 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
-import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.Subreport;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
-import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document;
-import it.eng.spagobi.engines.drivers.IEngineDriver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
@@ -86,7 +71,8 @@ public class DocumentCompositionUtils {
 		 // get the user profile from session
 		SessionContainer permSession = sessionContainer.getPermanentContainer();
 	    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString()) + 
+	    String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) + 
+		//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
 				"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
 				+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
 				+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;

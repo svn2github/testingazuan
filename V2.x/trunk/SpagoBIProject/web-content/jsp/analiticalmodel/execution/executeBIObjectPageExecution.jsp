@@ -100,7 +100,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 	
 		function adaptSize<%=uuid%>Funct() {
 		
-			if (parent.sessionExpiredSpagoBIJS) {
+			if (window != parent) {
 				// case when document is executed inside main iframe in SpagoBI Web application
 				heightMainIFrame = 0;
 				// calculates the iframe height

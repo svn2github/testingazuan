@@ -143,7 +143,7 @@ public class DossierCollaborationModule extends AbstractModule {
 			SessionContainer session = this.getRequestContainer().getSessionContainer();
 			SessionContainer permanentSession = session.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			String userId = (String) profile.getUserUniqueIdentifier();
+			String userId = (String) ((UserProfile)profile).getUserId();
 			
 			String label = (String)request.getAttribute("label");
 			if(label==null) label = "";

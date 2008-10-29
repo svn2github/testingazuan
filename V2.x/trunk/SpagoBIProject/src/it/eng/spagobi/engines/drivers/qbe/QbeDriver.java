@@ -28,6 +28,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
@@ -256,8 +257,9 @@ public class QbeDriver implements IEngineDriver {
 	 */
 	protected Map applySecurity(Map pars, IEngUserProfile profile) {
 		logger.debug("IN");
-		pars.put("userId", profile.getUserUniqueIdentifier());
-		logger.debug("Add parameter: userId/"+ profile.getUserUniqueIdentifier());
+		pars.put("userId", ((UserProfile)profile).getUserId());
+		//logger.debug("Add parameter: userId/"+ ((UserProfile)profile).getUserId());
+		logger.debug("Add parameter: userId/"+ ((UserProfile)profile).getUserUniqueIdentifier());
 		logger.debug("OUT");
 		return pars;
 	}

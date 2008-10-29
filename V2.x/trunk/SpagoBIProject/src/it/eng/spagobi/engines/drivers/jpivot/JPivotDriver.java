@@ -39,6 +39,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
@@ -375,7 +376,7 @@ public class JPivotDriver implements IEngineDriver {
 			    
 			} catch (Exception e) {
 			    logger.error("Error while recovering profile attribute " + nameProfAttr + " of the user "
-				    + profile.getUserUniqueIdentifier(), e);
+				    + ((UserProfile)profile).getUserId(), e);
 			}
 			valueProfAttr = valueProfAttr.replaceAll("'","");
 			// if the value of the profile attribute is not null
@@ -505,8 +506,8 @@ public class JPivotDriver implements IEngineDriver {
      */
     protected Map applySecurity(Map pars, IEngUserProfile profile) {
 	logger.debug("IN");
-	pars.put("userId", profile.getUserUniqueIdentifier());
-	logger.debug("Add parameter: userId/" + profile.getUserUniqueIdentifier());
+	pars.put("userId",((UserProfile)profile).getUserUniqueIdentifier());
+	logger.debug("Add parameter: userUniqueIdentifier/" + ((UserProfile)profile).getUserUniqueIdentifier());
 	logger.debug("OUT");
 	return pars;
     }

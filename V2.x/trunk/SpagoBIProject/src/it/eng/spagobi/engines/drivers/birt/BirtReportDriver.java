@@ -37,18 +37,14 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -117,8 +113,8 @@ public class BirtReportDriver implements IEngineDriver {
      */
     protected Map applySecurity(Map pars, IEngUserProfile profile) {
 	logger.debug("IN");
-	pars.put("userId", profile.getUserUniqueIdentifier());
-	logger.debug("Add parameter: userId/"+profile.getUserUniqueIdentifier());
+	pars.put("userId", ((UserProfile)profile).getUserId());
+	logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserId());
 	logger.debug("OUT");
 	return pars;
     }

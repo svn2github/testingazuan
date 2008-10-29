@@ -115,8 +115,9 @@ public class JPaloDriver implements IEngineDriver {
      */
     protected Map applySecurity(Map pars, IEngUserProfile profile) {
 		logger.debug("IN");
-		pars.put("userId", profile.getUserUniqueIdentifier());
-		logger.debug("Add parameter: userId/"+profile.getUserUniqueIdentifier());
+		pars.put("userId", ((UserProfile)profile).getUserId());
+		//logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserId());
+		logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserUniqueIdentifier());
 		logger.debug("OUT");
 		return pars;
     }

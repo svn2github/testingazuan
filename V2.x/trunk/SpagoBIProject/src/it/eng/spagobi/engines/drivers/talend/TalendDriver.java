@@ -37,6 +37,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
@@ -136,8 +137,9 @@ public class TalendDriver implements IEngineDriver {
 	 */
 	protected Map applySecurity(Map pars,IEngUserProfile profile) {
 		logger.debug("IN");
-		pars.put("userId", profile.getUserUniqueIdentifier());
-		logger.debug("Add parameter: userId/"+profile.getUserUniqueIdentifier());
+		pars.put("userId", ((UserProfile)profile).getUserId());
+	//	logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserId());
+		logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserUniqueIdentifier());
 		logger.debug("OUT");
 		return pars;
 	}

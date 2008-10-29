@@ -100,7 +100,7 @@ public class PortletLoginAction extends AbstractHttpAction {
 		    throw new SecurityException();
 		}
 
-		logger.debug("userProfile created.UserID= " + (String) profile.getUserUniqueIdentifier());
+		logger.debug("userProfile created.UserUniqueIDentifier= " + (String) profile.getUserUniqueIdentifier());
 		logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());
 		logger.debug("Functionalities of the user profile: " + profile.getFunctionalities());
 		logger.debug("Roles of the user profile: " + profile.getRoles());
@@ -113,7 +113,8 @@ public class PortletLoginAction extends AbstractHttpAction {
 			permSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
 		}
 		
-		String username = (String) profile.getUserUniqueIdentifier();
+		//String username = (String) profile.getUserUniqueIdentifier();
+		String username = (String)((UserProfile)profile).getUserId();
 		if (!UserUtilities.userFunctionalityRootExists(username)) {
 		    UserUtilities.createUserFunctionalityRoot(profile);
 		}

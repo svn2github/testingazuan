@@ -117,7 +117,8 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		
 		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		if (profile==null || !userId.equals(profile.getUserUniqueIdentifier().toString())){
+		//if (profile==null || !userId.equals(profile.getUserUniqueIdentifier().toString())){
+		if (profile==null || !userId.equals(((UserProfile)profile).getUserId().toString())){
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	    	// Check if SSO is active
 	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
@@ -163,7 +164,8 @@ public class LoginModule extends AbstractHttpModule {
 	            throw new SecurityException();
 	        }
 	        
-			String username = (String) profile.getUserUniqueIdentifier();
+			//String username = (String) profile.getUserUniqueIdentifier();
+	        String username = (String) ((UserProfile)profile).getUserId();
 			if (!UserUtilities.userFunctionalityRootExists(username)) {
 			    UserUtilities.createUserFunctionalityRoot(profile);
 			}
@@ -197,8 +199,10 @@ public class LoginModule extends AbstractHttpModule {
 					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
 					&& !profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
 				Collection lstRolesForUser = profile.getRoles();
+				logger.debug("** Roles for user: " + lstRolesForUser.size());
 				Object[] arrRoles = lstRolesForUser.toArray();
 				for (int i=0; i< arrRoles.length; i++){
+					logger.debug("*** arrRoles[i]): " + arrRoles[i]);
 					Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
 					if (role != null){
 						List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
@@ -218,7 +222,7 @@ public class LoginModule extends AbstractHttpModule {
 				}
 				response.setAttribute(LIST_MENU, lstFinalMenu);
 			}	
-
+			logger.debug("List Menu Size " + lstFinalMenu.size());
 			//String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode");
 			//response.setAttribute(MENU_MODE, menuMode);
 			response.setAttribute(MENU_MODE, DEFAULT_LAYOUT_MODE);

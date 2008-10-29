@@ -73,8 +73,9 @@ public class UserUtilities {
 	    logger.debug("got userId from Principal=" + userId);
 
 	    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+	    SpagoBIUserProfile user = null;
 	    try {
-		SpagoBIUserProfile user = supplier.createUserProfile(userId);
+		user = supplier.createUserProfile(userId);
 		userProfile = new UserProfile(user);
 	    } catch (Exception e) {
 		logger.error("Reading user information... ERROR", e);
@@ -88,7 +89,8 @@ public class UserUtilities {
 
 	    permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, userProfile);
 
-	    String username = (String) userProfile.getUserUniqueIdentifier();
+	   // String username = (String) userProfile.getUserUniqueIdentifier();
+	    String username = (String) user.getUserId();
 	    if (!UserUtilities.userFunctionalityRootExists(username)) {
 		UserUtilities.createUserFunctionalityRoot(userProfile);
 	    }
@@ -110,6 +112,7 @@ public class UserUtilities {
     public static boolean userFunctionalityRootExists(String username) throws Exception {
 	boolean exists = false;
 	try {
+		logger.debug("****  username checked: " + username);
 	    ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 	    exists = functdao.checkUserRootExists(username);
 	} catch (Exception e) {
@@ -129,7 +132,8 @@ public class UserUtilities {
      */
     public static void createUserFunctionalityRoot(IEngUserProfile userProfile) throws Exception {
 	try {
-	    String username = (String) userProfile.getUserUniqueIdentifier();
+	    String username = (String) ((UserProfile)userProfile).getUserId();
+	    logger.debug("username: " + username);
 	    Collection roleStrs = userProfile.getRoles();
 	    Iterator roleIter = roleStrs.iterator();
 	    List roles = new ArrayList();

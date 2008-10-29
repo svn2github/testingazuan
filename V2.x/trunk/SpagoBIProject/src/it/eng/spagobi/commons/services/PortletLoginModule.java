@@ -98,7 +98,8 @@ public class PortletLoginModule extends AbstractModule {
 			permSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
 		}
 		
-		String username = (String)profile.getUserUniqueIdentifier();
+		//String username = (String)profile.getUserUniqueIdentifier();
+		String username = (String)((UserProfile)profile).getUserId();
 		if(!UserUtilities.userFunctionalityRootExists(username)) {
 			UserUtilities.createUserFunctionalityRoot(profile);
 		}

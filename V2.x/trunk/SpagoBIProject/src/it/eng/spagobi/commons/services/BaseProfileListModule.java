@@ -21,15 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.services;
 
-import javax.servlet.http.HttpServletRequest;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -65,7 +65,7 @@ public abstract class BaseProfileListModule extends AbstractBasicListModule {
 					permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 				} else {
 					// in case the profile is different, creates a new one and overwrites the existing
-					if (!profile.getUserUniqueIdentifier().toString().equals(userId)) {
+					if (!((UserProfile)profile).getUserId().toString().equals(userId)) {
 						logger.debug("Different user profile found in session, creating a new one and replacing in session....");
 						profile = GeneralUtilities.createNewUserProfile(userId);
 						permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);

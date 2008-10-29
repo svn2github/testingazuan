@@ -1208,14 +1208,19 @@ public class GeneralUtilities {
 	    	// If SSO is active gets userid in session
 	    	if (active != null && active.equals("true")) {
 	    	    SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
-	    	    sessionUserId = ssoProxy.readUserId(httpRequest.getSession());
+	    	    sessionUserId = ssoProxy.readUserIdentifier(httpRequest.getSession());
 	    	    if (sessionUserId != null) {
+	    	    	logger.debug("requestUserId: " + requestUserId );
+	    	    	logger.debug("sessionUserId: " + sessionUserId );
 	    			// if userid in session is different from userid in request throws an exception
+	    	    	/*
 	    			if (requestUserId != null && !requestUserId.equals(sessionUserId)) {
 	    			    logger.error("The user identifier specified on service request is diferent from the one detected by SSO system: " +
 	    			    		"requestUserId=" + requestUserId + "/sessionUserId=" + sessionUserId);
 	    			    throw new SecurityException("Invalid userid");
 	    			}
+	    			*/
+	    	    	return sessionUserId;
 	    	    } else {
 	    			logger.error("User id was not found in session");
 	    			throw new SecurityException("User id was not found in session");

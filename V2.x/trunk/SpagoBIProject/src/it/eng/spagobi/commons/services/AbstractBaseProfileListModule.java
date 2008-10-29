@@ -21,22 +21,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.services;
 
-import javax.servlet.http.HttpServletRequest;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 /**
@@ -64,14 +63,18 @@ public abstract class AbstractBaseProfileListModule extends AbstractBasicListMod
 	    //If CAS is active gets userid in session
 	    if (active != null && active.equals("true")) {
 	    	HttpServletRequest req =(HttpServletRequest) this.getRequestContainer().getInternalRequest();
-		SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
-		sessionUserId = ssoProxy.readUserId(req.getSession());
+	    	SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
+	    	sessionUserId = ssoProxy.readUserIdentifier(req.getSession());
+	    	
 	    	if(requestUserId!=null && sessionUserId!= null){
+	    		/*
 	    		//if userid in session different from userid in request throws exception
 		    	if (!requestUserId.equals(sessionUserId)){
 		    		logger.error("The user can not execute this module");
 		    		throw new SecurityException("Invalid userid");
 		    	}
+		    	*/
+	    		requestUserId = sessionUserId;
 		    }
 	    	else if (sessionUserId==null){
 	    		logger.error("The user can not execute this module");
@@ -86,7 +89,7 @@ public abstract class AbstractBaseProfileListModule extends AbstractBasicListMod
 			SessionContainer sessCont = reqCont.getSessionContainer();
 			SessionContainer permSess = sessCont.getPermanentContainer();
 			profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			if (profile!=null)profileUser = profile.getUserUniqueIdentifier().toString();
+			if (profile!=null)profileUser = ((UserProfile)profile).getUserId().toString();
 			//If session userid differs from request userid or is null, puts the new userid in session
 			if (profileUser == null || profileUser == "" || !profileUser.equals(requestUserId)){
 				ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();

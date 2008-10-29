@@ -23,12 +23,11 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
@@ -659,7 +658,7 @@ public class ObjectsAccessVerifier {
      * @throws EMFInternalError 
      */
     public static boolean checkProfileVisibility(BIObject obj, IEngUserProfile profile) throws EMFInternalError {
-    	logger.debug("IN: obj label is [" + obj.getLabel() + "]; user is [" + profile.getUserUniqueIdentifier().toString() + "]");
+    	logger.debug("IN: obj label is [" + obj.getLabel() + "]; user is [" + ((UserProfile)profile).getUserId().toString() + "]");
     	boolean toReturn = true;
     	String profVisibility = obj.getProfiledVisibility();
     	if (profVisibility == null || profVisibility.trim().equals("")) {

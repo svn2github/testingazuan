@@ -26,8 +26,8 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import org.apache.log4j.Logger;
 
@@ -62,7 +62,7 @@ public abstract class BaseProfileAction extends AbstractHttpAction {
 					permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 				} else {
 					// in case the profile is different, creates a new one and overwrites the existing
-					if (!profile.getUserUniqueIdentifier().toString().equals(userId)) {
+					if (!((UserProfile)profile).getUserId().toString().equals(userId)) {
 						logger.debug("Different user profile found in session, creating a new one and replacing in session....");
 						profile = GeneralUtilities.createNewUserProfile(userId);
 						permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);

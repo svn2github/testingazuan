@@ -22,10 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.content.service;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -33,23 +29,23 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
-import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Encoder;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import sun.misc.BASE64Encoder;
 
 public class ContentServiceImpl extends AbstractServiceImpl{
 
@@ -137,7 +133,9 @@ public class ContentServiceImpl extends AbstractServiceImpl{
             	logger.debug("KO - User " + user + " cannot save subobjects");
             	return "KO - You cannot save subobjects";
             }
-            return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
+            String userId = ((UserProfile)profile).getUserId().toString();
+            //return saveSubObject(user,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
+            return saveSubObject(userId,documentiId,analysisName,analysisDescription,visibilityBoolean,content);
 	} catch (SecurityException e) {
 	    logger.error("SecurityException",e);
 	    return null;

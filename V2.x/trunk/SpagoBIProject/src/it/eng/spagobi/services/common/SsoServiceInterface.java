@@ -58,7 +58,7 @@ public interface SsoServiceInterface {
      * @param session Http Session
      * @return
      */
-    String readUserId(HttpSession session);
+    String readUserIdentifier(HttpSession session);
     
     
     /**
@@ -66,5 +66,5 @@ public interface SsoServiceInterface {
      * @param session Portlet Session
      * @return
      */
-    String readUserId(PortletSession session);
+    String readUserIdentifier(PortletSession session);
 }

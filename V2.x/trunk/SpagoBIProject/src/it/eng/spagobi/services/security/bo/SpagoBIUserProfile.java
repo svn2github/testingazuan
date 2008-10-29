@@ -16,7 +16,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
 
     private java.lang.String userId;
 
-    private java.lang.String userIdentifier;
+    private java.lang.String uniqueIdentifier;
 
     private java.lang.String userName;
 
@@ -34,7 +34,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
            this.functions = functions;
            this.roles = roles;
            this.userId = userId;
-           this.userIdentifier = userIdentifier;
+           this.uniqueIdentifier = uniqueIdentifier;
            this.userName = userName;
     }
 
@@ -105,7 +105,9 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
      * @return userId
      */
     public java.lang.String getUserId() {
-        return userId;
+    	String strReturn = userId;
+    	if (strReturn == null) strReturn = uniqueIdentifier;
+        return strReturn;
     }
 
 
@@ -120,22 +122,22 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
 
 
     /**
-     * Gets the userIdentifier value for this SpagoBIUserProfile.
+     * Gets the uniqueIdentifier value for this SpagoBIUserProfile.
      * 
-     * @return userIdentifier
+     * @return uniqueIdentifier
      */
-    public java.lang.String getUserIdentifier() {
-        return userIdentifier;
+    public java.lang.String getUniqueIdentifier() {
+        return uniqueIdentifier;
     }
 
 
     /**
-     * Sets the userIdentifier value for this SpagoBIUserProfile.
+     * Sets the uniqueIdentifier value for this SpagoBIUserProfile.
      * 
-     * @param userIdentifier
+     * @param uniqueIdentifier
      */
-    public void setUserIdentifier(java.lang.String userIdentifier) {
-        this.userIdentifier = userIdentifier;
+    public void setUniqueIdentifier(java.lang.String uniqueIdentifier) {
+        this.uniqueIdentifier = uniqueIdentifier;
     }
 
 
@@ -145,7 +147,9 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
      * @return userName
      */
     public java.lang.String getUserName() {
-        return userName;
+    	String strReturn = userName;
+    	if (strReturn == null) strReturn = uniqueIdentifier;
+        return strReturn;
     }
 
 
@@ -182,9 +186,9 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
             ((this.userId==null && other.getUserId()==null) || 
              (this.userId!=null &&
               this.userId.equals(other.getUserId()))) &&
-            ((this.userIdentifier==null && other.getUserIdentifier()==null) || 
-             (this.userIdentifier!=null &&
-              this.userIdentifier.equals(other.getUserIdentifier()))) &&
+            ((this.uniqueIdentifier==null && other.getUniqueIdentifier()==null) || 
+             (this.uniqueIdentifier!=null &&
+              this.uniqueIdentifier.equals(other.getUniqueIdentifier()))) &&
             ((this.userName==null && other.getUserName()==null) || 
              (this.userName!=null &&
               this.userName.equals(other.getUserName())));
@@ -227,8 +231,8 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
         if (getUserId() != null) {
             _hashCode += getUserId().hashCode();
         }
-        if (getUserIdentifier() != null) {
-            _hashCode += getUserIdentifier().hashCode();
+        if (getUniqueIdentifier() != null) {
+            _hashCode += getUniqueIdentifier().hashCode();
         }
         if (getUserName() != null) {
             _hashCode += getUserName().hashCode();
@@ -268,8 +272,8 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userIdentifier");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "userIdentifier"));
+        elemField.setFieldName("uniqueIdentifier");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "uniqueIdentifier"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

@@ -21,15 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.distributionlist.service;
 
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -42,9 +41,6 @@ import it.eng.spagobi.tools.distributionlist.bo.Email;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 /**
@@ -155,7 +151,7 @@ public class DetailDistributionListUserModule extends BaseProfileModule {
 			
 			IEngUserProfile profile=UserUtilities.getUserProfile();
 
-			if (profile!=null) userId=(String)profile.getUserUniqueIdentifier();
+			if (profile!=null) userId=(String)((UserProfile)profile).getUserId();
 			//load the dl
 			dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 			//load the user
@@ -201,7 +197,7 @@ public class DetailDistributionListUserModule extends BaseProfileModule {
 			String id = (String) request.getAttribute("DL_ID");
 			this.modalita = SpagoBIConstants.DETAIL_UNSUBSC;
 			IEngUserProfile userProfile = UserUtilities.getUserProfile();
-			String userId = (String)userProfile.getUserUniqueIdentifier();
+			String userId = (String)((UserProfile)userProfile).getUserId();
 			//load the dl
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer(id));
 

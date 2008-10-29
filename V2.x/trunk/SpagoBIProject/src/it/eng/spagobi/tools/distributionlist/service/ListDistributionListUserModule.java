@@ -21,20 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.distributionlist.service;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
-/**
-* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
-*/
 import it.eng.spagobi.commons.utilities.UserUtilities;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Loads the Distributionlist List
@@ -64,7 +62,7 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 		*/
 	    	IEngUserProfile userProfile =UserUtilities.getUserProfile();
 		String userId="";
-		if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
+		if (userProfile!=null) userId=(String)((UserProfile)userProfile).getUserId();
 		//sets the userid as input parameter for the query fo statements.xml
 		aSessionContainer.setAttribute("user_id",userId);
 		

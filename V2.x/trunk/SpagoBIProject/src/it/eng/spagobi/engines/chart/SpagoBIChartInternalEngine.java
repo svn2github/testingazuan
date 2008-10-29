@@ -34,12 +34,10 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.SpagoBISessionContainer;
-import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
@@ -105,7 +103,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 		SessionContainer session = requestContainer.getSessionContainer();
 		IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String userId=(String)userProfile.getUserUniqueIdentifier();
+		String userId=(String)((UserProfile)userProfile).getUserId();
 
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 

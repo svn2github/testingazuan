@@ -32,12 +32,10 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.SpagoBISessionContainer;
-import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -134,7 +132,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 		    IEngUserProfile.ENG_USER_PROFILE);
-	    dataParameters.put("userId", profile.getUserUniqueIdentifier());
+	    dataParameters.put("userId", ((UserProfile)profile).getUserId());
 
 	    // get all the parameters for dash configuration
 	    Map confParameters = new HashMap();

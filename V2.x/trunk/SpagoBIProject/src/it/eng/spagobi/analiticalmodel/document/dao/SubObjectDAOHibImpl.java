@@ -28,6 +28,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
@@ -57,7 +58,7 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
-						 "and (isPublic = true or owner = '"+profile.getUserUniqueIdentifier().toString()+"')";
+						 "and (isPublic = true or owner = '"+((UserProfile)profile).getUserId().toString()+"')";
 			Query query = aSession.createQuery(hql);
 			List result = query.list();
 			Iterator it = result.iterator();

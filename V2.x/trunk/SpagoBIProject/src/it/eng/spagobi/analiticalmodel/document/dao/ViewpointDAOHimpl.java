@@ -33,6 +33,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiViewpoints;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 
 import java.util.ArrayList;
@@ -405,7 +406,7 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			tx = aSession.beginTransaction();
 			
 			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId + " and (vp.vpScope = 'Public' or " +
-					"vp.vpOwner = '" + userProfile.getUserUniqueIdentifier().toString() + "')";
+					"vp.vpOwner = '" + ((UserProfile)userProfile).getUserId().toString() + "')";
 
 			Query hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();

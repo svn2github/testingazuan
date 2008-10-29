@@ -111,7 +111,7 @@ public class SpagoBIAccessFilter implements Filter {
 
 
 	    if (userIdentifier != null && !isBackend)
-		userIdentifier=checkUserWithSSO(userIdentifier, session);
+	    	userIdentifier=checkUserWithSSO(userIdentifier, session);
 
 	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 	    String spagoBackEndUrl = request.getParameter(SpagoBIConstants.SBI_BACK_END_HOST);
@@ -189,8 +189,7 @@ This code doesn't show the original error
     
 	if (EnginConf.getInstance().isSsoActive()) {
 	    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-	    String ssoUserIdentifier = userProxy.readUserId(session);
-	   // userId = userId.replace(' ', '+');
+	    String ssoUserIdentifier = userProxy.readUserIdentifier(session);
 	    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
 	    logger.debug("got userId from IProxyService=" + userId);
 	    return ssoUserIdentifier;

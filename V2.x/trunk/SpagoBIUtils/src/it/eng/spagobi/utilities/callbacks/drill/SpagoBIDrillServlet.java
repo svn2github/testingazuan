@@ -33,6 +33,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities.callbacks.drill;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -60,7 +61,8 @@ public class SpagoBIDrillServlet extends HttpServlet {
 	if (profile == null) {
 	    logger.error("IEngUserProfile is not in session!!!");
 	} else {
-	    String username = (String) profile.getUserUniqueIdentifier();
+	  //  String username = (String) profile.getUserUniqueIdentifier();
+	    String username = (String) ((UserProfile)profile).getUserId();
 
 	    String spagobiContextUrl = (String) session
 		    .getAttribute("spagobicontext");

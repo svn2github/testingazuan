@@ -95,6 +95,7 @@ public class AuditAccessUtils {
     public void updateAudit(HttpSession session, String userId,String auditId, Long startTime, Long endTime,
 	    String executionState, String errorMessage, String errorCode) {
 	logger.debug("IN");
+	logger.debug("*** updateAudit userId: " + userId);
 	try {
 	    if (auditId == null || !_auditIds.contains(auditId))
 		return;

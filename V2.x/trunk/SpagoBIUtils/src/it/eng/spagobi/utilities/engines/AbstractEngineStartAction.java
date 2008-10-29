@@ -46,7 +46,6 @@ import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -63,6 +62,7 @@ import sun.misc.BASE64Decoder;
 public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		
 	private String userId;
+	private String userUniqueIdentifier;
 	private String auditId;
 	private String documentId;
 	private SpagoBiDataSource dataSource;
@@ -131,6 +131,22 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     }
     
     /**
+	 * User profile is loaded by the SpagoBiAccessFilter.
+	 * 
+	 * @return the unique id of the given user
+	 */
+    public String getUserIdentifier() {
+    	IEngUserProfile profile = null;
+    	
+    	if(userUniqueIdentifier == null) {
+    		profile =(IEngUserProfile) getAttributeFromHttpSession( USER_ID );    	
+    		userUniqueIdentifier = (String)profile.getUserUniqueIdentifier();
+    	}
+    	
+    	return userUniqueIdentifier;
+    }
+    
+    /**
      * Gets the audit id.
      * 
      * @return the audit id
@@ -175,7 +191,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      */
     public SourceBean getTemplate() {
     	if(template == null) {
-    		template = getTemplate( getUserId(), getDocumentId() );
+    		//template = getTemplate( getUserId(), getDocumentId() );
+    		template = getTemplate( getUserIdentifier(), getDocumentId() );
     	}
     	return template;
     }
@@ -344,7 +361,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    
    public AuditServiceProxy getAuditServiceProxy() {
 	   if(auditProxy == null) {
-		   auditProxy = new AuditServiceProxy(getAuditId(), getUserId(), getHttpRequest().getSession());
+		   //auditProxy = new AuditServiceProxy(getAuditId(), getUserId(), getHttpRequest().getSession());
+		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpRequest().getSession());
 	   }	   
 	    
 	   return auditProxy;

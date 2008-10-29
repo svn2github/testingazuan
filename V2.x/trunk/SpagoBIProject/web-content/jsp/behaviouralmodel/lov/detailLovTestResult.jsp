@@ -279,10 +279,10 @@ function askForConfirmIfNecessary() {
 		
 		<div width="100%">
 			<spagobi:LovColumnsSelector moduleName="ListTestLovModule" 
-			                            visibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getVisibleColumnNames(), ",")%>" 
+			                           visibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getVisibleColumnNames(),\",\")%>"
 			                            valueColumn="<%=lovDet.getValueColumnName()%>" 
 			                            descriptionColumn="<%=lovDet.getDescriptionColumnName()%>" 
-			                            invisibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getInvisibleColumnNames(), ",")%>" />
+			                            invisibleColumns="<%=GeneralUtilities.fromListToString(lovDet.getInvisibleColumnNames(),\",\")%>" />
 		</div>
 		
 

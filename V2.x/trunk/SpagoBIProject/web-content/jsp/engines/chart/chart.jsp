@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
-
+<%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <%
 	boolean docComposition=false;
@@ -110,8 +110,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		if(userProfile==null){
 			userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			userId=(String)userProfile.getUserUniqueIdentifier();
-			}
+			//userId=(String)userProfile.getUserUniqueIdentifier();
+			userId=(String)((UserProfile)userProfile).getUserId();
+		}
 
 			//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");

@@ -39,7 +39,7 @@ BIObject biObj = instanceO.getBIObject();
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= strUuid %>" style="width:100%;overflow=auto;border: 0;display:inline;"> <!-- float:left; -->
-	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userProfile.getUserUniqueIdentifier().toString() + "&documentId=" + biObj.getId().toString() %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
+	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userId + "&documentId=" + biObj.getId().toString() %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>    
 <%-- End execution iframe --%>

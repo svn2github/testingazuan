@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.wapp.util.MenuAccessVerifier"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spago.util.JavaScript"%>
+<%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
@@ -471,7 +472,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 			
 		tb.add(
 			new Ext.Toolbar.TextItem({
-				text: '<spagobi:message key="menu.welcome" />: <b><%= userProfile.getUserUniqueIdentifier().toString() %></b>&nbsp;&nbsp;&nbsp;'
+				text: '<spagobi:message key="menu.welcome" />: <b><%= ((UserProfile)userProfile).getUserName().toString() %></b>&nbsp;&nbsp;&nbsp;'
 			})	
 		);
 		    

@@ -44,6 +44,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Iterator"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
+<%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
@@ -147,8 +148,15 @@ String getUrl(String baseUrl, Map mapPars) {
 	}
 	
 	IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	
+	String userUniqueIdentifier="";
 	String userId="";
-	if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
+	//if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
+	if (userProfile!=null){
+		userId=(String)((UserProfile)userProfile).getUserId();
+		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
+	}
+	
 %>
 
 

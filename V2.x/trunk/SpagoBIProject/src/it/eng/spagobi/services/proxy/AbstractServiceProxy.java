@@ -107,24 +107,24 @@ public abstract class AbstractServiceProxy {
 	    // sono sui motori...
 	    if (EnginConf.getInstance().isSsoActive()) ssoIsActive = true;
 	    logger.debug("Read activeSso=" + ssoIsActive);
-	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
-	    filterReceipt = (String) sourceBeanConf.getCharacters();
-	    logger.debug("Read filterReceipt=" + filterReceipt);
 
-	    sourceBeanConf = (SourceBean) engineConfig.getAttribute("SPAGOBI_SERVER_URL");
+	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("SPAGOBI_SERVER_URL");
 	    String stagoBiServerURL= (String) sourceBeanConf.getCharacters();
-	    logger.debug("Read stagoBiServerURL=" + stagoBiServerURL);
+	    logger.debug("Read spagoBiServerURL=" + stagoBiServerURL);
 	    if (stagoBiServerURL!=null && stagoBiServerURL.length()>0){
 		    // N.B. if engine-config.xml contains tag SPAGOBI_SERVER_URL
 		    // the proxy use this value for invoke WebService
-	    }else {
-		stagoBiServerURL = backEndUrl + filterReceipt;
+		backEndUrl=stagoBiServerURL;
 	    }
+	    sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
+	    filterReceipt = (String) sourceBeanConf.getCharacters();
+	    logger.debug("Read filterReceipt=" + filterReceipt);
+	    filterReceipt = backEndUrl + filterReceipt;    
 	    sourceBeanConf = (SourceBean) engineConfig.getAttribute(className + "_URL");
 	    String serviceUrlStr = (String) sourceBeanConf.getCharacters();
 	    logger.debug("Read sericeUrl=" + serviceUrlStr);
 	    try {
-		serviceUrl = new URL(stagoBiServerURL + serviceUrlStr);
+		serviceUrl = new URL(backEndUrl + serviceUrlStr);
 	    } catch (MalformedURLException e) {
 		logger.error("MalformedURLException:" + backEndUrl + serviceUrlStr, e);
 	    }

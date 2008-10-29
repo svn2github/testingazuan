@@ -62,6 +62,7 @@ import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.common.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
@@ -171,8 +172,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
 		
-		DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
-		DataSetImpl dsi = new DataSetImpl(dataSet,profile);
+		DataSetProxyImpl dsProxy=new DataSetProxyImpl(profile); 
+		IDataSet dsi=dsProxy.getDataSet(dataSet);
+		//DataSetImpl dsi = new DataSetImpl(dataSet,profile);
 		Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 		HashMap parametersFilled=(HashMap)par;
 		dsi.loadData(parametersFilled);

@@ -6,6 +6,7 @@
 package it.eng.spagobi.jpivotaddins.bean;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
 
@@ -66,7 +67,8 @@ public class TemplateBean implements Serializable {
 		Logger logger = Logger.getLogger(this.getClass());
 		HttpSession session = reqContext.getSession();
 		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		String user = (String) profile.getUserUniqueIdentifier();		
+		String userUniqueIdentifier = (String) profile.getUserUniqueIdentifier();		
+		String user = (String)((UserProfile) profile).getUserId();
 		String documentId=(String)session.getAttribute("document");
 		String catalogUri = (String) session.getAttribute("catalogUri"); 
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
@@ -120,7 +122,8 @@ public class TemplateBean implements Serializable {
 			}
 			xmlString = document.asXML();
 		    try {
-			ContentServiceProxy proxy=new ContentServiceProxy(user,session);
+			//ContentServiceProxy proxy=new ContentServiceProxy(user,session);
+			ContentServiceProxy proxy=new ContentServiceProxy(userUniqueIdentifier,session);
 			String result=proxy.saveObjectTemplate( documentId, templateName, xmlString);
 		    } catch (Exception gse) {		
 		    	logger.error("Error while saving template", gse);

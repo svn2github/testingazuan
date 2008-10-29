@@ -6,6 +6,7 @@
 package it.eng.spagobi.jpivotaddins.bean;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.jpivotaddins.bean.adapter.AnalysisAdapterUtil;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.messages.EngineMessageBundle;
@@ -113,7 +114,9 @@ public class SaveAnalysisBean extends ComponentSupport {
 		String documentId=(String)session.getAttribute("document");
 		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
-		String user = (String) profile.getUserUniqueIdentifier();
+		//String user = (String) profile.getUserUniqueIdentifier();
+		String user = (String)((UserProfile) profile).getUserId();
+		String userUniqueIdentifier = (String)((UserProfile) profile).getUserUniqueIdentifier();
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		String query = null;
 		MdxQuery mdxQuery = (MdxQuery) olapModel.getExtension("mdxQuery");
@@ -132,10 +135,12 @@ public class SaveAnalysisBean extends ComponentSupport {
 		    if (PUBLIC_VISIBLITY.equalsIgnoreCase(analysisVisibility)) 
 				visibilityBoolean = "true";
 		    
-		    ContentServiceProxy proxy=new ContentServiceProxy(user,session);
+		   //ContentServiceProxy proxy=new ContentServiceProxy(user,session);
+		   ContentServiceProxy proxy=new ContentServiceProxy(userUniqueIdentifier,session);
 		    try {
-               	        String result=proxy.saveSubObject(documentId, analysisName,analysisDescription, 
-				    visibilityBoolean, xmlString);			
+                String result=proxy.saveSubObject(documentId, analysisName,analysisDescription, 
+                									visibilityBoolean, xmlString);		
+                logger.debug("result save subobject: " + result);
 		        session.setAttribute("saveSubObjectMessage", result);
 		        // if the saving operation has no success, the previous 
 		        if (result.toUpperCase().startsWith("KO")) this.analysisName = recoveryAnalysisName;

@@ -93,7 +93,7 @@ LICENSE: see LICENSE.txt file
 		} else {
 			//String templateBase64Coded = request.getParameter("template");
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			Content template = contentProxy.readTemplate(documentId);
+			Content template = contentProxy.readTemplate(documentId, new HashMap());
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
 

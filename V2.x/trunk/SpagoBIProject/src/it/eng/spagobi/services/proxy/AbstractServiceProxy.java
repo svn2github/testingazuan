@@ -109,12 +109,12 @@ public abstract class AbstractServiceProxy {
 	    logger.debug("Read activeSso=" + ssoIsActive);
 
 	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("SPAGOBI_SERVER_URL");
-	    String stagoBiServerURL= (String) sourceBeanConf.getCharacters();
-	    logger.debug("Read spagoBiServerURL=" + stagoBiServerURL);
-	    if (stagoBiServerURL!=null && stagoBiServerURL.length()>0){
+	    String spagoBiServerURL= (String) sourceBeanConf.getCharacters();
+	    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
+	    if (spagoBiServerURL!=null && spagoBiServerURL.length()>0){
 		    // N.B. if engine-config.xml contains tag SPAGOBI_SERVER_URL
 		    // the proxy use this value for invoke WebService
-		backEndUrl=stagoBiServerURL;
+		backEndUrl=spagoBiServerURL;
 	    }
 	    sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
 	    filterReceipt = (String) sourceBeanConf.getCharacters();

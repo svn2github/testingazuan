@@ -112,7 +112,6 @@ INSERT INTO SBI_DOMAINS VALUES(44,'BOOL','Boolean','VALUE_TYPE','Input value typ
 INSERT INTO SBI_DOMAINS VALUES(45,'SINGLE','Single value','VALUE_TYPE','Input value types to check','Only single value allowed')
 INSERT INTO SBI_DOMAINS VALUES(46,'MULTI','Multivalue','VALUE_TYPE','Input value types to check','Many values are allowed')
 INSERT INTO SBI_DOMAINS VALUES(47,'DATE','Date','PAR_TYPE','Parameter type','Parameter expects date values')
-INSERT INTO SBI_DOMAINS VALUES(48,'NUM','Number','PAR_TYPE','Parameter type','Parameter expects numerical values')
 INSERT INTO SBI_DOMAINS VALUES(49,'STRING','String','PAR_TYPE','Parameter type','Parameter expects textual values')
 INSERT INTO SBI_DOMAINS VALUES(50,'USER','Functional role','ROLE_TYPE','User role type','Functional role for end users')
 INSERT INTO SBI_DOMAINS VALUES(51,'ADMIN','Administrative role','ROLE_TYPE','User role type','Administrative role for developer users')

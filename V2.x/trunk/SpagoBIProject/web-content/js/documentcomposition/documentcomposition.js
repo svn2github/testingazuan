@@ -191,7 +191,8 @@ Ext.onReady(function() {
 	      				height:'100%',
 	      				id: 'iframe_' + strDocLabel,
 	      				name: 'iframe_' + strDocLabel,
-	      				style: {overflow:'auto'}  
+	      				style: {overflow:'auto'},
+	      				scrolling:'no'  //possible values: yes, no, auto  
 	 				}]
 				},
 		        renderTo: 'divIframe_'+ strDocLabel

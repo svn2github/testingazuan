@@ -67,12 +67,13 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 			// get the module response
 			SourceBean executeModuleResponse = (SourceBean) responseContainer
 					.getServiceResponse().getAttribute("ExecuteBIObjectModule");
-			SourceBean checklistLookupModule = (SourceBean) responseContainer.getServiceResponse().getAttribute(
-					"ChecklistLookupModalityValuesModule");
+			/*SourceBean checklistLookupModule = (SourceBean) responseContainer.getServiceResponse().getAttribute(
+					"ChecklistLookupModalityValuesModule");*/
 			
 			// if the module response is null throws an error and return the name of
 			// the errors publisher
-			if (executeModuleResponse == null && checklistLookupModule == null) {
+			//if (executeModuleResponse == null && checklistLookupModule == null) {
+			if (executeModuleResponse == null ) {
 				logger.error("Module response null");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 10);
 				errorHandler.addError(error);
@@ -90,14 +91,14 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 						return publisherName;
 					} else
 						return "error";
-				} else if (checklistLookupModule != null) {
+				/*} else if (checklistLookupModule != null) {
 					Object publisherNameSetObj = checklistLookupModule
 							.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
 					if (publisherNameSetObj != null) {
 						String publisherName = (String) publisherNameSetObj;
 						return publisherName;
 					} else
-						return "error";	
+						return "error";	*/
 				} else
 					return "error";
 			}
@@ -115,10 +116,10 @@ public class ExecuteBIObjectPublisher implements PublisherDispatcherIFace {
 			boolean publisherNameSet = false;
 			Object publisherNameSetObj = executeModuleResponse == null ? null: executeModuleResponse
 					.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
-			if (publisherNameSetObj == null) {
+			/*if (publisherNameSetObj == null) {
 				publisherNameSetObj = checklistLookupModule == null ? null: checklistLookupModule
 						.getAttribute(SpagoBIConstants.PUBLISHER_NAME);
-			}
+			}*/
 			if (publisherNameSetObj != null) {
 				publisherNameSet = true;
 			}

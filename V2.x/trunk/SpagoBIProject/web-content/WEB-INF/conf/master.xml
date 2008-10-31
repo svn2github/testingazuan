@@ -209,4 +209,12 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/publishers.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/statements.xml" />  	
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/validation.xml" />
+    
+    <!-- threshold -->
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/modules.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/pages.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/presentation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/publishers.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/statements.xml" />   
+    
 </MASTER>

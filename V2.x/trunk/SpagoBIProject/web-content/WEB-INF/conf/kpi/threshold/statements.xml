@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<STATEMENTS>
+  
+  <STATEMENT name="LIST_THRESHOLD"
+    query="SELECT threshold_id as id, name, description FROM sbi_threshold ORDER BY name" />
+    
+  <STATEMENT name="DELETE_THRESHOLD"
+    query="DELETE FROM sbi_threshold WHERE THRESHOLD_ID=?" />
+
+  <STATEMENT name="DETAIL_THRESHOLD"
+    query="SELECT THRESHOLD_ID as id, name, description, THRESHOLD_TYPE_ID FROM sbi_threshold WHERE THRESHOLD_ID = ?" />
+
+  <STATEMENT name="UPDATE_THRESHOLD"
+    query="UPDATE sbi_threshold SET name=?, description=?, THRESHOLD_TYPE_ID=? WHERE THRESHOLD_ID=?" />
+
+  <STATEMENT name="INSERT_THRESHOLD"
+    query="INSERT INTO sbi_threshold(name, description, THRESHOLD_TYPE_ID)
+           VALUES (?,?,?);" />
+
+</STATEMENTS>

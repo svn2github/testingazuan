@@ -20,8 +20,6 @@
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
-<%@page import="it.eng.spago.util.PortletUtilities"%>
-
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
 <portlet:defineObjects/>
@@ -47,24 +45,28 @@
     <td width="20">&nbsp;</td>
     <td vAlign="middle">
       <a href='<portlet:actionURL><portlet:param name="PAGE" value="KpiPage"/></portlet:actionURL>'
-        class="link_main_menu"> 
+         class="link_main_menu"> 
         <spagobi:message key="sbi.kpi.kpiDefinition.label" bundle="<%=messageBunle%>"/>
       </a>
     </td>
   </tr>
 
+  <tr class="portlet-font">
+    <td width="100" align="center">
+      <img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/scaleIcon.png")%>' />
+    </td>
+	<td width="20">&nbsp;</td>
+	<td vAlign="middle">
+	  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ThresholdPage"/></portlet:actionURL>'
+	    class="link_main_menu">
+		<spagobi:message key="sbi.kpi.thresholdDefinition.label" bundle="<%=messageBunle%>" />
+  	  </a>
+    </td>
+  </tr>
+	
+  
+
 <%--
-	<tr class="portlet-font">
-		<td width="100" align="center"><img
-			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/scaleIcon.png")%>' />
-		</td>
-		<td width="20">&nbsp;</td>
-		<td vAlign="middle"><br />
-		<a
-			href='<portlet:actionURL><portlet:param name="PAGE" value="ScalePage"/></portlet:actionURL>'
-			class="link_main_menu"> <spagobi:message key="s4q.wz4.scale" />
-		</a></td>
-	</tr>
 	 
 	  <tr class="portlet-font">
     <td width="100" align="center"><img

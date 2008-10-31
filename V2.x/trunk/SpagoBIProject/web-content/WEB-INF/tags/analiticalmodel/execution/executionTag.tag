@@ -24,7 +24,7 @@ iframeUrl.append("&userid=biadmin");
 
 
 if (documentId == null && documentLabel == null) {
-	throw new Exception("Document id nor document label are specified!!");
+	throw new Exception("Neither document id nor document label are specified!!");
 }
 if (documentId != null) {
 	iframeUrl.append("&OBJECT_ID=" + documentId);

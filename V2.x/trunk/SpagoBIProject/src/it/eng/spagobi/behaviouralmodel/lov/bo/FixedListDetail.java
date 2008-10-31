@@ -39,7 +39,7 @@ public class FixedListDetail  implements ILovDetail  {
 	/**
 	 * items of the list
 	 */
-	List items = new ArrayList();
+	List items = new ArrayList();    
 	
 	
 	private List visibleColumnNames = null;

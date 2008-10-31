@@ -75,15 +75,13 @@
         		<CONSEQUENCES/>
       		</DEPENDENCE>
 
-			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
+			<!-- <DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
-        			<!--
-        			<PARAMETER name="TYPE_LIST" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
-        		 	-->
         		</CONDITIONS>
         		<CONSEQUENCES/>
-      		</DEPENDENCE>         		
+      		</DEPENDENCE>  
+      		-->       		
       		<!--
       		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
@@ -93,6 +91,7 @@
         		<CONSEQUENCES/>
       		</DEPENDENCE>  	
       		-->
+      		<!-- 
       		<DEPENDENCE source="ExecuteBIObjectModule" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
@@ -105,6 +104,7 @@
         			<PARAMETER name="correlated_paruse_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.correlated_paruse_id" />
         		</CONSEQUENCES>
       		</DEPENDENCE>	
+      		 -->
       		<!--
       		<DEPENDENCE source="ExecuteBIObjectModule" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
@@ -123,7 +123,7 @@
     	<MODULES>
       		<MODULE keep_instance="false" keep_response="false" name="ExecuteBIObjectModule"/>
       		<!-- <MODULE keep_instance="false" keep_response="false" name="ListLookupModalityValuesModule"/> -->
-    		<MODULE keep_instance="false" keep_response="false" name="ChecklistLookupModalityValuesModule"/>
+    		<!-- <MODULE keep_instance="false" keep_response="false" name="ChecklistLookupModalityValuesModule"/> -->
     	</MODULES>
   	</PAGE>
   	

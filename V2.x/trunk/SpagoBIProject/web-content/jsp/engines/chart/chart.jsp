@@ -324,189 +324,204 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<!-- Begin drawing the page -->
 <br>
 <table align="left">
-
-<% 
-	    // No slider needed
-	if(!showSlider){
-
-	    %>
-	    <tr>
-		    <td>
-		  	 	<div align="center">
-					<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
-				</div>
-			</td>
-		</tr>
-		<%}
-	else{   /////////////////////// Beginslider creation //////////////////////////
-		maxSlider=datasetMap.getCatsnum().toString();
-		minSlider="1";
-	%>
-	<tr>
-		<script type="text/javascript" language="JAVASCRIPT">
-			<!--
-				arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
-				-->
-		</script>
+  <tr>
+  	<td>
+	<table align="left">
 	
-		<%
-		for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
-			Integer key=(Integer)iterator.next();
-			String name=(String)datasetMap.getCategories().get(key);
-		%>
-
-		<script type="text/javascript" language="JAVASCRIPT">
-			<!--
-				arrayCats[<%=key%>]='<%=name%>';
-		     //arrayCats[1]='All';
-			//-->
-		</script>
-		<%} %>
-	
-	
-					<td width="75%" align="center">
-
-										<span class='portlet-form-field-label'>
-											<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>  <%=datasetMap.getCatTitle()%> or select from
-										</span>
-										
-								<span  class='portlet-form-field-label'id="slider_1_1_value" width="10%" align="right" >
-										</span>
-										
-
-						<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
-							<span id="slider1"></span> 
-						</a>
-
-							</td>		
-				</tr>
-	<!-- 	</form>  -->
-		<!--  </table> -->
-<tr>
-<td align="center">
- 	<div>
- 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
-	</div>
-</td>
-</tr>
-</table>
-
 	<% 
-	}
-	/////////////////////// End slider creation ////////////////////////// 
-	%>
+		    // No slider needed
+		if(!showSlider){
+	
+		    %>
+		    <tr>
+			    <td>
+			  	 	<div align="center">
+						<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
+					</div>
+				</td>
+			</tr>
+			<%}
+		else{   /////////////////////// Beginslider creation //////////////////////////
+			maxSlider=datasetMap.getCatsnum().toString();
+			minSlider="1";
+		%>
+		<tr>
+			<script type="text/javascript" language="JAVASCRIPT">
+				<!--
+					arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
+					-->
+			</script>
+		
+			<%
+			for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
+				Integer key=(Integer)iterator.next();
+				String name=(String)datasetMap.getCategories().get(key);
+			%>
+	
+			<script type="text/javascript" language="JAVASCRIPT">
+				<!--
+					arrayCats[<%=key%>]='<%=name%>';
+			     //arrayCats[1]='All';
+				//-->
+			</script>
+			<%} %>
+		
+		
+						<td width="75%" align="center">
+	
+											<span class='portlet-form-field-label'>
+												<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>  <%=datasetMap.getCatTitle()%> or select from
+											</span>
+											
+									<span  class='portlet-form-field-label'id="slider_1_1_value" width="10%" align="right" >
+											</span>
+											
+	
+							<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
+								<span id="slider1"></span> 
+							</a>
+	
+								</td>		
+					</tr>
+		<!-- 	</form>  -->
+			<!--  </table> -->
+	<tr>
+	<td align="center">
+	 	<div>
+	 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
+		</div>
+	</td>
+	</tr>
+	</table>
+	
+		<% 
+		}
+		/////////////////////// End slider creation ////////////////////////// 
+		%>
     
     
-    
+    </td>
+  </tr>
+  <tr>
+   <td>   
     
         
 
 <% 	 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// form to limit the series if it is a barchart
-
-if(limitSeries){
-	//sets the URL
-	limitSeries=true;
-	if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
-	{
-		refreshUrlPars.put("OBJECT_ID",documentid);
-	}
-	else
-	{
-		refreshUrlSerie=refreshUrl;
-	}
-	%>
-<table  align="left">
-<div align="center">
-<tr>
-<td style="color:white">s
-</td>
-</tr>
-<tr>
-<td style="color:white">s
-</td>
-</tr>
-</div>
-</table>
-
-<div>
-   <table id="limitseries" align="left">
-   <tr>
-	<td> 
-	<div align="center">
-		<div class='div_detail_form'>
-			<span class='portlet-form-field-label'>
-			Select from <%=datasetMap.getSerTitle()%>
-			</span>
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// form to limit the series if it is a barchart
+		
+		if(limitSeries){
+			//sets the URL
+			limitSeries=true;
+			if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
+			{
+				refreshUrlPars.put("OBJECT_ID",documentid);
+			}
+			else
+			{
+				refreshUrlSerie=refreshUrl;
+			}
+			%>
+		<table  align="left">
+		<div align="center">
+		<tr>
+		<td style="color:white">s
+		</td>
+		</tr>
+		<tr>
+		<td style="color:white">s
+		</td>
+		</tr>
 		</div>
-	<div>	
+		</table>
+
 	</td>
-	</tr>
-	<tr>
-	<td> 
+  </tr>
+  <tr>
+  	<td>
+<!--<div>-->
+	   <table id="limitseries" align="left">
+	   <tr>
+		<td> 
+		<div align="center">
+			<div class='div_detail_form'>
+				<span class='portlet-form-field-label'>
+				Select from <%=datasetMap.getSerTitle()%>
+				</span>
+			</div>
+		 </div> 	
+		</td>
+		</tr>
+		<tr>
+		<td> 
+		
+		<form name="serie" action="<%=refreshUrl%>" method="POST" >
+		
+		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
+		<% 	
+		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+		{
+		String name = (String) iterator.next();
+		String value=(refreshUrlPars.get(name)).toString();
+		%>		
+		<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+		
+		<%}%>
+		<div align="center" class='div_detail_form'>
+		<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
+				<input id="serie" name="serie" value="allseries" 
+				type="radio" checked='checked' />
+				<span>View all</span>
+		
+		
+		<%} else {%>	
 	
-	<form name="serie" action="<%=refreshUrl%>" method="POST" >
+				<input id="serie" name="serie" value="allseries" 
+				type="radio" />
+				<span>View all</span>
 	
-	<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
-	<% 	
-	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-	{
-	String name = (String) iterator.next();
-	String value=(refreshUrlPars.get(name)).toString();
-	%>		
-	<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+		<%} %>
+		
+		<%     	
+		// for each possible serie 
+		if(datasetMap.getSeries()!=null){	
+		for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
+		String ser = (String) iterator.next(); 
+		if(datasetMap.getSelectedSeries().contains(ser)){
+		%>
 	
-	<%}%>
-	<div align="center" class='div_detail_form'>
-	<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
-			<input id="serie" name="serie" value="allseries" 
-			type="radio" checked='checked' />
-			<span>View all</span>
+				<input id="serie" name="serie" value="<%=ser%>" 
+				type="radio" checked='checked' />
+				<span><%=ser%></span>
+		
+		<%}else{ %>
+		
 	
-	
-	<%} else {%>	
+				<input id="serie" name="serie" value="<%=ser%>" 
+				type="radio" />
+				<span><%=ser%></span>
+		<%} 
+		 }
+		}%>
+		
+		<input type="submit" value="Select"/>
+		</div>
+		</form>
+		</div>
+		<!-- </div>
+		</div>-->
+		</td>
+		</tr>
+		</table>
+<!-- </div>-->	
 
-			<input id="serie" name="serie" value="allseries" 
-			type="radio" />
-			<span>View all</span>
-
-	<%} %>
-	
-	<%     	
-	// for each possible serie 
-	if(datasetMap.getSeries()!=null){	
-	for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
-	String ser = (String) iterator.next(); 
-	if(datasetMap.getSelectedSeries().contains(ser)){
-	%>
-
-			<input id="serie" name="serie" value="<%=ser%>" 
-			type="radio" checked='checked' />
-			<span><%=ser%></span>
-	
-	<%}else{ %>
-	
-
-			<input id="serie" name="serie" value="<%=ser%>" 
-			type="radio" />
-			<span><%=ser%></span>
-	<%} 
-	 }
-	}%>
-	
-	<input type="submit" value="Select"/>
-	</form>
-	</div>
-	</div>
-	</div>
 	</td>
-	</tr>
-	</table>
-</div>	
-
+  </tr>
+	
+</table>
 <% 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// end serie limit
 }

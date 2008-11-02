@@ -1058,9 +1058,9 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    	buffer.append("null_values_color['"+ kpiNames[i] +"'] = '" + measure.getColurNullCol() + "';\n");
 	    	buffer.append("trasholdCalculationType['"+ kpiNames[i] +"'] = '" + measure.getTresholdCalculatorType() + "';\n");
 	    	
-	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static")) {
+	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static") || measure.getTresholdCalculatorType().equalsIgnoreCase("perc")) {
 		    	String[] values = getTresholdsArray(measure.getColumnId());
-		    	if(values != null && values.length < 0) {
+		    	if(values != null && values.length > 0) {
 			    	buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = [");
 			    	
 			    	buffer.append(values[0]);

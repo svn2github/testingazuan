@@ -42,6 +42,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		left : 0,
         		width: 100     		
         	};
+        	/*alert("label: "+config.width);*/
         	var test_label = new qx.ui.basic.Label();
         	test_label.set(defultConfig);
         	test_label.set(config);
@@ -57,16 +58,16 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		maxLength:100,        		
         		width: 0,
         		height: 0,
-        		value: '',
-        		password:false   		
+        		value: ''/*,
+        		password:false*/
         	};
         
-        	if(config.password == false){
+        	/*if(config.password == false){*/
             	var test_textfield = new qx.ui.form.TextField();
-        	}
+        	/*}
         	else{
         		var test_textfield = new qx.ui.form.PasswordField();
-        	}	
+        	}*/
             test_textfield.set( defultConfig );
             test_textfield.set( config );
             return test_textfield;
@@ -241,9 +242,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		height: 20,
         		labelwidth: 80,
         		value: '',
-        		mandatory: false,
-        		password: false		
+        		mandatory: false/*,
+        		password: false	*/	
         	};
+        	/*alert(config.labelwidth);*/
         	
         	/*
         	var flag = 0;
@@ -275,8 +277,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        		maxLength: config.maxLength,        		
 	        		width: config.width,
 	        		height: config.height,
-	        		value: config.value,
-	        		password: config.password  
+	        		value: config.value/*,
+	        		password: config.password*/  
 	        	});
         	
         	var atom = new qx.ui.basic.Atom();

@@ -44,7 +44,8 @@
     </td>
     <td width="20">&nbsp;</td>
     <td vAlign="middle">
-      <a href='<portlet:actionURL><portlet:param name="PAGE" value="KpiPage"/></portlet:actionURL>'
+      <a href='<portlet:actionURL><portlet:param name="PAGE" value="KpiPage"/>
+								  <portlet:param name="FIELD_ORDER" value="NAME"/></portlet:actionURL>'
          class="link_main_menu"> 
         <spagobi:message key="sbi.kpi.kpiDefinition.label" bundle="<%=messageBunle%>"/>
       </a>
@@ -57,7 +58,8 @@
     </td>
 	<td width="20">&nbsp;</td>
 	<td vAlign="middle">
-	  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ThresholdPage"/></portlet:actionURL>'
+	  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ThresholdPage"/>
+								  <portlet:param name="FIELD_ORDER" value="NAME"/></portlet:actionURL>'
 	    class="link_main_menu">
 		<spagobi:message key="sbi.kpi.thresholdDefinition.label" bundle="<%=messageBunle%>" />
   	  </a>

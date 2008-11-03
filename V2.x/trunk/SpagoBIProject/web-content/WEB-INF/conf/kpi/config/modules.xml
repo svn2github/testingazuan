@@ -3,7 +3,10 @@
   <MODULE name="ListKpiModule" class="it.eng.spagobi.kpi.config.service.ListKpiModule">
     <CONFIG pool="spagobi" rows="10" title="sbi.kpi.config.list.title">
       <QUERIES>
-        <SELECT_QUERY statement="LIST_KPI" />
+        <SELECT_QUERY statement="LIST_KPI">
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
         <DELETE_QUERY statement="DELETE_KPI">
           <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />
         </DELETE_QUERY>

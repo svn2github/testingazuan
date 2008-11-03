@@ -116,7 +116,8 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
         		dataIndex: 'password',
         		text: 'Password',
         		mandatory: false,
-        		visible: false
+        		visible: false,
+        		password: true,
         	},{
         		type: 'text',
         		dataIndex: 'driver',

@@ -82,8 +82,23 @@ qx.Class.define("spagobi.ui.FormList", {
 		this.setConfig(config);
 		
 		this._tabView = new qx.ui.pageview.tabview.TabView();
-		
+	//	this._tabView.setBorder(new qx.ui.core.Border(10));
 		this.addInstance();
+	/*	this.atom = new qx.ui.basic.Atom();
+		this.atom.add(this._tabView);
+		this.atom.setLeft(0);
+		this.atom.setBorder(new qx.ui.core.Border(3));
+	  	this.add(this.atom);
+	  	*/
+	// 	this._tabView.setBorder(new qx.ui.core.Border(10));
+	//	this.child = this._tabView.getChildren();
+		
+	//	alert(this.child.length);
+		//this.child[2].setBorder(new qx.ui.core.Border(3));
+	//	alert (this.getWidth());
+	//	alert (this.getHeight());
+	//	this._tabView.setDimension(500,'auto');
+	//	this._tabView.setDimension(500,500);		
 	  	this.add(this._tabView);
 	},
 	 
@@ -93,6 +108,8 @@ qx.Class.define("spagobi.ui.FormList", {
   
 	members: {
 		
+		 child : undefined,
+		 atom : undefined,	
 		_config: undefined,
 		
 		_instances: undefined,
@@ -139,7 +156,8 @@ qx.Class.define("spagobi.ui.FormList", {
 				subform = new spagobi.ui.Form(this._config);
 			} else {
 				subform = new this._config();
-			}	
+			}
+		//	subform.setBorder(new qx.ui.core.Border(3));	
 			if(o) {
 				subform.setData(o);
 			}		
@@ -155,7 +173,11 @@ qx.Class.define("spagobi.ui.FormList", {
 	        this._tabView.getBar().add(subFormButton);
 	        var subFormPage = new qx.ui.pageview.tabview.Page(subFormButton);
 	  		this._tabView.getPane().add(subFormPage);
+	  	//	alert (this._tabView.getPane().getChildren()[0]);
+	  		this._tabView.getPane().setDimension('auto','auto');
 	  		subFormPage.add(subform);
+	  		this._tabView.getPane().setDimension('auto','auto');
+	  //	subFormPage.setBorder(new qx.ui.core.Border(1));
 	  		
 	  		this._instances[this._instances.length] = subform;
 	  		

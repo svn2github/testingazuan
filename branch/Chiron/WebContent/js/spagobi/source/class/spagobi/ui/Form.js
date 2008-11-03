@@ -94,7 +94,9 @@ qx.Class.define("spagobi.ui.Form", {
 	 */
 	construct : function(config) { 
 		this.base(arguments);
-		
+	//	this.setWidth('100%');
+	//	this.setHeight('100%');
+	//	this.setDimension(500,500);		
 		this.setSpacing(5);
   		
   		this.dataMappings = [];
@@ -104,6 +106,7 @@ qx.Class.define("spagobi.ui.Form", {
 	  			this.addInputField( config[i] );
 	  		}
   		}
+  	//	this.setBorder(new qx.ui.core.Border(5));
 	},
 	
 	members: {
@@ -256,6 +259,7 @@ qx.Class.define("spagobi.ui.Form", {
   				    
   			} else if(config.type === 'formList') {
   				inputField = spagobi.commons.WidgetUtils.createInputFormList(config);    
+  			//	inputField.setDimension('100%','100%');//Border(new qx.ui.core.Border(5));
   				inputField.setUserData('type', 'formList');
   				    
   			} else if(config.type === 'textarea') {

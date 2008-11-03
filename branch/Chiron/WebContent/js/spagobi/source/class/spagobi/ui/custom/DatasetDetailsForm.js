@@ -70,7 +70,7 @@ qx.Class.define("spagobi.ui.custom.DatasetDetailsForm", {
         	}, {
         		type: 'text',
         		dataIndex: 'description',
-        		text: 'Descr',
+        		text: 'Description',
         		mandatory: false		
         	},{
         		type: 'combo',

@@ -51,7 +51,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         },
         
         
-        createTextField : function( config ) {
+        createTextField : function( config,password ) {
         	var defultConfig = {
         		top: 0,
         		left: 0,
@@ -62,12 +62,12 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		password:false*/
         	};
         
-        	/*if(config.password == false){*/
+        	if(config.password == false){
             	var test_textfield = new qx.ui.form.TextField();
-        	/*}
+        	}
         	else{
         		var test_textfield = new qx.ui.form.PasswordField();
-        	}*/
+        	}
             test_textfield.set( defultConfig );
             test_textfield.set( config );
             return test_textfield;
@@ -242,8 +242,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		height: 20,
         		labelwidth: 80,
         		value: '',
-        		mandatory: false/*,
-        		password: false	*/	
+        		mandatory: false,
+        		password: false
         	};
         	/*alert(config.labelwidth);*/
         	
@@ -279,7 +279,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        		height: config.height,
 	        		value: config.value/*,
 	        		password: config.password*/  
-	        	});
+	        	},config.password);
         	
         	var atom = new qx.ui.basic.Atom();
         	atom.add(labelField, textField);

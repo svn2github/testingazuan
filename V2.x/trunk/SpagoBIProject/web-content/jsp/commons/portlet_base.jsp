@@ -99,8 +99,10 @@ String getUrl(String baseUrl, Map mapPars) {
 	aResponseContainer = ResponseContainerPortletAccess.getResponseContainer(request);
 	if (aRequestContainer == null) {
 		// case of web mode
-		aRequestContainer = RequestContainerAccess.getRequestContainer(request);
-		aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
+		//aRequestContainer = RequestContainerAccess.getRequestContainer(request);
+		aRequestContainer = RequestContainer.getRequestContainer();
+		//aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
+		aResponseContainer = ResponseContainer.getResponseContainer();
 	}
 	
 	String channelType = aRequestContainer.getChannelType();

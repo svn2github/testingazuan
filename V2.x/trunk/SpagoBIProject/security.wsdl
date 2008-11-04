@@ -4,8 +4,8 @@
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="urn:spagobisecurity"/>
    <import namespace="http://bo.security.services.spagobi.eng.it"/>
+   <import namespace="urn:spagobisecurity"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="mapItem">
     <sequence>
@@ -32,8 +32,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    </complexType>
   </schema>
   <schema targetNamespace="http://bo.security.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="urn:spagobisecurity"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="urn:spagobisecurity"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="SpagoBIUserProfile">
     <sequence>
@@ -41,12 +41,18 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
      <element name="functions" nillable="true" type="impl:ArrayOf_soapenc_string"/>
      <element name="roles" nillable="true" type="impl:ArrayOf_soapenc_string"/>
      <element name="userId" nillable="true" type="soapenc:string"/>
-     <element name="userIdentifier" nillable="true" type="soapenc:string"/>
+     <element name="uniqueIdentifier" nillable="true" type="soapenc:string"/>
      <element name="userName" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>
   </schema>
  </wsdl:types>
+
+   <wsdl:message name="isAuthorizedResponse">
+
+      <wsdl:part name="isAuthorizedReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
 
    <wsdl:message name="isAuthorizedRequest">
 
@@ -57,6 +63,16 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in2" type="soapenc:string"/>
 
       <wsdl:part name="in3" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="checkAuthorizationRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -71,22 +87,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="checkAuthorizationRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="isAuthorizedResponse">
-
-      <wsdl:part name="isAuthorizedReturn" type="xsd:boolean"/>
 
    </wsdl:message>
 

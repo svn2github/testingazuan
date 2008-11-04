@@ -4,8 +4,8 @@
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
   <schema targetNamespace="http://bo.datasource.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="urn:spagobidataset"/>
    <import namespace="http://bo.dataset.services.spagobi.eng.it"/>
+   <import namespace="urn:spagobidataset"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="SpagoBiDataSource">
     <sequence>
@@ -21,8 +21,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    </complexType>
   </schema>
   <schema targetNamespace="http://bo.dataset.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="urn:spagobidataset"/>
    <import namespace="http://bo.datasource.services.spagobi.eng.it"/>
+   <import namespace="urn:spagobidataset"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="SpagoBiDataSet">
     <sequence>
@@ -44,8 +44,8 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    </complexType>
   </schema>
   <schema targetNamespace="urn:spagobidataset" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://bo.dataset.services.spagobi.eng.it"/>
    <import namespace="http://bo.datasource.services.spagobi.eng.it"/>
+   <import namespace="http://bo.dataset.services.spagobi.eng.it"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="ArrayOf_tns2_SpagoBiDataSet">
     <complexContent>
@@ -57,9 +57,13 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="getAllDataSetResponse">
+   <wsdl:message name="getDataSetByLabelRequest">
 
-      <wsdl:part name="getAllDataSetReturn" type="impl:ArrayOf_tns2_SpagoBiDataSet"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -69,9 +73,9 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getDataSetResponse">
+   <wsdl:message name="getAllDataSetResponse">
 
-      <wsdl:part name="getDataSetReturn" type="tns2:SpagoBiDataSet"/>
+      <wsdl:part name="getAllDataSetReturn" type="impl:ArrayOf_tns2_SpagoBiDataSet"/>
 
    </wsdl:message>
 
@@ -83,13 +87,9 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getDataSetByLabelRequest">
+   <wsdl:message name="getDataSetResponse">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
+      <wsdl:part name="getDataSetReturn" type="tns2:SpagoBiDataSet"/>
 
    </wsdl:message>
 

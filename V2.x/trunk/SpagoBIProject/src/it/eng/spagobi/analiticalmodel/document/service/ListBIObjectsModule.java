@@ -44,6 +44,7 @@ import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -169,7 +170,10 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	String objectStateCD = obj.getStateCode();
 	logger.debug("Object State = "+objectStateCD);
 	int visibleInstances = 0;	
-	List lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityList(functionalities);
+	List lowFunct = new ArrayList();
+	if (!functionalities.isEmpty()){
+		lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityList(functionalities);
+	
 	logger.debug("Loaded List of all LowFunctionalities related to the BIObject");
        
     if ((profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))) {
@@ -288,6 +292,9 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	rowSBStr += "		STATE=\"" + objectStateCD + "\"";
 	rowSBStr += "		INSTANCES=\"" + visibleInstances + "\"";
 	rowSBStr += " 		/>";
+	}else{
+		rowSBStr += " 		/>";
+	}
 
 	SourceBean rowSB = SourceBean.fromXMLString(rowSBStr);
 	logger.debug("OUT");

@@ -170,6 +170,7 @@ public class ListTag extends TagSupport
 				_providerUrlMap.putAll(_paramsMap);
 			}
 			
+			
 		} // if (_actionName != null)
 		else if (_moduleName != null) {
 			_serviceName = _moduleName;
@@ -187,6 +188,7 @@ public class ListTag extends TagSupport
 			_providerURL = "PAGE=" + pageName + "&MODULE=" + _moduleName + "&";
 			_providerUrlMap.put("PAGE", pageName);
 			_providerUrlMap.put("MODULE", _moduleName);
+			
 			
 			//checks for exception module (ie. for job and trigger must added the parameter MESSAGEDET into url
 			for (int i = 0; i < EXCEPTION_MODULES.length; i++){
@@ -295,6 +297,11 @@ public class ListTag extends TagSupport
 		SourceBean captionSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 		List captions = captionSB.getContainedSourceBeanAttributes();
 		int numCaps = captions.size();
+		String columnFilter = (String)_serviceRequest.getAttribute("columnFilter");
+		String typeFilter= (String)_serviceRequest.getAttribute("typeFilter");
+		String typeValueFilter = (String)_serviceRequest.getAttribute("typeValueFilter");
+		String valueFilter = (String)_serviceRequest.getAttribute("valueFilter");
+		
 		
 		_htmlStream.append("<TABLE class='list' style='width:100%;margin-top:1px'>\n");
 		_htmlStream.append("	<TR>\n");
@@ -309,10 +316,17 @@ public class ListTag extends TagSupport
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
 			//defines order url for dynamic ordering
+			
 			HashMap orderParamsMap = new HashMap();
 			orderParamsMap.putAll(_providerUrlMap);			
 			orderParamsMap.put("FIELD_ORDER", nameColumn);
-			orderParamsMap.put("TYPE_ORDER"," ASC");			
+			orderParamsMap.put("TYPE_ORDER"," ASC");	
+			if (columnFilter!= null && typeFilter != null && typeValueFilter!=null){	
+				orderParamsMap.put("columnFilter", columnFilter);
+				orderParamsMap.put("typeFilter", typeFilter);
+				orderParamsMap.put("typeValueFilter", typeValueFilter);
+				orderParamsMap.put("valueFilter", valueFilter);
+			}
 			String orderUrlAsc = createUrl(orderParamsMap);
 			orderParamsMap.remove("TYPE_ORDER");
 			orderParamsMap.put("TYPE_ORDER"," DESC");
@@ -974,6 +988,13 @@ public class ListTag extends TagSupport
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='middle' width='80%'>\n");
 		if (_filter == null || _filter.equalsIgnoreCase("enabled")) {
 			
+			
+			/*HashMap allUrlMap = (HashMap) _providerUrlMap.clone();
+			allUrlMap.remove("valueFilter");
+			allUrlMap.remove("columnFilter");
+			allUrlMap.remove("typeFilter");
+			allUrlMap.remove("typeValueFilter");*/
+			
 			String allUrl = createUrl(_providerUrlMap);
 			String filterURL = createUrl(_providerUrlMap);
 			
@@ -1212,6 +1233,13 @@ public class ListTag extends TagSupport
 			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
 			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
 			String tmpUrl = createUrl(tmpParamsMap);
+			
+			String ORDER = (String) _serviceRequest.getAttribute("ORDER");
+			String FIELD_ORDER = (String) _serviceRequest.getAttribute("FIELD_ORDER");
+			if (FIELD_ORDER!= null && ORDER != null){
+				tmpParamsMap.put("FIELD_ORDER", FIELD_ORDER);
+				tmpParamsMap.put("ORDER", ORDER);
+			}
 			
 			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);

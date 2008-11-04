@@ -262,7 +262,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 */
 	public List loadLowFunctionalityList(List functionalityIDs) throws EMFUserError {
 		logger.debug( "IN" );
-		if (functionalityIDs!=null){
+		if (functionalityIDs!=null && !functionalityIDs.isEmpty()){
 		    logger.debug( "SIZE="+functionalityIDs.size() );
 		    Iterator iter=functionalityIDs.iterator();
 		    while (iter.hasNext()){

@@ -129,7 +129,12 @@ public class DelegatedHibernateConnectionListService extends DelegatedBasicListS
 		list.setPaginator(paginator);
 		
 		// filter the list 
-		String valuefilter = (String) request.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		Object valuefilterObj = (Object)request.getAttribute(SpagoBIConstants.VALUE_FILTER);
+		String valuefilter = null;
+		if(valuefilterObj!=null){
+			valuefilter = valuefilterObj.toString();
+		}
+		//String valuefilter = (String)request.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		if (valuefilter != null) {
 			String columnfilter = (String) request
 					.getAttribute(SpagoBIConstants.COLUMN_FILTER);

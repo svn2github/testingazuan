@@ -69,5 +69,10 @@
          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenuRole.hbm.xml" />
+        
+         <!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmContact.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

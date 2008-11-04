@@ -13,8 +13,9 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="hibernate.show_sql">false</property>
-       
+        <property name="hibernate.show_sql">true</property>
+<property name="hibernate.cache.use_minimal_puts">true</property>                
+        <property name="hibernate.generate_statistics">true</property>       
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
        
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEvents.hbm.xml" />
@@ -72,6 +73,10 @@
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenuRole.hbm.xml" />
         
+        <!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingmysql/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingmysql/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingmysql/SbiAlarmContact.hbm.xml" />
         
         <class-cache class="it.eng.spagobi.commons.metadata.SbiExtRoles" usage="read-only"/>
         <class-cache class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" usage="nonstrict-read-write"/>

@@ -691,12 +691,13 @@ Create table `SBI_THRESHOLD_VALUE` (
 	`id_threshold_value` Int NOT NULL AUTO_INCREMENT,
 	`THRESHOLD_ID` Int NOT NULL,
 	`SEVERITY_ID` Int,
+	`position` Int,
 	`min_value` Double,
 	`max_value` Double,
 	`label` Varchar(20),
 	`colour` Varchar(20),
  Primary Key (`id_threshold_value`)) ENGINE = InnoDB;
-
+ 
 Create table `SBI_KPI_MODEL` (
 	`KPI_MODEL_ID` Int NOT NULL AUTO_INCREMENT,
 	`KPI_ID` Int,

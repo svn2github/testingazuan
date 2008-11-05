@@ -17,6 +17,7 @@ public class Kpi {
 	List kpiChildren = null; // List of Kpis children
 	List roles = null;	//roles that can view this KPI
 	List Thresholds = null;
+	List kpiInstances = null; //all the instances of that KPI
 	Double standardWeight = null;
 	String metric = null;
 	String description = null;	
@@ -31,6 +32,7 @@ public class Kpi {
 		this.isRoot = false;	
 		this.Thresholds = new ArrayList();
 		this.roles = new ArrayList();
+		this.kpiInstances = new ArrayList();
 	}
 
 
@@ -198,6 +200,30 @@ public class Kpi {
 
 	public void setScaleName(String scaleName) {
 		this.scaleName = scaleName;
+	}
+
+
+
+	public Boolean getIsRoot() {
+		return isRoot;
+	}
+
+
+
+	public void setIsRoot(Boolean isRoot) {
+		this.isRoot = isRoot;
+	}
+
+
+
+	public List getKpiInstances() {
+		return kpiInstances;
+	}
+
+
+
+	public void setKpiInstances(List kpiInstances) {
+		this.kpiInstances = kpiInstances;
 	}
 	
 

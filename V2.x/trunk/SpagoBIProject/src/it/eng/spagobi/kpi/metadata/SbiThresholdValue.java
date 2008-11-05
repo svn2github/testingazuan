@@ -21,6 +21,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
      private double maxValue;
      private String label;
      private String colour;
+     private Integer position;
 
 
     // Constructors
@@ -44,6 +45,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
         this.maxValue = maxValue;
         this.label = label;
         this.colour = colour;
+        this.position = position;
     }
     
 
@@ -105,6 +107,14 @@ public class SbiThresholdValue  implements java.io.Serializable {
     public void setColour(String colour) {
         this.colour = colour;
     }
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
    
 
 

@@ -26,5 +26,8 @@
         <property name="colour" type="string">
             <column name="colour" length="20" />
         </property>
+        <property name="position" type="integer">
+            <column name="position" />
+        </property>
     </class>
 </hibernate-mapping>

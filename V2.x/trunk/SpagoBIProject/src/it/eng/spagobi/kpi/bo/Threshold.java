@@ -11,6 +11,7 @@ public class Threshold {
 	String label = null;
 	Color color = null;
 	String severity = null;
+	Integer position = null;
 	
 	String thresholdName = null;//all thresholds referred to the same kpi will have this Name equal
 	String thresholdDescription = null;//all thresholds referred to the same kpi will have this description equal
@@ -91,6 +92,14 @@ public class Threshold {
 	public Threshold() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
 	}
 	
 	

@@ -12,6 +12,7 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VAL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('BIOBJ_TYPE', 'BI Object types', 'OFFICE_DOC', 'Office document', 'Office document');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('BIOBJ_TYPE', 'BI Object types', 'ETL', 'ETL process', 'ETL process');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('BIOBJ_TYPE', 'BI Object types', 'DOCUMENT_COMPOSITE','Document Composite', 'Document Composite objects type');
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('BIOBJ_TYPE', 'BI Object types', 'KPI','Kpi', 'Kpi business indicator');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('VALUE_TYPE', 'Input value types to check', 'BOOL', 'Boolean', 'Boolean input value type');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('VALUE_TYPE', 'Input value types to check', 'SINGLE', 'Single value', 'Only single value allowed');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('VALUE_TYPE', 'Input value types to check', 'MULTI', 'Multivalue', 'Many values are allowed');

@@ -8,6 +8,7 @@ public class Model {
 	
 	ModelNode root =null; //root of the tree made of ModelNodes, representing the model
 	List childrenNodes = null;//List of ModelNodes children
+	List modelAttributes = null;//List of all related ModelAttributes
 	String name = null;//name of the complete model (like CMMI/GQM)
 	String description = null;//description of the complete model
 	
@@ -30,6 +31,7 @@ public class Model {
 	public Model() {
 		super();
 		this.childrenNodes= new ArrayList();
+		this.modelAttributes = new ArrayList();
 	}
 
 	public ModelNode getRoot() {

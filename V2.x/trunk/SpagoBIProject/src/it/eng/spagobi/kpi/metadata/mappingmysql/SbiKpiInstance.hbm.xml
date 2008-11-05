@@ -24,7 +24,7 @@
             <key>
                 <column name="id_kpi_instance" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiAlarm" />
+            <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
         </set>
         <set name="sbiKpiValues" inverse="true">
             <key>

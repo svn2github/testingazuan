@@ -16,7 +16,7 @@ public class SbiKpiValue  implements java.io.Serializable {
      private Integer idKpiInstanceValue;
      private SbiKpiInstance sbiKpiInstance;
      private String kpiValue;
-     private String kpiDate;
+     private Date kpiDate;
      private String idDocumentMeasRes;
      private Date beginDt;
      private Date endDt;
@@ -35,7 +35,7 @@ public class SbiKpiValue  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, String kpiValue, String kpiDate, String idDocumentMeasRes, Date beginDt, Date endDt) {
+    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, String kpiValue, Date kpiDate, String idDocumentMeasRes, Date beginDt, Date endDt) {
         this.idKpiInstanceValue = idKpiInstanceValue;
         this.sbiKpiInstance = sbiKpiInstance;
         this.kpiValue = kpiValue;
@@ -73,11 +73,11 @@ public class SbiKpiValue  implements java.io.Serializable {
         this.kpiValue = kpiValue;
     }
 
-    public String getKpiDate() {
+    public Date getKpiDate() {
         return this.kpiDate;
     }
     
-    public void setKpiDate(String kpiDate) {
+    public void setKpiDate(Date kpiDate) {
         this.kpiDate = kpiDate;
     }
 

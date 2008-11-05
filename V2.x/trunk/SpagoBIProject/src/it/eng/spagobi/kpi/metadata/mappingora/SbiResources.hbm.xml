@@ -8,7 +8,7 @@
             <column name="RESOURCE_ID" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.kpi.metadata.SbiDomains">
+        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="RESOURCE_TYPE_ID" not-null="true" />
         </many-to-one>
         <property name="tableName" type="string">

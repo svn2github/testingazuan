@@ -8,7 +8,7 @@
             <column name="id_kpi_role" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiExtRoles" class="it.eng.spagobi.kpi.metadata.SbiExtRoles" >
+        <many-to-one name="sbiExtRoles" class="it.eng.spagobi.commons.metadata.SbiExtRoles" >
             <column name="EXT_ROLE_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.metadata.SbiKpi">

@@ -760,7 +760,7 @@ Create table `SBI_KPI_VALUE` (
 	`id_kpi_instance_value` Int NOT NULL AUTO_INCREMENT,
 	`id_kpi_instance` Int NOT NULL,
 	`VALUE` Varchar(40),
-	`DATE` Char(20),
+	`DATE` Date,
 	`id_document_meas_res` Char(20),
 	`BEGIN_DT` Date,
 	`END_DT` Date,

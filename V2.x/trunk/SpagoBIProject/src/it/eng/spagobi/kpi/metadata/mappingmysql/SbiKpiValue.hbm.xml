@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 3-nov-2008 10.09.03 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.kpi.metadata.SbiKpiValue" table="sbi_kpi_value" >
+        <id name="idKpiInstanceValue" type="integer">
+            <column name="id_kpi_instance_value" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.metadata.SbiKpiInstance" >
+            <column name="id_kpi_instance" not-null="true" />
+        </many-to-one>
+        <property name="kpiValue" type="string">
+            <column name="KPI_VALUE" length="40" />
+        </property>
+        <property name="kpiDate" type="string">
+            <column name="KPI_DATE" length="20" />
+        </property>
+        <property name="idDocumentMeasRes" type="string">
+            <column name="id_document_meas_res" length="20" />
+        </property>
+        <property name="beginDt" type="timestamp">
+            <column name="BEGIN_DT" length="19" />
+        </property>
+        <property name="endDt" type="timestamp">
+            <column name="END_DT" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

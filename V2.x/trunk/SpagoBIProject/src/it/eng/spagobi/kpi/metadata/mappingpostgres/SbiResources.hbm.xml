@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 3-nov-2008 10.09.01 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.kpi.metadata.SbiResources" table="sbi_resources" >
+        <id name="resourceId" type="integer">
+            <column name="RESOURCE_ID" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="sbiDomains" class="it.eng.spagobi.kpi.metadata.SbiDomains">
+            <column name="RESOURCE_TYPE_ID" not-null="true" />
+        </many-to-one>
+        <property name="tableName" type="string">
+            <column name="TABLE_NAME" length="40" />
+        </property>
+        <property name="columnName" type="string">
+            <column name="COLUMN_NAME" length="40" />
+        </property>
+        <property name="resourceName" type="string">
+            <column name="RESOURCE_NAME" length="40" />
+        </property>
+        <set name="sbiKpiModelResourceses" inverse="true">
+            <key>
+                <column name="RESOURCE_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiModelResources" />
+        </set>
+    </class>
+</hibernate-mapping>

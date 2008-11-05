@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 3-nov-2008 10.09.02 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.kpi.metadata.SbiThresholdValue" table="sbi_threshold_value" >
+        <id name="idThresholdValue" type="integer">
+            <column name="id_threshold_value" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.metadata.SbiThreshold" >
+            <column name="THRESHOLD_ID" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sbiDomains" class="it.eng.spagobi.kpi.metadata.SbiDomains" >
+            <column name="SEVERITY_ID" />
+        </many-to-one>
+        <property name="minValue" type="double">
+            <column name="min_value" precision="22" scale="0" />
+        </property>
+        <property name="maxValue" type="double">
+            <column name="max_value" precision="22" scale="0" />
+        </property>
+        <property name="label" type="string">
+            <column name="label" length="20" />
+        </property>
+        <property name="colour" type="string">
+            <column name="colour" length="20" />
+        </property>
+    </class>
+</hibernate-mapping>

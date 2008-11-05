@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 3-nov-2008 10.09.01 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.kpi.metadata.SbiKpiPeriodicity" table="sbi_kpi_periodicity" >
+        <id name="idKpiInstancePeriod" type="integer">
+            <column name="id_kpi_instance_period" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="sbiPeriodicity" class="it.eng.spagobi.kpi.metadata.SbiPeriodicity" >
+            <column name="id_periodicity" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.metadata.SbiKpiInstance" update="false" insert="false" >
+            <column name="id_periodicity" not-null="true" />
+        </many-to-one>
+        <property name="idKpiInstance" type="integer">
+            <column name="id_kpi_instance" not-null="true" />
+        </property>
+        <property name="perValue" type="double">
+            <column name="per_value" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

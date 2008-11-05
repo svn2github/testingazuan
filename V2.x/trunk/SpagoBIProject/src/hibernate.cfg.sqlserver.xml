@@ -75,6 +75,12 @@
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiThreshold.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiThresholdValue.hbm.xml" />
         
+         
+        <!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingsqlserver/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingsqlserver/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingsqlserver/SbiAlarmContact.hbm.xml" />
+        
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenuRole.hbm.xml" />

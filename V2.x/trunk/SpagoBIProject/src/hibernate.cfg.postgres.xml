@@ -76,6 +76,11 @@
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThreshold.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />
         
+        <!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />
+        
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenuRole.hbm.xml" />

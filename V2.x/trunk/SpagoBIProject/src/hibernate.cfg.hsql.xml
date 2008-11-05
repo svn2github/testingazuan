@@ -80,6 +80,11 @@
         <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiThreshold.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiThresholdValue.hbm.xml" />
 
+		<!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappinghsqldb/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappinghsqldb/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappinghsqldb/SbiAlarmContact.hbm.xml" />
+
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappinghsqldb/SbiRememberMe.hbm.xml" />
          <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappinghsqldb/SbiDataSetConfig.hbm.xml" />

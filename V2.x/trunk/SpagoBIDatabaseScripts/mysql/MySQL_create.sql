@@ -769,10 +769,10 @@ Create table `SBI_KPI_VALUE` (
 
 Create table `SBI_KPI_MODEL_INST` (
 	`KPI_MODEL_INST` Int NOT NULL AUTO_INCREMENT,
-	`KPI_CATEG_INST_PAR` Int,
-	`id_kpi_instance` Int NOT NULL,
-	`name` Varchar(20),
-	`description` Varchar(20),
+	`KPI_MODEL_INST_PAR` Int,
+	`id_kpi_instance` Int,
+	`name` Varchar(400),
+	`description` Varchar(1000),
  Primary Key (`KPI_MODEL_INST`)) ENGINE = InnoDB;
 
 Create table `SBI_RESOURCES` (

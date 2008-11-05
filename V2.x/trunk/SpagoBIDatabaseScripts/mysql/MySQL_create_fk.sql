@@ -238,7 +238,7 @@ Alter table `SBI_THRESHOLD_VALUE` add Foreign Key (`THRESHOLD_ID`) references `S
 
 -- KPI INSTANCE
 Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
-Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_CATEG_INST_PAR`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_MODEL_INST_PAR`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;

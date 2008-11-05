@@ -14,9 +14,6 @@
         <property name="kpiValue" type="string">
             <column name="KPI_VALUE" length="40" />
         </property>
-        <property name="kpiDate" type="timestamp">
-            <column name="KPI_DATE" length="20" />
-        </property>
         <property name="idDocumentMeasRes" type="string">
             <column name="id_document_meas_res" length="20" />
         </property>

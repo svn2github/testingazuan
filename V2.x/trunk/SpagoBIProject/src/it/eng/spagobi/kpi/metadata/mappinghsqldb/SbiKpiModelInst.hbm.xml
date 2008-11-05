@@ -12,13 +12,13 @@
             <column name="id_kpi_instance" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiKpiModelInst" class="it.eng.spagobi.kpi.metadata.SbiKpiModelInst" >
-            <column name="KPI_MODEL_INST_PAR" not-null="true" />
+            <column name="KPI_MODEL_INST_PAR" />
         </many-to-one>
         <property name="name" type="string">
-            <column name="name" length="20" />
+            <column name="name" length="400" />
         </property>
         <property name="description" type="string">
-            <column name="description" length="20" />
+            <column name="description" length="1000" />
         </property>
         <set name="sbiKpiModelResourceses" inverse="true">
             <key>

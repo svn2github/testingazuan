@@ -9,7 +9,6 @@ public class KpiValue {
 	Double value = null;		
 	List thresholds = null;
 	Double weight = null;
-	Date date = null;//Date in which the value has been calculated
 	Date beginDate = null;
 	Date endDate = null;//null beginDate + num_validity_days
 	Integer num_validity_days = null;// number of days from begindate for wich the value is valid
@@ -60,14 +59,6 @@ public class KpiValue {
 
 	public void setWeight(Double weight) {
 		this.weight = weight;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public Date getBeginDate() {

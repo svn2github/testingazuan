@@ -6,7 +6,8 @@ import java.util.List;
 
 public class KpiValue {
 	
-	Double value = null;		
+	Integer kpiInstanceId = null;
+	String value = null;		
 	List thresholds = null;
 	Double weight = null;
 	Date beginDate = null;
@@ -21,11 +22,11 @@ public class KpiValue {
 		this.thresholds = new ArrayList();
 	}
 
-	public Double getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(Double value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 
@@ -91,6 +92,14 @@ public class KpiValue {
 
 	public void setR(Resource r) {
 		this.r = r;
+	}
+
+	public Integer getKpiInstanceId() {
+		return kpiInstanceId;
+	}
+
+	public void setKpiInstanceId(Integer kpiInstanceId) {
+		this.kpiInstanceId = kpiInstanceId;
 	}
 
 }

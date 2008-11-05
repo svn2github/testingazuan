@@ -62,6 +62,24 @@
         <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappinghsqldb/SbiDossierPartsTemp.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/dossier/metadata/mappinghsqldb/SbiDossierPresentations.hbm.xml" />
 
+		 <!-- KPI Engine -->
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappinghsqldb/SbiThresholdValue.hbm.xml" />
+
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappinghsqldb/SbiRememberMe.hbm.xml" />
          <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappinghsqldb/SbiDataSetConfig.hbm.xml" />

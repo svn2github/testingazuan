@@ -57,6 +57,24 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingsqlserver/SbiRememberMe.hbm.xml" />
         
+         <!-- KPI Engine -->
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingsqlserver/SbiThresholdValue.hbm.xml" />
+        
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenuRole.hbm.xml" />

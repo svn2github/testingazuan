@@ -58,6 +58,24 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
         
+         <!-- KPI Engine -->
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />
+        
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenuRole.hbm.xml" />

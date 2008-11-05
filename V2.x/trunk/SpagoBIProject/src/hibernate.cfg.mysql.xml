@@ -69,6 +69,24 @@
         
         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSetConfig.hbm.xml" />
         
+         <!-- KPI Engine -->
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingmysql/SbiThresholdValue.hbm.xml" />
+        
          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingmysql/SbiMenuRole.hbm.xml" />

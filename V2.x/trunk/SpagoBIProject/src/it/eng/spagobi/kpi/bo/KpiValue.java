@@ -15,7 +15,7 @@ public class KpiValue {
 	Integer num_validity_days = null;// number of days from begindate for wich the value is valid
 	String scaleCode = null;
 	String scaleName = null;
-	Resource r = null;//Resource (project/pocess) to which refers the value
+	Resource r = null;//Resource (project/process) to which refers the value
 	
 	public KpiValue() {
 		super();

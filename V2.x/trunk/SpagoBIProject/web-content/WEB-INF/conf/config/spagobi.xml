@@ -109,7 +109,7 @@
      
      <LOOKUP numberRows = "20" />
 
-     <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
+      <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
     
      <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
  	
@@ -118,8 +118,9 @@
  
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	
+	
 	 <PORTLET_EDIT_MODE_ROLES>
-		<ROLE name="/admin" />
+		<ROLE name="/spagobi/admin" />
 	 </PORTLET_EDIT_MODE_ROLES>
 
 	 <LANGUAGE_SUPPORTED>
@@ -194,6 +195,7 @@
 		<DAO name="MenuDAO" implementation="it.eng.spagobi.wapp.dao.MenuDAOImpl"/>
 		<DAO name="MenuRolesDAO" implementation="it.eng.spagobi.wapp.dao.MenuRolesDAOImpl"/>
 		<DAO name="BIObjectRatingDAO" implementation="it.eng.spagobi.analiticalmodel.document.dao.BIObjectRatingDAOHibImpl"/>
+		<DAO name="KpiDAO" implementation="it.eng.spagobi.kpi.dao.KpiDAOImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

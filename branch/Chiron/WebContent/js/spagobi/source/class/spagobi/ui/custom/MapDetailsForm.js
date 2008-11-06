@@ -85,7 +85,7 @@ qx.Class.define("spagobi.ui.custom.MapDetailsForm", {
         		type: 'combo',
         		dataIndex: 'format',
         		text: 'Format',
-        		items: ["","SVG"]		
+        		items: ["SVG"]		
         	}, {
         		//type: 'form',
         		type: 'formList',

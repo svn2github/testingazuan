@@ -101,7 +101,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
         		dataIndex: 'type',
         		text: 'Type',
         		labelwidth: 100,
-        		items: ["","Query Statement", "Script to load values", "Fixed List of values", "Java class"],
+        		items: ["Query Statement", "Script to load values", "Fixed List of values", "Java class"],
         		listeners: [
 	        		{
 	        			event: 'changeValue',
@@ -119,7 +119,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		dataIndex: 'datasourcelabel',
 				        		text: 'Data Source label',
 				        		labelwidth: 100,
-				        		items: ["","FoodMart", "Pool", "Connection"]
+				        		items: ["FoodMart", "Pool", "Connection"]
 			        		},	{
 				        		type: 'textarea',
 				        		dataIndex: 'querydef',
@@ -127,8 +127,8 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		labelwidth: 100,
 				        		height: 50	
 			        		}
-			        	],
-			     visible: false  
+			        	]/*,
+			     visible: false */ 
         	},  {
         		type: 'form',
         		dataIndex: 'scriptloadvalues',
@@ -199,31 +199,32 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 	 */
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
-			
-        	if (e.getValue()== "Query Statement") {
-        		this.getInputField('scriptloadvalues').setDisplay(false);
-        		this.getInputField('fixedlov').setDisplay(false);
-        		this.getInputField('javaclass').setDisplay(false);
-        		this.getInputField('querystmt').setDisplay(true);
-        		
-			} else if (e.getValue()== "Script to load values") {
-        		this.getInputField('querystmt').setDisplay(false);
-        		this.getInputField('fixedlov').setDisplay(false);
-        		this.getInputField('javaclass').setDisplay(false);
-        		this.getInputField('scriptloadvalues').setDisplay(true);
-        		
-        	} else if (e.getValue()== "Fixed List of values") {
-        		this.getInputField('querystmt').setDisplay(false);
-        		this.getInputField('scriptloadvalues').setDisplay(false);
-        		this.getInputField('javaclass').setDisplay(false);
-        		this.getInputField('fixedlov').setDisplay(true);
-        		
-        	} else if (e.getValue()== "Java class") {
-        		this.getInputField('querystmt').setDisplay(false);
-        		this.getInputField('scriptloadvalues').setDisplay(false);
-        		this.getInputField('fixedlov').setDisplay(false);
-        		this.getInputField('javaclass').setDisplay(true);
-        	}
-        }
+			if( this && this.getInputField('querystmt') ) {
+	        	if (e.getValue()== "Query Statement") {
+	        		this.getInputField('querystmt').setDisplay(true);
+	        		this.getInputField('scriptloadvalues').setDisplay(false);
+	        		this.getInputField('fixedlov').setDisplay(false);
+	        		this.getInputField('javaclass').setDisplay(false);
+	        		        		
+				} else if (e.getValue()== "Script to load values") {
+	        		this.getInputField('querystmt').setDisplay(false);
+	        		this.getInputField('scriptloadvalues').setDisplay(true);
+	        		this.getInputField('fixedlov').setDisplay(false);
+	        		this.getInputField('javaclass').setDisplay(false);
+	        		        		
+	        	} else if (e.getValue()== "Fixed List of values") {
+	        		this.getInputField('querystmt').setDisplay(false);
+	        		this.getInputField('scriptloadvalues').setDisplay(false);
+	        		this.getInputField('fixedlov').setDisplay(true);
+	        		this.getInputField('javaclass').setDisplay(false);
+	        		        		
+	        	} else if (e.getValue()== "Java class") {
+	        		this.getInputField('querystmt').setDisplay(false);
+	        		this.getInputField('scriptloadvalues').setDisplay(false);
+	        		this.getInputField('fixedlov').setDisplay(false);
+	        		this.getInputField('javaclass').setDisplay(true);
+	        	}
+	        }
+		} 
 	}
 });

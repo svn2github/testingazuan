@@ -98,7 +98,7 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         		type: 'combo',
         		dataIndex: 'type',
         		text: 'Type',
-        		items: ["","Report","On-line Analytical Processing","Data Mining Model","Dashboard","Datamart Model","Map","Dossier","Office Document","ETL Process", "Document Composite"],
+        		items: ["Report","On-line Analytical Processing","Data Mining Model","Dashboard","Datamart Model","Map","Dossier","Office Document","ETL Process", "Document Composite"],
         		listeners: [
 	        		{
 	        			event: 'changeValue',
@@ -110,12 +110,12 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         		type: 'combo',
         		dataIndex: 'engine',
         		text: 'Engine',
-        		items: ["","JPIVOT"]
+        		items: ["JPIVOT"]
 	       	}, {
         		type: 'combo',
         		dataIndex: 'datasource',
         		text: 'Data Source',
-        		items: ["","FoodMart","SpagoBI","GeoData","XaltiaOracle"]
+        		items: ["FoodMart","SpagoBI","GeoData","XaltiaOracle"]
            	}, {
         		type: 'text',
         		dataIndex: 'useDataSet',
@@ -125,7 +125,7 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         		type: 'combo',
         		dataIndex: 'state',
         		text: 'State',
-        		items: ["","Suspended","Development","Test","Release"]
+        		items: ["Suspended","Development","Test","Release"]
         	}, {
         		type: 'text',
         		dataIndex: 'refreshseconds',
@@ -180,7 +180,7 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         },
         
 		_documentTypeChangeValueHandler : function(e) {
-        	if( this && this.getInputField('type') ) {
+        	if( this && this.getInputField('engine') ) {
         		if (e.getValue()=="Report") {
         			/*var dummyarray = [];
         			dummyarray = this._funcofrelatedcombo();

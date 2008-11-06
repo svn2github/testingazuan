@@ -61,6 +61,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	this.base(arguments, "1*", "2*");
     this.setWidth("100%");
     this.setHeight("100%");
+    //this.setHeight("1*");
     this.setLiveResize(true);
  //   this.setOverflow("auto");
   //  this.setShowKnob(false);
@@ -76,7 +77,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
       		
     //var records;
     var form;  	
-    this._type = type;	
+    this._type = type;
+    
+   
 	if(type === 'engine') {
 		this.records = spagobi.app.data.DataService.loadEngineRecords();
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
@@ -147,48 +150,55 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	    //this.listPage.setWidth('100%'); 
 	    //this.listPage.setHeight('100%');  	
 	      	
-	      	
+	    	
 	   	// Create detail view
 	   	detailPage = new qx.ui.pageview.buttonview.ButtonView();
 	    detailPage.setEdge(0);     
-	        
+	       
 	    // Create detail view toolbar
-	      var saveButton = new qx.ui.pageview.buttonview.Button(/*"Save");//*/"", "spagobi/img/spagobi/test/save.png");
+	    var saveButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/save.png");
 	    var SB = new qx.ui.popup.ToolTip("Save");
 	    saveButton.setToolTip(SB);
-	    var deleteButton = new qx.ui.pageview.buttonview.Button(/*"Delete");//*/"", "spagobi/img/spagobi/test/delete.png");
+	    var deleteButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/delete.png");
 	    var SD = new qx.ui.popup.ToolTip("Delete");
 	    deleteButton.setToolTip(SD);
-	    var createButton = new qx.ui.pageview.buttonview.Button(/*"New");//*/"", "spagobi/img/spagobi/test/create.png");
+	    var createButton = new qx.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/create.png");
 	    var NB = new qx.ui.popup.ToolTip("New");
 	    createButton.setToolTip(NB);
 	                     
 	    detailPage.getBar().add(createButton, saveButton, deleteButton);               
 	   
 	    // Functionality for Save button
+	    /*
 	    var save_page = new qx.ui.pageview.buttonview.Page(saveButton);
 		save_page.setDisplay(false);
 		detailPage.getPane().add(save_page);
 		save_page.addEventListener("appear", this.ShowDetails, this);
+		*/
+		saveButton.addEventListener("changeChecked", this.ShowDetails, this);
 		
-		/*
-		function ShowDetails() {
-		var alias = this.getForm().getData();
-		alert (this.printObject(alias));
-		}
-	    */    
 	    // Create detail view body
 	   	this._form = form;       	      	
 	   	detailHeader = new qx.ui.pageview.buttonview.Button("", "");
 	    detailHeader.setDisplay(false);        
 	    detailHeader.setChecked(true);  		
-		this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader ); 
-	    this.detailBody.setOverflow("auto");
-	    this.detailBody.add( this._form );  		 
-	  	detailPage.getPane().add( this.detailBody );
+		
+		this.detailBody = new qx.ui.pageview.buttonview.Page( detailHeader );
+		
+	    	this.detailBody.setOverflow("auto");
+	    this.detailBody.add( this._form );
+	    //this._form.setDimension("100%","1*");		 
 	  	
+	  	detailPage.getPane().add( this.detailBody );
 	  	this.addBottom( detailPage );
-	  	//this.setOverflow("auto");
+	  	
+	  		//detailPage.getPane().setDimension("100%","100%");
+	  	//detailPage.setDimension("100%","1*");
+	  	//this.detailBody.setDimension("100%","100%");
+	  		//this._form.setDimension("100%","100%");
+	  		//this.detailBody.setBorder(new qx.ui.core.Border(1));
+	  	
+	  		//this.setOverflow("auto");
   			
   	/*    
     //testing for parameter form's getData() function
@@ -376,7 +386,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     	this.onClickMenu();
     },
     
-    ShowDetails: function () {
+    ShowDetails: function (e) {
+    	if(e.getTarget().getChecked() == false){
+    		return;
+    	}
 		if (this.records.ID != undefined){
     		if (this.records.ID == "ROLES"){
 				alert (this.listPage._table.getUpdatedData());
@@ -385,7 +398,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		else{
 			var alias = this.getForm().getData();
 			alert (this.printObject(alias));
-		}	
+		}
+		//e.getTarget().getButton().setChecked(false);
+		
+		e.getTarget().setChecked(false);
 	}	
   }
 });

@@ -75,7 +75,7 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
         		type: 'combo',
         		dataIndex: 'type',
         		text: 'Check Type',
-        		items: ["Choose...", "Date", "Regexp", "Max Length", "Range", "Decimal", "Min Length"],
+        		items: ["Date", "Regexp", "Max Length", "Range", "Decimal", "Min Length"],
         		mandatory: false,
         		labelwidth: 100,
         		listeners: [
@@ -91,8 +91,7 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
         		text: 'Date Value Format',
         		value: 'dd/mm/yyyy',
         		labelwidth: 100,
-        		mandatory: false,
-			    visible: false		
+        		mandatory: false	
         	}, {
         		type: 'text',
         		dataIndex: 'regularexpression',
@@ -142,6 +141,7 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 	
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
+        	if( this && this.getInputField('datevalueformat') ) {	
         		if (e.getValue()==null) {
 					this.getInputField('datevalueformat').setDisplay(false);
 					this.getInputField('regularexpression').setDisplay(false);
@@ -205,7 +205,7 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 					this.getInputField('decimalplaces').setDisplay(false);
 					this.getInputField('minlengthvalue').setDisplay(true);
 					
-				} else if (e.getValue()=="Choose..."){
+				} /*else if (e.getValue()=="Choose..."){
 					if(this.getInputField('datevalueformat')){
 					this.getInputField('datevalueformat').setDisplay(false);
 					this.getInputField('regularexpression').setDisplay(false);
@@ -216,9 +216,9 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 					this.getInputField('minlengthvalue').setDisplay(false);
 					alert("Please choose a value !!!");
 					}
-				}
+				}*/
 			}	 
-        	
+		}	
         	
         }       
         

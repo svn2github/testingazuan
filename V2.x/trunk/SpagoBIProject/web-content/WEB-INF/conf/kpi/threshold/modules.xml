@@ -27,6 +27,7 @@
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdValuePage" />
           <PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="ListThresholdValuesModule" />
           <PARAMETER name="IDT" scope="LOCAL" type="RELATIVE" value="ID" />
+          <PARAMETER name="FIELD_ORDER" scope="" type="ABSOLUTE" value="POSITION" />
         </VALUE_CAPTION>
         <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="sbi.kpi.caption.delete">
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdPage" />
@@ -81,6 +82,8 @@
       <QUERIES>
         <SELECT_QUERY statement="LIST_THRESHOLD_VALUES">
           <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
         </SELECT_QUERY>
         <DELETE_QUERY statement="DELETE_THRESHOLD_VALUE">
           <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />

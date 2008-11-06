@@ -19,7 +19,7 @@
 
   <!-- VALUES -->
   <STATEMENT name="LIST_THRESHOLD_VALUES"
-    query="SELECT id_threshold_value as id, position, label, min_value, max_value FROM sbi_threshold_value WHERE threshold_id=? ORDER BY position" />
+    query="SELECT id_threshold_value as id, position, label, min_value, max_value FROM sbi_threshold_value WHERE threshold_id=?" />
   
   <STATEMENT name="DETAIL_THRESHOLD_VALUE"
     query="SELECT id_threshold_value as id, threshold_id, severity_id, position, min_value, max_value, label, colour FROM sbi_threshold_value WHERE id_threshold_value=?" />

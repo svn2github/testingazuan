@@ -25,11 +25,11 @@
     query="SELECT id_threshold_value as id, threshold_id, severity_id, position, min_value, max_value, label, colour FROM sbi_threshold_value WHERE id_threshold_value=?" />
   
   <STATEMENT name="UPDATE_THRESHOLD_VALUE"
-    query="UPDATE sbi_threshold_value SET position=?, label=?, min_value=?, max_value=?, colour=? WHERE id_threshold_value=?" />
+    query="UPDATE sbi_threshold_value SET position=?, label=?, min_value=?, max_value=?, colour=?, severity_id=? WHERE id_threshold_value=?" />
   
   <STATEMENT name="INSERT_THRESHOLD_VALUE"
-    query="INSERT INTO sbi_threshold_value(threshold_id, position, label, min_value, max_value, colour)
-           VALUES (?,?,?,?,?,?);" />
+    query="INSERT INTO sbi_threshold_value(threshold_id, position, label, min_value, max_value, colour, severity_id)
+           VALUES (?,?,?,?,?,?,?);" />
   
   <STATEMENT name="DELETE_THRESHOLD_VALUE"
     query="DELETE FROM sbi_threshold_value WHERE id_threshold_value=?" />

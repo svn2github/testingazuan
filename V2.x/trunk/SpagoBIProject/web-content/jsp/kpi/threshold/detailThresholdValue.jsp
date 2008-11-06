@@ -184,6 +184,30 @@
   class='portlet-form-input-field' type="text" name="colour" size="50"
   value="<%=colour%>" maxlength="20"></div>
 
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.severity" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form'>
+<select class='portlet-form-field' name="severity_id" >
+<%
+	List severityLevels = DAOFactory.getDomainDAO().loadListDomainsByType("SEVERITY");
+	Iterator itt = severityLevels.iterator();
+	while (itt.hasNext()){
+		Domain domain = (Domain)itt.next();
+		String selected = "";
+		if (severity_id != null && severity_id.intValue() == domain.getValueId().intValue()){
+			selected = "selected='selected'";		
+		}
+		%>    			 		
+		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
+			<%= domain.getValueName() %>	
+		</option>
+		<%
+	}
+%>
+</select>
+</div>
+
 </div>
 </form>
 

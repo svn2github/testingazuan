@@ -58,7 +58,7 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
         
-         <!-- KPI Engine -->
+         <!-- KPI Engine 
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpi.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstance.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstanceHistory.hbm.xml" />
@@ -74,12 +74,12 @@
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiPeriodicity.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiResources.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThreshold.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />-->
         
-        <!-- Kpi.alarm -->
+        <!-- Kpi.alarm 
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarm.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmEvent.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />-->
         
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenu.hbm.xml" />

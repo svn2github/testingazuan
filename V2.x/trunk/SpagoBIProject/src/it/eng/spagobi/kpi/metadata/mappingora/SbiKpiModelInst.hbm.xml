@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 5-nov-2008 17.17.18 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" table="sbi_kpi_model_inst" >
+        <id name="kpiModelInst" type="integer">
+            <column name="KPI_MODEL_INST" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
+            <column name="id_kpi_instance" />
+        </many-to-one>
+        <many-to-one name="sbiKpiModelInst" class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" >
+            <column name="KPI_MODEL_INST_PAR" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="400" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="1000" />
+        </property>
+        <set name="sbiKpiModelInsts" inverse="true">
+            <key>
+                <column name="KPI_MODEL_INST_PAR" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" />
+        </set>
+        <set name="sbiKpiModelResourceses" inverse="true">
+            <key>
+                <column name="KPI_MODEL_INST" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources" />
+        </set>
+    </class>
+</hibernate-mapping>

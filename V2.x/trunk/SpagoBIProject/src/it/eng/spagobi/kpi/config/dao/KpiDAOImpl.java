@@ -7,6 +7,8 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
+import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 
 import java.util.Date;
 import java.util.List;
@@ -26,12 +28,17 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 	}
 
-	public KpiValue getKpiActualValue(KpiInstance kpi) throws EMFUserError {
+	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public List getKpiActualValue(KpiInstance kpi) throws EMFUserError {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public KpiValue getKpiValue(KpiInstance kpi, Date d) throws EMFUserError {
+	public List getKpiValue(KpiInstance kpi, Date d) throws EMFUserError {
 		
 		logger.debug("IN");
 		 
@@ -106,6 +113,11 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public boolean hasActualValues(KpiInstance inst) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	public boolean isAlarmingValue(KpiValue value) throws EMFUserError {
 		// TODO Auto-generated method stub
@@ -127,7 +139,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 		hibKpiValue.setBeginDt(beginDt);
 		hibKpiValue.setEndDt(endDt);
-		//hibKpiValue.setKpiValue(kpiValue);
+		hibKpiValue.setValue(kpiValue);
 		hibKpiValue.setIdKpiInstanceValue(kpiInstanceId);
 		
 		return hibKpiValue;
@@ -139,7 +151,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 		Date beginDate = value.getBeginDt();
 		Date endDate = value.getEndDt();
-		//String val = value.getKpiValue();
+		String val = value.getValue();
 		Integer kpiInstanceID = value.getIdKpiInstanceValue();
 		SbiKpiInstance kpiInst = value.getSbiKpiInstance();
 		Double weight = kpiInst.getWeight();
@@ -147,7 +159,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 		toReturn.setBeginDate(beginDate);
 		toReturn.setEndDate(endDate);
-		//toReturn.setValue(val);
+		toReturn.setValue(val);
 		toReturn.setKpiInstanceId(kpiInstanceID);
 		toReturn.setWeight(weight);
 		

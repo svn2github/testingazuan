@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -37,15 +38,22 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine;
-import it.eng.spagobi.engines.chart.bo.ChartImpl;
-import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
-import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.utils.DatasetMap;
+import it.eng.spagobi.engines.kpi.utils.StyleLabel;
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
+import it.eng.spagobi.kpi.config.bo.KpiValue;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
+import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
+import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -60,6 +68,29 @@ public class SpagoBIKpiInternalEngine {
 	private static transient Logger logger = Logger.getLogger(SpagoBIKpiInternalEngine.class);
 
 	public static final String messageBundle = "component_spagobichartKPI_messages";
+	protected int titleDimension;
+	protected String name=null;
+	protected String subName=null;
+	protected int width;
+	protected int height;
+	protected String data;
+	protected String confDataset;
+	protected IEngUserProfile profile;
+	protected String type="";
+	protected String subtype="";
+	protected Color color;
+	protected boolean legend=true;
+	protected Map parametersObject;
+	protected boolean show_chart=true;
+	protected boolean slider=true;
+	protected StyleLabel styleTitle;
+	protected StyleLabel styleSubTitle;
+	protected HashMap seriesLabelsMap = null;
+	
+	protected double lower=0.0;
+	protected double upper=0.0;
+	protected Map confParameters;
+	protected SourceBean sbRow;
 
 
 
@@ -128,168 +159,68 @@ public class SpagoBIKpiInternalEngine {
 
 			//		**************take informations on the chart type*****************
 
-
-			String type=content.getName();
-			String subtype = (String)content.getAttribute("type");
-
-
-
-			String data="";
-			try{
-				logger.debug("Getting Data Set ID");
-				if(obj.getDataSetId()!=null){
-				    data=obj.getDataSetId().toString();
-				} else {
-				    logger.error("Data Set not defined");
-				    throw new Exception("Data Set not defined");				    
-				}
-			}catch (Exception e) {
-				logger.error("Error while getting the dataset");
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9207);
-				userError.setBundle("messages");
-				throw userError;
+			Integer modelNodeInstanceID = (Integer)content.getAttribute("model_node_instance");
+			getSetConf(content);
+			//gets the ModelInstanceNode
+			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID);
+			//From the modelInstance gets the related KpiInstance
+			KpiInstance kpiI = mI.getKpiInstanceAssociated();
+			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI);
+			//if not still actual calculates the new values and updates the KpiInstance
+			if (!isActual){
+				kpiI = calculateNewKpiInstance(kpiI);
 			}
-
-			HashMap parametersMap=null;
+			//From the KpiInstance gets the last KpiValues 
 			
-			//Search if the chart has parameters
-			List parametersList=obj.getBiObjectParameters();
-			logger.debug("Check for BIparameters and relative values");
-			if(parametersList!=null){
-				parametersMap=new HashMap();
-				for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
-					BIObjectParameter par= (BIObjectParameter) iterator.next();
-					String url=par.getParameterUrlName();
-					List values=par.getParameterValues();
-					if(values!=null){
-						if(values.size()==1){
-							String value=(String)values.get(0);
-							parametersMap.put(url, value);
-						}else if(values.size() >=1){
-							String value = "'"+(String)values.get(0)+"'";
-							for(int k = 1; k< values.size() ; k++){
-								value = value + ",'" + (String)values.get(k)+"'";
-							}
-							parametersMap.put(url, value);
+			List kpiValues = kpiI.getValue();
+			Iterator kpiVIt = kpiValues.iterator();
+			while (kpiVIt.hasNext()){
+				KpiValue kpiV = (KpiValue)kpiVIt.next();
+				Resource r = kpiV.getR();
+				List thresholds = kpiV.getThresholds();
+				String value = kpiV.getValue();
+				Double weight = kpiV.getWeight();
+				if (show_chart){
+					//creates a document with the representation of the kpivalues for each resource
+					
+				}else{
+					//creates a document without the representation of the kpivalues but only with its values for each resoruce
+					System.out.println("**********************************************");
+					System.out.println("RESOURCE="+r.getName());
+					System.out.println("Value="+value);
+					System.out.println("Weight="+weight);
+					System.out.println("Thresholds:");
+					Iterator threshIt = thresholds.iterator();
+					while(threshIt.hasNext()){
+						Threshold t = (Threshold)threshIt.next();
+						String type = t.getType();
+						Double min = null;
+						Double max = null;
+						System.out.println("++++++++Threshold Type:"+type);
+						if (type.equals("INTERVAL")){
+							
+							min = t.getMinValue();
+							max = t.getMaxValue();
+							System.out.println("++++++++Min:"+min);
+							System.out.println("++++++++Max:"+max);
+							
+						}else if (type.equals("MIN")){
+							
+							min = t.getMinValue();
+							System.out.println("++++++++Min:"+min);
+							
+						}else if (type.equals("MAX")){
+							
+							max = t.getMaxValue();
+							System.out.println("++++++++Max:"+max);
+							
 						}
 					}
-
-				}	
-
-			} // end looking for parameters
-			
-			
-			
-			
-			try{
-				logger.debug("create the chart");
-				// set the right chart type
-				sbi=ChartImpl.createChart(type, subtype);
-				sbi.setProfile(userProfile);
-				sbi.setType(type);
-				sbi.setSubtype(subtype);
-				sbi.setData(data);
-				sbi.setParametersObject(parametersMap);
-				// configure the chart with template parameters
-				sbi.configureChart(content);
+										
+				}
 				
-				boolean linkable=sbi.isLinkable();
-				if(linkable){
-					logger.debug("Linkable chart, search in request for serieurlname or categoryurlname");
-					String serieurlname="";
-					String categoryurlname="";
-
-					//checjk if is a linkable bar or pie
-					boolean linkableBar=false;
-					if(sbi instanceof LinkableBar)linkableBar=true;
-					else linkableBar=false;
-					
-					
-					//check is these parameters are in request, if not take them from template, if not use series and category by default
-					
-					if(linkableBar){
-					if(serviceRequest.getAttribute("serieurlname")!=null){
-						serieurlname=(String)serviceRequest.getAttribute("serieurlname");
-						((LinkableBar)sbi).setSerieUrlname(serieurlname);
-					}
-					}
-					
-					//category is defined both for pie and bar linkable charts
-					if(serviceRequest.getAttribute("categoryurlname")!=null){
-						categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
-					
-						((ILinkableChart)sbi).setCategoryUrlName(categoryurlname);
-												
-					}
-					
-					
-					//check if there are other parameters from the drill parameters whose value is in the request; elsewhere take them from template
-					logger.debug("Linkable chart: search in the request for other parameters");
-					HashMap drillParameters=new HashMap();
-					if(((ILinkableChart)sbi).getDrillParameter()!= null){
-					
-					drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
-					
-					for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
-						String name = (String) iterator.next();
-						if(serviceRequest.getAttribute(name)!=null){
-							String value=(String)serviceRequest.getAttribute(name);
-							((ILinkableChart)sbi).getDrillParameter().remove(name);
-							((ILinkableChart)sbi).getDrillParameter().put(name, value);
-
-						}
-
-					}
-					}
-
-				}
-
-
-
+			}
 			
-			}
-			catch (Exception e) {
-				logger.error("Error while creating the chart");
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);
-				userError.setBundle("messages");
-				throw userError;
-			}
-
-
-
-			// calculate values for the chart
-			try{
-				logger.debug("Retrieve value by executing the dataset");
-				datasets=sbi.calculateValue();
-			}	
-			catch (Exception e) {
-				logger.error("Error in retrieving the value");
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2006);
-				userError.setBundle("messages");
-				throw userError;
-			}
-
-
-			//JFreeChart chart=null;
-			// create the chart
-
-
-			//in the re-drawing case in document-composition check if serie or categories have been set
-			String serie=null;
-			String category=null;
-			if(serviceRequest.getAttribute("serie")!=null)
-			{
-				List series=(List)serviceRequest.getAttributeAsList("serie");
-				for(Iterator it=series.iterator();it.hasNext();){
-					serie=(String)it.next();
-					response.setAttribute("serie",serie);
-				}
-			}
-			if(serviceRequest.getAttribute("category")!=null)
-			{category=(String)serviceRequest.getAttribute("category");
-			response.setAttribute("category",category);
-			}
-
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
@@ -325,6 +256,169 @@ public class SpagoBIKpiInternalEngine {
 	}
 
 
+	public void getSetConf(SourceBean content) {
+		logger.debug("IN");
+		// common part for all charts
+		//setting the title with parameter values if is necessary
+		if(content.getAttribute("name")!=null) {
+			String titleChart = (String)content.getAttribute("name");
+			String tmpTitle = titleChart;
+			while (!tmpTitle.equals("")){
+				if (tmpTitle.indexOf("$P{") >= 0){
+					String parName = tmpTitle.substring(tmpTitle.indexOf("$P{")+3, tmpTitle.indexOf("}"));
+					
+					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+					parValue = parValue.replaceAll("\'", "");
+					
+					if(parValue.equals("%")) parValue = "";
+					int pos = tmpTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
+					tmpTitle = tmpTitle.substring(pos);
+				}
+				else
+					tmpTitle = "";
+			}
+			setName(titleChart);
+		}
+		else setName("");
+
+		SourceBean styleTitleSB = (SourceBean)content.getAttribute("STYLE_TITLE");
+		if(styleTitleSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_TITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_TITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_TITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleTitle=new StyleLabel(fontS,size,color);
+				
+			}
+			catch (Exception e) {
+				logger.error("Wrong style Title settings, use default");
+			}
+
+		}
+		
+		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute("STYLE_SUBTITLE");
+		if(styleSubTitleSB!=null){
+
+			String subTitle = (String)content.getAttribute("STYLE_SUBTITLE.name");
+			if(subTitle!=null) {
+				String tmpSubTitle = subTitle;
+				while (!tmpSubTitle.equals("")){
+					if (tmpSubTitle.indexOf("$P{") >= 0){
+						String parName = tmpSubTitle.substring(tmpSubTitle.indexOf("$P{")+3, tmpSubTitle.indexOf("}"));
+						String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+						parValue = parValue.replaceAll("\'", "");
+						if(parValue.equals("%")) parValue = "";
+						int pos = tmpSubTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+						subTitle = subTitle.replace("$P{" + parName + "}", parValue);
+						tmpSubTitle = tmpSubTitle.substring(pos);
+					}
+					else
+						tmpSubTitle = "";
+				}
+				setSubName(subTitle);
+			}
+			else setSubName("");
+			
+			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_SUBTITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleSubTitle=new StyleLabel(fontS,size,color);				
+			}
+			catch (Exception e) {
+				logger.error("Wrong style SubTitle settings, use default");
+			}
+
+		}
+
+
+		if(content.getAttribute("title_dimension")!=null) 
+		{
+			String titleD=((String)content.getAttribute("title_dimension"));
+			titleDimension=Integer.valueOf(titleD).intValue();
+		}
+		else setTitleDimension(18);
+
+
+		String colS = (String)content.getAttribute("COLORS.background");
+		if(colS!=null) 
+		{
+			Color col=new Color(Integer.decode(colS).intValue());
+			if(col!=null){
+				setColor(col);}
+			else{
+				setColor(Color.white);
+			}
+		}
+		else { 	
+			setColor(Color.white);
+		}
+
+		String widthS = (String)content.getAttribute("DIMENSION.width");
+		String heightS = (String)content.getAttribute("DIMENSION.height");
+		if(widthS==null || heightS==null){
+			logger.warn("Width or height non defined, use default ones");
+			widthS="400";
+			heightS="300";
+		}
+
+		width=Integer.valueOf(widthS).intValue();
+		height=Integer.valueOf(heightS).intValue();
+
+		// get all the data parameters 
+
+
+		try{					
+			Map dataParameters = new HashMap();
+			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
+			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
+			Iterator dataAttrsIter = dataAttrsList.iterator();
+			while(dataAttrsIter.hasNext()) {
+				SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
+				SourceBean param = (SourceBean)paramSBA.getValue();
+				String nameParam = (String)param.getAttribute("name");
+				String valueParam = (String)param.getAttribute("value");
+				dataParameters.put(nameParam, valueParam);
+			}
+
+			legend=true;
+			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get("legend");
+				if(leg.equalsIgnoreCase("false"))
+					legend=false;
+			}
+
+			show_chart=true;
+			if(dataParameters.get("show_chart")!=null && !(((String)dataParameters.get("show_chart")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("show_chart");
+				if(fil.equalsIgnoreCase("false"))
+					show_chart=false;
+			}
+			
+			
+		}
+		catch (Exception e) {
+			logger.error("error in reading data source parameters");
+		}
+
+
+	}
+	
+	public KpiInstance calculateNewKpiInstance(KpiInstance k){
+		return null;
+	}
+	
+	
 	/**
 	 * The <code>SpagoBIDashboardInternalEngine</code> cannot manage subobjects so this method must not be invoked.
 	 * 
@@ -340,6 +434,30 @@ public class SpagoBIKpiInternalEngine {
 		// it cannot be invoked
 		logger.error("SpagoBIDashboardInternalEngine cannot exec subobjects.");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
+	}
+	
+	/**
+	 * Sets the color.
+	 * 
+	 * @param color the new color
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public void setTitleDimension(int titleDimension) {
+		this.titleDimension = titleDimension;
+	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.engines.chart.bo.IChart#setName(java.lang.String)
+	 */
+	public void setName(String _name) {
+		name=_name;		
+	}
+	
+	public void setSubName(String _name) {
+		subName=_name;		
 	}
 
 	/**

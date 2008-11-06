@@ -7,13 +7,14 @@ public class KpiInstance {
 	
 	Integer kpiId = null;
 	List kpiHistoryValues = null;//a List of all past values with relative thresholds	
-	KpiValue lastValue = null;//last calculated value with relative thresholds
+	List lastValues = null;//last calculated values with relative thresholds for each resource
 	Kpi kpi = null ;// type of the kpi instance
 	
 	
 	public KpiInstance() {
 		super();
 		this.kpiHistoryValues = new ArrayList();
+		this.lastValues = new ArrayList();
 	}
 
 	public Integer getKpiId() {
@@ -32,12 +33,12 @@ public class KpiInstance {
 		this.kpiHistoryValues = kpiHistoryValues;
 	}
 
-	public KpiValue getValue() {
-		return lastValue;
+	public List getValue() {
+		return lastValues;
 	}
 
-	public void setValue(KpiValue value) {
-		this.lastValue = value;
+	public void setValue(List value) {
+		this.lastValues = value;
 	}
 
 	public Kpi getKpi() {

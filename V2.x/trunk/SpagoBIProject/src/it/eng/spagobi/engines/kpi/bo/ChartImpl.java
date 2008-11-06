@@ -47,7 +47,7 @@ public class ChartImpl {
 	protected boolean legend=true;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected Map parametersObject;
-	protected boolean filter=true;
+	protected boolean show_chart=true;
 	protected boolean slider=true;
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
@@ -198,15 +198,6 @@ public class ChartImpl {
 				dataParameters.put(nameParam, valueParam);
 			}
 
-
-			if(dataParameters.get("confdataset")!=null && !(((String)dataParameters.get("confdataset")).equalsIgnoreCase("") )){	
-				confDataset=(String)dataParameters.get("confdataset");
-				isLovConfDefined=true;
-			}
-			else {
-				isLovConfDefined=false;
-			}
-
 			legend=true;
 			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
 				String leg=(String)dataParameters.get("legend");
@@ -214,65 +205,13 @@ public class ChartImpl {
 					legend=false;
 			}
 
-			filter=true;
-			if(dataParameters.get("view_filter")!=null && !(((String)dataParameters.get("view_filter")).equalsIgnoreCase("") )){	
-				String fil=(String)dataParameters.get("view_filter");
+			show_chart=true;
+			if(dataParameters.get("show_chart")!=null && !(((String)dataParameters.get("show_chart")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("show_chart");
 				if(fil.equalsIgnoreCase("false"))
-					filter=false;
-			}
-
-			slider=true;
-			if(dataParameters.get("view_slider")!=null && !(((String)dataParameters.get("view_slider")).equalsIgnoreCase("") )){	
-				String sli=(String)dataParameters.get("view_slider");
-				if(sli.equalsIgnoreCase("false"))
-					slider=false;
-			}
-
-			//reading series orders if present
-			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
-			if(sbSerieLabels!=null){
-				seriesLabelsMap=new LinkedHashMap();
-				List atts=sbSerieLabels.getContainedAttributes();
-				String serieLabel="";
-				for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
-					SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
-					String serieName=(String)object.getKey();
-					serieLabel=new String((String)object.getValue());
-					if(serieLabel!=null){
-						seriesLabelsMap.put(serieName, serieLabel); 
-					}
-				}		
+					show_chart=false;
 			}
 			
-			logger.debug("Configuration in template");
-			confParameters = new HashMap();
-			SourceBean confSB = (SourceBean)content.getAttribute("CONF");
-
-			List confAttrsList = confSB.getAttributeAsList("PARAMETER");
-
-			Iterator confAttrsIter = confAttrsList.iterator();
-			while(confAttrsIter.hasNext()) {
-				SourceBean param = (SourceBean)confAttrsIter.next();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				confParameters.put(nameParam, valueParam);
-			}	
-			if(confParameters.get("lower")!=null){	
-				String lower=(String)confParameters.get("lower");
-				setLower(Double.valueOf(lower).doubleValue());
-			}
-			else {
-				logger.error("lower bound not defined");
-				throw new Exception("lower bound not defined");
-			}
-			if(confParameters.get("upper")!=null){	
-				String upper=(String)confParameters.get("upper");
-				setUpper(Double.valueOf(upper).doubleValue());
-			}
-			else {
-				logger.error("upper bound not defined");
-				throw new Exception("upper bound not defined");
-			}
 			
 		}
 		catch (Exception e) {
@@ -280,6 +219,10 @@ public class ChartImpl {
 		}
 
 
+	}
+	
+	public boolean isShowChart(){
+		return show_chart;
 	}
 
 	/**
@@ -305,9 +248,8 @@ public class ChartImpl {
 	 * @return the chart impl
 	 */
 
-	public static ChartImpl createChart(String type,String subtype){
+	public static ChartImpl createChart(String subtype){
 		ChartImpl sbi=null;
-		if(type.equals("DIALCHART")){
 			if(subtype.equalsIgnoreCase("speedometer")){
 				sbi=new Speedometer();
 			}
@@ -320,8 +262,6 @@ public class ChartImpl {
 			else if(subtype.equalsIgnoreCase("meter")){
 				sbi= new Meter();
 			}
-		}
-
 		return sbi;
 	}
 
@@ -607,16 +547,6 @@ public class ChartImpl {
 	 */
 	public void setParametersObject(Map parametersObject) {
 		this.parametersObject = parametersObject;
-	}
-
-
-
-	public boolean isFilter() {
-		return filter;
-	}
-
-	public void setFilter(boolean filter) {
-		this.filter = filter;
 	}
 
 	public boolean isSlider() {

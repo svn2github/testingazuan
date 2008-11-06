@@ -3,6 +3,8 @@ package it.eng.spagobi.kpi.config.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
+import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,24 @@ public interface IKpiDAO {
 	 */	
 	public void insertKpiValue(KpiValue value) throws EMFUserError;
 
+	/**
+	 * Returns the ModelInstance of the referred id
+	 * 
+	 * @param id of the ModelInstance
+	 * @return ModelInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError ;
+	
+	/**
+	 * Returns true if the values are the actual ones, false they have to be recalculated
+	 * 
+	 * @param KpiInstance
+	 * @return  Returns true if the values are the actual ones, false they have to be recalculated
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public boolean hasActualValues(KpiInstance inst) throws EMFUserError ;
+	
 	/**
 	 * Returns true if the value is not in the correct threshold, false if it's fine
 	 * 
@@ -49,7 +69,7 @@ public interface IKpiDAO {
 	public void deleteKpiValue(KpiValue value) throws EMFUserError;
 	
 	/**
-	 * Gets a Kpi Value of the past
+	 * Gets the Kpi Values of the past for each resource
 	 * 
 	 * @param Kpi , Date of when the KpiValue has to valid
 	 * 
@@ -57,18 +77,18 @@ public interface IKpiDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public KpiValue getKpiValue(KpiInstance kpi, Date d) throws EMFUserError;
+	public List getKpiValue(KpiInstance kpi, Date d) throws EMFUserError;
 	
 	/**
-	 * Lists all Kpi Values of a specific KPI
+	 * Gets all actual Kpi Values for each resource
 	 * 
-	 * @param Kpi 
+	 * @param Kpi Instance
 	 * 
-	 * @return Returns a list of all the Kpi Value of the specific KPI
+	 * @return Returns a list of all actual Kpi Values for each resource
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public KpiValue getKpiActualValue(KpiInstance kpi) throws EMFUserError;
+	public List getKpiActualValue(KpiInstance kpi) throws EMFUserError;
 	
 	/**
 	 * Lists all Kpi Values of a specific KPIInstance

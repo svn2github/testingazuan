@@ -1,54 +1,54 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 3-nov-2008 10.09.02 by Hibernate Tools 3.1.0 beta3 -->
+<!-- Generated 5-nov-2008 17.16.33 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.metadata.SbiKpiInstance" table="sbi_kpi_instance" >
+    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" table="sbi_kpi_instance" >
         <id name="idKpiInstance" type="integer">
             <column name="id_kpi_instance" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.metadata.SbiKpi" >
+        <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="KPI_ID" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.metadata.SbiThreshold" >
+        <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
             <column name="THRESHOLD_ID" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.metadata.SbiMeasureUnit" >
+        <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" >
             <column name="id_measure_unit" not-null="true" />
         </many-to-one>
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />
         </property>
-        <set name="sbiAlarms" inverse="true">
+        <set name="sbiKpiPeriodicities" inverse="true">
             <key>
                 <column name="id_kpi_instance" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" />
         </set>
-        <set name="sbiKpiValues" inverse="true">
+        <set name="sbiKpiModelInsts" inverse="true">
             <key>
-                <column name="id_kpi_instance" not-null="true" />
+                <column name="id_kpi_instance" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiValue" />
+            <one-to-many class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" />
         </set>
         <set name="sbiKpiInstanceHistories" inverse="true">
             <key>
                 <column name="id_kpi_instance" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiInstanceHistory" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory" />
         </set>
-        <set name="sbiKpiPeriodicities" inverse="true">
-            <key>
-                <column name="id_periodicity" not-null="true" />
-            </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiPeriodicity" />
-        </set>
-        <set name="sbiKpiModelInsts" inverse="true">
+        <set name="sbiKpiValues" inverse="true">
             <key>
                 <column name="id_kpi_instance" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiModelInst" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiValue" />
+        </set>
+        <set name="sbiAlarms" inverse="true">
+            <key>
+                <column name="id_kpi_instance" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
         </set>
     </class>
 </hibernate-mapping>

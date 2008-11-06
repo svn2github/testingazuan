@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 3-nov-2008 10.09.03 by Hibernate Tools 3.1.0 beta3 -->
+<!-- Generated 5-nov-2008 17.16.34 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.metadata.SbiKpiInstanceHistory" table="sbi_kpi_instance_history" >
+    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory" table="sbi_kpi_instance_history" >
         <id name="idKpiInstanceHistory" type="integer">
             <column name="id_kpi_instance_history" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.metadata.SbiKpiInstance" >
+        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
             <column name="id_kpi_instance" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.metadata.SbiThreshold" >
+        <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
             <column name="THRESHOLD_ID" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.metadata.SbiMeasureUnit" >
+        <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" >
             <column name="id_measure_unit" not-null="true" />
         </many-to-one>
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />
         </property>
-        <property name="instanceDate" type="timestamp">
-            <column name="instance_date" length="19" />
+        <property name="date" type="timestamp">
+            <column name="date" length="19" />
         </property>
     </class>
 </hibernate-mapping>

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 3-nov-2008 10.09.03 by Hibernate Tools 3.1.0 beta3 -->
+<!-- Generated 5-nov-2008 17.16.33 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.metadata.SbiMeasureUnit" table="sbi_measure_unit" >
+    <class name="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" table="sbi_measure_unit" >
         <id name="idMeasureUnit" type="integer">
             <column name="id_measure_unit" />
             <generator class="assigned" />
@@ -20,23 +20,23 @@
         <property name="scaleNm" type="string">
             <column name="SCALE_NM" length="400" />
         </property>
+        <set name="sbiKpis" inverse="true">
+            <key>
+                <column name="id_measure_unit" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpi" />
+        </set>
         <set name="sbiKpiInstanceHistories" inverse="true">
             <key>
                 <column name="id_measure_unit" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiInstanceHistory" />
-        </set>
-        <set name="sbiKpis" inverse="true">
-            <key>
-                <column name="id_measure_unit" not-null="true" />
-            </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpi" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory" />
         </set>
         <set name="sbiKpiInstances" inverse="true">
             <key>
                 <column name="id_measure_unit" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.metadata.SbiKpiInstance" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" />
         </set>
     </class>
 </hibernate-mapping>

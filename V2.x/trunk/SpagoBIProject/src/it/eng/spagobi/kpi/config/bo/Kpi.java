@@ -13,8 +13,8 @@ public class Kpi {
 	DataSetConfig kpiDs = null;// Related DataSet
 	String documentLabel = null; //document related to this KPI
 	Boolean isRoot = null;
-	Kpi father = null;
-	List kpiChildren = null; // List of Kpis children
+	Integer fatherId = null;
+	List kpiChildrenIds = null; // List of Kpis children
 	List roles = null;	//roles that can view this KPI
 	List Thresholds = null;
 	List kpiInstances = null; //all the instances of that KPI
@@ -28,7 +28,7 @@ public class Kpi {
 	
 	public Kpi() {
 		super();
-		this.kpiChildren = new ArrayList();
+		this.kpiChildrenIds = new ArrayList();
 		this.isRoot = false;	
 		this.Thresholds = new ArrayList();
 		this.roles = new ArrayList();
@@ -85,26 +85,26 @@ public class Kpi {
 
 
 
-	public Kpi getFather() {
-		return father;
+	public Integer getFather() {
+		return fatherId;
 	}
 
 
 
-	public void setFather(Kpi father) {
-		this.father = father;
+	public void setFather(Integer father) {
+		this.fatherId = father;
 	}
 
 
 
 	public List getKpiChildren() {
-		return kpiChildren;
+		return kpiChildrenIds;
 	}
 
 
 
 	public void setKpiChildren(List kpiChildren) {
-		this.kpiChildren = kpiChildren;
+		this.kpiChildrenIds = kpiChildren;
 	}
 
 

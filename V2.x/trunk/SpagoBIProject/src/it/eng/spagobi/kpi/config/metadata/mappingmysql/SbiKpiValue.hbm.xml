@@ -17,10 +17,10 @@
         <property name="value" type="string">
             <column name="VALUE" length="40" />
         </property>
-        <property name="beginDt" type="date">
+        <property name="beginDt" type="timestamp">
             <column name="BEGIN_DT" length="10" />
         </property>
-        <property name="endDt" type="date">
+        <property name="endDt" type="timestamp">
             <column name="END_DT" length="10" />
         </property>
     </class>

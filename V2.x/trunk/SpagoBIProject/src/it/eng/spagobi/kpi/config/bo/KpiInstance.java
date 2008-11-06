@@ -1,20 +1,21 @@
 package it.eng.spagobi.kpi.config.bo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class KpiInstance {
 	
 	Integer kpiId = null;
-	List kpiHistoryValues = null;//a List of all past values with relative thresholds	
-	List lastValues = null;//last calculated values with relative thresholds for each resource
+	//List kpiHistoryValues = null;//a List of all past values with relative thresholds	
+	List values = null;//last calculated values with relative thresholds for each resource
 	Kpi kpi = null ;// type of the kpi instance
-	
+	Date d = null;	
 	
 	public KpiInstance() {
 		super();
-		this.kpiHistoryValues = new ArrayList();
-		this.lastValues = new ArrayList();
+		//this.kpiHistoryValues = new ArrayList();
+		this.values = new ArrayList();
 	}
 
 	public Integer getKpiId() {
@@ -25,20 +26,21 @@ public class KpiInstance {
 		this.kpiId = kpiId;
 	}
 
+	/*
 	public List getKpiHistoryValues() {
 		return kpiHistoryValues;
 	}
 
 	public void setKpiHistoryValues(List kpiHistoryValues) {
 		this.kpiHistoryValues = kpiHistoryValues;
-	}
+	}*/
 
 	public List getValue() {
-		return lastValues;
+		return values;
 	}
 
 	public void setValue(List value) {
-		this.lastValues = value;
+		this.values = value;
 	}
 
 	public Kpi getKpi() {
@@ -47,6 +49,15 @@ public class KpiInstance {
 
 	public void setKpi(Kpi kpi) {
 		this.kpi = kpi;
+	}
+
+
+	public Date getD() {
+		return d;
+	}
+
+	public void setD(Date d) {
+		this.d = d;
 	}
 	
 

@@ -9,11 +9,11 @@ public class ModelInstanceNode {
 	
 	Boolean isRoot = null;
 	String name = null;
-	String code = null;
 	String descr = null;
-	String type = null;
-	ModelNode father = null;
-	List children = null;// List of ModelNodesInstances children
+	ModelNode reference = null;
+	Integer modelInstanceNodeId = null;
+	Integer fatherId = null;
+	List childrenIds = null;// List of ModelNodesInstances children
 	KpiInstance kpiInstanceAssociated = null;
 	List resources = null ; //Resources to which this model has to be applied
 	
@@ -33,14 +33,6 @@ public class ModelInstanceNode {
 		this.name = name;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public String getDescr() {
 		return descr;
 	}
@@ -49,28 +41,21 @@ public class ModelInstanceNode {
 		this.descr = descr;
 	}
 
-	public String getType() {
-		return type;
+
+	public ModelNode getModelReference() {
+		return reference;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public ModelNode getFather() {
-		return father;
-	}
-
-	public void setFather(ModelNode father) {
-		this.father = father;
+	public void setModelReference(ModelNode reference) {
+		this.reference = reference;
 	}
 
 	public List getChildren() {
-		return children;
+		return childrenIds;
 	}
 
 	public void setChildren(List children) {
-		this.children = children;
+		this.childrenIds = children;
 	}
 
 	public KpiInstance getKpiInstanceAssociated() {
@@ -91,8 +76,32 @@ public class ModelInstanceNode {
 
 	public ModelInstanceNode() {
 		super();
-		this.children = new ArrayList();	
+		this.childrenIds = new ArrayList();	
 		this.resources = new ArrayList();	
+	}
+
+	public Integer getModelInstanceNodeId() {
+		return modelInstanceNodeId;
+	}
+
+	public void setModelInstanceNodeId(Integer modelInstanceNodeId) {
+		this.modelInstanceNodeId = modelInstanceNodeId;
+	}
+
+	public List getChildrenIds() {
+		return childrenIds;
+	}
+
+	public void setChildrenIds(List childrenIds) {
+		this.childrenIds = childrenIds;
+	}
+
+	public Integer getFatherId() {
+		return fatherId;
+	}
+
+	public void setFatherId(Integer fatherId) {
+		this.fatherId = fatherId;
 	}
 	
 

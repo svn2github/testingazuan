@@ -216,5 +216,6 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/publishers.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/statements.xml" />   
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/validation.xml" />
     
 </MASTER>

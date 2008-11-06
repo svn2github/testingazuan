@@ -46,4 +46,53 @@
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
+
+  <PUBLISHER name="ThresholdValuePublisher">
+    <RENDERING channel="PORTLET" type="JAVA" mode="">
+      <RESOURCES>
+        <ITEM prog="0" resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+          <CONFIG>
+            <CHECKS>
+              <CHECK target="ListThresholdValuesPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListThresholdValuesPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdValuesModule" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListThresholdValuesPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="message" scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="DetailThresholdValuePublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdValueModule" />
+                </CONDITIONS>
+              </CHECK>
+            </CHECKS>
+          </CONFIG>
+        </ITEM>
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+  <PUBLISHER name="ListThresholdValuesPublisher">
+    <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/listThresholdValues.jsp" />
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+  <PUBLISHER name="DetailThresholdValuePublisher">
+    <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/detailThresholdValue.jsp" />
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+
+
 </PUBLISHERS>

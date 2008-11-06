@@ -58,11 +58,10 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		maxLength:100,        		
         		width: 0,
         		height: 0,
-        		value: ''/*,
-        		password:false*/
+        		value: ''
         	};
         
-        	if(config.password == false){
+        	if(password != true){
             	var test_textfield = new qx.ui.form.TextField();
         	}
         	else{
@@ -240,7 +239,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		maxLength:100,        		
         		width: 200,
         		height: 20,
-        		labelwidth: 80,
+        		labelwidth: 100,
         		value: '',
         		mandatory: false,
         		password: false
@@ -258,6 +257,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
+        
         	var labelField = this.createLabel({
         		text : config.text,
         		top : config.top,
@@ -277,9 +277,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        		maxLength: config.maxLength,        		
 	        		width: config.width,
 	        		height: config.height,
-	        		value: config.value/*,
-	        		password: config.password*/  
-	        	},config.password);
+	        		value: config.value
+	           	},config.password);
         	
         	var atom = new qx.ui.basic.Atom();
         	atom.add(labelField, textField);
@@ -310,7 +309,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text: '',
         		items: [],
         		listeners: [],
-        		labelwidth: 80
+        		labelwidth: 100
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -348,7 +347,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		text: '',
         		checked: false,
         		listeners: [],
-        		labelwidth: 80
+        		labelwidth: 100
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -423,7 +422,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		width: 200,
         		height: 50,
         		mandatory: false,
-        		labelwidth: 80		
+        		labelwidth: 100		
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -498,7 +497,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		items: [],
         		listeners: [],
         		columns: 1,
-        		labelwidth: 80
+        		labelwidth: 100
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
@@ -549,7 +548,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		checked: false,
         		items: [],
         		listeners: [],
-        		labelwidth: 80
+        		labelwidth: 100
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);

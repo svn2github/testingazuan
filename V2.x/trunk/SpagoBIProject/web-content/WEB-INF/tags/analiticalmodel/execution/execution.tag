@@ -12,6 +12,7 @@
 <%@attribute name="displayToolbar" required="false" type="java.lang.Boolean"%>
 <%@attribute name="displaySliders" required="false" type="java.lang.Boolean"%>
 <%@attribute name="iframeStyle" required="false" type="java.lang.String"%>
+<%@attribute name="theme" required="false" type="java.lang.String"%>
 <%@attribute name="authenticationTicket" required="false" type="java.lang.String"%>
 
 <%
@@ -46,6 +47,7 @@ if (parametersMap != null && !parametersMap.isEmpty()) {
 if (executionRole != null) iframeUrl.append("&ROLE=" + URLEncoder.encode(executionRole));
 if (displayToolbar != null) iframeUrl.append("&TOOLBAR_VISIBLE=" + displayToolbar.toString());
 if (displaySliders != null) iframeUrl.append("&SLIDERS_VISIBLE=" + displaySliders.toString());
+if (theme != null)	iframeUrl.append("&theme=" + theme);
 if (authenticationTicket != null) iframeUrl.append("&auth_ticket=" + URLEncoder.encode(authenticationTicket));
 %>
 

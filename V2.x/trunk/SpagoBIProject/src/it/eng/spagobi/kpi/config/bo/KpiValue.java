@@ -14,7 +14,6 @@ public class KpiValue {
 	Double weight = null;
 	Date beginDate = null;
 	Date endDate = null;//null beginDate + num_validity_days
-	Integer num_validity_days = null;// number of days from begindate for wich the value is valid
 	String scaleCode = null;
 	String scaleName = null;
 	Resource r = null;//Resource (project/process) to which refers the value
@@ -78,14 +77,6 @@ public class KpiValue {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-
-	public Integer getNum_validity_days() {
-		return num_validity_days;
-	}
-
-	public void setNum_validity_days(Integer num_validity_days) {
-		this.num_validity_days = num_validity_days;
 	}
 
 	public Resource getR() {

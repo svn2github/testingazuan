@@ -2,6 +2,7 @@ package it.eng.spagobi.kpi.model.bo;
 
 public class Resource {
 	
+	Integer id = null;
 	String name = null;
 	String coumn_name = null;
 	String table_name = null;
@@ -42,6 +43,14 @@ public class Resource {
 	public Resource() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

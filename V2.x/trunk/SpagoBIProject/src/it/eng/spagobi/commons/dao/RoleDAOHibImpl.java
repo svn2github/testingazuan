@@ -499,7 +499,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setIsAbleToSaveIntoPersonalFolder(hibRole.getIsAbleToSaveIntoPersonalFolder() == null || hibRole.getIsAbleToSaveIntoPersonalFolder().booleanValue());
 		role.setRoleTypeCD(hibRole.getRoleTypeCode());
 		role.setRoleTypeID(hibRole.getRoleType().getValueId());
-		logger.debug( "IN" );
+		logger.debug( "OUT" );
 		return role;
 	}
 

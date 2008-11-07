@@ -131,7 +131,7 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
 	
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
-        	if( this && this.getInputField('type') ) {
+        	if( this && this.getInputField('jndiname') ) {
         		if (e.getValue()=="With Jndi Name") {
 					this.getInputField('jndiname').setDisplay(true);
 					this.getInputField('url').setDisplay(false);

@@ -74,7 +74,7 @@ qx.Class.define("spagobi.ui.custom.ConfigurationSubform", {
         		type: 'combo',
         		dataIndex: 'priority',
         		text: 'Priority',
-        		items: ["","1"]
+        		items: ["1"]
         	}
         ]);
 	}

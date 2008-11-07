@@ -67,7 +67,7 @@ qx.Class.define("spagobi.ui.custom.FeatureDetailsForm", {
         		type: 'combo',
         		dataIndex: 'type',
         		text: 'Type',
-        		items: ["","Territorial", "Positional"],
+        		items: ["Territorial", "Positional"],
         		mandatory: true	
         	}
         	]);

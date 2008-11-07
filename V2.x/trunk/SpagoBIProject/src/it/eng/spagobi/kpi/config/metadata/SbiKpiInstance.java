@@ -3,6 +3,7 @@ package it.eng.spagobi.kpi.config.metadata;
 
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,11 +27,20 @@ public class SbiKpiInstance  implements java.io.Serializable {
      private Set sbiKpiInstanceHistories = new HashSet(0);
      private Set sbiKpiValues = new HashSet(0);
      private Set sbiAlarms = new HashSet(0);
+     private Date beginDt;
 
 
     // Constructors
 
-    /** default constructor */
+    public Date getBeginDt() {
+		return beginDt;
+	}
+
+	public void setBeginDt(Date beginDt) {
+		this.beginDt = beginDt;
+	}
+
+	/** default constructor */
     public SbiKpiInstance() {
     }
 

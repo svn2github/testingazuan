@@ -50,5 +50,8 @@
             </key>
             <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
         </set>
+        <property name="beginDt" type="timestamp">
+            <column name="BEGIN_DT" length="10" />
+        </property>
     </class>
 </hibernate-mapping>

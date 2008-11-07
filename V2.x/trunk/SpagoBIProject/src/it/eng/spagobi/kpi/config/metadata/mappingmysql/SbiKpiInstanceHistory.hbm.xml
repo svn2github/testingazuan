@@ -20,8 +20,11 @@
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />
         </property>
-        <property name="date" type="timestamp">
-            <column name="date" length="19" />
+       <property name="beginDt" type="timestamp">
+            <column name="BEGIN_DT" length="10" />
+        </property>
+        <property name="endDt" type="timestamp">
+            <column name="END_DT" length="10" />
         </property>
     </class>
 </hibernate-mapping>

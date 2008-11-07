@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -44,7 +45,7 @@ import org.hibernate.Transaction;
  *
  */
 public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRolesDAO {
-	
+    private static transient Logger logger = Logger.getLogger(MenuRolesDAOImpl.class);
 	/**
 	 * Load menu by role id.
 	 * 
@@ -57,6 +58,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#loadMenuByRoleId(java.lang.Integer)
 	 */
 	public List loadMenuByRoleId(Integer roleId) throws EMFUserError {
+	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -70,7 +72,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
 					  " where mf.id.menuId = m.menuId " + 
 					  " and mf.id.extRoleId = " + roleId.toString() +
-					  " order by m.parentId, m.prog";
+					  " order by m.parentId desc, m.prog";
 			
 			hqlQuery = aSession.createQuery(hql);
 			List hibList = hqlQuery.list();
@@ -83,12 +85,14 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				Object[] tmpLst = (Object[])it.next();
 				Integer menuId = (Integer)tmpLst[0];
 				tmpMenu = menuDAO.loadMenuByID(menuId);
-				if (tmpMenu != null)
+				if (tmpMenu != null){
+				    logger.debug("Add Menu:"+tmpMenu.getName());
 					realResult.add(tmpMenu);
+				}
 			}
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+		    logger.error("HibernateException",he);
 
 			if (tx != null)
 				tx.rollback();
@@ -100,6 +104,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				if (aSession.isOpen()) aSession.close();
 			}			
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 
@@ -117,6 +122,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#loadMenuRoles(java.lang.Integer, java.lang.Integer)
 	 */
 	public MenuRoles loadMenuRoles(Integer menuId, Integer roleId) throws EMFUserError{
+	    logger.debug("IN");
 		MenuRoles toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -134,7 +140,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+		    logger.error("HibernateException",he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -143,6 +149,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				if (aSession.isOpen()) aSession.close();
 			}			
 		}
+		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -156,6 +163,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAOO#modifyMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void modifyMenuRole(MenuRoles aMenuRole) throws EMFUserError {
+	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -168,7 +176,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			SbiMenuRole hibFeature = (SbiMenuRole) aSession.load(SbiMenuRole.class, hibMenuRoleId);
 			tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+		    logger.error("HibernateException",he);
 
 			if (tx != null)
 				tx.rollback();
@@ -181,6 +189,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			}
 			
 		}
+		logger.debug("OUT");
 	}
 
 	/**
@@ -193,6 +202,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#insertMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void insertMenuRole(MenuRoles aMenuRole) throws EMFUserError {
+	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -219,6 +229,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				if (aSession.isOpen()) aSession.close();
 			}			
 		}
+		logger.debug("OUT");
 	}
 
 
@@ -232,6 +243,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 * @see it.eng.spagobi.wapp.dao.IMenuRolesDAO#eraseMenuRole(it.eng.spagobi.wapp.bo.MenuRoles)
 	 */
 	public void eraseMenuRole(MenuRoles aMenuRole) throws EMFUserError{
+	    logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
 		try {
@@ -259,6 +271,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 				if (aSession.isOpen()) aSession.close();
 			}			
 		}
+		logger.debug("OUT");
 	}
 	
 	/**

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 21-apr-2005
  *
@@ -48,97 +48,113 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+
 /**
  * 
  * @author Antonella Giachino (antonella.giachino@eng.it)
  * @deprecated (use LoginModule)
- *
+ * 
  */
 public class MenuModule extends AbstractHttpModule {
-	
-	public static final String CREATE_MENU = "CREATE_MENU";
-	public static final String MODULE_PAGE = "MenuPage";
-	
+
+    public static final String CREATE_MENU = "CREATE_MENU";
+    public static final String MODULE_PAGE = "MenuPage";
+
     static Logger logger = Logger.getLogger(MenuModule.class);
     IEngUserProfile profile = null;
-	
-	/**
-	 * Service.
-	 * 
-	 * @param request the request
-	 * @param response the response
-	 * 
-	 * @throws Exception the exception
-	 * 
-	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
-	public void service(SourceBean request, SourceBean response) throws Exception {
-	    logger.debug("IN");
-		RequestContainer reqCont = RequestContainer.getRequestContainer();
-		SessionContainer sessCont = reqCont.getSessionContainer();
-		SessionContainer permSess = sessCont.getPermanentContainer();
-		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
-		String message = (String) request.getAttribute("MESSAGEDET");
-		logger.debug("Message =" + message);
-		
-		EMFErrorHandler errorHandler = getErrorHandler();
-		
-		try {
-			if (message == null) {
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);				
-				logger.debug("The message parameter is null");
-				throw userError;
-			}
 
-			if (message.trim().equalsIgnoreCase(CREATE_MENU)) {
-				getMenuItems(request, response);
-			}
-		} catch (EMFUserError eex) {
-			errorHandler.addError(eex);
-			return;
-		} catch (Exception ex) {
-			EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
-			errorHandler.addError(internalError);
-			return;
-		}
-		// fill response attributes
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
-		logger.debug("OUT");		
+    /**
+     * Service.
+     * 
+     * @param request
+     *                the request
+     * @param response
+     *                the response
+     * 
+     * @throws Exception
+     *                 the exception
+     * 
+     * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean,
+     *      it.eng.spago.base.SourceBean)
+     */
+    public void service(SourceBean request, SourceBean response) throws Exception {
+	logger.debug("IN");
+	RequestContainer reqCont = RequestContainer.getRequestContainer();
+	SessionContainer sessCont = reqCont.getSessionContainer();
+	SessionContainer permSess = sessCont.getPermanentContainer();
+	profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+	String message = (String) request.getAttribute("MESSAGEDET");
+	logger.debug("Message =" + message);
+
+	EMFErrorHandler errorHandler = getErrorHandler();
+
+	try {
+	    if (message == null) {
+		EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
+		logger.debug("The message parameter is null");
+		throw userError;
+	    }
+
+	    if (message.trim().equalsIgnoreCase(CREATE_MENU)) {
+		getMenuItems(request, response);
+	    }
+	} catch (EMFUserError eex) {
+	    errorHandler.addError(eex);
+	    logger.error("EMFUserError", eex);
+	    return;
+	} catch (Exception ex) {
+	    EMFInternalError internalError = new EMFInternalError(EMFErrorSeverity.ERROR, ex);
+	    errorHandler.addError(internalError);
+	    logger.error("Exception", ex);
+	    return;
 	}
-	
-	/**
-	 * Gets the elements of menu relative by the user logged. It reaches the role from the request and 
-	 * asks to the DB all detail
-	 * menu information, by calling the method <code>loadMenuByRoleId</code>.
-	 *   
-	 * @param request The request Source Bean
-	 * @param response The response Source Bean
-	 * @throws EMFUserError If an exception occurs
-	 */   
-	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
-		try {	
-			List lstFinalMenu = new ArrayList();
-			Collection lstRolesForUser = profile.getRoles();
-			Object[] arrRoles = lstRolesForUser.toArray();
-			for (int i=0; i< arrRoles.length; i++){
-				List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId((Integer)arrRoles[i]);
-				for(int j=0; j<lstMenuItems.size(); j++){
-					if (!lstFinalMenu.contains((Menu)lstMenuItems.get(j))){						
-						Menu tmpElement = (Menu)lstMenuItems.get(j);
-						List tmpChildren = (DAOFactory.getMenuDAO().getChildrenMenu(tmpElement.getMenuId()));
-						boolean tmpHasCHildren = (tmpChildren.size()==0)?false:true;
-						tmpElement.setHasChildren(tmpHasCHildren);
-						lstFinalMenu.add(tmpElement);	
-					}
-				}
-			}
-			response.setAttribute("LIST_MENU", lstFinalMenu);
-		} catch (Exception ex) {
-			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, MenuModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 7000, new Vector(), params);
+	// fill response attributes
+	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+	logger.debug("OUT");
+    }
+
+    /**
+     * Gets the elements of menu relative by the user logged. It reaches the
+     * role from the request and asks to the DB all detail menu information, by
+     * calling the method <code>loadMenuByRoleId</code>.
+     * 
+     * @param request
+     *                The request Source Bean
+     * @param response
+     *                The response Source Bean
+     * @throws EMFUserError
+     *                 If an exception occurs
+     */
+    private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
+	logger.debug("IN");
+	try {
+	    List lstFinalMenu = new ArrayList();
+	    Collection lstRolesForUser = profile.getRoles();
+	    Object[] arrRoles = lstRolesForUser.toArray();
+	    for (int i = 0; i < arrRoles.length; i++) {
+		Integer roleId = (Integer) arrRoles[i];
+		if (roleId != null)
+		    logger.debug("Reading menu items for roleId:" + roleId.toString());
+		List lstMenuItems = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(roleId);
+		for (int j = 0; j < lstMenuItems.size(); j++) {
+		    if (!lstFinalMenu.contains((Menu) lstMenuItems.get(j))) {
+			Menu tmpElement = (Menu) lstMenuItems.get(j);
+			logger.debug("Add Menu:" + tmpElement.getName());
+			List tmpChildren = (DAOFactory.getMenuDAO().getChildrenMenu(tmpElement.getMenuId()));
+			boolean tmpHasCHildren = (tmpChildren.size() == 0) ? false : true;
+			tmpElement.setHasChildren(tmpHasCHildren);
+			lstFinalMenu.add(tmpElement);
+		    }
 		}
+	    }
+	    response.setAttribute("LIST_MENU", lstFinalMenu);
+	} catch (Exception ex) {
+	    logger.error("Cannot fill response container" + ex.getLocalizedMessage());
+	    HashMap params = new HashMap();
+	    params.put(AdmintoolsConstants.PAGE, MenuModule.MODULE_PAGE);
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, 7000, new Vector(), params);
 	}
+	logger.debug("OUT");
+    }
 }

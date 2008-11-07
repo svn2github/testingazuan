@@ -342,6 +342,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#loadAllMenues()
 	 */
 	public List loadAllMenues() throws EMFUserError {
+	        logger.debug("IN");
 		Session tmpSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -356,13 +357,14 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			while (it.hasNext()) {			
 				SbiMenu hibMenu = (SbiMenu) it.next();	
 				if (hibMenu != null) {
-					Menu biMenu = toMenu(hibMenu);	
+					Menu biMenu = toMenu(hibMenu);
+					logger.debug("Add Menu:"+biMenu.getName());
 					realResult.add(biMenu);
 				}
 			}
 			//tx.commit();
 		} catch (HibernateException he) {
-			logException(he);
+		    logger.error("HibernateException",he);
 
 			if (tx != null)
 				tx.rollback();
@@ -376,6 +378,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			}
 
 		}
+		logger.debug("OUT");
 		return realResult;
 	}
 

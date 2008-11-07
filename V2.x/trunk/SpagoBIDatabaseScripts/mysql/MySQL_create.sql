@@ -725,17 +725,10 @@ Create table `SBI_KPI_MODEL_ATTR_VAL` (
  Primary Key (`KPI_MODEL_ATTR_VAL_ID`)) ENGINE = InnoDB;
 
 
-Create table `SBI_PERIODICITY` (
-	`id_periodicity` Int NOT NULL AUTO_INCREMENT,
-	`name` Varchar(20),
-	`unit` Varchar(20),
- Primary Key (`id_periodicity`)) ENGINE = InnoDB;
-
 Create table `SBI_KPI_PERIODICITY` (
 	`id_kpi_instance_period` Int NOT NULL AUTO_INCREMENT,
 	`id_kpi_instance` Int NOT NULL,
-	`id_periodicity` Int NOT NULL,
-	`value` Double,
+	`value` Integer,
 	UNIQUE (`id_kpi_instance_period`),
  Primary Key (`id_kpi_instance_period`)) ENGINE = InnoDB;
 

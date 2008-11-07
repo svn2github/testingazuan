@@ -88,7 +88,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 									Expression.isNull("parentFunct"),
 									Expression.eq("functTypeCd", "USER_FUNCT"));
 			Criterion filters = Expression.and(userfunctANDnullparent, 
-									Expression.like("path", "/"+username+"%"));
+									Expression.like("path", "/"+username));
 			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
 			criteria.add(filters);
 			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();

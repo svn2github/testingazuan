@@ -745,6 +745,7 @@ Create table `SBI_KPI_INSTANCE` (
 	`THRESHOLD_ID` Int NOT NULL,
 	`id_measure_unit` Int NOT NULL,
 	`weight` Double,
+	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_INSTANCE_HISTORY` (
@@ -753,7 +754,8 @@ Create table `SBI_KPI_INSTANCE_HISTORY` (
 	`THRESHOLD_ID` Int NOT NULL,
 	`id_kpi_instance` Int NOT NULL,
 	`weight` Double,
-	`date` Datetime,
+	`BEGIN_DT` Datetime,
+	`END_DT` Datetime,
 	UNIQUE (`id_kpi_instance_history`),
  Primary Key (`id_kpi_instance_history`)) ENGINE = InnoDB;
 
@@ -762,8 +764,8 @@ Create table `SBI_KPI_VALUE` (
 	`id_kpi_instance` Int NOT NULL,
 	`RESOURCE_ID` Int NOT NULL,
 	`VALUE` Varchar(40),
-	`BEGIN_DT` Date,
-	`END_DT` Date,
+	`BEGIN_DT` Datetime,
+	`END_DT` Datetime,
 	UNIQUE (`id_kpi_instance_value`),
  Primary Key (`id_kpi_instance_value`)) ENGINE = InnoDB;
 

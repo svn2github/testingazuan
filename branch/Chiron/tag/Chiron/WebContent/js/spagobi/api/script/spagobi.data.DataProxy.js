@@ -1,0 +1,1 @@
+{type:"class",attributes:{"name":"DataProxy","packageName":"spagobi.data","superClass":"qx.core.Object","fullName":"spagobi.data.DataProxy","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

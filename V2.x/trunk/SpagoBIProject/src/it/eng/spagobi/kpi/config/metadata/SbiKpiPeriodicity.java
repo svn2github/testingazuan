@@ -14,8 +14,7 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
 
      private Integer idKpiInstancePeriod;
      private SbiKpiInstance sbiKpiInstance;
-     private SbiPeriodicity sbiPeriodicity;
-     private double value;
+     private Integer value;
 
 
     // Constructors
@@ -25,17 +24,15 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     }
 
 	/** minimal constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance, SbiPeriodicity sbiPeriodicity) {
+    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance) {
         this.idKpiInstancePeriod = idKpiInstancePeriod;
         this.sbiKpiInstance = sbiKpiInstance;
-        this.sbiPeriodicity = sbiPeriodicity;
     }
     
     /** full constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance, SbiPeriodicity sbiPeriodicity, double value) {
+    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance, Integer value) {
         this.idKpiInstancePeriod = idKpiInstancePeriod;
         this.sbiKpiInstance = sbiKpiInstance;
-        this.sbiPeriodicity = sbiPeriodicity;
         this.value = value;
     }
     
@@ -59,19 +56,11 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
         this.sbiKpiInstance = sbiKpiInstance;
     }
 
-    public SbiPeriodicity getSbiPeriodicity() {
-        return this.sbiPeriodicity;
-    }
-    
-    public void setSbiPeriodicity(SbiPeriodicity sbiPeriodicity) {
-        this.sbiPeriodicity = sbiPeriodicity;
-    }
-
-    public double getValue() {
+    public Integer getValue() {
         return this.value;
     }
     
-    public void setValue(double value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
    

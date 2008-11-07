@@ -11,11 +11,8 @@
         <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
             <column name="id_kpi_instance" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiPeriodicity" class="it.eng.spagobi.kpi.config.metadata.SbiPeriodicity" >
-            <column name="id_periodicity" not-null="true" />
-        </many-to-one>
-        <property name="value" type="double">
-            <column name="value" precision="22" scale="0" />
+        <property name="value" type="integer">
+            <column name="value" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>

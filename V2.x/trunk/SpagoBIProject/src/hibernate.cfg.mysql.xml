@@ -82,7 +82,6 @@
         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiKpiRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiKpiValue.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiMeasureUnit.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiPeriodicity.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingmysql/SbiResources.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingmysql/SbiThreshold.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingmysql/SbiThresholdValue.hbm.xml" />

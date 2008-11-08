@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASTER>
+	<CONFIGURATOR path="/WEB-INF/conf/data_access.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/dispatchers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/initializers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/statements.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tracing.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/validation.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/renderers.xml" />	
+</MASTER>

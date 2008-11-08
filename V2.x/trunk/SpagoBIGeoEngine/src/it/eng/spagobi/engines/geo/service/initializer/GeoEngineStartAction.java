@@ -52,6 +52,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	public static final String EXECUTION_CONTEXT = "EXECUTION_CONTEXT";
 	public static final String EXECUTION_ID = "EXECUTION_ID";
 	public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
+	public static final String OUTPUT_TYPE = "outputType";
 	
 	//response 
 	/** The Constant IS_DOC_COMPOSITION_MODE_ACTIVE. */
@@ -80,6 +81,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			String executionContext;
 			String executionId;
 			String documentLabel;
+			String outputType;
 			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
@@ -87,14 +89,27 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("Template: " + getTemplate());	
 			
 			executionContext = getAttributeAsString( EXECUTION_CONTEXT ); 
+			logger.debug("Parameter [" + EXECUTION_CONTEXT + "] is equal to [" + executionContext + "]");
+			
 			executionId = getAttributeAsString( EXECUTION_ID );
+			logger.debug("Parameter [" + EXECUTION_ID + "] is equal to [" + executionId + "]");
+			
 			documentLabel = getAttributeAsString( DOCUMENT_LABEL );
+			logger.debug("Parameter [" + DOCUMENT_LABEL + "] is equal to [" + documentLabel + "]");
+			
+			outputType = getAttributeAsString(OUTPUT_TYPE);
+			logger.debug("Parameter [" + OUTPUT_TYPE + "] is equal to [" + outputType + "]");
+			
 			
 			logger.debug("Execution context: " + executionContext);
 			String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
 			logger.debug("Document composition mode active: " + isDocumentCompositionModeActive);
 			
 			env = getEnv("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive), documentLabel, executionId);
+			if( outputType != null ) {
+				env.put(Constants.ENV_OUTPUT_TYPE, outputType);
+			}
+			
 			
 			geoEngineInstance = GeoEngine.createInstance(getTemplate(), env);
 			geoEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
@@ -161,6 +176,18 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		return contextUrl;
 	}
 	
+	private String getAbsoluteContextUrl() {
+		String contextUrl = null;
+		
+		contextUrl = getHttpRequest().getScheme() + "://" 
+					+ getHttpRequest().getServerName() + ":" 
+					+ getHttpRequest().getServerPort() + "/" 
+					+ getContextUrl();
+		logger.debug("Context path: " + contextUrl);
+		
+		return contextUrl;
+	}
+	
 	public Map getEnv(boolean isDocumentCompositionModeActive, String documentLabel, String executionId) {
 		Map env = null;
 		
@@ -171,6 +198,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		logger.debug("DataSource: " + dataSource.toString());
 		
 		env.put(Constants.ENV_CONTEXT_URL, getContextUrl());
+		env.put(Constants.ENV_ABSOLUTE_CONTEXT_URL, getAbsoluteContextUrl());
 		
 		env.put(Constants.ENV_MAPCATALOGUE_SERVICE_PROXY, getMapCatalogueProxy());
 		

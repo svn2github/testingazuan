@@ -49,7 +49,9 @@ import org.apache.log4j.Logger;
  */
 public class MapDrawAction extends AbstractGeoEngineAction {
 	
-	/** Request parameters. */
+	// request
+	
+	/** The Constant HIERARCHY_NAME. */
 	public static final String HIERARCHY_NAME = "hierarchyName";
 	
 	/** The Constant HIERARCHY_LEVEL. */
@@ -64,8 +66,10 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 	/** The Constant MAP_CATALOGUE_MANAGER_URL. */
 	public static final String MAP_CATALOGUE_MANAGER_URL = "mapCatalogueManagerUrl";
 
+	// default values
+	public static final String DEFAULT_OUTPUT_TYPE = Constants.DSVG;
 	
-	/** Logger component. */
+	// Logger component
     public static transient Logger logger = Logger.getLogger(MapDrawAction.class);
 	
 	
@@ -114,7 +118,10 @@ public class MapDrawAction extends AbstractGeoEngineAction {
 			
 			getGeoEngineInstance().setAnalysisState( analysisState );
 		
-			outputFormat = Constants.DSVG;
+			outputFormat = (String)getGeoEngineInstance().getEnv().get(Constants.ENV_OUTPUT_TYPE);
+			if(outputFormat == null) {
+				outputFormat = DEFAULT_OUTPUT_TYPE;
+			}
 			
 		
 			

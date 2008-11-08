@@ -134,6 +134,9 @@ public class Constants {
 	/** The Constant ENV_CONTEXT_URL. */
 	public static final String ENV_CONTEXT_URL = "CONTEXT_URL";
 	
+	/** The Constant ENV_ABSOLUTE_CONTEXT_URL. */
+	public static final String ENV_ABSOLUTE_CONTEXT_URL = "ABSOLUTE_CONTEXT_URL";
+	
 	/** The Constant ENV_STD_HIERARCHY. */
 	public static final String ENV_STD_HIERARCHY = "STD_HIERARCHY";
 	
@@ -145,6 +148,11 @@ public class Constants {
 	
 	/** The Constant ENV_EXEC_IFRAME_ID. */
 	public static final String ENV_EXEC_IFRAME_ID = "ENV_EXEC_IFRAME_ID";
+	
+	public static final String ENV_OUTPUT_TYPE = "OUTPUT_TYPE";
+	
+	
+	
 	
 	// OUTPUT FORMAT TYPES AND MIME TYPES
 	

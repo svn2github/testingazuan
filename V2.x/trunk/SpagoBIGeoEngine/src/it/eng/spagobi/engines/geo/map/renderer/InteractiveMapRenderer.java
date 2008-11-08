@@ -904,7 +904,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		//File file = new File("D:/Documenti/Prototipi/Test/exo-portal-1.1.4-SpagoBI-2.0/webapps/SpagoBIGeoEngine/js/lib/svg-widgets/" + scriptName);
 		
 		try {
-			URL scriptUrl = new URL((String)getEnv().get(Constants.ENV_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
+			URL scriptUrl = new URL((String)getEnv().get(Constants.ENV_ABSOLUTE_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
+			//URL scriptUrl = new URL("http://localhost:8080/SpagoBIGeoEngine" + "/js/lib/svg-widgets/" + scriptName);
 			
 			BufferedReader reader = new BufferedReader( new InputStreamReader( scriptUrl.openStream() ) );
 			String line = null;

@@ -3,8 +3,12 @@ package it.eng.spagobi.kpi.config.dao;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +31,24 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError ;
+	
+	/**
+	 * Returns the KpiInstance of the referred id
+	 * 
+	 * @param id of the KpiInstance
+	 * @return KpiInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public SbiKpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
+	
+	/**
+	 * Returns the Kpi of the referred id
+	 * 
+	 * @param id of the Kpi
+	 * @return KpiInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public SbiKpi loadKpiById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns true if the values are the actual ones, false they have to be recalculated
@@ -101,7 +123,15 @@ public interface IKpiDAO {
 	 */	
 	public List listKpiValues(KpiInstance kpi) throws EMFUserError;
 
-	
-	
+	/**
+	 * Transforms a SbiThresholdValue into a Treshold
+	 * 
+	 * @param SbiThresholValue t
+	 * 
+	 * @return Threshold
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public Threshold toThreshold(SbiThresholdValue t);
 
 }

@@ -4,7 +4,7 @@ public class Resource {
 	
 	Integer id = null;
 	String name = null;
-	String coumn_name = null;
+	String column_name = null;
 	String table_name = null;
 	String type = null; //type of the resource, such as Project...
 	
@@ -16,12 +16,12 @@ public class Resource {
 		this.name = name;
 	}
 
-	public String getCoumn_name() {
-		return coumn_name;
+	public String getColumn_name() {
+		return column_name;
 	}
 
-	public void setCoumn_name(String coumn_name) {
-		this.coumn_name = coumn_name;
+	public void setColumn_name(String column_name) {
+		this.column_name = column_name;
 	}
 
 	public String getTable_name() {

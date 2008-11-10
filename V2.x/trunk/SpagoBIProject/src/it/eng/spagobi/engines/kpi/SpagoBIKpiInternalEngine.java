@@ -44,19 +44,36 @@ import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
 import it.eng.spagobi.engines.kpi.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
+import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.common.DataSetImpl;
+import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -83,7 +100,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected String subtype="";
 	protected Color color;
 	protected boolean legend=true;
-	protected Map parametersObject;
+	protected HashMap parametersObject;
 	protected boolean show_chart=true;
 	protected boolean slider=true;
 	protected StyleLabel styleTitle;
@@ -94,6 +111,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected double upper=0.0;
 	protected Map confParameters;
 	protected SourceBean sbRow;
+	protected List resources ;
 
 
 
@@ -194,6 +212,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				}	
 
 			} // end looking for parameters
+			
+			this.parametersObject = parametersMap;
 
 
 			//		**************take informations on the chart type*****************
@@ -205,6 +225,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID);
 			//From the modelInstance gets the related KpiInstance
 			KpiInstance kpiI = mI.getKpiInstanceAssociated();
+			//I set the list of resources of that specific ModelInstance
+			this.resources = mI.getResources();
 			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI, dateOfKPI);
 			//if not still actual or doesn't have any values, calculates the new values and updates the KpiInstance
 			if (!isActual){
@@ -467,8 +489,83 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	}
 	
-	public KpiInstance calculateNewKpiInstance(KpiInstance k){
-		return null;
+	public KpiInstance calculateNewKpiInstance(KpiInstance k) throws EMFUserError{
+		
+		KpiInstance toReturn = new KpiInstance();
+		toReturn.setKpiInstanceId(k.getKpiInstanceId());
+		toReturn.setKpi(k.getKpi());
+		toReturn.setD(k.getD());
+		
+		List kpiValues = new ArrayList();
+		DataSetConfig ds = null;
+		Integer kpiId = k.getKpi();
+		try {
+		SbiKpi kpi = DAOFactory.getKpiDAO().loadKpiById(kpiId);
+		Integer dsID = kpi.getSbiDataSet().getDsId();
+				
+			ds = DAOFactory.getDataSetDAO().loadDataSetByID(dsID);
+		} catch (EMFUserError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Iterator resIt = resources.iterator();
+		while(resIt.hasNext()){
+			
+			KpiValue kVal = new KpiValue();
+			Resource r = (Resource) resIt.next();
+			String colName = r.getColumn_name();
+			String value = r.getName();
+
+			HashMap temp = (HashMap)this.parametersObject.clone() ;
+			temp.put(colName, value);
+			DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
+			DataSetImpl dsi = new DataSetImpl(ds,profile);
+			dsi.loadData(temp);
+			IDataStore ids = dsi.getDataStore();
+	
+			//Transform result into KPIValue (I suppose that the result has a unique value)
+			IRecord record = ids.getAt(0);			
+			List fields = record.getFields();
+			String fieldValue = (String) fields.get(0);
+			kVal.setValue(fieldValue);
+			kVal.setR(r);
+			Date begD = new Date();
+			kVal.setBeginDate(begD);
+			SbiKpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
+			//TODO da cambiare quando ci sarà la FK corretta
+			Set periodicities = sbik.getSbiKpiPeriodicities();
+			Iterator periodIt = periodicities.iterator();
+			SbiKpiPeriodicity period =(SbiKpiPeriodicity)periodIt.next();
+			Integer seconds = period.getValue();
+			//Transforms seconds into milliseconds
+			Integer milliSeconds = seconds * 1000;			
+			Long begDtTime = begD.getTime();
+			long endTime = begDtTime.longValue() + milliSeconds.longValue();		
+			Date endDate = new Date(endTime);
+			kVal.setEndDate(endDate);
+			
+			kVal.setKpiInstanceId(k.getKpiInstanceId());
+			kVal.setWeight(k.getWeight());
+			SbiThreshold t = sbik.getSbiThreshold();
+			List thresholds = new ArrayList();
+			Set thresholdValues = t.getSbiThresholdValues();
+			Iterator it = thresholdValues.iterator();
+			while (it.hasNext()){
+				SbiThresholdValue val = (SbiThresholdValue) it.next();
+				Threshold tr = DAOFactory.getKpiDAO().toThreshold(val);
+				thresholds.add(tr);
+			}
+			 
+			kVal.setThresholds(thresholds);			
+			//Add kpiValue to the KpiValues List 
+			kpiValues.add(kVal);
+			//Insert new Value into the DB
+			DAOFactory.getKpiDAO().insertKpiValue(kVal);			
+		}
+
+		toReturn.setValue(kpiValues);
+		
+		return toReturn;
 	}
 	
 	

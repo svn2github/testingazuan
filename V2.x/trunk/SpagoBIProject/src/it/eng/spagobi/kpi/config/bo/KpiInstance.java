@@ -11,18 +11,27 @@ public class KpiInstance {
 	List values = null;//last calculated values with relative thresholds for each resource
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
+	Double weight = null; 
 	
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
+	}
+
 	public KpiInstance() {
 		super();
 		//this.kpiHistoryValues = new ArrayList();
 		this.values = new ArrayList();
 	}
 
-	public Integer getKpiId() {
+	public Integer getKpiInstanceId() {
 		return kpiInstanceId;
 	}
 
-	public void setKpiId(Integer kpiId) {
+	public void setKpiInstanceId(Integer kpiId) {
 		this.kpiInstanceId = kpiId;
 	}
 

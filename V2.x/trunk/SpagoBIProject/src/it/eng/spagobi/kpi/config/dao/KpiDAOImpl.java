@@ -114,6 +114,36 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
+	public SbiKpi loadKpiById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		SbiKpi toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpi hibSbiKpiInstance = (SbiKpi)aSession.load(SbiKpi.class,id);
+			toReturn = hibSbiKpiInstance;
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	public List getKpiActualValue(KpiInstance kpi) throws EMFUserError {
 		// TODO Auto-generated method stub
 		return null;
@@ -123,7 +153,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 		logger.debug("IN");
 		 
-		Integer kpiInstID = kpi.getKpiId();
+		Integer kpiInstID = kpi.getKpiInstanceId();
 		Session aSession = null;
 		Transaction tx = null;
 		SbiKpiInstance hibKpiInstance = null;
@@ -453,7 +483,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		d = kpiInst.getBeginDt();
 		List values = getKpiValue(kpiInst, d);		
 		
-		toReturn.setKpiId(kpiId);
+		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
 		toReturn.setValue(values);
 		toReturn.setD(d);
@@ -472,7 +502,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String type = d.getValueCd();	
 		Integer resourceId = r.getResourceId();
 		
-		toReturn.setCoumn_name(coumn_name);
+		toReturn.setColumn_name(coumn_name);
 		toReturn.setName(name);
 		toReturn.setTable_name(table_name);
 		toReturn.setType(type);
@@ -494,7 +524,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	private SbiResources toSbiResource(Resource r) throws EMFUserError{
 		
 		SbiResources toReturn = new SbiResources();
-		String columnName = r.getCoumn_name();
+		String columnName = r.getColumn_name();
 		String resourceName = r.getName();
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
@@ -598,7 +628,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
-	private Threshold toThreshold(SbiThresholdValue t){
+	public Threshold toThreshold(SbiThresholdValue t){
 		
 		Threshold toReturn = new Threshold();
 

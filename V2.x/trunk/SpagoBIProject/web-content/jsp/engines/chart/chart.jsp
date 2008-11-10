@@ -69,6 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String executionFlowIdO=instanceO.getFlowId();
    	%>
 
+
 	<%-- div with wait while loading message --%>
 	<div id="divLoadingMessage<%= uuidO %>" style="display:inline;">
 		<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
@@ -116,6 +117,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 			//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
+		
 		String documentid=(objO.getId()).toString();
 		//String documentid=(String)aServiceResponse.getAttribute("documentid");
 		DatasetMap datasetMap=(DatasetMap)sbModuleResponse.getAttribute("datasets");

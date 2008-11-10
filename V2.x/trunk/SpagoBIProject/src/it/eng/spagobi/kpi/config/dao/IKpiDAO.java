@@ -35,7 +35,7 @@ public interface IKpiDAO {
 	 * @return  Returns true if the values are the actual ones, false they have to be recalculated
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public boolean hasActualValues(KpiInstance inst) throws EMFUserError ;
+	public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
 	
 	/**
 	 * Returns true if the value is not in the correct threshold, false if it's fine

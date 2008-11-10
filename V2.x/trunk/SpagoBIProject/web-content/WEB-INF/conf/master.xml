@@ -52,6 +52,11 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/presentation.xml" />
+	
+<!-- engines.kpi -->
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/presentation.xml" />	
 
 	
 <!-- engines.officedocument -->

@@ -37,9 +37,11 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
 import it.eng.spagobi.engines.kpi.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
@@ -50,6 +52,7 @@ import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 import java.awt.Color;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +66,7 @@ import org.apache.log4j.Logger;
  * 
  */
 
-public class SpagoBIKpiInternalEngine {
+public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	
 	private static transient Logger logger = Logger.getLogger(SpagoBIKpiInternalEngine.class);
 
@@ -108,7 +111,7 @@ public class SpagoBIKpiInternalEngine {
 
 
 		DatasetMap datasets=null;
-		ChartImpl sbi=null;
+		ChartImpl sbi=new Speedometer();
 
 		ResponseContainer responseContainer=ResponseContainer.getResponseContainer();
 		EMFErrorHandler errorHandler=responseContainer.getErrorHandler();
@@ -118,7 +121,7 @@ public class SpagoBIKpiInternalEngine {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
 		}
 
-		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("DASH")) {
+		if (!obj.getBiObjectTypeCode().equalsIgnoreCase("KPI")) {
 			logger.error("The input object is not a dashboard.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 		}
@@ -155,18 +158,55 @@ public class SpagoBIKpiInternalEngine {
 				userError.setBundle("messages");
 				throw userError;
 			}
+			
+			Date dateOfKPI = new Date();
+			
+			HashMap parametersMap=null;
+			//Search if the chart has parameters
+			List parametersList=obj.getBiObjectParameters();
+			logger.debug("Check for BIparameters and relative values");
+			if(parametersList!=null){
+				parametersMap=new HashMap();
+				for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+					BIObjectParameter par= (BIObjectParameter) iterator.next();
+					String url=par.getParameterUrlName();
+					List values=par.getParameterValues();
+					if(values!=null){
+						if(values.size()==1){
+							String value=(String)values.get(0);
+							parametersMap.put(url, value);
+							if (url.equals("ParKpiDate")){
+								//TODO da verificare
+								dateOfKPI = new Date(url);
+							}
+						}else if(values.size() >=1){
+							String value = "'"+(String)values.get(0)+"'";
+							for(int k = 1; k< values.size() ; k++){
+								value = value + ",'" + (String)values.get(k)+"'";
+							}
+							parametersMap.put(url, value);
+							if (url.equals("ParKpiDate")){
+								//TODO da verificare
+								dateOfKPI = new Date(url);
+							}
+						}
+					}
+				}	
+
+			} // end looking for parameters
 
 
 			//		**************take informations on the chart type*****************
 
-			Integer modelNodeInstanceID = (Integer)content.getAttribute("model_node_instance");
+			String modelNodeInstance = (String)content.getAttribute("model_node_instance");
+			Integer modelNodeInstanceID = new Integer(modelNodeInstance);
 			getSetConf(content);
 			//gets the ModelInstanceNode
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID);
 			//From the modelInstance gets the related KpiInstance
 			KpiInstance kpiI = mI.getKpiInstanceAssociated();
-			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI);
-			//if not still actual calculates the new values and updates the KpiInstance
+			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI, dateOfKPI);
+			//if not still actual or doesn't have any values, calculates the new values and updates the KpiInstance
 			if (!isActual){
 				kpiI = calculateNewKpiInstance(kpiI);
 			}
@@ -174,6 +214,7 @@ public class SpagoBIKpiInternalEngine {
 			
 			List kpiValues = kpiI.getValue();
 			Iterator kpiVIt = kpiValues.iterator();
+			String text = "";
 			while (kpiVIt.hasNext()){
 				KpiValue kpiV = (KpiValue)kpiVIt.next();
 				Resource r = kpiV.getR();
@@ -185,10 +226,15 @@ public class SpagoBIKpiInternalEngine {
 					
 				}else{
 					//creates a document without the representation of the kpivalues but only with its values for each resoruce
+					text += "**************************************";
 					System.out.println("**********************************************");
+					text += "RESOURCE="+r.getName();
 					System.out.println("RESOURCE="+r.getName());
+					text += "Value="+value ;
 					System.out.println("Value="+value);
+					text += "Weight="+weight;
 					System.out.println("Weight="+weight);
+					text += "Thresholds:";
 					System.out.println("Thresholds:");
 					Iterator threshIt = thresholds.iterator();
 					while(threshIt.hasNext()){
@@ -196,22 +242,27 @@ public class SpagoBIKpiInternalEngine {
 						String type = t.getType();
 						Double min = null;
 						Double max = null;
+						text += "++++++++Threshold Type:"+type;
 						System.out.println("++++++++Threshold Type:"+type);
-						if (type.equals("INTERVAL")){
+						if (type.equals("RANGE")){
 							
 							min = t.getMinValue();
 							max = t.getMaxValue();
+							text += "++++++++Min:"+min;
 							System.out.println("++++++++Min:"+min);
+							text += "++++++++Max:"+max;
 							System.out.println("++++++++Max:"+max);
 							
 						}else if (type.equals("MIN")){
 							
 							min = t.getMinValue();
+							text += "++++++++Min:"+min;
 							System.out.println("++++++++Min:"+min);
 							
 						}else if (type.equals("MAX")){
 							
 							max = t.getMaxValue();
+							text += "++++++++Max:"+max;
 							System.out.println("++++++++Max:"+max);
 							
 						}
@@ -221,6 +272,7 @@ public class SpagoBIKpiInternalEngine {
 				
 			}
 			
+			
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
@@ -229,6 +281,7 @@ public class SpagoBIKpiInternalEngine {
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
 				response.setAttribute("sbi",sbi);
+				response.setAttribute("text",text);
 
 			}
 			catch (Exception eex) {

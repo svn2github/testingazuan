@@ -23,7 +23,6 @@ package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -245,10 +244,12 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			Query hibQuery = null;
 			if (aMenu.getParentId() == null) //hibMenu.setProg(new Integer(1));
 				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId is null ");
-			else 
+			else {
 				// loads sub menu
-				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId = " + aMenu.getParentId());
-				
+				//hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId = " + aMenu.getParentId());
+				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId = ?" );
+				hibQuery.setInteger(0, aMenu.getParentId().intValue());
+			}
 			Integer maxProg = (Integer) hibQuery.uniqueResult();
 			if (maxProg != null) hibMenu.setProg(new Integer(maxProg.intValue() + 1));
 			else hibMenu.setProg(new Integer(1));
@@ -308,9 +309,14 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			}
 
 			// update prog column in other menu
-			String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > " 
-				+ hibMenu.getProg() + " and s.parentId = " + hibMenu.getParentId();
+			//String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > " 
+			//	+ hibMenu.getProg() + " and s.parentId = " + hibMenu.getParentId();
+			
+			String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
+				 + " and s.parentId = ? ";
 			Query query = tmpSession.createQuery(hqlUpdateProg);
+			query.setInteger(0, hibMenu.getProg().intValue());
+			query.setInteger(1,  hibMenu.getParentId().intValue());
 			query.executeUpdate();
 			
 			tmpSession.delete(hibMenu);
@@ -403,9 +409,10 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			String hql = " from SbiMenuRole s where s.id.menuId = "+ menuId;
+			//String hql = " from SbiMenuRole s where s.id.menuId = "+ menuId;
+			String hql = " from SbiMenuRole s where s.id.menuId = ? ";
 			Query aQuery = tmpSession.createQuery(hql);
-
+			aQuery.setInteger(0, menuId.intValue());
 			List biFeaturesAssocitedWithMap = aQuery.list();
 			if (biFeaturesAssocitedWithMap.size() > 0)
 				bool = true;
@@ -448,9 +455,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			String hql = " from SbiMenu s where s.id.parentId = "+ menuId + " order by s.prog";
+			//String hql = " from SbiMenu s where s.id.parentId = "+ menuId + " order by s.prog";
+			String hql = " from SbiMenu s where s.id.parentId = ? order by s.prog";
 			Query aQuery = tmpSession.createQuery(hql);
-
+			aQuery.setInteger(0, menuId.intValue());
+			
 			List hibList = aQuery.list();
 			Iterator it = hibList.iterator();			
 			while (it.hasNext()) {			
@@ -712,69 +721,31 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
-			/*
-			tmpSession = getSession();
-			tx = tmpSession.beginTransaction();
-
-			SbiMenu sbiMenu=(SbiMenu)tmpSession.load(SbiMenu.class, menuID);
-
-			Integer fatherId=sbiMenu.getParentId();
-
-			SbiMenu sbiFatherMenu=(SbiMenu)tmpSession.load(SbiMenu.class, fatherId);
-
-			Integer grandFatherId=sbiFatherMenu.getParentId();
-
-			//Change children: 
-
-			// get the children of old father, they will point to new father
-			Criterion parentCriterrion = Expression.eq("parentId",
-					fatherId);
-			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
-			criteria.add(parentCriterrion);
-
-			// Get the list of children from the old father
-			List oldFatherChildren=criteria.list();
-
-			//I can retrieve all the children now and save all them
-			for (Iterator iterator = oldFatherChildren.iterator(); iterator.hasNext();) {
-				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
-				sbiMenuO.setParentId(menuID);
-			}
-
-
-			Criterion childCriterrion = Expression.eq("parentId",
-					menuID);
-			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
-			childCriteria.add(childCriterrion);
-
-			// Get the list of children from the new father
-			List newFatherChildren=childCriteria.list();
-
-			for (Iterator iterator = newFatherChildren.iterator(); iterator.hasNext();) {
-				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
-				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
-			}
-
-
-			sbiMenu.setParentId(grandFatherId);
-			sbiFatherMenu.setParentId(menuID);
-
-
-*/
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			SbiMenu hibMenu = (SbiMenu) tmpSession.load(SbiMenu.class, menuID);
 			Integer oldProg = hibMenu.getProg();
 			Integer newProg = new Integer(oldProg.intValue() - 1);
 			String upperMenuHql = "";
-			if (hibMenu.getParentId() == null)
-				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+			Query query = null;
+			if (hibMenu.getParentId() == null){
+				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				//" and s.parentId is null ";
+				upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
 				" and s.parentId is null ";
-			else
-			 upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
-				" and s.parentId = " + hibMenu.getParentId().toString();
+				query = tmpSession.createQuery(upperMenuHql);
+				query.setInteger(0, newProg.intValue());
+			}
+			else{
+				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				//" and s.parentId = " + hibMenu.getParentId().toString();
+				 upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
+					" and s.parentId = ? ";
+				 query = tmpSession.createQuery(upperMenuHql);
+				 query.setInteger(0, newProg.intValue());
+				 query.setInteger(1, hibMenu.getParentId().intValue());
+			}
 			
-			Query query = tmpSession.createQuery(upperMenuHql);
 			SbiMenu hibUpperMenu = (SbiMenu) query.uniqueResult();
 			if (hibUpperMenu == null) {
 				logger.error("The menu with prog [" + newProg + "] does not exist.");
@@ -810,56 +781,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
-			/*
-			tmpSession = getSession();
-			tx = tmpSession.beginTransaction();
-
-			SbiMenu sbiMenu=(SbiMenu)tmpSession.load(SbiMenu.class, menuID);
-
-			Integer fatherId=sbiMenu.getParentId();
-
-			SbiMenu sbiFatherMenu=(SbiMenu)tmpSession.load(SbiMenu.class, fatherId);
-
-			Integer grandFatherId=sbiFatherMenu.getParentId();
-
-			//Change children: 
-
-			// get the children of old father, they will point to new father
-			Criterion parentCriterrion = Expression.eq("parentId",
-					fatherId);
-			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
-			criteria.add(parentCriterrion);
-
-			// Get the list of children from the old father
-			List oldFatherChildren=criteria.list();
-
-			//I can retrieve all the children now and save all them
-			for (Iterator iterator = oldFatherChildren.iterator(); iterator.hasNext();) {
-				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
-				sbiMenuO.setParentId(menuID);
-			}
-
-
-			Criterion childCriterrion = Expression.eq("parentId",
-					menuID);
-			Criteria childCriteria = tmpSession.createCriteria(SbiMenu.class);
-			childCriteria.add(childCriterrion);
-
-			// Get the list of children from the new father
-			List newFatherChildren=childCriteria.list();
-
-			for (Iterator iterator = newFatherChildren.iterator(); iterator.hasNext();) {
-				SbiMenu sbiMenuO = (SbiMenu) iterator.next();
-				if(!(oldFatherChildren.contains(sbiMenuO))) sbiMenuO.setParentId(fatherId);
-			}
-
-
-			sbiMenu.setParentId(grandFatherId);
-			sbiFatherMenu.setParentId(menuID);
-
-
-			tx.commit();
-			*/
+			
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			SbiMenu hibMenu = (SbiMenu) tmpSession.load(SbiMenu.class, menuID);
@@ -867,14 +789,25 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			Integer newProg = new Integer(oldProg.intValue() + 1);
 			
 			String upperMenuHql = "";
-			if (hibMenu.getParentId() == null)
-				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+			Query query = null;
+			if (hibMenu.getParentId() == null){
+				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				//" and s.parentId is null ";
+				upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
 				" and s.parentId is null ";
-			else
-				upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
-				" and s.parentId = " + hibMenu.getParentId().toString();
-			
-			Query query = tmpSession.createQuery(upperMenuHql);
+				query = tmpSession.createQuery(upperMenuHql);
+				query.setInteger(0, newProg.intValue());
+			}
+			else {
+				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
+				//" and s.parentId = " + hibMenu.getParentId().toString();
+				upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
+				" and s.parentId = ? " ;
+				query = tmpSession.createQuery(upperMenuHql);
+				query.setInteger(0, newProg.intValue());
+				query.setInteger(1, hibMenu.getParentId().intValue());
+			}
+			//Query query = tmpSession.createQuery(upperMenuHql);
 			SbiMenu hibUpperMenu = (SbiMenu) query.uniqueResult();
 			if (hibUpperMenu == null) {
 				logger.error("The menu with prog [" + newProg + "] does not exist.");

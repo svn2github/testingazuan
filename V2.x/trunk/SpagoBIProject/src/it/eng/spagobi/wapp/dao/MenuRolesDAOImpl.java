@@ -68,13 +68,19 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-
+/*
 				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
 					  " where mf.id.menuId = m.menuId " + 
 					  " and mf.id.extRoleId = " + roleId.toString() +
 					  " order by m.parentId desc, m.prog";
+*/	
+				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
+				  " where mf.id.menuId = m.menuId " + 
+				  " and mf.id.extRoleId = ? " +
+				  " order by m.parentId desc, m.prog";
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, roleId.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -130,9 +136,14 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiMenuRole s where s.id.menuId=" + menuId.toString() + 
-			             " and s.id.roleId=" +  roleId.toString();
+			//String hql = "from SbiMenuRole s where s.id.menuId=" + menuId.toString() + 
+			//             " and s.id.roleId=" +  roleId.toString();
+			
+			String hql = "from SbiMenuRole s where s.id.menuId= ? " + 
+            " and s.id.roleId= ? ";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, menuId.intValue());
+			query.setInteger(1, roleId.intValue());
 			//toReturn =(MenuRoles) query.uniqueResult();			
 			SbiMenuRole hibMenuRole = (SbiMenuRole)query.uniqueResult();
 			if (hibMenuRole == null) return null;

@@ -23,6 +23,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
 <%
+//print for document composition problem
+/*System.out.println(" ----- ");
+System.out.println("*** SPAGO Request: " + aServiceRequest.toXML());
+System.out.println(" ----- ");
+System.out.println("*** executeBIObjectPageExecution.print() - STARTS " );
+contextManager.print();
+System.out.println("*** executeBIObjectPageExecution.print() - ENDED " );
+*/
+// end test
+
 ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 String modalityO = instanceO.getExecutionModality();
 if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {

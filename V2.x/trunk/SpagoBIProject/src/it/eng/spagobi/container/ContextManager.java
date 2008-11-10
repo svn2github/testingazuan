@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class ContextManager extends AbstractContainer {
-
+	private static final String _sessionAttributeBaseKey = "SPAGOBI_SESSION_ATTRIBUTE";
 	protected ISessionContainer _session;
 	protected IContextRetrieverStrategy _strategy;
 	
@@ -173,11 +173,24 @@ public class ContextManager extends AbstractContainer {
 		List toReturn = new ArrayList();
 		try {
 			Context context = _strategy.getContext(_session);
-			toReturn = context.getKeys();
+			if (context != null)
+				toReturn = context.getKeys();
 			return toReturn;
 		} finally {
 			logger.debug("OUT");
 		}
 	}
-	
+	/**
+	 * Print all the contexts with all personal objects
+	 */
+	public void print() {
+		List contextObjects = this.getKeys();
+		for (int i=0; i<contextObjects.size(); i++){
+			String attributeName = (String)contextObjects.get(i);
+			Object attributeObject = _session.get(attributeName);
+			//logger.debug("*** Context Object_ "+i + "  : "+ attributeName + " value: " +((attributeObject==null)?"":attributeObject.toString()));
+			System.out.println("*** Context Object_ "+i + "  : "+ attributeName + " value: " +((attributeObject==null)?"":attributeObject.toString()));
+		}
+			
+	}
 }

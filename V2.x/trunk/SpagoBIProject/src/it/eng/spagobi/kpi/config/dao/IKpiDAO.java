@@ -33,28 +33,10 @@ public interface IKpiDAO {
 	 */	
 	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError ;
 	
-	/**
-	 * Returns the KpiInstance of the referred id
-	 * 
-	 * @param id of the KpiInstance
-	 * @return KpiInstance of the referred id
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public SbiKpiInstance loadSbiKpiInstanceById(Integer id) throws EMFUserError ;
-	
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	
 	public List getThresholds(KpiInstance k)throws EMFUserError;
-	
-	/**
-	 * Returns the SbiKpi of the referred id
-	 * 
-	 * @param id of the SbiKpi
-	 * @return SbiKpi of the referred id
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public SbiKpi loadSbiKpiById(Integer id) throws EMFUserError ;
-	
+
 	/**
 	 * Returns the Kpi of the referred id
 	 * 
@@ -105,11 +87,11 @@ public interface IKpiDAO {
 	public void deleteKpiValue(KpiValue value) throws EMFUserError;
 	
 	/**
-	 * Gets the Kpi Values of the past for each resource
+	 * Gets the all the Kpi Values valid for the Date d (for each resource)
 	 * 
-	 * @param Kpi , Date of when the KpiValue has to valid
+	 * @param Kpi , Date of when the KpiValue has to be valid
 	 * 
-	 * @return Returns the correct KpiValue for that Date
+	 * @return Returns all the Kpi Values valid for the Date d (for each resource)
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
@@ -126,28 +108,5 @@ public interface IKpiDAO {
 	 */	
 	public List getKpiActualValue(KpiInstance kpi) throws EMFUserError;
 	
-	/**
-	 * Lists all Kpi Values of a specific KPIInstance
-	 * 
-	 * @param Kpi 
-	 * 
-	 * @return Returns a list of all the Kpi Value of the specific KPI Instance
-	 * 
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public List listKpiValues(KpiInstance kpi) throws EMFUserError;
-
-	/**
-	 * Transforms a SbiThresholdValue into a Treshold
-	 * 
-	 * @param SbiThresholValue t
-	 * 
-	 * @return Threshold
-	 * 
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public Threshold toThreshold(SbiThresholdValue t);
-	
-	public Kpi toKpi(SbiKpi kpi) throws EMFUserError;
 
 }

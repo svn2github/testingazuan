@@ -56,6 +56,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 
 	}
+	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	String execContext = instanceO.getExecutionModality();
+   	// if in document composition case do not include header.jsp
+	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+				<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+				<%
+			   }
+   		else // in document composition case doesn't call header so set Object and uuid
+			   {
+	   				docComposition=true;
+			   }
+	%>
+	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
+		
+	
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
+	
+	<%
 		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
 		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");
 		List kpiValues =(List)sbModuleResponse.getAttribute("kpiValues");

@@ -206,7 +206,7 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 					BIObject obj = (BIObject) it.next();
 					Engine engine = obj.getEngine();
 					if(engine!=null) {
-						if(!EngineUtilities.isExternal(obj.getEngine())){
+						if(!EngineUtilities.isExternal(obj.getEngine())&& !engine.getLabel().equals("KpiEngine")){							
 							continue;
 						}
 					}

@@ -21,14 +21,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.service.DefaultRequestContext;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.util.GregorianCalendar;
@@ -36,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -89,7 +100,73 @@ public class ExecutionProxy {
 	    // if engine is not an external it's not possible to call it using
 	    // url
 	    if (!EngineUtilities.isExternal(eng))
+	    	if(eng.getLabel().equals("KpiEngine")){
+	    		SourceBean request = null;
+	    		SourceBean resp = null;
+	    		EMFErrorHandler errorHandler = null;
+	    		
+	    		try {
+	    			request = new SourceBean("");
+	    			resp = new SourceBean("");
+	    		} catch (SourceBeanException e1) {
+	    			e1.printStackTrace();
+	    		}
+	    		RequestContainer reqContainer = new RequestContainer();
+	    		ResponseContainer resContainer = new ResponseContainer();
+	    		reqContainer.setServiceRequest(request);
+	    		resContainer.setServiceResponse(resp);
+	    		DefaultRequestContext defaultRequestContext = new DefaultRequestContext(
+	    				reqContainer, resContainer);
+	    		resContainer.setErrorHandler(new EMFErrorHandler());
+	    		RequestContainer.setRequestContainer(reqContainer);
+	    		ResponseContainer.setResponseContainer(resContainer);
+	    		Locale locale = new Locale("it","IT","");
+	    		SessionContainer session = new SessionContainer(true);
+	    		reqContainer.setSessionContainer(session);
+	    		SessionContainer permSession = session.getPermanentContainer();
+	    		//IEngUserProfile profile = new AnonymousCMSUserProfile();
+	    		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	    		errorHandler = defaultRequestContext.getErrorHandler();
+
+	    		String className = eng.getClassName();
+				logger.debug("Try instantiating class " + className
+						+ " for internal engine " + eng.getName() + "...");
+				InternalEngineIFace internalEngine = null;
+				// tries to instantiate the class for the internal engine
+				try {
+					if (className == null && className.trim().equals(""))
+						throw new ClassNotFoundException();
+					internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
+				} catch (ClassNotFoundException cnfe) {
+					logger.error("The class ['" + className
+							+ "'] for internal engine " + eng.getName()
+							+ " was not found.", cnfe);
+					Vector params = new Vector();
+					params.add(className);
+					params.add(eng.getName());
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							2001, params));
+					return response;
+				} catch (Exception e) {
+					logger.error("Error while instantiating class " + className, e);
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							100));
+					return response;
+				}
+				try {
+						internalEngine.execute(reqContainer, biObject, resp);
+				} catch (EMFUserError e) {
+					logger.error("Error during engine execution", e);
+					errorHandler.addError(e);
+				} catch (Exception e) {
+					logger.error("Error while engine execution", e);
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							100));
+				}
+	    		
+	    	}else{
 		return response;
+	    	}
 	    // get driver class
 	    String driverClassName = eng.getDriverName();
 	    // get the url of the engine

@@ -447,10 +447,6 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return false;
 	}
 
-	public List listKpiValues(KpiInstance kpi) throws EMFUserError {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	private SbiKpiValue toSbiKpiValue(KpiValue value) throws EMFUserError{
 		
@@ -769,10 +765,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String thresholdName = sbit.getName();
 		String thresholdDescription = sbit.getDescription();
 		String type = sbit.getSbiDomains().getValueCd();
-		//TODO usare il colore vero
-		String col = t.getColour();		
 		Color color = new Color(255, 153, 0);
-		
+		String col = t.getColour();	
+		if (col!= null){
+			color = color.decode(col);
+		}
+				
 		toReturn.setColor(color);
 		toReturn.setId(id);
 		toReturn.setLabel(label);

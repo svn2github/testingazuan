@@ -30,7 +30,6 @@ package it.eng.spagobi.commons.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
 import it.eng.spagobi.commons.bo.Role;
@@ -254,7 +253,9 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		
 			SbiExtRoles hibRole = (SbiExtRoles) aSession.load(SbiExtRoles.class,  aRole.getId());
 			// deletes associations with events (and events themselves, if they have no more associations)
-			Query hibQuery = aSession.createQuery(" from SbiEventRole ser where ser.id.role.extRoleId = " + hibRole.getExtRoleId().toString());
+			//Query hibQuery = aSession.createQuery(" from SbiEventRole ser where ser.id.role.extRoleId = " + hibRole.getExtRoleId().toString());
+			Query hibQuery = aSession.createQuery(" from SbiEventRole ser where ser.id.role.extRoleId = ?" );
+			hibQuery.setInteger(0, hibRole.getExtRoleId().intValue());
 			List eventsRole = hibQuery.list();
 			Iterator it = eventsRole.iterator();
 			while (it.hasNext()) {
@@ -362,12 +363,17 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			Query hibQuery = aSession.createQuery(" from SbiExtRoles ");
 			List hibListAllRoles = hibQuery.list();
 
-			String hql = "from SbiParuseDet s "
+			/*String hql = "from SbiParuseDet s "
 					+ " where s.id.sbiParuse.sbiParameters.parId = "
-					+ parameterID;
+					+ parameterID;*/
+			
+			String hql = "from SbiParuseDet s "
+				+ " where s.id.sbiParuse.sbiParameters.parId = ?"
+				;
 
 			Query hqlQuery = aSession.createQuery(hql);
-
+			hqlQuery.setInteger(0, parameterID.intValue());
+			
 			List parUseDetsOfNoFreeRoles = hqlQuery.list();
 
 			List noFreeRoles = new ArrayList();
@@ -432,12 +438,18 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 				SbiParuseDet det = (SbiParuseDet)it.next();
 			}
 			
-			String hql = "from SbiParuseDet s "
+			/*String hql = "from SbiParuseDet s "
 						+" where s.id.sbiParuse.sbiParameters.parId = "+ sbiParuse.getSbiParameters().getParId() 
-						+" and s.id.sbiParuse.label != '" + sbiParuse.getLabel()+ "'";
+						+" and s.id.sbiParuse.label != '" + sbiParuse.getLabel()+ "'";*/
+			
+			String hql = "from SbiParuseDet s "
+				+" where s.id.sbiParuse.sbiParameters.parId = ? "
+				+" and s.id.sbiParuse.label != ? ";
 			
 			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, sbiParuse.getSbiParameters().getParId().intValue());
+			hqlQuery.setString(1, sbiParuse.getLabel());
 			
 			List parUseDetsOfNoFreeRoles = hqlQuery.list();
 			
@@ -521,11 +533,18 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "select f from SbiFunctions f, SbiFuncRole fr, SbiExtRoles r "
+			/*String hql = "select f from SbiFunctions f, SbiFuncRole fr, SbiExtRoles r "
 						+" where f.functId = fr.id.function.functId " 
 						+" and r.extRoleId = fr.id.role.extRoleId "
-						+" and r.extRoleId = " + roleID; 
+						+" and r.extRoleId = " + roleID; */
+			
+			String hql = "select f from SbiFunctions f, SbiFuncRole fr, SbiExtRoles r "
+				+" where f.functId = fr.id.function.functId " 
+				+" and r.extRoleId = fr.id.role.extRoleId "
+				+" and r.extRoleId = ?"; 
+			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, roleID.intValue());
 			functs = hqlQuery.list();
 			tx.commit();
 		} catch (HibernateException he) {
@@ -559,11 +578,18 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "select pu from SbiParuseDet pud, SbiParuse pu, SbiExtRoles r "
+			/*String hql = "select pu from SbiParuseDet pud, SbiParuse pu, SbiExtRoles r "
 						+" where pu.useId = pud.id.sbiParuse.useId " 
 						+" and r.extRoleId = pud.id.sbiExtRoles.extRoleId "
-						+" and r.extRoleId = " + roleID; 
+						+" and r.extRoleId = " + roleID; */
+			
+			String hql = "select pu from SbiParuseDet pud, SbiParuse pu, SbiExtRoles r "
+				+" where pu.useId = pud.id.sbiParuse.useId " 
+				+" and r.extRoleId = pud.id.sbiExtRoles.extRoleId "
+				+" and r.extRoleId = ?"; 
+			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, roleID);
 			uses = hqlQuery.list();
 			tx.commit();
 		} catch (HibernateException he) {

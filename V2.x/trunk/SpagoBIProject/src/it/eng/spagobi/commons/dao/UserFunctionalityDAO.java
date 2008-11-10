@@ -63,7 +63,8 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		    Query query = aSession.createQuery(hql);		   
 		    query.setParameter(0, roles[i]);
 		    SbiExtRoles spaobiRole=(SbiExtRoles)query.uniqueResult();
-		    strRoles=strRoles+"'"+spaobiRole.getRoleType().getValueCd()+"',";
+		    //strRoles=strRoles+"'"+spaobiRole.getRoleType().getValueCd()+"',";
+		    strRoles=strRoles+spaobiRole.getRoleType().getValueCd()+",";
 		}
 		if (strRoles.endsWith(",")){
 		    strRoles=strRoles.substring(0, strRoles.length()-1);
@@ -73,8 +74,10 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		
 		//String hql = "from SbiRolesUserFunctionality suf where suf.userFunctionality.domainCd = 'USER_FUNCTIONALITY'" + 
 		// " and suf.roleType.valueCd in ("+strRoles+")";
-		String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in ("+strRoles+") and suf.roleType.domainCd='ROLE_TYPE'";
+		//String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in ("+strRoles+") and suf.roleType.domainCd='ROLE_TYPE'";
+		String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in (?) and suf.roleType.domainCd='ROLE_TYPE'";
 		Query query = aSession.createQuery(hql);
+		query.setString(0, strRoles);
 		List userFuncList = query.list();
 		Iterator iter=userFuncList.iterator();
 		while (iter.hasNext()){

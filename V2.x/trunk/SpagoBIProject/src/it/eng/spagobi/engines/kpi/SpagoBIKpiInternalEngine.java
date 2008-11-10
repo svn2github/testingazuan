@@ -235,66 +235,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			//From the KpiInstance gets the last KpiValues 
 			
 			List kpiValues = kpiI.getValues();
-			Iterator kpiVIt = kpiValues.iterator();
-			String text = "";
-			while (kpiVIt.hasNext()){
-				KpiValue kpiV = (KpiValue)kpiVIt.next();
-				Resource r = kpiV.getR();
-				List thresholds = kpiV.getThresholds();
-				String value = kpiV.getValue();
-				Double weight = kpiV.getWeight();
-				if (show_chart){
-					//creates a document with the representation of the kpivalues for each resource
-					
-				}else{
-					//creates a document without the representation of the kpivalues but only with its values for each resoruce
-					text += "**************************************";
-					
-					text += "RESOURCE="+r.getName();
-					
-					text += "Value="+value ;
-					
-					text += "Weight="+weight;
-					
-					text += "Thresholds:";
-					
-					Iterator threshIt = thresholds.iterator();
-					while(threshIt.hasNext()){
-						Threshold t = (Threshold)threshIt.next();
-						String type = t.getType();
-						Double min = null;
-						Double max = null;
-						text += "++++++++Threshold Type:"+type;
 						
-						if (type.equals("RANGE")){
-							
-							min = t.getMinValue();
-							max = t.getMaxValue();
-							text += "++++++++Min:"+min;
-							
-							text += "++++++++Max:"+max;
-							
-							
-						}else if (type.equals("MIN")){
-							
-							min = t.getMinValue();
-							text += "++++++++Min:"+min;
-							
-							
-						}else if (type.equals("MAX")){
-							
-							max = t.getMaxValue();
-							text += "++++++++Max:"+max;
-							
-							
-						}
-					}
-										
-				}
-				
-			}
-			
-			
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");

@@ -154,8 +154,9 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			Query hibQuery = aSession.createQuery(" from SbiEngines engines where engines.biobjType.valueCd = '" + biobjectType + "'");
-			
+			//Query hibQuery = aSession.createQuery(" from SbiEngines engines where engines.biobjType.valueCd = '" + biobjectType + "'");
+			Query hibQuery = aSession.createQuery(" from SbiEngines engines where engines.biobjType.valueCd = ?" );
+			hibQuery.setString(0, biobjectType);
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 
@@ -387,9 +388,10 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			tx = aSession.beginTransaction();
 			Integer engineIdInt = Integer.valueOf(engineId);
 			
-			String hql = " from SbiObjects s where s.sbiEngines.engineId = "+ engineIdInt;
+			//String hql = " from SbiObjects s where s.sbiEngines.engineId = "+ engineIdInt;
+			String hql = " from SbiObjects s where s.sbiEngines.engineId = ?";
 			Query aQuery = aSession.createQuery(hql);
-			
+			aQuery.setInteger(0, engineIdInt.intValue());
 			List biObjectsAssocitedWithEngine = aQuery.list();
 			if (biObjectsAssocitedWithEngine.size() > 0)
 				bool = true;

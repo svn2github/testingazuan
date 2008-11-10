@@ -62,8 +62,12 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and sdp.prog=" + versionId;
+			//String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and sdp.prog=" + versionId;
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId= ?  and sdp.prog= ?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, versionId.intValue());
+			
 			SbiDossierPresentations hibObjTemp = (SbiDossierPresentations) query.uniqueResult();
 			if (hibObjTemp == null) {
 				return null;
@@ -93,8 +97,10 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and prog is not null";
+			//String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and prog is not null";
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId= ? and prog is not null";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
 			List list = query.list();
 			if (list == null) {
 				return null;
@@ -129,8 +135,12 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and sdp.prog=" + versionId;
+			//String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " and sdp.prog=" + versionId;
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=? and sdp.prog=?";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, versionId.intValue());
+			
 			SbiDossierPresentations hibObjTemp = (SbiDossierPresentations) query.uniqueResult();
 			if (hibObjTemp != null) {
 				SbiBinContents hibBinCont = hibObjTemp.getSbiBinaryContent();
@@ -241,9 +251,11 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "select max(sdp.prog) as maxprog from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" 
-				+ dossierId;
+			/*String hql = "select max(sdp.prog) as maxprog from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" 
+				+ dossierId;*/
+			String hql = "select max(sdp.prog) as maxprog from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=?";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
 			Integer maxProg = (Integer) query.uniqueResult();
 			Integer nextProg = null;
 			if (maxProg == null) {
@@ -275,9 +287,14 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " " +
-					"and sdp.workflowProcessId=" + workflowProcessId;
+			/*String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId + " " +
+					"and sdp.workflowProcessId=" + workflowProcessId;*/
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=? "+
+				"and sdp.workflowProcessId=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, workflowProcessId.intValue());
+			
 			SbiDossierPresentations hibObjTemp = (SbiDossierPresentations) query.uniqueResult();
 			if (hibObjTemp == null) {
 				return null;
@@ -327,8 +344,10 @@ public class DossierPresentationsDAOHibImpl extends AbstractHibernateDAO impleme
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId;
+			//String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=" + dossierId;
+			String hql = "from SbiDossierPresentations sdp where sdp.sbiObject.biobjId=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {

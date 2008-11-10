@@ -65,11 +65,20 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
+			/*String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
 					" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId=" + dossierId + 
 					" and binTemp.sbiDossierPartsTemp.workflowProcessId = " + workflowProcessId + 
-					" and binTemp.type='" + IMAGE + "'";
+					" and binTemp.type='" + IMAGE + "'";*/
+			String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=?"  +
+			" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId=?"  + 
+			" and binTemp.sbiDossierPartsTemp.workflowProcessId = ?"+ 
+			" and binTemp.type=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0,  pageId.intValue());
+			query.setInteger(1, dossierId.intValue());
+			query.setInteger(2, workflowProcessId.intValue());
+			query.setString(3, IMAGE);
+			
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {
@@ -100,9 +109,15 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
-					"and partTemp.pageId=" + pageId.toString() + " and partTemp.workflowProcessId = " + workflowProcessId;
+			/*String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
+					"and partTemp.pageId=" + pageId.toString() + " and partTemp.workflowProcessId = " + workflowProcessId;*/
+			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId= ?" +
+			" and partTemp.pageId= ? and partTemp.workflowProcessId = ?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, pageId.intValue());
+			query.setInteger(2, workflowProcessId.intValue());
+			
 			SbiDossierPartsTemp hibObjTemp = (SbiDossierPartsTemp) query.uniqueResult();
 			if (hibObjTemp == null) {
 				hibObjTemp = new SbiDossierPartsTemp();
@@ -113,11 +128,21 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 				hibObjTemp.setWorkflowProcessId(workflowProcessId);
 				aSession.save(hibObjTemp);
 			}
-			hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
+			/*hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
 				" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId=" + dossierId + 
 				" and binTemp.sbiDossierPartsTemp.workflowProcessId = " + workflowProcessId + 
-				" and binTemp.type='" + NOTE + "'";
+				" and binTemp.type='" + NOTE + "'";*/
+			
+			hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId= ?"+
+				" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId= ?"  + 
+				" and binTemp.sbiDossierPartsTemp.workflowProcessId = ?"  + 
+				" and binTemp.type= ?" ;
 			query = aSession.createQuery(hql);
+			query.setInteger(0, pageId.intValue());
+			query.setInteger(1, dossierId.intValue());
+			query.setInteger(2, workflowProcessId.intValue());
+			query.setString(3, NOTE);
+			
 			SbiDossierBinaryContentsTemp temp = (SbiDossierBinaryContentsTemp) query.uniqueResult();
 			if (temp != null) {
 				// updates note row
@@ -158,9 +183,15 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
-					"and partTemp.pageId=" + pageId.toString() + " and partTemp.workflowProcessId = " + workflowProcessId;
+			//String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
+			//		"and partTemp.pageId=" + pageId.toString() + " and partTemp.workflowProcessId = " + workflowProcessId;
+			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=? " +
+				" and partTemp.pageId=?  and partTemp.workflowProcessId = ?" + workflowProcessId;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, pageId.intValue());
+			query.setInteger(2, workflowProcessId.intValue());
+			
 			SbiDossierPartsTemp hibObjTemp = (SbiDossierPartsTemp) query.uniqueResult();
 			if (hibObjTemp == null) {
 				hibObjTemp = new SbiDossierPartsTemp();
@@ -203,11 +234,20 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
+			/*String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId=" + pageId.toString() +
 					" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId=" + dossierId + 
 					" and binTemp.sbiDossierPartsTemp.workflowProcessId = " + workflowProcessId + 
-					" and binTemp.type='" + NOTE + "'";
+					" and binTemp.type='" + NOTE + "'";*/
+			String hql = "from SbiDossierBinaryContentsTemp binTemp where binTemp.sbiDossierPartsTemp.pageId= ?"+
+				" and binTemp.sbiDossierPartsTemp.sbiObject.biobjId= ?" + 
+				" and binTemp.sbiDossierPartsTemp.workflowProcessId = ?" + 
+				" and binTemp.type=? ";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, pageId.intValue());
+			query.setInteger(1, dossierId.intValue());
+			query.setInteger(2, workflowProcessId.intValue());
+			query.setString(3, NOTE);
+			
 			SbiDossierBinaryContentsTemp hibObjTemp = (SbiDossierBinaryContentsTemp) query.uniqueResult();
 			if (hibObjTemp != null) toReturn = hibObjTemp.getBinContent();
 			return toReturn;
@@ -234,9 +274,14 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
-				" and partTemp.workflowProcessId = " + workflowProcessId;
+			/*String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
+				" and partTemp.workflowProcessId = " + workflowProcessId;*/
+			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId= ? "  +
+			" and partTemp.workflowProcessId = ? " ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
+			query.setInteger(1, workflowProcessId.intValue());
+			
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {
@@ -268,8 +313,10 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId;
+			//String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId;
+			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, dossierId.intValue());
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {

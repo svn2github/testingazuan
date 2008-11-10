@@ -97,10 +97,14 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			/*hql = "from SbiEvents as event " + 
+	         "where event.user = '" + user + "'";*/
+			
 			hql = "from SbiEvents as event " + 
-	         "where event.user = '" + user + "'";
+	         "where event.user = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setString(0, user);
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -193,10 +197,14 @@ public class EventDAOHibImpl extends AbstractHibernateDAO implements IEventDAO{
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			/*hql = "from SbiEvents as event " + 
+	         "where event.user = '" + user + "'";*/
+			
 			hql = "from SbiEvents as event " + 
-	         "where event.user = '" + user + "'";
+	         "where event.user = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setString(0, user);
 			events = hqlQuery.list();
 			
 			Iterator it = events.iterator();

@@ -25,13 +25,10 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiEventRole;
 import it.eng.spagobi.commons.metadata.SbiEventRoleId;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.engines.drivers.weka.WekaDriver;
 import it.eng.spagobi.events.bo.EventLog;
 import it.eng.spagobi.events.metadata.SbiEventsLog;
 
@@ -55,7 +52,7 @@ import org.hibernate.Transaction;
  */
 public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLogDAO {
 	
-	 static private Logger logger = Logger.getLogger(AbstractHibernateDAO.class);
+	 static private Logger logger = Logger.getLogger(EventLogDAOHibImpl.class);
 	
 	/**
 	 * Load event log by id.
@@ -157,7 +154,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			hql = 
+			/*hql = 
 				"select " +
 					"eventlog " +
 				"from " +
@@ -170,9 +167,25 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	         		"and " +
 	         		"roles.name in ('" + collectionRoles + "') " +
 	         	"order by " +
+	         		"eventlog.date";*/
+			
+			hql = 
+				"select " +
+					"eventlog " +
+				"from " +
+					"SbiEventsLog as eventlog, " +
+					"SbiEventRole as eventRole, " +
+					"SbiExtRoles as roles " + 
+	         	"where " +
+	         		"eventlog.id = eventRole.id.event.id and " +
+	         		"eventRole.id.role.extRoleId = roles.extRoleId " +
+	         		"and " +
+	         		"roles.name in (?) " +
+	         	"order by " +
 	         		"eventlog.date";
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setString(0, collectionRoles);
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -230,16 +243,17 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		Iterator rolesIt = roles.iterator();
 		while (rolesIt.hasNext()) {
 			String roleName = (String) rolesIt.next();
+			/*String hql = "from SbiExtRoles as roles " + 
+	         "where roles.name = '" + roleName + "'";*/
+			
 			String hql = "from SbiExtRoles as roles " + 
-	         "where roles.name = '" + roleName + "'";
+	         "where roles.name = ?";
 			
 			Query hqlQuery = session.createQuery(hql);
+			hqlQuery.setString(0, roleName);
 			SbiExtRoles aHibRole = (SbiExtRoles) hqlQuery.uniqueResult();
 			if (aHibRole == null) {
-				SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, 
-			            this.getClass().getName(), 
-			            "toSbiEventsLog", 
-			            "Role with name = '" + roleName + "' does not exist!!");
+				logger.error("Role with name = '" + roleName + "' does not exist!!");
 				continue;
 			}
 			SbiEventRoleId eventRoleId = new SbiEventRoleId();
@@ -318,10 +332,14 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			/*hql = "from SbiEventsLog as eventlog " + 
+	         "where eventlog.user = '" + user + "'";*/
+			
 			hql = "from SbiEventsLog as eventlog " + 
-	         "where eventlog.user = '" + user + "'";
+	         "where eventlog.user = ?";
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setString(0, user);
 			events = hqlQuery.list();
 			
 			Iterator it = events.iterator();

@@ -196,6 +196,11 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		    stateUp = true;
 		    stateDown = true;
 		}
+		/*
+		if (visible != null && visible.intValue() == 0) {
+			logger.debug("Document not Visible");
+			return null;
+		}*/
 	} 
 	
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)) {
@@ -217,7 +222,10 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		    stateUp = true;
 		    stateDown = false;
 	    }
-	    
+	    if (visible != null && visible.intValue() == 0) {
+			logger.debug("Document not Visible");
+			return null;
+		 }
 	}
 
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
@@ -246,6 +254,10 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 			stateUp = false;
 			stateDown = false;
 		}
+		if (visible != null && visible.intValue() == 0) {
+			logger.debug("Document not Visible");
+			return null;
+		}
 	}
     
     else if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)){
@@ -269,12 +281,14 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
  			
     	stateUp = false;
 	    stateDown = false;
+	    
+	    if (visible != null && visible.intValue() == 0) {
+			logger.debug("Document not Visible");
+			return null;
+		}
     }
     
-	if (visible != null && visible.intValue() == 0) {
-		logger.debug("Document not Visible");
-		return null;
-	    }
+	
 	if (canExec == false && canDev == false && canTest==false){
 		logger.debug("Document never Executable for this user");
 		return null;		

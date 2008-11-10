@@ -108,9 +108,10 @@ public class BIObjectRatingDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjectsRating s where s.id.objId = " + obj.getId();
+			//String hql = "from SbiObjectsRating s where s.id.objId = " + obj.getId();
+			String hql = "from SbiObjectsRating s where s.id.objId = ?";
 			Query query = aSession.createQuery(hql);
-				
+			query.setInteger(0,  obj.getId().intValue());
 			List l = query.list();
 			double totalVotes = 0 ;
 			double sumVotes = 0 ;
@@ -149,9 +150,15 @@ public class BIObjectRatingDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			//String hql = " from SbiObjectsRating s where " +
+			//             " s.id.objId = "+  obj.getId()+ " and s.id.userId = '"+ userid +"'";
+			
 			String hql = " from SbiObjectsRating s where " +
-			             " s.id.objId = "+  obj.getId()+ " and s.id.userId = '"+ userid +"'";
+            " s.id.objId = ? and s.id.userId = ?";
+			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0,  obj.getId().intValue());
+			hqlQuery.setString(1, userid);
 			hibBIObjectsRating = (SbiObjectsRating)hqlQuery.uniqueResult();
 			tx.commit();
 			return hibBIObjectsRating ;

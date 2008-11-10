@@ -80,8 +80,12 @@ public class SnapshotDAOHibImpl extends AbstractHibernateDAO implements ISnapsho
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiSnapshots ss where ss.sbiObject.biobjId = " + idBIObj;
+			//String hql = "from SbiSnapshots ss where ss.sbiObject.biobjId = " + idBIObj;
+			String hql = "from SbiSnapshots ss where ss.sbiObject.biobjId = ?" ;
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, idBIObj.intValue());
+			
 			List hibSnaps = query.list();
 			Iterator iterHibSnaps = hibSnaps.iterator();
 			while(iterHibSnaps.hasNext()) {

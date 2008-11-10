@@ -113,8 +113,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			biObject = loadBIObjectForDetail(id);
-			String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObject.getId() + " order by s.priority asc";
+			//String hql = "from SbiObjPar s where s.sbiObject.biobjId = " + biObject.getId() + " order by s.priority asc";
+			String hql = "from SbiObjPar s where s.sbiObject.biobjId = ? order by s.priority asc";
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, biObject.getId().intValue());
 			List hibObjectPars = hqlQuery.list();
 			SbiObjPar hibObjPar = null;
 			Iterator it = hibObjectPars.iterator();
@@ -226,8 +228,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = " from SbiObjects where biobjId = " + id;
+			//String hql = " from SbiObjects where biobjId = " + id;
+			String hql = " from SbiObjects where biobjId = ?";
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, id.intValue());
 			SbiObjects hibObject = (SbiObjects)hqlQuery.uniqueResult();
 			if (hibObject == null) return null;
 			biObject = toBIObject(hibObject);
@@ -527,8 +531,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		// recover the saved binary hibernate object
 		hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
 		// set to not active the current active template
-		String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId="+hibBIObject.getBiobjId();
+		//String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId="+hibBIObject.getBiobjId();
+		String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId=?";
         Query query = aSession.createQuery(hql);
+        query.setInteger(0, hibBIObject.getBiobjId().intValue());
         try{
         	int rowCount = query.executeUpdate();
         } catch (Exception e) {
@@ -938,12 +944,19 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			// find all id parameters relative to the objects
-			hql = "select par.parId from " +
+			/*hql = "select par.parId from " +
 					     "SbiParameters as par, SbiObjects as obj, SbiObjPar as objpar  " + 
 				         "where obj.biobjId = '"+id+"' and " +
 				         "      obj.biobjId = objpar.sbiObject.biobjId and " +
 				         "      par.parId = objpar.id.sbiParameter.parId ";
+			*/
+			hql = "select par.parId from " +
+		     "SbiParameters as par, SbiObjects as obj, SbiObjPar as objpar  " + 
+	         "where obj.biobjId = ?  and " +
+	         "      obj.biobjId = objpar.sbiObject.biobjId and " +
+	         "      par.parId = objpar.id.sbiParameter.parId ";
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, id.intValue());
 			List idParameters = hqlQuery.list();
 			
 			if(idParameters.size() == 0) {
@@ -1155,6 +1168,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			Query hibQuery = aSession.createQuery("from SbiObjects s  order by s." + filterOrder);
+			//Query hibQuery = aSession.createQuery("from SbiObjects s  order by ?" );
+			//hibQuery.setString(0, filterOrder);
 			List hibList = hibQuery.list();
 			
 			//Criteria criteria = aSession.createCriteria(SbiObjects.class);
@@ -1210,7 +1225,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Query hibQuery = aSession.createQuery(
+			/*Query hibQuery = aSession.createQuery(
 			"select " +
 			"	distinct(objects) " +
 			"from " +
@@ -1222,8 +1237,26 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			"		(functions.path = '" + initialPath + "' " +
 			"		 or functions.path like '" + initialPath + "/%' ) " + 
 			"order by " +
-			"	objects.label");
+			"	objects.label");*/
+			
+			Query hibQuery = aSession.createQuery(
+					"select " +
+					"	distinct(objects) " +
+					"from " +
+					"	SbiObjects as objects, SbiObjFunc as objFuncs, SbiFunctions as functions " +
+					"where " +
+					"	objects.biobjId = objFuncs.id.sbiObjects.biobjId " +
+					"	and objFuncs.id.sbiFunctions.functId = functions.functId " +
+					"	and " +
+					"		(functions.path = ? " +
+					"		 or functions.path like ?) " + 
+					"order by " +
+					"	objects.label");
+			
+			hibQuery.setString(0, initialPath);
+			hibQuery.setString(1, initialPath + "%");
 			List hibList = hibQuery.list();
+			
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
 				realResult.add(toBIObject((SbiObjects) it.next()));
@@ -1257,6 +1290,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			/*
 			Query hibQuery = aSession.createQuery(
 			"select " +
 			"	distinct(objects) " +
@@ -1270,6 +1304,23 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			"		 or functions.path like '" + initialPath + "/%' ) " + 
 			"order by " +
 			"	objects." + filterOrder);
+			*/
+			Query hibQuery = aSession.createQuery(
+					"select " +
+					"	distinct(objects) " +
+					"from " +
+					"	SbiObjects as objects, SbiObjFunc as objFuncs, SbiFunctions as functions " +
+					"where " +
+					"	objects.biobjId = objFuncs.id.sbiObjects.biobjId " +
+					"	and objFuncs.id.sbiFunctions.functId = functions.functId " +
+					"	and " +
+					"		(functions.path = ? "  +
+					"		 or functions.path like ? "  + 
+					"order by ? " );
+			hibQuery.setString(0, initialPath);
+			hibQuery.setString(1, initialPath + "%");
+			hibQuery.setString(2, "	objects." +filterOrder);
+			
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -1307,8 +1358,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = " from SbiObjects where path = '" + path + "'";
+			//String hql = " from SbiObjects where path = '" + path + "'";
+			String hql = " from SbiObjects where path = ? " ;
+			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setSerializable(0, path);
+			
 			SbiObjects hibObject = (SbiObjects)hqlQuery.uniqueResult();
 			if (hibObject == null) return null;
 			biObject = toBIObject(hibObject);

@@ -57,9 +57,16 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
-						 "and (isPublic = true or owner = '"+((UserProfile)profile).getUserId().toString()+"')";
+			//String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
+			//			 "and (isPublic = true or owner = '"+((UserProfile)profile).getUserId().toString()+"')";
+			
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId= ? "+
+			 "and (isPublic = true or owner = ? )";
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, idBIObj.intValue());
+			query.setString(1, ((UserProfile)profile).getUserId().toString());
+			
 			List result = query.list();
 			Iterator it = result.iterator();
 			while (it.hasNext()){
@@ -88,9 +95,15 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
-						 "and isPublic = true";
+			//String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj + " " +
+			//			 "and isPublic = true";
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId= ?" + 
+			 "and isPublic = true";
+			
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, idBIObj.intValue());
+			
 			List result = query.list();
 			Iterator it = result.iterator();
 			while (it.hasNext()){
@@ -120,8 +133,12 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj;
+			//String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId="+idBIObj;
+			String hql = "from SbiSubObjects sso where sso.sbiObject.biobjId=?";
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, idBIObj.intValue());
+			
 			List result = query.list();
 			Iterator it = result.iterator();
 			while (it.hasNext()){

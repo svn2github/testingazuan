@@ -123,9 +123,12 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId;
+			//String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId;
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = ?" ;
 
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, objId.intValue());
+			
 			List hibList = hqlQuery.list();
 			
 			tx.commit();
@@ -142,7 +145,15 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
-		} finally {
+		} catch (Exception ex){
+			logException(ex);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		}
+		finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
@@ -405,10 +416,16 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId + " and (vp.vpScope = 'Public' or " +
-					"vp.vpOwner = '" + ((UserProfile)userProfile).getUserId().toString() + "')";
+			//String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId + " and (vp.vpScope = 'Public' or " +
+			//		"vp.vpOwner = '" + ((UserProfile)userProfile).getUserId().toString() + "')";
+			
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = ? and (vp.vpScope = 'Public' or  "+
+			"vp.vpOwner = ?)";
 
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, objId.intValue());
+			hqlQuery.setString(1, ((UserProfile)userProfile).getUserId().toString());
+			
 			List hibList = hqlQuery.list();
 			
 			tx.commit();

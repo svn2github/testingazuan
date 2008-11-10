@@ -56,9 +56,15 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId + 
-						 " and son.execReq = '"+execIdentif+"'";
+			//String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId + 
+			//			 " and son.execReq = '"+execIdentif+"'";
+			
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = ?"  + 
+			 " and son.execReq = ?";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
+			query.setString(1, execIdentif);
+			
 			SbiObjNotes hibObjNote = (SbiObjNotes)query.uniqueResult();
 			if(hibObjNote!=null) {
 				objNote = toObjNote(hibObjNote);
@@ -165,8 +171,10 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId;
+			//String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId;
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = ?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
 			List notes = query.list();
 			Iterator notesIt = notes.iterator();
 			while (notesIt.hasNext()) {

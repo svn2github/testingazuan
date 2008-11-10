@@ -60,10 +60,14 @@ implements ISubreportDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			//hql = " from SbiSubreports as subreport " + 
+	        // "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
+			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
+	         "where subreport.id.masterReport.biobjId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0,  master_rpt_id.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -102,10 +106,14 @@ implements ISubreportDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			//hql = " from SbiSubreports as subreport " + 
+	        // "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
+			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
+	         "where subreport.id.subReport.biobjId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, sub_rpt_id.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -161,10 +169,14 @@ implements ISubreportDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			//hql = " from SbiSubreports as subreport " + 
+	        // "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
+			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.id.masterReport.biobjId = " + master_rpt_id.toString();
+	         "where subreport.id.masterReport.biobjId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0,master_rpt_id.intValue());
 			subreports = hqlQuery.list();
 			
 			Iterator it = subreports.iterator();
@@ -202,10 +214,14 @@ implements ISubreportDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
+			//hql = " from SbiSubreports as subreport " + 
+	        // "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
+			
 			hql = " from SbiSubreports as subreport " + 
-	         "where subreport.id.subReport.biobjId = " + sub_rpt_id.toString();
+	         "where subreport.id.subReport.biobjId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, sub_rpt_id.intValue());
 			subreports = hqlQuery.list();
 			
 			Iterator it = subreports.iterator();

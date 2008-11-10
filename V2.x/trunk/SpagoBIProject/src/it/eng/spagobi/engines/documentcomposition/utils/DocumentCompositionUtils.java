@@ -128,6 +128,11 @@ public class DocumentCompositionUtils {
 	 */
 	private static String getParametersUrl(Document document, SourceBean requestSB){
 		String paramUrl = "";
+		String[] paramsVP = null;
+		String vpContent = (String)requestSB.getAttribute("content");
+		if (vpContent != null){
+		 paramsVP = vpContent.split("&");  
+		}
 		
 		//set others parameters value
 		Properties lstParams = document.getParams();
@@ -143,7 +148,11 @@ public class DocumentCompositionUtils {
 	    		key = lstParams.getProperty(tmpKey);
 	    		if (key == null) break;
 	    		value = (String)requestSB.getAttribute(key);
-		    	//if value isn't defined, gets the default value
+		    	//if value isn't defined, check if there is a value into content parameter (there is when a document is called from a viewpoint) gets the default value
+	    		if((value == null || value.equals("")) && paramsVP != null){
+	    			value = getVPValue(key, paramsVP);
+	    		}
+	    		//if value isn't defined, gets the default value
 			    if(value == null || value.equals("")){
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 		    	}
@@ -178,5 +187,17 @@ public class DocumentCompositionUtils {
 			retHM.put(key, value);
 		}
 		return retHM;
+	}
+	
+	private static String getVPValue(String key, String[] params){
+		String retVal = "";
+		for (int i=0; i < params.length; i++){
+			if (params[i].startsWith(key)){
+				retVal = params[i].substring(params[i].indexOf("=")+1);
+				break;
+			}
+		}
+		return retVal;
+		
 	}
 }

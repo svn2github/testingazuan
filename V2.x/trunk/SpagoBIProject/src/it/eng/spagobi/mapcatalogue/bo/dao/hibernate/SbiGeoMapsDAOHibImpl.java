@@ -332,8 +332,10 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			tx = tmpSession.beginTransaction();
 			Integer mapIdInt = Integer.valueOf(mapId);
 			
-			String hql = " from SbiGeoMapFeatures s where s.id.mapId = "+ mapIdInt;
+			//String hql = " from SbiGeoMapFeatures s where s.id.mapId = "+ mapIdInt;
+			String hql = " from SbiGeoMapFeatures s where s.id.mapId =?";
 			Query aQuery = tmpSession.createQuery(hql);
+			aQuery.setInteger(0, mapIdInt.intValue());
 			
 			List biFeaturesAssocitedWithMap = aQuery.list();
 			if (biFeaturesAssocitedWithMap.size() > 0)

@@ -70,10 +70,14 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			/*hql = " from SbiGeoMapFeatures as mf " + 
+	         "where mf.id.mapId = " + mapId.toString();*/
+			
 			hql = " from SbiGeoMapFeatures as mf " + 
-	         "where mf.id.mapId = " + mapId.toString();
+	         "where mf.id.mapId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, mapId.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -127,10 +131,14 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			/*hql = " from SbiGeoMapFeatures as mf " + 
+	         "where mf.id.mapId = " + mapId.toString();*/
+			
 			hql = " from SbiGeoMapFeatures as mf " + 
-	         "where mf.id.mapId = " + mapId.toString();
+	         "where mf.id.mapId = ?";
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, mapId.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -184,10 +192,14 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			/*hql = " from SbiGeoMapFeatures as mf " + 
+	         "where mf.id.featureId = " + featureId.toString();*/
+			
 			hql = " from SbiGeoMapFeatures as mf " + 
-	         "where mf.id.featureId = " + featureId.toString();
+	         "where mf.id.featureId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, featureId.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -240,10 +252,14 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
+			/*hql = " from SbiGeoMapFeatures as mf " + 
+	         "where mf.id.featureId = " + featureId.toString();*/
+			
 			hql = " from SbiGeoMapFeatures as mf " + 
-	         "where mf.id.featureId = " + featureId.toString();
+	         "where mf.id.featureId = ?" ;
 			
 			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, featureId.intValue());
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();
@@ -294,9 +310,14 @@ public class SbiGeoMapFeaturesDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiGeoMapFeatures s where s.id.mapId=" + mapId.toString() + 
-			             " and s.id.featureId=" +  featureId.toString();
+			/*String hql = "from SbiGeoMapFeatures s where s.id.mapId=" + mapId.toString() + 
+			             " and s.id.featureId=" +  featureId.toString();*/
+			
+			String hql = "from SbiGeoMapFeatures s where s.id.mapId=?"  + 
+            " and s.id.featureId=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, mapId.intValue());
+			query.setInteger(1, featureId.intValue());
 			//toReturn =(GeoMapFeature) query.uniqueResult();			
 			SbiGeoMapFeatures hibMapFeature = (SbiGeoMapFeatures)query.uniqueResult();
 			if (hibMapFeature == null) return null;

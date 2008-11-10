@@ -292,7 +292,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject is not null and ");
 			hql.append(	"		a.sbiEngine is not null and ");
 			hql.append(	"		a.sbiObject.label not like 'SBI_%' and ");
-			hql.append(	"		a.userGroup in (" + usergroups + ") and ");
+			hql.append(	"		a.userGroup in (?) and ");
 			hql.append(	"		(a.sbiSubObject is null or a.sbiSubObject.subObjId = a.subObjId) ");
 			hql.append(	"group by 	a.sbiObject.biobjId, ");
 			hql.append(	"			a.sbiObject.label, ");
@@ -305,6 +305,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"			a.sbiEngine.name ");
 			hql.append(	"order by count(a.sbiObject.biobjId) desc ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
+			hqlQuery.setString(0, usergroups);
 			hqlQuery.setMaxResults(limit);
 			List result = hqlQuery.list();
 			Iterator resultIt = result.iterator();
@@ -359,7 +360,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject is not null and ");
 			hql.append(	"		a.sbiEngine is not null and ");
 			hql.append(	"		a.sbiObject.label not like 'SBI_%' and ");
-			hql.append(	"		a.userName = '" + userId + "' and ");
+			hql.append(	"		a.userName = ? and ");
 			hql.append(	"		(a.sbiSubObject is null or a.sbiSubObject.subObjId = a.subObjId) ");
 			hql.append(	"group by 	a.sbiObject.biobjId, ");
 			hql.append(	"			a.sbiObject.label, ");
@@ -372,6 +373,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"			a.sbiEngine.name ");
 			hql.append(	"order by max(a.requestTime) desc ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
+			hqlQuery.setString(0, userId);
 			hqlQuery.setMaxResults(limit);
 			List result = hqlQuery.list();
 			Iterator resultIt = result.iterator();
@@ -429,9 +431,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		SbiAudit a ");
 			hql.append(	"where 	");
 			hql.append(	"		a.sbiObject is not null and ");
-			hql.append(	"		a.sbiObject.biobjId = '" + objId + "' ");
+			hql.append(	"		a.sbiObject.biobjId = ? ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
-			
+			hqlQuery.setInteger(0, objId.intValue());
 			Timestamp date = (Timestamp) hqlQuery.uniqueResult();
 			toReturn.setDocumentId(objId);
 			toReturn.setExecutionStartTime(date);
@@ -447,10 +449,11 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql2.append(	"		SbiAudit a ");
 			hql2.append(	"where 	");
 			hql2.append(	"		a.sbiObject is not null and ");
-			hql2.append(	"		a.sbiObject.biobjId = '" + objId + "' and ");	
-			hql2.append(	"		a.executionStartTime = '" + date + "' ");
+			hql2.append(	"		a.sbiObject.biobjId = ? and ");	
+			hql2.append(	"		a.executionStartTime = ? ");
 			Query hqlQuery2 = aSession.createQuery(hql2.toString());
-			
+			hqlQuery2.setInteger(0, objId.intValue());
+			hqlQuery2.setTimestamp(1, date);
 			Object[] row = (Object[]) hqlQuery2.uniqueResult();
 
 			toReturn.setUserName((String) row[0]);
@@ -495,9 +498,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		SbiAudit a ");
 			hql.append(	"where 	");
 			hql.append(	"		a.sbiObject is not null and ");
-			hql.append(	"		a.sbiObject.biobjId = '" + objId + "' ");
+			hql.append(	"		a.sbiObject.biobjId = ? ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
-			
+			hqlQuery.setInteger(0, objId.intValue());
 			List l = hqlQuery.list();
 			int x = 0 ;
 			int count = 1 ;

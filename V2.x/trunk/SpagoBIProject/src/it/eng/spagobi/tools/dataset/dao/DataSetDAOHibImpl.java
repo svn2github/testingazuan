@@ -474,9 +474,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			tx = aSession.beginTransaction();
 			Integer dsIdInt = Integer.valueOf(dsId);
 
-			String hql = " from SbiObjects s where s.dataSet.dsId = "+ dsIdInt;
+			//String hql = " from SbiObjects s where s.dataSet.dsId = "+ dsIdInt;
+			String hql = " from SbiObjects s where s.dataSet.dsId = ?";
 			Query aQuery = aSession.createQuery(hql);
-
+			aQuery.setInteger(0, dsIdInt.intValue());
 			List biObjectsAssocitedWithDs = aQuery.list();
 			if (biObjectsAssocitedWithDs.size() > 0)
 				bool = true;

@@ -417,9 +417,10 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			tx = aSession.beginTransaction();
 			Integer dsIdInt = Integer.valueOf(dsId);
 			
-			String hql = " from SbiObjects s where s.dataSource.dsId = "+ dsIdInt;
+			//String hql = " from SbiObjects s where s.dataSource.dsId = "+ dsIdInt;
+			String hql = " from SbiObjects s where s.dataSource.dsId = ?";
 			Query aQuery = aSession.createQuery(hql);
-			
+			aQuery.setInteger(0, dsIdInt.intValue());
 			List biObjectsAssocitedWithDs = aQuery.list();
 			if (biObjectsAssocitedWithDs.size() > 0)
 				bool = true;
@@ -467,9 +468,10 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			tx = aSession.beginTransaction();
 			Integer dsIdInt = Integer.valueOf(dsId);
 			
-			String hql = " from SbiEngines s where s.dataSource.dsId = "+ dsIdInt;
+			//String hql = " from SbiEngines s where s.dataSource.dsId = "+ dsIdInt;
+			String hql = " from SbiEngines s where s.dataSource.dsId = ?";
 			Query aQuery = aSession.createQuery(hql);
-			
+			aQuery.setInteger(0, dsIdInt.intValue());
 			List biObjectsAssocitedWithEngine = aQuery.list();
 			if (biObjectsAssocitedWithEngine.size() > 0)
 				bool = true;

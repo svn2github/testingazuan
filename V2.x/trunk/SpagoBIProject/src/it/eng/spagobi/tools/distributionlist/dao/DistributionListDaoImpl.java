@@ -107,11 +107,13 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tx = aSession.beginTransaction();
 			SbiDistributionListsObjects hibDistributionListsObjects = new SbiDistributionListsObjects();
 			
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+biobId;
+			//String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+biobId;
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=?";
 			Query query = aSession.createQuery(hql);
-				
-				List l = query.list();
-				if(!l.isEmpty()){
+			query.setInteger(0, dl.getId());
+			query.setInteger(1, biobId);
+			List l = query.list();
+			if(!l.isEmpty()){
 			    Iterator it = l.iterator();
 			    while(it.hasNext()){
 			    	SbiDistributionListsObjects temp = (SbiDistributionListsObjects)it.next();
@@ -123,7 +125,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			    		aSession.delete(hibDistributionListsObjects);
 			    	}
 			    }			
-				}
+			}
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while erasing Distribution List objects related to the Distribution List "+ ((dl == null)?"":String.valueOf(dl.getId())) , he);
@@ -439,9 +441,10 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tx = aSession.beginTransaction();
 			Integer dlIdInt = Integer.valueOf(dlId);
 			
-			String hql = " from SbiObjects s where s.distributionList.dlId = "+ dlIdInt;
+			//String hql = " from SbiObjects s where s.distributionList.dlId = "+ dlIdInt;
+			String hql = " from SbiObjects s where s.distributionList.dlId = ?";
 			Query aQuery = aSession.createQuery(hql);
-			
+			aQuery.setInteger(0, dlIdInt.intValue());
 			List biObjectsAssocitedWithDl = aQuery.list();
 			if (biObjectsAssocitedWithDl.size() > 0)
 				bool = true;
@@ -639,8 +642,12 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 		try {
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" and sdlo.xml='"+xml+"'" ;
+			//String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" and sdlo.xml='"+xml+"'" ;
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=? and sdlo.xml=?" ;
 			Query query = tmpSession.createQuery(hql);
+			query.setInteger(0, dl.getId());
+			query.setInteger(1, objId);
+			query.setString(2, xml);
 			
 			SbiDistributionListsObjects hibDL = (SbiDistributionListsObjects) query.uniqueResult();
 			if (hibDL == null) return false;							
@@ -674,9 +681,11 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+			//String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId;
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=?";
 			Query query = tmpSession.createQuery(hql);
-			
+			query.setInteger(0, dl.getId());
+			query.setInteger(1, objId);
 			List l = query.list();
 			if(!l.isEmpty()){
 		    Iterator it = l.iterator();
@@ -719,9 +728,11 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" group by sdlo.xml";
+			//String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" group by sdlo.xml";
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=? group by sdlo.xml";
 			Query query = tmpSession.createQuery(hql);
-			
+			query.setInteger(0, dl.getId());
+			query.setInteger(1, objId);
 			List l = query.list();
 			
 			if(!l.isEmpty()){

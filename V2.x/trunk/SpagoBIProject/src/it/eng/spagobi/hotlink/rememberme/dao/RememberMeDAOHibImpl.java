@@ -63,8 +63,10 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiRememberMe srm where srm.id=" + rememberMeId;
+			//String hql = "from SbiRememberMe srm where srm.id=" + rememberMeId;
+			String hql = "from SbiRememberMe srm where srm.id=?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, rememberMeId.intValue());
 			SbiRememberMe hibObj = (SbiRememberMe) query.uniqueResult();
 			if (hibObj == null) {
 				logger.warn("SbiRememberMe with id = " + rememberMeId + " not found!");

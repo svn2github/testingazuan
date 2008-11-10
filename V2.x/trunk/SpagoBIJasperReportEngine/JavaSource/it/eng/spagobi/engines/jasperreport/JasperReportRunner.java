@@ -12,7 +12,6 @@ import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetWsServiceProxy;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 

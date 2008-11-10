@@ -70,11 +70,21 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			// get the existing object
-			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + aObjParuse.getObjParId() + 
+			/*String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + aObjParuse.getObjParId() + 
 			             " and s.id.sbiParuse.useId = " + aObjParuse.getParuseId() + 
 			             " and s.id.sbiObjParFather.objParId = " + aObjParuse.getObjParFatherId() + 
-			             " and s.id.filterOperation = '" + aObjParuse.getFilterOperation()+"'";
+			             " and s.id.filterOperation = '" + aObjParuse.getFilterOperation()+"'";*/
+			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = ? " + 
+            " and s.id.sbiParuse.useId = ? "  + 
+            " and s.id.sbiObjParFather.objParId = ? "  + 
+            " and s.id.filterOperation = ? " ;
+			
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, aObjParuse.getObjParId().intValue());
+			hqlQuery.setInteger(1, aObjParuse.getParuseId().intValue());
+			hqlQuery.setInteger(2, aObjParuse.getObjParFatherId().intValue());
+			hqlQuery.setString(3, aObjParuse.getFilterOperation());
+			
 			SbiObjParuse sbiObjParuse = (SbiObjParuse)hqlQuery.uniqueResult();
 			if (sbiObjParuse == null) {
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
@@ -197,11 +207,20 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			// get the existing object
-			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + aObjParuse.getObjParId() + 
+			/*String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + aObjParuse.getObjParId() + 
 			             " and s.id.sbiParuse.useId = " + aObjParuse.getParuseId() + 
 			             " and s.id.sbiObjParFather.objParId = " + aObjParuse.getObjParFatherId() + 
-			             " and s.id.filterOperation = '" + aObjParuse.getFilterOperation() + "'";
+			             " and s.id.filterOperation = '" + aObjParuse.getFilterOperation() + "'";*/
+			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = ? "  + 
+            " and s.id.sbiParuse.useId = ? " +  
+            " and s.id.sbiObjParFather.objParId = ? "  + 
+            " and s.id.filterOperation = ? ";
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, aObjParuse.getObjParId().intValue());
+			hqlQuery.setInteger(1, aObjParuse.getParuseId().intValue());
+			hqlQuery.setInteger(2, aObjParuse.getObjParFatherId().intValue());
+			hqlQuery.setString(3,  aObjParuse.getFilterOperation());
+			
 			SbiObjParuse sbiObjParuse = (SbiObjParuse)hqlQuery.uniqueResult();
 			if (sbiObjParuse == null) {		
 				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
@@ -251,8 +270,10 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + objParId + " order by s.prog";	
+			//String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = " + objParId + " order by s.prog";	
+			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId = ? order by s.prog";
 			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, objParId.intValue());
 			List sbiObjParuses = hqlQuery.list();
 			Iterator it = sbiObjParuses.iterator();
 			while (it.hasNext()){
@@ -315,8 +336,10 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			// get all the sbiobjparuse objects which have the parameter as the father
-			String hql = "from SbiObjParuse s where s.id.sbiObjParFather=" + objParFatherId;
+			//String hql = "from SbiObjParuse s where s.id.sbiObjParFather=" + objParFatherId;
+			String hql = "from SbiObjParuse s where s.id.sbiObjParFather=? " ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, objParFatherId.intValue());
 			List objParuses = query.list();
 			if (objParuses == null || objParuses.size() == 0) 
 				return toReturn;
@@ -364,8 +387,10 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "from SbiObjParuse s where s.id.sbiParuse.useId = " + useId;
+			//String hql = "from SbiObjParuse s where s.id.sbiParuse.useId = " + useId;
+			String hql = "from SbiObjParuse s where s.id.sbiParuse.useId = ?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, useId.intValue());
 			List result = query.list();
 			Iterator it = result.iterator();
 			while (it.hasNext()){
@@ -403,7 +428,7 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = 
+			/*String hql = 
 					"select " +
 					"	distinct(obj.label) " +
 					"from " +
@@ -411,7 +436,17 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 					"where " +
 					"	obj.sbiObjPars.objParId = s.id.sbiObjPar.objParId and " +
 					"	s.id.sbiParuse.useId = " + useId;
+			*/
+			String hql = 
+				"select " +
+				"	distinct(obj.label) " +
+				"from " +
+				"	SbiObjects obj, SbiObjParuse s " +
+				"where " +
+				"	obj.sbiObjPars.objParId = s.id.sbiObjPar.objParId and " +
+				"	s.id.sbiParuse.useId = ?" ;
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, useId.intValue());
 			List result = query.list();
 			toReturn = result;
 			tx.commit();
@@ -456,10 +491,18 @@ public class ObjParuseDAOHibImpl extends AbstractHibernateDAO implements IObjPar
 			aCriteria.add(aCriterion);
 			List sbiObjParuses = (List) aCriteria.list();
 			*/
-			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId=" + objParId + 
+			/*String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId=" + objParId + 
 			             " and s.id.sbiParuse.useId=" +  paruseId +
 			             " order by s.prog";
+			*/
+			String hql = "from SbiObjParuse s where s.id.sbiObjPar.objParId=? "+ 
+            " and s.id.sbiParuse.useId=? " +
+            " order by s.prog";
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, objParId.intValue());
+			query.setInteger(1, paruseId.intValue());
+			
 			List sbiObjParuses = query.list();
 			if(sbiObjParuses==null) 
 				return objparuses;

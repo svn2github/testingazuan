@@ -159,10 +159,18 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			String hql = "select s from SbiParuse s, SbiParuseDet spd where s.sbiParameters.parId="+parameterId+ " and " +
+			/*String hql = "select s from SbiParuse s, SbiParuseDet spd where s.sbiParameters.parId="+parameterId+ " and " +
 					     "s.useId = spd.id.sbiParuse.useId and " +
-					     "spd.id.sbiExtRoles.name='"+roleName+"'";
+					     "spd.id.sbiExtRoles.name='"+roleName+"'";*/
+			
+			String hql = "select s from SbiParuse s, SbiParuseDet spd where s.sbiParameters.parId=?  and " +
+		     "s.useId = spd.id.sbiParuse.useId and " +
+		     "spd.id.sbiExtRoles.name=? ";
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, parameterId);
+			query.setString(1, roleName);
+			
 			SbiParuse hibParuse = (SbiParuse)query.uniqueResult();	
 			toReturn = toParameterUse(hibParuse);
 			tx.commit();
@@ -559,8 +567,10 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiParuse s where s.sbiParameters.parId="+parId;
+			//String hql = "from SbiParuse s where s.sbiParameters.parId="+parId;
+			String hql = "from SbiParuse s where s.sbiParameters.parId=? ";
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, parId.intValue());
 			List result = query.list();
 			
 			Iterator it = result.iterator();
@@ -704,8 +714,11 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "from SbiParuse s where s.sbiLov.lovId="+lovId;
+			//String hql = "from SbiParuse s where s.sbiLov.lovId="+lovId;
+			String hql = "from SbiParuse s where s.sbiLov.lovId=?";
+			
 			Query query = aSession.createQuery(hql);
+			query.setInteger(0, lovId.intValue());
 			List result = query.list();
 			
 			Iterator it = result.iterator();

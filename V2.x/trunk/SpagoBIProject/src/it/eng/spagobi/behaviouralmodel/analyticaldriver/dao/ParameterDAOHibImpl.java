@@ -37,17 +37,16 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -64,7 +63,7 @@ import org.hibernate.criterion.Expression;
  */
 public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 		IParameterDAO {
-
+	static private Logger logger = Logger.getLogger(ParameterDAOHibImpl.class);
 	/**
 	 * Load for detail by parameter id.
 	 * 
@@ -189,10 +188,7 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 				// for each parameter. The control is executed before the load of the object so 
 				// the list would have to contain only one element but if the list contains more than one
 				// object it's an error
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-								    "ParameterDAOHibImpl", 
-								    "loadForExecutionByParameterIDandRoleName", 
-								    "the parameter with id "+parameterID+" has more than one parameteruse for the role "+roleName);
+				logger.error("the parameter with id "+parameterID+" has more than one parameteruse for the role "+roleName);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 			}
 			tx.commit();

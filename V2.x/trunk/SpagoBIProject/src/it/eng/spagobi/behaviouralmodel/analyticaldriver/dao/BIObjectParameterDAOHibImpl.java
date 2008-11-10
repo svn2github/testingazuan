@@ -34,14 +34,13 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -54,7 +53,7 @@ import org.hibernate.Transaction;
  * @author Zoppello
  */
 public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements IBIObjectParameterDAO{
-
+	static private Logger logger = Logger.getLogger(BIObjectParameterDAOHibImpl.class);
 	
 	/**
 	 * Load by id.
@@ -145,10 +144,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			SbiObjPar hibObjPar = (SbiObjPar) aSession.load(SbiObjPar.class,  aBIObjectParameter.getId());
 
 			if (hibObjPar == null) {
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-					    "BIObjectParameterDAOHibImpl", 
-					    "modifyBIObjectParameter", 
-					    "the BIObjectParameter with id="+aBIObjectParameter.getId()+" does not exist.");
+				logger.error("the BIObjectParameter with id="+aBIObjectParameter.getId()+" does not exist.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1033);
 			}
 			
@@ -274,10 +270,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 			SbiObjPar hibObjPar = (SbiObjPar) aSession.load(SbiObjPar.class,  aBIObjectParameter.getId());
 			
 			if (hibObjPar == null) {		
-				SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-				    "BIObjectParameterDAOHibImpl", 
-				    "eraseBIObjectParameter", 
-				    "the BIObjectParameter with id="+aBIObjectParameter.getId()+" does not exist.");
+				logger.error("the BIObjectParameter with id="+aBIObjectParameter.getId()+" does not exist.");
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 1034);
 			}
 			
@@ -386,10 +379,7 @@ public class BIObjectParameterDAOHibImpl extends AbstractHibernateDAO implements
 				// if the priority is different from the value expected, 
 				// recalculates it for all the parameter of the document
 				if (priority == null || priority.intValue() != count) {
-					SpagoBITracer.minor(SpagoBIConstants.NAME_MODULE, 
-						    "BIObjectParameterDAOHibImpl", 
-						    "loadBIObjectParametersById", 
-						    "The priorities of the biparameters for the document with id = " + biObjectID + " are not sorted. Priority recalculation starts.");
+					logger.error("The priorities of the biparameters for the document with id = " + biObjectID + " are not sorted. Priority recalculation starts.");
 					recalculateBiParametersPriority(biObjectID, aSession);
 					// restarts this method in order to load updated priorities
 					aBIObjectParameter.setPriority(new Integer(count));

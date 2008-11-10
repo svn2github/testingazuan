@@ -249,15 +249,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				}else{
 					//creates a document without the representation of the kpivalues but only with its values for each resoruce
 					text += "**************************************";
-					System.out.println("**********************************************");
+					
 					text += "RESOURCE="+r.getName();
-					System.out.println("RESOURCE="+r.getName());
+					
 					text += "Value="+value ;
-					System.out.println("Value="+value);
+					
 					text += "Weight="+weight;
-					System.out.println("Weight="+weight);
+					
 					text += "Thresholds:";
-					System.out.println("Thresholds:");
+					
 					Iterator threshIt = thresholds.iterator();
 					while(threshIt.hasNext()){
 						Threshold t = (Threshold)threshIt.next();
@@ -265,27 +265,27 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						Double min = null;
 						Double max = null;
 						text += "++++++++Threshold Type:"+type;
-						System.out.println("++++++++Threshold Type:"+type);
+						
 						if (type.equals("RANGE")){
 							
 							min = t.getMinValue();
 							max = t.getMaxValue();
 							text += "++++++++Min:"+min;
-							System.out.println("++++++++Min:"+min);
+							
 							text += "++++++++Max:"+max;
-							System.out.println("++++++++Max:"+max);
+							
 							
 						}else if (type.equals("MIN")){
 							
 							min = t.getMinValue();
 							text += "++++++++Min:"+min;
-							System.out.println("++++++++Min:"+min);
+							
 							
 						}else if (type.equals("MAX")){
 							
 							max = t.getMaxValue();
 							text += "++++++++Max:"+max;
-							System.out.println("++++++++Max:"+max);
+							
 							
 						}
 					}
@@ -299,11 +299,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
 
-				response.setAttribute("datasets",datasets);
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
 				response.setAttribute("sbi",sbi);
-				response.setAttribute("text",text);
+				response.setAttribute("kpiValues",kpiValues);
+				response.setAttribute("show_chart",show_chart);
 
 			}
 			catch (Exception eex) {

@@ -29,22 +29,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.io.PrintWriter"%>
 <%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
 <%@page import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.ChartImpl"%>
 <%@page import="org.jfree.chart.ChartRenderingInfo"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
 <%@page import="org.jfree.data.general.Dataset"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
-
+<%@page import="it.eng.spagobi.kpi.config.bo.*"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.*"%>
+<%@page import="it.eng.spagobi.kpi.model.bo.*"%>
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="java.util.Vector"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
-<%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
@@ -61,9 +55,62 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			userId=(String)((UserProfile)userProfile).getUserId();
 		}
 
-		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-		String txt = (String)sbModuleResponse.getAttribute("sbi");
+	}
+		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
+		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");
+		List kpiValues =(List)sbModuleResponse.getAttribute("kpiValues");
+			Iterator kpiVIt = kpiValues.iterator();
+			String text = "";
+			while (kpiVIt.hasNext()){
+				KpiValue kpiV = (KpiValue)kpiVIt.next();
+				Resource r = kpiV.getR();
+				List thresholds = kpiV.getThresholds();
+				String value = kpiV.getValue();
+				Double weight = kpiV.getWeight();
+				if (show_chart){
+					//creates a document with the representation of the kpivalues for each resource
+					
+				}else{
+					//creates a document without the representation of the kpivalues but only with its values for each resoruce
+					String resName = r.getName();
+					%>
+					<div>*******************************************</div>
+					<div>RESOURCE = <%=resName%></div>
+					<div>Value = <%=value%></div>
+					<div>Weight = <%=weight%></div>					
+					<div>Thresholds :</div>
+	
+					<%
+					Iterator threshIt = thresholds.iterator();
+					while(threshIt.hasNext()){
+						Threshold t = (Threshold)threshIt.next();
+						String type = t.getType();
+						Double min = null;
+						Double max = null;						
+						%>
+						<div>Threshold Type: <%=type%></div>
+						<%
+						if (type.equals("RANGE")){						
+							min = t.getMinValue();
+							max = t.getMaxValue();
+							%>
+							<div>Min: <%=min%></div>
+							<div>Max: <%=max%></div>
+							<%														
+						}else if (type.equals("MIN")){						
+							min = t.getMinValue();
+							%>
+							<div>Min: <%=min%></div>
+							<%
+						}else if (type.equals("MAX")){							
+							max = t.getMaxValue();
+							%>
+							<div>Max: <%=max%></div>
+							<%
+						}					
+					}
+				}				
+			}
 		%>
-		<div><%=txt%></div>
 
 		

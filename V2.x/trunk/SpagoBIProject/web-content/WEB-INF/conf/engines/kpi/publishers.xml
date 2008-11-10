@@ -2,7 +2,7 @@
 
 <PUBLISHERS>
   	
-    <PUBLISHER name="CHARTKPI">
+    <PUBLISHER name="KPI">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
         		<ITEM mode="VIEW" resource="/jsp/engines/kpi/kpi.jsp"/>

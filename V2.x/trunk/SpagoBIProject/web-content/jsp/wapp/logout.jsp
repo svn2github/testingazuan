@@ -1,7 +1,65 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%
+
 session.invalidate();
-String context = request.getContextPath();
-response.sendRedirect(context);
+
+//Check if SSO is active
+ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+String active = (String) validateSB.getCharacters();
+if (active == null || active.equalsIgnoreCase("false")) {
+	String context = request.getContextPath();
+	response.sendRedirect(context);
+}
+else if (active != null && active.equalsIgnoreCase("true")) {
+
+	SourceBean logoutSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.SECURITY_LOGOUT_URL");
+	String urlLogout = (String) logoutSB.getCharacters();
+	
 %>
+
+<iframe id='invalidSessionJasper'
+                 name='invalidSessionJasper'
+                 src='<%=urlLogout %>'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe> 
+<%} %>
+<iframe id='invalidSessionJasper'
+                 name='invalidSessionJasper'
+                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIJasperReportEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<iframe id='invalidSessionJasper'
+                 name='invalidSessionJasper'
+                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<iframe id='invalidSessionJasper'
+                 name='invalidSessionJasper'
+                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIQbeEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<iframe id='invalidSessionJasper'
+                 name='invalidSessionJasper'
+                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIGeoEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<%if (active != null && active.equalsIgnoreCase("true")) { %>
+	<script>window.close();</script>
+<% } %>

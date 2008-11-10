@@ -483,7 +483,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
     	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
     	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
     	String active = (String) validateSB.getCharacters();
-    	if (active == null || active.equalsIgnoreCase("false")) {
+    	//if (active == null || active.equalsIgnoreCase("false")) {
 		%>
 			tb.addSeparator();
 
@@ -498,7 +498,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		    );
 		
 		<%
-	  	}
+	  	//}
 		%>
 		
 	});

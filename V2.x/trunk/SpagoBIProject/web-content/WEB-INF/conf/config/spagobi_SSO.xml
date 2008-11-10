@@ -7,4 +7,5 @@
 	 </VALIDATE-USER>
 	 <FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
 	 <PASS>PASS</PASS>  
+	 <SECURITY_LOGOUT_URL>https://localhost:8443/exo-cas-2/logout</SECURITY_LOGOUT_URL>
 </SPAGOBI_SSO>

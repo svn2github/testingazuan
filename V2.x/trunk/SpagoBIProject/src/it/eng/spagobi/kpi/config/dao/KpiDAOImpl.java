@@ -2,6 +2,7 @@ package it.eng.spagobi.kpi.config.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
@@ -12,6 +13,7 @@ import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
@@ -84,7 +86,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
-	public SbiKpiInstance loadKpiInstanceById(Integer id) throws EMFUserError {
+	public SbiKpiInstance loadSbiKpiInstanceById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		SbiKpiInstance toReturn = null;
 		Session aSession = null;
@@ -114,7 +116,37 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
-	public SbiKpi loadKpiById(Integer id) throws EMFUserError {
+	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		KpiInstance toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,id);
+			toReturn = toKpiInstance(hibSbiKpiInstance);
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	public SbiKpi loadSbiKpiById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		SbiKpi toReturn = null;
 		Session aSession = null;
@@ -125,6 +157,36 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			SbiKpi hibSbiKpiInstance = (SbiKpi)aSession.load(SbiKpi.class,id);
 			toReturn = hibSbiKpiInstance;
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	public Kpi loadKpiById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		Kpi toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpi hibSbiKpiInstance = (SbiKpi)aSession.load(SbiKpi.class,id);
+			toReturn = toKpi(hibSbiKpiInstance);
 			
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
@@ -248,8 +310,21 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiKpiValue hibKpiValue = toSbiKpiValue(value);
-
+			SbiKpiValue hibKpiValue = new SbiKpiValue();
+			Date beginDt = value.getBeginDate();
+			Date endDt = value.getEndDate();
+			String kpiValue = value.getValue().toString();
+			Integer kpiInstanceId = value.getKpiInstanceId();
+			SbiKpiInstance sbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,kpiInstanceId);
+			Resource r = value.getR();
+			SbiResources sbiResources = toSbiResource(r);
+			
+			hibKpiValue.setBeginDt(beginDt);
+			hibKpiValue.setEndDt(endDt);
+			hibKpiValue.setValue(kpiValue);
+			hibKpiValue.setSbiKpiInstance(sbiKpiInstance);
+			hibKpiValue.setSbiResources(sbiResources);
+			
 			aSession.save(hibKpiValue);
 			tx.commit();
 			
@@ -271,6 +346,45 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 	}
 	
+	public List getThresholds(KpiInstance k)throws EMFUserError{
+		
+		logger.debug("IN");
+		List thresholds = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,k.getKpiInstanceId());
+			SbiThreshold t = hibSbiKpiInstance.getSbiThreshold();
+			
+			Set thresholdValues = t.getSbiThresholdValues();
+			Iterator it = thresholdValues.iterator();
+			while (it.hasNext()){
+				SbiThresholdValue val = (SbiThresholdValue) it.next();
+				Threshold tr = toThreshold(val);
+				thresholds.add(tr);
+			}
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " , he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return thresholds;
+	}
+	
 	public Date calculateEndDate(KpiValue value, Date beginDate) throws EMFUserError {
 		logger.debug("IN");
 		Date toReturn = null;
@@ -281,7 +395,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			Integer kpiInstanceID = value.getKpiInstanceId();
-			SbiKpiInstance instK = loadKpiInstanceById(kpiInstanceID);
+			SbiKpiInstance instK = loadSbiKpiInstanceById(kpiInstanceID);
 			Set periodicity = instK.getSbiKpiPeriodicities();
 			//TODO continuare
 			
@@ -321,7 +435,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		if (d.after(instBegDt)){
 			toReturn = true ;
 		}	
-		List values = inst.getValue();
+		List values = inst.getValues();
 		if (values.isEmpty()){
 			toReturn = false ;
 		}
@@ -345,7 +459,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Date endDt = value.getEndDate();
 		String kpiValue = value.getValue().toString();
 		Integer kpiInstanceId = value.getKpiInstanceId();
-		SbiKpiInstance sbiKpiInstance = loadKpiInstanceById(kpiInstanceId);
+		SbiKpiInstance sbiKpiInstance = loadSbiKpiInstanceById(kpiInstanceId);
 		Resource r = value.getR();
 		SbiResources sbiResources = toSbiResource(r);
 		
@@ -481,12 +595,18 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
-		List values = getKpiValue(kpiInst, d);		
+		List values = getKpiValue(kpiInst, d);	
+		//TODO da cambiare quando ci sarà la FK corretta
+		Set periodicities = kpiInst.getSbiKpiPeriodicities();
+		Iterator periodIt = periodicities.iterator();
+		SbiKpiPeriodicity period =(SbiKpiPeriodicity)periodIt.next();
+		Integer seconds = period.getValue();
 		
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
-		toReturn.setValue(values);
+		toReturn.setValues(values);
 		toReturn.setD(d);
+		toReturn.setPeriodicity(seconds);
 		
 		return toReturn;
 	}
@@ -529,8 +649,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
 		String type = r.getType();
-		List sbiDomainsSet = DAOFactory.getDomainDAO().loadListDomainsByType(type);
-		SbiDomains sbiDomains = (SbiDomains)sbiDomainsSet.get(0);
+		Domain domain = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("RESOURCE",type);
+		SbiDomains sbiDomains = new SbiDomains();
+		sbiDomains.setDomainCd(domain.getDomainCode());
+		sbiDomains.setDomainNm(domain.getDomainName());
+		sbiDomains.setValueCd(domain.getValueCd());
+		sbiDomains.setValueDs(domain.getValueDescription());
+		sbiDomains.setValueId(domain.getValueId());
+		sbiDomains.setValueNm(domain.getValueName());
 		
 		toReturn.setColumnName(columnName);
 		toReturn.setResourceId(resourceId);
@@ -541,7 +667,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
-	private Kpi toKpi(SbiKpi kpi) throws EMFUserError{
+	public Kpi toKpi(SbiKpi kpi) throws EMFUserError{
 		
 		Kpi toReturn = new Kpi();
 		

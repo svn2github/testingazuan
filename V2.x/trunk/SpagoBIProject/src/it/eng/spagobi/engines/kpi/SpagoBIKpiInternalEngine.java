@@ -234,7 +234,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			//From the KpiInstance gets the last KpiValues 
 			
-			List kpiValues = kpiI.getValue();
+			List kpiValues = kpiI.getValues();
 			Iterator kpiVIt = kpiValues.iterator();
 			String text = "";
 			while (kpiVIt.hasNext()){
@@ -500,10 +500,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		DataSetConfig ds = null;
 		Integer kpiId = k.getKpi();
 		try {
-		SbiKpi kpi = DAOFactory.getKpiDAO().loadKpiById(kpiId);
-		Integer dsID = kpi.getSbiDataSet().getDsId();
-				
-			ds = DAOFactory.getDataSetDAO().loadDataSetByID(dsID);
+		Kpi kpi = DAOFactory.getKpiDAO().loadKpiById(kpiId);
+		ds = kpi.getKpiDs();
+
 		} catch (EMFUserError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -526,35 +525,26 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			//Transform result into KPIValue (I suppose that the result has a unique value)
 			IRecord record = ids.getAt(0);			
 			List fields = record.getFields();
-			String fieldValue = (String) fields.get(0);
+			IField f = (IField) fields.get(0);
+			SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
+			String fieldValue = fieldObject.getValue().toString();
 			kVal.setValue(fieldValue);
 			kVal.setR(r);
 			Date begD = new Date();
 			kVal.setBeginDate(begD);
-			SbiKpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-			//TODO da cambiare quando ci sarà la FK corretta
-			Set periodicities = sbik.getSbiKpiPeriodicities();
-			Iterator periodIt = periodicities.iterator();
-			SbiKpiPeriodicity period =(SbiKpiPeriodicity)periodIt.next();
-			Integer seconds = period.getValue();
+			KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
+			Integer seconds = sbik.getPeriodicity();
 			//Transforms seconds into milliseconds
-			Integer milliSeconds = seconds * 1000;			
-			Long begDtTime = begD.getTime();
-			long endTime = begDtTime.longValue() + milliSeconds.longValue();		
+			long milliSeconds = seconds.longValue() * 1000;			
+			long begDtTime = begD.getTime();
+			long endTime = begDtTime + milliSeconds;		
 			Date endDate = new Date(endTime);
 			kVal.setEndDate(endDate);
 			
 			kVal.setKpiInstanceId(k.getKpiInstanceId());
 			kVal.setWeight(k.getWeight());
-			SbiThreshold t = sbik.getSbiThreshold();
-			List thresholds = new ArrayList();
-			Set thresholdValues = t.getSbiThresholdValues();
-			Iterator it = thresholdValues.iterator();
-			while (it.hasNext()){
-				SbiThresholdValue val = (SbiThresholdValue) it.next();
-				Threshold tr = DAOFactory.getKpiDAO().toThreshold(val);
-				thresholds.add(tr);
-			}
+			
+			List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);
 			 
 			kVal.setThresholds(thresholds);			
 			//Add kpiValue to the KpiValues List 
@@ -563,7 +553,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			DAOFactory.getKpiDAO().insertKpiValue(kVal);			
 		}
 
-		toReturn.setValue(kpiValues);
+		toReturn.setValues(kpiValues);
 		
 		return toReturn;
 	}

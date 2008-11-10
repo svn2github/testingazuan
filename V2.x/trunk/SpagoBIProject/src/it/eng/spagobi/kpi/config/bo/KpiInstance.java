@@ -7,7 +7,7 @@ import java.util.List;
 public class KpiInstance {
 	
 	Integer kpiInstanceId = null;
-	//List kpiHistoryValues = null;//a List of all past values with relative thresholds	
+	Integer periodicity = null;//period of valability in seconds
 	List values = null;//last calculated values with relative thresholds for each resource
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
@@ -44,12 +44,12 @@ public class KpiInstance {
 		this.kpiHistoryValues = kpiHistoryValues;
 	}*/
 
-	public List getValue() {
+	public List getValues() {
 		return values;
 	}
 
-	public void setValue(List value) {
-		this.values = value;
+	public void setValues(List values) {
+		this.values = values;
 	}
 
 	public Integer getKpi() {
@@ -67,6 +67,14 @@ public class KpiInstance {
 
 	public void setD(Date d) {
 		this.d = d;
+	}
+
+	public Integer getPeriodicity() {
+		return periodicity;
+	}
+
+	public void setPeriodicity(Integer periodicity) {
+		this.periodicity = periodicity;
 	}
 	
 

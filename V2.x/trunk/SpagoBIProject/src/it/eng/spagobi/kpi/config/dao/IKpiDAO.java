@@ -1,6 +1,7 @@
 package it.eng.spagobi.kpi.config.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
@@ -39,16 +40,29 @@ public interface IKpiDAO {
 	 * @return KpiInstance of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public SbiKpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
+	public SbiKpiInstance loadSbiKpiInstanceById(Integer id) throws EMFUserError ;
+	
+	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
+	
+	public List getThresholds(KpiInstance k)throws EMFUserError;
+	
+	/**
+	 * Returns the SbiKpi of the referred id
+	 * 
+	 * @param id of the SbiKpi
+	 * @return SbiKpi of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public SbiKpi loadSbiKpiById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns the Kpi of the referred id
 	 * 
 	 * @param id of the Kpi
-	 * @return KpiInstance of the referred id
+	 * @return Kpi of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public SbiKpi loadKpiById(Integer id) throws EMFUserError ;
+	public Kpi loadKpiById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns true if the values are the actual ones, false they have to be recalculated
@@ -133,5 +147,7 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public Threshold toThreshold(SbiThresholdValue t);
+	
+	public Kpi toKpi(SbiKpi kpi) throws EMFUserError;
 
 }

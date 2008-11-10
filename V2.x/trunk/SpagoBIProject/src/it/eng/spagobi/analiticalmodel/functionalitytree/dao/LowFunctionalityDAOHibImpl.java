@@ -155,7 +155,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			if (hibParentFunct == null) hibFunct.setProg(new Integer(1));
 			else {
 				// loads sub functionalities
-				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				//Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = ?" );
+				hibQuery.setInteger(0, parentId.intValue());
 				Integer maxProg = (Integer) hibQuery.uniqueResult();
 				if (maxProg != null) hibFunct.setProg(new Integer(maxProg.intValue() + 1));
 				else hibFunct.setProg(new Integer(1));
@@ -616,7 +618,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			if (hibParentFunct == null) hibFunct.setProg(new Integer(1));
 			else {
 				// loads sub functionalities
-				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				//Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = " + parentId);
+				Query hibQuery = aSession.createQuery("select max(s.prog) from SbiFunctions s where s.parentFunct.functId = ?" );
+				hibQuery.setInteger(0, parentId.intValue());
 				Integer maxProg = (Integer) hibQuery.uniqueResult();
 				if (maxProg != null) hibFunct.setProg(new Integer(maxProg.intValue() + 1));
 				else hibFunct.setProg(new Integer(1));
@@ -686,9 +690,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			}
 			
 			// update prog column in other functions
-			String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > " 
-				+ hibFunct.getProg() + " and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId();
+			//String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > " 
+			//	+ hibFunct.getProg() + " and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId();
+			String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > ? " 
+				+ " and s.parentFunct.functId = ?" ;
 			Query query = aSession.createQuery(hqlUpdateProg);
+			query.setInteger(0, hibFunct.getProg().intValue());
+			query.setInteger(1, hibFunct.getParentFunct().getFunctId().intValue());
 			query.executeUpdate();
 			
 			aSession.delete(hibFunct);
@@ -894,7 +902,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				else if(username==null) {
 					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' order by s.parentFunct.functId, s.prog");
 				} else {
-					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"' order by s.parentFunct.functId, s.prog");
+					//hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like '/"+username+"' order by s.parentFunct.functId, s.prog");
+					hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' or s.path like ? order by s.parentFunct.functId, s.prog");
+					hibQuery.setString(0, "/"+username);
 				}
 			} catch (EMFInternalError e) {
 			    logger.error("EMFInternalError while access to DBMS", e);
@@ -959,10 +969,11 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// loads sub functionalities
 			
 			/* ********* start luca changes *************** */
-			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
+			//Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.path like ? order by s.parentFunct.functId, s.prog");
 			//Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' and s.path like '" + initialPath + "/%' order by s.parentFunct.functId, s.prog");
 			/* ********* end luca changes ***************** */
-			
+			hibQuery.setString(0, initialPath + "/%");
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -1070,10 +1081,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				SbiFunctions sbiFunct = new SbiFunctions();
 				sbiFunct.setFunctId(functId);
 		
-				hql = " from SbiFuncRole as funcRole where funcRole.id.function = '" + sbiFunct.getFunctId() + 
-				"' AND  funcRole.id.role = '"+ roleId +"' AND funcRole.stateCd ='"+stateCD+"'"; 
+				//hql = " from SbiFuncRole as funcRole where funcRole.id.function = '" + sbiFunct.getFunctId() + 
+				//"' AND  funcRole.id.role = '"+ roleId +"' AND funcRole.stateCd ='"+stateCD+"'"; 
+				hql = " from SbiFuncRole as funcRole where funcRole.id.function = ? " + 
+				"' AND  funcRole.id.role = ?  AND funcRole.stateCd = ?"; 
 			
 				hqlQuery = aSession.createQuery(hql);
+				hqlQuery.setInteger(0, sbiFunct.getFunctId().intValue());
+				hqlQuery.setInteger(1, roleId.intValue());
+				hqlQuery.setString(2, stateCD);
 				functions = hqlQuery.list();
 			
 				Iterator it = functions.iterator();
@@ -1116,7 +1132,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 					
 			// loads sub functionalities
-			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = " + parentId);
+			//Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = " + parentId);
+			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = ?" );
+			hibQuery.setInteger(0, parentId.intValue());
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 			while (it.hasNext()) {
@@ -1154,9 +1172,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			Integer oldProg = hibFunct.getProg();
 			Integer newProg = new Integer(oldProg.intValue() + 1);
 			
-			String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
-				" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			//String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
+			//	" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			String upperFolderHql = "from SbiFunctions s where s.prog = ? "+ 
+			" and s.parentFunct.functId = ?" ;
 			Query query = aSession.createQuery(upperFolderHql);
+			query.setInteger(0, newProg.intValue());			
+			query.setInteger(1, hibFunct.getParentFunct().getFunctId().intValue());
 			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
 			if (hibUpperFunct == null) {
 				logger.error("The function with prog [" + newProg + "] does not exist.");
@@ -1197,9 +1219,13 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			Integer oldProg = hibFunct.getProg();
 			Integer newProg = new Integer(oldProg.intValue() - 1);
 			
-			String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
-				" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			//String upperFolderHql = "from SbiFunctions s where s.prog = " + newProg.toString() + 
+			//	" and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId().toString();
+			String upperFolderHql = "from SbiFunctions s where s.prog = ? " + 
+			" and s.parentFunct.functId = ? " ;
 			Query query = aSession.createQuery(upperFolderHql);
+			query.setInteger(0, newProg.intValue());
+			query.setInteger(1,  hibFunct.getParentFunct().getFunctId().intValue());
 			SbiFunctions hibUpperFunct = (SbiFunctions) query.uniqueResult();
 			if (hibUpperFunct == null) {
 				logger.error("The function with prog [" + newProg + "] does not exist.");

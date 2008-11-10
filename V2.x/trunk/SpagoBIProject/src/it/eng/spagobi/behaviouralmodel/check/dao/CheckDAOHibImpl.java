@@ -359,9 +359,10 @@ public class CheckDAOHibImpl extends AbstractHibernateDAO implements ICheckDAO {
 			
 			Integer checkIdInt = Integer.valueOf(checkId);
 			
-			String hql = "from SbiParuseCk s where s.id.sbiChecks.checkId = "+checkIdInt;
+			//String hql = "from SbiParuseCk s where s.id.sbiChecks.checkId = "+checkIdInt;
+			String hql = "from SbiParuseCk s where s.id.sbiChecks.checkId = ?";
 			Query aQuery = aSession.createQuery(hql);
-			
+			aQuery.setInteger(0, Integer.valueOf(checkId).intValue());
 			List list = aQuery.list();
 			if (list.size() > 0)
 				ref = true;

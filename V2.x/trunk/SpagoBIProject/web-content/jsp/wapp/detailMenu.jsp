@@ -718,7 +718,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   		if (isUserFunct) {
 	   			continue;
 	   		}
-			boolean isRoot = folder.getParentId() == null;
+			boolean isRoot = (folder.getParentId() == null || folder.getParentId().intValue()==0);
 			String nameLabel = folder.getName();
 			String name = msgBuilder.getMessage(nameLabel, "messages", request);
 			%>

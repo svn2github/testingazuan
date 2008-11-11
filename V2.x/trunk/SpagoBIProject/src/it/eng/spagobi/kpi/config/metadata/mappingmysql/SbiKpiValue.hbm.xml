@@ -14,7 +14,7 @@
             <column name="id_kpi_instance" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiResources" class="it.eng.spagobi.kpi.model.metadata.SbiResources" >
-            <column name="RESOURCE_ID" not-null="true" />
+            <column name="RESOURCE_ID"  />
         </many-to-one>
         <property name="value" type="string">
             <column name="VALUE" length="40" />

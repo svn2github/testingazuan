@@ -90,11 +90,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					//creates a document with the representation of the kpivalues for each resource
 					
 				}else{
-					//creates a document without the representation of the kpivalues but only with its values for each resoruce
-					String resName = r.getName();
 					%>
 					<div>*******************************************</div>
+					<% if (r!=null){
+					//creates a document without the representation of the kpivalues but only with its values for each resoruce
+					String resName = r.getName();%>
 					<div>RESOURCE = <%=resName%></div>
+					<% }%>
 					<div>Value = <%=value%></div>
 					<div>Weight = <%=weight%></div>					
 					<div>Thresholds :</div>

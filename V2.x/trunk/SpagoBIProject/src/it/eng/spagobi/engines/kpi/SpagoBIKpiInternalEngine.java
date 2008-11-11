@@ -38,7 +38,6 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
@@ -47,33 +46,22 @@ import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
-import it.eng.spagobi.kpi.config.metadata.SbiKpi;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
-import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
-import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
-import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -177,6 +165,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				throw userError;
 			}
 			
+			//Date for which we want to see the KpiValues
 			Date dateOfKPI = new Date();
 			
 			HashMap parametersMap=null;
@@ -430,8 +419,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	}
 	
+	/**
+	 * returns the new KpiInstance with all the same data except for the List of KpiValues which will be recalculated
+	 * 
+	 * @param Kpi Instance k for which new values have to be calculated
+	 * 
+	 * @return the new KpiInstance with all the same data except for the List of KpiValues which will be recalculated
+	 * @throws EMFUserError the EMF user error
+	 */
 	public KpiInstance calculateNewKpiInstance(KpiInstance k) throws EMFUserError{
-		
+		logger.debug("IN");
 		KpiInstance toReturn = new KpiInstance();
 		toReturn.setKpiInstanceId(k.getKpiInstanceId());
 		toReturn.setKpi(k.getKpi());
@@ -448,55 +445,77 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Iterator resIt = resources.iterator();
-		while(resIt.hasNext()){
+		
+		//In case the KPIValue has to be calculated for each resource
+		if(!resources.isEmpty()){
+			Iterator resIt = resources.iterator();
+			while(resIt.hasNext()){
+				
+				Resource r = (Resource)resIt.next();
+				KpiValue kVal = getNewKpiValue(ds,k, r);	
+				//Add kpiValue to the KpiValues List 
+				kpiValues.add(kVal);
+				//Insert new Value into the DB
+				DAOFactory.getKpiDAO().insertKpiValue(kVal);			
+			}
+		}else{//In case the KPIValue doesn't have to be calculated for a specific resource
 			
-			KpiValue kVal = new KpiValue();
-			Resource r = (Resource) resIt.next();
-			String colName = r.getColumn_name();
-			String value = r.getName();
-
-			HashMap temp = (HashMap)this.parametersObject.clone() ;
-			temp.put(colName, value);
-			DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
-			DataSetImpl dsi = new DataSetImpl(ds,profile);
-			dsi.loadData(temp);
-			IDataStore ids = dsi.getDataStore();
-	
-			//Transform result into KPIValue (I suppose that the result has a unique value)
-			IRecord record = ids.getAt(0);			
-			List fields = record.getFields();
-			IField f = (IField) fields.get(0);
-			SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
-			String fieldValue = fieldObject.getValue().toString();
-			kVal.setValue(fieldValue);
-			kVal.setR(r);
-			Date begD = new Date();
-			kVal.setBeginDate(begD);
-			KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-			Integer seconds = sbik.getPeriodicity();
-			//Transforms seconds into milliseconds
-			long milliSeconds = seconds.longValue() * 1000;			
-			long begDtTime = begD.getTime();
-			long endTime = begDtTime + milliSeconds;		
-			Date endDate = new Date(endTime);
-			kVal.setEndDate(endDate);
-			
-			kVal.setKpiInstanceId(k.getKpiInstanceId());
-			kVal.setWeight(k.getWeight());
-			
-			List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);
-			 
-			kVal.setThresholds(thresholds);			
+			KpiValue kVal = getNewKpiValue(ds,k, null);	
 			//Add kpiValue to the KpiValues List 
 			kpiValues.add(kVal);
 			//Insert new Value into the DB
-			DAOFactory.getKpiDAO().insertKpiValue(kVal);			
+			DAOFactory.getKpiDAO().insertKpiValue(kVal);	
 		}
 
 		toReturn.setValues(kpiValues);
-		
+		logger.debug("OUT");
 		return toReturn;
+	}
+	
+	public KpiValue getNewKpiValue(DataSetConfig ds, KpiInstance k, Resource r) throws EMFUserError{
+		
+		logger.debug("IN");
+		KpiValue kVal = new KpiValue();
+		Date begD = new Date();
+		kVal.setBeginDate(begD);
+		KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
+		Integer seconds = sbik.getPeriodicity();
+		//Transforms seconds into milliseconds
+		long milliSeconds = seconds.longValue() * 1000;			
+		long begDtTime = begD.getTime();
+		long endTime = begDtTime + milliSeconds;		
+		Date endDate = new Date(endTime);
+		kVal.setEndDate(endDate);
+		kVal.setKpiInstanceId(k.getKpiInstanceId());
+		kVal.setWeight(k.getWeight());		
+		List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);		 
+		kVal.setThresholds(thresholds);	
+		
+		//If it has to be calculated for a Resource. The resource will be set as parameter
+		HashMap temp = (HashMap)this.parametersObject.clone() ;
+		if (r!=null){
+			String colName = r.getColumn_name();
+			String value = r.getName();
+			kVal.setR(r);			
+			temp.put(colName, value);		
+		}
+
+		//If not, the dataset will be calculated without the parameter Resource and the DataSet won't expect a parameter of type resource
+		DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
+		DataSetImpl dsi = new DataSetImpl(ds,profile);
+		dsi.loadData(temp);
+		IDataStore ids = dsi.getDataStore();
+
+		//Transform result into KPIValue (I suppose that the result has a unique value)
+		IRecord record = ids.getAt(0);			
+		List fields = record.getFields();
+		IField f = (IField) fields.get(0);
+		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
+		String fieldValue = fieldObject.getValue().toString();
+		kVal.setValue(fieldValue);
+		logger.debug("OUT");
+		return kVal;
+		
 	}
 	
 	
@@ -517,11 +536,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
 	
-	/**
-	 * Sets the color.
-	 * 
-	 * @param color the new color
-	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
@@ -530,9 +544,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		this.titleDimension = titleDimension;
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.IChart#setName(java.lang.String)
-	 */
 	public void setName(String _name) {
 		name=_name;		
 	}

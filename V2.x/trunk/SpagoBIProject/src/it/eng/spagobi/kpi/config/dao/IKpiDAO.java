@@ -19,7 +19,7 @@ public interface IKpiDAO {
 	/**
 	 * Inserts a new KPI Value with its date, value period and thresholds
 	 * 
-	 * @param KpiValue to insert for the specific Kpi
+	 * @param KpiValue to insert 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public void insertKpiValue(KpiValue value) throws EMFUserError;
@@ -33,8 +33,22 @@ public interface IKpiDAO {
 	 */	
 	public ModelInstanceNode loadModelInstanceById(Integer id,Date requestedDate) throws EMFUserError ;
 	
+	/**
+	 * Returns the KpiInstance of the referred id
+	 * 
+	 * @param id of the KpiInstance
+	 * @return KpiInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	
+	/**
+	 * Returns a List of all the the Threshols of the KpiInstance
+	 * 
+	 * @param KpiInstance k
+	 * @return List of all the the Threshols of the KpiInstance
+	 * @throws EMFUserError If an Exception occurred
+	 */
 	public List getThresholds(KpiInstance k)throws EMFUserError;
 
 	/**
@@ -47,10 +61,10 @@ public interface IKpiDAO {
 	public Kpi loadKpiById(Integer id) throws EMFUserError ;
 	
 	/**
-	 * Returns true if the values are the actual ones, false they have to be recalculated
+	 * Returns true if the values are the actual ones, false if they have to be recalculated
 	 * 
-	 * @param KpiInstance
-	 * @return  Returns true if the values are the actual ones, false they have to be recalculated
+	 * @param KpiInstance and date for which the values have to be actual
+	 * @return  Returns true if the values are the actual ones, false if they have to be recalculated
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
@@ -65,48 +79,5 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public boolean isAlarmingValue(KpiValue value)	throws EMFUserError;
-	
-	/**
-	 * Returns true if the value is the actual one, false if it has to be recalculated
-	 * 
-	 * @param KpiValue 
-	 * 
-	 * @return Returns true if the value is the actual one, false if it has to be recalculated
-	 * 
-	 * @throws EMFUserError if an Exception occurs
-	 */
-	public  boolean isActualValue(KpiValue value)  throws EMFUserError;
-	
-	
-	/**
-	 * Deletes the KPI Value 
-	 * 
-	 * @param KpiValue to delete
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public void deleteKpiValue(KpiValue value) throws EMFUserError;
-	
-	/**
-	 * Gets the all the Kpi Values valid for the Date d (for each resource)
-	 * 
-	 * @param Kpi , Date of when the KpiValue has to be valid
-	 * 
-	 * @return Returns all the Kpi Values valid for the Date d (for each resource)
-	 * 
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public List getKpiValue(KpiInstance kpi, Date d) throws EMFUserError;
-	
-	/**
-	 * Gets all actual Kpi Values for each resource
-	 * 
-	 * @param Kpi Instance
-	 * 
-	 * @return Returns a list of all actual Kpi Values for each resource
-	 * 
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public List getKpiActualValue(KpiInstance kpi) throws EMFUserError;
-	
 
 }

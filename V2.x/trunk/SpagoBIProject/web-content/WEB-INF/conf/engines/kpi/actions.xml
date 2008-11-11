@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
 
- <ACTION name="GET_PNG" class="it.eng.spagobi.engines.kpi.service.GetPngAction" scope="REQUEST">
+ <ACTION name="GET_PNG2" class="it.eng.spagobi.engines.kpi.service.GetPngAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
 

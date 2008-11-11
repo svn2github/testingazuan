@@ -7,6 +7,8 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
@@ -290,8 +292,105 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	}
 
 	public boolean isAlarmingValue(KpiValue value) throws EMFUserError {
-		// TODO Auto-generated method stub
-		return false;
+		logger.debug("IN");
+		boolean isAlarming = false;
+		Integer kpiInstID = value.getKpiInstanceId();
+		String val = value.getValue();
+		Double kpiVal = new Double(val);
+		KpiInstance kInst = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,kpiInstID);
+			Set alarms = hibSbiKpiInstance.getSbiAlarms();
+			if (!alarms.isEmpty()){
+				
+				Iterator itAl = alarms.iterator();
+				while(itAl.hasNext()){
+					SbiAlarm alarm = (SbiAlarm)itAl.next();
+					String a = "";
+					SbiThresholdValue threshold = alarm.getSbiThresholdValue();
+					String type = threshold.getSbiThreshold().getSbiDomains().getValueCd();
+					Double min = null;
+					Double max = null;
+					String thresholdValue = "";
+					
+					if(type.equals("RANGE")){
+						
+						min = threshold.getMinValue();
+						max = threshold.getMaxValue();
+						int i = kpiVal.compareTo(min);
+						int j = kpiVal.compareTo(max);
+						//if the value is in the interval, then there should be an alarm
+						if (i>0 && j<0){
+							isAlarming = true;
+							thresholdValue = min.toString() +"-"+max.toString();
+						}
+						
+					}else if (type.equals("MIN")){
+						
+						min = threshold.getMinValue();
+						int i = kpiVal.compareTo(min);
+						//if the value is smaller than the min value
+						if(i<0){
+							isAlarming = true;
+							thresholdValue += min.toString() ;
+						}
+						
+					}else if (type.equals("MAX")){
+						
+						max = threshold.getMaxValue();
+						int j = kpiVal.compareTo(max);
+						//if the value is higher than the max value
+						if(j>0){
+							isAlarming = true;
+							thresholdValue += max.toString();
+						}
+					}
+					
+					if(isAlarming){
+						SbiAlarmEvent alarmEv = new SbiAlarmEvent();
+						Integer alarmID = alarm.getId();
+						String kpiName = hibSbiKpiInstance.getSbiKpi().getName();
+						String resources = null;
+						if(value.getR()!=null){
+							resources = value.getR().getName();
+						}
+						
+												
+						alarmEv.setKpiName(kpiName);
+						alarmEv.setKpiValue(val);
+						alarmEv.setActive(true);
+						alarmEv.setEventTs(new Date());
+						alarmEv.setResources(resources);
+						alarmEv.setSbiAlarms(alarm);
+						alarmEv.setThresholdValue(thresholdValue);
+						
+						DAOFactory.getAlarmEventDAO().insert(alarmEv);
+					}
+					
+				}
+			}
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " , he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return isAlarming;
 	}
 
 	

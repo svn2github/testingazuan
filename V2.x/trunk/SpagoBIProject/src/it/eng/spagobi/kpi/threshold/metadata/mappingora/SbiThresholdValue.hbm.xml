@@ -29,5 +29,11 @@
         <property name="position" type="integer">
             <column name="position" />
         </property>
+        <set name="sbiAlarms" inverse="true">
+            <key>
+                <column name="id_threshold_value" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
+        </set>
     </class>
 </hibernate-mapping>

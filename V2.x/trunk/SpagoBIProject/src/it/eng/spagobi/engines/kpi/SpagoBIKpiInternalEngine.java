@@ -43,6 +43,7 @@ import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
 import it.eng.spagobi.engines.kpi.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
@@ -433,6 +434,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		toReturn.setKpiInstanceId(k.getKpiInstanceId());
 		toReturn.setKpi(k.getKpi());
 		toReturn.setD(k.getD());
+		boolean isAlarming = false ;
 		
 		List kpiValues = new ArrayList();
 		DataSetConfig ds = null;
@@ -456,7 +458,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				//Add kpiValue to the KpiValues List 
 				kpiValues.add(kVal);
 				//Insert new Value into the DB
-				DAOFactory.getKpiDAO().insertKpiValue(kVal);			
+				DAOFactory.getKpiDAO().insertKpiValue(kVal);	
+				//Checks if the value is alarming (out of a certain range)
+				//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
+				isAlarming = DAOFactory.getKpiDAO().isAlarmingValue(kVal);	
 			}
 		}else{//In case the KPIValue doesn't have to be calculated for a specific resource
 			
@@ -464,10 +469,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			//Add kpiValue to the KpiValues List 
 			kpiValues.add(kVal);
 			//Insert new Value into the DB
-			DAOFactory.getKpiDAO().insertKpiValue(kVal);	
+			DAOFactory.getKpiDAO().insertKpiValue(kVal);
+			//Checks if the value is alarming (out of a certain range)
+			//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
+			isAlarming = DAOFactory.getKpiDAO().isAlarmingValue(kVal);
 		}
-
+		
 		toReturn.setValues(kpiValues);
+		
 		logger.debug("OUT");
 		return toReturn;
 	}

@@ -1,5 +1,8 @@
 package it.eng.spagobi.kpi.threshold.metadata;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import it.eng.spagobi.commons.metadata.SbiDomains;
 // Generated 5-nov-2008 17.17.42 by Hibernate Tools 3.1.0 beta3
 
@@ -22,6 +25,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
      private String label;
      private String colour;
      private Integer position;
+     private Set sbiAlarms = new HashSet(0);
 
 
     // Constructors
@@ -37,7 +41,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiThresholdValue(Integer idThresholdValue, SbiThreshold sbiThreshold, SbiDomains sbiDomains, double minValue, double maxValue, String label, String colour, Integer position) {
+    public SbiThresholdValue(Integer idThresholdValue, SbiThreshold sbiThreshold, SbiDomains sbiDomains, double minValue, double maxValue, String label, String colour, Integer position, Set sbiAlarms) {
         this.idThresholdValue = idThresholdValue;
         this.sbiThreshold = sbiThreshold;
         this.sbiDomains = sbiDomains;
@@ -46,6 +50,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
         this.label = label;
         this.colour = colour;
         this.position = position;
+        this.sbiAlarms = sbiAlarms;
     }
     
 
@@ -116,12 +121,12 @@ public class SbiThresholdValue  implements java.io.Serializable {
         this.position = position;
     }
    
-
-
-
-
-
-
-
+    public Set getSbiAlarms() {
+        return this.sbiAlarms;
+    }
+    
+    public void setSbiAlarms(Set sbiAlarms) {
+        this.sbiAlarms = sbiAlarms;
+    }
 
 }

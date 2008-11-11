@@ -738,6 +738,7 @@ Create table `SBI_KPI_INSTANCE` (
 	`id_measure_unit` Int NOT NULL,
 	`id_periodicity` Int NOT NULL,
 	`weight` Double,
+	`id_kpi_chart_type` Int,
 	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
 
@@ -755,7 +756,7 @@ Create table `SBI_KPI_INSTANCE_HISTORY` (
 Create table `SBI_KPI_VALUE` (
 	`id_kpi_instance_value` Int NOT NULL AUTO_INCREMENT,
 	`id_kpi_instance` Int NOT NULL,
-	`RESOURCE_ID` Int NOT NULL,
+	`RESOURCE_ID` Int,
 	`VALUE` Varchar(40),
 	`BEGIN_DT` Datetime,
 	`END_DT` Datetime,

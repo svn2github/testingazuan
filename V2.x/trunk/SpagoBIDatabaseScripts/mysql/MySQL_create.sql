@@ -727,7 +727,6 @@ Create table `SBI_KPI_MODEL_ATTR_VAL` (
 
 Create table `SBI_KPI_PERIODICITY` (
 	`id_kpi_instance_period` Int NOT NULL AUTO_INCREMENT,
-	`id_kpi_instance` Int NOT NULL,
 	`value` Integer,
 	UNIQUE (`id_kpi_instance_period`),
  Primary Key (`id_kpi_instance_period`)) ENGINE = InnoDB;
@@ -737,6 +736,7 @@ Create table `SBI_KPI_INSTANCE` (
 	`KPI_ID` Int NOT NULL,
 	`THRESHOLD_ID` Int NOT NULL,
 	`id_measure_unit` Int NOT NULL,
+	`id_periodicity` Int NOT NULL,
 	`weight` Double,
 	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;

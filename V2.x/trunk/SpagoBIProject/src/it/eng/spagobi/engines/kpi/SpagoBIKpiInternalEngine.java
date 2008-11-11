@@ -222,7 +222,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			Integer modelNodeInstanceID = new Integer(modelNodeInstance);
 			getSetConf(content);
 			//gets the ModelInstanceNode
-			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID);
+			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
 			//From the modelInstance gets the related KpiInstance
 			KpiInstance kpiI = mI.getKpiInstanceAssociated();
 			//I set the list of resources of that specific ModelInstance

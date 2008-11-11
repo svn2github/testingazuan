@@ -31,7 +31,7 @@ public interface IKpiDAO {
 	 * @return ModelInstance of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError ;
+	public ModelInstanceNode loadModelInstanceById(Integer id,Date requestedDate) throws EMFUserError ;
 	
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	

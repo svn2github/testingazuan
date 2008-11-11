@@ -56,7 +56,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		
 	}
 
-	public ModelInstanceNode loadModelInstanceById(Integer id) throws EMFUserError {
+	public ModelInstanceNode loadModelInstanceById(Integer id,Date requestedDate) throws EMFUserError {
 		logger.debug("IN");
 		ModelInstanceNode toReturn = null;
 		Session aSession = null;
@@ -66,7 +66,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst)aSession.load(SbiKpiModelInst.class,id);
-			toReturn = toModelInstanceNode(hibSbiKpiModelInst);
+			toReturn = toModelInstanceNode(hibSbiKpiModelInst, requestedDate );
 			
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
@@ -126,7 +126,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,id);
-			toReturn = toKpiInstance(hibSbiKpiInstance);
+			toReturn = toKpiInstance(hibSbiKpiInstance,hibSbiKpiInstance.getBeginDt());
 			
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
@@ -533,14 +533,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	}
 	
 	
-	private ModelInstanceNode toModelInstanceNode(SbiKpiModelInst hibSbiKpiModelInst) throws EMFUserError{
+	private ModelInstanceNode toModelInstanceNode(SbiKpiModelInst hibSbiKpiModelInst,Date requestedDate) throws EMFUserError{
 		
 		ModelInstanceNode toReturn = new ModelInstanceNode();
 				
 		 String descr = hibSbiKpiModelInst.getDescription();
 		 String name = hibSbiKpiModelInst.getName();
 		 SbiKpiInstance kpiInst = hibSbiKpiModelInst.getSbiKpiInstance();
-		 KpiInstance kpiInstanceAssociated = toKpiInstance(kpiInst);
+		 KpiInstance kpiInstanceAssociated = toKpiInstance(kpiInst,requestedDate);
 		 Set resources = hibSbiKpiModelInst.getSbiKpiModelResourceses();
 		 List res = new ArrayList();
 		 Iterator i = resources.iterator();
@@ -584,7 +584,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
-	private KpiInstance toKpiInstance(SbiKpiInstance kpiInst) throws EMFUserError{
+	private KpiInstance toKpiInstance(SbiKpiInstance kpiInst,Date requestedDate) throws EMFUserError{
 		
 		KpiInstance toReturn = new KpiInstance();
 		Integer kpiId = kpiInst.getIdKpiInstance();
@@ -592,7 +592,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
-		List values = getKpiValue(kpiInst, d);	
+		List values = getKpiValue(kpiInst, requestedDate);	
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
 		Integer seconds = periodicity.getValue();
 		
@@ -700,7 +700,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Iterator iKI = kInstances.iterator();
 			while(iKI.hasNext()){
 				SbiKpiInstance kpiI =(SbiKpiInstance) iKI.next();
-				KpiInstance kI = toKpiInstance(kpiI);
+				KpiInstance kI = toKpiInstance(kpiI, kpiI.getBeginDt());
 				KpiInstances.add(kI);
 			}
 			

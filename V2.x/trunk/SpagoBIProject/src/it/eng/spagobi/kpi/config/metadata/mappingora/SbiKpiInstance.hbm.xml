@@ -11,6 +11,9 @@
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="KPI_ID" not-null="true" />
         </many-to-one>
+        <many-to-one name="sbiKpiPeriodicity" class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" fetch="select">
+            <column name="id_periodicity" not-null="true" />
+        </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
             <column name="THRESHOLD_ID" not-null="true" />
         </many-to-one>
@@ -20,12 +23,6 @@
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />
         </property>
-        <set name="sbiKpiPeriodicities" inverse="true">
-            <key>
-                <column name="id_kpi_instance" not-null="true" />
-            </key>
-            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" />
-        </set>
         <set name="sbiKpiModelInsts" inverse="true">
             <key>
                 <column name="id_kpi_instance" />

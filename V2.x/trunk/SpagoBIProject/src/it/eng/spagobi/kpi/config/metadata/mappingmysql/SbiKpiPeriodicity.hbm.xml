@@ -8,11 +8,14 @@
             <column name="id_kpi_instance_period" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
-            <column name="id_kpi_instance" not-null="true" />
-        </many-to-one>
         <property name="value" type="integer">
             <column name="value" not-null="true"/>
         </property>
+         <set name="sbiKpiInstances" inverse="true">
+            <key>
+                <column name="id_periodicity" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" />
+        </set>
     </class>
 </hibernate-mapping>

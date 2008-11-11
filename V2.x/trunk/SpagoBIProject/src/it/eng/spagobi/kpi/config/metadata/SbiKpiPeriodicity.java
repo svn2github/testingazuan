@@ -1,5 +1,8 @@
 package it.eng.spagobi.kpi.config.metadata;
+
+import java.util.HashSet;
 // Generated 5-nov-2008 17.16.37 by Hibernate Tools 3.1.0 beta3
+import java.util.Set;
 
 
 
@@ -13,8 +16,8 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     // Fields    
 
      private Integer idKpiInstancePeriod;
-     private SbiKpiInstance sbiKpiInstance;
      private Integer value;
+     private Set sbiKpiInstances = new HashSet(0);
 
 
     // Constructors
@@ -24,15 +27,14 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     }
 
 	/** minimal constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance) {
+    public SbiKpiPeriodicity(Integer idKpiInstancePeriod) {
         this.idKpiInstancePeriod = idKpiInstancePeriod;
-        this.sbiKpiInstance = sbiKpiInstance;
     }
     
     /** full constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod, SbiKpiInstance sbiKpiInstance, Integer value) {
+    public SbiKpiPeriodicity(Integer idKpiInstancePeriod,  Integer value, Set sbiKpiInstances) {
         this.idKpiInstancePeriod = idKpiInstancePeriod;
-        this.sbiKpiInstance = sbiKpiInstance;
+        this.sbiKpiInstances = sbiKpiInstances;
         this.value = value;
     }
     
@@ -48,12 +50,12 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
         this.idKpiInstancePeriod = idKpiInstancePeriod;
     }
 
-    public SbiKpiInstance getSbiKpiInstance() {
-        return this.sbiKpiInstance;
+    public Set getSbiKpiInstances() {
+        return this.sbiKpiInstances;
     }
     
-    public void setSbiKpiInstance(SbiKpiInstance sbiKpiInstance) {
-        this.sbiKpiInstance = sbiKpiInstance;
+    public void setSbiKpiInstances(Set sbiKpiInstances) {
+        this.sbiKpiInstances = sbiKpiInstances;
     }
 
     public Integer getValue() {

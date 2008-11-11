@@ -19,10 +19,10 @@ public class SbiKpiInstance  implements java.io.Serializable {
 
      private Integer idKpiInstance;
      private SbiKpi sbiKpi;
+     private SbiKpiPeriodicity sbiKpiPeriodicity;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
      private double weight;
-     private Set sbiKpiPeriodicities = new HashSet(0);
      private Set sbiKpiModelInsts = new HashSet(0);
      private Set sbiKpiInstanceHistories = new HashSet(0);
      private Set sbiKpiValues = new HashSet(0);
@@ -45,21 +45,22 @@ public class SbiKpiInstance  implements java.io.Serializable {
     }
 
 	/** minimal constructor */
-    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit) {
+    public SbiKpiInstance(Integer idKpiInstance, SbiKpiPeriodicity sbiKpiPeriodicity, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit) {
         this.idKpiInstance = idKpiInstance;
         this.sbiKpi = sbiKpi;
+        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
     }
     
     /** full constructor */
-    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, Set sbiKpiPeriodicities, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms) {
+    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, SbiKpiPeriodicity sbiKpiPeriodicity, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms) {
         this.idKpiInstance = idKpiInstance;
         this.sbiKpi = sbiKpi;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
         this.weight = weight;
-        this.sbiKpiPeriodicities = sbiKpiPeriodicities;
+        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
         this.sbiKpiModelInsts = sbiKpiModelInsts;
         this.sbiKpiInstanceHistories = sbiKpiInstanceHistories;
         this.sbiKpiValues = sbiKpiValues;
@@ -110,13 +111,13 @@ public class SbiKpiInstance  implements java.io.Serializable {
         this.weight = weight;
     }
 
-    public Set getSbiKpiPeriodicities() {
-        return this.sbiKpiPeriodicities;
+    public SbiKpiPeriodicity getSbiKpiPeriodicity() {
+        return this.sbiKpiPeriodicity;
     }
     
-    public void setSbiKpiPeriodicities(Set sbiKpiPeriodicities) {
-        this.sbiKpiPeriodicities = sbiKpiPeriodicities;
-    }
+    public void setSbiKpiPeriodicity(SbiKpiPeriodicity sbiKpiPeriodicity) {
+        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
+    } 
 
     public Set getSbiKpiModelInsts() {
         return this.sbiKpiModelInsts;

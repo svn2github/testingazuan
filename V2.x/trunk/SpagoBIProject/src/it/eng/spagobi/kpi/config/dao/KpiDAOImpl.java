@@ -396,7 +396,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			Integer kpiInstanceID = value.getKpiInstanceId();
 			SbiKpiInstance instK = loadSbiKpiInstanceById(kpiInstanceID);
-			Set periodicity = instK.getSbiKpiPeriodicities();
+			SbiKpiPeriodicity periodicity = instK.getSbiKpiPeriodicity();
+			//Set periodicity = instK.getSbiKpiPeriodicities();
 			//TODO continuare
 			
 			SbiKpiValue hibKpiValue = toSbiKpiValue(value);
@@ -592,11 +593,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
 		List values = getKpiValue(kpiInst, d);	
-		//TODO da cambiare quando ci sarà la FK corretta
-		Set periodicities = kpiInst.getSbiKpiPeriodicities();
-		Iterator periodIt = periodicities.iterator();
-		SbiKpiPeriodicity period =(SbiKpiPeriodicity)periodIt.next();
-		Integer seconds = period.getValue();
+		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
+		Integer seconds = periodicity.getValue();
 		
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	

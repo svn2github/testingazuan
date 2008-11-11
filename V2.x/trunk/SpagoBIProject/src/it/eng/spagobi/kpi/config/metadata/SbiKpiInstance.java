@@ -1,6 +1,7 @@
 package it.eng.spagobi.kpi.config.metadata;
 // Generated 5-nov-2008 17.16.35 by Hibernate Tools 3.1.0 beta3
 
+import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ public class SbiKpiInstance  implements java.io.Serializable {
 
      private Integer idKpiInstance;
      private SbiKpi sbiKpi;
+     private SbiDomains sbiDomains;
      private SbiKpiPeriodicity sbiKpiPeriodicity;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
@@ -54,12 +56,13 @@ public class SbiKpiInstance  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, SbiKpiPeriodicity sbiKpiPeriodicity, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms) {
+    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi,  SbiDomains sbiDomains, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, SbiKpiPeriodicity sbiKpiPeriodicity, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms) {
         this.idKpiInstance = idKpiInstance;
         this.sbiKpi = sbiKpi;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
         this.weight = weight;
+        this.sbiDomains = sbiDomains;
         this.sbiKpiPeriodicity = sbiKpiPeriodicity;
         this.sbiKpiModelInsts = sbiKpiModelInsts;
         this.sbiKpiInstanceHistories = sbiKpiInstanceHistories;
@@ -151,12 +154,11 @@ public class SbiKpiInstance  implements java.io.Serializable {
         this.sbiAlarms = sbiAlarms;
     }
    
-
-
-
-
-
-
-
-
+    public SbiDomains getSbiDomains() {
+        return this.sbiDomains;
+    }
+    
+    public void setSbiDomains(SbiDomains sbiDomains) {
+        this.sbiDomains = sbiDomains;
+    }
 }

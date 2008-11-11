@@ -25,7 +25,7 @@ import org.hibernate.Transaction;
 
 /**
  * 
- * @see it.eng.spagobi.kpi.alarm.bo.SbiAlarmContact
+ * @see it.eng.spagobi.kpi.alarm.bo.AlarmContact
  * @author Enrico Cesaretti
  */
 public class SbiAlarmContactDAOHibImpl extends AbstractHibernateDAO implements ISbiAlarmContactDAO {

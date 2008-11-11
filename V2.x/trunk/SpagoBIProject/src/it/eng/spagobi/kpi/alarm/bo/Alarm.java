@@ -15,7 +15,7 @@ package it.eng.spagobi.kpi.alarm.bo;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SbiAlarm  implements java.io.Serializable {
+public class Alarm  implements java.io.Serializable {
 
  	/**
      * 
@@ -29,13 +29,13 @@ public class SbiAlarm  implements java.io.Serializable {
  	private String descr; 
  	private String text; 
  	private String url; 
- 	private Set<SbiAlarmContact> sbiAlarmContacts = new HashSet<SbiAlarmContact>(0); 
+ 	private Set<AlarmContact> sbiAlarmContacts = new HashSet<AlarmContact>(0); 
 
 
-    public SbiAlarm() {}
+    public Alarm() {}
 	
 
-    public SbiAlarm(Boolean singleEvent, Boolean autoDisabled, String label, String name, String descr, String text, String url, Set<SbiAlarmContact> sbiAlarmContacts) {
+    public Alarm(Boolean singleEvent, Boolean autoDisabled, String label, String name, String descr, String text, String url, Set<AlarmContact> sbiAlarmContacts) {
        this.singleEvent = singleEvent;
        this.autoDisabled = autoDisabled;
        this.label = label;
@@ -103,11 +103,11 @@ public class SbiAlarm  implements java.io.Serializable {
     public void setUrl(String url) {
         this.url = url;
     }    
-    public Set<SbiAlarmContact> getSbiAlarmContacts() {
+    public Set<AlarmContact> getSbiAlarmContacts() {
         return this.sbiAlarmContacts;
     }    
     
-    public void setSbiAlarmContacts(Set<SbiAlarmContact> sbiAlarmContacts) {
+    public void setSbiAlarmContacts(Set<AlarmContact> sbiAlarmContacts) {
         this.sbiAlarmContacts = sbiAlarmContacts;
     }    
 

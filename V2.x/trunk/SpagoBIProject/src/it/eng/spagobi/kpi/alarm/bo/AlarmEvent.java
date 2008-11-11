@@ -13,7 +13,7 @@ package it.eng.spagobi.kpi.alarm.bo;
 
 import java.util.Date;
 
-public class SbiAlarmEvent  implements java.io.Serializable {
+public class AlarmEvent  implements java.io.Serializable {
 
  	/**
      * 
@@ -26,13 +26,13 @@ public class SbiAlarmEvent  implements java.io.Serializable {
  	private String thresholdValue; 
  	private String kpiName; 
  	private String resources; 
- 	private SbiAlarm sbiAlarms; 
+ 	private Alarm sbiAlarms; 
 
 
-    public SbiAlarmEvent() {}
+    public AlarmEvent() {}
 	
 
-    public SbiAlarmEvent(Date eventTs, Boolean active, String kpiValue, String thresholdValue, String kpiName, String resources, SbiAlarm sbiAlarms) {
+    public AlarmEvent(Date eventTs, Boolean active, String kpiValue, String thresholdValue, String kpiName, String resources, Alarm sbiAlarms) {
        this.eventTs = eventTs;
        this.active = active;
        this.kpiValue = kpiValue;
@@ -92,11 +92,11 @@ public class SbiAlarmEvent  implements java.io.Serializable {
     public void setResources(String resources) {
         this.resources = resources;
     }    
-    public SbiAlarm getSbiAlarms() {
+    public Alarm getSbiAlarms() {
         return this.sbiAlarms;
     }    
     
-    public void setSbiAlarms(SbiAlarm sbiAlarms) {
+    public void setSbiAlarms(Alarm sbiAlarms) {
         this.sbiAlarms = sbiAlarms;
     }    
 

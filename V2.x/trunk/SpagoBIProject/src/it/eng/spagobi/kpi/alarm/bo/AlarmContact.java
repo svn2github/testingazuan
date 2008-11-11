@@ -17,7 +17,7 @@ import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SbiAlarmContact  implements java.io.Serializable {
+public class AlarmContact  implements java.io.Serializable {
 
  	/**
      * 
@@ -31,10 +31,10 @@ public class SbiAlarmContact  implements java.io.Serializable {
  	private Set<SbiAlarm> sbiAlarms = new HashSet<SbiAlarm>(0); 
 
 
-    public SbiAlarmContact() {}
+    public AlarmContact() {}
 	
 
-    public SbiAlarmContact(String name, String email, String mobile, String resources, Set<SbiAlarm> sbiAlarms) {
+    public AlarmContact(String name, String email, String mobile, String resources, Set<SbiAlarm> sbiAlarms) {
        this.name = name;
        this.email = email;
        this.mobile = mobile;

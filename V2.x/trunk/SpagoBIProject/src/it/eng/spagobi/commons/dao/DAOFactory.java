@@ -52,6 +52,9 @@ import it.eng.spagobi.engines.dossier.dao.IDossierDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.hotlink.rememberme.dao.IRememberMeDAO;
+import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
+import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
+import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmEventDAO;
 import it.eng.spagobi.kpi.config.dao.IKpiDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
@@ -455,13 +458,47 @@ public class DAOFactory {
 	}
 	
 	/**
+	 * Gets the KPI dao.
+	 * 
+	 * @return the KPI dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static IKpiDAO getKpiDAO() throws EMFUserError{
+		return (IKpiDAO)createDAOInstance("KpiDAO");
+	}
+	
+	
+	/**
 	 * Gets the bI object rating dao.
 	 * 
 	 * @return the bI object rating dao
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public static IKpiDAO getKpiDAO() throws EMFUserError{
-		return (IKpiDAO)createDAOInstance("KpiDAO");
+	public static ISbiAlarmContactDAO getAlarmContactDAO() throws EMFUserError{
+		return (ISbiAlarmContactDAO)createDAOInstance("AlarmContactDAO");
+	}
+	
+	/**
+	 * Gets the bI object rating dao.
+	 * 
+	 * @return the bI object rating dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static ISbiAlarmDAO getAlarmDAO() throws EMFUserError{
+		return (ISbiAlarmDAO)createDAOInstance("AlarmDAO");
+	}
+	
+	/**
+	 * Gets the bI object rating dao.
+	 * 
+	 * @return the bI object rating dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static ISbiAlarmEventDAO getAlarmEventDAO() throws EMFUserError{
+		return (ISbiAlarmEventDAO)createDAOInstance("AlarmEventDAO");
 	}
 }

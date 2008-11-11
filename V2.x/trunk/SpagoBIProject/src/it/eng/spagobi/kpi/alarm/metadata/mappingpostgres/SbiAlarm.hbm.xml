@@ -7,7 +7,18 @@
             <column name="ALARM_ID" />
             <generator class="native"/>
         </id>
-             
+        <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" >
+            <column name="DOCUMENT_ID" />
+        </many-to-one>
+        <many-to-one name="sbiThresholdValue" class="it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue" >
+            <column name="id_threshold_value" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
+            <column name="id_kpi_instance" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+            <column name="MODALITY_ID" not-null="true" />
+        </many-to-one>   
         <property name="singleEvent" type="true_false">
             <column name="SINGLE_EVENT" not-null="false" default="T" />
         </property>  

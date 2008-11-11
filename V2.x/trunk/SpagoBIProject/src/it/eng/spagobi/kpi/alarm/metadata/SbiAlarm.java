@@ -12,6 +12,11 @@ package it.eng.spagobi.kpi.alarm.metadata;
 
  
 
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
+import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +27,10 @@ public class SbiAlarm  implements java.io.Serializable {
      */
     private static final long serialVersionUID = 4950020055410842408L;
 	private Integer id; 
+	private SbiObjects sbiObjects;
+	private SbiThresholdValue sbiThresholdValue;
+	private SbiKpiInstance sbiKpiInstance;
+    private SbiDomains sbiDomains;
  	private boolean singleEvent;
  	private boolean autoDisabled;
  	private String label; 
@@ -35,9 +44,13 @@ public class SbiAlarm  implements java.io.Serializable {
     public SbiAlarm() {}
 	
 
-    public SbiAlarm(Boolean singleEvent, Boolean autoDisabled, String label, String name, String descr, String text, String url, Set<SbiAlarmContact> sbiAlarmContacts) {
+    public SbiAlarm(Boolean singleEvent,SbiObjects sbiObjects,SbiThresholdValue sbiThresholdValue, SbiKpiInstance sbiKpiInstance, SbiDomains sbiDomains, Boolean autoDisabled, String label, String name, String descr, String text, String url, Set<SbiAlarmContact> sbiAlarmContacts) {
        this.singleEvent = singleEvent;
        this.autoDisabled = autoDisabled;
+       this.sbiObjects = sbiObjects;
+       this.sbiThresholdValue = sbiThresholdValue;
+       this.sbiKpiInstance = sbiKpiInstance;
+       this.sbiDomains = sbiDomains;
        this.label = label;
        this.name = name;
        this.descr = descr;
@@ -49,11 +62,44 @@ public class SbiAlarm  implements java.io.Serializable {
    
     public Integer getId() {
         return this.id;
-    }    
+    } 
     
     public void setId(Integer id) {
         this.id = id;
-    }    
+    }   
+    
+    public SbiObjects getSbiObjects() {
+        return this.sbiObjects;
+    }
+    
+    public void setSbiObjects(SbiObjects sbiObjects) {
+        this.sbiObjects = sbiObjects;
+    }
+
+    public SbiThresholdValue getSbiThresholdValue() {
+        return this.sbiThresholdValue;
+    }
+    
+    public void setSbiThresholdValue(SbiThresholdValue sbiThresholdValue) {
+        this.sbiThresholdValue = sbiThresholdValue;
+    }
+
+    public SbiKpiInstance getSbiKpiInstance() {
+        return this.sbiKpiInstance;
+    }
+    
+    public void setSbiKpiInstance(SbiKpiInstance sbiKpiInstance) {
+        this.sbiKpiInstance = sbiKpiInstance;
+    }
+
+    public SbiDomains getSbiDomains() {
+        return this.sbiDomains;
+    }
+    
+    public void setSbiDomains(SbiDomains sbiDomains) {
+        this.sbiDomains = sbiDomains;
+    }
+    
     public boolean isSingleEvent() {
         return this.singleEvent;
     }    

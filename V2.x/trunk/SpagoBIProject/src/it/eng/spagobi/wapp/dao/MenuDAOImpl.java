@@ -242,7 +242,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			
 			// manages prog column that determines the menu order
 			Query hibQuery = null;
-			if (aMenu.getParentId() == null) //hibMenu.setProg(new Integer(1));
+			if (aMenu.getParentId() == null || aMenu.getParentId().intValue()==0 ) //hibMenu.setProg(new Integer(1));
 				hibQuery = tmpSession.createQuery("select max(s.prog) from SbiMenu s where s.parentId is null ");
 			else {
 				// loads sub menu
@@ -579,11 +579,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * Return the level of menu element: 1 - first, 2 - second|third, 4 - last, 0 other
 	 */
 	private Integer getLevel(Integer parentId, Integer objId){
-		if (parentId == null && objId != null)
+		if ((parentId == null || parentId.intValue() == 0) && objId != null)
 			return new Integer("1");
-		else if (parentId != null && objId == null)
+		else if (parentId != null && parentId.intValue() > 0 && objId == null)
 			return new Integer("2");
-		else if(parentId != null && objId != null)
+		else if(parentId != null && parentId.intValue() > 0 && objId != null)
 			return new Integer("4");
 		else
 			return new Integer("1");
@@ -728,11 +728,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			Integer newProg = new Integer(oldProg.intValue() - 1);
 			String upperMenuHql = "";
 			Query query = null;
-			if (hibMenu.getParentId() == null){
+			if (hibMenu.getParentId() == null || hibMenu.getParentId().intValue()==0){
 				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
 				//" and s.parentId is null ";
 				upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
-				" and s.parentId is null ";
+				" and (s.parentId is null or s.parentId = 0)";
 				query = tmpSession.createQuery(upperMenuHql);
 				query.setInteger(0, newProg.intValue());
 			}
@@ -790,11 +790,11 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			
 			String upperMenuHql = "";
 			Query query = null;
-			if (hibMenu.getParentId() == null){
+			if (hibMenu.getParentId() == null || hibMenu.getParentId().intValue()==0){
 				//upperMenuHql = "from SbiMenu s where s.prog = " + newProg.toString() + 
 				//" and s.parentId is null ";
 				upperMenuHql = "from SbiMenu s where s.prog = ? "  + 
-				" and s.parentId is null ";
+				" and (s.parentId is null or s.parentId = 0)";
 				query = tmpSession.createQuery(upperMenuHql);
 				query.setInteger(0, newProg.intValue());
 			}

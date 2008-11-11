@@ -136,7 +136,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 				if (initialPath.equalsIgnoreCase(menu.getName())) addItemForJSTree(htmlStream, menu, true, limitLeaves);
 				else addItemForJSTree(htmlStream, menu, false,limitLeaves);
 			} else {
-				if (menu.getParentId() == null) addItemForJSTree(htmlStream, menu, true,limitLeaves);
+				if (menu.getParentId() == null || menu.getParentId().intValue()==0) addItemForJSTree(htmlStream, menu, true,limitLeaves);
 				else addItemForJSTree(htmlStream, menu, false,limitLeaves);
 			}
 		}
@@ -408,7 +408,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 
 
 	public int calculateDepth(HashMap idsMenues, Menu menu){
-		if(menu.getParentId()==null) {
+		if(menu.getParentId()==null || menu.getParentId().intValue()==0) {
 			return 0;
 		}
 		else 
@@ -480,7 +480,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 
 	private boolean canCreateMaster(Menu menu) {
 		Integer parentId = menu.getParentId();
-		if(parentId==null) return false;
+		if(parentId==null || parentId.intValue()==0) return false;
 		else{
 			//check the roles.
 			Menu parentMenu;

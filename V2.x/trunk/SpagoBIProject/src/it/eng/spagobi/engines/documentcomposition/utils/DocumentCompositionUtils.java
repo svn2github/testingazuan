@@ -193,7 +193,7 @@ public class DocumentCompositionUtils {
 		for (int i=0; i < objPars.size(); i++){
 			BIObjectParameter objPar = (BIObjectParameter)objPars.get(i);
 			if (objPar.getParameterUrlName().equalsIgnoreCase(key)){
-				retVal = (String)objPar.getParameterValues().get(0);
+				retVal = (objPar.getParameterValues()==null)?"":(String)objPar.getParameterValues().get(0);
 				break;
 			}
 		}

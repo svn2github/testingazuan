@@ -27,7 +27,9 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -113,7 +115,7 @@ public class DocumentCompositionUtils {
 			logger.error("The object with label " + objLabel + " hasn't got a document into template" );
 			return "1002|"; 
 		}
-		urlReturn += getParametersUrl(document, requestSB);
+		urlReturn += getParametersUrl(document, requestSB, instance);
 		//adds '|' char for management error into jsp if is necessary.
 		return "|"+urlReturn;
 	}
@@ -126,14 +128,8 @@ public class DocumentCompositionUtils {
 	 * @param requestSB the request object
 	 * @return a string with the url completed
 	 */
-	private static String getParametersUrl(Document document, SourceBean requestSB){
+	private static String getParametersUrl(Document document, SourceBean requestSB, ExecutionInstance instance){
 		String paramUrl = "";
-		String[] paramsVP = null;
-		String vpContent = (String)requestSB.getAttribute("content");
-		if (vpContent != null){
-		 paramsVP = vpContent.split("&");  
-		}
-		
 		//set others parameters value
 		Properties lstParams = document.getParams();
 		String key = "";
@@ -148,11 +144,11 @@ public class DocumentCompositionUtils {
 	    		key = lstParams.getProperty(tmpKey);
 	    		if (key == null) break;
 	    		value = (String)requestSB.getAttribute(key);
-		    	//if value isn't defined, check if there is a value into content parameter (there is when a document is called from a viewpoint) gets the default value
-	    		if((value == null || value.equals("")) && paramsVP != null){
-	    			value = getVPValue(key, paramsVP);
+	    		//if value isn't defined, check if there is a value into the instance(there is when a document is called from a refresh o viewpoint mode) 
+	    		if((value == null || value.equals(""))){
+	    			value = getInstanceValue(key, instance);
 	    		}
-	    		//if value isn't defined, gets the default value
+	    		//if value isn't defined, gets the default value from the template
 			    if(value == null || value.equals("")){
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 		    	}
@@ -189,15 +185,20 @@ public class DocumentCompositionUtils {
 		return retHM;
 	}
 	
-	private static String getVPValue(String key, String[] params){
+	private static String getInstanceValue(String key, ExecutionInstance instance){
 		String retVal = "";
-		for (int i=0; i < params.length; i++){
-			if (params[i].startsWith(key)){
-				retVal = params[i].substring(params[i].indexOf("=")+1);
+		BIObject obj = instance.getBIObject();
+		List objPars = obj.getBiObjectParameters();
+		
+		for (int i=0; i < objPars.size(); i++){
+			BIObjectParameter objPar = (BIObjectParameter)objPars.get(i);
+			if (objPar.getParameterUrlName().equalsIgnoreCase(key)){
+				retVal = (String)objPar.getParameterValues().get(0);
 				break;
 			}
 		}
 		return retVal;
 		
 	}
+	
 }

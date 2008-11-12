@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spagobi.engines.kpi.utils.StyleLabel"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.ChartImpl"%>
 
 <%
 	boolean docComposition=false;
@@ -77,16 +78,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<%
 		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-		String title = (String)sbModuleResponse.getAttribute("title");
-		String subTitle = (String)sbModuleResponse.getAttribute("subName");
-		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");
-		if (title!=null){
-			%>
-			<div><%=title%></div>
-			<%}
-		if (subTitle!=null){%>
-			<div><%=subTitle%></div>
-		<%}
+		
+		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");		
+		
+		if (!show_chart){
 		List kpiValues =(List)sbModuleResponse.getAttribute("kpiValues");
 			Iterator kpiVIt = kpiValues.iterator();
 			String text = "";
@@ -96,11 +91,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				List thresholds = kpiV.getThresholds();
 				String value = kpiV.getValue();
 				Double weight = kpiV.getWeight();
-				if (show_chart){
-					//creates a document with the representation of the kpivalues for each resource
-					
-				}else{
-					%>
+		
+					String title = (String)sbModuleResponse.getAttribute("title");
+					String subTitle = (String)sbModuleResponse.getAttribute("subName");
+					if (title!=null){
+						%>
+						<div><%=title%></div>
+						<%}
+					if (subTitle!=null){%>
+						<div><%=subTitle%></div>
+						<%}%>					
 					<div>*******************************************</div>
 					<% if (r!=null){
 					//creates a document without the representation of the kpivalues but only with its values for each resoruce
@@ -141,7 +141,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						}					
 					}
 				}				
+		}else{
+			List charts =(List)sbModuleResponse.getAttribute("charts");
+			Iterator it = charts.iterator();
+			while(it.hasNext()){
+				ChartImpl sbi = (ChartImpl)it.next();
+				////////////// Chart creation///////////////////
+				
+				JFreeChart chart=null;
+				// create the chart
+				chart = sbi.createChart();
+				//Create the temporary file
+				BIObject objO = instanceO.getBIObject();
+				String uuidO=instanceO.getExecutionId();
+				String executionFlowIdO=instanceO.getFlowId();
+				String executionId = uuidO;
+				executionId = executionId.replaceAll("-", "");
+
+				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+				//Saving image on a temporary file
+				String dir=System.getProperty("java.io.tmpdir");
+				String path=dir+"/"+executionId+".png";
+				java.io.File file1 = new java.io.File(path);
+				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
+				
+				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
+		
+				%>
+									<!-- Begin drawing the page -->
+<br>
+<table align="left">
+    <tr>
+	   <td>
+	   <div align="center">
+	   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
+	   </div>
+	   </td>
+	</tr>
+</table>					
+				<%
 			}
+		}
 		%>
 
 		

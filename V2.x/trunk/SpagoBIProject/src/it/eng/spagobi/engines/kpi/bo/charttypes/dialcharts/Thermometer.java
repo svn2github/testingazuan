@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +52,6 @@ public class Thermometer extends ChartImpl {
 	
 	private static transient Logger logger=Logger.getLogger(Thermometer.class);
 
-	private	Vector intervals=null;
 	private String units="";
 
 
@@ -65,6 +65,18 @@ public class Thermometer extends ChartImpl {
 	}
 
 
+	public void configureChart(HashMap conf) {
+		logger.info("IN");
+		super.configureChart(conf);
+		logger.debug("OUT");
+	}
+	
+	public void setThresholds(List thresholds) {
+		logger.info("IN");
+		super.setThresholds(thresholds);
+		logger.debug("OUT");
+	}
+	
 	/**
 	 * Creates a chart of type thermometer.
 	 * 
@@ -73,8 +85,6 @@ public class Thermometer extends ChartImpl {
 	 * 
 	 * @return A chart thermometer.
 	 */
-
-
 	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
 		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
@@ -126,95 +136,6 @@ public class Thermometer extends ChartImpl {
 
 		return chart;       
 	}
-
-
-
-
-	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV.
-	 * 
-	 * @param content the content of the template.
-	 * 
-	 * @return A chart that displays a value as a dial.
-	 */
-
-
-	public void configureChart(SourceBean content) {
-		logger.debug("IN");
-		super.configureChart(content);
-
-
-			if(confParameters.get("unit")!=null){	
-				String unit=(String)confParameters.get("unit");
-				setUnits(unit);
-			}
-			else
-				setUnits("");
-
-
-			//reading intervals information
-			SourceBean subrangesSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
-			List subrangesAttrsList=null;
-			if(subrangesSB!=null){
-				subrangesAttrsList = subrangesSB.getContainedSourceBeanAttributes();
-			}
-
-			if(subrangesAttrsList==null || subrangesAttrsList.isEmpty()){ // if subranges are not defined 
-				logger.error("subranges not correctly defined");			}
-			else{	
-
-				Iterator subrangesAttrsIter = subrangesAttrsList.iterator();
-				while(subrangesAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)subrangesAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-					String range= (String)param.getAttribute("label");
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
-
-					KpiInterval subrange=new KpiInterval();
-
-					subrange.setLabel(range);
-					subrange.setMin(Double.valueOf(min).doubleValue());
-					subrange.setMax(Double.valueOf(max).doubleValue());
-
-					Color color=new Color(Integer.decode(col).intValue());
-					if(color!=null){
-						subrange.setColor(color);}
-					else{
-						subrange.setColor(Color.RED);
-					}
-					addIntervals(subrange);
-				}
-			}
-		logger.debug("OUT");
-	}
-
-
-
-
-	/**
-	 * Gets the intervals.
-	 * 
-	 * @return the intervals
-	 */
-	public Vector getIntervals() {
-		return intervals;
-	}
-
-
-
-
-	/**
-	 * Adds the intervals.
-	 * 
-	 * @param subrange the subrange
-	 */
-	public void addIntervals(KpiInterval subrange) {
-		this.intervals.add(subrange);
-	}
-
-
 
 
 	/**

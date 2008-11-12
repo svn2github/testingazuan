@@ -42,6 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="it.eng.spagobi.engines.kpi.utils.StyleLabel"%>
 
 <%
 	boolean docComposition=false;
@@ -76,7 +77,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<%
 		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
+		String title = (String)sbModuleResponse.getAttribute("title");
+		String subTitle = (String)sbModuleResponse.getAttribute("subName");
 		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");
+		if (title!=null){
+			%>
+			<div><%=title%></div>
+			<%}
+		if (subTitle!=null){%>
+			<div><%=subTitle%></div>
+		<%}
 		List kpiValues =(List)sbModuleResponse.getAttribute("kpiValues");
 			Iterator kpiVIt = kpiValues.iterator();
 			String text = "";

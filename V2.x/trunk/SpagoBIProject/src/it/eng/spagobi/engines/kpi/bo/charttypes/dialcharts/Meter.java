@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -44,6 +45,7 @@ import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 /**
  * 
@@ -54,7 +56,7 @@ import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 public class Meter extends ChartImpl {
 	
 	private static transient Logger logger=Logger.getLogger(Meter.class);
-	Vector intervals;
+	
 
 
 	/**
@@ -66,98 +68,18 @@ public class Meter extends ChartImpl {
 	}
 
 
-	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV.
-	 * 
-	 * @param content the content of the template.
-	 * 
-	 * @return A chart that displays a value as a dial.
-	 */
-
-	public void configureChart(SourceBean content) {
+	public void configureChart(HashMap conf) {
 		logger.info("IN");
-		super.configureChart(content);
-
-		if(!isLovConfDefined){
-			logger.info("Configuration parameters set in template");
-			//reading intervals information
-			SourceBean intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
-			List intervalsAttrsList=null;
-			if(intervalsSB!=null){
-				intervalsAttrsList = intervalsSB.getContainedSourceBeanAttributes();
-			}
-
-			if(intervalsAttrsList==null || intervalsAttrsList.isEmpty()){ // if intervals are not defined realize a single interval
-				KpiInterval interval=new KpiInterval();
-				interval.setLabel("");
-				interval.setMin(getLower());
-				interval.setMax(getUpper());
-				interval.setColor(Color.WHITE);
-				addInterval(interval);
-			}
-			else{	
-
-				Iterator intervalsAttrsIter = intervalsAttrsList.iterator();
-				while(intervalsAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)intervalsAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-
-					String label="";
-					if(param.getAttribute("label")!=null)
-						label=(String)param.getAttribute("label");
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
-
-					KpiInterval interval=new KpiInterval();
-					interval.setLabel(label);
-					interval.setMin(Double.valueOf(min).doubleValue());
-					interval.setMax(Double.valueOf(max).doubleValue());
-
-					Color color=new Color(Integer.decode(col).intValue());
-					if(color!=null){
-						interval.setColor(color);}
-					else{
-						interval.setColor(Color.RED);
-					}
-					addInterval(interval);
-				}
-			}
-		}
-		else{
-			logger.info("Configuration parameters set in LOV");
-			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
-			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
-				logger.warn("intervals not correctly defined, use default settings");
-				KpiInterval interval=new KpiInterval();
-				interval.setLabel("");
-				interval.setMin(getLower());
-				interval.setMax(getUpper());
-				interval.setColor(Color.WHITE);
-				addInterval(interval);
-			}
-			else{
-				for(int i=1;i<=Integer.valueOf(intervalsNumber).intValue();i++){
-					KpiInterval interval=new KpiInterval();
-					String label="";
-					if(sbRow.getAttribute("label"+(new Integer(i)).toString())!=null){
-						label=(String)sbRow.getAttribute("label"+(new Integer(i)).toString());}
-					String min=(String)sbRow.getAttribute("min"+(new Integer(i)).toString());
-					String max=(String)sbRow.getAttribute("max"+(new Integer(i)).toString());
-					String col=(String)sbRow.getAttribute("color"+(new Integer(i)).toString());
-					interval.setLabel(label);
-					interval.setMin(Double.valueOf(min).doubleValue());
-					interval.setMax(Double.valueOf(max).doubleValue());
-					Color color=new Color(Integer.decode(col).intValue());
-					interval.setColor(color);
-					addInterval(interval);
-
-				}
-			}
-		}
+		super.configureChart(conf);
 		logger.debug("OUT");
-
 	}
+	
+	public void setThresholds(List thresholds) {
+		logger.info("IN");
+		super.setThresholds(thresholds);
+		logger.debug("OUT");
+	}
+	
 
 	/**
 	 * Creates the chart .
@@ -168,10 +90,11 @@ public class Meter extends ChartImpl {
 	 * @return A chart .
 	 */
 
-	public JFreeChart createChart(DatasetMap datasets) {
+	public JFreeChart createChart() {
 
-		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
-
+		if (dataset==null){
+			return null;
+		}
 		MeterPlot plot = new MeterPlot((ValueDataset)dataset);
 		plot.setRange(new Range(lower, upper));
 
@@ -211,30 +134,6 @@ public class Meter extends ChartImpl {
 		}
 
 		return chart;
-	}
-
-
-
-
-
-	/**
-	 * Gets the intervals.
-	 * 
-	 * @return the intervals
-	 */
-	public Vector getIntervals() {
-		return intervals;
-	}
-
-
-
-	/**
-	 * Adds the interval.
-	 * 
-	 * @param interval the interval
-	 */
-	public void addInterval(KpiInterval interval) {
-		intervals.add(interval);
 	}
 
 

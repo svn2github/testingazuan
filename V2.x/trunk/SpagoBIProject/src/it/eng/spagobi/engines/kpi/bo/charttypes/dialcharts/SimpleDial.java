@@ -25,6 +25,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -60,23 +61,7 @@ public class SimpleDial extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(SimpleDial.class);
 
 	double increment=0.0;
-	int minorTickCount=0;
-	Vector intervals;
-
-
-	boolean horizontalView=false; //false is vertical, true is horizontal
-	boolean horizontalViewConfigured=false;
-	public static final String CHANGE_VIEW_HORIZONTAL="horizontal";
-
-	public static final String CHANGE_VIEW_LABEL="Set View Orientation";
-	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
-	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
-
-
-
-
-
-
+	int minorTickCount=5;
 
 	/**
 	 * Instantiates a new simple dial.
@@ -86,92 +71,17 @@ public class SimpleDial extends ChartImpl {
 		intervals=new Vector();
 	}
 
-	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV.
-	 * 
-	 * @param content the content of the template.
-	 * 
-	 * @return A chart that displays a value as a dial.
-	 */
-
-
-
-	public void configureChart(SourceBean content) {
-		logger.debug("IN");
-		super.configureChart(content);
-
-			if(confParameters.get("increment")!=null){	
-				String increment=(String)confParameters.get("increment");
-				setIncrement(Double.valueOf(increment).doubleValue());
-			}
-			else {
-				logger.error("increment not defined");
-			}
-			if(confParameters.get("minor_tick")!=null){	
-				String minorTickCount=(String)confParameters.get("minor_tick");
-				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
-			}
-			else {
-				setMinorTickCount(10);
-			}
-
-			if(confParameters.get("orientation")!=null){	
-				String orientation=(String)confParameters.get("orientation");
-				if(orientation.equalsIgnoreCase("vertical")){
-					horizontalViewConfigured=true;
-					horizontalView=false;
-				}
-				else if(orientation.equalsIgnoreCase("horizontal")){
-					horizontalViewConfigured=true;
-					horizontalView=true;
-				}
-			}
-
-
-			//reading intervals information
-			SourceBean intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
-			List intervalsAttrsList=null;
-			if(intervalsSB!=null){
-				intervalsAttrsList = intervalsSB.getContainedSourceBeanAttributes();
-			}
-
-			if(intervalsAttrsList==null || intervalsAttrsList.isEmpty()){ // if intervals are not defined realize a single interval
-				logger.warn("intervals not defined; default settings");
-				/*KpiInterval interval=new KpiInterval();
-				interval.setMin(getLower());
-				interval.setMax(getUpper());
-				interval.setColor(Color.white);
-				addInterval(interval);*/
-			}
-			else{	
-
-				Iterator intervalsAttrsIter = intervalsAttrsList.iterator();
-				while(intervalsAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)intervalsAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
-
-					KpiInterval interval=new KpiInterval();
-					interval.setMin(Double.valueOf(min).doubleValue());
-					interval.setMax(Double.valueOf(max).doubleValue());
-
-					Color color=new Color(Integer.decode(col).intValue());
-					if(color!=null){
-						interval.setColor(color);}
-					else{
-						// sets default color
-						interval.setColor(Color.white);
-					}
-					addInterval(interval);
-				}
-			}
-
-		logger.debug("out");
+	public void configureChart(HashMap conf) {
+		logger.info("IN");
+		super.configureChart(conf);
+		logger.debug("OUT");
 	}
-
 	
+	public void setThresholds(List thresholds) {
+		logger.info("IN");
+		super.setThresholds(thresholds);
+		logger.debug("OUT");
+	}
 	
 	/**
 	 * Creates the chart .
@@ -181,7 +91,6 @@ public class SimpleDial extends ChartImpl {
 	 * 
 	 * @return A chart .
 	 */
-
 	public JFreeChart createChart(DatasetMap datasets) {
 		// get data for diagrams
 		logger.debug("IN");
@@ -192,14 +101,8 @@ public class SimpleDial extends ChartImpl {
 		plot.setDataset((ValueDataset)dataset);
 
 		ArcDialFrame dialFrame=null;
-		if(!horizontalView){
-			plot.setView(0.78, 0.37, 0.22, 0.26);     
-			dialFrame = new ArcDialFrame(-10.0, 20.0); 
-		}
-		else{
-			plot.setView(0.21, 0.0, 0.58, 0.30);
-			dialFrame = new ArcDialFrame(60.0, 60.0);
-		}
+		plot.setView(0.78, 0.37, 0.22, 0.26);     
+		dialFrame = new ArcDialFrame(-10.0, 20.0); 
 
 		dialFrame.setInnerRadius(0.65);
 		dialFrame.setOuterRadius(0.90);
@@ -213,23 +116,16 @@ public class SimpleDial extends ChartImpl {
 		DialBackground sdb = new DialBackground(gp);
 
 		GradientPaintTransformType gradientPaintTransformType=GradientPaintTransformType.VERTICAL;
-		if(horizontalView){
 			gradientPaintTransformType=GradientPaintTransformType.HORIZONTAL;
-		}
 
 		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(
 				gradientPaintTransformType));
 		plot.addLayer(sdb);
 
+		increment = (upper-lower)/10;
 		StandardDialScale scale=null;
-		if(!horizontalView){
 			scale = new StandardDialScale(lower, upper, -8, 16.0, 
 					increment, minorTickCount);
-		}
-		else{
-			scale = new StandardDialScale(lower, upper, 115.0, 
-					-50.0, increment, minorTickCount);
-		}
 
 		// sets intervals
 		for (Iterator iterator = intervals.iterator(); iterator.hasNext();) {
@@ -336,56 +232,6 @@ public class SimpleDial extends ChartImpl {
 	 */
 	public boolean isChangeableView() {
 		return true;
-	}
-
-
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
-	 */
-	public List getPossibleChangePars() {
-		List l=new Vector();
-		if(!horizontalViewConfigured){
-		l.add(CHANGE_VIEW_HORIZONTAL);}
-		
-		return l;
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)
-	 */
-	public void setChangeViewsParameter(String changePar, boolean how) {
-		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
-			horizontalView=how;
-		}
-
-	}
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameter(java.lang.String)
-	 */
-	public boolean getChangeViewParameter(String changePar) {
-		boolean ret=false;
-		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
-			ret=horizontalView;
-		}
-		return ret;
-	}
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getChangeViewParameterLabel(java.lang.String, int)
-	 */
-	public String getChangeViewParameterLabel(String changePar, int i) {
-		String ret="";
-		if(changePar.equalsIgnoreCase(CHANGE_VIEW_HORIZONTAL)){
-			if(i==0)	
-				ret=CHANGE_VIEW_LABEL;
-			else if(i==1) ret=CHANGE_VIEW_LABEL1;
-			else if(i==2) ret=CHANGE_VIEW_LABEL2;
-
-		}
-		return ret;
 	}
 
 

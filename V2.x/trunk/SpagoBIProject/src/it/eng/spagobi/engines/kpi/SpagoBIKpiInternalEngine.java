@@ -55,6 +55,7 @@ import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
 	protected HashMap seriesLabelsMap = null;
+	protected HashMap confMap;
 	
 	protected double lower=0.0;
 	protected double upper=0.0;
@@ -118,7 +120,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 
 		DatasetMap datasets=null;
-		ChartImpl sbi=new Speedometer();
+		
 
 		ResponseContainer responseContainer=ResponseContainer.getResponseContainer();
 		EMFErrorHandler errorHandler=responseContainer.getErrorHandler();
@@ -227,7 +229,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Loaded the KpiInstance related to the specified Model Instance");
 			//I set the list of resources of that specific ModelInstance
 			this.resources = mI.getResources();
-			logger.debug("Ciao");
+			
 			logger.debug("Setted the List of Resources related to the specified Model Instance");
 			if(this.resources == null || this.resources.isEmpty()){
 				logger.debug("There are no resources assigned to the Model Instance");
@@ -242,6 +244,30 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			//From the KpiInstance gets the last KpiValues 		
 			List kpiValues = kpiI.getValues();
+			
+			List charts = new ArrayList();
+			if(show_chart){
+				//If charts have to be shown the list "charts" will be filled with a chart for each KpiValue
+				Iterator it = kpiValues.iterator();
+				while(it.hasNext()){
+					KpiValue k = (KpiValue) it.next();
+					List thresholds = k.getThresholds();
+					String chartType = k.getChartType();
+					if(chartType!=null){
+						
+						Double value = new Double(k.getValue());
+						ChartImpl sbi = null;				
+						sbi=ChartImpl.createChart(chartType);
+						sbi.setProfile(userProfile);
+						sbi.setValueDataSet(value);
+						sbi.configureChart(confMap);
+						sbi.setThresholds(thresholds);
+						
+						charts.add(sbi);
+						
+					}					
+				}				
+			}
 						
 			try{
 				//chart = sbi.createChart(title,dataset);
@@ -249,10 +275,19 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
-				response.setAttribute("sbi",sbi);
 				response.setAttribute("kpiValues",kpiValues);
 				response.setAttribute("show_chart",show_chart);
-
+				if (name!=null){
+					response.setAttribute("title",name);
+					response.setAttribute("styleTitle",styleTitle);
+				}
+				if(subName!=null){
+					response.setAttribute("subName",subName);
+					response.setAttribute("styleSubTitle",styleSubTitle);
+				}
+				if(show_chart && !charts.isEmpty()){
+					response.setAttribute("charts",charts);
+				}
 			}
 			catch (Exception eex) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 10107);
@@ -275,165 +310,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			errorHandler.addError(userError);
 
 		}
-
-	}
-
-
-	public void getSetConf(SourceBean content) {
-		logger.debug("IN");
-		// common part for all charts
-		//setting the title with parameter values if is necessary
-		if(content.getAttribute("name")!=null) {
-			String titleChart = (String)content.getAttribute("name");
-			String tmpTitle = titleChart;
-			while (!tmpTitle.equals("")){
-				if (tmpTitle.indexOf("$P{") >= 0){
-					String parName = tmpTitle.substring(tmpTitle.indexOf("$P{")+3, tmpTitle.indexOf("}"));
-					
-					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
-					parValue = parValue.replaceAll("\'", "");
-					
-					if(parValue.equals("%")) parValue = "";
-					int pos = tmpTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
-					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
-					tmpTitle = tmpTitle.substring(pos);
-				}
-				else
-					tmpTitle = "";
-			}
-			setName(titleChart);
-		}
-		else setName("");
-
-		SourceBean styleTitleSB = (SourceBean)content.getAttribute("STYLE_TITLE");
-		if(styleTitleSB!=null){
-
-			String fontS = (String)content.getAttribute("STYLE_TITLE.font");
-			String sizeS = (String)content.getAttribute("STYLE_TITLE.size");
-			String colorS = (String)content.getAttribute("STYLE_TITLE.color");
-
-
-			try{
-				Color color=Color.decode(colorS);
-				int size=Integer.valueOf(sizeS).intValue();
-				styleTitle=new StyleLabel(fontS,size,color);
-				
-			}
-			catch (Exception e) {
-				logger.error("Wrong style Title settings, use default");
-			}
-
-		}
-		
-		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute("STYLE_SUBTITLE");
-		if(styleSubTitleSB!=null){
-
-			String subTitle = (String)content.getAttribute("STYLE_SUBTITLE.name");
-			if(subTitle!=null) {
-				String tmpSubTitle = subTitle;
-				while (!tmpSubTitle.equals("")){
-					if (tmpSubTitle.indexOf("$P{") >= 0){
-						String parName = tmpSubTitle.substring(tmpSubTitle.indexOf("$P{")+3, tmpSubTitle.indexOf("}"));
-						String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
-						parValue = parValue.replaceAll("\'", "");
-						if(parValue.equals("%")) parValue = "";
-						int pos = tmpSubTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
-						subTitle = subTitle.replace("$P{" + parName + "}", parValue);
-						tmpSubTitle = tmpSubTitle.substring(pos);
-					}
-					else
-						tmpSubTitle = "";
-				}
-				setSubName(subTitle);
-			}
-			else setSubName("");
-			
-			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
-			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");
-			String colorS = (String)content.getAttribute("STYLE_SUBTITLE.color");
-
-
-			try{
-				Color color=Color.decode(colorS);
-				int size=Integer.valueOf(sizeS).intValue();
-				styleSubTitle=new StyleLabel(fontS,size,color);				
-			}
-			catch (Exception e) {
-				logger.error("Wrong style SubTitle settings, use default");
-			}
-
-		}
-
-
-		if(content.getAttribute("title_dimension")!=null) 
-		{
-			String titleD=((String)content.getAttribute("title_dimension"));
-			titleDimension=Integer.valueOf(titleD).intValue();
-		}
-		else setTitleDimension(18);
-
-
-		String colS = (String)content.getAttribute("COLORS.background");
-		if(colS!=null) 
-		{
-			Color col=new Color(Integer.decode(colS).intValue());
-			if(col!=null){
-				setColor(col);}
-			else{
-				setColor(Color.white);
-			}
-		}
-		else { 	
-			setColor(Color.white);
-		}
-
-		String widthS = (String)content.getAttribute("DIMENSION.width");
-		String heightS = (String)content.getAttribute("DIMENSION.height");
-		if(widthS==null || heightS==null){
-			logger.warn("Width or height non defined, use default ones");
-			widthS="400";
-			heightS="300";
-		}
-
-		width=Integer.valueOf(widthS).intValue();
-		height=Integer.valueOf(heightS).intValue();
-
-		// get all the data parameters 
-
-
-		try{					
-			Map dataParameters = new HashMap();
-			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
-			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
-			Iterator dataAttrsIter = dataAttrsList.iterator();
-			while(dataAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String nameParam = (String)param.getAttribute("name");
-				String valueParam = (String)param.getAttribute("value");
-				dataParameters.put(nameParam, valueParam);
-			}
-
-			legend=true;
-			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
-				String leg=(String)dataParameters.get("legend");
-				if(leg.equalsIgnoreCase("false"))
-					legend=false;
-			}
-
-			show_chart=true;
-			if(dataParameters.get("show_chart")!=null && !(((String)dataParameters.get("show_chart")).equalsIgnoreCase("") )){	
-				String fil=(String)dataParameters.get("show_chart");
-				if(fil.equalsIgnoreCase("false"))
-					show_chart=false;
-			}
-			
-			
-		}
-		catch (Exception e) {
-			logger.error("error in reading data source parameters");
-		}
-
 
 	}
 	
@@ -544,6 +420,172 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		
 	}
 	
+
+	public void getSetConf(SourceBean content) {
+		logger.debug("IN");
+		this.confMap = new HashMap();
+		// common part for all charts
+		//setting the title with parameter values if is necessary
+		if(content.getAttribute("name")!=null) {
+			String titleChart = (String)content.getAttribute("name");
+			String tmpTitle = titleChart;
+			while (!tmpTitle.equals("")){
+				if (tmpTitle.indexOf("$P{") >= 0){
+					String parName = tmpTitle.substring(tmpTitle.indexOf("$P{")+3, tmpTitle.indexOf("}"));
+					
+					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+					parValue = parValue.replaceAll("\'", "");
+					
+					if(parValue.equals("%")) parValue = "";
+					int pos = tmpTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
+					tmpTitle = tmpTitle.substring(pos);
+				}
+				else
+					tmpTitle = "";
+			}
+			setName(titleChart);
+			this.confMap.put("name", name) ;
+		}
+		else setName("");
+
+		SourceBean styleTitleSB = (SourceBean)content.getAttribute("STYLE_TITLE");
+		if(styleTitleSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_TITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_TITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_TITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleTitle=new StyleLabel(fontS,size,color);
+				
+			}
+			catch (Exception e) {
+				logger.error("Wrong style Title settings, use default");
+			}
+
+		}else{
+			styleTitle=new StyleLabel("Arial",16,new Color (255,0,0));
+		}
+		this.confMap.put("styleTitle", styleTitle) ;
+		
+		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute("STYLE_SUBTITLE");
+		if(styleSubTitleSB!=null){
+
+			String subTitle = (String)content.getAttribute("STYLE_SUBTITLE.name");
+			if(subTitle!=null) {
+				String tmpSubTitle = subTitle;
+				while (!tmpSubTitle.equals("")){
+					if (tmpSubTitle.indexOf("$P{") >= 0){
+						String parName = tmpSubTitle.substring(tmpSubTitle.indexOf("$P{")+3, tmpSubTitle.indexOf("}"));
+						String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+						parValue = parValue.replaceAll("\'", "");
+						if(parValue.equals("%")) parValue = "";
+						int pos = tmpSubTitle.indexOf("$P{"+parName+"}") + (parName.length()+4);
+						subTitle = subTitle.replace("$P{" + parName + "}", parValue);
+						tmpSubTitle = tmpSubTitle.substring(pos);
+					}
+					else
+						tmpSubTitle = "";
+				}
+				setSubName(subTitle);
+				
+			}
+			else setSubName("");
+			
+			this.confMap.put("subName", subName) ;
+			
+			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
+			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");
+			String colorS = (String)content.getAttribute("STYLE_SUBTITLE.color");
+
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleSubTitle=new StyleLabel(fontS,size,color);				
+			}
+			catch (Exception e) {
+				logger.error("Wrong style SubTitle settings, use default");
+			}
+
+		}else{
+			styleSubTitle=new StyleLabel("Arial",12,new Color (0,0,0));
+		}
+		this.confMap.put("styleSubTitle", styleSubTitle) ;
+
+
+		String colS = (String)content.getAttribute("COLORS.background");
+		if(colS!=null) 
+		{
+			Color col=new Color(Integer.decode(colS).intValue());
+			if(col!=null){
+				setColor(col);}
+			else{
+				setColor(Color.white);
+			}
+		}
+		else { 	
+			setColor(Color.white);
+		}
+		this.confMap.put("color", color) ;
+
+		String widthS = (String)content.getAttribute("DIMENSION.width");
+		String heightS = (String)content.getAttribute("DIMENSION.height");
+		if(widthS==null || heightS==null){
+			logger.warn("Width or height non defined, use default ones");
+			widthS="400";
+			heightS="300";
+		}
+
+		width=Integer.valueOf(widthS).intValue();
+		height=Integer.valueOf(heightS).intValue();
+		this.confMap.put("width", width) ;
+		this.confMap.put("height", height) ;
+
+		// get all the data parameters 
+
+
+		try{					
+			Map dataParameters = new HashMap();
+			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
+			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
+			Iterator dataAttrsIter = dataAttrsList.iterator();
+			while(dataAttrsIter.hasNext()) {
+				SourceBeanAttribute paramSBA = (SourceBeanAttribute)dataAttrsIter.next();
+				SourceBean param = (SourceBean)paramSBA.getValue();
+				String nameParam = (String)param.getAttribute("name");
+				String valueParam = (String)param.getAttribute("value");
+				dataParameters.put(nameParam, valueParam);
+			}
+
+			legend=true;
+			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get("legend");
+				if(leg.equalsIgnoreCase("false"))
+					legend=false;
+			}
+			this.confMap.put("legend", legend) ;
+
+			show_chart=true;
+			if(dataParameters.get("show_chart")!=null && !(((String)dataParameters.get("show_chart")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("show_chart");
+				if(fil.equalsIgnoreCase("false"))
+					show_chart=false;
+			}
+			this.confMap.put("show_chart", show_chart) ;
+			
+			
+		}
+		catch (Exception e) {
+			logger.error("error in reading data source parameters");
+		}
+
+
+	}
 	
 	/**
 	 * The <code>SpagoBIDashboardInternalEngine</code> cannot manage subobjects so this method must not be invoked.

@@ -17,7 +17,16 @@ public class KpiValue {
 	String scaleCode = null;
 	String scaleName = null;
 	Resource r = null;//Resource (project/process) to which refers the value
+	String chartType = null;
 	
+	public String getChartType() {
+		return chartType;
+	}
+
+	public void setChartType(String chartType) {
+		this.chartType = chartType;
+	}
+
 	public KpiValue() {
 		super();
 		this.thresholds = new ArrayList();

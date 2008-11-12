@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -63,9 +64,9 @@ public class Speedometer extends ChartImpl {
 	
 	private static transient Logger logger=Logger.getLogger(SBISpeedometer.class);
 
-	Vector intervals;
+
 	double increment=0.0;
-	int minorTickCount=0;
+	int minorTickCount=5;
 	boolean dialtextuse = false ;
 	String dialtext = "";
 
@@ -78,95 +79,17 @@ public class Speedometer extends ChartImpl {
 		intervals=new Vector();	
 	}
 
-	/**
-	 * set parameters for the creation of the chart getting them from template or from LOV.
-	 * 
-	 * @param content the content of the template.
-	 * 
-	 * @return A chart that displays a value as a dial.
-	 */
-
-
-	public void configureChart(SourceBean content) {
-
-		super.configureChart(content);
-
-		logger.debug("IN");
-
-			logger.debug("Configuration set in template");
-			if(confParameters.get("increment")!=null){	
-				String increment=(String)confParameters.get("increment");
-				setIncrement(Double.valueOf(increment).doubleValue());
-			}
-			else {
-				logger.error("increment not defined");
-				return;
-			}
-			if(confParameters.get("minor_tick")!=null){	
-				String minorTickCount=(String)confParameters.get("minor_tick");
-				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
-			}
-			else {
-				setMinorTickCount(10);
-			}
-			
-			if(confParameters.get("dialtextuse")!=null){	
-				String dialtextusetemp=(String)confParameters.get("dialtextuse");
-				if(dialtextusetemp.equalsIgnoreCase("true")){
-					dialtextuse = true;
-				}
-				else dialtextuse = false;
-			}
-			
-			if(dialtextuse && confParameters.get("dialtext")!=null){
-				dialtext=(String)confParameters.get("dialtext");
-			}
-
-
-			//reading intervals information
-			SourceBean intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
-			List intervalsAttrsList=null;
-			if(intervalsSB!=null){
-				intervalsAttrsList = intervalsSB.getContainedSourceBeanAttributes();
-			}
-
-			if(intervalsAttrsList==null || intervalsAttrsList.isEmpty()){ // if intervals are not defined realize a single interval
-				logger.warn("intervals not defined; default settings");
-				KpiInterval interval=new KpiInterval();
-				interval.setMin(getLower());
-				interval.setMax(getUpper());
-				interval.setColor(Color.WHITE);
-				addInterval(interval);
-			}
-			else{	
-
-				Iterator intervalsAttrsIter = intervalsAttrsList.iterator();
-				while(intervalsAttrsIter.hasNext()) {
-					SourceBeanAttribute paramSBA = (SourceBeanAttribute)intervalsAttrsIter.next();
-					SourceBean param = (SourceBean)paramSBA.getValue();
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
-
-					KpiInterval interval=new KpiInterval();
-					interval.setMin(Double.valueOf(min).doubleValue());
-					interval.setMax(Double.valueOf(max).doubleValue());
-
-					Color color=new Color(Integer.decode(col).intValue());
-					if(color!=null){
-						interval.setColor(color);}
-					else{
-						// sets default color
-						interval.setColor(Color.WHITE);
-					}
-					addInterval(interval);
-				}
-			}
-		logger.debug("out");
+	public void configureChart(HashMap conf) {
+		logger.info("IN");
+		super.configureChart(conf);
+		logger.debug("OUT");
 	}
-
-
-
+	
+	public void setThresholds(List thresholds) {
+		logger.info("IN");
+		super.setThresholds(thresholds);
+		logger.debug("OUT");
+	}
 
 
 	/**
@@ -198,8 +121,8 @@ public class Speedometer extends ChartImpl {
 		DialValueIndicator dvi = new DialValueIndicator(0);
 		plot.addLayer(dvi);
 
-		StandardDialScale scale = new StandardDialScale(lower, 
-				upper, -120, -300, 10.0, 4);
+		increment = (upper-lower)/10;
+		StandardDialScale scale = new StandardDialScale(lower, upper, -120, -300, 10.0, 4);
 		scale.setMajorTickIncrement(increment);
 		scale.setMinorTickCount(minorTickCount);
 		scale.setTickRadius(0.88);

@@ -91,11 +91,9 @@ public class SimpleDial extends ChartImpl {
 	 * 
 	 * @return A chart .
 	 */
-	public JFreeChart createChart(DatasetMap datasets) {
+	public JFreeChart createChart() {
 		// get data for diagrams
 		logger.debug("IN");
-		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
-
 		
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);

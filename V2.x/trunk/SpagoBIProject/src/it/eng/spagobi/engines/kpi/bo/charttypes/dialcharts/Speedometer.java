@@ -101,9 +101,8 @@ public class Speedometer extends ChartImpl {
 	 * @return A chart speedometer.
 	 */
 
-	public JFreeChart createChart(DatasetMap datasets) {
+	public JFreeChart createChart() {
 		logger.debug("IN");
-		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
 		
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);

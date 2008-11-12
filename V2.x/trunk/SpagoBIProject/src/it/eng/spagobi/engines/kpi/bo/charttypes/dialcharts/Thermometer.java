@@ -85,9 +85,8 @@ public class Thermometer extends ChartImpl {
 	 * 
 	 * @return A chart thermometer.
 	 */
-	public JFreeChart createChart(DatasetMap datasets) {
+	public JFreeChart createChart() {
 		logger.debug("IN");
-		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
 
 		ThermometerPlot plot = new ThermometerPlot((ValueDataset)dataset);
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT,	plot, true);               

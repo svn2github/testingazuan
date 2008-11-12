@@ -159,7 +159,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			hibKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class, kpiInstID);
 			Set kpiValues = hibKpiInstance.getSbiKpiValues();
-			String chartType = hibKpiInstance.getSbiDomains().getValueCd();
+			SbiDomains dom = hibKpiInstance.getSbiDomains();
+			String chartType = null;
+			if (dom!=null) chartType = dom.getValueCd();
 			
 			 Iterator iVa = kpiValues.iterator();
 				while(iVa.hasNext()){

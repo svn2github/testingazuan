@@ -60,7 +60,7 @@ public class ChartImpl {
 	 * 
 	 * @return the j free chart
 	 */
-	public JFreeChart createChart(DatasetMap dataset) {
+	public JFreeChart createChart() {
 		return null;
 	}
 

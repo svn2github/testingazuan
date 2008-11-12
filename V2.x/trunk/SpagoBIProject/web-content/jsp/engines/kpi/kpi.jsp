@@ -99,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<% }%>
 					<div>Value = <%=value%></div>
 					<div>Weight = <%=weight%></div>					
-					<div>Thresholds :</div>
+					<div>Thresholds:</div>
 	
 					<%
 					Iterator threshIt = thresholds.iterator();
@@ -115,18 +115,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							min = t.getMinValue();
 							max = t.getMaxValue();
 							%>
-							<div>Min: <%=min%></div>
-							<div>Max: <%=max%></div>
+							<div>Min: <%=min.toString()%></div>
+							<div>Max: <%=max.toString()%></div>
 							<%														
-						}else if (type.equals("MIN")){						
+						}else if (type.equals("MINIMUM")){						
 							min = t.getMinValue();
 							%>
-							<div>Min: <%=min%></div>
+							<div>Min: <%=min.toString()%></div>
 							<%
-						}else if (type.equals("MAX")){							
+						}else if (type.equals("MAXIMUM")){							
 							max = t.getMaxValue();
 							%>
-							<div>Max: <%=max%></div>
+							<div>Max: <%=max.toString()%></div>
 							<%
 						}					
 					}

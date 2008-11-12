@@ -227,8 +227,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Loaded the KpiInstance related to the specified Model Instance");
 			//I set the list of resources of that specific ModelInstance
 			this.resources = mI.getResources();
+			logger.debug("Ciao");
 			logger.debug("Setted the List of Resources related to the specified Model Instance");
-			if(this.resources == null){
+			if(this.resources == null || this.resources.isEmpty()){
 				logger.debug("There are no resources assigned to the Model Instance");
 			}
 			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI, dateOfKPI);

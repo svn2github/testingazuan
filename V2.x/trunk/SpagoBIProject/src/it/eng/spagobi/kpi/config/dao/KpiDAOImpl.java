@@ -205,13 +205,16 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			Integer kpiInstanceId = value.getKpiInstanceId();
 			SbiKpiInstance sbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,kpiInstanceId);
 			Resource r = value.getR();
-			SbiResources sbiResources = toSbiResource(r);
+			if (r!=null){
+				SbiResources sbiResources = toSbiResource(r);
+				hibKpiValue.setSbiResources(sbiResources);
+			}
 			
 			hibKpiValue.setBeginDt(beginDt);
 			hibKpiValue.setEndDt(endDt);
 			hibKpiValue.setValue(kpiValue);
 			hibKpiValue.setSbiKpiInstance(sbiKpiInstance);
-			hibKpiValue.setSbiResources(sbiResources);
+			
 			
 			aSession.save(hibKpiValue);
 			tx.commit();

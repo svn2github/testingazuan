@@ -291,9 +291,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 
-	public boolean isAlarmingValue(KpiValue value) throws EMFUserError {
+	public void isAlarmingValue(KpiValue value) throws EMFUserError {
 		logger.debug("IN");
-		boolean isAlarming = false;
+		
 		Integer kpiInstID = value.getKpiInstanceId();
 		String val = value.getValue();
 		Double kpiVal = new Double(val);
@@ -310,44 +310,42 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				
 				Iterator itAl = alarms.iterator();
 				while(itAl.hasNext()){
+					boolean isAlarming = false;
 					SbiAlarm alarm = (SbiAlarm)itAl.next();
 					String a = "";
 					SbiThresholdValue threshold = alarm.getSbiThresholdValue();
 					String type = threshold.getSbiThreshold().getSbiDomains().getValueCd();
-					Double min = null;
-					Double max = null;
+					double min ;
+					double max;
 					String thresholdValue = "";
 					
 					if(type.equals("RANGE")){
 						
 						min = threshold.getMinValue();
 						max = threshold.getMaxValue();
-						int i = kpiVal.compareTo(min);
-						int j = kpiVal.compareTo(max);
+
 						//if the value is in the interval, then there should be an alarm
-						if (i>0 && j<0){
+						if (kpiVal.doubleValue()>= min && 	kpiVal.doubleValue()<= max){
 							isAlarming = true;
-							thresholdValue = min.toString() +"-"+max.toString();
+							thresholdValue = "Min:"+ min +"-Max:"+max;
 						}
 						
-					}else if (type.equals("MIN")){
+					}else if (type.equals("MINIMUM")){
 						
 						min = threshold.getMinValue();
-						int i = kpiVal.compareTo(min);
 						//if the value is smaller than the min value
-						if(i<0){
+						if(kpiVal.doubleValue()<= min ){
 							isAlarming = true;
-							thresholdValue += min.toString() ;
+							thresholdValue = "Min:"+ min ;
 						}
 						
-					}else if (type.equals("MAX")){
+					}else if (type.equals("MAXIMUM")){
 						
 						max = threshold.getMaxValue();
-						int j = kpiVal.compareTo(max);
 						//if the value is higher than the max value
-						if(j>0){
+						if(kpiVal.doubleValue()>= max ){
 							isAlarming = true;
-							thresholdValue += max.toString();
+							thresholdValue = "Max:"+max;
 						}
 					}
 					
@@ -390,7 +388,6 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 		}
 		logger.debug("OUT");
-		return isAlarming;
 	}
 
 	

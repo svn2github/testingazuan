@@ -20,8 +20,8 @@ public class SbiThresholdValue  implements java.io.Serializable {
      private Integer idThresholdValue;
      private SbiThreshold sbiThreshold;
      private SbiDomains sbiDomains;
-     private double minValue;
-     private double maxValue;
+     private Double minValue;
+     private Double maxValue;
      private String label;
      private String colour;
      private Integer position;
@@ -81,19 +81,19 @@ public class SbiThresholdValue  implements java.io.Serializable {
         this.sbiDomains = sbiDomains;
     }
 
-    public double getMinValue() {
+    public Double getMinValue() {
         return this.minValue;
     }
     
-    public void setMinValue(double minValue) {
+    public void setMinValue(Double minValue) {
         this.minValue = minValue;
     }
 
-    public double getMaxValue() {
+    public Double getMaxValue() {
         return this.maxValue;
     }
     
-    public void setMaxValue(double maxValue) {
+    public void setMaxValue(Double maxValue) {
         this.maxValue = maxValue;
     }
 

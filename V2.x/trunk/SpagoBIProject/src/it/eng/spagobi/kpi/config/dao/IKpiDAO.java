@@ -78,6 +78,6 @@ public interface IKpiDAO {
 	 * 
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public boolean isAlarmingValue(KpiValue value)	throws EMFUserError;
+	public void isAlarmingValue(KpiValue value)	throws EMFUserError;
 
 }

@@ -461,7 +461,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				DAOFactory.getKpiDAO().insertKpiValue(kVal);	
 				//Checks if the value is alarming (out of a certain range)
 				//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-				isAlarming = DAOFactory.getKpiDAO().isAlarmingValue(kVal);	
+				DAOFactory.getKpiDAO().isAlarmingValue(kVal);	
 			}
 		}else{//In case the KPIValue doesn't have to be calculated for a specific resource
 			
@@ -472,7 +472,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			DAOFactory.getKpiDAO().insertKpiValue(kVal);
 			//Checks if the value is alarming (out of a certain range)
 			//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-			isAlarming = DAOFactory.getKpiDAO().isAlarmingValue(kVal);
+			DAOFactory.getKpiDAO().isAlarmingValue(kVal);
 		}
 		
 		toReturn.setValues(kpiValues);

@@ -76,7 +76,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	
 	private static transient Logger logger = Logger.getLogger(SpagoBIKpiInternalEngine.class);
 
-	public static final String messageBundle = "component_spagobichartKPI_messages";
+	public static final String messageBundle = "messages";
 	protected int titleDimension;
 	protected String name=null;
 	protected String subName=null;
@@ -159,6 +159,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 				String contentStr = new String(contentBytes);
 				content = SourceBean.fromXMLString(contentStr);
+				logger.debug("Got the content of the template");
 			} catch (Exception e) {
 				logger.error("Error while converting the Template bytes into a SourceBean object");
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2003);
@@ -203,6 +204,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 			} // end looking for parameters
 			
+			logger.debug("Got the date for which the KpiValues have to be calculated. Date:"+dateOfKPI);
+			
 			this.parametersObject = parametersMap;
 
 
@@ -210,25 +213,38 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 			String modelNodeInstance = (String)content.getAttribute("model_node_instance");
 			Integer modelNodeInstanceID = new Integer(modelNodeInstance);
+			if (modelNodeInstanceID == null){
+				logger.error("The modelNodeInstanceId specified in the template is null");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
+			}
 			getSetConf(content);
+			logger.debug("Setted the configuration of the template");
 			//gets the ModelInstanceNode
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
+			logger.debug("Loaded the modelInstanceNode with id "+ modelNodeInstanceID.toString());
 			//From the modelInstance gets the related KpiInstance
 			KpiInstance kpiI = mI.getKpiInstanceAssociated();
+			logger.debug("Loaded the KpiInstance related to the specified Model Instance");
 			//I set the list of resources of that specific ModelInstance
 			this.resources = mI.getResources();
+			logger.debug("Setted the List of Resources related to the specified Model Instance");
+			if(this.resources == null){
+				logger.debug("There are no resources assigned to the Model Instance");
+			}
 			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI, dateOfKPI);
+			
 			//if not still actual or doesn't have any values, calculates the new values and updates the KpiInstance
 			if (!isActual){
+				logger.debug("The kpiInstance with id "+kpiI.getKpiInstanceId().toString()+" hasn't got actual values");
 				kpiI = calculateNewKpiInstance(kpiI);
+				logger.debug("The kpiInstance with id "+kpiI.getKpiInstanceId().toString()+" was reloaded with the new calculated KpiValues");
 			}
-			//From the KpiInstance gets the last KpiValues 
-			
+			//From the KpiInstance gets the last KpiValues 		
 			List kpiValues = kpiI.getValues();
 						
 			try{
 				//chart = sbi.createChart(title,dataset);
-				logger.debug("successfull chart creation");
+				logger.debug("successfull kpi creation");
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
@@ -238,7 +254,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 			}
 			catch (Exception eex) {
-				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 10107);
 				userError.setBundle("messages");
 				throw userError;
 			}

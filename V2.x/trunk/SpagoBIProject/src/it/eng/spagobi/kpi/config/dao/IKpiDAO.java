@@ -70,12 +70,10 @@ public interface IKpiDAO {
 	public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
 	
 	/**
-	 * Returns true if the value is not in the correct threshold, false if it's fine
+	 * For the specific KpiValue verifies if it is ok with every threshold and if not writes an alarm event in the AlarmEvent table so that later on an alarm will be sent
 	 * 
 	 * @param KpiValue 
-	 * 
-	 * @return Returns true if the value is not in the correct threshold, false if it's fine
-	 * 
+	 *  
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public void isAlarmingValue(KpiValue value)	throws EMFUserError;

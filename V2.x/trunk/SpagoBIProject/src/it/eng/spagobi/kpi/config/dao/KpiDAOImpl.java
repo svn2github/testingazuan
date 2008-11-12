@@ -71,7 +71,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
 
 		} finally {
 			if (aSession!=null){
@@ -172,12 +172,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				}
 				
 			} catch (HibernateException he) {
-				logger.error("Error while loading the data Set with id " , he);			
+				logger.error("Error while getting the List of KpiValues related to the SbiKpiInstance with id " +  ((kpiInstID == null)?"":kpiInstID.toString())+"at the Date "+ d, he);			
 
 				if (tx != null)
 					tx.rollback();
 
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 10102);
 
 			} finally {
 				if (aSession!=null){
@@ -217,12 +217,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx.commit();
 			
 		} catch (HibernateException he) {
-			logger.error("Error while inserting the KpiValue", he);			
+			logger.error("Error while inserting the KpiValue related to the KpiInstance with id "+ ((value.getKpiInstanceId() == null)?"":value.getKpiInstanceId().toString()), he);			
 
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10103);
 
 		} finally {
 			if (aSession!=null){
@@ -256,12 +256,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 			
 		} catch (HibernateException he) {
-			logger.error("Error while loading the Model Instance with id " , he);			
+			logger.error("Error while loading the current list of Thresholds for the KpiInstance with id " + ((k.getKpiInstanceId() == null)?"":k.getKpiInstanceId().toString()), he);			
 
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10104);
 
 		} finally {
 			if (aSession!=null){
@@ -278,12 +278,13 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		logger.debug("IN");
 		boolean toReturn = false ;
-		//I verify if effectively the required date is in the 
+		//I verify if effectively the required date is after the begin date of the KpiInstance
 		Date instBegDt = inst.getD();
 		if (d.after(instBegDt)){
 			toReturn = true ;
 		}	
 		List values = inst.getValues();
+		//Even if the required date is after the begin date of the KpiInstance it could be that there are no actual KpiValues and that they have to be recalculated
 		if (values.isEmpty()){
 			toReturn = false ;
 		}
@@ -328,6 +329,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						if (kpiVal.doubleValue()>= min && 	kpiVal.doubleValue()<= max){
 							isAlarming = true;
 							thresholdValue = "Min:"+ min +"-Max:"+max;
+							logger.debug("The value "+kpiVal.doubleValue()+" is in the RANGE "+thresholdValue+" and so an Alarm will be scheduled");
 						}
 						
 					}else if (type.equals("MINIMUM")){
@@ -337,6 +339,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						if(kpiVal.doubleValue()<= min ){
 							isAlarming = true;
 							thresholdValue = "Min:"+ min ;
+							logger.debug("The value "+kpiVal.doubleValue()+" is lower than "+thresholdValue+" and so an Alarm will be scheduled");
 						}
 						
 					}else if (type.equals("MAXIMUM")){
@@ -346,6 +349,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						if(kpiVal.doubleValue()>= max ){
 							isAlarming = true;
 							thresholdValue = "Max:"+max;
+							logger.debug("The value "+kpiVal.doubleValue()+" is higher than "+thresholdValue+" and so an Alarm will be scheduled");
 						}
 					}
 					
@@ -368,18 +372,19 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						alarmEv.setThresholdValue(thresholdValue);
 						
 						DAOFactory.getAlarmEventDAO().insert(alarmEv);
+						logger.debug("A new alarm has been inserted in the Alarm Event Table");
 					}
 					
 				}
 			}
 			
 		} catch (HibernateException he) {
-			logger.error("Error while loading the Model Instance with id " , he);			
+			logger.error("Error while verifying if the KpiValue is alarming for its thresholds " , he);			
 
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10105);
 
 		} finally {
 			if (aSession!=null){
@@ -403,7 +408,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		SbiKpiInstance kpiInst = value.getSbiKpiInstance();
 		Double weight = kpiInst.getWeight();
 		SbiResources res = value.getSbiResources();
-		Resource r = toResource(res);
+		Resource r = null;
+		if (res!=null) r = toResource(res);
 		List thresholds = new ArrayList();
 		SbiKpiInstance ski = value.getSbiKpiInstance();
 		Date kpiInstBegDt = ski.getBeginDt();
@@ -466,18 +472,19 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		 KpiInstance kpiInstanceAssociated = toKpiInstance(kpiInst,requestedDate);
 		 Set resources = hibSbiKpiModelInst.getSbiKpiModelResourceses();
 		 List res = new ArrayList();
-		 Iterator i = resources.iterator();
+		 if (!resources.isEmpty()){
+		  Iterator i = resources.iterator();
 			while(i.hasNext()){
 				SbiKpiModelResources dls =(SbiKpiModelResources) i.next();
 				Resource r = toResource(dls);
 				res.add(r);
 			}
+		 }
 		//gets father id
 		 SbiKpiModelInst father = hibSbiKpiModelInst.getSbiKpiModelInst();
 		 Integer fatherId = null;
 		 Boolean isRoot = false;
-		 if (father!=null){
-			 
+		 if (father!=null){			 
 			 fatherId = father.getKpiModelInst();
 		 }else{
 			 isRoot = true;
@@ -491,9 +498,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				SbiKpiModelInst skml =(SbiKpiModelInst) iCI.next();
 				Integer childId = skml.getKpiModelInst();
 				childrenIds.add(childId);
-			}
-		
-		
+			}		
 		
 		toReturn.setDescr(descr);
 		toReturn.setName(name);
@@ -692,7 +697,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String thresholdName = sbit.getName();
 		String thresholdDescription = sbit.getDescription();
 		String type = sbit.getSbiDomains().getValueCd();
-		Color color = new Color(255, 153, 0);
+		Color color = new Color(255, 255, 0);
 		String col = t.getColour();	
 		if (col!= null){
 			color = color.decode(col);

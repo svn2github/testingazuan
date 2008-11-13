@@ -264,6 +264,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 		Session aSession = null;
 		Transaction tx = null;
 		List toReturn = new ArrayList();
+		List userGroups = new ArrayList();
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -271,8 +272,9 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			Iterator it = roles.iterator();
 			while (it.hasNext()) {
 				String roleName = (String) it.next();
-				usergroups += "'" + roleName + "'";
-				if (it.hasNext()) usergroups += ",";
+				//usergroups += "'" + roleName + "'";
+				//if (it.hasNext()) usergroups += ",";
+				 if (!userGroups.contains(roleName)) userGroups.add(roleName);
 			}
 			StringBuffer hql = new StringBuffer();
 			hql.append("select ");
@@ -292,7 +294,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"		a.sbiObject is not null and ");
 			hql.append(	"		a.sbiEngine is not null and ");
 			hql.append(	"		a.sbiObject.label not like 'SBI_%' and ");
-			hql.append(	"		a.userGroup in (?) and ");
+			hql.append(	"		a.userGroup in (:USER_GROUPS) and ");
 			hql.append(	"		(a.sbiSubObject is null or a.sbiSubObject.subObjId = a.subObjId) ");
 			hql.append(	"group by 	a.sbiObject.biobjId, ");
 			hql.append(	"			a.sbiObject.label, ");
@@ -305,7 +307,7 @@ public class DbAuditImpl extends AbstractHibernateDAO implements IAuditDAO {
 			hql.append(	"			a.sbiEngine.name ");
 			hql.append(	"order by count(a.sbiObject.biobjId) desc ");
 			Query hqlQuery = aSession.createQuery(hql.toString());
-			hqlQuery.setString(0, usergroups);
+			hqlQuery.setParameterList("USER_GROUPS", userGroups);
 			hqlQuery.setMaxResults(limit);
 			List result = hqlQuery.list();
 			Iterator resultIt = result.iterator();

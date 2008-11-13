@@ -149,6 +149,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
      		<%
 			Iterator it = charts.iterator();
      		int j = 0;
+     		int colonne = 1 ;
 			while(it.hasNext()){
 				ChartImpl sbi = (ChartImpl)it.next();
 				////////////// Chart creation///////////////////
@@ -173,7 +174,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 				"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
 		
-				j++;
+				if(colonne==6){
+					%>
+					</tr><tr>
+					<%
+					colonne = 1;
+				}
+				
 				%>
 									<!-- Begin drawing the page -->
 
@@ -183,7 +190,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   </div>
 			   </td>
 				
-				<%
+				<%j++;
+				colonne ++;
 			}
 		}
 		%>

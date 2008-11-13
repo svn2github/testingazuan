@@ -256,11 +256,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					if(chartType!=null){
 						
 						Double value = new Double(k.getValue());
+						HashMap pars = (HashMap) confMap.clone();
+						String chartTitle = "";
+						if(k.getR()!=null){
+							chartTitle = "Resource: "+k.getR().getName();
+						}
+						pars.put("name", chartTitle) ;
 						ChartImpl sbi = null;				
 						sbi=ChartImpl.createChart(chartType);
 						sbi.setProfile(userProfile);
 						sbi.setValueDataSet(value);
-						sbi.configureChart(confMap);
+						sbi.configureChart(pars);
 						sbi.setThresholds(thresholds);
 						
 						charts.add(sbi);
@@ -392,6 +398,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		kVal.setWeight(k.getWeight());		
 		List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);		 
 		kVal.setThresholds(thresholds);	
+		String chartType = DAOFactory.getKpiDAO().getChartType(sbik.getKpiInstanceId());
 		
 		//If it has to be calculated for a Resource. The resource will be set as parameter
 		HashMap temp = (HashMap)this.parametersObject.clone() ;
@@ -415,10 +422,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
 		String fieldValue = fieldObject.getValue().toString();
 		kVal.setValue(fieldValue);
+		if(chartType!=null)	kVal.setChartType(chartType);
 		logger.debug("OUT");
 		return kVal;
 		
 	}
+	
 	
 
 	public void getSetConf(SourceBean content) {
@@ -445,7 +454,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					tmpTitle = "";
 			}
 			setName(titleChart);
-			this.confMap.put("name", name) ;
 		}
 		else setName("");
 
@@ -495,8 +503,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				
 			}
 			else setSubName("");
-			
-			this.confMap.put("subName", subName) ;
 			
 			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
 			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");

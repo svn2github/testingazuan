@@ -726,5 +726,40 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
+	
+	public String getChartType(Integer kpiInstanceID) throws EMFUserError{
+		String chartType = null;
+		logger.debug("IN");
+
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance)aSession.load(SbiKpiInstance.class,kpiInstanceID);
+			SbiDomains d =hibSbiKpiInstance.getSbiDomains();
+			if (d!=null){
+				chartType = d.getValueCd();
+			}
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " + ((kpiInstanceID == null)?"":kpiInstanceID.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		
+		return chartType;
+	}
 
 }

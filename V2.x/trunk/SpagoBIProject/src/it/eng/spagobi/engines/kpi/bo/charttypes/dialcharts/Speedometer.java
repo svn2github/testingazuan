@@ -155,7 +155,8 @@ public class Speedometer extends ChartImpl {
 
 		plot.removePointer(0);
 		DialPointer.Pointer p = new DialPointer.Pointer();
-		p.setFillPaint(Color.yellow);
+		//colore della lancetta
+		p.setFillPaint(Color.black);
 		plot.addPointer(p);
 
 		logger.debug("OUT");

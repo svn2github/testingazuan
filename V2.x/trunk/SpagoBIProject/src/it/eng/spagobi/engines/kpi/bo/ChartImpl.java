@@ -128,7 +128,7 @@ public class ChartImpl {
 				}
 				KpiInterval interval = new KpiInterval();
 				if(color!=null)	{
-					interval.setColor(color);
+					interval.setColor(c);
 				}else{
 					interval.setColor(Color.WHITE);
 				}

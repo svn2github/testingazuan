@@ -75,10 +75,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
-	
+	<%
+	String title = (String)sbModuleResponse.getAttribute("title");
+	String subTitle = (String)sbModuleResponse.getAttribute("subName");
+	if (title!=null){
+		%>
+		<div align="center" style="font:Arial;font-size:24;color:blue"><%=title%></div>
+			<%}if (subTitle!=null){%>
+		<div align="center" style="font:Arial;font-size:16;color:aqua"><%=subTitle%></div>
+		<%}%>	
 	<%
 		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-		
+		List charts =(List)sbModuleResponse.getAttribute("charts");
 		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");		
 		
 		if (!show_chart){
@@ -91,16 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				List thresholds = kpiV.getThresholds();
 				String value = kpiV.getValue();
 				Double weight = kpiV.getWeight();
-		
-					String title = (String)sbModuleResponse.getAttribute("title");
-					String subTitle = (String)sbModuleResponse.getAttribute("subName");
-					if (title!=null){
-						%>
-						<div><%=title%></div>
-						<%}
-					if (subTitle!=null){%>
-						<div><%=subTitle%></div>
-						<%}%>					
+						%>			
 					<div>*******************************************</div>
 					<% if (r!=null){
 					//creates a document without the representation of the kpivalues but only with its values for each resoruce
@@ -141,9 +140,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						}					
 					}
 				}				
-		}else{
-			List charts =(List)sbModuleResponse.getAttribute("charts");
+		}else if(!charts.isEmpty()){
+			
+			%> <!-- BEGIN OF TABLE WITH CHARTS -->
+			<br>
+			   <table align="left">
+    				<tr>
+     		<%
 			Iterator it = charts.iterator();
+     		int j = 0;
 			while(it.hasNext()){
 				ChartImpl sbi = (ChartImpl)it.next();
 				////////////// Chart creation///////////////////
@@ -161,28 +166,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 				//Saving image on a temporary file
 				String dir=System.getProperty("java.io.tmpdir");
-				String path=dir+"/"+executionId+".png";
+				String path=dir+"/"+executionId+j+".png";
 				java.io.File file1 = new java.io.File(path);
 				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
 				
 				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 				"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
 		
+				j++;
 				%>
 									<!-- Begin drawing the page -->
-<br>
-<table align="left">
-    <tr>
-	   <td>
-	   <div align="center">
-	   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
-	   </div>
-	   </td>
-	</tr>
-</table>					
+
+			   <td>
+			   <div align="center">
+			   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
+			   </div>
+			   </td>
+				
 				<%
 			}
 		}
 		%>
+				</tr>
+			</table>
+			<!--END OF TABLE WITH CHARTS -->			
 
 		

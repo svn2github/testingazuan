@@ -77,5 +77,7 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public void isAlarmingValue(KpiValue value)	throws EMFUserError;
+	
+	public String getChartType(Integer kpiInstanceID) throws EMFUserError;
 
 }

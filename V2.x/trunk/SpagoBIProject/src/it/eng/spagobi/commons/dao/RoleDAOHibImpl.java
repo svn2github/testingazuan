@@ -589,7 +589,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 				+" and r.extRoleId = ?"; 
 			
 			Query hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setInteger(0, roleID);
+			hqlQuery.setInteger(0, roleID.intValue());
 			uses = hqlQuery.list();
 			tx.commit();
 		} catch (HibernateException he) {

@@ -168,7 +168,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		     "spd.id.sbiExtRoles.name=? ";
 			
 			Query query = aSession.createQuery(hql);
-			query.setInteger(0, parameterId);
+			query.setInteger(0, parameterId.intValue());
 			query.setString(1, roleName);
 			
 			SbiParuse hibParuse = (SbiParuse)query.uniqueResult();	

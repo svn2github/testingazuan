@@ -21,8 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -107,6 +108,7 @@ public class Speedometer extends ChartImpl {
 		plot.setDialFrame(new StandardDialFrame());
 		plot.setBackground(new DialBackground());
 		
+		
 		if(dialtextuse){
 			//Usually it shoudn'tbe used. It is a type of title written into the graph
 			DialTextAnnotation annotation1 = new DialTextAnnotation(dialtext);			
@@ -126,10 +128,11 @@ public class Speedometer extends ChartImpl {
 		logger.debug("Setted the number of MinorTickLines between every MajorTickline");
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.15);
-		scale.setTickLabelFont(new Font("Dialog", Font.PLAIN, 14));
+		Font f =new Font("Arial",Font.PLAIN,11);
+		scale.setTickLabelFont(f);
 		plot.addScale(0, scale);
 		plot.addPointer(new DialPointer.Pin());
-
+		
 		DialCap cap = new DialCap();
 		plot.setCap(cap);
 

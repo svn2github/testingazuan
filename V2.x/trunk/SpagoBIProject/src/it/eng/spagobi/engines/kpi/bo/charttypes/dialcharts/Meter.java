@@ -21,8 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -103,12 +104,13 @@ public class Meter extends ChartImpl {
 		plot.setDialShape(DialShape.CHORD);
 		plot.setMeterAngle(260);
 		plot.setTickLabelsVisible(true);
-		plot.setTickLabelFont(new Font("Dialog", Font.BOLD, 10));
+		Font f =new Font("Arial",Font.PLAIN,11);
+		plot.setTickLabelFont(f);
 		plot.setTickLabelPaint(Color.darkGray);
 		plot.setTickSize(5.0);
 		plot.setTickPaint(Color.lightGray);		
 		plot.setValuePaint(Color.black);
-		plot.setValueFont(new Font("Dialog", Font.BOLD, 14));
+		plot.setValueFont(new Font("Arial", Font.PLAIN, 14));
 		logger.debug("Setted all properties of the plot");
 
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);

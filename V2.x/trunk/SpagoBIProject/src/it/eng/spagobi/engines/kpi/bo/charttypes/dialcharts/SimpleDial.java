@@ -26,6 +26,7 @@ import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class SimpleDial extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(SimpleDial.class);
 
 	double increment=0.0;
-	int minorTickCount=5;
+	int minorTickCount=2;
 
 	/**
 	 * Instantiates a new simple dial.
@@ -97,8 +98,8 @@ public class SimpleDial extends ChartImpl {
 		logger.debug("Created the new Dial Plot");
 
 		ArcDialFrame dialFrame=null;
-		plot.setView(0.78, 0.37, 0.22, 0.26);     
-		dialFrame = new ArcDialFrame(-10.0, 20.0); 
+		plot.setView(0.21, 0.0, 0.58, 0.30);
+		dialFrame = new ArcDialFrame(60.0, 60.0);
 		dialFrame.setInnerRadius(0.65);
 		dialFrame.setOuterRadius(0.90);
 		dialFrame.setForegroundPaint(Color.darkGray);
@@ -113,15 +114,14 @@ public class SimpleDial extends ChartImpl {
 		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(gradientPaintTransformType));
 		plot.addLayer(sdb);
 
-		increment = (upper-lower)/10;
+		increment = (upper-lower)/4;
 		StandardDialScale scale=null;
-			scale = new StandardDialScale(lower, upper, -8, 16.0, increment, minorTickCount);
+		scale = new StandardDialScale(lower, upper, 115.0,-50.0, increment, minorTickCount);
 
 		// sets intervals
 		for (Iterator iterator = intervals.iterator(); iterator.hasNext();) {
-			KpiInterval interval = (KpiInterval) iterator.next();
-			StandardDialRange range = new StandardDialRange(interval.getMin(), interval.getMax(), 
-					interval.getColor()); 
+			KpiInterval interval = (KpiInterval)iterator.next();
+			StandardDialRange range = new StandardDialRange(interval.getMin(), interval.getMax(), interval.getColor()); 
 			range.setInnerRadius(0.70);
 			range.setOuterRadius(0.75);
 			plot.addLayer(range);
@@ -130,6 +130,8 @@ public class SimpleDial extends ChartImpl {
 
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.07);
+		Font f =new Font("Arial",Font.PLAIN,11);
+		scale.setTickLabelFont(f);
 		//scale.setMajorTickIncrement(25.0);
 		plot.addScale(0, scale);
 

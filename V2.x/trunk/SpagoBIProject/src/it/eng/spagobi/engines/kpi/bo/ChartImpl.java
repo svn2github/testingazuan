@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
@@ -178,8 +178,10 @@ public class ChartImpl {
 				}
 				if (max.doubleValue()>upper){
 					upper = max.doubleValue();
-				}
+				}			
+				
 				KpiInterval interval = new KpiInterval();
+				
 				if(c!=null)	{
 					interval.setColor(c);
 				}else{

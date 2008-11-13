@@ -578,16 +578,16 @@ CREATE TABLE SBI_KPI_ROLE (
 
 CREATE TABLE SBI_KPI (
 	KPI_ID INTEGER NOT NULL,
-	id_measure_unit INTEGER NOT NULL,
-	DS_ID Int NOT NULL,
-	id_kpi_parent INTEGER NOT NULL,
-	THRESHOLD_ID INTEGER NOT NULL,
-	name VARCHAR2(120),
+	id_measure_unit INTEGER,
+	DS_ID INTEGER,
+	id_kpi_parent INTEGER ,
+	THRESHOLD_ID INTEGER,
+	name VARCHAR2(127),
 	document_label VARCHAR2(20),
 	code VARCHAR2(20),
 	metric VARCHAR2(20),
 	description VARCHAR2(255),
-	standard_weight Double,
+	weight DOUBLE,
 	flg_is_father Char(1),
  PRIMARY KEY (KPI_ID)
 ) 
@@ -616,8 +616,8 @@ Create table SBI_THRESHOLD_VALUE (
 	id_threshold_value INTEGER NOT NULL,
 	THRESHOLD_ID INTEGER NOT NULL,
 	SEVERITY_ID INTEGER,
-	min_value INTEGER,
-	max_value INTEGER,
+	min_value DOUBLE,
+	max_value DOUBLE,
 	label VARCHAR2(20),
 	colour VARCHAR2(20),
  Primary Key (id_threshold_value)
@@ -626,7 +626,7 @@ Create table SBI_THRESHOLD_VALUE (
 
 Create table SBI_KPI_MODEL (
 	KPI_MODEL_ID INTEGER NOT NULL,
-	KPI_ID INTEGER NOT NULL,
+	KPI_ID INTEGER,
 	KPI_MODEL_TYPE_ID INTEGER NOT NULL,
 	KPI_PARENT_MODEL_ID INTEGER NOT NULL,
 	KPI_MODEL_CD VARCHAR2(40),
@@ -650,23 +650,13 @@ Create table SBI_KPI_MODEL_ATTR_VAL (
 	KPI_MODEL_ATTR_VAL_ID INTEGER NOT NULL,
 	KPI_MODEL_ATTR_ID INTEGER NOT NULL,
 	KPI_MODEL_ID INTEGER NOT NULL,
-	ATTR_VALUE VARCHAR2(2048),
+	attr_VALUE VARCHAR2(2048),
  Primary Key (KPI_MODEL_ATTR_VAL_ID)
 )
 /
 
-Create table SBI_PERIODICITY (
-	id_periodicity INTEGER NOT NULL,
-	name VARCHAR2(40),
-	unit VARCHAR2(40),
- Primary Key (id_periodicity)
-) 
-/
-
 Create table SBI_KPI_PERIODICITY (
 	id_kpi_instance_period INTEGER NOT NULL,
-	id_kpi_instance INTEGER NOT NULL,
-	id_periodicity INTEGER NOT NULL,
 	per_value INTEGER,
  Primary Key (id_kpi_instance_period)
 ) /
@@ -676,8 +666,11 @@ Create table SBI_KPI_INSTANCE (
 	id_kpi_instance INTEGER NOT NULL,
 	KPI_ID INTEGER NOT NULL,
 	THRESHOLD_ID INTEGER NOT NULL,
-	id_measure_unit INTEGER NOT NULL,
-	weight INTEGER,
+	id_measure_unit INTEGER,
+	id_periodicity INTEGER NOT NULL,
+	weight DOUBLE,
+	id_kpi_chart_type INTEGER ,
+	BEGIN_DT TIMESTAMP,
  Primary Key (id_kpi_instance)
 ) 
 /
@@ -687,8 +680,10 @@ Create table SBI_KPI_INSTANCE_HISTORY (
 	id_measure_unit INTEGER NOT NULL,
 	THRESHOLD_ID INTEGER NOT NULL,
 	id_kpi_instance INTEGER NOT NULL,
-	weight INTEGER,
+	weight DOUBLE,
 	instance_date TIMESTAMP,
+	BEGIN_DT TIMESTAMP,
+	END_DT TIMESTAMP,
  Primary Key (id_kpi_instance_history)
 ) 
 /
@@ -697,8 +692,7 @@ Create table SBI_KPI_VALUE (
 	id_kpi_instance_value INTEGER NOT NULL,
 	id_kpi_instance INTEGER NOT NULL,
 	KPI_VALUE VARCHAR2(40),
-	KPI_DATE VARCHAR2(20),
-	id_document_meas_res VARCHAR2(20),
+	REsOURCE_ID INTEGER,
 	BEGIN_DT TIMESTAMP,
 	END_DT TIMESTAMP,
  Primary Key (id_kpi_instance_value)
@@ -707,10 +701,10 @@ Create table SBI_KPI_VALUE (
 
 Create table SBI_KPI_MODEL_INST (
 	KPI_MODEL_INST INTEGER NOT NULL,
-	KPI_MODEL_INST_PAR INTEGER NOT NULL,
-	id_kpi_instance INTEGER NOT NULL,
-	name VARCHAR2(20),
-	description VARCHAR2(20),
+	KPI_MODEL_INST_PAR INTEGER,
+	id_kpi_instance INTEGER ,
+	name VARCHAR2(400),
+	description VARCHAR2(1000),
  Primary Key (KPI_MODEL_INST)
 ) 
 /
@@ -745,6 +739,8 @@ Create table SBI_ALARM (
 	TEXT VARCHAR2(1000) ,
 	URL VARCHAR2(20) ,
 	SINGLE_EVENT Char(1) ,
+    AUTO_DISABLED Char(1) default NULL,
+	id_threshold_value INTEGER NOT NULL,
  Primary Key (ALARM_ID)
 ) 
 /
@@ -1319,40 +1315,51 @@ ALTER TABLE SBI_MENU_ROLE ADD FOREIGN KEY (MENU_ID) REFERENCES SBI_MENU (MENU_ID
 ALTER TABLE SBI_MENU_ROLE ADD FOREIGN KEY (EXT_ROLE_ID) REFERENCES SBI_EXT_ROLES (EXT_ROLE_ID) ON DELETE CASCADE
 /
 
-Alter table SBI_MEASURE_UNIT ADD FOREIGN KEY (SCALE_TYPE_ID) REFERENCES SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD FOREIGN KEY (KPI_MODEL_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR ADD FOREIGN KEY(KPI_MODEL_ATTR_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_THRESHOLD_VALUE ADD FOREIGN KEY(SEVERITY_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_RESOURCES ADD FOREIGN KEY(RESOURCE_TYPE_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD FOREIGN KEY(MODALITY_ID) references SBI_DOMAINS (VALUE_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_ROLE ADD FOREIGN KEY(EXT_ROLE_ID) references SBI_EXT_ROLES (EXT_ROLE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD FOREIGN KEY(DOCUMENT_ID) references SBI_OBJECTS (BIOBJ_ID) ON DELETE CASCADE;
-Alter table SBI_KPI ADD FOREIGN KEY(id_kpi_parent) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_ROLE ADD FOREIGN KEY(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE ADD FOREIGN KEY(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD FOREIGN KEY(KPI_ID) references SBI_KPI (KPI_ID) ON DELETE CASCADE;
-Alter table SBI_KPI ADD FOREIGN KEY(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE ADD FOREIGN KEY(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE_HISTORY ADD FOREIGN KEY(id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit) ON DELETE CASCADE;
-Alter table SBI_KPI ADD FOREIGN KEY(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) ON DELETE CASCADE;
-Alter table SBI_THRESHOLD_VALUE ADD FOREIGN KEY(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID);
-Alter table SBI_KPI_INSTANCE ADD FOREIGN KEY(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID);
-Alter table SBI_KPI_INSTANCE_HISTORY ADD FOREIGN KEY(THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR_VAL ADD FOREIGN KEY(KPI_MODEL_ID) references SBI_KPI_MODEL (KPI_MODEL_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL ADD FOREIGN KEY(KPI_PARENT_MODEL_ID) references SBI_KPI_MODEL (KPI_MODEL_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_ATTR_VAL ADD FOREIGN KEY(KPI_MODEL_ATTR_ID) references SBI_KPI_MODEL_ATTR (KPI_MODEL_ATTR_ID) ON DELETE CASCADE;
-Alter table SBI_KPI_PERIODICITY ADD FOREIGN KEY(id_periodicity) references SBI_PERIODICITY (id_periodicity) ON DELETE CASCADE;
-Alter table SBI_KPI_PERIODICITY ADD FOREIGN KEY(id_periodicity) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_INST ADD FOREIGN KEY(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_VALUE ADD FOREIGN KEY(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_INSTANCE_HISTORY ADD FOREIGN KEY(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_ALARM ADD FOREIGN KEY(id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_INST ADD FOREIGN KEY(KPI_MODEL_INST_PAR) references SBI_KPI_MODEL_INST (KPI_MODEL_INST) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_RESOURCES ADD FOREIGN KEY(KPI_MODEL_INST) references SBI_KPI_MODEL_INST (KPI_MODEL_INST) ON DELETE CASCADE;
-Alter table SBI_KPI_MODEL_RESOURCES ADD FOREIGN KEY(RESOURCE_ID) references SBI_RESOURCES (RESOURCE_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_EVENT ADD FOREIGN KEY(ALARM_ID) references SBI_ALARM (ALARM_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_DISTRIBUTION ADD FOREIGN KEY(ALARM_ID) references SBI_ALARM (ALARM_ID) ON DELETE CASCADE;
-Alter table SBI_ALARM_DISTRIBUTION ADD FOREIGN KEY(ALARM_CONTACT_ID) references SBI_ALARM_CONTACT (ALARM_CONTACT_ID) ON DELETE CASCADE;
+
+-- KPI DEFINITION
+Alter table `SBI_KPI_MODEL_ATTR` add Foreign Key (`KPI_MODEL_ATTR_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL_ATTR_VAL` add Foreign Key (`KPI_MODEL_ID`) references `SBI_KPI_MODEL` (`KPI_MODEL_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL_ATTR_VAL` add Foreign Key (`KPI_MODEL_ATTR_ID`) references `SBI_KPI_MODEL_ATTR` (`KPI_MODEL_ATTR_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_MODEL_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL` add Foreign Key (`KPI_PARENT_MODEL_ID`) references `SBI_KPI_MODEL` (`KPI_MODEL_ID`) ON DELETE CASCADE;
+Alter table `SBI_MEASURE_UNIT` add Foreign Key (`SCALE_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI` add Foreign Key (`DS_ID`) references `SBI_DATA_SET` (`DS_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI` add Foreign Key (`id_kpi_parent`) references `SBI_KPI` (`KPI_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) ON DELETE CASCADE;
+Alter table `SBI_KPI` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete no action on update no action;
+Alter table `SBI_KPI_ROLE` add Foreign Key (`EXT_ROLE_ID`) references `SBI_EXT_ROLES` (`EXT_ROLE_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_ROLE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) ON DELETE CASCADE;
+Alter table `SBI_THRESHOLD` add Foreign Key (`THRESHOLD_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_THRESHOLD_VALUE` add Foreign Key (`SEVERITY_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_THRESHOLD_VALUE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete cascade on update no action;
+
+-- KPI INSTANCE
+Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_MODEL_INST_PAR`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_periodicity`) references `SBI_KPI_PERIODICITY` (`id_kpi_instance_period`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_kpi_chart_type`) references `SBI_DOMAINS` (`value_id`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`KPI_MODEL_INST`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) ON DELETE CASCADE;
+Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`RESOURCE_ID`) references `SBI_RESOURCES` (`RESOURCE_ID`) ON DELETE CASCADE;
+Alter table `SBI_RESOURCES` add Foreign Key (`RESOURCE_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_KPI_VALUE` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE CASCADE;
+Alter table `SBI_KPI_VALUE` add Foreign Key (`RESOURCE_ID`) references `SBI_RESOURCES` (`RESOURCE_ID`) ON DELETE CASCADE;
+
+-- KPI ALARM
+Alter table `SBI_ALARM` add Foreign Key (`MODALITY_ID`) references `SBI_DOMAINS` (`VALUE_ID`) ON DELETE CASCADE;
+Alter table `SBI_ALARM` add Foreign Key (`DOCUMENT_ID`) references `SBI_OBJECTS` (`BIOBJ_ID`) ON DELETE CASCADE;
+Alter table `SBI_ALARM` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE CASCADE;
+Alter table `SBI_ALARM` add Foreign Key (`id_threshold_value`) references `SBI_THRESHOLD_VALUE` (`ID_THRESHOLD_VALUE`) ON DELETE CASCADE;
+Alter table `SBI_ALARM_EVENT` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) ON DELETE CASCADE;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_EVENT_ID`) references `SBI_ALARM_EVENT` (`ALARM_EVENT_ID`) ON DELETE CASCADE;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_CONTACT_ID`) references `SBI_ALARM_CONTACT` (`ALARM_CONTACT_ID`) ON DELETE CASCADE;
+
 
 -- CREATE OBJECT TABLES SECTION
 

@@ -46,7 +46,6 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
     public String[] readUserFunctionality(String[] roles) throws Exception{
 	logger.debug("IN");
 	if (roles==null) return null;
-	String strRoles="";
 	if (roles==null || roles.length==0) {
 	    logger.warn("The array of roles is empty...");
 	    return new String[0];
@@ -58,26 +57,27 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		aSession = getSession();
 		tx = aSession.beginTransaction();
 		
+		List roleTypes = new ArrayList();
+		
 		for (int i=0;i<roles.length;i++){
 		    String hql = "from SbiExtRoles ser where ser.name=?";
 		    Query query = aSession.createQuery(hql);		   
 		    query.setParameter(0, roles[i]);
 		    SbiExtRoles spaobiRole=(SbiExtRoles)query.uniqueResult();
 		    //strRoles=strRoles+"'"+spaobiRole.getRoleType().getValueCd()+"',";
-		    strRoles=strRoles+spaobiRole.getRoleType().getValueCd()+",";
+		    //strRoles=strRoles+spaobiRole.getRoleType().getValueCd()+",";
+		    String roleTypeCode = spaobiRole.getRoleType().getValueCd();
+		    if (!roleTypes.contains(roleTypeCode)) roleTypes.add(roleTypeCode);
 		}
-		if (strRoles.endsWith(",")){
-		    strRoles=strRoles.substring(0, strRoles.length()-1);
-		}
-		logger.debug("strRoles="+strRoles);
-		if (strRoles.length()==0) logger.warn("No roles found for the user...!!!!!");
+		logger.debug("strRoles="+roleTypes);
+		if (roleTypes.size()==0) logger.warn("No role types found for the user...!!!!!");
 		
 		//String hql = "from SbiRolesUserFunctionality suf where suf.userFunctionality.domainCd = 'USER_FUNCTIONALITY'" + 
 		// " and suf.roleType.valueCd in ("+strRoles+")";
 		//String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in ("+strRoles+") and suf.roleType.domainCd='ROLE_TYPE'";
-		String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in (?) and suf.roleType.domainCd='ROLE_TYPE'";
+		String hql = "Select distinct suf.name from SbiUserFunctionality suf where suf.roleType.valueCd in (:ROLE_TYPES) and suf.roleType.domainCd='ROLE_TYPE'";
 		Query query = aSession.createQuery(hql);
-		query.setString(0, strRoles);
+		query.setParameterList("ROLE_TYPES", roleTypes);
 		List userFuncList = query.list();
 		Iterator iter=userFuncList.iterator();
 		while (iter.hasNext()){

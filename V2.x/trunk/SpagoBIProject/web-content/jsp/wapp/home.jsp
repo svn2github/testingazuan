@@ -106,7 +106,13 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 
   <body>
 
-	<%@include file="/html/banner.html" %>
+	<%
+	String displayBannerAndFooterParam = (String) aServiceRequest.getAttribute("displayBannerAndFooter");
+	boolean displayBannerAndFooter = !(displayBannerAndFooterParam != null && displayBannerAndFooterParam.equalsIgnoreCase("false"));
+	if (displayBannerAndFooter) {
+	%>
+		<%@include file="/html/banner.html" %>
+	<% } %>
 
 	<%-- contains the menu --%>
 	<div id="menubar" style="width:100%;background:#EEEFF3;"> 
@@ -135,10 +141,12 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	}
 	</script>
   
+	<%
+	if (displayBannerAndFooter) {
+	%>
 	<%@include file="/html/footer.html" %>
-  
-  </body>
-  
+	<% } %>
+	
   <script>
   	<%-- Ext overriding methods for mouseout and mouseexit from menu --%>
 	Ext.override(Ext.menu.Menu, {
@@ -476,30 +484,18 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 			})	
 		);
 		    
-		
 		//adds exit menu
-		<%
-    	// Check if SSO is active
-    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-    	String active = (String) validateSB.getCharacters();
-    	//if (active == null || active.equalsIgnoreCase("false")) {
-		%>
-			tb.addSeparator();
+		tb.addSeparator();
 
-			tb.add(
-				new Ext.Toolbar.Button({
-		            id: '<%new Double(Math.random()).toString();%>',
-		            text: '<spagobi:message key="menu.logout" />',
-		            icon: '<%=contextName%>/img/wapp/exit16.png',
-		            cls: 'x-btn-logout x-btn-text-icon bmenu',
-		            handler: logout	  
-		        })	
-		    );
-		
-		<%
-	  	//}
-		%>
+		tb.add(
+			new Ext.Toolbar.Button({
+	            id: '<%new Double(Math.random()).toString();%>',
+	            text: '<spagobi:message key="menu.logout" />',
+	            icon: '<%=contextName%>/img/wapp/exit16.png',
+	            cls: 'x-btn-logout x-btn-text-icon bmenu',
+	            handler: logout	  
+	        })	
+	    );
 		
 	});
 	

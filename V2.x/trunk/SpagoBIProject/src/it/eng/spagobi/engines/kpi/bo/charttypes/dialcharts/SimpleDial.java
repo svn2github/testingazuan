@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.utils.KpiInterval;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -39,16 +42,9 @@ import org.jfree.chart.plot.dial.DialPointer;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.engines.kpi.utils.KpiInterval;
-import it.eng.spagobi.engines.kpi.utils.DatasetMap;
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 
 /**
  * 
@@ -86,44 +82,40 @@ public class SimpleDial extends ChartImpl {
 	/**
 	 * Creates the chart .
 	 * 
-	 * @param chartTitle  the chart title.
-	 * @param dataset  the dataset.
-	 * 
-	 * @return A chart .
+	 * @return A Simple Dial chart .
 	 */
 	public JFreeChart createChart() {
-		// get data for diagrams
 		logger.debug("IN");
+		
+		if (dataset==null){
+			logger.debug("The dataset to be represented is null");
+			return null;		
+		}
 		
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
+		logger.debug("Created the new Dial Plot");
 
 		ArcDialFrame dialFrame=null;
 		plot.setView(0.78, 0.37, 0.22, 0.26);     
 		dialFrame = new ArcDialFrame(-10.0, 20.0); 
-
 		dialFrame.setInnerRadius(0.65);
 		dialFrame.setOuterRadius(0.90);
 		dialFrame.setForegroundPaint(Color.darkGray);
 		dialFrame.setStroke(new BasicStroke(3.0f));
 		plot.setDialFrame(dialFrame);
 
-		GradientPaint gp = new GradientPaint(new Point(), 
-				new Color(255, 255, 255), new Point(), 
-				new Color(240, 240, 240));
+		GradientPaint gp = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(240, 240, 240));
 		DialBackground sdb = new DialBackground(gp);
 
-		GradientPaintTransformType gradientPaintTransformType=GradientPaintTransformType.VERTICAL;
-			gradientPaintTransformType=GradientPaintTransformType.HORIZONTAL;
+		GradientPaintTransformType gradientPaintTransformType=GradientPaintTransformType.HORIZONTAL;
 
-		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(
-				gradientPaintTransformType));
+		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(gradientPaintTransformType));
 		plot.addLayer(sdb);
 
 		increment = (upper-lower)/10;
 		StandardDialScale scale=null;
-			scale = new StandardDialScale(lower, upper, -8, 16.0, 
-					increment, minorTickCount);
+			scale = new StandardDialScale(lower, upper, -8, 16.0, increment, minorTickCount);
 
 		// sets intervals
 		for (Iterator iterator = intervals.iterator(); iterator.hasNext();) {
@@ -144,22 +136,25 @@ public class SimpleDial extends ChartImpl {
 		DialPointer needle = new DialPointer.Pin();
 		needle.setRadius(0.82);
 		plot.addLayer(needle);
+		
 		JFreeChart chart1 = new JFreeChart(plot);
+		logger.debug("Created the chart");
 		chart1.setBackgroundPaint(color);
+		logger.debug("Setted background color of the chart");
 		
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart1.setTitle(title);
+		logger.debug("Setted the title of the chart");
 		if(subName!= null && !subName.equals("")){
 			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
 			chart1.addSubtitle(subTitle);
+			logger.debug("Setted the subtitle of the chart");
 		}
 
 		
 		logger.debug("OUT");
 		return chart1;
 	}
-
-
 
 
 	/**
@@ -171,8 +166,6 @@ public class SimpleDial extends ChartImpl {
 		return increment;
 	}
 
-
-
 	/**
 	 * Sets the increment.
 	 * 
@@ -182,8 +175,6 @@ public class SimpleDial extends ChartImpl {
 		this.increment = increment;
 	}
 
-
-
 	/**
 	 * Gets the minor tick count.
 	 * 
@@ -192,8 +183,6 @@ public class SimpleDial extends ChartImpl {
 	public int getMinorTickCount() {
 		return minorTickCount;
 	}
-
-
 
 	/**
 	 * Sets the minor tick count.
@@ -221,16 +210,5 @@ public class SimpleDial extends ChartImpl {
 	public void addInterval(KpiInterval interval) {
 		this.intervals.add(interval);
 	}
-
-
-
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#isChangeableView()
-	 */
-	public boolean isChangeableView() {
-		return true;
-	}
-
 
 }

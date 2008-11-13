@@ -1,15 +1,32 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.engines.kpi.bo;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Thermometer;
-import it.eng.spagobi.engines.kpi.utils.DataSetAccessFunctions;
-import it.eng.spagobi.engines.kpi.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
@@ -17,100 +34,136 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
-import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.VerticalAlignment;
+/**
+ * 
+ * @author Chiara Chiarelli
+ * 
+ */
 
 public class ChartImpl {
 	
-	protected String name=null;
-	protected String subName=null;
-	protected Integer width;
-	protected Integer height;
-	protected IEngUserProfile profile;
-	protected Color color;
-	protected Boolean legend=true;
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
-	protected StyleLabel styleTitle;
-	protected StyleLabel styleSubTitle;
 	
-	protected DefaultValueDataset dataset ;
+	protected String name=null;//Chart Title
+	protected String subName=null;//Chart Sub Title
+	protected StyleLabel styleTitle;//Chart Title style
+	protected StyleLabel styleSubTitle;//Chart Sub Title style
+	protected Integer width;//Chart Width
+	protected Integer height;//Chart height
+	protected IEngUserProfile profile;
+	protected Color color;//background color of the chart
+	protected Boolean legend = true;//true if legend visible; false if not	
 	
-	protected Vector intervals ;	
-	protected double lower=0.0;
-	protected double upper=0.0;
+	protected DefaultValueDataset dataset ;//ValueDataset for the chart
+	
+	protected Vector intervals ;//List of chart intervals	
+	protected double lower=0.0;//Chart's lower bound
+	protected double upper=0.0;//Chart's higher bound
 
 	/**
 	 * This function creates the chart object.
 	 * 
-	 * @param chartTitle the chart title
-	 * @param dataset the dataset
-	 * 
-	 * @return the j free chart
+	 * @return the JFreeChart
 	 */
 	public JFreeChart createChart() {
 		return null;
 	}
 
 	/**
-	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template.
+	 * This function creates the object of the right subtype 
 	 * 
-	 * @param type the type
-	 * @param subtype the subtype
+	 * @param subtype: the subtype of the Dial Chart
 	 * 
-	 * @return the chart impl
+	 * @return the correct ChartImpl instanciated
 	 */
 	public static ChartImpl createChart(String subtype){
+		logger.debug("IN");
 		ChartImpl sbi=null;
 			if(subtype.equalsIgnoreCase("Speedometer")){
 				sbi=new Speedometer();
+				logger.debug("Speedometer chart instanciated");
 			}
 			else if(subtype.equalsIgnoreCase("SimpleDial")){
 				sbi= new SimpleDial();
+				logger.debug("SimpleDial chart instanciated");
 			}
 			else if(subtype.equalsIgnoreCase("Thermometer")){
 				sbi= new Thermometer();
+				logger.debug("Thermometer chart instanciated");
 			}
 			else if(subtype.equalsIgnoreCase("Meter")){
 				sbi= new Meter();
+				logger.debug("Meter chart instanciated");
 			}
+			logger.debug("OUT");	
 		return sbi;
 	}
 
+	/**
+	 * This function configures the chart with the parameters passed in the config HashMap 
+	 * 
+	 * @param subtype: the subtype of the Dial Chart
+	 * 
+	 * @return the correct ChartImpl instanciated
+	 */
 	public void configureChart(HashMap config) {
-		
+		logger.debug("IN");
 		name = (String) config.get("name");
+			logger.debug("Chart title setted: "+((name!=null)?name:""));
 		subName =(String) config.get("subName");
+			logger.debug("Chart subtitle setted: "+((subName!=null)?subName:""));
 		styleTitle = (StyleLabel)config.get("styleTitle");
+			logger.debug("Chart style title setted");
 		styleSubTitle =(StyleLabel) config.get("styleSubTitle");
+			logger.debug("Chart style subtitle setted");
 		color = (Color) config.get("color");
+			logger.debug("Chart background color setted");
 		width = (Integer) config.get("width");
+			logger.debug("Chart width setted");
 		height = (Integer) config.get("height");
-		legend = (Boolean) config.get("legend");	
+			logger.debug("Chart height setted");
+		legend = (Boolean) config.get("legend");
+			logger.debug("Chart legend setted: "+legend.toString());
+		logger.debug("OUT");	
 	}
 	
+	/**
+	 * Sets the Double value to represent into the Chart
+	 * 
+	 * @param Double value to set
+	 * 
+	 */
 	public void setValueDataSet(Double valueToRepresent){
 		this.dataset = new DefaultValueDataset(valueToRepresent);
 	}
 	
+	/**
+	 * This function returns the Double value represented in the chart
+	 * 
+	 * @return the Double value represented in the chart
+	 */
 	public DefaultValueDataset getValueDataSet(){
 		return this.dataset ;
 	}
 
-	
+	/**
+	 * This function fills up the vector "intervals" with the intervals of the chart, getting them from a list of Thresholds 
+	 * 
+	 * @param List of thresholds to set
+	 */
 	public void setThresholds(List thresholds) {
+		logger.debug("IN");
 		if(thresholds!=null && !thresholds.isEmpty()){
 			Iterator it = thresholds.iterator();
 			//TODO testare con min da solo o max da solo
@@ -127,7 +180,7 @@ public class ChartImpl {
 					upper = max.doubleValue();
 				}
 				KpiInterval interval = new KpiInterval();
-				if(color!=null)	{
+				if(c!=null)	{
 					interval.setColor(c);
 				}else{
 					interval.setColor(Color.WHITE);
@@ -151,9 +204,10 @@ public class ChartImpl {
 				}
 				
 				intervals.add(interval);
+				logger.debug("New interval added to the Vector");					
 			}
 		}
-		
+		logger.debug("OUT");
 	}
 	
 	/* (non-Javadoc)
@@ -241,14 +295,6 @@ public class ChartImpl {
 	}
 
 	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.IChart#filterDataset(org.jfree.data.general.Dataset, java.util.HashMap, int, int)
-	 */
-	public Dataset filterDataset(Dataset dataset, HashMap categories, int catSelected, int numberCatsVisualization) {
-
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.IChart#isLegend()
 	 */
 	public boolean isLegend() {
@@ -262,33 +308,6 @@ public class ChartImpl {
 		this.legend = legend;
 	}
 
-
-	public void setTitleParameter(List atts) {
-		try{
-			String tmpTitle=new String(name);
-			if (tmpTitle.indexOf("$F{") >= 0){
-				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
-
-				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
-					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-
-					String nameP=new String(object.getKey());
-					String value=new String((String)object.getValue());
-					if(nameP.equalsIgnoreCase(parName))
-					{
-						int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
-						name = name.replace("$F{" + parName + "}", value);
-						tmpTitle = tmpTitle.substring(pos);
-					}
-				}
-
-			}
-		}
-		catch (Exception e) {
-			logger.error("Error in parameters Title");
-		}
-
-	}
 
 	public TextTitle setStyleTitle(String title,StyleLabel titleLabel){
 		Font font=null;
@@ -318,7 +337,7 @@ public class ChartImpl {
 		}
 
 		if(!definedFont)
-			font=new Font("Tahoma", Font.BOLD, 18);
+			font=new Font("Arial", Font.BOLD, 18);
 		if(!definedColor)
 			color=Color.BLACK;
 

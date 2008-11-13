@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts;
 
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -42,17 +45,9 @@ import org.jfree.chart.plot.dial.StandardDialFrame;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.KpiInterval;
-import it.eng.spagobi.engines.chart.utils.DatasetMap;
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 
 /**
  * 
@@ -62,17 +57,17 @@ import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 
 public class Speedometer extends ChartImpl {
 	
-	private static transient Logger logger=Logger.getLogger(SBISpeedometer.class);
+	private static transient Logger logger=Logger.getLogger(Speedometer.class);
 
 
-	double increment=0.0;
-	int minorTickCount=5;
+	double increment=0.0;//increment between each MajorTickLines
+	int minorTickCount=5;//Number of MinorTickLines between every 2 MajorTickLines
 	boolean dialtextuse = false ;
-	String dialtext = "";
+	String dialtext = "";//Text to be written into the chart (usually not used)
 
 
 	/**
-	 * Instantiates a new sBI speedometer.
+	 * Instantiates a new Speedometer.
 	 */
 	public Speedometer() {
 		super();
@@ -93,27 +88,30 @@ public class Speedometer extends ChartImpl {
 
 
 	/**
-	 * Creates a chart of type speedometer.
+	 * Creates a chart of type Speedometer.
 	 * 
-	 * @param chartTitle  the chart title.
-	 * @param dataset  the dataset.
-	 * 
-	 * @return A chart speedometer.
+	 * @return A Speedometer Chart
 	 */
-
 	public JFreeChart createChart() {
 		logger.debug("IN");
+	
+		if (dataset==null){
+			logger.debug("The dataset to be represented is null");
+			return null;		
+		}
 		
 		DialPlot plot = new DialPlot();
+		logger.debug("Created new DialPlot");
+		
 		plot.setDataset((ValueDataset)dataset);
 		plot.setDialFrame(new StandardDialFrame());
-
 		plot.setBackground(new DialBackground());
+		
 		if(dialtextuse){
+			//Usually it shoudn'tbe used. It is a type of title written into the graph
 			DialTextAnnotation annotation1 = new DialTextAnnotation(dialtext);			
 			annotation1.setFont(styleTitle.getFont());
 			annotation1.setRadius(0.7);
-
 			plot.addLayer(annotation1);
 		}
 		
@@ -123,12 +121,13 @@ public class Speedometer extends ChartImpl {
 		increment = (upper-lower)/10;
 		StandardDialScale scale = new StandardDialScale(lower, upper, -120, -300, 10.0, 4);
 		scale.setMajorTickIncrement(increment);
+		logger.debug("Setted the unit after which a new MajorTickline will be drawed");
 		scale.setMinorTickCount(minorTickCount);
+		logger.debug("Setted the number of MinorTickLines between every MajorTickline");
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.15);
 		scale.setTickLabelFont(new Font("Dialog", Font.PLAIN, 14));
 		plot.addScale(0, scale);
-
 		plot.addPointer(new DialPointer.Pin());
 
 		DialCap cap = new DialCap();
@@ -137,39 +136,40 @@ public class Speedometer extends ChartImpl {
 		// sets intervals
 		for (Iterator iterator = intervals.iterator(); iterator.hasNext();) {
 			KpiInterval interval = (KpiInterval) iterator.next();
-			StandardDialRange range = new StandardDialRange(interval.getMin(), interval.getMax(), 
-					interval.getColor()); 
+			StandardDialRange range = new StandardDialRange(interval.getMin(), interval.getMax(), interval.getColor()); 
 			range.setInnerRadius(0.52);
 			range.setOuterRadius(0.55);
 			plot.addLayer(range);
-
+			logger.debug("new range added to the plot");
 		}
 
-		GradientPaint gp = new GradientPaint(new Point(), 
-				new Color(255, 255, 255), new Point(), 
-				new Color(170, 170, 220));
+		GradientPaint gp = new GradientPaint(new Point(),new Color(255, 255, 255), new Point(), new Color(170, 170, 220));
 		DialBackground db = new DialBackground(gp);
-		db.setGradientPaintTransformer(new StandardGradientPaintTransformer(
-				GradientPaintTransformType.VERTICAL));
+		db.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
 		plot.setBackground(db);
-
 		plot.removePointer(0);
+		
 		DialPointer.Pointer p = new DialPointer.Pointer();
-		//colore della lancetta
+		//Pointer color
 		p.setFillPaint(Color.black);
 		plot.addPointer(p);
+		logger.debug("Setted all properties of the plot");
 
-		logger.debug("OUT");
 		JFreeChart chart=new JFreeChart(name, plot);
-		
+		logger.debug("Created the chart");
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		logger.debug("Setted the title of the chart");
 		if(subName!= null && !subName.equals("")){
 			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
 			chart.addSubtitle(subTitle);
+			logger.debug("Setted the subtitle of the chart");
 		}
 		
 		chart.setBackgroundPaint(color);
+		logger.debug("Setted background color of the chart");
+		
+		logger.debug("OUT");
 		return chart;
 	}
 
@@ -183,9 +183,6 @@ public class Speedometer extends ChartImpl {
 	public Vector getIntervals() {
 		return intervals;
 	}
-
-
-
 
 
 	/**
@@ -208,7 +205,6 @@ public class Speedometer extends ChartImpl {
 	}
 
 
-
 	/**
 	 * Sets the increment.
 	 * 
@@ -217,7 +213,6 @@ public class Speedometer extends ChartImpl {
 	public void setIncrement(double increment) {
 		this.increment = increment;
 	}
-
 
 
 	/**
@@ -230,7 +225,6 @@ public class Speedometer extends ChartImpl {
 	}
 
 
-
 	/**
 	 * Sets the minor tick count.
 	 * 
@@ -239,6 +233,4 @@ public class Speedometer extends ChartImpl {
 	public void setMinorTickCount(int minorTickCount) {
 		this.minorTickCount = minorTickCount;
 	}
-
-
 }

@@ -40,10 +40,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
-import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
-import it.eng.spagobi.engines.kpi.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
-import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
@@ -55,7 +52,6 @@ import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -78,31 +74,27 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	private static transient Logger logger = Logger.getLogger(SpagoBIKpiInternalEngine.class);
 
 	public static final String messageBundle = "messages";
-	protected int titleDimension;
-	protected String name=null;
-	protected String subName=null;
-	protected int width;
-	protected int height;
-	protected String data;
-	protected String confDataset;
-	protected IEngUserProfile profile;
-	protected String type="";
-	protected String subtype="";
-	protected Color color;
-	protected boolean legend=true;
-	protected HashMap parametersObject;
-	protected boolean show_chart=true;
-	protected boolean slider=true;
-	protected StyleLabel styleTitle;
-	protected StyleLabel styleSubTitle;
-	protected HashMap seriesLabelsMap = null;
-	protected HashMap confMap;
+
+	protected String name=null;//Document's title
+	protected String subName=null;//Document's subtitle
+	protected StyleLabel styleTitle;//Document's title style
+	protected StyleLabel styleSubTitle;//Document's subtitle style
 	
-	protected double lower=0.0;
-	protected double upper=0.0;
-	protected Map confParameters;
-	protected SourceBean sbRow;
-	protected List resources ;
+	protected int width;//width of each chart
+	protected int height;//height of each chart
+	
+	protected IEngUserProfile profile;
+	
+	protected String subtype="";
+	protected Color color;//background color of the charts
+	
+	protected HashMap parametersObject;
+	protected boolean show_chart=false;//false if only the kpi Values are shown
+	protected boolean legend=false;//true if the legend will be shown	
+	
+	protected HashMap confMap;//HashMap with all the config parameters	
+		
+	protected List resources ;//List of resources linked to the ModelInstanceNode
 
 
 
@@ -117,11 +109,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	 */
 
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
-
-
-		DatasetMap datasets=null;
 		
-
 		ResponseContainer responseContainer=ResponseContainer.getResponseContainer();
 		EMFErrorHandler errorHandler=responseContainer.getErrorHandler();
 
@@ -211,7 +199,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			this.parametersObject = parametersMap;
 
 
-			//		**************take informations on the chart type*****************
+			//		**************take informations on the modelInstance and its KpiValues*****************
 
 			String modelNodeInstance = (String)content.getAttribute("model_node_instance");
 			Integer modelNodeInstanceID = new Integer(modelNodeInstance);
@@ -247,12 +235,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			
 			List charts = new ArrayList();
 			if(show_chart){
+				logger.debug("Started creation of each chart");
 				//If charts have to be shown the list "charts" will be filled with a chart for each KpiValue
 				Iterator it = kpiValues.iterator();
 				while(it.hasNext()){
 					KpiValue k = (KpiValue) it.next();
 					List thresholds = k.getThresholds();
 					String chartType = k.getChartType();
+					logger.debug("Got chartType: "+(chartType!=null?chartType:""));
+					if(chartType==null){
+						logger.debug("Chart Type is null");
+					}
 					if(chartType!=null){
 						
 						Double value = new Double(k.getValue());
@@ -260,23 +253,28 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						String chartTitle = "";
 						if(k.getR()!=null){
 							chartTitle = "Resource: "+k.getR().getName();
+							logger.debug("Added the title to the chart with the name of the resource: "+k.getR().getName());
 						}
 						pars.put("name", chartTitle) ;
 						ChartImpl sbi = null;				
 						sbi=ChartImpl.createChart(chartType);
+						logger.debug("Chart created");
 						sbi.setProfile(userProfile);
+						logger.debug("Profile setted");
 						sbi.setValueDataSet(value);
+						logger.debug("Value to represent setted: "+(value!=null ? value.toString():""));
 						sbi.configureChart(pars);
+						logger.debug("Config parameters setted into the chart");
 						sbi.setThresholds(thresholds);
+						logger.debug("Thresholds setted for the chart");
 						
-						charts.add(sbi);
-						
+						charts.add(sbi);	
+						logger.debug("Chart added to the list of charts");
 					}					
 				}				
 			}
 						
 			try{
-				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull kpi creation");
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
@@ -302,21 +300,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 
 			logger.debug("OUT");
-
-
 		}
 		catch (EMFUserError e) {
 
 			errorHandler.addError(e);
-
 		}
 		catch (Exception e) {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
 			logger.error("Generic Error");
 			errorHandler.addError(userError);
-
 		}
-
 	}
 	
 	/**
@@ -614,9 +607,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		this.color = color;
 	}
 	
-	public void setTitleDimension(int titleDimension) {
-		this.titleDimension = titleDimension;
-	}
 	
 	public void setName(String _name) {
 		name=_name;		

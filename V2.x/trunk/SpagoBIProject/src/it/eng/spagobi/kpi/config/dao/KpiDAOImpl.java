@@ -18,7 +18,6 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
-import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
@@ -29,10 +28,6 @@ import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
-import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
-import it.eng.spagobi.tools.distributionlist.bo.Email;
-import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionList;
-import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListUser;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -42,12 +37,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	
@@ -744,7 +736,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 			
 		} catch (HibernateException he) {
-			logger.error("Error while loading the Model Instance with id " + ((kpiInstanceID == null)?"":kpiInstanceID.toString()), he);			
+			logger.error("Error while loading the KpiInstance with id " + ((kpiInstanceID == null)?"":kpiInstanceID.toString()), he);			
 
 			if (tx != null)
 				tx.rollback();

@@ -79,9 +79,5 @@ public class GetPngAction extends AbstractHttpAction{
 			logger.error("File not correctle deleted");
 		} 
 		logger.debug("OUT");
-
-
 	}
-
-
 }

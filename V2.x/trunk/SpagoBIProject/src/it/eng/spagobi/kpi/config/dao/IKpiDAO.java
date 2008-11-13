@@ -78,6 +78,13 @@ public interface IKpiDAO {
 	 */
 	public void isAlarmingValue(KpiValue value)	throws EMFUserError;
 	
+	/**
+	 * Returns the ChartType of the specific KpiInstance (it could also be null)
+	 * 
+	 * @param kpiInstanceID 
+	 * @return Returns the ChartType of the specific KpiInstance (it could also be null)
+	 * @throws EMFUserError if an Exception occurs
+	 */
 	public String getChartType(Integer kpiInstanceID) throws EMFUserError;
 
 }

@@ -19,11 +19,6 @@
 StringBuffer iframeUrl = new StringBuffer();
 iframeUrl.append(spagobiContext + "/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&NEW_SESSION=true&MODALITY=SINGLE_OBJECT_EXECUTION_MODALITY");
 
-
-// TODO togliere lo userid dalla richiesta
-iframeUrl.append("&userid=biadmin");
-
-
 if (documentId == null && documentLabel == null) {
 	throw new Exception("Neither document id nor document label are specified!!");
 }
@@ -51,4 +46,4 @@ if (theme != null)	iframeUrl.append("&theme=" + theme);
 if (authenticationTicket != null) iframeUrl.append("&auth_ticket=" + URLEncoder.encode(authenticationTicket));
 %>
 
-<iframe src="<%= iframeUrl.toString() %>" style="<%= iframeStyle %>"></iframe>
+<iframe src="<%= iframeUrl.toString() %>" style="<%= iframeStyle != null ? iframeStyle : "" %>"></iframe>

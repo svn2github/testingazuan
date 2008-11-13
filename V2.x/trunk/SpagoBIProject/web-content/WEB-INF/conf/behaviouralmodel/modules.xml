@@ -172,9 +172,11 @@
     	</CONFIG>
   	</MODULE>
   	
-<!-- 	<MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">
-	</MODULE>-->
-		
+  	<!-- 
+	<MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ChecklistLookupModalityValuesModule" name="ChecklistLookupModalityValuesModule">
+	</MODULE>
+	-->
+    
     <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.DetailChecksModule" name="DetailChecksModule">
      	<CONFIG/>
     </MODULE>   
@@ -320,9 +322,10 @@
 	    </CONFIG>
   	</MODULE>
 	
+	<!-- 
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLookupModalityValuesModule" name="ListLookupModalityValuesModule">
 	</MODULE>    
-
+	-->
 
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule" name="ListLovsModule">	    
 	    <CONFIG pool="spagobi" rows="10" title="SBIDev.predLovList.title">

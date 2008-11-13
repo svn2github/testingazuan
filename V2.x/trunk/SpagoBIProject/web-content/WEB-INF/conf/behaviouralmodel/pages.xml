@@ -74,14 +74,14 @@
         		</CONDITIONS>
         		<CONSEQUENCES/>
       		</DEPENDENCE>
-
-			<!-- <DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
+			<!--
+			<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
         		</CONDITIONS>
         		<CONSEQUENCES/>
-      		</DEPENDENCE>  
-      		-->       		
+      		</DEPENDENCE>
+      		-->         		
       		<!--
       		<DEPENDENCE source="ValidateExecuteBIObjectPage" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
@@ -91,7 +91,7 @@
         		<CONSEQUENCES/>
       		</DEPENDENCE>  	
       		-->
-      		<!-- 
+      		<!--
       		<DEPENDENCE source="ExecuteBIObjectModule" target="ChecklistLookupModalityValuesModule">
         		<CONDITIONS>
         			<PARAMETER name="ExecuteBIObjectModule.LOOKUP_PARAMETER_NAME" scope="SERVICE_RESPONSE" value="AF_DEFINED"/>
@@ -103,8 +103,8 @@
         			<PARAMETER name="LOOKUP_PARAMETER_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.LOOKUP_PARAMETER_ID" />
         			<PARAMETER name="correlated_paruse_id" type="RELATIVE" scope="SERVICE_RESPONSE" value="ExecuteBIObjectModule.correlated_paruse_id" />
         		</CONSEQUENCES>
-      		</DEPENDENCE>	
-      		 -->
+      		</DEPENDENCE>
+      		-->	
       		<!--
       		<DEPENDENCE source="ExecuteBIObjectModule" target="ListLookupModalityValuesModule">
         		<CONDITIONS>
@@ -199,7 +199,7 @@
     	</MODULES>
   	</PAGE> 	
 
-	
+	<!--
 	<PAGE name="GenericLookupPage" scope="REQUEST" title="LookupPage" >
     	<DEPENDENCIES>
       		<DEPENDENCE source="GenericLookupPage" target="ListLookupModalityValuesModule">
@@ -211,6 +211,7 @@
       		<MODULE keep_instance="false" keep_response="false" name="ListLookupModalityValuesModule"/>
     	</MODULES>
   	</PAGE>
+  	-->
   	
   	<PAGE name="ListLovsPage" scope="REQUEST" >
     	<DEPENDENCIES>

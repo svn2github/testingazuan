@@ -21,14 +21,21 @@ import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.service.ListTestDataSetModule;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
+
+import com.sun.star.text.FilenameDisplayFormat;
 
 /**
  * @author Angelo Bernabei
@@ -40,6 +47,8 @@ public class FileReader implements IDataReader {
 	private static transient Logger logger = Logger.getLogger(FileReader.class);
 	FileDataSet ds = null;
 	IEngUserProfile profile=null;
+	String fileType = "xml";
+	final static String SEPARATOR=";";
 
     public IEngUserProfile getProfile() {
 		return profile;
@@ -80,6 +89,10 @@ public class FileReader implements IDataReader {
 		IDataStore ids = (IDataStore)new DataStoreImpl();
 		FileInputStream fis = null;
 		String fileName = ds.getFileName();
+		if(fileName!=null){
+			int lenght = fileName.length();
+			fileType = fileName.substring(lenght-3, lenght);			
+		}
 		try{
 			fis = new FileInputStream(fileName);
 		}
@@ -87,54 +100,106 @@ public class FileReader implements IDataReader {
 			e.printStackTrace();
 			logger.debug("File not found",e);
 		}
-		try{
-		InputSource inputSource=new InputSource(fis);
-
-		SourceBean rowsSourceBean = null;
-		List colNames = new ArrayList();
-
-			rowsSourceBean = SourceBean.fromXMLStream(inputSource);
-			//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
-			if(rowsSourceBean!=null){
-				List row =rowsSourceBean.getAttributeAsList("ROW");
-				if(row.size()>=1){
-					Iterator iterator = row.iterator(); 
-					
-					while(iterator.hasNext()){
-											
-					SourceBean sb = (SourceBean) iterator.next();
-					//For each row I instanciate an IRecord
-					IRecord r = (IRecord)new Record();
-					
-					List sbas=sb.getContainedAttributes();
-					for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+		
+		if(fileType.equalsIgnoreCase("txt") || fileType.equalsIgnoreCase("xml")){
+			
+			try{
+			InputSource inputSource=new InputSource(fis);
+	
+			SourceBean rowsSourceBean = null;
+			List colNames = new ArrayList();
+	
+				rowsSourceBean = SourceBean.fromXMLStream(inputSource);
+				//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
+				if(rowsSourceBean!=null){
+					List row =rowsSourceBean.getAttributeAsList("ROW");
+					if(row.size()>=1){
+						Iterator iterator = row.iterator(); 
 						
-						SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-						String fieldName=object.getKey();
-						IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
-						fMeta.setName(fieldName);
-						//Each Record is made out of different IFields with a value and metadata
-						IField f = (IField)new Field(fMeta,object);
-						r.appendField(f);
-					}
-					ids.appendRow(r);
+						while(iterator.hasNext()){
+												
+						SourceBean sb = (SourceBean) iterator.next();
+						//For each row I instanciate an IRecord
+						IRecord r = (IRecord)new Record();
+						
+						List sbas=sb.getContainedAttributes();
+						for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+							
+							SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+							String fieldName=object.getKey();
+							IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
+							fMeta.setName(fieldName);
+							//Each Record is made out of different IFields with a value and metadata
+							IField f = (IField)new Field(fMeta,object);
+							r.appendField(f);
+						}
+						ids.appendRow(r);
+						}
 					}
 				}
 			}
-		}
-
-		catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception reading File data");
-		}
-		finally{
-			if(fis!=null)
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					logger.error("IOException during File Closure");
-				}
+	
+			
+			catch (Exception e) {
+				e.printStackTrace();
+				logger.error("Exception reading File data");
+			}
+			finally{
+				if(fis!=null)
+					try {
+						fis.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						logger.error("IOException during File Closure");
+					}
+			}
+		}else if(fileType.equalsIgnoreCase("csv")){
+			InputStreamReader fileReader=null;
+			LineNumberReader lineReader=null;
+			InputSource inputSource=new InputSource(fis);
+			InputStream is = inputSource.getByteStream();
+			
+			try {				
+				fileReader=new InputStreamReader(is);
+				lineReader=new LineNumberReader(fileReader);
+				boolean fineFile=false;
+				int numRow = 0;
+				List fields = new ArrayList();
+				while (!fineFile){
+					
+					String riga=lineReader.readLine();
+					if (riga==null) fineFile=true;
+					else {
+						IRecord r = (IRecord)new Record();
+						
+						StringTokenizer tokenizer=new StringTokenizer(riga,SEPARATOR);
+						int count = 0;
+						while(tokenizer.hasMoreElements()){
+							String token=tokenizer.nextToken();
+							if (numRow==0){
+								fields.add(token);
+							}else{
+								if (token!=null) {
+								int numberOfFIelds = fields.size();
+								IFieldMeta fMeta = (IFieldMeta)new FieldMetadata();
+								String fName = (String) fields.get(count);
+								fMeta.setName(fName);
+								//Each Record is made out of different IFields with a value and metadata
+								IField f = (IField)new Field(fMeta,token);
+								r.appendField(f);
+								count ++;
+								}
+							}
+						}
+						if(numRow!=0)ids.appendRow(r);					
+					}
+					numRow++;
+				}	
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		logger.debug("OUT");
 	return ids;

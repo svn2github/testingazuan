@@ -91,8 +91,14 @@ public class DataStoreImpl implements IDataStore {
 				IField f = (IField)it.next();
 				IFieldMeta fMeta = (IFieldMeta)f.getMetadata();
 				String fieldName = fMeta.getName();
+				String fieldValue ="";
+				String objType = f.getValue().getClass().getName();
+				if(objType.equals("java.lang.String")){
+					fieldValue = (String) f.getValue();
+				}else{
 				SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
-				String fieldValue = fieldObject.getValue().toString();
+				fieldValue = fieldObject.getValue().toString();
+				}
 				xml += fieldName +"=\'"+fieldValue+"\' ";
 			}
 			xml += " />";

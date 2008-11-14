@@ -1357,7 +1357,7 @@ Alter table `SBI_ALARM` add Foreign Key (`DOCUMENT_ID`) references `SBI_OBJECTS`
 Alter table `SBI_ALARM` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE CASCADE;
 Alter table `SBI_ALARM` add Foreign Key (`id_threshold_value`) references `SBI_THRESHOLD_VALUE` (`ID_THRESHOLD_VALUE`) ON DELETE CASCADE;
 Alter table `SBI_ALARM_EVENT` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) ON DELETE CASCADE;
-Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_EVENT_ID`) references `SBI_ALARM_EVENT` (`ALARM_EVENT_ID`) ON DELETE CASCADE;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) ON DELETE CASCADE;
 Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_CONTACT_ID`) references `SBI_ALARM_CONTACT` (`ALARM_CONTACT_ID`) ON DELETE CASCADE;
 
 

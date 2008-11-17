@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  == $Id: //open/mondrian/webapp/WEB-INF/datasources.xml#5 $
+  == $Id: //open/mondrian-release/3.0/webapp/WEB-INF/datasources.xml#2 $
   == This software is subject to the terms of the Common Public License
   == Agreement, available at the following URL:
   == http://www.opensource.org/licenses/cpl.html.
@@ -24,7 +24,8 @@
         <!--
              Name of the data source.
         -->
-        <DataSourceName>Provider=Mondrian;DataSource=MondrianFoodMart;</DataSourceName>
+        <!--<DataSourceName>Provider=Mondrian;DataSource=MondrianFoodMart;</DataSourceName>-->
+        <DataSourceName>Provider=Mondrian;DataSource=foodmart;</DataSourceName>
 
         <!--
              Description of the data source.
@@ -45,7 +46,8 @@
              Catalogs can override the connect string with their own
              <DataSourceInfo> element.
           -->
-        <DataSourceInfo>Provider=mondrian;Jdbc=jdbc:oracle:thin:foodmart/foodmart@//marmalade.hydromatic.net:1521/XE;JdbcUser=foodmart;JdbcPassword=foodmart;JdbcDrivers=oracle.jdbc.OracleDriver;Catalog=/WEB-INF/queries/FoodMart.xml</DataSourceInfo>
+        <!--<DataSourceInfo>Provider=mondrian;Jdbc=jdbc:oracle:thin:foodmart/foodmart@//marmalade.hydromatic.net:1521/XE;JdbcUser=foodmart;JdbcPassword=foodmart;JdbcDrivers=oracle.jdbc.OracleDriver;Catalog=/WEB-INF/queries/FoodMart.xml</DataSourceInfo>-->
+        <DataSourceInfo>Provider=mondrian;Jdbc=jdbc:hsqldb:hsql://localhost:9002/foodmart;JdbcUser=sa;JdbcPassword=sa;JdbcDrivers=org.hsqldb.jdbcDriver;Catalog=/WEB-INF/queries/FoodMart.xml</DataSourceInfo>
 
         <!-- 
              Provider name must be 'Mondrian'.

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-$Id: //open/mondrian/webapp/WEB-INF/mdxquery.xsl#2 $
+$Id: //open/mondrian-release/3.0/webapp/WEB-INF/mdxquery.xsl#2 $
 
 This software is subject to the terms of the Common Public License
 Agreement, available at the following URL:

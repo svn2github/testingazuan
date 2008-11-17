@@ -33,7 +33,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Gioia
@@ -41,6 +47,8 @@ import java.util.List;
  */
 public class ParametersDecoder {
 
+	static private Logger logger = Logger.getLogger(ParametersDecoder.class);
+	
 	private String openBlockMarker;
 	private String closeBlockMarker;
 	
@@ -135,6 +143,50 @@ public class ParametersDecoder {
 	 * @return the list
 	 */
 	public List decode(String value) {
+		logger.debug("IN: value = " + value);
+		List values = null;
+		
+		if(value == null) return null;
+		
+		if(isMultiValues(value)) {
+			values = new ArrayList();
+			String separator = getSeparator(value);
+			String innerBlock = getInnerBlock(value);
+			String parameterType = getParameterType(value);
+			String[] chunks = innerBlock.split(separator);
+			for(int i = 0; i < chunks.length; i++) {
+				String singleValue = chunks[i];
+				if (parameterType.equalsIgnoreCase("STRING")) {
+					if (singleValue.trim().equals("")) {
+						logger.debug("Adding quotes to parameter value ... ");
+						singleValue = "'" + singleValue + "'";
+					} else {
+						if (!singleValue.startsWith("'") && !singleValue.endsWith("'")) {
+							logger.debug("Adding quotes to parameter value ... ");
+							singleValue = "'" + singleValue + "'";
+						}
+					}
+				}
+				values.add(singleValue);
+			}
+		} else {
+			values = new ArrayList();
+			values.add(value);
+		}
+		
+		logger.debug("OUT: list of values = " + (values == null ? null : values.toString()));
+		return values;
+	}
+	
+	/**
+	 * Get the original values (without adding the quotes)
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the list
+	 */
+	public List getOriginalValues(String value) {
+		logger.debug("IN: value = " + value);
 		List values = null;
 		
 		if(value == null) return null;
@@ -145,13 +197,15 @@ public class ParametersDecoder {
 			String innerBlock = getInnerBlock(value);
 			String[] chunks = innerBlock.split(separator);
 			for(int i = 0; i < chunks.length; i++) {
-				values.add(chunks[i]);
+				String singleValue = chunks[i];
+				values.add(singleValue);
 			}
 		} else {
 			values = new ArrayList();
 			values.add(value);
 		}
 		
+		logger.debug("OUT: list of values = " + (values == null ? null : values.toString()));
 		return values;
 	}
 	
@@ -160,16 +214,31 @@ public class ParametersDecoder {
 	/////////////////////////////////////////////////////////////
 	
 	private String getSeparator(String value) {
+		logger.debug("IN: value = " + value);
 		String separator = null;
 		
 		int outerBlockOpeningIndex = value.trim().indexOf(openBlockMarker);
 		int innerBlockOpeningIndex = value.trim().indexOf(openBlockMarker, outerBlockOpeningIndex + 1);	
 		separator = value.substring(outerBlockOpeningIndex + 1, innerBlockOpeningIndex).trim();
 		
+		logger.debug("OUT: separator = " + separator);
 		return separator;
 	}
 	
+	private String getParameterType(String value) {
+		logger.debug("IN: value = " + value);
+		String parameterType = null;
+		
+		int innerBlockClosingIndex = value.trim().indexOf(closeBlockMarker);
+		int outerBlockClosingIndex = value.trim().indexOf(closeBlockMarker, innerBlockClosingIndex + 1);	
+		parameterType = value.substring(innerBlockClosingIndex + 1, outerBlockClosingIndex).trim();
+		
+		logger.debug("OUT: parameterType = " + parameterType);
+		return parameterType;
+	}
+	
 	private String getInnerBlock(String value) {
+		logger.debug("IN: value = " + value);
 		String innerBlock = null;
 		
 		int outerBlockOpeningIndex = value.trim().indexOf(openBlockMarker);
@@ -177,10 +246,45 @@ public class ParametersDecoder {
 		int innerBlockClosingIndex = value.trim().indexOf(closeBlockMarker, innerBlockOpeningIndex + 1);	
 		innerBlock = value.substring(innerBlockOpeningIndex + 1, innerBlockClosingIndex).trim();
 		
+		logger.debug("OUT: innerBlock = " + innerBlock);
 		return innerBlock;
 	}
 	
 
+	/**
+	 * Gets all decoded parameters defined on http request. Multivalue parameters are converted into List
+	 * The returned HashMap will contain the request parameters' names as key; for each parameter, 
+	 * the value will be a String if it has a single value, it will be a List if it is multi value (each element of the List being a String).
+	 *  
+	 * @param servletRequest The http request
+	 * @return an HashMap containing all decoded parameters defined on http request. Multivalue parameters are converted into List
+	 */
+	public static HashMap getDecodedRequestParameters(HttpServletRequest servletRequest) {
+		logger.debug("IN");
+		HashMap requestParameters = new HashMap();
+		ParametersDecoder decoder = new ParametersDecoder();
+		Enumeration enumer = servletRequest.getParameterNames();
+		while (enumer.hasMoreElements()) {
+			String key = (String) enumer.nextElement();
+			Object value = null;
+			String valueStr = servletRequest.getParameter(key);
+			logger.debug("Found request parameter with key = [" + key + "] and value = [" + valueStr + "]");
+			try {
+				if (decoder.isMultiValues(valueStr)) {
+				    value = decoder.getOriginalValues(valueStr).toArray();
+				} else {
+					value = valueStr;
+				}
+			} catch (Exception e) {
+				logger.error("Error while decoding parameter with key = [" + key + "] and value = [" + valueStr + "]. It will be not decoded", e);
+				value = valueStr;
+			}
+			requestParameters.put(key, value);
+		}
+		logger.debug("OUT");
+		return requestParameters;
+	}
+	
 	/////////////////////////////////////////////////////////////
 	//	MAIN METHOD
 	/////////////////////////////////////////////////////////////

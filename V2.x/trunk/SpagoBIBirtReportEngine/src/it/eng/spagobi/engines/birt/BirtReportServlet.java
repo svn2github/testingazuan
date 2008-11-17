@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -195,8 +196,8 @@ public class BirtReportServlet extends HttpServlet {
 	
 	ContentServiceProxy contentProxy = new ContentServiceProxy(userId, servletRequest.getSession());
 	
-	
-	Content template = contentProxy.readTemplate(documentId,new HashMap());
+	HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(servletRequest);
+	Content template = contentProxy.readTemplate(documentId,requestParameters);
 	logger.debug("Read the template=" + template.getFileName());
 	InputStream is = null;
 	try {

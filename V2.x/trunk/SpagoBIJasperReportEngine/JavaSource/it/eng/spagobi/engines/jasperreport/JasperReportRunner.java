@@ -13,6 +13,7 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetWsServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
+import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.awt.Graphics2D;
@@ -162,7 +163,8 @@ public class JasperReportRunner {
 			// (by default is WEB_INF/lib)
 			setJRClasspath(getJRLibDir(servletContext));
 			
-			Content template=contentProxy.readTemplate( documentId,new HashMap());
+			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(servletRequest);
+			Content template=contentProxy.readTemplate( documentId,requestParameters);
 			logger.debug("Read the template."+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -209,7 +211,7 @@ public class JasperReportRunner {
 			
 			Monitor monitorSubReport =MonitorFactory.start("JasperReportRunner.compileSubReport");
 			// compile subreports
-			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy);
+			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy, requestParameters);
 			monitorSubReport.stop();		
 			// set classloader
 			ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -587,7 +589,7 @@ public class JasperReportRunner {
 	
 	
 	
-	private File[] compileSubreports(Map params, File destDir,ContentServiceProxy contentProxy) throws JRException, Exception {
+	private File[] compileSubreports(Map params, File destDir,ContentServiceProxy contentProxy, HashMap requestParameters) throws JRException, Exception {
 	    	logger.debug("IN");
  		String subrptnumStr = (params.get("srptnum")==null)?"0":(String)params.get("srptnum");
 		int subrptnum = Integer.parseInt(subrptnumStr);
@@ -616,7 +618,7 @@ public class JasperReportRunner {
 		}
 				
 		for(int i = 0; i < subreports.length; i++) {
-			Content template=contentProxy.readTemplate(subreports[i],new HashMap());
+			Content template=contentProxy.readTemplate(subreports[i], requestParameters);
 			logger.debug("Read the template.(subreport)"+template.getFileName());
 			InputStream is = null;		
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
@@ -696,5 +698,6 @@ public class JasperReportRunner {
 		logger.debug("OUT");
 		return jrTempDir;		
 	}
+	
 }
 

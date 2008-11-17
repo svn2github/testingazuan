@@ -44,12 +44,15 @@ import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -202,8 +205,9 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		Content template = null;
 		String templateContent = null;
 		
-		contentProxy = getContentServiceProxy();		
-		template = contentProxy.readTemplate(documentId,new HashMap());
+		contentProxy = getContentServiceProxy();
+		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
+		template = contentProxy.readTemplate(documentId, requestParameters);
 		logger.debug("Read the template."+ template.getFileName());	
 		
 		
@@ -448,8 +452,5 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 			
 		return newParValue;
 	}
-	
-	
-
 	
 }

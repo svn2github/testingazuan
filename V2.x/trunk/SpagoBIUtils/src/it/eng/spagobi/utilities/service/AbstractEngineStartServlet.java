@@ -41,6 +41,7 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.utilities.ParametersDecoder;
 
 import org.apache.log4j.Logger;
 
@@ -128,7 +129,8 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
 	 */
 	public Content getRowTemplate() {
 		ContentServiceProxy contentProxy = new ContentServiceProxy( getUserId(), getSession());
-		Content template = contentProxy.readTemplate( getDocumentId() ,new HashMap());
+		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getRequest());
+		Content template = contentProxy.readTemplate( getDocumentId() ,requestParameters);
 		
 		return template;
 	}

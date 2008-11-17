@@ -93,7 +93,14 @@ LICENSE: see LICENSE.txt file
 		} else {
 			//String templateBase64Coded = request.getParameter("template");
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			Content template = contentProxy.readTemplate(documentId, new HashMap());
+			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(request);
+			
+			// remove the dimension_access_rules parameter because it produces an exception (not blocking but the exception 
+			// is visilble on the console) since it is not compatible with multi value parameter encoding.
+			// TODO move the cube profiling information from driver to engine 
+			requestParameters.remove("dimension_access_rules");
+			
+			Content template = contentProxy.readTemplate(documentId, requestParameters);
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
 
@@ -122,7 +129,8 @@ LICENSE: see LICENSE.txt file
 			String resName = ds.getJndiName();
 			resName = resName.replace("java:comp/env/","");
 %>
-			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+			<%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
+<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 				<%=query%>
 				
 				<%

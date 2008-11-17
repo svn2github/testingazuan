@@ -46,7 +46,7 @@ public class ParameterValuesEncoder {
     public static final String DEFAULT_SEPARATOR = ";";
     public static final String DEFAULT_OPEN_BLOCK_MARKER = "{";
     public static final String DEFAULT_CLOSE_BLOCK_MARKER = "}";
-
+    
     // ///////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////
@@ -150,8 +150,6 @@ public class ParameterValuesEncoder {
 	Parameter parameter = biobjPar.getParameter();
 	if (parameter != null) {
 	    String type = parameter.getType();
-	    logger.debug("type="+type);
-	    boolean isString = "STRING".equalsIgnoreCase(type);
 	    ModalitiesValue modValue = parameter.getModalityValue();
 	    if (modValue != null) {
 		boolean mult = biobjPar.getParameter().getModalityValue().isMultivalue();
@@ -165,7 +163,7 @@ public class ParameterValuesEncoder {
 		if (!mult) {
 		    return (String) biobjPar.getParameterValues().get(0);
 		} else {
-		    return encodeMultivaluesParam(biobjPar.getParameterValues(), isString);
+		    return encodeMultivaluesParam(biobjPar.getParameterValues(), type);
 		}
 	    } else {
 		List values = biobjPar.getParameterValues();
@@ -173,21 +171,20 @@ public class ParameterValuesEncoder {
 		    if (values.size() == 1)
 			return (String) biobjPar.getParameterValues().get(0);
 		    else
-			return encodeMultivaluesParam(biobjPar.getParameterValues(), isString);
+			return encodeMultivaluesParam(biobjPar.getParameterValues(), type);
 		} else
 		    return "";
 	    }
 	} else {
 	    Integer parId = biobjPar.getParID();
-	    boolean isString = false;
+	    String type = null;
 	    if (parId == null) {
 		logger.warn("Parameter object nor parameter id are set into BiObjectPrameter with label = "
 			+ biobjPar.getLabel() + " of document with id = " + biobjPar.getBiObjectID());
 	    } else {
 		try {
 		    Parameter aParameter = DAOFactory.getParameterDAO().loadForDetailByParameterID(parId);
-		    String type = aParameter.getType();
-		    isString = "STRING".equalsIgnoreCase(type);
+		    type = aParameter.getType();
 		} catch (EMFUserError e) {
 		    logger.warn("Error loading parameter with id = " + biobjPar.getParID());
 		}
@@ -197,7 +194,7 @@ public class ParameterValuesEncoder {
 		if (values.size() == 1)
 		    return (String) biobjPar.getParameterValues().get(0);
 		else
-		    return encodeMultivaluesParam(biobjPar.getParameterValues(), isString);
+		    return encodeMultivaluesParam(biobjPar.getParameterValues(), type);
 	    } else
 		return "";
 	}
@@ -208,13 +205,16 @@ public class ParameterValuesEncoder {
     // UTILITY METHODS
     // ///////////////////////////////////////////////////////////
 
-    /*
-     * isString: it is a flag: if it is true, the values are strings: in this
-     * case, if the strings are not surrounded by ' character, they are
-     * surrounded by ' character. This is a work-around: generally speaking, a
-     * list of values should declare the type of contained objects.
+    /**
+     * Multi values parameters are encoded in the following way:
+     * openBlockMarker + separator + openBlockMarker + [values separated by the separator] + closeBlockMarker + parameterType + closeBlockMarker
+     * Examples:
+     * {,{string1,string2,string3}STRING}
+     * {,{number1,number1,number1}NUM}
+     * 
+     * parameterType: the type of the parameter (NUM/STRING/DATE)
      */
-    private String encodeMultivaluesParam(List values, boolean isString) {
+    private String encodeMultivaluesParam(List values, String parameterType) {
 	logger.debug("IN");
 	String value = "";
 
@@ -226,19 +226,11 @@ public class ParameterValuesEncoder {
 	value += openBlockMarker;
 	for (int i = 0; i < values.size(); i++) {
 	    String valueToBeAppended = (values.get(i) == null) ? "" : (String) values.get(i);
-	    if (isString) {
-		if (valueToBeAppended.equals(""))
-		    valueToBeAppended = "''";
-		else {
-		    if (!valueToBeAppended.startsWith("'") && !valueToBeAppended.endsWith("'")) {
-			valueToBeAppended = "'" + valueToBeAppended + "'";
-		    }
-		}
-	    }
 	    value += (i > 0) ? separator : "";
 	    value += valueToBeAppended;
 	}
 	value += closeBlockMarker;
+	value += parameterType;
 	value += closeBlockMarker;
 	logger.debug("IN.value=" + value);
 	return value;

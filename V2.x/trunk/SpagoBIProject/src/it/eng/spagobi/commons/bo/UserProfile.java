@@ -110,10 +110,10 @@ public class UserProfile implements IEngUserProfile {
      * @return the user profile
      */
     public static final UserProfile createWorkFlowUserProfile() {
-	UserProfile profile = new UserProfile("[SYSTEM - WORKFLOW]");
+	UserProfile profile = new UserProfile(WORKFLOW_USER_NAME);
 	profile.roles = new ArrayList();
 	profile.userAttributes = new HashMap();
-	profile.userAttributes.put("password", WORKFLOW_USER_NAME);
+//	profile.userAttributes.put("password", WORKFLOW_USER_NAME);
 	return profile;
     }
 
@@ -136,10 +136,20 @@ public class UserProfile implements IEngUserProfile {
      * 
      * @return true, if checks if is scheduler user
      */
+    public static boolean isWorkflowUser(String userid) {
+	return WORKFLOW_USER_NAME.equals(userid);
+    }
+    
+    /**
+     * Checks if is scheduler user.
+     * 
+     * @param userid String
+     * 
+     * @return true, if checks if is scheduler user
+     */
     public static boolean isSchedulerUser(String userid) {
 	return SCHEDULER_USER_NAME.equals(userid);
     }
-
 
     /* (non-Javadoc)
      * @see it.eng.spago.security.IEngUserProfile#getFunctionalities()

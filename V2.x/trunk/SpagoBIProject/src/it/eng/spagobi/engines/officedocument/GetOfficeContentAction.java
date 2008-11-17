@@ -83,7 +83,7 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 		
 		ContentServiceImplSupplier c = new ContentServiceImplSupplier();
-		Content template = c.readTemplate(userId, documentId);
+		Content template = c.readTemplate(userId, documentId, null);
 		String templateFileName = template.getFileName();
 
 		logger.debug("Template Read");

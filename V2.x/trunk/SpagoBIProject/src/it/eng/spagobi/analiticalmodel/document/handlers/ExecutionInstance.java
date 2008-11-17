@@ -43,10 +43,12 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
@@ -285,7 +287,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 	
-	public void refreshParametersValues(SourceBean request, boolean transientMode) throws Exception {
+	public void refreshParametersValues(SourceBean request, boolean transientMode) {
 		logger.debug("IN");
 		String pendingDelete = (String) request.getAttribute("PENDING_DELETE");
 		List biparams = object.getBiObjectParameters();
@@ -300,6 +302,17 @@ public class ExecutionInstance {
 			} else {
 				refreshParameter(biparam, request, transientMode);
 			}
+		}
+		logger.debug("OUT");
+	}
+	
+	public void refreshParametersValues(Map parametersMap, boolean transientMode) {
+		logger.debug("IN");
+		List biparams = object.getBiObjectParameters();
+		Iterator iterParams = biparams.iterator();
+		while (iterParams.hasNext()) {
+			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			refreshParameter(biparam, parametersMap, transientMode);
 		}
 		logger.debug("OUT");
 	}
@@ -324,6 +337,46 @@ public class ExecutionInstance {
 			biparam.setParameterValues(null);
 		else
 			biparam.setParameterValues(paramvalues);
+		biparam.setTransientParmeters(transientMode);
+		logger.debug("OUT");
+	}
+	
+	private void refreshParameter(BIObjectParameter biparam, Map parametersMap, boolean transientMode) {
+		logger.debug("IN");
+		String nameUrl = biparam.getParameterUrlName();
+		Object parameterValueObj = parametersMap.get(nameUrl);
+		List values = null;
+		if (parameterValueObj != null) {
+			if (parameterValueObj instanceof List) {
+				values = (List) parameterValueObj;
+			} else if (parameterValueObj instanceof Object[]) {
+				Object[] array = (Object[]) parameterValueObj;
+				values = new ArrayList();
+				for (int i = 0; i < array.length; i++) {
+					Object o = array[i];
+					if (o != null) {
+						values.add(o.toString());
+					}
+				}
+			} else if (parameterValueObj instanceof String) {
+				values = new ArrayList();
+				values.add(parameterValueObj);
+			} else {
+				values = new ArrayList();
+				values.add(parameterValueObj.toString());
+			}
+		} else {
+			logger.debug("No attribute found on input map for biparameter with name [" + biparam.getLabel() + "]");
+		}
+		
+		if (values != null && values.size() > 0) {
+			logger.debug("Updating values of biparameter " + biparam.getLabel() + " to " + values.toString());
+			biparam.setParameterValues(values);
+		} else {
+			logger.debug("Erasing values of biparameter " + biparam.getLabel());
+			biparam.setParameterValues(null);
+		}
+		
 		biparam.setTransientParmeters(transientMode);
 		logger.debug("OUT");
 	}
@@ -358,9 +411,16 @@ public class ExecutionInstance {
 		Iterator iterParams = biparams.iterator();
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			logger.debug("Evaluating errors for biparameter " + biparam.getLabel() + " ...");
 			List errorsOnChecks = getValidationErrorsOnChecks(biparam);
+			if (errorsOnChecks != null && errorsOnChecks.size() > 0) {
+				logger.warn("Found " + errorsOnChecks.size() + " errors on checks for biparameter " + biparam.getLabel());
+			}
 			toReturn.addAll(errorsOnChecks);
 			List errorsOnValues = getValidationErrorsOnValues(biparam);
+			if (errorsOnValues != null && errorsOnValues.size() > 0) {
+				logger.warn("Found " + errorsOnValues.size() + " errors on values for biparameter " + biparam.getLabel());
+			}
 			toReturn.addAll(errorsOnValues);
 			List values = biparam.getParameterValues();
 			boolean hasValidValues = false;
@@ -375,12 +435,10 @@ public class ExecutionInstance {
 	}
 	
 	private List getValidationErrorsOnChecks(BIObjectParameter biparameter) throws Exception {
-		logger.debug("OUT");
+		logger.debug("IN");
 		List toReturn = new ArrayList();
 		List checks = biparameter.getParameter().getChecks();
-		String urlName = biparameter.getParameterUrlName();
 		String label = biparameter.getLabel();
-		List values = biparameter.getParameterValues();
 		if (checks == null || checks.size() == 0) {
 			logger.debug("No checks associated for biparameter [" + label + "].");
 			return toReturn;
@@ -389,67 +447,17 @@ public class ExecutionInstance {
 			Check check = null;
 			while (it.hasNext()) {
 				check = (Check) it.next();
-				if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")) {
-					if (values == null || values.isEmpty()) {
-						EMFValidationError error = SpagoBIValidationImpl.validateField(urlName, label, null, "MANDATORY", null, null, null);
-						toReturn.add(error);
-					} else {
-						Iterator valuesIt = values.iterator();
-						boolean hasAtLeastOneValue = false;
-						while (valuesIt.hasNext()) {
-							String aValue = (String) valuesIt.next();
-							if (aValue != null && !aValue.trim().equals("")) {
-								hasAtLeastOneValue = true;
-								break;
-							}
-						}
-						if (!hasAtLeastOneValue) {
-							EMFValidationError error = SpagoBIValidationImpl.validateField(urlName, label, null, "MANDATORY", null, null, null);
-							toReturn.add(error);
-						}
+				logger.debug("Applying check [" + check.getLabel() + "] to biparameter [" + label + "] ...");
+				List errors = getValidationErrorOnCheck(biparameter, check);
+				if (errors != null && errors.size() > 0) {
+					Iterator errorsIt = errors.iterator();
+					while (errorsIt.hasNext()) {
+						EMFValidationError error = (EMFValidationError) errorsIt.next();
+						logger.error("Found an error applying check [" + check.getLabel() + "] for biparameter [" + label + "]: " + error.getDescription());
 					}
+					toReturn.add(errors);
 				} else {
-					if (values != null && !values.isEmpty()) {
-						Iterator valuesIt = values.iterator();
-						while (valuesIt.hasNext()) {
-							String aValue = (String) valuesIt.next();
-							EMFValidationError error = null;
-							if (check.getValueTypeCd().equalsIgnoreCase("LETTERSTRING")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "LETTERSTRING", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("ALFANUMERIC")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "ALFANUMERIC", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("NUMERIC")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERIC", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("EMAIL")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "EMAIL", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("FISCALCODE")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "FISCALCODE", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("INTERNET ADDRESS")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "URL", null, null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("DECIMALS")) {
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DECIMALS", check.getFirstValue(), check.getSecondValue(), null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("RANGE")) {
-								if (biparameter.getParameter().getType().equalsIgnoreCase("DATE")){
-									// In a Parameter where parameterType == DATE the mask represent the date format
-									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATERANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
-								}else if (biparameter.getParameter().getType().equalsIgnoreCase("NUM")){
-									// In a Parameter where parameterType == NUM the mask represent the decimal format
-									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERICRANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
-								}else if (biparameter.getParameter().getType().equalsIgnoreCase("STRING")){
-									error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "STRINGRANGE", check.getFirstValue(), check.getSecondValue(), null);
-								}
-							} else if (check.getValueTypeCd().equalsIgnoreCase("MAXLENGTH")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MAXLENGTH", check.getFirstValue(), null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("MINLENGTH")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MINLENGTH", check.getFirstValue(), null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("REGEXP")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "REGEXP", check.getFirstValue(), null, null);
-							} else if (check.getValueTypeCd().equalsIgnoreCase("DATE")){
-								error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATE", check.getFirstValue(), null, null);
-							}
-							toReturn.add(error);
-						}
-					}
+					logger.debug("No errors found applying check [" + check.getLabel() + "] to biparameter [" + label + "].");
 				}
 		}
 		logger.debug("OUT");
@@ -457,11 +465,86 @@ public class ExecutionInstance {
 		}	
 	}
 	
+	private List getValidationErrorOnCheck(BIObjectParameter biparameter, Check check) throws Exception {
+		logger.debug("IN: Examining check with name " + check.getName() + " ...");
+		List toReturn = new ArrayList();
+		String urlName = biparameter.getParameterUrlName();
+		String label = biparameter.getLabel();
+		List values = biparameter.getParameterValues();
+		if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")) {
+			if (values == null || values.isEmpty()) {
+				EMFValidationError error = SpagoBIValidationImpl.validateField(urlName, label, null, "MANDATORY", null, null, null);
+				toReturn.add(error);
+			} else {
+				Iterator valuesIt = values.iterator();
+				boolean hasAtLeastOneValue = false;
+				while (valuesIt.hasNext()) {
+					String aValue = (String) valuesIt.next();
+					if (aValue != null && !aValue.trim().equals("")) {
+						hasAtLeastOneValue = true;
+						break;
+					}
+				}
+				if (!hasAtLeastOneValue) {
+					EMFValidationError error = SpagoBIValidationImpl.validateField(urlName, label, null, "MANDATORY", null, null, null);
+					toReturn.add(error);
+				}
+			}
+		} else {
+			if (values != null && !values.isEmpty()) {
+				Iterator valuesIt = values.iterator();
+				while (valuesIt.hasNext()) {
+					String aValue = (String) valuesIt.next();
+					EMFValidationError error = null;
+					if (check.getValueTypeCd().equalsIgnoreCase("LETTERSTRING")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "LETTERSTRING", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("ALFANUMERIC")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "ALFANUMERIC", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("NUMERIC")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERIC", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("EMAIL")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "EMAIL", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("FISCALCODE")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "FISCALCODE", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("INTERNET ADDRESS")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "URL", null, null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("DECIMALS")) {
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DECIMALS", check.getFirstValue(), check.getSecondValue(), null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("RANGE")) {
+						if (biparameter.getParameter().getType().equalsIgnoreCase("DATE")){
+							// In a Parameter where parameterType == DATE the mask represent the date format
+							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATERANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
+						}else if (biparameter.getParameter().getType().equalsIgnoreCase("NUM")){
+							// In a Parameter where parameterType == NUM the mask represent the decimal format
+							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "NUMERICRANGE", check.getFirstValue(), check.getSecondValue(), biparameter.getParameter().getMask());
+						}else if (biparameter.getParameter().getType().equalsIgnoreCase("STRING")){
+							error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "STRINGRANGE", check.getFirstValue(), check.getSecondValue(), null);
+						}
+					} else if (check.getValueTypeCd().equalsIgnoreCase("MAXLENGTH")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MAXLENGTH", check.getFirstValue(), null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("MINLENGTH")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "MINLENGTH", check.getFirstValue(), null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("REGEXP")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "REGEXP", check.getFirstValue(), null, null);
+					} else if (check.getValueTypeCd().equalsIgnoreCase("DATE")){
+						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATE", check.getFirstValue(), null, null);
+					}
+					toReturn.add(error);
+				}
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	private List getValidationErrorsOnValues(BIObjectParameter biparam) throws Exception {
+		logger.debug("IN");
+		String biparamLabel = biparam.getLabel();
 		List toReturn = new ArrayList();
 		// get lov
 		ModalitiesValue lov = biparam.getParameter().getModalityValue();
 		if (lov.getITypeCd().equals("MAN_IN")) {
+			logger.debug("Modality in use for biparameter [" + biparamLabel + "] is manual input");
 			return toReturn;
 		}
 		
@@ -495,6 +578,7 @@ public class ExecutionInstance {
 			}
 		}
 		biparam.setParameterValuesDescription(parameterValuesDescription);
+		logger.debug("OUT");
 		return toReturn;
 	}
 

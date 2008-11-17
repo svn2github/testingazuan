@@ -121,14 +121,6 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 			throws Exception {
 		logger.debug("IN");
 		
-	
-		/*
-		System.out.println("*******************************************");
-		System.out.println("ExecuteBiOBjectModule.service()  The request in input is: " + request.toString() );
-		System.out.println("*******************************************");
-		*/
-		
-		
 		// Check of the userId in order to keep performing the request
 		super.service(request, response);
 		
@@ -145,12 +137,6 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		SessionContainer session = requestContainer.getSessionContainer();
 		contextManager = new ContextManager(new SpagoBISessionContainer(session), 
 				new LightNavigatorContextRetrieverStrategy(request));
-		
-		//test for document composition problem:
-		System.out.println("ExecuteBiOBjectModule.print() - STARTS " );
-		contextManager.print();
-		System.out.println("ExecuteBiOBjectModule.print() - ENDED " );
-		//end test
 		
 		permanentSession = session.getPermanentContainer();
 		logger.debug("errorHanlder, requestContainer, session, permanentSession retrived ");
@@ -202,12 +188,6 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 				recoverExecutionFromCrossNavigationHandler(request, response);
 			}
 			
-			//test for document composition problem:
-			System.out.println("*******************************************");
-			System.out.println("ExecuteBiOBjectModule.service()  The request in output is: " + request.toString() );
-			System.out.println("ExecuteBiOBjectModule.service()  The response in output is: " + response.toString() );
-			System.out.println("*******************************************");
-			//end test
 		} catch (EMFUserError e) {
 			errorHandler.addError(e);
 		} finally {

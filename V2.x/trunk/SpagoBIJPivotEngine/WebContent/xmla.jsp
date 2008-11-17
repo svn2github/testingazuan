@@ -1,7 +1,7 @@
 <%@ page import="mondrian.xmla.test.XmlaTestServletRequestWrapper"
          language="java"
          contentType="text/xml" %><%
-// $Id: //open/mondrian/webapp/xmla.jsp#4 $
+// $Id: //open/mondrian-release/3.0/webapp/xmla.jsp#2 $
 // This software is subject to the terms of the Common Public License
 // Agreement, available at the following URL:
 // http://www.opensource.org/licenses/cpl.html.

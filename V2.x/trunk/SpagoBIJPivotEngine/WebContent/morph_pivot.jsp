@@ -1,5 +1,5 @@
 <%--
-// $Id: //open/mondrian/webapp/morph_pivot.jsp#6 $
+// $Id: //open/mondrian-release/3.0/webapp/morph_pivot.jsp#2 $
 // This software is subject to the terms of the Common Public License
 // Agreement, available at the following URL:
 // http://www.opensource.org/licenses/cpl.html.

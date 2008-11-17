@@ -62,8 +62,8 @@ logger.debug("Reading a user profile...");
 String userId = null;
 IEngUserProfile profile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 if (profile!=null){
-   // userId = (String)profile.getUserUniqueIdentifier();
-	 userId = (String)((UserProfile)profile).getUserId();
+   userId = (String)profile.getUserUniqueIdentifier();
+	 //userId = (String)((UserProfile)profile).getUserId();
 }
 if(profile==null || userId==null) {
     logger.debug("User profile is null");
@@ -80,7 +80,7 @@ if (auditId != null) {
 			"EXECUTION_STARTED", null, null);
 
 }
-logger.debug("Strated...");
+logger.debug("Started...");
 try {
 %>
 

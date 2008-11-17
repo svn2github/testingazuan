@@ -1,6 +1,6 @@
 <%@page contentType="text/html"%>
 <%--
-// $Id: //open/mondrian/webapp/adhoc.jsp#11 $
+// $Id: //open/mondrian-release/3.0/webapp/adhoc.jsp#2 $
 // This software is subject to the terms of the Common Public License
 // Agreement, available at the following URL:
 // http://www.opensource.org/licenses/cpl.html.

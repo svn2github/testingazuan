@@ -133,6 +133,7 @@ executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoB
 executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
 executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 executionParameters.put("SBI_EXECUTION_ID", instance.getExecutionId());
+executionParameters.put("SBI_EXECUTION_ROLE", instance.getExecutionRole());
 // Auditing
 AuditManager auditManager = AuditManager.getInstance();
 String modality = instance.getExecutionModality();

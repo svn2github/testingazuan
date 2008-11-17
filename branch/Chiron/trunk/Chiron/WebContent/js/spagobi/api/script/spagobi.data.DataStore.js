@@ -1,1 +1,0 @@
-{type:"class",attributes:{"name":"DataStore","packageName":"spagobi.data","superClass":"qx.core.Object","fullName":"spagobi.data.DataStore","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

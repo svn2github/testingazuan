@@ -1,1 +1,0 @@
-{type:"class",attributes:{"isStatic":"true","name":"Form","packageName":"qx.ui.layout.spagobi.ui","childClasses":"spagobi.ui.FormList","fullName":"qx.ui.layout.spagobi.ui.Form"}}

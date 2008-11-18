@@ -1,0 +1,1 @@
+{type:"class",attributes:{"name":"DataReader","packageName":"spagobi.data","superClass":"qx.core.Object","fullName":"spagobi.data.DataReader","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

@@ -1,0 +1,1 @@
+{type:"class",attributes:{"name":"Link1DummyForm","packageName":"spagobi.ui.custom","superClass":"spagobi.ui.Form","fullName":"spagobi.ui.custom.Link1DummyForm","type":"class"},children:[{type:"desc",attributes:{"text":"<p>This class defines the Feature Details Form.</p>"}},{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

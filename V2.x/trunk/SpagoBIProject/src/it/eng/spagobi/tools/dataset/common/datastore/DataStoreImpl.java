@@ -4,7 +4,6 @@
 package it.eng.spagobi.tools.dataset.common.datastore;
 
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
 import java.util.ArrayList;
@@ -30,8 +29,7 @@ public class DataStoreImpl implements IDataStore {
 
 
 	public void applyTranformer(IDataTransformer transformer) {
-
-
+		records = transformer.transformData(records);
     }
 
 	public void appendRow(IRecord r){

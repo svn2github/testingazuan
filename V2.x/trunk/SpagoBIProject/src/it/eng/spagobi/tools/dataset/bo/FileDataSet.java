@@ -21,18 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.bo;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+
 import java.io.FileInputStream;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.DialCharts;
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 
 /**
  * @author Angelo Bernabei

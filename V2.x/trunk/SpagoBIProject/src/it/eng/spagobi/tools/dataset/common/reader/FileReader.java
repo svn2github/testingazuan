@@ -5,8 +5,6 @@ package it.eng.spagobi.tools.dataset.common.reader;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -18,7 +16,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
-import it.eng.spagobi.tools.dataset.service.ListTestDataSetModule;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,8 +31,6 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
-
-import com.sun.star.text.FilenameDisplayFormat;
 
 /**
  * @author Angelo Bernabei

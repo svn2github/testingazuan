@@ -24,7 +24,8 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="300"/>
 				</FIELD>
-				<FIELD name="QUERY" label="QUERY">			
+				<FIELD name="QUERY" label="QUERY">	
+					<VALIDATOR validatorName="XSS"/>		
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>
 				<FIELD name="DATASOURCE" label="DATASOURCE">		
@@ -38,7 +39,9 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="250"/>
 				</FIELD>
-				<FIELD name="SCRIPT" label="SCRIPT">			
+				<FIELD name="SCRIPT" label="SCRIPT">	
+					<VALIDATOR validatorName="XSS"/>		
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>	
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>	
 				<FIELD name="JCLASSNAME" label="JCLASSNAME">			
@@ -51,7 +54,6 @@
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
 			</CONDITIONS>	
-		</VALIDATION>
 			<FIELDS>
 				<FIELD name="LABEL" label="#SBISet.ListDataSet.columnLabel">
 					<VALIDATOR validatorName="MANDATORY"/>
@@ -71,7 +73,8 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="300"/>
 				</FIELD>
-				<FIELD name="QUERY" label="QUERY">			
+				<FIELD name="QUERY" label="QUERY">	
+				<VALIDATOR validatorName="XSS"/>			
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>
 				<FIELD name="DATASOURCE" label="DATASOURCE">		
@@ -85,7 +88,8 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="250"/>
 				</FIELD>
-				<FIELD name="SCRIPT" label="SCRIPT">			
+				<FIELD name="SCRIPT" label="SCRIPT">	
+				<VALIDATOR validatorName="XSS"/>			
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>	
 				<FIELD name="JCLASSNAME" label="JCLASSNAME">			
@@ -93,5 +97,6 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>	
 			</FIELDS>
+		</VALIDATION>	
 	</SERVICE>
 </VALIDATIONS>

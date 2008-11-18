@@ -223,4 +223,11 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/statements.xml" />   
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/validation.xml" />
     
+    <!-- model -->
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/statements.xml" />
+    
 </MASTER>

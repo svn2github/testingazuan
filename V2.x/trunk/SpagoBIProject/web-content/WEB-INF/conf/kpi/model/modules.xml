@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MODULES>
+
+	<!-- MODEL -->
+	<MODULE name="ListModelModule" class="it.eng.spagobi.kpi.model.service.ListModelModule">
+		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.model.title">
+			<QUERIES>
+				<SELECT_QUERY statement="LIST_MODEL" />
+				<DELETE_QUERY statement="DELETE_MODEL">
+					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />
+				</DELETE_QUERY>
+			</QUERIES>
+			<COLUMNS>
+				<COLUMN label="sbi.kpi.label.name" name="NAME" />
+			</COLUMNS>
+			<CAPTIONS>
+				<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif"
+					label="sbi.kpi.caption.select">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelPage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE"
+						value="DetailModelModule" />
+					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_SELECT" />
+					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+				</SELECT_CAPTION>
+				<TREE_CAPTION confirm="FALSE" image="/img/treeView16.png"
+					label="sbi.kpi.caption.tree">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelTreePage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE"
+						value="ListModelTreeModule" />
+					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+				</TREE_CAPTION>
+				<DELETE_CAPTION confirm="TRUE" image="/img/erase.gif"
+					label="sbi.kpi.caption.delete">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelPage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="ListModelModule" />
+					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="LIST_DELETE" />
+					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+				</DELETE_CAPTION>
+			</CAPTIONS>
+			<BUTTONS>
+				<INSERT_BUTTON confirm="TRUE" image="/img/new.png"
+					label="sbi.kpi.button.insert.title">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelPage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE"
+						value="DetailModelModule" />
+					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_NEW" />
+				</INSERT_BUTTON>
+				<BACK_BUTTON confirm="FALSE" image="/img/back.png"
+					label="sbi.kpi.button.back.title" onlyPortletRunning="true">
+					<PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE"
+						value="ConfigurationWizardAction" />
+					<PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE"
+						value="true" />
+				</BACK_BUTTON>
+			</BUTTONS>
+		</CONFIG>
+	</MODULE>
+
+	<MODULE name="ListModelTreeModule"
+		class="it.eng.spagobi.kpi.model.service.ListModelTreeModule">
+		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.list.model.tree.title">
+			<QUERIES>
+				<SELECT_QUERY statement="LIST_MODEL_TREE" />
+				<SELECT_ROOT statement="LIST_MODEL_TREE_ROOT" />
+
+				<DELETE_QUERY statement="">
+					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE" />
+					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="AF" />
+				</DELETE_QUERY>
+			</QUERIES>
+			<COLUMNS />
+			<CAPTIONS />
+			<BUTTONS />
+		</CONFIG>
+	</MODULE>
+
+
+	<MODULE name="DetailModelModule"
+		class="it.eng.spagobi.kpi.model.service.DetailModelModule">
+		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.tree.title">
+			<QUERIES>
+				<SELECT_QUERY_MODEL statement="DETAIL_MODEL" />
+				<SELECT_QUERY_DOMAINS statement="DETAIL_MODEL_DOMAINS" />
+				<SELECT_QUERY_MODEL_ATTR statement="DETAIL_MODEL_MODEL_ATTR" />
+				<SELECT_QUERY_MODEL_ID_FROM_ATTR statement="SELECT_MODEL_ID_FROM_ATTR" />
+				<SELECT_QUERY_MODEL_ATTR_ID_FROM_MODEL_ID statement="SELECT_MODEL_ATTR_ID_FROM_MODEL_ID" />
+				
+				<UPDATE_QUERY_MODEL statement="UPDATE_MODEL" />
+				<UPDATE_QUERY_MODEL_ATTR statement="UPDATE_MODEL_ATTR" />
+				
+				<INSERT_QUERY_MODEL statement="INSERT_MODEL_ROOT" />
+				<INSERT_QUERY_MODEL_ATTR statement="INSERT_MODEL_ATTR_ROOT" />
+			</QUERIES>
+			<BUTTONS />
+		</CONFIG>
+	</MODULE>
+	
+	<!--/ MODEL -->
+
+</MODULES>

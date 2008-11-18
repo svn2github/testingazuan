@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+
+<PUBLISHER name="ModelPublisher">
+    <RENDERING channel="PORTLET" type="JAVA" mode="">
+      <RESOURCES>
+        <ITEM prog="0"
+          resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+          <CONFIG>
+            <CHECKS>
+              <CHECK target="ListModelPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module"
+                    scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListModelPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module"
+                    scope="SERVICE_REQUEST" value="ListModelModule" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListModelPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="message"
+                    scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
+                </CONDITIONS>
+              </CHECK>          
+              <CHECK
+                target="DetailModelPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module"
+                    scope="SERVICE_REQUEST" value="DetailModelModule" />
+                </CONDITIONS>
+              </CHECK>
+            </CHECKS>
+          </CONFIG>
+        </ITEM>
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+
+  <PUBLISHER name="ListModelPublisher">
+    <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM mode="VIEW" resource="/jsp/kpi/model/listModel.jsp" />
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+
+  <PUBLISHER name="DetailModelPublisher">
+    <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM mode="VIEW"
+          resource="/jsp/kpi/model/detailModel.jsp" />
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+  
+  
+    <PUBLISHER name="ModelTreePublisher">
+    <RENDERING channel="PORTLET" type="JAVA" mode="">
+      <RESOURCES>
+        <ITEM prog="0"
+          resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+          <CONFIG>
+            <CHECKS>
+              <CHECK
+                target="DetailModelTreePublisher">
+                <CONDITIONS>
+                  <PARAMETER name="type"
+                    scope="SERVICE_REQUEST" value="AF_DEFINED" />
+                  <PARAMETER name="message"
+                    scope="SERVICE_REQUEST" value="DETAIL_NEW" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK
+                target="DetailModelTreePublisher">
+                <CONDITIONS>
+                  <PARAMETER name="type"
+                    scope="SERVICE_REQUEST" value="AF_DEFINED" />
+                  <PARAMETER name="message"
+                    scope="SERVICE_REQUEST" value="DETAIL_SELECT" />
+                </CONDITIONS>
+              </CHECK>       
+              <CHECK
+                target="ListModelTreePublisher">
+                <CONDITIONS>              
+                </CONDITIONS>
+              </CHECK>
+            </CHECKS>
+          </CONFIG>
+        </ITEM>
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+
+
+  <PUBLISHER name="ListModelTreePublisher">
+    <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM mode="VIEW" resource="/jsp/kpi/model/modelTree.jsp" />
+      </RESOURCES>
+    </RENDERING>
+  </PUBLISHER>
+  
+</PUBLISHERS>  

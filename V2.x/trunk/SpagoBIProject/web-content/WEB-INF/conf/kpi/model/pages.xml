@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGES>
+  <PAGE name="ModelPage" class="it.eng.spago.dispatching.module.ConfigurablePage"
+    scope="REQUEST">
+    <GRAPH id="kpi-1">
+      <MODULES>
+        <MODULE id="1" name="ListModelModule" />
+        <MODULE id="2" name="DetailModelModule" />
+      </MODULES>
+    </GRAPH>
+  </PAGE>
+  
+  <PAGE name="ModelTreePage" class="it.eng.spago.dispatching.module.ConfigurablePage"
+    scope="REQUEST">
+    <GRAPH id="kpi-1">
+      <MODULES>
+        <MODULE id="1" name="ListModelTreeModule" />
+        <MODULE id="2" name="DetailModelTreeModule" />
+      </MODULES>
+    </GRAPH>
+  </PAGE>
+  
+</PAGES>

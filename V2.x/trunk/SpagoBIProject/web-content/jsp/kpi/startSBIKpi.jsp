@@ -65,10 +65,23 @@
   	  </a>
     </td>
   </tr>
-	
-  
 
-<%--
+	<tr class="portlet-font">
+		<td width="100" align="center"><img
+			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/assessmentIcon.png")%>' />
+		</td>
+		<td width="20">&nbsp;</td>
+		<td vAlign="middle"><br />
+		  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ModelPage"/>
+		  							  <portlet:param name="FIELD_ORDER" value="NAME"/>
+									  </portlet:actionURL>'
+			class="link_main_menu">
+			<spagobi:message key="sbi.kpi.modelDefinition.label" bundle="<%=messageBunle%>" />
+		  </a>
+		</td>
+	</tr>
+
+	<%--
 	 
 	  <tr class="portlet-font">
     <td width="100" align="center"><img

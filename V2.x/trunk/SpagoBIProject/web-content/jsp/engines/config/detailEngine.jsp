@@ -330,6 +330,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBISet.eng.dirUploadField" />
 		</span>
 	</div>
+	<!-- 
 	<div class='div_detail_form' style='display:none;'>
 	<% String dirUpl = engine.getDirUpload();
 	   if( (dirUpl==null) || (dirUpl.equalsIgnoreCase("null")) ) {
@@ -352,7 +353,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 		<input class='portlet-form-input-field' type="text" name="dirUsable" 
 			   size="50" value="<%=dirUse%>" maxlength="260">
-	</div>
+	</div> -->
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
 			<spagobi:message key = "SBISet.eng.criptableField" />

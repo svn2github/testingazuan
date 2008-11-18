@@ -78,8 +78,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	public static final String ERROR_REGEXP="9011";
 	public static final String ERROR_DATE="9012";
 	public static final String ERROR_URL="9013";
+	public static final String ERROR_BOOLEAN="9014";
 	
-	// Costanti per le espressioni regolari
+	// Costanti per le espressioni regolari 
 	private static final String LETTER_STRING_REGEXP= "^([a-zA-Z])*$";
 	private static final String FISCAL_CODE_REGEXP="^([A-Z]{6}[A-Z\\d]{2}[A-Z][A-Z\\d]{2}[A-Z][A-Z\\d]{3}[A-Z])*$";
 	//private static final String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s])*$";
@@ -463,7 +464,17 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_EMAIL,params);
 				
 			}
-		} else if (validatorName.equalsIgnoreCase("FISCALCODE")){
+		} else if (validatorName.equalsIgnoreCase("BOOLEAN")){
+			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")){
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_BOOLEAN, params);	
+				
+			}
+
+		} 
+		else if (validatorName.equalsIgnoreCase("FISCALCODE")){
 			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the FISCALCODE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, FISCAL_CODE_REGEXP)){
 				

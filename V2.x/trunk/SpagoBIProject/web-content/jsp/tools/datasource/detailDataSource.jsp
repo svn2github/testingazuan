@@ -29,7 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 	
-	<script type="text/javascript" src="<%=linkProto%>"></script>
+	<%@page import="it.eng.spago.util.JavaScript"%>
+<script type="text/javascript" src="<%=linkProto%>"></script>
 <script type="text/javascript" src="<%=linkProtoWin%>"></script>
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
@@ -313,6 +314,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 	var dialect = document.dsForm.DIALECT.value;
 	var label = document.dsForm.LABEL.value;
+	alert(document.dsForm.DESCR.value);
 	var description = document.dsForm.DESCR.value;	
 	var jndi = document.dsForm.JNDI.value;
 	var url = document.dsForm.URL_CONNECTION.value;

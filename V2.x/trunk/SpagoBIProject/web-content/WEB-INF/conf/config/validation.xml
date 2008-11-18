@@ -8,34 +8,47 @@
 				<FIELD name="label" label="#SBISet.eng.LabelField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="name" label="#SBISet.eng.NameField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
+				<FIELD name="biobjTypeId" label="biobjTypeId">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="engineTypeId" label="engineTypeId">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="useDataSet" label="useDataSet">
+					<VALIDATOR validatorName="BOOLEAN"/>
+				</FIELD>
+				<FIELD name="useDataSource" label="useDataSource">
+					<VALIDATOR validatorName="BOOLEAN"/>
+				</FIELD>
+				<FIELD name="engineDefaultDS" label="engineDefaultDS">
+					<VALIDATOR validatorName="NUMERIC"/>
+				</FIELD>
 				<FIELD name="description" label="#SBISet.eng.descriptionField">
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
-				<!--
-				<FIELD name="engineDefaultDS" label="#SBISet.eng.dataSource">
-					<VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
-				-->	
 				<FIELD name="url" label="#SBISet.eng.urlField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="URL"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">
 					<VALIDATOR validatorName="URL"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="criptable" label="#SBISet.eng.criptableField">
 					<VALIDATOR validatorName="NUMERIC"/>
 				</FIELD>
 				<FIELD name="driverName" label="#SBISet.eng.driverNameField">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>	
 			</FIELDS>
 		</VALIDATION>
@@ -49,27 +62,40 @@
 				<FIELD name="label" label="#SBISet.eng.LabelField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="name" label="#SBISet.eng.NameField">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
+				<FIELD name="biobjTypeId" label="biobjTypeId">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="engineTypeId" label="engineTypeId">
+					<VALIDATOR validatorName="MANDATORY"/>
+				</FIELD>
+				<FIELD name="useDataSet" label="useDataSet">
+					<VALIDATOR validatorName="BOOLEAN"/>
+				</FIELD>
+				<FIELD name="useDataSource" label="useDataSource">
+					<VALIDATOR validatorName="BOOLEAN"/>
+				</FIELD>
+				<FIELD name="engineDefaultDS" label="engineDefaultDS">
+					<VALIDATOR validatorName="NUMERIC"/>
+				</FIELD>
 				<FIELD name="description" label="#SBISet.eng.descriptionField">
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
-				<!--
-				<FIELD name="engineDefaultDS" label="#SBISet.eng.dataSource">
-					<VALIDATOR validatorName="MANDATORY"/>
-				</FIELD>
-				-->
 				<FIELD name="className" label="#SBISet.eng.classNameField">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">
 					<VALIDATOR validatorName="URL"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="criptable" label="#SBISet.eng.criptableField">
 					<VALIDATOR validatorName="NUMERIC"/>

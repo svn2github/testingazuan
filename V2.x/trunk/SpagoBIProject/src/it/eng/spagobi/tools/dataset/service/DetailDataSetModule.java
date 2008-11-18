@@ -33,6 +33,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -494,13 +495,22 @@ public class DetailDataSetModule extends AbstractModule {
 					}
 					if(serviceRequest.getAttribute("QUERY")!=null){
 						String query=(String)serviceRequest.getAttribute("QUERY");
-						((QueryDataSet)ds).setQuery(query);
+						String toVerify = query.toUpperCase();
+						if (toVerify.startsWith("SELECT")){
+							((QueryDataSet)ds).setQuery(query);
+						}
+						else {
+							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "QUERY", "9215");
+							getErrorHandler().addError(error);
+						}
 					}
 					if(serviceRequest.getAttribute("DATASOURCE")!=null){
 						String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
-						if(!dataSourceID.equalsIgnoreCase("")){
+						if(!dataSourceID.equalsIgnoreCase("") && !(dataSourceID == null)){
 						DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
 						((QueryDataSet)ds).setDataSource(dataSource);
+						}else{
+							
 						}
 					}
 				}
@@ -531,7 +541,13 @@ public class DetailDataSetModule extends AbstractModule {
 							}
 							if(serviceRequest.getAttribute("SCRIPT")!=null){
 								String script=(String)serviceRequest.getAttribute("SCRIPT");
-								((ScriptDataSet)ds).setScript(script);
+								String toVerify = script.toUpperCase();
+								if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
+									((ScriptDataSet)ds).setScript(script);
+								}else{
+									EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
+									getErrorHandler().addError(error);
+								}								
 							}
 						}
 						else

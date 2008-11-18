@@ -80,6 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	<title>Chiron - Demo</title>    	
     	
     	<script type="text/javascript">
+    		alert(qxsettings.toSource());
 			if(qxsettings["spagobi.executionMode"]==undefined)qxsettings["spagobi.executionMode"]='web';
 		</script>
 		  

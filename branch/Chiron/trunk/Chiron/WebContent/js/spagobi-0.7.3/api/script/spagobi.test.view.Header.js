@@ -1,0 +1,1 @@
+{type:"class",attributes:{"name":"Header","packageName":"spagobi.test.view","superClass":"qx.ui.embed.HtmlEmbed","fullName":"spagobi.test.view.Header","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"}}]}]}

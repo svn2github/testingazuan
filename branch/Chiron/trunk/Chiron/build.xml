@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="SpagoBIGeoEngine" default="buildSource">
+<project name="Chiron" default="buildSource">
 
 	<description>
 		Chiron build file
@@ -25,6 +25,19 @@
 		  
 		</replace>
 		
+		<replace file="${js.spagobi.source.dir}/script/chiron.web.js">
+					
+					<replacefilter 
+					    token="../../../../../../../../documenti/codice/spagobiv2/chiron/webcontent" 
+					    value=".."/>
+			
+			
+			
+			<replacefilter 
+						    token="../../../../../../../../documenti/codice/spagobiv2/chiron/webcontent" 
+						    value=".."/>
+			
+		<!--
 			<replace 
 				file="${js.spagobi.source.dir}/script/chiron.web.js">
 			
@@ -35,6 +48,8 @@
 			<replacefilter 
 			    token='if(qxsettings["spagobi.app.resourceUri"]==undefined)qxsettings["spagobi.app.resourceUri"]="./resource";\' 
 			    value='if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]="..";\' />
+			    
+			-->
 				  
 		</replace>
 		
@@ -104,10 +119,10 @@
 	
 	
 	<target name="createSourceScriptFiles" depends="makeSource">
-			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 
+			<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
 				  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
 			
-			<copy file="${js.spagobi.source.dir}/script/spagobi.app.js" 
+			<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
 						  tofile="${js.spagobi.source.dir}/script/chiron.portlet.js"/>
 			
 	</target>
@@ -121,19 +136,23 @@
 				
 	</target>
 	
+	
+	
+	
+	
 	<target name="makeSource" >
-		  <exec executable="cmd" dir="${basedir}" >
-		    <env key="Path" path="C:/Programmi/cygwin/bin"/>
-		  	<arg value="/c"/>
-		    <arg value="makeSource.bat"/>
-		  </exec>
-		</target>
+		 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
+			<arg value="/c"/>
+			<arg value="generate.py source"/>
+		 </exec> 
+	</target>
+	
 	
 	<target name="makeBuild" >
 			  <exec executable="cmd" dir="${basedir}" >
 			    <env key="Path" path="C:/Programmi/cygwin/bin"/>
 			  	<arg value="/c"/>
-			    <arg value="makeBuild.bat"/>
+			    <arg value="generateBuild.bat"/>
 			  </exec>
 			</target>
 	
@@ -141,7 +160,7 @@
 		  <exec executable="cmd" dir="${basedir}" >
 		    <env key="Path" path="C:/Programmi/cygwin/bin"/>
 		  	<arg value="/c"/>
-		    <arg value="makeApi.bat"/>
+		    <arg value="generateApi.bat"/>
 		  </exec>
 		</target>
 	

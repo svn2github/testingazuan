@@ -1,0 +1,114 @@
+{
+  "name"    : "spagobi",
+
+  "include" :
+  [
+    {
+      "path" : "../../../../../../../documenti/codice/spagobiv2/chiron/webcontent/js/qooxdoo-0.8/tool/data/config/application.json",
+      "as"   : "appconf"
+    }
+  ],
+
+  "let" :
+  {
+    "APPLICATION"  : "spagobi",
+    "QOOXDOO_PATH" : "../../../../../../../documenti/codice/spagobiv2/chiron/webcontent/js/qooxdoo-0.8/framework",
+    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
+    "QXTHEME"      : "qx.theme.Modern",
+    "LOCALES"      : [ "en" ],
+    "ROOT"         : "."
+  },
+
+  "jobs" :
+  {
+  	"common" :
+	{
+	  "include" : 
+	  [
+	    "spagobi.app.Chiron",
+	    "${QXTHEME}",
+	    "qx.legacy.theme.ClassicRoyale"
+	  ],
+	  "settings" :
+	  {
+	    "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale",
+	    "qx.application"  : "spagobi.app.Chiron"
+	  }
+	},
+    "api" :
+    {
+      "extend" : ["appconf::api"]
+    },
+
+    "build" :
+    {
+      "extend" : ["common", "appconf::build"]
+
+      "settings" :
+      {
+        "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale"
+      }
+    },
+
+    "clean" :
+    {
+      "extend" : ["appconf::clean"]
+    },
+
+    "distclean" :
+    {
+      "extend" : ["appconf::distclean"]
+    },
+
+    "fix" :
+    {
+      "extend" : ["appconf::fix"]
+    },
+
+    "lint" :
+    {
+      "extend" : ["appconf::lint"]
+    },
+
+    "migration" :
+    {
+      "extend" : ["appconf::migration"]
+    },
+
+    "pretty" :
+    {
+      "extend" : ["appconf::pretty"]
+    },
+
+    "publish" :
+    {
+      "extend" : ["appconf::publish"]
+    },
+
+    "source" :
+    {
+      "extend" : ["common", "appconf::source"]
+
+      "settings" :
+      {
+        "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale"
+      }
+    },
+
+    "test" :
+    {
+      "extend" : ["appconf::test"]
+    },
+
+    "test-source" :
+    {
+      "extend" : ["appconf::test-source"]
+    },
+
+    "translate" :
+    {
+      "extend" : ["appconf::translate"]
+    }
+
+  }
+}

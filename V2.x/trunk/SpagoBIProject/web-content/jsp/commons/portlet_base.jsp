@@ -28,6 +28,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          		 it.eng.spagobi.commons.utilities.urls.IUrlBuilder,
          		 it.eng.spagobi.commons.utilities.messages.IMessageBuilder"
 %>
+<%--
+The following directive catches exceptions thrown by jsps, but it does not seem to work properly....
+<%@page errorPage="/html/error.html"%>
+--%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.WebUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.PortletUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilder"%>

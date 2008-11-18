@@ -181,7 +181,7 @@
   	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/commons/error.jsp"/>
+      			<ITEM prog="0" resource="/html/error.html"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

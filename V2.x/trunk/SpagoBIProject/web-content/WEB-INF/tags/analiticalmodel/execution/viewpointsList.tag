@@ -135,7 +135,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 					<%
 	                //if (ownerVP.equals(profile.getUserUniqueIdentifier().toString())) {
-	                if (ownerVP.equals(((UserProfile)profile).getUserId().toString())) {
+	                if (ownerVP.equals(((UserProfile)profile).getUserId().toString()) || profile.getFunctionalities().contains(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 	                	%>
 	                 	<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteViewpoint"/>'); 
 	                 											if (conf) {document.location='<%= deleteVPUrl.toString() %>';}">

@@ -19,7 +19,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/presentation.xml" />
   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/publishers.xml" />  
-   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/business_map.xml" /> 
+   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/business_map.xml" />
+   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/validation.xml" />
 <!-- behaviouralmodel -->
 	
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/modules.xml" />
@@ -98,6 +99,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/messages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/validation.xml" />
 	  
   
 	<!-- tools.role -->	

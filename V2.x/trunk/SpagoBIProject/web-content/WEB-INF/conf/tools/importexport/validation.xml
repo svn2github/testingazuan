@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+	<SERVICE name="ImportExportPage" type="PAGE">
+		<VALIDATION blocking="true" validators="">
+			<CONDITIONS>
+				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="EXPORT"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="exportFileName" label="#SBISet.importexport.nameExp">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+				</FIELD>			
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+</VALIDATIONS>

@@ -10,6 +10,7 @@
 		</RENDERING>
 	</PUBLISHER>
 	
+	<!-- 
 	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
@@ -17,7 +18,8 @@
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
-
+	-->
+	
   <PUBLISHER name="LoginSBIMapCataloguePublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>

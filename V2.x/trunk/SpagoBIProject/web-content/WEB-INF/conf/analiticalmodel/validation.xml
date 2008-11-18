@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+
+	<!-- validation for viewpoints saving -->
+	<SERVICE name="ValidateExecuteBIObjectPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+				<PARAMETER name="SUBMESSAGEDET" scope="SERVICE_REQUEST" value="VIEWPOINT_SAVE"/>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="tmp_nameVP" label="#SBIDev.docConf.viewPoint.name">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
+				</FIELD>
+				<FIELD name="tmp_descVP" label="#SBIDev.docConf.viewPoint.description">
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>	
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
+</VALIDATIONS>

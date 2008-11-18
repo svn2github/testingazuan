@@ -373,6 +373,7 @@
 			<FIELDS>
 				<FIELD name="script" label="#SBIDev.scriptWiz.scriptLbl">
 				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="XSS"/>
 				</FIELD>
 			</FIELDS>
 		</VALIDATION>
@@ -384,6 +385,7 @@
 			<FIELDS>
 				<FIELD name="javaClassName" label="#SBIDev.javaClassWiz.javaClassNameLbl">
 				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="XSS"/>
 				</FIELD>				
 			</FIELDS>
 		</VALIDATION>
@@ -395,10 +397,12 @@
 			<FIELDS>
 				<FIELD name="newNameRow" label="#SBIDev.lovWiz.newItemNameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="XSS"/>
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="newValueRow" label="#SBIDev.lovWiz.newItemValueField">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="XSS"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 			</FIELDS>
@@ -411,6 +415,7 @@
 			<FIELDS>
 				<FIELD name="nameOfFixedLovItemNew" label="#SBIDev.lovWiz.newItemNameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="XSS"/>
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="valueOfFixedLovItemNew" label="#SBIDev.lovWiz.newItemValueField">
@@ -427,10 +432,12 @@
 			<FIELDS>
 				<FIELD name="datasource" label="#SBIDev.queryWiz.dsLabelField">
 				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="XSS"/>
 				 	<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>
 				<FIELD name="queryDef" label="#SBIDev.queryWiz.queryDefField">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="XSS"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="3400"/>
 				</FIELD>
 				<!-- 

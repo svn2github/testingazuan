@@ -198,8 +198,8 @@ public class DetailChecksModule extends AbstractModule {
 		
         String value1 = (String)request.getAttribute(fieldValue1Name);
         String value2 = (String)request.getAttribute(fieldValue2Name);
-        check.setFirstValue(value1);
-        check.setSecondValue(value2);
+        if (value1!=null && value1.length()>400)check.setFirstValue(value1);
+        if (value2!=null && value2.length()>400)check.setSecondValue(value2);
 
         labelControl(label, checkId);
         

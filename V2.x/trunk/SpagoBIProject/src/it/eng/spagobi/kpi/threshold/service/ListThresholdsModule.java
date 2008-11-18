@@ -33,7 +33,7 @@ import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 
 public class ListThresholdsModule extends DefaultBasicListModule {
 	
-	public static final String MODULE_PAGE = "ListThresholdsPage";
+	public static final String MODULE_PAGE = "ListThresholdsModule";
 
 	/**
 	 * Gets the list.

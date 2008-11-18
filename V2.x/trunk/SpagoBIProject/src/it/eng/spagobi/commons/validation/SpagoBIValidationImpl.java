@@ -37,6 +37,7 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.ValidationEngineIFace;
 import it.eng.spago.validation.impl.ValidatorLocator;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -79,6 +80,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	public static final String ERROR_DATE="9012";
 	public static final String ERROR_URL="9013";
 	public static final String ERROR_BOOLEAN="9014";
+	public static final String ERROR_XSS="9015";
 	
 	// Costanti per le espressioni regolari 
 	private static final String LETTER_STRING_REGEXP= "^([a-zA-Z])*$";
@@ -664,7 +666,22 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			
 			}
 			}
-		} else if (validatorName.equalsIgnoreCase("DATE")){
+		}  else if (validatorName.equalsIgnoreCase("XSS")){
+			if (!GenericValidator.isBlankOrNull(value)) {
+				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the XSS VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+				String toVerify = value.toUpperCase();
+				if( toVerify.contains("<A") ||  toVerify.contains("<LINK") ||  toVerify.contains("<IMG") ||  toVerify.contains("<SCRIPT") ||
+						toVerify.contains("&lt;A") ||  toVerify.contains("&lt;LINK") ||  toVerify.contains("&lt;IMG") ||  toVerify.contains("&lt;SCRIPT")	){
+
+					// Generate Errors
+					params = new ArrayList();
+					params.add(fieldLabel);
+					
+					return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_XSS,params);
+				
+				}
+				}
+		}else if (validatorName.equalsIgnoreCase("DATE")){
 			
 			if (!GenericValidator.isBlankOrNull(value)) {
 			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");

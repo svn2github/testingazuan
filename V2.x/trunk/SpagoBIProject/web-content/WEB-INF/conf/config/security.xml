@@ -17,10 +17,11 @@
 <ACTION name="LOGIN_ACTION_SBI_TOOLS"/>
 <ACTION name="LOGIN_ACTION_SBI_RESOURCES"/>
 <ACTION name="LOGIN_ACTION_SBI_DISTRIBUTIONLIST"/>
-
 <ACTION name="SERVICE_EXCEPTION_ACTION"/>
 <ACTION name="EMPTY_ACTION"/>
 <ACTION name="SESSION_EXPIRED_ACTION"/>
+<ACTION name="READ_HTML_FILE"/>
+<ACTION name="LOGOUT_ACTION"/>
 
 </ACTIONS_EXCLUDED_FROM_GLOBAL>
 	
@@ -30,5 +31,9 @@
 <PAGE_MODULE pagename="LOGIN_PAGE_SBI_FUNCTIONALITY" modulename="TreeObjectsModule"/>
 <PAGE_MODULE pagename="LOGIN_PAGE_SBI_FUNCTIONALITY" modulename="ListBIObjectsModule"/>
 <PAGE_MODULE pagename="LOGINPAGE" modulename="LOGINMODULE"/>
+<PAGE_MODULE pagename="ValidateExecuteBIObjectPage" modulename="ExecuteBIObjectModule"/>
+<PAGE_MODULE pagename="ExecuteBIObjectPage" modulename="ExecuteBIObjectModule"/>
+
+
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

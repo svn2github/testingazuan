@@ -27,6 +27,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
@@ -276,9 +278,15 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 	    // add the Multipart to the message
 	    msg.setContent(mp);
 	    // send message
-	    Transport.send(msg);
+	    EMFErrorHandler errorHandler = getErrorHandler();
+	    if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+	    	Transport.send(msg);
+	    	retCode = OK;
+	    }else{
+	    	retCode = ERROR;
+	    }
 
-	    retCode = OK;
+	    
 
 	} catch (Exception e) {
 	    logger.error("Error while executing and sending object ", e);

@@ -91,6 +91,7 @@ public class InsertNotesAction extends BaseProfileAction{
 	 
 		private void goToInsertNotes(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
 			
+			
 			String objId= (String)request.getAttribute("OBJECT_ID");
 			String userId= (String)request.getAttribute("userId");
 			String execIdentifier = (String)request.getAttribute("execIdentifier");
@@ -169,6 +170,7 @@ public class InsertNotesAction extends BaseProfileAction{
 		       }
 		     }
 		    
+		    
 		    String notesEnc = new BASE64Encoder().encode(notes.getBytes());
 		    response.setAttribute("userId", userId);
 			response.setAttribute("OBJECT_ID", objId);
@@ -208,18 +210,24 @@ public class InsertNotesAction extends BaseProfileAction{
 			try{	
 					IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 					BIObject biobject = objectDAO.loadBIObjectById(new Integer(objectid));
+					EMFErrorHandler errorHandler = getErrorHandler();
 					
 					IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
 					ObjNote objNote = objNoteDAO.getExecutionNotes(new Integer(objectid), execIdentifier);
 					if(objNote!=null) {
 						objNote.setContent(notes.getBytes());
 						objNote.setExecReq(execIdentifier);
-						objNoteDAO.modifyExecutionNotes(objNote);
+						  if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+							  objNoteDAO.modifyExecutionNotes(objNote);
+							  }
+						
 					} else {
 						objNote = new ObjNote();
 						objNote.setContent(notes.getBytes());
 						objNote.setExecReq(execIdentifier);
-						objNoteDAO.saveExecutionNotes(biobject.getId(), objNote);
+						if(errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+							objNoteDAO.saveExecutionNotes(biobject.getId(), objNote);
+							  }					
 					}
 			} catch (Exception e) {
 				logger.warn("Error while saving notes", e);

@@ -263,6 +263,70 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+	
+	<SERVICE name="INSERT_NOTES_ACTION" type="ACTION">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="notes" label="notes">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="500"/>
+				</FIELD>
+				<FIELD name="OLD_NOTES" label="OLD_NOTES">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="500"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	<SERVICE name="RATING_ACTION" type="ACTION">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="RATING" label="RATING">
+					 <VALIDATOR validatorName="NUMERIC"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	<SERVICE name="SEND_TO_ACTION" type="ACTION">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="a" label="a">
+					 <VALIDATOR validatorName="XSS"/>
+					 <VALIDATOR validatorName="EMAIL"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="cc" label="cc">
+					 <VALIDATOR validatorName="XSS"/>
+					 <VALIDATOR validatorName="EMAIL"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="object" label="object">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="message" label="message">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="1000"/>
+				</FIELD>
+				<FIELD name="login" label="login">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="pwd" label="pwd">
+					 <VALIDATOR validatorName="XSS"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="replyto" label="replyto">
+					 <VALIDATOR validatorName="XSS"/>
+					 <VALIDATOR validatorName="EMAIL"/>
+				    <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
 
 	<SERVICE name="ParameterUseValidation" type="PAGE">
 		<!-- VALIDATION blocking="false" validators="">

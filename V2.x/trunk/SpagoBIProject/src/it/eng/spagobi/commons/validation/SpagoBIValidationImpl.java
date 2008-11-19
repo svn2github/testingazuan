@@ -671,7 +671,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the XSS VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 				String toVerify = value.toUpperCase();
 				if( toVerify.contains("<A") ||  toVerify.contains("<LINK") ||  toVerify.contains("<IMG") ||  toVerify.contains("<SCRIPT") ||
-						toVerify.contains("&lt;A") ||  toVerify.contains("&lt;LINK") ||  toVerify.contains("&lt;IMG") ||  toVerify.contains("&lt;SCRIPT")	){
+						toVerify.contains("&LT;A") ||  toVerify.contains("&LT;LINK") ||  toVerify.contains("&LT;IMG") ||  toVerify.contains("&LT;SCRIPT")	){
 
 					// Generate Errors
 					params = new ArrayList();

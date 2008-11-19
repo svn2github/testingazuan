@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
     
 </STYLE>
-
+<spagobi:error/>
 <div class="div_form_container">
 	<div class="div_form_margin" >
 		<div class="div_form_row" >

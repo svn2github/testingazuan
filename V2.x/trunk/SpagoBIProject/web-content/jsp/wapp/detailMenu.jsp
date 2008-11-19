@@ -41,6 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO"%>
 <%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality"%>
 <%@page import="it.eng.spago.util.JavaScript"%>
+<%@page import="java.util.ArrayList"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMenuModule"); 
@@ -770,7 +771,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 			    	boolean alternate = false;	
 	 			     	String rowClass = null;
 	 			     	MenuDAOImpl menuDao=(MenuDAOImpl)DAOFactory.getMenuDAO();
-		 	    		List children=menuDao.getChildrenMenu(menu.getMenuId());
+	 			     	List children = null;
+	 			     	if (menu.getMenuId() != null) {
+	 			     		// new node
+	 			     		children=menuDao.getChildrenMenu(menu.getMenuId());
+	 			     	} else {
+	 			     		// existing node
+	 			     		children = new ArrayList();
+	 			     	}
 	 			     	for(int i=0; i<sysRoles.length; i++) {   // for all the possible roles
 	 			            String ruleId = sysRoles[i][0];
 	 			            String ruleName = sysRoles[i][1];

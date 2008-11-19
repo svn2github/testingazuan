@@ -5,8 +5,6 @@
 		<MAP_ACTION actionName="MOVE_UP_MENU" businessProcess="MenuManagement" />
 		<MAP_ACTION actionName="MOVE_DOWN_MENU" businessProcess="MenuManagement" />
 		<MAP_ACTION actionName="MENU_BEFORE_EXEC" businessProcess="MenuManagement" />
-		<MAP_ACTION actionName="READ_HTML_FILE" businessProcess="MenuManagement" />
-		<MAP_ACTION actionName="LOGOUT_ACTION" businessProcess="MenuManagement" />
 		<MAP_ACTION actionName="GET_PUBLIC_SUBOBJECTS_INFO" businessProcess="MenuManagement" />
 		<MAP_ACTION actionName="GET_SNAPSHOTS_INFO" businessProcess="MenuManagement" />
 		<MAP_ACTION actionName="GET_SUBOBJECT_INFO" businessProcess="MenuManagement" />

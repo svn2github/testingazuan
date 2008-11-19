@@ -103,6 +103,7 @@
 		formUrlPars.put("PAGE", "ThresholdValuePage");
 		formUrlPars.put("MODULE", "DetailThresholdValueModule");
 		formUrlPars.put("MESSAGE", message);
+		formUrlPars.put("IDT", threshold_id);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	}
 	
@@ -114,6 +115,10 @@
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 
+<%
+String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js");
+%>
+<script type="text/javascript" src="<%=urlColorPicker%>"></script>
 
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
@@ -143,7 +148,6 @@
 <form method='POST' action='<%=formUrl%>' id='thresholdValueForm' name='thresholdForm'>
 <input type='hidden' value='<%=id%>' name='id' />
 <input type='hidden' value='<%=threshold_id%>' name='threshold_id' />
-<input type='hidden' value='<%=threshold_id%>' name='idt' />
 <div class="div_detail_area_forms">
 
 <div class='div_detail_label'><span
@@ -176,13 +180,21 @@
   class='portlet-form-input-field' type="text" name="max_Value" size="50"
   value="<%=maxValue%>" maxlength="200"></div>
 
+<script language="JavaScript">
+var cp = new ColorPicker('window'); // Popup window
+</script>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.colour" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'>
-<input
-  class='portlet-form-input-field' type="text" name="colour" size="50"
-  value="<%=colour%>" maxlength="20"></div>
+<input style="background-color:<%=colour%>"
+  class='portlet-form-input-field' type="text" name="colour" id="colour" size="50"
+  value="<%=colour%>" maxlength="20" >
+<a fref="#" onClick="javascript:cp.select(document.forms[0].colour,'pick');return false;" name="pick" id="pick">Select</a>
+<script language="JavaScript">
+cp.writeDiv()
+</script>
+</div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

@@ -8,7 +8,6 @@
 <MAP_PAGE_MODULE pageName="ListObjParusePage" moduleName="ListObjParuseModule" businessProcess="ParameterManagement" />
 <MAP_PAGE_MODULE pageName="ListParametersPage" moduleName="ListParametersModule" businessProcess="ParameterManagement" />
 <MAP_PAGE_MODULE pageName="CheckLinksPage" moduleName="CheckLinksModule" businessProcess="ConstraintManagement" />
-<MAP_PAGE_MODULE pageName="ValidateExecuteBIObjectPage" moduleName="ExecuteBIObjectModule" businessProcess="ConstraintManagement" />
 <MAP_PAGE_MODULE pageName="DetailModalitiesChecksPage" moduleName="DetailChecksModule" businessProcess="ConstraintManagement" />
 <MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListPredefinedChecksModule" businessProcess="ConstraintManagement" />
 <MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListModalitiesChecksModule" businessProcess="ConstraintManagement" />

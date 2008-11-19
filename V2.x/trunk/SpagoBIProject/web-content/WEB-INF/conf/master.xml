@@ -26,7 +26,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/presentation.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/publishers.xml" />  
+  	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/publishers.xml" /> 
+  	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/business_map.xml" />  
     
 <!-- engines.config -->
 	
@@ -207,9 +208,9 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/mail.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />
-	<!--  
+	<!--  -->
 	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
--->
+
 	<!-- profile manager -->
 	<!--
   	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />

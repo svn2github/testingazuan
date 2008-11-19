@@ -25,10 +25,6 @@
 <MAP_PAGE_MODULE pageName="BIObjectsPage" moduleName="ListBIObjectsModule" businessProcess="DocumentManagement" />
 <MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="PortletLoginModule" businessProcess="DocumentUserManagement" />
 <MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="ExecutionWorkspaceModule" businessProcess="DocumentUserManagement" />
-<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="PortletLoginModule" businessProcess="DocumentUserManagement" />
-<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="BIObjectsModule" businessProcess="DocumentUserManagement" />
-<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="TreeObjectsModule" businessProcess="DocumentUserManagement" />
-<MAP_PAGE_MODULE pageName="LOGIN_PAGE_SBI_FUNCTIONALITY" moduleName="ListBIObjectsModule" businessProcess="DocumentUserManagement" />
 <MAP_PAGE_MODULE pageName="DetailBIObjectPage" moduleName="DetailBIObjectModule" businessProcess="DocumentManagement" />
 <MAP_PAGE_MODULE pageName="MetadataBIObjectPage" moduleName="MetadataBIObjectModule" businessProcess="DocumentUserManagement" />
 <MAP_PAGE_MODULE pageName="DocumentTemplateBuildPage" moduleName="DocumentTemplateBuildModule" businessProcess="DocumentManagement" />

@@ -168,8 +168,9 @@
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/presentation.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/hotlink/publishers.xml" /> 	
-    <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" /> 
+    <CONFIGURATOR path="/WEB-INF/conf/hotlink/publishers.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/hotlink/validation.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" />
 	
 	<!-- webapp -->
 	

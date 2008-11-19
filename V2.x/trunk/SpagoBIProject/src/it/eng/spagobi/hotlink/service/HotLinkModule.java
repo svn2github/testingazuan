@@ -26,8 +26,11 @@ import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.hotlink.rememberme.bo.RememberMe;
 
 import org.apache.log4j.Logger;
 
@@ -80,7 +83,20 @@ public class HotLinkModule extends AbstractModule {
 		try {
 			String rememberMeIdStr = (String) request.getAttribute("REMEMBER_ME_ID");
 			Integer rememberMeId = new Integer(rememberMeIdStr);
-			DAOFactory.getRememberMeDAO().delete(rememberMeId);
+			RememberMe rm = DAOFactory.getRememberMeDAO().getRememberMe(rememberMeId);
+			UserProfile profile = (UserProfile) this.getRequestContainer().getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			// check if user is able to erase remember me
+			String userId = profile.getUserId().toString();
+			if (rm != null) {
+				if (userId.equals(rm.getUserName())) {
+					logger.warn("Deleting RememberMe with id = " + rememberMeIdStr + " ...");
+					DAOFactory.getRememberMeDAO().delete(rememberMeId);
+				} else {
+					logger.error("User [" + userId + "] CANNOT erase RememberMe with id = " + rememberMeIdStr + " since he is not the owner.");
+				}
+			} else {
+				logger.warn("RememberMe with id = " + rememberMeIdStr + " not found.");
+			}
 			getHotLinkListHandler(request, response);
 		} finally {
 			logger.debug("OUT");

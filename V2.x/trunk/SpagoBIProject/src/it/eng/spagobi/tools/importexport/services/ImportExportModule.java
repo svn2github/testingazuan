@@ -45,6 +45,7 @@ import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
 import it.eng.spagobi.tools.importexport.ImportResultInfo;
+import it.eng.spagobi.tools.importexport.ImportUtilities;
 import it.eng.spagobi.tools.importexport.MetadataAssociations;
 import it.eng.spagobi.tools.importexport.TransformManager;
 import it.eng.spagobi.tools.importexport.UserAssociationsKeeper;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -213,74 +215,99 @@ public class ImportExportModule extends AbstractModule {
 	logger.debug("IN");
 	IImportManager impManager = null;
 	// get exported file and eventually the associations file
-	UploadedFile archive = null;
+//	UploadedFile archive = null;
+//	UploadedFile associationsFile = null;
+	FileItem archive = null;
+	FileItem associationsFileItem = null;
 	UploadedFile associationsFile = null;
 	AssociationFile assFile = null;
-	String assKindFromReq = (String) request.getAttribute("importAssociationKind");
-	boolean isNoAssociationModality = assKindFromReq != null && assKindFromReq.equalsIgnoreCase("noassociations");
-	List uplFiles = request.getAttributeAsList("UPLOADED_FILE");
-	Iterator uplFilesIter = uplFiles.iterator();
-	while (uplFilesIter.hasNext()) {
-	    UploadedFile uplFile = (UploadedFile) uplFilesIter.next();
-	    String nameInForm = uplFile.getFieldNameInForm();
-	    if (nameInForm.equals("exportedArchive")) {
-		archive = uplFile;
-	    } else if (nameInForm.equals("associationsFile")) {
-		associationsFile = uplFile;
-	    }
-	}
-	// check that the name of the uploaded archive is not empty
-	String archiveName = archive.getFileName();
-	if (archiveName.trim().equals("")) {
-	    logger.error("Missing exported file");
-	    try {
-		response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
-	    } catch (SourceBeanException e) {
-		logger.error("Error while populating response source bean ", e);
-		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
-	    }
-	    throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8007", "component_impexp_messages");
-	}
-	
-	// if the user choose to have no associations, checks the form, otherwise set the variable associationsFile = null
-	if (!isNoAssociationModality) {
-		// check if the name of associations file is empty (in this case set
-		// null to the variable)
-		if (associationsFile != null) {
-			String associationsFileName = associationsFile.getFileName();
-			if (associationsFileName.trim().equals("")) {
-			    associationsFile = null;
-			}
-		}
-		// if the association file is empty then check if there is an
-		// association id
-		// rebuild the uploaded file and assign it to associationsFile variable
-		if (associationsFile == null) {
-		    String assId = (String) request.getAttribute("hidAssId");
-		    if ((assId != null) && !assId.trim().equals("")) {
-			IAssociationFileDAO assfiledao = new AssociationFileDAO();
-			assFile = assfiledao.loadFromID(assId);
-			byte[] content = assfiledao.getContent(assFile);
-			UploadedFile uplFile = new UploadedFile();
-			uplFile.setSizeInBytes(content.length);
-			uplFile.setFileContent(content);
-			uplFile.setFileName("association.xml");
-			uplFile.setFieldNameInForm("");
-			associationsFile = uplFile;
+	try {
+		String assKindFromReq = (String) request.getAttribute("importAssociationKind");
+		boolean isNoAssociationModality = assKindFromReq != null && assKindFromReq.equalsIgnoreCase("noassociations");
+		List uplFiles = request.getAttributeAsList("UPLOADED_FILE");
+		Iterator uplFilesIter = uplFiles.iterator();
+		while (uplFilesIter.hasNext()) {
+		    //UploadedFile uplFile = (UploadedFile) uplFilesIter.next();
+			FileItem uplFile = (FileItem) uplFilesIter.next();
+		    //String nameInForm = uplFile.getFieldNameInForm();
+			String nameInForm = uplFile.getFieldName();
+		    if (nameInForm.equals("exportedArchive")) {
+		    	archive = uplFile;
+		    } else if (nameInForm.equals("associationsFile")) {
+		    	associationsFileItem = uplFile;
 		    }
 		}
-	} else {
-		associationsFile = null;
-	}
+		// check that the name of the uploaded archive is not empty
+		//String archiveName = archive.getFileName();
+		String archiveName = GeneralUtilities.getRelativeFileNames(archive.getName());
+		if (archiveName.trim().equals("")) {
+		    logger.error("Missing exported file");
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
+		    throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "8007", "component_impexp_messages");
+		}
+		
+		int maxSize = ImportUtilities.getImportFileMaxSize();
+		if (archive.getSize() > maxSize) {
+		    logger.error("File is too large!!!");
+			response.setAttribute(ImportExportConstants.PUBLISHER_NAME, "ImportExportLoopbackStopImport");
+		    throw new EMFValidationError(EMFErrorSeverity.ERROR, "exportedArchive", "202");
+		}
+		
+		// checks if the association file is bigger than 1 MB, that is more than enough!!
+		if (associationsFileItem != null) {
+			if (associationsFileItem.getSize() == 0) {
+				throw new EMFValidationError(EMFErrorSeverity.ERROR, "associationsFile", "201");
+			}
+			if (associationsFileItem.getSize() > 1048576) {
+				throw new EMFValidationError(EMFErrorSeverity.ERROR, "associationsFile", "202");
+			}
+			// loads association file
+			associationsFile = new UploadedFile();
+			associationsFile.setFileContent(associationsFileItem.get());
+			associationsFile.setFieldNameInForm(associationsFileItem.getFieldName());
+			associationsFile.setSizeInBytes(associationsFileItem.getSize());
+			associationsFile.setFileName(GeneralUtilities.getRelativeFileNames(associationsFileItem.getName()));
+		}
+		
+		// if the user choose to have no associations, checks the form, otherwise set the variable associationsFile = null
+		if (!isNoAssociationModality) {
+			// check if the name of associations file is empty (in this case set
+			// null to the variable)
+			if (associationsFile != null) {
+				String associationsFileName = associationsFile.getFileName();
+				if (associationsFileName.trim().equals("")) {
+				    associationsFile = null;
+				}
+			}
+			// if the association file is empty then check if there is an
+			// association id
+			// rebuild the uploaded file and assign it to associationsFile variable
+			if (associationsFile == null) {
+			    String assId = (String) request.getAttribute("hidAssId");
+			    if ((assId != null) && !assId.trim().equals("")) {
+				IAssociationFileDAO assfiledao = new AssociationFileDAO();
+				assFile = assfiledao.loadFromID(assId);
+				byte[] content = assfiledao.getContent(assFile);
+				UploadedFile uplFile = new UploadedFile();
+				uplFile.setSizeInBytes(content.length);
+				uplFile.setFileContent(content);
+				uplFile.setFileName("association.xml");
+				uplFile.setFieldNameInForm("");
+				associationsFile = uplFile;
+			    }
+			}
+		} else {
+			associationsFile = null;
+		}
+		
+		// get the association mode
+		String assMode = IImportManager.IMPORT_ASS_DEFAULT_MODE;
+		if (assKindFromReq.equalsIgnoreCase("predefinedassociations")) {
+		    assMode = IImportManager.IMPORT_ASS_PREDEFINED_MODE;
+		}
+		// get bytes of the archive
+		byte[] archiveBytes = archive.get();
 	
-	// get the association mode
-	String assMode = IImportManager.IMPORT_ASS_DEFAULT_MODE;
-	if (assKindFromReq.equalsIgnoreCase("predefinedassociations")) {
-	    assMode = IImportManager.IMPORT_ASS_PREDEFINED_MODE;
-	}
-	// get bytes of the archive
-	byte[] archiveBytes = archive.getFileContent();
-	try {
 	    // get path of the import tmp directory
 	    ConfigSingleton conf = ConfigSingleton.getInstance();
 	    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");

@@ -78,7 +78,9 @@ import org.apache.log4j.Logger;
 public class GeneralUtilities {
 
     private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
-
+    
+    public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
+    
     /**
      * The Main method.
      * 
@@ -1266,4 +1268,27 @@ public class GeneralUtilities {
 	    return toReturn;
 	}
     
+	public static int getTemplateMaxSize() {
+		logger.debug("IN");
+		int toReturn = MAX_DEFAULT_TEMPLATE_SIZE;
+		try {
+			ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	    	SourceBean maxSizeSB = (SourceBean) serverConfig.getAttribute("SPAGOBI.TEMPLATE_MAX_SIZE");
+	    	if (maxSizeSB != null) {
+	    		String maxSizeStr = (String) maxSizeSB.getCharacters();
+	    		logger.debug("Configuration found for max template size: " + maxSizeStr);
+	    		Integer maxSizeInt = new Integer(maxSizeStr);
+	    		toReturn = maxSizeInt.intValue();
+	    	} else {
+	    		logger.debug("No configuration found for max template size");
+	    	}
+		} catch (Exception e) {
+			logger.error("Error while retrieving max template size", e);
+			logger.debug("Considering default value " + MAX_DEFAULT_TEMPLATE_SIZE);
+			toReturn = MAX_DEFAULT_TEMPLATE_SIZE;
+		}
+		logger.debug("OUT: max size = " + toReturn);
+		return toReturn;
+	}
+	
 }

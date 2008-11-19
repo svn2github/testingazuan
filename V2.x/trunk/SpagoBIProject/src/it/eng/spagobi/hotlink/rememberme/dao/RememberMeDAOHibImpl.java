@@ -121,7 +121,7 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		}
 	}
 
-	private Object toRememberMe(SbiRememberMe hibObj) {
+	private RememberMe toRememberMe(SbiRememberMe hibObj) {
 		RememberMe toReturn = new RememberMe();
 		toReturn.setId(hibObj.getId());
 		toReturn.setName(hibObj.getName());
@@ -187,6 +187,37 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 						+ parameters + "] is already present.");
 				return false;
 			}
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "100");  
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
+	}
+
+	public RememberMe getRememberMe(Integer rememberMeId) throws EMFInternalError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		RememberMe toReturn = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion userIdCriterion = Expression.eq("id", rememberMeId);
+			Criteria criteria = aSession.createCriteria(SbiRememberMe.class);
+			criteria.add(userIdCriterion);
+			//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			List list = criteria.list();
+			Iterator it = list.iterator();
+			while (it.hasNext()) {
+				SbiRememberMe hibObj = (SbiRememberMe) it.next();
+				toReturn = toRememberMe(hibObj);
+			}
+			return toReturn;
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null) tx.rollback();	

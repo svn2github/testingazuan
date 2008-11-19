@@ -333,6 +333,11 @@ public class DetailFunctionalityModule extends AbstractModule {
 		
 		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 			String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
+			LowFunctionality parentFunct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
+			if (parentFunct == null) {
+				EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, AdmintoolsConstants.PATH_PARENT, "1002", new Vector());
+				getErrorHandler().addError(error);
+			}
 			String newPath = pathParent + "/" + code;
 			//SourceBean dataLoad = new SourceBean("dataLoad");
 			LowFunctionality funct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(newPath, false);
@@ -356,7 +361,7 @@ public class DetailFunctionalityModule extends AbstractModule {
 			lowFunct.setDevRoles(devRoles);
 			lowFunct.setExecRoles(execRoles);
 			lowFunct.setTestRoles(testRoles);
-			LowFunctionality parentFunct =  DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(pathParent, false);
+			
 			if (parentFunct != null) lowFunct.setParentId(parentFunct.getId());
 		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 			String idFunct = (String)request.getAttribute(AdmintoolsConstants.FUNCTIONALITY_ID);

@@ -23,6 +23,8 @@ package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UploadedFile;
@@ -44,6 +46,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
@@ -145,14 +148,31 @@ public class ManageImpExpAssAction extends BaseProfileAction {
 		}
 		String description = (String) sbrequest.getAttribute("DESCRIPTION");
 		if (description == null) description = "";
-		UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
-		if (uplFile == null || uplFile.getFileName().trim().equals("")) {
+//		UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
+		FileItem uplFile = (FileItem)sbrequest.getAttribute("UPLOADED_FILE");
+		String fileName = GeneralUtilities.getRelativeFileNames(uplFile.getName());
+		byte[] content = null;
+		if (uplFile == null || uplFile.getName().trim().equals("")) {
 			String msg = msgBuild.getMessage("Sbi.saving.associationFileNotSpecified", "component_impexp_messages", locale);
 			httpResponse.getOutputStream().write(msg.getBytes());
 			httpResponse.getOutputStream().flush();
 			return;
 		} else {
-			if (!AssociationFile.isValidContent(uplFile.getFileContent())) {
+			if (uplFile.getSize() == 0) {
+				String msg = msgBuild.getMessage("201", "component_impexp_messages", locale);
+				httpResponse.getOutputStream().write(msg.getBytes());
+				httpResponse.getOutputStream().flush();
+				return;
+			}
+			int maxSize = GeneralUtilities.getTemplateMaxSize();
+			if (uplFile.getSize() > maxSize) {
+				String msg = msgBuild.getMessage("202", "component_impexp_messages", locale);
+				httpResponse.getOutputStream().write(msg.getBytes());
+				httpResponse.getOutputStream().flush();
+				return;
+			}
+			content = uplFile.get();
+			if (!AssociationFile.isValidContent(content)) {
 				String msg = msgBuild.getMessage("Sbi.saving.associationFileNotValid", "component_impexp_messages", locale);
 				httpResponse.getOutputStream().write(msg.getBytes());
 				httpResponse.getOutputStream().flush();
@@ -170,13 +190,13 @@ public class ManageImpExpAssAction extends BaseProfileAction {
 		if (assfiledao.exists(assFile.getId())) {
 			if (overwrite) {
 				assfiledao.deleteAssociationFile(assFile);
-				assfiledao.saveAssociationFile(assFile, uplFile.getFileContent());
+				assfiledao.saveAssociationFile(assFile, content);
 			} else {
 				logger.warn("Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
                    		"and name=[" + assFile.getName() + "] will not be saved.");
 			}
 		} else {
-			assfiledao.saveAssociationFile(assFile, uplFile.getFileContent());
+			assfiledao.saveAssociationFile(assFile, content);
 		}
 		List assFiles = assfiledao.getAssociationFiles();
 		String html = generateHtmlJsCss();

@@ -40,6 +40,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 
 import java.util.ArrayList;
@@ -176,13 +177,7 @@ public class ExecutionInstance {
 	
 	private List loadCorrectRolesForExecution() throws EMFInternalError, EMFUserError {
 		logger.debug("IN");
-		List correctRoles = null;
-		if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
-				|| userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
-				|| userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
-			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(object.getId(), userProfile);
-		else
-			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(object.getId());
+		List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(object.getId(), userProfile);
 		logger.debug("OUT");
 		return correctRoles;
 	}
@@ -455,7 +450,7 @@ public class ExecutionInstance {
 						EMFValidationError error = (EMFValidationError) errorsIt.next();
 						logger.error("Found an error applying check [" + check.getLabel() + "] for biparameter [" + label + "]: " + error.getDescription());
 					}
-					toReturn.add(errors);
+					toReturn.addAll(errors);
 				} else {
 					logger.debug("No errors found applying check [" + check.getLabel() + "] to biparameter [" + label + "].");
 				}

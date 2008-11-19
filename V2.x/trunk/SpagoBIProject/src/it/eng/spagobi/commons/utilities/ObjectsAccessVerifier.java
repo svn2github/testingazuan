@@ -23,6 +23,7 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -718,4 +719,26 @@ public class ObjectsAccessVerifier {
     	return toReturn;
     }
     
+    /**
+     * returns the list of correct roles of the input profile for the execution of the document with the specified input
+     * @param objectId the document id
+     * @param profile the user profile
+     * @return the list of correct roles of the input profile for the execution of the document with the specified input
+     * @throws EMFUserError 
+     * @throws EMFInternalError 
+     */
+    public static List getCorrectRolesForExecution(Integer objectId , IEngUserProfile profile) throws EMFInternalError, EMFUserError {
+    	logger.debug("IN");
+		List correctRoles = null;
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
+				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
+				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
+			correctRoles = DAOFactory.getBIObjectDAO()
+					.getCorrectRolesForExecution(objectId, profile);
+		else
+			correctRoles = DAOFactory.getBIObjectDAO()
+					.getCorrectRolesForExecution(objectId);
+		logger.debug("OUT");
+		return correctRoles;
+    }
 }

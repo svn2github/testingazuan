@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.hotlink.rememberme.dao;
 
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spagobi.hotlink.rememberme.bo.RememberMe;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public interface IRememberMeDAO {
 	public boolean saveRememberMe(String name, String description, Integer docId, Integer subObjId, String userId, String parameters) throws EMFInternalError;
 	
 	/**
-	 * Gets the my remember me.
+	 * Gets all user's remember me.
 	 * 
 	 * @param userId the user id
 	 * 
@@ -60,11 +61,22 @@ public interface IRememberMeDAO {
 	public List getMyRememberMe(String userId) throws EMFInternalError;
 	
 	/**
-	 * Delete.
+	 * Deletes the remember me with the given id.
 	 * 
 	 * @param rememberMeId the remember me id
 	 * 
 	 * @throws EMFInternalError the EMF internal error
 	 */
 	public void delete(Integer rememberMeId) throws EMFInternalError;
+	
+	/**
+	 * Loads the remember me with the given id.
+	 * 
+	 * @param rememberMeId the remember me id
+	 * 
+	 * @return the required remember me
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
+	public RememberMe getRememberMe(Integer rememberMeId) throws EMFInternalError;
 }

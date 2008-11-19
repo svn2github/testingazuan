@@ -31,6 +31,14 @@ public class ReadHtmlFile extends AbstractHttpAction{
 		if(menuId!=null){
 			Menu menu=DAOFactory.getMenuDAO().loadMenuByID(Integer.valueOf(menuId));
 			String fileName=menu.getStaticPage();
+			
+			// check the validity of the fileName (it must not be a path)
+			// TODO remove this control and write better this action, or remove the action at all
+			if (fileName.contains("\\") || fileName.contains("/") || fileName.contains("..")) {
+				logger.error("Menu with id = " + menu.getMenuId() + " has file name [" + fileName + "] containing file separator character!!!");
+				throw new Exception("Menu file name cannot contain file separator character");
+			}
+			
 			logger.debug("fileName="+fileName);
 			String rootPath=ConfigSingleton.getRootPath();
 			String filePath=rootPath+System.getProperty("file.separator")+"static_content"+System.getProperty("file.separator")+fileName;

@@ -312,11 +312,22 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			//String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > " 
 			//	+ hibMenu.getProg() + " and s.parentId = " + hibMenu.getParentId();
 			
-			String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
-				 + " and s.parentId = ? ";
-			Query query = tmpSession.createQuery(hqlUpdateProg);
-			query.setInteger(0, hibMenu.getProg().intValue());
-			query.setInteger(1,  hibMenu.getParentId().intValue());
+			Integer parentId = hibMenu.getParentId();
+			String hqlUpdateProg = null;
+			Query query = null;
+			if (parentId != null) {
+				hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
+					 + " and s.parentId = ? ";
+				query = tmpSession.createQuery(hqlUpdateProg);
+				query.setInteger(0, hibMenu.getProg().intValue());
+				query.setInteger(1,  hibMenu.getParentId().intValue());
+			} else {
+				hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
+					 + " and s.parentId = null";
+				query = tmpSession.createQuery(hqlUpdateProg);
+				query.setInteger(0, hibMenu.getProg().intValue());
+			}
+
 			query.executeUpdate();
 			
 			tmpSession.delete(hibMenu);

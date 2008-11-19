@@ -33,17 +33,22 @@ public class UploadManager extends DefaultRequestContext implements IUploadHandl
 	 * @see it.eng.spago.dispatching.httpchannel.upload.IUploadHandler#upload(org.apache.commons.fileupload.FileItem)
 	 */
 	public void upload(FileItem item) throws Exception {
-		long size = item.getSize();
-		
-		if(size>0) {
-			UploadedFile uploadedFile = new UploadedFile();
-			uploadedFile.setFileContent(item.get());
-			uploadedFile.setFieldNameInForm(item.getFieldName());
-			uploadedFile.setSizeInBytes(item.getSize());
-			uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
+		if (item != null) {
 			SourceBean serviceRequest = getServiceRequest();
-			serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
+			serviceRequest.setAttribute("UPLOADED_FILE", item);
 		}
+		
+//		long size = item.getSize();
+//		
+//		if(size>0) {
+//			UploadedFile uploadedFile = new UploadedFile();
+//			uploadedFile.setFileContent(item.get());
+//			uploadedFile.setFieldNameInForm(item.getFieldName());
+//			uploadedFile.setSizeInBytes(item.getSize());
+//			uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
+//			SourceBean serviceRequest = getServiceRequest();
+//			serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
+//		}
 	}
 
 }

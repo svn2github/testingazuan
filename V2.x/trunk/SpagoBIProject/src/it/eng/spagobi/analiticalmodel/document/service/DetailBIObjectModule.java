@@ -824,12 +824,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			
 			// make a validation of the request data
 			ValidationCoordinator.validate("PAGE", "BIObjectValidation", this);			
-			// if there are some validation errors into the errorHandler return without write into DB 
-			if(!errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
-				helper.fillResponse(initialPath);
-				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, mod, false, false);
-				return;
-			}
+
 			// build and ObjTemplate object using data into request
 			ObjTemplate objTemp = helper.recoverBIObjTemplateDetails();
 			//if the template is not loaded check if default version is changed
@@ -852,6 +847,14 @@ public class DetailBIObjectModule extends AbstractModule {
 				}
 			}
 			else flgReloadTemp = true;
+			
+			// if there are some validation errors into the errorHandler return without write into DB 
+			if(!errorHandler.isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				helper.fillResponse(initialPath);
+				prepareBIObjectDetailPage(response, obj, null, selectedObjParIdStr, mod, false, false);
+				return;
+			}
+			
 			// based on the modality do different tasks
 			if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {
 				//if data source value is not specified, it gets the default data source associated at the engine
@@ -864,7 +867,6 @@ public class DetailBIObjectModule extends AbstractModule {
 				if(objTemp==null) {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, loadParsDCClicked);
 				} else {
-				        
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp, loadParsDCClicked);
 				}
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {

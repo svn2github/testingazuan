@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
@@ -53,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -161,21 +163,49 @@ public class DossierManagementModule extends AbstractModule {
 		try {
 			String tempFolder = (String) request.getAttribute(DossierConstants.DOSSIER_TEMP_FOLDER);
 			IDossierDAO dossierDao = new DossierDAOHibImpl();
-			UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+			FileItem upFile = (FileItem) request.getAttribute("UPLOADED_FILE");
 			if (upFile != null) {
-				String fileName = upFile.getFileName();
+				String fileName = GeneralUtilities.getRelativeFileNames(upFile.getName());
+				if (upFile.getSize() == 0) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+					getErrorHandler().addError(error);
+					return;
+				}
+				int maxSize = GeneralUtilities.getTemplateMaxSize();
+				if (upFile.getSize() > maxSize) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+					getErrorHandler().addError(error);
+					return;
+				}
 				if (!fileName.toUpperCase().endsWith(".XML")) {
 					List params = new ArrayList();
 					params.add("xml");
 					EMFUserError error = new EMFValidationError(EMFErrorSeverity.ERROR, "UPLOADED_FILE", "107", params, null, "component_dossier_messages");
 					getErrorHandler().addError(error);
 				} else {
-					byte[] fileContent = upFile.getFileContent();
+					byte[] fileContent = upFile.get();
 					dossierDao.storeProcessDefinitionFile(fileName, fileContent, tempFolder);
 				}
 			} else {
 				logger.warn("Upload file was null!!!");
 			}
+			
+			
+//			UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+//			if (upFile != null) {
+//				String fileName = upFile.getFileName();
+//				if (!fileName.toUpperCase().endsWith(".XML")) {
+//					List params = new ArrayList();
+//					params.add("xml");
+//					EMFUserError error = new EMFValidationError(EMFErrorSeverity.ERROR, "UPLOADED_FILE", "107", params, null, "component_dossier_messages");
+//					getErrorHandler().addError(error);
+//				} else {
+//					byte[] fileContent = upFile.getFileContent();
+//					dossierDao.storeProcessDefinitionFile(fileName, fileContent, tempFolder);
+//				}
+//			} else {
+//				logger.warn("Upload file was null!!!");
+//			}
 			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierLoopbackDossierDetail");
 		} finally {
 			logger.debug("OUT");
@@ -188,21 +218,49 @@ public class DossierManagementModule extends AbstractModule {
 		try {
 			String tempFolder = (String) request.getAttribute(DossierConstants.DOSSIER_TEMP_FOLDER);
 			IDossierDAO dossierDao = new DossierDAOHibImpl();
-			UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+			FileItem upFile = (FileItem) request.getAttribute("UPLOADED_FILE");
 			if (upFile != null) {
-				String fileName = upFile.getFileName();
+				String fileName = GeneralUtilities.getRelativeFileNames(upFile.getName());
+				if (upFile.getSize() == 0) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+					getErrorHandler().addError(error);
+					return;
+				}
+				int maxSize = GeneralUtilities.getTemplateMaxSize();
+				if (upFile.getSize() > maxSize) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+					getErrorHandler().addError(error);
+					return;
+				}
 				if (!fileName.toUpperCase().endsWith(".PPT")) {
 					List params = new ArrayList();
 					params.add("ppt");
 					EMFUserError error = new EMFValidationError(EMFErrorSeverity.ERROR, "UPLOADED_FILE", "107", params, null, "component_dossier_messages");
 					getErrorHandler().addError(error);
 				} else {
-					byte[] fileContent = upFile.getFileContent();
+					byte[] fileContent = upFile.get();
 					dossierDao.storePresentationTemplateFile(fileName, fileContent, tempFolder);
 				}
 			} else {
 				logger.warn("Upload file was null!!!");
 			}
+			
+			
+//			UploadedFile upFile = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+//			if (upFile != null) {
+//				String fileName = upFile.getFileName();
+//				if (!fileName.toUpperCase().endsWith(".PPT")) {
+//					List params = new ArrayList();
+//					params.add("ppt");
+//					EMFUserError error = new EMFValidationError(EMFErrorSeverity.ERROR, "UPLOADED_FILE", "107", params, null, "component_dossier_messages");
+//					getErrorHandler().addError(error);
+//				} else {
+//					byte[] fileContent = upFile.getFileContent();
+//					dossierDao.storePresentationTemplateFile(fileName, fileContent, tempFolder);
+//				}
+//			} else {
+//				logger.warn("Upload file was null!!!");
+//			}
 			response.setAttribute(DossierConstants.PUBLISHER_NAME, "DossierLoopbackDossierDetail");
 		} finally {
 			logger.debug("OUT");

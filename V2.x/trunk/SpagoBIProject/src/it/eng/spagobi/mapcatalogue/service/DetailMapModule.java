@@ -56,6 +56,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -460,10 +461,22 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	String format = (String)serviceRequest.getAttribute("FORMAT");
 	String url = null;
 	//gets the file eventually uploaded
-	UploadedFile uploaded = (UploadedFile) serviceRequest.getAttribute("UPLOADED_FILE");
+	FileItem uploaded = (FileItem) serviceRequest.getAttribute("UPLOADED_FILE");
     String fileName = null;
     if(uploaded!=null) {
-    	fileName = uploaded.getFileName();
+    	fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
+		if (uploaded.getSize() == 0) {
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+			getErrorHandler().addError(error);
+			return map;
+		}
+		int maxSize = GeneralUtilities.getTemplateMaxSize();
+		if (uploaded.getSize() > maxSize) {
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+			getErrorHandler().addError(error);
+			return map;
+		}
+    	
     }
 	
 	if (fileName != null && !fileName.equals("")){		
@@ -475,7 +488,7 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 		FileOutputStream tmpFile = new FileOutputStream(fileDir + System.getProperty("file.separator")+fileName);		
 	    
 	    try {
-	    	tmpFile.write(uploaded.getFileContent());
+	    	tmpFile.write(uploaded.get());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -485,6 +498,33 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	}
 	else
 		url = (String)serviceRequest.getAttribute("sourceUrl");
+	
+	
+//	UploadedFile uploaded = (UploadedFile) serviceRequest.getAttribute("UPLOADED_FILE");
+//    String fileName = null;
+//    if(uploaded!=null) {
+//    	fileName = uploaded.getFileName();
+//    }
+//	
+//	if (fileName != null && !fileName.equals("")){		
+//	    if (name == null || name.equals("") ||
+//	    	fileName == null || fileName.equals("")) return map;
+//	    
+//		File fileDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");	
+//		if(!(fileDir).exists()) fileDir.mkdirs();	   
+//		FileOutputStream tmpFile = new FileOutputStream(fileDir + System.getProperty("file.separator")+fileName);		
+//	    
+//	    try {
+//	    	tmpFile.write(uploaded.getFileContent());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}		
+//	
+//		//url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+"\\"+fileName;
+//		url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+System.getProperty("file.separator")+fileName;
+//	}
+//	else
+//		url = (String)serviceRequest.getAttribute("sourceUrl");
 	
 	map.setMapId(id.intValue());
 	map.setName(name);

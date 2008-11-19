@@ -239,12 +239,18 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	}
 	
 	private void eraseSnapshotHandler(SourceBean request, SourceBean response)
-			throws EMFUserError, SourceBeanException {
+			throws EMFUserError, SourceBeanException, NumberFormatException, EMFInternalError {
 		logger.debug("IN");
-		ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
-		String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
-		Integer snapId = new Integer(snapshotIdStr);
-		snapdao.deleteSnapshot(snapId);
+		UserProfile profile = (UserProfile) this.getUserProfile();
+		// only if user is administrator, he can erase snapshot 
+		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+			ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
+			String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
+			Integer snapId = new Integer(snapshotIdStr);
+			snapdao.deleteSnapshot(snapId);
+		} else {
+			logger.error("Current user [" + profile.getUserId().toString() + "] CANNOT erase snapshots!!");
+		}
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}
@@ -324,15 +330,6 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 				} else {
 					role = (String) correctRoles.get(0);
 				}
-			}
-		}
-		// controls if the user can see the required subobject
-		if (subObj != null) {
-			boolean canSeeSubobject = canSeeSubobject(profile, subObj);
-			if (!canSeeSubobject) {
-				List l = new ArrayList();
-				l.add(subObj.getName());
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
 			}
 		}
 		
@@ -443,14 +440,7 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	
 	private List getCorrectRolesForExecution(IEngUserProfile profile, Integer id) throws EMFInternalError, EMFUserError {
 		logger.debug("IN");
-		List correctRoles = null;
-		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
-				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)
-				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN))
-			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id, profile);
-		else
-			correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(id);
-		logger.debug("correct roles for execution retrived " + correctRoles);
+		List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(id, profile);
 		logger.debug("OUT");
 		return correctRoles;
 	}
@@ -497,6 +487,15 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		return obj;
 	}
 	
+	/**
+	 * Finds the subobject required by the request, if any.
+	 * It consider only the subobejcts of the current document, so if a subobject of another document is required it is not found.
+	 * It loads the current document's subobjects and invokes the getRequiredSubObject(request, subobjects)  
+	 * 
+	 * @param request
+	 * @return the required subobject
+	 * @throws Exception
+	 */
 	private SubObject getRequiredSubObject(SourceBean request) throws Exception {
 		logger.debug("IN");
 		ExecutionInstance instance = getExecutionInstance();
@@ -508,8 +507,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	
 	/**
 	 * Find the subobject with the name specified by the attribute
-	 * "LABEL_SUB_OBJECT" or "SUBOBJECT_ID" on request; if those attributes are missing, null is returned. 
-	 * If such a subobject does not exist an error is added into the Error Handler
+	 * "LABEL_SUB_OBJECT" or "SUBOBJECT_ID" on request among the list of subobjects in input (that must be the current 
+	 * document's subobjects list); if those attributes are missing, null is returned. 
+	 * If such a subobject does not exist or the current user is not able to see that subobject, an error is added into the Error Handler
 	 * and null is returned.
 	 * @param request The service request
 	 * @param subObjects The list of all existing subobjects for the current document
@@ -528,25 +528,28 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		}
 		if (subObjectName != null) {
 			logger.debug("Looking for subobject with name [" + subObjectName + "] ...");
-			if (subObjects.size() > 0) {
-				if (subObjectName != null) {
-					Iterator iterSubs = subObjects.iterator();
-					while (iterSubs.hasNext() && subObj == null) {
-						SubObject sd = (SubObject) iterSubs.next();
-						if (sd.getName().equals(subObjectName.trim())) {
-							subObj = sd;
-						}
+			if (subObjects != null && subObjects.size() > 0) {
+				Iterator iterSubs = subObjects.iterator();
+				while (iterSubs.hasNext() && subObj == null) {
+					SubObject sd = (SubObject) iterSubs.next();
+					if (sd.getName().equals(subObjectName.trim())) {
+						subObj = sd;
+						break;
 					}
 				}
 			}
 		} else {
 			logger.debug("Looking for subobject with id [" + subObjectIdStr + "] ...");
-			try {
-				Integer subObjId = new Integer(subObjectIdStr);
-				ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
-				subObj = subdao.getSubObject(subObjId);
-			} catch (Exception e) {
-				logger.error(e);
+			Integer subObjId = new Integer(subObjectIdStr);
+			if (subObjects != null && subObjects.size() > 0) {
+				Iterator iterSubs = subObjects.iterator();
+				while (iterSubs.hasNext() && subObj == null) {
+					SubObject sd = (SubObject) iterSubs.next();
+					if (sd.getId().equals(subObjId)) {
+						subObj = sd;
+						break;
+					}
+				}
 			}
 		}
 		// case subobject not found
@@ -557,12 +560,27 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 			EMFUserError userError = new EMFUserError(
 					EMFErrorSeverity.ERROR, 1080, l);
 			errorHandler.addError(userError);
+		} else {
+			boolean canSeeSubobject = canSeeSubobject(getUserProfile(), subObj);
+			if (!canSeeSubobject) {
+				List l = new ArrayList();
+				l.add(subObj.getName());
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
+				errorHandler.addError(userError);
+				subObj = null;
+			}
 		}
 		logger.debug("OUT");
 		return subObj;
 	}
 	
-	
+	/**
+	 * Finds the snapshot required by the request, if any.
+	 * It consider only the snapshots of the current document, so if a snapshots of another document is required it is not found.
+	 * It loads the current document's snapshots and invokes the getRequiredSnapshot(request, snapshots)  
+	 * @param request The service request
+	 * @return the required snapshot
+	 */
 	private Snapshot getRequiredSnapshot(SourceBean request) throws Exception {
 		logger.debug("IN");
 		ExecutionInstance instance = getExecutionInstance();
@@ -575,8 +593,8 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	/**
 	 * Find the snapshot with the name specified by the attribute
 	 * "SNAPSHOT_NAME" and number specified by "SNAPSHOT_NUMBER" or by 
-	 * the attribute "SNAPSHOT_ID" on request; 
-	 * if SNAPSHOT_NAME attribute is missing, null is returned. 
+	 * the attribute "SNAPSHOT_ID" on request among the list of snapshots in input (that must be the current 
+	 * document's snapshots list); if SNAPSHOT_NAME attribute is missing, null is returned. 
 	 * If such a snapshot does not exist an error is added into the Error Handler
 	 * and null is returned.
 	 * @param request The service request
@@ -780,7 +798,7 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	}
 
 	/**
-	 * Delete a subObject
+	 * Delete a subObject of the current document
 	 * 
 	 * @param request
 	 *            The request SourceBean
@@ -791,12 +809,20 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 			throws Exception {
 		logger.debug("IN");
 		// get id of the subobject
-		String subObjIdStr = (String) request.getAttribute(SpagoBIConstants.SUBOBJECT_ID);
-		Integer subObjId = new Integer(subObjIdStr);
-		// get dao for suboject
-		ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
-		// delete subobject
-		subobjdao.deleteSubObject(subObjId);
+		SubObject subobj = getRequiredSubObject(request);
+		UserProfile profile = (UserProfile) getUserProfile();
+		String userId = profile.getUserId().toString();
+		if (subobj != null) {
+			if (subobj.getOwner().equals(userId) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+				logger.error("Deleting subobject with id = " + subobj.getId() + " ...");
+				// get dao for suboject
+				ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+				// delete subobject
+				subobjdao.deleteSubObject(subobj.getId());
+			} else {
+				logger.error("Current user [" + userId + "] CANNOT erase subobject with id = " + subobj.getId());
+			}
+		}
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}
@@ -1121,7 +1147,9 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	private void execSnapshotHandler(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
 		Snapshot snapshot = getRequiredSnapshot(request);
-		executeSnapshot(snapshot, response);
+		if (snapshot!= null) {
+			executeSnapshot(snapshot, response);
+		}
 		logger.debug("OUT");
 	}
 	
@@ -1393,7 +1421,11 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 		String nameVP = (String) request.getAttribute("tmp_nameVP");
 		String descVP = (String) request.getAttribute("tmp_descVP");
 		String scopeVP = (String) request.getAttribute("tmp_scopeVP");
-		//String ownerVP = (String) profile.getUserUniqueIdentifier();
+		if (scopeVP != null && scopeVP.equalsIgnoreCase("Public")) {
+			scopeVP = "Public";
+		} else {
+			scopeVP = "Private";
+		}
 		String ownerVP = (String) ((UserProfile)profile).getUserId();
 		
 
@@ -1465,13 +1497,31 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	 *            The request SourceBean
 	 * @param response
 	 *            The response SourceBean
+	 * @throws EMFInternalError 
 	 */
 	private void eraseViewpoint(SourceBean request, SourceBean response)
-			throws EMFUserError, SourceBeanException {
+			throws EMFUserError, SourceBeanException, EMFInternalError {
 		logger.debug("IN");
-		String id = (String) request.getAttribute("vpId");
-		IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();
-		VPDAO.eraseViewpoint(new Integer(id));
+		String idStr = (String) request.getAttribute("vpId");
+		Integer id = new Integer(idStr);
+		logger.debug("Viewpoint id = " + id);
+		IViewpointDAO vpDAO = DAOFactory.getViewpointDAO();
+		// check if the user is able to erase the viewpoint
+		boolean canDelete = false;
+		UserProfile profile = (UserProfile) getUserProfile();
+		String userId = profile.getUserId().toString();
+		if (profile.getFunctionalities().contains(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+			// administrator can delete any viewpoint
+			canDelete = true;
+		} else {
+			// normal user can delete a viewpoints only if he is the owner
+			Viewpoint vp = vpDAO.loadViewpointByID(id);
+			canDelete = userId.equals(vp.getVpOwner());
+		}
+		if (canDelete) vpDAO.eraseViewpoint(new Integer(id));
+		else {
+			logger.error("User cannot delete selected viewpoint!! UserId = [" + userId + "]; viepoint id =[" + id + "]");
+		}
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
 	}

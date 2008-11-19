@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -44,6 +45,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
@@ -58,6 +60,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.apache.commons.fileupload.FileItem;
 
 public class DetBIObjModHelper {
 
@@ -110,7 +114,8 @@ public class DetBIObjModHelper {
 		String criptableStr = (String) request.getAttribute("criptable");
 		String visibleStr = (String) request.getAttribute("visible");
 		String profiledVisibilityStr = (String) request.getAttribute("profileVisibility");
-		String path = (String) request.getAttribute("path");
+		// path is unused
+		//String path = (String) request.getAttribute("path");
 		String typeAttr = (String) request.getAttribute("type");
 		String engineIdStr = (String) request.getAttribute("engine");
 		String stateAttr = (String) request.getAttribute("state");
@@ -239,7 +244,7 @@ public class DetBIObjModHelper {
 		obj.setRelName(relname);
 		obj.setStateCode(stateCode);
 		obj.setStateID(stateId);
-		obj.setPath(path);
+		//obj.setPath(path);
 		// metadata
 		obj.setCreationUser(userId);
 		obj.setExtendedDescription(longDescription);
@@ -270,19 +275,45 @@ public class DetBIObjModHelper {
 		//String userId=(String)profile.getUserUniqueIdentifier();
 		String userId=(String)((UserProfile)profile).getUserId();
 	    ObjTemplate templ = null;
-		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+	    
+		FileItem uploaded = (FileItem) request.getAttribute("UPLOADED_FILE");
 		if (uploaded != null) {
-			String fileName = uploaded.getFileName();
+			String fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
 			if (fileName != null && !fileName.trim().equals("")) {
+				if (uploaded.getSize() == 0) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+					this.respCont.getErrorHandler().addError(error);
+					return null;
+				}
+				int maxSize = GeneralUtilities.getTemplateMaxSize();
+				if (uploaded.getSize() > maxSize) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+					this.respCont.getErrorHandler().addError(error);
+					return null;
+				}
 				templ = new ObjTemplate();
 				templ.setActive(new Boolean(true));
 				templ.setCreationUser(userId);
-				templ.setDimension(Long.toString(uploaded.getSizeInBytes()/1000)+" KByte");
+				templ.setDimension(Long.toString(uploaded.getSize()/1000)+" KByte");
 		        templ.setName(fileName);
-		        byte[] uplCont = uploaded.getFileContent();
+		        byte[] uplCont = uploaded.get();
 		        templ.setContent(uplCont);
 			}
 		}
+	    
+//		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
+//		if (uploaded != null) {
+//			String fileName = uploaded.getFileName();
+//			if (fileName != null && !fileName.trim().equals("")) {
+//				templ = new ObjTemplate();
+//				templ.setActive(new Boolean(true));
+//				templ.setCreationUser(userId);
+//				templ.setDimension(Long.toString(uploaded.getSizeInBytes()/1000)+" KByte");
+//		        templ.setName(fileName);
+//		        byte[] uplCont = uploaded.getFileContent();
+//		        templ.setContent(uplCont);
+//			}
+//		}
 		return templ;
 	}
 	

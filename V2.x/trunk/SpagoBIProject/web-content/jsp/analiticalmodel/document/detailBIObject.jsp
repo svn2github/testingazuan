@@ -290,9 +290,9 @@ function saveDocument(goBack) {
 <input type='hidden' value='<%= modality %>' name='MESSAGEDET' />
 <input type='hidden' value='' name='' id='saveBIObjectParameter'/>
 	
-<% if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
+<%-- if(modality.equalsIgnoreCase(ObjectsTreeConstants.DETAIL_MOD)) { %>
 	<input type='hidden' value='<%= obj.getPath() %>' name='<%= ObjectsTreeConstants.PATH %>' />
-<% } %>
+<% } --%>
 	
 <table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
 	<tr>

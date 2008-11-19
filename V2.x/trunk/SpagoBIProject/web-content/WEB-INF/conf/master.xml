@@ -32,8 +32,10 @@
 	
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/pages.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/config/presentation.xml" />
-  <CONFIGURATOR path="/WEB-INF/conf/engines/config/publishers.xml" />     
+	<CONFIGURATOR path="/WEB-INF/conf/engines/config/presentation.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/engines/config/publishers.xml" /> 
+  <CONFIGURATOR path="/WEB-INF/conf/engines/config/business_map.xml" />  
+      
   
 <!-- engines.dossier -->
 	 
@@ -43,26 +45,31 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/validation.xml" />  
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/validation.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dossier/business_map.xml" />   
   
 <!-- engines.dashboard -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/dashboard/business_map.xml" /> 
 
 <!-- engines.chart -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/business_map.xml" /> 
 	
 <!-- engines.kpi -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/presentation.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/business_map.xml" /> 
 
 	
 <!-- engines.officedocument -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/business_map.xml" /> 
     
 <!-- engines.documentcomposition -->
 	<!--
@@ -77,6 +84,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/event/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/event/presentation.xml" />
   <CONFIGURATOR path="/WEB-INF/conf/event/publishers.xml" />   
+  <CONFIGURATOR path="/WEB-INF/conf/event/business_map.xml" /> 
   
 <!-- mapcatalogue -->  
 
@@ -88,8 +96,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/statements.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/geoengine.xml" />  
-  
-
+	<CONFIGURATOR path="/WEB-INF/conf/mapcatalogue/business_map.xml" /> 
+ 
 	
 	<!-- tools.importexport -->
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/importexport.xml" />
@@ -100,6 +108,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/messages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/validation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/importexport/business_map.xml" />
 	  
   
 	<!-- tools.role -->	
@@ -107,7 +116,8 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/role/presentation.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/tools/role/publishers.xml" />     
+    <CONFIGURATOR path="/WEB-INF/conf/tools/role/publishers.xml" />   
+    <CONFIGURATOR path="/WEB-INF/conf/tools/role/business_map.xml" />  
   
   
 	<!-- tools.scheduler -->
@@ -117,6 +127,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/validation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/scheduler/business_map.xml" />
 	
 	<!-- tools.datasource -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/actions.xml" />
@@ -125,6 +136,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/tools/datasource/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/validation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/business_map.xml" />
 	
 	<!-- tools.dataset -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/modules.xml" />
@@ -133,6 +145,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/tools/dataset/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/validation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/dataset.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/business_map.xml" />
 	
 	<!-- tools.distributionlist -->	
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/modules.xml" />
@@ -140,14 +153,14 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/publishers.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/validation.xml" />
-	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/distributionlist/business_map.xml" />
 	
 	<!-- workflow -->	
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/workflow/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/workflow/publishers.xml" /> 
-
+ 	<CONFIGURATOR path="/WEB-INF/conf/workflow/business_map.xml" /> 
 	
 	<!-- hotlink -->
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/hotlink.xml" />
@@ -156,6 +169,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/hotlink/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/publishers.xml" /> 	
+    <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" /> 
 	
 	<!-- webapp -->
 	
@@ -166,6 +180,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/menu.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/business_map.xml" />
 	<!--  <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />-->
 
 	
@@ -191,9 +206,9 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/mail.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />
-	<!-- 
+	<!--  
 	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
- -->
+-->
 	<!-- profile manager -->
 	<!--
   	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />

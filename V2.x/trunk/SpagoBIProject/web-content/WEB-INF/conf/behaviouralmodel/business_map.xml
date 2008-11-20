@@ -16,6 +16,5 @@
 <MAP_PAGE_MODULE pageName="LovLookupPage" moduleName="ListLookupLovModule" businessProcess="LovsManagement" />
 <MAP_PAGE_MODULE pageName="ListLovsPage" moduleName="ListLovsModule" businessProcess="LovsManagement" />
 
-
 	</MAP_PAGE_MODULES>
 </BUSINESS_MAP>

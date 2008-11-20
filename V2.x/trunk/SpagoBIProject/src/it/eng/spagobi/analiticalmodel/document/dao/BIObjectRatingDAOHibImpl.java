@@ -58,10 +58,15 @@ public class BIObjectRatingDAOHibImpl extends AbstractHibernateDAO implements
 			SbiObjectsRating hibBIObjectsRating = new SbiObjectsRating();
 			
 			hibBIObjectsRating = loadBIObjectRatingById(obj, userid);
-			
+			Integer newRating = new Integer(rating);
+			if(newRating!= null && newRating.intValue()> 5){
+				newRating = new Integer(5);
+			}else if(newRating!= null && newRating.intValue()< 0){
+				newRating = new Integer(0);
+			}
 			if (hibBIObjectsRating != null){
 				
-				hibBIObjectsRating.setRating(new Integer(rating));
+				hibBIObjectsRating.setRating(newRating);
 				aSession.update(hibBIObjectsRating);
 
 			}else {
@@ -70,7 +75,7 @@ public class BIObjectRatingDAOHibImpl extends AbstractHibernateDAO implements
 				hibBIObjectsRatingId1.setObjId(obj.getId());
 				hibBIObjectsRatingId1.setUserId(userid);
 				hibBIObjectsRating1.setId(hibBIObjectsRatingId1);
-				hibBIObjectsRating1.setRating(new Integer(rating));
+				hibBIObjectsRating1.setRating(newRating);
 				hibBIObjectsRating1.setSbiObjects(hibBIObject);
 				hibBIObjectsRating = hibBIObjectsRating1 ;
 				aSession.save(hibBIObjectsRating);

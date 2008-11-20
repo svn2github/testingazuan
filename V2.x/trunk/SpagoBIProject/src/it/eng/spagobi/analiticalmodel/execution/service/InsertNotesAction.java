@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.execution.service;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
@@ -28,6 +31,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
@@ -35,12 +39,15 @@ import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -152,6 +159,38 @@ public class InsertNotesAction extends BaseProfileAction{
 		    
 		    if (objId != null && !objId.equals("")){
 		    	if (userId != null && !userId.equals("")){
+		    		
+		    		boolean canSee = false;
+		    		RequestContainer requestContainer = this.getRequestContainer();		
+		    		SessionContainer session = requestContainer.getSessionContainer();
+		    		SessionContainer permanentSession = session.getPermanentContainer();
+		    		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		    		
+		    		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objId));
+		    		try {
+						canSee = ObjectsAccessVerifier.canSee(obj, profile);
+					} catch (EMFInternalError e1) {
+						e1.printStackTrace();
+					}
+					if (!canSee) {
+						logger.error("Object with label = '" + obj.getLabel()
+								+ "' cannot be executed by the user!!");
+						Vector v = new Vector();
+						v.add(obj.getLabel());
+						throw new EMFUserError(EMFErrorSeverity.ERROR, "1075", v, null);
+					}
+					// get all correct execution roles
+					List correctRoles = new ArrayList();
+					try {
+						correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(new Integer(objId), profile);
+					} catch (NumberFormatException e2) {
+						e2.printStackTrace();
+					} 
+					if (correctRoles == null || correctRoles.size() == 0) {
+						logger.warn("Object cannot be executed by no role of the user");
+						throw new EMFUserError(EMFErrorSeverity.ERROR, 1006);
+					}
+		    		
 		    		String tempOldNotest = getNotes(execIdentifier, objId );
 		    		String tempOldNotes = "" ;
 		    		try {

@@ -44,6 +44,11 @@
 <PAGE_MODULE pagename="MetadataBIObjectPage" modulename="MetadataBIObjectModule"/>
 <PAGE_MODULE pagename="SelectParameterPage" modulename="SelectParameterPageModule"/>
 <PAGE_MODULE pagename="SelectDatasetLookupPage" modulename="SelectDatasetLookupModule"/>
+<PAGE_MODULE pagename="ListDistributionListUserPage" modulename="ListDistributionListUserModule"/>
+<PAGE_MODULE pagename="ListDistributionListUserPageWithOutback" modulename="ListDistributionListUserModuleWithOutback"/>	
+<PAGE_MODULE pagename="DetailDistributionListUserPage" modulename="DetailDistributionListUserModule"/>		
+<PAGE_MODULE pagename="InsertEmailPage" modulename="DetailDistributionListUserModule" />		
+	
 
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

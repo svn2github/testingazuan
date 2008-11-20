@@ -3,6 +3,7 @@
 	<MAP_ACTIONS>
 <MAP_ACTION actionName="MOVE_UP_LOWFUNCTIONALITY" businessProcess="FunctionalitiesManagement" />
 <MAP_ACTION actionName="MOVE_DOWN_LOWFUNCTIONALITY" businessProcess="FunctionalitiesManagement" />
+<MAP_ACTION actionName="DOWNLOAD_BIOBJ_TEMPLATE" businessProcess="DocumentDevManagement" />
 
 	</MAP_ACTIONS>
 	<MAP_PAGE_MODULES>

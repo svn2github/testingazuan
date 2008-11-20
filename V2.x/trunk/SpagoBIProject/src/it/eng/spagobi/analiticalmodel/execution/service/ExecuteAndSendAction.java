@@ -26,7 +26,6 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.security.IEngUserProfile;
@@ -37,8 +36,8 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
-import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -134,16 +133,16 @@ public class ExecuteAndSendAction extends BaseProfileAction {
 		    logger.debug("got message from Request=" + message);
 		} else if (parName.equals("userid")) {
 		    userId = (String) request.getAttribute("userid");
-		    logger.debug("got userId from Request=" + userId);
+		    logger.info("got userId from Request=" + userId);
 		} else if (parName.equals("login")) {
 		    login = (String) request.getAttribute("login");
-		    logger.debug("got user from Request");
+		    logger.info("got user from Request"+login);
 		} else if (parName.equals("pwd")) {
 		    pass = (String) request.getAttribute("pwd");
-		    logger.debug("got pwd from Request");
+		    logger.info("got pwd from Request");
 		} else if (parName.equals("replyto")) {
 			from = (String) request.getAttribute("replyto");
-		    logger.debug("got email to reply to, from Request");    
+		    logger.info("got email to reply to, from Request"+from);    
 		} else if (parName.equals("NEW_SESSION")) {
 			continue;
 		} else {

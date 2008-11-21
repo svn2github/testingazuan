@@ -1,5 +1,7 @@
 package it.eng.spagobi.kpi.model.dao;
 
+import java.util.List;
+
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.model.bo.Model;
 
@@ -33,4 +35,13 @@ public interface IModelDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public Integer insertModel(Model aModel, Integer modelTypeId) throws EMFUserError;
+	
+	/**
+	 * 
+	 * Returns the List of Model Root.
+	 * 
+	 * @return List of Model Root.
+	 * @throws EMFUserError If an Exception occurred.
+	 */
+	public List loadModelsRoot() throws EMFUserError;
 }

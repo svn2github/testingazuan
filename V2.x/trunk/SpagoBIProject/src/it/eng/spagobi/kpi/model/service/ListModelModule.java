@@ -21,27 +21,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.model.service;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.list.basic.impl.DefaultBasicListModule;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import java.util.List;
 
-public class ListModelModule extends DefaultBasicListModule{
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
+
+import org.apache.log4j.Logger;
+
+public class ListModelModule extends AbstractConfigurableListModule {
 	
-	public static final String MODULE_PAGE = "ListModelModule";
-	
-	/**
-	 * Gets the list.
-	 * 
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 * @return ListIFace
-	 * 
-	 * @throws Exception the exception
-	 */
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedHibernateConnectionListService.getList(this, request, response);
+    private static transient Logger logger = Logger.getLogger(ListModelModule.class);
+
+	protected List getObjectList(SourceBean request) {
+		List result = null;
+		try {
+			result = DAOFactory.getModelDAO().loadModelsRoot();
+		} catch (EMFUserError e) {
+			logger.error(e);
+		}
+		return result;
 	}
+
+	protected void setRowAttribute(SourceBean rowSB, Object obj) throws SourceBeanException {
+		Model aModel = (Model) obj;
+		rowSB.setAttribute("name", aModel.getName());
+		rowSB.setAttribute("id", aModel.getId());
+	}	
 
 }

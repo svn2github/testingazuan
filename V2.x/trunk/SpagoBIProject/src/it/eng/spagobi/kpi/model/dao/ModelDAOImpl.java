@@ -9,6 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -126,6 +127,47 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		logger.debug("OUT");
 	}
 
+	public List loadModelsRoot() throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		List toReturn = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			SbiDomains sbiDomains = new SbiDomains();
+			sbiDomains.setDomainCd("MODEL_ROOT");
+			SbiKpiModel modelExample = new SbiKpiModel();
+			
+			Criteria crit = aSession
+			.createCriteria(SbiKpiModel.class);
+			crit.add(Example.create(modelExample)).createCriteria("sbiDomains").add( Example.create( sbiDomains ));
+			List sbiKpiModelList = crit.list();
+			for (Iterator iterator = sbiKpiModelList.iterator(); iterator.hasNext();) {
+				SbiKpiModel sbiKpiModel = (SbiKpiModel) iterator.next();
+				Model aModel = toModelWithoutChildren(sbiKpiModel, aSession);
+				toReturn.add(aModel);
+			}
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+
+	}
+
 	private Model toModelWithoutChildren(SbiKpiModel value, Session aSession) {
 		logger.debug("IN");
 		Model toReturn = new Model();
@@ -141,10 +183,10 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		List modelAttributes = new ArrayList();
 		//
 
-		List modelAttrList = getModelAttListByDomain(value.getSbiDomains() ,aSession);
-		
-		for (Iterator iterator = modelAttrList.iterator(); iterator
-				.hasNext();) {
+		List modelAttrList = getModelAttListByDomain(value.getSbiDomains(),
+				aSession);
+
+		for (Iterator iterator = modelAttrList.iterator(); iterator.hasNext();) {
 			ModelAttribute attribute = new ModelAttribute();
 			SbiKpiModelAttr attr = (SbiKpiModelAttr) iterator.next();
 			String aCode = null;
@@ -156,7 +198,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			aCode = attr.getKpiModelAttrCd();
 			aName = attr.getKpiModelAttrNm();
 			aDesc = attr.getKpiModelAttrDescr();
-// devo ricavarmi l'attr val e settarlo a "" se è nullo
+			// devo ricavarmi l'attr val e settarlo a "" se è nullo
 			aValue = getModelAttrValue(value, attr, aSession);
 			aId = attr.getKpiModelAttrId();
 
@@ -185,11 +227,12 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			Session session) {
 		String toReturn = "";
 		Criteria critt = session.createCriteria(SbiKpiModelAttrVal.class);
-		critt.add(Expression.eq("sbiKpiModel",model));
-		critt.add(Expression.eq("sbiKpiModelAttr",attr));
+		critt.add(Expression.eq("sbiKpiModel", model));
+		critt.add(Expression.eq("sbiKpiModelAttr", attr));
 		List modelAttrValList = critt.list();
-		if(!modelAttrValList.isEmpty()){
-			SbiKpiModelAttrVal attrVal= (SbiKpiModelAttrVal)modelAttrValList.get(0);
+		if (!modelAttrValList.isEmpty()) {
+			SbiKpiModelAttrVal attrVal = (SbiKpiModelAttrVal) modelAttrValList
+					.get(0);
 			toReturn = attrVal.getValue();
 		}
 		return toReturn;
@@ -197,7 +240,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 
 	private List getModelAttListByDomain(SbiDomains sbiDomains, Session session) {
 		Criteria critt = session.createCriteria(SbiKpiModelAttr.class);
-		critt.add(Expression.eq("sbiDomains",sbiDomains));
+		critt.add(Expression.eq("sbiDomains", sbiDomains));
 		return critt.list();
 	}
 
@@ -211,15 +254,16 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			// get the domains
-			SbiDomains sbiDomains = (SbiDomains)aSession.load(SbiDomains.class, modelTypeId);
-			//set the sbiKpiModel
+			SbiDomains sbiDomains = (SbiDomains) aSession.load(
+					SbiDomains.class, modelTypeId);
+			// set the sbiKpiModel
 			SbiKpiModel sbiKpiModel = new SbiKpiModel();
 			sbiKpiModel.setKpiModelNm(model.getName());
 			sbiKpiModel.setKpiModelDesc(model.getDescription());
 			sbiKpiModel.setKpiModelCd(model.getCode());
 			sbiKpiModel.setSbiDomains(sbiDomains);
-			idToReturn = (Integer)aSession.save(sbiKpiModel);
-			
+			idToReturn = (Integer) aSession.save(sbiKpiModel);
+
 			tx.commit();
 
 		} catch (HibernateException he) {

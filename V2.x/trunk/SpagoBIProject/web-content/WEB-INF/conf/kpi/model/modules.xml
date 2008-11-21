@@ -4,12 +4,14 @@
 	<!-- MODEL -->
 	<MODULE name="ListModelModule" class="it.eng.spagobi.kpi.model.service.ListModelModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.model.title">
+			<!-- 
 			<QUERIES>
 				<SELECT_QUERY statement="LIST_MODEL" />
 				<DELETE_QUERY statement="DELETE_MODEL">
 					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />
 				</DELETE_QUERY>
 			</QUERIES>
+			 -->
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>

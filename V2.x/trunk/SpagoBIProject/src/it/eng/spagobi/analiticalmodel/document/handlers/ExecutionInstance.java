@@ -524,7 +524,7 @@ public class ExecutionInstance {
 					} else if (check.getValueTypeCd().equalsIgnoreCase("DATE")){
 						error = SpagoBIValidationImpl.validateField(urlName, label, aValue, "DATE", check.getFirstValue(), null, null);
 					}
-					toReturn.add(error);
+					if (error != null) toReturn.add(error);
 				}
 			}
 		}

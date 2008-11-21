@@ -56,7 +56,6 @@
 			</CONDITIONS>	
 			<FIELDS>
 				<FIELD name="LABEL" label="#SBISet.ListDataSet.columnLabel">
-					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>	
@@ -65,7 +64,6 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="NAME" label="#SBISet.eng.NameField">
-					<VALIDATOR validatorName="MANDATORY"/>
 					 <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>	

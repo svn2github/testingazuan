@@ -656,11 +656,11 @@ public class ParametersGeneratorTag extends TagSupport {
 			toInsert = "*"+toInsert;
 			break;
 		}else{
-			toInsert = "&nbsp;"+toInsert;
+			toInsert = "&nbsp; "+toInsert;
 		}
 		} 
 	  }else{
-		  toInsert = "&nbsp;"+toInsert; 
+		  toInsert = "&nbsp; "+toInsert; 
 	  }
 	htmlStream.append(toInsert);
 	htmlStream.append("</span>\n");

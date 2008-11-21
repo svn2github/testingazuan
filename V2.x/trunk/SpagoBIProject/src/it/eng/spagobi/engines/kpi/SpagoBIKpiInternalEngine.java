@@ -28,6 +28,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -319,8 +320,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	 * 
 	 * @return the new KpiInstance with all the same data except for the List of KpiValues which will be recalculated
 	 * @throws EMFUserError the EMF user error
+	 * @throws EMFInternalError 
 	 */
-	public KpiInstance calculateNewKpiInstance(KpiInstance k) throws EMFUserError{
+	public KpiInstance calculateNewKpiInstance(KpiInstance k) throws EMFUserError, EMFInternalError{
 		logger.debug("IN");
 		KpiInstance toReturn = new KpiInstance();
 		toReturn.setKpiInstanceId(k.getKpiInstanceId());
@@ -373,7 +375,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return toReturn;
 	}
 	
-	public KpiValue getNewKpiValue(DataSetConfig ds, KpiInstance k, Resource r) throws EMFUserError{
+	public KpiValue getNewKpiValue(DataSetConfig ds, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError{
 		
 		logger.debug("IN");
 		KpiValue kVal = new KpiValue();

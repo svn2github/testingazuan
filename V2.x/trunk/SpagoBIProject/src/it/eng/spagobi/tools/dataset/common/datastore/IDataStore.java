@@ -21,6 +21,8 @@ public interface IDataStore {
     IRecord getAt(int i);
     Iterator iterator();
     
+    public boolean isEmpty();
+    
     public void appendRow(IRecord r);
 	public void insertRow(int position,IRecord r);
     

@@ -26,6 +26,14 @@ public class DataStoreImpl implements IDataStore {
 		super();
 		this.records = new ArrayList();
 	}
+    
+    public boolean isEmpty(){
+    	if (this.records.isEmpty()){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
 
 
 	public void applyTranformer(IDataTransformer transformer) {

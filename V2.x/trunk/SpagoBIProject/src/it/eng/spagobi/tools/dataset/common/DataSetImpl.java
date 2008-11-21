@@ -5,27 +5,17 @@ package it.eng.spagobi.tools.dataset.common;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
-import it.eng.spagobi.tools.dataset.bo.FileDataSet;
-import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
-import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.reader.ClassReader;
-import it.eng.spagobi.tools.dataset.common.reader.FileReader;
-import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
 import it.eng.spagobi.tools.dataset.common.reader.IDataReader;
-import it.eng.spagobi.tools.dataset.common.reader.SQLResultSetReader;
-import it.eng.spagobi.tools.dataset.common.reader.WebServiceReader;
 
-import java.io.FileInputStream;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 /**
  * @author Angelo Bernabei
@@ -60,7 +50,7 @@ public class DataSetImpl implements IDataSet{
 	return dataStore;
     }
 
-    public void loadData(HashMap parameters) {
+    public void loadData(HashMap parameters) throws EMFUserError, EMFInternalError{
 	/*
 	 * 
 	 * operazioni da effettuar per il caricamento dei dati
@@ -79,14 +69,14 @@ public class DataSetImpl implements IDataSet{
     try {
 		dataReader= (IDataReader)Class.forName((String) reader.getAttribute("class")).newInstance();
 	} catch (InstantiationException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
+		logger.error("Instantiation Exception");
 	} catch (IllegalAccessException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
+		logger.error("IllegalAccessException Exception");
 	} catch (ClassNotFoundException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
+		logger.error("ClassNotFoundException Exception");
 	}
     dataReader.setDataSetConfig(ds);
     dataReader.setProfile(profile);

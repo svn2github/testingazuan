@@ -5,6 +5,9 @@ package it.eng.spagobi.tools.dataset.common.reader;
 
 import java.util.HashMap;
 
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -23,7 +26,7 @@ public interface IDataReader {
      * 
      */
 
-    IDataStore read(HashMap parameters);
+    IDataStore read(HashMap parameters)throws EMFUserError, EMFInternalError;
     
     void setDataSetConfig(DataSetConfig ds);
     

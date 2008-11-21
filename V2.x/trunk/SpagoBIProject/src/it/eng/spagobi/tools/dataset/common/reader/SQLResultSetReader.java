@@ -10,17 +10,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.axis.handlers.ErrorHandler;
 import org.apache.log4j.Logger;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -69,29 +72,42 @@ public class SQLResultSetReader implements IDataReader {
 		// TODO Auto-generated constructor stub
 	}
 
-	public IDataStore read(HashMap parameters) {
+	public IDataStore read(HashMap parameters) throws EMFUserError, EMFInternalError {
 		
 		logger.debug("IN");
 		IDataStore ids = (IDataStore)new DataStoreImpl();
 		DataSource dataSource=ds.getDataSource();
 		String datasource=null;
-		try{
-			datasource = dataSource.getLabel();
+	
+			if (dataSource!=null){
+				datasource = dataSource.getLabel();
+			}else{
+				logger.error("DataSource is missing");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "DataSource is null");
+			}
 
 			String query = ds.getQuery();
 		
-			query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
-			
+			try {
+				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
+				
 			//check if there are parameters filled
-		
-			if(parameters!=null && !parameters.isEmpty()){
-				query = GeneralUtilities.substituteParametersInString(query, parameters);	
+				if(parameters!=null && !parameters.isEmpty()){
+					query = GeneralUtilities.substituteParametersInString(query, parameters);	
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
 			SourceBean rowsSourceBean = null;
 			List colNames = new ArrayList();
 			
-			rowsSourceBean = (SourceBean) executeSelect(datasource, query, colNames);
+			try {
+				rowsSourceBean = (SourceBean) executeSelect(datasource, query, colNames);
+			} catch (SourceBeanException e) {
+				e.printStackTrace();
+				logger.error("SourceBean Exception");
+			}
 
 				//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
 				if(rowsSourceBean!=null){
@@ -120,15 +136,12 @@ public class SQLResultSetReader implements IDataReader {
 						}
 					}
 				}
-			}catch (Exception e) {
-				e.printStackTrace();
-				logger.debug("Exception during Query result reading");
-			}
+			
 			logger.debug("OUT");
 	return ids;
     }
 
-	public static Object executeSelect(String datasource, String statement, List columnsNames) throws EMFInternalError {
+	public static Object executeSelect(String datasource, String statement, List columnsNames) throws EMFInternalError, SourceBeanException, EMFUserError {
 		
 		logger.debug("IN");
 		Object result = null;
@@ -143,12 +156,18 @@ public class SQLResultSetReader implements IDataReader {
 	
 			sqlCommand = dataConnection.createSelectCommand(statement);
 			dataResult = sqlCommand.execute();
-			ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
-			.getDataObject();
-			List temp = Arrays.asList(scrollableDataResult.getColumnNames());
-			columnsNames.addAll(temp);
-			result = scrollableDataResult.getSourceBean();
-		} finally {
+			if(dataResult!=null){
+				ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
+				.getDataObject();
+				List temp = Arrays.asList(scrollableDataResult.getColumnNames());
+				columnsNames.addAll(temp);
+				result = scrollableDataResult.getSourceBean();
+			}
+		}catch(EMFInternalError e){
+			logger.error("Error in query Execution");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "Error in query Execution: check your query and Datasource");
+			
+		}finally {
 			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		}
 		logger.debug("OUT");

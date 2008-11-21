@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PRESENTATION>	
-  <MAPPING business_type="PAGE" business_name="ModelPage" publisher_name="ModelPublisher"/>
+ 
+  <MAPPING business_type="PAGE" business_name="ModelPage" publisher_name="ModelPublisher"/>   
   <MAPPING business_type="PAGE" business_name="ModelTreePage" publisher_name="ModelTreePublisher"/>
 </PRESENTATION>

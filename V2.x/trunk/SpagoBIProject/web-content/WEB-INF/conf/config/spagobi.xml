@@ -26,8 +26,8 @@
      
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
      
-     <!-- Xml (Spago framework) security Provider   
- 
+     <!-- Xml (Spago framework) security Provider  -->
+     <!--
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
@@ -35,14 +35,8 @@
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlSecurityServiceSupplierImpl" />
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
-    	<ROLE-TYPE-PATTERNS>
-	    	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
-	    	<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
-	    	<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
-	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
-    	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
---> 
+	 -->
    <!-- Web security Provider  (LDAP) -->
    <!--
 	<SECURITY>
@@ -60,7 +54,7 @@
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
-				<NAME_PORTAL_APPLICATION>@portal.context@</NAME_PORTAL_APPLICATION>
+				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
@@ -73,7 +67,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	 
+	
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
 
@@ -108,17 +102,17 @@
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />
-     
-     
- <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
+
+     <SPAGOBI_CONTEXT>/SpagoBI</SPAGOBI_CONTEXT>
+    
+     <SPAGOBI_HOST>http://localhost:58080</SPAGOBI_HOST>
  	
- 	   <BACKEND_SPAGOBI_HOST>@spagobi.backend.host@</BACKEND_SPAGOBI_HOST>
+ 	   <BACKEND_SPAGOBI_HOST>http://localhost:58080</BACKEND_SPAGOBI_HOST>
  	  
- 
+
+ 	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
-	
 	
 	 <PORTLET_EDIT_MODE_ROLES>
 		<ROLE name="/spagobi/admin" />
@@ -200,6 +194,8 @@
 		<DAO name="AlarmEventDAO" implementation="it.eng.spagobi.kpi.alarm.dao.SbiAlarmEventDAOHibImpl"/>
 		<DAO name="AlarmDAO" implementation="it.eng.spagobi.kpi.alarm.dao.SbiAlarmDAOHibImpl"/>
 		<DAO name="AlarmContactDAO" implementation="it.eng.spagobi.kpi.alarm.dao.SbiAlarmContactDAOHibImpl"/>
+		
+		<DAO name="ModelDAO" implementation="it.eng.spagobi.kpi.model.dao.ModelDAOImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

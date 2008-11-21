@@ -2,10 +2,19 @@ package it.eng.spagobi.kpi.model.bo;
 
 public class ModelAttribute {
 	
-	String name = null;
-	String code = null;
-	String descr = null;
-	String type = null;
+	private Integer id = null;// SBI_MODEL_ATTR_ID
+	private String name = null;// SBI_KPI_MODEL_ATTR Name
+	private String code = null;// SBI_KPI_MODEL_ATTR code
+	private String descr = null;// SBI_KPI_MODEL_ATTR descr
+	private String value = null; // SBI_KPI_MODEL_ATTR_VAL value
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public String getName() {
 		return name;
@@ -31,12 +40,12 @@ public class ModelAttribute {
 		this.descr = descr;
 	}
 
-	public String getType() {
-		return type;
+	public String getValue() {
+		return value;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setValue(String type) {
+		this.value = type;
 	}
 
 	public ModelAttribute() {

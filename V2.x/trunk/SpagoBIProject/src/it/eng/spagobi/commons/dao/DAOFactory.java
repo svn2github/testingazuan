@@ -56,6 +56,7 @@ import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmEventDAO;
 import it.eng.spagobi.kpi.config.dao.IKpiDAO;
+import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
@@ -501,4 +502,16 @@ public class DAOFactory {
 	public static ISbiAlarmEventDAO getAlarmEventDAO() throws EMFUserError{
 		return (ISbiAlarmEventDAO)createDAOInstance("AlarmEventDAO");
 	}
+	
+	/**
+	 * Gets the MODEL dao.
+	 * 
+	 * @return the MODEL dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static IModelDAO getModelDAO() throws EMFUserError{
+		return (IModelDAO)createDAOInstance("ModelDAO");
+	}
+	
 }

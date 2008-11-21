@@ -73,25 +73,10 @@
 			<BUTTONS />
 		</CONFIG>
 	</MODULE>
-
-
+	
 	<MODULE name="DetailModelModule"
 		class="it.eng.spagobi.kpi.model.service.DetailModelModule">
 		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.tree.title">
-			<QUERIES>
-				<SELECT_QUERY_MODEL statement="DETAIL_MODEL" />
-				<SELECT_QUERY_DOMAINS statement="DETAIL_MODEL_DOMAINS" />
-				<SELECT_QUERY_MODEL_ATTR statement="DETAIL_MODEL_MODEL_ATTR" />
-				<SELECT_QUERY_MODEL_ID_FROM_ATTR statement="SELECT_MODEL_ID_FROM_ATTR" />
-				<SELECT_QUERY_MODEL_ATTR_ID_FROM_MODEL_ID statement="SELECT_MODEL_ATTR_ID_FROM_MODEL_ID" />
-				
-				<UPDATE_QUERY_MODEL statement="UPDATE_MODEL" />
-				<UPDATE_QUERY_MODEL_ATTR statement="UPDATE_MODEL_ATTR" />
-				
-				<INSERT_QUERY_MODEL statement="INSERT_MODEL_ROOT" />
-				<INSERT_QUERY_MODEL_ATTR statement="INSERT_MODEL_ATTR_ROOT" />
-			</QUERIES>
-			<BUTTONS />
 		</CONFIG>
 	</MODULE>
 	

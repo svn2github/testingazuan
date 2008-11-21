@@ -129,12 +129,4 @@ public class SbiKpiModel  implements java.io.Serializable {
         this.sbiKpiModels = sbiKpiModels;
     }
    
-
-
-
-
-
-
-
-
 }

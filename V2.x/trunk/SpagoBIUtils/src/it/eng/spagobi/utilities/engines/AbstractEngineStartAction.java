@@ -194,8 +194,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      */
     public SourceBean getTemplate() {
     	if(template == null) {
-    		//template = getTemplate( getUserId(), getDocumentId() );
-    		template = getTemplate( getUserIdentifier(), getDocumentId() );
+    		template = getTemplate( getUserId(), getDocumentId() );
     	}
     	return template;
     }

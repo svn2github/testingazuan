@@ -38,6 +38,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -48,6 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 
 /**
@@ -167,6 +171,60 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return attrValue;
 	}
 	
+	public List getAttributeAsStringList(String attrName) {
+		List attrValue = null;
+		Object rawAttrValue;
+		
+		if( !requestContainsAttribute(attrName) ) return null;
+		
+		rawAttrValue = getAttribute(attrName);		
+		if(rawAttrValue != null) {
+			if(rawAttrValue instanceof ArrayList) {
+				attrValue = (List)rawAttrValue;
+			} else if (rawAttrValue instanceof String) {
+				attrValue = new ArrayList();
+				attrValue.add( rawAttrValue );
+			} else {
+				attrValue = new ArrayList();
+				attrValue.add(rawAttrValue.toString());
+			}
+		}
+		
+		return attrValue;		
+	}
+	
+	public List getAttributeAsCsvStringList(String attrName, String separator) {
+		List attrValue = null;
+		
+		if( !requestContainsAttribute(attrName) ) return null;
+		try {
+			attrValue = Arrays.asList( getAttributeAsString(attrName).split(separator) );
+		} catch (Exception e) {
+			logger.warn("Impossible to convert request parameter " + attrName 
+					+ " whose value is " + getAttributeAsString(attrName)
+					+ " to list", e);
+		}
+		
+		return attrValue;		
+	}
+	
+	public JSONObject getAttributeAsJSONObject(String attrName) {
+		JSONObject attrValue = null;
+		
+		if( !requestContainsAttribute(attrName) ) return null;
+		try {
+			attrValue = new JSONObject(getAttributeAsString(attrName));
+		} catch (Exception e) {
+			logger.warn("Impossible to convert request parameter " + attrName 
+					+ " whose value is " + getAttributeAsString(attrName)
+					+ " to JSONObject", e);
+		}
+		
+		return attrValue;		
+	}
+	
+	
+	
 	/**
 	 * Del attribute.
 	 * 
@@ -242,18 +300,18 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		getHttpResponse().getWriter().print(content);
 	}
 	
-	public void writeBackToClient(File file, boolean inline, String contentName, String contentType) throws IOException {
+	public void writeBackToClient(File file, IStreamEncoder encoder,boolean inline, String contentName, String contentType) throws IOException {
 		BufferedInputStream bis = null;
 		
 		bis = new BufferedInputStream( new FileInputStream(file) );
 		try {
-			writeBackToClient(bis, inline, contentName, contentType);
+			writeBackToClient(bis, encoder, inline, contentName, contentType);
 		} finally {
 			bis.close();
 		}		
 	}
 	
-	public void writeBackToClient(InputStream in, boolean inline, String contentName, String contentType) throws IOException {		
+	public void writeBackToClient(InputStream in, IStreamEncoder encoder, boolean inline, String contentName, String contentType) throws IOException {		
 		int contentLength = 0;
 		int b = -1;
 		
@@ -263,13 +321,18 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		getHttpResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + contentName + "\";");
 		getHttpResponse().setContentType( contentType );
 		
-		while((b = in.read()) != -1) {
-			getHttpResponse().getOutputStream().write(b);
-			contentLength++;
-		}		
+		if(encoder == null) {
+			while((b = in.read()) != -1) {
+				getHttpResponse().getOutputStream().write(b);
+				contentLength++;
+			}	
+			getHttpResponse().setContentLength( contentLength );
+		} else {
+			encoder.encode(in, getHttpResponse().getOutputStream());
+		}
 		getHttpResponse().getOutputStream().flush();
 		
-		getHttpResponse().setContentLength( contentLength );
+		
 	}
 	
 	

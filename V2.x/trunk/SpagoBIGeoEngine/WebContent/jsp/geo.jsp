@@ -27,14 +27,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <head>
 
 <%@ include file="../jsp/geo_base.jspf"%>
-<script type="text/javascript" src='../js/service/geo.js'></script>
+<script type="text/javascript" src='../js/spagobi/geo/deprecated/geo.js'></script>
 <link type="text/css" rel="stylesheet" href ="../css/geo.css"/>
 
 </head>
 
 
 <%	
-	System.out.println("Andiamo avincere");
 	boolean isDrillPanelVisible = true;
 	String isSaveSubObjFuncActive = null;
 	String actionUrl = null;

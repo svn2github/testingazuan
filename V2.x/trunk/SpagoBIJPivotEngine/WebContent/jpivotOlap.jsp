@@ -28,6 +28,12 @@ LICENSE: see LICENSE.txt file
 --%>
 
 <%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%--
+The following directive catches exceptions thrown by jsps, must be commented in development environment
+--%>
+<%@page errorPage="/html/error.html"%>
+
 <%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
 <%@page import="com.tonbeller.wcf.controller.RequestContext"%>
 <%@page import="java.util.Locale"%>

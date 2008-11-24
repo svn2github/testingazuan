@@ -1109,6 +1109,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		maxLength = label.length();
 	}
 
+	maxLength = maxLength + 1;
 	int labelDivWidth = maxLength * PIXEL_PER_CHAR;
 
 	return labelDivWidth;

@@ -55,6 +55,22 @@ public class SaveAnalysisBean extends ComponentSupport {
 	}
 
 	public void setAnalysisDescription(String analysisDescription) {
+		RequestContext context = RequestContext.instance();
+		Locale locale = context.getLocale();
+		if (analysisDescription == null) {
+			this.analysisDescription = null;
+			return;
+		}
+		if (analysisDescription.indexOf("/") != -1 || analysisDescription.indexOf("\\") != -1) {
+			logger.error("Analysis name contains file path separators.");
+	    	String msg = EngineMessageBundle.getMessage("error.analysis.description.contains.separators", locale);
+			throw new FormatException(msg);
+		}
+		if (analysisDescription.indexOf("<") != -1 || analysisDescription.indexOf(">") != -1 || analysisDescription.indexOf("&lt;") != -1 || analysisDescription.indexOf("&gt;") != -1) {
+			logger.error("Analysis name contains invalid characters.");
+	    	String msg = EngineMessageBundle.getMessage("error.analysis.description.invalid.characters", locale);
+			throw new FormatException(msg);
+		}
 		this.analysisDescription = analysisDescription;
 	}
 
@@ -85,7 +101,7 @@ public class SaveAnalysisBean extends ComponentSupport {
 	    	String msg = EngineMessageBundle.getMessage("error.analysis.name.contains.separators", locale);
 			throw new FormatException(msg);
 		}
-		if (analysisName.indexOf("<") != -1 || analysisName.indexOf(">") != -1) {
+		if (analysisName.indexOf("<") != -1 || analysisName.indexOf(">") != -1 || analysisName.indexOf("&lt;") != -1 || analysisName.indexOf("&gt;") != -1) {
 			logger.error("Analysis name contains invalid characters.");
 	    	String msg = EngineMessageBundle.getMessage("error.analysis.name.invalid.characters", locale);
 			throw new FormatException(msg);
@@ -100,7 +116,11 @@ public class SaveAnalysisBean extends ComponentSupport {
 	}
 
 	public void setAnalysisVisibility(String analysisVisibility) {
-		this.analysisVisibility = analysisVisibility;
+		if (PUBLIC_VISIBLITY.equalsIgnoreCase(analysisVisibility)) {
+			this.analysisVisibility = PUBLIC_VISIBLITY;
+		} else {
+			this.analysisVisibility = PRIVATE_VISIBLITY;
+		}
 	}
 	
 	public void resetFields (){

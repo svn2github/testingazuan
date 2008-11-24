@@ -29,6 +29,7 @@
 <ACTION name="INSERT_NOTES_ACTION"/>
 <ACTION name="RATING_ACTION"/>
 <ACTION name="GET_PNG"/>
+<ACTION name="MENU_BEFORE_EXEC"/>
 
 </ACTIONS_EXCLUDED_FROM_GLOBAL>
 	
@@ -47,8 +48,9 @@
 <PAGE_MODULE pagename="ListDistributionListUserPage" modulename="ListDistributionListUserModule"/>
 <PAGE_MODULE pagename="ListDistributionListUserPageWithOutback" modulename="ListDistributionListUserModuleWithOutback"/>	
 <PAGE_MODULE pagename="DetailDistributionListUserPage" modulename="DetailDistributionListUserModule"/>		
-<PAGE_MODULE pagename="InsertEmailPage" modulename="DetailDistributionListUserModule" />		
-	
-
+<PAGE_MODULE pagename="InsertEmailPage" modulename="DetailDistributionListUserModule" />	
+<PAGE_MODULE pagename="BIObjectsPage" modulename="BIObjectsModule" />
+<PAGE_MODULE pagename="BIObjectsPage" modulename="TreeObjectsModule" />
+<PAGE_MODULE pagename="BIObjectsPage" modulename="ListBIObjectsModule" />
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

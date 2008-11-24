@@ -310,6 +310,22 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
+	  <error-page>
+	  	<exception-type>java.lang.Throwable</exception-type>
+	  	<location>/html/error.html</location>
+	  </error-page>
+		 
+	  <error-page>
+	  	<error-code>404</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+  
+	  <error-page>
+	  	<error-code>500</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+
+
 	<taglib>
 		<taglib-uri>http://www.tonbeller.com/wcf</taglib-uri>
 		<taglib-location>/WEB-INF/wcf/wcf-tags.tld</taglib-location>

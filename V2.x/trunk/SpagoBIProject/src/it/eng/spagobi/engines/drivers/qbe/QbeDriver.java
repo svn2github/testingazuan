@@ -116,8 +116,8 @@ public class QbeDriver implements IEngineDriver {
 			
 			Integer id = subObjectDetail.getId();
 			
-			map.put("nameSubObject",  subObjectDetail.getName() );
-			map.put("descriptionSubObject", subObjectDetail.getDescription() );
+			map.put("nameSubObject",  subObjectDetail.getName() != null? subObjectDetail.getName(): "" );
+			map.put("descriptionSubObject", subObjectDetail.getDescription() != null? subObjectDetail.getDescription(): "");
 			map.put("visibilitySubObject", subObjectDetail.getIsPublic().booleanValue()?"Public":"Private" );
 	        map.put("subobjectId", subObjectDetail.getId());
 		

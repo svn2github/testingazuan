@@ -20,11 +20,15 @@
  **/
 package it.eng.spagobi.engines.geo.map.utils;
 
+import it.eng.spagobi.utilities.service.IStreamEncoder;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
@@ -35,7 +39,11 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
  * 
  * @author Andrea Gioia
  */
-public class SVGMapConverter {
+public class SVGMapConverter implements IStreamEncoder {
+	
+	public void encode(InputStream inputStream,	OutputStream outputStream) throws IOException {
+		SVGMapConverter.SVGToJPEGTransform(inputStream, outputStream);
+	}
 	
 	/**
 	 * Transform the svg file into a jpeg image.
@@ -45,7 +53,7 @@ public class SVGMapConverter {
 	 * 
 	 * @throws Exception raised if some errors occur during the elaboration
 	 */
-	public static void SVGToJPEGTransform(InputStream inputStream,	OutputStream outputStream) throws Exception {
+	public static void SVGToJPEGTransform(InputStream inputStream,	OutputStream outputStream) throws IOException {
 		// create a JPEG transcoder
 		JPEGTranscoder t = new JPEGTranscoder();
 		
@@ -68,7 +76,11 @@ public class SVGMapConverter {
 		TranscoderOutput output = new TranscoderOutput(outputStream);
 		
 		// save the image
-		t.transcode(input, output);
+		try {
+			t.transcode(input, output);
+		} catch (TranscoderException e) {
+			throw new IOException("Impossible to convert svg to jpeg: " + e.getCause());
+		}
 	}
 
 	

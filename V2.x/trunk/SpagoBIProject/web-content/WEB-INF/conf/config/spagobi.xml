@@ -8,15 +8,15 @@
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
+	<!-- defines the max dimension (in bytes) of a document template when uploading it into document detail page -->
+	<TEMPLATE_MAX_SIZE>5242880</TEMPLATE_MAX_SIZE>
      
     <!-- ********************* START MENU CONFIGURATION ************************ -->
 	<!-- Property 'mode' defines the style of menu: 
 			- 'ALL_TOP': all the menu voices are on the top of page
 			- 'ALL_LEFT': all the menu voices are on the left of the page
 			- 'TOP_LEFT': the first level is on the top, while others levels are on the left of the page
-		Property 'viewExtra' defines the visibility of extra contents for final users:
-			- 'YES': view the right menu with extra-contents like hotlink, distribution list, ...
-			' 'NO': non view right menu  
+			AT THE TIME BEING, ONLY ALL_TOP WORKS PROPERLY
 	 -->
 	<!--  <MENU mode="ALL_TOP" viewExtra="YES"/> -->
 	 
@@ -35,6 +35,12 @@
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlSecurityServiceSupplierImpl" />
     	<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
+    	<ROLE-TYPE-PATTERNS>
+	    	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
+	    	<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
+	    	<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
+	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
+    	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
 	 -->
    <!-- Web security Provider  (LDAP) -->

@@ -2,4 +2,5 @@
 <INITIALIZERS>
 	<INITIALIZER class="it.eng.spago.tracing.TracerInitializer" config="" />
 	<INITIALIZER class="it.eng.spago.dispatching.coordinator.DispatcherInitializer" config="" />
+	<INITIALIZER class="it.eng.spago.util.MonitorInitializer" config="" />
 </INITIALIZERS>

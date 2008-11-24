@@ -2,6 +2,7 @@
 <MASTER>
 	
 	<CONFIGURATOR path="/WEB-INF/conf/qbe.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />
 	
 	<!-- start QBE COMMONS -->
 	<CONFIGURATOR path="/WEB-INF/conf/commons/actions.xml" />
@@ -28,6 +29,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/validation.xml" />
 	
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/presentation.xml" />

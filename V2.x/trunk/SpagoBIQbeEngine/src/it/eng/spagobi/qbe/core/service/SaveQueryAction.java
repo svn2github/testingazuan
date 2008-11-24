@@ -22,6 +22,8 @@ package it.eng.spagobi.qbe.core.service;
 
 import java.io.IOException;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,9 @@ import org.json.JSONException;
 
 import it.eng.qbe.newquery.Query;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFAbstractError;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.commons.service.JSONAcknowledge;
@@ -81,6 +86,19 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		
 		
 		try {
+			
+			EMFErrorHandler errorHandler = getErrorHandler();
+			if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				Collection errors = errorHandler.getErrors();
+				Iterator it = errors.iterator();
+				while (it.hasNext()) {
+					EMFAbstractError error = (EMFAbstractError) it.next();
+					if (error.getSeverity().equals(EMFErrorSeverity.ERROR)) {
+						throw new SpagoBIEngineServiceException(getActionName(), error.getMessage(), null);
+					}
+				}
+			}
+			
 			super.service(request, response);			
 			
 			queryName = getAttributeAsString(QUERY_NAME);		

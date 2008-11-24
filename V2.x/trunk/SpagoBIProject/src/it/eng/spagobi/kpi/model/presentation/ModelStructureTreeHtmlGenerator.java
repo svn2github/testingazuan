@@ -14,6 +14,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.kpi.model.bo.Model;
 
 public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator{
 
@@ -121,19 +122,24 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator{
 			String initialPath) {
 		Iterator it = items.iterator();
 		while (it.hasNext()) {
-			SourceBean item = (SourceBean)it.next();
-			List rows = item.getAttributeAsList("ROW");			
-			for (int i=0; i < rows.size(); i++){
-				SourceBean row = (SourceBean)rows.get(i);
-				String name = (String)row.getAttribute("NAME");
-				// ID NON AVENDO GLI APICI VIENE INTERPRETATO COME UN INTEGER
-				Integer id =  (Integer)row.getAttribute("ID");
-				Integer parentId = (Integer)row.getAttribute("PARENT_ID");
-				if (parentId == null)
-					parentId = -1;
-				addItemForJSTree(htmlStream, null,id,parentId , name, true, false, false);
-			}
-			
+			Model aModel = (Model)it.next();
+			recursiveStepAddItems(htmlStream,aModel);
+		}
+	}
+	
+	private void recursiveStepAddItems(StringBuffer htmlStream, Model aModel){
+		String name = aModel.getName();
+		Integer id =  aModel.getId();
+		Integer parentId = aModel.getRootId();
+		if (parentId == null)
+			parentId = -1;
+		// parent
+		addItemForJSTree(htmlStream, null,id,parentId , name, true, false, false);
+		List modelChildren = aModel.getChildrenNodes();
+		// children
+		for (Iterator iterator = modelChildren.iterator(); iterator.hasNext();) {
+			Model child = (Model) iterator.next();
+			recursiveStepAddItems(htmlStream, child);
 		}
 	}
 	

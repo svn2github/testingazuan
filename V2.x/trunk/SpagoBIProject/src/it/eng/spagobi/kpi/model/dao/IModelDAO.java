@@ -17,6 +17,15 @@ public interface IModelDAO {
 	public Model loadModelWithoutChildrenById(Integer id) throws EMFUserError;
 	
 	/**
+	 * Returns the Model wit its children of the referred id
+	 * 
+	 * @param id of the Model
+	 * @return Model of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public Model loadModelWithChildrenById(Integer id) throws EMFUserError;
+	
+	/**
 	 * Modify model.
 	 * 
 	 * @param aModel the a model

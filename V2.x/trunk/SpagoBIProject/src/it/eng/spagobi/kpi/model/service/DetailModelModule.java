@@ -8,7 +8,6 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelAttribute;
-import it.eng.spagobi.kpi.model.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;

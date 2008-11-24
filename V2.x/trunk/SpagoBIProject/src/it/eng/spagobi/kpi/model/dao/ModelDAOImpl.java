@@ -3,6 +3,7 @@ package it.eng.spagobi.kpi.model.dao;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -55,6 +56,37 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			}
 		}
 		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	public Model loadModelWithChildrenById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Model toReturn = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiModel hibSbiKpiModel = (SbiKpiModel) aSession.load(
+					SbiKpiModel.class, id);
+			toReturn = toModelWithChildren(hibSbiKpiModel, null); 
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model with id "
+					+ ((id == null) ? "" : id.toString()), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}		
+		logger.debug("OUT");		
 		return toReturn;
 	}
 
@@ -168,6 +200,43 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 
 	}
 
+	/**
+	 * Create a Model (without modelAttribute) with children from a SbiKpiModel.
+	 * @param value the SbiKpiModel to transform to a Model.
+	 * @return the Model create from the SbiKpiModel.
+	 */
+	private Model toModelWithChildren(SbiKpiModel value, Integer rootId) {
+		logger.debug("IN");
+		Model toReturn = new Model();
+		String name = value.getKpiModelNm();
+		String description = value.getKpiModelDesc();
+		String code = value.getKpiModelCd();
+		Integer id = value.getKpiModelId();
+
+		String typeName = value.getSbiDomains().getValueNm();
+		String typeDescription = value.getSbiDomains().getValueDs();
+		List childrenNodes = new ArrayList();
+		
+		Set children = value.getSbiKpiModels();
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+			SbiKpiModel sbiKpichild = (SbiKpiModel) iterator.next();
+			Model child = toModelWithChildren(sbiKpichild, id);
+			childrenNodes.add(child);
+		}
+		
+		toReturn.setId(id);
+		toReturn.setName(name);
+		toReturn.setDescription(description);
+		toReturn.setCode(code);
+		toReturn.setTypeName(typeName);
+		toReturn.setTypeDescription(typeDescription);
+		toReturn.setChildrenNodes(childrenNodes);
+		toReturn.setRootId(rootId);
+		
+		logger.debug("OUT");		
+		return toReturn;
+	}
+	
 	private Model toModelWithoutChildren(SbiKpiModel value, Session aSession) {
 		logger.debug("IN");
 		Model toReturn = new Model();
@@ -198,7 +267,6 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			aCode = attr.getKpiModelAttrCd();
 			aName = attr.getKpiModelAttrNm();
 			aDesc = attr.getKpiModelAttrDescr();
-			// devo ricavarmi l'attr val e settarlo a "" se è nullo
 			aValue = getModelAttrValue(value, attr, aSession);
 			aId = attr.getKpiModelAttrId();
 

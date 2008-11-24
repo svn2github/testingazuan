@@ -4,14 +4,6 @@
 	<!-- MODEL -->
 	<MODULE name="ListModelModule" class="it.eng.spagobi.kpi.model.service.ListModelModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.model.title">
-			<!-- 
-			<QUERIES>
-				<SELECT_QUERY statement="LIST_MODEL" />
-				<DELETE_QUERY statement="DELETE_MODEL">
-					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />
-				</DELETE_QUERY>
-			</QUERIES>
-			 -->
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>
@@ -61,15 +53,6 @@
 	<MODULE name="ListModelTreeModule"
 		class="it.eng.spagobi.kpi.model.service.ListModelTreeModule">
 		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.list.model.tree.title">
-			<QUERIES>
-				<SELECT_QUERY statement="LIST_MODEL_TREE" />
-				<SELECT_ROOT statement="LIST_MODEL_TREE_ROOT" />
-
-				<DELETE_QUERY statement="">
-					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE" />
-					<PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="AF" />
-				</DELETE_QUERY>
-			</QUERIES>
 			<COLUMNS />
 			<CAPTIONS />
 			<BUTTONS />

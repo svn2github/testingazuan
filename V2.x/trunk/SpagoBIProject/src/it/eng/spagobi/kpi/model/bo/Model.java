@@ -6,8 +6,8 @@ import java.util.List;
 public class Model {
 	
 	private Integer id = null;// id of ModelNode (KPI_MODEL_ID)
-	private ModelNode root =null; //root of the tree made of ModelNodes, representing the model
-	private List childrenNodes = null;//List of ModelNodes children
+	private Integer rootId = null; //the root id of the tree made of ModelNodes, representing the model
+	private List childrenNodes = null;//List of Model children
 	private List modelAttributes = null;//List of all related ModelAttributes
 	private String name = null;//name of the complete model (like CMMI/GQM)
 	private String description = null;//description of the complete model
@@ -70,12 +70,12 @@ public class Model {
 		this.modelAttributes = new ArrayList();
 	}
 	
-	public ModelNode getRoot() {
-		return root;
+	public Integer getRootId() {
+		return rootId;
 	}
 
-	public void setRoot(ModelNode root) {
-		this.root = root;
+	public void setRootId(Integer rootId) {
+		this.rootId = rootId;
 	}
 
 	public List getChildrenNodes() {

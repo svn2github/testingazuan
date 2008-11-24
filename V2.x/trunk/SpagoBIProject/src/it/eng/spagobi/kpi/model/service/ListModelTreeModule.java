@@ -27,9 +27,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
-import it.eng.spago.init.InitializerIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.kpi.model.utils.ModelUtils;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.model.bo.Model;
 
 
 public class ListModelTreeModule extends AbstractModule {
@@ -39,46 +39,9 @@ public class ListModelTreeModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String parentId = (String)request.getAttribute("ID");
 		List result = new ArrayList();
-		SourceBean root = getRoot(parentId);
-		result.add(root);
-		RecursiveNavigationStep(parentId, result);
+		Model aModel = DAOFactory.getModelDAO().loadModelWithChildrenById(Integer.parseInt(parentId));
+		result.add(aModel);
 		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, result);
-	}
-	
-	
-	private void recursiveNavigation(List childId,List result ) throws Exception{
-		for(int i = 0; i<childId.size(); i++){
-			RecursiveNavigationStep(childId.get(i).toString(), result);
-		}
-	}
-	
-	private void RecursiveNavigationStep(String parentId, List result)throws Exception{
-		SourceBean item = getChildren(parentId);
-		result.add(item);
-		List myChildId = item.getAttributeAsList("ROW.ID");
-		recursiveNavigation(myChildId, result);
-	}
-
-	private SourceBean getRoot(String parentId) throws Exception {
-		SourceBean result = null;
-		InitializerIFace serviceInitializer = (InitializerIFace) this;
-		SourceBean statement =
-            (SourceBean) serviceInitializer.getConfig().getAttribute(
-                "QUERIES.SELECT_ROOT");
-		ArrayList inputParameters = new ArrayList();
-		inputParameters.add(parentId);
-		return ModelUtils.selectQuery(statement,inputParameters);
-	}
-	
-	private SourceBean getChildren(String parentId) throws Exception{ 
-		
-		InitializerIFace serviceInitializer = (InitializerIFace) this;
-		SourceBean statement =
-            (SourceBean) serviceInitializer.getConfig().getAttribute(
-                "QUERIES.SELECT_QUERY");
-		ArrayList inputParameters = new ArrayList();
-		inputParameters.add(parentId);
-		return ModelUtils.selectQuery(statement, inputParameters);
 	}
 
 }

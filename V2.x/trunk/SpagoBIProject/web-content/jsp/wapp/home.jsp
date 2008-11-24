@@ -531,11 +531,22 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		return;
 	}
 	
-	function logout() {
-		window.location = "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
-	}
+	<%
+	//Check if SSO is active
+	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+	String active = (String) validateSB.getCharacters();
+	if (active == null || active.equalsIgnoreCase("false")) { %>
+		function logout() {
+			window.location = "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
+		}
+	<% } else { %>
+			function logout() {
+			window.location = "<%= ((SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.SECURITY_LOGOUT_URL")).getCharacters() %>";
+		}
+	<% }
 	
-	<% } %>
+	}%>
 	
 <%--} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
 

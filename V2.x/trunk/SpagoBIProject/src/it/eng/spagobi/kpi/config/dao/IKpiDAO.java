@@ -4,13 +4,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
-import it.eng.spagobi.kpi.config.metadata.SbiKpi;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
-import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
-import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 
 import java.util.Date;
@@ -62,10 +57,31 @@ public interface IKpiDAO {
 	 */	
 	public Kpi loadKpiById(Integer id) throws EMFUserError ;
 	
+	/**
+	 * Returns the DatasetConfig for the KPI with id kpiId
+	 * 
+	 * @param kpiId of the KPI 
+	 * @return DataSetConfig used to calculate the KPI with ID kpiId 
+	 * @throws EMFUserError if an Exception occurs
+	 */
 	public DataSetConfig getDsFromKpiId(Integer kpiId) throws EMFUserError;
-		
+	
+	/**
+	 * KpiValue valid for the the KpiInstance selected, for the resource selected, in the date selected 
+	 * 
+	 * @param KpiValue 
+	 * @return KpiValue valid for the the KpiInstance selected, for the resource selected, in the date selected 
+	 * @throws EMFUserError if an Exception occurs
+	 */
 	public KpiValue getKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError;
 	
+	/**
+	 * Returns True if the KPIInstance with id kpiInstID is under AlarmControl, false if it is not 
+	 * 
+	 * @param kpiInstID of the KPIInstance that we want to monitor
+	 * @return Boolean that shows if the KPIInstance with id kpiInstID is under AlarmControl  
+	 * @throws EMFUserError if an Exception occurs
+	 */
 	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError;
 	
 	//public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;

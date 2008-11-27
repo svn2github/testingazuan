@@ -164,7 +164,7 @@ public class ChartImpl {
 		logger.debug("IN");
 		if(thresholds!=null && !thresholds.isEmpty()){
 			Iterator it = thresholds.iterator();
-			//TODO testare con min da solo o max da solo
+			
 			while(it.hasNext()){
 				Threshold t = (Threshold)it.next();
 				String type = t.getType();

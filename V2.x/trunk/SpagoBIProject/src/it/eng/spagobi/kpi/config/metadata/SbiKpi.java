@@ -27,7 +27,7 @@ public class SbiKpi  implements java.io.Serializable {
      private String code;
      private String metric;
      private String description;
-     private double weight;
+     private Double weight;
      private Character flgIsFather;
      private Set sbiKpiModels = new HashSet(0);
      private Set sbiKpis = new HashSet(0);
@@ -48,7 +48,7 @@ public class SbiKpi  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpi(Integer kpiId, SbiKpi sbiKpi, SbiDataSetConfig sbiDataSet, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, String name, String documentLabel, String code, String metric, String description, double weight, Character flgIsFather, Set sbiKpiModels, Set sbiKpis, Set sbiKpiInstances, Set sbiKpiRoles) {
+    public SbiKpi(Integer kpiId, SbiKpi sbiKpi, SbiDataSetConfig sbiDataSet, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, String name, String documentLabel, String code, String metric, String description, Double weight, Character flgIsFather, Set sbiKpiModels, Set sbiKpis, Set sbiKpiInstances, Set sbiKpiRoles) {
         this.kpiId = kpiId;
         this.sbiKpi = sbiKpi;
         this.sbiDataSet = sbiDataSet;
@@ -155,7 +155,7 @@ public class SbiKpi  implements java.io.Serializable {
         return this.weight;
     }
     
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 

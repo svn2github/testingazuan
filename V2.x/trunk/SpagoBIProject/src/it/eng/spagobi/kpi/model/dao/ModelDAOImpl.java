@@ -17,6 +17,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
@@ -58,7 +59,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
+
 	public Model loadModelWithChildrenById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -69,7 +70,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			tx = aSession.beginTransaction();
 			SbiKpiModel hibSbiKpiModel = (SbiKpiModel) aSession.load(
 					SbiKpiModel.class, id);
-			toReturn = toModelWithChildren(hibSbiKpiModel, null); 
+			toReturn = toModelWithChildren(hibSbiKpiModel, null);
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model with id "
 					+ ((id == null) ? "" : id.toString()), he);
@@ -85,8 +86,8 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 					aSession.close();
 				logger.debug("OUT");
 			}
-		}		
-		logger.debug("OUT");		
+		}
+		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -167,16 +168,17 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			SbiDomains sbiDomains = new SbiDomains();
 			sbiDomains.setDomainCd("MODEL_ROOT");
 			SbiKpiModel modelExample = new SbiKpiModel();
-			
-			Criteria crit = aSession
-			.createCriteria(SbiKpiModel.class);
-			crit.add(Example.create(modelExample)).createCriteria("sbiDomains").add( Example.create( sbiDomains ));
+
+			Criteria crit = aSession.createCriteria(SbiKpiModel.class);
+			crit.add(Example.create(modelExample)).createCriteria("sbiDomains")
+					.add(Example.create(sbiDomains));
 			List sbiKpiModelList = crit.list();
-			for (Iterator iterator = sbiKpiModelList.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = sbiKpiModelList.iterator(); iterator
+					.hasNext();) {
 				SbiKpiModel sbiKpiModel = (SbiKpiModel) iterator.next();
 				Model aModel = toModelWithoutChildren(sbiKpiModel, aSession);
 				toReturn.add(aModel);
@@ -202,7 +204,9 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 
 	/**
 	 * Create a Model (without modelAttribute) with children from a SbiKpiModel.
-	 * @param value the SbiKpiModel to transform to a Model.
+	 * 
+	 * @param value
+	 *            the SbiKpiModel to transform to a Model.
 	 * @return the Model create from the SbiKpiModel.
 	 */
 	private Model toModelWithChildren(SbiKpiModel value, Integer rootId) {
@@ -216,14 +220,14 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String typeName = value.getSbiDomains().getValueNm();
 		String typeDescription = value.getSbiDomains().getValueDs();
 		List childrenNodes = new ArrayList();
-		
+
 		Set children = value.getSbiKpiModels();
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			SbiKpiModel sbiKpichild = (SbiKpiModel) iterator.next();
 			Model child = toModelWithChildren(sbiKpichild, id);
 			childrenNodes.add(child);
 		}
-		
+
 		toReturn.setId(id);
 		toReturn.setName(name);
 		toReturn.setDescription(description);
@@ -231,12 +235,12 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setChildrenNodes(childrenNodes);
-		toReturn.setRootId(rootId);
-		
-		logger.debug("OUT");		
+		toReturn.setParentId(rootId);
+
+		logger.debug("OUT");
 		return toReturn;
 	}
-	
+
 	private Model toModelWithoutChildren(SbiKpiModel value, Session aSession) {
 		logger.debug("IN");
 		Model toReturn = new Model();
@@ -321,6 +325,9 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+
+			Integer parentId = model.getParentId();
+
 			// get the domains
 			SbiDomains sbiDomains = (SbiDomains) aSession.load(
 					SbiDomains.class, modelTypeId);
@@ -330,6 +337,12 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			sbiKpiModel.setKpiModelDesc(model.getDescription());
 			sbiKpiModel.setKpiModelCd(model.getCode());
 			sbiKpiModel.setSbiDomains(sbiDomains);
+			if (parentId != null) {
+				SbiKpiModel sbiKpiParentModel = (SbiKpiModel) aSession.load(
+						SbiKpiModel.class, parentId);
+				sbiKpiModel.setSbiKpiModel(sbiKpiParentModel);
+			}
+
 			idToReturn = (Integer) aSession.save(sbiKpiModel);
 
 			tx.commit();
@@ -348,6 +361,50 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		}
 		logger.debug("OUT");
 		return idToReturn;
+	}
+
+	public boolean deleteModel(Integer modelId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			SbiKpiModel aModel = (SbiKpiModel) aSession.load(SbiKpiModel.class,
+					modelId);
+			recursiveStepDelete(aSession, aModel);
+			deleteModelAndAttribute(aSession, aModel);
+		
+			tx.commit();
+
+		} catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			aSession.close();
+		}
+		return true;
+	}
+
+	private void recursiveStepDelete(Session aSession, SbiKpiModel aModel) {
+		Set children = aModel.getSbiKpiModels();
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+			SbiKpiModel modelChild = (SbiKpiModel) iterator.next();
+			recursiveStepDelete(aSession, modelChild);
+			// delete Model and Attribute
+			deleteModelAndAttribute(aSession, modelChild);
+		}
+	}
+	
+	private void deleteModelAndAttribute(Session aSession, SbiKpiModel aModel){
+		Set modelChildAttributes = aModel.getSbiKpiModelAttrVals();
+		for (Iterator iterator2 = modelChildAttributes.iterator(); iterator2
+				.hasNext();) {
+			SbiKpiModelAttrVal modelAttrVal = (SbiKpiModelAttrVal) iterator2.next();
+			aSession.delete(modelAttrVal);
+		}
+		aSession.delete(aModel);
 	}
 
 }

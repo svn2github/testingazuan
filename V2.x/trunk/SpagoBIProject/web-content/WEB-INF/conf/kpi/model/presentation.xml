@@ -3,4 +3,6 @@
  
   <MAPPING business_type="PAGE" business_name="ModelPage" publisher_name="ModelPublisher"/>   
   <MAPPING business_type="PAGE" business_name="ModelTreePage" publisher_name="ModelTreePublisher"/>
+  
+  <MAPPING business_type="PAGE" business_name="ModelInstancePage" publisher_name="ModelInstancePublisher"/>
 </PRESENTATION>

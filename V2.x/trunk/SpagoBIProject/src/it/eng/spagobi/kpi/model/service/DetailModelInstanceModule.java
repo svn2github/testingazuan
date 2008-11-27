@@ -3,18 +3,11 @@ package it.eng.spagobi.kpi.model.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
-import it.eng.spago.init.InitializerIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.model.bo.Model;
-import it.eng.spagobi.kpi.model.bo.ModelAttribute;
-import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
 
 
-public class DetailModelModule extends DefaultDetailModule{
+public class DetailModelInstanceModule extends DefaultDetailModule{
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGE");
@@ -23,17 +16,17 @@ public class DetailModelModule extends DefaultDetailModule{
 		}
 		// DETAIL_SELECT
 		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)){
-			String parentId = (String)request.getAttribute("ID");
-			DetailModelUtil.selectModel(Integer.parseInt(parentId), response);
+			String idModel = (String)request.getAttribute("ID");
+			DetailModelInstanceUtil.selectModel(Integer.parseInt(idModel), response);
 		}
 		// DETAIL_UPDATE
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)){
 			String idModel = (String) request.getAttribute("ID");
-			DetailModelUtil.updateModelFromRequest(request, Integer.parseInt(idModel));
+			DetailModelInstanceUtil.updateModelInstanceFromRequest(request, Integer.parseInt(idModel));
 		}
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)){
-			DetailModelUtil.newModel(request,response, null);
+			DetailModelInstanceUtil.newModel(request,response, null);
 		}
 	}
 

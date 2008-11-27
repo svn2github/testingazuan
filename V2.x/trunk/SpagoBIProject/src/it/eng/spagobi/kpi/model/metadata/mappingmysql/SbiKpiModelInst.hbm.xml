@@ -6,7 +6,9 @@
     <class name="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" table="sbi_kpi_model_inst" >
         <id name="kpiModelInst" type="integer">
             <column name="KPI_MODEL_INST" />
-            <generator class="assigned" />
+            <generator class="native">
+            	<param name="sequence">sbi_kpi_model_inst_seq</param>
+            </generator>
         </id>
         <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
             <column name="id_kpi_instance" />

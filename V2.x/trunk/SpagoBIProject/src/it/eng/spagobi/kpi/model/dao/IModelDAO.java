@@ -53,4 +53,12 @@ public interface IModelDAO {
 	 * @throws EMFUserError If an Exception occurred.
 	 */
 	public List loadModelsRoot() throws EMFUserError;
+	
+	/**
+	 * 
+	 * @param modelId id of the model to delete.
+	 * @return Return true if the model is deleted.
+	 * @throws EMFUSEMFUserError If an Exception occurred.
+	 */
+	public boolean deleteModel(Integer modelId) throws EMFUserError;
 }

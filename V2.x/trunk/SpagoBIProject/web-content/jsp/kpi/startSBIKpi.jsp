@@ -66,12 +66,12 @@
     </td>
   </tr>
 
-	<tr class="portlet-font">
+  <tr class="portlet-font">
 		<td width="100" align="center"><img
-			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/assessmentIcon.png")%>' />
+			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/assessmentFramework.png")%>' />
 		</td>
 		<td width="20">&nbsp;</td>
-		<td vAlign="middle"><br />
+		<td vAlign="middle">
 		  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ModelPage"/>
 		  							  <portlet:param name="FIELD_ORDER" value="NAME"/>
 									  </portlet:actionURL>'
@@ -80,7 +80,22 @@
 		  </a>
 		</td>
 	</tr>
-
+	
+	  <tr class="portlet-font">
+		<td width="100" align="center"><img
+			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/assessmentIcon.png")%>' />
+		</td>
+		<td width="20">&nbsp;</td>
+		<td vAlign="middle">
+		  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ModelInstancePage"/>
+		  							  <portlet:param name="FIELD_ORDER" value="NAME"/>
+									  </portlet:actionURL>'
+			class="link_main_menu">
+			<spagobi:message key="sbi.kpi.modelInstanceDefinition.label" bundle="<%=messageBunle%>" />
+		  </a>
+		</td>
+	</tr>
+	
 	<%--
 	 
 	  <tr class="portlet-font">
@@ -114,6 +129,8 @@
 			href='<portlet:actionURL><portlet:param name="PAGE" value="AssessmentModelPage"/></portlet:actionURL>'
 			class="link_main_menu"> <spagobi:message key="s4q.wz2.assessmentModel" /> </a></td>
 	</tr>
+	
+	
 	--%>	
 </table>
 

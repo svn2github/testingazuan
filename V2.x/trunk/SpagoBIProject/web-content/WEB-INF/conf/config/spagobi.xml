@@ -202,6 +202,7 @@
 		<DAO name="AlarmContactDAO" implementation="it.eng.spagobi.kpi.alarm.dao.SbiAlarmContactDAOHibImpl"/>
 		
 		<DAO name="ModelDAO" implementation="it.eng.spagobi.kpi.model.dao.ModelDAOImpl"/>
+		<DAO name="ModelInstanceDAO" implementation="it.eng.spagobi.kpi.model.dao.ModelInstanceDAOImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

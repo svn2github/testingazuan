@@ -25,6 +25,8 @@ import java.util.List;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.Model;
@@ -50,6 +52,30 @@ public class ListModelModule extends AbstractConfigurableListModule {
 		Model aModel = (Model) obj;
 		rowSB.setAttribute("name", aModel.getName());
 		rowSB.setAttribute("id", aModel.getId());
-	}	
+	}
 
+	@Override
+	public boolean delete(SourceBean request, SourceBean response) {
+		boolean toReturn = false;
+		String modelId = (String)request.getAttribute("ID");
+		if(canDelete(Integer.parseInt(modelId))) {
+			try {
+				toReturn = DAOFactory.getModelDAO().deleteModel(Integer.parseInt(modelId));
+			} catch (NumberFormatException e) {
+				toReturn = false;
+			} catch (EMFUserError e) {
+				toReturn = false;
+			}	
+		}
+		if(!toReturn){
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING, "10012","component_kpi_messages"));
+		}
+			
+		return toReturn; 
+	}
+	
+	private boolean canDelete(Integer modelId){
+		return true;
+	}
 }

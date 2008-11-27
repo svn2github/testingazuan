@@ -17,8 +17,8 @@ public class SbiKpiModelInst  implements java.io.Serializable {
     // Fields    
 
      private Integer kpiModelInst;
-     private SbiKpiInstance sbiKpiInstance;
-     private SbiKpiModelInst sbiKpiModelInst;
+     private SbiKpiInstance sbiKpiInstance; //KPI
+     private SbiKpiModelInst sbiKpiModelInst; // MODEL_INST
      private String name;
      private String description;
      private Set sbiKpiModelInsts = new HashSet(0);

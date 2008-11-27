@@ -1,7 +1,10 @@
 package it.eng.spagobi.kpi.config.dao;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -28,8 +31,11 @@ import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
+import it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionListsObjects;
 
 import java.awt.Color;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -37,9 +43,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Expression;
 
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	
@@ -293,6 +302,42 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
+	
+	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError{
+		logger.debug("IN");
+		Boolean toReturn = false;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String hql = "from SbiAlarm sa where sa.sbiKpiInstance.idKpiInstance = ? " ;
+					
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, kpiInstID);
+	
+			List l = query.list();
+			if (!l.isEmpty())	{
+				toReturn = true;
+			}
+			
+		} catch (HibernateException he) {
+			
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 	public void isAlarmingValue(KpiValue value) throws EMFUserError {
 		logger.debug("IN");
@@ -396,6 +441,82 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		logger.debug("OUT");
 	}
+	
+	public DataSetConfig getDsFromKpiId(Integer kpiId) throws EMFUserError{
+		logger.debug("IN");
+		DataSetConfig toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpi k = (SbiKpi)aSession.load(SbiKpi.class,kpiId);		
+			SbiDataSetConfig ds = k.getSbiDataSet();
+			toReturn = DAOFactory.getDataSetDAO().loadDataSetByID(ds.getDsId());
+			
+		} catch (HibernateException he) {
+			
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	public KpiValue getKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError{
+		
+		logger.debug("IN");
+		KpiValue toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();  
+			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
+			finder.add(Expression.eq("sbiKpiInstance.idKpiInstance",kpiInstanceId));
+			finder.add(Expression.lt("beginDt",d));
+			finder.add(Expression.gt("endDt",d));	
+			
+			if (r!=null){
+				finder.add(Expression.eq("sbiResources.resourceId",r.getId()));
+			}
+						
+			List l = finder.list();
+			if(!l.isEmpty()){
+			    Iterator it = l.iterator();
+			    while(it.hasNext()){
+			    	SbiKpiValue temp = (SbiKpiValue)it.next();
+			    	toReturn = toKpiValue(temp, d);
+			    	break;
+			    }			
+			}
+			
+		} catch (HibernateException he) {
+			
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 	
 	private KpiValue toKpiValue(SbiKpiValue value,Date d){
@@ -495,7 +616,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		 //gets list of children id
 		 Set children = hibSbiKpiModelInst.getSbiKpiModelInsts();
 		 List childrenIds = new ArrayList();
-		 Iterator iCI = childrenIds.iterator();
+		 Iterator iCI = children.iterator();
 			while(iCI.hasNext()){
 				SbiKpiModelInst skml =(SbiKpiModelInst) iCI.next();
 				Integer childId = skml.getKpiModelInst();
@@ -509,7 +630,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		toReturn.setFatherId(fatherId);
 		//toReturn.setModelReference(reference);TODO aspettare che ci sia il legame nel db
 		toReturn.setIsRoot(isRoot);		
-		toReturn.setChildren(childrenIds);	
+		toReturn.setChildrenIds(childrenIds);	
 		logger.debug("OUT");
 		return toReturn;
 	}

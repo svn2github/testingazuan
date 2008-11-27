@@ -32,8 +32,8 @@ import java.awt.Color;
 public class KpiInterval {
 
 	private String label;
-	private double min;
-	private double max;
+	private Double min;
+	private Double max;
 	private Color color;
 	
 	
@@ -51,7 +51,7 @@ public class KpiInterval {
 	 * @param max the max
 	 * @param color the color
 	 */
-	public KpiInterval(double min, double max, Color color) {
+	public KpiInterval(Double min, Double max, Color color) {
 		super();
 		this.min = min;
 		this.max = max;
@@ -63,7 +63,7 @@ public class KpiInterval {
 	 * 
 	 * @return the min
 	 */
-	public double getMin() {
+	public Double getMin() {
 		return min;
 	}
 	
@@ -72,7 +72,7 @@ public class KpiInterval {
 	 * 
 	 * @param min the new min
 	 */
-	public void setMin(double min) {
+	public void setMin(Double min) {
 		this.min = min;
 	}
 	
@@ -81,7 +81,7 @@ public class KpiInterval {
 	 * 
 	 * @return the max
 	 */
-	public double getMax() {
+	public Double getMax() {
 		return max;
 	}
 	
@@ -90,7 +90,7 @@ public class KpiInterval {
 	 * 
 	 * @param max the new max
 	 */
-	public void setMax(double max) {
+	public void setMax(Double max) {
 		this.max = max;
 	}
 	

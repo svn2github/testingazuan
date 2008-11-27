@@ -8,8 +8,10 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
+import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 
 import java.util.Date;
 import java.util.List;
@@ -59,6 +61,12 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public Kpi loadKpiById(Integer id) throws EMFUserError ;
+	
+	public DataSetConfig getDsFromKpiId(Integer kpiId) throws EMFUserError;
+		
+	public KpiValue getKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError;
+	
+	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError;
 	
 	/**
 	 * Returns true if the values are the actual ones, false if they have to be recalculated

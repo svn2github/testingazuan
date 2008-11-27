@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.kpi.utils.KpiInterval;
+import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
@@ -70,6 +71,7 @@ public class ChartImpl {
 	protected Vector intervals ;//List of chart intervals	
 	protected double lower=0.0;//Chart's lower bound
 	protected double upper=0.0;//Chart's higher bound
+	protected Double target=null;//Chart's target to attaign
 
 	/**
 	 * This function creates the chart object.
@@ -106,6 +108,10 @@ public class ChartImpl {
 				sbi= new Meter();
 				logger.debug("Meter chart instanciated");
 			}
+			else if(subtype.equalsIgnoreCase("BulletGraph")){
+				sbi= new BulletGraph();
+				logger.debug("Meter chart instanciated");
+			}
 			logger.debug("OUT");	
 		return sbi;
 	}
@@ -127,14 +133,6 @@ public class ChartImpl {
 			logger.debug("Chart style title setted");
 		styleSubTitle =(StyleLabel) config.get("styleSubTitle");
 			logger.debug("Chart style subtitle setted");
-		color = (Color) config.get("color");
-			logger.debug("Chart background color setted");
-		width = (Integer) config.get("width");
-			logger.debug("Chart width setted");
-		height = (Integer) config.get("height");
-			logger.debug("Chart height setted");
-		legend = (Boolean) config.get("legend");
-			logger.debug("Chart legend setted: "+legend.toString());
 		logger.debug("OUT");	
 	}
 	
@@ -169,43 +167,114 @@ public class ChartImpl {
 			//TODO testare con min da solo o max da solo
 			while(it.hasNext()){
 				Threshold t = (Threshold)it.next();
+				String type = t.getType();
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
 				String label = t.getLabel();
 				Color c = t.getColor();
-				if (min.doubleValue()<lower){
-					lower = min.doubleValue();
-				}
-				if (max.doubleValue()>upper){
-					upper = max.doubleValue();
-				}			
 				
-				KpiInterval interval = new KpiInterval();
-				
-				if(c!=null)	{
-					interval.setColor(c);
-				}else{
-					interval.setColor(Color.WHITE);
-				}
-				if(label!=null)	{
-					interval.setLabel(label);
-				}else{
-					interval.setLabel("");
-				}
-				
-				if(max!=null)	{
-					interval.setMax(max);
-				}else{
-					interval.setMax(upper);
-				}
-				
-				if(min!=null)	{
-					interval.setMin(min);
-				}else{
-					interval.setMin(lower);
-				}
-				
-				intervals.add(interval);
+				if (type.equals("RANGE")){
+					if (min.doubleValue()<lower){
+						lower = min.doubleValue();
+					}
+					if (max.doubleValue()>upper){
+						upper = max.doubleValue();
+					}			
+					
+					KpiInterval interval = new KpiInterval();
+					
+					if(c!=null)	{
+						interval.setColor(c);
+					}else{
+						interval.setColor(Color.WHITE);
+					}
+					if(label!=null)	{
+						interval.setLabel(label);
+					}else{
+						interval.setLabel("");
+					}
+					
+					if(max!=null)	{
+						interval.setMax(max);
+					}else{
+						interval.setMax(upper);
+					}
+					
+					if(min!=null)	{
+						interval.setMin(min);
+					}else{
+						interval.setMin(lower);
+					}
+					
+					intervals.add(interval);
+				}else if (type.equals("MINIMUM")){
+					
+					if (min.doubleValue()<lower){
+						lower = min.doubleValue()*2;
+					}	
+					if(min.doubleValue()>0){
+						upper = min.doubleValue()*2;
+					}else if(min.doubleValue()==0){
+						upper = 10;
+						lower = -10;
+					}
+					
+					KpiInterval interval1 = new KpiInterval();
+					
+					if(c!=null)	{
+						interval1.setColor(c);
+					}else{
+						interval1.setColor(Color.WHITE);
+					}
+					if(label!=null)	{
+						interval1.setLabel(label);
+					}else{
+						interval1.setLabel("");
+					}
+						interval1.setMax(min);
+						interval1.setMin(lower);				
+					intervals.add(interval1);
+					KpiInterval interval2 = new KpiInterval();
+						interval2.setColor(Color.WHITE);
+						interval2.setLabel("");
+						interval2.setMax(upper);
+						interval2.setMin(min);				
+					intervals.add(interval2);
+					
+				}else if (type.equals("MAXIMUM")){
+					
+					if (max.doubleValue()>upper){
+						upper = max.doubleValue()*2;
+					}	
+					if (max.doubleValue()<0){
+						lower = max.doubleValue()*2;
+					}else if(max.doubleValue()==0){
+						lower = -10;
+						upper = 10;
+					}
+					
+					KpiInterval interval1 = new KpiInterval();
+						interval1.setColor(Color.WHITE);
+					
+						interval1.setLabel("");
+						interval1.setMax(max);
+						interval1.setMin(lower);				
+					intervals.add(interval1);
+					KpiInterval interval2 = new KpiInterval();
+					if(c!=null)	{
+						interval2.setColor(c);
+					}else{
+						interval2.setColor(Color.WHITE);
+					}
+					if(label!=null)	{
+						interval2.setLabel(label);
+					}else{
+						interval2.setLabel("");
+					}
+						interval2.setMax(upper);
+						interval2.setMin(max);				
+					intervals.add(interval2);				
+				}				
 				logger.debug("New interval added to the Vector");					
 			}
 		}

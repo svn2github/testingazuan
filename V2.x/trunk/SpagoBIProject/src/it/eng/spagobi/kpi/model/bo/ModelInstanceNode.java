@@ -50,14 +50,6 @@ public class ModelInstanceNode {
 		this.reference = reference;
 	}
 
-	public List getChildren() {
-		return childrenIds;
-	}
-
-	public void setChildren(List children) {
-		this.childrenIds = children;
-	}
-
 	public KpiInstance getKpiInstanceAssociated() {
 		return kpiInstanceAssociated;
 	}

@@ -44,6 +44,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spagobi.engines.kpi.utils.StyleLabel"%>
 <%@page import="it.eng.spagobi.engines.kpi.bo.ChartImpl"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiResourceBlock"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLine"%>
 
 <%
 	boolean docComposition=false;
@@ -72,7 +74,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
-	
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/spagobi_shared.css")%>"/>
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
 	<%
@@ -80,123 +82,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String subTitle = (String)sbModuleResponse.getAttribute("subName");
 	if (title!=null){
 		%>
-		<div align="center" style="font:Arial;font-size:24;color:blue"><%=title%></div>
+		<div class="kpi_title_section"><%=title%></div>
 			<%}if (subTitle!=null){%>
-		<div align="center" style="font:Arial;font-size:16;color:aqua"><%=subTitle%></div>
-		<%}%>	
-	<%
-		//ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
-		List charts =(List)sbModuleResponse.getAttribute("charts");
-		Boolean show_chart = (Boolean)sbModuleResponse.getAttribute("show_chart");		
-		
-		if (!show_chart){
-		List kpiValues =(List)sbModuleResponse.getAttribute("kpiValues");
-			Iterator kpiVIt = kpiValues.iterator();
-			String text = "";
-			while (kpiVIt.hasNext()){
-				KpiValue kpiV = (KpiValue)kpiVIt.next();
-				Resource r = kpiV.getR();
-				List thresholds = kpiV.getThresholds();
-				String value = kpiV.getValue();
-				Double weight = kpiV.getWeight();
-						%>			
-					<div>*******************************************</div>
-					<% if (r!=null){
-					//creates a document without the representation of the kpivalues but only with its values for each resoruce
-					String resName = r.getName();%>
-					<div>RESOURCE = <%=resName%></div>
-					<% }%>
-					<div>Value = <%=value%></div>
-					<div>Weight = <%=weight%></div>					
-					<div>Thresholds:</div>
-	
-					<%
-					Iterator threshIt = thresholds.iterator();
-					while(threshIt.hasNext()){
-						Threshold t = (Threshold)threshIt.next();
-						String type = t.getType();
-						Double min = null;
-						Double max = null;						
-						%>
-						<div>Threshold Type: <%=type%></div>
-						<%
-						if (type.equals("RANGE")){						
-							min = t.getMinValue();
-							max = t.getMaxValue();
-							%>
-							<div>Min: <%=min.toString()%></div>
-							<div>Max: <%=max.toString()%></div>
-							<%														
-						}else if (type.equals("MINIMUM")){						
-							min = t.getMinValue();
-							%>
-							<div>Min: <%=min.toString()%></div>
-							<%
-						}else if (type.equals("MAXIMUM")){							
-							max = t.getMaxValue();
-							%>
-							<div>Max: <%=max.toString()%></div>
-							<%
-						}					
-					}
-				}				
-		}else if(!charts.isEmpty()){
-			
-			%> <!-- BEGIN OF TABLE WITH CHARTS -->
-			<br>
-			   <table align="left">
-    				<tr>
-     		<%
-			Iterator it = charts.iterator();
-     		int j = 0;
-     		int colonne = 1 ;
-			while(it.hasNext()){
-				ChartImpl sbi = (ChartImpl)it.next();
-				////////////// Chart creation///////////////////
+		<div class="kpi_subtitle_section"><%=subTitle%></div>
+		<%}
+		Boolean display_bullet_chart = (Boolean)sbModuleResponse.getAttribute("display_bullet_chart");	
+		Boolean display_alarm = (Boolean)sbModuleResponse.getAttribute("display_alarm");
+		Boolean display_semaphore = (Boolean)sbModuleResponse.getAttribute("display_semaphore");
+		Boolean display_weight = (Boolean)sbModuleResponse.getAttribute("display_weight");
+		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
+		if(!kpiRBlocks.isEmpty()){
+			Iterator blocksIt = kpiRBlocks.iterator();
+			while(blocksIt.hasNext()){
 				
-				JFreeChart chart=null;
-				// create the chart
-				chart = sbi.createChart();
-				//Create the temporary file
-				BIObject objO = instanceO.getBIObject();
-				String uuidO=instanceO.getExecutionId();
-				String executionFlowIdO=instanceO.getFlowId();
-				String executionId = uuidO;
-				executionId = executionId.replaceAll("-", "");
-
-				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-				//Saving image on a temporary file
-				String dir=System.getProperty("java.io.tmpdir");
-				String path=dir+"/"+executionId+j+".png";
-				java.io.File file1 = new java.io.File(path);
-				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
-				
-				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
-		
-				if(colonne==6){
-					%>
-					</tr><tr>
-					<%
-					colonne = 1;
-				}
-				
+				KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
+				StringBuffer _htmlStream = block.makeTree( request,display_bullet_chart, display_alarm, display_semaphore,display_weight );
 				%>
-									<!-- Begin drawing the page -->
-
-			   <td>
-			   <div align="center">
-			   <img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
-			   </div>
-			   </td>
-				
-				<%j++;
-				colonne ++;
+				<br>
+				<br>
+			   <%=_htmlStream%>
+			   <br>
+			   <br>
+				<%
 			}
-		}
-		%>
-				</tr>
-			</table>
-			<!--END OF TABLE WITH CHARTS -->			
+		}		
+		%>	
+	<%@ include file="/jsp/commons/footer.jsp"%>		
 
 		

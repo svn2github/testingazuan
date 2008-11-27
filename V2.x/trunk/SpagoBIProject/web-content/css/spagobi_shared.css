@@ -530,4 +530,53 @@ IMG {
 	border-bottom: 1px solid #bbb;
 }
 
+/* KPI STYLES*/
 
+.kpi_resource_section    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 14pt;
+	font-weight: normal;
+	color: black;
+	background-color: #FFCC00;
+	font-weight: bold;
+	vertical-align: middle;
+	text-align: left;
+	height: 16pt;
+}
+
+.kpi_line_section_even    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12pt;
+	font-weight: normal;
+	color: black;
+	background-color: #FFFFCC;
+	vertical-align: middle;
+	height: 14pt;
+}
+
+.kpi_line_section_odd    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12pt;
+	font-weight: normal;
+	color: black;
+	background-color: #FFFF99;
+	vertical-align: middle;
+	height: 14pt;
+}
+
+.kpi_title_section    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 18pt;
+	font-weight: normal;
+	color: black;
+	font-weight: bold;
+	text-align: center;
+}
+
+.kpi_subtitle_section    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 16pt;
+	font-weight: normal;
+	color: black;
+	text-align: center;
+}

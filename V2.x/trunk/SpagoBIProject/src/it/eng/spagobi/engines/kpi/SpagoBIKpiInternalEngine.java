@@ -26,6 +26,7 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -41,12 +42,14 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+import it.eng.spagobi.engines.kpi.bo.KpiLine;
+import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
-import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.common.DataSetImpl;
 import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
@@ -55,8 +58,12 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.awt.Color;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,21 +88,22 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected StyleLabel styleTitle;//Document's title style
 	protected StyleLabel styleSubTitle;//Document's subtitle style
 	
-	protected int width;//width of each chart
-	protected int height;//height of each chart
-	
 	protected IEngUserProfile profile;
 	
-	protected String subtype="";
-	protected Color color;//background color of the charts
+	protected String subtype = "";
 	
 	protected HashMap parametersObject;
-	protected boolean show_chart=false;//false if only the kpi Values are shown
-	protected boolean legend=false;//true if the legend will be shown	
+	
+	protected boolean display_semaphore = false;//true if the semaphore will be displayed
+	protected boolean display_bullet_chart = false;//true if the bullet chart will be displayed	
+	protected boolean display_weight = false;//true if the weight will be displayed	
+	protected boolean display_alarm = false;//true if the alarm state will be displayed	
 	
 	protected HashMap confMap;//HashMap with all the config parameters	
 		
 	protected List resources ;//List of resources linked to the ModelInstanceNode
+	
+	protected boolean isActualDateRequired = true;
 
 
 
@@ -176,8 +184,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							String value=(String)values.get(0);
 							parametersMap.put(url, value);
 							if (url.equals("ParKpiDate")){
-								//TODO da verificare
-								dateOfKPI = new Date(url);
+								SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+								String format = (String) formatSB.getAttribute("format");
+								SimpleDateFormat f =  new SimpleDateFormat();
+								f.applyPattern(format);
+								try {
+									dateOfKPI = f.parse(value);
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+								isActualDateRequired = false;
 							}
 						}else if(values.size() >=1){
 							String value = "'"+(String)values.get(0)+"'";
@@ -186,8 +202,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							}
 							parametersMap.put(url, value);
 							if (url.equals("ParKpiDate")){
-								//TODO da verificare
-								dateOfKPI = new Date(url);
+								SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+								String format = (String) formatSB.getAttribute("format");
+								SimpleDateFormat f =  new SimpleDateFormat();
+								f.applyPattern(format);
+								try {
+									dateOfKPI = f.parse(value);
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+								isActualDateRequired = false;
 							}
 						}
 					}
@@ -210,78 +234,44 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			getSetConf(content);
 			logger.debug("Setted the configuration of the template");
+			
+			List kpiRBlocks = new ArrayList();//List of KpiValues Trees for each Resource: it will be sent to the jsp
+			
 			//gets the ModelInstanceNode
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
 			logger.debug("Loaded the modelInstanceNode with id "+ modelNodeInstanceID.toString());
-			//From the modelInstance gets the related KpiInstance
-			KpiInstance kpiI = mI.getKpiInstanceAssociated();
-			logger.debug("Loaded the KpiInstance related to the specified Model Instance");
 			//I set the list of resources of that specific ModelInstance
-			this.resources = mI.getResources();
+			this.resources = mI.getResources();			
+			logger.debug("Setted the List of Resources related to the specified Model Instance");		
 			
-			logger.debug("Setted the List of Resources related to the specified Model Instance");
 			if(this.resources == null || this.resources.isEmpty()){
 				logger.debug("There are no resources assigned to the Model Instance");
+				KpiResourceBlock block = new KpiResourceBlock();
+				KpiLine line = getBlock(modelNodeInstanceID, dateOfKPI, null);
+				block.setRoot(line);				
+				kpiRBlocks.add(block);
 			}
-			boolean isActual = DAOFactory.getKpiDAO().hasActualValues(kpiI, dateOfKPI);
-			
-			//if not still actual or doesn't have any values, calculates the new values and updates the KpiInstance
-			if (!isActual){
-				logger.debug("The kpiInstance with id "+kpiI.getKpiInstanceId().toString()+" hasn't got actual values");
-				kpiI = calculateNewKpiInstance(kpiI);
-				logger.debug("The kpiInstance with id "+kpiI.getKpiInstanceId().toString()+" was reloaded with the new calculated KpiValues");
-			}
-			//From the KpiInstance gets the last KpiValues 		
-			List kpiValues = kpiI.getValues();
-			
-			List charts = new ArrayList();
-			if(show_chart){
-				logger.debug("Started creation of each chart");
-				//If charts have to be shown the list "charts" will be filled with a chart for each KpiValue
-				Iterator it = kpiValues.iterator();
-				while(it.hasNext()){
-					KpiValue k = (KpiValue) it.next();
-					List thresholds = k.getThresholds();
-					String chartType = k.getChartType();
-					logger.debug("Got chartType: "+(chartType!=null?chartType:""));
-					if(chartType==null){
-						logger.debug("Chart Type is null");
-					}
-					if(chartType!=null){
-						
-						Double value = new Double(k.getValue());
-						HashMap pars = (HashMap) confMap.clone();
-						String chartTitle = "";
-						if(k.getR()!=null){
-							chartTitle = "Resource: "+k.getR().getName();
-							logger.debug("Added the title to the chart with the name of the resource: "+k.getR().getName());
-						}
-						pars.put("name", chartTitle) ;
-						ChartImpl sbi = null;				
-						sbi=ChartImpl.createChart(chartType);
-						logger.debug("Chart created");
-						sbi.setProfile(userProfile);
-						logger.debug("Profile setted");
-						sbi.setValueDataSet(value);
-						logger.debug("Value to represent setted: "+(value!=null ? value.toString():""));
-						sbi.configureChart(pars);
-						logger.debug("Config parameters setted into the chart");
-						sbi.setThresholds(thresholds);
-						logger.debug("Thresholds setted for the chart");
-						
-						charts.add(sbi);	
-						logger.debug("Chart added to the list of charts");
-					}					
-				}				
+			else{			
+				Iterator resourcesIt = this.resources.iterator();
+				while(resourcesIt.hasNext()){
+					Resource r = (Resource) resourcesIt.next();
+					KpiResourceBlock block = new KpiResourceBlock();
+					block.setR(r);
+					KpiLine line = getBlock(modelNodeInstanceID, dateOfKPI, r);
+					block.setRoot(line);						
+					kpiRBlocks.add(block);
+				}
 			}
 						
 			try{
-				logger.debug("successfull kpi creation");
+				logger.debug("successfull kpis creation");
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
-				response.setAttribute("kpiValues",kpiValues);
-				response.setAttribute("show_chart",show_chart);
+				response.setAttribute("display_bullet_chart",display_bullet_chart);
+				response.setAttribute("display_alarm",display_alarm);
+				response.setAttribute("display_semaphore",display_semaphore);
+				response.setAttribute("display_weight",display_weight);
 				if (name!=null){
 					response.setAttribute("title",name);
 					response.setAttribute("styleTitle",styleTitle);
@@ -290,9 +280,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					response.setAttribute("subName",subName);
 					response.setAttribute("styleSubTitle",styleSubTitle);
 				}
-				if(show_chart && !charts.isEmpty()){
-					response.setAttribute("charts",charts);
-				}
+				response.setAttribute("kpiRBlocks",kpiRBlocks);
 			}
 			catch (Exception eex) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 10107);
@@ -313,67 +301,127 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 	}
 	
-	/**
-	 * returns the new KpiInstance with all the same data except for the List of KpiValues which will be recalculated
-	 * 
-	 * @param Kpi Instance k for which new values have to be calculated
-	 * 
-	 * @return the new KpiInstance with all the same data except for the List of KpiValues which will be recalculated
-	 * @throws EMFUserError the EMF user error
-	 * @throws EMFInternalError 
-	 */
-	public KpiInstance calculateNewKpiInstance(KpiInstance k) throws EMFUserError, EMFInternalError{
-		logger.debug("IN");
-		KpiInstance toReturn = new KpiInstance();
-		toReturn.setKpiInstanceId(k.getKpiInstanceId());
-		toReturn.setKpi(k.getKpi());
-		toReturn.setD(k.getD());
-		boolean isAlarming = false ;
+	public KpiLine getBlock(Integer miId, Date dateOfKPI, Resource r) throws EMFUserError, EMFInternalError{
 		
-		List kpiValues = new ArrayList();
-		DataSetConfig ds = null;
-		Integer kpiId = k.getKpi();
-		try {
-		Kpi kpi = DAOFactory.getKpiDAO().loadKpiById(kpiId);
-		ds = kpi.getKpiDs();
-
-		} catch (EMFUserError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//In case the KPIValue has to be calculated for each resource
-		if(!resources.isEmpty()){
-			Iterator resIt = resources.iterator();
-			while(resIt.hasNext()){
+		KpiLine line = new KpiLine();
+		ModelInstanceNode modI = DAOFactory.getKpiDAO().loadModelInstanceById(miId, dateOfKPI);
+		String modelNodeName = modI.getName();
+		line.setModelNodeName(modelNodeName);		
 				
-				Resource r = (Resource)resIt.next();
-				KpiValue kVal = getNewKpiValue(ds,k, r);	
-				//Add kpiValue to the KpiValues List 
-				kpiValues.add(kVal);
-				//Insert new Value into the DB
-				DAOFactory.getKpiDAO().insertKpiValue(kVal);	
-				//Checks if the value is alarming (out of a certain range)
-				//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-				DAOFactory.getKpiDAO().isAlarmingValue(kVal);	
-			}
-		}else{//In case the KPIValue doesn't have to be calculated for a specific resource
-			
-			KpiValue kVal = getNewKpiValue(ds,k, null);	
-			//Add kpiValue to the KpiValues List 
-			kpiValues.add(kVal);
+		KpiInstance kpiI = modI.getKpiInstanceAssociated();
+		KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+		if(value == null && isActualDateRequired){
+			DataSetConfig ds = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+			value = getNewKpiValue(ds,kpiI, r);	
 			//Insert new Value into the DB
-			DAOFactory.getKpiDAO().insertKpiValue(kVal);
+			DAOFactory.getKpiDAO().insertKpiValue(value);	
 			//Checks if the value is alarming (out of a certain range)
 			//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-			DAOFactory.getKpiDAO().isAlarmingValue(kVal);
+			DAOFactory.getKpiDAO().isAlarmingValue(value);	
+		}else if (value!= null){
+			line.setValue(value);
+		}else{
+			return line;
 		}
 		
-		toReturn.setValues(kpiValues);
+		if(display_alarm){
+			Boolean alarm =  DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
+			line.setAlarm(alarm);
+		}
 		
+		if(display_bullet_chart){
+
+			List thresholds = value.getThresholds();
+			/*String chartType = value.getChartType();
+			logger.debug("Got chartType: "+(chartType!=null?chartType:""));
+			if(chartType==null){
+				logger.debug("Chart Type is null");
+			}*/
+			String chartType = "BulletGraph";			
+			Double val = new Double(value.getValue());
+			HashMap pars = (HashMap) confMap.clone();
+			ChartImpl sbi = null;				
+			sbi=ChartImpl.createChart(chartType);
+			logger.debug("Chart created");
+			sbi.setProfile(profile);
+			logger.debug("Profile setted");
+			sbi.setValueDataSet(val);
+			logger.debug("Value to represent setted: "+(val!=null ? val.toString():""));
+			sbi.configureChart(pars);
+			logger.debug("Config parameters setted into the chart");
+			sbi.setThresholds(thresholds);
+			logger.debug("Thresholds setted for the chart");
+			line.setChartBullet(sbi);			
+		}
+		if(display_semaphore){
+			Color semaphorColor = null;
+			List thresholds = value.getThresholds();
+			Double val = new Double(value.getValue());
+			semaphorColor = getSemaphorColor(thresholds,val);
+
+			line.setSemaphorColor(semaphorColor);
+		}	
+		
+		List children = new ArrayList();
+		List childrenIds = modI.getChildrenIds();
+		if (!childrenIds.isEmpty()){
+			Iterator childrenIt = childrenIds.iterator();
+			while(childrenIt.hasNext()){
+				Integer id = (Integer) childrenIt.next();			
+				KpiLine childrenLine = getBlock(id, dateOfKPI,r);
+				children.add(childrenLine);
+			}
+		}		
+		line.setChildren(children);
+		
+		return line;		
+	}
+	
+	/**
+	 * This function fills up the vector "intervals" with the intervals of the chart, getting them from a list of Thresholds 
+	 * 
+	 * @param List of thresholds to set
+	 * @return The Color of the interval in which the value falls
+	 */
+	public Color getSemaphorColor(List thresholds, Double value) {
+		logger.debug("IN");
+		Color toReturn = null;
+		if(thresholds!=null && !thresholds.isEmpty()){
+			Iterator it = thresholds.iterator();
+			//TODO testare con min da solo o max da solo
+			while(it.hasNext()){
+				Threshold t = (Threshold)it.next();
+				String type = t.getType();
+				Double min = t.getMinValue();
+				Double max = t.getMaxValue();
+				
+				if (type.equals("RANGE")){
+					if (value.doubleValue()>=min.doubleValue() && value.doubleValue()<=max.doubleValue() ){
+						String label = t.getLabel();
+						toReturn = t.getColor();
+					}
+				}else if (type.equals("MINIMUM")){
+					if (value.doubleValue()<min.doubleValue()){
+						String label = t.getLabel();
+						toReturn = t.getColor();
+					}else{
+						toReturn = Color.WHITE;
+					}
+				}else if (type.equals("MAXIMUM")){
+					if (value.doubleValue()>max.doubleValue() ){
+						String label = t.getLabel();
+						toReturn = t.getColor();
+					}else{
+						toReturn = Color.WHITE;
+					}				
+				}
+			logger.debug("New interval added to the Vector");					
+			}
+		}
 		logger.debug("OUT");
 		return toReturn;
 	}
+
 	
 	public KpiValue getNewKpiValue(DataSetConfig ds, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError{
 		
@@ -518,38 +566,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		this.confMap.put("styleSubTitle", styleSubTitle) ;
 
-
-		String colS = (String)content.getAttribute("COLORS.background");
-		if(colS!=null) 
-		{
-			Color col=new Color(Integer.decode(colS).intValue());
-			if(col!=null){
-				setColor(col);}
-			else{
-				setColor(Color.white);
-			}
-		}
-		else { 	
-			setColor(Color.white);
-		}
-		this.confMap.put("color", color) ;
-
-		String widthS = (String)content.getAttribute("DIMENSION.width");
-		String heightS = (String)content.getAttribute("DIMENSION.height");
-		if(widthS==null || heightS==null){
-			logger.warn("Width or height non defined, use default ones");
-			widthS="400";
-			heightS="300";
-		}
-
-		width=Integer.valueOf(widthS).intValue();
-		height=Integer.valueOf(heightS).intValue();
-		this.confMap.put("width", width) ;
-		this.confMap.put("height", height) ;
-
 		// get all the data parameters 
-
-
 		try{					
 			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
@@ -563,29 +580,42 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				dataParameters.put(nameParam, valueParam);
 			}
 
-			legend=true;
-			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
-				String leg=(String)dataParameters.get("legend");
+			display_semaphore=true;
+			if(dataParameters.get("display_semaphore")!=null && !(((String)dataParameters.get("display_semaphore")).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get("display_semaphore");
 				if(leg.equalsIgnoreCase("false"))
-					legend=false;
+					display_semaphore=false;
 			}
-			this.confMap.put("legend", legend) ;
+			this.confMap.put("display_semaphore", display_semaphore) ;
 
-			show_chart=true;
-			if(dataParameters.get("show_chart")!=null && !(((String)dataParameters.get("show_chart")).equalsIgnoreCase("") )){	
-				String fil=(String)dataParameters.get("show_chart");
+			display_bullet_chart=true;
+			if(dataParameters.get("display_bullet_chart")!=null && !(((String)dataParameters.get("display_bullet_chart")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("display_bullet_chart");
 				if(fil.equalsIgnoreCase("false"))
-					show_chart=false;
+					display_bullet_chart=false;
 			}
-			this.confMap.put("show_chart", show_chart) ;
+			this.confMap.put("display_bullet_chart", display_bullet_chart) ;
 			
+			display_weight=true;
+			if(dataParameters.get("display_weight")!=null && !(((String)dataParameters.get("display_weight")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("display_weight");
+				if(fil.equalsIgnoreCase("false"))
+					display_weight=false;
+			}
+			this.confMap.put("display_weight", display_weight) ;
 			
+			display_alarm=true;
+			if(dataParameters.get("display_alarm")!=null && !(((String)dataParameters.get("display_alarm")).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get("display_alarm");
+				if(fil.equalsIgnoreCase("false"))
+					display_alarm=false;
+			}
+			this.confMap.put("display_alarm", display_alarm) ;
+						
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
 		}
-
-
 	}
 	
 	/**
@@ -604,11 +634,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		logger.error("SpagoBIDashboardInternalEngine cannot exec subobjects.");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "101", messageBundle);
 	}
-	
-	public void setColor(Color color) {
-		this.color = color;
-	}
-	
 	
 	public void setName(String _name) {
 		name=_name;		

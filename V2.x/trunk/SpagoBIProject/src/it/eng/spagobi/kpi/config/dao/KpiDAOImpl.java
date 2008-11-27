@@ -285,7 +285,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	}
 
 	
-	public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError {
+	/*public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError {
 
 		logger.debug("IN");
 		boolean toReturn = false ;
@@ -301,7 +301,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		logger.debug("OUT");
 		return toReturn;
-	}
+	}*/
 	
 	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError{
 		logger.debug("IN");
@@ -644,13 +644,13 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
-		List values = getKpiValue(kpiInst, requestedDate);	
+		//List values = getKpiValue(kpiInst, requestedDate);	
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
 		Integer seconds = periodicity.getValue();
 		
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
-		toReturn.setValues(values);
+		//toReturn.setValues(values);
 		toReturn.setD(d);
 		toReturn.setPeriodicity(seconds);
 		logger.debug("OUT");

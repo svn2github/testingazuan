@@ -68,14 +68,7 @@ public interface IKpiDAO {
 	
 	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError;
 	
-	/**
-	 * Returns true if the values are the actual ones, false if they have to be recalculated
-	 * 
-	 * @param KpiInstance and date for which the values have to be actual
-	 * @return  Returns true if the values are the actual ones, false if they have to be recalculated
-	 * @throws EMFUserError If an Exception occurred
-	 */	
-	public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
+	//public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
 	
 	/**
 	 * For the specific KpiValue verifies if it is ok with every threshold and if not writes an alarm event in the AlarmEvent table so that later on an alarm will be sent

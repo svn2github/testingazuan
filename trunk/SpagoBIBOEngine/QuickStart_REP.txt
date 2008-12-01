@@ -17,7 +17,8 @@ In order to integrate a BO rep report into SpagoBI:
                 repository="name of the bo repository (Example:corporate)"/>
   </BO_DOCUMENT>
 
-- The engine support only PDF output format for rep documents. Any parameter for output format is not considered.
+- The engine supports PDF and XLS output formats for rep documents: default output format is PDF. In order to choose the output format
+  you have to define a parameter with url name "param_output_format" and value PDF or XLS.
   
 - If your bo report has some prompt you need to define a SpagoBI parameter for each
   one of them.
@@ -32,7 +33,7 @@ In order to integrate a BO rep report into SpagoBI:
   TOMCAT_HOME/webapps/SpagoBIBOEngine/WEB-INF/classes/prompts.properties
   and add the following association:
   Matricule_ = Matricule :
-  If the BO document has no more prompts, you can execute it and see the result in PDF format; 
+  If the BO document has no more prompts, you can execute it and see the result in PDF or XLS format; 
   in case instead the document has one more prompt, the document cannot be refreshed (this is a BO specification) 
   and you will see an error message. You have to build another SpagoBI document parameter for the second BO prompt.
 

@@ -342,6 +342,13 @@ public class ViewDocumentHandler {
 					logger.info("Cannot find OUTPUTTYPE parameter, use default value PDF for .rep documents.");
 					outputType = BOConstants.PDF_OUTPUT_TYPE;
 				}
+				
+				if (!outputType.equalsIgnoreCase(BOConstants.PDF_OUTPUT_TYPE) && !outputType.equalsIgnoreCase(BOConstants.XLS_OUTPUT_TYPE)) {
+					logger.warn("This engine supports only PDF or XLS output formats for .rep documents, not [" + outputType + "] format. " +
+							"Using PDF format that is the default.");
+					outputType = BOConstants.PDF_OUTPUT_TYPE;
+				}
+				
 				try {
 					// must call getHTMLView(true) before handling prompts
 					wiDocument.getHTMLView(true);
@@ -384,9 +391,11 @@ public class ViewDocumentHandler {
 			String jspexecution = "";
 			if(outputType.trim().equalsIgnoreCase(BOConstants.HTML_OUTPUT_TYPE)){
 				jspexecution="/jsp/viewDocumentHTML.jsp";
+			} else if (outputType.trim().equalsIgnoreCase(BOConstants.XLS_OUTPUT_TYPE)) {
+				jspexecution="/jsp/viewDocumentXLS.jsp";	
 			} else {
-				jspexecution="/jsp/viewDocumentPDF.jsp";	
-			}		
+				jspexecution="/jsp/viewDocumentPDF.jsp";
+			}
 			// AUDIT UPDATE
 			if (auditAccessUtils != null) auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
 					"EXECUTION_PERFORMED", null, null);
@@ -396,7 +405,7 @@ public class ViewDocumentHandler {
 		} catch (SpagoBIBOEngineException e){
 			showErrorMessage(e.getMessage(), response);
  	    } catch (Exception e){
- 	    	  logger.error("Error while generating report output");
+ 	    	  logger.error("Error while generating report output", e);
  	    	  // AUDIT UPDATE
 		 	  	if (auditAccessUtils != null) 
 		 	  	    auditAccessUtils.updateAudit(auditId, null, new Long(System.currentTimeMillis()), 
@@ -451,7 +460,7 @@ public class ViewDocumentHandler {
 			writer.write(body);
 			writer.flush();
 			writer.close();
-		} else if(outType.equals(BOConstants.XSL_OUTPUT_TYPE)) {
+		} else if(outType.equals(BOConstants.XLS_OUTPUT_TYPE)) {
 			String repName = report.getName();
 			response.setContentType("application/vnd.ms-excel");
 			BinaryView binaryView = (BinaryView)report.getView(OutputFormatType.XLS);

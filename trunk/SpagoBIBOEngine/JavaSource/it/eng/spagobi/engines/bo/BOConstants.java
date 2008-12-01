@@ -37,9 +37,9 @@ public class BOConstants {
 	public static final String REPORT_TYPE = "REPORTTYPE";
 	public static final String REPORT_ID = "REPORTID";
 	public static final String REPOSITORY = "REPOSITORY";
-	public static final String OUTPUT_TYPE = "OUTPUTTYPE";
+	public static final String OUTPUT_TYPE = "param_output_format";
 	public static final String HTML_OUTPUT_TYPE = "HTML";
-	public static final String XSL_OUTPUT_TYPE = "XSL";
+	public static final String XLS_OUTPUT_TYPE = "XLS";
 	public static final String PDF_OUTPUT_TYPE = "PDF";
 	public static final String CORPORATE_REPOSITORY = "corporate";
 	public static final String INBOX_REPOSITORY = "inbox";

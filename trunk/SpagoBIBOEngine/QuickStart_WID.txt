@@ -16,8 +16,8 @@ In order to integrate a BO wid report into SpagoBI:
                 repository="name of the bo repository (Example:corporate)"/>
   </BO_DOCUMENT>
 
-- The engine support HTML and PDF output format. In order to choose the output format
-  you have to define a parameter with url name 'OUTPUTTYPE' and value HTML or PDF
+- The engine supports HTML and PDF output format: default output format is HTML. In order to choose the output format
+  you have to define a parameter with url name "param_output_format" and value HTML or PDF.
   
 - If your bo report has some parameters you need to define a SpagoBI parameter for each
   one of them. The SpagoBI parameter must have url name  equals to the bo parameter name.

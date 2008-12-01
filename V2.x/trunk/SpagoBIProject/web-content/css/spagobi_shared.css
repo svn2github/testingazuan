@@ -537,7 +537,7 @@ IMG {
 	font-size: 14pt;
 	font-weight: normal;
 	color: black;
-	background-color: #FFCC00;
+	background-color: #5B6C7C;
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
@@ -549,9 +549,9 @@ IMG {
 	font-size: 12pt;
 	font-weight: normal;
 	color: black;
-	background-color: #FFFFCC;
+	background-color: #FFFFFF;
 	vertical-align: middle;
-	height: 14pt;
+	height: 22pt;
 }
 
 .kpi_line_section_odd    {
@@ -559,9 +559,10 @@ IMG {
 	font-size: 12pt;
 	font-weight: normal;
 	color: black;
-	background-color: #FFFF99;
+	background-color: #FFFFFF;
 	vertical-align: middle;
-	height: 14pt;
+	height: 22pt;
+	border-bottom: 1px solid #bbb;
 }
 
 .kpi_title_section    {

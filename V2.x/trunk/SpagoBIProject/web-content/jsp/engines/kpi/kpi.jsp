@@ -115,7 +115,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					resDiv += "<a style='margin: 0px 0px 5px 10px;' id='"+resName+"_click' name='"+resName+"_click' > ";
 					resDiv += "Resource: "+resName;
 					resDiv += "</a> ";
-					resDiv += "<div id ='"+resName+"'>\n";
 					scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";
 				}	
 				 scriptDiv += "</script>";

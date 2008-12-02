@@ -139,6 +139,36 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 	
+	public Resource loadResourceById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		Resource toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiResources hibSbiResource = (SbiResources)aSession.load(SbiResources.class,id);
+			toReturn = toResource(hibSbiResource);
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id " + ((id == null)?"":id.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	public List getKpiValue(SbiKpiInstance kpi, Date d) throws EMFUserError {
 		
 		logger.debug("IN");
@@ -638,10 +668,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
+		Double weight = kpiInst.getWeight();
 		//List values = getKpiValue(kpiInst, requestedDate);	
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
 		Integer seconds = periodicity.getValue();
 		
+		toReturn.setWeight(weight);
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
 		//toReturn.setValues(values);

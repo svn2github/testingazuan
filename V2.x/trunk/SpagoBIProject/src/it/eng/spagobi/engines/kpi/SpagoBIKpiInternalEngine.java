@@ -180,43 +180,60 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					List values=par.getParameterValues();
 					if(values!=null){
 						if(values.size()==1){
-							String value=(String)values.get(0);
-							parametersMap.put(url, value);
-							if (url.equals("ParKpiDate")){
-								SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
-								String format = (String) formatSB.getAttribute("format");
-								SimpleDateFormat f =  new SimpleDateFormat();
-								f.applyPattern(format);
-								try {
-									dateOfKPI = f.parse(value);
-								} catch (ParseException e) {
-									e.printStackTrace();
+							if (url.equals("ParKpiResources")){
+								this.resources = new ArrayList();
+								String value = (String)values.get(0);
+								Integer res = new Integer(value);
+								Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+								this.resources.add(toAdd);
 								}
-								isActualDateRequired = false;
+							}else{
+								String value=(String)values.get(0);
+								parametersMap.put(url, value);
+								if (url.equals("ParKpiDate")){
+									SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+									String format = (String) formatSB.getAttribute("format");
+									SimpleDateFormat f =  new SimpleDateFormat();
+									f.applyPattern(format);
+									try {
+										dateOfKPI = f.parse(value);
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+									isActualDateRequired = false;
+								}
 							}
 						}else if(values.size() >=1){
-							String value = "'"+(String)values.get(0)+"'";
-							for(int k = 1; k< values.size() ; k++){
-								value = value + ",'" + (String)values.get(k)+"'";
-							}
-							parametersMap.put(url, value);
-							if (url.equals("ParKpiDate")){
-								SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
-								String format = (String) formatSB.getAttribute("format");
-								SimpleDateFormat f =  new SimpleDateFormat();
-								f.applyPattern(format);
-								try {
-									dateOfKPI = f.parse(value);
-								} catch (ParseException e) {
-									e.printStackTrace();
+							if (url.equals("ParKpiResources")){
+								this.resources = new ArrayList();
+								for(int k = 0; k< values.size() ; k++){
+									String value = (String)values.get(k);
+									Integer res = new Integer(value);
+									Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+									this.resources.add(toAdd);
 								}
-								isActualDateRequired = false;
+							}else{
+								String value = "'"+(String)values.get(0)+"'";
+								for(int k = 1; k< values.size() ; k++){
+									value = value + ",'" + (String)values.get(k)+"'";
+								}
+								parametersMap.put(url, value);
+								if (url.equals("ParKpiDate")){
+									SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+									String format = (String) formatSB.getAttribute("format");
+									SimpleDateFormat f =  new SimpleDateFormat();
+									f.applyPattern(format);
+									try {
+										dateOfKPI = f.parse(value);
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+									isActualDateRequired = false;
+								}
 							}
 						}
 					}
-				}	
-
-			} // end looking for parameters
+				} // end looking for parameters
 			
 			logger.debug("Got the date for which the KpiValues have to be calculated. Date:"+dateOfKPI);
 			
@@ -240,7 +257,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
 			logger.debug("Loaded the modelInstanceNode with id "+ modelNodeInstanceID.toString());
 			//I set the list of resources of that specific ModelInstance
-			this.resources = mI.getResources();			
+			if(this.resources == null || this.resources.isEmpty()){
+				this.resources = mI.getResources();		
+			}
 			logger.debug("Setted the List of Resources related to the specified Model Instance");		
 			
 			if(this.resources == null || this.resources.isEmpty()){
@@ -316,7 +335,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			DAOFactory.getKpiDAO().insertKpiValue(value);	
 			//Checks if the value is alarming (out of a certain range)
 			//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-			DAOFactory.getKpiDAO().isAlarmingValue(value);	
+			DAOFactory.getKpiDAO().isAlarmingValue(value);
+			line.setValue(value);
 		}else if (value!= null){
 			line.setValue(value);
 		}else{

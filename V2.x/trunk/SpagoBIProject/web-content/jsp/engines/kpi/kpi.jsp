@@ -46,9 +46,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.kpi.bo.ChartImpl"%>
 <%@page import="it.eng.spagobi.engines.kpi.bo.KpiResourceBlock"%>
 <%@page import="it.eng.spagobi.engines.kpi.bo.KpiLine"%>
+<%@page import="java.util.ArrayList"%> 
 
 <%
 	boolean docComposition=false;
+    List resources = new ArrayList();
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
  	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
@@ -74,7 +76,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 	<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
 		
-	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/spagobi_shared.css")%>"/>
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
 	<%
@@ -91,22 +92,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Boolean display_semaphore = (Boolean)sbModuleResponse.getAttribute("display_semaphore");
 		Boolean display_weight = (Boolean)sbModuleResponse.getAttribute("display_weight");
 		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
+		StringBuffer _htmlStream = new StringBuffer();
 		if(!kpiRBlocks.isEmpty()){
 			Iterator blocksIt = kpiRBlocks.iterator();
 			while(blocksIt.hasNext()){
 				
 				KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
-				StringBuffer _htmlStream = block.makeTree( userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight );
-				%>
-				<br>
-				<br>
-			   <%=_htmlStream%>
-			   <br>
-			   <br>
-				<%
+				if(block.getR()!=null){
+					String resName = block.getR().getName();
+					resources.add(resName);
+				}
+				_htmlStream.append(block.makeTree( userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight ));
+				
 			}
-		}		
-		%>	
+			String resDiv = "";
+			String scriptDiv = "";
+			if(resources!=null && !resources.isEmpty()){
+				Iterator resIt = resources.iterator();
+				scriptDiv += "<script>";
+				while(resIt.hasNext()){
+					String resName = (String)resIt.next();
+					resDiv += "<a style='margin: 0px 0px 5px 10px;' id='"+resName+"_click' name='"+resName+"_click' > ";
+					resDiv += "Resource: "+resName;
+					resDiv += "</a> ";
+					resDiv += "<div id ='"+resName+"'>\n";
+					scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";
+				}	
+				 scriptDiv += "</script>";
+			}
+				%>
+			 <%=resDiv%>
+			<br>
+			   <%=_htmlStream%>
+			<br>
+			 <%=scriptDiv%>
+		<%}%>		
 	<%@ include file="/jsp/commons/footer.jsp"%>		
 
 		

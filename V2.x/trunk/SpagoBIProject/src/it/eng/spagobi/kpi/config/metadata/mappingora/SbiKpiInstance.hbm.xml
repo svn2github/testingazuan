@@ -6,22 +6,24 @@
     <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" table="sbi_kpi_instance" >
         <id name="idKpiInstance" type="integer">
             <column name="id_kpi_instance" />
-            <generator class="assigned" />
+            <generator class="native">
+            	<param name="sequence">sbi_kpi_instance</param>
+            </generator>
         </id>
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="KPI_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
-            <column name="id_kpi_chart_type" />
+            <column name="CHART_TYPE_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiKpiPeriodicity" class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" >
-            <column name="id_periodicity" not-null="true" />
+            <column name="id_kpi_periodicity" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
             <column name="THRESHOLD_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" >
-            <column name="id_measure_unit"  />
+            <column name="id_measure_unit" not-null="true" />
         </many-to-one>
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />

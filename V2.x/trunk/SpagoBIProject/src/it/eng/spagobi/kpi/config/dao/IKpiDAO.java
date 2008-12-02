@@ -103,5 +103,13 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public String getChartType(Integer kpiInstanceID) throws EMFUserError;
+	
+	/**
+	 * Returns the list of Kpi.
+	 * 
+	 * @return the list of all Kpi.
+	 * @throws EMFUserError if an Exception occurs
+	 */
+	public List loadKpiList() throws EMFUserError;
 
 }

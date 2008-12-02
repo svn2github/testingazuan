@@ -14,8 +14,16 @@ public class Model {
 	private String code = null;//code of the complete model
 	private String typeName = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeDescription = null;//description of the type of the model
+	private Integer kpiId = null;// id of Kpi
 	
-	
+	public Integer getKpiId() {
+		return kpiId;
+	}
+
+	public void setKpiId(Integer kpiId) {
+		this.kpiId = kpiId;
+	}
+
 	public Integer getId(){
 		return id;
 	}

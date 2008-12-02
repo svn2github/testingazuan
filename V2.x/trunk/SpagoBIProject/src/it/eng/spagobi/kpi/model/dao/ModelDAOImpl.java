@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.record.PageBreakRecord.Break;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -18,6 +19,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
@@ -103,12 +105,22 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			String kpiModelDesc = value.getDescription();
 			String kpiModelNm = value.getName();
 			List modelAttributes = value.getModelAttributes();
+			Integer kpiId = value.getKpiId();
 
 			SbiKpiModel sbiKpiModel = (SbiKpiModel) aSession.load(
 					SbiKpiModel.class, kpiModelId);
 			sbiKpiModel.setKpiModelCd(kpiModelCd);
 			sbiKpiModel.setKpiModelDesc(kpiModelDesc);
 			sbiKpiModel.setKpiModelNm(kpiModelNm);
+			
+			if (kpiId != null){
+				SbiKpi sbiKpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
+				sbiKpiModel.setSbiKpi(sbiKpi);
+			}
+			else{
+				sbiKpiModel.setSbiKpi(null);
+			}
+			
 			aSession.update(sbiKpiModel);
 			for (int i = 0; i < modelAttributes.size(); i++) {
 				ModelAttribute mAtt = (ModelAttribute) modelAttributes.get(i);
@@ -241,7 +253,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		return toReturn;
 	}
 
-	private Model toModelWithoutChildren(SbiKpiModel value, Session aSession) {
+	static protected Model toModelWithoutChildren(SbiKpiModel value, Session aSession) {
 		logger.debug("IN");
 		Model toReturn = new Model();
 
@@ -249,6 +261,11 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String description = value.getKpiModelDesc();
 		String code = value.getKpiModelCd();
 		Integer id = value.getKpiModelId();
+		SbiKpi sbiKpi = value.getSbiKpi();
+		Integer kpiId = null;
+		if(sbiKpi != null){
+			kpiId = sbiKpi.getKpiId();
+		}
 
 		String typeName = value.getSbiDomains().getValueNm();
 		String typeDescription = value.getSbiDomains().getValueDs();
@@ -290,12 +307,13 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setModelAttributes(modelAttributes);
 		toReturn.setChildrenNodes(null);
+		toReturn.setKpiId(kpiId);
 
 		logger.debug("OUT");
 		return toReturn;
 	}
 
-	private String getModelAttrValue(SbiKpiModel model, SbiKpiModelAttr attr,
+	static private String getModelAttrValue(SbiKpiModel model, SbiKpiModelAttr attr,
 			Session session) {
 		String toReturn = "";
 		Criteria critt = session.createCriteria(SbiKpiModelAttrVal.class);
@@ -310,7 +328,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		return toReturn;
 	}
 
-	private List getModelAttListByDomain(SbiDomains sbiDomains, Session session) {
+	static private List getModelAttListByDomain(SbiDomains sbiDomains, Session session) {
 		Criteria critt = session.createCriteria(SbiKpiModelAttr.class);
 		critt.add(Expression.eq("sbiDomains", sbiDomains));
 		return critt.list();
@@ -327,6 +345,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			tx = aSession.beginTransaction();
 
 			Integer parentId = model.getParentId();
+			Integer kpiId = model.getKpiId();
 
 			// get the domains
 			SbiDomains sbiDomains = (SbiDomains) aSession.load(
@@ -341,6 +360,11 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 				SbiKpiModel sbiKpiParentModel = (SbiKpiModel) aSession.load(
 						SbiKpiModel.class, parentId);
 				sbiKpiModel.setSbiKpiModel(sbiKpiParentModel);
+			}
+			
+			if (kpiId != null){
+				SbiKpi sbiKpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
+				sbiKpiModel.setSbiKpi(sbiKpi);
 			}
 
 			idToReturn = (Integer) aSession.save(sbiKpiModel);
@@ -406,5 +430,43 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		}
 		aSession.delete(aModel);
 	}
+
+	public boolean hasKpi(Integer modelId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		boolean toReturn = false;
+		try {
+			tx = aSession.beginTransaction();
+			SbiKpiModel aModel = (SbiKpiModel) aSession.load(SbiKpiModel.class,
+					modelId);
+			toReturn = recursiveHasKpi(aModel);
+		
+			tx.commit();
+
+		} catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			aSession.close();
+		}
+		return toReturn;
+	}
+
+	private boolean recursiveHasKpi(SbiKpiModel model) {
+		SbiKpi sbiKpi = model.getSbiKpi();
+		boolean toReturn =(sbiKpi != null);
+		Set Children = model.getSbiKpiModels();
+		for (Iterator iterator = Children.iterator(); iterator.hasNext();) {
+			SbiKpiModel child = (SbiKpiModel) iterator.next();
+			toReturn = toReturn || recursiveHasKpi(child);
+			if(toReturn == true)
+				break;
+		}
+		return toReturn;
+	}
+		
 
 }

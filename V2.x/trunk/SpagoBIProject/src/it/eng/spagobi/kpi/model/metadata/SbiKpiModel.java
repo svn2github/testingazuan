@@ -16,7 +16,7 @@ public class SbiKpiModel implements java.io.Serializable {
 
 	// Fields
 
-	private Integer kpiModelId;
+  	private Integer kpiModelId;
 	private SbiDomains sbiDomains;
 	private SbiKpiModel sbiKpiModel;
 	private SbiKpi sbiKpi;
@@ -25,7 +25,7 @@ public class SbiKpiModel implements java.io.Serializable {
 	private String kpiModelDesc;
 	private Set sbiKpiModelAttrVals = new HashSet(0);
 	private Set sbiKpiModels = new HashSet(0);
-
+    private Set sbiKpiModelInsts = new HashSet(0);
 	// Constructors
 
 	/** default constructor */
@@ -42,7 +42,7 @@ public class SbiKpiModel implements java.io.Serializable {
 	public SbiKpiModel(Integer kpiModelId, SbiDomains sbiDomains,
 			SbiKpiModel sbiKpiModel, SbiKpi sbiKpi, String kpiModelCd,
 			String kpiModelNm, String kpiModelDesc, Set sbiKpiModelAttrVals,
-			Set sbiKpiModels) {
+			Set sbiKpiModels, Set sbiKpiModelInsts) {
 		this.kpiModelId = kpiModelId;
 		this.sbiDomains = sbiDomains;
 		this.sbiKpiModel = sbiKpiModel;
@@ -52,6 +52,7 @@ public class SbiKpiModel implements java.io.Serializable {
 		this.kpiModelDesc = kpiModelDesc;
 		this.sbiKpiModelAttrVals = sbiKpiModelAttrVals;
 		this.sbiKpiModels = sbiKpiModels;
+		this.sbiKpiModelInsts = sbiKpiModelInsts;
 	}
 
 	// Property accessors
@@ -126,6 +127,14 @@ public class SbiKpiModel implements java.io.Serializable {
 
 	public void setSbiKpiModels(Set sbiKpiModels) {
 		this.sbiKpiModels = sbiKpiModels;
+	}
+	
+	public Set getSbiKpiModelInsts() {
+		return sbiKpiModelInsts;
+	}
+
+	public void setSbiKpiModelInsts(Set sbiKpiModelInsts) {
+		this.sbiKpiModelInsts = sbiKpiModelInsts;
 	}
 
 }

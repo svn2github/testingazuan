@@ -3,20 +3,13 @@ package it.eng.spagobi.kpi.model.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
-import it.eng.spago.init.InitializerIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.model.bo.Model;
-import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class DetailModelModule extends DefaultDetailModule{
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		
 		String message = (String) request.getAttribute("MESSAGE");
 		if (message == null) {	
 			message = SpagoBIConstants.DETAIL_SELECT;

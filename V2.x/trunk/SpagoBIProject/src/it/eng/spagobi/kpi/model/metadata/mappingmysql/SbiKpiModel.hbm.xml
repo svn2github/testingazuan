@@ -40,5 +40,13 @@
             </key>
             <one-to-many class="it.eng.spagobi.kpi.model.metadata.SbiKpiModel" />
         </set>
+ 
+        <set name="sbiKpiModelInsts" inverse="true">
+            <key>
+                <column name="KPI_MODEL_ID" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" />
+        </set>
+
     </class>
 </hibernate-mapping>

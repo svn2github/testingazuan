@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PUBLISHERS>
+
+	<!-- MODEL -->
 	<PUBLISHER name="ModelPublisher">
 		<RENDERING channel="PORTLET" type="JAVA" mode="">
 			<RESOURCES>
@@ -55,7 +57,7 @@
 	</PUBLISHER>
 	
 	
-		<PUBLISHER name="ModelTreePublisher">
+	<PUBLISHER name="ModelTreePublisher">
 		<RENDERING channel="PORTLET" type="JAVA" mode="">
 			<RESOURCES>
 				<ITEM prog="0"
@@ -110,7 +112,9 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-
+	<!-- / MODEL -->
+	
+	<!-- MODEL INSTNACE-->
 	<PUBLISHER name="ModelInstancePublisher">
 		<RENDERING channel="PORTLET" type="JAVA" mode="">
 			<RESOURCES>
@@ -165,5 +169,59 @@
 		</RENDERING>
 	</PUBLISHER>	
 
-
+	<PUBLISHER name="ModelInstanceTreePublisher">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelInstanceTreeModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="message" scope="SERVICE_REQUEST"
+										value="DETAIL_UPDATE" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailModelInstanceTreeModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="ListModelInstanceTreePublisher">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/kpi/model/modelInstanceTree.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	
+	<PUBLISHER name="DetailModelInstanceTreePublisher">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailModelInstanceTree.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	<!-- / MODEL INSTNACE-->
 </PUBLISHERS>    

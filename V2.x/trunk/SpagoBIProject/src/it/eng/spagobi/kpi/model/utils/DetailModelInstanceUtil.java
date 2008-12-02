@@ -1,13 +1,17 @@
 package it.eng.spagobi.kpi.model.utils;
 
+import java.util.List;
+
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 
 public class DetailModelInstanceUtil  {
 
-	public static void selectModel(Integer id, SourceBean serviceResponse) throws Exception{
+	public static void selectModelInstance(Integer id, SourceBean serviceResponse) throws Exception{
 		ModelInstance toReturn = DAOFactory.getModelInstanceDAO().loadModelInstanceWithoutChildrenById(id);
 		serviceResponse.setAttribute("MODELINSTANCE", toReturn);
 
@@ -20,8 +24,8 @@ public class DetailModelInstanceUtil  {
 	}
 
 	private static ModelInstance getModelInstanceFromRequest(SourceBean serviceRequest) {
-		String modelName = (String) serviceRequest.getAttribute("modelName");
-		String modelDescription = (String) serviceRequest.getAttribute("modelDescription");
+		String modelName = (String) serviceRequest.getAttribute("modelInstanceName");
+		String modelDescription = (String) serviceRequest.getAttribute("modelInstanceDescription");
 		
 		ModelInstance toReturn = new ModelInstance();
 		toReturn.setName(modelName);
@@ -29,18 +33,31 @@ public class DetailModelInstanceUtil  {
 		return toReturn;
 	}
 
-	public static void newModel(SourceBean serviceRequest, SourceBean serviceResponse,
+	public static void newModelInstance(SourceBean serviceRequest, SourceBean serviceResponse,
 			Integer parentId) throws Exception{
 		ModelInstance toCreate = getModelInstanceFromRequest(serviceRequest);
-//		if (id != null)
-//			toCreate.setParentId(parentId);
-
-		// insert the new model
-		Integer modelId = DAOFactory.getModelInstanceDAO().insertModel(toCreate); 
-		serviceResponse.setAttribute("ID", modelId);
+		if (parentId != null)
+			toCreate.setParentId(parentId);
+		String modelId = (String) serviceRequest.getAttribute("KPI_MODEL_ID");
+		Model model = new Model();
+		model.setId(Integer.parseInt(modelId));
+		toCreate.setModel(model);
+//		// insert the new model
+		Integer modelInstanceId = DAOFactory.getModelInstanceDAO().insertModelInstance(toCreate); 
+		serviceResponse.setAttribute("ID", modelInstanceId);
 		serviceResponse.setAttribute("MESSAGE",SpagoBIConstants.DETAIL_SELECT);
-		selectModel(modelId, serviceResponse);
+		selectModelInstance(modelInstanceId, serviceResponse);
 		
+	}
+
+	public static List getCandidateModelChildren(Integer parentId){
+		List candidateModelChildren = null;
+		try {
+			candidateModelChildren = DAOFactory.getModelInstanceDAO().getCandidateModelChildren(parentId);
+		} catch (EMFUserError e) {
+			
+		}
+		return candidateModelChildren;
 	}
 
 }

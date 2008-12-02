@@ -10,8 +10,14 @@ public class ModelInstance {
 	private List childrenNodes = null;//List of ModelInstanceNodes children
 	private String name = null;//name of the complete model instance(like "my own CMMI")
 	private String description = null;//description of the complete model instance
+	private Integer parentId = null;
 	
-	
+	public Integer getParentId() {
+		return parentId;
+	}
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
 	public Integer getId() {
 		return id;
 	}

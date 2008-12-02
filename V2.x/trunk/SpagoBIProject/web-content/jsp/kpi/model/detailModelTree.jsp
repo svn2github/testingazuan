@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.bo.Domain"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.Model"%>
+<%@page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.ModelAttribute"%>
 <%@page import="java.util.ArrayList"%>
 <%  
@@ -36,12 +37,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String modelName = "";
 	String modelCode = "";
 	String modelDescription = "";
+	Integer kpiId = null;
 
 	String typeName = "";
 	String typeDescription = "";
 	List attributeList = null;
 
-	String title = "";
+	String title = "TITLE";
 	String messageSave = "";
 
 	// DETAIL_SELECT
@@ -82,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			typeName = model.getTypeName();
 			typeDescription = model.getTypeDescription();
 			attributeList = model.getModelAttributes();
+			kpiId = model.getKpiId();
 		}
 	}
 
@@ -234,6 +237,51 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	}
 %>
+
+<div class="div_detail_area_forms">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.kpi.name" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<select class='portlet-form-field' name="kpiId">
+<%
+	String selected = "";
+
+	if(kpiId == null) {
+		selected = "selected";
+	}
+	else {
+		selected = "";
+	}
+%>
+	<option value="-1"
+		label="" <%=selected%>>
+	</option>
+
+	<%
+	List kpiList = DAOFactory.getKpiDAO().loadKpiList();
+	for (java.util.Iterator iterator = kpiList.iterator(); iterator
+			.hasNext();) {
+		Kpi kpi = (Kpi) iterator.next();
+		if(kpi.getKpiId().equals(kpiId)){
+			selected = "selected";
+		}
+		else {
+			selected = "";
+		}
+	%>
+	<option value="<%=kpi.getKpiId()%>"
+		label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+	</option>
+	<%
+	}
+	%>
+
+</select>
+
+</div>
+</div>
+
 </form>
     </td>
   </tr>

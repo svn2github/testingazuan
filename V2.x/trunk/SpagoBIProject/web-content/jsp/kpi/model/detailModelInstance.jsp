@@ -26,14 +26,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.ModelInstance"%>
+<%@page import="it.eng.spagobi.kpi.model.bo.Model"%>
 <%
 	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
 	String id = (String) aServiceRequest.getAttribute("ID");
 	
+	String modelInstanceName = "";
+	String modelInstanceDescription = "";
+	
 	String modelName = "";
 	String modelDescription = "";
+	String modelCode = "";
+	String typeName = "";
+	String typeDescription = "";
+	List attributeList = null;
+	
 
-	String title = "";
+	String title = "TITLE";
 	String messageSave = "";
 
 	// DETAIL_SELECT
@@ -67,10 +76,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailModelInstanceModule");
-		ModelInstance model = (ModelInstance) moduleResponse.getAttribute("MODELINSTANCE");
-		if (model != null) {
-			modelName = model.getName();
-			modelDescription = model.getDescription();
+		ModelInstance modelInstance = (ModelInstance) moduleResponse.getAttribute("MODELINSTANCE");
+		if (modelInstance != null) {
+			modelInstanceName = modelInstance.getName();
+			modelInstanceDescription = modelInstance.getDescription();
+			Model aModel = modelInstance.getModel();
+			
+			if (aModel != null){
+				modelName = aModel.getName();
+				modelDescription = aModel.getDescription();
+				modelCode = aModel.getCode();
+				typeName = aModel.getTypeName();
+				typeDescription = aModel.getTypeDescription();
+				attributeList = aModel.getModelAttributes();
+			}
 		}
 	}
 
@@ -128,15 +147,119 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelInstanceName" size="50"
+	value="<%=modelInstanceName%>" maxlength="200"> &nbsp;*</div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelInstanceDescription"
+	size="50" value="<%=modelInstanceDescription%>" maxlength="200"></div>
+</div>
+
+
+<div class="div_detail_area_forms">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
+
+<%
+ 	if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+ %>
+ 
+ 
+<select class='portlet-form-field' name="KPI_MODEL_ID">
+	<%
+		List severityLevels = DAOFactory.getModelDAO().loadModelsRoot();
+			Iterator itt = severityLevels.iterator();
+			while (itt.hasNext()) {
+				Model model = (Model) itt.next();
+				String selected = "";
+	%>
+	<option value="<%=model.getId()%>"
+		label="<%=model.getName()%>" <%=selected%>><%=model.getName()%>
+	</option>
+	<%
+		}
+	%>
+</select>
+
+<%
+	}
+%>
+
+<%
+ 	if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+ %>
+<div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelName" size="50"
-	value="<%=modelName%>" maxlength="200"> &nbsp;*</div>
+	value="<%=modelName%>" maxlength="200" readonly></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelDescription"
-	size="50" value="<%=modelDescription%>" maxlength="200"></div>
+	size="50" value="<%=modelDescription%>" maxlength="200" readonly></div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelCode" size="50"
+	value="<%=modelCode%>" maxlength="200" readonly></div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+
+<input class='portlet-form-input-field' type="text" name="typeName"
+	size="50" value="<%=typeName%>" maxlength="200" readonly></div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.model.typeDescription" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="typeDescription"
+	size="50" value="<%=typeDescription%>" maxlength="200" readonly></div>
+</div>
+<spagobi:message key="sbi.kpi.model.attributes"
+	bundle="<%=messageBundle%>" />
+
+<div class="div_detail_area_forms">
+<%
+	List modelAttributesName = new ArrayList();
+		for (int i = 0; attributeList != null
+				&& i < attributeList.size(); i++) {
+			String attributeName = "";
+			String attributeValue = "";
+			Integer attributeId;
+			ModelAttribute modelAttribute = (ModelAttribute) attributeList
+					.get(i);
+			attributeName = modelAttribute.getName();
+			attributeValue = modelAttribute.getValue();
+			attributeId = modelAttribute.getId();
+			modelAttributesName.add(attributeId);
+%>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="<%=attributeName%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text"
+	name='<%="M_ATTR" + attributeId.toString()%>' size="50"
+	value="<%=attributeValue%>" maxlength="200" readonly></div>
+<%
+	}
+%>
+</div>
+
+<%
+ 	}
+ %>
+
 </div>
 
 </form>

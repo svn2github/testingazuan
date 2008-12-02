@@ -76,6 +76,12 @@ public class ListModelModule extends AbstractConfigurableListModule {
 	}
 	
 	private boolean canDelete(Integer modelId){
-		return true;
+		boolean toReturn = false;
+		try {
+			toReturn = (!(DAOFactory.getModelDAO().hasKpi(modelId)));
+		} catch (EMFUserError e) {
+		}
+		return toReturn;
+		
 	}
 }

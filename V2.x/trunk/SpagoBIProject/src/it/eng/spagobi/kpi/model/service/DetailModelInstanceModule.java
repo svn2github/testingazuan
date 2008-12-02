@@ -17,7 +17,7 @@ public class DetailModelInstanceModule extends DefaultDetailModule{
 		// DETAIL_SELECT
 		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)){
 			String idModel = (String)request.getAttribute("ID");
-			DetailModelInstanceUtil.selectModel(Integer.parseInt(idModel), response);
+			DetailModelInstanceUtil.selectModelInstance(Integer.parseInt(idModel), response);
 		}
 		// DETAIL_UPDATE
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)){
@@ -26,7 +26,7 @@ public class DetailModelInstanceModule extends DefaultDetailModule{
 		}
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)){
-			DetailModelInstanceUtil.newModel(request,response, null);
+			DetailModelInstanceUtil.newModelInstance(request,response, null);
 		}
 	}
 

@@ -32,12 +32,12 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
 
 
-public class ListModelTreeModule extends AbstractModule {
+public class ListModelInstanceTreeModule extends AbstractModule {
 	
-	static private Logger logger = Logger.getLogger(ListModelTreeModule.class);
+	static private Logger logger = Logger.getLogger(ListModelInstanceTreeModule.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String)request.getAttribute("MESSAGE");
@@ -47,7 +47,7 @@ public class ListModelTreeModule extends AbstractModule {
 		}
 		String parentId = (String)request.getAttribute("ID");
 		List result = new ArrayList();
-		Model aModel = DAOFactory.getModelDAO().loadModelWithChildrenById(Integer.parseInt(parentId));
+		ModelInstance aModel = DAOFactory.getModelInstanceDAO().loadModelInstanceWithChildrenById(Integer.parseInt(parentId));
 		result.add(aModel);
 		response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, result);
 	}
@@ -58,7 +58,7 @@ public class ListModelTreeModule extends AbstractModule {
 		
 		String modelId = (String)request.getAttribute("MODEL_ID");
 		if(canDelete(Integer.parseInt(modelId))) {
-			toReturn = DAOFactory.getModelDAO().deleteModel(Integer.parseInt(modelId));
+			//toReturn = DAOFactory.getModelDAO().deleteModel(Integer.parseInt(modelId));
 		}
 		else{
 			EMFErrorHandler engErrorHandler = getErrorHandler();
@@ -68,12 +68,7 @@ public class ListModelTreeModule extends AbstractModule {
 	}
 	
 	private boolean canDelete(Integer modelId){
-		boolean toReturn = false;
-		try {
-			toReturn = (!(DAOFactory.getModelDAO().hasKpi(modelId)));
-		} catch (EMFUserError e) {
-		}
-		return toReturn;
+		return true;
 	}
 
 }

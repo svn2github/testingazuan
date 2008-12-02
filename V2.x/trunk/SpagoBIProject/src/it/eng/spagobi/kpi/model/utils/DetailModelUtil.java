@@ -52,11 +52,18 @@ public class DetailModelUtil {
 		String modelName = (String) serviceRequest.getAttribute("modelName");
 		String modelDescription = (String) serviceRequest.getAttribute("modelDescription");
 		String modelCode = (String) serviceRequest.getAttribute("modelCode");
+		String modelKpiId = (String) serviceRequest.getAttribute("kpiId");
+		Integer kpiId = null;
+		
+		if (modelKpiId!=null && Integer.parseInt(modelKpiId)!= -1){
+			kpiId = Integer.parseInt(modelKpiId);
+		}
 
 		Model toReturn = new Model();
 		toReturn.setName(modelName);
 		toReturn.setDescription(modelDescription);
 		toReturn.setCode(modelCode);
+		toReturn.setKpiId(kpiId);
 
 		return toReturn;
 	}

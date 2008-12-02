@@ -11,7 +11,7 @@ public class SbiKpiModelResources  implements java.io.Serializable {
 
 
     // Fields    
-
+	
      private Integer kpiModelResourcesId;
      private SbiKpiModelInst sbiKpiModelInst;
      private SbiResources sbiResources;

@@ -5,4 +5,6 @@
   <MAPPING business_type="PAGE" business_name="ModelTreePage" publisher_name="ModelTreePublisher"/>
   
   <MAPPING business_type="PAGE" business_name="ModelInstancePage" publisher_name="ModelInstancePublisher"/>
+  <MAPPING business_type="PAGE" business_name="ModelInstanceTreePage" publisher_name="ModelInstanceTreePublisher"/>
+
 </PRESENTATION>

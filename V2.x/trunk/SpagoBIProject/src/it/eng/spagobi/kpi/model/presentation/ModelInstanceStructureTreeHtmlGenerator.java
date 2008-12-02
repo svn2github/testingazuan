@@ -16,9 +16,11 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
+import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
 
-public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
+public class ModelInstanceStructureTreeHtmlGenerator implements
+		ITreeHtmlGenerator {
 
 	private IUrlBuilder urlBuilder;
 	private RequestContainer reqCont;
@@ -163,14 +165,14 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 			HttpServletRequest httpRequest, String initialPath) {
 		Iterator it = items.iterator();
 		while (it.hasNext()) {
-			Model aModel = (Model) it.next();
+			ModelInstance aModel = (ModelInstance) it.next();
 			parentId = aModel.getId();
 			recursiveStepAddItems(htmlStream, aModel, httpRequest);
 		}
 	}
 
-	private void recursiveStepAddItems(StringBuffer htmlStream, Model aModel,
-			HttpServletRequest httpRequest) {
+	private void recursiveStepAddItems(StringBuffer htmlStream,
+			ModelInstance aModel, HttpServletRequest httpRequest) {
 		String name = aModel.getName();
 		Integer id = aModel.getId();
 		Integer parentId = aModel.getParentId();
@@ -182,16 +184,18 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		List modelChildren = aModel.getChildrenNodes();
 		// children
 		for (Iterator iterator = modelChildren.iterator(); iterator.hasNext();) {
-			Model child = (Model) iterator.next();
+			ModelInstance child = (ModelInstance) iterator.next();
 			recursiveStepAddItems(htmlStream, child, httpRequest);
 		}
 	}
 
-	protected void addItemForJSTree(StringBuffer htmlStream, Model item,
-			int id, int parentId, String name, boolean isInitialPath,
-			boolean isFinalPath, boolean kpi, HttpServletRequest httpRequest) {
+	protected void addItemForJSTree(StringBuffer htmlStream,
+			ModelInstance item, int id, int parentId, String name,
+			boolean isInitialPath, boolean isFinalPath, boolean kpi,
+			HttpServletRequest httpRequest) {
 		String skpi = (kpi) ? "&nbsp;<span class=\\'kpi\\'>[kpi]</span>" : "";
-		String empty = "";
+		String delete = "";
+		String add = "";
 
 		String title = name;
 		if (name.length() > 30) {
@@ -199,24 +203,18 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 			name += "...";
 		}
 
-		if(parentId == -1){
-			htmlStream.append("	treeCMS.add(" + id + ", " + parentId + ",'" + name
-					+ skpi + "', 'javascript:linkEmpty()','" + title
-					+ "', '', '', '', '', 'menu(event, \\'"
-					+ createAddObjectLink(item, httpRequest) + "\\', \\'"
-					+ createDetailObjectLink(item, httpRequest) + "\\', \\'"
-					+ empty + "\\', \\'\\')' );\n");
-			
-		}else {
-			htmlStream.append("	treeCMS.add(" + id + ", " + parentId + ",'" + name
-					+ skpi + "', 'javascript:linkEmpty()','" + title
-					+ "', '', '', '', '', 'menu(event, \\'"
-					+ createAddObjectLink(item, httpRequest) + "\\', \\'"
-					+ createDetailObjectLink(item, httpRequest) + "\\', \\'"
-					+ createDeleteObjectLink(item, httpRequest) + "\\', \\'\\')' );\n");
+		if (DetailModelInstanceUtil.getCandidateModelChildren(id).size() > 0) {
+			add = createAddObjectLink(item, httpRequest);
 		}
-		
+		if (parentId != -1) {
+			delete = createDeleteObjectLink(item, httpRequest);
+		}
 
+		htmlStream.append("	treeCMS.add(" + id + ", " + parentId + ",'" + name
+				+ skpi + "', 'javascript:linkEmpty()','" + title
+				+ "', '', '', '', '', 'menu(event, \\'" + add + "\\', \\'"
+				+ createDetailObjectLink(item, httpRequest) + "\\', \\'"
+				+ delete + "\\', \\'\\')' );\n");
 	}
 
 	protected void makeJSFunctionForMenu(StringBuffer htmlStream,
@@ -252,7 +250,8 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		}\n");
 
 		String confirmCaption = msgBuilder.getMessage(
-				"sbi.modelTree.captionConfirm", "component_kpi_messages", httpRequest);
+				"sbi.modelTree.captionConfirm", "component_kpi_messages",
+				httpRequest);
 		htmlStream.append("     function actionConfirm(message, url){\n");
 		htmlStream.append("         if (confirm('" + confirmCaption
 				+ " ' + message + '?')){\n");
@@ -261,10 +260,11 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("     }\n");
 	}
 
-	protected String createDetailObjectLink(Model aModel, HttpServletRequest httpRequest) {
+	protected String createDetailObjectLink(ModelInstance aModel,
+			HttpServletRequest httpRequest) {
 		HashMap editUrlParMap = new HashMap();
-		editUrlParMap.put(SpagoBIConstants.PAGE, "ModelTreePage");
-		editUrlParMap.put("MODULE","DetailModelTreeModule");
+		editUrlParMap.put(SpagoBIConstants.PAGE, "ModelInstanceTreePage");
+		editUrlParMap.put("MODULE", "DetailModelInstanceTreeModule");
 		editUrlParMap.put("MESSAGE", "DETAIL_SELECT");
 		editUrlParMap.put("ID", parentId);
 		editUrlParMap.put("MODEL_ID", aModel.getId());
@@ -273,15 +273,11 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return editUrl;
 	}
 
-	private Map getItemParams(Model aModel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	protected String createAddObjectLink(Model aModel, HttpServletRequest httpRequest) {
+	protected String createAddObjectLink(ModelInstance aModel,
+			HttpServletRequest httpRequest) {
 		HashMap addUrlParMap = new HashMap();
-		addUrlParMap.put(SpagoBIConstants.PAGE,"ModelTreePage");
-		addUrlParMap.put("MODULE", "DetailModelTreeModule");
+		addUrlParMap.put(SpagoBIConstants.PAGE, "ModelInstanceTreePage");
+		addUrlParMap.put("MODULE", "DetailModelInstanceTreeModule");
 		addUrlParMap.put("MESSAGE", "DETAIL_NEW");
 		addUrlParMap.put("ID", parentId);
 		addUrlParMap.put("MODEL_ID", aModel.getId());
@@ -289,19 +285,15 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		return addUrl;
 	}
 
-	protected String createDeleteObjectLink(Model aModel, HttpServletRequest httpRequest) {
+	protected String createDeleteObjectLink(ModelInstance aModel,
+			HttpServletRequest httpRequest) {
 		HashMap deleteUrlParMap = new HashMap();
-		deleteUrlParMap.put(SpagoBIConstants.PAGE, "ModelTreePage");
-		deleteUrlParMap.put("MODULE","ListModelTreeModule");
+		deleteUrlParMap.put(SpagoBIConstants.PAGE, "ModelInstanceTreePage");
+		deleteUrlParMap.put("MODULE", "ListModelInstanceTreeModule");
 		deleteUrlParMap.put("MESSAGE", "DETAIL_DELETE");
 		deleteUrlParMap.put("ID", parentId);
 		deleteUrlParMap.put("MODEL_ID", aModel.getId());
 		String addUrl = urlBuilder.getUrl(httpRequest, deleteUrlParMap);
 		return addUrl;
-	}
-
-	private Map getItemParamsDelete(Model aModel) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

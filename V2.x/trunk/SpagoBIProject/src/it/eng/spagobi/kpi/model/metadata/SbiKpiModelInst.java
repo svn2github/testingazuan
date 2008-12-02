@@ -15,9 +15,10 @@ public class SbiKpiModelInst  implements java.io.Serializable {
 
 
     // Fields    
-
+	
      private Integer kpiModelInst;
      private SbiKpiInstance sbiKpiInstance; //KPI
+     private SbiKpiModel sbiKpiModel;
      private SbiKpiModelInst sbiKpiModelInst; // MODEL_INST
      private String name;
      private String description;
@@ -27,7 +28,7 @@ public class SbiKpiModelInst  implements java.io.Serializable {
 
     // Constructors
 
-    /** default constructor */
+	/** default constructor */
     public SbiKpiModelInst() {
     }
 
@@ -37,9 +38,10 @@ public class SbiKpiModelInst  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiModelInst(Integer kpiModelInst, SbiKpiInstance sbiKpiInstance, SbiKpiModelInst sbiKpiModelInst, String name, String description, Set sbiKpiModelInsts, Set sbiKpiModelResourceses) {
+    public SbiKpiModelInst(Integer kpiModelInst, SbiKpiInstance sbiKpiInstance, SbiKpiModel sbiKpiModel, SbiKpiModelInst sbiKpiModelInst, String name, String description, Set sbiKpiModelInsts, Set sbiKpiModelResourceses) {
         this.kpiModelInst = kpiModelInst;
         this.sbiKpiInstance = sbiKpiInstance;
+        this.sbiKpiModel = sbiKpiModel;
         this.sbiKpiModelInst = sbiKpiModelInst;
         this.name = name;
         this.description = description;
@@ -66,6 +68,14 @@ public class SbiKpiModelInst  implements java.io.Serializable {
     public void setSbiKpiInstance(SbiKpiInstance sbiKpiInstance) {
         this.sbiKpiInstance = sbiKpiInstance;
     }
+    
+    public SbiKpiModel getSbiKpiModel() {
+		return sbiKpiModel;
+	}
+
+	public void setSbiKpiModel(SbiKpiModel sbiKpiModel) {
+		this.sbiKpiModel = sbiKpiModel;
+	}
 
     public SbiKpiModelInst getSbiKpiModelInst() {
         return this.sbiKpiModelInst;

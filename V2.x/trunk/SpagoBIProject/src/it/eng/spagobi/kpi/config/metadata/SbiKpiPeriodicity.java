@@ -1,9 +1,8 @@
 package it.eng.spagobi.kpi.config.metadata;
+// Generated 2-dic-2008 10.47.59 by Hibernate Tools 3.1.0 beta3
 
 import java.util.HashSet;
-// Generated 5-nov-2008 17.16.37 by Hibernate Tools 3.1.0 beta3
 import java.util.Set;
-
 
 
 /**
@@ -15,8 +14,13 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
 
     // Fields    
 
-     private Integer idKpiInstancePeriod;
-     private Integer value;
+     private Integer idKpiPeriodicity;
+     private String name;
+     private Integer months;
+     private Integer days;
+     private Integer hours;
+     private Integer minutes;
+     private String period;
      private Set sbiKpiInstances = new HashSet(0);
 
 
@@ -27,27 +31,80 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     }
 
 	/** minimal constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod) {
-        this.idKpiInstancePeriod = idKpiInstancePeriod;
+    public SbiKpiPeriodicity(Integer idKpiPeriodicity) {
+        this.idKpiPeriodicity = idKpiPeriodicity;
     }
     
     /** full constructor */
-    public SbiKpiPeriodicity(Integer idKpiInstancePeriod,  Integer value, Set sbiKpiInstances) {
-        this.idKpiInstancePeriod = idKpiInstancePeriod;
+    public SbiKpiPeriodicity(Integer idKpiPeriodicity, String name, Integer months, Integer days, Integer hours, Integer minutes, String period, Set sbiKpiInstances) {
+        this.idKpiPeriodicity = idKpiPeriodicity;
+        this.name = name;
+        this.months = months;
+        this.days = days;
+        this.hours = hours;
+        this.minutes = minutes;
+        this.period = period;
         this.sbiKpiInstances = sbiKpiInstances;
-        this.value = value;
     }
     
 
    
     // Property accessors
 
-    public Integer getIdKpiInstancePeriod() {
-        return this.idKpiInstancePeriod;
+    public Integer getIdKpiPeriodicity() {
+        return this.idKpiPeriodicity;
     }
     
-    public void setIdKpiInstancePeriod(Integer idKpiInstancePeriod) {
-        this.idKpiInstancePeriod = idKpiInstancePeriod;
+    public void setIdKpiPeriodicity(Integer idKpiPeriodicity) {
+        this.idKpiPeriodicity = idKpiPeriodicity;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getMonths() {
+        return this.months;
+    }
+    
+    public void setMonths(Integer months) {
+        this.months = months;
+    }
+
+    public Integer getDays() {
+        return this.days;
+    }
+    
+    public void setDays(Integer days) {
+        this.days = days;
+    }
+
+    public Integer getHours() {
+        return this.hours;
+    }
+    
+    public void setHours(Integer hours) {
+        this.hours = hours;
+    }
+
+    public Integer getMinutes() {
+        return this.minutes;
+    }
+    
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
+    }
+
+    public String getPeriod() {
+        return this.period;
+    }
+    
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     public Set getSbiKpiInstances() {
@@ -57,21 +114,5 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     public void setSbiKpiInstances(Set sbiKpiInstances) {
         this.sbiKpiInstances = sbiKpiInstances;
     }
-
-    public Integer getValue() {
-        return this.value;
-    }
-    
-    public void setValue(Integer value) {
-        this.value = value;
-    }
    
-
-
-
-
-
-
-
-
 }

@@ -20,6 +20,10 @@ public interface IModelInstanceDAO {
 
 	public void modifyModel(ModelInstance modelInstance) throws EMFUserError;
 
-	public Integer insertModel(ModelInstance toCreate) throws EMFUserError;
+	public Integer insertModelInstance(ModelInstance toCreate) throws EMFUserError;
+
+	public ModelInstance loadModelInstanceWithChildrenById(Integer parseInt) throws EMFUserError;
+
+	public List getCandidateModelChildren(Integer parentId) throws EMFUserError;
 
 }

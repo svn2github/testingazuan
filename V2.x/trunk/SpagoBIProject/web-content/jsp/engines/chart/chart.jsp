@@ -473,14 +473,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div align="center" class='div_detail_form'>
 		<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
 				<input id="serie" name="serie" value="allseries" 
-				type="radio" checked='checked' />
+				type="checkbox" checked='checked' />
 				<span>View all</span>
 		
 		
 		<%} else {%>	
-	
 				<input id="serie" name="serie" value="allseries" 
-				type="radio" />
+				type="checkbox" />
 				<span>View all</span>
 	
 		<%} %>
@@ -494,14 +493,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 	
 				<input id="serie" name="serie" value="<%=ser%>" 
-				type="radio" checked='checked' />
+				type="checkbox" checked='checked' />
 				<span><%=ser%></span>
 		
 		<%}else{ %>
 		
 	
 				<input id="serie" name="serie" value="<%=ser%>" 
-				type="radio" />
+				type="checkbox" />
 				<span><%=ser%></span>
 		<%} 
 		 }

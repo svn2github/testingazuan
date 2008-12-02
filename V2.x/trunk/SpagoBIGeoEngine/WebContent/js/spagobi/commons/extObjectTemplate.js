@@ -27,39 +27,19 @@
   * by Andrea Gioia (andrea.gioia@eng.it)
   */
 
-Sbi.commons.ServiceQueue = function(config) {
+Sbi.xxx.Xxxx = function(conf) {
 	
-	this.serviceQueue = [];
-	
-	Ext.apply(this, config);
-	
-	this.addEvents();	
 	
 	// constructor
-    Sbi.commons.ServiceQueue.superclass.constructor.call(this);
+    Sbi.xxx.Xxxx.superclass.constructor.call(this, {
+    	
+    })
 };
 
-Ext.extend(Sbi.commons.ServiceQueue, Ext.util.Observable, {
+Ext.extend(Sbi.xxx.Xxxx, Ext.util.Observable, {
     
     // static contens and methods definitions
    
    
     // public methods
-    add : function(serviceConfig) {
-    	this.serviceQueue.push( serviceConfig );
-    }
-    
-    , run : function() {
-    	this.runNext();
-    }
-    
-    , runNext : function(serviceResponse, serviceConfig) {
-    	var nextServiceConfig = serviceQueue.pop();
-    	nextServiceConfig.success = this.runNext;
-    	
-    	Ext.Ajax.request( nextServiceConfig );  
-    	
-    	//this.fireEvent("requestcomplete", this, response, options);
-        //Ext.callback(options.success, options.scope, [response, options]);   
-    }
 });

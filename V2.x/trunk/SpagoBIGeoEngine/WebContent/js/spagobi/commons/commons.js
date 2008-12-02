@@ -1,8 +1,7 @@
 // create namespace
-Ext.namespace('it.eng.spagobi.engines.qbe.commons');
+Ext.ns("Sbi.commons");
 
-
-it.eng.spagobi.engines.qbe.commons = function(){
+Sbi.commons = function(){
 	// do NOT access DOM from here; elements don't exist yet
  
     // private variables
@@ -12,7 +11,7 @@ it.eng.spagobi.engines.qbe.commons = function(){
 	return {
 	
 		init : function() {
-			//alert("init");
+			//alert("init: Sbi.commons");
 		},
 		
 		toStr : function(o) {

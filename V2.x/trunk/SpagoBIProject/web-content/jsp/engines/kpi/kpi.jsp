@@ -96,7 +96,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			while(blocksIt.hasNext()){
 				
 				KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
-				StringBuffer _htmlStream = block.makeTree( request,display_bullet_chart, display_alarm, display_semaphore,display_weight );
+				StringBuffer _htmlStream = block.makeTree( userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight );
 				%>
 				<br>
 				<br>

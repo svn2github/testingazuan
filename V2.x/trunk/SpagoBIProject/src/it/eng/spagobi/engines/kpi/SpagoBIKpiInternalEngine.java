@@ -45,6 +45,7 @@ import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
+import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
@@ -321,7 +322,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}else{
 			return line;
 		}
+		Integer kpiId = kpiI.getKpi();
+		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
 		
+		if(k!=null){
+			String docLabel = k.getDocumentLabel();
+			if (docLabel!=null && !docLabel.equals("")){
+				List documents = new ArrayList();
+				documents.add(docLabel);
+				line.setDocuments(documents);
+			}		
+		}
 		if(display_alarm){
 			Boolean alarm =  DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
 			line.setAlarm(alarm);

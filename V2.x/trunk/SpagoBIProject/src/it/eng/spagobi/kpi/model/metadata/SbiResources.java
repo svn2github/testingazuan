@@ -21,6 +21,7 @@ public class SbiResources  implements java.io.Serializable {
      private String tableName;
      private String columnName;
      private String resourceName;
+     private String resourceDescr;
      private Set sbiKpiValues = new HashSet(0);
      private Set sbiKpiModelResourceses = new HashSet(0);
 
@@ -38,12 +39,13 @@ public class SbiResources  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiResources(Integer resourceId, SbiDomains sbiDomains, String tableName, String columnName, String resourceName, Set sbiKpiValues, Set sbiKpiModelResourceses) {
+    public SbiResources(Integer resourceId, SbiDomains sbiDomains, String tableName, String columnName, String resourceName, String resourceDescr, Set sbiKpiValues, Set sbiKpiModelResourceses) {
         this.resourceId = resourceId;
         this.sbiDomains = sbiDomains;
         this.tableName = tableName;
         this.columnName = columnName;
         this.resourceName = resourceName;
+        this.resourceDescr = resourceDescr;
         this.sbiKpiValues = sbiKpiValues;
         this.sbiKpiModelResourceses = sbiKpiModelResourceses;
     }
@@ -107,13 +109,13 @@ public class SbiResources  implements java.io.Serializable {
     public void setSbiKpiModelResourceses(Set sbiKpiModelResourceses) {
         this.sbiKpiModelResourceses = sbiKpiModelResourceses;
     }
+
+	public String getResourceDescr() {
+		return resourceDescr;
+	}
+
+	public void setResourceDescr(String resourceDescr) {
+		this.resourceDescr = resourceDescr;
+	}
    
-
-
-
-
-
-
-
-
 }

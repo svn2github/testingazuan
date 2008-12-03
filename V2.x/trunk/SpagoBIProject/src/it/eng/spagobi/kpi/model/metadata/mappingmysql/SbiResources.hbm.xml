@@ -20,6 +20,9 @@
         <property name="resourceName" type="string">
             <column name="RESOURCE_NAME" length="40" />
         </property>
+        <property name="resourceDescr" type="string">
+            <column name="RESOURCE_DESCR" length="400" />
+        </property>
         <set name="sbiKpiValues" inverse="true">
             <key>
                 <column name="RESOURCE_ID" not-null="true" />

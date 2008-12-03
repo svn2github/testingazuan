@@ -106,11 +106,11 @@ public class KpiResourceBlock {
 			_htmlStream.append("		<td width='2%' style=\"align:left;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");
 		}
 		
-		_htmlStream.append("		<td width='"+(53-(recursionLev))+"%' style='height=30px;align:left;vertical-align:middle;'><div>"+modelName+"</div></td>\n");
+		_htmlStream.append("		<td width='"+(53-(recursionLev))+"%' title='Model Instance Node' style='height=30px;align:left;vertical-align:middle;'><div>"+modelName+"</div></td>\n");
 		
-		_htmlStream.append("		<td  width='9%' style=\"align:left;vertical-align:middle;\"><div>"+lo+"</div></td>\n");
+		_htmlStream.append("		<td  width='9%' title='Value' style=\"align:left;vertical-align:middle;\"><div>"+lo+"</div></td>\n");
 		if (display_weight && weight!=null){
-			_htmlStream.append("		<td width='5%' style=\"align:left;vertical-align:middle;\"><div>["+weight.toString()+"]</div></td>\n");
+			_htmlStream.append("		<td width='5%' title='Weight' style=\"align:left;vertical-align:middle;\"><div>["+weight.toString()+"]</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' style=\"align:left;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");
 		}
@@ -152,7 +152,7 @@ public class KpiResourceBlock {
 				execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
 				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
-				_htmlStream.append("<a href=\""+docHref+"\"> <img src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
+				_htmlStream.append("<a title='Document linked to the kpi' href=\""+docHref+"\"> <img src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
 			_htmlStream.append("		</div></td>\n");
 		}else{
@@ -160,7 +160,7 @@ public class KpiResourceBlock {
 		}
 		
 		if (display_alarm){
-			if(alarm) _htmlStream.append("		<td width='2%' style=\"align:right;vertical-align:middle;\"><div><img src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
+			if(alarm) _htmlStream.append("		<td width='2%' title='Kpi under Alarm control' style=\"align:right;vertical-align:middle;\"><div><img src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
 			else _htmlStream.append("		<td width='2%' style=\"align:right;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' style=\"align:right;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");

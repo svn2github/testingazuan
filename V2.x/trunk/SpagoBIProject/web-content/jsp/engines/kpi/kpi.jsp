@@ -138,13 +138,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					resDiv += " "+resDescr;
 					resDiv += "</a> ";
 					resDiv += "</li>";
-					if(col==1){
 						scriptDiv += "toggle('"+resName+"', '"+resName+"_click', true );\n";	
-					}else{
-						scriptDiv += "toggle('"+resName+"', '"+resName+"_click', false );\n";	
-					}
-					scriptViewAll += "toggle('"+resName+"', '"+resName+"_click', true );\n";	
-					scriptHideAll += "toggle('"+resName+"', '"+resName+"_click', false );\n";	
+
+					scriptViewAll += "setVisible('"+resName+"', '"+resName+"_click', true );\n";	
+					scriptHideAll += "setVisible('"+resName+"', '"+resName+"_click', false );\n";	
 					
 					if(col>7){
 						col = 0;

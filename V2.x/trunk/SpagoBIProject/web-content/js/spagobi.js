@@ -256,6 +256,15 @@ function toggle(elementId, togglerId, toggled) {
 	});
 }
 
+function setVisible(elementId, togglerId, visible) {
+	Ext.onReady(function() {
+		var element = Ext.get(elementId);
+	    	
+	    element.setVisible(visible);
+
+	});
+}
+
 function toggleWithCookie(elementId, togglerId, toggled) {
 	Ext.onReady(function() {
 		var element = Ext.get(elementId);

@@ -21,7 +21,8 @@ public class SbiKpiInstanceHistory  implements java.io.Serializable {
      private SbiKpiInstance sbiKpiInstance;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
-     private double weight;
+     private Double weight;
+     private Double target;
      private Date beginDt;
      private Date endDt;
 
@@ -42,13 +43,14 @@ public class SbiKpiInstanceHistory  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiInstanceHistory(Integer idKpiInstanceHistory, SbiDomains sbiDomains, SbiKpiInstance sbiKpiInstance, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, Date beginDt, Date endDt) {
+    public SbiKpiInstanceHistory(Integer idKpiInstanceHistory, SbiDomains sbiDomains, SbiKpiInstance sbiKpiInstance, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, Double weight, Double target, Date beginDt, Date endDt) {
         this.idKpiInstanceHistory = idKpiInstanceHistory;
         this.sbiDomains = sbiDomains;
         this.sbiKpiInstance = sbiKpiInstance;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
         this.weight = weight;
+        this.target = target;
         this.beginDt = beginDt;
         this.endDt = endDt;
     }
@@ -97,11 +99,11 @@ public class SbiKpiInstanceHistory  implements java.io.Serializable {
         this.sbiMeasureUnit = sbiMeasureUnit;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return this.weight;
     }
     
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
@@ -120,5 +122,13 @@ public class SbiKpiInstanceHistory  implements java.io.Serializable {
     public void setEndDt(Date endDt) {
         this.endDt = endDt;
     }
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
+	}
    
 }

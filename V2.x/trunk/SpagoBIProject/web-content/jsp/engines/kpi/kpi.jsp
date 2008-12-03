@@ -107,24 +107,64 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 			String resDiv = "";
 			String scriptDiv = "";
+			String scriptViewAll = "<script>";
+			scriptViewAll += "function viewAll(){";
+			String scriptHideAll = "<script>";
+			scriptHideAll += "function hideAll(){";
 			if(resources!=null && !resources.isEmpty()){
 				Iterator resIt = resources.iterator();
 				scriptDiv += "<script>";
+				resDiv += "<div class='slider_header'><ul>";
+				resDiv += "<li class='arrow' id='ss'>";
+				resDiv += "<a  href='javascript:viewAll();' style='margin: 0px 0px 5px 10px;' id='ViewAll_click' name='ViewAll_click' > ";
+				resDiv += " View All";
+				resDiv += "</a> ";
+				resDiv += "</li>";
+				resDiv += "<li class='arrow' id='ss'>";
+				resDiv += "<a  href='javascript:hideAll();' style='margin: 0px 0px 5px 10px;' id='HideAll_click' name='HideAll_click' > ";
+				resDiv += " Hide All";
+				resDiv += "</a> ";
+				resDiv += "</li>";	
+				int col = 2;
 				while(resIt.hasNext()){
+					col++;
 					String resName = (String)resIt.next();
-					resDiv += "<a style='margin: 0px 0px 5px 10px;' id='"+resName+"_click' name='"+resName+"_click' > ";
-					resDiv += "Resource: "+resName;
+					if(col>7){
+						resDiv += "</ul><ul>";
+					}
+					resDiv += "<li class='arrow' id='ss'>";
+					resDiv += "<a  href='javascript:void(0);' style='margin: 0px 0px 5px 10px;' id='"+resName+"_click' name='"+resName+"_click' > ";
+					resDiv += " "+resName;
 					resDiv += "</a> ";
-					scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";
+					resDiv += "</li>";
+					if(col==1){
+						scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', true );\n";	
+					}else{
+						scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";	
+					}
+					scriptViewAll += "toggleWithCookie('"+resName+"', '"+resName+"_click', true );\n";	
+					scriptHideAll += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";	
+					
+					if(col>7){
+						col = 0;
+					}
 				}	
+				resDiv += "</ul>";
+				resDiv += "</div>";
 				 scriptDiv += "</script>";
+				 scriptHideAll += "}";
+				 scriptHideAll += "</script>";
+				 scriptViewAll += "}";
+				 scriptViewAll += "</script>";
 			}
 				%>
 			 <%=resDiv%>
 			<br>
-			   <%=_htmlStream%>
+			   <%=_htmlStream%> 
 			<br>
 			 <%=scriptDiv%>
+			 <%=scriptViewAll%>
+			 <%=scriptHideAll%>
 		<%}%>		
 	<%@ include file="/jsp/commons/footer.jsp"%>		
 

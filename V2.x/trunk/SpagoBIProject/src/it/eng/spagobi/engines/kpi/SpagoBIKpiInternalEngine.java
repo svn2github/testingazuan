@@ -203,7 +203,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									isActualDateRequired = false;
 								}
 							}
-						}else if(values.size() >=1){
+						}else if(values!=null && values.size() >=1){
 							if (url.equals("ParKpiResources")){
 								this.resources = new ArrayList();
 								for(int k = 0; k< values.size() ; k++){
@@ -459,7 +459,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		Date begD = new Date();
 		kVal.setBeginDate(begD);
 		KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-		Integer seconds = sbik.getPeriodicity();
+		Integer seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(sbik.getPeriodicity());
 		//Transforms seconds into milliseconds
 		long milliSeconds = seconds.longValue() * 1000;			
 		long begDtTime = begD.getTime();

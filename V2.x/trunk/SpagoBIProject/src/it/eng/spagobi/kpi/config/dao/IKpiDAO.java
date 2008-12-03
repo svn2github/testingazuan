@@ -49,6 +49,15 @@ public interface IKpiDAO {
 	public List getThresholds(KpiInstance k)throws EMFUserError;
 
 	/**
+	 * Returns an Integer representing the seconds of the Periodicity with id periodicityId
+	 * 
+	 * @param Integer periodicityId 
+	 * @return Integer representing the seconds of the Periodicity with id periodicityId
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public Integer getPeriodicitySeconds(Integer periodicityId)throws EMFUserError;
+	
+	/**
 	 * Returns the Kpi of the referred id
 	 * 
 	 * @param id of the Kpi

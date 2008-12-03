@@ -7,7 +7,7 @@ import java.util.List;
 public class KpiInstance {
 	
 	Integer kpiInstanceId = null;
-	Integer periodicity = null;//period of valability in seconds
+	Integer periodicity = null;//id of periodicity of valability in seconds
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
 	Double weight = null; 

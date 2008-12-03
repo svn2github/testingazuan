@@ -4,6 +4,7 @@ public class Resource {
 	
 	Integer id = null;
 	String name = null;
+	String descr = null;
 	String column_name = null;
 	String table_name = null;
 	String type = null; //type of the resource, such as Project...
@@ -51,6 +52,14 @@ public class Resource {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getDescr() {
+		return descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
 	}
 
 }

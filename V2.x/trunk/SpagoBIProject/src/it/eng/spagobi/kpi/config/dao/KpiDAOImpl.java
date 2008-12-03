@@ -221,7 +221,54 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return values;
 	}
 
+	public Integer getPeriodicitySeconds(Integer periodicityId)throws EMFUserError{
+		
+		logger.debug("IN");
+		Integer toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		int seconds = 0 ;
 
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiPeriodicity hibSbiKpiPeriodicity = (SbiKpiPeriodicity)aSession.load(SbiKpiPeriodicity.class,periodicityId);
+			if(hibSbiKpiPeriodicity.getDays()!=null){
+				//86400 seconds in a day
+				seconds += hibSbiKpiPeriodicity.getDays().intValue()*86400;
+			}
+			if(hibSbiKpiPeriodicity.getHours()!=null){
+				//3600 seconds in an hour
+				seconds += hibSbiKpiPeriodicity.getHours().intValue()*3600;
+			}
+			if(hibSbiKpiPeriodicity.getMinutes()!=null){
+				//60 seconds in a minute
+				seconds += hibSbiKpiPeriodicity.getMinutes().intValue()*60;
+			}
+			if(hibSbiKpiPeriodicity.getMonths()!=null){
+				//2592000 seconds in a month of 30 days
+				seconds += hibSbiKpiPeriodicity.getMonths().intValue()*2592000;
+			}
+			toReturn = new Integer(seconds);
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Periodicity with id "+periodicityId , he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	public void insertKpiValue(KpiValue value) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -671,14 +718,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Double weight = kpiInst.getWeight();
 		//List values = getKpiValue(kpiInst, requestedDate);	
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
-		Integer seconds = periodicity.getValue();
-		
+		Integer idPeriodicity = periodicity.getIdKpiPeriodicity();
+	
 		toReturn.setWeight(weight);
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
 		//toReturn.setValues(values);
 		toReturn.setD(d);
-		toReturn.setPeriodicity(seconds);
+		toReturn.setPeriodicity(idPeriodicity);
 		logger.debug("OUT");
 		return toReturn;
 	}
@@ -691,12 +738,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String coumn_name = r.getColumnName();
 		String name = r.getResourceName();
 		String table_name = r.getTableName();
+		String descr = r.getResourceDescr();
 		SbiDomains d = r.getSbiDomains();
 		String type = d.getValueCd();	
 		Integer resourceId = r.getResourceId();
 		
 		toReturn.setColumn_name(coumn_name);
 		toReturn.setName(name);
+		toReturn.setDescr(descr);
 		toReturn.setTable_name(table_name);
 		toReturn.setType(type);
 		toReturn.setId(resourceId);
@@ -721,6 +770,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		SbiResources toReturn = new SbiResources();
 		String columnName = r.getColumn_name();
 		String resourceName = r.getName();
+		String resourceDescr = r.getDescr();
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
 		String type = r.getType();
@@ -736,6 +786,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		toReturn.setColumnName(columnName);
 		toReturn.setResourceId(resourceId);
 		toReturn.setResourceName(resourceName);
+		toReturn.setResourceDescr(resourceDescr);
 		toReturn.setSbiDomains(sbiDomains);
 		toReturn.setTableName(tableName);
 		logger.debug("OUT");

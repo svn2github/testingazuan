@@ -24,7 +24,8 @@ public class SbiKpiInstance  implements java.io.Serializable {
      private SbiKpiPeriodicity sbiKpiPeriodicity;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
-     private double weight;
+     private Double weight;
+     private Double target;
      private Set sbiKpiModelInsts = new HashSet(0);
      private Set sbiKpiInstanceHistories = new HashSet(0);
      private Set sbiKpiValues = new HashSet(0);
@@ -106,11 +107,11 @@ public class SbiKpiInstance  implements java.io.Serializable {
         this.sbiMeasureUnit = sbiMeasureUnit;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return this.weight;
     }
     
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
@@ -161,4 +162,12 @@ public class SbiKpiInstance  implements java.io.Serializable {
     public void setSbiDomains(SbiDomains sbiDomains) {
         this.sbiDomains = sbiDomains;
     }
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
+	}
 }

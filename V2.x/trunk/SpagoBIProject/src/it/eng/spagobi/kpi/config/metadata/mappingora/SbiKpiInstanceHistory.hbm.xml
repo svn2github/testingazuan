@@ -23,6 +23,9 @@
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />
         </property>
+        <property name="target" type="double">
+            <column name="target" precision="22" scale="0" />
+        </property>
         <property name="beginDt" type="timestamp">
             <column name="BEGIN_DT" length="19" />
         </property>

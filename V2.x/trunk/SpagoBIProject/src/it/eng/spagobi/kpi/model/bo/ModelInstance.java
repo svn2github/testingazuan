@@ -1,5 +1,7 @@
 package it.eng.spagobi.kpi.model.bo;
 
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
+
 import java.util.List;
 
 public class ModelInstance {
@@ -11,7 +13,14 @@ public class ModelInstance {
 	private String name = null;//name of the complete model instance(like "my own CMMI")
 	private String description = null;//description of the complete model instance
 	private Integer parentId = null;
+	private KpiInstance kpiInstance = null;
 	
+	public KpiInstance getKpiInstance() {
+		return kpiInstance;
+	}
+	public void setKpiInstance(KpiInstance kpiInstance) {
+		this.kpiInstance = kpiInstance;
+	}
 	public Integer getParentId() {
 		return parentId;
 	}

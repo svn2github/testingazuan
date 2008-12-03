@@ -1,0 +1,97 @@
+package it.eng.spagobi.kpi.threshold.dao;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
+
+public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThresholdDAO {
+
+	static private Logger logger = Logger.getLogger(ThresholdDAOImpl.class);
+
+	public Threshold loadThresholdById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		Threshold toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiThreshold hibThreshold = (SbiThreshold)aSession.load(SbiThreshold.class,id);
+			toReturn = new Threshold();
+			toReturn.setThresholdName(hibThreshold.getName());
+			toReturn.setThresholdName(hibThreshold.getDescription());
+			toReturn.setId(hibThreshold.getThresholdId());
+			toReturn.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
+			
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Threshold with id " + ((id == null)?"":id.toString()), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
+	}
+
+	public List loadThresholdList() throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+			toTransform = aSession.createQuery("from SbiThreshold").list();
+
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiThreshold hibThreshold = (SbiThreshold) iterator
+						.next();
+				Threshold threshold = new Threshold();
+				threshold.setThresholdName(hibThreshold.getName());
+				threshold.setThresholdName(hibThreshold.getDescription());
+				threshold.setId(hibThreshold.getThresholdId());
+				threshold.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
+				toReturn.add(threshold);
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Threshold", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
+	}
+
+}

@@ -56,8 +56,10 @@ import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmEventDAO;
 import it.eng.spagobi.kpi.config.dao.IKpiDAO;
+import it.eng.spagobi.kpi.config.dao.IPeriodicityDAO;
 import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
@@ -525,5 +527,26 @@ public class DAOFactory {
 	public static IModelInstanceDAO getModelInstanceDAO() throws EMFUserError{
 		return (IModelInstanceDAO)createDAOInstance("ModelInstanceDAO");
 	}
+	
+	/**
+	 * Gets the PERIODICITY dao.
+	 * 
+	 * @return the PERIODICITY dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static IPeriodicityDAO getPeriodicityDAO() throws EMFUserError{
+		return (IPeriodicityDAO)createDAOInstance("PeriodicityDAO");
+	}
 
+	/**
+	 * Gets the THRESHOLD dao.
+	 * 
+	 * @return the THRESHOLD dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static IThresholdDAO getThresholdDAO() throws EMFUserError{
+		return (IThresholdDAO)createDAOInstance("ThresholdDAO");
+	}
 }

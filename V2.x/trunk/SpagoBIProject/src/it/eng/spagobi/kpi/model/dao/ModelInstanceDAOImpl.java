@@ -3,6 +3,10 @@ package it.eng.spagobi.kpi.model.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
@@ -13,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -41,7 +46,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 					.hasNext();) {
 				SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) iterator
 						.next();
-				ModelInstance aModelInst = toModelInstanceWithoutChildren(sbiKpiModelInst, aSession);
+				ModelInstance aModelInst = toModelInstanceWithoutChildren(
+						sbiKpiModelInst, aSession);
 				toReturn.add(aModelInst);
 			}
 		} catch (HibernateException he) {
@@ -63,7 +69,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	}
 
-	private ModelInstance toModelInstanceWithoutChildren(SbiKpiModelInst value, Session aSession) {
+	private ModelInstance toModelInstanceWithoutChildren(SbiKpiModelInst value,
+			Session aSession) {
 		logger.debug("IN");
 		ModelInstance toReturn = new ModelInstance();
 
@@ -71,8 +78,27 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		String description = value.getDescription();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
-		Model aModel = ModelDAOImpl.toModelWithoutChildren(sbiKpiModel, aSession);
-		
+		Model aModel = ModelDAOImpl.toModelWithoutChildren(sbiKpiModel,
+				aSession);
+		SbiKpiInstance sbiKpiInstance = value.getSbiKpiInstance();
+
+		if (sbiKpiInstance != null) {
+			// toKpiInstance
+			KpiInstance aKpiInstance = new KpiInstance();
+			aKpiInstance.setKpiInstanceId(sbiKpiInstance.getIdKpiInstance());
+			aKpiInstance.setKpi(sbiKpiInstance.getSbiKpi().getKpiId());
+			aKpiInstance.setThresholdId(sbiKpiInstance.getSbiThreshold()
+					.getThresholdId());
+			aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
+					.getValueId());
+			aKpiInstance.setPeriodicityId(sbiKpiInstance.getSbiKpiPeriodicity()
+					.getIdKpiPeriodicity());
+			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
+			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
+			//
+			toReturn.setKpiInstance(aKpiInstance);
+		}
+
 		toReturn.setId(id);
 		toReturn.setName(name);
 		toReturn.setDescription(description);
@@ -93,7 +119,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInstance = (SbiKpiModelInst) aSession
 					.load(SbiKpiModelInst.class, id);
-			toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInstance, aSession);
+			toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInstance,
+					aSession);
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model Instance with id "
@@ -150,7 +177,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		logger.debug("OUT");
 	}
 
-	public Integer insertModelInstance(ModelInstance toCreate) throws EMFUserError {
+	public Integer insertModelInstance(ModelInstance toCreate)
+			throws EMFUserError {
 		logger.debug("IN");
 		Integer idToReturn;
 		Session aSession = null;
@@ -165,15 +193,30 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			sbiKpiModelInst.setName(toCreate.getName());
 			sbiKpiModelInst.setDescription(toCreate.getDescription());
 			Model aModel = toCreate.getModel();
-			if (aModel!=null && aModel.getId()!=null){
-				SbiKpiModel sbiKpiModel = (SbiKpiModel)aSession.load(SbiKpiModel.class, aModel.getId());
+			if (aModel != null && aModel.getId() != null) {
+				SbiKpiModel sbiKpiModel = (SbiKpiModel) aSession.load(
+						SbiKpiModel.class, aModel.getId());
 				sbiKpiModelInst.setSbiKpiModel(sbiKpiModel);
+
+				// set the sbiKpiInstance
+				SbiKpi sbiKpi = sbiKpiModel.getSbiKpi();
+				if (sbiKpi != null) {
+					SbiKpiInstance sbiKpiInstance = new SbiKpiInstance();
+					sbiKpiInstance.setSbiKpi(sbiKpi);
+					sbiKpiInstance.setSbiThreshold(sbiKpi.getSbiThreshold());
+					Calendar now = Calendar.getInstance();
+					sbiKpiInstance.setBeginDt(now.getTime());
+					aSession.save(sbiKpiInstance);
+					sbiKpiModelInst.setSbiKpiInstance(sbiKpiInstance);
+				}
+
 			}
-			if (parentId!=null){
-				SbiKpiModelInst sbiKpiModelInstParent = (SbiKpiModelInst) aSession.load(SbiKpiModelInst.class, parentId);
+			if (parentId != null) {
+				SbiKpiModelInst sbiKpiModelInstParent = (SbiKpiModelInst) aSession
+						.load(SbiKpiModelInst.class, parentId);
 				sbiKpiModelInst.setSbiKpiModelInst(sbiKpiModelInstParent);
 			}
-			
+
 			idToReturn = (Integer) aSession.save(sbiKpiModelInst);
 
 			tx.commit();
@@ -206,7 +249,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
 					.load(SbiKpiModelInst.class, id);
-			toReturn = toModelWithChildren(hibSbiKpiModelInst, null);
+			toReturn = toModelInstanceWithChildren(hibSbiKpiModelInst, null);
 		} catch (HibernateException he) {
 			logger.error("Error while loading the ModelInstance with id "
 					+ ((id == null) ? "" : id.toString()), he);
@@ -228,7 +271,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	}
 
-	private ModelInstance toModelWithChildren(SbiKpiModelInst value, Integer parentId) {
+	private ModelInstance toModelInstanceWithChildren(SbiKpiModelInst value,
+			Integer parentId) {
 		logger.debug("IN");
 		ModelInstance toReturn = new ModelInstance();
 		String name = value.getName();
@@ -240,7 +284,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		Set children = value.getSbiKpiModelInsts();
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			SbiKpiModelInst sbiKpichild = (SbiKpiModelInst) iterator.next();
-			ModelInstance child = toModelWithChildren(sbiKpichild, id);
+			ModelInstance child = toModelInstanceWithChildren(sbiKpichild, id);
 			childrenNodes.add(child);
 		}
 
@@ -262,14 +306,16 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) aSession.load(SbiKpiModelInst.class, parentId);
-			SbiKpiModel aModel =(SbiKpiModel)sbiKpiModelInst.getSbiKpiModel();
-			
+			SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) aSession.load(
+					SbiKpiModelInst.class, parentId);
+			SbiKpiModel aModel = (SbiKpiModel) sbiKpiModelInst.getSbiKpiModel();
+
 			// Load all Children
-			if(aModel!= null){
+			if (aModel != null) {
 				Set modelChildren = aModel.getSbiKpiModels();
 				// Load all ModelInstance Children
-				Set modelInstanceChildren = sbiKpiModelInst.getSbiKpiModelInsts();
+				Set modelInstanceChildren = sbiKpiModelInst
+						.getSbiKpiModelInsts();
 				// Remove all Children just instantiated
 				for (Iterator iterator = modelInstanceChildren.iterator(); iterator
 						.hasNext();) {
@@ -278,17 +324,21 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 				}
 				for (Iterator iterator = modelChildren.iterator(); iterator
 						.hasNext();) {
-					SbiKpiModel sbiKpiModelCandidate = (SbiKpiModel) iterator.next();
+					SbiKpiModel sbiKpiModelCandidate = (SbiKpiModel) iterator
+							.next();
 					Model modelCandidate = new Model();
 					modelCandidate.setId(sbiKpiModelCandidate.getKpiModelId());
-					modelCandidate.setName(sbiKpiModelCandidate.getKpiModelNm());
+					modelCandidate
+							.setName(sbiKpiModelCandidate.getKpiModelNm());
 					toReturn.add(modelCandidate);
 				}
-			}			
-			
+			}
+
 		} catch (HibernateException he) {
-			logger.error("Error while loading the model canidate children of the parent "
-					+ ((parentId == null) ? "" : parentId.toString()), he);
+			logger.error(
+					"Error while loading the model canidate children of the parent "
+							+ ((parentId == null) ? "" : parentId.toString()),
+					he);
 
 			if (tx != null)
 				tx.rollback();
@@ -304,7 +354,6 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		}
 		logger.debug("OUT");
 		return toReturn;
-
 
 	}
 

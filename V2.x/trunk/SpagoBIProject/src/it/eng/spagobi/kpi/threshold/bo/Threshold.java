@@ -15,7 +15,16 @@ public class Threshold {
 	
 	String thresholdName = null;//all thresholds referred to the same kpi will have this Name equal
 	String thresholdDescription = null;//all thresholds referred to the same kpi will have this description equal
+	Integer thresholdTypeId = null;
 	
+	
+	public Integer getThresholdTypeId() {
+		return thresholdTypeId;
+	}
+
+	public void setThresholdTypeId(Integer thresholdTypeId) {
+		this.thresholdTypeId = thresholdTypeId;
+	}
 
 	public Integer getId() {
 		return Id;

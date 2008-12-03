@@ -209,15 +209,6 @@ public class JasperReportRunner {
 			    }
 			}
 			
-			Monitor monitorSubReport =MonitorFactory.start("JasperReportRunner.compileSubReport");
-			// compile subreports
-			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy, requestParameters);
-			monitorSubReport.stop();		
-			// set classloader
-			ClassLoader previous = Thread.currentThread().getContextClassLoader();
-			ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext, executionId).toURL()}, previous);
-			Thread.currentThread().setContextClassLoader(current);
-						
 			// Set the temporary location for the files generated on-the-fly by JR 
 			// (by default is the current user tmp-dir)
 			setJRTempDir(tmpDirectory);
@@ -225,8 +216,19 @@ public class JasperReportRunner {
 			logger.debug("Compiling template file ...");
 			Monitor monitorCompileTemplate =MonitorFactory.start("JasperReportRunner.compileTemplate");
 			JasperReport report  = JasperCompileManager.compileReport(is);
-			monitorCompileTemplate.start();
+			monitorCompileTemplate.stop();
 			logger.debug("Template file compiled  succesfully");
+			
+			parameters = adaptReportParams(parameters, report);
+			
+			Monitor monitorSubReport = MonitorFactory.start("JasperReportRunner.compileSubReport");
+			// compile subreports
+			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy, requestParameters);
+			monitorSubReport.stop();		
+			// set classloader
+			ClassLoader previous = Thread.currentThread().getContextClassLoader();
+			ClassLoader current = URLClassLoader.newInstance(new URL[]{getJRCompilationDir(servletContext, executionId).toURL()}, previous);
+			Thread.currentThread().setContextClassLoader(current);
 			
 			// Create the virtualizer									
 			if(isVirtualizationActive()) {
@@ -698,6 +700,53 @@ public class JasperReportRunner {
 		logger.debug("OUT");
 		return jrTempDir;		
 	}
+	
+    protected Map adaptReportParams(Map parameters, JasperReport report) {
+    	logger.debug("IN");
+    	String dateformat = (String) parameters.get("dateformat");
+    	if (dateformat != null) {
+    		dateformat = dateformat.replaceAll("D", "d");
+    		dateformat = dateformat.replaceAll("m", "M");
+    		dateformat = dateformat.replaceAll("Y", "y");
+    	}
+    	JRParameter[] reportParameters = report.getParameters();
+    	ParametersDecoder decoder = new ParametersDecoder();
+    	for (int i = 0; i < reportParameters.length; i++) {
+    		JRParameter aReportParameter = reportParameters[i];
+    		String paramName = aReportParameter.getName();
+    		logger.debug("Examining parameter with name [" + paramName + "] ...");
+    		String paramValueString = (String) parameters.get(paramName);
+    		if (paramValueString == null) {
+    			logger.debug("No value found for parameter with name [" + paramName + "]");
+    			continue;
+    		}
+    		if (paramValueString != null) {
+    			logger.debug("Value found for parameter with name [" + paramName + "] is [" + paramValueString + "]");
+			    /*
+			     * The ParameterConverter converts a single value. Multi-value
+			     * parameters are assumed to contains values that are String type.
+			     * If they are not Strings (list of dates, list of numbers, ...) the
+			     * converter will not work.
+			     */
+    		    if (decoder.isMultiValues(paramValueString)) {
+    		    	logger.debug("Value found for parameter with name [" + paramName + "] is [" + paramValueString + "] and it is multivalue. " +
+    		    			"Cannot adapt parameter nature");
+    		    	continue;
+    		    }
+    		    Class aReportParameterClass = aReportParameter.getValueClass();
+    		    Object newValue = ParameterConverter.convertParameter(aReportParameterClass, paramValueString, dateformat);
+    		    if (newValue == null)
+    		    	newValue = paramValueString;
+
+    		    if (!(newValue instanceof String)) {
+    		    	logger.debug("Updating parameter with name [" + paramName + "] to a " + newValue.getClass().getName() + ".");
+        		    parameters.put(paramName, newValue);
+    		    }
+    		}
+    	}
+    	logger.debug("OUT");
+    	return parameters;
+    }
 	
 }
 

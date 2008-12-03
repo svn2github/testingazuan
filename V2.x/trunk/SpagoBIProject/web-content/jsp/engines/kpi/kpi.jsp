@@ -99,8 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 				KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
 				if(block.getR()!=null){
-					String resName = block.getR().getName();
-					resources.add(resName);
+					resources.add( block.getR());
 				}
 				_htmlStream.append(block.makeTree( userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight ));
 				
@@ -128,22 +127,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				int col = 2;
 				while(resIt.hasNext()){
 					col++;
-					String resName = (String)resIt.next();
+					Resource r = (Resource)resIt.next();
+					String resName = r.getName();
+					String resDescr = r.getDescr();
 					if(col>7){
 						resDiv += "</ul><ul>";
 					}
 					resDiv += "<li class='arrow' id='ss'>";
 					resDiv += "<a  href='javascript:void(0);' style='margin: 0px 0px 5px 10px;' id='"+resName+"_click' name='"+resName+"_click' > ";
-					resDiv += " "+resName;
+					resDiv += " "+resDescr;
 					resDiv += "</a> ";
 					resDiv += "</li>";
 					if(col==1){
-						scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', true );\n";	
+						scriptDiv += "toggle('"+resName+"', '"+resName+"_click', true );\n";	
 					}else{
-						scriptDiv += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";	
+						scriptDiv += "toggle('"+resName+"', '"+resName+"_click', false );\n";	
 					}
-					scriptViewAll += "toggleWithCookie('"+resName+"', '"+resName+"_click', true );\n";	
-					scriptHideAll += "toggleWithCookie('"+resName+"', '"+resName+"_click', false );\n";	
+					scriptViewAll += "toggle('"+resName+"', '"+resName+"_click', true );\n";	
+					scriptHideAll += "toggle('"+resName+"', '"+resName+"_click', false );\n";	
 					
 					if(col>7){
 						col = 0;

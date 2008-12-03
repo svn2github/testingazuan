@@ -368,6 +368,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}*/
 			String chartType = "BulletGraph";			
 			Double val = new Double(value.getValue());
+			Double target = value.getTarget();
 			HashMap pars = (HashMap) confMap.clone();
 			ChartImpl sbi = null;				
 			sbi=ChartImpl.createChart(chartType);
@@ -376,6 +377,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Profile setted");
 			sbi.setValueDataSet(val);
 			logger.debug("Value to represent setted: "+(val!=null ? val.toString():""));
+			if(target!=null){
+				sbi.setTarget(target);
+				logger.debug("Target setted: "+(target!=null ? target.toString():""));
+			}
 			sbi.configureChart(pars);
 			logger.debug("Config parameters setted into the chart");
 			sbi.setThresholds(thresholds);

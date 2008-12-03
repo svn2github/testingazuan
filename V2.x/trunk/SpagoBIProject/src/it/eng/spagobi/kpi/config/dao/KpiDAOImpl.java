@@ -601,6 +601,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer kpiInstanceID = value.getIdKpiInstanceValue();
 		SbiKpiInstance kpiInst = value.getSbiKpiInstance();
 		Double weight = kpiInst.getWeight();
+		Double target = kpiInst.getTarget();
 		SbiResources res = value.getSbiResources();
 		Resource r = null;
 		if (res!=null) r = toResource(res);
@@ -640,7 +641,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				}				
 			}
 		}		
-		
+		toReturn.setTarget(target);
 		toReturn.setBeginDate(beginDate);
 		toReturn.setEndDate(endDate);
 		toReturn.setValue(val);

@@ -15,12 +15,15 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.CategorySeriesLabelGenerator;
+import org.jfree.chart.labels.StandardCategorySeriesLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleInsets;
@@ -86,7 +89,6 @@ public class BulletGraph  extends ChartImpl{
         
      // add the target marker 
         if(target != null) {
-        	System.out.println("YYYYY -> " + target);
 	        ValueMarker marker = new ValueMarker( target.doubleValue(), Color.BLACK, new BasicStroke(2.0f)); 	        
 	        plot.addRangeMarker(marker, Layer.FOREGROUND); 
         }
@@ -114,7 +116,7 @@ public class BulletGraph  extends ChartImpl{
         BarRenderer renderer = (BarRenderer) plot.getRenderer(); 
         renderer.setMaximumBarWidth(0.33); 
         renderer.setSeriesPaint(0, Color.BLACK); 
-		
+        
         return chart;
 	}
 }

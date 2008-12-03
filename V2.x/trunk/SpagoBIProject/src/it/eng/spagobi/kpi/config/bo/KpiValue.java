@@ -12,6 +12,7 @@ public class KpiValue {
 	String value = null;		
 	List thresholds = null;
 	Double weight = null;
+	Double target = null;
 	Date beginDate = null;
 	Date endDate = null;//null beginDate + num_validity_days
 	String scaleCode = null;
@@ -102,6 +103,14 @@ public class KpiValue {
 
 	public void setKpiInstanceId(Integer kpiInstanceId) {
 		this.kpiInstanceId = kpiInstanceId;
+	}
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
 	}
 
 }

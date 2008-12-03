@@ -147,6 +147,16 @@ public class ChartImpl {
 	}
 	
 	/**
+	 * Sets the Double value to represent the target into the Chart
+	 * 
+	 * @param Double value of the target to set
+	 * 
+	 */	
+	public void setTarget(Double target){
+		this.target = target;
+	}
+	
+	/**
 	 * This function returns the Double value represented in the chart
 	 * 
 	 * @return the Double value represented in the chart

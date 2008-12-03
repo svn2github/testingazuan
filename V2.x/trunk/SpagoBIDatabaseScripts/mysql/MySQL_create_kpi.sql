@@ -96,6 +96,7 @@ Create table `SBI_KPI_INSTANCE` (
 	`id_measure_unit` Int NOT NULL,
 	`id_kpi_periodicity` Int NOT NULL,
 	`weight` Double,
+	`target` Double,
 	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
 
@@ -106,6 +107,7 @@ Create table `SBI_KPI_INSTANCE_HISTORY` (
 	`CHART_TYPE_ID` Int NOT NULL,
 	`id_measure_unit` Int NOT NULL,
 	`weight` Double,
+	`target` Double,
 	`BEGIN_DT` Datetime,
 	`END_DT` Datetime,
 	UNIQUE (`id_kpi_instance_history`),

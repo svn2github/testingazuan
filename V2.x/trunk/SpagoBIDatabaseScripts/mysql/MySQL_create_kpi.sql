@@ -136,6 +136,7 @@ Create table `SBI_RESOURCES` (
 	`TABLE_NAME` Varchar(40),
 	`COLUMN_NAME` Varchar(40),
 	`RESOURCE_NAME` Varchar(40),
+	`RESOURCE_DESCR` Varchar(400),
  Primary Key (`RESOURCE_ID`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_MODEL_RESOURCES` (
@@ -179,5 +180,5 @@ Create table `SBI_ALARM_CONTACT` (
 
 Create table `SBI_ALARM_DISTRIBUTION` (
 	`ALARM_CONTACT_ID` Int NOT NULL,
-	`ALARM_EVENT_ID` Int NOT NULL,
+	`ALARM_ID` Int NOT NULL,
  Primary Key (`ALARM_CONTACT_ID`,`ALARM_EVENT_ID`)) ENGINE = InnoDB;

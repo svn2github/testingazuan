@@ -39,5 +39,5 @@ Alter table `SBI_ALARM` add Foreign Key (`MODALITY_ID`) references `SBI_DOMAINS`
 Alter table `SBI_ALARM` add Foreign Key (`DOCUMENT_ID`) references `SBI_OBJECTS` (`BIOBJ_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_ALARM` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
 Alter table `SBI_ALARM_EVENT` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) on delete  restrict on update  restrict;
-Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_EVENT_ID`) references `SBI_ALARM_EVENT` (`ALARM_EVENT_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_CONTACT_ID`) references `SBI_ALARM_CONTACT` (`ALARM_CONTACT_ID`) on delete  restrict on update  restrict;

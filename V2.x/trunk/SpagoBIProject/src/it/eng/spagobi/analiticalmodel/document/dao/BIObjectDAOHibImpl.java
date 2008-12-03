@@ -943,13 +943,41 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			
+			// allRolesWithPermission will store all roles with permissions on folders containing the required document
+			List allRolesWithPermission = new ArrayList();
+
+			// firts filter on roles: finds only roles with permissions on folders containing the required document
+			SbiObjects hibBIObject = (SbiObjects)aSession.load(SbiObjects.class, id);
+			String objectState = hibBIObject.getState().getValueCd();
+			Set hibObjFuncs = hibBIObject.getSbiObjFuncs();
+			Iterator itObjFunc = hibObjFuncs.iterator();
+			while (itObjFunc.hasNext()) {
+				SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
+				SbiFunctions aSbiFunctions = aSbiObjFunc.getId().getSbiFunctions();
+				String rolesHql = "select distinct roles.name from " +
+					"SbiExtRoles as roles, SbiFuncRole as funcRole " + 
+					"where roles.extRoleId = funcRole.id.role.extRoleId and " +
+					"	   funcRole.id.function.functId = " + aSbiFunctions.getFunctId() + " and " +
+					"	   funcRole.id.state.valueCd = '" + objectState + "' ";
+				Query rolesHqlQuery = aSession.createQuery(rolesHql);
+				// get the list of roles that can see the document (in REL or TEST state) in that functionality
+				List rolesNames = new ArrayList();
+				rolesNames = rolesHqlQuery.list();
+				allRolesWithPermission.addAll(rolesNames);
+			}
+			
+			// userRolesWithPermission will store the filtered roles with permissions on folders containing the required document
+			List userRolesWithPermission = new ArrayList();
+			Iterator rolesIt = roles.iterator();
+			while (rolesIt.hasNext()) {
+				// if the role is a user role and can see the document (in REL or TEST state), 
+				// it is a correct role
+				String role = rolesIt.next().toString();
+				if (allRolesWithPermission.contains(role)) userRolesWithPermission.add(role);
+			}
+			
 			// find all id parameters relative to the objects
-			/*hql = "select par.parId from " +
-					     "SbiParameters as par, SbiObjects as obj, SbiObjPar as objpar  " + 
-				         "where obj.biobjId = '"+id+"' and " +
-				         "      obj.biobjId = objpar.sbiObject.biobjId and " +
-				         "      par.parId = objpar.id.sbiParameter.parId ";
-			*/
 			hql = "select par.parId from " +
 		     "SbiParameters as par, SbiObjects as obj, SbiObjPar as objpar  " + 
 	         "where obj.biobjId = ?  and " +
@@ -960,50 +988,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			List idParameters = hqlQuery.list();
 			
 			if(idParameters.size() == 0) {
-				List allCorrectRoles = new ArrayList();
 				// if the object has not parameter associates all the roles that have the execution or
 				// test permissions on the containing folders are correct roles in the same manner.
-				SbiObjects hibBIObject = (SbiObjects)aSession.load(SbiObjects.class, id);
-				String objectState = hibBIObject.getState().getValueCd();
-				Set hibObjFuncs = hibBIObject.getSbiObjFuncs();
-				Iterator itObjFunc = hibObjFuncs.iterator();
-				while (itObjFunc.hasNext()) {
-					SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
-					SbiFunctions aSbiFunctions = aSbiObjFunc.getId().getSbiFunctions();
-					String rolesHql = "select distinct roles.name from " +
-						"SbiExtRoles as roles, SbiFuncRole as funcRole " + 
-						"where roles.extRoleId = funcRole.id.role.extRoleId and " +
-						"	   funcRole.id.function.functId = " + aSbiFunctions.getFunctId() + " and " +
-						"	   funcRole.id.state.valueCd = '" + objectState + "' ";
-					Query rolesHqlQuery = aSession.createQuery(rolesHql);
-					// get the list of roles that can see the document (in REL or TEST state) in that functionality
-					List rolesNames = new ArrayList();
-					rolesNames = rolesHqlQuery.list();
-					allCorrectRoles.addAll(rolesNames);
-				}
-				Iterator rolesIt = roles.iterator();
-				while (rolesIt.hasNext()) {
-					// if the role is a user role and can see the document (in REL or TEST state), 
-					// it is a correct role
-					String role = rolesIt.next().toString();
-					if (allCorrectRoles.contains(role)) correctRoles.add(role);
-				}
-				
-				/*
-				// considering only the first role
-				if (rolesIt.hasNext()) {
-					// if the role is a user role and can see the document (in REL or TEST state), 
-					// it is a correct role
-					String role = rolesIt.next().toString();
-					correctRoles.add(role);
-				}
-				*/
-				
-				return correctRoles;
-
+				return userRolesWithPermission;
 			}
 			
-			Iterator iterRoles = roles.iterator();
+			// second filter on roles: finds only roles with correct modalities of the parameters of the required document
+			Iterator iterRoles = userRolesWithPermission.iterator();
 			Iterator iterParam = null;
 			String role = null;
 			String idPar = null;
@@ -1037,7 +1028,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					correctRoles.add(role);
 				}
 			}
-			tx.commit();
+			tx.rollback();
 		} catch (HibernateException he) {
 			logger.error(he);
 			if (tx != null)

@@ -140,8 +140,8 @@ public class BirtReportDriver implements IEngineDriver {
    	  
 	// retrieving the date format        
         ConfigSingleton config = ConfigSingleton.getInstance();
-	    SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE_FORMAT");
-	    String format = (formatSB==null)?"":(String) formatSB.getAttribute("format");
+	    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+	    String format = (formatSB==null)?"DD-MM-YYYY":(String) formatSB.getAttribute("format");
 	    pars.put("dateformat", format);
         pars = addBIParameters(biobj, pars);
         logger.debug("OUT");

@@ -34,6 +34,8 @@ package it.eng.spagobi.engines.drivers.jasperreport;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -141,6 +143,13 @@ public class JasperReportDriver implements IEngineDriver {
 	logger.debug("Add document parameter:"+documentId);
 	pars.put("documentLabel", biobj.getLabel());
 	logger.debug("Add document parameter:"+biobj.getLabel());
+	
+	// adding date format parameter
+    ConfigSingleton config = ConfigSingleton.getInstance();
+    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+    String format = (formatSB==null)?"DD-MM-YYYY":(String) formatSB.getAttribute("format");
+    pars.put("dateformat", format);
+	
 	pars = addBISubreports(biobj, pars);
 	pars = addBIParameters(biobj, pars);
   

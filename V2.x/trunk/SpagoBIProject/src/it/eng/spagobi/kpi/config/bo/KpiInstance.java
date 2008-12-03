@@ -11,6 +11,7 @@ public class KpiInstance {
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
 	Double weight = null; 
+	Double target = null; 
 	
 	public Double getWeight() {
 		return weight;
@@ -55,6 +56,14 @@ public class KpiInstance {
 
 	public void setPeriodicity(Integer periodicity) {
 		this.periodicity = periodicity;
+	}
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
 	}
 	
 

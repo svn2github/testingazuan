@@ -716,11 +716,13 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
 		Double weight = kpiInst.getWeight();
+		Double target = kpiInst.getTarget();
 		//List values = getKpiValue(kpiInst, requestedDate);	
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
 		Integer idPeriodicity = periodicity.getIdKpiPeriodicity();
 	
 		toReturn.setWeight(weight);
+		toReturn.setTarget(target);
 		toReturn.setKpiInstanceId(kpiId);
 		toReturn.setKpi(k);	
 		//toReturn.setValues(values);

@@ -17,6 +17,7 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VAL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('VALUE_TYPE', 'Input value types to check', 'SINGLE', 'Single value', 'Only single value allowed');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('VALUE_TYPE', 'Input value types to check', 'MULTI', 'Multivalue', 'Many values are allowed');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('PAR_TYPE', 'Parameter type', 'DATE', 'Date', 'Parameter expects date values');
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('PAR_TYPE', 'Parameter type', 'NUM', 'Number', 'Parameter expects numerical values');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('PAR_TYPE', 'Parameter type', 'STRING', 'String', 'Parameter expects textual values');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('ROLE_TYPE', 'Role type', 'USER', 'Functional role', 'Functional role for end users');
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) VALUES ('ROLE_TYPE', 'Role type', 'ADMIN', 'Administrative role', 'Administrative role for developer users');

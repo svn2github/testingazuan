@@ -20,15 +20,35 @@
  **/
  
 /**
-  * Object's name - short description
+  * Object name 
   * 
-  * Object documentation ...
+  * [description]
   * 
-  * by Andrea Gioia (andrea.gioia@eng.it)
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - name (mail)
   */
 
 Sbi.xxx.Xxxx = function(conf) {
 	
+	Ext.apply(this, config);
+	
+	this.addEvents();	
 	
 	// constructor
     Sbi.xxx.Xxxx.superclass.constructor.call(this, {

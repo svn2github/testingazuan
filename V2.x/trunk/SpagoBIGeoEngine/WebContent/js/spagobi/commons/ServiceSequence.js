@@ -20,16 +20,42 @@
  **/
  
 /**
-  * Object's name - short description
+  * ServiceSequence 
   * 
-  * Object documentation ...
+  * Conacat multiple ajax requests. This class have a very simple implementation. 
+  * Lot of improvements are needed :-(
   * 
-  * by Andrea Gioia (andrea.gioia@eng.it)
+  * 
+  * Public Properties
+  * 
+  * - serviceSequence: an array containing ajax request configuration objects
+  * 				   (see Ext.Ajax.request doc). This property is optional.
+  * 					If not specified an empy sequence will be created.
+  *
+  *
+  * Public Methods
+  * 
+  * - add: append a new ajax request configuration object (see Ext.Ajax.request doc) 
+  * 	   to the sequence list.
+  * 
+  * - run: execute the service sequnce with a FIFO policy.
+  * 
+  * 
+  * Public Events
+  * 
+  *  none 
+  * 
+  * Authors
+  * 
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Sbi.commons.ServiceSequence = function(config) {
 	
 	this.serviceSequence = [];
+	this.serviceStack = [];
+	this.onSequenceExecuted = function(responce){console.log(responce.toSource())};
+	this.onSequenceExecutedScope = undefined;
 	
 	Ext.apply(this, config);
 	
@@ -46,20 +72,40 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
    
     // public methods
     add : function(serviceConfig) {
+    	console.log('PUSH: ' + serviceConfig.url);
     	this.serviceSequence.push( serviceConfig );
     }
     
     , run : function() {
+    	this.serviceStack = [];
+    	for(i = 0; i < this.serviceSequence.length; i++) {
+    		this.serviceStack.push( this.serviceSequence[i] );
+    	}
+    	
+    	this.serviceStack.reverse();
     	this.runNext();
     }
     
     , runNext : function(serviceResponse, serviceConfig) {
-    	var nextServiceConfig = serviceSequence.pop();
-    	nextServiceConfig.success = this.runNext;
     	
-    	Ext.Ajax.request( nextServiceConfig );  
-    	
-    	//this.fireEvent("requestcomplete", this, response, options);
-        //Ext.callback(options.success, options.scope, [response, options]);   
+    	console.log(this.serviceStack);
+    	if( this.serviceStack && this.serviceStack.length > 0) {    	
+	    	var nextServiceConfig = this.serviceStack.pop();
+	    	console.log('POP: ' + nextServiceConfig.url);
+	    	
+	    	if(typeof nextServiceConfig.params == "function"){
+	    		console.log('resolving parametrs ...');
+                nextServiceConfig.params = nextServiceConfig.params.call(nextServiceConfig.scope||window, nextServiceConfig);
+            	console.log(nextServiceConfig.params.toSource());
+            }
+	    	
+	    	nextServiceConfig.scope = this;
+	    	nextServiceConfig.success = this.runNext;	    	
+	    	Ext.Ajax.request( nextServiceConfig );  
+	    	
+    	} else {   
+    		this.onSequenceExecuted.call(this.onSequenceExecutedScope||window, serviceResponse);
+    		console.log('ServiceSequence terminated');
+    	}
     }
 });

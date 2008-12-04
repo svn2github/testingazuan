@@ -103,8 +103,6 @@ public class QbeTemplate {
 			modalities.add(modalitySB);
 		}
 		
-		SourceBean datasourceSB = (SourceBean)template.getAttribute("DATASOURCE");
-		dialect = (String)datasourceSB.getAttribute("dialect");
 		
 		SourceBean compositeModalitySB = null;
 		try {

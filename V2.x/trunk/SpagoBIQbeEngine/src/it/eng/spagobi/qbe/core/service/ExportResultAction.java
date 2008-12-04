@@ -167,7 +167,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 				}
 				
 				try {				
-					writeBackToClient(reportFile, writeBackResponseInline, "report." + fileExtension, mimeType);
+					writeBackToClient(reportFile, null, writeBackResponseInline, "report." + fileExtension, mimeType);
 				} catch (IOException ioe) {
 					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
 				}			

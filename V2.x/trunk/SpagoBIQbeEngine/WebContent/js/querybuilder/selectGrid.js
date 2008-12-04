@@ -429,7 +429,7 @@ it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app = function() {
 		   var record = new this.Record({
 		       funct: '',
 		       order: '',
-		       alias:'', 
+		       alias: config.data['field'], 
 		       id: config.data['id'], 
 		       entity: config.data['entity'], 
 		       field: config.data['field'],

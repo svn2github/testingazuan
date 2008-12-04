@@ -37,13 +37,14 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.qbe.commons.service.JSONAcknowledge;
-import it.eng.spagobi.qbe.commons.service.JSONSuccess;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONFailure;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 import it.eng.spagobi.utilities.strings.StringUtils;
 
 import org.apache.log4j.Logger;
@@ -145,6 +146,10 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			getEngineInstance().setQuery(query);
 			result = saveAnalysisState();
 			getEngineInstance().setQuery(queryBkp);
+			
+			if(!result.trim().toLowerCase().startsWith("ok")) {
+				throw new SpagoBIEngineServiceException(getActionName(), result);
+			}
 			
 			try {
 				writeBackToClient( new JSONSuccess( result ) );

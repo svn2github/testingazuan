@@ -80,7 +80,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		DBConnection connection = new DBConnection();			
 		connection.setName( ds.getLabel() );
-		connection.setDialect( template.getDialect() );			
+		connection.setDialect( ds.getHibDialectClass() );			
 		connection.setJndiName( ds.getJndiName() );			
 		connection.setDriverClass( ds.getDriver() );			
 		connection.setPassword( ds.getPassword() );

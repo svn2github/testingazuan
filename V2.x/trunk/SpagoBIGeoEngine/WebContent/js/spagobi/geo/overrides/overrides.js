@@ -4,6 +4,21 @@
 * modifications  in the structure.
 ============================================================================= */
 
+Ext.override(Ext.tree.TreeNodeUI,{    
+	toggleCheck : function(value){        
+		var cb = this.checkbox;        
+		if(cb){            
+			var checkvalue = (value === undefined ? !cb.checked : value);            
+			cb.checked = checkvalue;            
+			this.node.attributes.checked = checkvalue;  
+			//this.onCheckChange();     
+		}    
+	}
+}); 
+
+
+
+
 Ext.override(Ext.tree.TreePanel, {
     initComponent : function(){
         Ext.tree.TreePanel.superclass.initComponent.call(this);

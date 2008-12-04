@@ -39,10 +39,36 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/commons.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/exceptionHandler.js"/>
+	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/ComponentBuddy.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/serviceRegistry.js"/>
+	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/ExceptionHandler.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/ServiceRegistry.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/ServiceSequence.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	
+	
+	
+	
+    
+    <qbe:url type="resource" var="src" ref="../js/spagobi/geo/overrides/overrides.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/Geo.js"/>
+	<script type="text/javascript" src='${src}'/></script>	
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/SaveAnalysisWindow.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/DrillControlPanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/GeoApp.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<script type="text/javascript">   
@@ -53,29 +79,13 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        				  request.getContextPath().substring(1):
 	        				  request.getContextPath()%>'
     	};
-    	it.eng.spagobi.engines.qbe.serviceregistry.module.init();
-    	it.eng.spagobi.engines.qbe.serviceregistry.module.setBaseUrl(url);
+    	
+    	Sbi.geo.app.serviceRegistry = new Sbi.commons.ServiceRegistry({baseUrl: url});
     </script>
-    
-    <qbe:url type="resource" var="src" ref="../js/spagobi/geo/overrides/overrides.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/Geo.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/DrillControlPanel.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/geo/GeoApp.js"/>
-	<script type="text/javascript" src='${src}'/></script>
 	
     
     
     <script type="text/javascript">  
-      <%
-      	//String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
-      %>
-      
       Ext.onReady(Sbi.geo.app.init, Sbi.geo.app.app);        
     </script>
 	

@@ -4,7 +4,9 @@
   */
  
 
-Sbi.geo.DrillControlPanel = function(conf) {
+Sbi.geo.DrillControlPanel = function(config) {
+	
+	this.analysisState = undefined;
     
     var Hierarchy = Ext.data.Record.create([
     	{name: 'id'}                 
@@ -16,11 +18,12 @@ Sbi.geo.DrillControlPanel = function(conf) {
         
   	this.hierarchyComboBoxStore = new Ext.data.Store({
 	   proxy: new Ext.data.HttpProxy({
-           url: 'AdapterHTTP?ACTION_NAME=GET_HIERARCHIES_ACTION',
+           //url: 'AdapterHTTP?ACTION_NAME=GET_HIERARCHIES_ACTION',
+           url: Sbi.geo.app.serviceRegistry.getServiceUrl('GET_HIERARCHIES_ACTION'),
            success: function(response){
            	 // do nothing 
            },
-   		   failure: function(){alert('Impossible to get hierachies');}        
+   		   failure: Sbi.commons.ExceptionHandler.handleFailure      
         })
         , reader: new Ext.data.JsonReader({   
     		root: "hierarchies",                        
@@ -108,11 +111,12 @@ Sbi.geo.DrillControlPanel = function(conf) {
 	   	   params: {
 	   	   	featureName: undefined
 	   	   },	   	  
-           url: 'AdapterHTTP?ACTION_NAME=X_GET_MAPS_ACTION',
+           //url: 'AdapterHTTP?ACTION_NAME=X_GET_MAPS_ACTION',
+           url: Sbi.geo.app.serviceRegistry.getServiceUrl('X_GET_MAPS_ACTION'),
            success: function(response){
            	 // do nothing 
            },
-   		   failure: function(){alert('Impossible to get maps');}        
+   		   failure: Sbi.commons.ExceptionHandler.handleFailure      
         })
         , reader: new Ext.data.JsonReader({   
     		root: "maps",                        
@@ -231,7 +235,8 @@ Sbi.geo.DrillControlPanel = function(conf) {
         }]
     });
     
-    this.hierarchyComboBoxStore.load();
+    this.syncronizeAnaysisState();
+    //this.hierarchyComboBoxStore.load();
 }
 
 
@@ -244,14 +249,10 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
    
     // public methods
     getAnalysisState : function() {
-      var analysisState = {};
       
-      /*
-      public static final String HIERARCHY = "hierarchy";
-	  public static final String HIERARCHY_LEVEL = "level";
-	  public static final String MAP = "map";
-	  public static final String FEATURES = "features";	
-      */
+      
+      
+      var analysisState = {};
       
       analysisState.hierarchy = this.hierarchyComboBox.getValue();
       analysisState.level = this.hierarchyTree.getChecked()[0].text;
@@ -266,15 +267,43 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
       return analysisState;
     }, 
     
+    // public methods
+    setAnalysisState : function(analysisState) {
+    	this.analysisState = analysisState;
+		this.hierarchyComboBoxStore.load();
+        //alert(analysisState.toSource());
+    }, 
+    
+    syncronizeAnaysisState : function(){
+   		Ext.Ajax.request({
+			url: Sbi.geo.app.serviceRegistry.getServiceUrl('GET_ANALYSIS_STATE_ACTION'),
+			success: function(response, options) {
+				var analysisState = Ext.util.JSON.decode( response.responseText );
+				this.setAnalysisState(analysisState);
+			}
+			, failure: Sbi.commons.ExceptionHandler.handleFailure
+			, scope: this
+   		});  
+    },
+    
     // private handlers
     
     handleHierarchySelectorDataChanged: function(store) {
-    	var hierarchy = store.getAt(0);
-    	this.hierarchyComboBox.setValue(hierarchy.id);
-    	this.hierarchyComboBox.fireEvent('select', this.hierarchyComboBox, hierarchy, 0);
+    	// select one hierachy
+    	var index;
+    	if(this.analysisState == undefined) {
+    		index = 0;
+    	} else {
+    		index = store.find('id', this.analysisState.hierarchy);
+    	}    	
+    	var hierarchy = store.getAt( index );
+    	this.hierarchyComboBox.setValue(hierarchy.id);  
+    	
+    	this.hierarchyComboBox.fireEvent('select', this.hierarchyComboBox, hierarchy, 0);    	
     },
     
     handleSelectHierarchy : function(combo, record, index){
+      // load selected hierarcy's levels
       var hierarchyName = record.data['name'];
       var levels = record.data['levels'];
       var hierarchyRoot = new Ext.tree.TreeNode({text:hierarchyName, expanded: true});
@@ -293,11 +322,17 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
       }
       this.hierarchyTree.setRootNode(hierarchyRoot);
       
-      var node = this.hierarchyTree.getRootNode().firstChild;
-      node.getUI().toggleCheck(true);
-      
-      this.hierarchyTree.fireEvent('checkchange', node, true);
-      
+      // select one level into the hierachy
+      var node;
+      if(this.analysisState == undefined) {
+      	node = this.hierarchyTree.getRootNode().firstChild;
+      } else {
+      	node = this.hierarchyTree.getRootNode().findChild('id', this.analysisState.level);
+      }
+            
+      node.getUI().toggleCheck(true);     
+       
+      this.hierarchyTree.fireEvent('checkchange', node, true);      
     },
     
     handleChangeHierarchyLevel : function(node, checked){
@@ -313,32 +348,58 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
     },
     
     handleMapSelectorDataChanged: function(store) {
-    	var map = store.getAt(0);
+    	// select one map
+    	var index;
+    	
+    	if(this.analysisState == undefined) {
+      		index = 0;
+	    } else {
+	      	index = store.find('id', this.analysisState.map);
+	    }
+    	var map = store.getAt( index );
     	this.mapComboBox.setValue(map.id);
+    	
     	this.mapComboBox.fireEvent('select', this.mapComboBox, map, 0);
     },
     
     handleSelectMap  : function(combo, record, index){
-      var mapName = record.data['name'];
-      var features = record.data['features'];
-      var hierarchyRoot = new Ext.tree.TreeNode({text:mapName, expanded: true});
-      for(var i = 0; i < features.length; i++) {
-        var node;    
+    	// load selected map's features
+      	var mapName = record.data['name'];
+		var features = record.data['features'];
+      	var hierarchyRoot = new Ext.tree.TreeNode({text:mapName, expanded: true});
+      	for(var i = 0; i < features.length; i++) {
+        	var node;    
         
-        node = new Ext.tree.TreeNode({
-          text: features[i].name,
-          iconCls: 'noimage', 
-          checked:false
-        });
+        	node = new Ext.tree.TreeNode({
+          		text: features[i].name,
+          		iconCls: 'noimage', 
+          		checked:false
+        	});
         
-         Ext.apply(node.attributes, features[i]);
+         	Ext.apply(node.attributes, features[i]);
          
-        hierarchyRoot.appendChild( node );
-      }
-      this.featuresTree.setRootNode(hierarchyRoot);
+        	hierarchyRoot.appendChild( node );
+      	}
+      	this.featuresTree.setRootNode(hierarchyRoot);
       
-      var node = this.featuresTree.getRootNode().findChild('id', this.mapComboBoxStore.lastOptions.params.featureName);
-      node.getUI().toggleCheck(true);
+      	// select features into the map
+      	if(this.analysisState == undefined) {
+      		var node = this.featuresTree.getRootNode().findChild('id', this.mapComboBoxStore.lastOptions.params.featureName);
+      		node.getUI().toggleCheck(true);
+      	} else {
+      		var featureMap = [];
+      		for(i = 0; i < this.analysisState.features.length; i++) {
+      			featureMap[ features[i].id ] = true;
+      		}
+      		this.featuresTree.getRootNode().cascade( function(node) {
+      			if(featureMap[ node.attributes['id'] ]) {
+      				node.getUI().toggleCheck(true);
+      			}
+      			
+      		}, this);
+      	}
+      	
+      	this.analysisState = undefined;
     }
     
     

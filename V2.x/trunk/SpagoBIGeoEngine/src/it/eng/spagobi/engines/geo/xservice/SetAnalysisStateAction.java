@@ -110,7 +110,7 @@ public class SetAnalysisStateAction extends AbstractGeoEngineAction {
 			
 			
 			
-			// all or norhings
+			// all or nothings
 			Assert.assertTrue(!analysisStateJSON.isNull(HIERARCHY), "Attribute [" + HIERARCHY + "] cannot be null");
 			Assert.assertNotNull(!analysisStateJSON.isNull(HIERARCHY_LEVEL), "Attribute [" + HIERARCHY_LEVEL + "] cannot be null");
 			Assert.assertNotNull(!analysisStateJSON.isNull(MAP), "Attribute [" + MAP + "] cannot be null");

@@ -32,6 +32,11 @@
     	<CONFIG></CONFIG>
   	</ACTION>
   	
+  	<ACTION name="SAVE_ANALYSIS_STATE_ACTION" 
+  			class="it.eng.spagobi.engines.geo.xservice.SaveAnalysisStateAction" 
+  			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
   	
   	<!-- 
 	

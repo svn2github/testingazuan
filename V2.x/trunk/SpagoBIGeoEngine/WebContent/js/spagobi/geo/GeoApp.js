@@ -17,52 +17,22 @@ Sbi.geo.app = function() {
     return {
         // public properties, e.g. strings to translate
         
+        serviceRegistry: undefined
+        
+        , saveAnalysisWin: undefined
+        
         // public methods
-        init: function() {
+        , init: function( config ) {
             Ext.QuickTips.init();
             
-            var geoconf = {
-              
-              hierachies: [
-		            ['STANDARD','Standard Hierachy', 'Standard Hierachy Desc.', 
-                  [
-                  {text: 'level1', ttip: 'level1: description goes here', type: 'operand', value: '$F{level1}'}
-                  , {text: 'level2', ttip: 'level2: description goes here', type: 'operand', value: '$F{level2}'}
-                  ]
-                ], ['CUSTOM', 'Custom Hierachy', 'Custom Hierachy Desc.', 
-                  [
-                  {text: 'L1', ttip: 'L1: description goes here', type: 'operand', value: '$F{L1}'}
-                  , {text: 'L2', ttip: 'L2: description goes here', type: 'operand', value: '$F{L2}'}
-                  , {text: 'L3', ttip: 'L3: description goes here', type: 'operand', value: '$F{L3}'}
-                  , {text: 'L4', ttip: 'L4: description goes here', type: 'operand', value: '$F{L4}'}
-                  ]
-                ]
-              ],
-              
-              maps: [
-    		       ['REGIONS','RegionMap', 'Everybody that can execute this qbe will see also your saved query', 
-                [
-                  {id: 'regions', name: 'Regions', description: 'Regions of France', category: 'Territorias'},
-                  {id: 'departments', name: 'Departments', description: 'Departments of France', category: 'Territorias'},
-                  {id: 'regionL', name: 'Region names', description: 'Region names', category: 'Labels'},
-                  {id: 'departmentL', name: 'Department names', description: 'epartment names', category: 'Labels'}
-                ]           
-               ],
-    		       ['DEPARTMENTS', 'DeparmentMap', 'The saved quary will be visible only to you', 
-                [
-                  {id: 'departments',  name: 'Departments', description: 'Departments of France', category: 'Territorias'},
-                  {id: 'cities',  name: 'Cities', description: 'Greatest cities in France', category: 'Point of interest'},
-                  {id: 'nuclear',  name: 'Nuclear Plants', description: 'Nuclear Plant', category: 'Point of interest'},
-                  {id: 'cityL',  name: 'City names', description: 'City names', category: 'Labels'},
-                  {id: 'departmentL',  name: 'Department names', description: 'epartment names', category: 'Labels'}
-                ]           
-               ]
-		          ]
-            };
-            
-            var drillPanel = new Sbi.geo.DrillControlPanel(geoconf);
+            var messageBoxBuddy =  new Sbi.commons.ComponentBuddy({
+				buddy : Ext.MessageBox.getDialog()
+			});
+			messageBoxBuddy.hide();
             
             
+            var drillPanel = new Sbi.geo.DrillControlPanel(config);
+           
             var viewport = new Ext.Viewport({
               layout: 'border',
               border: false,
@@ -80,12 +50,68 @@ Sbi.geo.app = function() {
                 minWidth: 0,
                 layout: 'fit',
                 
-                tools:[{
-                    id:'gear',
-                    qtip:'Exec',
-                    // hidden:true,
+                tools:[
+                {
+                    id:'save',
                     handler: function(event, toolEl, panel){
-                      alert(drillPanel.getAnalysisState().toSource());
+                      if(this.saveAnalysisWin === undefined) {
+                      	var sequence = new Sbi.commons.ServiceSequence({
+                      	  	onSequenceExecuted: function(response) {
+                      			var content = Ext.util.JSON.decode( response.responseText );
+								content.text = content.text || "";
+								if (content.text.match('OK - ')) {
+									try {
+										parent.loadSubObject(window.name, content.text.substr(5));
+										Ext.MessageBox.show({
+							           		title: 'Customized view saved'
+							           		, msg: 'Customized view saved succesfully !!!'
+							           		, buttons: Ext.MessageBox.OK     
+							           		, icon: Ext.MessageBox.INFO 
+							           		, modal: false
+							       		});
+									} catch (ex) {
+										alert('ERROR: ' + ex.toSource())
+									}
+								}
+                      		} 
+                      		, onSequenceExecutedScope: this  
+                      	});
+                      	
+                      	
+                      	this.saveAnalysisWin = new Sbi.geo.SaveAnalysisWindow({
+                      		saveServiceSequence : sequence      		                   		
+                      	});
+                      	
+                      	sequence.add({
+		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
+							, failure: Sbi.commons.ExceptionHandler.handleFailure
+							, params: drillPanel.getAnalysisState
+							, scope: drillPanel
+						});
+						sequence.add({
+		                    url: Sbi.geo.app.serviceRegistry.getServiceUrl('SAVE_ANALYSIS_STATE_ACTION')
+							, failure: Sbi.commons.ExceptionHandler.handleFailure
+							, params: this.saveAnalysisWin.getAnalysisMeta
+							, scope: this.saveAnalysisWin
+						});   
+                      }
+                      this.saveAnalysisWin.show();
+                    }
+                } , {
+                    id:'gear',
+                    handler: function(event, toolEl, panel){
+                    	
+                    	Ext.Ajax.request({
+                    		url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
+                    		, success: function() {
+                    			
+                    			var iframeEl = Ext.get('iframe_1');
+                    			iframeEl.dom.src = Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION');
+                    		}
+							, failure: Sbi.commons.ExceptionHandler					
+							, params: drillPanel.getAnalysisState
+							, scope: drillPanel 
+                    	});   
                     }
                 }],
                 
@@ -95,7 +121,8 @@ Sbi.geo.app = function() {
           				cls:'x-panel-body',
           				children:[{
           					tag:'iframe',
-          	      			src: 'AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION',
+          					src: Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION'),
+          	      			//src: 'AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION',
           	      			frameBorder:0,
           	      			width:'100%',
           	      			height:'100%',
@@ -121,7 +148,10 @@ Sbi.geo.app = function() {
               
               tools:[{
                 id:'refresh',
-                qtip:'Refresch expression structure'
+                qtip:'Refresch map',
+                handler: function(event, toolEl, panel){
+                	
+                }
               }],
               
               //items: [east]

@@ -91,7 +91,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			}
 			
 			try {
-				writeBackToClient(maptmpfile, encoder, true, "map", getContentType(outputFormat));
+				writeBackToClient(maptmpfile, encoder, true, "map.svg", getContentType(outputFormat));
 			} catch(IOException e) {
 				logger.error("error while flushing output", e);
 				getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing output" );

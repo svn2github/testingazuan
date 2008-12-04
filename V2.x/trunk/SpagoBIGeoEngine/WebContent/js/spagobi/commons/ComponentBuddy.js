@@ -76,12 +76,9 @@ Sbi.commons.ComponentBuddy = function(config) {
     
     
     if(this.buddy.dd) {
-    	console.log('Component buddy is druggable');
     	this.buddy.dd.onDrag = function(e) {
-    		console.log('I');
         	this.buddy.dd.alignElWithMouse(this.buddy.dd.proxy, e.getPageX(), e.getPageY());
             this.buddy.dd.alignElWithMouse(this, e.getPageX()-1, e.getPageY());
-            console.log('O');
         };
     }
     
@@ -95,7 +92,6 @@ Ext.extend(Sbi.commons.ComponentBuddy, Ext.Element, {
     
     // static contens and methods definitions
     keepInTouchWithBuddy : function(eventName){
-      console.log('keepInTouchWithBuddy: ' + eventName);
       
       var box = this.buddy.getBox();
       box.width += 3;
@@ -107,23 +103,17 @@ Ext.extend(Sbi.commons.ComponentBuddy, Ext.Element, {
       } else if (eventName === 'show') {
       	this.show();
       	if(this.buddy.dd) {
-	    	console.log('YYY Component buddy is druggable');
 	    	this.buddy.dd.fixEl = this;
 	    	this.buddy.dd.onDrag = function(e) {
-	    		console.log('I');
 	        	this.alignElWithMouse(this.proxy, e.getPageX(), e.getPageY());
 	            this.alignElWithMouse(this.fixEl, e.getPageX()-1, e.getPageY());
-	            console.log('O');
 	        };
     	  }
       } else if (eventName === 'render') {
       	 if(this.buddy.dd) {
-	    	console.log('XXX Component buddy is druggable');
 	    	this.buddy.dd.onDrag = function(e) {
-	    		console.log('I');
 	        	this.buddy.dd.alignElWithMouse(this.buddy.dd.proxy, e.getPageX(), e.getPageY());
 	            this.buddy.dd.alignElWithMouse(this, e.getPageX()-1, e.getPageY());
-	            console.log('O');
 	        };
     	  }
       }

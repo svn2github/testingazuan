@@ -10,6 +10,7 @@
 		</RENDERING>
 	</PUBLISHER>
 	
+	<!--  
 	<PUBLISHER name="SERVICE_EXCEPTION_ACTION_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
@@ -17,6 +18,7 @@
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
+	-->
 	
 	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">

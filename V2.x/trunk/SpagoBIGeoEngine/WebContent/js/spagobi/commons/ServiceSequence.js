@@ -54,7 +54,7 @@ Sbi.commons.ServiceSequence = function(config) {
 	
 	this.serviceSequence = [];
 	this.serviceStack = [];
-	this.onSequenceExecuted = function(responce){console.log(responce.toSource())};
+	this.onSequenceExecuted = function(responce){allert(responce.toSource())};
 	this.onSequenceExecutedScope = undefined;
 	
 	Ext.apply(this, config);
@@ -72,7 +72,6 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
    
     // public methods
     add : function(serviceConfig) {
-    	console.log('PUSH: ' + serviceConfig.url);
     	this.serviceSequence.push( serviceConfig );
     }
     
@@ -88,15 +87,11 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
     
     , runNext : function(serviceResponse, serviceConfig) {
     	
-    	console.log(this.serviceStack);
     	if( this.serviceStack && this.serviceStack.length > 0) {    	
 	    	var nextServiceConfig = this.serviceStack.pop();
-	    	console.log('POP: ' + nextServiceConfig.url);
 	    	
 	    	if(typeof nextServiceConfig.params == "function"){
-	    		console.log('resolving parametrs ...');
                 nextServiceConfig.params = nextServiceConfig.params.call(nextServiceConfig.scope||window, nextServiceConfig);
-            	console.log(nextServiceConfig.params.toSource());
             }
 	    	
 	    	nextServiceConfig.scope = this;
@@ -105,7 +100,6 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
 	    	
     	} else {   
     		this.onSequenceExecuted.call(this.onSequenceExecutedScope||window, serviceResponse);
-    		console.log('ServiceSequence terminated');
     	}
     }
 });

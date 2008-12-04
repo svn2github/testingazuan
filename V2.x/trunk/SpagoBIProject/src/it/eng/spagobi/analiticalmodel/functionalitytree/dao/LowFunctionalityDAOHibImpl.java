@@ -1084,7 +1084,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				//hql = " from SbiFuncRole as funcRole where funcRole.id.function = '" + sbiFunct.getFunctId() + 
 				//"' AND  funcRole.id.role = '"+ roleId +"' AND funcRole.stateCd ='"+stateCD+"'"; 
 				hql = " from SbiFuncRole as funcRole where funcRole.id.function = ? " + 
-				"' AND  funcRole.id.role = ?  AND funcRole.stateCd = ?"; 
+				" AND  funcRole.id.role = ?  AND funcRole.stateCd = ?"; 
 			
 				hqlQuery = aSession.createQuery(hql);
 				hqlQuery.setInteger(0, sbiFunct.getFunctId().intValue());

@@ -48,6 +48,7 @@ import org.jfree.chart.plot.dial.ArcDialFrame;
 import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
+import org.jfree.chart.plot.dial.DialValueIndicator;
 import org.jfree.chart.plot.dial.StandardDialRange;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.chart.title.TextTitle;
@@ -301,12 +302,21 @@ public class SimpleDial extends DialCharts{
 
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.07);
+		//set tick label style
+		Font tickLabelsFont = new Font(labelsTickStyle.getFontName(), Font.PLAIN, labelsTickStyle.getSize());
+		scale.setTickLabelFont(tickLabelsFont);
+		scale.setTickLabelPaint(labelsTickStyle.getColor());
 		//scale.setMajorTickIncrement(25.0);
 		plot.addScale(0, scale);
 
 		DialPointer needle = new DialPointer.Pin();
 		needle.setRadius(0.82);
 		plot.addLayer(needle);
+		DialValueIndicator dvi = new DialValueIndicator(0);
+		dvi.setFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
+		dvi.setPaint(labelsValueStyle.getColor());
+		plot.addLayer(dvi);
+		
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setBackgroundPaint(color);
 		

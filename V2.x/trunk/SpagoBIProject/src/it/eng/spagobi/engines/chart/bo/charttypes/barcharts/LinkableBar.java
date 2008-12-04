@@ -132,6 +132,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
 
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
+		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
@@ -177,6 +179,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 
 		// disable bar outlines...
 		//BarRenderer renderer = (BarRenderer) plot.getRenderer();
@@ -227,6 +233,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
+		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 
 		logger.debug("OUT");
 		return chart;

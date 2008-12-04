@@ -90,6 +90,7 @@ public class ChartImpl implements IChart {
 	protected boolean slider=true;
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
+	protected StyleLabel defaultLabelsStyle;
 	protected HashMap seriesLabelsMap = null;
 
 	/**
@@ -182,6 +183,39 @@ public class ChartImpl implements IChart {
 
 		}
 
+		SourceBean styleLabelsSB = (SourceBean)content.getAttribute("STYLE_LABELS_DEFAULT");
+		if(styleLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.font");
+			if(fontS==null){
+				fontS = "Arial";
+			}
+			String sizeS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.size");
+			if(sizeS==null){
+				sizeS = "12";
+			}
+			String colorS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.color");
+			if(colorS==null){
+				colorS = "#000000";
+			}
+			String orientationS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				defaultLabelsStyle=new StyleLabel(fontS,size,color,orientationS);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			defaultLabelsStyle=new StyleLabel("Arial", 12,Color.BLACK);
+		}
 
 		if(content.getAttribute("title_dimension")!=null) 
 		{

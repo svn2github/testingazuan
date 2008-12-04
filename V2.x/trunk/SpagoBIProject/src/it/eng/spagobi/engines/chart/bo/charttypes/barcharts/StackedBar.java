@@ -429,6 +429,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		else
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		renderer.setDrawBarOutline(false);
 
 		logger.debug("Set series color");
@@ -466,20 +470,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 			double orient=(-Math.PI / 2.0);
 			logger.debug("add labels style");
-			if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
-				renderer.setBaseItemLabelFont(addLabelsStyle.getFont());
-				renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-				if(addLabelsStyle.getOrientation().equalsIgnoreCase("horizontal")){
-					orient=0.0;
-				}
+			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+				orient=0.0;
 			}
-			else{
-				renderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 12));
-				if(addLabelsStyle!=null  && addLabelsStyle.getColor()!=null)
-					renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-				else
-					renderer.setBaseItemLabelPaint(Color.BLACK);
-			}
+			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
 			logger.debug("add labels style set");
 
 			renderer.setBaseItemLabelGenerator(generator);
@@ -503,6 +499,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
+		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 
 		logger.debug("OUT");
 		return chart;

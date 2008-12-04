@@ -428,8 +428,12 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		renderer.setItemURLGenerator(mycatUrl);
 */
 
-		TextTitle title =setStyleTitle(name, styleTitle);
+		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
 
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
@@ -440,6 +444,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 
 
 		int seriesN=dataset.getRowCount();
@@ -470,21 +478,11 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
 
 			double orient=(-Math.PI / 2.0);
-
-			if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
-				renderer.setBaseItemLabelFont(addLabelsStyle.getFont());
-				renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-				if(addLabelsStyle.getOrientation().equalsIgnoreCase("horizontal")){
+			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
 					orient=0.0;
 				}
-			}
-			else{
-				renderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 12));
-				if(addLabelsStyle!=null  && addLabelsStyle.getColor()!=null)
-					renderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-				else
-					renderer.setBaseItemLabelPaint(Color.BLACK);
-			}
+			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
 			renderer.setBaseItemLabelGenerator(generator);
 			renderer.setBaseItemLabelsVisible(true);
@@ -515,9 +513,13 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				subCatLabel = subCategoryLabel;
 			
 	        domainAxis.addSubCategory(subCatLabel);
+	        domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+	        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+	        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+	        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		}
 		plot.setDomainAxis(domainAxis);
-		 plot.setRenderer(renderer);
+		plot.setRenderer(renderer);
 		
 
 		/*

@@ -235,11 +235,20 @@ public class OverlaidBarLine extends BarCharts {
 
 		CategoryPlot plot = new CategoryPlot();
 
-		plot.setDomainAxis(new CategoryAxis(getCategoryLabel()));
-		plot.setRangeAxis(new NumberAxis(getValueLabel()));
-
-
-
+		
+		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+		plot.setRangeAxis(rangeAxis);
+		
+		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
+		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		plot.setDomainAxis(domainAxis);
 
 		plot.setOrientation(PlotOrientation.VERTICAL);
 		plot.setRangeGridlinesVisible(true);
@@ -249,9 +258,6 @@ public class OverlaidBarLine extends BarCharts {
 
 
 		//I create one bar renderer and one line
-
-
-
 		MyStandardCategoryItemLabelGenerator generator=null;
 		if(additionalLabels){
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());}
@@ -263,21 +269,12 @@ public class OverlaidBarLine extends BarCharts {
 			if(additionalLabels){
 				barRenderer.setBaseItemLabelGenerator(generator);
 				double orient=(-Math.PI / 2.0);
-				if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
-					barRenderer.setBaseItemLabelFont(addLabelsStyle.getFont());
-					barRenderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-					if(addLabelsStyle.getOrientation().equalsIgnoreCase("horizontal")){
-						orient=0.0;
-					}
-
+			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+					orient=0.0;
 				}
-				else{
-					barRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
-					if(addLabelsStyle!=null && addLabelsStyle.getColor()!=null)
-						barRenderer.setBaseItemLabelPaint(addLabelsStyle.getColor());
-					else
-						barRenderer.setBaseItemLabelPaint(Color.BLACK);
-				}
+			barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+					
 				barRenderer.setBaseItemLabelsVisible(true);
 				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
@@ -323,7 +320,8 @@ public class OverlaidBarLine extends BarCharts {
 			//lineRenderer.setShapesFilled(false);
 			lineRenderer.setShapesFilled(true);
 			if(additionalLabels){lineRenderer.setBaseItemLabelGenerator(generator);
-			lineRenderer.setBaseItemLabelFont(new Font("Serif", Font.BOLD, 13));
+			lineRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+			lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
 			lineRenderer.setBaseItemLabelsVisible(true);
 			}
 
@@ -366,8 +364,12 @@ public class OverlaidBarLine extends BarCharts {
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
-		TextTitle title =setStyleTitle(name, styleTitle);
+		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
 		chart.setBackgroundPaint(Color.white);
 		return chart;
 

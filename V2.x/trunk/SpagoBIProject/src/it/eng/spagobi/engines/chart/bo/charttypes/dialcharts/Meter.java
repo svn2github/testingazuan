@@ -189,13 +189,15 @@ public class Meter extends DialCharts{
 		plot.setDialShape(DialShape.CHORD);
 		plot.setMeterAngle(260);
 		plot.setTickLabelsVisible(true);
-		plot.setTickLabelFont(new Font("Dialog", Font.BOLD, 10));
-		plot.setTickLabelPaint(Color.darkGray);
+		//set tick label style
+		Font tickLabelsFont = new Font(labelsTickStyle.getFontName(), Font.PLAIN, labelsTickStyle.getSize());
+		plot.setTickLabelFont(tickLabelsFont);
+		plot.setTickLabelPaint(labelsTickStyle.getColor());
 		plot.setTickSize(5.0);
 		plot.setTickPaint(Color.lightGray);
 
-		plot.setValuePaint(Color.black);
-		plot.setValueFont(new Font("Dialog", Font.BOLD, 14));
+		plot.setValuePaint(labelsValueStyle.getColor());
+		plot.setValueFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
 
 		JFreeChart chart = new JFreeChart(name, 
 				JFreeChart.DEFAULT_TITLE_FONT, plot, legend);

@@ -231,6 +231,8 @@ public class SBISpeedometer extends DialCharts{
 		}
 		
 		DialValueIndicator dvi = new DialValueIndicator(0);
+		dvi.setFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
+		dvi.setPaint(labelsValueStyle.getColor());
 		plot.addLayer(dvi);
 
 		StandardDialScale scale = new StandardDialScale(lower, 
@@ -239,7 +241,10 @@ public class SBISpeedometer extends DialCharts{
 		scale.setMinorTickCount(minorTickCount);
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.15);
-		scale.setTickLabelFont(new Font("Dialog", Font.PLAIN, 14));
+		//set tick label style
+		Font tickLabelsFont = new Font(labelsTickStyle.getFontName(), Font.PLAIN, labelsTickStyle.getSize());
+		scale.setTickLabelFont(tickLabelsFont);
+		scale.setTickLabelPaint(labelsTickStyle.getColor());
 		plot.addScale(0, scale);
 
 		plot.addPointer(new DialPointer.Pin());

@@ -135,6 +135,10 @@ public class SimpleBar extends BarCharts{
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
@@ -143,7 +147,9 @@ public class SimpleBar extends BarCharts{
 		// add
 		CategorySeriesLabelGenerator generator = new StandardCategorySeriesLabelGenerator("{0}");
 		renderer.setLegendItemLabelGenerator(generator);
-		renderer.setItemLabelsVisible(true);
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 		
 		
         int seriesN=dataset.getRowCount();
@@ -153,6 +159,8 @@ public class SimpleBar extends BarCharts{
  			Color color=(Color)colorMap.get(serieName);
  			if(color!=null){
  				renderer.setSeriesPaint(i, color);
+ 				renderer.setSeriesItemLabelFont(i, new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+ 				renderer.setSeriesItemLabelPaint(i, defaultLabelsStyle.getColor());
  			}	
          }
         }
@@ -163,6 +171,10 @@ public class SimpleBar extends BarCharts{
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
+		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		logger.debug("OUT");
 		return chart;
 

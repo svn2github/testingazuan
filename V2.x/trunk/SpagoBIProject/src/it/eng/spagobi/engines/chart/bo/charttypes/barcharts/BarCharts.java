@@ -68,7 +68,10 @@ public class BarCharts extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(BarCharts.class);
 	Vector seriesNames=null;
 	Vector hiddenSeries=null;
-	StyleLabel addLabelsStyle;
+
+	StyleLabel styleXaxesLabels;
+	StyleLabel styleYaxesLabels;
+	StyleLabel styleValueLabels;
 
 
 
@@ -299,26 +302,122 @@ public class BarCharts extends ChartImpl {
 		}
 
 		// check if there is some info about additional labels style
+		
+		SourceBean styleXaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_X_AXIS_LABELS");
+		if(styleXaxisLabelsSB!=null){
 
-		SourceBean styleLabelsSB = (SourceBean)content.getAttribute("STYLE_LABELS");
-		if(styleLabelsSB!=null){
-
-			String fontS = (String)content.getAttribute("STYLE_LABELS.font");
-			String sizeS = (String)content.getAttribute("STYLE_LABELS.size");
-			String colorS = (String)content.getAttribute("STYLE_LABELS.color");
-			String orientationS = (String)content.getAttribute("STYLE_LABELS.orientation");
-
+			String fontS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
 
 			try{
-				Color color=Color.decode(colorS);
-				int size=Integer.valueOf(sizeS).intValue();
-				addLabelsStyle=new StyleLabel(fontS,size,color,orientationS);
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleXaxesLabels=new StyleLabel(fontS,size,color);
 
 			}
 			catch (Exception e) {
 				logger.error("Wrong style labels settings, use default");
 			}
 
+		}else{
+			styleXaxesLabels = defaultLabelsStyle;
+		}
+		
+		SourceBean styleYaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_Y_AXIS_LABELS");
+		if(styleYaxisLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+			
+			try{
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleYaxesLabels=new StyleLabel(fontS,size,color);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			styleYaxesLabels = defaultLabelsStyle;
+		}
+		
+		SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABELS");
+		if(styleValueLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_VALUE_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_VALUE_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_VALUE_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_VALUE_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+
+			try{
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleValueLabels=new StyleLabel(fontS,size,color);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			styleValueLabels = defaultLabelsStyle;
 		}
 
 		seriesNumber=new HashMap();

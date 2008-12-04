@@ -29,7 +29,9 @@ import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +53,8 @@ public class DialCharts extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(DialCharts.class);
 	protected double lower=0.0;
 	protected double upper=0.0;
+	StyleLabel labelsTickStyle;
+	StyleLabel labelsValueStyle;
 	Map confParameters;
 	SourceBean sbRow;
 
@@ -72,6 +76,76 @@ public class DialCharts extends ChartImpl {
 		super.configureChart(content);
 
 		try{
+			// check if there is some info about additional labels style
+
+			SourceBean styleTickLabelsSB = (SourceBean)content.getAttribute("STYLE_TICK_LABELS");
+			if(styleTickLabelsSB!=null){
+
+				String fontS = (String)content.getAttribute("STYLE_TICK_LABELS.font");
+				if(fontS==null){
+					fontS = defaultLabelsStyle.getFontName();
+				}
+				String sizeS = (String)content.getAttribute("STYLE_TICK_LABELS.size");
+				String colorS = (String)content.getAttribute("STYLE_TICK_LABELS.color");
+
+				try{
+					Color color= Color.BLACK;
+					if(colorS!=null){
+						color=Color.decode(colorS);
+					}else{
+						defaultLabelsStyle.getColor();
+					}
+					int size= 12;
+					if(sizeS!=null){
+						size=Integer.valueOf(sizeS).intValue();
+					}else{
+						size = defaultLabelsStyle.getSize();
+					}
+					
+					labelsTickStyle=new StyleLabel(fontS,size,color);
+
+				}
+				catch (Exception e) {
+					logger.error("Wrong style labels settings, use default");
+				}
+
+			}else{
+				labelsTickStyle = defaultLabelsStyle;
+			}
+			
+			SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABEL");
+			if(styleValueLabelsSB!=null){
+
+				String fontS = (String)content.getAttribute("STYLE_VALUE_LABEL.font");
+				if(fontS==null){
+					fontS = defaultLabelsStyle.getFontName();
+				}
+				String sizeS = (String)content.getAttribute("STYLE_VALUE_LABEL.size");
+				String colorS = (String)content.getAttribute("STYLE_VALUE_LABEL.color");
+				
+				try{
+					Color color= Color.BLACK;
+					if(colorS!=null){
+						color=Color.decode(colorS);
+					}else{
+						defaultLabelsStyle.getColor();
+					}
+					int size= 12;
+					if(sizeS!=null){
+						size=Integer.valueOf(sizeS).intValue();
+					}else{
+						size = defaultLabelsStyle.getSize();
+					}
+					labelsValueStyle=new StyleLabel(fontS,size,color);
+
+				}
+				catch (Exception e) {
+					logger.error("Wrong style labels settings, use default");
+				}
+
+			}else{
+				labelsValueStyle = defaultLabelsStyle;
+			}
 
 			if(isLovConfDefined==false){  // the configuration parameters are set in template
 				logger.debug("Configuration in template");

@@ -106,6 +106,8 @@ public class Thermometer extends DialCharts{
 		plot.setThermometerPaint(Color.lightGray);
 		plot.setGap(3);
 		plot.setValueLocation(3);
+		plot.setValuePaint(labelsValueStyle.getColor());
+		plot.setValueFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
 
 		plot.setRange(lower, upper);
 

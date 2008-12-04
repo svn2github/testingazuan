@@ -36,6 +36,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
@@ -77,6 +78,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
+	private DataSourceServiceProxy datasourceProxy;
 	
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
@@ -117,27 +119,18 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	}
 	
 	
-	/**
-	 * User profile is loaded by the SpagoBiAccessFilter.
-	 * 
-	 * @return the unique id of the given user
-	 */
+
     public String getUserId() {
-    	IEngUserProfile profile = null;
+    	UserProfile profile = null;
     	
     	if(userId == null) {
-    		profile =(IEngUserProfile) getAttributeFromHttpSession( USER_ID );    	
-        	userId = (String)profile.getUserUniqueIdentifier();
+    		profile =(UserProfile) getAttributeFromHttpSession( USER_ID );    	
+        	userId = (String)profile.getUserId();
     	}
     	
     	return userId;
     }
     
-    /**
-	 * User profile is loaded by the SpagoBiAccessFilter.
-	 * 
-	 * @return the unique id of the given user
-	 */
     public String getUserIdentifier() {
     	IEngUserProfile profile = null;
     	
@@ -233,11 +226,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      * @return the data source
      */
     public SpagoBiDataSource getDataSource() {
-    	DataSourceServiceProxy proxyDS;
-    	
     	if(dataSource == null) {
-    		proxyDS = new DataSourceServiceProxy( getUserId() , getHttpSession() );
-    		dataSource = proxyDS.getDataSource( getDocumentId() );
+    		dataSource = getDataSourceServiceProxy().getDataSource( getDocumentId() );
     	}
 		
 		return dataSource;
@@ -356,7 +346,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     	
    public ContentServiceProxy getContentServiceProxy() {
 	   if(contentProxy == null) {
-		   contentProxy = new ContentServiceProxy(userId, getHttpRequest().getSession());
+		   contentProxy = new ContentServiceProxy(getUserIdentifier(), getHttpRequest().getSession());
 	   }	   
 	    
 	   return contentProxy;
@@ -364,12 +354,21 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    
    public AuditServiceProxy getAuditServiceProxy() {
 	   if(auditProxy == null) {
-		   //auditProxy = new AuditServiceProxy(getAuditId(), getUserId(), getHttpRequest().getSession());
 		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpRequest().getSession());
 	   }	   
 	    
 	   return auditProxy;
    }
+   
+   public DataSourceServiceProxy getDataSourceServiceProxy() {
+	   if(datasourceProxy == null) {
+		   datasourceProxy = new DataSourceServiceProxy( getUserIdentifier() , getHttpSession() );
+	   }	   
+	    
+	   return datasourceProxy;
+   }
+   
+   
    
    public Map getEnv() {
 	   Map env = new HashMap();

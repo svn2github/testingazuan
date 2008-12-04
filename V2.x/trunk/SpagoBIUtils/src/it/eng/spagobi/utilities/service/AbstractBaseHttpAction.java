@@ -300,8 +300,11 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		getHttpResponse().getWriter().print(content);
 	}
 	
-	public void writeBackToClient(File file, IStreamEncoder encoder,boolean inline, String contentName, String contentType) throws IOException {
+	public void writeBackToClient(File file, IStreamEncoder encoder, 
+			boolean inline, String contentName, String contentType) throws IOException {
 		BufferedInputStream bis = null;
+		
+		logger.debug("Flushing file [" + file.getName() +"] - " + inline + " - " + contentType);
 		
 		bis = new BufferedInputStream( new FileInputStream(file) );
 		try {

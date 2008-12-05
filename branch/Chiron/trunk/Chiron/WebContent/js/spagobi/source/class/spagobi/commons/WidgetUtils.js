@@ -37,17 +37,26 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
   statics : {
   	   createLabel : function( config ) {
         	var defultConfig = {
-        		text : '',
+        		//text : '',//change
+        		content: '',
         		top : 0,
         		left : 0,
         		width: 100     		
         	};
-        	/*alert("label: "+config.width);*/
-        	var test_label = new qx.legacy.ui.basic.Label();
-        	test_label.set(defultConfig);
-        	test_label.set(config);
-        	 
-        	return test_label;
+        	
+        	//var test_label = new qx.legacy.ui.basic.Label();//change
+        	var test_label = new qx.ui.basic.Label();
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+        	//test_label.set(defultConfig);//change
+        	//test_label.set(config);//change
+        	test_label.set({content: config.content, width: config.width});
+        	
+        	var labelContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);//to set left and top
+        	labelContainer.add(test_label, {top: config.top, left: config.left});
+        	
+        	//return test_label;
+        	return labelContainer;
         },
         
         
@@ -55,22 +64,32 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	var defultConfig = {
         		top: 0,
         		left: 0,
-        		maxLength:100,        		
+        		maxLength:100,//yes     		
         		width: 0,
-        		height: 0,
+        		height: 0,//yes
         		value: ''
         	};
         
         	if(password != true){
-            	var test_textfield = new qx.legacy.ui.form.TextField();
+            	//var test_textfield = new qx.legacy.ui.form.TextField();//change
+            	var test_textfield = new qx.ui.form.TextField();
         	}
         	else{
-        		var test_textfield = new qx.legacy.ui.form.PasswordField();
+        		//var test_textfield = new qx.legacy.ui.form.PasswordField();//change
+        		var test_textfield = new qx.ui.form.PasswordField();
         	}
-            test_textfield.set( defultConfig );
-            test_textfield.set( config );
-            return test_textfield;
-          
+        	
+        	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
+            //test_textfield.set( defultConfig );//change .. not needed
+            //test_textfield.set( config );//change
+            test_textfield.set({width:config.width, height:config.height, 
+            					value:config.value, maxLength:config.maxLength });
+            					
+            var textContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
+        	textContainer.add(test_textfield, {top: config.top, left: config.left});
+        						
+            //return test_textfield;
+          	return textContainer;
         },
         
         createComboBox : function( config ) {
@@ -83,14 +102,13 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           
           	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
          
-          	var combo_box = new qx.legacy.ui.form.ComboBox();
-          	combo_box.set({ 
-          		top: config.top, 
-          		left: config.left 
-          	});
+          	//var combo_box = new qx.legacy.ui.form.ComboBox();//change
+          	var combo_box = new qx.ui.form.ComboBox();
+          	//combo_box.set({ top: config.top, left: config.left });//change
           	
           	for(var i=0; i< config.items.length; i++) {
-              var item = new qx.legacy.ui.form.ListItem(config.items[i]);
+              //var item = new qx.legacy.ui.form.ListItem(config.items[i]);//change
+              var item = new qx.ui.form.ListItem(config.items[i]);
               combo_box.add(item);
             }
             
@@ -102,9 +120,14 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             	}
             }
             
-            combo_box.setSelected(combo_box.getList().getFirstChild());
-            return combo_box;
-          
+            //combo_box.setSelected(combo_box.getList().getFirstChild());//change
+            //combo_box.setSelection(combo_box.getList().getFirstChild());
+            
+            var comboContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
+        	comboContainer.add(combo_box, {top: config.top, left: config.left});
+        	
+            //return combo_box;
+          	return comboContainer;
         },
         
         createFlagBox : function( config ) {
@@ -117,12 +140,11 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
            	
            	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
           
-       		var check_box = new qx.legacy.ui.form.CheckBox();
-       		check_box.set({
-       			checked: config.checked,
-       			top: config.top,
-       			left: config.left
-        	});
+       		//var check_box = new qx.legacy.ui.form.CheckBox();//change
+       		var check_box = new qx.ui.form.CheckBox();
+       		
+       		//check_box.set({checked: config.checked,top: config.top,	left: config.left});//change
+        	check_box.set({checked: config.checked});
         	
         	for(var i=0; i< config.listeners.length; i++) {
             	if(config.listeners[i].scope) {
@@ -132,7 +154,11 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             	}
             }
         	
-            return check_box;
+        	var checkboxContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
+        	checkboxContainer.add(check_box, {top: config.top, left: config.left});
+        	
+            //return check_box;//change
+            return checkboxContainer
         },  	
         
         createTextArea: function( config ) {
@@ -145,10 +171,16 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	};
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
-            var test_textarea = new qx.legacy.ui.form.TextArea();
-            //test_textarea.set( defultConfig );
-            test_textarea.set( config );
-            return test_textarea;
+            //var test_textarea = new qx.legacy.ui.form.TextArea();//change
+            var test_textarea = new qx.ui.form.TextArea();
+            	
+            test_textarea.set( {width:config.width, height:config.height} );
+            
+            var textAreaContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);//to set left and top
+        	textAreaContainer.add(test_textarea, {top: config.top, left: config.left});
+        	
+            //return test_textarea;
+            return textAreaContainer;
           
         },
         
@@ -163,27 +195,34 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	};
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
-        	var checkbox_grid = new qx.legacy.ui.layout.GridLayout;
+        	//var checkbox_grid = new qx.legacy.ui.layout.GridLayout;//change
+        	var checkbox_grid = new qx.ui.layout.GridLayout;
 		    checkbox_grid.auto();
         	checkbox_grid.set({ left: config.left });
         	
-        	checkbox_grid.setColumnCount(config.columns);	
-    		checkbox_grid.setRowCount(Math.ceil(config.items.length/config.columns));
+        	//checkbox_grid.setColumnCount(config.columns);//change	..find
+    		//checkbox_grid.setRowCount(Math.ceil(config.items.length/config.columns));//change..find
     		
     		//alert('hi');		// why is it coming 2 times ??
     		
-    		var rows = checkbox_grid.getRowCount();
-    		var cols = checkbox_grid.getColumnCount();
+    		//var rows = checkbox_grid.getRowCount();
+    		//var cols = checkbox_grid.getColumnCount();
+    		var rows = config.columns;
+    		var cols = Math.ceil(config.items.length/config.columns);
     		
     		for(i=0,k=0;i<rows ; i++){
     			checkbox_grid.setRowHeight(i, 30);			
     			for(j=0; j<cols && k<config.items.length; j++,k++){
     				checkbox_grid.setColumnWidth(j, 50);	
     				
-    				var label_text = new qx.legacy.ui.basic.Label(config.items[k]);
-		    		var check_box = new qx.legacy.ui.form.CheckBox();
+    				//var label_text = new qx.legacy.ui.basic.Label(config.items[k]);//change
+		    		//var check_box = new qx.legacy.ui.form.CheckBox();//change
+       				var label_text = new qx.ui.basic.Label(config.items[k]);
+		    		var check_box = new qx.ui.form.CheckBox();
+		    		
+       				//var atom = new qx.legacy.ui.basic.Atom();//change
+       				var atom = new qx.ui.basic.Atom();
        				
-       				var atom = new qx.legacy.ui.basic.Atom();
        				atom.add(check_box, label_text);
        				atom.setUserData('label', label_text);
         			atom.setUserData('field', check_box);
@@ -205,16 +244,22 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           
           	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
           	
-          	var atom = new qx.legacy.ui.basic.Atom();
+          	//var atom = new qx.legacy.ui.basic.Atom();//change
+          	//var atom = new qx.ui.basic.Atom();
+          	var radioContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);//to set left and top
+        	
+          	
           	var radioButtons = [];
-          	var radioManager = new qx.legacy.ui.selection.RadioManager("mygroup");
+          	//var radioManager = new qx.legacy.ui.selection.RadioManager("mygroup");//change
+          	var radioManager = new qx.ui.form.RadioGroup("mygroup");
           	
           	for(i=0; i<config.items.length; i++){
           		
-          		radioButtons[i] = new qx.legacy.ui.form.RadioButton(config.items[i]);
-          		radioButtons[i].set({ top: config.top, left: config.left});
+          		//radioButtons[i] = new qx.legacy.ui.form.RadioButton(config.items[i]);//change
+          		radioButtons[i] = new qx.ui.form.RadioButton(config.items[i]);
+          		radioContainer.add(radioButtons[i], { top: config.top, left: config.left});
           		
-          		atom.add(radioButtons[i]);		// to return the group of radio buttons as returning a radio manager gives error
+          		//atom.add(radioButtons[i]);		// to return the group of radio buttons as returning a radio manager gives error
           		radioManager.add(radioButtons[i]);	//to make only 1 radio button be selected at any time
           		
           	}
@@ -228,7 +273,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             }
             radioButtons[0].setChecked(true);	//by default, the 1st radio button is selected
             
-          	return atom;
+         	//return atom;
+         	return radioContainer;
 		},
         
         createInputTextField: function( config ) {
@@ -259,7 +305,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth   
@@ -273,30 +320,42 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         	var textField = this.createTextField({
 	        		top: config.top,
-	        		left: config.left + 30,
+	        		left: config.left + 10,
 	        		maxLength: config.maxLength,        		
 	        		width: config.width,
 	        		height: config.height,
 	        		value: config.value
 	           	},config.password);
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
-        	atom.add(labelField, textField);
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	//var atom = new qx.ui.basic.Atom();
+        	
+        	
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	atom.add(labelField);//, {top: config.top, left: config.left} 
+        	atom.add(textField);//,  {top: config.top, left: config.left + 30} 
         	
         	if(config.mandatory) {
         		var mandatoryMarker = this.createLabel({
-	        		text : '*',
+	        		//text : '*',//change
+	        		content : '*',
 	        		top : config.top,
-	        		left : config.left + 35 
+	        		left : config.left + 5 
         		});
-        		atom.add(mandatoryMarker);
+        		atom.add(mandatoryMarker);//,  {top: config.top, left: config.left + 35}
         	}
         	
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', textField);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);//change
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;
@@ -315,7 +374,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth    
@@ -323,18 +383,28 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	        	   
 	        var comboBox = this.createComboBox({
 	        	top: config.top,
-	        	left: config.left + 30,
+	        	left: config.left + 10,
 	        	items: config.items,
 	        	listeners: config.listeners
 	        });
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
-        	atom.add(labelField, comboBox);
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	//var atom = new qx.ui.basic.Atom();//change
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	
+        	atom.add( labelField );
+        	atom.add( comboBox );
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', comboBox);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);//change
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;
@@ -353,7 +423,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth   
@@ -362,17 +433,27 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        var checkBox = this.createFlagBox({
 	        	checked: config.checked,
 	        	top: config.top,
-	        	left: config.left + 30,
+	        	left: config.left + 10,
 	        	listeners: config.listeners
 	        });
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
-        	atom.add(labelField, checkBox);
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	//var atom = new qx.ui.basic.Atom();//change
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	
+        	atom.add( labelField );
+        	atom.add( checkBox );
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);//change
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;
@@ -397,7 +478,13 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			subform.setUserData('field', subform);
 			
 			if(config.visible != undefined){
-				subform.setDisplay(config.visible);
+				//subform.setDisplay(config.visible);
+				if(config.visible){
+					subform.setVisibility("visible");
+				}
+				else{
+					subform.setVisibility("excluded");
+				}
 			}	
 			return subform;
 		},
@@ -428,7 +515,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth
@@ -437,20 +525,24 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         
         	var textArea = this.createTextArea({
         		top: config.top,
-        		left: config.left + 30,
+        		left: config.left + 10,
         		//rows: config.rows,        		
         		width: config.width,
         		height: config.height   
         	});
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
-        	atom.add(labelField, textArea);
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	//var atom = new qx.ui.basic.Atom();
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	atom.add( labelField );
+        	atom.add( textArea );
         	
         	if(config.mandatory) {
         		var mandatoryMarker = this.createLabel({
-	        		text : '*',
+	        		//text : '*',//change
+	        		content : '*',
 	        		top : config.top,
-	        		left : config.left + 35 
+	        		left : config.left + 5 
         		});
         		atom.add(mandatoryMarker);
         	}
@@ -459,7 +551,13 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	atom.setUserData('field', textArea);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;
@@ -503,7 +601,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth   
@@ -521,20 +620,28 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	var checkBox = new spagobi.ui.CheckBoxList({
 	        	checked: config.checked,
 	        	top: 0,	
-	        	left: config.left + 30,
+	        	left: config.left + 10,
 	        	items: config.items,
 	        	listeners: config.listeners,
 	        	columns: config.columns
 	        });
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	var atom = new qx.ui.basic.Atom();
+        	
         	atom.add(labelField );
         	atom.add(checkBox);
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', checkBox);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);//change
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;
@@ -554,7 +661,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
         	var labelField = this.createLabel({
-        		text : config.text,
+        		//text : config.text,//change
+        		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth   
@@ -564,18 +672,28 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        var radioButton = this.createRadioBox({
 	        	checked: config.checked,
 	        	top: config.top,
-	        	left: config.left + 30,
+	        	left: config.left + 10,
 	        	items: config.items,
 	        	listeners: config.listeners
 	        });
         	
-        	var atom = new qx.legacy.ui.basic.Atom();
-        	atom.add(labelField, radioButton);
+        	//var atom = new qx.legacy.ui.basic.Atom();//change
+        	//var atom = new qx.ui.basic.Atom();
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	
+        	atom.add( labelField );
+        	atom.add( radioButton );
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', radioButton);
         	
         	if(config.visible != undefined){
-				atom.setDisplay(config.visible);
+				//atom.setDisplay(config.visible);//change
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
         	}
         	
         	return atom;

@@ -85,5 +85,6 @@ qx.Class.define("spagobi.ui.custom.AnalyticalDriverDetailsForm", {
         		formList: spagobi.ui.custom.UseModeSubForm 
         	}
         ]);
+        
 	}
 });

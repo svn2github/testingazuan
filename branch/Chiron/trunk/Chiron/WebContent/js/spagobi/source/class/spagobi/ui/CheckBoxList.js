@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
  
 qx.Class.define("spagobi.ui.CheckBoxList", {
-	extend: qx.legacy.ui.layout.GridLayout,
+	extend: qx.ui.container.Composite,//qx.ui.layout.Grid,//
 	
 /**
  * Constructor to create a Checkbox List.
@@ -58,6 +58,8 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
  */	
 	 construct : function(config) { 
 		this.base(arguments);
+		this.dummyGrid = new qx.ui.layout.Grid(); 	
+		this.setLayout(this.dummyGrid);
  		
  		this._setAtom();
  		
@@ -76,7 +78,7 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 		atom : [],
 		label_text: [],
 		check_box: [],
-		
+		dummyGrid : undefined,
 		
 		_setAtom: function(){
 			this.atom = [];
@@ -112,36 +114,46 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 	    	};
 	    	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
 	    	
-	    	
-		    this.auto();
+	   		
+	//	    
+	// this.auto();
 	    	this.set({ left: config.left });
 	    	
-	    	this.setColumnCount(config.columns);	
-			this.setRowCount(Math.ceil(config.items.length/config.columns));
+	 //   	this.setColumnCount(config.columns);	
+	//		this.setRowCount(Math.ceil(config.items.length/config.columns));
 			
 			//alert('hi');		// why is it coming 2 times ??
 			
-			var rows = this.getRowCount();
-			var cols = this.getColumnCount();
+			var rows = config.columns;//this.getRowCount();
+			var cols = Math.ceil(config.items.length/config.columns);    
+		//	alert(rows);
+		//	alert(cols);    
+			//this.getColumnCount();
 			
 			var index = 0;
 			
 			for(i=0,k=0;i<rows ; i++){
-				this.setRowHeight(i, 30);			
+				this.dummyGrid.setRowHeight(i, 30);			
 				for(j=0; j<cols && k<config.items.length; j++,k++){
-					this.setColumnWidth(j, 50);	
+					this.dummyGrid.setColumnWidth(j, 50);	
 					
-					this.label_text[index] = new qx.legacy.ui.basic.Label(config.items[k]);
-		    		this.check_box[index]  = new qx.legacy.ui.form.CheckBox();
+					this.label_text[index] = new qx.ui.basic.Label(config.items[k]);
+		    		this.check_box[index]  = new qx.ui.form.CheckBox();
 	   				
-	   				//var atom = new qx.legacy.ui.basic.Atom();
-	   				this.atom[index] = new qx.legacy.ui.basic.Atom();
-	   				this.atom[index].add(this.check_box[index], this.label_text[index]);
+	   				this.atom[index] = new qx.ui.container.Composite(new qx.ui.layout.HBox);//new qx.ui.container.Composite(new qx.ui.layout.HBox);
+	   				
+	   				this.atom[index].add(this.check_box[index]);
+	   				this.atom[index].add(this.label_text[index]);
+	   				
 	   				this.atom[index].setUserData('label', this.label_text[index]);
 	    			this.atom[index].setUserData('field', this.check_box[index]);
-	   				this.add(this.atom[index], j, i);
+	    			
+	   				this.add(this.atom[index],{row:j,column:i});//, j, i);
 	   				//this.setUserData('element'+index, this.atom[index]);
+	   			//	alert("holidays");
 	   				index++;
+	   				
+	   				
 				}
 		 	}
 		},
@@ -157,7 +169,7 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 			var temp = [];
 			for(i=0,j=0; i<this.atom.length; i++){
 				if(this.atom[i].getUserData('field').getChecked() == true ){
-					temp[j] = this.atom[i].getUserData('label').getText();
+					temp[j] = this.atom[i].getUserData('label').getValue();
 					j++;
 				}
 			}
@@ -175,7 +187,7 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 			var flag = false;
 			for(i=0; i<value.length; i++){
 				for(j=0; j<this.atom.length; j++){
-					if( value[i] == this.atom[j].getUserData('label').getText() ){
+					if( value[i] == this.atom[j].getUserData('label').getValue() ){
 						this.atom[j].getUserData('field').setChecked(true);
 						flag = true;
 						break;

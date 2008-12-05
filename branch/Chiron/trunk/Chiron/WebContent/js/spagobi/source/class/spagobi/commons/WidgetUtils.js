@@ -250,17 +250,18 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
           	
           	var radioButtons = [];
-          	//var radioManager = new qx.legacy.ui.selection.RadioManager("mygroup");//change
-          	var radioManager = new qx.ui.form.RadioGroup("mygroup");
+      //    	var radioManager = new qx.legacy.ui.selection.RadioManager();//change //"mygroup"
+          	var radioManager = new qx.ui.form.RadioGroup();//"mygroup"
           	
           	for(i=0; i<config.items.length; i++){
           		
           		//radioButtons[i] = new qx.legacy.ui.form.RadioButton(config.items[i]);//change
           		radioButtons[i] = new qx.ui.form.RadioButton(config.items[i]);
-          		radioContainer.add(radioButtons[i], { top: config.top, left: config.left});
+          		radioManager.add(radioButtons[i]);
+          		radioContainer.add(radioButtons[i], { top: config.top, left: (config.left+ i*60)});//
           		
           		//atom.add(radioButtons[i]);		// to return the group of radio buttons as returning a radio manager gives error
-          		radioManager.add(radioButtons[i]);	//to make only 1 radio button be selected at any time
+          			//to make only 1 radio button be selected at any time
           		
           	}
           	
@@ -627,7 +628,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        });
         	
         	//var atom = new qx.legacy.ui.basic.Atom();//change
-        	var atom = new qx.ui.basic.Atom();
+        	//var atom = new qx.ui.basic.Atom();
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
         	
         	atom.add(labelField );
         	atom.add(checkBox);

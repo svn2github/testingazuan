@@ -74,7 +74,8 @@ qx.Class.define("spagobi.ui.custom.UseModeSubForm", {
         		type: 'combo',
         		dataIndex: 'lovlist',
         		text: 'Selection List',
-        		items: ["List","Check List","Combo Box"]		
+        		items: ["List","Check List","Combo Box"],
+        		visible: true	
         	}, {
         		type: 'text',
         		dataIndex: 'manualinput',
@@ -103,14 +104,14 @@ qx.Class.define("spagobi.ui.custom.UseModeSubForm", {
 		_lovTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('type') ) {
         		if (e.getValue().getLabel()=="Lov") {
-        			this.getInputField('lov').setDisplay(true);
-					this.getInputField('lovlist').setDisplay(true);
-					this.getInputField('manualinput').setDisplay(false);
+        			this.getInputField('lov').setVisibility("visible");
+					this.getInputField('lovlist').setVisibility("visible");
+					this.getInputField('manualinput').setVisibility("excluded");
 					
 				} else if (e.getValue().getLabel()=="Manual Input") {
-					this.getInputField('lov').setDisplay(false);
-					this.getInputField('lovlist').setDisplay(false);
-					this.getInputField('manualinput').setDisplay(true);
+					this.getInputField('lov').setVisibility("excluded");
+					this.getInputField('lovlist').setVisibility("excluded");
+					this.getInputField('manualinput').setVisibility("visible");
 					
 				}
         	}

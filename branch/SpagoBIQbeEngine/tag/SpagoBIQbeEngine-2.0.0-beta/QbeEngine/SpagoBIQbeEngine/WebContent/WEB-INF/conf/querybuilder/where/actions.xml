@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="SELECT_FIELD_FOR_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.AddWhereFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FROM_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.DeleteWhereFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_DOWN_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveDownWhereFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_UP_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.MoveUpWhereFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="START_WIZARD_SUBQUERY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.SubQueryStartAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXIT_SUBQUERY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.SubQueryExitAction" 
+			scope="REQUEST">			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="UPDATE_BRACKETS_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.UpdateBracketsInWhereAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="UPDATE_FIELD_WHERE_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.where.service.UpdateFieldsForWhereAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION> 
+	
+	
+</ACTIONS>
+

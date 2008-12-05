@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="SELECT_FIELD_FOR_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.AddOrderByFieldAction" 
+			scope="REQUEST">		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FOR_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.DeleteOrderByFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_DOWN_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveDownOrderByFieldAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_UP_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.MoveUpOrderByFieldAction" 
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	
+	
+	
+	<ACTION name="SWITCH_ORDERBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.orderby.service.SwitchAscendingOrderPopertyValueAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+</ACTIONS>
+

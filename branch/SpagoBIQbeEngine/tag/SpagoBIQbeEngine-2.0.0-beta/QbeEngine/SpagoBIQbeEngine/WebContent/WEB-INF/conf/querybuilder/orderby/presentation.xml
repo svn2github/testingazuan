@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PRESENTATION>
+	
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FOR_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SWITCH_ORDERBY_ACTION" publisher_name="SELECT_FIELDS_FOR_ORDERBY_PUBLISHER"/>
+	
+	
+</PRESENTATION>
+

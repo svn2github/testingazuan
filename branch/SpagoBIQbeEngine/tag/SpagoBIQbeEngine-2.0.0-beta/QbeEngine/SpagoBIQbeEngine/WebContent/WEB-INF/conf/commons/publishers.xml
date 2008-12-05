@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PUBLISHERS>
+
+	<PUBLISHER name="DYNAMIC_FORWARD_PUBLISHER">
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="" type="JAVA">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="it.eng.spago.presentation.DynamicForwardPublisher" />
+        		
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>  	
+
+
+
+	
+  	
+  	
+  	<!--  
+  	<PUBLISHER name="SERVICE_EXCEPTION_ACTION_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	-->
+  	
+  	
+</PUBLISHERS>

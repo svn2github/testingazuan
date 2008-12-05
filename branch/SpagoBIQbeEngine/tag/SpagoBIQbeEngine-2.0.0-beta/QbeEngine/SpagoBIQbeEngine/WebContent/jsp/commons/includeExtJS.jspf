@@ -1,0 +1,10 @@
+<!-- Include Ext and app-specific scripts: -->
+<qbe:url type="resource" var="ExtBase" ref="../js/ext/adapter/ext/ext-base.js"/>
+<script type="text/javascript" src='${ExtBase}'/></script>
+	
+<qbe:url type="resource" var="ExtDebug" ref="../js/ext/ext-all-debug.js"/>
+<script type="text/javascript" src='${ExtDebug}'/></script>
+    
+<!-- Include Ext stylesheets here: -->
+<qbe:url type="resource" var="ExtCSS" ref="../js/ext/resources/css/ext-all.css"/>
+<link rel="styleSheet" href ="${ExtCSS}" type="text/css" />

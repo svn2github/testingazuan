@@ -1,0 +1,199 @@
+<qbe:message key="QBE.alt.imgDeleteFromSelection" var="deleteButtonLabel" />
+<qbe:message key="QBE.alt.imgMoveUp" var="moveUpButtonLabel" />
+<qbe:message key="QBE.alt.imgMoveDown" var="moveDownButtonLabel" />
+<qbe:message key="QBE.alt.imgCleanOperator" var="removeOperatorButtonLabel" />
+<qbe:message key="QBE.alt.imgApplyOperator" var="showOperatorsButtonLabel" />
+<qbe:message key="QBE.alt.imgAs" var="setAliasButtonLabel" />
+
+
+<qbe:url type="resource" var="deleteButtonImage" ref="../img/querybuilder/select/delete.gif"/>
+<qbe:url type="resource" var="moveUpButtonImage" ref="../img/querybuilder/select/ArrowUp.gif"/>
+<qbe:url type="resource" var="moveDownButtonImage" ref="../img/querybuilder/select/ArrowDown.gif"/>
+<qbe:url type="resource" var="removeOperatorButtonImage" ref="../img/querybuilder/select/clear.gif"/>
+<qbe:url type="resource" var="showOperatorsButtonImage" ref="../img/querybuilder/select/operator.gif"/>
+<qbe:url type="resource" var="setAliasButtonImage" ref="../img/querybuilder/select/as.gif"/>
+
+
+<form id="formUpdateSelect" name="formUpdateSelect" action="${updateSelectionClause}" method="post">	
+					
+					<input type="hidden" name="ACTION_NAME" value="UPDATE_FIELD_SELECT_ACTION"/>
+				  	
+				  	<table class="qbe-font">
+				  			
+				  		<c:if test="true">
+				  			<c:set var="fields" value="${query.selectFieldsIterator}"/>
+					 		<c:if test="${fields != null}">	
+					 			<c:forEach var="field" items="${fields}">	
+					 				<tr>
+				    		   			<td width="5%">				    		   				
+				    		   				<qbe:button id="deleteButton"
+				    		   							type="action"
+				    		   							name="DELETE_FIELD_FROM_SELECT_ACTION"
+				    		   							tooltip="${deleteButtonTooltip}"
+				    		   							image="${deleteButtonImage}">
+				    		   					<qbe:param name="FIELD_ID" value="${field.id}"/>				    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   				
+				    		   			<td width="5%">
+				    		   				<qbe:button id="moveUpButton"
+				    		   							type="action"
+				    		   							name="MOVE_UP_ACTION"
+				    		   							tooltip="${moveUpButtonTooltip}"
+				    		   							image="${moveUpButtonImage}">
+				    		   					<qbe:param name="FIELD_ID" value="${field.id}"/>				    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   			
+				    		   			<td width="5%">
+				    		   				<qbe:button id="moveDownButton"
+				    		   							type="action"
+				    		   							name="MOVE_DOWN_ACTION"
+				    		   							tooltip="${moveDownButtonTooltip}"
+				    		   							image="${moveDownButtonImage}">
+				    		   					<qbe:param name="FIELD_ID" value="${field.id}"/>				    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   			
+				    		   			<td width="5%">				    		   				
+				    		   				<qbe:button id="removeOperatorButton"
+				    		   							type="script"
+				    		   							name="removeOperator"
+				    		   							tooltip="${removeOperatorButtonLabel}"
+				    		   							image="${removeOperatorButtonImage}">
+				    		   					<qbe:param value="'NEW_FIELD_${field.id}'"/>
+				    		   					<qbe:param value="event"/>			    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   			
+				    		   			<td width="5%">				    		   				
+				    		   				<qbe:button id="showOperatorsButton"
+				    		   							type="script"
+				    		   							name="openDivOperatoriSelect"
+				    		   							tooltip="${showOperatorsButtonLabel}"
+				    		   							image="${showOperatorsButtonImage}">
+				    		   					<qbe:param value="'NEW_FIELD_${field.id}'"/>
+				    		   					<qbe:param value="event"/>			    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   			
+				    		   			<td width="35%" align="left">
+				    		   				<input type="hidden" 
+				    		   					   id="NEW_FIELD_${field.id}"   		   				
+				    		   					   name="NEW_FIELD_${field.id}"   
+				    		   					   value="${field.fieldName}" 
+				    		   					   readonly="readonly"/>
+				    		   				
+				    		   				<span id="NEW_FIELD_${field.id}_span">
+				    		   					<qbe:fld-label var="fieldLabel" fieldName="${field.fieldName}"/>
+				    		   					<c:out value="${fieldLabel}"/>
+				    		   				</span>
+				    		   			</td>
+				    		   			
+				    		   			<td width="5%">				    		   				
+				    		   				<qbe:button id="setAliasButton"
+				    		   							type="script"
+				    		   							name="inputAS"
+				    		   							tooltip="${setAliasButtonTooltip}"
+				    		   							image="${setAliasButtonImage}">
+				    		   					<qbe:param value="'NEW_FIELD_${field.id}'"/>
+				    		   					<qbe:param value="'ALIAS_FOR_${field.id}'"/>			    		   					
+				    		   					<qbe:param value="event"/>			    		   							
+				    		   				</qbe:button>
+				    		   			</td>
+				    		   			
+				    		   			<td width="35%" align="left">
+				    		   				<input type="hidden" 
+				    		   					   id="ALIAS_FOR_${field.id}" 
+				    		   					   name="ALIAS_FOR_${field.id}" 				    		   					    
+				    		   					   value="" 
+				    		   					   readonly="readonly"/>
+				    		   						
+				    		   				<span id="ALIAS_FOR_${field.id}_span">
+					    		   				<c:choose>
+													<c:when test="${field.fieldAlias != null}">
+														${field.fieldAlias}
+													</c:when>												
+													<c:otherwise>
+														&nbsp;
+													</c:otherwise>
+					    		   				</c:choose>				    		   					
+				    		   				</span>
+				    		   			</td>				    		   			
+				    		   		</tr>				    		   		
+					 			</c:forEach>
+					 		</c:if>		
+					 		
+			
+			
+			<c:set var="cFields" value="${query.calculatedFieldsIterator}"/>
+				
+			<c:if test="${cFields != null}">	
+				<c:forEach var="cField" items="${cFields}">
+					<tr>
+				    	
+				    	<td width="5%">				    		   				
+				    		<qbe:button id="deleteButton"
+				    					type="action"
+				    					name="DELETE_FIELD_FROM_SELECT_ACTION"
+				    					tooltip="${deleteButtonTooltip}"
+				    					image="${deleteButtonImage}">
+				    			<qbe:param name="FIELD_ID" value="$(cField.id)"/>				    		   							
+				    		</qbe:button>
+				    	</td>
+				    		   				
+				    	<td  width="5%">&nbsp;</td>				    		   					
+				    	<td  width="5%">&nbsp;</td>				    		  
+				    	<td  width="5%">&nbsp;</td>				    		   					
+				    	<td  width="5%">&nbsp;</td>				    		   					
+				    	<td  width="5%">&nbsp;</td>
+				    		   					
+				    	<td width="5%">
+				    		<img src="${setAliasButtonImage}" 
+				    			alt="${setAliasButtonTooltip}" 
+				    			title="${setAliasButtonTooltip}" />
+				    	</td>				    		   					
+				    		   					
+				    	<td width="35%" align="left">
+				    		<c:choose>
+								<c:when test="${cField.fldLabel != null}">
+									${cField.fldLabel}
+								</c:when>												
+								<c:otherwise>
+									${cField.id}
+								</c:otherwise>
+					    	</c:choose>						    		   				
+				    	</td> 		   					
+					</tr>	
+				</c:forEach>
+			</c:if>	
+					 		
+			
+			<tr>
+				<td colspan="8">
+					<c:choose>
+							<c:when test="${query.distinct}">
+								<input type="checkbox" 
+										id="checkboxDistinct" 
+										checked="checked" 
+										onclick="handleDistinct()"> distinct				    		   				
+							</c:when>												
+							<c:otherwise>
+								<input type="checkbox" 
+									   id="checkboxDistinct" 
+									   onclick="handleDistinct()"> distinct				    		   				
+							</c:otherwise>
+	    		   	</c:choose>	
+											
+					<input type="hidden" 
+						   id="selectDistinct" 
+						   name="selectDistinct" 
+						   value="${query.distinct}"/>
+    			</td>
+    		</tr>
+    			 			    		   		
+	 	</c:if> 
+	 	
+	 </table>
+	 
+</form>

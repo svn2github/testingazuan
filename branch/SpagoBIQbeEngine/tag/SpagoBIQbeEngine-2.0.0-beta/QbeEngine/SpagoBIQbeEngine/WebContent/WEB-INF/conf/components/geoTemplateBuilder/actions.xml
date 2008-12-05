@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="GENERATE_GEO_TEMPLATE_ACTION" class="it.eng.qbe.geo.action.GenearateGeoTemplateAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MODIFY_MEASURE_DETAILS_ACTION" class="it.eng.qbe.geo.action.ModifyMeasureDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>		
+	
+	<ACTION name="SAVE_MEASURE_ACTION" class="it.eng.qbe.geo.action.SaveMeasureAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="SAVE_MEASURE_AND_EXIT_ACTION" class="it.eng.qbe.geo.action.SaveMeasureAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXIT_MEASURE_DETAILS_ACTION" class="it.eng.qbe.geo.action.ExitMeasureDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+		
+	
+	<ACTION name="CREATE_HIERARCHY_ACTION" class="it.eng.qbe.geo.action.CreateHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MODIFY_HIERARCHY_ACTION" class="it.eng.qbe.geo.action.ModifyHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_HIERARCHY_ACTION" class="it.eng.qbe.geo.action.SaveHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_HIERARCHY_AND_EXIT_ACTION" class="it.eng.qbe.geo.action.SaveHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXIT_HIERARCHY_DETAILS_ACTION" class="it.eng.qbe.geo.action.ExitHierarchyDetailsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="GET_HIERACHIES_ACTION" class="it.eng.qbe.geo.action.GetHierarchiesAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_HIERARCHY_LEVELS_ACTION" class="it.eng.qbe.geo.action.GetHierarchyLevelsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>		
+	
+	<ACTION name="GET_MAPS_ACTION" class="it.eng.qbe.geo.action.GetMapsAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_LAYERS_ACTION" class="it.eng.qbe.geo.action.GetLayersAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_TEMPLETE_ACTION" class="it.eng.qbe.geo.action.GetTempleteAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="DELETE_HIERACHIES_ACTION" class="it.eng.qbe.geo.action.DeleteHierarchyAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="VIEW_ON_MAP" class="it.eng.qbe.geo.action.ViewOnMapAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="PREVIEW_ON_MAP" class="it.eng.qbe.geo.action.PreviewOnMapAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	
+	
+</ACTIONS>

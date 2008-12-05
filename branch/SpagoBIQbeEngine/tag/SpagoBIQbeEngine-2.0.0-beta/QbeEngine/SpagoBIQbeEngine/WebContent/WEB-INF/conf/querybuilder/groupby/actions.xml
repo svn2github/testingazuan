@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="SELECT_FIELD_FOR_GROUPBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.AddGroupByFieldAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_FIELD_FOR_GROUPBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.DeleteGroupByFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_DOWN_GROUPBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveDownGroupByFieldAction" 
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="MOVE_UP_GROUPBY_ACTION" 
+			class="it.eng.spagobi.qbe.querybuilder.groupby.service.MoveUpGroupByFieldAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	
+	
+	
+</ACTIONS>
+

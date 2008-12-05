@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PRESENTATION>
+	<MAPPING business_type="ACTION" business_name="ALIGN_EXPERT_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="COMPOSE_RESUME_QUERY_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_EXPERT_ACTION"  publisher_name="RESUME_QUERY_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_RESUME_ACTION" publisher_name="LOOPBACK_AFTER_UPDATE_RESUME"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_PREVIEW_MODE_ACTION" publisher_name="RESUME_QUERY_PUBLISHER"/>
+	
+	
+</PRESENTATION>
+

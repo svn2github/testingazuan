@@ -1,0 +1,10 @@
+<QBE>
+	<DATASOURCE name="FoodMart" 
+				dialect="org.hibernate.dialect.MySQLDialect" />					
+	<DATAMART 	name="test_largeqbe"/>
+</QBE>
+
+
+
+
+

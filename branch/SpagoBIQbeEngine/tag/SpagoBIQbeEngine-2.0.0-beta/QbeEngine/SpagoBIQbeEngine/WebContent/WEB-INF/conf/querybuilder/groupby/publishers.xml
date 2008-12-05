@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PUBLISHERS>
+     
+	<PUBLISHER name="SELECT_FIELDS_FOR_GROUPBY_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/jsp/querybuilder/groupby/groupByPage.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/querybuilder/groupby/groupByPage.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/querybuilder/groupby/groupByPage.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+	</PUBLISHER>
+	                        	
+</PUBLISHERS>

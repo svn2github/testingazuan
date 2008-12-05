@@ -30,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /**
  * Class to show the title text "SpagoBI - Chiron" on the top of the page
- * @see spagobi.app.Chiron#main
+ * @see spagobi.app.Chiron#main 
  */
  
 qx.Class.define("spagobi.app.ui.Header",

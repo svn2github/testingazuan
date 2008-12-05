@@ -50,6 +50,9 @@ it.eng.spagobi.engines.qbe.app = function() {
         init: function() {
             Ext.QuickTips.init();
             
+            //Ext.util.CSS.swapStyleSheet('theme', '../js/ext/resources/css/xtheme-gray.css');
+            
+            
             it.eng.spagobi.engines.qbe.locale.module.init();
             it.eng.spagobi.engines.qbe.locale.module.applyLocale();
            

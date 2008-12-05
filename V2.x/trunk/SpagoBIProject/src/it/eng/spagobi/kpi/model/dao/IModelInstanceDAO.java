@@ -18,7 +18,7 @@ public interface IModelInstanceDAO {
 
 	public ModelInstance loadModelInstanceWithoutChildrenById(Integer parentId)throws EMFUserError;
 
-	public void modifyModel(ModelInstance modelInstance) throws EMFUserError;
+	public void modifyModelInstance(ModelInstance modelInstance) throws EMFUserError;
 
 	public Integer insertModelInstance(ModelInstance toCreate) throws EMFUserError;
 

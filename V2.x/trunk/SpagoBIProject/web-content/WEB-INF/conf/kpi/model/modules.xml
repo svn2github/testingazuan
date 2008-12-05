@@ -92,6 +92,13 @@
 					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_SELECT" />
 					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
 				</SELECT_CAPTION>
+				<RESOURCES_CAPTION confirm="FALSE" image="/img/rememberMe22.png"
+					label="sbi.kpi.caption.resources">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstanceTreePage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE"
+						value="ListModelInstanceTreeModule" />
+					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+				</RESOURCES_CAPTION>
 				<TREE_CAPTION confirm="FALSE" image="/img/kpi/treeView16.png"
 					label="sbi.kpi.caption.tree">
 					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstanceTreePage" />

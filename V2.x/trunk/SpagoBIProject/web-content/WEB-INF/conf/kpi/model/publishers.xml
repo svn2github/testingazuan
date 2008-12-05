@@ -134,12 +134,16 @@
 										value="ListModelInstanceModule" />
 								</CONDITIONS>
 							</CHECK>
+							
+							<!--
 							<CHECK target="ListModelInstancePublisher">
 								<CONDITIONS>
 									<PARAMETER name="message" scope="SERVICE_REQUEST"
 										value="DETAIL_UPDATE" />
 								</CONDITIONS>
 							</CHECK>
+							-->
+							
 							<CHECK target="DetailModelInstancePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
@@ -188,12 +192,16 @@
 										value="ListModelInstanceTreeModule" />
 								</CONDITIONS>
 							</CHECK>
+							
+							<!--
 							<CHECK target="ListModelInstanceTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="message" scope="SERVICE_REQUEST"
 										value="DETAIL_UPDATE" />
 								</CONDITIONS>
 							</CHECK>
+							-->
+							
 							<CHECK target="DetailModelInstanceTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"

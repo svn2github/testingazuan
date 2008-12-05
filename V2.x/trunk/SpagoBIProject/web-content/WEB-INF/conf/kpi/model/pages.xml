@@ -23,7 +23,7 @@
   
    <PAGE name="ModelInstancePage" class="it.eng.spago.dispatching.module.ConfigurablePage"
     scope="REQUEST">
-    <GRAPH id="kpi-1">
+    <GRAPH id="kpi-2">
       <MODULES>
         <MODULE id="1" name="ListModelInstanceModule" />
         <MODULE id="2" name="DetailModelInstanceModule" />
@@ -33,7 +33,7 @@
   
   <PAGE name="ModelInstanceTreePage" class="it.eng.spago.dispatching.module.ConfigurablePage"
     scope="REQUEST">
-    <GRAPH id="kpi-1">
+    <GRAPH id="kpi-2">
       <MODULES>
         <MODULE id="1" name="ListModelInstanceTreeModule" />
         <MODULE id="2" name="DetailModelInstanceTreeModule" />

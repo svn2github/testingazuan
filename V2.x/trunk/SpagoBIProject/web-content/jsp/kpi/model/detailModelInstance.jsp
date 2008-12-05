@@ -27,6 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.ModelInstance"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.Model"%>
+<%@page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%>
+<%@page import="it.eng.spagobi.kpi.config.bo.KpiInstance"%>
+<%@page import="it.eng.spagobi.commons.bo.Domain"%>
+<%@page import="it.eng.spagobi.kpi.config.bo.Periodicity"%>
 <%
 	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
 	String id = (String) aServiceRequest.getAttribute("ID");
@@ -41,6 +46,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String typeDescription = "";
 	List attributeList = null;
 	
+	Integer kpiId = null;
+	Integer thresholdId = null;
+	Integer chartTypeId = null;
+	Integer periodicityId = null;
+	String weight = "";
+	
 
 	String title = "TITLE";
 	String messageSave = "";
@@ -49,6 +60,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (messageIn != null
 			&& messageIn
 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailModelInstanceModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
 		messageSave = DelegatedDetailService.DETAIL_UPDATE;
 	}
 	//DETAIL_NEW
@@ -90,6 +110,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				typeDescription = aModel.getTypeDescription();
 				attributeList = aModel.getModelAttributes();
 			}
+			
+			KpiInstance aKpiInstance = modelInstance.getKpiInstance();
+			
+			if (aKpiInstance != null){
+				kpiId = aKpiInstance.getKpi();
+				thresholdId = aKpiInstance.getThresholdId();
+				chartTypeId = aKpiInstance.getChartTypeId();
+				periodicityId = aKpiInstance.getPeriodicityId();
+				Double aWeight = aKpiInstance.getWeight();
+				if (aWeight != null)
+					weight = aWeight.toString(); 
+			}
 		}
 	}
 
@@ -101,8 +133,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ModelInstancePage");
-	backUrlPars
-			.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";
@@ -158,19 +194,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	size="50" value="<%=modelInstanceDescription%>" maxlength="200"></div>
 </div>
 
-
-<div class="div_detail_area_forms">
-<div class='div_detail_label'><span
-	class='portlet-form-field-label'> <spagobi:message
-	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
-
 <%
  	if (messageIn != null
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
  %>
  
- 
+<div class="div_detail_area_forms">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
+	 
 <select class='portlet-form-field' name="KPI_MODEL_ID">
 	<%
 		List severityLevels = DAOFactory.getModelDAO().loadModelsRoot();
@@ -196,6 +230,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
  %>
+ 
+<div class="div_detail_area_forms">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelName" size="50"
 	value="<%=modelName%>" maxlength="200" readonly></div>
@@ -256,11 +295,139 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 </div>
 
+<spagobi:message key="sbi.kpi.label.kpiInstance"
+	bundle="<%=messageBundle%>" />
+
+<div class="div_detail_area_forms">
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.kpi.name" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<select class='portlet-form-field' name="KPI_ID">
+
+	<%
+	List kpiList = DAOFactory.getKpiDAO().loadKpiList();
+	for (java.util.Iterator iterator = kpiList.iterator(); iterator
+			.hasNext();) {
+		String selected = "";
+		Kpi kpi = (Kpi) iterator.next();
+		if(kpi.getKpiId().equals(kpiId)){
+			selected = "selected";
+		}
+		else {
+			selected = "";
+		}
+	%>
+	<option value="<%=kpi.getKpiId()%>"
+		label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+	</option>
+	<%
+	}
+	%>
+
+</select>
+</div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.thresholdName" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<select class='portlet-form-field' name="THRESHOLD_ID">
+
+	<%
+	List thresholdList = DAOFactory.getThresholdDAO().loadThresholdList();
+	for (java.util.Iterator iterator = thresholdList.iterator(); iterator
+			.hasNext();) {
+		Threshold threshold = (Threshold) iterator.next();
+		String selected = "";
+		if(threshold.getId().equals(thresholdId)){
+			selected = "selected";
+		}
+		else {
+			selected = "";
+	}
+	%>
+	<option value="<%=threshold.getId()%>"
+		label="<%=threshold.getThresholdName()%>" <%=selected%>><%=threshold.getThresholdName()%>
+	</option>
+	<%
+	}
+	%>
+
+</select>
+
+</div>
+
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.chartType" bundle="<%=messageBundle%>" /> </span></div>
+
+<div class='div_detail_form'>	
+<select  class='portlet-form-field' name="CHART_TYPE_ID">
+	<%
+		List ChartType = DAOFactory.getDomainDAO()
+					.loadListDomainsByType("KPI_CHART");
+	for (Iterator iterator = ChartType.iterator(); iterator.hasNext();) {
+		Domain domain = (Domain) iterator.next();
+		String selected = "";
+		if(domain.getValueId().equals(chartTypeId)){
+			selected = "selected";
+		}
+		else {
+			selected = "";
+		}
+	%>
+	<option value="<%=domain.getValueId()%>"
+		label="<%=domain.getValueName()%>" <%=selected%>><%=domain.getValueName()%>
+	</option>
+	<%
+		}
+	%>
+</select>
+</div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.periodicity" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+	<select class='portlet-form-field' name="ID_KPI_PERIODICITY">
+	<%
+		List periodicityList = DAOFactory.getPeriodicityDAO().loadPeriodicityList();
+		for (Iterator iterator = periodicityList.iterator(); iterator.hasNext();) {
+		Periodicity periodicity = (Periodicity) iterator.next();
+		String selected = "";
+		if(periodicity.getIdKpiPeriodicity().equals(periodicityId)){
+			selected = "selected";
+		}
+		else {
+			selected = "";
+		}
+	%>
+	<option value="<%=periodicity.getIdKpiPeriodicity()%>"
+		label="<%=periodicity.getName()%>" <%=selected%>><%=periodicity.getName()%>
+	</option>
+	<%
+		}
+	%>
+</select>
+</div>
+
+
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="weight"
+	size="10" value="<%=weight%>" maxlength="200" ></div>
+
+</div>
+
 <%
  	}
  %>
-
-</div>
 
 </form>
 

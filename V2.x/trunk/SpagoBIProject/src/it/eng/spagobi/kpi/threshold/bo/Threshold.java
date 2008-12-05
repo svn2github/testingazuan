@@ -100,7 +100,6 @@ public class Threshold {
 
 	public Threshold() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Integer getPosition() {

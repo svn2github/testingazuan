@@ -43,7 +43,6 @@ public class Resource {
 
 	public Resource() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Integer getId() {

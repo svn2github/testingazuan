@@ -22,4 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <spagobi:list moduleName="ListModelModule" bundle="component_kpi_messages"/>
 
+<spagobi:error />
+
 <%@ include file="/jsp/commons/footer.jsp"%>

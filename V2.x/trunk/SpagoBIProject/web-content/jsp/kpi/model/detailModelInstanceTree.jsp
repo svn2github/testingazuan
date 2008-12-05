@@ -64,6 +64,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
 		messageSave = DelegatedDetailService.DETAIL_UPDATE;
 	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailModelInstanceTreeModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
 	//DETAIL_NEW
 	if (messageIn != null
 			&& messageIn
@@ -126,8 +135,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ModelInstanceTreePage");
-	backUrlPars
-			.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+		backUrlPars.put("ID", parentId);
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";
@@ -299,9 +313,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 %>
 </div>
-<%
- 	}
- %>
+
 
 <spagobi:message key="sbi.kpi.label.kpiInstance"
 	bundle="<%=messageBundle%>" />
@@ -312,7 +324,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.kpi.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
-<select class='portlet-form-field' name="kpiId">
+<select class='portlet-form-field' name="KPI_ID">
+<%
+ 
+	if(kpiId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
 
 	<%
 	List kpiList = DAOFactory.getKpiDAO().loadKpiList();
@@ -341,7 +366,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.thresholdName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
-<select class='portlet-form-field' name="kpiId">
+<select class='portlet-form-field' name="THRESHOLD_ID">
+<%
+	if(thresholdId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
 
 	<%
 	List thresholdList = DAOFactory.getThresholdDAO().loadThresholdList();
@@ -375,6 +411,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form'>	
 <select  class='portlet-form-field' name="CHART_TYPE_ID">
 	<%
+	if(chartTypeId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+	
+	<%
 		List ChartType = DAOFactory.getDomainDAO()
 					.loadListDomainsByType("KPI_CHART");
 	for (Iterator iterator = ChartType.iterator(); iterator.hasNext();) {
@@ -400,7 +448,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.periodicity" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
-	<select class='portlet-form-field' name="KPI_PERIODICITY_ID">
+	<select class='portlet-form-field' name="ID_KPI_PERIODICITY">
+	<%
+	if(periodicityId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+	
 	<%
 		List periodicityList = DAOFactory.getPeriodicityDAO().loadPeriodicityList();
 		for (Iterator iterator = periodicityList.iterator(); iterator.hasNext();) {
@@ -429,8 +489,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" readonly></div>
+	size="10" value="<%=weight%>" maxlength="200" ></div>
 </div>
+<%
+ 	}
+ %>
 
 </form>
 </td>

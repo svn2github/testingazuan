@@ -14,16 +14,16 @@
             <column name="KPI_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
-            <column name="CHART_TYPE_ID" not-null="true" />
+            <column name="CHART_TYPE_ID" />
         </many-to-one>
         <many-to-one name="sbiKpiPeriodicity" class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" >
-            <column name="id_kpi_periodicity" not-null="true" />
+            <column name="id_kpi_periodicity" />
         </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
-            <column name="THRESHOLD_ID" not-null="true" />
+            <column name="THRESHOLD_ID" />
         </many-to-one>
         <many-to-one name="sbiMeasureUnit" class="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" >
-            <column name="id_measure_unit" not-null="true" />
+            <column name="id_measure_unit" />
         </many-to-one>
         <property name="weight" type="double">
             <column name="weight" precision="22" scale="0" />

@@ -1,26 +1,29 @@
 qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 
-  extend : qx.legacy.ui.layout.VerticalBoxLayout,
+  extend : qx.ui.container.Composite,//qx.legacy.ui.layout.VerticalBoxLayout,
   
   construct : function()  
   {
   	
-	  this.base(arguments);    	
-	  this.setWidth("100%");
-	  this.setHeight("100%");
+	  this.base(arguments);  
+	  this.setLayout(new qx.ui.layout.VBox);  	
+//	  this.setWidth("100%");
+//	  this.setHeight("100%");
 	  
-	  this.createToolbar();
-	  
-	  this._textfield1 = this.createTextField({
+	 this.createToolbar();
+	
+	 this.createDummyLabel(); 
+	
+	 this._textfield1 = this.createTextField({
 								        		type: 'text',
 								        		dataIndex: 'label',
 								        		text: 'Label',
 								        		labelwidth: 100,
 								        		mandatory: true	
 								        	});
-      this.setUserData('label',this._textfield1);
+     this.setUserData('label',this._textfield1);
         	
-	  this._textfield2 = this.createTextField({
+	 this._textfield2 = this.createTextField({
 								        		type: 'text',
 								        		dataIndex: 'name',
 								        		text: 'Name',
@@ -38,11 +41,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 								        	});
 	  this.setUserData('description',this._textfield3);
 	  
+	  this.createDummyLabel(); 
+	  
 	  this._table = this.CreateTableWithCheckbox();
 	  this.setUserData('table',this._table);
   },
   
-  members :
+  members : 
   {
   		 _textfield1 : undefined,
   		 _textfield2 : undefined,
@@ -51,44 +56,52 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
   		 
 	  	  createToolbar : function(){
 	  	
-		  var tb = new qx.legacy.ui.toolbar.ToolBar;
+		  var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+		//  var tb = new qx.ui.toolbar.ToolBar;
 		  
-		  var createButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/create.png");
-		  var NB = new qx.legacy.ui.popup.ToolTip("New");
+		   var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/create.png'));
+		  var NB = new qx.ui.tooltip.ToolTip("New");//qx.ui.popup.ToolTip("New"); Replaced
 		  createButton.setToolTip(NB);
 		  
-		  var saveButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/save.png");
-		  var SB = new qx.legacy.ui.popup.ToolTip("Save");
+		  var saveButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/save.png'));
+		  var SB = new qx.ui.tooltip.ToolTip("Save"); // Replaced
 		  saveButton.setToolTip(SB);
 		  
-		  var deleteButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/delete.png");
-		  var SD = new qx.legacy.ui.popup.ToolTip("Delete");
+		  var deleteButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/delete.png'));
+		  var SD = new qx.ui.tooltip.ToolTip("Delete");// Replaced
 		  deleteButton.setToolTip(SD);
 		  
 		  
-		  var moveUpButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/go-up.png");
-		  var moveUpToolTip = new qx.legacy.ui.popup.ToolTip("Move up");
+		  var moveUpButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/go-up.png'));
+		  var moveUpToolTip = new qx.ui.tooltip.ToolTip("Move up");// Replaced
 		  moveUpButton.setToolTip(moveUpToolTip);
 		  
-		  var moveDownButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/go-down.png");
-		  var moveDownToolTip = new qx.legacy.ui.popup.ToolTip("Move Down");
+		  var moveDownButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/go-down.png'));
+		  var moveDownToolTip = new qx.ui.tooltip.ToolTip("Move Down");// Replaced
 		  moveDownButton.setToolTip(moveDownToolTip);	
 		  	
-		  var clearAllButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/reset.gif");
-		  var clearAllToolTip = new qx.legacy.ui.popup.ToolTip("Clear all Data");
+		  var clearAllButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/reset.gif'));
+		  var clearAllToolTip = new qx.ui.tooltip.ToolTip("Clear all Data");// Replaced
 		  clearAllButton.setToolTip(clearAllToolTip);
-		  	
-		  tb.add(createButton,saveButton,deleteButton,moveUpButton,moveDownButton,clearAllButton);
 		  
-		  tb.setUserData('create',createButton);
-		  tb.setUserData('save',saveButton);
-		  tb.setUserData('delete',deleteButton);
-		  tb.setUserData('moveUp',moveUpButton);
-		  tb.setUserData('moveDown',moveDownButton);
-		  tb.setUserData('clearAll',clearAllButton);
+		  var formBarArray = [createButton, saveButton, deleteButton,moveUpButton,moveDownButton,clearAllButton];//since add() adds only 1 widget at a time
+	    
+	    for(var i=0; i<formBarArray.length; i++){
+	   		formBar.add(formBarArray[i]);
+	   		//formBarManager.add(formBarArray[i]);
+	    }	
+		 // tb.add(createButton,saveButton,deleteButton,moveUpButton,moveDownButton,clearAllButton);
 		  
-		  this.add(tb);
-		  this.setUserData('toolBar', tb);
+		  formBarArray[0].setUserData('create',createButton);
+		  formBarArray[1].setUserData('save',saveButton);
+		  formBarArray[2].setUserData('delete',deleteButton);
+		  formBarArray[3].setUserData('moveUp',moveUpButton);
+		  formBarArray[4].setUserData('moveDown',moveDownButton);
+		  formBarArray[5].setUserData('clearAll',clearAllButton);
+		  
+		  this.setUserData('toolBar', formBarArray);
+		  this.add(formBar);
+		//  this.setUserData('toolBar', tb);
 		  // Button event listeners in parent class - FunctionalClassDummy.js
      },
   
@@ -101,6 +114,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
   		  return textfield;
    	 },
    	 
+   	 	  createDummyLabel: function(){
+   	 	  	var space = spagobi.commons.WidgetUtils.createLabel(" ");
+  		  //textfield.setTop(20);
+  		  this.add(space);
+   	 	  	
+   	 },
+   	 	  
    	 	  CreateTableWithCheckbox : function (){
    	 	  
    	 	  var tableData = spagobi.app.data.DataService.loadFunctinalitiesRecords();
@@ -116,8 +136,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	      this.add( atom0 );
 	      */
 	      
-	      newTable.setWidth('100%');
-    	  newTable.setHeight('1*');
+	    //  newTable.setWidth('100%');
+    	  newTable.setHeight(343);
     	  this.add(newTable);
     	  
     	  //alert(newTable.getDataRowRenderer());    	  
@@ -129,23 +149,23 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
    	 	
    	 },
    	 
-   	 resetOldData: function(/*txt1,txt2,txt3,tableModel,tableData*/){
+   	 resetOldData: function(){//(/*txt1,txt2,txt3,tableModel,tableData*/){
    	 	//if(txt1 == undefined){
 	   	 	var txt1 = this._textfield1.getUserData('field');
-	   	 	var txt2 = this._textfield2.getUserData('field');
+	  	 	var txt2 = this._textfield2.getUserData('field');
 	   	 	var txt3 = this._textfield3.getUserData('field');
 	   	 	
 	   	 	
-	   	 	
+	 //  	 	alert(txt1);
 	   	 	var tableModel = this._table.getTableModel();
 	 		var tableData = tableModel.getData();
 	 		
 	 		var tableRowCount = tableData.length;
    	 	//}
    	 	
-   	 	txt1.setValue('');
-   	 	txt2.setValue('');
-   	 	txt3.setValue('');
+   	 	txt1.getChildren()[0].setValue('');
+   	 	txt2.getChildren()[0].setValue('');
+   	 	txt3.getChildren()[0].setValue('');
    	 	for(var i=0; i<tableRowCount; i++){
  			
  			if(tableData[i][2]){
@@ -177,7 +197,10 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
    	 	
    	 	//var rowcount = this._table.getTableModel().getRowCount();
    	 		
-   	 		
+   	 	var obj1 = txt1.getChildren()[0];	
+   	 	var obj2 = txt2.getChildren()[0];
+   	 	var obj3 = txt3.getChildren()[0];
+ 		
  		var tableModel = this._table.getTableModel();
  		var tableData = tableModel.getData();
  		
@@ -199,16 +222,17 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
  		tableModel.setData(tableData);
  		*/
  		
- 		this.resetOldData(txt1,txt2,txt3,tableModel,tableData);
+ 		this.resetOldData();//(obj1,obj2,obj3,tableModel,tableData);
+ 	//	this.resetOldData(txt1,txt2,txt3,tableModel,tableData);
  		
- 		if(config.tree.getManager().getSelectedItem() == config.tree){		// If Root Node
+ 		if(config.tree.getSelectedItem() == config.tree.getRoot()){		// If Root Node
   			return;
   		}
    	 	
  		//Set Current Data
-   	 	txt1.setValue(config.data.label);
-   	 	txt2.setValue(config.data.name);
-   	 	txt3.setValue(config.data.desc);
+   	 	obj1.setValue(config.data.label);
+   	 	obj2.setValue(config.data.name);
+   	 	obj3.setValue(config.data.desc);
    	 	
    	 		//Set new data
    	 		if(config.data.func != undefined){
@@ -237,9 +261,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
     	var nodeName  = this._textfield2.getUserData('field');
     	var nodeDesc  = this._textfield3.getUserData('field');
     	
-    	info.label = nodeLabel.getValue();
-		info.name = nodeName.getValue();
-		info.desc = nodeDesc.getValue();
+    	info.label = nodeLabel.getChildren()[0].getValue();
+		info.name = nodeName.getChildren()[0].getValue();
+		info.desc = nodeDesc.getChildren()[0].getValue();
 		info.func = [];
 		
     	var table 	  = this._table;

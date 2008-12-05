@@ -1,49 +1,35 @@
 qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 {
-  extend : qx.legacy.ui.splitpane.HorizontalSplitPane,
+  extend : qx.ui.container.Composite,//qx.ui.splitpane.Pane,//qx.legacy.ui.splitpane.HorizontalSplitPane,
   
   construct : function(type)
   {
    // this.base(arguments, "1*", "2*");
-    this.base(arguments,"1*","4*");//, "2*"); //  180
-    this.setWidth("100%");
-    this.setHeight("100%");
+    this.base(arguments);//,"1*","4*");//, "2*"); //  180
+    this.setLayout(new qx.ui.layout.Dock);
+     //this.setShowKnob(false);
+    this.horSplit = new qx.ui.splitpane.Pane();
+    this.add(this.horSplit);//,{width:'100%',height:'100%'});
     
-    //this.setLiveResize(true);    //this.setShowKnob(false);
-    
-   
-   if(type === 'funcManagement') { 
-    	var leftPart = new qx.legacy.ui.layout.VerticalBoxLayout();
-  		leftPart.setWidth("100%");
-   		leftPart.setHeight("100%");
-    	leftPart.setOverflow("auto"); 
-    	leftPart.setBackgroundColor('white');
-    	leftPart.setBorder(new qx.legacy.ui.core.Border(1));
+ 	if(type === 'funcManagement') {
+   	var leftPart = new qx.ui.container.Composite(new qx.ui.layout.VBox);
+//  		leftPart.setWidth("100%");
+//   		leftPart.setHeight("100%");
+ //   	leftPart.setOverflow("auto"); 
+  //  	leftPart.setBackgroundColor('white');
+ // 		var border = new qx.ui.decoration.Single(1);
+  //  	leftPart.setDecorator(new qx.ui.decoration.Single(1));//leftPart.setBorder(new qx.legacy.ui.core.Border(1));
     	
-  		var headerLabel = new qx.legacy.ui.basic.Label("Functionalities Tree");
-  		with(headerLabel){
-  			width = 200;
-  			height = 300;
-  		};
-  		
-  	//var dummyTree = new spagobi.ui.Tree({root: "Functionalities" });
-  	var tree = new spagobi.ui.Tree({root: "Functionalities" });
-  	/*
-  	with(tree)
-        {
-          setBackgroundColor("white");
-          //setBorder("inset");
-          setOverflow("auto");
-  
-          setWidth('100%');
-    	  setHeight('1*');
-        };
-  	*/
+  	var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
+   		
+  	leftPart.add(headerLabel);
+   
+  	var tree = new spagobi.ui.Tree({root: "Functionalities"});
+		
   	
   	var node1 = tree.addNode({
 		  							name  : "Report",
 		  							parent: tree,
-		  							//id	  : "node1",
 		  							data  : {
 		  							 			label : 'ReportLabel',
 		  							 			name  : 'ReportName',
@@ -65,13 +51,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  							 						}
 		  							 			]	
 		  							 		}
+		  							 		
 		  					});
 		  					
-						
+	  				
   		var node2 = tree.addNode({
 		  							name  : "OLAP",
 		  							parent: tree,
-		  							//id	  : "node2",
 		  							data  : {
 		  							 			label : 'OLAPLabel',
 		  							 			name  : 'OLAPName',
@@ -96,9 +82,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   								});
   		var node3 = tree.addNode({
 		  							name  : "myOLAP",
-		  							parent: node2, //tree.getUserData("OLAP").getUsedData('node'),//
-		  							//id	  : "node3",
-		  							//file  : true,
+		  							parent: node2,
 		  							data  : {
 		  							 			label : 'myOLAP Label',
 		  							 			name  : 'myOLAP Name',
@@ -108,10 +92,6 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		var node4 = tree.addNode({
 		  							name  : "DashBoard",
 		  							parent: tree,
-		  							//id	  : "node4",
-		  							//init_icon: "icon/16/places/user-trash.png",
-		  							//click_icon: "",
-		  							//checkBox  : true,
 		  							data  : {
 		  							 			label : 'DashBoardLabel',
 		  							 			name  : 'DashBoardName',
@@ -120,9 +100,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   								});
   		var node5 = tree.addNode({
 		  							name  : "myDashBoardFolder",
-		  							parent: node4,  // tree.getUserData("DashBoard").getUsedData('node'),//
-		  							//id	  : "node5",
-		  							//checkBox: true,
+		  							parent: node4,  
 		  							data  : {
 		  							 			label : 'myDashBoardFolderLabel',
 		  							 			name  : 'myDashBoardFolderName',
@@ -131,12 +109,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  						});
   		var node6 = tree.addNode({
 		  							name  : "myDashBoard",
-		  							parent: node4,  //tree.getUserData("DashBoard").getUsedData('node'),//
-		  							//id	  : "node6",
-		  							//checkBox: true,
-		  							//init_icon: "icon/16/places/user-desktop.png",
-		  							//click_icon: "",
-		  							//file  : true,
+		  							parent: node4,  
 		  							data  : {
 		  							 			label : 'myDashBoard Label',
 		  							 			name  : 'myDashBoard Name',
@@ -144,46 +117,47 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  							 		}
   								});
   		
-  		
-  		
   		this._tree = tree;						
   		//tree.addListener("click",tree.onClickMenu,tree);		//contextmenu				
-  		tree.getManager().addListener("changeSelection",this.showInfo,this);
+  		tree.addListener("changeSelection",this.showInfo,this);
   		
   		
   		//leftPart.setBackgroundColor('white');
   		
-  		leftPart.add(headerLabel, tree);
-  		
+  		leftPart.add(tree);//,{height:330}
+  		this.horSplit.add(leftPart);
+  	//	var headerLabel1 = new spagobi.ui.custom.FunctionalityTreeSubClass();
+   
+        
   		//leftPart.setOverflow("auto");	
   		
-  		this.addLeft(leftPart);
+  	//	this.horSplit.add(headerLabel,0);
   		
   		
   		var rightPart = new spagobi.ui.custom.FunctionalityTreeSubClass();
-  		rightPart.setWidth("100%");
-   		rightPart.setHeight("100%");
-  		this.addRight(rightPart);
-  		rightPart.setOverflow("auto");
   		
+  		this.horSplit.add(rightPart);
+  		
+  	
+  
   		var toolBar = rightPart.getUserData('toolBar');
   		
-  		this._createButton = toolBar.getUserData('create');
+  		this._createButton = toolBar[0].getUserData('create');
   		this._createButton.addListener("execute", this.createNode,this);
   		
-  		this._saveButton = toolBar.getUserData('save');
+  		this._saveButton = toolBar[1].getUserData('save');
   		this._saveButton.addListener("execute", this.save,this);
   		
-  		this._deleteButton = toolBar.getUserData('delete');
+  		this._deleteButton = toolBar[2].getUserData('delete');
   		this._deleteButton.addListener("execute", this.deleteNode,this);
   		
-  		this._moveUpButton = toolBar.getUserData('moveUp');
+  		this._moveUpButton = toolBar[3].getUserData('moveUp');
   		this._moveUpButton.addListener("execute",this.moveUp,this);
   		
-  		this._moveDownButton = toolBar.getUserData('moveDown');
+  		this._moveDownButton = toolBar[4].getUserData('moveDown');
   		this._moveDownButton.addListener("execute",this.moveDown,this);
   		
-  		this._clearAllButton = toolBar.getUserData('clearAll');
+  		this._clearAllButton = toolBar[5].getUserData('clearAll');
   		this._clearAllButton.addListener("execute",this.clearAll,this);
   		
   		//Set Focus of buttons only when Node selected
@@ -194,11 +168,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		this._moveDownButton.setEnabled(false);
   		
   		this._right = rightPart;
-   } 		
+  			
+   } 	
   },
   
   members :
   {
+	 horSplit : undefined,
   	_tree : undefined,
   	_right: undefined,
   	
@@ -210,32 +186,35 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   	
   	/*Show Insert, Delete, Move Up and Move Down Buttons */
   	showButtons: function(){
-  		if(this._tree.getManager().getSelectedItem() == this._tree){		// If Root Node
+  		if(this._tree.getSelectedItem() == this._tree.getRoot()){		// If Root Node
 	        this._createButton.setEnabled(true);
 	        this._saveButton.setEnabled(false);
   			this._deleteButton.setEnabled(false);
   			this._moveUpButton.setEnabled(false);
   			this._moveDownButton.setEnabled(false);
+  		//	alert("1");
   			return;
   			
 	    } else {
-       			var selectionManager = this._tree.getManager();
-       			var item = selectionManager.getSelectedItem();
-       			
+	    //	alert("2");
+       		//	var selectionManager = this._tree.getManager();
+       			var item = this._tree.getSelectedItem();
+       		//	alert(item.data.label);
        			this._saveButton.setEnabled(true);
        			this._deleteButton.setEnabled(true);
        			
-       			if(item instanceof qx.legacy.ui.tree.TreeFile){			//leaf nodes don't have insert option	
+       			if(item instanceof qx.ui.tree.TreeFile){
+       				alert("Never");			//leaf nodes don't have insert option	
        				this._createButton.setEnabled(false);
        				
-					if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+					if(this._tree.getPreviousSiblingOf(item) == undefined){		// first child cannot be moved up
        						this._moveUpButton.setEnabled(false);
        					}
        					else{
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+       					if(this._tree.getNextSiblingOf(item) == undefined){	// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
        					}
        					else{
@@ -247,15 +226,16 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
        					this._createButton.setEnabled(true);
 	        			this._saveButton.setEnabled(true);
   						this._deleteButton.setEnabled(true);
-  						
-       					if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
-       						this._moveUpButton.setEnabled(false);
+  					//	alert(this._tree.getPreviousSiblingOf(item));
+       					if(this._tree.getPreviousSiblingOf(item) == undefined){		// first child cannot be moved up
+       						
+       							this._moveUpButton.setEnabled(false);
        					}
        					else{
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+       					if(this._tree.getNextSiblingOf(item) == undefined){	// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
        					}
        					else{
@@ -273,13 +253,16 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		var nodeData = {};
   		
-  		if(this._tree.getManager().getSelectedItem() == this._tree){		// If Root Node
-  			nodeData.tree = this._tree;
+  		if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
+  			
+  				nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
+  		//		alert("1"); 
   		}
   		else{
+  		//	alert("2");
 	    	nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
   		}
-  			
+  	//	alert("3");	
   		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
   		
   	},
@@ -319,9 +302,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
     	//alert(table.getDataRowRenderer().getHighlightFocusRow());
     	
     	var info = {
-    				label : nodeLabel.getValue(),
-    				name  : nodeName.getValue(),
-    				desc  : nodeDesc.getValue(),
+    				label : nodeLabel.getChildren()[0].getValue(),
+    				name  : nodeName.getChildren()[0].getValue(),
+    				desc  : nodeDesc.getChildren()[0].getValue(),
     				roles : table.getUpdatedData() 		
     	};
     	
@@ -344,15 +327,19 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		
 		
 		var dataObject = this._right.getData();
-		var parent = this._tree.getSelectedElement();
-		
+		var parent = this._tree.getSelectedItem();
+		alert(parent);
+	//	alert(dataObject.label);
+		alert(parent.getLabel());
 		var nodeObject = {};
 		nodeObject.name = dataObject.label;
 		nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+		alert(nodeObject.parent);
+	//	alert(nodeObject.parent);
 		nodeObject.data = dataObject;
 		
 		var treeNode = this._tree.addNode(nodeObject);
-		this._tree.setSelectedElement(treeNode.getUserData('node'));
+		this._tree.select(treeNode.getUserData('node'));
 				
 	}
     

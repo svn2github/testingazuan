@@ -34,8 +34,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qx.Class.define("spagobi.ui.NavigationBar", {
 	
-	extend : qx.legacy.ui.layout.HorizontalBoxLayout,
-	//extend : qx.legacy.ui.toolbar.ToolBar,
+			//extend : qx.legacy.ui.toolbar.ToolBar,
+	//extend : qx.legacy.ui.layout.HorizontalBoxLayout,//change
+	extend : qx.ui.container.Composite,
 	
 	/**
 	 * Constructor to create the navigation bar.
@@ -50,10 +51,12 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
-		this.setWidth("100%");// try also "auto"
-		this.setHeight("100%");
-	//	this.setCentered(true);//setLeft("center");
-	//	this.setTop(-5);
+		this.setLayout(new qx.ui.layout.HBox);
+		this.getLayout().setAlignX("center");
+		//this.setWidth("100%");// try also "auto"
+		//this.setHeight("100%");
+				//	this.setCentered(true);//setLeft("center");
+				//	this.setTop(-5);
 		this.createNavBar();
 		
 	},
@@ -71,26 +74,29 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		 */
 		createNavBar : function(){
 			
-			var firstPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");
+			//var firstPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");//change
+			var firstPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/firstPage.png"));
 			this.add(firstPageButton);
-		//	horizontalbarLayout.add(firstPageButton);
+					//	horizontalbarLayout.add(firstPageButton);
 			
-			var prevPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/previousPage.png");
+			//var prevPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/previousPage.png");//change
+			var prevPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/previousPage.png"));
 			this.add(prevPageButton);
-			//horizontalbarLayout.add(prevPageButton);
+					//horizontalbarLayout.add(prevPageButton);
 			
-			//horizontalbarLayout.add(new qx.legacy.ui.basic.HorizontalSpacer());
+					//horizontalbarLayout.add(new qx.legacy.ui.basic.HorizontalSpacer());
 			
-			var nextPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");
+			//var nextPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");//change
+			var nextPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/nextPage.png"));
 			this.add(nextPageButton);
-			//horizontalbarLayout.add(nextPageButton);
+					//horizontalbarLayout.add(nextPageButton);
 			
-			var lastPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/lastPage.png");
+			//var lastPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/lastPage.png");//change
+			var lastPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/lastPage.png"));
 			this.add(lastPageButton);
-			//horizontalbarLayout.add(lastPageButton);
+					//horizontalbarLayout.add(lastPageButton);
 			
-			/*horizontalbarLayout.setAlign("right",null);
-			this.add(horizontalbarLayout);*/
+			
 		}	
 	}
 });

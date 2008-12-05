@@ -244,7 +244,7 @@ qx.Class.define("spagobi.ui.FormList", {
 			//subFormPage.setVisibility("visible");
 			//this._tabView.removeListener("changeSelected",this._choosePage,this);
     		this._tabView.setSelected(this._tabPage);
-    		this.childrenList("after New add");
+    		//this.childrenList("after New add");
     		this._dummyFunction();
     		//alert("Form label"+ this._tabView.getSelected().getLabel());
     		//this._tabView.addListener("changeSelected",this._choosePage,this);
@@ -272,7 +272,7 @@ qx.Class.define("spagobi.ui.FormList", {
 	  		//dummysubFormPage.add(new qx.ui.basic.Label("dummy"));//change .. no need maybe
       		this._tabView.add(dummysubFormPage);
       		this._instances[this._instances.length] = {};
-	  		this.childrenList("after new dummy");
+	  		//this.childrenList("after new dummy");
 	  	},
 		
 		_choosePage: function(e){
@@ -285,7 +285,7 @@ qx.Class.define("spagobi.ui.FormList", {
 				//this._tabView.addListener("changeSelected",this._choosePage,this);
 				return;
 			}
-			this.childrenList("1");
+			//this.childrenList("1");
 			//alert(e + ", " + e.getEventPhase());
 			//e.stopPropagation();//doesnt work here
 			//alert(e.getPropagationStopped());
@@ -302,7 +302,7 @@ qx.Class.define("spagobi.ui.FormList", {
 			if(pg.getLabel().substring(0,5) == "Dummy"){//(pg.getLabel()== ""){
 				//this._tabView.setSelected(this._tabPage);
 				this._dummytab();//deleting dummy tab calls this event .. prevented by removing lstener
-				this.childrenList("should stop now");
+				//this.childrenList("should stop now");
 				this._tabView.addListener("changeSelected",this._choosePage,this);
 				
 				//e.stopPropagation();//very important
@@ -472,7 +472,7 @@ qx.Class.define("spagobi.ui.FormList", {
             this._tabView.getBar().remove(itemsList[ index ]);
     		this._tabView.getPane().remove(targetPage);
     		*/
-    		this.childrenList("before remove");
+    		//this.childrenList("before remove");
     		this._tabView.removeListener("changeSelected",this._choosePage,this);
     		//eve.setBubbles(true);no effect
     		//eve.stopPropagation();
@@ -481,7 +481,7 @@ qx.Class.define("spagobi.ui.FormList", {
     		//this._tabView.addListener("changeSelected",this._choosePage,this);
     		//targetPage.dispose();
             	//itemsList[ index ].dispose();
-            this.childrenList("after remove");
+            //this.childrenList("after remove");
             for(i=index; i<this._instances.length-1; i++){
 					this._instances[i] = this._instances[i+1];
 				}
@@ -496,6 +496,7 @@ qx.Class.define("spagobi.ui.FormList", {
             * */
 		},
 		
+		//Function to display the list of tabs added in tabview array
 		childrenList: function(s){
 			alert(s);
 			var list = "";

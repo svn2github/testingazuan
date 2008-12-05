@@ -33,7 +33,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 qx.Class.define("spagobi.ui.IconBar", {
-	extend : qx.legacy.ui.layout.VerticalBoxLayout,
+	//extend : qx.legacy.ui.layout.VerticalBoxLayout,
+	extend : qx.ui.container.Composite,
 
 	/** 
 	*  Call to the constructor with the main "Config object" as its argument which contains the following  properties:
@@ -51,7 +52,9 @@ qx.Class.define("spagobi.ui.IconBar", {
 	*/  	
 	construct : function( config ) {   
 	    this.base(arguments);
-	    this.setSpacing(0);
+	    //this.setWidth(70);
+	    this.set({width: 70});
+	    this.setLayout(new qx.ui.layout.VBox);//change..added
 	    
 	    
 	    if(config) {
@@ -75,8 +78,8 @@ qx.Class.define("spagobi.ui.IconBar", {
 		    */		    
 	    }
 	   
-	    
-	//alert("4");//1
+	   //this.add(this._container); 
+	
 	},
 	
 
@@ -86,7 +89,8 @@ qx.Class.define("spagobi.ui.IconBar", {
 		_focusedBackgroudColor: 'gray',
 		_defaultSelectedPageName : undefined,
 		_checkedButton        : undefined,
-	   
+	    //_container: undefined,//change..added
+	    
 		/**	  
 		* This function adds the button on the vertical bar (the butons are actually atoms).
 		* The argument to this function is a complex object namely buttonConfig which has the folowing properties.
@@ -115,7 +119,9 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 	*/
 	 	
 	 	_addAtom: function(name, image, callback, context, tooltip) {	    
-			var atom = new qx.legacy.ui.basic.Atom('', image);
+			//var atom = new qx.legacy.ui.basic.Atom('', image);//change
+			var atom = new qx.ui.basic.Atom('', image);
+			
 			atom.setUserData('name', name);
 			atom.setUserData('checked', false);
 			if (name == this._defaultSelectedPageName)
@@ -124,9 +130,12 @@ qx.Class.define("spagobi.ui.IconBar", {
 				this._check(atom);
 			}
 			if (tooltip){
-				var tt = new qx.legacy.ui.popup.ToolTip(tooltip);
+				//var tt = new qx.legacy.ui.popup.ToolTip(tooltip);//change
+				var tt = new qx.ui.tooltip.ToolTip(tooltip);
+				
 				atom.setToolTip(tt);
-				tt.setShowInterval(20);
+				//tt.setShowInterval(20);//change
+				tt.setShowTimeout(20);
 			}
 			
 			atom.addListener("mouseover",this._onmouseover, this);
@@ -136,6 +145,7 @@ qx.Class.define("spagobi.ui.IconBar", {
     		atom.addListener("keydown",  this._onkeydown, this);
     		atom.addListener("keypress", this._onkeypress, this);
 			
+			//this.add(atom);//change
 			this.add(atom);
 		},
 	 	
@@ -170,7 +180,7 @@ qx.Class.define("spagobi.ui.IconBar", {
      	* This function takes an argument "button" which is of type "event".
      	* @param e (qx.legacy.event.type.event)  -> e is the current instance of the event listener.
 	 	*/	 
-		select: function(button){	 	
+		select: function(button){
 			if (!this._checkedButton) {
 		 		this._check(button);
 		 		
@@ -182,7 +192,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 
 	 	// This function is executed when a mouse down event occurs.
 	    _onmousedown: function(e) {
-	 		this.select(e.getTarget());
+	    	this.select(e.getTarget());
 	 	},
 	 	
 	/* 
@@ -241,7 +251,7 @@ qx.Class.define("spagobi.ui.IconBar", {
             default:
               return;
           	}
-
+			/*change-old
 		    var vChild =
 		        (vPrevious
 		         ? (e.getTarget().isFirstChild()
@@ -250,11 +260,24 @@ qx.Class.define("spagobi.ui.IconBar", {
 		         : (e.getTarget().isLastChild()
 		            ? e.getTarget().getParent().getFirstChild()
 		            : e.getTarget().getNextSibling()));
+			*/
+			
+			/*change-new ..not tested
+			 var vChild =
+		        (vPrevious
+		         ? (e.getTarget()== e.getTarget()._getChildren()[0]
+		            ? e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().length - 1]
+		            : e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().indexOf(e.getTarget())-1])
+		         : (e.getTarget() == e.getTarget()._getChildren()[e.getTarget()._getChildren().length - 1]
+		            ? e.getTarget().getLayoutParent()._getChildren()[0]
+		            : e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().indexOf(e.getTarget())+1]));
 		
+			 
 		    // focus next/previous button
 		    vChild.setFocused(true);
 			vChild.setBackgroundColor(this._focusedBackgroudColor);
 			e.getTarget().setBackgroundColor(null);
+			*/ 
 	 	}
 	 	
 	}

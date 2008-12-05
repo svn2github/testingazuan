@@ -34,7 +34,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 qx.Class.define("spagobi.ui.PageView", {
 	
-	extend : qx.legacy.ui.splitpane.HorizontalSplitPane,
+	//extend : qx.legacy.ui.splitpane.HorizontalSplitPane,//change
+	extend : qx.ui.splitpane.Pane,
 	
 	/**
 	 * Constructor to create a Page.
@@ -99,38 +100,28 @@ qx.Class.define("spagobi.ui.PageView", {
 	 * @param config The config has the properties as described above.
 	 */
 	construct : function(config) {
-		this.base(arguments, 70, "1*");
-		this.setShowKnob(false);
-		this.setSplitterSize(0);
+		//this.base(arguments, 70, "1*");//change
+		this.base(arguments,"horizontal");
+		
+		//this.setShowKnob(false);//change..splitpane.Slider
+		//this.setSplitterSize(0);//change splitpane.Splitter
 		
 		this._pages = [];
+		this._container1 = new qx.ui.container.Composite(new qx.ui.layout.Grow);
+		this._container2 = new qx.ui.container.Composite(new qx.ui.layout.Grow);
 		
 		var toolbarConfig = {
 			defaultBackgroudColor: config.toolbar.defaultBackgroudColor,
 			focusedBackgroudColor: config.toolbar.focusedBackgroudColor,
 			defaultSelectedPage : config.defaultSelectedPage
 		};
+		
 		this._toolbar = new spagobi.ui.IconBar( toolbarConfig );
 		
 		var buttonsConfig = config.toolbar.buttons;
 		for(var i = 0; i < buttonsConfig.length; i++) {
+	
 			
-			//
-			/* New code
-					if(buttonsConfig[i].name == 'engine'){
-						this.setSplitterSize(50);
-						//alert('Children : '+this.getChildrenLength());
-						var c = this.getChildren();
-						for(j=0; j<c.length; j++){
-							alert('Child '+ j + ': '+ c[j]);
-							alert(c[j].getAllowStretchX());
-							c[j].setAllowStretchX(false); 	//boxlayout
-							alert(c[j].getAllowStretchX());
-						}	
-						//this.getFirstChild().getAllowStretchX();
-					}
-			//  
-			 */	
 			buttonsConfig[i].handler =  function(e){this.selectPage(e.getTarget().getUserData('name'));};
 			buttonsConfig[i].context = this;
 			this._toolbar.addButton( buttonsConfig[i] );
@@ -140,7 +131,11 @@ qx.Class.define("spagobi.ui.PageView", {
 			this._defaultSelectedPageName = config.defaultSelectedPage;
 		}	
 		
-		this.addLeft( this._toolbar );
+		//this.addLeft( this._toolbar );//change
+		//this._toolbar.setWidth(70);
+		this._container1.add(this._toolbar);//, {width: 70}
+		this.add(this._container1, 0);
+		
 		
 	},
 	
@@ -153,7 +148,8 @@ qx.Class.define("spagobi.ui.PageView", {
 		_pages: undefined,
 		_selectedPageName: undefined,
 		_defaultSelectedPageName: undefined,
-		
+		_container1 : undefined,//change .. addded
+		_container2 : undefined,//change .. addded
 		/**
 		 * Function to show the required page on the right side on the window.
 		 * <p>It hides the previously displayed page and makes the current page visible.
@@ -178,20 +174,23 @@ qx.Class.define("spagobi.ui.PageView", {
     				this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);
     			}
     			
-    			this.addRight( this._pages[pageName] );
+    			//this.addRight( this._pages[pageName] );//change
+    			this._container2.add(this._pages[pageName]);
+    			this.add(this._container2, 1);
     		}
     	
     	
 	    	if(this._selectedPageName) {
 	    		//this._pages[this._selectedPageName].setVisibility(false);
-	    		this._pages[this._selectedPageName].setDisplay(false);
+	    		//this._pages[this._selectedPageName].setDisplay(false);//change
+	    		this._pages[this._selectedPageName].setVisibility("excluded");
 	    	}
 	    	this._selectedPageName = pageName;
 	    	
 	    	
 	    	//this._pages[pageName].setVisibility(true);	// added
-	    	this._pages[pageName].setDisplay(true);	// added
-	    	
+	    	//this._pages[pageName].setDisplay(true);	// change
+	    	this._pages[pageName].setVisibility("visible");
 	    			//if (pageName != "funcManagement"){	
 	    	//this._pages[pageName].show();
 	    			//}

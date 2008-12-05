@@ -30,7 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
 
 qx.Class.define("spagobi.ui.ToolBar", {
-	extend : qx.legacy.ui.toolbar.ToolBar,
+	//extend : qx.legacy.ui.toolbar.ToolBar,//change
+	extend : qx.ui.toolbar.ToolBar,
 
 	/**
 	 * Constructor to create the top toolbar with buttons on it.
@@ -66,20 +67,26 @@ qx.Class.define("spagobi.ui.ToolBar", {
   	
   	construct : function( config ) {
 	    this.base(arguments);
+	    qx.Class.include(qx.ui.toolbar.RadioButton, qx.ui.core.MExecutable);
+	    //this._toolBarManager = new qx.legacy.ui.selection.RadioManager(null);//change
+	    this._toolBarManager = new qx.ui.form.RadioGroup(null);//so that only 1 is selected ..but doesnt work with command
 	    
-	    this._toolBarManager = new qx.legacy.ui.selection.RadioManager(null);
+	    //TRYING PUTTING THIS IN CONTAINER (COMPOSITE OR OTHER)
+	    //this._container = new qx.ui.container.Composite(new qx.ui.layout.Grow());
 	    
 	    for(var i = 0; i < config.length; i++) {
 	    	this.addButton( config[i] );
 	    }
+		
+	  	//this.add(new qx.legacy.ui.toolbar.Separator());//change
+	  	this.addSeparator(); //or this.add(new qx.ui.toolbar.Separator());
+	  	//this._container.add(new qx.ui.toolbar.Separator());
 	
-	  	
-	  	this.add(new qx.legacy.ui.toolbar.Separator());
-	
-		this.add(new qx.legacy.ui.basic.HorizontalSpacer());	   
+		//this.add(new qx.legacy.ui.basic.HorizontalSpacer());//change
+		//this.add(new qx.ui.core.Spacer());   //maybe also {flex:1}
+		this.addSpacer();
 
     	// Poulate languages menu and add it to the toolbar
-	    /*
 	    var locales =
 	    {
 	      en : this.tr("English"),
@@ -93,16 +100,21 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	
 	    var availableLocales = qx.locale.Manager.getInstance().getAvailableLocales();
 	    var locale = qx.locale.Manager.getInstance().getLocale();
-	    var lang_menu = new qx.legacy.ui.menu.Menu();
-	    var radioManager = new qx.legacy.ui.selection.RadioManager("lang");
-	
+	    //var lang_menu = new qx.legacy.ui.menu.Menu();//change
+	    var lang_menu = new qx.ui.menu.Menu();
+	    
+	    //var radioManager = new qx.legacy.ui.selection.RadioManager("lang");//change
+	    var radioManager = new 	qx.ui.form.RadioGroup();
+		radioManager.setName("lang");
+		
 	    for (var lang in locales)
 	    {
 	      if (availableLocales.indexOf(lang) == -1) {
 	        continue;
 	      }
 	
-	      var menuButton = new qx.legacy.ui.menu.RadioButton(locales[lang], null, locale == lang);
+	      //var menuButton = new qx.legacy.ui.menu.RadioButton(locales[lang], null, locale == lang);//change
+	      var menuButton = new qx.ui.menu.RadioButton(locales[lang], null, locale == lang);
 	      menuButton.setUserData("locale", lang);
 	      lang_menu.add(menuButton);
 	      radioManager.add(menuButton);
@@ -114,9 +126,12 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	      qx.locale.Manager.getInstance().setLocale(lang);
 	    });
 	
-	    lang_menu.addToDocument();
-	    this.add(new qx.legacy.ui.toolbar.MenuButton(null, lang_menu, "spagobi/img/spagobi/test/locale.png"));
-		*/
+	    //lang_menu.addToDocument();//change
+	    //this.getRoot().add(lang_menu);//not working
+	    
+	    //this.add(new qx.legacy.ui.toolbar.MenuButton(null, lang_menu, "spagobi/img/spagobi/test/locale.png"));
+		this.add(new qx.ui.toolbar.MenuButton(null, qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/locale.png"), lang_menu));
+		
 		
 		
 		this.addButton({
@@ -124,7 +139,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		handler: this.showAbout,
 	  		context: this,
 	  		"label": 'Help',
-	  		icon: 'icon/16/actions/help-about.png',
+	  		icon: 'qx/icon/Oxygen/16/actions/help-about.png', //icon/16
 	  		tooltip: 'Help'
 	  	});
 	  	
@@ -134,6 +149,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	members: {
 		
 		_toolBarManager: undefined,
+		_container: undefined,
 	/**
 	 * Shows a popup box
 	 */	
@@ -183,28 +199,40 @@ qx.Class.define("spagobi.ui.ToolBar", {
 		addButton: function(btnConfig) {  			
   			var command;
   			if(btnConfig.command && btnConfig.handler) {
+	    		//var command = new qx.event.Command( btnConfig.command );//change
 	    		var command = new qx.event.Command( btnConfig.command );
+	    		
 	    		command.addListener("execute", btnConfig.handler, btnConfig.context);
   			}
     		
-    		//var button = new qx.legacy.ui.toolbar.Button(this.tr(btnConfig.label), btnConfig.icon);
-    		
-    		var button = new qx.legacy.ui.toolbar.RadioButton(btnConfig.label, btnConfig.icon);
+    		//var button = new qx.legacy.ui.toolbar.RadioButton(this.tr(btnConfig.label), btnConfig.icon);
+			//var button = new qx.legacy.ui.toolbar.RadioButton(btnConfig.label, btnConfig.icon);//change
 			
+			//qx.Class.include(qx.ui.toolbar.RadioButton, qx.ui.core.MExecutable);//change..added to include setCommand()
+			var button = new qx.ui.toolbar.RadioButton(btnConfig.label, btnConfig.icon);
+			  
         	this._toolBarManager.add(button);		// Radio Mananger
 			
 			if(command) {
+				//qx.Class.include(qx.ui.toolbar.RadioButton, qx.ui.core.MExecutable);//change..added to include setCommand()
 				button.setCommand( command );
 			} else if( btnConfig.handler ) {
-				button.addListener("execute", btnConfig.handler, btnConfig.context);
+				//button.addListener("execute", btnConfig.handler, btnConfig.context);//change
+				button.addListener("click", btnConfig.handler, btnConfig.context);//or mousedowm
 				
 			}
+			//button.addListener("execute", btnConfig.handler, btnConfig.context);//change
+			button.addListener("click", btnConfig.handler, btnConfig.context);//or mousedowm
 			
 			if(btnConfig.tooltip) {
 				if(command) {
-					button.setToolTip(new qx.legacy.ui.popup.ToolTip(btnConfig.tooltip));
+							//button.setToolTip(new qx.legacy.ui.popup.ToolTip(this.tr('(%1) ' + btnConfig.tooltip, command.toString())));
+					//button.setToolTip(new qx.legacy.ui.popup.ToolTip(btnConfig.tooltip));//change
+					button.setToolTip(new qx.ui.tooltip.ToolTip(btnConfig.tooltip));
 				} else {
-					button.setToolTip(new qx.legacy.ui.popup.ToolTip(btnConfig.tooltip));				
+							//button.setToolTip(new qx.legacy.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));
+          			//button.setToolTip(new qx.legacy.ui.popup.ToolTip(btnConfig.tooltip));//change
+          			button.setToolTip(new qx.legacy.ui.tooltip.ToolTip(btnConfig.tooltip));			
 				}				
 			}
 			
@@ -216,5 +244,6 @@ qx.Class.define("spagobi.ui.ToolBar", {
 				}
 			}
   		}
+  		
   }
 });

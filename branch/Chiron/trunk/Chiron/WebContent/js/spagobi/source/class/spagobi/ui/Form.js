@@ -29,7 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Class for the creation of a form
  */ 
 qx.Class.define("spagobi.ui.Form", {
-	extend: qx.legacy.ui.layout.VerticalBoxLayout,
+	//extend: qx.legacy.ui.layout.VerticalBoxLayout,//change
+	extend : qx.ui.container.Composite,
 	
 	/**
 	 * Constructor to create a form. <hr>
@@ -94,10 +95,11 @@ qx.Class.define("spagobi.ui.Form", {
 	 */
 	construct : function(config) { 
 		this.base(arguments);
-	//	this.setWidth('100%');
-	//	this.setHeight('100%');
-	//	this.setDimension(500,500);		
-		this.setSpacing(5);
+		this.setLayout(new qx.ui.layout.VBox(5));
+				//	this.setWidth('100%');
+				//	this.setHeight('100%');
+				//	this.setDimension(500,500);		
+		//this.setSpacing(5);//change
   		
   		this.dataMappings = [];
   		
@@ -158,30 +160,43 @@ qx.Class.define("spagobi.ui.Form", {
 			var value;
 			
 			if(!this.getInputField(dataIndex)) return null;
+			
+			var container = this.getInputField(dataIndex).getUserData('field');//change..added
+			var object = container.getChildren()[0];//change..added
+			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
-				value = this.getInputField(dataIndex).getUserData('field').getValue();
+				//value = this.getInputField(dataIndex).getUserData('field').getValue();//change
+				value = object.getValue();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
-				value = this.getInputField(dataIndex).getUserData('field').getValue();
+				//value = this.getInputField(dataIndex).getUserData('field').getValue();
+				value = object.getValue();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
-				value = this.getInputField(dataIndex).getUserData('field').isChecked();
+				//value = this.getInputField(dataIndex).getUserData('field').isChecked();//change
+				value = object.isChecked();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {	
-				value = this.getInputField(dataIndex).getUserData('field').getData();
+				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
+				value = object.getData();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {	
-				value = this.getInputField(dataIndex).getUserData('field').getData();
+				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
+				value = object.getData();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {	
-				value = this.getInputField(dataIndex).getUserData('field').getValue();
+				//value = this.getInputField(dataIndex).getUserData('field').getValue();//change
+				value = object.getValue();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {	
-				value = this.getInputField(dataIndex).getUserData('field').getData();
+				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
+				value = object.getData();
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
-				var atom = this.getInputField(dataIndex).getUserData('field');
-				var radioButton = atom.getChildren();
+				//var atom = this.getInputField(dataIndex).getUserData('field');//change
+				//var radioButton = atom.getChildren();//change
+				
+				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
 					if(radioButton[i].getChecked() == true){
 						value = radioButton[i].getLabel();
@@ -201,30 +216,43 @@ qx.Class.define("spagobi.ui.Form", {
 			if(!this.getInputField(dataIndex)) {
 				return;
 			}
+			
+			var container = this.getInputField(dataIndex).getUserData('field');//change..added
+			var object = container.getChildren()[0];//change..added
+			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
-				this.getInputField(dataIndex).getUserData('field').setValue(value);
+				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
+				object.setValue(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
-				this.getInputField(dataIndex).getUserData('field').setValue(value);
+				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
+				object.setValue(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
-				this.getInputField(dataIndex).getUserData('field').setChecked(value);
+				//this.getInputField(dataIndex).getUserData('field').setChecked(value);//change
+				object.setChecked(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {		
-				this.getInputField(dataIndex).getUserData('field').setData(value);
+				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
+				object.setData(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {		
-				this.getInputField(dataIndex).getUserData('field').setData(value);
+				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
+				object.setData(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
-				this.getInputField(dataIndex).getUserData('field').setValue(value);
+				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
+				object.setValue(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {		
-				this.getInputField(dataIndex).getUserData('field').setData(value);
+				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
+				object.setData(value);
 				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
-				var atom = this.getInputField(dataIndex).getUserData('field');
-				var radioButton = atom.getChildren();
+				//var atom = this.getInputField(dataIndex).getUserData('field');//change
+				//var radioButton = atom.getChildren();//change
+				
+				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
 					if(radioButton[i].getLabel() == value){
 						radioButton[i].setChecked(true);
@@ -259,7 +287,6 @@ qx.Class.define("spagobi.ui.Form", {
   				    
   			} else if(config.type === 'formList') {
   				inputField = spagobi.commons.WidgetUtils.createInputFormList(config);    
-  			//	inputField.setDimension('100%','100%');//Border(new qx.legacy.ui.core.Border(5));
   				inputField.setUserData('type', 'formList');
   				    
   			} else if(config.type === 'textarea') {
@@ -279,9 +306,9 @@ qx.Class.define("spagobi.ui.Form", {
   			this.dataMappings[config.dataIndex] = inputField;
   			this.add(inputField);
 		}
-	},
-	
-	statics : {
-	
 	}
+	//change ... not needed
+	/*,
+	statics : {
+	}*/
 });

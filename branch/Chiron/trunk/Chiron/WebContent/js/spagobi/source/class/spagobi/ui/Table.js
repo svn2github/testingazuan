@@ -36,7 +36,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qx.Class.define("spagobi.ui.Table",
 {
-  extend : qx.legacy.ui.table.Table,
+  //extend : qx.legacy.ui.table.Table,//change
+  extend : qx.ui.table.Table,
 
   /**
    * Constructor to create a list (table)
@@ -66,7 +67,8 @@ qx.Class.define("spagobi.ui.Table",
     }
 
     // Create table model
-    this._tableModel = new qx.legacy.ui.table.model.Simple();
+    //this._tableModel = new qx.legacy.ui.table.model.Simple();//change
+    this._tableModel = new qx.ui.table.model.Simple();
     
     this._tableModel.setColumnIds( this.columnIds );
 	this._tableModel.setColumnNamesById( this.columnNames );
@@ -77,7 +79,8 @@ qx.Class.define("spagobi.ui.Table",
     this.base(arguments, this._tableModel,
     {
       tableColumnModel : function(obj) {
-        return new qx.legacy.ui.table.columnmodel.Resize(obj);
+        //return new qx.legacy.ui.table.columnmodel.Resize(obj);//change
+        return new qx.ui.table.columnmodel.Resize(obj);
       }
     });
 
@@ -92,9 +95,11 @@ qx.Class.define("spagobi.ui.Table",
    if (data.ID != undefined){
     	if (data.ID == "ROLES"){
 		
-			var propertyCellRendererFactory = new qx.legacy.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
+			//var propertyCellRendererFactory = new qx.legacy.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);//change
+			var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
 	 	
-   		 	var propertyCellEditorFactory = new qx.legacy.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
+   		 	//var propertyCellEditorFactory = new qx.legacy.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);//change
+   		 	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
 
 			for(i=0; i<data.columns.length; i++){
 				columnModel.setDataCellRenderer(data.columns[i], propertyCellRendererFactory);
@@ -103,52 +108,16 @@ qx.Class.define("spagobi.ui.Table",
 			
 			this.addListener("cellClick",this._onCellClick, this );
 			
-			/*
-			columnModel.setDataCellRenderer(2, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(2, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(3, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(3, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(4, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(4, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(5, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(5, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(6, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(6, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(7, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(7, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(8, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(8, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(9, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(9, propertyCellEditorFactory);
-			columnModel.setDataCellRenderer(10, propertyCellRendererFactory);
-			columnModel.setCellEditorFactory(10, propertyCellEditorFactory);
-		
-			
-			
-			
-		//	columnModel.setDataCellRenderer(2, new qx.legacy.ui.table.cellrenderer.Boolean());
-	 	//  columnModel.setDataCellRenderer(3, new qx.legacy.ui.table.cellrenderer.Boolean());    
-	 //   columnModel.setDataCellRenderer(4, new qx.legacy.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc));
-	 //   columnModel.setDataCellRenderer(5, new qx.legacy.ui.table.cellrenderer.Boolean());
-	 //   columnModel.setDataCellRenderer(6, new qx.legacy.ui.table.cellrenderer.Boolean());
-	 //   columnModel.setDataCellRenderer(7, new qx.legacy.ui.table.cellrenderer.Boolean());
-	//    columnModel.setDataCellRenderer(9, new qx.legacy.ui.table.cellrenderer.Boolean());
-	//   columnModel.setDataCellRenderer(10, new qx.legacy.ui.table.cellrenderer.Boolean());
-		
-	*/
     }
     }
 	
-	// Basic setup
- //this.setDimension('100%', '100%');
-    //alert (this.getWidthValue());
-    //var a = (92 * screen.width)/100;
-   	//this.setWidth(a);
+	//this.setWidth('100%');//change
+    //this.setHeight('100%');//change
+    //this.setBorder("inset-thin");//change
+    //this.setDecorator(new qx.ui.decoration.Single(null,"solid",null));
     
-    this.setWidth('100%');
-    this.setHeight('100%');
-    this.setBorder("inset-thin");					//line-bottom
-    this.setOverflow("auto");
+    //this.setOverflow("auto");//change ... find
+    
     this.setStatusBarVisible(false);
     this.getDataRowRenderer().setHighlightFocusRow(true);
     this.getPaneScroller(0).setShowCellFocusIndicator(false);
@@ -173,54 +142,15 @@ qx.Class.define("spagobi.ui.Table",
   	 propertyCellEditorFactoryFunc : function (cellInfo) 
 
   		{
-  			/*var table 			= cellInfo.table;
-  			var tableModel 	= table.getTableModel();
-  			var rowData			= tableModel.getRowData(cellInfo.row);
-  			var metaData		= rowData[3];*/
-  		/*	var cellEditor ;  // 	= new qx.legacy.ui.table.celleditor.TextField;
-  			var validationFunc 	= null;
-
-  			for ( var cmd in this.columnIds )
-  			{
-  				switch ( cmd )
-  				{
-  			case "type":
-               switch ( this.columnIds['type'] )
-               {
-                 case "checkbox":
-  						     cellEditor = new qx.legacy.ui.table.celleditor.CheckBox; break;
-               }
-
-  				}
-  			}
-  			return cellEditor;*/
-  			
-  			return new qx.legacy.ui.table.celleditor.CheckBox;
+  			//return new qx.legacy.ui.table.celleditor.CheckBox;
+  			return new qx.ui.table.celleditor.CheckBox;
   		},
 
   	 
   	 propertyCellRendererFactoryFunc : function (cellInfo)
       {
-        	/*var table 		 = cellInfo.table;
-  			var tableModel 	 = table.getTableModel();
-  			var rowData		 = tableModel.getRowData(cellInfo.row);
-  			var metaData	 = rowData[3];
-*/
-  		/*	for ( var cmd in this.columnIds )
-  			{
-  				switch ( cmd )
-  				{
-            case "type":
-              switch ( this.columnIds['type'])
-              {
-                case "checkbox": return new qx.legacy.ui.table.cellrenderer.Boolean;
-              }
-              break;
-
-  				}
-        
-        return new qx.legacy.ui.table.cellrenderer.Default;}*/
-        return new qx.legacy.ui.table.cellrenderer.Boolean;
+        	//return new qx.legacy.ui.table.cellrenderer.Boolean;
+        	return new qx.ui.table.cellrenderer.Boolean;
       },
       
       
@@ -282,9 +212,9 @@ qx.Class.define("spagobi.ui.Table",
         var itemData = this.getTableModel().getRowData(selectedEntry);
 		 
 		 
-        // If this is undefined, the data is not yet ready...
+        			// If this is undefined, the data is not yet ready...
         if (itemData) {
-        //if (this._controller != spagobi.ui.custom.FunctionalityTreeSubClass )
+        			//if (this._controller != spagobi.ui.custom.FunctionalityTreeSubClass )
           this._controller.selectDataObject(itemData);
         }
       }
@@ -293,33 +223,33 @@ qx.Class.define("spagobi.ui.Table",
     
     _onCellClick : function(e){
 	
-			if ( ! e instanceof qx.event.type.DataEvent){
+			//if ( ! e instanceof qx.event.type.DataEvent){//change
+			if ( ! e instanceof qx.event.type.Data){
 				return;
 			}
 			
-  			//var event_data = new qx.legacy.ui.table.pane.CellEvent(null,null,event);
   			var colnum = e.getColumn();
   			var romnum = e.getRow();
   			
   			if(typeof(this.getTableModel().getValue(colnum,romnum)) != 'boolean'){
   				return;
   			}
-  			//	alert(event +" ," +colnum +" ,"+ romnum);
-  			//var changedData = event.getData();
-  			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
+		  			//	alert(event +" ," +colnum +" ,"+ romnum);
+		  			//var changedData = event.getData();
+		  			//alert (typeof(this.getTableModel().getValue(colnum,romnum)));
 			
 			if ( this.getTableModel().getValue(colnum,romnum) === true )
 			{
-				//event.setData(false);// == false;
+					//event.setData(false);// == false;
 				this.getTableModel().setValue(colnum,romnum,false);
-				//	alert (this.getTableModel().getValue(colnum,romnum));
+					//	alert (this.getTableModel().getValue(colnum,romnum));
 			}
 			else 
 			{
-				//event.setData(true);// == true;
+					//event.setData(true);// == true;
 				this.getTableModel().setValue(colnum,romnum,true);
-				//	alert (this.getTableModel().getValue(colnum,romnum));
-				//event_data.setData(true);
+					//	alert (this.getTableModel().getValue(colnum,romnum));
+					//event_data.setData(true);
 			}
   		  
       }

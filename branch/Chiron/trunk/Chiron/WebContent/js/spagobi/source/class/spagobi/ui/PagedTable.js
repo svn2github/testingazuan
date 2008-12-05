@@ -36,8 +36,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qx.Class.define("spagobi.ui.PagedTable", {
   
-	extend : qx.legacy.ui.layout.VerticalBoxLayout, //qx.legacy.ui.layout.GridLayout,
-
+	//extend : qx.legacy.ui.layout.VerticalBoxLayout, //qx.legacy.ui.layout.GridLayout,//change
+	extend : qx.ui.container.Composite,
+	
 	/**
 	 * Constructor to create the entity with filter bar, list and navigation bar
 	 * 
@@ -53,46 +54,53 @@ qx.Class.define("spagobi.ui.PagedTable", {
 	 */
 	construct : function(controller, data)  {
     	   	
-    	this.base(arguments);    	
-    	this.setWidth("100%");// try also "auto"
-		this.setHeight("100%");
-	//	this.setOverflow("auto");
-	//	alert (document.documentElement.clientWidth);
-  //	alert (window.innerWidth);
-//		alert (screen.width);
-	//  alert (this.getWidthValue());
-	//	alert (this.getMaxWidth());
+    	this.base(arguments);
+    	this.setLayout(new qx.ui.layout.VBox);
+    	  	
+    	//this.setWidth("100%");// try also "auto"
+		//this.setHeight("100%");
+						//	this.setOverflow("auto");
+						//	alert (document.documentElement.clientWidth);
+					  //	alert (window.innerWidth);
+					//		alert (screen.width);
+						//  alert (this.getWidthValue());
+						//	alert (this.getMaxWidth());
 		this._filterBar = new spagobi.ui.FilterBar();
+    	
     	this._table = new spagobi.ui.Table(controller, data);
     	this._navigationBar = new spagobi.ui.NavigationBar(); 
     	
+    	//var atom1 = new qx.legacy.ui.basic.Atom();//change
+    	//var atom1 = new qx.ui.basic.Atom();
+    			//	atom1.setWidth('100%'); 
+    	//atom1.add( this._filterBar );
+    	//atom1.setHorizontalAlign("center");//change 
+    	//this.add( atom1 );
+    	this.add(this._filterBar);	
     	
+    	this.add(this._table);
+    	this.add(this._navigationBar);
+			    	/*    	
+			    	var atom0 = new qx.legacy.ui.basic.Atom();
+			    	atom0.setWidth('100%'); 
+			        atom0.setHeight('1*');
+			        atom0.setBackgroundColor('white');
+			    	atom0.add( this._table );
+			    	this.add( atom0 );
+			    	*/
     	
-    	var atom1 = new qx.legacy.ui.basic.Atom();
-    //	atom1.setWidth('100%'); 
-    	atom1.add( this._filterBar );
-    	atom1.setHorizontalAlign("center");
-    	this.add( atom1 );
-    	
-    	/*    	
-    	var atom0 = new qx.legacy.ui.basic.Atom();
-    	atom0.setWidth('100%'); 
-        atom0.setHeight('1*');
-        atom0.setBackgroundColor('white');
-    	atom0.add( this._table );
-    	this.add( atom0 );
-    	*/
+    	/*
     	this._table.setWidth('100%');
     	this._table.setHeight('1*');
     	this.add(this._table);
     	
     	    	
     	var atom2 = new qx.legacy.ui.basic.Atom();
-  //  	atom2.setWidth('100%');  
+  				//  	atom2.setWidth('100%');  
     	atom2.add( this._navigationBar );
     	atom2.setHorizontalAlign("center");
     	this.add( atom2 );
-    	
+    	*/
   	},
 
 	members : {

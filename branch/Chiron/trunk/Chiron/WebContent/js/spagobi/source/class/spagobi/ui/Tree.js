@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 qx.Class.define("spagobi.ui.Tree", {
           
-          extend: qx.legacy.ui.tree.Tree,
+          extend: qx.ui.tree.Tree,
           
           /**
           * Constructor of Customized class
@@ -52,8 +52,17 @@ qx.Class.define("spagobi.ui.Tree", {
           */ 
           construct : function(config) {
           	
-          	 var trs = qx.legacy.ui.tree.TreeRowStructure.getInstance().standard(config.root);
-		     this.base(arguments, trs);
+          //	 var trs = qx.legacy.ui.tree.TreeRowStructure.getInstance().standard(config.root);
+		     this.base(arguments);
+		     this._root = new qx.ui.tree.TreeFolder(config.root);
+		     this._root.setOpen(true);
+		     this.setRoot(this._root);
+		    // this.setUserData(config.root, this._root);//this.setUserData() // check for 'node'!!
+			//  alert(this.getUserData(config.root)); 
+		     var dummyatom = new qx.ui.basic.Atom();
+		     dummyatom.setUserData('node',this._root);
+		     this.setUserData(config.root, dummyatom);
+
           	
           	 //this.setWidth("100%"); // don't set it, else scroll bar appear permanantly
     		 //this.setHeight("100%");
@@ -69,6 +78,7 @@ qx.Class.define("spagobi.ui.Tree", {
           },
           
           members: {
+          		   _root : undefined,
           		   _nodeId : 0,
           		   nameText: undefined,
           		   atom: undefined,
@@ -89,7 +99,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		
 	               		
 	               		
-	               		if(this.getSelectedElement() == undefined || this.getManager().getSelectedItem() == undefined){		// null
+	               		if(this.getSelectedItem() == undefined){		// null
 	               			//alert("no Element Selected");
 	               			return;
 	               		}
@@ -162,13 +172,13 @@ qx.Class.define("spagobi.ui.Tree", {
         				var moveDownCmd = new qx.event.Command();
         				moveDownCmd.addListener("execute", this.moveDownNode,this);
         									
-	               		var contextMenu = new qx.legacy.ui.menu.Menu;
-	               		var insertButton = new qx.legacy.ui.menu.Button("Insert",null,insertCmd); // handleClick(var vItem, Event e)
-	               		var deleteButton = new qx.legacy.ui.menu.Button("Delete",null,deleteCmd);
-	               		var moveUpButton = new qx.legacy.ui.menu.Button("Move Up",null,moveUpCmd);
-	               		var moveDownButton = new qx.legacy.ui.menu.Button("Move Down",null,moveDownCmd);
+	               		var contextMenu = new qx.ui.menu.Menu;
+	               		var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd); // handleClick(var vItem, Event e)
+	               		var deleteButton = new qx.ui.menu.Button("Delete",null,deleteCmd);
+	               		var moveUpButton = new qx.ui.menu.Button("Move Up",null,moveUpCmd);
+	               		var moveDownButton = new qx.ui.menu.Button("Move Down",null,moveDownCmd);
 	               		
-	               		if(this.getManager().getSelectedItem() == this){		// If Root Node
+	               		if(this.getSelectedItem() == this){		// If Root Node
 	               			contextMenu.add(insertButton,deleteButton);
 	               		} else {
 		               			var selectionManager = this.getManager();
@@ -400,57 +410,66 @@ qx.Class.define("spagobi.ui.Tree", {
                  	
                  	if(config.checkBox != undefined){	// to check if its a standard node with just icon and name
                  										// ... or specia node with a icon, checkbox and name 
-                 		
-                 		treeRowStructure = qx.legacy.ui.tree.TreeRowStructure.getInstance().newRow();                 
+                 	//	alert("1");
+                 		treeRowStructure = new qx.ui.tree.TreeFolder();                 
                  		treeRowStructure.addIndent();
                  		if(config.init_icon != undefined && config.click_icon != undefined){
+                 	//		alert("2");
                  			treeRowStructure.addIcon(config.init_icon, config.click_icon);
                  		}
                  		// to add default image 
-                 		if (config.checkBox == true){ 
-                      		var obj = new qx.legacy.ui.form.CheckBox();
-                      		treeRowStructure.addObject(obj, true);
+                 		
+                 		if (config.checkBox == true){
+                 	//		alert("3"); 
+                      		var obj = new qx.ui.form.CheckBox();
+                      		treeRowStructure.addWidget(obj, true);
                   		}
                   		
                   		treeRowStructure.addLabel(config.name);
                  	}
                  	
                  	else{			// if standard node with just Icon and name
-                 		treeRowStructure = qx.legacy.ui.tree.TreeRowStructure.getInstance().standard(config.name);
+                 		//	alert("4");
+                 			treeRowStructure = new qx.ui.tree.TreeFolder(config.name);
                  	}	 
                   	
                   	if(config.file != undefined){	// to check if node is of type file or folder
-                  		if(config.file == true){
-                  			treeNode = new qx.legacy.ui.tree.TreeFile(treeRowStructure);
+                  	//	alert("5");
+                  			if(config.file == true){
+                  			//	alert("6");
+                  			treeNode = new qx.ui.tree.TreeFile(config.name);
                   		}
                   		else{
-                  			treeNode = new qx.legacy.ui.tree.TreeFolder(treeRowStructure);
+                  		//	alert("7");
+                  			treeNode = new qx.ui.tree.TreeFolder(config.name);
                   		}
                   	}
-                  	else{							// by default, node is of Folder type
-                  		treeNode = new qx.legacy.ui.tree.TreeFolder(treeRowStructure);
+                  	else{			
+                  	//	alert("8");				// by default, node is of Folder type
+                  		treeNode = new qx.ui.tree.TreeFolder(config.name);
                   	}                                                  
                   	
-                  	//alert(config.parent);
-                  	if(config.parent == this){ //instanceof qx.legacy.ui.tree.Tree){
-                  		//alert('adding in tree');
-                  		config.parent.add(treeNode);
-                  		
+                  	
+                  	if(config.parent == this){ 
+                  	//	alert("9");
+                  		this._root.add(treeNode);
+                  		                 		
                    	//this.setUserData(config.id, treeNode);
                   	}
                    	else{
+                   	//	alert("10");
                    		//alert('adding below tree');
                    	 	var p = config.parent.getUserData('node');
                    	 	p.add(treeNode);
                    	}
                    	
-                   	
-                   	 var atom = new qx.legacy.ui.basic.Atom();
+                   //	alert("11");
+                   	 var atom = new qx.ui.basic.Atom();
         			 //atom.add(treeNode);//,config.data);
         			 
         			 atom.setUserData('node', treeNode);
         			 atom.setUserData('data', config.data);
-        			 
+        			// alert(atom.getUserData('node'));
         			 this.setUserData(config.name,atom);	//Label of node is used as its id .. later we can use its level or hierarchy path
                    	 
                    	
@@ -474,7 +493,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               
 	             	//var currentItem = this.getSelectedElement();
 	             	
-	             	 var currentItem = this.getManager().getSelectedItem();
+	             	 var currentItem = this.getSelectedItem();
 	             	
 	             	//alert(currentItem + ","+currentItem.getLabel());
 	             	if(currentItem == this){
@@ -521,10 +540,11 @@ qx.Class.define("spagobi.ui.Tree", {
                  	nodeParent.remove(node);
                  	*/
                  	
-                 	var currentItem = this.getSelectedElement();
-                 	var nodeParent = currentItem.getParentFolder();
+                 	var currentItem = this.getSelectedItem();
+                 	var nodeParent = currentItem.getParentChildrenContainer();
                  	nodeParent.remove(currentItem);
-                 	nodeParent.setSelected(true);
+                 //	nodeParent.setSelected(true);
+                 	nodeParent.setVisibility("visible");
                  	
                  	//alert(nodeParent.getChildrenLength()); why 2 as horizontalbox and vbox??
                  	//node.destroy();
@@ -547,7 +567,7 @@ qx.Class.define("spagobi.ui.Tree", {
                   * @return {AbstractTreeElement} - The currently selected Node of the tree
                   */
                  getCurrentNode:function(){
-                 	return this.getSelectedElement();
+                 	return this.getSelectedItem;//getSelectedElement()
                  },
                  
                  /**
@@ -555,30 +575,32 @@ qx.Class.define("spagobi.ui.Tree", {
                   */
                  moveUpNode: function(){
                  	
-                 	var selectionManager = this.getManager();
-	               	var item = selectionManager.getSelectedItem();
-	               	var previousItem = selectionManager.getPreviousSibling(item);
-	               	var parentItem = item.getParentFolder();
+            //     	var selectionManager = this.getManager();
+	               	var item = this.getSelectedItem();
+	               	var previousItem = this.getPreviousSiblingOf(item);
+	               	var parentItem = item.getParentChildrenContainer();
 	               	
 	               	//parentItem.remove(item);
-	               	parentItem.addBeforeToFolder(item,previousItem);
+	               	parentItem.addBefore(item,previousItem);
 	               	
-	               	item.setSelected(true);
+	               	//item.setSelected(true);// what is the alternative for setSelected
+	              // 	this.selectItem(item);// Not Sure what i am doing!!
+	              item.setVisibility("visible");
                  },
                  
                  /**
                   * 
                   */
                  moveDownNode: function(){
-                 	var selectionManager = this.getManager();
-	               	var item = selectionManager.getSelectedItem();
-	               	var nextItem = selectionManager.getNextSibling(item);
-	               	var parentItem = item.getParentFolder();
+             //    	var selectionManager = this.getManager();
+	               	var item = this.getSelectedItem();
+	               	var nextItem = this.getNextSiblingOf(item);
+	               	var parentItem = item.getParentChildrenContainer();
 	               	
 	               	//parentItem.remove(item);
-	               	parentItem.addAfterToFolder(item,nextItem);
+	               	parentItem.addAfter(item,nextItem);
 	               	
-	               	item.setSelected(true);
+	               	item.setVisibility("visible");//item.setSelected(true);
                  },
                  
                  /*
@@ -590,9 +612,10 @@ qx.Class.define("spagobi.ui.Tree", {
                  getNodeData: function(){
                  	
                  	var info = {};
-                 	var node = this.getCurrentNode();
+               //  	var node = this.getCurrentNode();
+                 //	alert(node);
+                 	var nodeId = this.getSelectedItem().getLabel();
                  	
-                 	var nodeId = node.getLabel();
                  	var atom = this.getUserData(nodeId);	//nodeid = label .. to be changed
                  	
                  	if(atom.getUserData('data') != undefined)

@@ -86,12 +86,13 @@ qx.Class.define("spagobi.ui.custom.MapDetailsForm", {
         		dataIndex: 'format',
         		text: 'Format',
         		items: ["SVG"]		
-        	}, {
+        	}//change ... to be uncommented and worked upon
+        	, {
         		//type: 'form',
         		type: 'formList',
         		dataIndex: 'features',
         		formList: spagobi.ui.custom.FeatureDetailsForm
-        		
+        	 	
         		/*[
         			{
 			        	type: 'text',

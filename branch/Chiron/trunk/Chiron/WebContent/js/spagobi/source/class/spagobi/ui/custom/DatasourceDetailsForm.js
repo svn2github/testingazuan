@@ -65,7 +65,7 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
 	*
 	*/ 	
 	construct : function() { 
-		//this.base(arguments, this.self(arguments).formStructure);
+		
 		this.base(arguments,[
         	{
         		type: 'text',
@@ -132,20 +132,34 @@ qx.Class.define("spagobi.ui.custom.DatasourceDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('jndiname') ) {
+        		/*//change
         		if (e.getValue()=="With Jndi Name") {
 					this.getInputField('jndiname').setDisplay(true);
 					this.getInputField('url').setDisplay(false);
 					this.getInputField('user').setDisplay(false);
 					this.getInputField('password').setDisplay(false);
-					this.getInputField('driver').setDisplay(false);
+					this.getInputField('driver').setDisplay(false);//
+				*/
+				if (e.getData()=="With Jndi Name") {
+					this.getInputField('jndiname').setVisibility("visible");
+					this.getInputField('url').setVisibility("excluded");
+					this.getInputField('user').setVisibility("excluded");
+					this.getInputField('password').setVisibility("excluded");
+					this.getInputField('driver').setVisibility("excluded");
 					
 				} else {
-					this.getInputField('jndiname').setDisplay(false);
+					/*//change
+					this.getInputField('jndiname').setDisplay(false);//
 					this.getInputField('url').setDisplay(true);
 					this.getInputField('user').setDisplay(true);
 					this.getInputField('password').setDisplay(true);
 					this.getInputField('driver').setDisplay(true);
-					
+					*/
+					this.getInputField('jndiname').setVisibility("excluded");
+					this.getInputField('url').setVisibility("visible");
+					this.getInputField('user').setVisibility("visible");
+					this.getInputField('password').setVisibility("visible");
+					this.getInputField('driver').setVisibility("visible");
 				}
         	}        	
         } 

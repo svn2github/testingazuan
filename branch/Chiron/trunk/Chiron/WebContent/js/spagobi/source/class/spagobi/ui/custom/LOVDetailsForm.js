@@ -127,8 +127,8 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        		labelwidth: 100,
 				        		height: 50	
 			        		}
-			        	]/*,
-			     visible: false */ 
+			        	]
+			        	//,	     visible: false  
         	},  {
         		type: 'form',
         		dataIndex: 'scriptloadvalues',
@@ -146,7 +146,7 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
         	},  {
         		type: 'form',
         		dataIndex: 'fixedlov',
-        		form:
+        		/*form:
         				[				
         					{
         					type: 'formList',
@@ -174,7 +174,17 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 				        					}
 								        ]
 				        	}
-				        ],
+				        ],*/
+				 form:
+        				[       		
+        					{
+				        		type: 'text',
+				        		dataIndex: 'dummy',
+				        		text: 'Dummy',
+				        		labelwidth: 100,
+				        		height: 50
+        					}
+        				],    
 			     visible: false 
         	},  {
         		type: 'form',
@@ -200,7 +210,8 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
 			if( this && this.getInputField('querystmt') ) {
-	        	if (e.getValue()== "Query Statement") {
+				//change
+	        	/*if (e.getValue()== "Query Statement") {
 	        		this.getInputField('querystmt').setDisplay(true);
 	        		this.getInputField('scriptloadvalues').setDisplay(false);
 	        		this.getInputField('fixedlov').setDisplay(false);
@@ -223,6 +234,31 @@ qx.Class.define("spagobi.ui.custom.LOVDetailsForm", {
 	        		this.getInputField('scriptloadvalues').setDisplay(false);
 	        		this.getInputField('fixedlov').setDisplay(false);
 	        		this.getInputField('javaclass').setDisplay(true);
+	        	}
+	        	*/
+	        	if (e.getData()== "Query Statement") {
+	        		this.getInputField('querystmt').setVisibility("visible");
+	        		this.getInputField('scriptloadvalues').setVisibility("excluded");
+	        		this.getInputField('fixedlov').setVisibility("excluded");
+	        		this.getInputField('javaclass').setVisibility("excluded");
+	        		        		
+				} else if (e.getData()== "Script to load values") {
+	        		this.getInputField('querystmt').setVisibility("excluded");
+	        		this.getInputField('scriptloadvalues').setVisibility("visible");
+	        		this.getInputField('fixedlov').setVisibility("excluded");
+	        		this.getInputField('javaclass').setVisibility("excluded");
+	        		        		
+	        	} else if (e.getData()== "Fixed List of values") {
+	        		this.getInputField('querystmt').setVisibility("excluded");
+	        		this.getInputField('scriptloadvalues').setVisibility("excluded");
+	        		this.getInputField('fixedlov').setVisibility("visible");
+	        		this.getInputField('javaclass').setVisibility("excluded");
+	        		        		
+	        	} else if (e.getData()== "Java class") {
+	        		this.getInputField('querystmt').setVisibility("excluded");
+	        		this.getInputField('scriptloadvalues').setVisibility("excluded");
+	        		this.getInputField('fixedlov').setVisibility("excluded");
+	        		this.getInputField('javaclass').setVisibility("visible");
 	        	}
 	        }
 		} 

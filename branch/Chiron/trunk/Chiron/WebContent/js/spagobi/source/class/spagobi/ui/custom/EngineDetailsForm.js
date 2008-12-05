@@ -150,14 +150,20 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('url') ) {
-        		if (e.getValue()=="Internal") {
+        		//if (e.getValue()=="Internal") {//change
+        		if (e.getData()=="Internal") {
+        			/*//change
 					this.getInputField('url').setDisplay(false);
 					this.getInputField('driver').setDisplay(false);
 					this.getInputField('class').setDisplay(true);
+					*/
+					this.getInputField('url').setVisibility("excluded");
+					this.getInputField('driver').setVisibility("excluded");
+					this.getInputField('class').setVisibility("visible");
 				} else {
-					this.getInputField('url').setDisplay(true);
-					this.getInputField('driver').setDisplay(true);
-					this.getInputField('class').setDisplay(false);
+					this.getInputField('url').setVisibility("visible");
+					this.getInputField('driver').setVisibility("visible");
+					this.getInputField('class').setVisibility("excluded");
 				}
         	}
         	
@@ -165,7 +171,9 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
         
         _useDataSourceChangeCheckedHandler : function(e) {
         	if( this && this.getInputField('dataSource') ) {
-        		this.getInputField('dataSource').setDisplay( e.getValue() );
+        		//this.getInputField('dataSource').setDisplay( e.getValue() );//change
+        		var display = e.getData()? "visible" : "excluded";
+        		this.getInputField('dataSource').setVisibility( display );
         	}
         }  
 	}

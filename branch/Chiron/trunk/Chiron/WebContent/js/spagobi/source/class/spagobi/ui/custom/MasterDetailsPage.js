@@ -39,7 +39,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 {
-  extend : qx.legacy.ui.splitpane.VerticalSplitPane,
+  //extend : qx.legacy.ui.splitpane.VerticalSplitPane,
+  extend : qx.ui.container.Composite,
+  
 
   /**
    * Constructor to create the page on right side.
@@ -58,37 +60,50 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
    	
   construct : function(type)
   {
-	this.base(arguments, "1*", "2*");
+	//this.base(arguments, "1*", "2*");//extend :	qx.ui.splitpane.Pane,
+	this.base(arguments);
+	this.setLayout(new qx.ui.layout.Dock);
+	
+	
+	var pane = new qx.ui.splitpane.Pane("vertical");
+	
+	var containerTop = new qx.ui.container.Composite(new qx.ui.layout.VBox).set({
+        height: 150
+      });
+
+    var containerBottom = new qx.ui.container.Composite(new qx.ui.layout.VBox);
+	
+	
+	/*
     this.setWidth("100%");
     this.setHeight("100%");
-    //this.setHeight("1*");
-    this.setLiveResize(true);
- //   this.setOverflow("auto");
-  //  this.setShowKnob(false);
     
-  //  alert (this.getParent());
-    //var listPage;
+    this.setLiveResize(true);
+ 			//   this.setOverflow("auto");
+  			//   this.setShowKnob(false);
+    
+ 
     var detailPage;
     var detailHeader;
-    //var detailBody ;
+   
     
     this.setEdge(0);
    	this.setBorder("line-left");
       		
-    //var records;
+    		//var records;
     var form;  	
     this._type = type;
     
-   
+   */
 	if(type === 'engine') {
 		this.records = spagobi.app.data.DataService.loadEngineRecords();
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
-	} else if(type === 'dataset') {
-		this.records = spagobi.app.data.DataService.loadDatasetRecords();
-		form = new spagobi.ui.custom.DatasetDetailsForm(); 
 	} else if(type === 'datasource') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+	} else if(type === 'dataset') {
+		this.records = spagobi.app.data.DataService.loadDatasetRecords();
+		form = new spagobi.ui.custom.DatasetDetailsForm(); 
 	} else if(type == 'mapmgmt') {
 		this.records = spagobi.app.data.DataService.loadMapRecords();
 		form = new spagobi.ui.custom.MapDetailsForm(); 
@@ -116,9 +131,6 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'link3') {									
 		this.records = spagobi.app.data.DataService.loadlink3Records();
 		form = new spagobi.ui.custom.Link3DummyForm(); 
-	} else if(type == 'roles') {									
-		this.records = spagobi.app.data.DataService.loadRolesRecords();
-		form = new spagobi.ui.custom.RolesDummyForm(); 
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
@@ -140,43 +152,78 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type === 'schedule') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
-	}
+	} else if(type == 'roles') {									
+		this.records = spagobi.app.data.DataService.loadRolesRecords();
+		form = new spagobi.ui.custom.RolesDummyForm(); 
+	} 
 	
-	
+	//For Roles, lin1, link2 and link3, do as :
+	//this._container1.show();
+    //this._container2.exclude();
+	/*
+	 if(type == 'roles' || type == 'link1' || type == 'link2' || type == 'link3'){
+	 	//containerTop.setLayout(new qx.ui.layout.Grow);
+	 	containerTop.show();
+	 	containerBottom.exclude();
+	 }
+	 */
 	
 		this.listPage = new spagobi.ui.PagedTable(this,this.records); 
-	   	this.addTop( this.listPage );
-	   	this.listPage.setOverflow("auto");
-	    //this.listPage.setWidth('100%'); 
-	    //this.listPage.setHeight('100%');  	
-	      	
-	    	
-	   	// Create detail view
-	   	detailPage = new qx.legacy.ui.pageview.buttonview.ButtonView();
-	    detailPage.setEdge(0);     
-	       
-	    // Create detail view toolbar
-	    var saveButton = new qx.legacy.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/save.png");
-	    var SB = new qx.legacy.ui.popup.ToolTip("Save");
-	    saveButton.setToolTip(SB);
-	    var deleteButton = new qx.legacy.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/delete.png");
-	    var SD = new qx.legacy.ui.popup.ToolTip("Delete");
-	    deleteButton.setToolTip(SD);
-	    var createButton = new qx.legacy.ui.pageview.buttonview.Button("", "spagobi/img/spagobi/test/create.png");
-	    var NB = new qx.legacy.ui.popup.ToolTip("New");
-	    createButton.setToolTip(NB);
-	                     
-	    detailPage.getBar().add(createButton, saveButton, deleteButton);               
-	   
-	    // Functionality for Save button
-	    /*
-	    var save_page = new qx.legacy.ui.pageview.buttonview.Page(saveButton);
-		save_page.setDisplay(false);
-		detailPage.getPane().add(save_page);
-		save_page.addListener("appear", this.ShowDetails, this);
-		*/
-		saveButton.addListener("changeChecked", this.ShowDetails, this);
+	   	
+	   	//this.addTop( this.listPage );//change
+	   	containerTop.add(this.listPage);
+	   	pane.add(containerTop, 0);
+	   	
+	   	//var button = new qx.ui.form.Button("Toggle Splitpane Orientation");
+	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+	   	//var formBarManager = new qx.ui.form.RadioGroup(null);
+	   	//qx.Class.include(qx.ui.toolbar.RadioButton, qx.ui.core.MExecutable);
+	   	
+	   	var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
+	    var createToolTip = new qx.ui.tooltip.ToolTip("New");
+	    createButton.setToolTip(createToolTip);
+	   		   	   	
+	   	var saveButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/save.png"));
+	    var saveToolTip = new qx.ui.tooltip.ToolTip("Save");
+	    saveButton.setToolTip(saveToolTip);
+	    saveButton.addListener("execute", this.ShowDetails, this);
+	    
+	    var deleteButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/delete.png"));
+	    var deleteToolTip = new qx.ui.tooltip.ToolTip("Delete");
+	    deleteButton.setToolTip(deleteToolTip);
+	    
+	    var formBarArray = [createButton, saveButton, deleteButton];//since add() adds only 1 widget at a time
+	    
+	    for(var i=0; i<formBarArray.length; i++){
+	   		formBar.add(formBarArray[i]);
+	   		//formBarManager.add(formBarArray[i]);
+	    }
+	    
+	    
+	   	containerBottom.add(formBar);
 		
+	   	
+	   	//this.listPage.setOverflow("auto");//change ..find
+			    //this.listPage.setWidth('100%'); 
+			    //this.listPage.setHeight('100%');  	
+	    this._form = form;
+	    containerBottom.add(this._form);
+	    
+	    pane.add(containerBottom, 1);
+		this.add(pane,{edge: "west",width: "100%"});
+		
+		/* Don't Delete 
+	    //testing for parameter form's getData() function
+	    if(type ==='parameters'){
+	  		var b = new qx.legacy.ui.form.Button("dummy button");
+	  		b.addListener("execute",this.myFunction,this);
+	  		form.add(b);
+	  	}
+	  	*/
+  	
+	   	
+	   	
+		/* 
 	    // Create detail view body
 	   	this._form = form;       	      	
 	   	detailHeader = new qx.legacy.ui.pageview.buttonview.Button("", "");
@@ -185,30 +232,22 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		
 		this.detailBody = new qx.legacy.ui.pageview.buttonview.Page( detailHeader );
 		
-	    	this.detailBody.setOverflow("auto");
+	    this.detailBody.setOverflow("auto");
 	    this.detailBody.add( this._form );
 	    //this._form.setDimension("100%","1*");		 
 	  	
 	  	detailPage.getPane().add( this.detailBody );
 	  	this.addBottom( detailPage );
 	  	
-	  		//detailPage.getPane().setDimension("100%","100%");
+	  	//detailPage.getPane().setDimension("100%","100%");
 	  	//detailPage.setDimension("100%","1*");
 	  	//this.detailBody.setDimension("100%","100%");
-	  		//this._form.setDimension("100%","100%");
-	  		//this.detailBody.setBorder(new qx.legacy.ui.core.Border(1));
-	  	
-	  		//this.setOverflow("auto");
-  			
-  	/*    
-    //testing for parameter form's getData() function
-    if(type ==='parameters'){
-  		var b = new qx.legacy.ui.form.Button("dummy button");
-  		b.addListener("execute",this.myFunction,this);
-  		form.add(b);
-  	}
-  	*/
-  	//alert("3");//4
+	  	//this._form.setDimension("100%","100%");
+	  	//this.detailBody.setBorder(new qx.legacy.ui.core.Border(1));
+	  	//this.setOverflow("auto");
+  		*/		
+  	
+  	
   },
 
   members :
@@ -387,21 +426,26 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     },
     
     ShowDetails: function (e) {
+    	
+    	/*
     	if(e.getTarget().getChecked() == false){
     		return;
     	}
+    	*/ 
 		if (this.records.ID != undefined){
     		if (this.records.ID == "ROLES"){
 				alert (this.listPage._table.getUpdatedData());
 			}
     	}
 		else{
+			
+			
 			var alias = this.getForm().getData();
 			alert (this.printObject(alias));
+			
 		}
 		//e.getTarget().getButton().setChecked(false);
-		
-		e.getTarget().setChecked(false);
+		//e.getTarget().setChecked(false);
 	}	
   }
 });

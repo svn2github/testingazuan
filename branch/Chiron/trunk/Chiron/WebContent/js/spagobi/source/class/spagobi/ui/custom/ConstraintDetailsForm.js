@@ -142,7 +142,8 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('datevalueformat') ) {	
-        		if (e.getValue()==null) {
+        		//change
+        		/*if (e.getValue()==null) {
 					this.getInputField('datevalueformat').setDisplay(false);
 					this.getInputField('regularexpression').setDisplay(false);
 					this.getInputField('maxlengthvalue').setDisplay(false);
@@ -205,18 +206,72 @@ qx.Class.define("spagobi.ui.custom.ConstraintDetailsForm", {
 					this.getInputField('decimalplaces').setDisplay(false);
 					this.getInputField('minlengthvalue').setDisplay(true);
 					
-				} /*else if (e.getValue()=="Choose..."){
-					if(this.getInputField('datevalueformat')){
-					this.getInputField('datevalueformat').setDisplay(false);
-					this.getInputField('regularexpression').setDisplay(false);
-					this.getInputField('maxlengthvalue').setDisplay(false);
-					this.getInputField('lrv').setDisplay(false);
-					this.getInputField('higherrangevalue').setDisplay(false);
-					this.getInputField('decimalplaces').setDisplay(false);
-					this.getInputField('minlengthvalue').setDisplay(false);
-					alert("Please choose a value !!!");
-					}
 				}*/
+				
+				if (e.getData()==null) {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Date") { 
+					this.getInputField('datevalueformat').setVisibility("visible");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Regexp") {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("visible");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Max Length") {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("visible");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Range") {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("visible");
+					this.getInputField('higherrangevalue').setVisibility("visible");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Decimal") {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("visible");
+					this.getInputField('minlengthvalue').setVisibility("excluded");
+					
+				} else if (e.getData()=="Min Length") {
+					this.getInputField('datevalueformat').setVisibility("excluded");
+					this.getInputField('regularexpression').setVisibility("excluded");
+					this.getInputField('maxlengthvalue').setVisibility("excluded");
+					this.getInputField('lrv').setVisibility("excluded");
+					this.getInputField('higherrangevalue').setVisibility("excluded");
+					this.getInputField('decimalplaces').setVisibility("excluded");
+					this.getInputField('minlengthvalue').setVisibility("visible");
+					
+				}
 			}	 
 		}	
         	

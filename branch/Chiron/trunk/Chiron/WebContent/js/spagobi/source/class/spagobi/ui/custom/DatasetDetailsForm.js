@@ -55,7 +55,7 @@ qx.Class.define("spagobi.ui.custom.DatasetDetailsForm", {
 	*
 	*/ 	
 	construct : function() { 
-		//this.base(arguments, this.self(arguments).formStructure);
+		
 		this.base(arguments,[
         	{
         		type: 'text',
@@ -97,11 +97,19 @@ qx.Class.define("spagobi.ui.custom.DatasetDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	 if( this && this.getInputField('fileName') ) {
+        		/*//change
         		if (e.getValue()=="File") {
 					this.getInputField('fileName').setDisplay(true);
 					
 				} else {
 					this.getInputField('fileName').setDisplay(false);
+				}
+				*/
+				if (e.getData()=="File") {
+					this.getInputField('fileName').setVisibility("visible");
+					
+				} else {
+					this.getInputField('fileName').setVisibility("excluded");
 				}
         	}        	
         }

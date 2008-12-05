@@ -33,6 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *  
  */
 
+/*
+#asset(qx/icon/Oxygen/16/actions/edit-delete.png)
+#asset(qx/icon/Oxygen/16/actions/list-add.png)
+*/
 
 qx.Class.define("spagobi.ui.FormList", {
 	extend: spagobi.ui.Form,
@@ -81,24 +85,32 @@ qx.Class.define("spagobi.ui.FormList", {
 		this._instances = [];
 		this.setConfig(config);
 		
-		this._tabView = new qx.legacy.ui.pageview.tabview.TabView();
-	//	this._tabView.setBorder(new qx.legacy.ui.core.Border(10));
-		this.addInstance();
-	/*	this.atom = new qx.legacy.ui.basic.Atom();
-		this.atom.add(this._tabView);
-		this.atom.setLeft(0);
-		this.atom.setBorder(new qx.legacy.ui.core.Border(3));
-	  	this.add(this.atom);
-	  	*/
-	// 	this._tabView.setBorder(new qx.legacy.ui.core.Border(10));
-	//	this.child = this._tabView.getChildren();
+		//this._tabView = new qx.legacy.ui.pageview.tabview.TabView();//change
+		this._tabView = new qx.ui.tabview.TabView();
 		
-	//	alert(this.child.length);
-		//this.child[2].setBorder(new qx.legacy.ui.core.Border(3));
-	//	alert (this.getWidth());
-	//	alert (this.getHeight());
-	//	this._tabView.setDimension(500,'auto');
-	//	this._tabView.setDimension(500,500);		
+		//this._tabView.setWidth(500);//try later
+		
+			//	this._tabView.setBorder(new qx.legacy.ui.core.Border(10));
+		this.addInstance();
+		
+		//Event listener should be after addInstance(), else it gets triggered on addition of dummy tab
+		this._tabView.addListener("changeSelected",this._choosePage,this); 
+																		
+				/*	this.atom = new qx.legacy.ui.basic.Atom();
+					this.atom.add(this._tabView);
+					this.atom.setLeft(0);
+					this.atom.setBorder(new qx.legacy.ui.core.Border(3));
+				  	this.add(this.atom);
+				  	*/
+				// 	this._tabView.setBorder(new qx.legacy.ui.core.Border(10));
+				//	this.child = this._tabView.getChildren();
+					
+				//	alert(this.child.length);
+					//this.child[2].setBorder(new qx.legacy.ui.core.Border(3));
+				//	alert (this.getWidth());
+				//	alert (this.getHeight());
+				//	this._tabView.setDimension(500,'auto');
+				//	this._tabView.setDimension(500,500);		
 	  	this.add(this._tabView);
 	},
 	 
@@ -116,8 +128,11 @@ qx.Class.define("spagobi.ui.FormList", {
 		
 		_tabView: undefined,
 		
-		_tabButton: undefined,
+		//_tabButton: undefined,//change
+		_tabPage: undefined,//change .. added
 		_tabcount: 0,
+		_dummycount: 0,
+		_check: false,
 		_formCount:0,
 		_checkObject: {
 						_checkedFields : [],
@@ -157,39 +172,64 @@ qx.Class.define("spagobi.ui.FormList", {
 			} else {
 				subform = new this._config();
 			}
-		//	subform.setBorder(new qx.legacy.ui.core.Border(3));	
+					//	subform.setBorder(new qx.legacy.ui.core.Border(3));	
 			if(o) {
 				subform.setData(o);
 			}		
 			
 			this._currentSubform = subform;
+			
+			//change
+			/*
 			var subFormButton = new qx.legacy.ui.pageview.tabview.Button('tab-' + this._tabcount);
 			this._tabcount++;
 			
 			subFormButton.setChecked(true);
 			subFormButton.setShowCloseButton(true);
-			//this._tabButton = subFormButton;
+				//this._tabButton = subFormButton;
 			
 	        this._tabView.getBar().add(subFormButton);
 	        var subFormPage = new qx.legacy.ui.pageview.tabview.Page(subFormButton);
 	  		this._tabView.getPane().add(subFormPage);
-	  	//	alert (this._tabView.getPane().getChildren()[0]);
+	  			//	alert (this._tabView.getPane().getChildren()[0]);
 	  		this._tabView.getPane().setDimension('auto','auto');
 	  		subFormPage.add(subform);
 	  		this._tabView.getPane().setDimension('auto','auto');
-	  //	subFormPage.setBorder(new qx.legacy.ui.core.Border(1));
+	  			//	subFormPage.setBorder(new qx.legacy.ui.core.Border(1));
+	  		*/
+	  		var subFormPage = new qx.ui.tabview.Page('tab-' + this._tabcount, "qx/icon/Oxygen/16/actions/edit-delete.png");
+	  		subFormPage.setLayout(new qx.ui.layout.Grow());//VBox
+	  		this._tabcount++;
+	  		subFormPage.add(subform);
+	  		this._tabView.add(subFormPage);
+	  		//alert("Form label"+ this._tabView.getSelected().getLabel());
+	  		//	subFormButton.setShowCloseButton(true);//change ... find for the close button
+	  		
+	  		//this._tabView.add(subFormPage);
 	  		
 	  		this._instances[this._instances.length] = subform;
+	  		//alert("Form length: "+this._instances.length);
 	  		
-	  		this._dummyFunction();
+	  		//this._tabPage = subFormPage;
+	  		//this._dummyFunction();
+	  			
+	  			//subFormPage.addListener("appear",this._changeSubForm,this);// focus activate
+	  			//subFormButton.addListener("changeChecked",this._changeSubForm,this);//change
+	  			//this._tabView.addListener("changeSelected",this._choosePage,this);
+	  			//subFormButton.addListener("closetab",this._closeSubForm,this);//change .. find
 	  		
-	  		subFormButton.addListener("changeChecked",this._changeSubForm,this);
-	  		subFormButton.addListener("closetab",this._closeSubForm,this);
-	  		
+	  		//uncomment 2
+	  		/*
 	  		if(this._instances.length > 2){	//this part of code is executed only when there are at least 2 subforms
-		  		var itemsList1 = this._tabView.getBar().getChildren();
-				var oldForm = itemsList1.indexOf(this._tabButton);
-				var newForm = itemsList1.indexOf(subFormButton);
+		  		//change
+		  		//var itemsList1 = this._tabView.getBar().getChildren();
+		  		//var oldForm = itemsList1.indexOf(this._tabButton);
+				//var newForm = itemsList1.indexOf(subFormButton);
+				
+				var itemsList1 = this._tabView.getChildren();
+		  		var oldForm = itemsList1.indexOf(this._tabPage);
+		  		var newForm = itemsList1.indexOf(subFormPage);
+		  		
 				this._currentSubform = this._instances[oldForm];
 				var newSubForm = this._instances[newForm];
 				//alert("Old form id is: " + oldForm);
@@ -197,7 +237,17 @@ qx.Class.define("spagobi.ui.FormList", {
 					this._checkbox(this._currentSubform,newSubForm,oldForm,newForm);
 				}
 	  		}
-			this._tabButton = subFormButton;
+	  		*/
+			//this._tabButton = subFormButton;//change
+			this._tabPage = subFormPage;//moved up
+			
+			//subFormPage.setVisibility("visible");
+			//this._tabView.removeListener("changeSelected",this._choosePage,this);
+    		this._tabView.setSelected(this._tabPage);
+    		this.childrenList("after New add");
+    		this._dummyFunction();
+    		//alert("Form label"+ this._tabView.getSelected().getLabel());
+    		//this._tabView.addListener("changeSelected",this._choosePage,this);
 		},
 		
 		/**
@@ -206,80 +256,156 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * <p> Called by addInstance() function.
 		 */
 		_dummyFunction: function(){
-			var dummysubFormButton = new qx.legacy.ui.pageview.tabview.Button('');
+			//change
+			/*var dummysubFormButton = new qx.legacy.ui.pageview.tabview.Button('');
 			dummysubFormButton.setShowCloseButton(true);
 			dummysubFormButton.setCloseButtonImage("icon/16/actions/edit-add.png");
 			
 			this._tabView.getBar().add(dummysubFormButton);
 	        var dummysubFormPage = new qx.legacy.ui.pageview.tabview.Page(dummysubFormButton);
 	  		this._tabView.getPane().add(dummysubFormPage);
-	  		
 	  		dummysubFormButton.addListener("changeChecked",this._dummytab,this);
-	  		
-	  		dummysubFormPage.add();
-	  		this._instances[this._instances.length] = {};
-	  		
+	  		*/
+	  		var dummysubFormPage = new qx.ui.tabview.Page("Dummy"+this._dummycount,"qx/icon/Oxygen/16/actions/list-add.png");
+      		this._dummycount++;
+      		dummysubFormPage.setLayout(new qx.ui.layout.Grow());
+	  		//dummysubFormPage.add(new qx.ui.basic.Label("dummy"));//change .. no need maybe
+      		this._tabView.add(dummysubFormPage);
+      		this._instances[this._instances.length] = {};
+	  		this.childrenList("after new dummy");
 	  	},
+		
+		_choosePage: function(e){
+			alert("inside event listener" + this._check);
+			if(this._check){
+				
+				this._check = !this._check;
+				//this._tabView.removeListener("changeSelected",this._choosePage,this);
+				this._tabView.setSelected(this._tabPage);
+				//this._tabView.addListener("changeSelected",this._choosePage,this);
+				return;
+			}
+			this.childrenList("1");
+			//alert(e + ", " + e.getEventPhase());
+			//e.stopPropagation();//doesnt work here
+			//alert(e.getPropagationStopped());
+			//e.setBubbles(true);
+			/*
+			if(e.BUBBLING_PHASE == e.getEventPhase())	//AT_TARGET i.e. 2
+			 	e.stopPropagation();//very important
+			*/
+			var tabView = e.getTarget();
+			var pg = tabView.getSelected();
+			
+			alert(pg.getLabel());
+			
+			if(pg.getLabel().substring(0,5) == "Dummy"){//(pg.getLabel()== ""){
+				//this._tabView.setSelected(this._tabPage);
+				this._dummytab();//deleting dummy tab calls this event .. prevented by removing lstener
+				this.childrenList("should stop now");
+				this._tabView.addListener("changeSelected",this._choosePage,this);
+				
+				//e.stopPropagation();//very important
+				
+				//
+				
+			}/*
+			else{
+				//this._tabView.removeListener("changeSelected",this._choosePage,this);
+    			//this._tabView.setSelected(pg);
+    			//this._tabView.addListener("changeSelected",this._choosePage,this);
+    			pg.setVisibility("visible");
+				//this._changeSubForm(pg);
+			}
+			*/
+			//e.setBubbles(true);//alert(e.getBubbles());
+			
+			//e.setEventPhase(e.BUBBLING_PHASE);
+			//e.stopPropagation();//works here
+		},
 		
 		/**
 		 * Event Listner function for the dummy tab button.
 		 * <p> The function checks if the dummy tab is selected, and if so, it deletes the current dummy tab,
 		 *     adds a new subform in the tab list and creates the new dummy tab after it.
 		 */
-		_dummytab: function(e){
-			if(e.getTarget().isChecked() == true){
-				this.deleteDataAt(this._instances.length-1);
-				this._tabButton.setShowCloseButton(false);
-				//this.addInstance();
-				/*
-				var itemsList1 = this._tabView.getBar().getChildren();
-				var btnIndex1 = itemsList1.indexOf(this._tabButton);
-				this._currentSubform = this._instances[btnIndex1];
-				if(this._currentSubform.getInputField('mychecklist') != undefined){
-					//this._checkbox(this._currentSubform);	//new form to be passed and not current
-				}
-				*/
-				this.addInstance();
-			}
+		_dummytab: function(){
+			//alert("2");
+			
+			//if(e.getTarget().isChecked() == true){//change..find equivalent
+				this.deleteDataAt(this._instances.length-1);//commenting this works
+				//this._tabButton.setShowCloseButton(false);//change..find
+						//this.addInstance();
+						/*
+						var itemsList1 = this._tabView.getBar().getChildren();
+						var btnIndex1 = itemsList1.indexOf(this._tabButton);
+						this._currentSubform = this._instances[btnIndex1];
+						if(this._currentSubform.getInputField('mychecklist') != undefined){
+							//this._checkbox(this._currentSubform);	//new form to be passed and not current
+						}
+						*/
+				this.addInstance();//uncomment
+				//alert("dummy deleted and new added");
+			//}
 		},
 		
-		_changeSubForm: function(e){ 
-			var btn = e.getTarget(); 
-			if(btn.isChecked() == true){
-				this._tabButton.setShowCloseButton(false); 
-				btn.setShowCloseButton(true);
-				//this._tabButton = btn;
+		 
+		_changeSubForm: function(pg){
+			alert("Hi");
+			//var pg = e.getTarget();
+			//if(btn.isChecked() == true){//change..find equivalent
+			//if(btn.isChecked() == true){
+				//this._tabButton.setShowCloseButton(false);//change...find
+				//btn.setShowCloseButton(true);//change..find
+					//this._tabButton = btn;
 				
-				var itemsList1 = this._tabView.getBar().getChildren();
+				//change
+				/*var itemsList1 = this._tabView.getBar().getChildren();
 				var oldForm = itemsList1.indexOf(this._tabButton);
 				var newForm = itemsList1.indexOf(btn);
+				*/
+				
+				var itemsList1 = this._tabView.getChildren();
+				var oldForm = itemsList1.indexOf(this._tabPage);
+				var newForm = itemsList1.indexOf(pg);
+				
+				//alert(oldForm + "," +  newForm);//forms are same .. do diff.
 				this._currentSubform = this._instances[oldForm];
 				var newSubForm = this._instances[newForm];
 				
 				if(this._currentSubform.getInputField('mychecklist') != undefined){
 					this._checkbox(this._currentSubform,newSubForm,oldForm,newForm);	//new form to be passed and not current
 				}
-				this._tabButton = btn;
-			}
+					//this._tabButton = btn;//change
+				this._tabPage = pg;
+				
+			//}
 		},
-		
+		//uncomment 3
+		/*
 		_closeSubForm: function(e){ 
 			if(e.getTarget().isChecked() == true){
-				var btn1 = e.getData();
-				//btn1.setShowCloseButton(false);
-				var itemsList1 = this._tabView.getBar().getChildren();
+				var btn1 = e.getData();//change ..maybe as below
+				var page1 = e.getData();
+				
+				//var itemsList1 = this._tabView.getBar().getChildren();//change
+				var itemsList1 = this._tabView.getChildren();
+				
 				var lengthList1 = itemsList1.length;
-				var btnIndex1 = itemsList1.indexOf(btn1);
+				//var btnIndex1 = itemsList1.indexOf(btn1);//change
+				var btnIndex1 = itemsList1.indexOf(page1);
 				
 				if( lengthList1 > 2 ) {			// if there are more than 1 tabs created (1 tab plus dummy tab should always be present)
     				
 	            	if (btnIndex1 < lengthList1-2 ){		//if closing tab is not the last tab in list, select next tab on deletion of current tab
                 		itemsList1[btnIndex1+1].setChecked(true);
-                		this._tabButton = itemsList1[btnIndex1+1];
+                		//this._tabButton = itemsList1[btnIndex1+1];
+                		this._tabPage = itemsList1[btnIndex1+1];
               		}
               		else {									//closing tab is last tab on list, so select previous tab on the deletion of current tab 
                 		itemsList1[btnIndex1-1].setChecked(true);
-                		this._tabButton = itemsList1[btnIndex1-1];
+                		//this._tabButton = itemsList1[btnIndex1-1];
+                		this._tabPage = itemsList1[btnIndex1-1];
               		}
               		if(this._currentSubform.getInputField('mychecklist') != undefined){
 					this._checklistAllow(btn1,btnIndex1);
@@ -290,15 +416,15 @@ qx.Class.define("spagobi.ui.FormList", {
 			   else {
         			alert("Last Tab won't be removed!");
       		   }
-      		   /*
+      		   / *
       		   if(this._currentSubform.getInputField('mychecklist') != undefined){
 					this._checklistAllow(btn1,btnIndex1);
       		   }
 				this.deleteDataAt(btnIndex1);
-				*/
+				* /
 			}
 		},
-		
+		*/
 		/**
 		 * Function to get the data of the subform list
 		 */		
@@ -313,7 +439,8 @@ qx.Class.define("spagobi.ui.FormList", {
 	 	 * Function to delete the complete subform list including all the tabs in it. 
 	 	 */
 		deleteData: function() {
-			var pagesArray = this._tabView.getPane().getChildren();
+			//var pagesArray = this._tabView.getPane().getChildren();//change
+			var pagesArray = this._tabView.getChildren();
 			var pageNum = pagesArray.length;
 			var i = 0;
 			while(i < pageNum) {
@@ -331,26 +458,35 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * @param index The index number of the subform to be deleted
 		 */
 		deleteDataAt: function(index) {
-			var pagesArray = this._tabView.getPane().getChildren();
+			//alert("3");
+			
+			//var pagesArray = this._tabView.getPane().getChildren();//change
+			var pagesArray = this._tabView.getChildren();
 			var targetPage = pagesArray[ index ];
-			 
+			
+			//change
+			/* 
 			var itemsList = this._tabView.getBar().getChildren();
             var lengthList = itemsList.length;
-           
-       
-            itemsList[ index ].getManager().remove( itemsList[ index ] );
+           	itemsList[ index ].getManager().remove( itemsList[ index ] );
             this._tabView.getBar().remove(itemsList[ index ]);
-    		
-            this._tabView.getPane().remove(targetPage);
-    
-            targetPage.dispose();
-            //itemsList[ index ].dispose();
-            
+    		this._tabView.getPane().remove(targetPage);
+    		*/
+    		this.childrenList("before remove");
+    		this._tabView.removeListener("changeSelected",this._choosePage,this);
+    		//eve.setBubbles(true);no effect
+    		//eve.stopPropagation();
+    		this._tabView.remove(targetPage);
+    		this._check = true;
+    		//this._tabView.addListener("changeSelected",this._choosePage,this);
+    		//targetPage.dispose();
+            	//itemsList[ index ].dispose();
+            this.childrenList("after remove");
             for(i=index; i<this._instances.length-1; i++){
 					this._instances[i] = this._instances[i+1];
 				}
 			this._instances.length--;
-			
+			//alert("length: "+this._instances.length);
 			
 				
             /*
@@ -360,6 +496,15 @@ qx.Class.define("spagobi.ui.FormList", {
             * */
 		},
 		
+		childrenList: function(s){
+			alert(s);
+			var list = "";
+			var children = this._tabView.getChildren();
+			for(i in children){
+				list = list + children[i].getLabel();
+			}
+			alert(list);
+		},
 		/**
 		 * Function to set the data of the formlist.
 		 * 
@@ -373,18 +518,15 @@ qx.Class.define("spagobi.ui.FormList", {
 			}
 			
 			this.dataObject = o;		
-		},
-		
+		}//,
+		//uncomment 4
+		/*
 		_checkbox: function(subform,newSubForm,oldFormIndex,newFormIndex){
-			//alert("inside fn. defn");
 			var dummyWidget = subform.getInputField('mychecklist'); 
 			if(dummyWidget.getUserData('type')== 'check'){
 				//if(dummyWidget.exclusivecheckbox != undefined){
 				var grid = dummyWidget.getUserData('field').getChildren();//has to be specific to a form
 				var gridNew = newSubForm.getInputField('mychecklist').getUserData('field').getChildren();
-				
-				
-				
 				
 				for(i=0; i<grid.length; i++){			//current form's checked labels stored in global array
 					if(grid[i].getUserData('field').getChecked() == true){
@@ -411,13 +553,13 @@ qx.Class.define("spagobi.ui.FormList", {
 						}
 					}
 					
-					/* if checkbox unchecked in form, make it enable in rest subforms */
+					//if checkbox unchecked in form, make it enable in rest subforms
 					for(j=0; j<this._checkObject._checkedFields.length; j++){
 						if(this._checkObject._subFormid[j] == oldFormIndex){
 							for(ii=0; ii<grid.length; ii++){
 								if(this._checkObject._checkedFields[j] == grid[ii].getUserData('label').getText() && grid[ii].getUserData('field').getChecked() == false){ //if checkbox made unchecked
 									
-									/* make the newly made unchecked checkbox as available in rest of subforms*/
+									// make the newly made unchecked checkbox as available in rest of subforms
 									for(cnt=0; cnt<this._instances.length-1; cnt++){
 										var myForm = this._instances[cnt];
 										var chklst = myForm.getInputField('mychecklist'); 
@@ -429,7 +571,7 @@ qx.Class.define("spagobi.ui.FormList", {
 										}
 									}
 									
-									/*delete from global */
+									//delete from global
 									for(k=j; k<this._checkObject._checkedFields.length-1; k++){
 										this._checkObject._checkedFields[k] = this._checkObject._checkedFields[k+1];
 										this._checkObject._subFormid[k] = this._checkObject._subFormid[k+1]; 
@@ -461,7 +603,10 @@ qx.Class.define("spagobi.ui.FormList", {
 				
 			}//end of if
 		},//end of fn.
+		*/
 		
+		//uncomment 5
+		/*
 		_checklistAllow:function(button,buttonIndex){
 			var delForm = this._instances[buttonIndex];
 			var checkList = delForm.getInputField('mychecklist'); 
@@ -504,9 +649,10 @@ qx.Class.define("spagobi.ui.FormList", {
 						}
 					}
 			 	}		//end of if 	
-			}
+			}//end for
 			
 			
-		}
+		}//end fn.
+		*/ 
 	}	
 });

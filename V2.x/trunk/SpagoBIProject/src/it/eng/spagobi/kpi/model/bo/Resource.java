@@ -8,6 +8,7 @@ public class Resource {
 	String column_name = null;
 	String table_name = null;
 	String type = null; //type of the resource, such as Project...
+	Integer typeId = null;
 	
 	public String getName() {
 		return name;
@@ -39,6 +40,14 @@ public class Resource {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
 	}
 
 	public Resource() {

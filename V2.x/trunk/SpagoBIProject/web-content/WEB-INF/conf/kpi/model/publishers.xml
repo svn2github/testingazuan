@@ -232,4 +232,56 @@
 		</RENDERING>
 	</PUBLISHER>
 	<!-- / MODEL INSTNACE-->
+	
+	<!-- RESOURCES -->
+	
+	<PUBLISHER name="ResourcesPublisher">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="ListResourcesPublisher">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/kpi/model/listResources.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+
+	<PUBLISHER name="DetailResourcesPublisher">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailResources.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<!-- /RESOURCES -->
 </PUBLISHERS>    

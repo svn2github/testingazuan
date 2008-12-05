@@ -96,6 +96,21 @@
 		</td>
 	</tr>
 	
+	<tr class="portlet-font">
+		<td width="100" align="center"><img
+			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/assessmentIcon.png")%>' />
+		</td>
+		<td width="20">&nbsp;</td>
+		<td vAlign="middle">
+		  <a href='<portlet:actionURL><portlet:param name="PAGE" value="ResourcesPage"/>
+		  							  <portlet:param name="FIELD_ORDER" value="NAME"/>
+									  </portlet:actionURL>'
+			class="link_main_menu">
+			<spagobi:message key="sbi.kpi.resourcesDefinition.label" bundle="<%=messageBunle%>" />
+		  </a>
+		</td>
+	</tr>
+	
 	<%--
 	 
 	  <tr class="portlet-font">

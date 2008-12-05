@@ -76,6 +76,13 @@ public interface IKpiDAO {
 	public Resource loadResourceById(Integer id) throws EMFUserError ;
 	
 	/**
+	 * Returns the list of Resources
+	 * @return the list of Resources
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadResourcesList() throws EMFUserError;
+	
+	/**
 	 * Returns the DatasetConfig for the KPI with id kpiId
 	 * 
 	 * @param kpiId of the KPI 
@@ -129,5 +136,9 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public List loadKpiList() throws EMFUserError;
+
+	public void modifyResource(Resource resource) throws EMFUserError;
+
+	public Integer insertResource(Resource toCreate) throws EMFUserError;
 
 }

@@ -18,8 +18,12 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
+import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -138,6 +142,45 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
+	
+	public List loadResourcesList() throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+			toTransform = aSession.createQuery("from SbiResources").list();
+
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiResources hibResource = (SbiResources) iterator
+						.next();
+				Resource resource = toResource(hibResource);
+				toReturn.add(resource);
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Resources", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
+	}
+	
 	
 	public Resource loadResourceById(Integer id) throws EMFUserError {
 		logger.debug("IN");
@@ -745,12 +788,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		SbiDomains d = r.getSbiDomains();
 		String type = d.getValueCd();	
 		Integer resourceId = r.getResourceId();
+		Integer typeId = d.getValueId();
 		
 		toReturn.setColumn_name(coumn_name);
 		toReturn.setName(name);
 		toReturn.setDescr(descr);
 		toReturn.setTable_name(table_name);
 		toReturn.setType(type);
+		toReturn.setTypeId(typeId);
 		toReturn.setId(resourceId);
 		logger.debug("OUT");
 		return toReturn;
@@ -993,6 +1038,84 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		logger.debug("OUT");
 		return toReturn;
+	}
+
+	public void modifyResource(Resource resource) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Integer resourceId = resource.getId();
+			String tableName = resource.getTable_name();
+			String columnName = resource.getColumn_name();
+			String resourceName = resource.getName();
+			String resourceDescription = resource.getDescr();
+		    
+		    SbiDomains sbiDomain = (SbiDomains)aSession.load(SbiDomains.class, resource.getTypeId());
+		    SbiResources sbiResource = (SbiResources)aSession.load(SbiResources.class, resource.getId());
+		    
+		    sbiResource.setTableName(tableName);
+		    sbiResource.setColumnName(columnName);
+		    sbiResource.setResourceName(resourceName);
+		    sbiResource.setResourceDescr(resourceDescription);
+		    sbiResource.setSbiDomains(sbiDomain);
+			
+			aSession.update(sbiResource);
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+	}
+
+	public Integer insertResource(Resource toCreate) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer idToReturn;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiResources hibResource = new SbiResources();
+			hibResource.setResourceName(toCreate.getName());
+			hibResource.setResourceDescr(toCreate.getDescr());
+			hibResource.setTableName(toCreate.getTable_name());
+			hibResource.setColumnName(toCreate.getColumn_name());
+			SbiDomains sbiDomains = (SbiDomains) aSession.load(SbiDomains.class, toCreate.getTypeId());
+			hibResource.setSbiDomains(sbiDomains);
+			
+			idToReturn = (Integer)aSession.save(hibResource);
+			tx.commit();
+			
+		} catch (HibernateException he) {
+			logger.error("Error while inserting the KpiResource ", he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10103);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return idToReturn;
 	}
 
 }

@@ -41,5 +41,14 @@
     </GRAPH>
   </PAGE>
   
+  <PAGE name="ResourcesPage" class="it.eng.spago.dispatching.module.ConfigurablePage"
+    scope="REQUEST">
+    <GRAPH id="kpi-2">
+      <MODULES>
+        <MODULE id="1" name="ListResourcesModule" />
+        <MODULE id="2" name="DetailResourcesModule" />
+      </MODULES>
+    </GRAPH>
+  </PAGE>
   
 </PAGES>

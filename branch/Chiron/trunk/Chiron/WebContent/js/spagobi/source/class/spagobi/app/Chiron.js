@@ -31,10 +31,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Main Application Class
  */ 
+ 
+/*
+#asset(img/spagobi/test/engineAdministrationIcon.png)
+#asset(img/spagobi/test/*)
+#asset(qx/icon/Oxygen/16/actions/dialog-ok.png)
+
+*/ 
+ 
 qx.Class.define("spagobi.app.Chiron",
 {
-  extend : qx.legacy.application.Gui,
-
+  //extend : qx.legacy.application.Gui,//change
+	//extend : qx.application.Inline,
+	//include : [qx.legacy.application.MGuiCompat],
+	extend : qx.application.Standalone,//not working
+	
   /*
   *****************************************************************************
      SETTINGS
@@ -59,23 +70,25 @@ qx.Class.define("spagobi.app.Chiron",
   	selectToolbarName: undefined,
   	pages: [],
   	selectPageName: undefined,
-  	
+  	_container: undefined,//change..added
+  	containerToolBar: undefined,//chnage.. added
   	mainPane: {},
   	
   	
     main : function()
     {
 		 this.base(arguments);
-              	  	
+        // this.compat();//used with Inline
+        
+      	 //alert(qx.icontheme);   //undefined	
       	 // Define alias for custom resource path
-      	 
-      	 alert(qx.core.Setting.get("spagobi.resourceUri"));
-      	 //qx.util.AliasManager.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
-      	 qx.util.AliasManager.getInstance().add("spagobi", "cipolla");
+      	 qx.util.AliasManager.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
+      	 qx.util.AliasManager.getInstance().add("libResource", qx.core.Setting.get("qx.resourceUri"));      	 
       	 
       	 // Include CSS file
-         qx.legacy.html.StyleSheet.includeFile(qx.util.AliasManager.getInstance().resolve("../css/reader.css"));
-      	 
+         //qx.legacy.html.StyleSheet.includeFile(qx.util.AliasManager.getInstance().resolve("spagobi/css/reader.css"));//change
+      	 qx.bom.Stylesheet.includeFile(qx.util.AliasManager.getInstance().resolve("spagobi/css/reader.css"));//change2
+      	       	 
       	 // Increase parallel requests
       	qx.io.remote.RequestQueue.getInstance().setMaxConcurrentRequests(10);
       	
@@ -84,25 +97,28 @@ qx.Class.define("spagobi.app.Chiron",
       	
       	var executionMode = qx.core.Setting.get("spagobi.executionMode");
       	if(executionMode && executionMode === 'portal') {
-      		var d = qx.legacy.ui.core.ClientDocument.getInstance();
-
-			var inlineWidget = new qx.legacy.ui.basic.Inline("myInlineWidget");
-
+      		//var d = qx.legacy.ui.core.ClientDocument.getInstance();//change
+			var d = this.getRoot();
+			
+			//var inlineWidget = new qx.legacy.ui.basic.Inline("myInlineWidget");//change
+			var inlineWidget = new qx.ui.root.Inline("myInlineWidget");//change
+			
 	        inlineWidget.setHeight("70%");
 	        inlineWidget.setWidth("100%");
 	        d.add(inlineWidget);
          
          	inlineWidget.add( applicationLayout );
-      	} else {         	
-         	applicationLayout.addToDocument();
-         	var d = qx.legacy.ui.core.ClientDocument.getInstance();
-	        // Color Themes
-	        //qx.legacy.util.ThemeList.createMetaButtons(d, 600, 500);
+      	} else {
+      		         	
+         	//applicationLayout.addToDocument();//change
+         	this.getRoot().add(applicationLayout, {edge:0});//, {edge:0} //, width: "100%"
+         	
+         	//var d = qx.legacy.ui.core.ClientDocument.getInstance();//change
+         	//var d = this.getRoot();//change ..no need        
       	}
-      	
-  
+      	  
       	this._selectToolbar('resources');
-      	
+     	
     },
     
     /**
@@ -111,14 +127,22 @@ qx.Class.define("spagobi.app.Chiron",
      * __Header, Top ToolBar, Vertical Toolbar and Page__ are added.
      */ 
     _createLayout: function() {
-	   	var dockLayout = new qx.legacy.ui.layout.DockLayout();
-        dockLayout.setEdge(0);
- //       dockLayout.setWidth(screen.width);
-        dockLayout.setBackgroundColor('white');
+	   	//var dockLayout = new qx.legacy.ui.layout.DockLayout();//change
+	   	var dockLayout = new qx.ui.layout.Dock();
+	   	dockLayout.setSeparatorY("separator-vertical");
+	   	//var dockLayout = new qx.ui.layout.Canvas();//trying canvas instead..not working
+      
+        //dockLayout.setEdge(0);//change .. find equivalent .. maybe {edge:0}) when ading to getRoot();
+ 
+        //dockLayout.setBackgroundColor('white');//change..find equivalent
         
 	  	// Create header
       	this._headerView = new spagobi.app.ui.Header();
-      	dockLayout.addTop(this._headerView);
+      	//dockLayout.addTop(this._headerView);//change
+      	this._container = new qx.ui.container.Composite(dockLayout);
+		this._container.add(this._headerView, {edge:"north"});
+		//this._container.add(this._headerView, {left:0,top:0});//try canvas..not working
+      	
 
       	// Create toolbar
       	this._toolBarView = new spagobi.ui.ToolBar([
@@ -127,7 +151,7 @@ qx.Class.define("spagobi.app.Chiron",
 		  		handler: function() {this._selectToolbar('resources');},
 		  		context: this,
 		  		"label": 'Resources',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.',
 		  		defaultbutton: true
 	  		}, {
@@ -135,64 +159,67 @@ qx.Class.define("spagobi.app.Chiron",
 		  		handler: function() {this._selectToolbar('catalogues');},
 		  		context: this,
 		  		"label": 'Catalogues',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+E',
 		  		handler: function() {this._selectToolbar('behaviouralModel');},
 		  		context: this,
 		  		"label": 'Behavioural Model',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+R',
 		  		handler: function() {this._selectToolbar('analyticalModel');},
 		  		context: this,
 		  		"label": 'Analytical Model',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+T',
 		  		handler: function() {this._selectToolbar('adminDistributionList');},
 		  		context: this,
 		  		"label": 'Admin Distribution List',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+Y',
 		  		handler: function() {this._selectToolbar('functionality');},
 		  		context: this,
 		  		"label": 'Functionality',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+U',
 		  		handler: function() {this._selectToolbar('events');},
 		  		context: this,
 		  		"label": 'Events',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+I',
 		  		handler: function() {this._selectToolbar('tools');},
 		  		context: this,
 		  		"label": 'Tools',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+O',
 		  		handler: function() {this._selectToolbar('hotLinks');},
 		  		context: this,
 		  		"label": 'Hot Links',
-		  		icon: 'icon/16/actions/dialog-ok.png',
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}
       	]);
       	      	
-      	dockLayout.addTop(this._toolBarView);
+      	//dockLayout.addTop(this._toolBarView);//change
+      	this._container.add(this._toolBarView, {edge:"north"});//, width: "100%"
+      	//this._container.add(this._toolBarView, {left:0, width: "100%"});//not working
       	
       	// Create horizontal split pane
-      	
+      	this.containerToolBar = new qx.ui.container.Stack();
+      	      	
       	this.toolbars['resources'] = new spagobi.ui.PageView({
       		toolbar: {
       			//defaultBackgroudColor: 'white',
@@ -200,89 +227,100 @@ qx.Class.define("spagobi.app.Chiron",
       			buttons: [
       				{
       					name: 'engine',
-						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
+						image: qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/engineAdministrationIcon.png'),
 						page: 'engine',
-						tooltip: 'Engines'
+						tooltip: 'Engine Details'
       				}, {
       					name: 'datasource',
-						image:'spagobi/img/spagobi/test/datasourceAdministrationIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/datasourceAdministrationIcon.png'),
 						page: 'datasource',
-						tooltip: 'Datasources'
+						tooltip: 'Datasource Details'
       				}, {
       					name: 'dataset',
-						image:'spagobi/img/spagobi/test/datasetAdministrationIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/datasetAdministrationIcon.png'),
 						page: 'dataset',
-						tooltip: 'Dataset'
+						tooltip: 'Dataset Details'
       				}
       			]
       		},
       		defaultSelectedPage: 'engine'
       	});
-      	dockLayout.add( this.toolbars['resources'] );
-      	this.toolbars['resources'].setLiveResize(true);      	
-      	this.toolbars['resources'].setVisibility(false);
       	
+      	//change
+      	/*dockLayout.add( this.toolbars['resources'] );//change
+      	this.toolbars['resources'].setLiveResize(true);//change .. find equivalent .. maybe container resizer 	
+      	this.toolbars['resources'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['resources']);
       	
       	this.toolbars['catalogues'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'mapmgmt',
-						image:'spagobi/img/spagobi/test/mapManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/mapManagementIcon.png'),
 						page: 'mapmgmt',
-						tooltip: 'Maps'
+						tooltip: 'Map Details'
       				}, {
       					name: 'featuremgmt',
-						image:'spagobi/img/spagobi/test/featureManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/featureManagementIcon.png'),
 						page: 'featuremgmt',
-						tooltip: 'Features'
+						tooltip: 'Feature Details'
       				}
       			]
       		},
       		defaultSelectedPage: 'mapmgmt'
       	});
-      	dockLayout.add( this.toolbars['catalogues'] );
-      	this.toolbars['catalogues'].setLiveResize(true);      	
-      	this.toolbars['catalogues'].setVisibility(false);
+      	 
+      	//change
+      	/*dockLayout.add( this.toolbars['catalogues'] );
+      	  this.toolbars['catalogues'].setLiveResize(true);      	
+      	  this.toolbars['catalogues'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['catalogues']);
       	
       	this.toolbars['behaviouralModel'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'lov',
-						image:'spagobi/img/spagobi/test/lovManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/lovManagementIcon.png'),
 						page: 'lov',
-						tooltip: ' Predefined List of Values'
+						tooltip: 'LoV Details'//Predefined List of Values
       				}, {
       					name: 'constraints',
-						image:'spagobi/img/spagobi/test/constraintManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/constraintManagementIcon.png'),
 						page: 'constraints',
-						tooltip: 'Predefined Values Constraints'
+						tooltip: 'Constraint Details'
       				}, {
       					name: 'parameters',
-						image:'spagobi/img/spagobi/test/parameterManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/parameterManagementIcon.png'),
 						page: 'parameters',
-						tooltip: 'Analytical Drivers Management'
+						tooltip: 'Analytical Driver Details'// Analytical Drivers Management
       				}
       			]
       		},
       		defaultSelectedPage: 'lov'
       	});
-      	dockLayout.add( this.toolbars['behaviouralModel'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['behaviouralModel'] );
       	this.toolbars['behaviouralModel'].setLiveResize(true);
       	this.toolbars['behaviouralModel'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['behaviouralModel']);
       	
       	this.toolbars['analyticalModel'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'funcManagement',
-						image:'spagobi/img/spagobi/test/folderAdministrationIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/folderAdministrationIcon.png'),
 						page: 'funcManagement',
 						tooltip: 'Functionalities Management'
       				}, {
       					name: 'configuration',
-						image:'spagobi/img/spagobi/test/objectAdministrationIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/objectAdministrationIcon.png'),
 						page: 'configuration',
 						tooltip: 'Documents Configuration'
       				}
@@ -290,88 +328,104 @@ qx.Class.define("spagobi.app.Chiron",
       		},
       		defaultSelectedPage: 'funcManagement'
       	});
+      	
+      	//change
+      	/*
       	dockLayout.add( this.toolbars['analyticalModel'] );
       	this.toolbars['analyticalModel'].setLiveResize(true);
       	this.toolbars['analyticalModel'].setVisibility(false);
-      	
+      	*/
+      	this.containerToolBar.add(this.toolbars['analyticalModel']);
       	
       	this.toolbars['adminDistributionList'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'distributionList',
-						image:'spagobi/img/spagobi/test/distributionlistuser.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/distributionlistuser.png'),
 						page: 'distributionList',
-						tooltip: 'Distribution List User'
+						tooltip: 'Dummy'//Distribution List User
       				}, {
       					name: 'distributionListConfig',
-						image:'spagobi/img/spagobi/test/distributionlist.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/distributionlist.png'),
 						page: 'distributionListConfig',
-						tooltip: 'Distribution List Configuration'
+						tooltip: 'Dummy'//Distribution List Configuration
       				}
       			]
       		},
       		defaultSelectedPage: 'distributionList'
       	});
-      	dockLayout.add( this.toolbars['adminDistributionList'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['adminDistributionList'] );
         this.toolbars['adminDistributionList'].setLiveResize(true);
       	this.toolbars['adminDistributionList'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['adminDistributionList']);
       	
       	this.toolbars['functionality'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'func',
-						image:'spagobi/img/spagobi/test/mapManagementIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/mapManagementIcon.png'),
 						page: 'func',
-						tooltip: 'Functionalities'
+						tooltip: 'Dummy'//Functionalities
       				}
       			]
       		},
       		defaultSelectedPage: 'func'
       	});
-      	dockLayout.add( this.toolbars['functionality'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['functionality'] );
         this.toolbars['functionality'].setLiveResize(true);
       	this.toolbars['functionality'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['functionality']);
       	
       	this.toolbars['events'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'workflow',
-						image:'spagobi/img/spagobi/test/todoList_2.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/todoList_2.png'),
 						page: 'workflow',
-						tooltip: 'Workflow To Do List'
+						tooltip: 'Dummy'//Workflow To Do List
       				}, {
       					name: 'event',
-						image:'spagobi/img/spagobi/test/events.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/events.png'),
 						page: 'event',
-						tooltip: 'Events'
+						tooltip: 'Dummy'//Events
       				}
       			]
       		},
       		defaultSelectedPage: 'workflow'
       	});
-      	dockLayout.add( this.toolbars['events'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['events'] );
         this.toolbars['events'].setLiveResize(true);
       	this.toolbars['events'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['events']);
       	
       	this.toolbars['tools'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'tool',
-						image:'spagobi/img/spagobi/test/importexport64.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/importexport64.png'),
 						page: 'tool',
-						tooltip: 'Import / Export '
+						tooltip: 'Dummy'//Import / Export
       				}, {
       					name: 'schedule',
-						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/scheduleIcon64_blu.png'),
 						page: 'schedule',
-						tooltip: 'Schedule Document Executions '
+						tooltip: 'Dummy'//Schedule Document Executions
       				}, {
       					name: 'roles',
-						image:'spagobi/img/spagobi/test/rolesynch64.jpg',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/rolesynch64.jpg'),
 						page: 'roles',
 						tooltip: 'Roles Synchronization'
       				}
@@ -379,26 +433,30 @@ qx.Class.define("spagobi.app.Chiron",
       		},
       		defaultSelectedPage: 'tool'
       	});
-      	dockLayout.add( this.toolbars['tools'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['tools'] );
         this.toolbars['tools'].setLiveResize(true);
       	this.toolbars['tools'].setVisibility(false);
+      	*/
+      	this.containerToolBar.add(this.toolbars['tools']);
       	
       	this.toolbars['hotLinks'] = new spagobi.ui.PageView({
       		toolbar: {
       			buttons: [
       				{
       					name: 'link1',
-						image:'spagobi/img/spagobi/test/todoList_2.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/todoList_2.png'),
 						page: 'link1',
 						tooltip: 'Remember Me'
       				}, {
       					name: 'link2',
-						image:'spagobi/img/spagobi/test/scheduleIcon64_blu.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/scheduleIcon64_blu.png'),
 						page: 'link2',
 						tooltip: 'Most Popular'
       				}, {
       					name: 'link3',
-						image:'spagobi/img/spagobi/test/engineAdministrationIcon.png',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/engineAdministrationIcon.png'),
 						page: 'link3',
 						tooltip: 'Most Recently Used'
       				}
@@ -406,11 +464,19 @@ qx.Class.define("spagobi.app.Chiron",
       		},
       		defaultSelectedPage: 'link1'
       	});
-      	dockLayout.add( this.toolbars['hotLinks'] );
+      	
+      	//change
+      	/*dockLayout.add( this.toolbars['hotLinks'] );
         this.toolbars['hotLinks'].setLiveResize(true);
       	this.toolbars['hotLinks'].setVisibility(false);
-      	//alert("1");//3
-      	return dockLayout;  		
+      	*/ 
+  		this.containerToolBar.add(this.toolbars['hotLinks']);
+  		
+  		//this.containerToolBar.setSelected(this.containerToolBar.getChildren()[0]);//default resources selected
+  		this._container.add(this.containerToolBar, {edge:"west", height: "100%", width: "100%"});
+      	//return dockLayout;
+      	
+      	return this._container  		
     },
     
     /**
@@ -429,11 +495,15 @@ qx.Class.define("spagobi.app.Chiron",
      * @param toolbarName {String} The name of the Toolbar button
      */
     _selectToolbar: function(toolbarName) {
+    	
+    	/*
     	if(this.toolbars[toolbarName]) {
     		if(this.selectToolbarName) {
-    			this.toolbars[this.selectToolbarName].setVisibility(false);
+    			this.toolbars[this.selectToolbarName].setVisibility("excluded");
     		}
-    		this.toolbars[toolbarName].setVisibility(true);
+    		//alert(this.toolbars[toolbarName].getVisibility());
+    		this.toolbars[toolbarName].setVisibility("visible");
+    		
     		if(!this.toolbars[toolbarName].getSelectedPageName()) {
     			this.toolbars[toolbarName].selectDefaultPage();
     		}
@@ -443,6 +513,17 @@ qx.Class.define("spagobi.app.Chiron",
     	} else {
     		alert(toolbarName + ' is not yet implemented !');
     	}
+    	*/
+    	if(this.toolbars[toolbarName]) {
+	    	var index = this.containerToolBar.indexOf(this.toolbars[toolbarName]);
+	    	this.containerToolBar.setSelected(this.containerToolBar.getChildren()[index]);
+	    	if(!this.toolbars[toolbarName].getSelectedPageName()) {
+	    			this.toolbars[toolbarName].selectDefaultPage();
+	    	}
+    	}	
+    	else {
+    		alert(toolbarName + ' is not yet implemented !');
+    	}	 
     },
     
     /**
@@ -499,8 +580,9 @@ qx.Class.define("spagobi.app.Chiron",
      * Function to set the theme of the page
      */
     _applyCssTheme : function() {
-    	alert(document.body.className = qx.legacy.theme.manager.Meta.getInstance().getTheme());
-       document.body.className = qx.legacy.theme.manager.Meta.getInstance().getTheme() == qx.legacy.theme.ClassicRoyale ? "Ext" : "Classic";
+    	//alert(document.body.className = qx.legacy.theme.manager.Meta.getInstance().getTheme());
+       //document.body.className = qx.legacy.theme.manager.Meta.getInstance().getTheme() == qx.legacy.theme.ClassicRoyale ? "Ext" : "Classic";//change
+       document.body.className = qx.theme.manager.Meta.getInstance().getTheme() == qx.theme.Modern ? "Ext" : "Classic";
        //document.body.className = "Ext";
     },
    

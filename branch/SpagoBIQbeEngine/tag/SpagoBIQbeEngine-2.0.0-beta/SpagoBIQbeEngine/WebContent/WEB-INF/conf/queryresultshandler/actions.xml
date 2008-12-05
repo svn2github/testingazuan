@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="EXECUTE_QUERY_AND_SAVE_ACTION" 
+			class="it.eng.spagobi.qbe.queryresultshandler.service.ExecuteQueryAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION> 
+
+	
+	
+	<ACTION name="EXPORT_ACTION" 
+			class="it.eng.spagobi.qbe.queryresultshandler.service.ExportResultAction" 
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION> 	
+	
+</ACTIONS>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PRESENTATION>
+	
+	<MAPPING business_type="ACTION" business_name="DELETE_CALCULATED_FIELD_FROM_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="DELETE_FIELD_FROM_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_DOWN_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="MOVE_UP_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_CALC_FIELD_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="SELECT_FIELD_FOR_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+	<MAPPING business_type="ACTION" business_name="UPDATE_FIELD_SELECT_ACTION" publisher_name="SELECT_FIELDS_FOR_SELECTION_PUBLISHER"/>
+
+</PRESENTATION>
+

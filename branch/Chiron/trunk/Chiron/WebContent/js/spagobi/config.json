@@ -4,7 +4,7 @@
   "include" :
   [
     {
-      "path" : "../js/qooxdoo-0.8/tool/data/config/application.json",
+      "path" : "../qooxdoo-0.8/tool/data/config/application.json",
       "as"   : "appconf"
     }
   ],
@@ -12,8 +12,8 @@
   "let" :
   {
     "APPLICATION"  : "spagobi",
-    "QOOXDOO_PATH" : "../js/qooxdoo-0.8/framework",
-    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
+    "QOOXDOO_PATH" : "../qooxdoo-0.8/framework",
+    "QOOXDOO_URI"  : "./franco",
     "QXTHEME"      : "qx.theme.Modern",
     "LOCALES"      : [ "en" ],
     "ROOT"         : "."

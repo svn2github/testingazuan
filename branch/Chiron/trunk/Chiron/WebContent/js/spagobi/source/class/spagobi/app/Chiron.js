@@ -82,9 +82,13 @@ qx.Class.define("spagobi.app.Chiron",
         
       	 //alert(qx.icontheme);   //undefined	
       	 // Define alias for custom resource path
-      	 qx.util.AliasManager.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
-      	 qx.util.AliasManager.getInstance().add("libResource", qx.core.Setting.get("qx.resourceUri"));      	 
-      	 
+      	 //qx.util.AliasManager.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
+      	 //qx.util.AliasManager.getInstance().add("libResource", qx.core.Setting.get("qx.resourceUri"));      	 
+      	 qx.util.AliasManager.getInstance().add("spagobi", qxlibraries.spagobi.resourceUri);
+      	 qx.util.AliasManager.getInstance().add("libResource", qxlibraries.qx.resourceUri);      	 
+      	   
+      	   
+      	   
       	 // Include CSS file
          //qx.legacy.html.StyleSheet.includeFile(qx.util.AliasManager.getInstance().resolve("spagobi/css/reader.css"));//change
       	 qx.bom.Stylesheet.includeFile(qx.util.AliasManager.getInstance().resolve("spagobi/css/reader.css"));//change2

@@ -93,13 +93,16 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 
 	<qbe:page-content>
 
-	<div id="tabs"></div>
-	<div id="menuTreePane1"></div>
-	<div id="menuTreePane2"></div>
+	<!-- 
+	Used for syncronous requst 
+	TODO: create the class SyncrounousCaller with one method request that create this form on the fly
+	if it does not exist and than submit the request (similar to Ext.Ajax.request but for syncronous requests)
+	-->
 	<form id="form" 
 		  method="post"
 		  action=""
-		  target=""></form>
+		  target="">
+	</form>
 
 	</qbe:page-content>
 

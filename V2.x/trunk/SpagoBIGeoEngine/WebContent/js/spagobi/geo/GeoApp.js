@@ -39,7 +39,7 @@ Sbi.geo.app = function() {
               items: [
               { // CENTER REGION ---------------------------------------------------------
                 region: 'center',
-                title: 'Map',                
+                title: 'Document',                
                 //collapsible: true,
                 collapsed: false,
                 split: true,
@@ -52,6 +52,27 @@ Sbi.geo.app = function() {
                 
                 tools:[
                 {
+                    id:'plus',
+                    qtip:'Export as image',
+                    handler: function(event, toolEl, panel){
+                    
+                    	var form = document.getElementById('form');
+						form.action = Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION');
+						form.action += '&' + Ext.urlEncode({outputFormat:'jpeg', inline:false});
+						form.submit(); 
+                     
+                     /*
+                      Ext.Ajax.request({
+                      	url: Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION')
+                    	, success: function() {
+                    		// do nothings	
+                    	}
+						, failure: Sbi.commons.ExceptionHandler					
+						, params: {outputFormat:'jpeg', inline:false}
+                    });
+                    */
+                    }
+                }, {
                     id:'save',
                     handler: function(event, toolEl, panel){
                       if(this.saveAnalysisWin === undefined) {
@@ -113,7 +134,14 @@ Sbi.geo.app = function() {
 							, scope: drillPanel 
                     	});   
                     }
-                }],
+                }, {
+                    id:'help',
+                    qtip:'Help me please',
+                    // hidden:true,
+                    handler: function(event, toolEl, panel){
+                      alert('Version 2.0.0M1');
+                    }
+                  }],
                 
                 
                 bodyCfg: {

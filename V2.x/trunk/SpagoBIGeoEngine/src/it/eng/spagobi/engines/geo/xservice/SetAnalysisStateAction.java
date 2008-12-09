@@ -28,6 +28,8 @@ import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.IEngineInstance;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -134,7 +136,7 @@ public class SetAnalysisStateAction extends AbstractGeoEngineAction {
 			}		
 			
 		} catch (Throwable t) {
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), (IEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE ), t);
 		} finally {
 			// no resources need to be released
 		}	

@@ -116,6 +116,25 @@ public class GetMapsAction extends AbstractGeoEngineAction {
 					featureJSON.put("category", "undefined");
 					featuresJSON.put(featureJSON);
 				}
+				
+				JSONObject featureJSON= null;
+				
+				// grafici
+				featureJSON = new JSONObject();
+				featureJSON.put("id", "grafici");
+				featureJSON.put("name", "grafici");
+				featureJSON.put("description", "grafici");
+				featureJSON.put("category", "undefined");
+				featuresJSON.put(featureJSON);
+				
+				// valori
+				featureJSON = new JSONObject();
+				featureJSON.put("id", "valori");
+				featureJSON.put("name", "valori");
+				featureJSON.put("description", "valori");
+				featureJSON.put("category", "undefined");
+				featuresJSON.put(featureJSON);
+				
 				mapJSON.put("features", featuresJSON);
 				mapsJSON.put(mapJSON);
 				

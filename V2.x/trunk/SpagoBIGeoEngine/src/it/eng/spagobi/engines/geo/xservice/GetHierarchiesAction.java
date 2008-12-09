@@ -92,6 +92,7 @@ public class GetHierarchiesAction extends AbstractGeoEngineAction {
 					levelJSON.put("feature", level.getFeatureName());
 					levelsJSON.put(levelJSON);
 				}
+				
 				hierarchyJSON.put("levels", levelsJSON);
 				hierarchiesJSON.put(hierarchyJSON);
 			}

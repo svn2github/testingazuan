@@ -250,7 +250,7 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
     // public methods
     getAnalysisState : function() {
       
-      
+      //var params = {};
       
       var analysisState = {};
       
@@ -258,13 +258,18 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
       analysisState.level = this.hierarchyTree.getChecked()[0].text;
       
       analysisState.map = this.mapComboBox.getValue();
-      analysisState.features = [];
+      //analysisState.features = [];
+      analysisState.features = '';
       var checkedFeatures = this.featuresTree.getChecked();
       for(var i = 0; i < checkedFeatures.length; i++) {
-      	analysisState.features[i] = checkedFeatures[i].text;
+      	if(i > 0) analysisState.features += ',';
+      	analysisState.features += checkedFeatures[i].text;
       }      
       
       return analysisState;
+      
+      //params.analysisState = analysisState;
+      //return params;
     }, 
     
     // public methods
@@ -387,10 +392,14 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
       		var node = this.featuresTree.getRootNode().findChild('id', this.mapComboBoxStore.lastOptions.params.featureName);
       		node.getUI().toggleCheck(true);
       	} else {
+      		console.log('elect features into the map');
       		var featureMap = [];
+      		console.log('analysisState.features: ' + this.analysisState.features.toSource());
       		for(i = 0; i < this.analysisState.features.length; i++) {
-      			featureMap[ features[i].id ] = true;
+      			console.log('id : ' + this.analysisState.features[i]);
+      			featureMap[ this.analysisState.features[i] ] = true;
       		}
+      		console.log('> featureMap: ' + featureMap.toSource());
       		this.featuresTree.getRootNode().cascade( function(node) {
       			if(featureMap[ node.attributes['id'] ]) {
       				node.getUI().toggleCheck(true);

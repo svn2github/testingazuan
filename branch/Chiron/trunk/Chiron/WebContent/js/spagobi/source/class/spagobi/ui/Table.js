@@ -84,12 +84,16 @@ qx.Class.define("spagobi.ui.Table",
       }
     });
 
+   this.set({
+          height: 150
+      });
    
 
 	
     // Configure columns
     var columnModel = this.getTableColumnModel();
     var resizeBehavior = columnModel.getBehavior();
+    resizeBehavior
 	
 	
    if (data.ID != undefined){
@@ -120,7 +124,7 @@ qx.Class.define("spagobi.ui.Table",
     
     this.setStatusBarVisible(false);
     this.getDataRowRenderer().setHighlightFocusRow(true);
-    this.getPaneScroller(0).setShowCellFocusIndicator(false);
+   // this.getPaneScroller(0).setShowCellFocusIndicator(false);
     
     this._tableModel.setDataAsMapArray(data.rows, true);
     

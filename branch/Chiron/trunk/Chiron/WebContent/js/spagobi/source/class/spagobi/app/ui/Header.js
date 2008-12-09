@@ -36,18 +36,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qx.Class.define("spagobi.app.ui.Header",
 {
   //extend : qx.legacy.ui.embed.HtmlEmbed,//change
-  extend : qx.ui.embed.Html,
+  extend : qx.ui.container.Composite,
+  //extend : qx.ui.embed.Html,
 
   /**
    * Constructor to show the title text using HTML tags
    */	
   construct : function()
   {
-    this.base(arguments, "<h1><span>SpagoBI</span> - Chiron</h1>");
+    /*this.base(arguments, "<h1><span>SpagoBI</span> - Chiron</h1>");
 
     //this.setHtmlProperty("className", "header");//change
     this.setCssClass("header");
-    this.setHeight(50);
+    this.setHeight(50);*/
+    this.base(arguments);
+
+    this.setLayout(new qx.ui.layout.HBox);
+    this.setAppearance("app-header");
+
+    var title = new qx.ui.basic.Label("SpagoBI - Chiron");
+    var version = new qx.ui.basic.Label("V 0.8");
+
+    this.add(title);
+    this.add(new qx.ui.core.Spacer, {flex : 1});
+    this.add(version);
+    
   }
 });
 

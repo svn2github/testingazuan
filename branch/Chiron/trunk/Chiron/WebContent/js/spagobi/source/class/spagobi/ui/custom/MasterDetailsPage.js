@@ -67,9 +67,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	
 	var pane = new qx.ui.splitpane.Pane("vertical");
 	
-	var containerTop = new qx.ui.container.Composite(new qx.ui.layout.VBox).set({
-        height: 150
-      });
+	var containerTop = new qx.ui.container.Composite(new qx.ui.layout.VBox);//.set({
+    //    height: 150
+   //   });
 
     var containerBottom = new qx.ui.container.Composite(new qx.ui.layout.VBox);
 	
@@ -172,7 +172,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   	
 	   	//this.addTop( this.listPage );//change
 	   	containerTop.add(this.listPage);
-	   	pane.add(containerTop, 0);
+	   	pane.add(containerTop,0);
 	   	
 	   	//var button = new qx.ui.form.Button("Toggle Splitpane Orientation");
 	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
@@ -207,9 +207,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 			    //this.listPage.setWidth('100%'); 
 			    //this.listPage.setHeight('100%');  	
 	    this._form = form;
-	    containerBottom.add(this._form);
 	    
-	    pane.add(containerBottom, 1);
+	    containerBottom.add(this._form);
+	    var scroll = new qx.ui.container.Scroll();
+	     scroll.add(containerBottom);
+	    pane.add(scroll);
 		this.add(pane,{edge: "west",width: "100%"});
 		
 		/* Don't Delete 

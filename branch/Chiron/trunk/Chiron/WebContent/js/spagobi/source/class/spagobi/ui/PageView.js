@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qx.Class.define("spagobi.ui.PageView", {
 	
 	//extend : qx.legacy.ui.splitpane.HorizontalSplitPane,//change
-	extend : qx.ui.splitpane.Pane,
+	extend :qx.ui.splitpane.Pane,
 	
 	/**
 	 * Constructor to create a Page.
@@ -102,12 +102,15 @@ qx.Class.define("spagobi.ui.PageView", {
 	construct : function(config) {
 		//this.base(arguments, 70, "1*");//change
 		this.base(arguments,"horizontal");
-		
+	//	this.setLayout(new qx.ui.layout.HBox);
+//		var splitter = new qx.ui.splitpane.Splitter(this);
+//		splitter.setAllowShrinkX(false);
 		//this.setShowKnob(false);//change..splitpane.Slider
 		//this.setSplitterSize(0);//change splitpane.Splitter
-		
+	//	var w = this.getSplitterWidth();
+	//	w.setWidth(0);
 		this._pages = [];
-		this._container1 = new qx.ui.container.Composite(new qx.ui.layout.Grow);
+	//	this._container1 = new qx.ui.container.Composite(new qx.ui.layout.Dock);
 		this._container2 = new qx.ui.container.Composite(new qx.ui.layout.Grow);
 		
 		var toolbarConfig = {
@@ -133,8 +136,8 @@ qx.Class.define("spagobi.ui.PageView", {
 		
 		//this.addLeft( this._toolbar );//change
 		//this._toolbar.setWidth(70);
-		this._container1.add(this._toolbar);//, {width: 70}
-		this.add(this._container1, 0);
+	//	this._container1.add(this._toolbar,{width:'5%'});//, {width: 70}
+		this.add(this._toolbar,0);//this._container1, 0);
 		
 		
 	},
@@ -196,6 +199,12 @@ qx.Class.define("spagobi.ui.PageView", {
 	    			//}
 	    	 	  
     	},
+    	
+    	getSplitterWidth : function(){
+			
+			return this._getChildControl("splitter");
+		},
+    	
     	
     	/**
     	 * Function to select the default page

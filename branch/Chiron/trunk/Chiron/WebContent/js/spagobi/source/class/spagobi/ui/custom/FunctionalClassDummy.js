@@ -9,7 +9,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
     this.setLayout(new qx.ui.layout.Dock);
      //this.setShowKnob(false);
     this.horSplit = new qx.ui.splitpane.Pane();
-    this.add(this.horSplit);//,{width:'100%',height:'100%'});
+    this.add(this.horSplit,{width:'100%',height:'100%'});
     
  	if(type === 'funcManagement') {
    	var leftPart = new qx.ui.container.Composite(new qx.ui.layout.VBox);
@@ -136,7 +136,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		var rightPart = new spagobi.ui.custom.FunctionalityTreeSubClass();
   		
-  		this.horSplit.add(rightPart);
+  		this.horSplit.add(rightPart,1);
   		
   	
   
@@ -200,21 +200,23 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
        		//	var selectionManager = this._tree.getManager();
        			var item = this._tree.getSelectedItem();
        		//	alert(item.data.label);
+       		//	alert("Save Button getting enabled now");
        			this._saveButton.setEnabled(true);
+       		//	alert("Delete Button getting enabled now");
        			this._deleteButton.setEnabled(true);
        			
        			if(item instanceof qx.ui.tree.TreeFile){
-       				alert("Never");			//leaf nodes don't have insert option	
+       		//		alert("Never");			//leaf nodes don't have insert option	
        				this._createButton.setEnabled(false);
        				
-					if(this._tree.getPreviousSiblingOf(item) == undefined){		// first child cannot be moved up
+					if(this._tree.getPreviousSiblingOf(item) == null){		// first child cannot be moved up
        						this._moveUpButton.setEnabled(false);
        					}
        					else{
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(this._tree.getNextSiblingOf(item) == undefined){	// last child cannot be moved down
+       					if(this._tree.getNextSiblingOf(item) == null){	// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
        					}
        					else{
@@ -223,22 +225,31 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
      				//} 
        			}	// end of file nodes
        			else{											// If not Files (i.e. if Folders)
-       					this._createButton.setEnabled(true);
+       			//		alert("Create Button getting enabled now");
+       						this._createButton.setEnabled(true);
+       			//			alert("Save Button getting enabled now");
 	        			this._saveButton.setEnabled(true);
+	        	//		alert("Delete Button getting enabled now");
   						this._deleteButton.setEnabled(true);
   					//	alert(this._tree.getPreviousSiblingOf(item));
-       					if(this._tree.getPreviousSiblingOf(item) == undefined){		// first child cannot be moved up
+       					if(this._tree.getPreviousSiblingOf(item) == null){		// first child cannot be moved up
        						
+       			//				alert("Move Up Button getting enabled now");
        							this._moveUpButton.setEnabled(false);
        					}
        					else{
+       				//		alert("Move Down Button getting enabled now");
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(this._tree.getNextSiblingOf(item) == undefined){	// last child cannot be moved down
-       						this._moveDownButton.setEnabled(false);   
+       					if(this._tree.getNextSiblingOf(item) == null){	// last child cannot be moved down
+       							alert(this._tree.getNextSiblingOf(item));
+       					//		alert("Move Up Button getting enabled now");
+       							this._moveDownButton.setEnabled(false);   
        					}
        					else{
+       					//	alert("Move Down Button getting enabled now");
+       					alert(this._tree.getNextSiblingOf(item));
        						this._moveDownButton.setEnabled(true); 
        					}	
    				}	// end of folder nodes

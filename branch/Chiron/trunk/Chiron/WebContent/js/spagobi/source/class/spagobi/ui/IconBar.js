@@ -53,8 +53,21 @@ qx.Class.define("spagobi.ui.IconBar", {
 	construct : function( config ) {   
 	    this.base(arguments);
 	    //this.setWidth(70);
-	    this.set({width: 70});
-	    this.setLayout(new qx.ui.layout.VBox);//change..added
+	    this.set({width: 68});
+		var box = new qx.ui.layout.VBox();
+
+		this.setLayout(box);
+		this.set({allowGrowX : false});
+		/*.set({
+        width: 68,
+    //    decorator: "main",
+    //    backgroundColor: "yellow",
+        allowGrowX: false
+      });*/
+//	    var d = new qx.ui.layout.VBox();
+//	    d.allowGrowX(false);
+	    
+	    //change..added
 	    
 	    
 	    if(config) {

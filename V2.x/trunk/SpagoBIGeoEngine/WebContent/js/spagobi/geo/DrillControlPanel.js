@@ -392,14 +392,13 @@ Ext.extend(Sbi.geo.DrillControlPanel, Ext.Panel, {
       		var node = this.featuresTree.getRootNode().findChild('id', this.mapComboBoxStore.lastOptions.params.featureName);
       		node.getUI().toggleCheck(true);
       	} else {
-      		console.log('elect features into the map');
+      		
       		var featureMap = [];
-      		console.log('analysisState.features: ' + this.analysisState.features.toSource());
+      		
       		for(i = 0; i < this.analysisState.features.length; i++) {
-      			console.log('id : ' + this.analysisState.features[i]);
       			featureMap[ this.analysisState.features[i] ] = true;
       		}
-      		console.log('> featureMap: ' + featureMap.toSource());
+      		
       		this.featuresTree.getRootNode().cascade( function(node) {
       			if(featureMap[ node.attributes['id'] ]) {
       				node.getUI().toggleCheck(true);

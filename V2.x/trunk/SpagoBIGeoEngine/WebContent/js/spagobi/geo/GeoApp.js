@@ -91,12 +91,12 @@ Sbi.geo.app = function() {
 							           		, modal: false
 							       		});
 									} catch (ex) {
-										alert('ERROR: ' + ex.toSource())
+										Sbi.commons.ExceptionHandler.showErrorMessage( ex.toSource() );
 									}
 								}
                       		} 
                       		, onSequenceExecutedScope: this  
-                      	});
+                      	})
                       	
                       	
                       	this.saveAnalysisWin = new Sbi.geo.SaveAnalysisWindow({
@@ -114,7 +114,8 @@ Sbi.geo.app = function() {
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
 							, params: this.saveAnalysisWin.getAnalysisMeta
 							, scope: this.saveAnalysisWin
-						});   
+						});  
+						 
                       }
                       this.saveAnalysisWin.show();
                     }

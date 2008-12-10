@@ -61,28 +61,38 @@ Sbi.commons.ExceptionHandler = function(){
 		
 		
         handleFailure : function(response, options) {
-        	var str = "";
-        	for(p in response) {
-        		str += p + " = " + response[p] + "\n";
+        	
+        	var errMessage = 'Generic error'
+        	if(response !== undefined) {
+        		
+        		if(response.responseText !== undefined) {
+        			var content = Ext.util.JSON.decode( response.responseText );
+        			if(content.cause !== undefined) {
+        				errMessage = content.cause;
+        			} 
+        		} else {
+        			errMessage = Sbi.commons.toStr(response);
+        		}
         	}
         	
-        	var content = Ext.util.JSON.decode( response.responseText );
-        	//console.log('ERROR: ' + content.cause);
+        	Sbi.commons.ExceptionHandler.showErrorMessage(errMessage, 'Service Error');
+       	
+        },
+        
+        showErrorMessage : function(errMessage, title) {
+        	var m = errMessage || 'Generic error';
+        	var t = title || 'Error';
         	
         	Ext.MessageBox.show({
-           		title: 'Service Error'
-           		, msg: content.cause
+           		title: t
+           		, msg: m
            		, buttons: Ext.MessageBox.OK     
            		, icon: Ext.MessageBox.ERROR
            		, modal: false
        		});
-       		
-       		
-       		
-       		
-        	
-        	//alert();
         }
+        
+        
         
 	};
 }();

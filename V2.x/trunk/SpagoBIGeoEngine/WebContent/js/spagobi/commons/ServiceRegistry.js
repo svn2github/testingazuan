@@ -67,7 +67,6 @@ Ext.extend(Sbi.commons.ServiceRegistry, Ext.util.Observable, {
         }
         
         serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
-        //alert("Service invocation: " + serviceUrl); 
         return serviceUrl;
     }     
 });

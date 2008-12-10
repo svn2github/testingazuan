@@ -99,6 +99,7 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
 	    	Ext.Ajax.request( nextServiceConfig );  
 	    	
     	} else {   
+    		Sbi.commons.log('sequence ended');
     		this.onSequenceExecuted.call(this.onSequenceExecutedScope||window, serviceResponse);
     	}
     }

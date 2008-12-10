@@ -12,9 +12,9 @@ Sbi.commons = function(){
 	
 		init : function() {
 			//alert("init: Sbi.commons");
-		},
+		}
 		
-		toStr : function(o) {
+		, toStr : function(o) {
 			var str = "";
 			
 			if(o === 'undefined') return 'undefined';
@@ -25,11 +25,24 @@ Sbi.commons = function(){
 	        	str += p + ": " +  o[p] + "\n";
 	        }
 	        return str;
-		},
+		}
 		
-		dump : function(o) {
+		, dump : function(o) {
 			alert(this.toStr(o));
 		}
+		
+		
+		//, log: function(msg) {}
+		
+		
+		, log: function(msg) {
+			if(console === undefined) {
+				alert(msg);
+			} else {
+				console.log(msg);
+			}
+		}
+		
         
 	};
 }();

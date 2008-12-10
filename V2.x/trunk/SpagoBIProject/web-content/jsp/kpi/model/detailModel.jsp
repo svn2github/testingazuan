@@ -20,10 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%@ page
-	import="java.util.Map,java.util.HashMap,java.util.List,java.util.ArrayList"%>
-<%@page
-	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@ page import="java.util.Map,java.util.HashMap,java.util.List,java.util.ArrayList"%>
+<%@page import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.commons.bo.Domain"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.Model"%>
@@ -104,7 +102,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 
 <%@page import="java.util.ArrayList"%>
-<%@page import="it.eng.spagobi.kpi.model.bo.ModelAttribute"%><table
+<%@page import="it.eng.spagobi.kpi.model.bo.ModelAttribute"%>
+<table
 	class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'

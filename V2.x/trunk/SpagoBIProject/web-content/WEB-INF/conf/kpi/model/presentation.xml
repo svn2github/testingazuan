@@ -8,5 +8,6 @@
   <MAPPING business_type="PAGE" business_name="ModelInstanceTreePage" publisher_name="ModelInstanceTreePublisher"/>
   
   <MAPPING business_type="PAGE" business_name="ResourcesPage" publisher_name="ResourcesPublisher"/>
+  <MAPPING business_type="PAGE" business_name="ModelResourcesPage" publisher_name="ModelResourcesPublisher"/>
 
 </PRESENTATION>

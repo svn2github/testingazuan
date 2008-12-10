@@ -94,9 +94,8 @@
 				</SELECT_CAPTION>
 				<RESOURCES_CAPTION confirm="FALSE" image="/img/rememberMe22.png"
 					label="sbi.kpi.caption.resources">
-					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstanceTreePage" />
-					<PARAMETER name="MODULE" scope="" type="ABSOLUTE"
-						value="ListModelInstanceTreeModule" />
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelResourcesPage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="ListModelResourcesModule" />
 					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
 				</RESOURCES_CAPTION>
 				<TREE_CAPTION confirm="FALSE" image="/img/kpi/treeView16.png"
@@ -209,4 +208,33 @@
 	</MODULE>
 
 	<!--/  RESOURCES -->
+	<!-- SBI KPI MODEL  RESOURCES -->
+	
+	<MODULE name="ListModelResourcesModule" class="it.eng.spagobi.kpi.model.service.ListModelResourcesModule">
+		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.modelResources.title">
+			<COLUMNS>
+				<COLUMN label="sbi.kpi.label.name" name="NAME" />
+				<COLUMN label="sbi.kpi.label.selected" name="SELECTED" />
+			</COLUMNS>
+			<CAPTIONS>
+				<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="sbi.kpi.caption.select">	
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelResourcesPage" />
+					<PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="ListModelResourcesModule" />
+					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_SELECT" />
+					<PARAMETER name="RESOURCEID" scope="LOCAL" type="RELATIVE" value="RESOURCEID" />
+          			<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+          		</SELECT_CAPTION>
+			</CAPTIONS>
+			<BUTTONS>
+				<BACK_BUTTON confirm="FALSE" image="/img/back.png"
+					label="sbi.kpi.button.back.title" onlyPortletRunning="true">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstancePage" />
+					<!-- DA CAMBIARE CON LIGHT NAVIGATOR -->
+				</BACK_BUTTON>
+			</BUTTONS>
+		</CONFIG>
+	</MODULE>
+
+	<!--/  SBI KPI MODEL  RESOURCES -->
+	
 </MODULES>

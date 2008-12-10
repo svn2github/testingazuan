@@ -51,4 +51,14 @@
     </GRAPH>
   </PAGE>
   
+  
+  <PAGE name="ModelResourcesPage" scope="REQUEST">
+      <MODULES>
+        <MODULE name="ListModelResourcesModule" />
+      </MODULES>
+      <DEPENDENCIES>
+      	<DEPENDENCE source="ModelResourcesPage" target="ListModelResourcesModule">
+      	</DEPENDENCE>
+      </DEPENDENCIES>
+  </PAGE>
 </PAGES>

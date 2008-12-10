@@ -284,4 +284,61 @@
 	</PUBLISHER>
 	
 	<!-- /RESOURCES -->
+	<!-- MODEL RESOURCES -->
+	
+		<PUBLISHER name="ModelResourcesPublisher">
+		<RENDERING channel="PORTLET" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ModelResourcesBackPublisher">
+								<CONDITIONS>
+									<PARAMETER name="message" scope="SERVICE_REQUEST"
+										value="DETAIL_Select" />
+								</CONDITIONS>	
+							</CHECK>
+							<CHECK target="ListModelResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="ListModelResourcesPublisher">
+		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM mode="VIEW" resource="/jsp/kpi/model/listModelResources.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+	
+	<PUBLISHER name="ModelResourcesBackPublisher">
+	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+      		</RESOURCES>
+   	 	</RENDERING>
+	</PUBLISHER>
+	
+	<!-- /MODEL RESOURCES -->
+	
 </PUBLISHERS>    
